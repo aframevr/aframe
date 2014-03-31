@@ -15,6 +15,10 @@ namespace Mainframe
         public Context(IContext parentContext, SearchParameterCollection searchParameters)
         {
             this.ParentContext = parentContext;
+
+            if (searchParameters == null)
+                searchParameters = new SearchParameterCollection();
+
             this.SearchParameters = searchParameters;
         }
 

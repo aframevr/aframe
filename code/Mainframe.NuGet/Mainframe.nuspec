@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Mainframe</id>
-    <version>0.0.2</version>
+    <version>0.0.5</version>
     <title>C# automation framework built on top of Selenium and CodedUI</title>
     <authors>Sam Thwaites</authors>
     <owners>Sam Thwaites</owners>

@@ -36,8 +36,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context.cs" />
+    <Compile Include="ControlNotFoundException.cs" />
     <Compile Include="IContext.cs" />
-    <Compile Include="IControl.cs" />
     <Compile Include="Control.cs" />
     <Compile Include="ControlCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

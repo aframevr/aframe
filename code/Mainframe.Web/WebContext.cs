@@ -1,5 +1,6 @@
 ﻿using Mainframe.Web.Controls;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace Mainframe.Web
 
         public T NavigateTo<T>(string url) where T : WebControl
         {
-            this.Driver.Url = "https://www.google.com.au/search?q=test";
+            this.Driver.Url = url;
             this.Driver.Navigate();
             return As<T>(this);
         }

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>Mainframe.Web</id>
-        <version>0.0.2</version>
+        <version>0.0.5</version>
         <title>C# automation framework built on top of Selenium and CodedUI (Web Component)</title>
         <authors>Sam Thwaites</authors>
         <owners>Sam Thwaites</owners>
@@ -17,7 +17,7 @@
         <language>en-US</language>
         <tags>Automation FrameworkTest Testing UnitTest MSTest CodedUI Selenium UITesting</tags>
         <dependencies>
-          <dependency id="Mainframe" version="0.0.2" />
+          <dependency id="Mainframe" version="0.0.5" />
           <dependency id="Selenium.Support" version="2.40.0" />
         </dependencies>
     </metadata>

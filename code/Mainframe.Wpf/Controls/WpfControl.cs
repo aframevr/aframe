@@ -11,10 +11,5 @@ namespace Mainframe.Wpf.Controls
         public WpfControl(IContext context)
             : base(context, Technology.Wpf)
         { }
-
-        public override object RawFind()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

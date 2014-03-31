@@ -11,10 +11,5 @@ namespace Mainframe.WinForms.Controls
         public WinFormsControl(IContext context)
             : base(context, Technology.WinForms)
         { }
-
-        public override object RawFind()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

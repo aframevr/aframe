@@ -11,50 +11,43 @@ namespace Mainframe.Web.Controls
     public class WebControlCollection<T> : ControlCollection<T> where T : WebControl
     {
         public new WebContext Context { get { return base.Context as WebContext; } }
-        protected By _by { get { return this._searchParameters.ToBy(); } }
 
         public WebControlCollection(WebContext context, IEnumerable<SearchParameter> searchParameters)
             : base(context, Technology.Web, searchParameters)
         { }
 
-        public override object RawFind()
+        protected override object RawFind()
         {
-            var cssKey = "By.CssSelector: ";
-            var xpathKey = "By.XPath: ";
-            var byString = this._by.ToString();
+            //Find the absolute selector.
+            var absSelector = this.Context.SearchParameters.ToAbsoluteSelector();
+
+            //Get all the elements.
+            var elements = this.Context.JQueryFindElements();
+
+            //Loop through them adding the index.
             var indexedElements = new List<T>();
-
-            if (byString.StartsWith(cssKey))
+            var strToFormat = absSelector + ":eq({0})";
+            for (int i = 0; i < elements.Count(); i++)
             {
-                var original = byString.Replace(cssKey, "");
-                var strToFormat = original + ":nth-child({0})";
-
-                var elements = this.Context.Driver.FindElements(this._by); // all the bys...
-                for (int i = 0; i < elements.Count(); i++)
+                var indexedSelector = string.Format(strToFormat, i);
+                var searchParameters = new List<SearchParameter>
                 {
-
-                    var indexedBy = By.CssSelector(string.Format(strToFormat, i + 1));
-                    indexedElements.Add(this.Context.CreateControlItem<T>(indexedBy.FromBy()));
-                }
+                    new SearchParameter(WebControl.SearchProperties.JQuerySelector, indexedSelector)
+                };
+                indexedElements.Add(this.CreateControlItem<T>(searchParameters));
             }
-            else if (byString.StartsWith(xpathKey))
-            {
-                var original = byString.Replace(xpathKey, "");
-                var strToFormat = original + "[{0}]";
-
-                var elements = this.Context.Driver.FindElements(this._by);
-                for (int i = 0; i < elements.Count(); i++)
-                {
-                    var indexedBy = By.XPath(string.Format(strToFormat, i));
-                    indexedElements.Add(this.Context.CreateControlItem<T>(indexedBy.FromBy()));
-                }
-            }
-            else
-            {
-                throw new Exception("Mainframe only supports By.CssSelector & By.XPath. Currently using: " + byString);
-            }
-
+           
             return indexedElements;
+        }
+
+        protected override T2 CreateControlItem<T2>(IEnumerable<SearchParameter> searchParameters)
+        {
+            var wrapperSearchParameters = new SearchParameterCollection();
+            wrapperSearchParameters.Add(searchParameters);
+
+            //Each time we create a control, we add the selector of its parent.
+            var newContext = new WebContext(this.Context.Driver, this.Context.ParentContext, wrapperSearchParameters);
+            return (T2)Activator.CreateInstance(typeof(T2), newContext);
         }
     }
 }

@@ -25,45 +25,6 @@ namespace Mainframe
                 this._searchParameters.AddRange(searchParameters);
         }
 
-    //     internal PropertyExpressionCollection(List<PropertyCondition> list)
-    //{
-    //    Action<PropertyCondition> action = null;
-    //    if (list != null)
-    //    {
-    //        if (action == null)
-    //        {
-    //            action = condition => this.Add(new PropertyExpression(condition));
-    //        }
-    //        list.ForEach(action);
-    //    }
-    //}
-
-    //public void Add(PropertyExpression propertyExpression)
-    //{
-    //    if (propertyExpression == null)
-    //    {
-    //        throw new ArgumentNullException("propertyExpression");
-    //    }
-    //    this.Remove(propertyExpression.PropertyName);
-    //    propertyExpression.PropertyChanged += new PropertyChangedEventHandler(this.OnPropertyChanged);
-    //    base.List.Add(propertyExpression);
-    //}
-
-    //public void Add(params string[] nameValuePairs)
-    //{
-    //    if ((nameValuePairs.Length % 2) != 0)
-    //    {
-    //        throw new ArgumentException(ExtensionResources.OddNumberOfArguments, "nameValuePairs");
-    //    }
-    //    for (int i = 0; i < nameValuePairs.Length; i += 2)
-    //    {
-    //        this.Add(nameValuePairs[i], nameValuePairs[i + 1]);
-    //    }
-    //}
-
-
-
-
         public IEnumerator<IEnumerable<SearchParameter>> GetEnumerator()
         {
             return this._searchParameters.GetEnumerator();

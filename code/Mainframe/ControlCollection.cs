@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Mainframe
 {
-    public abstract class ControlCollection<T> : Control, IEnumerable<T> where T : IControl
+    public abstract class ControlCollection<T> : Control, IEnumerable<T> where T : Control
     {
         protected IEnumerable<SearchParameter> _searchParameters;
 
         public ControlCollection(IContext context, Technology technology, IEnumerable<SearchParameter> searchParameters) 
-            : base(context, technology)
+            :base(context, technology)
         {
             this._searchParameters = searchParameters;
         }
