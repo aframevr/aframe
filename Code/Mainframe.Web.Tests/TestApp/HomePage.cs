@@ -16,6 +16,12 @@ namespace Mainframe.Web.Tests.TestApp
 
         public RemovedStuff RemovedStuff { get { return this.CreateControl<RemovedStuff>("#removed-stuff"); } }
 
+        public FindOr FindOneMultiple { get { return this.CreateControl<FindOr>("#find-or"); } }
+
+        public FindOrMultiple FindAllMultiple { get { return this.CreateControl<FindOrMultiple>("#find-or-multiple"); } }
+
+        public IEnumerable<CrazyRace> FindCrazyMultiple { get { return this.CreateControls<CrazyRace>(".racex, .racey"); } }
+
         public IEnumerable<Race> Races { get { return this.CreateControls<Race>(".race"); } }
 
         public HomePage(Context context)

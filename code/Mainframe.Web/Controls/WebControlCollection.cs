@@ -18,36 +18,40 @@ namespace Mainframe.Web.Controls
 
         protected override object RawFind()
         {
+            var allElements = new List<T>();
+
             //Find the absolute selector.
             var absSelector = this.Context.SearchParameters.ToAbsoluteSelector();
 
-            //Get all the elements.
-            var elements = this.Context.JQueryFindElements();
-
-            //Loop through them adding the index.
-            var indexedElements = new List<T>();
-            var strToFormat = absSelector + ":eq({0})";
-            for (int i = 0; i < elements.Count(); i++)
-            {
-                var indexedSelector = string.Format(strToFormat, i);
-                var searchParameters = new List<SearchParameter>
+            var selectorParts = absSelector.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+            foreach (var selector in selectorParts)
+	        {
+		        //Get all the elements.
+                var elements = this.Context.JQueryFindElements(selector);
+                var strToFormat = selector + ":eq({0})";
+                for (int i = 0; i < elements.Count(); i++)
                 {
-                    new SearchParameter(WebControl.SearchProperties.JQuerySelector, indexedSelector)
-                };
-                indexedElements.Add(this.CreateControlItem<T>(searchParameters));
-            }
+                    var indexedSelector = string.Format(strToFormat, i);
+
+                    var searchParameters = new List<SearchParameter>
+                    {
+                        new SearchParameter(WebControl.SearchProperties.JQuerySelector, indexedSelector),
+                    };
+                    allElements.Add(this.CreateControlItem<T>(searchParameters));
+                }
+	        }
            
-            return indexedElements;
+            return allElements;
         }
 
-        protected override T2 CreateControlItem<T2>(IEnumerable<SearchParameter> searchParameters)
+        protected override T CreateControlItem<T>(IEnumerable<SearchParameter> searchParameters)
         {
             var wrapperSearchParameters = new SearchParameterCollection();
             wrapperSearchParameters.Add(searchParameters);
 
             //Each time we create a control, we add the selector of its parent.
             var newContext = new WebContext(this.Context.Driver, this.Context.ParentContext, wrapperSearchParameters);
-            return (T2)Activator.CreateInstance(typeof(T2), newContext);
+            return (T)Activator.CreateInstance(typeof(T), newContext);
         }
     }
 }

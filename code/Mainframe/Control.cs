@@ -36,28 +36,49 @@ namespace Mainframe
         }
 
         public virtual void Highlight()
-        {
+        { }
 
+        /// <summary>
+        /// Quick check to see if the control exists or not.
+        /// </summary>
+        public bool Exists
+        {
+            get
+            {
+                var beforeSearchTimeout = Playback.SearchTimeout;
+                try
+                {
+                    Playback.SearchTimeout = 0;
+                    this.Find();
+                    return true;
+                }
+                catch (ControlNotFoundTimeoutException)
+                {
+                    return false;
+                }
+                finally
+                {
+                    Playback.SearchTimeout = beforeSearchTimeout;
+                }
+            }
         }
 
         public void Find()
         {
-            this._rawControl = this.RawFind();
-            if (this._rawControl == null)
-                throw new ControlNotFoundException();
-
-            this.Highlight();
-        }
-
-        protected bool WaitForCondition<T>(T conditionContext, Predicate<T> conditionEvaluator, int millisecondsTimeout)
-        {
+            var millisecondsTimeout = Playback.SearchTimeout;
             var stoppy = Stopwatch.StartNew();
             do
             {
                 try
                 {
-                    if (conditionEvaluator(conditionContext))
-                        return true;
+                    this._rawControl = this.RawFind();
+                    if (this._rawControl == null)
+                        throw new ControlNotFoundException();
+                    else
+                    {
+                        //We found it.
+                        break;
+                    }
                 }
                 catch (ControlNotFoundException)
                 {
@@ -69,12 +90,13 @@ namespace Mainframe
                 }
             }
             while (stoppy.ElapsedMilliseconds < millisecondsTimeout);
-            return false;
-        }
 
-        public virtual bool WaitForCondition(Predicate<Control> conditionEvaluator, int millisecondsTimeout)
-        {
-            return WaitForCondition<Control>(this, conditionEvaluator, millisecondsTimeout);
+            //After all that, if the control is still not found, throw exception.
+            if (this._rawControl == null)
+                throw new ControlNotFoundTimeoutException();
+
+            if (Playback.HighlightOnFind)
+                this.Highlight();
         }
 
         protected virtual object RawFind()
@@ -82,12 +104,12 @@ namespace Mainframe
             throw new NotImplementedException();
         }
 
-        public virtual T CreateControl<T>(IEnumerable<SearchParameter> searchParameters) where T : Control
+        public virtual T CreateControl<T>(IEnumerable<SearchParameter> searchParameters)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchParameter> searchParameters) where T : Control
+        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchParameter> searchParameters)
         {
             throw new NotImplementedException();
         }
@@ -96,6 +118,70 @@ namespace Mainframe
         {
             throw new NotImplementedException();
         }
+
+
+        #region Wait Unti's
+        public virtual bool WaitUntil<T>(Predicate<T> conditionEvaluator, int millisecondsTimeout) where T : Control
+        {
+            var beforeSearchTimeout = Playback.SearchTimeout;
+            try
+            {
+                //We dont want to wait in the find..
+                Playback.SearchTimeout = 0;
+
+                var stoppy = Stopwatch.StartNew();
+                do
+                {
+                    try
+                    {
+                        if (conditionEvaluator((T)this))
+                            return true;
+                    }
+                    catch (ControlNotFoundTimeoutException)
+                    {
+                        //Swallow this exception.
+                    }
+                    finally
+                    {
+                        Thread.Sleep(Math.Min(Math.Max((int)((int)(millisecondsTimeout - (int)stoppy.ElapsedMilliseconds)), 0), 100));
+                    }
+                }
+                while (stoppy.ElapsedMilliseconds < millisecondsTimeout);
+
+            }
+            finally
+            {
+                Playback.SearchTimeout = beforeSearchTimeout;
+            }
+
+            return false;
+        }
+
+        public virtual bool WaitUntil<T>(Predicate<T> conditionEvaluator)  where T : Control
+        {
+            return WaitUntil<T>(conditionEvaluator, Playback.SearchTimeout);
+        }
+
+        public virtual bool WaitUntilExists(int waitTimeout)
+        {
+            return WaitUntil<Control>(x => x.Exists, waitTimeout);
+        }
+
+        public virtual bool WaitUntilExists()
+        {
+            return WaitUntilExists(Playback.SearchTimeout);
+        }  
+
+        public virtual bool WaitUntilNotExists(int waitTimeout)
+        {
+            return WaitUntil<Control>(x => !x.Exists, waitTimeout);
+        }
+
+        public virtual bool WaitUntilNotExists()
+        {
+            return WaitUntilNotExists(Playback.SearchTimeout);
+        }
+        #endregion
 
         public class SearchProperties
         {

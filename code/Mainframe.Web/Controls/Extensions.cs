@@ -35,17 +35,37 @@ namespace Mainframe.Web.Controls
                 var jquerySelector = searchParameters.SingleOrDefault(x => x.Name.Equals(WebControl.SearchProperties.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
                 if (jquerySelector != null)
                 {
-                    absoluteSelector = absoluteSelector + " " + jquerySelector.Value;
+                    /* Comma (or) support
+                     * 
+                     * Absolute Selector: .homepage
+                     *   Jquery Selector: .find-1, .find-2 
+                     *   Expected Result: .homepage .find-1, .homepage .find-2
+                     */
+
+                    var selector = "";
+                    var selectorParts = jquerySelector.Value.Split(new [] {','}, StringSplitOptions.RemoveEmptyEntries).Select(x=> x.Trim()).ToArray();
+                    for (int i = 0; i < selectorParts.Length; i++)
+			        {
+                        //Abs + selectorPart
+			            selector = selector + absoluteSelector + " " + selectorParts[i];
+
+                        //Add a comma if its not the last part.
+                        if(i != selectorParts.Length - 1)
+                        {
+                            selector = selector + ", ";
+                        }
+			        }
+
+                    absoluteSelector = selector;
                 }
             }
 
             return absoluteSelector.Trim();
         }
 
-        internal static IEnumerable<IWebElement> JQueryFindElements(this WebContext context)
+        internal static IEnumerable<IWebElement> JQueryFindElements(this WebContext context, string jquerySelector)
         {
-            var jQuerySelector = context.SearchParameters.ToAbsoluteSelector();
-            var elements = (IEnumerable<object>)context.ExecuteScript(@"return $(arguments[0]).get();", jQuerySelector);
+            var elements = (IEnumerable<object>)context.ExecuteScript(@"return $(arguments[0]).get();", jquerySelector);
             return elements.Cast<IWebElement>();
         }
 

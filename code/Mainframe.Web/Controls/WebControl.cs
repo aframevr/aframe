@@ -81,7 +81,7 @@ namespace Mainframe.Web.Controls
         public string Text
         {
             get { return this.RawControl.Text; }
-        } 
+        }
         #endregion
 
         public override void Highlight()
@@ -96,13 +96,19 @@ namespace Mainframe.Web.Controls
 
         protected override object RawFind()
         {
-            var elements = this.Context.JQueryFindElements();
+            var jQuerySelector = this.Context.SearchParameters.ToAbsoluteSelector();
+            var elements = this.Context.JQueryFindElements(jQuerySelector);
             return elements.FirstOrDefault();
         }
 
-        public bool WaitForCondition(Predicate<WebControl> conditionEvaluator, int millisecondsTimeout)
+        public bool WaitUntil(Predicate<WebControl> conditionEvaluator, int millisecondsTimeout)
         {
-            return WaitForCondition<WebControl>(this, conditionEvaluator, millisecondsTimeout);
+            return base.WaitUntil(conditionEvaluator, millisecondsTimeout);
+        }
+
+        public bool WaitUntil(Predicate<WebControl> conditionEvaluator)
+        {
+            return base.WaitUntil(conditionEvaluator);
         }
 
         public new T CreateControl<T>(IEnumerable<SearchParameter> searchParameters) where T : WebControl
