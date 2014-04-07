@@ -1,4 +1,4 @@
-﻿using Mainframe.Web.Tests.TestApp;
+﻿using MainFrame.Web.Tests.TestApp;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe.Web.Tests
+namespace MainFrame.Web.Tests
 {
     [DeploymentItem("TestApp\\TestApp.html", "TestApp")]
     [TestClass]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe.WinForms.Controls
+namespace MainFrame.WinForms.Controls
 {
     public class WinFormsControl : Control
     {

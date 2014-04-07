@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe
+namespace MainFrame
 {
     public abstract class Context : IContext
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe.Wpf.Controls
+namespace MainFrame.Wpf.Controls
 {
     public class WpfControl : Control
     {

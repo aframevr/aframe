@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>Mainframe</id>
-    <version>0.0.5</version>
-    <title>Mainframe</title>
+    <id>MainFrame</id>
+    <version>0.1.0</version>
+    <title>MainFrame</title>
     <authors>Sam Thwaites</authors>
     <owners>Sam Thwaites</owners>
-    <licenseUrl>https://github.com/Thwaitesy/Mainframe/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/Thwaitesy/Mainframe</projectUrl>
+    <licenseUrl>https://github.com/Thwaitesy/MainFrame/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Thwaitesy/MainFrame</projectUrl>
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>C# automation framework built on top of Selenium and CodedUI</description>
@@ -18,7 +18,7 @@
     <tags>Automation Framework Test Testing UnitTest MSTest CodedUI Selenium UITesting</tags>
   </metadata>
   <files>
-    <file src="bin\Mainframe.dll" target="lib\net45\Mainframe.dll" />
-    <file src="bin\Mainframe.pdb" target="lib\net45\Mainframe.pdb" />
+    <file src="bin\MainFrame.dll" target="lib\net45\MainFrame.dll" />
+    <file src="bin\MainFrame.pdb" target="lib\net45\MainFrame.pdb" />
   </files>
 </package>

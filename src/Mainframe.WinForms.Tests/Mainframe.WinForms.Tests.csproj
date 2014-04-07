@@ -9,8 +9,8 @@
     <ProjectGuid>{E2AFDF51-8EC6-435B-9FB0-999E6C1E864D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mainframe.WinForms.Tests</RootNamespace>
-    <AssemblyName>Mainframe.WinForms.Tests</AssemblyName>
+    <RootNamespace>MainFrame.WinForms.Tests</RootNamespace>
+    <AssemblyName>MainFrame.WinForms.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

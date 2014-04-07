@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Mainframe
+namespace MainFrame
 {
     public abstract class Control
     {

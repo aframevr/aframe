@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe.Web.Controls
+namespace MainFrame.Web.Controls
 {
     public static class Extensions
     {

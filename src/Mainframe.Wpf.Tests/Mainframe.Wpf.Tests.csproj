@@ -9,8 +9,8 @@
     <ProjectGuid>{FCD4605F-7A06-419B-B30F-C358BCDBED7A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mainframe.Wpf.Tests</RootNamespace>
-    <AssemblyName>Mainframe.Wpf.Tests</AssemblyName>
+    <RootNamespace>MainFrame.Wpf.Tests</RootNamespace>
+    <AssemblyName>MainFrame.Wpf.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

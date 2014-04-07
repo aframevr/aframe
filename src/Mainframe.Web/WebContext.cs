@@ -1,4 +1,4 @@
-﻿using Mainframe.Web.Controls;
+﻿using MainFrame.Web.Controls;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mainframe.Web
+namespace MainFrame.Web
 {
     public class WebContext : Context
     {

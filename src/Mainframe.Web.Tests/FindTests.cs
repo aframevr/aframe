@@ -3,16 +3,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using System.Linq;
-using Mainframe.Web;
+using MainFrame.Web;
 using System.IO;
 using System.Reflection;
-using Mainframe.Web.Tests.TestApp;
-using Mainframe.Web.Controls;
+using MainFrame.Web.Tests.TestApp;
+using MainFrame.Web.Controls;
 using System.Collections.Generic;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Mainframe.Web.Tests
+namespace MainFrame.Web.Tests
 {
     [TestClass]
     public class FindTests : BaseTest

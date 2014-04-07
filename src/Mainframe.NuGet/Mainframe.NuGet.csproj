@@ -7,8 +7,8 @@
     <ProjectGuid>{CE592DCE-F8ED-41E9-850B-21A4AD600D59}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mainframe.NuGet</RootNamespace>
-    <AssemblyName>Mainframe.NuGet</AssemblyName>
+    <RootNamespace>MainFrame.NuGet</RootNamespace>
+    <AssemblyName>MainFrame.NuGet</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,21 +37,21 @@
     <None Include="Mainframe.nuspec" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mainframe.Web\Mainframe.Web.csproj">
+    <ProjectReference Include="..\Mainframe.Web\MainFrame.Web.csproj">
       <Project>{84b050ab-fffc-4b05-9ca1-23cca496883b}</Project>
-      <Name>Mainframe.Web</Name>
+      <Name>MainFrame.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mainframe.WinForms\Mainframe.WinForms.csproj">
+    <ProjectReference Include="..\Mainframe.WinForms\MainFrame.WinForms.csproj">
       <Project>{74d8e9d5-d0cd-4736-a567-eb6b7f32615b}</Project>
-      <Name>Mainframe.WinForms</Name>
+      <Name>MainFrame.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mainframe.Wpf\Mainframe.Wpf.csproj">
+    <ProjectReference Include="..\Mainframe.Wpf\MainFrame.Wpf.csproj">
       <Project>{5ac5ead0-0339-4f25-9675-ff73a64bb758}</Project>
-      <Name>Mainframe.Wpf</Name>
+      <Name>MainFrame.Wpf</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mainframe\Mainframe.csproj">
+    <ProjectReference Include="..\Mainframe\MainFrame.csproj">
       <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
-      <Name>Mainframe</Name>
+      <Name>MainFrame</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Mainframe
+namespace MainFrame
 {
     public class ControlNotFoundException : Exception
     { }

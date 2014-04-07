@@ -6,8 +6,8 @@
     <ProjectGuid>{BBC9CF8A-03FB-4842-A09B-E545BF219822}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Mainframe.Web.Tests</RootNamespace>
-    <AssemblyName>Mainframe.Web.Tests</AssemblyName>
+    <RootNamespace>MainFrame.Web.Tests</RootNamespace>
+    <AssemblyName>MainFrame.Web.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -16,6 +16,8 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -74,13 +76,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mainframe.Web\Mainframe.Web.csproj">
+    <ProjectReference Include="..\Mainframe.Web\MainFrame.Web.csproj">
       <Project>{84b050ab-fffc-4b05-9ca1-23cca496883b}</Project>
-      <Name>Mainframe.Web</Name>
+      <Name>MainFrame.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Mainframe\Mainframe.csproj">
+    <ProjectReference Include="..\Mainframe\MainFrame.csproj">
       <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
-      <Name>Mainframe</Name>
+      <Name>MainFrame</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -108,6 +110,7 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
