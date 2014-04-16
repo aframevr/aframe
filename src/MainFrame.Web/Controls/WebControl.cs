@@ -1,6 +1,7 @@
 ﻿using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ namespace MainFrame.Web.Controls
 {
     public class WebControl : Control
     {
+        public string AbsoluteSelector { get { return this.Context.SearchParameters.ToAbsoluteSelector(); } }
+
         public new WebContext Context { get { return base.Context as WebContext; } }
 
         public new IWebElement RawControl { get { return base.RawControl as IWebElement; } }
@@ -96,8 +99,9 @@ namespace MainFrame.Web.Controls
 
         protected override object RawFind()
         {
-            var jQuerySelector = this.Context.SearchParameters.ToAbsoluteSelector();
-            var elements = this.Context.JQueryFindElements(jQuerySelector);
+            Debug.WriteLine("RawFind: $('{0}')", (object)this.AbsoluteSelector);
+
+            var elements = this.Context.JQueryFindElements(this.AbsoluteSelector);
             return elements.FirstOrDefault();
         }
 

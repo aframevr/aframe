@@ -12,10 +12,13 @@ namespace MainFrame
 
         public static bool HighlightOnFind { get; set; }
 
+        public static Dictionary<string, object> Properties { get; set; }
+
         static Playback()
         {
             SearchTimeout = 15 * 1000;
             HighlightOnFind = true;
+            Properties = new Dictionary<string, object>();
         }
     }
 }
