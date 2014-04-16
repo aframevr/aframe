@@ -17,7 +17,7 @@ TODO
 Changelog
 ==========================================================================
 
-*1.0.1*
+*0.1.1*
 - Updated Playback to include a properties / brain to hold information.
 - Added absolute selector debugging 
 
