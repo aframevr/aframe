@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>MainFrame</id>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <title>MainFrame</title>
     <authors>Sam Thwaites</authors>
     <owners>Sam Thwaites</owners>

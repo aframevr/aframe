@@ -1,4 +1,4 @@
-﻿using MainFrame.Web.Tests.TestApp;
+﻿using MainFrame.Web.Tests.App;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
@@ -13,27 +13,32 @@ using System.Threading.Tasks;
 
 namespace MainFrame.Web.Tests
 {
-    [DeploymentItem("TestApp\\TestApp.html", "TestApp")]
+    [DeploymentItem("app\\app.html", "app")]
+    [DeploymentItem("app\\iframe.html", "app")]
     [TestClass]
     public class BaseTest
     {
-        public WebContext Context;
-        public HomePage HomePage;
+        public readonly string TestAppUrl = Path.Combine(Path.GetDirectoryName(new UriBuilder(Assembly.GetExecutingAssembly().GetName().CodeBase).Uri.LocalPath), "app", "app.html");
 
-        [TestInitialize]
-        public void Init()
+        private WebContext _context;
+        public WebContext Context
         {
-            var dirPath = Path.GetDirectoryName(new UriBuilder(Assembly.GetExecutingAssembly().GetName().CodeBase).Uri.LocalPath);
-            this.Context = new WebContext(new FirefoxDriver());
-            var url = Path.Combine(dirPath, "TestApp", "TestApp.html");
-            this.HomePage = this.Context.NavigateTo<HomePage>(url);
+            get
+            {
+                if(this._context == null)
+                    this._context = new WebContext(new FirefoxDriver());
+
+                return this._context;
+            }
         }
 
         [TestCleanup]
-        public void Clean()
+        public void TestCleanup()
         {
-            this.Context.Dispose();
-            this.Context = null;
+            if (this._context != null)
+            {
+                this._context.Dispose();
+            }
         }
     }
 }

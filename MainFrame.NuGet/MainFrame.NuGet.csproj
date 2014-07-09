@@ -34,20 +34,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MainFrame.Web.nuspec" />
-    <None Include="MainFrame.nuspec" />
+    <None Include="MainFrame.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainFrame.Web\MainFrame.Web.csproj">
       <Project>{84b050ab-fffc-4b05-9ca1-23cca496883b}</Project>
       <Name>MainFrame.Web</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MainFrame.WinForms\MainFrame.WinForms.csproj">
-      <Project>{74d8e9d5-d0cd-4736-a567-eb6b7f32615b}</Project>
-      <Name>MainFrame.WinForms</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MainFrame.Wpf\MainFrame.Wpf.csproj">
-      <Project>{5ac5ead0-0339-4f25-9675-ff73a64bb758}</Project>
-      <Name>MainFrame.Wpf</Name>
     </ProjectReference>
     <ProjectReference Include="..\MainFrame\MainFrame.csproj">
       <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>

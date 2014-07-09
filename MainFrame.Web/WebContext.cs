@@ -23,18 +23,6 @@ namespace MainFrame.Web
             this.Driver = driver;
         }
 
-        public T NavigateTo<T>(string url) where T : WebControl
-        {
-            this.Driver.Url = url;
-            this.Driver.Navigate();
-            return As<T>(this);
-        }
-
-        public T As<T>(WebContext context) where T : WebControl
-        {
-            return (T)Activator.CreateInstance(typeof(T), context);
-        }
-
         public override void Dispose()
         {
             this.Driver.Quit();

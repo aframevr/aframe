@@ -23,5 +23,15 @@ namespace MainFrame
         }
 
         public abstract void Dispose();
+
+        public T As<T>() where T : Control
+        {
+            return (T)Activator.CreateInstance(typeof(T), this);
+        }
+
+        public Control As()
+        {
+            return As<Control>();
+        }
     }
 }

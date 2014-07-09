@@ -21,13 +21,13 @@ namespace MainFrame.Web.Controls
             var allElements = new List<T>();
 
             //Find the absolute selector.
-            var absSelector = this.Context.SearchParameters.ToAbsoluteSelector();
+            var absSelector = Helpers.ToAbsoluteSelector(this.Context.SearchParameters);
 
             var selectorParts = absSelector.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             foreach (var selector in selectorParts)
 	        {
 		        //Get all the elements.
-                var elements = this.Context.JQueryFindElements(selector);
+                var elements = Helpers.JQueryFindElements(this.Context, selector);
                 var strToFormat = selector + ":eq({0})";
                 for (int i = 0; i < elements.Count(); i++)
                 {

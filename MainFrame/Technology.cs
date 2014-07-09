@@ -10,7 +10,7 @@ namespace MainFrame
     {
         Unknown,
         Web,
-        Wpf,
-        WinForms
+        Desktop,
+        Mobile
     }
 }
