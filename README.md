@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/5k8dws5c71twumxt)](https://ci.appveyor.com/project/Thwaitesy/mainframe)
+
 Changelog
 ==========================================================================
 *0.2.0*
