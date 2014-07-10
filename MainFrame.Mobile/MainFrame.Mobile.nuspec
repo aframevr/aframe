@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>MainFrame.Web</id>
+        <id>MainFrame.Mobile</id>
         <version>$version$</version>
-        <title>Web Automation Framework</title>
+        <title>Mobile Automation Framework</title>
         <authors>Sam Thwaites</authors>
         <owners>Sam Thwaites</owners>
         <licenseUrl>https://github.com/Thwaitesy/MainFrame/blob/master/LICENSE</licenseUrl>
@@ -16,14 +16,13 @@
           gives your automation scripts the ability to be maintainable, flexible, and reliable without impacting on your design.
           With amazing documentation and samples galore, you will not be disappointed.
 
-          NOTE: This is the web package of MainFrame. For others please see MainFrame.Desktop or MainFrame.Mobile.
+          NOTE: This is the mobile package of MainFrame. For others please see MainFrame.Desktop or MainFrame.Web.
         </description>
         <copyright>Copyright 2014</copyright>
         <language>en-AU</language>
         <tags>automation framework uiautomation selenium codedui appium browser mobile web ui desktop gui phone webdriver unittest test testing bdd acceptance tdd</tags>
         <dependencies>
           <dependency id="MainFrame" version="$version$" />
-          <dependency id="Selenium.Support" version="2.40.0" />
         </dependencies>
     </metadata>
     <files>
