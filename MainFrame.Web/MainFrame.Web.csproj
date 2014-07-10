@@ -48,11 +48,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Extensions.cs" />
     <Compile Include="Controls\Helpers.cs" />
     <Compile Include="Controls\WebControl.cs" />
     <Compile Include="Controls\WebControlCollection.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebContext.cs" />
   </ItemGroup>

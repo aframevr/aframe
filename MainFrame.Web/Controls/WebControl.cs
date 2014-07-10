@@ -113,6 +113,20 @@ namespace MainFrame.Web.Controls
             return base.WaitUntil(conditionEvaluator);
         }
 
+        #region Create Control
+        public WebControl CreateControl(string jQuerySelector)
+        {
+            return this.CreateControl<WebControl>(jQuerySelector);
+        }
+
+        public T CreateControl<T>(string jQuerySelector) where T : WebControl
+        {
+            return this.CreateControl<T>(new List<SearchParameter> 
+            { 
+                new SearchParameter(WebControl.SearchProperties.JQuerySelector, jQuerySelector) 
+            });
+        }
+
         public new T CreateControl<T>(IEnumerable<SearchParameter> searchParameters) where T : WebControl
         {
             //Each time we create a control, we add the selector of its parent.
@@ -122,6 +136,21 @@ namespace MainFrame.Web.Controls
 
             var context = new WebContext(this.Context.Driver, this.Context, allSearchParameters);
             return (T)Activator.CreateInstance(typeof(T), context);
+        }
+        #endregion
+
+        #region Create Controls
+        public IEnumerable<WebControl> CreateControls(string jQuerySelector)
+        {
+            return this.CreateControls<WebControl>(jQuerySelector);
+        }
+
+        public IEnumerable<T> CreateControls<T>(string jQuerySelector) where T : WebControl
+        {
+            return this.CreateControls<T>(new List<SearchParameter> 
+            { 
+                new SearchParameter(WebControl.SearchProperties.JQuerySelector, jQuerySelector) 
+            });
         }
 
         public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchParameter> searchParameters) where T : WebControl
@@ -135,6 +164,8 @@ namespace MainFrame.Web.Controls
             var context = new WebContext(this.Context.Driver, this.Context.ParentContext /* Skip to parent */, allSearchParameters);
             return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), context, searchParameters)).AsEnumerable();
         }
+        
+        #endregion
 
         public new class SearchProperties : Control.SearchProperties
         {

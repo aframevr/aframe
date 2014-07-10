@@ -37,11 +37,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MainFrame">
-      <HintPath>..\..\packages\MainFrame.0.3.7.0\lib\net45\MainFrame.dll</HintPath>
+    <Reference Include="MainFrame.Core">
+      <HintPath>..\..\packages\MainFrame.0.3.10.0\lib\net45\MainFrame.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MainFrame.Web">
-      <HintPath>..\..\packages\MainFrame.Web.0.3.7.0\lib\net45\MainFrame.Web.dll</HintPath>
+    <Reference Include="MainFrame.Web, Version=0.3.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MainFrame.Web.0.3.10.0\lib\net45\MainFrame.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -66,6 +67,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Framework\TestBase.cs" />
+    <Compile Include="Framework\UrlHelper.cs" />
     <Compile Include="Modules\HomePage.cs" />
     <Compile Include="Modules\PackagesPage.cs" />
     <Compile Include="Modules\StatisticsPage.cs" />
