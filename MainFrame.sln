@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainFrame", "Mainframe\Main
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainFrame.Tests", "Mainframe.Tests\MainFrame.Tests.csproj", "{94420E70-0352-47FD-901C-D389C174584D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainFrame.NuGet", "Mainframe.NuGet\MainFrame.NuGet.csproj", "{CE592DCE-F8ED-41E9-850B-21A4AD600D59}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainFrame.Web", "Mainframe.Web\MainFrame.Web.csproj", "{84B050AB-FFFC-4B05-9CA1-23CCA496883B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainFrame.Web.Tests", "Mainframe.Web.Tests\MainFrame.Web.Tests.csproj", "{BBC9CF8A-03FB-4842-A09B-E545BF219822}"
@@ -42,10 +40,6 @@ Global
 		{94420E70-0352-47FD-901C-D389C174584D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94420E70-0352-47FD-901C-D389C174584D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94420E70-0352-47FD-901C-D389C174584D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE592DCE-F8ED-41E9-850B-21A4AD600D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE592DCE-F8ED-41E9-850B-21A4AD600D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE592DCE-F8ED-41E9-850B-21A4AD600D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE592DCE-F8ED-41E9-850B-21A4AD600D59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{84B050AB-FFFC-4B05-9CA1-23CCA496883B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84B050AB-FFFC-4B05-9CA1-23CCA496883B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84B050AB-FFFC-4B05-9CA1-23CCA496883B}.Release|Any CPU.ActiveCfg = Release|Any CPU

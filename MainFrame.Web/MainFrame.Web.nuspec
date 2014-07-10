@@ -2,27 +2,27 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>MainFrame.Web</id>
-        <version>0.2.0</version>
-        <title>MainFrame.Web</title>
+        <version>$version$</version>
+        <title>Web Automation Framework</title>
         <authors>Sam Thwaites</authors>
         <owners>Sam Thwaites</owners>
         <licenseUrl>https://github.com/Thwaitesy/MainFrame/blob/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/Thwaitesy/MainFrame</projectUrl>
         <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>C# automation framework built on top of Selenium and CodedUI (Web Component)</description>
-        <summary>C# automation framework built on top of Selenium and CodedUI (Web Component)</summary>
+        <description>C# Web Automation Framework built on top of Selenium</description>
+        <summary>C# Web Automation Framework built on top of Selenium</summary>
         <releaseNotes />
         <copyright>Copyright 2014</copyright>
         <language>en-US</language>
-        <tags>Automation Framework Test Testing UnitTest MSTest CodedUI Selenium UITesting</tags>
+        <tags>Automation Framework Test Testing UnitTest MSTest CodedUI Selenium UITesting Appium</tags>
         <dependencies>
           <dependency id="MainFrame" version="0.2.0" />
           <dependency id="Selenium.Support" version="2.40.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\MainFrame.Web.dll" target="lib\net45\MainFrame.Web.dll" />
-        <file src="bin\MainFrame.Web.pdb" target="lib\net45\MainFrame.Web.pdb" />
+        <file src="bin\Debug\MainFrame.Web.dll" target="lib\net45\MainFrame.Web.dll" />
+        <file src="bin\Debug\MainFrame.Web.pdb" target="lib\net45\MainFrame.Web.pdb" />
     </files>
 </package>

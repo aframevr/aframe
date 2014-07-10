@@ -2,23 +2,23 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>MainFrame</id>
-    <version>0.2.0</version>
-    <title>MainFrame</title>
+    <version>$version$</version>
+    <title>Automation Framework</title>
     <authors>Sam Thwaites</authors>
     <owners>Sam Thwaites</owners>
     <licenseUrl>https://github.com/Thwaitesy/MainFrame/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/Thwaitesy/MainFrame</projectUrl>
     <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>C# automation framework built on top of Selenium and CodedUI</description>
-    <summary>C# automation framework built on top of Selenium and CodedUI</summary>
+    <description>C# Automation Framework</description>
+    <summary>C# Automation Framework</summary>
     <releaseNotes />
     <copyright>Copyright 2014</copyright>
     <language>en-US</language>
-    <tags>Automation Framework Test Testing UnitTest MSTest CodedUI Selenium UITesting</tags>
+    <tags>Automation Framework Test Testing UnitTest MSTest CodedUI Selenium UITesting Appium</tags>
   </metadata>
   <files>
-    <file src="bin\MainFrame.dll" target="lib\net45\MainFrame.dll" />
-    <file src="bin\MainFrame.pdb" target="lib\net45\MainFrame.pdb" />
+    <file src="bin\Debug\MainFrame.dll" target="lib\net45\MainFrame.dll" />
+    <file src="bin\Debug\MainFrame.pdb" target="lib\net45\MainFrame.pdb" />
   </files>
 </package>
