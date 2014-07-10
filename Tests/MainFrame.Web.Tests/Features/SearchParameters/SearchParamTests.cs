@@ -1,7 +1,5 @@
-﻿using System;
+﻿using MainFrame.Web.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MainFrame.Web.Tests.App;
-using MainFrame.Web.Controls;
 
 namespace MainFrame.Web.Tests.Features.SearchParameters
 {

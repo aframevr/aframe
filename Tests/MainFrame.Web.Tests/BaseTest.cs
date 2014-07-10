@@ -1,15 +1,8 @@
-﻿using MainFrame.Web.Tests.App;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium.Chrome;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.IE;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MainFrame.Web.Tests
 {

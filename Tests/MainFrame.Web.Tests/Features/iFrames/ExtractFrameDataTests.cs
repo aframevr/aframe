@@ -1,8 +1,5 @@
-﻿using System;
+﻿using MainFrame.Web.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MainFrame.Web.Controls;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MainFrame.Web.Tests.Features.iFrames

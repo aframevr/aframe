@@ -79,11 +79,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MainFrame.Web\MainFrame.Web.csproj">
+    <ProjectReference Include="..\..\Mainframe.Web\MainFrame.Web.csproj">
       <Project>{84b050ab-fffc-4b05-9ca1-23cca496883b}</Project>
       <Name>MainFrame.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MainFrame\MainFrame.csproj">
+    <ProjectReference Include="..\..\Mainframe\MainFrame.csproj">
       <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
       <Name>MainFrame</Name>
     </ProjectReference>

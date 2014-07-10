@@ -44,14 +44,14 @@ namespace MainFrame.Web.Controls
             return allElements;
         }
 
-        protected override T CreateControlItem<T>(IEnumerable<SearchParameter> searchParameters)
+        protected override T2 CreateControlItem<T2>(IEnumerable<SearchParameter> searchParameters)
         {
             var wrapperSearchParameters = new SearchParameterCollection();
             wrapperSearchParameters.Add(searchParameters);
 
             //Each time we create a control, we add the selector of its parent.
             var newContext = new WebContext(this.Context.Driver, this.Context.ParentContext, wrapperSearchParameters);
-            return (T)Activator.CreateInstance(typeof(T), newContext);
+            return (T2)Activator.CreateInstance(typeof(T2), newContext);
         }
     }
 }

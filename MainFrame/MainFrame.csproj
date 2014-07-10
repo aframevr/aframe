@@ -7,8 +7,8 @@
     <ProjectGuid>{307371E1-1CC7-4E2C-881E-5A99AEA7FF33}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame</RootNamespace>
-    <AssemblyName>MainFrame</AssemblyName>
+    <RootNamespace>MainFrame.Core</RootNamespace>
+    <AssemblyName>MainFrame.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

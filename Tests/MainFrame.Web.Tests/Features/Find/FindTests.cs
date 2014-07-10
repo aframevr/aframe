@@ -1,16 +1,11 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using System.Linq;
-using MainFrame.Web;
-using System.IO;
-using System.Reflection;
+﻿using MainFrame.Web.Controls;
 using MainFrame.Web.Tests.App;
-using MainFrame.Web.Controls;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 
 namespace MainFrame.Web.Tests.Features.Find
 {
