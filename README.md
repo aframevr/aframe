@@ -2,6 +2,11 @@
 
 Changelog
 ==========================================================================
+*0.3.19*
+- [BREAKING CHANGE] Changed MainFrame namespace from MainFrame to MainFrame.Core (NuGet package id has changed also - so please remove and reinstall nuget packages)
+- Relocated files in project
+- Added sample for MainFrame.Web using nuget's website
+
 *0.2.0*
 - Added support for iFrames.
 - Refactored extensively.
