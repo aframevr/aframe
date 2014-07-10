@@ -38,10 +38,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MainFrame.Core">
-      <HintPath>..\..\packages\MainFrame.0.3.15.0\lib\net45\MainFrame.Core.dll</HintPath>
+      <HintPath>..\..\packages\MainFrame.Core.0.3.16.0\lib\net45\MainFrame.Core.dll</HintPath>
     </Reference>
     <Reference Include="MainFrame.Web">
-      <HintPath>..\..\packages\MainFrame.Web.0.3.15.0\lib\net45\MainFrame.Web.dll</HintPath>
+      <HintPath>..\..\packages\MainFrame.Web.0.3.16.0\lib\net45\MainFrame.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
