@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>MainFrame</id>
+    <id>MainFrame.Core</id>
     <version>$version$</version>
-    <title>Automation Framework</title>
+    <title>Core Automation Framework</title>
     <authors>Sam Thwaites</authors>
     <owners>Sam Thwaites</owners>
     <licenseUrl>https://github.com/Thwaitesy/MainFrame/blob/master/LICENSE</licenseUrl>

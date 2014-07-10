@@ -1,4 +1,5 @@
-﻿using MainFrame.Web.Controls;
+﻿using MainFrame.Core;
+using MainFrame.Web.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MainFrame.Web.Tests.Features.SearchParameters
@@ -18,8 +19,6 @@ namespace MainFrame.Web.Tests.Features.SearchParameters
             });
 
             var homePage = this.Context.NavigateTo(this.TestAppUrl);
-
-
         }
     }
 }

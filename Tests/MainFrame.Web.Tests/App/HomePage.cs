@@ -24,7 +24,7 @@ namespace MainFrame.Web.Tests.App
 
         public IEnumerable<Race> Races { get { return this.CreateControls<Race>(".race"); } }
 
-        public HomePage(Context context)
+        public HomePage(WebContext context)
             : base(context)
         {
             this.ContentChange = this.CreateControl<WebControl>(".content-change");

@@ -7,7 +7,7 @@
     <ProjectGuid>{84B050AB-FFFC-4B05-9CA1-23CCA496883B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame.Web</RootNamespace>
+    <RootNamespace>MainFrame.Core.Web</RootNamespace>
     <AssemblyName>MainFrame.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -55,14 +55,14 @@
     <Compile Include="WebContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mainframe\MainFrame.csproj">
-      <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
-      <Name>MainFrame</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="MainFrame.Web.nuspec" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MainFrame.Core\MainFrame.Core.csproj">
+      <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
+      <Name>MainFrame.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

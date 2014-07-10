@@ -22,7 +22,7 @@
         <language>en-AU</language>
         <tags>automation framework uiautomation selenium codedui appium browser mobile web ui desktop gui phone webdriver unittest test testing bdd acceptance tdd</tags>
         <dependencies>
-          <dependency id="MainFrame" version="$version$" />
+          <dependency id="MainFrame.Core" version="$version$" />
           <dependency id="Selenium.Support" version="2.40.0" />
         </dependencies>
     </metadata>

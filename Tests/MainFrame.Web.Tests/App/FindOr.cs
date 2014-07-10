@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public WebControl InnerControl { get { return this.CreateControl<WebControl>(".find-1, .find-2"); } }
 
-        public FindOr(Context context)
+        public FindOr(WebContext context)
             : base(context)
         { }
     }

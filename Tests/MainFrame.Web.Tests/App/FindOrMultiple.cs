@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public IEnumerable<WebControl> MultipleControls { get { return this.CreateControls<WebControl>(".find-1, .find-2"); } }
 
-        public FindOrMultiple(Context context)
+        public FindOrMultiple(WebContext context)
             : base(context)
         { }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace MainFrame
+namespace MainFrame.Core
 {
     public abstract class Control
     {

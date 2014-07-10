@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public IEnumerable<Item> Items { get { return this.CreateControls<Item>(".item, .other-item"); } }
 
-        public CrazyRace(Context context)
+        public CrazyRace(WebContext context)
             : base(context)
         { }
     }

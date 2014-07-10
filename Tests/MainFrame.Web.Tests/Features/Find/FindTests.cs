@@ -1,4 +1,5 @@
-﻿using MainFrame.Web.Controls;
+﻿using MainFrame.Core;
+using MainFrame.Web.Controls;
 using MainFrame.Web.Tests.App;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

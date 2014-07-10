@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public IEnumerable<Item> Items { get { return this.CreateControls<Item>(".item"); } }
 
-        public Race(Context context)
+        public Race(WebContext context)
             : base(context)
         { }
     }

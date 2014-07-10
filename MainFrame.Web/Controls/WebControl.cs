@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using MainFrame.Core;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ namespace MainFrame.Web.Controls
 
         public new IWebElement RawControl { get { return base.RawControl as IWebElement; } }
 
-        public WebControl(Context context)
+        public WebControl(WebContext context)
             : base(context, Technology.Web)
         { }
 

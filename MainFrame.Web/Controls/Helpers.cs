@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using MainFrame.Core;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

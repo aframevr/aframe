@@ -7,7 +7,7 @@
     <ProjectGuid>{DC67C132-6DD8-4D8C-8E62-6706D590CE43}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame.Desktop</RootNamespace>
+    <RootNamespace>MainFrame.Core.Desktop</RootNamespace>
     <AssemblyName>MainFrame.Desktop</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

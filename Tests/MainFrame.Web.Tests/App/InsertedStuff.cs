@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public WebControl IGotAdded { get { return this.CreateControl<WebControl>(".i-got-added"); } }
 
-        public InsertedStuff(Context context)
+        public InsertedStuff(WebContext context)
             : base(context)
         { }
     }

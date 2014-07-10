@@ -1,4 +1,5 @@
-﻿using MainFrame.Web.Controls;
+﻿using MainFrame.Core;
+using MainFrame.Web.Controls;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using System;

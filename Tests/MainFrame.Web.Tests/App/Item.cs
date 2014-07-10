@@ -9,7 +9,7 @@ namespace MainFrame.Web.Tests.App
 {
     public class Item : WebControl
     {
-        public Item(Context context)
+        public Item(WebContext context)
             : base(context)
         { }
     }

@@ -11,7 +11,7 @@ namespace MainFrame.Web.Tests.App
     {
         public WebControl IGotRemoved { get { return this.CreateControl<WebControl>("b.remove-me"); } }
 
-        public RemovedStuff(Context context)
+        public RemovedStuff(WebContext context)
             : base(context)
         { }
     }

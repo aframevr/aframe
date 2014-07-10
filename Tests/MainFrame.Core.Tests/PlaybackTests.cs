@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace MainFrame.Tests
+namespace MainFrame.Core.Tests
 {
     [TestClass]
     public class PlaybackTests

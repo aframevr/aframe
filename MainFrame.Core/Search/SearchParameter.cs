@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainFrame
+namespace MainFrame.Core
 {
     public class SearchParameter : ICloneable
     {
