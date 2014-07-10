@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Web.Sample.NuGet.Modules.Packages
 {
-    public class PackagesPage : WebControl
+    public class Package : WebControl
     {
-        public PackagesPage(WebContext webContext)
+        public string Name { get { return this.CreateControl(".package-list-header h1 a").Text; } }
+
+        public Package(WebContext webContext)
             : base(webContext)
-        { 
-        
-        }
+        { }
     }
 }

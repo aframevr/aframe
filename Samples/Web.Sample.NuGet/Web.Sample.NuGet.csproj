@@ -37,12 +37,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MainFrame.Core">
-      <HintPath>..\..\packages\MainFrame.0.3.10.0\lib\net45\MainFrame.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="MainFrame.Web, Version=0.3.10.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MainFrame.Core, Version=0.3.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MainFrame.Web.0.3.10.0\lib\net45\MainFrame.Web.dll</HintPath>
+      <HintPath>..\..\packages\MainFrame.0.3.11.0\lib\net45\MainFrame.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MainFrame.Web, Version=0.3.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MainFrame.Web.0.3.11.0\lib\net45\MainFrame.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -68,9 +69,9 @@
   <ItemGroup>
     <Compile Include="Framework\TestBase.cs" />
     <Compile Include="Framework\UrlHelper.cs" />
-    <Compile Include="Modules\HomePage.cs" />
-    <Compile Include="Modules\PackagesPage.cs" />
-    <Compile Include="Modules\StatisticsPage.cs" />
+    <Compile Include="Modules\Home\HomePage.cs" />
+    <Compile Include="Modules\Packages\Package.cs" />
+    <Compile Include="Modules\Packages\PackagesPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\SearchTests.cs" />
   </ItemGroup>
