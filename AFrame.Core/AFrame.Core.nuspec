@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>AFrame.Core</id>
+    <version>$version$</version>
+    <title>Core Automation Framework</title>
+    <authors>Sam Thwaites</authors>
+    <owners>Sam Thwaites</owners>
+    <licenseUrl>https://github.com/Thwaitesy/AFrame/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Thwaitesy/AFrame</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      AFrame is a common automation framework built ontop of Selenium for Web Apps, Microsoft CodedUI for
+      Desktop Apps and Appium for Mobile Apps. Utilizing the page object pattern and many others, AFrame 
+      gives your automation scripts the ability to be maintainable, flexible, and reliable without impacting on your design. 
+      With amazing documentation and samples galore, you will not be disappointed.
+
+      NOTE: This is the core package of AFrame. Please see AFrame.Web, AFrame.Desktop or AFrame.Mobile.
+    </description>
+    <copyright>Copyright 2014</copyright>
+    <language>en-AU</language>
+    <tags>automation framework uiautomation selenium codedui appium browser mobile web ui desktop phone webdriver unittest test testing bdd acceptance tdd</tags>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\$id$.pdb" target="lib\net45\" />
+  </files>
+</package>
