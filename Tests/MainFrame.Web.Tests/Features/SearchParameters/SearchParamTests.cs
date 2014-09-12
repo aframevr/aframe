@@ -10,10 +10,10 @@ namespace MainFrame.Web.Tests.Features.SearchParameters
         [TestMethod]
         public void TestMethod1()
         {
-            var searchParams = new SearchParameterCollection();
+            var searchParams = new SearchPropertyStack();
             searchParams.Add(new [] 
             { 
-                new SearchParameter(name: WebControl.SearchProperties.JQuerySelector,
+                new SearchProperty(name: WebControl.PropertyNames.JQuerySelector,
                                     value: "#always",
                                     searchOperator: SearchOperator.EqualTo)
             });

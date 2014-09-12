@@ -1,6 +1,6 @@
 ﻿using MainFrame.Core;
 using MainFrame.Web.Controls;
-using MainFrame.Web.Tests.App;
+using MainFrame.Web.Tests.PageObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -84,7 +84,7 @@ namespace MainFrame.Web.Tests.Features.Find
         public void ControlNotFoundTimeoutThrowsException()
         {
             var control = new WebControl(this.Context);
-            control.Context.SearchParameters.Add(new List<SearchParameter> { new SearchParameter(WebControl.SearchProperties.JQuerySelector, ".unknown") });
+            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.PropertyNames.JQuerySelector, ".unknown") });
             control.Find();
         }
 
@@ -92,7 +92,7 @@ namespace MainFrame.Web.Tests.Features.Find
         public void ControlNotFoundTimeout()
         {
             var control = new WebControl(this.Context);
-            control.Context.SearchParameters.Add(new List<SearchParameter> { new SearchParameter(WebControl.SearchProperties.JQuerySelector, ".unknown") });
+            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.PropertyNames.JQuerySelector, ".unknown") });
             var stoppy = Stopwatch.StartNew();
             try
             {

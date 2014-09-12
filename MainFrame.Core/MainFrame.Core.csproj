@@ -44,8 +44,8 @@
     <Compile Include="Playback.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search\SearchOperator.cs" />
-    <Compile Include="Search\SearchParameter.cs" />
-    <Compile Include="Search\SearchParameterCollection.cs" />
+    <Compile Include="Search\SearchProperty.cs" />
+    <Compile Include="Search\SearchPropertyStack.cs" />
     <Compile Include="Technology.cs" />
   </ItemGroup>
   <ItemGroup>

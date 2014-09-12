@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainFrame.Web.Tests.App
+namespace MainFrame.Web.Tests.PageObjects
 {
     public class Race : WebControl
     {

@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MainFrame.Core
 {
-    public class SearchParameter : ICloneable
+    public class SearchProperty : ICloneable
     {
         public string Name { get; private set; }
 
@@ -15,11 +11,11 @@ namespace MainFrame.Core
 
         public SearchOperator SearchOperator { get; private set; }
 
-        public SearchParameter(string name, string value)
+        public SearchProperty(string name, string value)
             : this(name, value, SearchOperator.EqualTo)
         { }
 
-        public SearchParameter(string name, string value, SearchOperator searchOperator)
+        public SearchProperty(string name, string value, SearchOperator searchOperator)
         {
             if (name == null)
                 throw new ArgumentNullException("name");
@@ -31,12 +27,12 @@ namespace MainFrame.Core
 
         public object Clone()
         {
-            return new SearchParameter(this.Name, this.Value, this.SearchOperator);
+            return new SearchProperty(this.Name, this.Value, this.SearchOperator);
         }
 
         public override bool Equals(object other)
         {
-            var expression = other as SearchParameter;
+            var expression = other as SearchProperty;
             if (expression == null)
                 return false;
 
@@ -61,7 +57,7 @@ namespace MainFrame.Core
 
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0} {1} '{2}'", new object[] { this.Name, this.SearchOperator, this.Value });
+            return string.Format(CultureInfo.InvariantCulture, "'{0}' {1} '{2}'", this.Name, this.SearchOperator, this.Value);
         }
     }
 }

@@ -6,8 +6,8 @@ using System.Reflection;
 
 namespace MainFrame.Web.Tests
 {
-    [DeploymentItem("app\\app.html", "app")]
-    [DeploymentItem("app\\iframe.html", "app")]
+    [DeploymentItem("app.html", "app")]
+    [DeploymentItem("iframe.html", "app")]
     [TestClass]
     public class BaseTest
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{84B050AB-FFFC-4B05-9CA1-23CCA496883B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame.Core.Web</RootNamespace>
+    <RootNamespace>MainFrame.Web</RootNamespace>
     <AssemblyName>MainFrame.Web</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

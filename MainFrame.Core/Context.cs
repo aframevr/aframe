@@ -10,16 +10,12 @@ namespace MainFrame.Core
     {
         public IContext ParentContext { get; private set; }
 
-        public SearchParameterCollection SearchParameters { get; private set; }
+        public SearchPropertyStack SearchPropertyStack { get; private set; }
 
-        public Context(IContext parentContext, SearchParameterCollection searchParameters)
+        public Context(IContext parentContext, SearchPropertyStack searchPropertyStack)
         {
             this.ParentContext = parentContext;
-
-            if (searchParameters == null)
-                searchParameters = new SearchParameterCollection();
-
-            this.SearchParameters = searchParameters;
+            this.SearchPropertyStack = searchPropertyStack ?? new SearchPropertyStack();
         }
 
         public abstract void Dispose();

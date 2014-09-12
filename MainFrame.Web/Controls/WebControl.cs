@@ -11,7 +11,7 @@ namespace MainFrame.Web.Controls
 {
     public class WebControl : Control
     {
-        public string AbsoluteSelector { get { return Helpers.ToAbsoluteSelector(this.Context.SearchParameters); } }
+        public string AbsoluteSelector { get { return Helpers.ToAbsoluteSelector(this.SearchProperties); } }
 
         public new WebContext Context { get { return base.Context as WebContext; } }
 
@@ -122,20 +122,20 @@ namespace MainFrame.Web.Controls
 
         public T CreateControl<T>(string jQuerySelector) where T : WebControl
         {
-            return this.CreateControl<T>(new List<SearchParameter> 
+            return this.CreateControl<T>(new List<SearchProperty> 
             { 
-                new SearchParameter(WebControl.SearchProperties.JQuerySelector, jQuerySelector) 
+                new SearchProperty(WebControl.PropertyNames.JQuerySelector, jQuerySelector) 
             });
         }
 
-        public new T CreateControl<T>(IEnumerable<SearchParameter> searchParameters) where T : WebControl
+        public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
-            //Each time we create a control, we add the selector of its parent.
-            var allSearchParameters = new SearchParameterCollection();
-            allSearchParameters.Add(this.Context.SearchParameters); //Parent
-            allSearchParameters.Add(searchParameters);
+            //Each time we create a control, we its parents properties.
+            var searchPropertyStack = new SearchPropertyStack();
+            searchPropertyStack.Add(this.Context.SearchPropertyStack); //Parent
+            searchPropertyStack.Add(searchProperties);
 
-            var context = new WebContext(this.Context.Driver, this.Context, allSearchParameters);
+            var context = new WebContext(this.Context.Driver, this.Context, searchPropertyStack);
             return (T)Activator.CreateInstance(typeof(T), context);
         }
         #endregion
@@ -148,29 +148,28 @@ namespace MainFrame.Web.Controls
 
         public IEnumerable<T> CreateControls<T>(string jQuerySelector) where T : WebControl
         {
-            return this.CreateControls<T>(new List<SearchParameter> 
+            return this.CreateControls<T>(new List<SearchProperty> 
             { 
-                new SearchParameter(WebControl.SearchProperties.JQuerySelector, jQuerySelector) 
+                new SearchProperty(WebControl.PropertyNames.JQuerySelector, jQuerySelector) 
             });
         }
 
-        public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchParameter> searchParameters) where T : WebControl
+        public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
-            //Each time we create a control, we add the selector of its parent.
-            var allSearchParameters = new SearchParameterCollection();
-            allSearchParameters.Add(this.Context.SearchParameters); //Parent
-            allSearchParameters.Add(searchParameters);
+            //Each time we create a control, we add its parent.
+            var searchPropertiesStack = new SearchPropertyStack();
+            searchPropertiesStack.Add(this.Context.SearchPropertyStack); //Parent
+            searchPropertiesStack.Add(searchProperties);
 
             //Each time we create a control, we add the selector of its parent.
-            var context = new WebContext(this.Context.Driver, this.Context.ParentContext /* Skip to parent */, allSearchParameters);
-            return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), context, searchParameters)).AsEnumerable();
+            var context = new WebContext(this.Context.Driver, this.Context.ParentContext /* Skip to parent */, searchPropertiesStack);
+            return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), context, searchProperties)).AsEnumerable();
         }
-        
         #endregion
 
-        public new class SearchProperties : Control.SearchProperties
+        public new class PropertyNames : Control.PropertyNames
         {
-            public const string JQuerySelector = "JQuerySelector";
+            public static readonly string JQuerySelector = "JQuerySelector";
         }
     }
 }

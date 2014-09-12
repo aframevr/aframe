@@ -1,5 +1,5 @@
 ﻿using MainFrame.Web.Controls;
-using MainFrame.Web.Tests.App;
+using MainFrame.Web.Tests.PageObjects;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 

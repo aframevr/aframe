@@ -8,9 +8,9 @@ namespace MainFrame.Core
 {
     public abstract class ControlCollection<T> : Control, IEnumerable<T> where T : Control
     {
-        protected IEnumerable<SearchParameter> _searchParameters;
+        protected IEnumerable<SearchProperty> _searchParameters;
 
-        public ControlCollection(IContext context, Technology technology, IEnumerable<SearchParameter> searchParameters) 
+        public ControlCollection(IContext context, Technology technology, IEnumerable<SearchProperty> searchParameters) 
             :base(context, technology)
         {
             this._searchParameters = searchParameters;

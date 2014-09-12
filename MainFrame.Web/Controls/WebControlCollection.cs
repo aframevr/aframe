@@ -9,8 +9,8 @@ namespace MainFrame.Web.Controls
     {
         public new WebContext Context { get { return base.Context as WebContext; } }
 
-        public WebControlCollection(WebContext context, IEnumerable<SearchParameter> searchParameters)
-            : base(context, Technology.Web, searchParameters)
+        public WebControlCollection(WebContext context, IEnumerable<SearchProperty> searchProperties)
+            : base(context, Technology.Web, searchProperties)
         { }
 
         protected override object RawFind()
@@ -18,7 +18,7 @@ namespace MainFrame.Web.Controls
             var allElements = new List<T>();
 
             //Find the absolute selector.
-            var absSelector = Helpers.ToAbsoluteSelector(this.Context.SearchParameters);
+            var absSelector = Helpers.ToAbsoluteSelector(this.Context.SearchPropertyStack);
 
             var selectorParts = absSelector.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
             foreach (var selector in selectorParts)
@@ -30,9 +30,9 @@ namespace MainFrame.Web.Controls
                 {
                     var indexedSelector = string.Format(strToFormat, i);
 
-                    var searchParameters = new List<SearchParameter>
+                    var searchParameters = new List<SearchProperty>
                     {
-                        new SearchParameter(WebControl.SearchProperties.JQuerySelector, indexedSelector),
+                        new SearchProperty(WebControl.PropertyNames.JQuerySelector, indexedSelector),
                     };
                     allElements.Add(this.CreateControlItem<T>(searchParameters));
                 }
@@ -41,13 +41,13 @@ namespace MainFrame.Web.Controls
             return allElements;
         }
 
-        protected override T2 CreateControlItem<T2>(IEnumerable<SearchParameter> searchParameters)
+        protected override T2 CreateControlItem<T2>(IEnumerable<SearchProperty> searchProperties)
         {
-            var wrapperSearchParameters = new SearchParameterCollection();
-            wrapperSearchParameters.Add(searchParameters);
+            var wrapperSearchProperties = new SearchPropertyStack();
+            wrapperSearchProperties.Add(searchProperties);
 
             //Each time we create a control, we add the selector of its parent.
-            var newContext = new WebContext(this.Context.Driver, this.Context.ParentContext, wrapperSearchParameters);
+            var newContext = new WebContext(this.Context.Driver, this.Context.ParentContext /*Parent Context*/, wrapperSearchProperties);
             return (T2)Activator.CreateInstance(typeof(T2), newContext);
         }
     }

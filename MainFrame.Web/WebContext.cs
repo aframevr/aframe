@@ -18,7 +18,7 @@ namespace MainFrame.Web
             : this(driver, null, null)
         { }
 
-        public WebContext(IWebDriver driver, IContext parentContext, SearchParameterCollection searchParameters)
+        public WebContext(IWebDriver driver, IContext parentContext, SearchPropertyStack searchParameters)
             : base(parentContext, searchParameters)
         {
             this.Driver = driver;

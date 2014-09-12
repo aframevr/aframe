@@ -62,12 +62,12 @@ namespace MainFrame.Web.Controls
             public string jQuery { get; set; }
         }
 
-        public static string ToAbsoluteSelector(SearchParameterCollection searchParameterCollection)
+        public static string ToAbsoluteSelector(SearchPropertyStack searchPropertyStack)
         {
             var absoluteSelector = "";
-            foreach (var searchParameters in searchParameterCollection)
+            foreach (var searchProperties in searchPropertyStack)
             {
-                var jquerySelector = searchParameters.SingleOrDefault(x => x.Name.Equals(WebControl.SearchProperties.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
+                var jquerySelector = searchProperties.SingleOrDefault(x => x.Name.Equals(WebControl.PropertyNames.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
                 if (jquerySelector != null)
                 {
                     /* Comma (or) support

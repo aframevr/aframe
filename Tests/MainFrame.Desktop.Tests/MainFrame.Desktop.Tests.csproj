@@ -1,10 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A8A5DBC5-8023-46C6-80E8-576CF267E95F}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -38,12 +37,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
@@ -51,7 +51,32 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WinForms\App\WinFormsApp.cs" />
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="WinForms\Features\FindTests.cs" />
+    <Compile Include="WinForms\Features\MouseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wpf\App\WpfApp.cs" />
+    <Compile Include="Wpf\Features\FindTests.cs" />
+    <Compile Include="Wpf\Features\MouseTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Apps\WinForms\WinForms.csproj">
+      <Project>{3efa2cda-3b65-4c6f-a538-1d011f4f7d85}</Project>
+      <Name>WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Apps\Wpf\Wpf.csproj">
+      <Project>{a051bb28-21c4-402c-ab0d-392e55077503}</Project>
+      <Name>Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MainFrame.Core\MainFrame.Core.csproj">
+      <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
+      <Name>MainFrame.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MainFrame.Desktop\MainFrame.Desktop.csproj">
+      <Project>{dc67c132-6dd8-4d8c-8e62-6706d590ce43}</Project>
+      <Name>MainFrame.Desktop</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

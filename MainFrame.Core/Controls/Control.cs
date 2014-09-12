@@ -11,6 +11,8 @@ namespace MainFrame.Core
 
         public Technology Technology { get; private set; }
 
+        public SearchPropertyStack SearchProperties { get { return this.Context.SearchPropertyStack; } }
+
         #region RawControl
         private object _rawControl;
         public object RawControl
@@ -101,17 +103,17 @@ namespace MainFrame.Core
             throw new NotImplementedException();
         }
 
-        public virtual T CreateControl<T>(IEnumerable<SearchParameter> searchParameters)
+        public virtual T CreateControl<T>(IEnumerable<SearchProperty> searchParameters)
         {
             throw new NotImplementedException();
         }
 
-        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchParameter> searchParameters)
+        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchParameters)
         {
             throw new NotImplementedException();
         }
 
-        protected virtual T CreateControlItem<T>(IEnumerable<SearchParameter> searchParameters)
+        protected virtual T CreateControlItem<T>(IEnumerable<SearchProperty> searchParameters)
         {
             throw new NotImplementedException();
         }
@@ -180,7 +182,7 @@ namespace MainFrame.Core
         }
         #endregion
 
-        public class SearchProperties
+        public class PropertyNames
         {
 
         }

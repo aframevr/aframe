@@ -8,8 +8,12 @@ namespace MainFrame.Core
 {
     public interface IContext : IDisposable
     {
-        SearchParameterCollection SearchParameters { get; }
+        SearchPropertyStack SearchPropertyStack { get; }
 
         IContext ParentContext { get; }
+
+        T As<T>() where T : Control;
+
+        Control As();
     }
 }

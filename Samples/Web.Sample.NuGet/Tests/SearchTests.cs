@@ -28,8 +28,11 @@ namespace Web.Sample.NuGet.Tests
         {
             //Arrange
             var page = this.WebContext.NavigateTo(UrlHelper.SiteUrl);
+
+
             var searchBox = page.CreateControl("#searchBoxInput");
             var searchBtn = page.CreateControl("#searchBoxSubmit");
+
             var packageNames = page.CreateControls("#searchResults .package .package-list-header h1 a");
 
             //Act
