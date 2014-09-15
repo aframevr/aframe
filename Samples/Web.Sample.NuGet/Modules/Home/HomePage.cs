@@ -15,7 +15,8 @@ namespace Web.Sample.NuGet.Modules.Home
 
         public HomePage(WebContext webContext)
             : base(webContext)
-        { }
+        { 
+        }
 
         public void SearchFor(string text)
         {

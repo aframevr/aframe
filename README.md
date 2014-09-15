@@ -1,7 +1,11 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/5k8dws5c71twumxt)](https://ci.appveyor.com/project/Thwaitesy/mainframe)
+[![Build status](https://ci.appveyor.com/api/projects/status/2ti8tnlabd7782fg/branch/master)](https://ci.appveyor.com/project/Thwaitesy/aframe/branch/master)
 
 Changelog
 ==========================================================================
+*0.4.0*
+- [BREAKING CHANGE] Changed name from MainFrame to AFrame.
+- Added preliminary support for desktop automation (WPF, WIN FORMS)
+
 *0.3.19*
 - [BREAKING CHANGE] Changed MainFrame namespace from MainFrame to MainFrame.Core (NuGet package id has changed also - so please remove and reinstall nuget packages)
 - Relocated files in project
@@ -31,4 +35,5 @@ Contributors
 
 Licence
 ==========================================================================
-See [LICENCE](https://github.com/Thwaitesy/MSTestHacks/blob/master/LICENCE)
+See [LICENCE](https://github.com/Thwaitesy/AFrame/blob/master/LICENCE)
+

@@ -25,7 +25,6 @@ namespace Web.Sample.NuGet.Framework
             }
         }
 
-
         [TestInitialize]
         public void Init()
         {
