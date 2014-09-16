@@ -9,12 +9,7 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinButton : WinControl
     {
-        public WinButton(IContext context)
-            : base(context)
-        {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Button");
-        }
-
+        #region Properties
         public virtual string DisplayText
         {
             get
@@ -29,6 +24,13 @@ namespace AFrame.Desktop.Controls.Win
             {
                 return (string)base.GetProperty(PropertyNames.Shortcut);
             }
+        }
+        #endregion
+
+        public WinButton(IContext context)
+            : base(context)
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Button");
         }
 
         public new class PropertyNames : WinControl.PropertyNames

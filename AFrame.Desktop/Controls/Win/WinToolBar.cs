@@ -1,4 +1,5 @@
 ﻿using AFrame.Core;
+using Microsoft.VisualStudio.TestTools.UITesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +8,27 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Win
 {
-    public class WinText : WinControl
+    public class WinToolBar : WinControl
     {
         #region Properties
-        public virtual string DisplayText
+        public virtual UITestControlCollection Items
         {
             get
             {
-                return (string)base.GetProperty(PropertyNames.DisplayText);
+                return (UITestControlCollection)base.GetProperty(PropertyNames.Items);
             }
         }
         #endregion
 
-        public WinText(IContext context)
+        public WinToolBar(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Text");
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "ToolBar");
         }
 
         public new class PropertyNames : WinControl.PropertyNames
         {
-            public static readonly string DisplayText = "DisplayText";
+            public static readonly string Items = "Items";
         }
     }
 }

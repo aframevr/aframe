@@ -16,12 +16,12 @@ namespace AFrame.Desktop.Controls
 
         public new UITestControl RawControl { get { return base.RawControl as UITestControl; } }
 
-        internal string TechnologyName;
+        internal string _technologyName;
 
         public DesktopControl(IContext context, string technologyName)
             : base(context, Technology.Desktop)
         {
-            this.TechnologyName = technologyName;
+            this._technologyName = technologyName;
         }
 
         public override void Highlight()
@@ -77,6 +77,14 @@ namespace AFrame.Desktop.Controls
             }
         }
 
+        public virtual string ControlType
+        {
+            get
+            {
+                return this.RawControl.ControlType.ToString();
+            }
+        }
+
         public virtual bool Enabled
         {
             get
@@ -109,6 +117,14 @@ namespace AFrame.Desktop.Controls
             }
         }
 
+        public virtual bool IsTopParent
+        {
+            get
+            {
+                return this.RawControl.IsTopParent;
+            }
+        }
+
         public virtual int Left
         {
             get
@@ -133,11 +149,35 @@ namespace AFrame.Desktop.Controls
             }
         }
 
+        public virtual string State
+        {
+            get
+            {
+                return this.RawControl.State.ToString();
+            }
+        }
+
+        public virtual string TechnologyName
+        {
+            get
+            {
+                return this.RawControl.TechnologyName;
+            }
+        }
+
         public virtual int Top
         {
             get
             {
                 return (int)this.GetProperty(PropertyNames.Top);
+            }
+        }
+        
+        public virtual UITestControl TopParent
+        {
+            get
+            {
+                return this.RawControl.TopParent;
             }
         }
 
@@ -209,10 +249,19 @@ namespace AFrame.Desktop.Controls
             public static readonly string FriendlyName = "FriendlyName";
             public static readonly string HasFocus = "HasFocus";
             public static readonly string Height = "Height";
+            public static readonly string Instance = "Instance";
+            public static readonly string IsTopParent = "IsTopParent";
             public static readonly string Left = "Left";
+            public static readonly string MaxDepth = "MaxDepth";
             public static readonly string Name = "Name";
             public static readonly string NativeElement = "NativeElement";
+            public static readonly string QueryId = "QueryId";
+            public static readonly string State = "State";
+            public static readonly string TechnologyName = "TechnologyName";
             public static readonly string Top = "Top";
+            public static readonly string TopParent = "TopParent";
+            public static readonly string UITechnologyElement = "UITechnologyElement";
+            public static readonly string Value = "Value";
             public static readonly string Width = "Width";
             public static readonly string WindowHandle = "WindowHandle";
         }

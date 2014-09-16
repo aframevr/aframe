@@ -9,29 +9,6 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinControl : DesktopControl
     {
-        public WinControl(IContext context)
-            : base(context, "MSAA")
-        {
-            //Microsoft.VisualStudio.TestTools.UITesting.WinControls.WinControl
-        }
-
-        #region Create Control
-        public new WinControl CreateControl(string name)
-        {
-            return base.CreateControl<WinControl>(name);
-        }
-
-        public new T CreateControl<T>(string name) where T : WinControl
-        {
-            return base.CreateControl<T>(name);
-        }
-
-        public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WinControl
-        {
-            return base.CreateControl<T>(searchProperties);
-        } 
-        #endregion
-
         #region Properties
         public string AccessibleDescription
         {
@@ -71,6 +48,36 @@ namespace AFrame.Desktop.Controls.Win
             {
                 return (string)base.GetProperty(PropertyNames.HelpText);
             }
+        }
+
+        public virtual string ToolTipText
+        {
+            get
+            {
+                var ctrl = (Microsoft.VisualStudio.TestTools.UITesting.WinControls.WinControl)this.RawControl;
+                return ctrl.ToolTipText;
+            }
+        }
+        #endregion
+
+        public WinControl(IContext context)
+            : base(context, "MSAA")
+        { }
+
+        #region Create Control
+        public new WinControl CreateControl(string name)
+        {
+            return base.CreateControl<WinControl>(name);
+        }
+
+        public new T CreateControl<T>(string name) where T : WinControl
+        {
+            return base.CreateControl<T>(name);
+        }
+
+        public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WinControl
+        {
+            return base.CreateControl<T>(searchProperties);
         } 
         #endregion
 

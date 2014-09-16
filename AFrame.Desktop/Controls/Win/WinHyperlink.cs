@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Win
 {
-    public class WinText : WinControl
+    public class WinHyperlink : WinControl
     {
         #region Properties
         public virtual string DisplayText
@@ -19,10 +19,10 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinText(IContext context)
+        public WinHyperlink(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Text");
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Hyperlink");
         }
 
         public new class PropertyNames : WinControl.PropertyNames

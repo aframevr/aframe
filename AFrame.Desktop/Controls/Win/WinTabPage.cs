@@ -1,4 +1,5 @@
 ﻿using AFrame.Core;
+using Microsoft.VisualStudio.TestTools.UITesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Win
 {
-    public class WinText : WinControl
+    public class WinTabPage : WinControl
     {
         #region Properties
         public virtual string DisplayText
@@ -19,10 +20,10 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinText(IContext context)
+        public WinTabPage(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Text");
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TabPage");
         }
 
         public new class PropertyNames : WinControl.PropertyNames
