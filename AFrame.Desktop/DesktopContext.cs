@@ -42,8 +42,6 @@ namespace AFrame.Desktop
             Mouse.MouseDragSpeed = 0;
             Mouse.MouseMoveSpeed = 0;
 
-            //Process.Start(new ProcessStartInfo(appPath));
-
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(appPath);
 
             return this.As<T>();

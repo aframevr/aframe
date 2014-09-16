@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Wpf
 {
-    public class WpfButton : WpfControl
+    public class WpfTitleBar : WpfControl
     {
         #region Properties
         public virtual string DisplayText
@@ -17,26 +17,17 @@ namespace AFrame.Desktop.Controls.Wpf
                 return (string)base.GetProperty(PropertyNames.DisplayText);
             }
         }
-
-        public virtual string Shortcut
-        {
-            get
-            {
-                return (string)base.GetProperty(PropertyNames.Shortcut);
-            }
-        }
         #endregion
 
-        public WpfButton(IContext context)
+        public WpfTitleBar(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Button");
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TitleBar");
         }
 
         public new class PropertyNames : WpfControl.PropertyNames
         {
             public static readonly string DisplayText = "DisplayText";
-            public static readonly string Shortcut = "Shortcut";
         }
     }
 }

@@ -26,6 +26,7 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\$configuration$\$id$.pdb" target="lib\net45\" />
+      <file src="bin\$configuration$\$id$.pdb" target="lib\net45\" />
+      <file src="bin\$configuration$\UIAVerify.zip" />
     </files>
 </package>

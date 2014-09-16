@@ -172,6 +172,21 @@ namespace AFrame.Desktop.Controls
             });
         }
 
+        public T CreateControl<T>(params string[] nameValuePairs) where T : DesktopControl
+        {
+            if ((nameValuePairs.Length % 2) != 0)
+            {
+                throw new ArgumentException("CreateControl needs to have even number of pairs. (Mod 2)", "nameValuePairs");
+            }
+            var searchProperties = new List<SearchProperty>();
+            for (int i = 0; i < nameValuePairs.Length; i = (int)(i + 2))
+            {
+                searchProperties.Add(new SearchProperty(nameValuePairs[i], nameValuePairs[i + 1]));
+            }
+
+            return this.CreateControl<T>(searchProperties);
+        }
+
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : DesktopControl
         {
             //Each time we create a control, we add its parent.

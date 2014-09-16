@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Wpf
 {
-    public class WpfText : WpfControl
+    public class WpfHyperlink : WpfControl
     {
         #region Properties
-        public virtual string DisplayText
+        public virtual string Alt
         {
             get
             {
-                return (string)base.GetProperty(PropertyNames.DisplayText);
+                return (string)base.GetProperty(PropertyNames.Alt);
             }
         }
         #endregion
 
-        public WpfText(IContext context)
+        public WpfHyperlink(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Text");
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Hyperlink");
         }
 
         public new class PropertyNames : WpfControl.PropertyNames
         {
-            public static readonly string DisplayText = "DisplayText";
+            public static readonly string Alt = "Alt";
         }
     }
 }

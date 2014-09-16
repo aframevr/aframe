@@ -1,4 +1,5 @@
 ﻿using AFrame.Core;
+using Microsoft.VisualStudio.TestTools.UITesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Wpf
 {
-    public class WpfButton : WpfControl
+    public class WpfListItem : WpfControl
     {
         #region Properties
+        public void Select()
+        {
+            var ctrl = (Microsoft.VisualStudio.TestTools.UITesting.WpfControls.WpfListItem)this.RawControl;
+            ctrl.Select();
+        }
+
         public virtual string DisplayText
         {
             get
@@ -18,25 +25,25 @@ namespace AFrame.Desktop.Controls.Wpf
             }
         }
 
-        public virtual string Shortcut
+        public virtual bool Selected
         {
             get
             {
-                return (string)base.GetProperty(PropertyNames.Shortcut);
+                return (bool)base.GetProperty(PropertyNames.Selected);
             }
         }
         #endregion
 
-        public WpfButton(IContext context)
+        public WpfListItem(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Button");
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ListItem");
         }
 
         public new class PropertyNames : WpfControl.PropertyNames
         {
             public static readonly string DisplayText = "DisplayText";
-            public static readonly string Shortcut = "Shortcut";
+            public static readonly string Selected = "Selected";
         }
     }
 }

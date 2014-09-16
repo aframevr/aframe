@@ -9,12 +9,7 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfWindow : WpfControl
     {
-        public WpfWindow(IContext context)
-            : base(context)
-        {
-            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Window");
-        }
-
+        #region Properties
         public bool AlwaysOnTop
         {
             get
@@ -113,6 +108,13 @@ namespace AFrame.Desktop.Controls.Wpf
             {
                 return (bool)base.GetProperty(PropertyNames.Transparent);
             }
+        }
+        #endregion
+
+        public WpfWindow(IContext context)
+            : base(context)
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Window");
         }
 
         public new class PropertyNames : WpfControl.PropertyNames

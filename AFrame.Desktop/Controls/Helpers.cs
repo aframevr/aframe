@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls
 {
-    public class Helpers
+    internal class Helpers
     {
         internal static UITestControl GenerateUITestControl(DesktopControl desktopControl)
         {

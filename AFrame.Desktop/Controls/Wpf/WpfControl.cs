@@ -9,34 +9,6 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfControl : DesktopControl
     {
-        public WpfControl(IContext context)
-            : base(context, "UIA")
-        {
-            this.SearchProperties.Add(PropertyNames.FrameworkId, "WPF");
-
-           // Microsoft.VisualStudio.TestTools.UITesting.WpfControls.WpfWindow
-        }
-
-        #region Create Control
-        public new WpfControl CreateControl(string automationId)
-        {
-            return this.CreateControl<WpfControl>(automationId);
-        }
-
-        public new T CreateControl<T>(string automationId) where T : WpfControl
-        {
-            return this.CreateControl<T>(new List<SearchProperty> 
-            { 
-                new SearchProperty(WpfControl.PropertyNames.AutomationId, automationId) 
-            });
-        }
-
-        public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WpfControl
-        {
-            return base.CreateControl<T>(searchProperties);
-        } 
-        #endregion
-
         #region Properties
         public virtual string AcceleratorKey
         {
@@ -101,6 +73,32 @@ namespace AFrame.Desktop.Controls.Wpf
                 return (string)base.GetProperty(PropertyNames.LabeledBy);
             }
         }
+        #endregion
+
+        public WpfControl(IContext context)
+            : base(context, "UIA")
+        {
+            this.SearchProperties.Add(PropertyNames.FrameworkId, "WPF");
+        }
+
+        #region Create Control
+        public new WpfControl CreateControl(string automationId)
+        {
+            return this.CreateControl<WpfControl>(automationId);
+        }
+
+        public new T CreateControl<T>(string automationId) where T : WpfControl
+        {
+            return this.CreateControl<T>(new List<SearchProperty> 
+            { 
+                new SearchProperty(WpfControl.PropertyNames.AutomationId, automationId) 
+            });
+        }
+
+        public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WpfControl
+        {
+            return base.CreateControl<T>(searchProperties);
+        } 
         #endregion
 
         public new class PropertyNames : DesktopControl.PropertyNames

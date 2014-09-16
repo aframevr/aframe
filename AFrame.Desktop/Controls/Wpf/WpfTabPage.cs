@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Controls.Wpf
 {
-    public class WpfText : WpfControl
+    public class WpfTabPage : WpfControl
     {
         #region Properties
-        public virtual string DisplayText
+        public virtual string Header
         {
             get
             {
-                return (string)base.GetProperty(PropertyNames.DisplayText);
+                return (string)base.GetProperty(PropertyNames.Header);
             }
         }
         #endregion
 
-        public WpfText(IContext context)
+        public WpfTabPage(IContext context)
             : base(context)
         {
-            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Text");
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TabPage");
         }
 
         public new class PropertyNames : WpfControl.PropertyNames
         {
-            public static readonly string DisplayText = "DisplayText";
+            public static readonly string Header = "Header";
         }
     }
 }

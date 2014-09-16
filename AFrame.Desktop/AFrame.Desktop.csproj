@@ -57,6 +57,38 @@
     <Compile Include="Controls\Win\WinWindow.cs" />
     <Compile Include="Controls\Win\WinButton.cs" />
     <Compile Include="Controls\Win\WinControl.cs" />
+    <Compile Include="Controls\Wpf\WpfCheckbox.cs" />
+    <Compile Include="Controls\Wpf\WpfComboBox.cs" />
+    <Compile Include="Controls\Wpf\WpfCustom.cs" />
+    <Compile Include="Controls\Wpf\WpfDatePicker.cs" />
+    <Compile Include="Controls\Wpf\WpfEdit.cs" />
+    <Compile Include="Controls\Wpf\WpfExpander.cs" />
+    <Compile Include="Controls\Wpf\WpfGroup.cs" />
+    <Compile Include="Controls\Wpf\WpfHyperlink.cs" />
+    <Compile Include="Controls\Wpf\WpfImage.cs" />
+    <Compile Include="Controls\Wpf\WpfListItem.cs" />
+    <Compile Include="Controls\Wpf\WpfMenu.cs" />
+    <Compile Include="Controls\Wpf\WpfMenuItem.cs" />
+    <Compile Include="Controls\Wpf\WpfPane.cs" />
+    <Compile Include="Controls\Wpf\WpfProgressBar.cs" />
+    <Compile Include="Controls\Wpf\WpfRadioButton.cs" />
+    <Compile Include="Controls\Wpf\WpfScrollBar.cs" />
+    <Compile Include="Controls\Wpf\WpfSeparator.cs" />
+    <Compile Include="Controls\Wpf\WpfSlider.cs" />
+    <Compile Include="Controls\Wpf\WpfStatusBar.cs" />
+    <Compile Include="Controls\Wpf\WpfTable.cs" />
+    <Compile Include="Controls\Wpf\WpfTabList.cs" />
+    <Compile Include="Controls\Wpf\WpfTabPage.cs" />
+    <Compile Include="Controls\Wpf\WpfToolBar.cs" />
+    <Compile Include="Controls\Wpf\WpfToolTip.cs" />
+    <Compile Include="Controls\Wpf\WpfTree.cs" />
+    <Compile Include="Controls\Wpf\WpfTreeItem.cs" />
+    <Compile Include="Controls\Wpf\WpfToggleButton.cs" />
+    <Compile Include="Controls\Wpf\WpfTitleBar.cs" />
+    <Compile Include="Controls\Wpf\WpfList.cs" />
+    <Compile Include="Controls\Wpf\WpfCell.cs" />
+    <Compile Include="Controls\Wpf\WpfRow.cs" />
+    <Compile Include="Controls\Wpf\WpfCalendar.cs" />
     <Compile Include="Controls\Wpf\WpfButton.cs" />
     <Compile Include="Controls\Wpf\WpfText.cs" />
     <Compile Include="Controls\Wpf\WpfWindow.cs" />
@@ -66,6 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AFrame.Desktop.nuspec" />
+    <Content Include="UIAVerify.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AFrame.Core\AFrame.Core.csproj">
