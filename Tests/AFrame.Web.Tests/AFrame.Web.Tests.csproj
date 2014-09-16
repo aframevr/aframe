@@ -85,6 +85,10 @@
       <Project>{84b050ab-fffc-4b05-9ca1-23cca496883b}</Project>
       <Name>AFrame.Web</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestApps\AFrame.Web.TestApp\AFrame.Web.TestApp.csproj">
+      <Project>{21e4bcdb-586b-4ffc-90a6-31df71963719}</Project>
+      <Name>AFrame.Web.TestApp</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

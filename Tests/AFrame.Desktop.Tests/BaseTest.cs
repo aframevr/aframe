@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Tests
 {
-    [DeploymentItem("Wpf.exe")]
-    [DeploymentItem("WinForms.exe")]
+    [DeploymentItem("AFrame.Wpf.TestApp.exe")]
+    [DeploymentItem("AFrame.WinForms.TestApp.exe")]
     public class BaseTest
     {
-        public readonly string WinFormsAppPath = "winforms.exe";
-        public readonly string WpfAppPath = "wpf.exe";
+        public readonly string WinFormsAppPath = "AFrame.WinForms.TestApp.exe";
+        public readonly string WpfAppPath = "AFrame.Wpf.TestApp.exe";
 
         private DesktopContext _context;
         public DesktopContext Context

@@ -69,6 +69,14 @@
       <Project>{dc67c132-6dd8-4d8c-8e62-6706d590ce43}</Project>
       <Name>AFrame.Desktop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TestApps\AFrame.WinForms.TestApp\AFrame.WinForms.TestApp.csproj">
+      <Project>{3efa2cda-3b65-4c6f-a538-1d011f4f7d85}</Project>
+      <Name>AFrame.WinForms.TestApp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestApps\AFrame.Wpf.TestApp\AFrame.Wpf.TestApp.csproj">
+      <Project>{a051bb28-21c4-402c-ab0d-392e55077503}</Project>
+      <Name>AFrame.Wpf.TestApp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
