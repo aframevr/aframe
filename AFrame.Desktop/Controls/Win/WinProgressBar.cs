@@ -46,7 +46,6 @@ namespace AFrame.Desktop.Controls.Win
         {
             public static readonly string MaximumValue = "MaximumValue";
             public static readonly string MinimumValue = "MinimumValue";
-            public static readonly string Value = "Value";
         }
     }
 }

@@ -72,7 +72,6 @@ namespace AFrame.Desktop.Controls.Win
             public static readonly string Cells = "Cells";
             public static readonly string RowIndex = "RowIndex";
             public static readonly string Selected = "Selected";
-            public static readonly string Value = "Value";
         }
     }
 }
