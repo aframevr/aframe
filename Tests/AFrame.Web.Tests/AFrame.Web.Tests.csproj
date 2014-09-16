@@ -6,8 +6,8 @@
     <ProjectGuid>{BBC9CF8A-03FB-4842-A09B-E545BF219822}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame.Web.Tests</RootNamespace>
-    <AssemblyName>MainFrame.Web.Tests</AssemblyName>
+    <RootNamespace>AFrame.Web.Tests</RootNamespace>
+    <AssemblyName>AFrame.Web.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -79,10 +79,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Apps\Web\Web.csproj">
-      <Project>{21e4bcdb-586b-4ffc-90a6-31df71963719}</Project>
-      <Name>Web</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\AFrame.Core\AFrame.Core.csproj">
       <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
       <Name>AFrame.Core</Name>

@@ -9,8 +9,8 @@
     <ProjectGuid>{680E6456-C886-46B9-92D9-F10E81C18276}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MainFrame.Mobile.Tests</RootNamespace>
-    <AssemblyName>MainFrame.Mobile.Tests</AssemblyName>
+    <RootNamespace>AFrame.Mobile.Tests</RootNamespace>
+    <AssemblyName>AFrame.Mobile.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
