@@ -46,5 +46,23 @@ namespace AFrame.Desktop
 
             return this.As<T>();
         }
+
+        public T Launch<T>(ProcessStartInfo appPath) where T : DesktopControl
+        {
+            AFrame.Core.Playback.HighlightOnFind = false;
+
+            Microsoft.VisualStudio.TestTools.UITesting.Playback.PlaybackSettings.SmartMatchOptions = Microsoft.VisualStudio.TestTools.UITest.Extension.SmartMatchOptions.None;
+            Microsoft.VisualStudio.TestTools.UITesting.Playback.PlaybackSettings.ShouldSearchFailFast = true;
+            Microsoft.VisualStudio.TestTools.UITesting.Playback.PlaybackSettings.MatchExactHierarchy = true;
+            Microsoft.VisualStudio.TestTools.UITesting.Playback.PlaybackSettings.DelayBetweenActions = 0;
+            Microsoft.VisualStudio.TestTools.UITesting.Playback.PlaybackSettings.SearchTimeout = AFrame.Core.Playback.SearchTimeout;
+
+            Mouse.MouseDragSpeed = 0;
+            Mouse.MouseMoveSpeed = 0;
+
+            this.ApplicationUnderTest = ApplicationUnderTest.Launch(appPath);
+
+            return this.As<T>();
+        }
     }
 }

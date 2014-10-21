@@ -25,5 +25,26 @@ namespace AFrame.Desktop.Tests.Wpf.Features
             //Assert
             Assert.AreEqual("4", app.ClickLabel.DisplayText);
         }
+
+        [TestMethod]
+        public void LaunchApplicationWithAdminAndClickButtons()
+        {
+            //Arrange
+            System.Diagnostics.ProcessStartInfo proc = new System.Diagnostics.ProcessStartInfo(this.WpfAppPath);
+            proc.UseShellExecute = true;
+            proc.Verb = "runas";
+            var app = this.Context.Launch<WpfApp>(proc);
+
+            //Act
+            app.ClickButton.Click();
+
+
+            app.ClickButton.Click();
+            app.ClickButton.Click();
+            app.ClickButton.Click();
+
+            //Assert
+            Assert.AreEqual("4", app.ClickLabel.DisplayText);
+        }
     }
 }
