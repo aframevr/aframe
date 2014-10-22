@@ -2,6 +2,12 @@
 
 Changelog
 ==========================================================================
+*0.5.0*
+- Added 'AlwaysSearch' for all controls or just the individual ones. Should fix stale control issues.  
+
+*0.4.26*
+- Added launch overload for desktop to allow for System.Diagnostics.ProcessStartInfo 
+
 *0.4.0*
 - [BREAKING CHANGE] Changed name from MainFrame to AFrame.
 - Added preliminary support for desktop automation (WPF, WIN FORMS)
