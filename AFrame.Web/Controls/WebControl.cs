@@ -124,8 +124,23 @@ namespace AFrame.Web.Controls
         {
             return this.CreateControl<T>(new List<SearchProperty> 
             { 
-                new SearchProperty(WebControl.PropertyNames.JQuerySelector, jQuerySelector) 
+                new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
             });
+        }
+
+        public T CreateControl<T>(params string[] nameValuePairs) where T : WebControl
+        {
+            if ((nameValuePairs.Length % 2) != 0)
+            {
+                throw new ArgumentException("CreateControl needs to have even number of pairs. (Mod 2)", "nameValuePairs");
+            }
+            var searchProperties = new List<SearchProperty>();
+            for (int i = 0; i < nameValuePairs.Length; i = (int)(i + 2))
+            {
+                searchProperties.Add(new SearchProperty(nameValuePairs[i], nameValuePairs[i + 1]));
+            }
+
+            return this.CreateControl<T>(searchProperties);
         }
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
@@ -150,9 +165,11 @@ namespace AFrame.Web.Controls
         {
             return this.CreateControls<T>(new List<SearchProperty> 
             { 
-                new SearchProperty(WebControl.PropertyNames.JQuerySelector, jQuerySelector) 
+                new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
             });
         }
+
+
 
         public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
@@ -167,7 +184,7 @@ namespace AFrame.Web.Controls
         }
         #endregion
 
-        public new class PropertyNames : Control.PropertyNames
+        public new class SearchNames : Control.SearchNames
         {
             public static readonly string JQuerySelector = "JQuerySelector";
         }

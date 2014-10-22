@@ -32,7 +32,7 @@ namespace AFrame.Web.Controls
 
                     var searchParameters = new List<SearchProperty>
                     {
-                        new SearchProperty(WebControl.PropertyNames.JQuerySelector, indexedSelector),
+                        new SearchProperty(WebControl.SearchNames.JQuerySelector, indexedSelector),
                     };
                     allElements.Add(this.CreateControlItem<T>(searchParameters));
                 }

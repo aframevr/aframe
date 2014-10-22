@@ -13,9 +13,7 @@ namespace AFrame.Web.Tests.Features.SearchParameters
             var searchParams = new SearchPropertyStack();
             searchParams.Add(new [] 
             { 
-                new SearchProperty(name: WebControl.PropertyNames.JQuerySelector,
-                                    value: "#always",
-                                    searchOperator: SearchOperator.EqualTo)
+                new SearchProperty(name: WebControl.SearchNames.JQuerySelector, value: "#always", searchOperator: SearchOperator.EqualTo)
             });
 
             var homePage = this.Context.NavigateTo(this.TestAppUrl);

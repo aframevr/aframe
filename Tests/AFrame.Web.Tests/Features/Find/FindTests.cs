@@ -84,7 +84,7 @@ namespace AFrame.Web.Tests.Features.Find
         public void ControlNotFoundTimeoutThrowsException()
         {
             var control = new WebControl(this.Context);
-            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.PropertyNames.JQuerySelector, ".unknown") });
+            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.SearchNames.JQuerySelector, ".unknown") });
             control.Find();
         }
 
@@ -92,7 +92,7 @@ namespace AFrame.Web.Tests.Features.Find
         public void ControlNotFoundTimeout()
         {
             var control = new WebControl(this.Context);
-            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.PropertyNames.JQuerySelector, ".unknown") });
+            control.Context.SearchPropertyStack.Add(new List<SearchProperty> { new SearchProperty(WebControl.SearchNames.JQuerySelector, ".unknown") });
             var stoppy = Stopwatch.StartNew();
             try
             {
