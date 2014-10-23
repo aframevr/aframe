@@ -27,7 +27,7 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
             var text2 = textCtrl.Text;
 
             //Wait till it changes
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
 
             //Verify it throws a stale exception.
             Action action = () => {
@@ -56,7 +56,7 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
                 var text2 = textCtrl.Text;
 
                 //Wait till it changes
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
 
                 //Verify it doesn't throw a stale exception.
                 Assert.AreEqual("I will go stale", textCtrls.Last().Text);
@@ -84,9 +84,6 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
             {
                 for (int i = 0; i < 50; i++)
                 {
-                    //Wait till it changes
-                    Thread.Sleep(200);
-
                     //Verify it doesn't throw a stale exception.
                     Assert.AreEqual("I will go stale", textCtrls.ElementAt(new Random().Next(0, 8)).Text);
                     Assert.AreEqual("I will go stale", textCtrl.Text);
