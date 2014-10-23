@@ -21,5 +21,11 @@ namespace AFrame.Core.Tests
 
             Assert.AreEqual(expected.TotalMilliseconds, Playback.SearchTimeout);
         }
+
+        [TestMethod]
+        public void AlwaysSearchIsDefaultedToFalse()
+        {
+            Assert.IsFalse(Playback.AlwaysSearch);
+        }
     }
 }

@@ -67,13 +67,13 @@ namespace AFrame.Web.Controls
             var absoluteSelector = "";
             foreach (var searchProperties in searchPropertyStack)
             {
-                var jquerySelector = searchProperties.SingleOrDefault(x => x.Name.Equals(WebControl.PropertyNames.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
+                var jquerySelector = searchProperties.SingleOrDefault(x => x.Name.Equals(WebControl.SearchNames.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
                 if (jquerySelector != null)
                 {
                     /* Comma (or) support
                      * 
                      * Absolute Selector: .homepage
-                     *   Jquery Selector: .find-1, .find-2 
+                     *   JQuery Selector: .find-1, .find-2 
                      *   Expected Result: .homepage .find-1, .homepage .find-2
                      */
 

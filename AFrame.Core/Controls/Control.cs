@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 
 namespace AFrame.Core
 {
@@ -13,16 +14,33 @@ namespace AFrame.Core
 
         public SearchPropertyStack SearchProperties { get { return this.Context.SearchPropertyStack; } }
 
+        private bool _highlighting = false;
+
+
         #region RawControl
         private object _rawControl;
+
         public object RawControl
         {
             get
             {
-                if (this._rawControl == null)
+                /* Always Search Feature
+                 * --------------------- 
+                 * 
+                 * If there is a property in the search properties 
+                 * set for "Always Search" then it must always call this.Find()
+                 * 
+                 * If the global property is set for always search, then 
+                 * it must call this.Find()
+                 * 
+                 */
+
+                var alwaysSearch = this.SearchProperties.First().Any(x=> x.Name == Control.SearchNames.AlwaysSearch);
+                if (this._rawControl == null || (this._highlighting == false && (Playback.AlwaysSearch || alwaysSearch)))
                 {
                     this.Find();
                 }
+
                 return this._rawControl;
             }
         } 
@@ -94,8 +112,21 @@ namespace AFrame.Core
             if (this._rawControl == null)
                 throw new ControlNotFoundTimeoutException(this, TimeSpan.FromMilliseconds(Playback.SearchTimeout));
 
+            //Always search has issues when trying to highlight upon finding... Basically it gets itself into a loop as
+            //Highlight can call find, if its always search it will just keep looping...
+
             if (Playback.HighlightOnFind)
-                this.Highlight();
+            {
+                try
+                {
+                    this._highlighting = true;
+                    this.Highlight();
+                }
+                finally
+                {
+                    this._highlighting = false;
+                }
+            }
         }
 
         protected virtual object RawFind()
@@ -185,6 +216,11 @@ namespace AFrame.Core
         public class PropertyNames
         {
 
+        }
+
+        public class SearchNames
+        {
+            public static readonly string AlwaysSearch = "AlwaysSearch";
         }
     }
 }
