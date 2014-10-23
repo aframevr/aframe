@@ -15,7 +15,13 @@ namespace AFrame.Web.Controls
 
         public new WebContext Context { get { return base.Context as WebContext; } }
 
-        public new IWebElement RawControl { get { return base.RawControl as IWebElement; } }
+        public new IWebElement RawControl 
+        { 
+            get 
+            {
+                return base.RawControl as IWebElement;
+            } 
+        }
 
         public WebControl(WebContext context)
             : base(context, Technology.Web)
@@ -24,73 +30,165 @@ namespace AFrame.Web.Controls
         #region IWebElement
         public void Clear()
         {
-            this.RawControl.Clear();
+            this.RetryIfStaleElementReferenceException<object>(() =>
+            {
+                this.RawControl.Clear();
+                return null;
+            });
         }
 
         public void Click()
         {
-            this.RawControl.Click();
+            this.RetryIfStaleElementReferenceException<object>(() =>
+            {
+                this.RawControl.Click();
+                return null;
+            });
         }
 
         public bool Displayed
         {
-            get { return this.RawControl.Displayed; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<bool>(() =>
+                {
+                    return this.RawControl.Displayed;
+                });
+            }
         }
 
         public bool Enabled
         {
-            get { return this.RawControl.Enabled; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<bool>(() =>
+                {
+                    return this.RawControl.Enabled;
+                });
+            }
         }
 
         public string GetAttribute(string attributeName)
         {
-            return this.RawControl.GetAttribute(attributeName);
+            return this.RetryIfStaleElementReferenceException<string>(() =>
+            {
+                return this.RawControl.GetAttribute(attributeName);
+            });
         }
 
         public string GetCssValue(string propertyName)
         {
-            return this.RawControl.GetCssValue(propertyName);
+            return this.RetryIfStaleElementReferenceException<string>(() =>
+            {
+                return this.RawControl.GetCssValue(propertyName);
+            });
         }
 
         public System.Drawing.Point Location
         {
-            get { return this.RawControl.Location; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<System.Drawing.Point>(() =>
+                {
+                    return this.RawControl.Location;
+                });
+            }
         }
 
         public bool Selected
         {
-            get { return this.RawControl.Selected; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<bool>(() =>
+                {
+                    return this.RawControl.Selected;
+                });
+            }
         }
 
         public void SendKeys(string text)
         {
-            this.RawControl.SendKeys(text);
+            this.RetryIfStaleElementReferenceException<object>(() =>
+            {
+                this.RawControl.SendKeys(text);
+                return null;
+            });
         }
 
         public System.Drawing.Size Size
         {
-            get { return this.RawControl.Size; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<System.Drawing.Size>(() =>
+                {
+                    return this.RawControl.Size;
+                });
+            }
         }
 
         public void Submit()
         {
-            this.RawControl.Submit();
+            this.RetryIfStaleElementReferenceException<object>(() =>
+            {
+                this.RawControl.Submit();
+                return null;
+            });
         }
 
         public string TagName
         {
-            get { return this.RawControl.TagName; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<string>(() =>
+                {
+                    return this.RawControl.TagName; 
+                });
+            }
         }
 
         public string Text
         {
-            get { return this.RawControl.Text; }
+            get 
+            {
+                return this.RetryIfStaleElementReferenceException<string>(() =>
+                {
+                    return this.RawControl.Text;
+                });
+            }
         }
         #endregion
 
+        public TReturn RetryIfStaleElementReferenceException<TReturn>(Func<TReturn> function, int noOfTimesToRetry = 1)
+        {
+            var attempted = 0;
+            while (true)
+            {
+                try
+                {
+                    attempted++;
+                    return function.Invoke();
+                }
+                catch (StaleElementReferenceException)
+                {
+                    if (attempted > noOfTimesToRetry)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Swallowed StaleElementReferenceException. Times attempted: {0}", attempted);
+                    }
+                }
+            }
+        }
+
         public override void Highlight()
         {
-            this.ExecuteScript("$(arguments[0]).stop().css('outline', '50px solid rgba(255, 0, 0, .7)').animate({ 'outline-width': '1px' }, 50);", this.RawControl);
+            this.RetryIfStaleElementReferenceException<object>(() =>
+            {
+                this.ExecuteScript("$(arguments[0]).stop().css('outline', '50px solid rgba(255, 0, 0, .7)').animate({ 'outline-width': '1px' }, 50);", this.RawControl);
+                return null;
+            });
         }
 
         public object ExecuteScript(string script, params object[] args)
@@ -168,8 +266,6 @@ namespace AFrame.Web.Controls
                 new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
             });
         }
-
-
 
         public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {

@@ -24,6 +24,8 @@ namespace AFrame.Web.Tests.PageObjects
 
         public IEnumerable<Race> Races { get { return this.CreateControls<Race>(".race"); } }
 
+        public StaleReference StaleReference { get { return this.CreateControl<StaleReference>("#highlight-stale-reference"); } }
+
         public HomePage(WebContext context)
             : base(context)
         {

@@ -65,6 +65,17 @@
         <div class="find-2">Find or 2</div>
     </div>
 
+    <div id="highlight-stale-reference">
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+    </div>
+
     <iframe id="testiframe" src="iframe.html" name="testiframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" height="100" width="200">
     
         <!--iframe.html gets injected here-->
@@ -88,6 +99,12 @@
                 $("#find-or").html("<div class='find-2'>Find or 2</div>");
 
             }, 10000);
+
+            setTimeout(function () {
+                //Stale references stuff
+                $("#highlight-stale-reference .stale-ref").remove();
+                $("#highlight-stale-reference").html("<span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span>");
+            }, 1000);
         });
     </script>
 </body>

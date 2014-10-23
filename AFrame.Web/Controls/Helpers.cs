@@ -125,6 +125,5 @@ namespace AFrame.Web.Controls
             var elements = (IEnumerable<object>)context.ExecuteScript(@"return $(arguments[0]).get();", jquerySelector);
             return elements.Cast<IWebElement>();
         }
-
     }
 }

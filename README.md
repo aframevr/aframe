@@ -2,6 +2,9 @@
 
 Changelog
 ==========================================================================
+*0.5.4*
+- Fix for Selenium StaleElementReferenceException. Will retry once if caught.
+
 *0.5.0*
 - Added 'AlwaysSearch' for all controls or just the individual ones. Should fix stale control issues.  
 

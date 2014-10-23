@@ -14,8 +14,7 @@ namespace AFrame.Core
 
         public SearchPropertyStack SearchProperties { get { return this.Context.SearchPropertyStack; } }
 
-        private bool _highlighting = false;
-
+        private volatile bool _isHightlighting;
 
         #region RawControl
         private object _rawControl;
@@ -35,8 +34,8 @@ namespace AFrame.Core
                  * 
                  */
 
-                var alwaysSearch = this.SearchProperties.First().Any(x=> x.Name == Control.SearchNames.AlwaysSearch);
-                if (this._rawControl == null || (this._highlighting == false && (Playback.AlwaysSearch || alwaysSearch)))
+                var alwaysSearch = this.SearchProperties.Last().Any(x => x.Name == Control.SearchNames.AlwaysSearch);
+                if (this._rawControl == null || (this._isHightlighting == false && (Playback.AlwaysSearch || alwaysSearch)))
                 {
                     this.Find();
                 }
@@ -119,12 +118,12 @@ namespace AFrame.Core
             {
                 try
                 {
-                    this._highlighting = true;
+                    this._isHightlighting = true;
                     this.Highlight();
                 }
                 finally
                 {
-                    this._highlighting = false;
+                    this._isHightlighting = false;
                 }
             }
         }

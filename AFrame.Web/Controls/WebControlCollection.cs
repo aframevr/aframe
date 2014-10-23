@@ -30,10 +30,12 @@ namespace AFrame.Web.Controls
                 {
                     var indexedSelector = string.Format(strToFormat, i);
 
-                    var searchParameters = new List<SearchProperty>
-                    {
-                        new SearchProperty(WebControl.SearchNames.JQuerySelector, indexedSelector),
-                    };
+                    //Add all search parameters bar the jquery selector.
+                    var searchParameters = this.Context.SearchPropertyStack.Last().Where(x => x.Name != WebControl.SearchNames.JQuerySelector).ToList();
+                   
+                    //Add the new indexed jquery selector.
+                    searchParameters.Add(new SearchProperty(WebControl.SearchNames.JQuerySelector, indexedSelector));
+                    
                     allElements.Add(this.CreateControlItem<T>(searchParameters));
                 }
 	        }
