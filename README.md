@@ -1,5 +1,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/2ti8tnlabd7782fg/branch/master)](https://ci.appveyor.com/project/Thwaitesy/aframe/branch/master)
 
+Documentation
+==========================================================================
+[Please view the website (https://aframe.github.io)](https://aframe.github.io)
+
 Changelog
 ==========================================================================
 *0.5.4*
