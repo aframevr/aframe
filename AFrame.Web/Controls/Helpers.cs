@@ -25,30 +25,47 @@ namespace AFrame.Web.Controls
              * 
             */
 
-            var regex = @"\[iframe=.[\w\-]*.\]";
+            var regex = @"\[iframe=.*]";
 
             var iFrames = Regex.Matches(jquery, regex, RegexOptions.IgnoreCase);
             var jQueries = Regex.Split(jquery, regex, RegexOptions.IgnoreCase);
             for (int i = 0; i < jQueries.Count(); i++)
             {
                 var iFrame = (iFrames.Count == i) ? "" : iFrames[i].Value;
-                var iFrameName = iFrame;
-                var stuffToStrip = new string[] { @"[", @"]", @"'", @"iframe=" };
-                foreach (var stuff in stuffToStrip)
-                {
-                    iFrameName = Regex.Replace(iFrameName, Regex.Escape(stuff), "", RegexOptions.IgnoreCase);
-                }
+                var jQuerySelector = iFrame;
+
+                var stuffToStrip = new string[] { @"[iframe='" };
+
+                //Start - Strip the [iframe= from the start.
+                jQuerySelector = Regex.Replace(jQuerySelector, Regex.Escape("[iframe="), "", RegexOptions.IgnoreCase);
+
+                //End - Remove the ] on the end.
+                if (jQuerySelector.Length > 1)
+                    jQuerySelector = jQuerySelector.Remove(jQuerySelector.Length - 1, 1);
+
+                //Remove the start and end quotes.
+                if (jQuerySelector.StartsWith("'")) //Single Quotes
+                    jQuerySelector = jQuerySelector.Substring(1, jQuerySelector.Length - 1);
+
+                if (jQuerySelector.StartsWith("\"")) //Double Quotes
+                    jQuerySelector = jQuerySelector.Substring(1, jQuerySelector.Length - 1);
+
+                if(jQuerySelector.EndsWith("'")) //Single Quotes
+                    jQuerySelector = jQuerySelector.Remove(jQuerySelector.Length - 1, 1);
+
+                if (jQuerySelector.EndsWith("\"")) //Double Quotes
+                    jQuerySelector = jQuerySelector.Remove(jQuerySelector.Length - 1, 1);
 
                 var jQuery = jQueries[i];
 
                 //Don't add a iFrame when both are empty.
-                if (string.IsNullOrEmpty(iFrameName) && string.IsNullOrEmpty(jQuery))
+                if (string.IsNullOrEmpty(jQuerySelector) && string.IsNullOrEmpty(jQuery))
                 {
                     continue;
                 }
                 else
                 {
-                    list.Add(new iFrameData { iFrameName = iFrameName, jQuery = jQuery });
+                    list.Add(new iFrameData { jQuerySelector = jQuerySelector, jQuery = jQuery });
                 }
             }
 
@@ -57,7 +74,7 @@ namespace AFrame.Web.Controls
 
         public class iFrameData
         {
-            public string iFrameName { get; set; }
+            public string jQuerySelector { get; set; }
 
             public string jQuery { get; set; }
         }
@@ -108,11 +125,17 @@ namespace AFrame.Web.Controls
                 var frames = Helpers.ExtractiFrameData(jquerySelector);
                 foreach (var frame in frames)
                 {
-                    if (!string.IsNullOrEmpty(frame.iFrameName))
+                    if (!string.IsNullOrEmpty(frame.jQuerySelector))
                     {
+                        //Find the frame element.
+                        var iFrameElement = Helpers.JQueryFindElements(context, frame.jQuerySelector).FirstOrDefault();
+
+                        if (iFrameElement == null)
+                            throw new NotFoundException("iframe could not be found given the following jquery selector: " + frame.jQuerySelector);
+
                         //Switch to the new frame
-                        context.Driver.SwitchTo().Frame(frame.iFrameName);
-                        Debug.WriteLine("JQueryFind: SwitchToFrame: {0}", (object)frame.iFrameName);
+                        context.Driver.SwitchTo().Frame(iFrameElement);
+                        Debug.WriteLine("JQueryFind: SwitchToFrame: {0}", (object)frame.jQuerySelector);
                     }
 
                     //Because we are jumping frames we don't care about the jQuery in between them.. Only the last one.

@@ -13,7 +13,7 @@ namespace AFrame.Web.Tests.Features.iFrames
         {
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
-            var tb = homePage.CreateControl<WebControl>("[iframe='testiframe'] #inner-frame-textbox");
+            var tb = homePage.CreateControl<WebControl>("[iframe='#testiframe'] #inner-frame-textbox");
 
             Assert.AreEqual("text box in iframe", tb.GetAttribute("value"));
         }
@@ -27,7 +27,7 @@ namespace AFrame.Web.Tests.Features.iFrames
             Assert.AreEqual("Always Here", homePage.CreateControl<WebControl>(".always").Text);
 
             //iFrame Find
-            Assert.AreEqual("text box in iframe", homePage.CreateControl<WebControl>("[iframe='testiframe'] #inner-frame-textbox").GetAttribute("value"));
+            Assert.AreEqual("text box in iframe", homePage.CreateControl<WebControl>("[iframe='#testiframe'] #inner-frame-textbox").GetAttribute("value"));
         }
 
         [TestMethod]
@@ -36,7 +36,7 @@ namespace AFrame.Web.Tests.Features.iFrames
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
             //iFrame Find
-            Assert.AreEqual("text box in iframe", homePage.CreateControl<WebControl>("[iframe='testiframe'] #inner-frame-textbox").GetAttribute("value"));
+            Assert.AreEqual("text box in iframe", homePage.CreateControl<WebControl>("[iframe='#testiframe'] #inner-frame-textbox").GetAttribute("value"));
 
             //Second Find
             Assert.AreEqual("Always Here", homePage.CreateControl<WebControl>(".always").Text);

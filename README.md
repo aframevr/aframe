@@ -6,6 +6,9 @@ Documentation
 
 Changelog
 ==========================================================================
+*0.6.0*
+- [BREAKING CHANGE] Updated iframe functionality to use jQuery selectors instead of just names and id's. See test projects for examples.
+
 *0.5.4*
 - Fix for Selenium StaleElementReferenceException. Will retry once if caught.
 
@@ -49,4 +52,3 @@ Contributors
 Licence
 ==========================================================================
 See [LICENCE](https://github.com/Thwaitesy/AFrame/blob/master/LICENCE)
-
