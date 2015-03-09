@@ -51,6 +51,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DesktopContextTests.cs" />
     <Compile Include="WinForms\App\WinFormsApp.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="WinForms\Features\FindTests.cs" />
