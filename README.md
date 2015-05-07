@@ -6,6 +6,9 @@ Documentation
 
 Changelog
 ==========================================================================
+*0.6.4*
+- (Web) Added support to turn off jQuery check on each request (When using saucelabs/browserstack it can be an additional overhead)
+
 *0.6.0*
 - [BREAKING CHANGE] Updated iframe functionality to use jQuery selectors instead of just names and id's. See test projects for examples.
 
