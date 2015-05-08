@@ -20,7 +20,7 @@ namespace AFrame.Web
         /// 
         /// Default: true
         /// </summary>
-        public bool CheckjQueryExists { get; set; }
+        public static bool CheckjQueryExists = true;
 
         public WebContext(IWebDriver driver)
             : this(driver, null, null)
@@ -30,7 +30,6 @@ namespace AFrame.Web
             : base(parentContext, searchParameters)
         {
             this.Driver = driver;
-            this.CheckjQueryExists = true;
         }
 
         public override void Dispose()
@@ -54,7 +53,7 @@ namespace AFrame.Web
         {
             var javaScriptExecutor = (IJavaScriptExecutor)this.Driver;
 
-            if(this.CheckjQueryExists)
+            if(CheckjQueryExists)
             {
                 var timeout = TimeSpan.FromSeconds(60);
                 var timeoutThreshold = DateTime.UtcNow.Add(timeout);

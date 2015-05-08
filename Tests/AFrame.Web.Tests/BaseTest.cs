@@ -19,7 +19,10 @@ namespace AFrame.Web.Tests
             get
             {
                 if(this._context == null)
+                {
                     this._context = new WebContext(new FirefoxDriver());
+                    WebContext.CheckjQueryExists = true;
+                }
 
                 return this._context;
             }
