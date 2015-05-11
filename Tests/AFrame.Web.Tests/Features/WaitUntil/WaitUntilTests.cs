@@ -14,7 +14,7 @@ namespace AFrame.Web.Tests.Features.WaitUntil
             var ctrl = homePage.InsertedStuff.IGotAdded;
             var stoppy = Stopwatch.StartNew();
             Assert.IsTrue(ctrl.WaitUntilNotExists());
-            Assert.IsTrue(stoppy.ElapsedMilliseconds < 500, "Waited " + stoppy.Elapsed);
+            Assert.IsTrue(stoppy.ElapsedMilliseconds < 1000, "Waited " + stoppy.Elapsed);
         }
 
         [TestMethod]
@@ -24,8 +24,8 @@ namespace AFrame.Web.Tests.Features.WaitUntil
             var ctrl = homePage.InsertedStuff.IGotAdded;
             var stoppy = Stopwatch.StartNew();
             Assert.IsTrue(ctrl.WaitUntilExists());
-            Assert.IsTrue(stoppy.ElapsedMilliseconds > 9000);
-            Assert.IsTrue(stoppy.ElapsedMilliseconds < 11000);
+            Assert.IsTrue(stoppy.ElapsedMilliseconds > 8000);
+            Assert.IsTrue(stoppy.ElapsedMilliseconds < 12000);
         }
 
         [TestMethod]
@@ -35,8 +35,8 @@ namespace AFrame.Web.Tests.Features.WaitUntil
             var ctrl = homePage.InsertedStuff.IGotAdded;
             var stoppy = Stopwatch.StartNew();
             Assert.IsTrue(ctrl.WaitUntil(x => x.Text == "this got added via javascript after 10 seconds"));
-            Assert.IsTrue(stoppy.ElapsedMilliseconds > 9000);
-            Assert.IsTrue(stoppy.ElapsedMilliseconds < 11000);
+            Assert.IsTrue(stoppy.ElapsedMilliseconds > 8000);
+            Assert.IsTrue(stoppy.ElapsedMilliseconds < 12000);
         }
     }
 }

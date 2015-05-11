@@ -16,16 +16,25 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
         [TestMethod]
         public void HightlightStaleReferenceException()
         {
+            WebContext.NumberOfTimesToRetryForStaleElementExceptions = 0;
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
-            //Get the control.
-            var textCtrls = homePage.StaleReference.StaleTexts;
-            var text1 = textCtrls.Last().Text;
-
             //Verify it throws a stale exception.
-            Action action = () => {
-                var x = homePage.StaleReference.CreateControl(".stale-ref:first-child");
-                var y = x.Text;
+            Action action = () =>
+            {
+                //Get the control.
+                var textCtrls = homePage.StaleReference.StaleTexts;
+
+                var text1 = textCtrls.Last().Text;
+
+                var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
+                var text2 = textCtrl.Text;
+
+                //Wait till it changes
+                Thread.Sleep(2000);
+            
+                var x = textCtrls.Last().Text;
+                var x2 = textCtrl.Text;
             };
 
             ExceptionAssert.Throws<OpenQA.Selenium.StaleElementReferenceException>(action); 
@@ -64,16 +73,18 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
         [TestMethod]
         public void StaleReferenceEdgeCasesThrowsStaleReference()
         {
+            WebContext.NumberOfTimesToRetryForStaleElementExceptions = 0;
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
-
-            //Get the control.
-            var textCtrls = homePage.CreateControls(".stale-ref").ToList();
-            var text1 = textCtrls.Last().Text;
-
-            var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
 
             Action action = () =>
             {
+                //Get the control.
+                var textCtrls = homePage.CreateControls(".stale-ref").ToList();
+                var text1 = textCtrls.Last().Text;
+
+                var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
+                var text2 = textCtrl.Text;
+
                 for (int i = 0; i < 50; i++)
                 {
                     //Verify it doesn't throw a stale exception.

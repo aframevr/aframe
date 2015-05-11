@@ -22,6 +22,13 @@ namespace AFrame.Web
         /// </summary>
         public static bool CheckjQueryExists = true;
 
+        /// <summary>
+        /// Number of times the action will be tried and the stale element exception is swallowed.
+        /// 
+        /// Default: 1
+        /// </summary>
+        public static int NumberOfTimesToRetryForStaleElementExceptions = 1;
+
         public WebContext(IWebDriver driver)
             : this(driver, null, null)
         { }

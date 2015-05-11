@@ -158,7 +158,7 @@ namespace AFrame.Web.Controls
         }
         #endregion
 
-        public TReturn RetryIfStaleElementReferenceException<TReturn>(Func<TReturn> function, int noOfTimesToRetry = 1)
+        public TReturn RetryIfStaleElementReferenceException<TReturn>(Func<TReturn> function)
         {
             var attempted = 0;
             while (true)
@@ -170,7 +170,7 @@ namespace AFrame.Web.Controls
                 }
                 catch (StaleElementReferenceException)
                 {
-                    if (attempted > noOfTimesToRetry)
+                    if (attempted > WebContext.NumberOfTimesToRetryForStaleElementExceptions)
                     {
                         throw;
                     }
