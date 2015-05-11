@@ -16,7 +16,6 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
         [TestMethod]
         public void HightlightStaleReferenceException()
         {
-            WebContext.NumberOfTimesToRetryForStaleElementExceptions = 0;
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
             //Verify it throws a stale exception.
@@ -35,6 +34,9 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
             
                 var x = textCtrls.Last().Text;
                 var x2 = textCtrl.Text;
+
+                var x3 = textCtrls.Last().Text;
+                var x4 = textCtrl.Text;
             };
 
             ExceptionAssert.Throws<OpenQA.Selenium.StaleElementReferenceException>(action); 
@@ -73,7 +75,6 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
         [TestMethod]
         public void StaleReferenceEdgeCasesThrowsStaleReference()
         {
-            WebContext.NumberOfTimesToRetryForStaleElementExceptions = 0;
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
             Action action = () =>
@@ -84,6 +85,9 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
 
                 var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
                 var text2 = textCtrl.Text;
+
+                var x = homePage.StaleReference.CreateControl(".stale-ref:first-child");
+                var y = x.Text;
 
                 for (int i = 0; i < 50; i++)
                 {
