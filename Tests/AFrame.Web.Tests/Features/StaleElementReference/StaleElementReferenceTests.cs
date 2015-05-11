@@ -20,19 +20,12 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
 
             //Get the control.
             var textCtrls = homePage.StaleReference.StaleTexts;
-
             var text1 = textCtrls.Last().Text;
-
-            var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
-            var text2 = textCtrl.Text;
-
-            //Wait till it changes
-            Thread.Sleep(2000);
 
             //Verify it throws a stale exception.
             Action action = () => {
-                var x = textCtrls.Last().Text;
-                var x2 = textCtrl.Text;
+                var x = homePage.StaleReference.CreateControl(".stale-ref:first-child");
+                var y = x.Text;
             };
 
             ExceptionAssert.Throws<OpenQA.Selenium.StaleElementReferenceException>(action); 
@@ -78,7 +71,6 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
             var text1 = textCtrls.Last().Text;
 
             var textCtrl = homePage.StaleReference.CreateControl(".stale-ref:first-child");
-            var text2 = textCtrl.Text;
 
             Action action = () =>
             {
