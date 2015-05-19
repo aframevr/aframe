@@ -23,7 +23,7 @@
         <tags>automation framework uiautomation selenium codedui appium browser mobile web ui desktop gui phone webdriver unittest test testing bdd acceptance tdd</tags>
         <dependencies>
           <dependency id="AFrame.Core" version="$version$" />
-          <dependency id="Selenium.Support" version="2.45.0" />
+          <dependency id="Selenium.Support" version="2.44.0" />
         </dependencies>
     </metadata>
     <files>
