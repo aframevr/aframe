@@ -22,7 +22,14 @@ namespace AFrame.Desktop.Controls
                 uiTestControl.TechnologyName = desktopControl._technologyName;
                 foreach (var searchProperty in searchProperties)
                 {
-                    uiTestControl.SearchProperties.Add(searchProperty.Name, searchProperty.Value);
+                    if(searchProperty.SearchOperator == Core.SearchOperator.EqualTo)
+                    {
+                        uiTestControl.SearchProperties.Add(searchProperty.Name, searchProperty.Value, PropertyExpressionOperator.EqualTo);
+                    }
+                    else
+                    {
+                        uiTestControl.SearchProperties.Add(searchProperty.Name, searchProperty.Value, PropertyExpressionOperator.Contains);
+                    }
                 }
             }
 
