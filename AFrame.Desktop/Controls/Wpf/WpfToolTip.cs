@@ -9,8 +9,8 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfToolTip : WpfControl
     {
-        public WpfToolTip(IContext context)
-            : base(context)
+        public WpfToolTip(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ToolTip");
         }

@@ -32,8 +32,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinRadioButton(IContext context)
-            : base(context)
+        public WinRadioButton(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "RadioButton");
         }

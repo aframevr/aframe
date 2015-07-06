@@ -67,8 +67,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfSlider(IContext context)
-            : base(context)
+        public WpfSlider(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Slider");
         }

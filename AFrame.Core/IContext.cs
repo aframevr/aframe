@@ -7,13 +7,5 @@ using System.Threading.Tasks;
 namespace AFrame.Core
 {
     public interface IContext : IDisposable
-    {
-        SearchPropertyStack SearchPropertyStack { get; }
-
-        IContext ParentContext { get; }
-
-        T As<T>() where T : Control;
-
-        Control As();
-    }
+    { }
 }

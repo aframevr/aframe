@@ -9,8 +9,8 @@ namespace AFrame.Web.Tests.PageObjects
 {
     public class Item : WebControl
     {
-        public Item(WebContext context)
-            : base(context)
+        public Item(WebContext context, WebControl parent)
+            : base(context, parent)
         { }
     }
 }

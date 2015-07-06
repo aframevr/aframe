@@ -19,8 +19,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfImage(IContext context)
-            : base(context)
+        public WpfImage(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Image");
         }

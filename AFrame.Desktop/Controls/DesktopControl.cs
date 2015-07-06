@@ -13,16 +13,21 @@ namespace AFrame.Desktop.Controls
     public abstract class DesktopControl : Control
     {
         public new DesktopContext Context { get { return base.Context as DesktopContext; } }
+        public new DesktopControl Parent { get { return base.Parent as DesktopControl; } }
 
         public new UITestControl RawControl { get { return base.RawControl as UITestControl; } }
 
         internal string _technologyName;
 
-        public DesktopControl(IContext context, string technologyName)
-            : base(context, Technology.Desktop)
+        public DesktopControl(DesktopContext context, DesktopControl parent, string technologyName)
+            : this(context, parent, new SearchPropertyCollection())
         {
             this._technologyName = technologyName;
         }
+
+        public DesktopControl(DesktopContext context, DesktopControl parent, SearchPropertyCollection searchProperties)
+            : base(context, Technology.Desktop, parent, searchProperties)
+        { }
 
         public override void Highlight()
         {
@@ -229,13 +234,9 @@ namespace AFrame.Desktop.Controls
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : DesktopControl
         {
-            //Each time we create a control, we add its parent.
-            var searchPropertyStack = new SearchPropertyStack();
-            searchPropertyStack.Add(this.Context.SearchPropertyStack); //Parent
-            searchPropertyStack.Add(searchProperties);
-
-            var context = new DesktopContext(this.Context, searchPropertyStack);
-            return (T)Activator.CreateInstance(typeof(T), context);
+            var ctrl = (T)Activator.CreateInstance(typeof(T), this.Context, this);
+            ctrl.SearchProperties.AddRange(searchProperties);
+            return ctrl;
         } 
         #endregion
 

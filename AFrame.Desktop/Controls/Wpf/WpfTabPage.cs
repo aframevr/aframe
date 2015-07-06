@@ -19,8 +19,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfTabPage(IContext context)
-            : base(context)
+        public WpfTabPage(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TabPage");
         }

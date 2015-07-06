@@ -60,8 +60,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinControl(IContext context)
-            : base(context, "MSAA")
+        public WinControl(DesktopContext context, DesktopControl parent)
+            : base(context, parent, "MSAA")
         { }
 
         #region Create Control

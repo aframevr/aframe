@@ -26,8 +26,8 @@ namespace AFrame.Web.Tests.PageObjects
 
         public StaleReference StaleReference { get { return this.CreateControl<StaleReference>("#highlight-stale-reference"); } }
 
-        public HomePage(WebContext context)
-            : base(context)
+        public HomePage(WebContext context, WebControl parent)
+            : base(context, parent)
         {
             this.ContentChange = this.CreateControl<WebControl>(".content-change");
         }

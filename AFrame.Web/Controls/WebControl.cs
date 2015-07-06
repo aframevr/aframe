@@ -11,9 +11,10 @@ namespace AFrame.Web.Controls
 {
     public class WebControl : Control
     {
-        public string AbsoluteSelector { get { return Helpers.ToAbsoluteSelector(this.SearchProperties); } }
+        public string AbsoluteSelector { get { return Helpers.ToAbsoluteSelector(this); } }
 
         public new WebContext Context { get { return base.Context as WebContext; } }
+        public new WebControl Parent { get { return base.Parent as WebControl; } }
 
         public new IWebElement RawControl 
         { 
@@ -23,8 +24,12 @@ namespace AFrame.Web.Controls
             } 
         }
 
-        public WebControl(WebContext context)
-            : base(context, Technology.Web)
+        public WebControl(WebContext context, WebControl parent)
+            : this(context, parent, new SearchPropertyCollection())
+        { }
+
+        public WebControl(WebContext context, WebControl parent, SearchPropertyCollection searchProperties)
+            : base(context, Technology.Web, parent, searchProperties)
         { }
 
         #region IWebElement
@@ -243,13 +248,9 @@ namespace AFrame.Web.Controls
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
-            //Each time we create a control, we its parents properties.
-            var searchPropertyStack = new SearchPropertyStack();
-            searchPropertyStack.Add(this.Context.SearchPropertyStack); //Parent
-            searchPropertyStack.Add(searchProperties);
-
-            var context = new WebContext(this.Context.Driver, this.Context, searchPropertyStack);
-            return (T)Activator.CreateInstance(typeof(T), context);
+            var ctrl = (T)Activator.CreateInstance(typeof(T), this.Context, this);
+            ctrl.SearchProperties.AddRange(searchProperties);
+            return ctrl;
         }
         #endregion
 
@@ -261,22 +262,15 @@ namespace AFrame.Web.Controls
 
         public IEnumerable<T> CreateControls<T>(string jQuerySelector) where T : WebControl
         {
-            return this.CreateControls<T>(new List<SearchProperty> 
+            return this.CreateControls<T>(new SearchPropertyCollection(new List<SearchProperty> 
             { 
                 new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
-            });
+            }));
         }
 
-        public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
+        public new IEnumerable<T> CreateControls<T>(SearchPropertyCollection searchProperties) where T : WebControl
         {
-            //Each time we create a control, we add its parent.
-            var searchPropertiesStack = new SearchPropertyStack();
-            searchPropertiesStack.Add(this.Context.SearchPropertyStack); //Parent
-            searchPropertiesStack.Add(searchProperties);
-
-            //Each time we create a control, we add the selector of its parent.
-            var context = new WebContext(this.Context.Driver, this.Context.ParentContext /* Skip to parent */, searchPropertiesStack);
-            return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), context, searchProperties)).AsEnumerable();
+            return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), this.Context, this, searchProperties)).AsEnumerable();
         }
         #endregion
 

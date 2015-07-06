@@ -13,8 +13,8 @@ namespace AFrame.Desktop.Controls.Win
 
         #endregion
 
-        public WinClient(IContext context)
-            : base(context)
+        public WinClient(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Client");
         }

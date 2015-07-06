@@ -13,8 +13,8 @@ namespace Web.Sample.NuGet.Modules.Home
         private WebControl SearchBox { get { return this.CreateControl("#searchBoxInput"); } }
         private WebControl SearchBtn { get { return this.CreateControl("#searchBoxSubmit"); } }
 
-        public HomePage(WebContext webContext)
-            : base(webContext)
+        public HomePage(WebContext context, WebControl parent)
+            : base(context, parent)
         { }
 
         public void SearchFor(string text)

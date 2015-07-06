@@ -9,8 +9,8 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfCustom : WpfControl
     {
-        public WpfCustom(IContext context)
-            : base(context)
+        public WpfCustom(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Custom");
         }

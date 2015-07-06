@@ -75,10 +75,10 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfControl(IContext context)
-            : base(context, "UIA")
+        public WpfControl(DesktopContext context, DesktopControl parent)
+            : base(context, parent, "UIA")
         {
-            this.SearchProperties.Add(PropertyNames.FrameworkId, "WPF");
+            this.SearchProperties.Add(new SearchProperty(PropertyNames.FrameworkId, "WPF"));
         }
 
         #region Create Control

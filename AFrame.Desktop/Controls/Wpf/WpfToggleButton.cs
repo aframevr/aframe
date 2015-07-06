@@ -43,8 +43,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfToggleButton(IContext context)
-            : base(context)
+        public WpfToggleButton(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ToggleButton");
         }

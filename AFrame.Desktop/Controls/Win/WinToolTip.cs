@@ -10,10 +10,10 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinToolTip : WinControl
     {
-        public WinToolTip(IContext context)
-            : base(context)
+        public WinToolTip(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "ToolTip");
+            this.SearchProperties.Add(new SearchProperty(WinControl.PropertyNames.ControlType, "ToolTip"));
         }
 
         public new class PropertyNames : WinControl.PropertyNames

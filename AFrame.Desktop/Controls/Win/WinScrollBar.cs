@@ -40,8 +40,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinScrollBar(IContext context)
-            : base(context)
+        public WinScrollBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "ScrollBar");
         }

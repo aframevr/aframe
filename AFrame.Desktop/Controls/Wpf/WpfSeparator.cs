@@ -9,8 +9,8 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfSeparator : WpfControl
     {
-        public WpfSeparator(IContext context)
-            : base(context)
+        public WpfSeparator(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Separator");
         }

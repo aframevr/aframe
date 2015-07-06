@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public WebControl InnerControl { get { return this.CreateControl<WebControl>(".find-1, .find-2"); } }
 
-        public FindOr(WebContext context)
-            : base(context)
+        public FindOr(WebContext context, WebControl parent)
+            : base(context, parent)
         { }
     }
 }

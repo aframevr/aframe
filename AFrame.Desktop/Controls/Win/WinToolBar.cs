@@ -20,8 +20,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinToolBar(IContext context)
-            : base(context)
+        public WinToolBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "ToolBar");
         }

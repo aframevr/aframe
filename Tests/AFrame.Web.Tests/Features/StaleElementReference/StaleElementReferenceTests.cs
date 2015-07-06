@@ -135,8 +135,8 @@ namespace AFrame.Web.Tests.Features.StaleElementReference
             var homePage = this.Context.NavigateTo<HomePage>(this.TestAppUrl);
 
             //Get the control.
-            var textCtrls = homePage.CreateControls<WebControl>(new [] { new SearchProperty(WebControl.SearchNames.JQuerySelector, ".stale-ref"),
-                                                                         new SearchProperty(WebControl.SearchNames.AlwaysSearch, "true") });
+            var textCtrls = homePage.CreateControls<WebControl>(new SearchPropertyCollection(new [] { new SearchProperty(WebControl.SearchNames.JQuerySelector, ".stale-ref"),
+                                                                                                      new SearchProperty(WebControl.SearchNames.AlwaysSearch, "true") }));
             var text1 = textCtrls.Last().Text;
 
             var textCtrl = homePage.StaleReference.CreateControl<WebControl>(WebControl.SearchNames.JQuerySelector, ".stale-ref:first-child",

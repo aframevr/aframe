@@ -16,11 +16,6 @@ namespace AFrame.Desktop
         public ApplicationUnderTest ApplicationUnderTest { get; private set; }
 
         public DesktopContext()
-            : this(null, null)
-        { }
-
-        internal DesktopContext(IContext parentContext, SearchPropertyStack searchParameters)
-            : base(parentContext, searchParameters)
         { }
 
         public override void Dispose()
@@ -44,7 +39,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(startInfo);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public T Launch<T>(string fileName) where T : DesktopControl
@@ -62,7 +57,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName) where T : DesktopControl
@@ -80,7 +75,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName, string arguments) where T : DesktopControl
@@ -98,7 +93,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName, arguments);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName, string arguments, string userName, System.Security.SecureString password, string domain) where T : DesktopControl
@@ -116,7 +111,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName, arguments, userName, password, domain);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public T FromProcess<T>(Process processToWrap) where T : DesktopControl
@@ -134,7 +129,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.FromProcess(processToWrap);
 
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
     }

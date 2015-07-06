@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public IEnumerable<Item> Items { get { return this.CreateControls<Item>(".item"); } }
 
-        public Race(WebContext context)
-            : base(context)
+        public Race(WebContext context, WebControl parent)
+            : base(context, parent)
         { }
     }
 }

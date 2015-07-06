@@ -19,8 +19,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfTitleBar(IContext context)
-            : base(context)
+        public WpfTitleBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TitleBar");
         }

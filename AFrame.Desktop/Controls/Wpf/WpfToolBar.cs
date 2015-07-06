@@ -28,8 +28,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfToolBar(IContext context)
-            : base(context)
+        public WpfToolBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ToolBar");
         }

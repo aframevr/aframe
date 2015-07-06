@@ -46,9 +46,9 @@ namespace AFrame.Desktop.Controls.Wpf
             }
         }
         #endregion
-        
-        public WpfScrollBar(IContext context)
-            : base(context)
+
+        public WpfScrollBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ScrollBar");
         }

@@ -35,8 +35,8 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfProgressBar(IContext context)
-            : base(context)
+        public WpfProgressBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ProgressBar");
         }

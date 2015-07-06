@@ -11,8 +11,8 @@ namespace AFrame.Desktop.Controls.Win
     public class WinSeparator : WinControl
     {
 
-        public WinSeparator(IContext context)
-            : base(context)
+        public WinSeparator(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Separator");
         }

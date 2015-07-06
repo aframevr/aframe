@@ -30,11 +30,6 @@ namespace AFrame.Web
         public static int NumberOfTimesToRetryForStaleElementExceptions = 1;
 
         public WebContext(IWebDriver driver)
-            : this(driver, null, null)
-        { }
-
-        public WebContext(IWebDriver driver, IContext parentContext, SearchPropertyStack searchParameters)
-            : base(parentContext, searchParameters)
         {
             this.Driver = driver;
         }
@@ -48,7 +43,7 @@ namespace AFrame.Web
         {
             this.Driver.Url = url;
             this.Driver.Navigate();
-            return this.As<T>();
+            return (T)Activator.CreateInstance(typeof(T), this, null);
         }
 
         public WebControl NavigateTo(string url)

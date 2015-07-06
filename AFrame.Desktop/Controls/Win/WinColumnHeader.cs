@@ -9,10 +9,10 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinColumnHeader : WinControl
     {
-        public WinColumnHeader(IContext context)
-            : base(context)
+        public WinColumnHeader(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "ColumnHeader");
+            this.SearchProperties.Add(new SearchProperty(WinControl.PropertyNames.ControlType, "ColumnHeader"));
         }
 
         public new class PropertyNames : WinControl.PropertyNames

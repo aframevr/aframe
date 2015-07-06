@@ -12,7 +12,9 @@ namespace AFrame.Core
 
         public Technology Technology { get; private set; }
 
-        public SearchPropertyStack SearchProperties { get { return this.Context.SearchPropertyStack; } }
+        public Control Parent { get; private set; }
+
+        public SearchPropertyCollection SearchProperties { get; set; }
 
         private volatile bool _isHightlighting;
 
@@ -34,7 +36,7 @@ namespace AFrame.Core
                  * 
                  */
 
-                var alwaysSearch = this.SearchProperties.Last().Any(x => x.Name == Control.SearchNames.AlwaysSearch);
+                var alwaysSearch = this.SearchProperties.Any(x => x.Name == Control.SearchNames.AlwaysSearch);
                 if (this._rawControl == null || (this._isHightlighting == false && (Playback.AlwaysSearch || alwaysSearch)))
                 {
                     this.Find();
@@ -45,10 +47,12 @@ namespace AFrame.Core
         } 
         #endregion
 
-        public Control(IContext context, Technology technology)
+        public Control(IContext context, Technology technology, Control parent, SearchPropertyCollection searchProperties)
         {
             this.Context = context;
             this.Technology = technology;
+            this.Parent = parent;
+            this.SearchProperties = searchProperties;
         }
 
         public virtual void Highlight()
@@ -133,17 +137,17 @@ namespace AFrame.Core
             throw new NotImplementedException();
         }
 
-        public virtual T CreateControl<T>(IEnumerable<SearchProperty> searchParameters)
+        public virtual T CreateControl<T>(SearchPropertyCollection searchParameters) where T : Control
         {
             throw new NotImplementedException();
         }
 
-        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchParameters)
+        public virtual IEnumerable<T> CreateControls<T>(SearchPropertyCollection searchParameters) where T : Control
         {
             throw new NotImplementedException();
         }
 
-        protected virtual T CreateControlItem<T>(IEnumerable<SearchProperty> searchParameters)
+        protected virtual T CreateControlItem<T>(SearchPropertyCollection searchProperties) where T : Control
         {
             throw new NotImplementedException();
         }

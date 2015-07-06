@@ -111,8 +111,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinWindow(IContext context)
-            : base(context)
+        public WinWindow(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Window");
         }

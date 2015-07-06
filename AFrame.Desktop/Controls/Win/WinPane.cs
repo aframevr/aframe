@@ -11,8 +11,8 @@ namespace AFrame.Desktop.Controls.Win
     public class WinPane : WinControl
     {
 
-        public WinPane(IContext context)
-            : base(context)
+        public WinPane(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Pane");
         }

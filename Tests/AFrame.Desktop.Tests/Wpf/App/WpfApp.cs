@@ -1,4 +1,5 @@
 ﻿using AFrame.Core;
+using AFrame.Desktop.Controls;
 using AFrame.Desktop.Controls.Win;
 using AFrame.Desktop.Controls.Wpf;
 using System;
@@ -15,8 +16,8 @@ namespace AFrame.Desktop.Tests.Wpf.App
 
         public WpfText ClickLabel { get; private set; }
 
-        public WpfApp(IContext context)
-            : base(context)
+        public WpfApp(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.Name, "MainWindow");
             

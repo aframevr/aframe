@@ -20,8 +20,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinRowHeader(IContext context)
-            : base(context)
+        public WinRowHeader(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "RowHeader");
         }

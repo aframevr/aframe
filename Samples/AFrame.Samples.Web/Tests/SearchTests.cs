@@ -9,19 +9,19 @@ namespace Web.Sample.NuGet.Tests
     [TestClass]
     public class SearchTests : TestBase
     {
-        [TestMethod]
-        public void IsAFrameWebTheFirstSearchResult_PageObjects()
-        {
-            //Arrange
-            var homePage = this.WebContext.NavigateTo<HomePage>(UrlHelper.SiteUrl);
-            var packagesPage = this.WebContext.As<PackagesPage>();
+        //[TestMethod]
+        //public void IsAFrameWebTheFirstSearchResult_PageObjects()
+        //{
+        //    //Arrange
+        //    var homePage = this.WebContext.NavigateTo<HomePage>(UrlHelper.SiteUrl);
+        //    var packagesPage = this.WebContext.CreateControl<PackagesPage>();
 
-            //Act
-            homePage.SearchFor("AFrame.Web");
+        //    //Act
+        //    homePage.SearchFor("AFrame.Web");
 
-            //Assert
-            Assert.AreEqual("Web Automation Framework", packagesPage.Packages.First().Name);
-        }
+        //    //Assert
+        //    Assert.AreEqual("Web Automation Framework", packagesPage.Packages.First().Name);
+        //}
 
         [TestMethod]
         public void IsAFrameWebTheFirstSearchResult_QuickAndDirty()

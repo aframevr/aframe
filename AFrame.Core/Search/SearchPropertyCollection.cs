@@ -6,14 +6,27 @@ using System.Threading.Tasks;
 
 namespace AFrame.Core
 {
-    public class SearchPropertyStack : IEnumerable<IEnumerable<SearchProperty>>
+    public class SearchPropertyCollection : IEnumerable<SearchProperty>
     {
-        private List<IEnumerable<SearchProperty>> _searchProperties = new List<IEnumerable<SearchProperty>>();
+        private List<SearchProperty> _searchProperties = new List<SearchProperty>();
+
+        public SearchPropertyCollection()
+        { }
+
+        public SearchPropertyCollection(SearchProperty searchProperty)
+        {
+            this.Add(searchProperty);
+        }
+
+        public SearchPropertyCollection(IEnumerable<SearchProperty> searchProperties)
+        {
+            this.AddRange(searchProperties);
+        }
 
         public void Add(SearchProperty searchProperty)
         {
             if (searchProperty != null)
-                this.Add(new[] { searchProperty });
+                this._searchProperties.Add(searchProperty);
         }
 
         public void Add(params string[] nameValuePairs)
@@ -33,19 +46,13 @@ namespace AFrame.Core
             this.Add(new SearchProperty(name, value, SearchOperator.EqualTo));
         }
 
-        public void Add(IEnumerable<SearchProperty> searchProperties)
+        public void AddRange(IEnumerable<SearchProperty> searchProperties)
         {
-            if(searchProperties != null)
-                this._searchProperties.Add(searchProperties);
+            if (searchProperties != null)
+                this._searchProperties.AddRange(searchProperties);
         }
 
-        public void Add(SearchPropertyStack searchPropertyStack)
-        {
-            if (searchPropertyStack != null)
-                this._searchProperties.AddRange(searchPropertyStack);
-        }
-
-        public IEnumerator<IEnumerable<SearchProperty>> GetEnumerator()
+        public IEnumerator<SearchProperty> GetEnumerator()
         {
             return this._searchProperties.GetEnumerator();
         }

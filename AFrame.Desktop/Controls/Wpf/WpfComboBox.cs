@@ -102,8 +102,8 @@ namespace AFrame.Desktop.Controls.Wpf
         } 
         #endregion
 
-        public WpfComboBox(IContext context)
-            : base(context)
+        public WpfComboBox(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ComboBox");
         }

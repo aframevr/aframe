@@ -20,8 +20,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinMenuBar(IContext context)
-            : base(context)
+        public WinMenuBar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "MenuBar");
         }

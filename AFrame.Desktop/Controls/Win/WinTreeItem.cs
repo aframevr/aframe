@@ -60,8 +60,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinTreeItem(IContext context)
-            : base(context)
+        public WinTreeItem(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TreeItem");
         }

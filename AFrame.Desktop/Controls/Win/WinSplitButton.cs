@@ -10,11 +10,10 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinSplitButton : WinControl
     {
-
-        public WinSplitButton(IContext context)
-            : base(context)
+        public WinSplitButton(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
-            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "SplitButton");
+            this.SearchProperties.Add(new SearchProperty(WinControl.PropertyNames.ControlType, "SplitButton"));
         }
 
         public new class PropertyNames : WinControl.PropertyNames

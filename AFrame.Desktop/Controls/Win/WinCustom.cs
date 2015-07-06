@@ -9,8 +9,8 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinCustom : WinControl
     {
-        public WinCustom(IContext context)
-            : base(context)
+        public WinCustom(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Custom");
         }

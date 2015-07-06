@@ -79,12 +79,23 @@ namespace AFrame.Web.Controls
             public string jQuery { get; set; }
         }
 
-        public static string ToAbsoluteSelector(SearchPropertyStack searchPropertyStack)
+        public static string ToAbsoluteSelector(Control webControl)
         {
-            var absoluteSelector = "";
-            foreach (var searchProperties in searchPropertyStack)
+            //Create the control stack, reverse it, and walk backwards up it.
+            var controlStack = new List<Control>();
+            var control = webControl;
+            while (control != null)
             {
-                var jquerySelector = searchProperties.SingleOrDefault(x => x.Name.Equals(WebControl.SearchNames.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
+                controlStack.Add(control);
+                control = control.Parent;
+            }
+            controlStack.Reverse();
+
+            //From the parent, all the way down the stack, generate the jquery selector.
+            var absoluteSelector = "";
+            foreach (var ctrl in controlStack)
+	        {
+                var jquerySelector = ctrl.SearchProperties.SingleOrDefault(x => x.Name.Equals(WebControl.SearchNames.JQuerySelector, StringComparison.InvariantCultureIgnoreCase));
                 if (jquerySelector != null)
                 {
                     /* Comma (or) support

@@ -1,4 +1,5 @@
 ﻿using AFrame.Core;
+using AFrame.Desktop.Controls;
 using AFrame.Desktop.Controls.Win;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,14 @@ namespace AFrame.Desktop.Tests.WinForms.App
 {
     public class WinFormsApp : WinWindow
     {
-        public WinButton ClickButton { get; private set; }
+        public WinButton ClickButton { get { return this.CreateControl<WinWindow>(WinControl.PropertyNames.ControlName, "ClicksBtn").CreateControl<WinButton>(); } }
 
-        public WinText ClickLabel { get; private set; }
+        public WinText ClickLabel { get { return this.CreateControl<WinWindow>(WinControl.PropertyNames.ControlName, "ClicksLbl").CreateControl<WinText>(); } }
 
-        public WinFormsApp(IContext context)
-            : base(context)
+        public WinFormsApp(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.Name, "Form1");
-            
-            this.ClickButton = this.CreateControl<WinButton>(new [] { new SearchProperty(WinControl.PropertyNames.ControlName, "ClicksBtn")});
-            this.ClickLabel = this.CreateControl<WinText>(new[] { new SearchProperty(WinControl.PropertyNames.ControlName, "ClicksLbl") });
         }
     }
 }

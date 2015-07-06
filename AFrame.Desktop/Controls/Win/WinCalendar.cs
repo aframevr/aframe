@@ -35,8 +35,8 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinCalendar(IContext context)
-            : base(context)
+        public WinCalendar(DesktopContext context, DesktopControl parent)
+            : base(context, parent)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Calendar");
         }

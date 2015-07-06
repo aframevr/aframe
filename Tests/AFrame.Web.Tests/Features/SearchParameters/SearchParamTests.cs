@@ -10,13 +10,13 @@ namespace AFrame.Web.Tests.Features.SearchParameters
         [TestMethod]
         public void TestMethod1()
         {
-            var searchParams = new SearchPropertyStack();
-            searchParams.Add(new [] 
-            { 
-                new SearchProperty(name: WebControl.SearchNames.JQuerySelector, value: "#always", searchOperator: SearchOperator.EqualTo)
-            });
+            //var searchParams = new SearchPropertyStack();
+            //searchParams.Add(new [] 
+            //{ 
+            //    new SearchProperty(name: WebControl.SearchNames.JQuerySelector, value: "#always", searchOperator: SearchOperator.EqualTo)
+            //});
 
-            var homePage = this.Context.NavigateTo(this.TestAppUrl);
+            //var homePage = this.Context.NavigateTo(this.TestAppUrl);
         }
     }
 }
