@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/2ti8tnlabd7782fg/branch/master)](https://ci.appveyor.com/project/Thwaitesy/aframe/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/2ti8tnlabd7782fg/branch/master?svg=true)](https://ci.appveyor.com/project/Thwaitesy/aframe/branch/master)
 
 Documentation
 ==========================================================================
@@ -6,6 +6,12 @@ Documentation
 
 Changelog
 ==========================================================================
+*0.7.0*
+- Public release
+- No need for constructors if using "CreateControl" everywhere.
+- Fixed parent scoping for desktop & web
+- More tests for the desktop project
+
 *0.6.4*
 - (Web) Added support to turn off jQuery check on each request (When using saucelabs/browserstack it can be an additional overhead)
 
