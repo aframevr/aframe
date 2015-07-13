@@ -60,8 +60,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfCalendar(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfCalendar()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Calendar");
+        }
+
+        public WpfCalendar(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Calendar");
         }

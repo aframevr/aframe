@@ -19,8 +19,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfText(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfText()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Text");
+        }
+
+        public WpfText(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Text");
         }

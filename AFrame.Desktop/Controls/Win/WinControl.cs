@@ -60,19 +60,23 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinControl(DesktopContext context, DesktopControl parent)
-            : base(context, parent, "MSAA")
+        public WinControl()
+            : base("MSAA")
+        { }
+
+        public WinControl(DesktopContext context)
+            : base(context, "MSAA")
         { }
 
         #region Create Control
-        public new WinControl CreateControl(string name)
+        public WinControl CreateControl(string name)
         {
-            return base.CreateControl<WinControl>(name);
+            return this.CreateControl<WinControl>(name);
         }
 
-        public new T CreateControl<T>(string name) where T : WinControl
+        public T CreateControl<T>(string name) where T : WinControl
         {
-            return base.CreateControl<T>(name);
+            return this.CreateControl<T>(new SearchProperty[] { new SearchProperty(WinControl.PropertyNames.Name, name) });
         }
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WinControl

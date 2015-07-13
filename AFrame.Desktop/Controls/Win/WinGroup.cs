@@ -9,8 +9,13 @@ namespace AFrame.Desktop.Controls.Win
 {
     public class WinGroup : WinControl
     {
-        public WinGroup(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinGroup()
+        {
+            this.SearchProperties.Add(new SearchProperty(WinControl.PropertyNames.ControlType, "Group"));
+        }
+
+        public WinGroup(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(new SearchProperty(WinControl.PropertyNames.ControlType, "Group"));
         }

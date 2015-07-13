@@ -27,8 +27,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinButton(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinButton()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Button");
+        }
+
+        public WinButton(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Button");
         }

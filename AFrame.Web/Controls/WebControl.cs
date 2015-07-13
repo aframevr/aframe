@@ -14,7 +14,12 @@ namespace AFrame.Web.Controls
         public string AbsoluteSelector { get { return Helpers.ToAbsoluteSelector(this); } }
 
         public new WebContext Context { get { return base.Context as WebContext; } }
-        public new WebControl Parent { get { return base.Parent as WebControl; } }
+
+        public new WebControl Parent
+        {
+            get { return base.Parent as WebControl; }
+            set { base.Parent = value; }
+        }
 
         public new IWebElement RawControl 
         { 
@@ -24,12 +29,12 @@ namespace AFrame.Web.Controls
             } 
         }
 
-        public WebControl(WebContext context, WebControl parent)
-            : this(context, parent, new SearchPropertyCollection())
+        public WebControl()
+            : base(Technology.Web)
         { }
 
-        public WebControl(WebContext context, WebControl parent, SearchPropertyCollection searchProperties)
-            : base(context, Technology.Web, parent, searchProperties)
+        public WebControl(WebContext context)
+            : base(context, Technology.Web)
         { }
 
         #region IWebElement
@@ -163,7 +168,7 @@ namespace AFrame.Web.Controls
         }
         #endregion
 
-        public TReturn RetryIfStaleElementReferenceException<TReturn>(Func<TReturn> function)
+        private TReturn RetryIfStaleElementReferenceException<TReturn>(Func<TReturn> function)
         {
             var attempted = 0;
             while (true)
@@ -175,7 +180,7 @@ namespace AFrame.Web.Controls
                 }
                 catch (StaleElementReferenceException)
                 {
-                    if (attempted > WebContext.NumberOfTimesToRetryForStaleElementExceptions)
+                    if (attempted > this.Context.NumberOfTimesToRetryForStaleElementExceptions)
                     {
                         throw;
                     }
@@ -225,32 +230,17 @@ namespace AFrame.Web.Controls
 
         public T CreateControl<T>(string jQuerySelector) where T : WebControl
         {
-            return this.CreateControl<T>(new List<SearchProperty> 
-            { 
-                new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
-            });
+            return this.CreateControl<T>(WebControl.SearchNames.JQuerySelector, jQuerySelector);
         }
 
-        public T CreateControl<T>(params string[] nameValuePairs) where T : WebControl
+        public new T CreateControl<T>(params string[] nameValuePairs) where T : WebControl
         {
-            if ((nameValuePairs.Length % 2) != 0)
-            {
-                throw new ArgumentException("CreateControl needs to have even number of pairs. (Mod 2)", "nameValuePairs");
-            }
-            var searchProperties = new List<SearchProperty>();
-            for (int i = 0; i < nameValuePairs.Length; i = (int)(i + 2))
-            {
-                searchProperties.Add(new SearchProperty(nameValuePairs[i], nameValuePairs[i + 1]));
-            }
-
-            return this.CreateControl<T>(searchProperties);
+            return base.CreateControl<T>(nameValuePairs);
         }
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
-            var ctrl = (T)Activator.CreateInstance(typeof(T), this.Context, this);
-            ctrl.SearchProperties.AddRange(searchProperties);
-            return ctrl;
+            return base.CreateControl<T>(searchProperties);
         }
         #endregion
 
@@ -262,13 +252,10 @@ namespace AFrame.Web.Controls
 
         public IEnumerable<T> CreateControls<T>(string jQuerySelector) where T : WebControl
         {
-            return this.CreateControls<T>(new SearchPropertyCollection(new List<SearchProperty> 
-            { 
-                new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) 
-            }));
+            return this.CreateControls<T>(new SearchProperty[] { new SearchProperty(WebControl.SearchNames.JQuerySelector, jQuerySelector) });
         }
 
-        public new IEnumerable<T> CreateControls<T>(SearchPropertyCollection searchProperties) where T : WebControl
+        public new IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : WebControl
         {
             return ((WebControlCollection<T>)Activator.CreateInstance(typeof(WebControlCollection<T>), this.Context, this, searchProperties)).AsEnumerable();
         }

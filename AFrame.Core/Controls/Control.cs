@@ -8,13 +8,13 @@ namespace AFrame.Core
 {
     public abstract class Control
     {
-        public IContext Context { get; private set; }
+        public IContext Context { get; internal set; }
 
         public Technology Technology { get; private set; }
 
-        public Control Parent { get; private set; }
+        public Control Parent { get; set; }
 
-        public SearchPropertyCollection SearchProperties { get; set; }
+        public SearchPropertyCollection SearchProperties = new SearchPropertyCollection();
 
         private volatile bool _isHightlighting;
 
@@ -47,12 +47,15 @@ namespace AFrame.Core
         } 
         #endregion
 
-        public Control(IContext context, Technology technology, Control parent, SearchPropertyCollection searchProperties)
+        public Control(Technology technology)
+        {
+            this.Technology = technology;
+        }
+
+        public Control(IContext context, Technology technology)
         {
             this.Context = context;
             this.Technology = technology;
-            this.Parent = parent;
-            this.SearchProperties = searchProperties;
         }
 
         public virtual void Highlight()
@@ -137,21 +140,70 @@ namespace AFrame.Core
             throw new NotImplementedException();
         }
 
-        public virtual T CreateControl<T>(SearchPropertyCollection searchParameters) where T : Control
+        #region Create Control
+        public T CreateControl<T>(params string[] nameValuePairs) where T : Control
+        {
+            if ((nameValuePairs.Length % 2) != 0)
+            {
+                throw new ArgumentException("CreateControl needs to have even number of pairs. (Mod 2)", "nameValuePairs");
+            }
+            var searchProperties = new List<SearchProperty>();
+            for (int i = 0; i < nameValuePairs.Length; i = (int)(i + 2))
+            {
+                searchProperties.Add(new SearchProperty(nameValuePairs[i], nameValuePairs[i + 1]));
+            }
+
+            return this.CreateControl<T>(searchProperties);
+        }
+
+        public virtual T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : Control
+        {
+            var control = Control.CreateInstance<T>(this.Context, this);
+            control.SearchProperties.AddRange(searchProperties);
+            return control;
+        }
+        #endregion
+
+        public static T CreateInstance<T>(IContext context, Control parent) where T : Control
+        {
+            //If type has constructor with 1 parameter and is type IContext. Then use that.
+            //Else use default constructor.
+
+            var type = typeof(T);
+
+            //First constructor attempt.
+            var ctor = type.GetConstructor(new[] { context.GetType() });
+            if (ctor != null)
+            {
+                var ctrl = (T)ctor.Invoke(new object[] { context });
+                ctrl.Parent = parent;
+                return ctrl;
+            }
+
+            //Second constructor attempt.
+            ctor = type.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
+            {
+                var ctrl = (T)ctor.Invoke(new object[] { });
+                ctrl.Context = context;
+                ctrl.Parent = parent;
+                return ctrl;
+            }
+
+            throw new Exception("No appropriate constructors found for " + type.Name);
+        }
+
+        #region Create Controls
+        public virtual IEnumerable<T> CreateControls<T>(IEnumerable<SearchProperty> searchProperties) where T : Control
         {
             throw new NotImplementedException();
         }
 
-        public virtual IEnumerable<T> CreateControls<T>(SearchPropertyCollection searchParameters) where T : Control
+        protected virtual T CreateControlItem<T>(IEnumerable<SearchProperty> searchProperties) where T : Control
         {
             throw new NotImplementedException();
         }
-
-        protected virtual T CreateControlItem<T>(SearchPropertyCollection searchProperties) where T : Control
-        {
-            throw new NotImplementedException();
-        }
-
+        #endregion
 
         #region Wait Until's
         public virtual bool WaitUntil<T>(Predicate<T> conditionEvaluator, int millisecondsTimeout) where T : Control

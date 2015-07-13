@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public IEnumerable<WebControl> MultipleControls { get { return this.CreateControls<WebControl>(".find-1, .find-2"); } }
 
-        public FindOrMultiple(WebContext context, WebControl parent)
-            : base(context, parent)
+        public FindOrMultiple(WebContext context)
+            : base(context)
         { }
     }
 }

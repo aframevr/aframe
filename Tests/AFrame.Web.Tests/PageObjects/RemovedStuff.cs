@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public WebControl IGotRemoved { get { return this.CreateControl<WebControl>("b.remove-me"); } }
 
-        public RemovedStuff(WebContext context, WebControl parent)
-            : base(context, parent)
+        public RemovedStuff(WebContext context)
+            : base(context)
         { }
     }
 }

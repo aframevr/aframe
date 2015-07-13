@@ -20,8 +20,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinMenu(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinMenu()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Menu");
+        }
+
+        public WinMenu(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Menu");
         }

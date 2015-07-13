@@ -1,12 +1,12 @@
-﻿using AFrame.Web.Controls;
+﻿using AFrame.Desktop.Controls.Win;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AFrame.Web.Tests.PageObjects
+namespace AFrame.Desktop.Tests.WinForms.App
 {
-    public class Item : WebControl
+    public class ClickButton : WinButton
     { }
 }

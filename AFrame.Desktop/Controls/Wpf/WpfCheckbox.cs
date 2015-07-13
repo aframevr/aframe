@@ -35,8 +35,13 @@ namespace AFrame.Desktop.Controls.Wpf
         } 
         #endregion
 
-        public WpfCheckbox(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfCheckbox()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Checkbox");
+        }
+
+        public WpfCheckbox(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Checkbox");
         }

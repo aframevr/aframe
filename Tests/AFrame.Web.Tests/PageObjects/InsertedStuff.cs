@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public WebControl IGotAdded { get { return this.CreateControl<WebControl>(".i-got-added"); } }
 
-        public InsertedStuff(WebContext context, WebControl parent)
-            : base(context, parent)
+        public InsertedStuff(WebContext context)
+            : base(context)
         { }
     }
 }

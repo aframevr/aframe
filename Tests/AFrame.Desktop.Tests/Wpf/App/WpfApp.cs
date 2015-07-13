@@ -16,8 +16,8 @@ namespace AFrame.Desktop.Tests.Wpf.App
 
         public WpfText ClickLabel { get; private set; }
 
-        public WpfApp(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfApp(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.Name, "MainWindow");
             

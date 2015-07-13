@@ -56,8 +56,13 @@ namespace AFrame.Desktop.Controls.Wpf
         } 
         #endregion
 
-        public WpfDatePicker(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfDatePicker()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "DatePicker");
+        }
+
+        public WpfDatePicker(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "DatePicker");
         }

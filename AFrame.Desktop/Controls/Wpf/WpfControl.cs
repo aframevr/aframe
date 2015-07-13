@@ -75,24 +75,27 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfControl(DesktopContext context, DesktopControl parent)
-            : base(context, parent, "UIA")
+        public WpfControl()
+            : base("UIA")
         {
-            this.SearchProperties.Add(new SearchProperty(PropertyNames.FrameworkId, "WPF"));
+            this.SearchProperties.Add(PropertyNames.FrameworkId, "WPF");
+        }
+
+        public WpfControl(DesktopContext context)
+            : base(context, "UIA")
+        {
+            this.SearchProperties.Add(PropertyNames.FrameworkId, "WPF");
         }
 
         #region Create Control
-        public new WpfControl CreateControl(string automationId)
+        public WpfControl CreateControl(string automationId)
         {
             return this.CreateControl<WpfControl>(automationId);
         }
 
-        public new T CreateControl<T>(string automationId) where T : WpfControl
+        public T CreateControl<T>(string automationId) where T : WpfControl
         {
-            return this.CreateControl<T>(new List<SearchProperty> 
-            { 
-                new SearchProperty(WpfControl.PropertyNames.AutomationId, automationId) 
-            });
+            return this.CreateControl<T>(new SearchProperty[] { new SearchProperty(WpfControl.PropertyNames.AutomationId, automationId) });
         }
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : WpfControl

@@ -9,8 +9,13 @@ namespace AFrame.Desktop.Controls.Wpf
 {
     public class WpfPane : WpfControl
     {
-        public WpfPane(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfPane()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Pane");
+        }
+
+        public WpfPane(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Pane");
         }

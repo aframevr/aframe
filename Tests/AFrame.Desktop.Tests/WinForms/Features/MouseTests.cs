@@ -16,8 +16,6 @@ namespace AFrame.Desktop.Tests.WinForms.Features
 
             //Act
             app.ClickButton.Click();
-
-
             app.ClickButton.Click();
             app.ClickButton.Click();
             app.ClickButton.Click();

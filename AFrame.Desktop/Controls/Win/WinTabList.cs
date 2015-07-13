@@ -40,8 +40,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinTabList(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinTabList()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TabList");
+        }
+
+        public WinTabList(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TabList");
         }

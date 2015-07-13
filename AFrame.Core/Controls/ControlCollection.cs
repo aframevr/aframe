@@ -8,13 +8,11 @@ namespace AFrame.Core
 {
     public abstract class ControlCollection<T> : Control, IEnumerable<T> where T : Control
     {
-        public T ProxyControl { get; private set; }
-
-        public ControlCollection(IContext context, Technology technology, Control parent, SearchPropertyCollection searchProperties)
-            : base(context, technology, parent, searchProperties)
+        public ControlCollection(IContext context, Technology technology, Control parent, IEnumerable<SearchProperty> searchProperties)
+            : base(context, technology)
         {
-            this.ProxyControl = (T)Activator.CreateInstance(typeof(T), context, parent);
-            this.ProxyControl.SearchProperties.AddRange(searchProperties);
+            this.Parent = parent;
+            this.SearchProperties.AddRange(searchProperties);
         }
 
         public IEnumerator<T> GetEnumerator()

@@ -139,8 +139,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinEdit(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinEdit()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Edit");
+        }
+
+        public WinEdit(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Edit");
         }

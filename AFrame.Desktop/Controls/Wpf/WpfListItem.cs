@@ -34,8 +34,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfListItem(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfListItem()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ListItem");
+        }
+
+        public WpfListItem(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "ListItem");
         }

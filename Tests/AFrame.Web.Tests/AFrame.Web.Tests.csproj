@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
     <Compile Include="Features\AlwaysSearch\AlwaysSearchTests.cs" />
+    <Compile Include="Features\CreatingControls\CreatingControlsTests.cs" />
     <Compile Include="Features\Find\FindTests.cs" />
     <Compile Include="Features\iFrames\ExtractFrameDataTests.cs" />
     <Compile Include="Features\iFrames\FindTests.cs" />

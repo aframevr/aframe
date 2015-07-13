@@ -19,8 +19,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinHyperlink(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinHyperlink()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Hyperlink");
+        }
+
+        public WinHyperlink(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Hyperlink");
         }

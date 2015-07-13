@@ -59,8 +59,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfMenuItem(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfMenuItem()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "MenuItem");
+        }
+
+        public WpfMenuItem(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "MenuItem");
         }

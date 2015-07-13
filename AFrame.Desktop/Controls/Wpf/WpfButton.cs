@@ -27,8 +27,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfButton(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfButton()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Button");
+        }
+
+        public WpfButton(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Button");
         }

@@ -74,8 +74,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfList(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfList()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "List");
+        }
+
+        public WpfList(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "List");
         }

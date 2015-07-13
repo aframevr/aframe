@@ -13,21 +13,28 @@ namespace AFrame.Desktop.Controls
     public abstract class DesktopControl : Control
     {
         public new DesktopContext Context { get { return base.Context as DesktopContext; } }
-        public new DesktopControl Parent { get { return base.Parent as DesktopControl; } }
+
+        public new DesktopControl Parent
+        {
+            get { return base.Parent as DesktopControl; }
+            set { base.Parent = value; }
+        }
 
         public new UITestControl RawControl { get { return base.RawControl as UITestControl; } }
 
         internal string _technologyName;
 
-        public DesktopControl(DesktopContext context, DesktopControl parent, string technologyName)
-            : this(context, parent, new SearchPropertyCollection())
+        public DesktopControl(string technologyName)
+            : base(Technology.Desktop)
         {
             this._technologyName = technologyName;
         }
 
-        public DesktopControl(DesktopContext context, DesktopControl parent, SearchPropertyCollection searchProperties)
-            : base(context, Technology.Desktop, parent, searchProperties)
-        { }
+        public DesktopControl(DesktopContext context, string technologyName)
+            : base(context, Technology.Desktop)
+        {
+            this._technologyName = technologyName;
+        }
 
         public override void Highlight()
         {
@@ -204,40 +211,15 @@ namespace AFrame.Desktop.Controls
         #endregion
 
         #region Create Control
-        public DesktopControl CreateControl(string name)
+        public new T CreateControl<T>(params string[] nameValuePairs) where T : DesktopControl
         {
-            return this.CreateControl<DesktopControl>(name);
-        }
-
-        public T CreateControl<T>(string name) where T : DesktopControl
-        {
-            return this.CreateControl<T>(new List<SearchProperty> 
-            { 
-                new SearchProperty(DesktopControl.PropertyNames.Name, name) 
-            });
-        }
-
-        public T CreateControl<T>(params string[] nameValuePairs) where T : DesktopControl
-        {
-            if ((nameValuePairs.Length % 2) != 0)
-            {
-                throw new ArgumentException("CreateControl needs to have even number of pairs. (Mod 2)", "nameValuePairs");
-            }
-            var searchProperties = new List<SearchProperty>();
-            for (int i = 0; i < nameValuePairs.Length; i = (int)(i + 2))
-            {
-                searchProperties.Add(new SearchProperty(nameValuePairs[i], nameValuePairs[i + 1]));
-            }
-
-            return this.CreateControl<T>(searchProperties);
+            return base.CreateControl<T>(nameValuePairs);
         }
 
         public new T CreateControl<T>(IEnumerable<SearchProperty> searchProperties) where T : DesktopControl
         {
-            var ctrl = (T)Activator.CreateInstance(typeof(T), this.Context, this);
-            ctrl.SearchProperties.AddRange(searchProperties);
-            return ctrl;
-        } 
+            return base.CreateControl<T>(searchProperties);
+        }
         #endregion
 
         public new class PropertyNames : Control.PropertyNames

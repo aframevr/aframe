@@ -68,8 +68,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfTreeItem(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfTreeItem()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TreeItem");
+        }
+
+        public WpfTreeItem(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TreeItem");
         }

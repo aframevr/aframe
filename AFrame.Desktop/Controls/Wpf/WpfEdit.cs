@@ -67,8 +67,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfEdit(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfEdit()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Edit");
+        }
+
+        public WpfEdit(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Edit");
         }

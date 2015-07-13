@@ -11,8 +11,8 @@ namespace AFrame.Web.Tests.PageObjects
     {
         public IEnumerable<WebControl> StaleTexts { get { return this.CreateControls<WebControl>(".stale-ref"); } }
 
-        public StaleReference(WebContext context, WebControl parent)
-            : base(context, parent)
+        public StaleReference(WebContext context)
+            : base(context)
         { }
     }
 }

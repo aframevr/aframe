@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace AFrame.Desktop.Tests
 {
+    [CodedUITest]
     [DeploymentItem("AFrame.Wpf.TestApp.exe")]
     [DeploymentItem("AFrame.WinForms.TestApp.exe")]
-    public class BaseTest
+    public class BaseTest : MSTestHacks.TestBase
     {
         public readonly string WinFormsAppPath = "AFrame.WinForms.TestApp.exe";
         public readonly string WpfAppPath = "AFrame.Wpf.TestApp.exe";

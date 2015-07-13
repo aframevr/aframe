@@ -68,8 +68,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfTable(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfTable()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Table");
+        }
+
+        public WpfTable(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Table");
         }

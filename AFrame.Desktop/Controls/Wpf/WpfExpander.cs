@@ -31,8 +31,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfExpander(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfExpander()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Expander");
+        }
+
+        public WpfExpander(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Expander");
         }

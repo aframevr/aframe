@@ -92,8 +92,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinSlider(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinSlider()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Slider");
+        }
+
+        public WinSlider(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Slider");
         }

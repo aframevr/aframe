@@ -84,8 +84,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinCheckBoxTreeItem(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinCheckBoxTreeItem()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "CheckBoxTreeItem");
+        }
+
+        public WinCheckBoxTreeItem(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "CheckBoxTreeItem");
         }

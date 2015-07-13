@@ -44,8 +44,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinRow(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinRow()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Row");
+        }
+
+        public WinRow(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Row");
         }

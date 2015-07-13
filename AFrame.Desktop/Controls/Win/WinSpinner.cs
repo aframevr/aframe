@@ -28,8 +28,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinSpinner(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinSpinner()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Spinner");
+        }
+
+        public WinSpinner(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Spinner");
         }

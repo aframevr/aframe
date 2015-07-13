@@ -11,12 +11,12 @@ namespace AFrame.Desktop.Tests.WinForms.App
 {
     public class WinFormsApp : WinWindow
     {
-        public WinButton ClickButton { get { return this.CreateControl<WinWindow>(WinControl.PropertyNames.ControlName, "ClicksBtn").CreateControl<WinButton>(); } }
+        public ClickButton ClickButton { get { return this.CreateControl<WinWindow>(WinControl.PropertyNames.ControlName, "ClicksBtn").CreateControl<ClickButton>(); } }
 
         public WinText ClickLabel { get { return this.CreateControl<WinWindow>(WinControl.PropertyNames.ControlName, "ClicksLbl").CreateControl<WinText>(); } }
 
-        public WinFormsApp(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinFormsApp(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.Name, "Form1");
         }

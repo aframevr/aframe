@@ -71,8 +71,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinCell(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinCell()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Cell");
+        }
+
+        public WinCell(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Cell");
         }

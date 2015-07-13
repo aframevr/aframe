@@ -19,8 +19,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfHyperlink(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfHyperlink()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Hyperlink");
+        }
+
+        public WpfHyperlink(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Hyperlink");
         }

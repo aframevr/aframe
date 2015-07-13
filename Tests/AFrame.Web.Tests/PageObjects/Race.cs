@@ -10,9 +10,5 @@ namespace AFrame.Web.Tests.PageObjects
     public class Race : WebControl
     {
         public IEnumerable<Item> Items { get { return this.CreateControls<Item>(".item"); } }
-
-        public Race(WebContext context, WebControl parent)
-            : base(context, parent)
-        { }
     }
 }

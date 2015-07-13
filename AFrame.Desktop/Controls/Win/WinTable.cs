@@ -60,8 +60,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinTable(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinTable()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Table");
+        }
+
+        public WinTable(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Table");
         }

@@ -19,8 +19,14 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfGroup(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfGroup()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Group");
+
+        }
+
+        public WpfGroup(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Group");
         }

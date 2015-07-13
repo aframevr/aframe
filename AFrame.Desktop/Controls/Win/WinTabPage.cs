@@ -20,8 +20,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinTabPage(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinTabPage()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TabPage");
+        }
+
+        public WinTabPage(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "TabPage");
         }

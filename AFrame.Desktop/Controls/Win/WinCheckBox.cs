@@ -35,8 +35,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinCheckBox(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinCheckBox()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "CheckBox");
+        }
+
+        public WinCheckBox(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "CheckBox");
         }

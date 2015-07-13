@@ -11,7 +11,7 @@ namespace AFrame.Web.Controls
         public new WebContext Context { get { return base.Context as WebContext; } }
         public new WebControl Parent { get { return base.Parent as WebControl; } }
 
-        public WebControlCollection(WebContext context, WebControl parent, SearchPropertyCollection searchProperties)
+        public WebControlCollection(WebContext context, WebControl parent, IEnumerable<SearchProperty> searchProperties)
             : base(context, Technology.Web, parent, searchProperties)
         { }
 
@@ -33,24 +33,30 @@ namespace AFrame.Web.Controls
                 {
                     var selector = selectorParts[i];
 
-                    //Generate the absolute selector for this selector part.
-                    var abs = Helpers.ToAbsoluteSelector(new WebControl(this.Context, this.Parent, new SearchPropertyCollection(new SearchProperty(WebControl.SearchNames.JQuerySelector, selector))));
+                    //Create a proxy to get the absolute selector.
+                    var proxyWebControl = Control.CreateInstance<T>(this.Context, this.Parent);
+                    proxyWebControl.SearchProperties.Add(WebControl.SearchNames.JQuerySelector, selector);
+                    
+                    //Get the absolute selector of the proxy control.
+                    var absoluteSelector = Helpers.ToAbsoluteSelector(proxyWebControl);
 
-                    //Find the elements. And put the index onto the selector part.
-                    var elements = Helpers.JQueryFindElements(this.Context, abs);
+                    //Find all the elements.
+                    var elements = Helpers.JQueryFindElements(this.Context, absoluteSelector);
 
+                    //For each element found - append the index selector  
                     var strToFormat = selector + ":eq({0})";
                     for (int e = 0; e < elements.Count(); e++)
                     {
                         var indexedSelector = string.Format(strToFormat, e);
 
-                        //Add all search parameters bar the jquery selector.
+                        //Get all search parameters except for the jQuery selector.
                         var searchParameters = this.SearchProperties.Where(x => x.Name != WebControl.SearchNames.JQuerySelector).ToList();
 
-                        //Add the new indexed jquery selector.
+                        //Add the new indexed jQuery selector.
                         searchParameters.Add(new SearchProperty(WebControl.SearchNames.JQuerySelector, indexedSelector));
 
-                        allElements.Add(this.CreateControlItem<T>(new SearchPropertyCollection(searchParameters)));
+                        //Add the indexed element to the final return array.
+                        allElements.Add(this.CreateControlItem<T>(searchParameters));
                     }
                 }
             }
@@ -58,10 +64,10 @@ namespace AFrame.Web.Controls
             return allElements;
         }
 
-        protected override T2 CreateControlItem<T2>(SearchPropertyCollection searchProperties)
+        protected override T2 CreateControlItem<T2>(IEnumerable<SearchProperty> searchProperties)
         {
-            var instance = (T2)Activator.CreateInstance(typeof(T2), this.Parent.Context, this.Parent);
-            instance.SearchProperties = searchProperties;
+            var instance = Control.CreateInstance<T2>(this.Parent.Context, this.Parent);
+            instance.SearchProperties.AddRange(searchProperties);
             return instance;
         }
     }

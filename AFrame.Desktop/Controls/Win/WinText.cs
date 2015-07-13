@@ -19,8 +19,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinText(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinText()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Text");
+        }
+
+        public WinText(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "Text");
         }

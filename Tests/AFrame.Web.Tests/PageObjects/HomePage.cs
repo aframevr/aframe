@@ -10,7 +10,7 @@ namespace AFrame.Web.Tests.PageObjects
 {
     public class HomePage : WebControl
     {
-        public WebControl ContentChange;
+        public WebControl ContentChange { get { return this.CreateControl<WebControl>(".content-change"); } }
 
         public InsertedStuff InsertedStuff { get { return this.CreateControl<InsertedStuff>("div#insert-stuff-here"); } }
 
@@ -25,11 +25,5 @@ namespace AFrame.Web.Tests.PageObjects
         public IEnumerable<Race> Races { get { return this.CreateControls<Race>(".race"); } }
 
         public StaleReference StaleReference { get { return this.CreateControl<StaleReference>("#highlight-stale-reference"); } }
-
-        public HomePage(WebContext context, WebControl parent)
-            : base(context, parent)
-        {
-            this.ContentChange = this.CreateControl<WebControl>(".content-change");
-        }
     }
 }

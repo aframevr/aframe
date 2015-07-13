@@ -12,8 +12,8 @@ namespace Web.Sample.NuGet.Modules.Packages
     {
         public string Name { get { return this.CreateControl(".package-list-header h1 a").Text; } }
 
-        public Package(WebContext context, WebControl parent)
-            : base(context, parent)
+        public Package(WebContext context)
+            : base(context)
         { }
     }
 }

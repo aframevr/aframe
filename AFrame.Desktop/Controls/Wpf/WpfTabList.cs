@@ -32,8 +32,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfTabList(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfTabList()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TabList");
+        }
+
+        public WpfTabList(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "TabList");
         }

@@ -12,8 +12,8 @@ namespace Web.Sample.NuGet.Modules.Packages
     {
         public IEnumerable<Package> Packages { get { return this.CreateControls<Package>("#searchResults .package"); } }
 
-        public PackagesPage(WebContext context, WebControl parent)
-            : base(context, parent)
+        public PackagesPage(WebContext context)
+            : base(context)
         { }
     }
 }

@@ -152,8 +152,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinList(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinList()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "List");
+        }
+
+        public WinList(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "List");
         }

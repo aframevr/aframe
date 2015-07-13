@@ -101,8 +101,13 @@ namespace AFrame.Desktop.Controls.Win
         }
         #endregion
 
-        public WinDateTimePicker(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WinDateTimePicker()
+        {
+            this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "DateTimePicker");
+        }
+
+        public WinDateTimePicker(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WinControl.PropertyNames.ControlType, "DateTimePicker");
         }

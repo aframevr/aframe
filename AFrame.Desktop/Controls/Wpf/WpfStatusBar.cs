@@ -20,8 +20,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfStatusBar(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfStatusBar()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "StatusBar");
+        }
+
+        public WpfStatusBar(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "StatusBar");
         }

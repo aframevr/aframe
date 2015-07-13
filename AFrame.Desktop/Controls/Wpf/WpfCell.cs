@@ -87,8 +87,13 @@ namespace AFrame.Desktop.Controls.Wpf
         }
         #endregion
 
-        public WpfCell(DesktopContext context, DesktopControl parent)
-            : base(context, parent)
+        public WpfCell()
+        {
+            this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Cell");
+        }
+
+        public WpfCell(DesktopContext context)
+            : base(context)
         {
             this.SearchProperties.Add(WpfControl.PropertyNames.ControlType, "Cell");
         }

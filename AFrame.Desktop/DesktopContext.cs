@@ -39,7 +39,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(startInfo);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
         public T Launch<T>(string fileName) where T : DesktopControl
@@ -57,7 +57,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName) where T : DesktopControl
@@ -75,7 +75,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName, string arguments) where T : DesktopControl
@@ -93,7 +93,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName, arguments);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
         public T Launch<T>(string fileName, string alternativeFileName, string arguments, string userName, System.Security.SecureString password, string domain) where T : DesktopControl
@@ -111,7 +111,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.Launch(fileName, alternativeFileName, arguments, userName, password, domain);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
         public T FromProcess<T>(Process processToWrap) where T : DesktopControl
@@ -129,7 +129,7 @@ namespace AFrame.Desktop
 
             this.ApplicationUnderTest = ApplicationUnderTest.FromProcess(processToWrap);
 
-            return (T)Activator.CreateInstance(typeof(T), this, null);
+            return Control.CreateInstance<T>(this, null);
         }
 
     }
