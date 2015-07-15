@@ -2,7 +2,7 @@
 
 Documentation
 ==========================================================================
-[Please view the website (https://aframe.github.io)](https://aframe.github.io)
+[Please view the documentation website (https://aframe.github.io)](https://aframe.github.io)
 
 Changelog
 ==========================================================================
