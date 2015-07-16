@@ -6,7 +6,7 @@ Documentation
 
 Changelog
 ==========================================================================
-*0.7.0*
+*0.7.1*
 - Public release
 - No need for constructors if using "CreateControl" everywhere.
 - Fixed parent scoping for desktop & web
