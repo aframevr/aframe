@@ -25,7 +25,7 @@ namespace AFrame.Web.Controls
              * 
             */
 
-            var regex = @"\[iframe=.*]";
+            var regex = @"\[iframe=[^\[\]]*(?:\[[^\[\]]*\])*.*?]";
 
             var iFrames = Regex.Matches(jquery, regex, RegexOptions.IgnoreCase);
             var jQueries = Regex.Split(jquery, regex, RegexOptions.IgnoreCase);
@@ -131,6 +131,11 @@ namespace AFrame.Web.Controls
             //Switch back to default frame.
             context.Driver.SwitchTo().DefaultContent();
 
+            return JQueryFindElementsStartingFromCurrentFrame(context, jquerySelector);
+        }
+
+        private static IEnumerable<IWebElement> JQueryFindElementsStartingFromCurrentFrame(WebContext context, string jquerySelector)
+        {
             if (jquerySelector.ToUpper().Contains("[IFRAME="))
             {
                 var frames = Helpers.ExtractiFrameData(jquerySelector);
@@ -139,7 +144,7 @@ namespace AFrame.Web.Controls
                     if (!string.IsNullOrEmpty(frame.jQuerySelector))
                     {
                         //Find the frame element.
-                        var iFrameElement = Helpers.JQueryFindElements(context, frame.jQuerySelector).FirstOrDefault();
+                        var iFrameElement = Helpers.JQueryFindElementsStartingFromCurrentFrame(context, frame.jQuerySelector).FirstOrDefault();
 
                         if (iFrameElement == null)
                             throw new NotFoundException("iframe could not be found given the following jquery selector: " + frame.jQuerySelector);

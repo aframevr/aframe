@@ -8,6 +8,7 @@ namespace AFrame.Web.Tests
 {
     [DeploymentItem("app.html", "app")]
     [DeploymentItem("iframe.html", "app")]
+    [DeploymentItem("nestedIframe.html", "app")]
     [TestClass]
     public class BaseTest
     {
