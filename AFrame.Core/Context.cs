@@ -9,5 +9,15 @@ namespace AFrame.Core
     public abstract class Context : IContext
     {
         public abstract void Dispose();
+
+        public T As<T>() where T : Control
+        {
+            return (T)Control.CreateInstance<T>(this, null);
+        }
+
+        public Control As()
+        {
+            return As<Control>();
+        }
     }
 }
