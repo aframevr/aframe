@@ -1,0 +1,32 @@
+{
+  "name": "vr-markup",
+  "homepage": "https://github.com/vr-components/vr-markup",
+  "license": "ISC",
+  "main": "build/vr-components.js",
+  "devDependencies": {
+    "gulp": "3.8.11",
+    "async": "1.4.0",
+    "gulp-if": "1.2.5",
+    "gulp-browserify": "0.5.1",
+    "gulp-clean": "0.3.1",
+    "gulp-concat": "2.5.2",
+    "gulp-jshint": "1.11.2",
+    "jshint-stylish": "2.0.1",
+    "gulp-livereload": "3.8.0",
+    "gulp-load-plugins": "0.8.1",
+    "gulp-uglify": "1.1.0",
+    "gulp-sourcemaps": "1.5.1",
+    "gulp-webserver": "0.9.1",
+    "minimist": "1.1.1"
+  },
+  "scripts": {
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vr-components/vr-markup.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gaia-components/vr-markup/issues"
+  }
+}

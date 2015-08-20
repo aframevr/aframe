@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>HUD</title>
+  <meta name="description" content="Demo of threejs using Web Components">
+  <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
+  <script src="../lib/vendor/dat.gui.js"></script>
+  <script src="../lib/vendor/three.js"></script>
+  <script src="../lib/vendor/VRControls.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
+  <script src="../dist/vr-markup.js"></script>
+  <script src="js/vr-cube.js"></script>
+</head>
+
+<body>
+  <vr-scene>
+    <vr-object class="pivot">
+      <vr-cube class="cube" rotx="45" roty="45"></vr-cube>
+    </vr-object>
+  </vr-scene>
+  <!--<button class="vr-button">Enter VR</button>-->
+
+  <script>
+    var vrDevices = {};
+    var container = document.querySelector('vr-scene');
+
+    function start() {
+      var fsButtons = document.querySelectorAll('.vr-button');
+      var i;
+      for(i=0; i<fsButtons.length; ++i) {
+        fsButtons[i].addEventListener('click', function() {
+          container.mozRequestFullScreen({ vrDisplay: vrDevices.headset });
+        });
+      }
+    }
+
+    // navigator.getVRDevices().then(function(devices) {
+    //   vrDevices.headset = devices[0];
+    //   vrDevices.position = devices[1];
+    //   start();
+    // });
+  </script>
+</body>
+</html>
