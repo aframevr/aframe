@@ -84,10 +84,16 @@
         }
       },
 
+      enterVR: {
+        value: function() {
+          this.vrEffect.setFullScreen(true);
+        }
+      },
+
       setupRenderer: {
         value: function() {
           var canvas = this.canvas;
-          var renderer = this.renderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
+          var renderer = this.renderer = this.monoRenderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
           renderer.setPixelRatio( window.devicePixelRatio );
           renderer.sortObjects = false;
           this.vrEffect = new THREE.VREffect(renderer);
@@ -97,7 +103,7 @@
       },
 
       resizeCanvas: {
-        value: function(){
+        value: function() {
           var canvas = this.canvas;
           var camera = this.camera;
           // Make it visually fill the positioned parent
@@ -123,7 +129,7 @@
 
       render: {
         value: function() {
-          this.renderer.render( this.scene, this.camera );
+          this.vrEffect.render( this.scene, this.camera );
         }
       }
     }
