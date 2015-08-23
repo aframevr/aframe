@@ -6,12 +6,21 @@
 	    createdCallback: {
 	    	value: function() {
 	    		this.object3D = new THREE.Object3D();
+	    		this.loaded();
 	    	}
+	    },
+
+	    loaded: {
+      	value: function() {
+      		var event = new CustomEvent('loaded');
+      		this.dispatchEvent(event);
+	      }
 	    },
 
 	    attachedCallback: {
 	    	value: function() {
 	    		var parent = this.parentNode;
+	    		var sceneEl = this.sceneEl = this.sceneEl || document.querySelector('vr-scene');
 	    		parent.add( this );
 	    		this.update();
 	    	}
@@ -31,6 +40,7 @@
 
 	  	update: {
 	  		value: function() {
+	  			if (!this.object3D) { return };
 	  			// Position
 	  			var x = parseFloat(this.getAttribute('x')) || 0;
 					var y = parseFloat(this.getAttribute('y')) || 0;

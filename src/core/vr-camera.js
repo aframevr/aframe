@@ -12,6 +12,12 @@
 	      		}
 	      	},
 
+      	  attachedCallback: {
+      	  	value: function() {
+      	  		this.loaded();
+      	  	}
+      		},
+
     	  	update: {
     	  		value: function() {
     	  			VRObject.prototype.update.call(this);

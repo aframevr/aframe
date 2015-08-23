@@ -5,7 +5,42 @@
     HTMLElement.prototype, {
       createdCallback: {
         value: function() {
+          this.attachEventListeners();
           this.setupScene();
+        }
+      },
+
+      attachEventListeners: {
+        value: function() {
+          var self = this;
+          var elementLoaded = this.elementLoaded.bind(this);
+          this.elementsPending = 0;
+          traverseDOM(this);
+          function traverseDOM(node) {
+            if (VRObject.prototype.isPrototypeOf(node)) {
+              attachEventListener(node);
+              self.elementsPending++;
+            }
+            node = node.firstChild;
+            while (node) {
+              traverseDOM(node);
+              node = node.nextSibling;
+            }
+          }
+          function attachEventListener(node) {
+            node.addEventListener('loaded', elementLoaded);
+          }
+
+        }
+      },
+
+      elementLoaded: {
+        value: function() {
+          this.elementsPending--;
+          if (this.elementsPending === 0) {
+            this.resizeCanvas();
+            this.render();
+          }
         }
       },
 
@@ -18,29 +53,6 @@
       detachedCallback: {
         value: function() {
           console.log('leaving the DOM :-( )');
-        }
-      },
-
-      attributeChangedCallback: {
-        value: function(name, previousValue, value)
-        {
-          if (previousValue == null) {
-            console.log(
-              'got a new attribute ', name,
-              ' with value ', value
-            );
-          } else if (value == null) {
-            console.log(
-              'somebody removed ', name,
-              ' its value was ', previousValue
-            );
-          } else {
-            console.log(
-              name,
-              ' changed from ', previousValue,
-              ' to ', value
-            );
-          }
         }
       },
 
@@ -70,6 +82,8 @@
           // If there's not a user defined camera
           if (!cameraEl) {
             cameraEl = document.createElement('vr-camera');
+            this.elementsPending++;
+            cameraEl.addEventListener('loaded', this.elementLoaded.bind(this));
             cameraEl.setAttribute('fov', 45);
             cameraEl.setAttribute('near', 1);
             cameraEl.setAttribute('far', 10000);
@@ -118,11 +132,10 @@
 
       add: {
         value: function(el) {
+          if (!el.object3D) { return; }
           this.object3D.add(el.object3D);
           if (el.tagName === "VR-CAMERA") {
             this.camera = el.object3D;
-            this.resizeCanvas();
-            this.render();
           }
         }
       },
