@@ -8,10 +8,9 @@
 	      VRObject.prototype, {
 	      	createdCallback: {
 		      	value: function() {
-		      		VRObject.prototype.createdCallback.call(this);
 		      		var geometry = new THREE.BoxGeometry( 200, 200, 200 );
 		      		var material = new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
-		      		this.object = new THREE.Mesh( geometry, material );
+		      		this.object3D = new THREE.Mesh( geometry, material );
 		      	}
 	      	}
 	      })

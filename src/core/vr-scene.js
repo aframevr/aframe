@@ -48,11 +48,10 @@
         value: function() {
           // The canvas where the WebGL contet will be painted
           this.setupCanvas();
-          // three.js camera setup
-          this.setupCamera();
           // The three.js renderer setup
           this.setupRenderer();
-          this.setupCameraEl();
+          // three.js camera setup
+          this.setupCamera();
         }
       },
 
@@ -67,26 +66,24 @@
 
       setupCamera: {
         value: function() {
-          var camera = this.camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-          camera.position.z = 400;
-        }
-      },
-
-      setupCameraEl: {
-        value: function() {
-          var cameraEl = document.createElement('vr-camera');
-          cameraEl.camera = this.camera;
-          var els = this.children;
-          for (var i = 0; i < els.length; ++i) {
-            cameraEl.appendChild(els[i]);
+          var cameraEl = document.querySelector('vr-camera');
+          // If there's not a user defined camera
+          if (!cameraEl) {
+            cameraEl = document.createElement('vr-camera');
+            cameraEl.setAttribute('fov', 45);
+            cameraEl.setAttribute('near', 1);
+            cameraEl.setAttribute('far', 10000);
+            cameraEl.setAttribute('z', 500);
           }
+          this.camera = cameraEl.object3D;
           this.appendChild(cameraEl);
         }
       },
 
       enterVR: {
         value: function() {
-          this.vrEffect.setFullScreen(true);
+          this.renderer = this.stereoRenderer;
+          this.stereoRenderer.setFullScreen(true);
         }
       },
 
@@ -96,9 +93,8 @@
           var renderer = this.renderer = this.monoRenderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
           renderer.setPixelRatio( window.devicePixelRatio );
           renderer.sortObjects = false;
-          this.vrEffect = new THREE.VREffect(renderer);
-          this.scene = new THREE.Scene();
-          this.resizeCanvas();
+          this.stereoRenderer = new THREE.VREffect(renderer);
+          this.object3D = new THREE.Scene();
         }
       },
 
@@ -107,29 +103,34 @@
           var canvas = this.canvas;
           var camera = this.camera;
           // Make it visually fill the positioned parent
-          canvas.style.width ='100%';
-          canvas.style.height='100%';
+          canvas.style.width = '100%';
+          canvas.style.height =' 100%';
           // Set the internal size to match
-          canvas.width  = canvas.offsetWidth;
+          canvas.width = canvas.offsetWidth;
           canvas.height = canvas.offsetHeight;
           // Updates camera
           camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
           camera.updateProjectionMatrix();
           // Notify the renderer of the size change
           this.renderer.setSize( canvas.width, canvas.height );
-          this.render();
         }
       },
 
       add: {
         value: function(el) {
-          this.scene.add(el.object);
+          this.object3D.add(el.object3D);
+          if (el.tagName === "VR-CAMERA") {
+            this.camera = el.object3D;
+            this.resizeCanvas();
+            this.render();
+          }
         }
       },
 
       render: {
         value: function() {
-          this.vrEffect.render( this.scene, this.camera );
+          this.renderer.render( this.object3D, this.camera );
+          window.requestAnimationFrame(this.render.bind(this));
         }
       }
     }
