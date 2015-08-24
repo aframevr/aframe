@@ -5,9 +5,17 @@
 	  'vr-material',
 	  {
 	    prototype: Object.create(
-	      VRObject.prototype, {
-	      	createdCallback: {
-		      	value: function() {
+	      VRNode.prototype, {
+	      	update: {
+			  		value: function() {
+			  			var color = this.getAttribute('color') || Math.random() * 0xffffff;
+			  			var material = this.material || this.setupMaterial();
+			  			material.color = new THREE.Color(color);
+			  		}
+			  	},
+
+	      	setupMaterial: {
+			  		value: function() {
 		      		var type = this.getAttribute('type') || 'MeshNormalMaterial';
 		      		var material;
   		  			switch (type) {
@@ -25,21 +33,15 @@
   		  					break;
   						}
   						this.material = material;
-		      		this.update();
-		      		this.loaded();
-		      	}
-	      	},
-
-	      	update: {
-			  		value: function() {
-			  			var color = this.getAttribute('color') || Math.random() * 0xffffff;
-			  			var material = this.material;
-			  			material.color = new THREE.Color(color);
+  						return material;
 			  		}
 			  	}
 	    })
 	  }
 	);
+
+	var VRTags = window.VRTags = window.VRTags || {};
+	VRTags["VR-MATERIAL"] = true;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){

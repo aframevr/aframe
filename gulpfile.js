@@ -39,9 +39,14 @@ function build(debug, filename, callback) {
           'lib/vendor/three.js',
           'lib/vendor/VREffect.js',
           'src/vendor/VRControls.js',
+          'src/core/vr-node.js',
           'src/core/vr-object.js',
           'src/core/vr-camera.js',
           'src/core/vr-scene.js',
+          'src/vr-material.js',
+          'src/vr-geometry.js',
+          'src/vr-mesh.js',
+          'src/vr-fog.js',
           'src/vr-controls.js'
         ])
         .pipe(gulpif(debug, sourcemaps.init()))

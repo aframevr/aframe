@@ -5,18 +5,20 @@
 	  'vr-fog',
 	  {
 	    prototype: Object.create(
-	      VRObject.prototype, {
-	      	createdCallback: {
+	      VRNode.prototype, {
+	      	update: {
 		      	value: function() {
-							var sceneEl = document.querySelector('vr-scene');
-	    				this.scene = sceneEl.object3D;
-		      		this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
-		      		this.loaded();
+		      		if (!this.fog) {
+		      			this.fog = this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
+		      		}
 		      	}
 	      	}
 	      })
 	  }
 	);
+
+	var VRTags = window.VRTags = window.VRTags || {};
+	VRTags["VR-FOG"] = true;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){

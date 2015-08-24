@@ -17,7 +17,10 @@
 
 <body>
   <vr-scene>
-    <vr-cube id="cube" rotx="45" roty="45" width="200" height="200" depth="200"></vr-cube>
+    <vr-geometry id="cube" primitive="Box" width="200" height="200" depth="200"></vr-geometry>
+    <vr-geometry id="sphere" primitive="Sphere" radius="100"></vr-geometry>
+    <vr-material id="normal" type="MeshNormalMaterial"></vr-material>
+    <vr-mesh class="cube" rotx="45" roty="45" geometry="sphere" material="normal"></vr-mesh>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

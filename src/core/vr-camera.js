@@ -6,20 +6,9 @@
 	  {
 	    prototype: Object.create(
 	      VRObject.prototype, {
-	      	createdCallback: {
-	      		value: function() {
-	      			this.object3D = new THREE.PerspectiveCamera();
-	      		}
-	      	},
-
-      	  attachedCallback: {
-      	  	value: function() {
-      	  		this.loaded();
-      	  	}
-      		},
-
     	  	update: {
     	  		value: function() {
+              var camera = this.object3D = this.object3D || new THREE.PerspectiveCamera();
     	  			VRObject.prototype.update.call(this);
     	  			// Camera parameters
     	  			var fov = parseFloat(this.getAttribute('fov')) || 45;
@@ -41,6 +30,9 @@
 	    )
 	  }
 	);
+
+  var VRTags = window.VRTags = window.VRTags || {};
+  VRTags["VR-CAMERA"] = true;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){

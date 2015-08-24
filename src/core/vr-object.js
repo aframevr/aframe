@@ -2,49 +2,38 @@
 (function(define){'use strict';define(function(require,exports,module){
 
 	var proto =  Object.create(
-    HTMLElement.prototype, {
-	    createdCallback: {
-	    	value: function() {
-	    		this.object3D = new THREE.Object3D();
-	    		this.loaded();
-	    	}
-	    },
-
-	    loaded: {
-      	value: function() {
-      		// To prevent emmitting the loaded event more than once
-      		if (this.hasLoaded) { return; }
-      		var event = new CustomEvent('loaded');
-      		this.hasLoaded = true;
-      		this.dispatchEvent(event);
-	      }
-	    },
-
+    VRNode.prototype, {
 	    attachedCallback: {
 	    	value: function() {
-	    		var parent = this.parentNode;
-	    		var sceneEl = this.sceneEl = this.sceneEl || document.querySelector('vr-scene');
+	    		var parent = this.parentObject = this.parentNode;
 	    		VRObject.prototype.update.call(this);
-	    		parent.add( this );
+	    		parent.add(this);
 	    	}
 	  	},
 
-	    detachedCallback: {
-	    	value: function() {
-	      	console.log('leaving the DOM :-( )');
-	    	}
-	  	},
+  	  detachedCallback: {
+  	  	value: function() {
+  	  		var parent = this.parentObject;
+  	  		parent.remove(this);
+  	  	}
+  		},
 
 	  	add: {
 	  		value: function(el) {
-	  			if (!this.object3D) { return; }
 	  			this.object3D.add(el.object3D);
+	  		}
+	  	},
+
+	  	remove: {
+	  		value: function(el) {
+	  			this.object3D.remove(el.object3D);
 	  		}
 	  	},
 
 	  	update: {
 	  		value: function() {
-	  			if (!this.object3D) { return };
+	  			this.object3D = this.object3D || new THREE.Object3D();
+
 	  			// Position
 	  			var x = parseFloat(this.getAttribute('x')) || 0;
 					var y = parseFloat(this.getAttribute('y')) || 0;
@@ -78,6 +67,8 @@
   });
 
 	// Registering element and exporting prototype
+	 var VRTags = window.VRTags = window.VRTags || {};
+  VRTags["VR-OBJECT"] = true;
 	module.exports = document.registerElement('vr-object', { prototype: proto });
 
 });})(typeof define=='function'&&define.amd?define

@@ -6,13 +6,6 @@
 	  {
 	    prototype: Object.create(
 	      VRObject.prototype, {
-	      	createdCallback: {
-		      	value: function() {
-		      		this.update();
-		      		this.loaded();
-		      	}
-	      	},
-
 	      	update: {
 			  		value: function() {
 			  			var width = parseFloat(this.getAttribute('width')) || 200;
@@ -33,6 +26,9 @@
 	      })
 	  }
 	);
+
+	var VRTags = window.VRTags = window.VRTags || {};
+	VRTags["VR-CUBE"] = true;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
