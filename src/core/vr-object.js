@@ -12,7 +12,10 @@
 
 	    loaded: {
       	value: function() {
+      		// To prevent emmitting the loaded event more than once
+      		if (this.hasLoaded) { return; }
       		var event = new CustomEvent('loaded');
+      		this.hasLoaded = true;
       		this.dispatchEvent(event);
 	      }
 	    },
@@ -21,8 +24,8 @@
 	    	value: function() {
 	    		var parent = this.parentNode;
 	    		var sceneEl = this.sceneEl = this.sceneEl || document.querySelector('vr-scene');
+	    		VRObject.prototype.update.call(this);
 	    		parent.add( this );
-	    		this.update();
 	    	}
 	  	},
 
@@ -34,6 +37,7 @@
 
 	  	add: {
 	  		value: function(el) {
+	  			if (!this.object3D) { return; }
 	  			this.object3D.add(el.object3D);
 	  		}
 	  	},
@@ -65,7 +69,10 @@
 
 	    attributeChangedCallback: {
 	    	value: function(name, previousValue, value) {
-	    		this.update();
+	    		VRObject.prototype.update.call(this);
+	    		if (VRObject.prototype.update !== this.update) {
+	    			this.update();
+	    		}
 	    	}
 	    }
   });

@@ -10,7 +10,7 @@
 		      	value: function() {
 							var sceneEl = document.querySelector('vr-scene');
 	    				this.scene = sceneEl.object3D;
-		      		this.scene.fog = new THREE.Fog( 0xefd1b5, 0.0025, 100000 );
+		      		this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
 		      		this.loaded();
 		      	}
 	      	}
