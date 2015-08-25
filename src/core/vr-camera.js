@@ -17,8 +17,8 @@
     					var aspect = parseFloat(this.getAttribute('aspect'))
     						|| window.innerWidth / window.innerHeight;
 
-    					// Setting three.js camera parameters
-    					this.object3D.fov = fov;
+    				  // Setting three.js camera parameters
+    				  this.object3D.fov = fov;
     	    		this.object3D.near = near;
     	    		this.object3D.far = far;
     	    		this.object3D.aspect = aspect;

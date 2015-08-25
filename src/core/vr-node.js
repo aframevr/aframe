@@ -14,11 +14,11 @@
 	    init: {
       	value: function() {
       		this.update();
-      		this.loaded();
+      		this.load();
 	      }
 	    },
 
-	    loaded: {
+	    load: {
       	value: function() {
       		// To prevent emmitting the loaded event more than once
       		if (this.hasLoaded) { return; }

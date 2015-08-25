@@ -16,7 +16,7 @@
           var elementLoaded = this.elementLoaded.bind(this);
           this.elementsPending = 0;
           var assets = document.querySelector('vr-assets');
-          if (assets && !assets.loaded) {
+          if (assets && !assets.hasLoaded) {
             this.elementsPending++;
             assets.addEventListener('loaded', elementLoaded);
           }

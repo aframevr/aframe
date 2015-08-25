@@ -6,10 +6,17 @@
 	  {
 	    prototype: Object.create(
 	      VRNode.prototype, {
+	      	init: {
+	      	  value: function() {
+	      	  	this.material = this.setupMaterial();
+	      	    this.load();
+	      	  }
+	      	},
+
 	      	update: {
 			  		value: function() {
 			  			var color = this.getAttribute('color') || Math.random() * 0xffffff;
-			  			var material = this.material || this.setupMaterial();
+			  			var material = this.material;
 			  			material.color = new THREE.Color(color);
 			  		}
 			  	},

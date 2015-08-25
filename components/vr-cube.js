@@ -6,21 +6,38 @@
 	  {
 	    prototype: Object.create(
 	      VRObject.prototype, {
+	      	init: {
+	      	  value: function() {
+	      	  	var material = this.getMaterial();
+			  			var geometry = this.getGeometry();
+	      	  	this.object3D = new THREE.Mesh( geometry, material );
+	      	  	this.load();
+	      	  }
+	      	},
+
 	      	update: {
+			  		value: function() {
+			  			var material = this.getMaterial();
+			  			var geometry = this.getGeometry();
+			  			this.object3D.geometry = new THREE.BoxGeometry( width, height, depth );
+			  			this.object3D.material = material;
+			  		}
+			  	},
+
+			  	getGeometry: {
 			  		value: function() {
 			  			var width = parseFloat(this.getAttribute('width')) || 200;
 			  			var height = parseFloat(this.getAttribute('height')) || 200;
 			  			var depth = parseFloat(this.getAttribute('depth')) || 200;
+			  			return new THREE.BoxGeometry( width, height, depth );
+			  		}
+			  	},
+
+			  	getMaterial: {
+			  		value: function() {
 			  			var materialId = this.getAttribute('material');
-			  			var materialEl = materialId? document.querySelector('#' + materialId) : null;
-			  			var material = (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
-			  			var geometry = new THREE.BoxGeometry( width, height, depth );
-			  			if (!this.object3D) {
-			  				this.object3D = new THREE.Mesh( geometry, material );
-			  			} else {
-			  				this.object3D.geometry = new THREE.BoxGeometry( width, height, depth );
-			  				this.object3D.material = material;
-			  			}
+			  			var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+			  			return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
 			  		}
 			  	}
 	      })

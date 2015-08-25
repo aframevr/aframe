@@ -6,12 +6,11 @@
 	  {
 	    prototype: Object.create(
 	      VRNode.prototype, {
-	      	update: {
-		      	value: function() {
-		      		if (!this.fog) {
-		      			this.fog = this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
-		      		}
-		      	}
+	      	init: {
+	      	  value: function() {
+	      	  	this.fog = this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
+	      	  	this.load();
+	      	  }
 	      	}
 	      })
 	  }

@@ -6,11 +6,12 @@
 	  {
 	    prototype: Object.create(
 	      VRNode.prototype, {
-	      	update: {
-			  		value: function() {
-			  			var geometry = this.geometry || this.setupGeometry();
-			  		}
-			  	},
+          init: {
+            value: function() {
+              var geometry = this.geometry || this.setupGeometry();
+              this.load();
+            }
+          },
 
 			  	setupGeometry: {
 			  		value: function() {

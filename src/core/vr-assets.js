@@ -47,12 +47,12 @@
         value: function() {
           this.assetsPending--;
           if (this.assetsPending === 0) {
-            this.loaded();
+            this.load();
           }
         }
       },
 
-      loaded: {
+      load: {
         value: function() {
           // To prevent emmitting the loaded event more than once
           if (this.hasLoaded) { return; }
