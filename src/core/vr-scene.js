@@ -15,7 +15,13 @@
           var self = this;
           var elementLoaded = this.elementLoaded.bind(this);
           this.elementsPending = 0;
+          var assets = document.querySelector('vr-assets');
+          if (assets && !assets.loaded) {
+            this.elementsPending++;
+            assets.addEventListener('loaded', elementLoaded);
+          }
           traverseDOM(this);
+
           function traverseDOM(node) {
             // We should be checking for the prototype like this
             // if (VRNode.prototype.isPrototypeOf(node))

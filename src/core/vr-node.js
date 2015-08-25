@@ -7,9 +7,15 @@
 	    	value: function() {
 	    		var sceneEl = document.querySelector('vr-scene');
 	    		this.scene = sceneEl.object3D;
-	    		this.update();
-	    		this.loaded();
+	 				this.init();
 	    	}
+	    },
+
+	    init: {
+      	value: function() {
+      		this.update();
+      		this.loaded();
+	      }
 	    },
 
 	    loaded: {
