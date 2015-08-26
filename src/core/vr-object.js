@@ -25,7 +25,9 @@
       load: {
         value: function() {
           var parent = this.parentNode;
-          parent.add(this);
+          if (parent) {
+            parent.add(this);
+          }
           VRNode.prototype.load.call(this);
         }
       },

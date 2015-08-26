@@ -6,30 +6,40 @@
     {
       prototype: Object.create(
         VRObject.prototype, {
-          update: {
+          init: {
             value: function() {
-              var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
-              var size = parseFloat(this.getAttribute('size')) || 14;
+              var material = new THREE.LineBasicMaterial( { color: 0x606060 } );
               var geometry = this.generateGeometry();
-
-              if (!this.object3D) {
-                this.object3D = new THREE.LineSegments( geometry, material, THREE.LinePieces );
-              } else {
-                this.object3D.geometry = geometry;
-              }
+              this.object3D = new THREE.LineSegments( geometry, material, THREE.LinePieces );
+              this.load();
             }
           },
+          update: {
+            value: function() {
+              this.object3D.geometry = this.generateGeometry();
+            }
+          },
+
           generateGeometry: {
             value: function(size) {
+              var size = parseFloat(this.getAttribute('size')) || 14;
+
+              // Grid
+              var step = 25;
+
               var geometry = new THREE.Geometry();
-              var floor = -0.04;
-              var step = 1;
-              for ( var i = 0; i <= size / step * 2; i ++ ) {
-                  geometry.vertices.push( new THREE.Vector3( - size, floor, i * step - size ) );
-                  geometry.vertices.push( new THREE.Vector3(   size, floor, i * step - size ) );
-                  geometry.vertices.push( new THREE.Vector3( i * step - size, floor, -size ) );
-                  geometry.vertices.push( new THREE.Vector3( i * step - size, floor,  size ) );
+              var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
+
+              for ( var i = - size; i <= size; i += step ) {
+
+                geometry.vertices.push( new THREE.Vector3( - size, - 0.04, i ) );
+                geometry.vertices.push( new THREE.Vector3(   size, - 0.04, i ) );
+
+                geometry.vertices.push( new THREE.Vector3( i, - 0.04, - size ) );
+                geometry.vertices.push( new THREE.Vector3( i, - 0.04,   size ) );
+
               }
+
               return geometry;
             }
           }

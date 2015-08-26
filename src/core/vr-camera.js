@@ -6,10 +6,15 @@
     {
       prototype: Object.create(
         VRObject.prototype, {
+          init: {
+            value: function() {
+              this.object3D = new THREE.PerspectiveCamera();
+              this.load();
+            }
+          },
+
           update: {
             value: function() {
-              var camera = this.object3D = this.object3D || new THREE.PerspectiveCamera();
-              VRObject.prototype.update.call(this);
               // Camera parameters
               var fov = parseFloat(this.getAttribute('fov')) || 45;
               var near = parseFloat(this.getAttribute('nar')) || 1;
@@ -24,10 +29,6 @@
               this.object3D.aspect = aspect;
               this.object3D.updateProjectionMatrix();
             }
-          },
-
-          load: {
-            value: function() { /* no op */ }
           }
       }
       )

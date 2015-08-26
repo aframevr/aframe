@@ -83,14 +83,12 @@
       setupCamera: {
         value: function() {
           var cameraEl = document.querySelector('vr-camera');
-          // If there's not a user defined camera
+          // If there's not a user defined camera we create one
           if (!cameraEl) {
             cameraEl = document.createElement('vr-camera');
-            cameraEl.addEventListener('loaded', this.elementLoaded.bind(this));
             cameraEl.setAttribute('fov', 45);
             cameraEl.setAttribute('near', 1);
             cameraEl.setAttribute('far', 10000);
-            cameraEl.setAttribute('z', 500);
           }
           this.camera = cameraEl.object3D;
           this.appendChild(cameraEl);
