@@ -12,6 +12,7 @@
   <script src="../lib/vendor/VREffect.js"></script>
   <script src="../dist/vr-markup.js"></script>
   <!-- User defined components -->
+  <script src="../components/vr-cube.js"></script>
   <script src="../components/vr-grid.js"></script>
   <style>
     body {
@@ -22,8 +23,10 @@
 
 <body>
   <vr-scene>
-    <vr-camera fov="45" near="1" far="2000" y="10"></vr-camera>
-    <vr-cube z="-500"></vr-cube>
+    <vr-camera fov="45" near="1" far="2000" y="50"></vr-camera>
+    <vr-cube z="-500" width="50" height="50" depth="50" y="25"></vr-cube>
+    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="100"></vr-cube>
+    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="-100"></vr-cube>
     <vr-grid size="1000"></vr-grid>
   </vr-scene>
   <button class="vr-button">Enter VR</button>

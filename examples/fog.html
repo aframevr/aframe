@@ -15,10 +15,12 @@
 </head>
 
 <body>
-  <vr-scene>
-    <vr-fog></vr-fog>
+  <vr-assets>
     <vr-material id="lambert" type="MeshLambertMaterial"></vr-material>
     <vr-material id="normal" type="MeshNormalMaterial"></vr-material>
+  </vr-assets>
+  <vr-scene>
+    <vr-fog></vr-fog>
     <vr-cube class="cube" rotx="45" roty="45" z="-500" material="normal" z="-500"></vr-cube>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
