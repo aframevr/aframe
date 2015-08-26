@@ -10,6 +10,18 @@
         }
       },
 
+      detachedCallback: {
+        value: function() {
+          this.shutdown();
+        }
+      },
+
+      shutdown: {
+        value: function() {
+          window.cancelAnimationFrame(this.animationFrameID);
+        }
+      },
+
       attachEventListeners: {
         value: function() {
           var self = this;
@@ -89,9 +101,12 @@
             cameraEl.setAttribute('fov', 45);
             cameraEl.setAttribute('near', 1);
             cameraEl.setAttribute('far', 10000);
+            this.appendChild(cameraEl);
           }
-          this.camera = cameraEl.object3D;
-          this.appendChild(cameraEl);
+          if (!cameraEl.hasLoaded) {
+            this.elementsPending++;
+            cameraEl.addEventListener('loaded', this.elementLoaded.bind(this));
+          }
         }
       },
 
@@ -105,11 +120,17 @@
       setupRenderer: {
         value: function() {
           var canvas = this.canvas;
-          var renderer = this.renderer = this.monoRenderer = new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
+          var renderer = this.renderer = this.monoRenderer =
+            (VRScene && VRScene.renderer) || // To prevent creating multiple rendering contexts
+            new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
           renderer.setPixelRatio( window.devicePixelRatio );
           renderer.sortObjects = false;
+          module.exports.renderer = renderer;
+
           this.stereoRenderer = new THREE.VREffect(renderer);
-          this.object3D = new THREE.Scene();
+
+          this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
+          module.exports.scene = this.object3D
         }
       },
 
@@ -135,9 +156,6 @@
         value: function(el) {
           if (!el.object3D) { return; }
           this.object3D.add(el.object3D);
-          if (el.tagName === "VR-CAMERA") {
-            this.camera = el.object3D;
-          }
         }
       },
 
@@ -151,7 +169,7 @@
       render: {
         value: function() {
           this.renderer.render( this.object3D, this.camera );
-          window.requestAnimationFrame(this.render.bind(this));
+          this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }
       }
     }

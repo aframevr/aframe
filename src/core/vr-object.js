@@ -12,7 +12,13 @@
       detachedCallback: {
         value: function() {
           var parent = this.parentNode;
-          parent.remove(this);
+          if (parent) {
+            parent.remove(this);
+          } else {
+            // In certain cases like removing an element from the DOM inspector
+            // The parentNode is null when calling this function.
+            this.sceneEl.remove(this);
+          }
         }
       },
 

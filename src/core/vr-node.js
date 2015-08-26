@@ -6,7 +6,7 @@
       createdCallback: {
         value: function() {
           var sceneEl = document.querySelector('vr-scene');
-          this.scene = sceneEl.object3D;
+          this.sceneEl = sceneEl;
           this.init();
         }
       },

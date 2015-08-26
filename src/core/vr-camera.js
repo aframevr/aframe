@@ -8,8 +8,11 @@
         VRObject.prototype, {
           init: {
             value: function() {
-              this.object3D = new THREE.PerspectiveCamera();
+              var camera = this.object3D = new THREE.PerspectiveCamera();
+              // This should probably managed within vr-scene
+              this.sceneEl.camera = camera;
               this.saveInitialValues();
+              this.update();
               this.load();
             }
           },

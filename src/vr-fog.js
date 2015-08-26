@@ -8,7 +8,7 @@
         VRNode.prototype, {
           init: {
             value: function() {
-              this.fog = this.scene.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
+              this.fog = this.sceneEl.object3D.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
               this.load();
             }
           }
