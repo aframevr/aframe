@@ -12,7 +12,7 @@
 
               var self = this;
               var src = this.getAttribute('src');
-              var scale = this.getAttribute('scale');
+              var scale = parseFloat(this.getAttribute('scale')) || 1;
 
               // TODO: enable user to pass in material, and have that material apply to all nodes in the loaded object.
 
@@ -25,8 +25,9 @@
               // loader.options.convertUpAxis = true; // Not sure if we need this. Doesn't appear to be the case. But it was in Three.js examples.
               loader.load( src, function ( collada ) {
                 var dae = collada.scene;
-                dae.scale.x = dae.scale.y = dae.scale.z = scale;
-                dae.updateMatrix();
+                console.log(dae);
+                // dae.scale.x = dae.scale.y = dae.scale.z = scale;
+                // dae.updateMatrix();
                 self.object3D = dae;
                 self.load();
               });

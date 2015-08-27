@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Demo Scene 1</title>
+  <title>Demo Scene 2</title>
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
@@ -10,19 +10,17 @@
   <script src="../dist/vr-markup-min.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
+  <script src="js/ColladaLoader.js"></script>
   <script src="js/ImageLoader.js"></script>
   <!-- User defined component example -->
-  <script src="../components/vr-video360.js"></script>
-  <script src="../components/vr-curvedPlane2.js"></script>
-  <script src="../components/vr-skysphere.js"></script>
+  <script src="../components/vr-model.js"></script>
 </head>
 
 <body>
   <vr-scene>
-    <vr-camera z="1" far="10000" near="0.1" fov="45"s></vr-camera>
-
+    <vr-camera z="5" y="1.8" far="10000" near="0.1" fov="45"s></vr-camera>
     <!-- <vr-video360 src="http://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4" autoplay loop></vr-video360> -->
-    <vr-skysphere src="images/sky1.jpg"></vr-skysphere>
+    <vr-model src="models/cube2.dae" x="2" y="2"></vr-model>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>
