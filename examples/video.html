@@ -24,11 +24,9 @@
 
 <body>
   <vr-scene>
-    <vr-camera fov="45" near="1" far="2000" y="50"></vr-camera>
-    <vr-cube z="-500" width="50" height="50" depth="50" y="25"></vr-cube>
-    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="100"></vr-cube>
-    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="-100"></vr-cube>
+    <vr-camera fov="45" near="1" far="2000" y="50" style="texture: caca"></vr-camera>
     <vr-grid size="1000"></vr-grid>
+    <vr-video z="-200" y="75" width="88" height="50" src="https://raw.githubusercontent.com/Mozilla-NTU/slidesMay2015/gh-pages/media/bunny.mp4" autoplay loop></vr-video>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

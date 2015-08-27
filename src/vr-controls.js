@@ -8,10 +8,7 @@
 		var keys = {};
 		var mouseDown = false;
 
-		var deltaX = 0;
-		var deltaY = 0;
     var acceleration = 2000;
-
     var velocity = new THREE.Vector3();
 
     var pitchObject = new THREE.Object3D();

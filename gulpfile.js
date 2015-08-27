@@ -38,7 +38,8 @@ function build(debug, filename, callback) {
           'lib/vendor/document-register-element.max.js',
           'lib/vendor/three.js',
           'lib/vendor/VREffect.js',
-          'src/vendor/VRControls.js',
+          'lib/vendor/VRControls.js',
+          'lib/cursor3D.js',
           'src/core/vr-node.js',
           'src/core/vr-object.js',
           'src/core/vr-camera.js',
@@ -48,7 +49,8 @@ function build(debug, filename, callback) {
           'src/vr-geometry.js',
           'src/vr-mesh.js',
           'src/vr-fog.js',
-          'src/vr-controls.js'
+          'src/vr-controls.js',
+          'src/vr-cursor.js'
         ])
         .pipe(gulpif(debug, sourcemaps.init()))
         .pipe(gulpif(!debug, uglify()))
