@@ -32,12 +32,7 @@
               material.uniforms[ "tCube" ].value = textureCube;
               var geometry = new THREE.BoxGeometry( size, size, size, 1, 1, 1 )
 
-              if (!this.object3D) {
-                  this.object3D = new THREE.Mesh( geometry, material );
-              } else {
-                  this.object3D.geometry = new THREE.BoxGeometry( size, size, size, 1, 1, 1 )
-                  this.object3D.material = material;
-              }
+              this.object3D = new THREE.Mesh( geometry, material );
             }
           },
 
