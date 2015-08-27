@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Video 360</title>
+  <meta name="description" content="Demo of threejs using Web Components">
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
+  <script src="../lib/vendor/dat.gui.js"></script>
+  <script src="../lib/vendor/three.js"></script>
+  <script src="../lib/vendor/VRControls.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
+  <script src="../dist/vr-markup.js"></script>
+  <!-- User defined components -->
+  <script src="../components/vr-grid.js"></script>
+  <script src="../components/vr-video360.js"></script>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <vr-scene>
+    <vr-camera y="60" fov="45" near="1" far="100000"></vr-camera>
+    <vr-grid size="200"></vr-grid>
+    <vr-video360 src="http://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4" autoplay loop></vr-video360>
+  </vr-scene>
+  <button class="vr-button">Enter VR</button>
+  <script>
+    var scene = document.querySelector('vr-scene');
+    var fsButton = document.querySelector('.vr-button');
+    fsButton.addEventListener('click', function() {
+      scene.enterVR();
+    });
+  </script>
+</body>
+</html>

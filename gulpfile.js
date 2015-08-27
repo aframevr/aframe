@@ -78,7 +78,7 @@ gulp.task('server', function() {
     .pipe(webserver({
       livereload: false,
       directoryListing: true,
-      open: "examples/index.html",
+      open: "examples/",
       port: 9000
     }));
 });
