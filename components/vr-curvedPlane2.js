@@ -35,11 +35,6 @@
               var opacity = parseFloat(this.getAttribute('opacity')) || 1;
               var flipNormals = parseFloat(this.getAttribute('flip')) || true;
 
-              var radius = parseFloat(this.getAttribute('radius')) || 10;
-              var width = parseFloat(this.getAttribute('width')) || 4;
-              var height = parseFloat(this.getAttribute('height')) || 1;
-              var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
-
               var radiusSegments = thetaLength / 2;
               var heightSegments = 1;
               var length = thetaLength * Math.PI/180;
