@@ -29,7 +29,7 @@
             value: function() {
               var video = document.createElement('video');
               video.crossOrigin = 'anonymous';
-              video.src = this.getAttribute('src');;
+              video.src = this.getAttribute('src');
               video.autoplay = this.hasAttribute('autoplay');
               video.loop = this.hasAttribute('loop');
 
