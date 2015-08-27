@@ -6,6 +6,7 @@
       createdCallback: {
         value: function() {
           this.attachEventListeners();
+          this.attachFullscreenListeners();
           this.setupScene();
         }
       },
@@ -59,7 +60,25 @@
           function attachEventListener(node) {
             node.addEventListener('loaded', elementLoaded);
           }
-        }
+        },
+
+        attachFullscreenListeners: {
+          value: function() {
+            // handle fullscreen changes
+            document.addEventListener('mozfullscreenchange', this.fullscreenChange.bind(this));
+            document.addEventListener('webkitfullscreenchange', this.fullscreenChange.bind(this));
+          }
+        },
+
+        fullscreenChange: {
+          value: function(e) {
+            // switch back to the mono renderer if we have dropped out of fullscreen VR mode.
+            var fsElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+            if (!fsElement) {
+              this.renderer = this.monoRenderer;
+            }
+          }
+        },
       },
 
       elementLoaded: {
