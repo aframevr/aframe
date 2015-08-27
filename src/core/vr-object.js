@@ -3,12 +3,6 @@
 
   var proto =  Object.create(
     VRNode.prototype, {
-       attachedCallback: {
-         value: function() {
-            VRObject.prototype.update.call(this);
-         }
-      },
-
       detachedCallback: {
         value: function() {
           var parent = this.parentNode;
@@ -31,9 +25,12 @@
       load: {
         value: function() {
           var parent = this.parentNode;
+          // Handle to the associated DOM element
+          this.object3D.el = this;
           if (parent) {
             parent.add(this);
           }
+          VRObject.prototype.update.call(this);
           VRNode.prototype.load.call(this);
         }
       },

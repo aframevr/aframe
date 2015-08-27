@@ -99,6 +99,8 @@
           this.setupRenderer();
           // three.js camera setup
           this.setupCamera();
+          // cursor camera setup
+          this.setupCursor();
         }
       },
 
@@ -113,7 +115,7 @@
 
       setupCamera: {
         value: function() {
-          var cameraEl = document.querySelector('vr-camera');
+          var cameraEl = this.querySelector('vr-camera');
           // If there's not a user defined camera we create one
           if (!cameraEl) {
             cameraEl = document.createElement('vr-camera');
@@ -125,6 +127,15 @@
           if (!cameraEl.hasLoaded) {
             this.elementsPending++;
             cameraEl.addEventListener('loaded', this.elementLoaded.bind(this));
+          }
+        }
+      },
+
+      setupCursor: {
+        value: function() {
+          var cursor = this.querySelector('vr-cursor');
+          if (cursor) {
+            this.cursor = cursor;
           }
         }
       },
@@ -187,7 +198,9 @@
 
       render: {
         value: function() {
+          var cursor = this.cursor;
           this.renderer.render( this.object3D, this.camera );
+          if (cursor) { cursor.render(); }
           this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }
       }

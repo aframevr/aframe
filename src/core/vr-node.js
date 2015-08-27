@@ -13,7 +13,6 @@
 
       init: {
         value: function() {
-          this.update();
           this.load();
         }
       },
@@ -25,6 +24,7 @@
           var event = new Event('loaded');
           this.hasLoaded = true;
           this.dispatchEvent(event);
+          this.update();
         }
       },
 
