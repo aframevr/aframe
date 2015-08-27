@@ -31,8 +31,6 @@
               var height = parseFloat(this.getAttribute('height')) || 5;
               var thetaStart = parseFloat(this.getAttribute('thetaStart')) || Math.PI;
               var thetaLength = parseFloat(this.getAttribute('thetaLength')) || 90;
-              var color = parseFloat(this.getAttribute('color')) || 0xCC0000;;
-              var opacity = parseFloat(this.getAttribute('opacity')) || 1;
               var flipNormals = parseFloat(this.getAttribute('flip')) || true;
 
               var radiusSegments = thetaLength / 2;
@@ -61,9 +59,25 @@
 
           getMaterial: {
             value: function() {
-              var materialId = this.getAttribute('material');
-              var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-              return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
+              
+              var imgSrc = this.getAttribute('tex');
+              var color = this.getAttribute('color');
+              var opacity = parseFloat(this.getAttribute('opacity')) || 1;
+
+              var material = new THREE.MeshBasicMaterial({ transparent: true, side: THREE.DoubleSide });
+
+              if(imgSrc){ 
+                material.map = THREE.ImageUtils.loadTexture(imgSrc);
+              } else if (color) {
+                material.color = new THREE.Color(color);
+              } else {
+                material.color = new THREE.Color("#CCCCCC");
+              }
+
+              material.opacity = opacity;
+              
+              return material;
+
             }
           }
         })

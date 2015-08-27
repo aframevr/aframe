@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Curved Plane 2</title>
+  <title>Demo Scene 1</title>
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
@@ -12,16 +12,16 @@
   <script src="../lib/vendor/VREffect.js"></script>
   <script src="js/ImageLoader.js"></script>
   <!-- User defined component example -->
+  <script src="../components/vr-video360.js"></script>
   <script src="../components/vr-curvedPlane2.js"></script>
 </head>
 
 <body>
   <vr-scene>
-    <vr-camera z="1" far="100000" near="1" fov="45"></vr-camera>
-    <vr-curvedPlane2 y="2.5" radius="4" height="1" thetaStart="10" thetaLength="30" color="#ffcd02"></vr-curvedPlane2>
-    <vr-curvedPlane2 y="40" radius="200" height="12" thetaStart="240" thetaLength="180" color="#6fbe4a"></vr-curvedPlane2>
-    <vr-curvedPlane2 y="0" radius="20" height="4" thetaStart="315" thetaLength="90" color="#0c99d5"></vr-curvedPlane2>
-    <vr-curvedPlane2 y="-14" radius="50" height="40" thetaStart="340" thetaLength="90" color="#e14164"></vr-curvedPlane2>
+    <vr-camera z="1" far="100000" near="1" fov="45"s></vr-camera>
+    <vr-curvedPlane2 y="3.25" radius="14" height="14" thetaStart="240" thetaLength="240" color="#444c35" opacity="0.6"></vr-curvedPlane2>
+    <vr-curvedPlane2 y="4.75" radius="10" height="10" thetaStart="280" thetaLength="160" tex="images/ui-concept-1.png"></vr-curvedPlane2>
+    <vr-video360 src="http://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4" autoplay loop></vr-video360>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

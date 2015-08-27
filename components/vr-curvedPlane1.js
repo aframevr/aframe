@@ -30,7 +30,6 @@
               var radius = parseFloat(this.getAttribute('radius')) || 10;
               var width = parseFloat(this.getAttribute('width')) || 4;
               var height = parseFloat(this.getAttribute('height')) || 1;
-              var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
 
               var circumference= 2 * Math.PI * radius;
               var thetaLength = (Math.PI*2) * (width/circumference);
@@ -55,6 +54,7 @@
 
           getMaterial: {
             value: function() {
+              var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
               var materialId = this.getAttribute('material');
               var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
               return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
