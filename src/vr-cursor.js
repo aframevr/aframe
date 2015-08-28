@@ -66,7 +66,7 @@
               var cursorPositionWorld = cursor.localToWorld( cursorPosition );
               var direction = cursorPositionWorld.sub(camera.position).normalize();
               raycaster.set( camera.position, direction );
-              return raycaster.intersectObjects( objects );
+              return raycaster.intersectObjects( objects, true );
             }
           },
 
