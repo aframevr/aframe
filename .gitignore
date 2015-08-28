@@ -3,4 +3,3 @@ firefox
 node_modules
 karma.conf.js
 .DS_Store
-dist
