@@ -8,9 +8,33 @@
         VRObject.prototype, {
           init: {
             value: function() {
+              var material = this.getMaterial();
+              var geometry = this.getGeometry();
+              this.object3D = new THREE.Mesh( geometry, material );
+              this.load();
+            }
+          },
+
+          update: {
+            value: function() {
+              var material = this.getMaterial();
+              var geometry = this.getGeometry();
+              this.object3D.geometry = geometry;
+              this.object3D.material = material;
+            }            
+          },
+
+          getGeometry: {
+            value: function() {
+              var size = parseFloat(this.getAttribute('size')) || 10000;
+              return new THREE.BoxGeometry( size, size, size, 1, 1, 1 );
+            }
+          },
+
+          getMaterial: {
+            value: function() {
 
               var self = this;
-              var size = parseFloat(this.getAttribute('size')) || 10000;
               
               var urlPrefix = this.getAttribute('src');
               var urls = [ urlPrefix + "right.jpg", urlPrefix + "left.jpg",
@@ -21,7 +45,9 @@
                 self.load(); 
               });
               textureCube.format = THREE.RGBFormat;
+              
               var shader = THREE.ShaderLib['cube'];
+              
               var material = new THREE.ShaderMaterial({
                 fragmentShader: shader.fragmentShader,
                 vertexShader: shader.vertexShader,
@@ -30,15 +56,10 @@
               });
 
               material.uniforms[ "tCube" ].value = textureCube;
-              var geometry = new THREE.BoxGeometry( size, size, size, 1, 1, 1 )
 
-              this.object3D = new THREE.Mesh( geometry, material );
+              return material;
             }
           },
-
-          update: {
-            // TODO: Am not sure what should go here...
-          }
         })
     }
   );
