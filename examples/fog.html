@@ -12,6 +12,9 @@
   <script src="../lib/vendor/VREffect.js"></script>
   <!-- User defined components -->
   <script src="../components/vr-cube.js"></script>
+  <script src="../components/vr-sphere.js"></script>
+  <script src="../components/vr-plane.js"></script>
+  <script src="../components/vr-skysphere.js"></script>
 </head>
 
 <body>
@@ -20,8 +23,12 @@
     <vr-material id="normal" type="MeshNormalMaterial"></vr-material>
   </vr-assets>
   <vr-scene>
-    <vr-fog></vr-fog>
-    <vr-cube class="cube" rotx="45" roty="45" z="-500" material="normal" z="-500"></vr-cube>
+    <vr-fog color="#CC0000" near="-400" far="1750"></vr-fog>
+    <vr-skysphere color="#CC0000"></vr-skysphere>
+    <vr-cube class="cube" rotx="13" roty="13" material="lambert" x="300" z="-1000"></vr-cube>
+    <vr-cube class="cube" rotx="45" roty="45" x="0" z="-500" material="lambert" z="-500"></vr-cube>
+    <vr-sphere class="sphere" radius="80" material="lambert" x="-100" y="30" z="-200"></vr-sphere>
+    <vr-plane class="plane" width="10000" height="10000" y="-10" rotx="-90" material="lambert"></vr-plane>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

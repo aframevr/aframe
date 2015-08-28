@@ -34,9 +34,16 @@
 
           getMaterial: {
             value: function() {
+              var color = this.getAttribute('color');
               var materialId = this.getAttribute('material');
               var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-              return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
+              var material = materialEl.material;
+
+              if(color) {
+                material.color = new THREE.Color(color);
+              } 
+
+              return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { opacity: 1 } );
             }
           }
         })

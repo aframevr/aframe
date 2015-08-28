@@ -8,10 +8,20 @@
         VRNode.prototype, {
           init: {
             value: function() {
-              this.fog = this.sceneEl.object3D.fog = new THREE.Fog( 0xefd1b5, 1.02, 500 );
+              var color = this.getAttribute('color') || 0xFFFFFF;
+              var near = parseFloat(this.getAttribute('near')) || 1;
+              var far = parseFloat(this.getAttribute('far')) || 1000;
+              this.fog = this.sceneEl.object3D.fog = new THREE.Fog( color, near, far );
               this.load();
             }
+          },
+
+          update: {
+            value: function() {
+              // TODO: DOES ANYTHING NEED TO BE IN UPDATE?
+            }
           }
+
         })
     }
   );
