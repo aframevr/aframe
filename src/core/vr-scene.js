@@ -198,9 +198,7 @@
 
       render: {
         value: function() {
-          var cursor = this.cursor;
           this.renderer.render( this.object3D, this.camera );
-          if (cursor) { cursor.render(); }
           this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }
       }

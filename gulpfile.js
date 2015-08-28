@@ -39,6 +39,7 @@ function build(debug, filename, callback) {
           'lib/vendor/three.js',
           'lib/vendor/VREffect.js',
           'lib/vendor/VRControls.js',
+          'lib/vendor/Raycaster.js',
           'lib/cursor3D.js',
           'src/core/vr-node.js',
           'src/core/vr-object.js',

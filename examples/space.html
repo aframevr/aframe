@@ -24,7 +24,13 @@
 
 <body>
   <vr-scene>
-    <vr-camera fov="45" near="1" far="2000" y="50"></vr-camera>
+    <vr-assets>
+      <vr-material id="yellow" type="MeshBasicMaterial" color="yellow"></vr-material>
+      <vr-material id="normal" type="MeshNormalMaterial" color="yellow"></vr-material>
+    </vr-assets>
+    <vr-camera fov="45" near="1" far="2000" y="50">
+      <vr-cursor z="-50" radius="0.5"></vr-cursor>
+    </vr-camera>
     <vr-cube z="-500" width="50" height="50" depth="50" y="25"></vr-cube>
     <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="100"></vr-cube>
     <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="-100"></vr-cube>
@@ -37,6 +43,19 @@
     fsButton.addEventListener('click', function() {
       scene.enterVR();
     });
+    var cubes = document.querySelectorAll('vr-cube');
+    var i;
+    for (i = 0; i < cubes.length; ++i) {
+      cubes[i].addEventListener('click', function(evt) {
+        var cube = evt.currentTarget;
+        var material = cube.getAttribute('material');
+        if (material === 'yellow') {
+          evt.currentTarget.setAttribute('material', 'normal');
+        } else {
+          evt.currentTarget.setAttribute('material', 'yellow');
+        }
+      });
+    }
   </script>
 </body>
 </html>
