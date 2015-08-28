@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Space</title>
+  <meta name="description" content="Demo of threejs using Web Components">
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
+  <script src="../lib/vendor/dat.gui.js"></script>
+  <script src="../lib/vendor/three.js"></script>
+  <script src="../lib/vendor/VRControls.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
+  <script src="../dist/vr-markup.js"></script>
+  <!-- User defined components -->
+  <script src="../components/vr-cube.js"></script>
+  <script src="../components/vr-grid.js"></script>
+  <script src="../components/vr-video.js"></script>
+  <script src="../components/vr-audio.js"></script>
+  <style id="vr-styles">
+    body {
+      background-color: black;
+    }
+  </style>
+</head>
+
+<body>
+  <vr-scene>
+    <vr-camera fov="45" near="1" far="2000" y="50"></vr-camera>
+    <vr-cube z="-500" width="50" height="50" depth="50" y="25">
+      <vr-audio src="cricket.mp3" autoplay loop></vr-audio>
+    </vr-cube>
+    <vr-grid size="1000"></vr-grid>
+  </vr-scene>
+  <button class="vr-button">Enter VR</button>
+  <script>
+    var scene = document.querySelector('vr-scene');
+    var fsButton = document.querySelector('.vr-button');
+    fsButton.addEventListener('click', function() {
+      scene.enterVR();
+    });
+  </script>
+</body>
+</html>
