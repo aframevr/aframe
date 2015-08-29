@@ -2,31 +2,26 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Space</title>
+  <title>Video</title>
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../lib/vendor/dat.gui.js"></script>
-  <script src="../lib/vendor/three.js"></script>
+  <script src="../dist/vr-markup-min.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
-  <script src="../dist/vr-markup.js"></script>
   <!-- User defined components -->
   <script src="../components/vr-cube.js"></script>
   <script src="../components/vr-grid.js"></script>
   <script src="../components/vr-video.js"></script>
-  <style id="vr-styles">
-    body {
-      background-color: black;
-    }
-  </style>
+  <script src="../components/vr-skysphere.js"></script>
 </head>
 
 <body>
   <vr-scene>
-    <vr-camera fov="45" near="1" far="2000" y="50" style="texture: caca"></vr-camera>
-    <vr-grid size="1000"></vr-grid>
-    <vr-video z="-200" y="75" width="88" height="50" src="https://raw.githubusercontent.com/Mozilla-NTU/slidesMay2015/gh-pages/media/bunny.mp4" autoplay loop></vr-video>
+    <vr-camera y="1.8" z="28"></vr-camera>
+    <vr-skysphere color="#000"></vr-skysphere>
+    <vr-grid size="50"></vr-grid>
+    <vr-video width="16" height="9" y="4.5" src="https://raw.githubusercontent.com/Mozilla-NTU/slidesMay2015/gh-pages/media/bunny.mp4" autoplay loop></vr-video>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

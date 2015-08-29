@@ -6,7 +6,6 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../dist/vr-markup-min.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
@@ -16,15 +15,17 @@
   <script src="../components/vr-sphere.js"></script>
   <script src="../components/vr-plane.js"></script>
   <script src="../components/vr-image.js"></script>
+  <script src="../components/vr-grid.js"></script>
 </head>
 
 <body>
   <vr-scene>
-    <vr-camera z="100" far="100000" near="1" fov="45"s></vr-camera>
-    <vr-cube x="0" rotx="45" roty="45" width="10" height="10" depth="10"></vr-cube> 
-    <vr-sphere x="20" radius="7"></vr-sphere>
-    <vr-plane x="40" rotx="0" roty="0" width="10" height="10"></vr-plane>
-    <vr-image x="60" width="10" height="10" src="images/firefox.jpg"></vr-image>
+    <vr-camera y="1.8" z="40"></vr-camera>
+    <vr-grid size="50"></vr-grid>
+    <vr-cube width="4" height="4" depth="4" rotx="20" roty="45" x="-15" y="5"></vr-cube> 
+    <vr-sphere radius="2.5" x="-7" y="5"></vr-sphere>
+    <vr-plane width="5" height="5" rotx="0" roty="0" x="0" y="5"></vr-plane>
+    <vr-image width="6" height="6" src="images/firefox.jpg" x="7" y="5"></vr-image>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

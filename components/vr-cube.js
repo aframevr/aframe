@@ -35,9 +35,24 @@
 
           getMaterial: {
             value: function() {
+              var color = this.getAttribute('color');
               var materialId = this.getAttribute('material');
-              var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-              return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
+              var materialEl;
+              var material;
+
+              if(materialId) {
+                materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+                material = materialEl.material;
+                if(color){
+                  material.color = new THREE.Color(color);
+                }
+              } else if (color) {
+                material = new THREE.MeshPhongMaterial({color:color})
+              } else {
+                material = new THREE.MeshNormalMaterial()
+              }
+
+              return material;
             }
           }
         })

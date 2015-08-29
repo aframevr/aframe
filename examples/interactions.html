@@ -2,39 +2,31 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Space</title>
+  <title>Interactions</title>
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../lib/vendor/dat.gui.js"></script>
-  <script src="../lib/vendor/three.js"></script>
+  <script src="../dist/vr-markup-min.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
-  <script src="../dist/vr-markup.js"></script>
   <!-- User defined components -->
   <script src="../components/vr-cube.js"></script>
   <script src="../components/vr-grid.js"></script>
-  <script src="../components/vr-video.js"></script>
-  <style id="vr-styles">
-    body {
-      background-color: black;
-    }
-  </style>
 </head>
 
 <body>
   <vr-scene>
     <vr-assets>
-      <vr-material id="yellow" type="MeshBasicMaterial" color="yellow"></vr-material>
+      <vr-material id="highlight" type="MeshBasicMaterial" color="yellow"></vr-material>
       <vr-material id="normal" type="MeshNormalMaterial" color="yellow"></vr-material>
     </vr-assets>
-    <vr-camera fov="45" near="1" far="2000" y="50">
-      <vr-cursor z="-50" radius="0.5"></vr-cursor>
+    <vr-camera y="1.8" z="15">
+      <vr-cursor z="-1" radius="0.005"></vr-cursor>
     </vr-camera>
-    <vr-cube z="-500" width="50" height="50" depth="50" y="25"></vr-cube>
-    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="100"></vr-cube>
-    <vr-cube z="-300" width="50" height="50" depth="50" y="25" x="-100"></vr-cube>
-    <vr-grid size="1000"></vr-grid>
+    <vr-cube material="normal" width="4" height="4" depth="4" y="2" z="-8"></vr-cube>
+    <vr-cube material="normal" width="4" height="4" depth="4" y="2" x="6"></vr-cube>
+    <vr-cube material="normal" width="4" height="4" depth="4" y="2" x="-6"></vr-cube>
+    <vr-grid size="50"></vr-grid>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>
@@ -43,16 +35,19 @@
     fsButton.addEventListener('click', function() {
       scene.enterVR();
     });
+    
     var cubes = document.querySelectorAll('vr-cube');
     var i;
     for (i = 0; i < cubes.length; ++i) {
       cubes[i].addEventListener('click', function(evt) {
         var cube = evt.currentTarget;
         var material = cube.getAttribute('material');
-        if (material === 'yellow') {
+        // console.log(material);
+        
+        if (material === 'highlight') {
           evt.currentTarget.setAttribute('material', 'normal');
         } else {
-          evt.currentTarget.setAttribute('material', 'yellow');
+          evt.currentTarget.setAttribute('material', 'highlight');
         }
       });
     }
