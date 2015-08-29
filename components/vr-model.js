@@ -25,19 +25,10 @@
               // loader.options.convertUpAxis = true; // Not sure if we need this. Doesn't appear to be the case. But it was in Three.js examples.
               loader.load( src, function ( collada ) {
                 var dae = collada.scene;
-                dae.scale.x = dae.scale.y = dae.scale.z = scale;
-                dae.updateMatrix();
+                dae.scale.set(scale, scale, scale);
                 self.object3D = dae;
                 self.load();
               });
-            }
-          },
-
-          update: {
-            value: function() {
-
-              // If we want to edit via dom inspector we need ot add update functions here (is my understanding).
-              
             }
           }
         })

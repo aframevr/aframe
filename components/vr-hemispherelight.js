@@ -8,19 +8,13 @@
         VRObject.prototype, {
           init: {
             value: function() {
-              var skyColor = parseFloat(this.getAttribute('skyColor')) || "#FFFFFF";
-              var groundColor = parseFloat(this.getAttribute('groundColor')) || "#FFFFFF";
+              var skyColor = this.getAttribute('skyColor') || "#FFFFFF";
+              var groundColor = this.getAttribute('groundColor') || "#FFFFFF";
               var intensity = parseFloat(this.getAttribute('intensity')) || 1;
               this.object3D = new THREE.HemisphereLight( skyColor, groundColor, intensity );
               console.log(this.object3D)
               this.load();
             }
-          },
-
-          update: {
-            value: function() {
-
-            }            
           }
         })
     }
