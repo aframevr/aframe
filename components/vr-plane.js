@@ -36,14 +36,22 @@
             value: function() {
               var color = this.getAttribute('color');
               var materialId = this.getAttribute('material');
-              var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-              var material = materialEl.material;
+              var materialEl;
+              var material;
 
-              if(color) {
-                material.color = new THREE.Color(color);
-              } 
+              if(materialId) {
+                materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+                material = materialEl.material;
+                if(color){
+                  material.color = new THREE.Color(color);
+                }
+              } else if (color) {
+                material = new THREE.MeshPhongMaterial({color:color})
+              } else {
+                material = new THREE.MeshNormalMaterial()
+              }
 
-              return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { opacity: 1 } );
+              return material;
             }
           }
         })

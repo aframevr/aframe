@@ -14,7 +14,14 @@
               this.fog = this.sceneEl.object3D.fog = new THREE.Fog( color, near, far );
               this.load();
             }
+          },
+
+          update: {
+            value: function() {
+              // TODO: DOES ANYTHING NEED TO BE IN UPDATE?
+            }
           }
+
         })
     }
   );

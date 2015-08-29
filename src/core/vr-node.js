@@ -30,13 +30,13 @@
 
       attachedCallback: {
         value: function() {
-          console.log('entering the DOM :-) )');
+          // console.log('entering the DOM :-) )');
         }
       },
 
       detachedCallback: {
         value: function() {
-          console.log('leaving the DOM :-( )');
+          // console.log('leaving the DOM :-( )');
         }
       },
 

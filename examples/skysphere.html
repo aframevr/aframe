@@ -6,7 +6,6 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../lib/vendor/dat.gui.js"></script>
   <script src="../dist/vr-markup-min.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
@@ -18,8 +17,8 @@
 
 <body>
   <vr-scene>
-    <vr-camera z="5" y="1.8" near="0.1" far="10000" fov="45"s></vr-camera>
-    <vr-sphere radius="2" z="-10"></vr-sphere>
+    <vr-camera y="1.8" z="40"></vr-camera>
+    <vr-sphere radius="5"></vr-sphere>
     <vr-skysphere src="images/city.jpg"></vr-skysphere>
   </vr-scene>
   <button class="vr-button">Enter VR</button>

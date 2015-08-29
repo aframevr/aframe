@@ -22,7 +22,7 @@
               // TODO: load and playback animations from loaded models.
              
               var loader = new THREE.ColladaLoader();
-              // loader.options.convertUpAxis = true; // Not sure if we need this. Doesn't appear to be the case. But it was in Three.js examples.
+              loader.options.convertUpAxis = true; // Not sure if we need this. Doesn't appear to be the case. But it was in Three.js examples.
               loader.load( src, function ( collada ) {
                 var dae = collada.scene;
                 dae.scale.set(scale, scale, scale);
