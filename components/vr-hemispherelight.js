@@ -2,16 +2,17 @@
 (function(define){'use strict';define(function(require,exports,module){
 
   document.registerElement(
-    'vr-fog',
+    'vr-hemispherelight',
     {
       prototype: Object.create(
-        VRNode.prototype, {
+        VRObject.prototype, {
           init: {
             value: function() {
-              var color = this.getAttribute('color') || 0xFFFFFF;
-              var near = parseFloat(this.getAttribute('near')) || 1;
-              var far = parseFloat(this.getAttribute('far')) || 1000;
-              this.fog = this.sceneEl.object3D.fog = new THREE.Fog( color, near, far );
+              var skyColor = this.getAttribute('skyColor') || "#FFFFFF";
+              var groundColor = this.getAttribute('groundColor') || "#FFFFFF";
+              var intensity = parseFloat(this.getAttribute('intensity')) || 1;
+              this.object3D = new THREE.HemisphereLight( skyColor, groundColor, intensity );
+              console.log(this.object3D)
               this.load();
             }
           }
@@ -20,9 +21,9 @@
   );
 
   var VRTags = window.VRTags = window.VRTags || {};
-  VRTags["VR-FOG"] = true;
+  VRTags["VR-HEMISPHERELIGHT"] = true;
 
 });})(typeof define=='function'&&define.amd?define
 :(function(n,w){'use strict';return typeof module=='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('VRFog',this));
+return w[n];},m.exports,m);w[n]=m.exports;};})('VRHemispherelight',this));

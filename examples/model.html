@@ -14,12 +14,14 @@
   <!-- User defined component example -->
   <script src="../components/vr-model.js"></script>
   <script src="../components/vr-skybox.js"></script>
+  <script src="../components/vr-hemispherelight.js"></script>
 </head>
 
 <body>
   <vr-scene>
     <vr-camera z="40" y="10" far="100000" near="1" fov="45"s></vr-camera>
-    <vr-model rotX="10" y="0" x="0" src="models/city.dae" scale="0.001"></vr-model>
+    <vr-hemispherelight x="100" y="200" z="100" skyColor="#1ba0d1" groundColor="#ef2d5e" intensity="1"></vr-hemispherelight>
+    <vr-model rotX="10" y="0" x="0" src="models/city.dae" scale="0.2"></vr-model>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

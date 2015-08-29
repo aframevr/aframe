@@ -34,7 +34,18 @@
           getMaterial: {
             value: function() {
               var imgSrc = this.getAttribute('src');
-              return new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture(imgSrc), side: THREE.BackSide });
+              var color = this.getAttribute('color');
+              var material = new THREE.MeshBasicMaterial({ side: THREE.BackSide, fog: false });
+
+              if(imgSrc){
+                material.map = new THREE.ImageUtils.loadTexture(imgSrc);
+              } else if(color) {
+                material.color = new THREE.Color(color);
+              } else {
+                material.color = new THREE.Color("#CCCCCC");
+              }
+
+              return material;
             }
           }
         })
