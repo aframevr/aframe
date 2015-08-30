@@ -15,7 +15,7 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               var material = this.getMaterial();
               var geometry = this.getGeometry();
@@ -59,14 +59,14 @@
 
           getMaterial: {
             value: function() {
-              
+
               var imgSrc = this.getAttribute('tex');
               var color = this.getAttribute('color');
               var opacity = parseFloat(this.getAttribute('opacity')) || 1;
 
               var material = new THREE.MeshBasicMaterial({ transparent: true, side: THREE.DoubleSide });
 
-              if(imgSrc){ 
+              if(imgSrc){
                 material.map = THREE.ImageUtils.loadTexture(imgSrc);
               } else if (color) {
                 material.color = new THREE.Color(color);
@@ -75,7 +75,7 @@
               }
 
               material.opacity = opacity;
-              
+
               return material;
 
             }

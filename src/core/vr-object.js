@@ -30,7 +30,7 @@
           if (parent) {
             parent.add(this);
           }
-          VRObject.prototype.update.call(this);
+          VRObject.prototype.onAttributeChanged.call(this);
           VRNode.prototype.load.call(this);
         }
       },
@@ -41,7 +41,7 @@
         }
       },
 
-      update: {
+      onAttributeChanged: {
         value: function() {
           this.object3D = this.object3D || new THREE.Object3D();
 
@@ -69,9 +69,9 @@
 
       attributeChangedCallback: {
         value: function(name, previousValue, value) {
-          VRObject.prototype.update.call(this);
-          if (VRObject.prototype.update !== this.update) {
-            this.update();
+          VRObject.prototype.onAttributeChanged.call(this);
+          if (VRObject.prototype.onAttributeChanged !== this.onAttributeChanged) {
+            this.onAttributeChanged();
           }
         }
       }

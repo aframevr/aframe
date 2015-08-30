@@ -15,13 +15,13 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               var material = this.getMaterial();
               var geometry = this.getGeometry();
               this.object3D.geometry = geometry;
               this.object3D.material = material;
-            }            
+            }
           },
 
           getGeometry: {
@@ -35,19 +35,19 @@
             value: function() {
 
               var self = this;
-              
+
               var urlPrefix = this.getAttribute('src');
               var urls = [ urlPrefix + "right.jpg", urlPrefix + "left.jpg",
                   urlPrefix + "top.jpg", urlPrefix + "bottom.jpg",
                   urlPrefix + "front.jpg", urlPrefix + "back.jpg" ];
-              
-              var textureCube = THREE.ImageUtils.loadTextureCube( urls, THREE.CubeReflectionMapping, function(){ 
-                self.load(); 
+
+              var textureCube = THREE.ImageUtils.loadTextureCube( urls, THREE.CubeReflectionMapping, function(){
+                self.load();
               });
               textureCube.format = THREE.RGBFormat;
-              
+
               var shader = THREE.ShaderLib['cube'];
-              
+
               var material = new THREE.ShaderMaterial({
                 fragmentShader: shader.fragmentShader,
                 vertexShader: shader.vertexShader,

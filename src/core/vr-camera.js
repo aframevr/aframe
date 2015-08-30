@@ -12,7 +12,6 @@
               // This should probably managed within vr-scene
               this.sceneEl.camera = camera;
               this.saveInitialValues();
-              this.update();
               this.load();
             }
           },
@@ -52,7 +51,7 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               // Camera parameters
               var fov = parseFloat(this.getAttribute('fov')) || 45;

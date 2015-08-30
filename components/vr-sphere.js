@@ -15,7 +15,7 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               var material = this.getMaterial();
               var geometry = this.getGeometry();

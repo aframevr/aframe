@@ -13,7 +13,7 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               var color = this.getAttribute('color') || Math.random() * 0xffffff;
               var material = this.material;

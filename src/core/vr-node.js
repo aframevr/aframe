@@ -24,7 +24,7 @@
           var event = new Event('loaded');
           this.hasLoaded = true;
           this.dispatchEvent(event);
-          this.update();
+          this.onAttributeChanged();
         }
       },
 
@@ -40,13 +40,13 @@
         }
       },
 
-      update: {
+      onAttributeChanged: {
         value: function() { /* no-op */ }
       },
 
       attributeChangedCallback: {
         value: function(name, previousValue, value) {
-          this.update();
+          this.onAttributeChanged();
         }
       }
   });

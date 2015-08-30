@@ -14,7 +14,8 @@
               this.load();
             }
           },
-          update: {
+
+          onAttributeChanged: {
             value: function() {
               this.object3D.geometry = this.generateGeometry();
             }

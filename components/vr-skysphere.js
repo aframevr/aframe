@@ -15,13 +15,13 @@
             }
           },
 
-          update: {
+          onAttributeChanged: {
             value: function() {
               var material = this.getMaterial();
               var geometry = this.getGeometry();
               this.object3D.geometry = geometry;
               this.object3D.material = material;
-            }            
+            }
           },
 
           getGeometry: {
