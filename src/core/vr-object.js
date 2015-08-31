@@ -79,7 +79,7 @@
           this.object3D.position.set(x, y, z);
           this.object3D.rotation.order = 'YXZ';
           this.object3D.rotation.set(rotationX, rotationY, rotationZ);
-          //this.object3D.scale.set(scaleX, scaleY, scaleY);
+          this.object3D.scale.set(scaleX, scaleY, scaleY);
         }
       },
 

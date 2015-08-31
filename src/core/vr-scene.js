@@ -93,6 +93,7 @@
 
       setupScene: {
         value: function() {
+          this.cameraControls = this.querySelector('vr-controls');
           // The canvas where the WebGL contet will be painted
           this.setupCanvas();
           // The three.js renderer setup
@@ -198,7 +199,10 @@
 
       render: {
         value: function() {
+          var cameraControls = this.cameraControls;
+          // Updates camera controls if any
           this.renderer.render( this.object3D, this.camera );
+          if (cameraControls) { cameraControls.update(); }
           this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }
       }
