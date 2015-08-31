@@ -6,7 +6,7 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup-min.js"></script>
+  <script src="../dist/vr-markup.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <!-- User defined components -->
@@ -22,13 +22,13 @@
     <vr-material id="normal" type="MeshNormalMaterial"></vr-material>
   </vr-assets>
   <vr-scene>
-    <vr-camera y="1.8"></vr-camera>
+    <vr-camera position="0 1.8 0"></vr-camera>
     <vr-fog color="#CC0000" near="-400" far="1750"></vr-fog>
     <vr-skysphere color="#CC0000"></vr-skysphere>
-    <vr-cube class="cube" rotx="13" roty="13" material="lambert" x="300" z="-1000"></vr-cube>
-    <vr-cube class="cube" rotx="45" roty="45" x="0" z="-500" material="lambert" z="-500"></vr-cube>
-    <vr-sphere class="sphere" radius="80" material="lambert" x="-100" y="30" z="-200"></vr-sphere>
-    <vr-plane class="plane" width="10000" height="10000" y="-10" rotx="-90" material="lambert"></vr-plane>
+    <vr-cube class="cube" position="300 0 -1000" rotation="13 13 0" material="lambert"></vr-cube>
+    <vr-cube class="cube" position="0 0 -500" rotatio="45 45 0" material="lambert"></vr-cube>
+    <vr-sphere class="sphere" position="-100 30 -200" radius="80" material="lambert"></vr-sphere>
+    <vr-plane class="plane" position="0 -10 0" rotation="-90 0 0" width="10000" height="10000"material="lambert"></vr-plane>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

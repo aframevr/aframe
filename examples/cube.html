@@ -6,7 +6,7 @@
   <meta name="description" content="Space">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup-min.js"></script>
+  <script src="../dist/vr-markup.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <!-- User defined component example -->
@@ -15,8 +15,8 @@
 
 <body>
   <vr-scene>
-    <vr-camera y="1.8" z="20"></vr-camera>
-    <vr-cube id="cube" width="5" height="5" depth="5" rotx="45" roty="45" y="2"></vr-cube>
+    <vr-camera position="0 1.8 20"></vr-camera>
+    <vr-cube id="cube" width="5" height="5" depth="5" rotation="45 45 0" position="0 2 0"></vr-cube>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

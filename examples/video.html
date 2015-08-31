@@ -6,7 +6,7 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup-min.js"></script>
+  <script src="../dist/vr-markup.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <!-- User defined components -->
@@ -18,10 +18,10 @@
 
 <body>
   <vr-scene>
-    <vr-camera y="1.8" z="28"></vr-camera>
+    <vr-camera position="0 1.8 28"></vr-camera>
     <vr-skysphere color="#000"></vr-skysphere>
     <vr-grid size="50"></vr-grid>
-    <vr-video width="16" height="9" y="4.5" src="https://raw.githubusercontent.com/Mozilla-NTU/slidesMay2015/gh-pages/media/bunny.mp4" autoplay loop></vr-video>
+    <vr-video position="0 4.5 0" width="16" height="9" src="https://raw.githubusercontent.com/Mozilla-NTU/slidesMay2015/gh-pages/media/bunny.mp4" autoplay loop></vr-video>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

@@ -8,7 +8,7 @@
         VRObject.prototype, {
           init: {
             value: function() {
-              var material = new THREE.LineBasicMaterial( { color: 0x606060 } );
+              var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
               var geometry = this.generateGeometry();
               this.object3D = new THREE.LineSegments( geometry, material, THREE.LinePieces );
               this.load();
@@ -30,7 +30,6 @@
               var density = 1;
 
               var geometry = new THREE.Geometry();
-              var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
 
               for ( var i = - size; i <= size; i += density ) {
 

@@ -26,13 +26,15 @@
   	});
 
     function attachMouseKeyboardListeners() {
-  		var x = parseFloat(cameraEl.getAttribute('x')) || 0;
-  		var y = parseFloat(cameraEl.getAttribute('y')) || 0;
-  		var z = parseFloat(cameraEl.getAttribute('z')) || 0;
+      var position = cameraEl.getAttribute('position')
+  		var x = position.x || 0;
+  		var y = position.y || 0;
+  		var z = position.z || 0;
 
-  		var rotX = parseFloat(cameraEl.getAttribute('rotY')) || 0;
-      var rotY = parseFloat(cameraEl.getAttribute('rotX')) || 0;
-      var rotZ = parseFloat(cameraEl.getAttribute('rotZ')) || 0;
+      var rotation = cameraEl.getAttribute('rotation')
+  		var rotX = rotation.x || 0;
+      var rotY = rotation.y || 0;
+      var rotZ = rotation.z || 0;
 
       var lastMouseX;
       var lastMouseY;
@@ -84,13 +86,15 @@
       velocity.x -= velocity.x * 10.0 * delta;
       velocity.z -= velocity.z * 10.0 * delta;
 
-      var x = parseFloat(cameraEl.getAttribute('x')) || 0;
-  		var y = parseFloat(cameraEl.getAttribute('y')) || 0;
-  		var z = parseFloat(cameraEl.getAttribute('z')) || 0;
+      var position = cameraEl.getAttribute('position')
+      var x = position.x || 0;
+      var y = position.y || 0;
+      var z = position.z || 0;
 
-  		var rotX = parseFloat(cameraEl.getAttribute('rotx')) || 0;
-      var rotY = parseFloat(cameraEl.getAttribute('roty')) || 0;
-      var rotZ = parseFloat(cameraEl.getAttribute('rotz')) || 0;
+      var rotation = cameraEl.getAttribute('rotation')
+      var rotX = rotation.x || 0;
+      var rotY = rotation.y || 0;
+      var rotZ = rotation.z || 0;
 
       if (keys[65]) { // Left
         velocity.x -= acceleration * delta;
@@ -115,23 +119,28 @@
         cameraEl.reset();
         // scene.resetSensor();
 
-        x = parseFloat(cameraEl.getAttribute('x')) || 0;
-        y = parseFloat(cameraEl.getAttribute('y')) || 0;
-        z = parseFloat(cameraEl.getAttribute('z')) || 0;
+        position = cameraEl.getAttribute('position')
+        x = position.x || 0;
+        y = position.y || 0;
+        z = position.z || 0;
 
-        rotX = parseFloat(cameraEl.getAttribute('rotx')) || 0;
-        rotY = parseFloat(cameraEl.getAttribute('roty')) || 0;
-        rotZ = parseFloat(cameraEl.getAttribute('rotz')) || 0;
+        rotation = cameraEl.getAttribute('rotation')
+        rotX = rotation.x || 0;
+        rotY = rotation.y || 0;
+        rotZ = rotation.z || 0;
 
       }
 
-      cameraEl.setAttribute('rotx', THREE.Math.radToDeg(pitchObject.rotation.x));
-      cameraEl.setAttribute('roty', THREE.Math.radToDeg(yawObject.rotation.y));
+      rotation = THREE.Math.radToDeg(pitchObject.rotation.x) + ' ' +
+                 THREE.Math.radToDeg(yawObject.rotation.y) + ' ' + rotZ;
+      cameraEl.setAttribute('rotation', rotation)
 
       var movementVector = getMovementVector(delta);
 
-      cameraEl.setAttribute('x', x + movementVector.x);
-      cameraEl.setAttribute('z', z + movementVector.z);
+      position = (x + movementVector.x) + ' ' +
+                  y + ' ' +
+                 (z + movementVector.z);
+      cameraEl.setAttribute('position', position);
 
 			window.requestAnimationFrame(updateCamera);
     }

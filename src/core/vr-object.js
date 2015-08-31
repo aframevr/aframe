@@ -3,6 +3,13 @@
 
   var proto =  Object.create(
     VRNode.prototype, {
+      init: {
+        value: function() {
+          this.object3D = new THREE.Object3D();
+          this.load();
+        }
+      },
+
       detachedCallback: {
         value: function() {
           var parent = this.parentNode;
@@ -46,24 +53,58 @@
           this.object3D = this.object3D || new THREE.Object3D();
 
           // Position
-          var x = parseFloat(this.getAttribute('x')) || 0;
-          var y = parseFloat(this.getAttribute('y')) || 0;
-          var z = parseFloat(this.getAttribute('z')) || 0;
+          var position = this.getAttribute('position');
+          var x = position.x || 0;
+          var y = position.y || 0;
+          var z = position.z || 0;
 
           // Orientation
-          var orientationX = parseFloat(this.getAttribute('rotx')) || 0;
-          var orientationY = parseFloat(this.getAttribute('roty')) || 0;
-          var orientationZ = parseFloat(this.getAttribute('rotz')) || 0;
+          var rotation = this.getAttribute('rotation');
+          var rotationX = rotation.x || 0;
+          var rotationY = rotation.y || 0;
+          var rotationZ = rotation.z || 0;
+
+          // Scale
+          var scale = this.getAttribute('scale');
+          var scaleX = scale.x || 1;
+          var scaleY = scale.y || 1;
+          var scaleZ = scale.z || 1;
 
           // Converting to degrees
-          var rotX = THREE.Math.degToRad(orientationX);
-          var rotY = THREE.Math.degToRad(orientationY);
-          var rotZ = THREE.Math.degToRad(orientationZ);
+          rotationX = THREE.Math.degToRad(rotationX);
+          rotationY = THREE.Math.degToRad(rotationY);
+          rotationZ = THREE.Math.degToRad(rotationZ);
 
           // Setting three.js parameters
           this.object3D.position.set(x, y, z);
           this.object3D.rotation.order = 'YXZ';
-          this.object3D.rotation.set(rotX, rotY, rotZ);
+          this.object3D.rotation.set(rotationX, rotationY, rotationZ);
+          //this.object3D.scale.set(scaleX, scaleY, scaleY);
+        }
+      },
+
+      getAttribute: {
+        value: function(attr) {
+          var value = HTMLElement.prototype.getAttribute.call(this, attr);
+          if (attr === 'position' ||
+              attr === 'rotation' ||
+              attr === 'scale') {
+            value = this.parseAttributeString(value);
+          }
+          return value;
+        }
+      },
+
+      parseAttributeString: {
+        value: function(str) {
+          var values
+          if (!str) { return {}; }
+          values = str.split(' ');
+          return {
+            x: parseFloat(values[0]),
+            y: parseFloat(values[1]),
+            z: parseFloat(values[2])
+          };
         }
       },
 
@@ -78,7 +119,7 @@
   });
 
   // Registering element and exporting prototype
-   var VRTags = window.VRTags = window.VRTags || {};
+  var VRTags = window.VRTags = window.VRTags || {};
   VRTags["VR-OBJECT"] = true;
   module.exports = document.registerElement('vr-object', { prototype: proto });
 

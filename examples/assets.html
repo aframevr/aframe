@@ -6,7 +6,7 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup-min.js"></script>
+  <script src="../dist/vr-markup.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <!-- User defined component example -->
@@ -20,9 +20,9 @@
     <vr-material id="basic" type="MeshBasicMaterial"></vr-material>
   </vr-assets>
   <vr-scene>
-    <vr-camera y="1.8" z="30"></vr-camera>
-    <vr-mesh geometry="cube" rotx="45" roty="45" material="normal" x="-5" y="3"></vr-mesh>
-    <vr-mesh geometry="sphere" material="basic" color="#CC0000" x="5" y="3"></vr-mesh>
+    <vr-camera position="0 1.8 30"></vr-camera>
+    <vr-mesh geometry="cube" rotation="45 45 0" material="normal" position="-5 3 0"></vr-mesh>
+    <vr-mesh geometry="sphere" material="basic" color="#CC0000" position="5 3 0"></vr-mesh>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
   <script>

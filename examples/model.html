@@ -6,7 +6,7 @@
   <meta name="description" content="Demo of threejs using Web Components">
   <link rel="stylesheet" type="text/css" href="style/main.css" />
   <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup-min.js"></script>
+  <script src="../dist/vr-markup.js"></script>
   <script src="../lib/vendor/VRControls.js"></script>
   <script src="../lib/vendor/VREffect.js"></script>
   <script src="js/ColladaLoader.js"></script>
@@ -19,9 +19,9 @@
 
 <body>
   <vr-scene>
-    <vr-camera y="1.8" z="15"></vr-camera>
-    <vr-hemispherelight x="0" y="200" z="-100" skyColor="#ffffff" groundColor="#ef2d5e" intensity="2"></vr-hemispherelight>
-    <vr-model src="models/monster/monster.dae" scale="0.25"></vr-model>
+    <vr-camera position="0 1.8 15"></vr-camera>
+    <vr-hemispherelight position="0 200 -100" skyColor="#ffffff" groundColor="#ef2d5e" intensity="2"></vr-hemispherelight>
+    <vr-model src="models/monster/monster.dae" scale="0.25 0.25 0.25"></vr-model>
     <vr-grid size="50"></vr-grid>
   </vr-scene>
   <button class="vr-button">Enter VR</button>
