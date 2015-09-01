@@ -1,4 +1,4 @@
-/* global VRTags */
+/* global VRTags, Promise */
 
 var VRScene = document.registerElement(
   'vr-scene',
@@ -65,6 +65,25 @@ var VRScene = document.registerElement(
           }
         },
 
+        attachMessageListeners: {
+          value: function() {
+            var self = this;
+            window.addEventListener('message', function(e) {
+              if (e.data && e.data.type === 'fullscreen') {
+                switch (e.data.data) {
+                  // set renderer with fullscreen VR enter and exit.
+                  case 'enter':
+                    self.setStereoRenderer();
+                    break;
+                  case 'exit':
+                    self.setMonoRenderer();
+                    break;
+                }
+              }
+            });
+          }
+        },
+
         attachFullscreenListeners: {
           value: function() {
             // handle fullscreen changes
@@ -88,8 +107,67 @@ var VRScene = document.registerElement(
             this.pendingElements--;
             if (this.pendingElements === 0) {
               this.resizeCanvas();
-              this.render();
+              this.setupLoader();
             }
+          }
+        },
+
+        createEnterVrButton: {
+          value: function() {
+            var vrButton = document.createElement('button');
+            vrButton.textContent = 'Enter VR';
+            vrButton.style.cssText = 'position: absolute; top: 10px; left: 10px; font-family: sans-serif;';
+            document.body.appendChild(vrButton);
+            vrButton.addEventListener('click', this.enterVR.bind(this));
+          }
+        },
+
+        // returns a promise that resolves to true if loader is in VR mode.
+        vrLoaderMode: {
+          value: function() {
+            return new Promise(function(resolve) {
+              var channel = new MessageChannel();
+              window.top.postMessage({type: 'checkVr'}, '*', [channel.port2]);
+              channel.port1.onmessage = function (message) {
+                resolve(!!message.data.data.isVr);
+              };
+            });
+          }
+        },
+
+        setupLoader: {
+          value: function() {
+            var self = this;
+            // inside loader, check for vr mode before kicking off render loop.
+            if (window.top !== window.self) {
+              self.attachMessageListeners();
+              self.vrLoaderMode().then(function(isVr) {
+                if (isVr) {
+                  self.setStereoRenderer();
+                } else {
+                  self.setMonoRenderer();
+                }
+                window.top.postMessage({type: 'ready'}, '*');
+                self.render();
+              });
+            } else {
+              self.createEnterVrButton();
+              self.render();
+            }
+          }
+        },
+
+        setStereoRenderer: {
+          value: function() {
+            this.renderer = this.stereoRenderer;
+            this.resizeCanvas();
+          }
+        },
+
+        setMonoRenderer: {
+          value: function() {
+            this.renderer = this.monoRenderer;
+            this.resizeCanvas();
           }
         },
 
@@ -221,3 +299,4 @@ var VRScene = document.registerElement(
     )
   }
 );
+

@@ -59,3 +59,4 @@ var VRNode = document.registerElement(
     })
   }
 );
+
