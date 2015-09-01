@@ -8,7 +8,7 @@
 	      VRNode.prototype, {
           init: {
             value: function() {
-              var geometry = this.geometry || this.setupGeometry();
+              this.setupGeometry();
               this.load();
             }
           },
@@ -17,6 +17,7 @@
 			  		value: function() {
 		      		var primitive = this.primitive = this.getAttribute('primitive') || "Box";
 		      		var geometry;
+              var radius;
   		  			switch (primitive) {
   		  				case 'Box':
   		  					var width =  parseFloat(this.getAttribute('width')) || 200;
@@ -25,11 +26,11 @@
   		  					geometry = new THREE.BoxGeometry( width, height, depth );
   		  				  break;
   		  				case 'Sphere':
-  		  					var radius = parseFloat(this.getAttribute('radius')) || 100;
+  		  					radius = parseFloat(this.getAttribute('radius')) || 100;
   		  					geometry = new THREE.SphereGeometry( radius, 32, 32 );
   		  					break;
   		  				case 'Torus':
-  		  					var radius = parseFloat(this.getAttribute('radius')) || 200;
+  		  					radius = parseFloat(this.getAttribute('radius')) || 200;
   		  					var tube = parseFloat(this.getAttribute('tube')) || 10;
   		  					geometry = new THREE.TorusGeometry( radius, tube );
   		  					break;
@@ -48,7 +49,7 @@
 	var VRTags = window.VRTags = window.VRTags || {};
 	VRTags["VR-GEOMETRY"] = true;
 
-});})(typeof define=='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module=='object'?function(c){
+});})(typeof define==='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module==='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
 return w[n];},m.exports,m);w[n]=m.exports;};})('VRGeometry',this));

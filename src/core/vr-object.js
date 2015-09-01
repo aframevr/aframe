@@ -123,7 +123,7 @@
   VRTags["VR-OBJECT"] = true;
   module.exports = document.registerElement('vr-object', { prototype: proto });
 
-});})(typeof define=='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module=='object'?function(c){
+});})(typeof define==='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module==='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
 return w[n];},m.exports,m);w[n]=m.exports;};})('VRObject',this));

@@ -10,7 +10,6 @@
             value: function() {
               var material = this.getMaterial();
               var geometry = this.getGeometry();
-              var camera = this.sceneEl.camera;
               this.object3D = new THREE.Mesh( geometry, material );
               this.raycaster = new THREE.Raycaster();
               this.attachEventListeners();
@@ -71,7 +70,7 @@
           },
 
           handleClick: {
-            value: function(e) {
+            value: function() {
               var scene = this.sceneEl.object3D;
               var intersectedObjects = this.intersect(scene.children);
               intersectedObjects.forEach(function(obj) {
@@ -86,7 +85,7 @@
   var VRTags = window.VRTags = window.VRTags || {};
   VRTags["VR-CURSOR"] = true;
 
-});})(typeof define=='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module=='object'?function(c){
+});})(typeof define==='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module==='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
 return w[n];},m.exports,m);w[n]=m.exports;};})('VRFog',this));

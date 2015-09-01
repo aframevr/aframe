@@ -5,7 +5,8 @@ var clean = require('gulp-clean');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
-var webserver = require('gulp-webserver');
+var karmaServer = require('karma').Server;
+var webServer = require('gulp-webserver');
 var browserify = require('gulp-browserify');
 var sourcemaps = require('gulp-sourcemaps');
 var livereload = require('gulp-livereload');
@@ -19,16 +20,25 @@ var production = flags.production || false;
 var debug = flags.debug || !production;
 var watch = flags.watch;
 
-gulp.task('build', function(callback) {
+
+gulp.task('test', function (done) {
+  new karmaServer({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
+
+gulp.task('build', ['lint'], function(callback) {
   build(true, 'vr-markup.js', function() {
     build(false, 'vr-markup-min.js', callback);
   })
 });
 
 gulp.task('lint', function() {
-  return gulp.src('./src/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'));
+  return gulp.src('src/*.js')
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
 });
 
 function build(debug, filename, callback) {
@@ -78,7 +88,7 @@ gulp.task('watch', function() {
 
 gulp.task('server', function() {
   gulp.src('./')
-    .pipe(webserver({
+    .pipe(webServer({
       livereload: false,
       directoryListing: true,
       open: "examples/",

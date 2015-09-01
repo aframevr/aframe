@@ -53,7 +53,6 @@
               value: function() {
                 var velocity = this.velocity;
                 var cameraEl = this.cameraEl;
-                var canvasEl = this.canvasEl;
                 var pitchObject = this.pitchObject;
                 var yawObject = this.yawObject;
                 var time = performance.now();
@@ -159,7 +158,7 @@
             },
 
             onMouseDown: {
-              value: function(event) {
+              value: function() {
                 this.mouseDown = true;
                 this.lastMouseX = event.clientX;
                 this.lastMouseY = event.clientY;
@@ -167,7 +166,7 @@
             },
 
             onMouseUp: {
-              value: function(event) {
+              value: function() {
                 this.mouseDown = false;
               }
             },
@@ -202,7 +201,7 @@
     var VRTags = window.VRTags = window.VRTags || {};
     VRTags["VR-CONTROLS"] = true;
 
-});})(typeof define=='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module=='object'?function(c){
+});})(typeof define==='function'&&define.amd?define
+:(function(n,w){'use strict';return typeof module==='object'?function(c){
 c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
 return w[n];},m.exports,m);w[n]=m.exports;};})('VRControls',this));

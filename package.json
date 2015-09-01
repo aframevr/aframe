@@ -17,7 +17,10 @@
     "gulp-uglify": "1.1.0",
     "gulp-sourcemaps": "1.5.1",
     "gulp-webserver": "0.9.1",
-    "minimist": "1.1.1"
+    "minimist": "1.1.1",
+    "karma": "^0.12.32",
+    "karma-mocha": "^0.1.10",
+    "karma-sinon-chai": "^0.3.0"
   },
   "scripts": {
     "build": "gulp"
