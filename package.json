@@ -23,7 +23,10 @@
     "karma-sinon-chai": "^0.3.0"
   },
   "scripts": {
-    "build": "gulp"
+    "start": "gulp dev",
+    "dev": "gulp dev",
+    "build": "gulp",
+    "postinstall": "gulp"
   },
   "repository": {
     "type": "git",

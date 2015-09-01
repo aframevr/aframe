@@ -93,9 +93,10 @@ gulp.task('server', function() {
     .pipe(webServer({
       livereload: false,
       directoryListing: true,
-      open: "examples/",
       port: 9000
     }));
 });
 
-gulp.task('default', ['clean', 'build'])
+gulp.task('dev', ['watch', 'server']);
+
+gulp.task('default', ['clean', 'build']);
