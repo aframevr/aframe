@@ -20,17 +20,10 @@
     <vr-material id="basic" type="MeshBasicMaterial"></vr-material>
   </vr-assets>
   <vr-scene>
+    <vr-controls></vr-controls>
     <vr-camera position="0 1.8 30"></vr-camera>
     <vr-mesh geometry="cube" rotation="45 45 0" material="normal" position="-5 3 0"></vr-mesh>
     <vr-mesh geometry="sphere" material="basic" color="#CC0000" position="5 3 0"></vr-mesh>
   </vr-scene>
-  <button class="vr-button">Enter VR</button>
-  <script>
-    var scene = document.querySelector('vr-scene');
-    var fsButton = document.querySelector('.vr-button');
-    fsButton.addEventListener('click', function() {
-      scene.enterVR();
-    });
-  </script>
 </body>
 </html>

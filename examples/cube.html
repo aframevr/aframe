@@ -19,13 +19,5 @@
     <vr-camera position="0 1.8 20"></vr-camera>
     <vr-cube id="cube" position="0 0 0" rotation="0 45 0" width="5" height="5" depth="5"></vr-cube>
   </vr-scene>
-  <script>
-    document.querySelector('#cube').addEventListener('click', function (e) {
-      var href = e.target.getAttribute('href');
-      if (href) {
-        window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
-      }
-    });
-  </script>
 </body>
 </html>

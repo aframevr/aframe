@@ -17,17 +17,10 @@
 
 <body>
   <vr-scene>
+    <vr-controls></vr-controls>
     <vr-camera position="0 1.8 40"></vr-camera>
     <vr-sphere radius="5"></vr-sphere>
     <vr-skysphere src="images/city.jpg"></vr-skysphere>
   </vr-scene>
-  <button class="vr-button">Enter VR</button>
-  <script>
-    var scene = document.querySelector('vr-scene');
-    var fsButton = document.querySelector('.vr-button');
-    fsButton.addEventListener('click', function() {
-      scene.enterVR();
-    });
-  </script>
 </body>
 </html>

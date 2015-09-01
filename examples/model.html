@@ -19,18 +19,11 @@
 
 <body>
   <vr-scene>
+    <vr-controls></vr-controls>
     <vr-camera position="0 1.8 15"></vr-camera>
     <vr-hemispherelight position="0 200 -100" skyColor="#ffffff" groundColor="#ef2d5e" intensity="2"></vr-hemispherelight>
     <vr-model src="models/monster/monster.dae" scale="0.25 0.25 0.25"></vr-model>
     <vr-grid size="50"></vr-grid>
   </vr-scene>
-  <button class="vr-button">Enter VR</button>
-  <script>
-    var scene = document.querySelector('vr-scene');
-    var fsButton = document.querySelector('.vr-button');
-    fsButton.addEventListener('click', function() {
-      scene.enterVR();
-    });
-  </script>
 </body>
 </html>
