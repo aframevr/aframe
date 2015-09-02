@@ -7,7 +7,7 @@ button {
   border: 1px solid white;
   padding: 5px;
   width: 90px;
-  z-index: 9999;
+  z-index: 999999;
 }
 
 button:hover {
