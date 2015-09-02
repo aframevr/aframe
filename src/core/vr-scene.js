@@ -93,8 +93,12 @@
 
       setupScene: {
         value: function() {
+          this.behaviors = [];
           this.cameraControls = this.querySelector('vr-controls');
-          // The canvas where the WebGL contet will be painted
+          if (this.cameraControls) {
+            this.behaviors.push(this.cameraControls);
+          }
+          // The canvas where the WebGL context will be painted
           this.setupCanvas();
           // The three.js renderer setup
           this.setupRenderer();
@@ -190,6 +194,12 @@
         }
       },
 
+      addBehavior: {
+        value: function(behavior) {
+          this.behaviors.push(behavior);
+        }
+      },
+
       remove: {
         value: function(el) {
           if (!el.object3D) { return; }
@@ -200,9 +210,9 @@
       render: {
         value: function() {
           var cameraControls = this.cameraControls;
-          // Updates camera controls if any
+          // Updates behaviors
+          this.behaviors.forEach(function(behavior) { behavior.update() });
           this.renderer.render( this.object3D, this.camera );
-          if (cameraControls) { cameraControls.update(); }
           this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }
       }
