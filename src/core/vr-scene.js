@@ -1,4 +1,4 @@
-/* globals define */
+/* globals define, VRScene, VRTags */
 (function(define){'use strict';define(function(require,exports,module){
 
   var proto = Object.create(
@@ -27,10 +27,10 @@
         value: function() {
           var self = this;
           var elementLoaded = this.elementLoaded.bind(this);
-          this.elementsPending = 0;
+          this.pendingElements = 0;
           var assets = document.querySelector('vr-assets');
           if (assets && !assets.hasLoaded) {
-            this.elementsPending++;
+            this.pendingElements++;
             assets.addEventListener('loaded', elementLoaded);
           }
           traverseDOM(this);
@@ -49,7 +49,7 @@
             // any time during their lifecycle.
             if (VRTags[node.tagName]) {
               attachEventListener(node);
-              self.elementsPending++;
+              self.pendingElements++;
             }
             node = node.firstChild;
             while (node) {
@@ -83,8 +83,8 @@
 
       elementLoaded: {
         value: function() {
-          this.elementsPending--;
-          if (this.elementsPending === 0) {
+          this.pendingElements--;
+          if (this.pendingElements === 0) {
             this.resizeCanvas();
             this.render();
           }
@@ -130,7 +130,7 @@
             this.appendChild(cameraEl);
           }
           if (!cameraEl.hasLoaded) {
-            this.elementsPending++;
+            this.pendingElements++;
             cameraEl.addEventListener('loaded', this.elementLoaded.bind(this));
           }
         }
@@ -165,7 +165,7 @@
           this.stereoRenderer = new THREE.VREffect(renderer);
 
           this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
-          module.exports.scene = this.object3D
+          module.exports.scene = this.object3D;
         }
       },
 
@@ -209,9 +209,8 @@
 
       render: {
         value: function() {
-          var cameraControls = this.cameraControls;
           // Updates behaviors
-          this.behaviors.forEach(function(behavior) { behavior.update() });
+          this.behaviors.forEach(function(behavior) { behavior.update(); });
           this.renderer.render( this.object3D, this.camera );
           this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
         }

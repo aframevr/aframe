@@ -23,7 +23,7 @@ var watch = flags.watch;
 
 gulp.task('test', function (done) {
   new karmaServer({
-    configFile: __dirname + '/karma.conf.js',
+    configFile: 'test/karma.conf.js',
     singleRun: true
   }, done).start();
 });
@@ -35,7 +35,7 @@ gulp.task('build', ['lint'], function(callback) {
 });
 
 gulp.task('lint', function() {
-  return gulp.src('src/*.js')
+  return gulp.src('src/*/*.js')
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -56,6 +56,8 @@ function build(debug, filename, callback) {
           'src/core/vr-camera.js',
           'src/core/vr-scene.js',
           'src/core/vr-assets.js',
+          'src/vr-behavior.js',
+          'src/vr-animation.js',
           'src/vr-material.js',
           'src/vr-geometry.js',
           'src/vr-mesh.js',

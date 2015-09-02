@@ -1,4 +1,4 @@
-/* globals define */
+/* globals define, VRNode */
 (function(define){'use strict';define(function(require,exports,module){
 
   var proto =  Object.create(
@@ -58,11 +58,11 @@
           var y = position.y || 0;
           var z = position.z || 0;
 
-          // Orientation
+          // Rotation
           var rotation = this.getAttribute('rotation');
-          var rotationX = rotation.x || 0;
-          var rotationY = rotation.y || 0;
-          var rotationZ = rotation.z || 0;
+          var rotationX = THREE.Math.degToRad(rotation.x) || 0;
+          var rotationY = THREE.Math.degToRad(rotation.y) || 0;
+          var rotationZ = THREE.Math.degToRad(rotation.z) || 0;
 
           // Scale
           var scale = this.getAttribute('scale');
@@ -70,16 +70,11 @@
           var scaleY = scale.y || 1;
           var scaleZ = scale.z || 1;
 
-          // Converting to degrees
-          rotationX = THREE.Math.degToRad(rotationX);
-          rotationY = THREE.Math.degToRad(rotationY);
-          rotationZ = THREE.Math.degToRad(rotationZ);
-
           // Setting three.js parameters
           this.object3D.position.set(x, y, z);
           this.object3D.rotation.order = 'YXZ';
           this.object3D.rotation.set(rotationX, rotationY, rotationZ);
-          this.object3D.scale.set(scaleX, scaleY, scaleY);
+          this.object3D.scale.set(scaleX, scaleY, scaleZ);
         }
       },
 
@@ -97,7 +92,7 @@
 
       parseAttributeString: {
         value: function(str) {
-          var values
+          var values;
           if (!str) { return {}; }
           values = str.split(' ');
           return {

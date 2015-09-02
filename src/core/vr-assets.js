@@ -1,4 +1,4 @@
-/* globals define */
+/* globals define, VRTags */
 (function(define){'use strict';define(function(require,exports,module){
 
   var proto = Object.create(

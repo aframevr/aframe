@@ -1,7 +1,7 @@
 /* globals define */
 (function(define){'use strict';define(function(require,exports,module){
 
-  var proto =  Object.create(
+  var proto = Object.create(
     HTMLElement.prototype, {
       createdCallback: {
         value: function() {

@@ -29,8 +29,8 @@
                 fov: parseFloat(this.getAttribute('fov')) || 45,
                 near: parseFloat(this.getAttribute('nar')) || 1,
                 far: parseFloat(this.getAttribute('far')) || 10000,
-                aspect: parseFloat(this.getAttribute('aspect'))
-                  || window.innerWidth / window.innerHeight
+                aspect: parseFloat(this.getAttribute('aspect')) ||
+                        window.innerWidth / window.innerHeight
               };
             }
           },
@@ -55,10 +55,10 @@
             value: function() {
               // Camera parameters
               var fov = parseFloat(this.getAttribute('fov')) || 45;
-              var near = parseFloat(this.getAttribute('nar')) || 1;
+              var near = parseFloat(this.getAttribute('near')) || 1;
               var far = parseFloat(this.getAttribute('far')) || 10000;
-              var aspect = parseFloat(this.getAttribute('aspect'))
-                || window.innerWidth / window.innerHeight;
+              var aspect = parseFloat(this.getAttribute('aspect')) ||
+                           window.innerWidth / window.innerHeight;
 
               // Setting three.js camera parameters
               this.object3D.fov = fov;
