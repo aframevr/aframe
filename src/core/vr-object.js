@@ -16,6 +16,16 @@ var VRObject = document.registerElement(
           }
         },
 
+        attachedCallback: {
+          value: function() {
+            // When creating an element from JS is not guaranteed to have
+            // a parent after initialization. It's up to the arbitrary
+            // JS to attach the element to the DOM. We cover this
+            // case here.
+            this.addToParent();
+          }
+        },
+
         detachedCallback: {
           value: function() {
             var parent = this.parentNode;
@@ -35,14 +45,25 @@ var VRObject = document.registerElement(
           }
         },
 
-        load: {
+        addToParent: {
           value: function() {
             var parent = this.parentNode;
+            var attachedToParent = this.attachedToParent;
+            if (!parent || attachedToParent) { return; }
+            // To prevent an object to attach itself multiple time to the parent
+            this.attachedToParent = true;
+            parent.add(this);
+          }
+        },
+
+        load: {
+          value: function() {
+            // To prevent calling load more than once
+            if (this.hasLoaded) { return; }
             // Handle to the associated DOM element
             this.object3D.el = this;
-            if (parent) {
-              parent.add(this);
-            }
+            // It attaches itself to the threejs parent object3D
+            this.addToParent();
             VRObject.prototype.onAttributeChanged.call(this);
             VRNode.prototype.load.call(this);
           }
