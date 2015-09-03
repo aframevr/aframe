@@ -5,3 +5,8 @@ The goal of this project is to design a set of HTML tags to describe 3D scenes i
 
 We use three.js to render the new tags but the aim is to provide a way to declare 3D scenes independent from the rendering engine.
 
+## Local development
+
+If you would like to contribute to this library,
+
+git clone https://github.com/MozVR/vr-markup.git && cd vr-markup && npm install && gulp && open examples/interactions.html
