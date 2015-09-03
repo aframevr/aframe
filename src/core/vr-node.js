@@ -1,62 +1,61 @@
-/* globals define */
-(function(define){'use strict';define(function(require,exports,module){
+var VRTags = {};
 
-  var proto = Object.create(
-    HTMLElement.prototype, {
-      createdCallback: {
-        value: function() {
-          var sceneEl = document.querySelector('vr-scene');
-          this.sceneEl = sceneEl;
-          this.init();
+// Registering element
+VRTags["VR-NODE"] = true;
+
+/* exported VRNode */
+var VRNode = document.registerElement(
+  'vr-node',
+  {
+    prototype: Object.create(
+      HTMLElement.prototype,
+      {
+        createdCallback: {
+          value: function() {
+            var sceneEl = document.querySelector('vr-scene');
+            this.sceneEl = sceneEl;
+            this.init();
+          }
+        },
+
+        init: {
+          value: function() {
+            this.load();
+          }
+        },
+
+        load: {
+          value: function() {
+            // To prevent emmitting the loaded event more than once
+            if (this.hasLoaded) { return; }
+            var event = new Event('loaded');
+            this.hasLoaded = true;
+            this.dispatchEvent(event);
+            this.onAttributeChanged();
+          }
+        },
+
+        attachedCallback: {
+          value: function() {
+            // console.log('entering the DOM :-) )');
+          }
+        },
+
+        detachedCallback: {
+          value: function() {
+            // console.log('leaving the DOM :-( )');
+          }
+        },
+
+        onAttributeChanged: {
+          value: function() { /* no-op */ }
+        },
+
+        attributeChangedCallback: {
+          value: function(name, previousValue, value) {
+            this.onAttributeChanged();
+          }
         }
-      },
-
-      init: {
-        value: function() {
-          this.load();
-        }
-      },
-
-      load: {
-        value: function() {
-          // To prevent emmitting the loaded event more than once
-          if (this.hasLoaded) { return; }
-          var event = new Event('loaded');
-          this.hasLoaded = true;
-          this.dispatchEvent(event);
-          this.onAttributeChanged();
-        }
-      },
-
-      attachedCallback: {
-        value: function() {
-          // console.log('entering the DOM :-) )');
-        }
-      },
-
-      detachedCallback: {
-        value: function() {
-          // console.log('leaving the DOM :-( )');
-        }
-      },
-
-      onAttributeChanged: {
-        value: function() { /* no-op */ }
-      },
-
-      attributeChangedCallback: {
-        value: function(name, previousValue, value) {
-          this.onAttributeChanged();
-        }
-      }
-  });
-
-  // Registering element and exporting prototype
-  var VRTags = window.VRTags = window.VRTags || {};
-  VRTags["VR-NODE"] = true;
-  module.exports = document.registerElement('vr-node', { prototype: proto });
-
-});})(typeof define==='function'&&define.amd?define
-:(function(n,w){'use strict';return typeof module==='object'?function(c){
-c(require,exports,module);}:function(c){var m={exports:{}};c(function(n){
-return w[n];},m.exports,m);w[n]=m.exports;};})('VRNode',this));
+    })
+  }
+);

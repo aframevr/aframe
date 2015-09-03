@@ -35,7 +35,7 @@ gulp.task('build', ['lint'], function(callback) {
 });
 
 gulp.task('lint', function() {
-  return gulp.src('src/*/*.js')
+  return gulp.src(['src/*/*.js', 'src/*.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
@@ -53,8 +53,8 @@ function build(debug, filename, callback) {
           'lib/cursor3D.js',
           'src/core/vr-node.js',
           'src/core/vr-object.js',
-          'src/core/vr-camera.js',
           'src/core/vr-scene.js',
+          'src/core/vr-camera.js',
           'src/core/vr-assets.js',
           'src/vr-behavior.js',
           'src/vr-animation.js',
