@@ -1,4 +1,4 @@
-/* global VRTags, Promise */
+/* global VRTags, Promise, TWEEN */
 
 var VRScene = document.registerElement(
   'vr-scene',
@@ -152,7 +152,7 @@ var VRScene = document.registerElement(
               });
             } else {
               self.createEnterVrButton();
-              self.render();
+              self.render(performance.now());
             }
           }
         },
@@ -288,9 +288,10 @@ var VRScene = document.registerElement(
         },
 
         render: {
-          value: function() {
+          value: function(t) {
+            TWEEN.update(t);
             // Updates behaviors
-            this.behaviors.forEach(function(behavior) { behavior.update(); });
+            this.behaviors.forEach(function(behavior) { behavior.update(t); });
             this.renderer.render( this.object3D, this.camera );
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
           }
@@ -299,4 +300,3 @@ var VRScene = document.registerElement(
     )
   }
 );
-

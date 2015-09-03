@@ -68,7 +68,20 @@ var VRObject = document.registerElement(
             this.initAttributes();
             VRObject.prototype.onAttributeChanged.call(this);
             VRNode.prototype.load.call(this);
+            this.addAnimations();
           }
+        },
+
+        setAttribute: {
+          value: function(attr, val) {
+            if (typeof val === 'object' &&
+              (attr === 'position' ||
+               attr === 'rotation' ||
+               attr === 'scale')) {
+                val = [val.x, val.y, val.z].join(' ');
+            }
+            HTMLElement.prototype.setAttribute.call(this, attr, val);
+          },
         },
 
         remove: {
@@ -88,10 +101,21 @@ var VRObject = document.registerElement(
           }
         },
 
+        addAnimations: {
+          value: function() {
+            var animations = this.hasAttribute('animation') ?
+              this.getAttribute('animation').split(' ') : [];
+            var attachObject = function (animationName) {
+              var el = document.getElementById(animationName);
+              if (el) { el.add(this); }
+            }.bind(this);
+            animations.forEach(attachObject);
+          },
+        },
+
         onAttributeChanged: {
           value: function() {
             this.object3D = this.object3D || new THREE.Object3D();
-
             // Position
             var position = this.getAttribute('position');
 
