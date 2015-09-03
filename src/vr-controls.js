@@ -141,7 +141,9 @@ var VRControls = document.registerElement(
           }
         },
 
-        PI_2: Math.PI / 2,
+        PI_2: {
+          value: Math.PI / 2
+        },
 
         onMouseMove: {
           value: function(event) {
@@ -162,7 +164,7 @@ var VRControls = document.registerElement(
         },
 
         onMouseDown: {
-          value: function() {
+          value: function(event) {
             this.mouseDown = true;
             this.lastMouseX = event.clientX;
             this.lastMouseY = event.clientY;
