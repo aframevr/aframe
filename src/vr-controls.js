@@ -1,7 +1,8 @@
-/* global VRNode */
-/* exported VRControls */
+var THREE = require('../lib/three');
 
-var VRControls = document.registerElement(
+var VRNode = require('./core/vr-node');
+
+module.exports = document.registerElement(
   'vr-controls',
   {
     prototype: Object.create(

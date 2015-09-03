@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   <title>Animations</title>
   <meta name="description" content="Demo of threejs using Web Components">
-  <link rel="stylesheet" type="text/css" href="style/main.css" />
-  <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
-  <script src="../dist/vr-markup.js"></script>
-  <!-- User defined components -->
+  <link rel="stylesheet" type="text/css" href="../style/vr-markup.css">
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <script src="../build/vr-markup.js"></script>
+  <!-- User-defined components -->
   <script src="../components/vr-cube.js"></script>
   <script src="../components/vr-grid.js"></script>
   <style id="vr-styles">
     body {
-       background-color: black;
-     }
+      background-color: black;
+    }
   </style>
 </head>
 
@@ -33,23 +33,5 @@
     <vr-cube position="-6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
     <vr-grid size="50"></vr-grid>
   </vr-scene>
-  <script>
-
-    var cubes = document.querySelectorAll('vr-cube');
-    var i;
-    for (i = 0; i < cubes.length; ++i) {
-      cubes[i].addEventListener('click', function(evt) {
-        var cube = evt.currentTarget;
-        var material = cube.getAttribute('material');
-        // console.log(material);
-
-        if (material === 'highlight') {
-          evt.currentTarget.setAttribute('material', 'normal');
-        } else {
-          evt.currentTarget.setAttribute('material', 'highlight');
-        }
-      });
-    }
-  </script>
 </body>
 </html>

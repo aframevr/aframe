@@ -1,7 +1,7 @@
-/* global VRNode */
-/* exported VRMaterial */
+var THREE = require('../lib/three');
+var VRNode = require('./core/vr-node');
 
-var VRMaterial = document.registerElement(
+module.exports = document.registerElement(
   'vr-material',
   {
     prototype: Object.create(

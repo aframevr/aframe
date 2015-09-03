@@ -1,7 +1,8 @@
-/* global VRObject */
-/* exported VRCursor */
+var THREE = require('../lib/three');
 
-var VRCursor = document.registerElement(
+var VRObject = require('./core/vr-object');
+
+module.exports = document.registerElement(
   'vr-cursor',
   {
     prototype: Object.create(

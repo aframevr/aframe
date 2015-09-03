@@ -1,7 +1,7 @@
-/* global VRNode */
-/* exported VRFog */
+var THREE = require('../lib/three');
+var VRNode = require('./core/vr-node');
 
-var VRFog = document.registerElement(
+module.exports = document.registerElement(
   'vr-fog',
   {
     prototype: Object.create(
@@ -18,4 +18,3 @@ var VRFog = document.registerElement(
       })
   }
 );
-

@@ -1,7 +1,9 @@
-/* globals VR, VRNode, TWEEN */
-/* exported VRAnimation */
+var VRUtils = require('./vr-utils');
+var VRNode = require('./core/vr-node');
 
-var VRAnimation = document.registerElement('vr-animation', {
+var TWEEN = require('tween.js');
+
+module.exports = document.registerElement('vr-animation', {
   prototype: Object.create(
     VRNode.prototype, {
       onElementCreated: {
@@ -10,7 +12,7 @@ var VRAnimation = document.registerElement('vr-animation', {
           this.duration = parseFloat(this.getAttribute('duration')) || 1000;
           this.loop = this.hasAttribute('loop');
           this.attribute = this.getAttribute('attribute');
-          this.to = VR.utils.parseAttributeString(this.attribute, this.getAttribute('to'));
+          this.to = VRUtils.parseAttributeString(this.attribute, this.getAttribute('to'));
           this.load();
         }
       },

@@ -1,5 +1,4 @@
-/* exported VRNode */
-var VRNode = document.registerElement(
+module.exports = document.registerElement(
   'vr-node',
   {
     prototype: Object.create(
@@ -11,7 +10,7 @@ var VRNode = document.registerElement(
           User element callbacks
           ----------------------
 
-          User created elements have to define the
+          User-created elements have to define the
           onElementCreated and onAttributeChanged methods.
 
         */
@@ -33,7 +32,7 @@ var VRNode = document.registerElement(
           Native custom elements callbacks
           --------------------------------
 
-          We don't expect the user defined elements
+          We don't expect the user-defined elements
           to override these. We provide the onElementCreated
           and onAttributeChanged instead
           so VRNode can manage the lifecycle of 3d Objects
@@ -74,4 +73,3 @@ var VRNode = document.registerElement(
     })
   }
 );
-

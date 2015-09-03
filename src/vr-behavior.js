@@ -1,7 +1,6 @@
-/* global VRNode */
-/* exported VRBehavior */
+var VRNode = require('./core/vr-node');
 
-var VRBehavior = document.registerElement(
+var VRBehavior = module.exports = document.registerElement(
   'vr-behavior',
   {
     prototype: Object.create(

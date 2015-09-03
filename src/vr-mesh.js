@@ -1,7 +1,7 @@
-/* global VRObject */
-/* exported VRMesh */
+var THREE = require('../lib/three');
+var VRObject = require('./core/vr-object');
 
-var VRMesh = document.registerElement(
+module.exports = document.registerElement(
   'vr-mesh',
   {
     prototype: Object.create(

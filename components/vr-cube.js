@@ -1,3 +1,8 @@
+var VRMarkup = require('vr-markup');
+
+var THREE = VRMarkup.THREE;
+var VRObject = VRMarkup.VRObject;
+
 document.registerElement(
   'vr-cube',
   {
@@ -55,4 +60,3 @@ document.registerElement(
       })
   }
 );
-

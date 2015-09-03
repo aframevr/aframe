@@ -1,6 +1,8 @@
-/* global VR, VRNode */
+var THREE = require('../../lib/three');
+var VRNode = require('./vr-node');
+var VRUtils = require('../vr-utils');
 
-var VRObject = document.registerElement(
+var VRObject = module.exports = document.registerElement(
   'vr-object',
   {
     prototype: Object.create(
@@ -40,7 +42,7 @@ var VRObject = document.registerElement(
         add: {
           value: function(el) {
             if (!el.object3D) {
-              VR.error("Trying to add an object3D that doesn't exist");
+              VRUtils.error("Trying to add an object3D that doesn't exist");
             }
             this.object3D.add(el.object3D);
           }
@@ -143,7 +145,7 @@ var VRObject = document.registerElement(
         getAttribute: {
           value: function(attribute) {
             var value = HTMLElement.prototype.getAttribute.call(this, attribute);
-            return VR.utils.parseAttributeString(attribute, value);
+            return VRUtils.parseAttributeString(attribute, value);
           }
         },
 

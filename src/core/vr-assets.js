@@ -1,4 +1,4 @@
-document.registerElement(
+module.exports = document.registerElement(
   'vr-assets',
   {
     prototype: Object.create(

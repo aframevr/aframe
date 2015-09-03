@@ -1,6 +1,11 @@
-/* global Promise, TWEEN, VRNode */
+/* global Promise */
 
-var VRScene = document.registerElement(
+var TWEEN = require('tween.js');
+
+var THREE = require('../../lib/three');
+var VRNode = require('./vr-node');
+
+var VRScene = module.exports = document.registerElement(
   'vr-scene',
   {
     prototype: Object.create(
@@ -216,7 +221,7 @@ var VRScene = document.registerElement(
         setupCamera: {
           value: function() {
             var cameraEl = this.querySelector('vr-camera');
-            // If there's not a user defined camera we create one
+            // If there's not a user-defined camera, we create one.
             if (!cameraEl) {
               cameraEl = document.createElement('vr-camera');
               cameraEl.setAttribute('fov', 45);

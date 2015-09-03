@@ -1,5 +1,5 @@
-bower_components
-firefox
-node_modules
-karma.conf.js
 .DS_Store
+build
+karma.conf.js
+node_modules
+npm-debug.log

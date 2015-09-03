@@ -6,6 +6,8 @@
 
 ( function() {
 
+	var THREE = require('vr-markup').THREE;
+
 	var COLLADA = null;
 	var scene = null;
 	var visualScene;

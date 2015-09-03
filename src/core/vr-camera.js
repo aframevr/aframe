@@ -1,5 +1,7 @@
-/* global VRObject */
-document.registerElement(
+var THREE = require('../../lib/three');
+var VRObject = require('./vr-object');
+
+module.exports = document.registerElement(
   'vr-camera',
   {
     prototype: Object.create(
