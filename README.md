@@ -7,6 +7,6 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 
 ## Local development
 
-If you would like to contribute to this library,
+If you would like to contribute to this library:
 
-git clone https://github.com/MozVR/vr-markup.git && cd vr-markup && npm install && gulp && open examples/interactions.html
+    git clone https://github.com/MozVR/vr-markup.git && cd vr-markup && npm install && npm start && open http://localhost:9000/examples/interactions.html
