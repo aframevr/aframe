@@ -10,3 +10,7 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 If you would like to contribute to this library:
 
     git clone https://github.com/MozVR/vr-markup.git && cd vr-markup && npm install && npm start && open http://localhost:9000/examples/interactions.html
+
+## License
+
+This program is free software and is distributed under an [MIT License](LICENSE).

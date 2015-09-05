@@ -1,8 +1,8 @@
 {
   "name": "vr-markup",
-  "homepage": "https://github.com/vr-components/vr-markup",
-  "license": "ISC",
-  "main": "build/vr-components.js",
+  "homepage": "https://github.com/MozVR/vr-markup",
+  "license": "MIT",
+  "main": "dist/vr-markup.js",
   "devDependencies": {
     "gulp": "3.8.11",
     "async": "1.4.0",
@@ -28,11 +28,8 @@
     "build": "gulp",
     "postinstall": "gulp"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/vr-components/vr-markup.git"
-  },
+  "repository": "MozVR/vr-markup",
   "bugs": {
-    "url": "https://github.com/gaia-components/vr-markup/issues"
+    "url": "https://github.com/MozVR/vr-markup/issues"
   }
 }
