@@ -1,14 +1,12 @@
-/* global VRTags, VRObject */
+/* global VRObject */
 /* exported VRCursor */
-
-VRTags["VR-CURSOR"] = true;
 
 var VRCursor = document.registerElement(
   'vr-cursor',
   {
     prototype: Object.create(
       VRObject.prototype, {
-        init: {
+        onElementCreated: {
           value: function() {
             var material = this.getMaterial();
             var geometry = this.getGeometry();

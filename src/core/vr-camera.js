@@ -1,15 +1,11 @@
-/* global VRObject, VRTags */
-
-// Registering element
-VRTags["VR-CAMERA"] = true;
-
+/* global VRObject */
 document.registerElement(
   'vr-camera',
   {
     prototype: Object.create(
       VRObject.prototype,
       {
-        init: {
+        onElementCreated: {
           value: function() {
             var camera = this.object3D = new THREE.PerspectiveCamera();
             // This should probably managed within vr-scene

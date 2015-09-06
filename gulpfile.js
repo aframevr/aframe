@@ -52,6 +52,7 @@ function build(debug, filename, callback) {
           'lib/vendor/Raycaster.js',
           'lib/vendor/Tween.js',
           'lib/cursor3D.js',
+          'src/vr-markup.js',
           'src/core/vr-node.js',
           'src/core/vr-object.js',
           'src/core/vr-scene.js',

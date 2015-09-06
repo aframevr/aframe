@@ -1,0 +1,3 @@
+/* exported VR */
+var VR = {};
+

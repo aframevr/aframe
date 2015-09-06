@@ -1,7 +1,4 @@
-/* global VRNode, VRTags */
-
-// Registering element
-VRTags["VR-OBJECT"] = true;
+/* global VRNode */
 
 var VRObject = document.registerElement(
   'vr-object',
@@ -9,7 +6,7 @@ var VRObject = document.registerElement(
     prototype: Object.create(
       VRNode.prototype,
       {
-        init: {
+        onElementCreated: {
           value: function() {
             this.object3D = new THREE.Object3D();
             this.load();
@@ -50,7 +47,7 @@ var VRObject = document.registerElement(
             var parent = this.parentNode;
             var attachedToParent = this.attachedToParent;
             if (!parent || attachedToParent) { return; }
-            // To prevent an object to attach itself multiple time to the parent
+            // To prevent an object to attach itself multiple times to the parent
             this.attachedToParent = true;
             parent.add(this);
           }

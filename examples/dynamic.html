@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cube</title>
+  <meta name="Creating VR elements dinamicaly with JavaScript" content="Dynamic Scene">
+  <link rel="stylesheet" type="text/css" href="style/main.css" />
+  <link rel="stylesheet" type="text/css" href="../dist/vr-markup.css" />
+  <script src="../dist/vr-markup.js"></script>
+  <script src="../lib/vendor/VRControls.js"></script>
+  <script src="../lib/vendor/VREffect.js"></script>
+  <!-- User defined component example -->
+  <script src="../components/vr-cube.js"></script>
+</head>
+
+<body>
+  <vr-scene>
+    <vr-controls></vr-controls>
+    <vr-camera position="0 1.8 20"></vr-camera>
+  </vr-scene>
+</body>
+<script>
+var rows = 2;
+var cols = 2;
+var spread = 10;
+var scene = document.querySelector('vr-scene');
+for (var r = 0; r < rows; r++) {
+  for (var c = 0; c < cols; c++) {
+    var el = document.createElement('vr-cube');
+    var x = c * spread;
+    var y = 0;
+    var z = r * spread;
+    el.setAttribute('position', {
+      x: x,
+      y: y,
+      z: z
+    });
+    el.setAttribute('height', 5);
+    el.setAttribute('width', 5);
+    el.setAttribute('depth', 5);
+    scene.appendChild(el);
+  }
+}
+</script>
+</html>

@@ -1,4 +1,3 @@
-/* global VRTags */
 document.registerElement(
   'vr-assets',
   {
@@ -18,18 +17,8 @@ document.registerElement(
             this.assetsPending = 0;
             traverseDOM(this);
             function traverseDOM(node) {
-              // We should be checking for the prototype like this
-              // if (VRNode.prototype.isPrototypeOf(node))
-              // Safari and Chrome doesn't seem to have the proper
-              // prototype attached to the node before the createdCallback
-              // function is called. To determine that an element is a VR
-              // related node we check if the tag has been registered as such
-              // during the element registration. This is fragile. We have to
-              // understand why the behaviour between firefox and the other browsers
-              // is not consistent. Firefox is the only one that behaves as one
-              // expects: The nodes have the proper prototype attached to them at
-              // any time during their lifecycle.
-              if (VRTags[node.tagName]) {
+              var tagName = node.tagName;
+              if (node !== self && tagName && tagName.indexOf('VR-') === 0) {
                 attachEventListener(node);
                 self.assetsPending++;
               }

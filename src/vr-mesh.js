@@ -1,14 +1,12 @@
-/* global VRTags, VRObject */
+/* global VRObject */
 /* exported VRMesh */
-
-VRTags["VR-MESH"] = true;
 
 var VRMesh = document.registerElement(
   'vr-mesh',
   {
     prototype: Object.create(
       VRObject.prototype, {
-        init: {
+        onElementCreated: {
           value: function() {
             var geometry = this.getGeometry();
             var material = this.getMaterial();

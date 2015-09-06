@@ -1,14 +1,12 @@
-/* global VRTags, VRNode */
+/* global VRNode */
 /* exported VRGeometry */
-
-VRTags["VR-GEOMETRY"] = true;
 
 var VRGeometry = document.registerElement(
   'vr-geometry',
   {
     prototype: Object.create(
       VRNode.prototype, {
-        init: {
+        onElementCreated: {
           value: function() {
             this.setupGeometry();
             this.load();

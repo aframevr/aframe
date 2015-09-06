@@ -1,14 +1,12 @@
-/* global VRTags, VRNode */
+/* global VRNode */
 /* exported VRFog */
-
-VRTags["VR-FOG"] = true;
 
 var VRFog = document.registerElement(
   'vr-fog',
   {
     prototype: Object.create(
       VRNode.prototype, {
-        init: {
+        onElementCreated: {
           value: function() {
             var color = this.getAttribute('color') || 0xFFFFFF;
             var near = parseFloat(this.getAttribute('near')) || 1;

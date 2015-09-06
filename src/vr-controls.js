@@ -1,7 +1,5 @@
-/* global VRTags, VRNode */
+/* global VRNode */
 /* exported VRControls */
-
-VRTags["VR-CONTROLS"] = true;
 
 var VRControls = document.registerElement(
   'vr-controls',
@@ -9,7 +7,7 @@ var VRControls = document.registerElement(
     prototype: Object.create(
       VRNode.prototype,
       {
-        init: {
+        onElementCreated: {
           value: function() {
             this.prevTime = Date.now();
             // The canvas where the scene is painted

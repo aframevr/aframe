@@ -1,14 +1,12 @@
-/* global VRTags, VRNode */
+/* global VRNode */
 /* exported VRMaterial */
-
-VRTags["VR-MATERIAL"] = true;
 
 var VRMaterial = document.registerElement(
   'vr-material',
   {
     prototype: Object.create(
       VRNode.prototype, {
-        init: {
+        onElementCreated: {
           value: function() {
             this.material = this.setupMaterial();
             this.load();

@@ -1,7 +1,5 @@
-/* global VRTags, VRNode */
+/* global VRNode */
 /* exported VRBehavior */
-
-VRTags["VR-BEHAVIOR"] = true;
 
 var VRBehavior = document.registerElement(
   'vr-behavior',
@@ -9,12 +7,9 @@ var VRBehavior = document.registerElement(
     prototype: Object.create(
       VRNode.prototype,
       {
-        createdCallback: {
+        onElementCreated: {
           value: function() {
-            var sceneEl = document.querySelector('vr-scene');
-            this.sceneEl = sceneEl;
             this.sceneEl.addBehavior(this);
-            this.init();
           }
         },
 
