@@ -53,6 +53,8 @@ function build(debug, filename, callback) {
           'lib/vendor/Tween.js',
           'lib/cursor3D.js',
           'src/vr-markup.js',
+          'src/vr-error.js',
+          'src/vr-utils.js',
           'src/core/vr-node.js',
           'src/core/vr-object.js',
           'src/core/vr-scene.js',

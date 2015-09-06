@@ -1,4 +1,4 @@
-/* global VRNode */
+/* global VR, VRNode */
 
 var VRObject = document.registerElement(
   'vr-object',
@@ -100,13 +100,16 @@ var VRObject = document.registerElement(
 
         addAnimations: {
           value: function() {
-            var animations = this.hasAttribute('animation') ?
-              this.getAttribute('animation').split(' ') : [];
-            var attachObject = function (animationName) {
-              var el = document.getElementById(animationName);
-              if (el) { el.add(this); }
-            }.bind(this);
+            var self = this;
+            var animations = this.getAttribute('animation');
+            if (!animations) { return; }
+            animations = animations.split(' ');
             animations.forEach(attachObject);
+            function attachObject(animationName) {
+              var el = document.getElementById(animationName);
+              if (!el) { return; }
+              el.add(self);
+            }
           },
         },
 
@@ -134,27 +137,9 @@ var VRObject = document.registerElement(
         },
 
         getAttribute: {
-          value: function(attr) {
-            var value = HTMLElement.prototype.getAttribute.call(this, attr);
-            if (attr === 'position' ||
-                attr === 'rotation' ||
-                attr === 'scale') {
-              value = this.parseAttributeString(value);
-            }
-            return value;
-          }
-        },
-
-        parseAttributeString: {
-          value: function(str) {
-            var values;
-            if (!str) { return null; }
-            values = str.split(' ');
-            return {
-              x: parseFloat(values[0]),
-              y: parseFloat(values[1]),
-              z: parseFloat(values[2])
-            };
+          value: function(attribute) {
+            var value = HTMLElement.prototype.getAttribute.call(this, attribute);
+            return VR.utils.parseAttributeString(attribute, value);
           }
         },
 
