@@ -19,6 +19,7 @@ var VRObject = document.registerElement(
             // a parent after initialization. It's up to the arbitrary
             // JS to attach the element to the DOM. We cover this
             // case here.
+            if (!this.hasLoaded) { return; }
             this.addToParent();
           }
         },
@@ -38,6 +39,9 @@ var VRObject = document.registerElement(
 
         add: {
           value: function(el) {
+            if (!el.object3D) {
+              VR.error("Trying to add an object3D that doesn't exist");
+            }
             this.object3D.add(el.object3D);
           }
         },
