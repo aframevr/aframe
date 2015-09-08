@@ -138,7 +138,7 @@ var VRScene = module.exports = document.registerElement(
           value: function() {
             var vrButton = document.createElement('button');
             vrButton.textContent = 'Enter VR';
-            vrButton.style.cssText = 'position: absolute; top: 10px; left: 10px; font-family: sans-serif;';
+            vrButton.className = 'vr-button';
             document.body.appendChild(vrButton);
             vrButton.addEventListener('click', this.enterVR.bind(this));
           }
