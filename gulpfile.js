@@ -62,6 +62,7 @@ function build(debug, filename, callback) {
           'src/core/vr-assets.js',
           'src/vr-behavior.js',
           'src/vr-animation.js',
+          'src/shaders/pbr.js',
           'src/vr-material.js',
           'src/vr-geometry.js',
           'src/vr-mesh.js',
