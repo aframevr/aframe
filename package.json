@@ -1,6 +1,6 @@
 {
   "name": "@mozvr/gazebo",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "homepage": "https://github.com/MozVR/vr-markup",
   "license": "MIT",
   "main": "src/vr-markup.js",
