@@ -11,7 +11,6 @@
     "karma": "^0.12.32",
     "karma-mocha": "^0.1.10",
     "karma-sinon-chai": "^0.3.0",
-    "three-vr-browserify": "^1.0.2",
     "tween.js": "^15.0.0"
   },
   "scripts": {
