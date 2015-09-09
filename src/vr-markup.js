@@ -18,22 +18,6 @@ require('./vr-geometry');
 require('./vr-material');
 require('./vr-mesh');
 
-// Load some default components.
-require('../components/vr-audio');
-require('../components/vr-cube');
-require('../components/vr-curvedPlane1');
-require('../components/vr-curvedPlane2');
-require('../components/vr-grid');
-require('../components/vr-hemispherelight');
-require('../components/vr-image');
-require('../components/vr-model');
-require('../components/vr-obj-loader');
-require('../components/vr-plane');
-require('../components/vr-skybox');
-require('../components/vr-sphere');
-require('../components/vr-video');
-require('../components/vr-video360');
-
 module.exports = {
   THREE: THREE,
   VRObject: VRObject,
