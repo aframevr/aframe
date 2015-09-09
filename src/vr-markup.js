@@ -1,14 +1,10 @@
-// Polyfill `document.registerElement`.
-require('document-register-element');
+require('./vr-register-element');
 
-var THREE = require('../lib/three');
-
-// These are the only ones of which we actually need exported references.
 var VRObject = require('./core/vr-object');
+var VRNode = require('./core/vr-node');
+var THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 
-// Requiring the module calls `document.registerElement` so the custom element will get created.
-require('./core/vr-node');
 require('./core/vr-camera');
 require('./core/vr-scene');
 require('./core/vr-assets');
@@ -25,5 +21,6 @@ require('./vr-mesh');
 module.exports = {
   THREE: THREE,
   VRObject: VRObject,
+  VRNode: VRNode,
   utils: VRUtils
 };

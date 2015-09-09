@@ -3,10 +3,11 @@ var VRNode = require('./core/vr-node');
 
 var TWEEN = require('tween.js');
 
-module.exports = document.registerElement('vr-animation', {
+module.exports = document.registerElement(
+  'vr-animation', {
   prototype: Object.create(
     VRNode.prototype, {
-      onElementCreated: {
+      createdCallback: {
         value: function() {
           this.delay = parseFloat(this.getAttribute('delay')) || 0;
           this.duration = parseFloat(this.getAttribute('duration')) || 1000;

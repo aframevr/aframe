@@ -8,7 +8,7 @@ document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
             var geometry = this.generateGeometry();
@@ -17,7 +17,7 @@ document.registerElement(
           }
         },
 
-        onAttributeChanged: {
+        attributeChangedCallback: {
           value: function() {
             this.object3D.geometry = this.generateGeometry();
           }

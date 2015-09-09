@@ -8,7 +8,7 @@ module.exports = document.registerElement(
     prototype: Object.create(
       VRNode.prototype,
       {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             this.prevTime = Date.now();
             // The canvas where the scene is painted
@@ -29,18 +29,12 @@ module.exports = document.registerElement(
             this.setAttribute('locomotion', true);
             this.setAttribute('mouse-look', true);
 
-            document.addEventListener('DOMContentLoaded', this.onDOMContentLoaded.bind(this));
-          }
-        },
-
-        onDOMContentLoaded: {
-          value: function() {
             this.attachMouseKeyboardListeners();
             this.load();
           }
         },
 
-        onAttributeChanged: {
+        attributeChangedCallback: {
           value: function() {
             var locomotion = this.getAttribute('locomotion');
             var mouseLook = this.getAttribute('mouse-look');
@@ -111,17 +105,18 @@ module.exports = document.registerElement(
 
             }
 
-            rotation = THREE.Math.radToDeg(pitchObject.rotation.x) + ' ' +
-                       THREE.Math.radToDeg(yawObject.rotation.y) + ' ' + rotZ;
+            cameraEl.setAttribute('rotation', {
+              x: pitchObject.rotation.x,
+              y: yawObject.rotation.y,
+              z: rotZ
+            });
 
             var movementVector = this.getMovementVector(delta);
-
-            position = (x + movementVector.x) + ' ' +
-                        y + ' ' +
-                       (z + movementVector.z);
-
-            cameraEl.setAttribute('rotation', rotation);
-            cameraEl.setAttribute('position', position);
+            cameraEl.setAttribute('position', {
+              x: x + movementVector.x,
+              y: y,
+              z: z + movementVector.z
+            });
           }
         },
 

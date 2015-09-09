@@ -308,7 +308,7 @@ var VRScene = module.exports = document.registerElement(
             TWEEN.update(t);
             // Updates behaviors
             this.behaviors.forEach(function(behavior) { behavior.update(t); });
-            this.renderer.render( this.object3D, this.camera );
+            this.renderer.render(this.object3D, this.camera);
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
           }
         }

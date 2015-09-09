@@ -6,7 +6,7 @@ module.exports = document.registerElement(
   {
     prototype: Object.create(
       VRNode.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var color = this.getAttribute('color') || 0xFFFFFF;
             var near = parseFloat(this.getAttribute('near')) || 1;

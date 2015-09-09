@@ -6,7 +6,7 @@ module.exports = document.registerElement(
   {
     prototype: Object.create(
       VRNode.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             this.setupGeometry();
             this.load();

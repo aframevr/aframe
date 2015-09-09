@@ -7,7 +7,7 @@ module.exports = document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
@@ -31,7 +31,7 @@ module.exports = document.registerElement(
           }
         },
 
-        onAttributeChanged: {
+        attributeChangedCallback: {
           value: function() {
             var material = this.getMaterial();
             var geometry = this.getGeometry();

@@ -7,13 +7,31 @@ module.exports = document.registerElement(
     prototype: Object.create(
       VRObject.prototype,
       {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var camera = this.object3D = new THREE.PerspectiveCamera();
             // This should probably managed within vr-scene
             this.sceneEl.camera = camera;
             this.saveInitialValues();
             this.load();
+          }
+        },
+
+        attributeChangedCallback: {
+          value: function() {
+            // Camera parameters
+            var fov = parseFloat(this.getAttribute('fov')) || 45;
+            var near = parseFloat(this.getAttribute('near')) || 1;
+            var far = parseFloat(this.getAttribute('far')) || 10000;
+            var aspect = parseFloat(this.getAttribute('aspect')) ||
+                         window.innerWidth / window.innerHeight;
+
+            // Setting three.js camera parameters
+            this.object3D.fov = fov;
+            this.object3D.near = near;
+            this.object3D.far = far;
+            this.object3D.aspect = aspect;
+            this.object3D.updateProjectionMatrix();
           }
         },
 
@@ -49,24 +67,6 @@ module.exports = document.registerElement(
             this.setAttribute('near', this.initValues.far);
             this.setAttribute('far', this.initValues.far);
             this.setAttribute('aspect', this.initValues.aspect);
-          }
-        },
-
-        onAttributeChanged: {
-          value: function() {
-            // Camera parameters
-            var fov = parseFloat(this.getAttribute('fov')) || 45;
-            var near = parseFloat(this.getAttribute('near')) || 1;
-            var far = parseFloat(this.getAttribute('far')) || 10000;
-            var aspect = parseFloat(this.getAttribute('aspect')) ||
-                         window.innerWidth / window.innerHeight;
-
-            // Setting three.js camera parameters
-            this.object3D.fov = fov;
-            this.object3D.near = near;
-            this.object3D.far = far;
-            this.object3D.aspect = aspect;
-            this.object3D.updateProjectionMatrix();
           }
         },
 

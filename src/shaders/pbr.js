@@ -6,17 +6,6 @@ module.exports = function (THREE) {
 
 	return {
 
-		uniforms: {
-
-			luminance:	 { type: "f", value: 1 },
-			turbidity:	 { type: "f", value: 2 },
-			reileigh:	 { type: "f", value: 1 },
-			mieCoefficient:	 { type: "f", value: 0.005 },
-			mieDirectionalG: { type: "f", value: 0.8 },
-			sunPosition: 	 { type: "v3", value: new THREE.Vector3() }
-
-		},
-
 		vertexShader: [
 
 			"attribute vec4 tangent;",
@@ -188,7 +177,6 @@ module.exports = function (THREE) {
 
 	    "void main()",
 	    "{",
-
 	      "vec3 normal = vTestNormal;",
 
 	      "vec3 viewDir = normalize(cameraPosition - vPosition);",

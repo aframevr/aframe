@@ -8,7 +8,7 @@ document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var skyColor = this.getAttribute('skyColor') || "#FFFFFF";
             var groundColor = this.getAttribute('groundColor') || "#FFFFFF";

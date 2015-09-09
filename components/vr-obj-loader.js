@@ -9,7 +9,7 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
 
-        onElementCreated: {
+        createdCallback: {
           value: function() {
 
             var self = this;

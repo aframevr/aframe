@@ -6,14 +6,14 @@ module.exports = document.registerElement(
   {
     prototype: Object.create(
       VRNode.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             this.material = this.setupMaterial();
             this.load();
           }
         },
 
-        onAttributeChanged: {
+        attributeChangedCallback: {
           value: function() {
             var color = this.getAttribute('color') || Math.random() * 0xffffff;
             var roughness = this.getAttribute('roughness') || "1.0";

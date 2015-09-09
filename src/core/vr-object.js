@@ -2,43 +2,18 @@ var THREE = require('../../lib/three');
 var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
-var VRObject = module.exports = document.registerElement(
+module.exports = document.registerElement(
   'vr-object',
   {
     prototype: Object.create(
       VRNode.prototype,
       {
-        onElementCreated: {
-          value: function() {
-            this.object3D = new THREE.Object3D();
-            this.load();
-          }
-        },
+        /**
 
-        attachedCallback: {
-          value: function() {
-            // When creating an element from JS is not guaranteed to have
-            // a parent after initialization. It's up to the arbitrary
-            // JS to attach the element to the DOM. We cover this
-            // case here.
-            if (!this.hasLoaded) { return; }
-            this.addToParent();
-          }
-        },
+          Native custom elements callbacks
+          --------------------------------
 
-        detachedCallback: {
-          value: function() {
-            var parent = this.parentNode;
-            if (parent) {
-              parent.remove(this);
-            } else {
-              // In certain cases like removing an element from the DOM inspector
-              // The parentNode is null when calling this function.
-              this.sceneEl.remove(this);
-            }
-          }
-        },
-
+        **/
         add: {
           value: function(el) {
             if (!el.object3D) {
@@ -69,7 +44,7 @@ var VRObject = module.exports = document.registerElement(
             this.addToParent();
             // It sets default values on the attributes if they're not defined
             this.initAttributes();
-            VRObject.prototype.onAttributeChanged.call(this);
+            VRObject.prototype.attributeChangedCallback.call(this);
             VRNode.prototype.load.call(this);
             this.addAnimations();
           }
@@ -119,7 +94,21 @@ var VRObject = module.exports = document.registerElement(
           },
         },
 
-        onAttributeChanged: {
+        getAttribute: {
+          value: function(attribute) {
+            var value = HTMLElement.prototype.getAttribute.call(this, attribute);
+            return VRUtils.parseAttributeString(attribute, value);
+          }
+        },
+
+        createdCallback: {
+          value: function() {
+            this.object3D = new THREE.Object3D();
+            this.load();
+          }
+        },
+
+        attributeChangedCallback: {
           value: function() {
             this.object3D = this.object3D || new THREE.Object3D();
             // Position
@@ -142,18 +131,26 @@ var VRObject = module.exports = document.registerElement(
           }
         },
 
-        getAttribute: {
-          value: function(attribute) {
-            var value = HTMLElement.prototype.getAttribute.call(this, attribute);
-            return VRUtils.parseAttributeString(attribute, value);
+        attachedCallback: {
+          value: function() {
+            // When creating an element from JS is not guaranteed to have
+            // a parent after initialization. It's up to the arbitrary
+            // JS to attach the element to the DOM. We cover this
+            // case here.
+            if (!this.hasLoaded) { return; }
+            this.addToParent();
           }
         },
 
-        attributeChangedCallback: {
-          value: function(name, previousValue, value) {
-            VRObject.prototype.onAttributeChanged.call(this);
-            if (VRObject.prototype.onAttributeChanged !== this.onAttributeChanged) {
-              this.onAttributeChanged();
+        detachedCallback: {
+          value: function() {
+            var parent = this.parentNode;
+            if (parent) {
+              parent.remove(this);
+            } else {
+              // In certain cases like removing an element from the DOM inspector
+              // The parentNode is null when calling this function.
+              this.sceneEl.remove(this);
             }
           }
         }

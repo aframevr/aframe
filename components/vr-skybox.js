@@ -8,7 +8,7 @@ document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
@@ -17,7 +17,7 @@ document.registerElement(
           }
         },
 
-        onAttributeChanged: {
+        attributeChangedCallback: {
           value: function() {
             var material = this.getMaterial();
             var geometry = this.getGeometry();

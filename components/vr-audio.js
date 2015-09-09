@@ -8,7 +8,7 @@ document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        onElementCreated: {
+        createdCallback: {
           value: function() {
             var listener = new THREE.AudioListener;
             document.querySelector('vr-camera').object3D.add(listener);
