@@ -1,12 +1,17 @@
 {
-  "name": "vr-markup",
+  "name": "@mozvr/gazebo",
+  "version": "0.1.5",
   "homepage": "https://github.com/MozVR/vr-markup",
   "license": "MIT",
-  "main": "build/vr-markup.js",
+  "main": "src/vr-markup.js",
+  "dependencies": {
+    "document-register-element": "^0.4.5",
+    "three-vr-browserify": "^1.0.2",
+    "tween.js": "^15.0.0"
+  },
   "devDependencies": {
     "browserify": "^11.0.1",
     "budo": "^4.2.1",
-    "document-register-element": "^0.4.5",
     "garnish": "^2.3.0",
     "karma": "^0.12.32",
     "karma-mocha": "^0.1.10",
@@ -17,7 +22,6 @@
     "start": "npm run dev",
     "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9000 -- -r ./src/vr-markup.js:vr-markup | garnish -v",
     "build": "mkdir -p build && browserify -r ./src/vr-markup.js:vr-markup -o build/vr-markup.js --debug",
-    "postinstall": "npm run build",
     "test": "karma start"
   },
   "repository": "MozVR/vr-markup",
