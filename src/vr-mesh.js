@@ -9,7 +9,7 @@ module.exports = document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var geometry = this.getGeometry();
             var material = this.getMaterial();
             this.object3D = new THREE.Mesh(geometry, material);
@@ -18,7 +18,7 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             if (material) {
               this.object3D.material = material;
@@ -28,17 +28,17 @@ module.exports = document.registerElement(
         },
 
         getGeometry: {
-          value: function() {
+          value: function () {
             var geometryId = this.getAttribute('geometry');
-            var geometryEl = geometryId? document.querySelector('#' + geometryId) : undefined;
-            return (geometryEl && geometryEl.geometry) || new THREE.BoxGeometry( 200, 200, 200 );
+            var geometryEl = geometryId ? document.querySelector('#' + geometryId) : undefined;
+            return (geometryEl && geometryEl.geometry) || new THREE.BoxGeometry(200, 200, 200);
           }
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var materialId = this.getAttribute('material');
-            var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+            var materialEl = materialId ? document.querySelector('#' + materialId) : undefined;
             return materialEl && materialEl.material;
           }
         }

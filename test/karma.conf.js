@@ -1,5 +1,5 @@
 'use strict';
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
     browserify: {
@@ -8,22 +8,22 @@ module.exports = function(config) {
     },
     browsers: ['firefox_latest'],
     customLaunchers: {
-     firefox_latest: {
-       base: 'FirefoxNightly',
-       prefs: { /* empty */ }
-     }
+      firefox_latest: {
+        base: 'FirefoxNightly',
+        prefs: { /* empty */ }
+      }
     },
     reporters: ['mocha'],
     client: {
       captureConsole: true,
-      mocha: { 'ui': 'tdd' }
+      mocha: {'ui': 'tdd'}
     },
     basePath: '../',
     files: [
-      'test/*.js',
+      'test/*.js'
     ],
     preprocessors: {
-      'test/*.js': [ 'browserify' ]
+      'test/*.js': ['browserify']
     }
   });
 };

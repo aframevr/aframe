@@ -1,3 +1,5 @@
+/* global Event, HTMLElement */
+
 require('../vr-register-element');
 
 /**
@@ -6,6 +8,7 @@ require('../vr-register-element');
  * It manages loading of objects.
  *
  */
+
 module.exports = document.registerElement(
   'vr-node',
   {
@@ -18,7 +21,7 @@ module.exports = document.registerElement(
         //  ----------------------------------  //
 
         createdCallback: {
-          value: function() {
+          value: function () {
             var sceneEl = document.querySelector('vr-scene');
             this.sceneEl = sceneEl;
           },
@@ -26,22 +29,22 @@ module.exports = document.registerElement(
         },
 
         attachedCallback: {
-          value: function() { /* no-op */ },
+          value: function () { /* no-op */ },
           writable: window.debug
         },
 
         detachedCallback: {
-          value: function() { /* no-op */ },
+          value: function () { /* no-op */ },
           writable: window.debug
         },
 
         attributeChangedCallback: {
-          value: function() { /* no-op */ },
+          value: function () { /* no-op */ },
           writable: window.debug
         },
 
         load: {
-          value: function() {
+          value: function () {
             // To prevent emmitting the loaded event more than once
             if (this.hasLoaded) { return; }
             var attributeChangedCallback = this.attributeChangedCallback;
@@ -52,6 +55,6 @@ module.exports = document.registerElement(
           },
           writable: window.debug
         }
-    })
+      })
   }
 );

@@ -1,3 +1,5 @@
+/* global MessageChannel, performance, Promise */
+
 require('../vr-register-element');
 
 var TWEEN = require('tween.js');
@@ -11,7 +13,7 @@ var VRScene = module.exports = document.registerElement(
     prototype: Object.create(
       VRNode.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             this.attachEventListeners();
             this.attachFullscreenListeners();
             this.setupScene();
@@ -19,19 +21,19 @@ var VRScene = module.exports = document.registerElement(
         },
 
         detachedCallback: {
-          value: function() {
+          value: function () {
             this.shutdown();
           }
         },
 
         shutdown: {
-          value: function() {
+          value: function () {
             window.cancelAnimationFrame(this.animationFrameID);
           }
         },
 
         attachEventListeners: {
-          value: function() {
+          value: function () {
             var self = this;
             var elementLoaded = this.elementLoaded.bind(this);
             this.pendingElements = 0;
@@ -41,8 +43,7 @@ var VRScene = module.exports = document.registerElement(
               assets.addEventListener('loaded', elementLoaded);
             }
             traverseDOM(this);
-
-            function traverseDOM(node) {
+            function traverseDOM (node) {
               // We have to wait for the element
               // If the node it's not the scene itself
               // and it's a VR element
@@ -57,14 +58,14 @@ var VRScene = module.exports = document.registerElement(
                 node = node.nextSibling;
               }
             }
-            function attachEventListener(node) {
+            function attachEventListener (node) {
               node.addEventListener('loaded', elementLoaded);
             }
           }
         },
 
         isVRNode: {
-          value: function(node) {
+          value: function (node) {
             // To check if a DOM elemnt is a VR element
             // We should be checking for the prototype like this
             // if (VRNode.prototype.isPrototypeOf(node))
@@ -82,9 +83,9 @@ var VRScene = module.exports = document.registerElement(
         },
 
         attachMessageListeners: {
-          value: function() {
+          value: function () {
             var self = this;
-            window.addEventListener('message', function(e) {
+            window.addEventListener('message', function (e) {
               if (e.data && e.data.type === 'fullscreen') {
                 switch (e.data.data) {
                   // set renderer with fullscreen VR enter and exit.
@@ -101,7 +102,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         attachFullscreenListeners: {
-          value: function() {
+          value: function () {
             // handle fullscreen changes
             document.addEventListener('mozfullscreenchange', this.fullscreenChange.bind(this));
             document.addEventListener('webkitfullscreenchange', this.fullscreenChange.bind(this));
@@ -109,7 +110,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         fullscreenChange: {
-          value: function(e) {
+          value: function (e) {
             // switch back to the mono renderer if we have dropped out of fullscreen VR mode.
             var fsElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
             if (!fsElement) {
@@ -119,7 +120,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         elementLoaded: {
-          value: function() {
+          value: function () {
             this.pendingElements--;
             // If we still need to wait for more elements
             if (this.pendingElements > 0) { return; }
@@ -135,7 +136,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         createEnterVrButton: {
-          value: function() {
+          value: function () {
             var vrButton = document.createElement('button');
             vrButton.textContent = 'Enter VR';
             vrButton.className = 'vr-button';
@@ -146,8 +147,8 @@ var VRScene = module.exports = document.registerElement(
 
         // returns a promise that resolves to true if loader is in VR mode.
         vrLoaderMode: {
-          value: function() {
-            return new Promise(function(resolve) {
+          value: function () {
+            return new Promise(function (resolve) {
               var channel = new MessageChannel();
               window.top.postMessage({type: 'checkVr'}, '*', [channel.port2]);
               channel.port1.onmessage = function (message) {
@@ -158,12 +159,12 @@ var VRScene = module.exports = document.registerElement(
         },
 
         setupLoader: {
-          value: function() {
+          value: function () {
             var self = this;
             // inside loader, check for vr mode before kicking off render loop.
             if (window.top !== window.self) {
               self.attachMessageListeners();
-              self.vrLoaderMode().then(function(isVr) {
+              self.vrLoaderMode().then(function (isVr) {
                 if (isVr) {
                   self.setStereoRenderer();
                 } else {
@@ -178,21 +179,21 @@ var VRScene = module.exports = document.registerElement(
         },
 
         setStereoRenderer: {
-          value: function() {
+          value: function () {
             this.renderer = this.stereoRenderer;
             this.resizeCanvas();
           }
         },
 
         setMonoRenderer: {
-          value: function() {
+          value: function () {
             this.renderer = this.monoRenderer;
             this.resizeCanvas();
           }
         },
 
         setupScene: {
-          value: function() {
+          value: function () {
             this.behaviors = [];
             this.cameraControls = this.querySelector('vr-controls');
             if (this.cameraControls) {
@@ -210,7 +211,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         setupCanvas: {
-          value: function() {
+          value: function () {
             var canvas = this.canvas = document.createElement('canvas');
             canvas.classList.add('vr-canvas');
             document.body.appendChild(canvas);
@@ -219,7 +220,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         setupCamera: {
-          value: function() {
+          value: function () {
             var cameraEl = this.querySelector('vr-camera');
             // If there's not a user-defined camera, we create one.
             if (!cameraEl) {
@@ -233,7 +234,7 @@ var VRScene = module.exports = document.registerElement(
         },
 
         setupCursor: {
-          value: function() {
+          value: function () {
             var cursor = this.querySelector('vr-cursor');
             if (cursor) {
               this.cursor = cursor;
@@ -242,19 +243,19 @@ var VRScene = module.exports = document.registerElement(
         },
 
         enterVR: {
-          value: function() {
+          value: function () {
             this.renderer = this.stereoRenderer;
             this.stereoRenderer.setFullScreen(true);
           }
         },
 
         setupRenderer: {
-          value: function() {
+          value: function () {
             var canvas = this.canvas;
             var renderer = this.renderer = this.monoRenderer =
               (VRScene && VRScene.renderer) || // To prevent creating multiple rendering contexts
-              new THREE.WebGLRenderer( { canvas: canvas, antialias: true, alpha: true } );
-            renderer.setPixelRatio( window.devicePixelRatio );
+              new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.sortObjects = false;
             VRScene.renderer = renderer;
 
@@ -266,12 +267,12 @@ var VRScene = module.exports = document.registerElement(
         },
 
         resizeCanvas: {
-          value: function() {
+          value: function () {
             var canvas = this.canvas;
             var camera = this.camera;
             // Make it visually fill the positioned parent
             canvas.style.width = '100%';
-            canvas.style.height =' 100%';
+            canvas.style.height = '100%';
             // Set the internal size to match
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
@@ -279,35 +280,37 @@ var VRScene = module.exports = document.registerElement(
             camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
             camera.updateProjectionMatrix();
             // Notify the renderer of the size change
-            this.renderer.setSize( canvas.width, canvas.height );
+            this.renderer.setSize(canvas.width, canvas.height);
           }
         },
 
         add: {
-          value: function(el) {
+          value: function (el) {
             if (!el.object3D) { return; }
             this.object3D.add(el.object3D);
           }
         },
 
         addBehavior: {
-          value: function(behavior) {
+          value: function (behavior) {
             this.behaviors.push(behavior);
           }
         },
 
         remove: {
-          value: function(el) {
+          value: function (el) {
             if (!el.object3D) { return; }
             this.object3D.remove(el.object3D);
           }
         },
 
         render: {
-          value: function(t) {
+          value: function (t) {
             TWEEN.update(t);
             // Updates behaviors
-            this.behaviors.forEach(function(behavior) { behavior.update(t); });
+            this.behaviors.forEach(function (behavior) {
+              behavior.update(t);
+            });
             this.renderer.render(this.object3D, this.camera);
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
           }

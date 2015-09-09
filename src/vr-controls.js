@@ -9,7 +9,7 @@ module.exports = document.registerElement(
       VRNode.prototype,
       {
         createdCallback: {
-          value: function() {
+          value: function () {
             this.prevTime = Date.now();
             // The canvas where the scene is painted
             this.canvasEl = document.querySelector('vr-scene').canvas;
@@ -24,7 +24,7 @@ module.exports = document.registerElement(
             this.pitchObject = new THREE.Object3D();
             this.yawObject = new THREE.Object3D();
             this.yawObject.position.y = 10;
-            this.yawObject.add( this.pitchObject );
+            this.yawObject.add(this.pitchObject);
 
             this.setAttribute('locomotion', true);
             this.setAttribute('mouse-look', true);
@@ -35,22 +35,22 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var locomotion = this.getAttribute('locomotion');
             var mouseLook = this.getAttribute('mouse-look');
-            this.locomotion = locomotion === "true"? true : false;
-            this.mouseLook = mouseLook === "true"? true : false;
+            this.locomotion = locomotion === 'true';
+            this.mouseLook = mouseLook === 'true';
           }
         },
 
         update: {
-          value: function() {
+          value: function () {
             var velocity = this.velocity;
             var cameraEl = this.cameraEl;
             var pitchObject = this.pitchObject;
             var yawObject = this.yawObject;
-            var time = performance.now();
-            var delta = ( time - this.prevTime ) / 1000;
+            var time = window.performance.now();
+            var delta = (time - this.prevTime) / 1000;
             var keys = this.keys;
             var acceleration = this.acceleration;
             this.prevTime = time;
@@ -64,8 +64,6 @@ module.exports = document.registerElement(
             var z = position.z || 0;
 
             var rotation = cameraEl.getAttribute('rotation');
-            var rotX = rotation.x || 0;
-            var rotY = rotation.y || 0;
             var rotZ = rotation.z || 0;
 
             if (this.locomotion) {
@@ -87,8 +85,6 @@ module.exports = document.registerElement(
               x = 0;
               y = 0;
               z = 0;
-              rotX = 0;
-              rotY = 0;
 
               cameraEl.reset();
               // scene.resetSensor();
@@ -99,10 +95,7 @@ module.exports = document.registerElement(
               z = position.z || 0;
 
               rotation = cameraEl.getAttribute('rotation');
-              rotX = rotation.x || 0;
-              rotY = rotation.y || 0;
               rotZ = rotation.z || 0;
-
             }
 
             cameraEl.setAttribute('rotation', {
@@ -121,7 +114,7 @@ module.exports = document.registerElement(
         },
 
         attachMouseKeyboardListeners: {
-          value: function() {
+          value: function () {
             var canvasEl = this.canvasEl;
 
             // Keyboard events
@@ -140,7 +133,7 @@ module.exports = document.registerElement(
         },
 
         onMouseMove: {
-          value: function(event) {
+          value: function (event) {
             var pitchObject = this.pitchObject;
             var yawObject = this.yawObject;
             var mouseDown = this.mouseDown;
@@ -153,12 +146,12 @@ module.exports = document.registerElement(
 
             yawObject.rotation.y -= movementX * 0.002;
             pitchObject.rotation.x -= movementY * 0.002;
-            pitchObject.rotation.x = Math.max(-PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+            pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
           }
         },
 
         onMouseDown: {
-          value: function(event) {
+          value: function (event) {
             this.mouseDown = true;
             this.lastMouseX = event.clientX;
             this.lastMouseY = event.clientY;
@@ -166,34 +159,34 @@ module.exports = document.registerElement(
         },
 
         onMouseUp: {
-          value: function() {
+          value: function () {
             this.mouseDown = false;
           }
         },
 
         onKeyDown: {
-          value: function(event) {
+          value: function (event) {
             this.keys[event.keyCode] = true;
           }
         },
 
         onKeyUp: {
-          value: function(event) {
+          value: function (event) {
             this.keys[event.keyCode] = false;
           }
         },
 
         getMovementVector: {
-          value: function(delta) {
+          value: function (delta) {
             var velocity = this.velocity;
-            var direction = new THREE.Vector3( velocity.x * delta, 0, velocity.z * delta );
-            var rotation = new THREE.Euler(0, 0, 0, "YXZ");
+            var direction = new THREE.Vector3(velocity.x * delta, 0, velocity.z * delta);
+            var rotation = new THREE.Euler(0, 0, 0, 'YXZ');
             var pitchObject = this.pitchObject;
             var yawObject = this.yawObject;
-            rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
-            return direction.applyEuler( rotation );
+            rotation.set(pitchObject.rotation.x, yawObject.rotation.y, 0);
+            return direction.applyEuler(rotation);
           }
         }
-    })
+      })
   }
 );

@@ -9,16 +9,16 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
-            this.object3D = new THREE.Mesh( geometry, material );
+            this.object3D = new THREE.Mesh(geometry, material);
             this.load();
           }
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D.geometry = geometry;
@@ -27,14 +27,13 @@ document.registerElement(
         },
 
         getGeometry: {
-          value: function() {
-
+          value: function () {
             var radius = parseFloat(this.getAttribute('radius')) || 10;
             var width = parseFloat(this.getAttribute('width')) || 4;
             var height = parseFloat(this.getAttribute('height')) || 1;
 
-            var circumference= 2 * Math.PI * radius;
-            var thetaLength = (Math.PI*2) * (width/circumference);
+            var circumference = 2 * Math.PI * radius;
+            var thetaLength = (Math.PI * 2) * (width / circumference);
 
             var geometry = new THREE.CylinderGeometry(
               radius, // radius top
@@ -47,18 +46,17 @@ document.registerElement(
               thetaLength
             );
 
-            geometry.applyMatrix( new THREE.Matrix4().makeScale(1, 1, -1));
+            geometry.applyMatrix(new THREE.Matrix4().makeScale(1, 1, -1));
 
             return geometry;
           }
         },
 
         getMaterial: {
-          value: function() {
-            var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
+          value: function () {
             var materialId = this.getAttribute('material');
-            var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-            return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
+            var materialEl = materialId ? document.querySelector('#' + materialId) : {};
+            return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial({color: Math.random() * 0xffffff, opacity: 1.0});
           }
         }
       })

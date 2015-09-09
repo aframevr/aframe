@@ -1,19 +1,24 @@
+var VRMarkup = require('vr-markup');
+
+var THREE = VRMarkup.THREE;
+var VRObject = VRMarkup.VRObject;
+
 document.registerElement(
   'vr-cylinder',
   {
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
-            this.object3D = new THREE.Mesh( geometry, material );
+            this.object3D = new THREE.Mesh(geometry, material);
             this.load();
           }
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D.geometry = geometry;
@@ -22,8 +27,7 @@ document.registerElement(
         },
 
         getGeometry: {
-          value: function() {
-
+          value: function () {
             var radius = parseFloat(this.getAttribute('radius') || 5);
             var height = parseFloat(this.getAttribute('height') || 1);
             var radiusSegments = parseFloat(this.getAttribute('radiusSegments') || 36);
@@ -44,11 +48,14 @@ document.registerElement(
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
             var materialId = this.getAttribute('material');
-            var materialEl = materialId? document.querySelector('#' + materialId) : undefined;
-            return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial( { color: Math.random() * 0xffffff, opacity: 1.0 } );
+            var materialEl = materialId ? document.querySelector('#' + materialId) : undefined;
+            return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial({
+              color: color,
+              opacity: 1.0
+            });
           }
         }
       })

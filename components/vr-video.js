@@ -9,7 +9,7 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D = new THREE.Mesh(geometry, material);
@@ -20,15 +20,15 @@ document.registerElement(
         /* no `update` function needed */
 
         getGeometry: {
-          value: function() {
-            var width = parseFloat(this.getAttribute('width')) || 50;
-            var height = parseFloat(this.getAttribute('height')) || 50;
+          value: function () {
+            var width = parseFloat(this.getAttribute('width') || 50);
+            var height = parseFloat(this.getAttribute('height') || 50);
             return new THREE.PlaneGeometry(width, height, 1, 1);
           }
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var video = document.createElement('video');
             video.crossOrigin = 'anonymous';
             video.src = this.getAttribute('src');
@@ -41,10 +41,11 @@ document.registerElement(
             texture.generateMipmaps = false;
 
             return new THREE.MeshBasicMaterial({
-              map: texture,
+              map: texture
             });
           }
         }
-      })
+      }
+    )
   }
 );
