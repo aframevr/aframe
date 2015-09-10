@@ -2,7 +2,7 @@ var THREE = require('../../lib/three');
 var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
-module.exports = document.registerElement(
+var VRObject = module.exports = document.registerElement(
   'vr-object',
   {
     prototype: Object.create(
