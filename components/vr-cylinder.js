@@ -1,10 +1,5 @@
-var VRMarkup = require('vr-markup');
-
-var THREE = VRMarkup.THREE;
-var VRObject = VRMarkup.VRObject;
-
 document.registerElement(
-  'vr-curvedPlane1',
+  'vr-cylinder',
   {
     prototype: Object.create(
       VRObject.prototype, {
@@ -29,25 +24,20 @@ document.registerElement(
         getGeometry: {
           value: function() {
 
-            var radius = parseFloat(this.getAttribute('radius')) || 10;
-            var width = parseFloat(this.getAttribute('width')) || 4;
-            var height = parseFloat(this.getAttribute('height')) || 1;
-
-            var circumference= 2 * Math.PI * radius;
-            var thetaLength = (Math.PI*2) * (width/circumference);
+            var radius = parseFloat(this.getAttribute('radius') || 5);
+            var height = parseFloat(this.getAttribute('height') || 1);
+            var radiusSegments = parseFloat(this.getAttribute('radiusSegments') || 36);
+            var heightSegments = parseFloat(this.getAttribute('heightSegments') || 10);
+            var openEnded = this.hasAttribute('openended');
 
             var geometry = new THREE.CylinderGeometry(
               radius, // radius top
               radius, // radius bottom
               height, // height
-              30, // y segments
-              10, // x segments
-              true, // openended
-              0,  // theta start
-              thetaLength
+              radiusSegments, // y segments
+              heightSegments, // x segments
+              openEnded // openended
             );
-
-            geometry.applyMatrix( new THREE.Matrix4().makeScale(1, 1, -1));
 
             return geometry;
           }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Performance</title>
+  <meta name="Testing performance of high numbers of polys" content="Dynamic Scene">
+  <link rel="stylesheet" type="text/css" href="../style/vr-markup.css">
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <script src="../build/vr-markup.js"></script>
+  <script src="../lib/vendor/stats.min.js"></script>
+  <!-- User defined component example -->
+  <script src="../components/vr-sphere.js"></script>
+  <script src="../components/vr-skysphere.js"></script>
+</head>
+
+<body>
+  <vr-assets>
+    <vr-material id="shiny" color="#ffcc00" metallic="0.9" roughness="0.38"></vr-material>
+  </vr-assets>
+  <vr-scene>
+    <vr-controls></vr-controls>
+    <vr-camera position="0 1.8 20"></vr-camera>
+    <vr-skysphere color="#385578"></vr-skysphere>
+  </vr-scene>
+</body>
+<script>
+
+  /* Create many objects */
+  var rows = 20;
+  var cols = 20;
+  var spread = 20;
+  var scene = document.querySelector('vr-scene');
+  var group = document.createElement('vr-object');
+  group.setAttribute('position', {
+    x: 0 - (cols * spread / 2),
+    y: -10,
+    z: 0 - (rows * spread / 2)
+  })
+  scene.appendChild(group);
+  for (var r = 0; r < rows; r++) {
+    for (var c = 0; c < cols; c++) {
+      var el = document.createElement('vr-sphere');
+      var x = c * spread;
+      var y = 0;
+      var z = r * spread;
+      el.setAttribute('position', {
+        x: x,
+        y: y,
+        z: z
+      });
+      el.setAttribute('radius', 5);
+      el.setAttribute('material', 'shiny');
+      group.appendChild(el);
+    }
+  }
+
+  /* Stats.js FPS counter */
+  /* TODO: get this working. Is not currently displaying any figures. */
+  var stats = new Stats();
+    stats.setMode( 1 );
+    var element = document.body.appendChild( stats.domElement );
+    element.style.zIndex = 100;
+    element.style.position = "absolute";
+    element.style.top = "1em";
+    element.style.right = "1em";
+    stats.begin();
+    //setInterval( function () {
+    //  stats.end();
+    //}, 1000 / 60 );
+
+</script>
+</html>

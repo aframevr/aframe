@@ -10,7 +10,9 @@ document.registerElement(
       VRObject.prototype, {
         createdCallback: {
           value: function() {
-            var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
+            
+            var color = this.getAttribute('color') || "#666";
+            var material = new THREE.LineBasicMaterial( { color: color } );
             var geometry = this.generateGeometry();
             this.object3D = new THREE.LineSegments( geometry, material, THREE.LinePieces );
             this.load();

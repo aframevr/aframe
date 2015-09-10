@@ -10,23 +10,20 @@
   <!-- User-defined components -->
   <script src="../components/vr-cube.js"></script>
   <script src="../components/vr-grid.js"></script>
-  <style id="vr-styles">
-    body {
-      background-color: black;
-    }
-  </style>
+  <script src="../components/vr-skysphere.js"></script>
 </head>
 
 <body>
   <vr-assets>
-    <vr-material id="highlight" color="yellow"></vr-material>
-    <vr-material id="normal" color="red"></vr-material>
+    <vr-material id="normal" color="#3399ff" metallic="0.9" roughness="0.38"></vr-material>
+    <vr-material id="highlight" color="#ffcc00" metallic="1" roughness="0.5"></vr-material>
   </vr-assets>
   <vr-scene>
     <vr-controls></vr-controls>
     <vr-camera position="0 1.8 20">
       <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
     </vr-camera>
+    <vr-skysphere color="#000"></vr-skysphere>
     <vr-cube position="0 2 -8" material="normal" width="4" height="4" depth="4" href="cube.html"></vr-cube>
     <vr-cube position="6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
     <vr-cube position="-6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
