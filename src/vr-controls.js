@@ -105,9 +105,9 @@ module.exports = document.registerElement(
 
             }
 
-            cameraEl.setAttribute('rotation', {
-              x: pitchObject.rotation.x,
-              y: yawObject.rotation.y,
+            el.setAttribute('rotation', {
+              x: THREE.Math.radToDeg(pitchObject.rotation.x),
+              y: THREE.Math.radToDeg(yawObject.rotation.y),
               z: rotZ
             });
 
