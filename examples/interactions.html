@@ -35,7 +35,9 @@
     for (i = 0; i < cubes.length; ++i) {
       cubes[i].addEventListener('click', function(evt) {
         var cube = evt.currentTarget;
-        cube.setAttribute('material', cube.getAttribute('material') ? 'normal' : 'highlight');
+        // Toggling material.
+        cube.setAttribute('material', cube.getAttribute('material') === 'normal' ? 'highlight' : 'normal');
+
         var href = cube.getAttribute('href');
         if (href) {
           window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
