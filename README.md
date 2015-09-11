@@ -20,8 +20,6 @@ Or if you'd prefer unminified files for local development (and source maps for t
 __Also, be sure to check out the awesome [examples](examples/).__
 
 
-## Contributing to the Gazebo library
-
 ## Local installation
 
     git clone https://github.com/MozVR/vr-markup.git
