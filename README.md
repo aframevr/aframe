@@ -46,7 +46,6 @@ __Also, be sure to check out the awesome [examples](examples/).__
 Assuming you want to publish a version of `dev` to the private package for testing:
 
     npm run dist
-    git commit -am 'bump dist'
     npm run release
 
 ## Publishing the latest official `dist` to GitHub Pages
@@ -67,7 +66,6 @@ Assuming `dev` has already been reviewed and merged to `master`:
     git checkout master
     git pull --rebase
     npm run dist
-    git commit -am 'bump dist'
     git tag 0.1.8
     git push origin head --tags
 

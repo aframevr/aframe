@@ -1,6 +1,6 @@
 {
   "name": "@mozvr/gazebo",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "homepage": "https://github.com/MozVR/vr-markup",
   "license": "MIT",
   "main": "src/vr-markup.js",
@@ -26,7 +26,7 @@
     "start": "npm run dev",
     "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9000 -- -r ./src/vr-markup.js:vr-markup | garnish -v",
     "build": "mkdir -p build && browserify -r ./src/vr-markup.js:vr-markup -o build/vr-markup.js --debug",
-    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js:dev && npm run dist:js:min && npm run dist:css:dev && npm run dist:css:min",
+    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js:dev && npm run dist:js:min && npm run dist:css:dev && npm run dist:css:min &&  git commit -am 'Bump dist'",
     "dist:js:dev": "browserify -r ./src/vr-markup.js:vr-markup -o dist/vr-markup.js --debug",
     "dist:js:min": "browserify -r ./src/vr-markup.js:vr-markup | uglifyjs -cm > dist/vr-markup.min.js",
     "dist:css:dev": "cp ./style/vr-markup.css dist/.",
