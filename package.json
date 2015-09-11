@@ -12,16 +12,29 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "budo": "^4.2.1",
+    "crass": "^0.7.7",
     "garnish": "^2.3.0",
+    "gh-pages": "^0.4.0",
     "karma": "^0.12.32",
     "karma-mocha": "^0.1.10",
     "karma-sinon-chai": "^0.3.0",
-    "tween.js": "^15.0.0"
+    "replace": "^0.3.0",
+    "tween.js": "^15.0.0",
+    "uglifyjs": "^2.4.10"
   },
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9000 -- -r ./src/vr-markup.js:vr-markup | garnish -v",
     "build": "mkdir -p build && browserify -r ./src/vr-markup.js:vr-markup -o build/vr-markup.js --debug",
+    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js:dev && npm run dist:js:min && npm run dist:css:dev && npm run dist:css:min",
+    "dist:js:dev": "browserify -r ./src/vr-markup.js:vr-markup -o dist/vr-markup.js --debug",
+    "dist:js:min": "browserify -r ./src/vr-markup.js:vr-markup | uglifyjs -cm > dist/vr-markup.min.js",
+    "dist:css:dev": "cp ./style/vr-markup.css dist/.",
+    "dist:css:min": "crass ./style/vr-markup.css > dist/vr-markup.min.css",
+    "replacepaths": "replace '../build/vr-markup.js' '../dist/vr-markup.min.js' gh-pages/ -r && replace '../style/vr-markup.css' '../dist/vr-markup.min.css' gh-pages/ -r",
+    "predeploy": "mkdir -p gh-pages && cp -r {components,dist,examples} gh-pages/. && npm run replacepaths",
+    "deploy": "gh-pages -d gh-pages && rm -rf gh-pages",
+    "release": "npm version patch --minor && npm login && npm publish",
     "test": "karma start"
   },
   "repository": "MozVR/vr-markup",
