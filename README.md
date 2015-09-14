@@ -27,11 +27,11 @@ __Also, be sure to check out the awesome [examples](examples/).__
 
 ## Test
 
-	npm test
+    npm test
 
 ## Local development
 
-    npm i
+    npm install
     npm start
     open http://localhost:9000/examples/
 
@@ -39,7 +39,7 @@ __Also, be sure to check out the awesome [examples](examples/).__
 
     git checkout dev
     git pull --rebase
-    npm i
+    npm install
     npm start
     open http://localhost:9000/examples/
 
