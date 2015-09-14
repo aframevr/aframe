@@ -1,3 +1,5 @@
+require('./vr-register-element');
+
 var THREE = require('../lib/three');
 
 var VRObject = require('./core/vr-object');

@@ -1,3 +1,5 @@
+require('./vr-register-element');
+
 var VRUtils = require('./vr-utils');
 var VRNode = require('./core/vr-node');
 

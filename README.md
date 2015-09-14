@@ -1,4 +1,4 @@
-# VR MARKUP
+# VR MARKUP [![](https://travis-ci.org/mozvr/vr-markup.svg)](https://travis-ci.org/mozvr/vr-markup)
 
 The goal of this project is to design a set of HTML tags to describe 3D scenes in the browser.
 

@@ -1,3 +1,5 @@
+require('./vr-register-element');
+
 var VRNode = require('./core/vr-node');
 
 var VRBehavior = module.exports = document.registerElement(

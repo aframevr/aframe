@@ -1,5 +1,5 @@
 {
-  "name": "@mozvr/gazebo",
+  "name": "mozvr-gazebo",
   "version": "0.1.9",
   "homepage": "https://github.com/MozVR/vr-markup",
   "license": "MIT",
@@ -14,11 +14,15 @@
     "crass": "^0.7.7",
     "garnish": "^2.3.0",
     "gh-pages": "^0.4.0",
-    "karma": "^0.12.32",
+    "karma": "^0.13.9",
+    "karma-chai-shallow-deep-equal" : "0.0.4",
+    "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
     "karma-sinon-chai": "^0.3.0",
+    "karma-browserify": "4.3.0",
     "replace": "^0.3.0",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "mozilla-download": "^1.0.5"
   },
   "scripts": {
     "start": "npm run dev",
@@ -33,7 +37,7 @@
     "predeploy": "mkdir -p gh-pages && cp -r {components,dist,examples} gh-pages/. && npm run replacepaths",
     "deploy": "gh-pages -d gh-pages && rm -rf gh-pages",
     "release": "npm version patch --minor && npm login && npm publish",
-    "test": "karma start"
+    "test": "karma start ./test/karma.conf.js"
   },
   "repository": "MozVR/vr-markup",
   "bugs": {

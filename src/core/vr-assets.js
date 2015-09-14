@@ -1,3 +1,5 @@
+require('../vr-register-element');
+
 module.exports = document.registerElement(
   'vr-assets',
   {

@@ -1,4 +1,4 @@
-/* global Promise */
+require('../vr-register-element');
 
 var TWEEN = require('tween.js');
 
