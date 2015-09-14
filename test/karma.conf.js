@@ -13,6 +13,7 @@ module.exports = function(config) {
        prefs: { /* empty */ }
      }
     },
+    reporters: ['mocha'],
     client: {
       captureConsole: true,
       mocha: { 'ui': 'tdd' }

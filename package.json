@@ -18,6 +18,7 @@
     "karma-chai-shallow-deep-equal" : "0.0.4",
     "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
+    "karma-mocha-reporter": "^1.1.0",
     "karma-sinon-chai": "^0.3.0",
     "karma-browserify": "4.3.0",
     "replace": "^0.3.0",
