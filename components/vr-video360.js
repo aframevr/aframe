@@ -21,7 +21,7 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = parseFloat(this.getAttribute('radius') || 10000);
+            var radius = this.getAttribute('radius', 10000);
             return new THREE.SphereGeometry(radius, 64, 40);
           }
         },
@@ -31,8 +31,8 @@ document.registerElement(
             var video = document.createElement('video');
             video.crossOrigin = 'anonymous';
             video.src = this.getAttribute('src');
-            video.autoplay = this.hasAttribute('autoplay');
-            video.loop = this.hasAttribute('loop');
+            video.autoplay = this.getAttribute('autoplay', false);
+            video.loop = this.getAttribute('loop', false);
 
             var texture = new THREE.VideoTexture(video);
             texture.minFilter = THREE.LinearFilter;

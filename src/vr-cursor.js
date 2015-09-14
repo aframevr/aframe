@@ -44,7 +44,7 @@ module.exports = document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = parseFloat(this.getAttribute('radius')) || 10;
+            var radius = this.getAttribute('radius', 10);
             var geometryId = this.getAttribute('geometry');
             var geometryEl = geometryId ? document.querySelector('#' + geometryId) : undefined;
             return (geometryEl && geometryEl.geometry) || new THREE.SphereGeometry(radius, 64, 40);

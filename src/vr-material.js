@@ -18,11 +18,9 @@ module.exports = document.registerElement(
         attributeChangedCallback: {
           value: function () {
             var color = this.getAttribute('color') || Math.random() * 0xffffff;
-            var roughness = this.getAttribute('roughness') || '1.0';
-            var metallic = this.getAttribute('metallic') || '0.5';
+            this.roughness = this.getAttribute('roughness', 1.0);
+            this.metallic = this.getAttribute('metallic', 0.5);
 
-            this.roughness = parseFloat(roughness);
-            this.metallic = parseFloat(metallic);
             this.lightIntensity = 7.001;
             color = new THREE.Color(color);
             this.color = new THREE.Vector3(color.r, color.g, color.b);

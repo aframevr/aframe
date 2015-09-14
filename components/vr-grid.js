@@ -10,7 +10,7 @@ document.registerElement(
       VRObject.prototype, {
         createdCallback: {
           value: function () {
-            var color = this.getAttribute('color') || '#666';
+            var color = this.getAttribute('color', '#666');
             var material = new THREE.LineBasicMaterial({color: color});
             var geometry = this.generateGeometry();
             this.object3D = new THREE.LineSegments(geometry, material, THREE.LinePieces);
@@ -26,8 +26,8 @@ document.registerElement(
 
         generateGeometry: {
           value: function () {
-            var size = parseFloat(this.getAttribute('size') || 14);
-            var density = parseFloat(this.getAttribute('density') || 1);
+            var size = this.getAttribute('size', 14);
+            var density = this.getAttribute('density', 1);
 
             // Grid
 

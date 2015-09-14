@@ -1,6 +1,5 @@
 require('./vr-register-element');
 
-var VRUtils = require('./vr-utils');
 var VRNode = require('./core/vr-node');
 
 var TWEEN = require('tween.js');
@@ -11,11 +10,11 @@ module.exports = document.registerElement(
       VRNode.prototype, {
         createdCallback: {
           value: function () {
-            this.delay = parseFloat(this.getAttribute('delay')) || 0;
-            this.duration = parseFloat(this.getAttribute('duration')) || 1000;
-            this.loop = this.hasAttribute('loop');
+            this.delay = this.getAttribute('delay', 0);
+            this.duration = this.getAttribute('duration', 1000);
+            this.loop = this.getAttribute('loop', false);
             this.attribute = this.getAttribute('attribute');
-            this.to = VRUtils.parseAttributeString(this.attribute, this.getAttribute('to'));
+            this.to = this.getAttribute('to', {x: 0, y: 0, z: 0});
             this.load();
           }
         },

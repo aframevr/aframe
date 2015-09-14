@@ -439,18 +439,96 @@ suite('vr-object', function () {
       this.el = null;
     });
 
-    test('returns null for a not defined attribute', function () {
+    test('returns null for an undefined attribute', function () {
       var el = this.el;
-      var height = el.getAttribute('height');
-      assert.isNull(height);
+      assert.notInclude(el.outerHTML, 'loop=');
+      assert.isNull(el.getAttribute('loop'));
     });
 
-    test('returns correct value for a defined attribute', function () {
+    test('returns correct value for an undefined boolean attribute with a default', function () {
+      var el = this.el;
+      el.removeAttribute('autoplay');
+      assert.notInclude(el.outerHTML, 'autoplay=');
+      assert.isTrue(el.getAttribute('autoplay', true));
+    });
+
+    test('returns correct value for an undefined number attribute with a default', function () {
+      var el = this.el;
+      assert.notInclude(el.outerHTML, 'height=');
+      assert.equal(el.getAttribute('height', 2.0), 2.0);
+    });
+
+    test('returns correct value for an undefined object attribute with a default', function () {
+      var el = this.el;
+      assert.notInclude(el.outerHTML, 'voodoo=');
+      var val = {x: 5, y: 10, z: 15};
+      assert.isNull(el.getAttribute('voodoo', val));
+    });
+
+    test('returns correct default for "position" attribute', function () {
+      var el = this.el;
+      assert.include(el.outerHTML, 'position="0 0 0"');
+      assert.deepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
+    });
+
+    test('returns correct default for "rotation" attribute', function () {
+      var el = this.el;
+      assert.include(el.outerHTML, 'rotation="0 0 0"');
+      assert.deepEqual(el.getAttribute('rotation'), {x: 0, y: 0, z: 0});
+    });
+
+    test('returns correct default for "scale" attribute', function () {
+      var el = this.el;
+      assert.include(el.outerHTML, 'scale="1 1 1"');
+      assert.deepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
+    });
+
+    test('returns correct value for a defined "position" attribute', function () {
       var el = this.el;
       var positionObj = {x: 23, y: 24, z: 25};
       el.setAttribute('position', positionObj);
+      assert.include(el.outerHTML, 'position="23 24 25"');
       var position = el.getAttribute('position');
       assert.deepEqual(position, positionObj);
+    });
+
+    test('returns correct value for a defined "rotation" attribute', function () {
+      var el = this.el;
+      var rotationObj = {x: 3, y: 2, z: 1};
+      el.setAttribute('rotation', rotationObj);
+      assert.include(el.outerHTML, 'rotation="3 2 1"');
+      var rotation = el.getAttribute('rotation');
+      assert.deepEqual(rotation, rotationObj);
+    });
+
+    test('returns correct value for a defined "to" attribute', function () {
+      var el = this.el;
+      el.setAttribute('to', '5');
+      assert.deepEqual(el.getAttribute('to'), {x: 5, y: 0, z: 0});
+    });
+
+    test('returns correct value for a boolean attribute with a default', function () {
+      var el = this.el;
+      var val = true;
+      el.setAttribute('loop', val);
+      assert.include(el.outerHTML, 'loop="true"');
+      assert.isTrue(el.getAttribute('loop', false));
+    });
+
+    test('returns correct value for a number attribute with a default', function () {
+      var el = this.el;
+      var val = 5.9;
+      el.setAttribute('height', val);
+      assert.include(el.outerHTML, 'height="5.9"');
+      assert.equal(el.getAttribute('height', 2.0), val);
+    });
+
+    test('returns correct value for an object attribute with a default', function () {
+      var el = this.el;
+      el.setAttribute('voodoo', '5 10 15');
+      assert.include(el.outerHTML, 'voodoo="5 10 15"');
+      var val = {x: 5, y: 10, z: 15};
+      assert.deepEqual(el.getAttribute('voodoo', val), val);
     });
   });
 });

@@ -13,8 +13,8 @@ document.registerElement(
             var listener = new THREE.AudioListener();
 
             var src = this.getAttribute('src');
-            var volume = parseFloat(this.getAttribute('vol')) || 10;
-            var loop = this.getAttribute('loop') || true;
+            var volume = this.getAttribute('vol', 10);
+            var loop = this.getAttribute('loop', false);
             var sound = new THREE.Audio(listener);
             volume = volume * 10; // We multiple by ten so the user can define volume in more intuitive scale: 0-10.
             sound.source.start(0, 0);
