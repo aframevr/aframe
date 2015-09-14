@@ -21,3 +21,8 @@ env:
   matrix:
     - CI_ACTION="npm run lint"
     - CI_ACTION="npm test"
+
+branches:
+  only:
+    - master
+    - dev
