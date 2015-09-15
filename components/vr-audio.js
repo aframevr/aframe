@@ -9,9 +9,8 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
-            var listener = new THREE.AudioListener;
-            document.querySelector('vr-camera').object3D.add(listener);
+          value: function () {
+            var listener = new THREE.AudioListener();
 
             var src = this.getAttribute('src');
             var volume = parseFloat(this.getAttribute('vol')) || 10;
@@ -20,7 +19,7 @@ document.registerElement(
             volume = volume * 10; // We multiple by ten so the user can define volume in more intuitive scale: 0-10.
             sound.source.start(0, 0);
 
-            if(src){
+            if (src) {
               sound.load(src);
               sound.setVolume(volume);
               sound.setLoop(loop);
@@ -30,7 +29,7 @@ document.registerElement(
             this.object3D = sound;
             this.load();
           }
-        },
+        }
       })
   }
 );

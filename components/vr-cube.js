@@ -9,16 +9,16 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
-            this.object3D = new THREE.Mesh( geometry, material );
+            this.object3D = new THREE.Mesh(geometry, material);
             this.load();
           }
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D.geometry = geometry;
@@ -27,31 +27,31 @@ document.registerElement(
         },
 
         getGeometry: {
-          value: function() {
+          value: function () {
             var width = parseFloat(this.getAttribute('width')) || 5;
             var height = parseFloat(this.getAttribute('height')) || 5;
             var depth = parseFloat(this.getAttribute('depth')) || 5;
-            return new THREE.BoxGeometry( width, height, depth );
+            return new THREE.BoxGeometry(width, height, depth);
           }
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var color = this.getAttribute('color');
             var materialId = this.getAttribute('material');
             var materialEl;
             var material;
 
-            if(materialId) {
-              materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+            if (materialId) {
+              materialEl = materialId ? document.querySelector('#' + materialId) : {};
               material = materialEl.material;
-              if(color){
+              if (color) {
                 material.color = new THREE.Color(color);
               }
             } else if (color) {
-              material = new THREE.MeshPhongMaterial({color:color})
+              material = new THREE.MeshPhongMaterial({color: color});
             } else {
-              material = new THREE.MeshNormalMaterial()
+              material = new THREE.MeshNormalMaterial();
             }
 
             return material;

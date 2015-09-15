@@ -9,16 +9,16 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
-            this.object3D = new THREE.Mesh( geometry, material );
+            this.object3D = new THREE.Mesh(geometry, material);
             this.load();
           }
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D.geometry = geometry;
@@ -27,29 +27,29 @@ document.registerElement(
         },
 
         getGeometry: {
-          value: function() {
+          value: function () {
             var radius = parseFloat(this.getAttribute('radius')) || 5;
-            return new THREE.SphereGeometry( radius, 20, 20 );
+            return new THREE.SphereGeometry(radius, 20, 20);
           }
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var color = this.getAttribute('color');
             var materialId = this.getAttribute('material');
             var materialEl;
             var material;
 
-            if(materialId) {
-              materialEl = materialId? document.querySelector('#' + materialId) : undefined;
+            if (materialId) {
+              materialEl = materialId ? document.querySelector('#' + materialId) : undefined;
               material = materialEl.material;
-              if(color){
+              if (color) {
                 material.color = new THREE.Color(color);
               }
             } else if (color) {
-              material = new THREE.MeshPhongMaterial({color:color})
+              material = new THREE.MeshPhongMaterial({color: color});
             } else {
-              material = new THREE.MeshNormalMaterial()
+              material = new THREE.MeshNormalMaterial();
             }
 
             return material;

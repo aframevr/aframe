@@ -10,7 +10,7 @@ module.exports = document.registerElement(
       VRObject.prototype,
       {
         createdCallback: {
-          value: function() {
+          value: function () {
             var camera = this.object3D = new THREE.PerspectiveCamera();
             // This should probably managed within vr-scene
             this.sceneEl.camera = camera;
@@ -20,7 +20,7 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function() {
+          value: function () {
             // Camera parameters
             var fov = parseFloat(this.getAttribute('fov')) || 45;
             var near = parseFloat(this.getAttribute('near')) || 1;
@@ -38,7 +38,7 @@ module.exports = document.registerElement(
         },
 
         saveInitialValues: {
-          value: function() {
+          value: function () {
             if (this.initValues) { return; }
             this.initValues = {
               x: parseFloat(this.getAttribute('x')) || 0,
@@ -57,7 +57,7 @@ module.exports = document.registerElement(
         },
 
         restoreInitialValues: {
-          value: function() {
+          value: function () {
             if (!this.initValues) { return; }
             this.setAttribute('x', this.initValues.x);
             this.setAttribute('y', this.initValues.y);
@@ -73,7 +73,7 @@ module.exports = document.registerElement(
         },
 
         reset: {
-          value: function() {
+          value: function () {
             this.restoreInitialValues();
           }
         }

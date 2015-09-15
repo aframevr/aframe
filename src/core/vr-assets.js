@@ -1,3 +1,5 @@
+/* global Event, HTMLElement */
+
 require('../vr-register-element');
 
 module.exports = document.registerElement(
@@ -7,18 +9,18 @@ module.exports = document.registerElement(
       HTMLElement.prototype,
       {
         createdCallback: {
-          value: function() {
+          value: function () {
             this.attachEventListeners();
           }
         },
 
         attachEventListeners: {
-          value: function() {
+          value: function () {
             var self = this;
             var assetLoaded = this.assetLoaded.bind(this);
             this.assetsPending = 0;
             traverseDOM(this);
-            function traverseDOM(node) {
+            function traverseDOM (node) {
               var tagName = node.tagName;
               if (node !== self && tagName && tagName.indexOf('VR-') === 0) {
                 attachEventListener(node);
@@ -30,14 +32,14 @@ module.exports = document.registerElement(
                 node = node.nextSibling;
               }
             }
-            function attachEventListener(node) {
+            function attachEventListener (node) {
               node.addEventListener('loaded', assetLoaded);
             }
           }
         },
 
         assetLoaded: {
-          value: function() {
+          value: function () {
             this.assetsPending--;
             if (this.assetsPending === 0) {
               this.load();
@@ -46,7 +48,7 @@ module.exports = document.registerElement(
         },
 
         load: {
-          value: function() {
+          value: function () {
             // To prevent emmitting the loaded event more than once
             if (this.hasLoaded) { return; }
             var event = new Event('loaded');

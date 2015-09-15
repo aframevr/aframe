@@ -10,8 +10,7 @@ document.registerElement(
       VRObject.prototype, {
 
         createdCallback: {
-          value: function() {
-
+          value: function () {
             var self = this;
             var src = this.getAttribute('src');
 
@@ -25,7 +24,7 @@ document.registerElement(
 
             var loader = new THREE.ColladaLoader();
             loader.options.convertUpAxis = true; // Not sure if we need this. Doesn't appear to be the case. But it was in Three.js examples.
-            loader.load( src, function ( collada ) {
+            loader.load(src, function (collada) {
               var dae = collada.scene;
               dae.scale.set(scale, scale, scale);
               self.object3D = dae;

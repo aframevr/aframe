@@ -24,24 +24,23 @@ var registerElement = document.registerElement;
  * @param  {object} obj The prototype of the new element
  * @return {object} The prototype of the new element
  */
-document.registerElement = function(tagName, obj) {
-	var proto;
-	var newObj = obj;
-	proto = obj.prototype.__proto__; // jshint ignore:line
+module.exports = document.registerElement = function (tagName, obj) {
+  var proto = Object.getPrototypeOf(obj.prototype);
+  var newObj = obj;
 
-	// Does the element inherit from VRNode?
-	if (VRNode && proto === VRNode.prototype) {
-		newObj = wrapVRNodeMethods(obj.prototype);
-		newObj = { prototype: Object.create(proto, newObj) };
-	}
+  // Does the element inherit from VRNode?
+  if (VRNode && proto === VRNode.prototype) {
+    newObj = wrapVRNodeMethods(obj.prototype);
+    newObj = {prototype: Object.create(proto, newObj)};
+  }
 
-	// Does the element inherit from VRObject?
-	if (VRObject && proto === VRObject.prototype) {
-		newObj = wrapVRObjectMethods(obj.prototype);
-		newObj = { prototype: Object.create(proto, newObj) };
-	}
+  // Does the element inherit from VRObject?
+  if (VRObject && proto === VRObject.prototype) {
+    newObj = wrapVRObjectMethods(obj.prototype);
+    newObj = {prototype: Object.create(proto, newObj)};
+  }
 
-	return registerElement.call(document, tagName, newObj);
+  return registerElement.call(document, tagName, newObj);
 };
 
 /**
@@ -50,11 +49,11 @@ document.registerElement = function(tagName, obj) {
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
-function wrapVRNodeMethods(obj) {
-	var newObj = {};
-	wrapMethods(newObj, ['createdCallback'], obj, VRNode.prototype);
-	copyProperties(obj, newObj);
-	return newObj;
+function wrapVRNodeMethods (obj) {
+  var newObj = {};
+  wrapMethods(newObj, ['createdCallback'], obj, VRNode.prototype);
+  copyProperties(obj, newObj);
+  return newObj;
 }
 
 /**
@@ -63,16 +62,19 @@ function wrapVRNodeMethods(obj) {
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
-function wrapVRObjectMethods(obj) {
-	var newObj = {};
-	var vrNodeMethods = ['createdCallback'];
-	var vrObjectMethods =
-		['attributeChangedCallback', 'attachedCallback', 'dettachedCallback'];
-	wrapMethods(newObj, vrNodeMethods, obj, VRNode.prototype);
-	wrapMethods(newObj, vrObjectMethods, obj, VRObject.prototype);
-	// Copies the remaining properties into the new object
-	copyProperties(obj, newObj);
-	return newObj;
+function wrapVRObjectMethods (obj) {
+  var newObj = {};
+  var vrNodeMethods = ['createdCallback'];
+  var vrObjectMethods = [
+    'attributeChangedCallback',
+    'attachedCallback',
+    'dettachedCallback'
+  ];
+  wrapMethods(newObj, vrNodeMethods, obj, VRNode.prototype);
+  wrapMethods(newObj, vrObjectMethods, obj, VRObject.prototype);
+  // Copies the remaining properties into the new object
+  copyProperties(obj, newObj);
+  return newObj;
 }
 
 /**
@@ -83,10 +85,10 @@ function wrapVRObjectMethods(obj) {
  * @param  {object} baseObj Object that derivedObj inherits from
  * @return {undefined}
  */
-function wrapMethods(targetObj, methodList, derivedObj, baseObj) {
-	methodList.forEach(function(methodName){
-		wrapMethod(targetObj, methodName, derivedObj, baseObj);
-	});
+function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
+  methodList.forEach(function (methodName) {
+    wrapMethod(targetObj, methodName, derivedObj, baseObj);
+  });
 }
 
 /**
@@ -98,17 +100,17 @@ function wrapMethods(targetObj, methodList, derivedObj, baseObj) {
  * @param  {object} baseObj Object that derivedObj inherits from
  * @return {undefined}
  */
-function wrapMethod(obj, methodName, derivedObj, baseObj) {
-	var derivedMethod = derivedObj[methodName];
-	var baseMethod = baseObj[methodName];
-	if (!derivedMethod || !baseMethod) { return; }
-	// Wrapper
-	// The base method is called before the one in the derived class
-	var wrapperMethod = function() {
-		baseMethod.apply(this, arguments);
-		return derivedMethod.apply(this, arguments);
-	};
-	obj[methodName] = { value: wrapperMethod, writable: window.debug };
+function wrapMethod (obj, methodName, derivedObj, baseObj) {
+  var derivedMethod = derivedObj[methodName];
+  var baseMethod = baseObj[methodName];
+  if (!derivedMethod || !baseMethod) { return; }
+  // Wrapper
+  // The base method is called before the one in the derived class
+  var wrapperMethod = function () {
+    baseMethod.apply(this, arguments);
+    return derivedMethod.apply(this, arguments);
+  };
+  obj[methodName] = {value: wrapperMethod, writable: window.debug};
 }
 
 /**
@@ -118,13 +120,13 @@ function wrapMethod(obj, methodName, derivedObj, baseObj) {
  * @param  {[type]} destination The object where properties are copied to
  * @return {undefined}
  */
-function copyProperties(source, destination) {
-	var props = Object.getOwnPropertyNames(source);
-	props.forEach(function(prop){
-		if (!destination[prop]) {
-			destination[prop] = { value: source[prop], writable: window.debug };
-		}
-	});
+function copyProperties (source, destination) {
+  var props = Object.getOwnPropertyNames(source);
+  props.forEach(function (prop) {
+    if (!destination[prop]) {
+      destination[prop] = {value: source[prop], writable: window.debug};
+    }
+  });
 }
 
 var VRNode = require('./core/vr-node');

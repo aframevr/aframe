@@ -9,7 +9,7 @@ document.registerElement(
     prototype: Object.create(
       VRObject.prototype, {
         createdCallback: {
-          value: function() {
+          value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
             this.object3D = new THREE.Mesh(geometry, material);
@@ -20,14 +20,14 @@ document.registerElement(
         /* no `update` function needed */
 
         getGeometry: {
-          value: function() {
-            var radius = parseFloat(this.getAttribute('radius')) || 10000;
-            return new THREE.SphereGeometry( radius, 64, 40 );
+          value: function () {
+            var radius = parseFloat(this.getAttribute('radius') || 10000);
+            return new THREE.SphereGeometry(radius, 64, 40);
           }
         },
 
         getMaterial: {
-          value: function() {
+          value: function () {
             var video = document.createElement('video');
             video.crossOrigin = 'anonymous';
             video.src = this.getAttribute('src');
@@ -46,6 +46,7 @@ document.registerElement(
             });
           }
         }
-    })
+      }
+    )
   }
 );
