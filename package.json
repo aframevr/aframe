@@ -1,0 +1,53 @@
+{
+  "name": "@mozvr/vr-components",
+  "version": "0.1.0",
+  "description": "Components for use with vr-markup",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --live --port 9000 -- -s 'vr-components' -t browserify-css | garnish -v",
+    "build": "mkdir -p build && browserify ./index.js -o build/vr-components.js --debug -s 'vr-components' -t browserify-css",
+    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:dev && npm run dist:min && git commit -am 'Bump dist'",
+    "dist:dev": "browserify ./index.js -s 'vr-components' -t browserify-css --debug -o dist/vr-components.js",
+    "dist:min": "browserify ./index.js -s 'vr-components' -t browserify-css | uglifyjs -cm > dist/vr-components.min.js",
+    "replacepaths": "replace 'build/vr-components.js' 'dist/vr-components.min.js' gh-pages/ -r",
+    "gh-pages": "npm run ghpages",
+    "preghpages": "mkdir -p gh-pages && cp -r {dist,lib,examples,index.html,style} gh-pages/. && npm run replacepaths",
+    "ghpages": "gh-pages -d gh-pages && rm -rf gh-pages",
+    "release": "npm version patch --minor && npm login && npm publish"
+  },
+  "repository": "MozVR/vr-components",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^11.0.1",
+    "browserify-css": "^0.7.1",
+    "budo": "^4.2.1",
+    "garnish": "^3.0.0",
+    "gh-pages": "^0.4.0",
+    "replace": "^0.3.0",
+    "uglifyjs": "^2.4.10"
+  },
+  "dependencies": {
+    "@mozvr/vr-markup": "^0.1.92",
+    "atomify": "^7.3.0",
+    "resrcify": "^1.1.3"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-css"
+    ]
+  },
+  "browserify-css": {
+    "minify": true
+  },
+  "semistandard": {
+    "ignore": [
+      "examples/js/**"
+    ]
+  },
+  "keywords": [
+    "vr",
+    "vr-markup",
+    "vr-components"
+  ]
+}
