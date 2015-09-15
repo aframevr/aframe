@@ -157,11 +157,11 @@ var VRObject = module.exports = document.registerElement(
             if (!animations) { return; }
             animations = animations.split(' ');
             animations.forEach(attachObject);
-            var attachObject = function (animationName) {
+            function attachObject (animationName) {
               var el = document.getElementById(animationName);
               if (!el) { return; }
               el.add(self);
-            };
+            }
           },
           writable: window.debug
         },
