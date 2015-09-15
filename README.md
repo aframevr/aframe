@@ -52,12 +52,12 @@ Assuming you want to publish a version of `dev` to the private package for testi
 
 ## Publishing the latest official `dist` to GitHub Pages
 
-    npm run deploy
+    npm run gh-pages
 
 ## Publishing the latest changes to GitHub Pages
 
     npm run dist
-    npm run deploy
+    npm run gh-pages
 
 ## Publishing to Production
 
