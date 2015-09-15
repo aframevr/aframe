@@ -194,11 +194,10 @@ var VRScene = module.exports = document.registerElement(
 
         setupScene: {
           value: function () {
-            this.behaviors = [];
-            this.cameraControls = this.querySelector('vr-controls');
-            if (this.cameraControls) {
-              this.behaviors.push(this.cameraControls);
-            }
+            this.behaviors = this.querySelectorAll('vr-controls');
+            // querySelectorAll returns a NodeList that it's not a normal array
+            // We need to convert
+            this.behaviors = Array.prototype.slice.call(this.behaviors);
             // The canvas where the WebGL context will be painted
             this.setupCanvas();
             // The three.js renderer setup

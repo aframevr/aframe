@@ -61,13 +61,15 @@ module.exports = document.registerElement(
 
         intersect: {
           value: function (objects) {
-            var camera = this.sceneEl.camera;
             var raycaster = this.raycaster;
             var cursor = this.object3D;
             var cursorPosition = cursor.position.clone();
-            var cursorPositionWorld = cursor.localToWorld(cursorPosition);
-            var direction = cursorPositionWorld.sub(camera.position).normalize();
-            raycaster.set(camera.position, direction);
+            cursor.localToWorld(cursorPosition);
+            var parent = this.parentNode.object3D;
+            var parentPosition = parent.position.clone();
+            parent.localToWorld(parentPosition);
+            var direction = cursorPosition.sub(parentPosition).normalize();
+            raycaster.set(parentPosition, direction);
             return raycaster.intersectObjects(objects, true);
           }
         },

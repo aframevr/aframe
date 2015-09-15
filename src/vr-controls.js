@@ -1,19 +1,22 @@
 var THREE = require('../lib/three');
 
-var VRNode = require('./core/vr-node');
+var VRObject = require('./core/vr-object');
+// To avoid recalculation at every mouse movement tick
+var PI_2 = Math.PI / 2;
 
 module.exports = document.registerElement(
   'vr-controls',
   {
     prototype: Object.create(
-      VRNode.prototype,
+      VRObject.prototype,
       {
         createdCallback: {
           value: function () {
+            this.object3D = new THREE.Object3D();
             this.prevTime = Date.now();
             // The canvas where the scene is painted
             this.canvasEl = document.querySelector('vr-scene').canvas;
-            this.cameraEl = document.querySelector('vr-camera');
+
             // To keep track of the pressed keys
             this.keys = {};
             this.mouseDown = false;
@@ -46,7 +49,6 @@ module.exports = document.registerElement(
         update: {
           value: function () {
             var velocity = this.velocity;
-            var cameraEl = this.cameraEl;
             var pitchObject = this.pitchObject;
             var yawObject = this.yawObject;
             var time = window.performance.now();
@@ -58,12 +60,12 @@ module.exports = document.registerElement(
             velocity.x -= velocity.x * 10.0 * delta;
             velocity.z -= velocity.z * 10.0 * delta;
 
-            var position = cameraEl.getAttribute('position');
+            var position = this.getAttribute('position');
             var x = position.x || 0;
             var y = position.y || 0;
             var z = position.z || 0;
 
-            var rotation = cameraEl.getAttribute('rotation');
+            var rotation = this.getAttribute('rotation');
             var rotZ = rotation.z || 0;
 
             if (this.locomotion) {
@@ -86,26 +88,26 @@ module.exports = document.registerElement(
               y = 0;
               z = 0;
 
-              cameraEl.reset();
+              this.reset();
               // scene.resetSensor();
 
-              position = cameraEl.getAttribute('position');
+              position = this.getAttribute('position');
               x = position.x || 0;
               y = position.y || 0;
               z = position.z || 0;
 
-              rotation = cameraEl.getAttribute('rotation');
+              rotation = this.getAttribute('rotation');
               rotZ = rotation.z || 0;
             }
 
-            cameraEl.setAttribute('rotation', {
+            this.setAttribute('rotation', {
               x: THREE.Math.radToDeg(pitchObject.rotation.x),
               y: THREE.Math.radToDeg(yawObject.rotation.y),
               z: rotZ
             });
 
             var movementVector = this.getMovementVector(delta);
-            cameraEl.setAttribute('position', {
+            this.setAttribute('position', {
               x: x + movementVector.x,
               y: y,
               z: z + movementVector.z
@@ -128,16 +130,11 @@ module.exports = document.registerElement(
           }
         },
 
-        PI_2: {
-          value: Math.PI / 2
-        },
-
         onMouseMove: {
           value: function (event) {
             var pitchObject = this.pitchObject;
             var yawObject = this.yawObject;
             var mouseDown = this.mouseDown;
-            var PI_2 = this.PI_2;
 
             if (!mouseDown || !this.mouseLook) { return; }
 

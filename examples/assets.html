@@ -18,8 +18,9 @@
     <vr-material id="plastic" color="red" metallic="0.7" roughness="0.9"></vr-material>
   </vr-assets>
   <vr-scene>
-    <vr-controls></vr-controls>
-    <vr-camera position="0 0 15"></vr-camera>
+    <vr-controls position="0 0 15">
+      <vr-camera></vr-camera>
+    </vr-controls>
     <vr-mesh geometry="cube" position="-5 0 0" rotation="45 45 0" material="plastic"></vr-mesh>
     <vr-mesh geometry="sphere" position="5 0 0" material="mirror"></vr-mesh>
   </vr-scene>
