@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Interactions</title>
+    <meta name="description" content="Demo of threejs using Web Components">
+    <script src="../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-material id="normal" color="#3399ff" metallic="0.9" roughness="0.38"></vr-material>
+      <vr-material id="highlight" color="#ffcc00" metallic="1" roughness="0.5"></vr-material>
+    </vr-assets>
+    <vr-scene>
+      <vr-controls position="0 1.8 20">
+        <vr-camera>
+          <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
+        </vr-camera>
+      </vr-controls>
+      <vr-skysphere color="#000"></vr-skysphere>
+      <vr-cube position="0 2 -8" material="normal" width="4" height="4" depth="4" href="cube.html"></vr-cube>
+      <vr-cube position="6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
+      <vr-cube position="-6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
+      <vr-grid size="50"></vr-grid>
+    </vr-scene>
+    <script>
+      var cubes = document.querySelectorAll('vr-cube');
+      var i;
+      for (i = 0; i < cubes.length; ++i) {
+        cubes[i].addEventListener('click', function (evt) {
+          var cube = evt.currentTarget;
+          // Toggling material.
+          cube.setAttribute('material', cube.getAttribute('material') === 'normal' ? 'highlight' : 'normal');
+
+          var href = cube.getAttribute('href');
+          if (href) {
+            window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

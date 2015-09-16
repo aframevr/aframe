@@ -1,0 +1,35 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.vr-canvas {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+button {
+  background-color: #303030;
+  border: 1px solid white;
+  color: white;
+  cursor: pointer;
+  left: 0;
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  width: 90px;
+  z-index: 999999;
+}
+
+button:hover {
+  background-color: gray;
+  color: white;
+}
+
+.vr-button {
+  top: 20px;
+  left: 30px;
+}

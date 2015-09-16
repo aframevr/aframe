@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cube</title>
+    <meta name="description" content="Grouping Objects">
+    <script src="../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+      <vr-controls position="0 1.8 20">
+        <vr-camera></vr-camera>
+      </vr-controls>
+      <vr-object class="cubes-group" position="0 2 0">
+        <vr-cube id="cube" width="5" height="5" depth="5" rotation="45 45 0" position="-10 0 0"></vr-cube>
+        <vr-cube id="cube" width="5" height="5" depth="5" rotation="45 45 0" position="0 0 0"></vr-cube>
+        <vr-cube id="cube" width="5" height="5" depth="5" rotation="45 45 0" position="10 0 0"></vr-cube>
+      </vr-object>
+    </vr-scene>
+  </body>
+</html>
