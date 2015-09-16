@@ -14,6 +14,9 @@ var VRScene = module.exports = document.registerElement(
       VRNode.prototype, {
         createdCallback: {
           value: function () {
+            this.insideIframe = window.top !== window.self;
+            this.insideLoader = false;
+            this.vrButton = null;
             this.attachEventListeners();
             this.attachFullscreenListeners();
             this.setupScene();
@@ -86,15 +89,22 @@ var VRScene = module.exports = document.registerElement(
           value: function () {
             var self = this;
             window.addEventListener('message', function (e) {
-              if (e.data && e.data.type === 'fullscreen') {
-                switch (e.data.data) {
-                  // set renderer with fullscreen VR enter and exit.
-                  case 'enter':
-                    self.setStereoRenderer();
+              if (e.data) {
+                switch (e.data.type) {
+                  case 'loaderReady':
+                    self.insideLoader = true;
+                    self.removeEnterVrButton();
                     break;
-                  case 'exit':
-                    self.setMonoRenderer();
-                    break;
+                  case 'fullscreen':
+                    switch (e.data.data) {
+                      // Set renderer with fullscreen VR enter and exit.
+                      case 'enter':
+                        self.setStereoRenderer();
+                        break;
+                      case 'exit':
+                        self.setMonoRenderer();
+                        break;
+                    }
                 }
               }
             });
@@ -137,11 +147,19 @@ var VRScene = module.exports = document.registerElement(
 
         createEnterVrButton: {
           value: function () {
-            var vrButton = document.createElement('button');
+            var vrButton = this.vrButton = document.createElement('button');
             vrButton.textContent = 'Enter VR';
             vrButton.className = 'vr-button';
             document.body.appendChild(vrButton);
             vrButton.addEventListener('click', this.enterVR.bind(this));
+          }
+        },
+
+        removeEnterVrButton: {
+          value: function () {
+            if (this.vrButton) {
+              this.vrButton.parentNode.removeChild(this.vrButton);
+            }
           }
         },
 
@@ -161,8 +179,9 @@ var VRScene = module.exports = document.registerElement(
         setupLoader: {
           value: function () {
             var self = this;
-            // inside loader, check for vr mode before kicking off render loop.
-            if (window.top !== window.self) {
+
+            // Inside loader, check for VR mode before kicking off render loop.
+            if (self.insideIframe) {
               self.attachMessageListeners();
               self.vrLoaderMode().then(function (isVr) {
                 if (isVr) {
@@ -172,7 +191,9 @@ var VRScene = module.exports = document.registerElement(
                 }
                 window.top.postMessage({type: 'ready'}, '*');
               });
-            } else {
+            }
+
+            if (!self.insideLoader) {
               self.createEnterVrButton();
             }
           }
