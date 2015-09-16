@@ -4,7 +4,7 @@ var VRObject = require('./core/vr-object');
 var VRNode = require('./core/vr-node');
 
 // Exports THREE to the window object so we can
-// use three.js with alteration
+// use three.js without alteration
 var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 
