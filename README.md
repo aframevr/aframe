@@ -9,8 +9,6 @@ VR components bundled with a copy of vr-markup.
 
 If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO?editors=100)!
 
-
-
 ### Downloads
 
 If you would like to embed this library in your project, simply include this single file:
@@ -32,3 +30,15 @@ First install from npm:
 And in your Browserify/Webpack modules, simply require the module:
 
     require('vr-components')
+
+
+## Local Development
+
+If you'd like to hack on components and/or examples, simply run these commands to get started:
+
+    git clone git@github.com:MozVR/horizon.git
+    cd horizon
+    npm install
+    npm start
+
+And fire up __[http://localhost:9000](http://localhost:9000)__!
