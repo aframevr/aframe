@@ -22,11 +22,11 @@ module.exports = document.registerElement(
         attributeChangedCallback: {
           value: function () {
             // Camera parameters
-            var fov = parseFloat(this.getAttribute('fov')) || 45;
-            var near = parseFloat(this.getAttribute('near')) || 1;
-            var far = parseFloat(this.getAttribute('far')) || 10000;
-            var aspect = parseFloat(this.getAttribute('aspect')) ||
-                         window.innerWidth / window.innerHeight;
+            var fov = this.getAttribute('fov', 45);
+            var near = this.getAttribute('near', 1);
+            var far = this.getAttribute('far', 10000);
+            var aspect = this.getAttribute('aspect',
+                                           window.innerWidth / window.innerHeight);
 
             // Setting three.js camera parameters
             this.object3D.fov = fov;
@@ -41,17 +41,17 @@ module.exports = document.registerElement(
           value: function () {
             if (this.initValues) { return; }
             this.initValues = {
-              x: parseFloat(this.getAttribute('x')) || 0,
-              y: parseFloat(this.getAttribute('y')) || 0,
-              z: parseFloat(this.getAttribute('z')) || 0,
-              rotX: parseFloat(this.getAttribute('rotX')) || 0,
-              rotY: parseFloat(this.getAttribute('rotY')) || 0,
-              rotZ: parseFloat(this.getAttribute('rotZ')) || 0,
-              fov: parseFloat(this.getAttribute('fov')) || 45,
-              near: parseFloat(this.getAttribute('nar')) || 1,
-              far: parseFloat(this.getAttribute('far')) || 10000,
-              aspect: parseFloat(this.getAttribute('aspect')) ||
-                      window.innerWidth / window.innerHeight
+              x: this.getAttribute('x', 0),
+              y: this.getAttribute('y', 0),
+              z: this.getAttribute('z', 0),
+              rotX: this.getAttribute('rotX', 0),
+              rotY: this.getAttribute('rotY', 0),
+              rotZ: this.getAttribute('rotZ', 0),
+              fov: this.getAttribute('fov', 45),
+              near: this.getAttribute('nar', 1),
+              far: this.getAttribute('far', 10000),
+              aspect: this.getAttribute('aspect',
+                                        window.innerWidth / window.innerHeight)
             };
           }
         },

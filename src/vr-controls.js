@@ -39,10 +39,8 @@ module.exports = document.registerElement(
 
         attributeChangedCallback: {
           value: function () {
-            var locomotion = this.getAttribute('locomotion');
-            var mouseLook = this.getAttribute('mouse-look');
-            this.locomotion = locomotion === 'true';
-            this.mouseLook = mouseLook === 'true';
+            this.locomotion = this.getAttribute('locomotion', false);
+            this.mouseLook = this.getAttribute('mouselook', false);
           }
         },
 
@@ -60,13 +58,9 @@ module.exports = document.registerElement(
             velocity.x -= velocity.x * 10.0 * delta;
             velocity.z -= velocity.z * 10.0 * delta;
 
-            var position = this.getAttribute('position');
-            var x = position.x || 0;
-            var y = position.y || 0;
-            var z = position.z || 0;
-
-            var rotation = this.getAttribute('rotation');
-            var rotZ = rotation.z || 0;
+            var position = this.getAttribute('position', {x: 0, y: 0, z: 0});
+            var rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
+            var rotZ = rotation.z;
 
             if (this.locomotion) {
               if (keys[65]) { // Left
@@ -84,20 +78,11 @@ module.exports = document.registerElement(
             }
 
             if (keys[90]) { // Z
-              x = 0;
-              y = 0;
-              z = 0;
-
               this.reset();
               // scene.resetSensor();
 
-              position = this.getAttribute('position');
-              x = position.x || 0;
-              y = position.y || 0;
-              z = position.z || 0;
-
-              rotation = this.getAttribute('rotation');
-              rotZ = rotation.z || 0;
+              position = this.getAttribute('position', {x: 0, y: 0, z: 0});
+              rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
             }
 
             this.setAttribute('rotation', {
@@ -108,9 +93,9 @@ module.exports = document.registerElement(
 
             var movementVector = this.getMovementVector(delta);
             this.setAttribute('position', {
-              x: x + movementVector.x,
-              y: y,
-              z: z + movementVector.z
+              x: position.x + movementVector.x,
+              y: position.y,
+              z: position.z + movementVector.z
             });
           }
         },

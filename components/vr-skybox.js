@@ -28,7 +28,7 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var size = parseFloat(this.getAttribute('size')) || 10000;
+            var size = this.getAttribute('size', 10000);
             return new THREE.BoxGeometry(size, size, size, 1, 1, 1);
           }
         },

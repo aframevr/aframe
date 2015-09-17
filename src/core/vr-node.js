@@ -2,6 +2,8 @@
 
 require('../vr-register-element');
 
+var VRUtils = require('../vr-utils');
+
 /**
  *
  * VRNode is the base class for all the VR markup
@@ -52,6 +54,22 @@ module.exports = document.registerElement(
             this.hasLoaded = true;
             this.dispatchEvent(event);
             if (attributeChangedCallback) { attributeChangedCallback.apply(this); }
+          },
+          writable: window.debug
+        },
+
+        setAttribute: {
+          value: function (attr, value) {
+            value = VRUtils.stringifyAttributeValue(value);
+            HTMLElement.prototype.setAttribute.call(this, attr, value);
+          },
+          writable: window.debug
+        },
+
+        getAttribute: {
+          value: function (attr, defaultValue) {
+            var value = HTMLElement.prototype.getAttribute.call(this, attr);
+            return VRUtils.parseAttributeString(attr, value, defaultValue);
           },
           writable: window.debug
         }

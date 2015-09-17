@@ -1,5 +1,3 @@
-/* global HTMLElement */
-
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
@@ -35,16 +33,16 @@ var VRObject = module.exports = document.registerElement(
           value: function () {
             this.object3D = this.object3D || new THREE.Object3D();
             // Position
-            var position = this.getAttribute('position');
+            var position = this.getAttribute('position', {x: 0, y: 0, z: 0});
 
             // Rotation
-            var rotation = this.getAttribute('rotation');
+            var rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
             var rotationX = THREE.Math.degToRad(rotation.x);
             var rotationY = THREE.Math.degToRad(rotation.y);
             var rotationZ = THREE.Math.degToRad(rotation.z);
 
             // Scale
-            var scale = this.getAttribute('scale');
+            var scale = this.getAttribute('scale', {x: 1, y: 1, z: 1});
 
             // Setting three.js parameters
             this.object3D.position.set(position.x, position.y, position.z);
@@ -115,13 +113,7 @@ var VRObject = module.exports = document.registerElement(
 
         setAttribute: {
           value: function (attr, val) {
-            if (typeof val === 'object' &&
-              (attr === 'position' ||
-               attr === 'rotation' ||
-               attr === 'scale')) {
-              val = [val.x, val.y, val.z].join(' ');
-            }
-            HTMLElement.prototype.setAttribute.call(this, attr, val);
+            return VRNode.prototype.setAttribute.call(this, attr, val);
           },
           writable: window.debug
         },
@@ -135,9 +127,9 @@ var VRObject = module.exports = document.registerElement(
 
         initAttributes: {
           value: function (el) {
-            var position = this.getAttribute('position');
-            var rotation = this.getAttribute('rotation');
-            var scale = this.getAttribute('scale');
+            var position = this.getAttribute('position', {x: 0, y: 0, z: 0});
+            var rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
+            var scale = this.getAttribute('scale', {x: 1, y: 1, z: 1});
             if (!position) { this.setAttribute('position', '0 0 0'); }
             if (!rotation) { this.setAttribute('rotation', '0 0 0'); }
             if (!scale) { this.setAttribute('scale', '1 1 1'); }
@@ -167,9 +159,8 @@ var VRObject = module.exports = document.registerElement(
         },
 
         getAttribute: {
-          value: function (attribute) {
-            var value = HTMLElement.prototype.getAttribute.call(this, attribute);
-            return VRUtils.parseAttributeString(attribute, value);
+          value: function (attrName, defaultValue) {
+            return VRNode.prototype.getAttribute.call(this, attrName, defaultValue);
           },
           writable: window.debug
         }
