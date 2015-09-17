@@ -28,7 +28,7 @@
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {
-    "@mozvr/vr-markup": "^0.1.92",
+    "@mozvr/vr-markup": "../vr-markup",
     "atomify": "^7.3.0",
     "resrcify": "^1.1.3"
   },
