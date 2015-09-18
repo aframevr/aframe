@@ -30,7 +30,7 @@ module.exports = document.registerElement(
             this.yawObject.add(this.pitchObject);
 
             this.setAttribute('locomotion', true);
-            this.setAttribute('mouse-look', true);
+            this.setAttribute('mouselook', true);
 
             this.attachMouseKeyboardListeners();
             this.load();
