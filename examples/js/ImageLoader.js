@@ -2,8 +2,6 @@
  * @author mrdoob / http://mrdoob.com/
  */
 
-var THREE = require('vr-markup').THREE;
-
 THREE.ImageLoader = function ( manager ) {
 
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
@@ -34,7 +32,7 @@ THREE.ImageLoader.prototype = {
 			THREE.Cache.add( url, this );
 
 			if ( onLoad ) onLoad( this );
-			
+
 			scope.manager.itemEnd( url );
 
 		}, false );
