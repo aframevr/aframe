@@ -6,6 +6,7 @@
   "main": "src/vr-markup.js",
   "dependencies": {
     "document-register-element": "^0.4.5",
+    "request-interval": "^1.0.0",
     "tween.js": "^15.0.0"
   },
   "devDependencies": {

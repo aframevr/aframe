@@ -1,5 +1,8 @@
+/* global CustomEvent */
+
 require('./vr-register-element');
 
+var requestInterval = require('request-interval');
 var THREE = require('../lib/three');
 
 var VRObject = require('./core/vr-object');
@@ -16,6 +19,7 @@ module.exports = document.registerElement(
             this.object3D = new THREE.Mesh(geometry, material);
             this.raycaster = new THREE.Raycaster();
             this.attachEventListeners();
+            this.pollForHoverIntersections();
             this.load();
           }
         },
@@ -24,6 +28,13 @@ module.exports = document.registerElement(
           value: function () {
             document.addEventListener('mousedown', this.onMouseDown.bind(this), false);
             this.addEventListener('click', this.handleClick.bind(this));
+          }
+        },
+
+        pollForHoverIntersections: {
+          value: function () {
+            this.intersectedEls = {};
+            requestInterval(100, this.handleMouseEnter.bind(this));
           }
         },
 
@@ -81,6 +92,44 @@ module.exports = document.registerElement(
             intersectedObjects.forEach(function (obj) {
               obj.object.el.click();
             });
+          }
+        },
+
+        handleMouseEnter: {
+          value: function () {
+            // Eventually we can support all types of custom mouse events à la jQuery's mouse events:
+            // https://api.jquery.com/category/events/mouse-events/
+            var scene = this.sceneEl.object3D;
+            var intersectedObjects = this.intersect(scene.children);
+            intersectedObjects.forEach(this.handleIntersection.bind(this));
+            Object.keys(this.intersectedEls).forEach(this.emitMouseEvents.bind(this));
+          }
+        },
+
+        handleIntersection: {
+          value: function (obj) {
+            var el = obj.object.el;
+            var id = obj.object.id;
+            this.intersectedEls[id] = this.intersectedEls[id] || {el: el, firedHover: false};
+            this.intersectedEls[id].justIntersected = true;
+          }
+        },
+
+        emitMouseEvents: {
+          value: function (id) {
+            var obj = this.intersectedEls[id];
+            var el = obj.el;
+
+            if (obj.justIntersected) {
+              if (!obj.firedHover) {
+                el.dispatchEvent(new CustomEvent('mouseenter'));
+                obj.firedHover = true;
+              }
+              obj.justIntersected = false;
+            } else {
+              el.dispatchEvent(new CustomEvent('mouseleave'));
+              delete this.intersectedEls[id];
+            }
           }
         }
       })
