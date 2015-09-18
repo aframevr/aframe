@@ -16,7 +16,7 @@ document.registerElement(
 
             // The default THREE.ColladaLoader scale of 0.01 ensures scales match across DAE and THREE scene (eg 1m - 1m)
             var scaleBase = 0.01;
-            var scaleUser = parseFloat(this.getAttribute('scale')) || 1;
+            var scaleUser = this.getAttribute('scale', {x: 1, y: 1, z: 1});
             var scale = scaleBase * scaleUser;
 
             // TODO: enable user to pass in material, and have that material apply to all nodes in the loaded object.
