@@ -10,9 +10,10 @@
     <vr-assets>
       <vr-material id="normal" color="#3399ff" metallic="0.9" roughness="0.38"></vr-material>
       <vr-material id="highlight" color="#ffcc00" metallic="1" roughness="0.5"></vr-material>
+      <vr-material id="hover" color="#0ff" metallic="0.5" roughness="0.5"></vr-material>
     </vr-assets>
     <vr-scene>
-      <vr-controls position="0 1.8 20">
+      <vr-controls position="-3 1.8 20">
         <vr-camera>
           <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
         </vr-camera>
@@ -27,15 +28,28 @@
       var cubes = document.querySelectorAll('vr-cube');
       var i;
       for (i = 0; i < cubes.length; ++i) {
-        cubes[i].addEventListener('click', function (evt) {
-          var cube = evt.currentTarget;
-          // Toggling material.
-          cube.setAttribute('material', cube.getAttribute('material') === 'normal' ? 'highlight' : 'normal');
+        cubes[i].addEventListener('click', function () {
+          var material = this.getAttribute('material');
+          var href = this.getAttribute('href');
 
-          var href = cube.getAttribute('href');
+          // Toggling material.
+          if (material === 'hover') {
+            this.setAttribute('material', material === 'hover' ? 'highlight' : 'hover');
+          } else {
+            this.setAttribute('material', material === 'normal' ? 'highlight' : 'normal');
+          }
+
           if (href) {
             window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
           }
+        });
+
+        cubes[i].addEventListener('mouseenter', function () {
+          this.setAttribute('material', 'hover');
+        });
+
+        cubes[i].addEventListener('mouseleave', function () {
+          this.setAttribute('material', 'normal');
         });
       }
     </script>
