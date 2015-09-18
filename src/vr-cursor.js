@@ -88,8 +88,8 @@ module.exports = document.registerElement(
         handleClick: {
           value: function () {
             var scene = this.sceneEl.object3D;
-            var intersectedObjects = this.intersect(scene.children);
-            intersectedObjects.forEach(function (obj) {
+            var intersectedObjs = this.intersect(scene.children);
+            intersectedObjs.forEach(function (obj) {
               obj.object.el.click();
             });
           }
@@ -100,8 +100,8 @@ module.exports = document.registerElement(
             // Eventually we can support all types of custom mouse events à la jQuery's mouse events:
             // https://api.jquery.com/category/events/mouse-events/
             var scene = this.sceneEl.object3D;
-            var intersectedObjects = this.intersect(scene.children);
-            intersectedObjects.forEach(this.handleIntersection.bind(this));
+            var intersectedObjs = this.intersect(scene.children);
+            intersectedObjs.forEach(this.handleIntersection.bind(this));
             Object.keys(this.intersectedEls).forEach(this.emitMouseEvents.bind(this));
           }
         },
