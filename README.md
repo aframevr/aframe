@@ -41,4 +41,8 @@ If you'd like to hack on components and/or examples, simply run these commands t
     npm install
     npm start
 
+If you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:
+
+    npm login
+
 And fire up __[http://localhost:9000](http://localhost:9000)__!
