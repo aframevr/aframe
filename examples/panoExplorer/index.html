@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pano Explorer</title>
+    <meta name="description" content="Pano explorer example scene">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+
+    <vr-assets>
+      <vr-material id="frameWhite" color="f7f7f7"></vr-material> <!-- materials are acting very strangely. Want a nice white surface without needing to fight with lighting. -->
+      <vr-animation id="zoom" attribute="position" from="0 0 -16" to="0 0 -10" duration="1000" delay="0" loop="true"></vr-animation>
+    </vr-assets>
+    
+    <vr-scene>
+      
+      <vr-controls locomotion="false"> <!-- locomotion false not working -->
+        <vr-camera position="0 1.8 0" near="0.2">
+          <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
+        </vr-camera>
+      </vr-controls>
+
+      <!-- STARTING PAGE: -->
+
+      <!-- A 360° image in the background -->
+      <!-- <vr-skybox src="images/abandoned/"></vr-skybox> --> <!-- skybox rotation not currently working. Something to do with shader in component -->
+      <vr-skysphere src="images/city.jpg"></vr-skysphere>
+      <vr-object id="frame" position="0 0 0">
+        <vr-plane material="frameWhite" id="top" width="10" height="10" rotation="90 0 0" position="0 4 0"></vr-plane>
+        <vr-plane material="frameWhite" id="bottom" width="10" height="10" rotation="-90 0 0" position="0 0 0"></vr-plane>
+        <vr-plane material="frameWhite" id="left" width="10" height="4" rotation="0 -90 0" position="5 2 0"></vr-plane>
+        <vr-plane material="frameWhite" id="right" width="10" height="4" rotation="0 90 0" position="-5 2 0"></vr-plane>
+        <vr-plane material="frameWhite" id="back" width="10" height="4" rotation="0 180 0" position="0 2 5"></vr-plane>
+      </vr-object>
+      
+      <!-- A 3D model at their feet -->
+      <!-- <vr-model src="models/city1/city.dae" position="0 0.5 1" scale="1 1 1"></vr-model> --> <!-- Model component not currently working. -->
+
+      <!-- A logo and labels with the brand and instructional information -->
+      <vr-image src="images/loops.png" width="4" height="2" position="0 2 -10"></vr-image>
+      <vr-image src="images/logos.png" width="4" height="2" position="0 0 -10"></vr-image>
+
+      <!-- Links to other scenes. They change color and play sound effect when looked at. -->
+      <vr-object id="links" position="0 1.2 -4">
+        <!-- <vr-image width="1" height="2" href=""></vr-image> -->
+      </vr-object>
+      
+      <vr-grid></vr-grid> <!-- temporary, just for helping place items in scene -->
+
+    </vr-scene>
+
+    <script>
+      var links = {
+        "data": [
+          {
+            "title": "Test 1",
+            "thumb": "thumb1.png",
+            "url": "www.cnn.com"
+          },
+          {
+            "title": "Test 2",
+            "thumb": "thumb2.png",
+            "url": "www.cnn.com"
+          }
+        ]
+      };
+
+      var scene = document.querySelector('vr-scene');
+      var holder = document.getElementById('links')
+      var width= 1;
+      var height = 2;
+
+      console.log(links);
+
+      for (var i = 0; i < links.data.length; i++) {
+        
+        var el = document.createElement('vr-image');
+        var xPos = i * (width * 1.2);
+        
+        el.setAttribute('position', {
+          x: xPos,
+          y: 0,
+          z: 0
+        });
+        el.setAttribute('src', "images/" + links.data[i].thumb);
+        el.setAttribute('width', width);
+        el.setAttribute('height', height);
+        holder.appendChild(el);
+      }
+    </script>
+  </body>
+</html>

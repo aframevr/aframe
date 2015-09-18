@@ -53,6 +53,8 @@ document.registerElement(
               material = new THREE.MeshNormalMaterial();
             }
 
+            /* TODO: make default double sided.*/
+
             return material;
           }
         }
