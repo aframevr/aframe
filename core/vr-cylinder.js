@@ -28,11 +28,11 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = parseFloat(this.getAttribute('radius') || 5);
-            var height = parseFloat(this.getAttribute('height') || 1);
-            var radiusSegments = parseFloat(this.getAttribute('radiusSegments') || 36);
-            var heightSegments = parseFloat(this.getAttribute('heightSegments') || 10);
-            var openEnded = this.hasAttribute('openended');
+            var radius = this.getAttribute('radius', 5);
+            var height = this.getAttribute('height', 1);
+            var radiusSegments = this.getAttribute('radiusSegments', 36);
+            var heightSegments = this.getAttribute('heightSegments', 10);
+            var openEnded = this.getAttribute('openended', false);
 
             var geometry = new THREE.CylinderGeometry(
               radius, // radius top
@@ -49,7 +49,7 @@ document.registerElement(
 
         getMaterial: {
           value: function () {
-            var color = parseFloat(this.getAttribute('color')) || 0xCC0000;
+            var color = this.getAttribute('color', 0xCC0000);
             var materialId = this.getAttribute('material');
             var materialEl = materialId ? document.querySelector('#' + materialId) : undefined;
             return (materialEl && materialEl.material) || new THREE.MeshNormalMaterial({

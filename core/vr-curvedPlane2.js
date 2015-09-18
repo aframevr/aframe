@@ -28,11 +28,11 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = parseFloat(this.getAttribute('radius')) || 10;
-            var height = parseFloat(this.getAttribute('height')) || 5;
-            var thetaStart = parseFloat(this.getAttribute('thetaStart')) || Math.PI;
-            var thetaLength = parseFloat(this.getAttribute('thetaLength')) || 90;
-            var flipNormals = parseFloat(this.getAttribute('flip')) || true;
+            var radius = this.getAttribute('radius', 10);
+            var height = this.getAttribute('height', 5);
+            var thetaStart = this.getAttribute('thetaStart', Math.PI);
+            var thetaLength = this.getAttribute('thetaLength', 90);
+            var flipNormals = this.getAttribute('flip', false);
 
             var radiusSegments = thetaLength / 2;
             var heightSegments = 1;
@@ -65,7 +65,7 @@ document.registerElement(
           value: function () {
             var imgSrc = this.getAttribute('tex');
             var color = this.getAttribute('color');
-            var opacity = parseFloat(this.getAttribute('opacity')) || 1;
+            var opacity = this.getAttribute('opacity', 1);
 
             var material = new THREE.MeshBasicMaterial({transparent: true, side: THREE.DoubleSide});
 

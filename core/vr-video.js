@@ -21,8 +21,8 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var width = parseFloat(this.getAttribute('width') || 50);
-            var height = parseFloat(this.getAttribute('height') || 50);
+            var width = this.getAttribute('width', 50);
+            var height = this.getAttribute('height', 50);
             return new THREE.PlaneGeometry(width, height, 1, 1);
           }
         },
@@ -32,8 +32,8 @@ document.registerElement(
             var video = document.createElement('video');
             video.crossOrigin = 'anonymous';
             video.src = this.getAttribute('src');
-            video.autoplay = this.hasAttribute('autoplay');
-            video.loop = this.hasAttribute('loop');
+            video.autoplay = this.getAttribute('autoplay', false);
+            video.loop = this.getAttribute('loop', false);
 
             var texture = new THREE.VideoTexture(video);
             texture.minFilter = THREE.LinearFilter;
