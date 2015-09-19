@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --live --port 9000 -- -s 'vr-components' -t browserify-css | garnish -v",
+    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --live --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t browserify-css | garnish -v",
     "build": "mkdir -p build && browserify ./index.js -o build/vr-components.js --debug -s 'vr-components' -t browserify-css",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:dev && npm run dist:min && git commit -am 'Bump dist'",
     "dist:dev": "browserify ./index.js -s 'vr-components' -t browserify-css --debug -o dist/vr-components.js",
@@ -14,17 +14,22 @@
     "gh-pages": "npm run ghpages",
     "preghpages": "mkdir -p gh-pages && cp -r {dist,lib,examples,index.html,style} gh-pages/. && npm run replacepaths",
     "ghpages": "gh-pages -d gh-pages && rm -rf gh-pages",
-    "release": "npm version patch --minor && npm login && npm publish"
+    "release": "npm version patch --minor && npm login && npm publish",
+    "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
+    "precommit": "npm run lint"
   },
   "repository": "MozVR/vr-components",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-css": "^0.7.1",
-    "budo": "^4.2.1",
+    "budo": "mattdesl/budo#6372153",
     "garnish": "^3.0.0",
     "gh-pages": "^0.4.0",
+    "husky": "^0.10.1",
     "replace": "^0.3.0",
+    "semistandard": "^7.0.2",
+    "snazzy": "^2.0.1",
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {
@@ -41,6 +46,8 @@
   },
   "semistandard": {
     "ignore": [
+      "build/**",
+      "dist/**",
       "examples/js/**"
     ]
   },
