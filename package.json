@@ -57,7 +57,6 @@
     "ignore": [
       "dist/**",
       "examples/js/**",
-      "lib/cursor3D.js",
       "lib/vendor/**",
       "src/shaders/**"
     ]
