@@ -23,7 +23,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-css": "^0.7.1",
-    "budo": "mattdesl/budo#6372153",
+    "budo": "mattdesl/budo#c9ffb260",
     "garnish": "^3.0.0",
     "gh-pages": "^0.4.0",
     "husky": "^0.10.1",
