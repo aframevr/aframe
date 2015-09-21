@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dynamic</title>
+    <meta name="description" content="Creating VR elements dynamically with JavaScript">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+      <vr-controls position="0 1.8 20">
+        <vr-camera></vr-camera>
+      </vr-controls>
+    </vr-scene>
+    <script>
+      var rows = 2;
+      var cols = 2;
+      var spread = 10;
+      var scene = document.querySelector('vr-scene');
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var el = document.createElement('vr-cube');
+          var x = c * spread;
+          var y = 0;
+          var z = r * spread;
+          el.setAttribute('position', {
+            x: x,
+            y: y,
+            z: z
+          });
+          el.setAttribute('height', 5);
+          el.setAttribute('width', 5);
+          el.setAttribute('depth', 5);
+          scene.appendChild(el);
+        }
+      }
+    </script>
+  </body>
+</html>
