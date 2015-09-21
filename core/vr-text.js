@@ -14,7 +14,8 @@ document.registerElement('vr-text', {
     createdCallback: {
       value: function () {
         // to hide the child textNode
-        this.style.display = 'none';
+        this.style.pointerEvents = 'none';
+        this.style.visibility = 'hidden';
 
         this.width = 256;
         this.height = 256;
@@ -22,13 +23,13 @@ document.registerElement('vr-text', {
         var ctx = document.createElement('canvas').getContext('2d');
         ctx.canvas.width = this.width;
         ctx.canvas.height = this.height;
+        ctx.clearRect(0, 0, this.width, this.height);
+        ctx.strokeStyle = '#FF0000';
         this.ctx = ctx;
 
-        this.ctx.clearRect(0, 0, this.width, this.height);
-        this.ctx.strokeStyle = '#FF0000';
         this.wrapText(this.textContent);
 
-        var texture = new THREE.Texture(this.ctx.canvas);
+        var texture = new THREE.Texture(ctx.canvas);
         texture.needsUpdate = true;
         var material = new THREE.MeshBasicMaterial({
           transparent: true,
@@ -62,19 +63,16 @@ document.registerElement('vr-text', {
             currentLine += word + ' ';
             // if this is the last word in our word list, then print it.
             if (i === words.length - 1) {
-              this.ctx.strokeText(currentLine, 0 , y);
+              this.ctx.strokeText(currentLine, 0, y);
             }
           } else {
             // otherwise print the current line
-            this.ctx.strokeText(currentLine, 0 , y);
+            this.ctx.strokeText(currentLine, 0, y);
             y += this.lineHeight;
             currentLine = word + ' ';
           }
         }.bind(this));
       },
-    },
-    attributeChangedCallback: {
-      value: function () {},
-    },
+    }
   })
 });
