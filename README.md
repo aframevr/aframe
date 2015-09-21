@@ -7,7 +7,7 @@ VR components bundled with a copy of vr-markup.
 
 ### Codepen
 
-If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO?editors=100)!
+If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO/left/?editors=100)!
 
 ### Downloads
 
