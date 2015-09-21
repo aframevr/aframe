@@ -1,6 +1,6 @@
 {
   "name": "@mozvr/vr-markup",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "homepage": "https://github.com/MozVR/vr-markup",
   "license": "MIT",
   "main": "src/vr-markup.js",
