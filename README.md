@@ -36,8 +36,8 @@ And in your Browserify/Webpack modules, simply require the module:
 
 If you'd like to hack on components and/or examples, simply run these commands to get started:
 
-    git clone git@github.com:MozVR/horizon.git
-    cd horizon
+    git clone git@github.com:MozVR/vr-components.git
+    cd vr-components
     npm install
     npm start
 
