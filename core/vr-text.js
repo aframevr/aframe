@@ -44,7 +44,7 @@ document.registerElement('vr-text', {
         this.object3D = new THREE.Mesh(geometry, material);
 
         this.load();
-      },
+      }
     },
     // TODO: replace this with maybe a node module that is better tested.
     wrapText: {
@@ -71,7 +71,7 @@ document.registerElement('vr-text', {
             currentLine = word + ' ';
           }
         }.bind(this));
-      },
+      }
     }
   })
 });
