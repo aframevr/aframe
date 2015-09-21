@@ -33,7 +33,7 @@
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {
-    "@mozvr/vr-markup": "^0.1.30"
+    "@mozvr/vr-markup": "^0.1.31"
   },
   "link": true,
   "browserify": {
