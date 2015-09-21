@@ -35,10 +35,9 @@ document.registerElement('vr-text', {
           transparent: true,
           doublesided: true,
           side: THREE.DoubleSide,
-          map: texture,
+          map: texture
           // for debugging
-          //color: '#00B000',
-          //wireframe: true,
+          // ,color: '#00B000', wireframe: true
         });
         // The size conversion here is weird
         var geometry = new THREE.PlaneGeometry(5, 5);
