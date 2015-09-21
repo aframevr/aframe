@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Physically Based Rendering</title>
+    <meta name="description" content="Cube">
+    <script src="../../build/vr-components.js"></script>
+    <script src="../_js/lib/vendor/OBJLoader.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-material id="pbr"></vr-material>
+    </vr-assets>
+    <vr-scene>
+      <vr-controls position="0 12 50">
+        <vr-camera></vr-camera>
+      </vr-controls>
+      <vr-obj-loader id="cube" position="0 0 0" rotation="0 0 0" src="../_models/MatTester.png" material="pbr"></vr-obj-loader>
+    </vr-scene>
+    <script src="../_js/lib/vendor/dat.gui.js"></script>
+    <script>
+      var material = document.querySelector('#pbr');
+      var gui = new dat.GUI();
+      var effectController  = {
+        baseColor: [ 0.1, 0.1, 0.1],
+        baseColorR: 0.800,
+        baseColorG: 0.200,
+        baseColorB: 0.005,
+        roughness: 0.001,
+        metallic: 0.001,
+      };
+
+      gui.add( effectController, "baseColorR", 0, 1, 0.001 ).onChange( matChanger );
+      gui.add( effectController, "baseColorG", 0, 1, 0.001 ).onChange( matChanger );
+      gui.add( effectController, "baseColorB", 0, 1, 0.001 ).onChange( matChanger );
+      gui.add( effectController, "roughness", 0, 1, 0.001 ).onChange(matChanger);
+      gui.add( effectController, "metallic", 0, 1, 0.001 ).onChange(matChanger);
+
+      matChanger();
+
+      function matChanger( )
+      {
+        var color = 'rgb(' + Math.round(effectController.baseColorR * 255) + ', '
+                           + Math.round(effectController.baseColorG * 255) + ', '
+                           + Math.round(effectController.baseColorB * 255) + ')';
+
+        var roughness = effectController.roughness;
+        var metallic = effectController.metallic;
+
+        material.setAttribute('color', color);
+        material.setAttribute('roughness', roughness);
+        material.setAttribute('metallic', metallic);
+      }
+    </script>
+  </body>
+</html>
