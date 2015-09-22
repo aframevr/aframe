@@ -135,14 +135,14 @@ module.exports = document.registerElement(
           value: function (obj) {
             var el = obj.object.el;
 
-            // A new intersection where previously there was none.
-            if (this.intersectedEl === null) {
+            if (!this.intersectedEl) {
+              // A new intersection where previously there was none.
               this.intersectedEl = el;
               el.dispatchEvent(new CustomEvent('mouseenter'));
               this.changeGeometry(true);
-            // A new intersection where previously a different element was and
-            // now needs a mouseleave event.
             } else if (this.intersectedEl !== el) {
+              // A new intersection where previously a different element was
+              // and now needs a mouseleave event.
               this.clearExistingIntersections();
               this.intersectedEl = el;
               el.dispatchEvent(new CustomEvent('mouseenter'));
