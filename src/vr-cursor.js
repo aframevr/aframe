@@ -16,8 +16,12 @@ module.exports = document.registerElement(
           value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
+            geometry.computeBoundingBox();
+            var bb = geometry.boundingBox;
+            this.cursorBias = bb.max.z - bb.min.z + 0.001;
             this.object3D = new THREE.Mesh(geometry, material);
             this.raycaster = new THREE.Raycaster();
+            this.intersectedEls = {};
             this.attachEventListeners();
             this.pollForHoverIntersections();
             this.load();
@@ -33,7 +37,6 @@ module.exports = document.registerElement(
 
         pollForHoverIntersections: {
           value: function () {
-            this.intersectedEls = {};
             requestInterval(100, this.handleMouseEnter.bind(this));
           }
         },
@@ -80,6 +83,10 @@ module.exports = document.registerElement(
             var parentPosition = parent.position.clone();
             parent.localToWorld(parentPosition);
             var direction = cursorPosition.sub(parentPosition).normalize();
+            // Offset the ray to start past the cursor, so its geometry is
+            // not intersected.
+            parentPosition.add(cursorPosition);
+            parentPosition.sub(new THREE.Vector3(0, 0, this.cursorBias));
             raycaster.set(parentPosition, direction);
             return raycaster.intersectObjects(objects, true);
           }
@@ -89,9 +96,9 @@ module.exports = document.registerElement(
           value: function () {
             var scene = this.sceneEl.object3D;
             var intersectedObjs = this.intersect(scene.children);
-            intersectedObjs.forEach(function (obj) {
-              obj.object.el.click();
-            });
+            if (intersectedObjs.length) {
+              intersectedObjs[0].object.el.click();
+            }
           }
         },
 
@@ -101,7 +108,9 @@ module.exports = document.registerElement(
             // https://api.jquery.com/category/events/mouse-events/
             var scene = this.sceneEl.object3D;
             var intersectedObjs = this.intersect(scene.children);
-            intersectedObjs.forEach(this.handleIntersection.bind(this));
+            if (intersectedObjs.length) {
+              this.handleIntersection(intersectedObjs[0]);
+            }
             Object.keys(this.intersectedEls).forEach(this.emitMouseEvents.bind(this));
           }
         },
