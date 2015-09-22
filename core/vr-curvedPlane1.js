@@ -28,9 +28,9 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = parseFloat(this.getAttribute('radius')) || 10;
-            var width = parseFloat(this.getAttribute('width')) || 4;
-            var height = parseFloat(this.getAttribute('height')) || 1;
+            var radius = this.getAttribute('radius', 10);
+            var width = this.getAttribute('width', 4);
+            var height = this.getAttribute('height', 1);
 
             var circumference = 2 * Math.PI * radius;
             var thetaLength = (Math.PI * 2) * (width / circumference);

@@ -7,9 +7,7 @@ VR components bundled with a copy of vr-markup.
 
 ### Codepen
 
-If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO?editors=100)!
-
-
+If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO/left/?editors=100)!
 
 ### Downloads
 
@@ -32,3 +30,19 @@ First install from npm:
 And in your Browserify/Webpack modules, simply require the module:
 
     require('vr-components')
+
+
+## Local Development
+
+If you'd like to hack on components and/or examples, simply run these commands to get started:
+
+    git clone git@github.com:MozVR/vr-components.git
+    cd vr-components
+    npm install
+    npm start
+
+If you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:
+
+    npm login
+
+And fire up __[http://localhost:9000](http://localhost:9000)__!

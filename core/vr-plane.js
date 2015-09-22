@@ -28,8 +28,8 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var width = parseFloat(this.getAttribute('width')) || 10;
-            var height = parseFloat(this.getAttribute('height')) || 10;
+            var width = this.getAttribute('width', 10);
+            var height = this.getAttribute('height', 10);
             return new THREE.PlaneGeometry(width, height, 1, 1);
           }
         },
