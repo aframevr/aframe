@@ -110,9 +110,9 @@ module.exports = document.registerElement(
             var intersectedObjs = this.intersect(scene.children);
             if (intersectedObjs.length) {
               this.handleIntersection(intersectedObjs[0]);
-            }
-            if (this.intersectedEl) {
-              this.emitMouseEvents(this.intersectedEl);
+            } else if (this.intersectedEl) {
+              this.clearExistingIntersections();
+              this.changeGeometry(false);
             }
           }
         },
@@ -126,7 +126,7 @@ module.exports = document.registerElement(
 
         clearExistingIntersections: {
           value: function () {
-            this.intersectedEl.el.dispatchEvent(new CustomEvent('mouseleave'));
+            this.intersectedEl.dispatchEvent(new CustomEvent('mouseleave'));
             this.intersectedEl = null;
           }
         },
@@ -137,31 +137,15 @@ module.exports = document.registerElement(
 
             // A new intersection where previously there was none.
             if (this.intersectedEl === null) {
-              this.intersectedEl = {el: el, firedHover: false};
+              this.intersectedEl = el;
+              el.dispatchEvent(new CustomEvent('mouseenter'));
+              this.changeGeometry(true);
             // A new intersection where previously a different element was and
             // now needs a mouseleave event.
-            } else if (this.intersectedEl.el !== el) {
+            } else if (this.intersectedEl !== el) {
               this.clearExistingIntersections();
-              this.intersectedEl = {el: el, firedHover: false};
-            }
-            this.intersectedEl.justIntersected = true;
-          }
-        },
-
-        emitMouseEvents: {
-          value: function (obj) {
-            var el = obj.el;
-
-            if (obj.justIntersected) {
-              if (!obj.firedHover) {
-                el.dispatchEvent(new CustomEvent('mouseenter'));
-                obj.firedHover = true;
-                this.changeGeometry(obj.justIntersected);
-              }
-              obj.justIntersected = false;
-            } else {
-              this.clearExistingIntersections();
-              this.changeGeometry(obj.justIntersected);
+              this.intersectedEl = el;
+              el.dispatchEvent(new CustomEvent('mouseenter'));
             }
           }
         }
