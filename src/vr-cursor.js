@@ -16,9 +16,6 @@ module.exports = document.registerElement(
           value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
-            geometry.computeBoundingBox();
-            var bb = geometry.boundingBox;
-            this.cursorBias = bb.max.z - bb.min.z + 0.001;
             this.object3D = new THREE.Mesh(geometry, material);
             this.raycaster = new THREE.Raycaster();
             this.intersectedEl = null;
@@ -83,10 +80,6 @@ module.exports = document.registerElement(
             var parentPosition = parent.position.clone();
             parent.localToWorld(parentPosition);
             var direction = cursorPosition.sub(parentPosition).normalize();
-            // Offset the ray to start past the cursor, so its geometry is
-            // not intersected.
-            parentPosition.add(cursorPosition);
-            parentPosition.sub(new THREE.Vector3(0, 0, this.cursorBias));
             raycaster.set(parentPosition, direction);
             return raycaster.intersectObjects(objects, true);
           }
@@ -96,8 +89,12 @@ module.exports = document.registerElement(
           value: function () {
             var scene = this.sceneEl.object3D;
             var intersectedObjs = this.intersect(scene.children);
-            if (intersectedObjs.length) {
-              intersectedObjs[0].object.el.click();
+            for (var i = 0; i < intersectedObjs.length; ++i) {
+              // Find the closest element that is not the cursor itself.
+              if (intersectedObjs[i].object !== this.object3D) {
+                intersectedObjs[i].object.el.click();
+                break;
+              }
             }
           }
         },
@@ -108,9 +105,16 @@ module.exports = document.registerElement(
             // https://api.jquery.com/category/events/mouse-events/
             var scene = this.sceneEl.object3D;
             var intersectedObjs = this.intersect(scene.children);
-            if (intersectedObjs.length) {
-              this.handleIntersection(intersectedObjs[0]);
-            } else if (this.intersectedEl) {
+            for (var i = 0; i < intersectedObjs.length; ++i) {
+              if (intersectedObjs[i].object !== this.object3D) {
+                // Find the closest element that is not the cursor itself.
+                this.handleIntersection(intersectedObjs[i]);
+                return;
+              }
+            }
+            // If we have no intersections other than the cursor itself,
+            // but we still have a previously intersected element, clear it.
+            if (this.intersectedEl) {
               this.clearExistingIntersections();
               this.changeGeometry(false);
             }
