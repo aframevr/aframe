@@ -41,10 +41,10 @@ document.registerElement(
         getMaterial: {
           value: function () {
             var imgSrc = this.getAttribute('src');
-            var material = new THREE.MeshBasicMaterial({ 
+            var material = new THREE.MeshBasicMaterial({
               map: THREE.ImageUtils.loadTexture(imgSrc),
               transparent: true,
-              side: THREE.DoubleSide 
+              side: THREE.DoubleSide
             });
 
             /* Would be better to only add transparency if needed. Starting heuristic could be if image type is PNG, for example). */
