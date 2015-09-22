@@ -1,2 +1,3 @@
-module.exports.VRMaterial = require('./vr-material');
-module.exports.VRGeometry = require('./vr-geometry');
+module.exports.camera = require('./vr-camera');
+module.exports.geometry = require('./vr-geometry');
+module.exports.material = require('./vr-material');

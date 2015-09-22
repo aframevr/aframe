@@ -190,11 +190,15 @@ var proto = {
 
   updateComponents: {
     value: function () {
+      var camera;
       this.updatePosition();
       this.updateRotation();
       this.updateScale();
       this.updateMaterial(this.getAttribute('material'));
       this.updateGeometry(this.getAttribute('geometry'));
+      camera = this.getAttribute('camera');
+      if (!camera) { return; }
+      this.updateCamera(camera);
     },
     writable: window.debug
   },

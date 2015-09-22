@@ -129,13 +129,17 @@ var VRScene = module.exports = document.registerElement(
         },
 
         elementLoaded: {
-          value: function () {
+          value: function (evt) {
+            var el = evt.currentTarget;
             this.pendingElements--;
+            if (el.camera) { this.cameraEl = el; }
             // If we still need to wait for more elements
             if (this.pendingElements > 0) { return; }
             // If the render loop is already running
             if (this.renderLoopStarted) { return; }
             this.setupLoader();
+            // three.js camera setup
+            this.setupCamera();
             this.resizeCanvas();
             // It kicks off the render loop
             this.render(performance.now());
@@ -222,8 +226,6 @@ var VRScene = module.exports = document.registerElement(
             this.setupCanvas();
             // The three.js renderer setup
             this.setupRenderer();
-            // three.js camera setup
-            this.setupCamera();
             // cursor camera setup
             this.setupCursor();
           }
@@ -240,20 +242,14 @@ var VRScene = module.exports = document.registerElement(
 
         setupCamera: {
           value: function () {
-            var self = this;
-            var cameraEl = this.querySelector('vr-camera');
-            // If there's not a user-defined camera, we create one.
-            if (!cameraEl) {
-              cameraEl = document.createElement('vr-camera');
-              cameraEl.setAttribute('fov', 45);
-              cameraEl.setAttribute('near', 1);
-              cameraEl.setAttribute('far', 10000);
-              self.appendChild(cameraEl);
-            }
-
-            cameraEl.addEventListener('loaded', function () {
-              self.camera = cameraEl.object3D;
-            });
+            var cameraEl;
+            // If there's a user defined camera
+            if (this.cameraEl) { return; }
+            // We create a default camera
+            cameraEl = document.createElement('vr-object');
+            this.cameraEl = cameraEl;
+            cameraEl.setAttribute('camera', 'fov: 45');
+            this.appendChild(cameraEl);
           }
         },
 
@@ -293,7 +289,7 @@ var VRScene = module.exports = document.registerElement(
         resizeCanvas: {
           value: function () {
             var canvas = this.canvas;
-            var camera = this.camera;
+            var camera = this.cameraEl.camera;
             // Make it visually fill the positioned parent
             canvas.style.width = '100%';
             canvas.style.height = '100%';
@@ -330,12 +326,13 @@ var VRScene = module.exports = document.registerElement(
 
         render: {
           value: function (t) {
+            var camera = this.cameraEl.camera;
             TWEEN.update(t);
             // Updates behaviors
             this.behaviors.forEach(function (behavior) {
               behavior.update(t);
             });
-            this.renderer.render(this.object3D, this.camera);
+            this.renderer.render(this.object3D, camera);
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
           }
         }
