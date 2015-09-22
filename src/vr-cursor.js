@@ -115,7 +115,7 @@ module.exports = document.registerElement(
             // If we have no intersections other than the cursor itself,
             // but we still have a previously intersected element, clear it.
             if (this.intersectedEl) {
-              this.clearExistingIntersections();
+              this.clearExistingIntersection();
               this.changeGeometry(false);
             }
           }
@@ -128,10 +128,17 @@ module.exports = document.registerElement(
           }
         },
 
-        clearExistingIntersections: {
+        clearExistingIntersection: {
           value: function () {
             this.intersectedEl.dispatchEvent(new CustomEvent('mouseleave'));
             this.intersectedEl = null;
+          }
+        },
+
+        setExistingIntersection: {
+          value: function (el) {
+            this.intersectedEl = el;
+            el.dispatchEvent(new CustomEvent('mouseenter'));
           }
         },
 
@@ -141,15 +148,13 @@ module.exports = document.registerElement(
 
             if (!this.intersectedEl) {
               // A new intersection where previously there was none.
-              this.intersectedEl = el;
-              el.dispatchEvent(new CustomEvent('mouseenter'));
+              this.setExistingIntersection(el);
               this.changeGeometry(true);
             } else if (this.intersectedEl !== el) {
               // A new intersection where previously a different element was
               // and now needs a mouseleave event.
-              this.clearExistingIntersections();
-              this.intersectedEl = el;
-              el.dispatchEvent(new CustomEvent('mouseenter'));
+              this.clearExistingIntersection();
+              this.setExistingIntersection(el);
             }
           }
         }
