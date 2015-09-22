@@ -53,7 +53,7 @@ module.exports.parseAttributeString = function (attr, value, defaultValue) {
 
   if (typeof defaultValue === 'object') {
     if ('x' in defaultValue && 'y' in defaultValue && 'z' in defaultValue) {
-      if (!value) { return null; }
+      if (!value) { return defaultValue; }
 
       values = value.split(' ');
 
