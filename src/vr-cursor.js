@@ -21,7 +21,7 @@ module.exports = document.registerElement(
             this.cursorBias = bb.max.z - bb.min.z + 0.001;
             this.object3D = new THREE.Mesh(geometry, material);
             this.raycaster = new THREE.Raycaster();
-            this.intersectedEls = {};
+            this.intersectedEl = null;
             this.attachEventListeners();
             this.pollForHoverIntersections();
             this.load();
@@ -58,7 +58,7 @@ module.exports = document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = this.getAttribute('radius', 10);
+            var radius = this.getAttribute('radius', 0.005);
             var geometryId = this.getAttribute('geometry');
             var geometryEl = geometryId ? document.querySelector('#' + geometryId) : undefined;
             return (geometryEl && geometryEl.geometry) || new THREE.SphereGeometry(radius, 64, 40);
@@ -111,33 +111,57 @@ module.exports = document.registerElement(
             if (intersectedObjs.length) {
               this.handleIntersection(intersectedObjs[0]);
             }
-            Object.keys(this.intersectedEls).forEach(this.emitMouseEvents.bind(this));
+            if (this.intersectedEl) {
+              this.emitMouseEvents(this.intersectedEl);
+            }
+          }
+        },
+
+        changeGeometry: {
+          value: function (highlight) {
+            this.object3D.geometry = highlight
+              ? new THREE.SphereGeometry(0.01, 64, 40) : this.getGeometry();
+          }
+        },
+
+        clearExistingIntersections: {
+          value: function () {
+            this.intersectedEl.el.dispatchEvent(new CustomEvent('mouseleave'));
+            this.intersectedEl = null;
           }
         },
 
         handleIntersection: {
           value: function (obj) {
             var el = obj.object.el;
-            var id = obj.object.id;
-            this.intersectedEls[id] = this.intersectedEls[id] || {el: el, firedHover: false};
-            this.intersectedEls[id].justIntersected = true;
+
+            // A new intersection where previously there was none.
+            if (this.intersectedEl === null) {
+              this.intersectedEl = {el: el, firedHover: false};
+            // A new intersection where previously a different element was and
+            // now needs a mouseleave event.
+            } else if (this.intersectedEl.el !== el) {
+              this.clearExistingIntersections();
+              this.intersectedEl = {el: el, firedHover: false};
+            }
+            this.intersectedEl.justIntersected = true;
           }
         },
 
         emitMouseEvents: {
-          value: function (id) {
-            var obj = this.intersectedEls[id];
+          value: function (obj) {
             var el = obj.el;
 
             if (obj.justIntersected) {
               if (!obj.firedHover) {
                 el.dispatchEvent(new CustomEvent('mouseenter'));
                 obj.firedHover = true;
+                this.changeGeometry(obj.justIntersected);
               }
               obj.justIntersected = false;
             } else {
-              el.dispatchEvent(new CustomEvent('mouseleave'));
-              delete this.intersectedEls[id];
+              this.clearExistingIntersections();
+              this.changeGeometry(obj.justIntersected);
             }
           }
         }
