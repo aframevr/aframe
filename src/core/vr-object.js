@@ -39,13 +39,13 @@ var proto = {
 
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
-      this.updateComponent(attrName);
+      this.updateComponent(attrName, oldVal);
     },
     writable: window.debug
   },
 
   updateComponent: {
-    value: function (name) {
+    value: function (name, oldVal) {
       // Capitalizes first letter of attribute name.
       var component = name.charAt(0).toUpperCase() + name.slice(1);
       var funcName = 'update' + component;
@@ -56,7 +56,7 @@ var proto = {
         VRUtils.warn('Unknown Attribute ' + name);
         return;
       }
-      updateComponent.call(this, value);
+      updateComponent.call(this, value, oldVal);
     },
     writable: window.debug
   },
@@ -90,13 +90,25 @@ var proto = {
   },
 
   updateTemplate: {
-    value: function () {
+    value: function (value, oldVal) {
       var templateId = this.getAttribute('template');
+      if (oldVal) {
+        this.removeFromTemplate(oldVal);
+      }
       if (!templateId) { return; }
       var template = document.querySelector('#' + templateId);
       if (!template) { return; }
       this.template = template;
       this.template.add(this);
+    }
+  },
+
+  removeFromTemplate: {
+    value: function (id) {
+      var template = document.querySelector('#' + id);
+      this.template = null;
+      if (!template) { return; }
+      template.remove(this);
     }
   },
 
@@ -151,6 +163,8 @@ var proto = {
       this.addToParent();
       // It sets default values on the attributes if they're not defined
       this.initAttributes();
+      // Updates the template if there's any
+      this.updateTemplate();
       // Updates components to match attributes values
       this.updateComponents();
       // Setup animations if there's any
@@ -179,7 +193,6 @@ var proto = {
       this.updatePosition();
       this.updateRotation();
       this.updateScale();
-      this.updateTemplate();
       this.updateMaterial(this.getAttribute('material'));
       this.updateGeometry(this.getAttribute('geometry'));
     },

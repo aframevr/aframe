@@ -1,5 +1,3 @@
-/* global Event, HTMLElement */
-
 require('../vr-register-element');
 
 var VRNode = require('./vr-node');
@@ -12,7 +10,7 @@ module.exports = document.registerElement(
       {
         createdCallback: {
           value: function () {
-            this.objs = [];
+            this.objs = {};
             this.load();
           },
           writable: window.debug
@@ -20,14 +18,24 @@ module.exports = document.registerElement(
 
         attributeChangedCallback: {
           value: function (attrName, oldVal, newVal) {
-            this.objs.forEach(function(obj) { obj.updateComponent(attrName); } );
+            var objs = this.objs;
+            for (var id in objs) { objs[id].updateComponent(attrName); }
           },
           writable: window.debug
         },
 
         add: {
           value: function (obj) {
-            this.objs.push(obj);
+            this.objs[obj.object3D.id] = obj;
+            obj.updateComponents();
+          },
+          writable: window.debug
+        },
+
+        remove: {
+          value: function (obj) {
+            delete this.objs[obj.object3D.id];
+            obj.updateComponents();
           },
           writable: window.debug
         }
