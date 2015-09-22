@@ -21,7 +21,7 @@ document.registerElement(
 
         getGeometry: {
           value: function () {
-            var radius = this.getAttribute('radius', 10000);
+            var radius = this.getAttribute('radius', 5000);
             return new THREE.SphereGeometry(radius, 64, 40);
           }
         },

@@ -15,6 +15,7 @@ document.registerElement(
             var intensity = this.getAttribute('intensity', 1);
             this.object3D = new THREE.HemisphereLight(skyColor, groundColor, intensity);
             this.load();
+            console.log(this);
           }
         }
       })
