@@ -8,9 +8,10 @@ var VRNode = require('./core/vr-node');
 var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 
+require('./core/vr-assets');
+require('./core/vr-object-template');
 require('./core/vr-camera');
 require('./core/vr-scene');
-require('./core/vr-assets');
 
 require('./vr-animation');
 require('./vr-behavior');

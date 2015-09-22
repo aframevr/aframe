@@ -49,11 +49,9 @@ module.exports = document.registerElement(
           value: function () {
             // To prevent emmitting the loaded event more than once
             if (this.hasLoaded) { return; }
-            var attributeChangedCallback = this.attributeChangedCallback;
             var event = new Event('loaded');
             this.hasLoaded = true;
             this.dispatchEvent(event);
-            if (attributeChangedCallback) { attributeChangedCallback.apply(this); }
           },
           writable: window.debug
         },

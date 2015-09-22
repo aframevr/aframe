@@ -2,9 +2,8 @@
 
 require('../vr-register-element');
 
-var TWEEN = require('tween.js');
-
 var THREE = require('../../lib/three');
+var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
 
 var VRScene = module.exports = document.registerElement(

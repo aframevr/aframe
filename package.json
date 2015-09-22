@@ -6,6 +6,7 @@
   "main": "src/vr-markup.js",
   "dependencies": {
     "document-register-element": "^0.4.5",
+    "parse-css": "git://github.com/tabatkins/parse-css.git#0d442e04bd4bc6c",
     "request-interval": "^1.0.0",
     "three": "^0.72.0",
     "tween.js": "^15.0.0"
