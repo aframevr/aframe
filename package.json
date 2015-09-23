@@ -48,7 +48,7 @@
     "ignore": [
       "build/**",
       "dist/**",
-      "examples/js/**"
+      "examples/_js/**"
     ]
   },
   "keywords": [

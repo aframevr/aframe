@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Assets</title>
+    <meta name="description" content="Demo of threejs using Web Components">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-geometry id="cube" primitive="Box" width="5" height="5" depth="5"></vr-geometry>
+      <vr-geometry id="sphere" primitive="Sphere" radius="3"></vr-geometry>
+      <vr-material id="mirror" color="purple" metallic="0.9" roughness="0.14"></vr-material>
+      <vr-material id="plastic" color="red" metallic="0.7" roughness="0.9"></vr-material>
+    </vr-assets>
+    <vr-scene>
+      <vr-controls position="0 0 15">
+        <vr-camera></vr-camera>
+      </vr-controls>
+      <vr-mesh geometry="cube" position="-5 0 0" rotation="45 45 0" material="plastic"></vr-mesh>
+      <vr-mesh geometry="sphere" position="5 0 0" material="mirror"></vr-mesh>
+    </vr-scene>
+  </body>
+</html>
