@@ -48,13 +48,13 @@ suite('vr-object', function () {
     });
 
     test('is called on attribute changed', function (done) {
-      var el = this.el;
+      var el = this.el
       var position = {x: 0, y: 10, z: 0};
       el.setAttribute('position', position);
       process.nextTick(function () {
         sinon.assert.calledWith(
           VRObject.prototype.attributeChangedCallback,
-          'position', '0 0 0', position);
+          'position', null, position);
         done();
       });
     });
@@ -345,10 +345,10 @@ suite('vr-object', function () {
       assert.deepEqual(position, positionObj);
     });
 
-    test('position is set to null when passing an empty string', function () {
+    test('defaults position to 0 0 0', function () {
       this.el.setAttribute('position', '');
       var position = this.el.getAttribute('position');
-      assert.isNull(position);
+      assert.deepEqual(position, {x: 0, y:0, z:0});
     });
   });
 
@@ -462,7 +462,7 @@ suite('vr-object', function () {
       var el = this.el;
       assert.notInclude(el.outerHTML, 'voodoo=');
       var val = {x: 5, y: 10, z: 15};
-      assert.isNull(el.getAttribute('voodoo', val));
+      assert.equal(el.getAttribute('voodoo', val), val);
     });
 
     test('returns correct default for "position" attribute', function () {

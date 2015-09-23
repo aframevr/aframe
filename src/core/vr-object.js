@@ -6,7 +6,7 @@ var VRUtils = require('../vr-utils');
 
 /**
  *
- * VROBject represents all elements that are part of the 3D scene.
+ * VRObject represents all elements that are part of the 3D scene.
  * They all have a position, rotation and a scale.
  *
  */
@@ -127,9 +127,9 @@ var VRObject = module.exports = document.registerElement(
 
         initAttributes: {
           value: function (el) {
-            var position = this.getAttribute('position', {x: 0, y: 0, z: 0});
-            var rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
-            var scale = this.getAttribute('scale', {x: 1, y: 1, z: 1});
+            var position = this.hasAttribute('position');
+            var rotation = this.hasAttribute('rotation');
+            var scale = this.hasAttribute('scale');
             if (!position) { this.setAttribute('position', '0 0 0'); }
             if (!rotation) { this.setAttribute('rotation', '0 0 0'); }
             if (!scale) { this.setAttribute('scale', '1 1 1'); }
