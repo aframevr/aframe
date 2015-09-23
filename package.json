@@ -6,10 +6,9 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --live --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t browserify-css | garnish -v",
-    "build": "mkdir -p build && browserify ./index.js -o build/vr-components.js --debug -s 'vr-components' -t browserify-css",
-    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:dev && npm run dist:min && git commit -am 'Bump dist'",
-    "dist:dev": "browserify ./index.js -s 'vr-components' -t browserify-css --debug -o dist/vr-components.js",
-    "dist:min": "browserify ./index.js -s 'vr-components' -t browserify-css | uglifyjs -cm > dist/vr-components.min.js",
+    "browserify": "browserify ./index.js -s 'vr-components' -t browserify-css",
+    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js",
+    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js",
     "replacepaths": "replace 'build/vr-components.js' 'dist/vr-components.min.js' gh-pages/ -r",
     "gh-pages": "npm run ghpages",
     "preghpages": "mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && npm run replacepaths",
