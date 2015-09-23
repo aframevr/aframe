@@ -190,6 +190,7 @@ var proto = {
 
   updateComponents: {
     value: function () {
+      var controls;
       var camera;
       this.updatePosition();
       this.updateRotation();
@@ -199,6 +200,9 @@ var proto = {
       camera = this.getAttribute('camera');
       if (!camera) { return; }
       this.updateCamera(camera);
+      controls = this.getAttribute('controls');
+      if (!controls) { return; }
+      this.updateControls(controls);
     },
     writable: window.debug
   },
