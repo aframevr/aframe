@@ -11,8 +11,36 @@
       <vr-controls position="0 1.8 0">
         <vr-camera></vr-camera>
       </vr-controls>
-      <vr-grid size="10"></vr-grid>
       <vr-video360 src="https://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4" autoplay="true" loop="true"></vr-video360>
     </vr-scene>
+    <script>
+      (function () {
+        var counter = 0;
+        var videos = [
+          'https://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4',
+          'http://cdn2.vrideo.com/prod_videos/v1/lSPg9ka_1080p_full.webm',
+          'http://cdn2.vrideo.com/prod_videos/v1/W7JUlEW_480p_full.mp4',
+          'http://cdn2.vrideo.com/prod_videos/v1/3aM7Xd6_1080p_full.webm'
+        ];
+        var video360 = document.querySelector('vr-video360');
+        window.addEventListener('keydown', function (e) {
+          if (e.keyCode === 37) {
+            counter--;
+          }
+          if (e.keyCode === 39) {
+            counter++;
+          }
+          if (e.keyCode === 37 || e.keyCode === 39) {
+            if (counter < 0) {
+              counter = videos.length - 1;
+            }
+            if (counter >= videos.length) {
+              counter = 0;
+            }
+            video360.setAttribute('src', videos[counter]);
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
