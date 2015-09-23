@@ -48,7 +48,7 @@ suite('vr-object', function () {
     });
 
     test('is called on attribute changed', function (done) {
-      var el = this.el
+      var el = this.el;
       var position = {x: 0, y: 10, z: 0};
       el.setAttribute('position', position);
       process.nextTick(function () {
@@ -348,7 +348,7 @@ suite('vr-object', function () {
     test('defaults position to 0 0 0', function () {
       this.el.setAttribute('position', '');
       var position = this.el.getAttribute('position');
-      assert.deepEqual(position, {x: 0, y:0, z:0});
+      assert.deepEqual(position, {x: 0, y: 0, z: 0});
     });
   });
 
