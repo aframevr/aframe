@@ -85,32 +85,34 @@ module.exports = document.registerElement(
           }
         },
 
-        handleClick: {
+        // May return null if no objects are intersected.
+        getClosestIntersected: {
           value: function () {
             var scene = this.sceneEl.object3D;
             var intersectedObjs = this.intersect(scene.children);
             for (var i = 0; i < intersectedObjs.length; ++i) {
               // Find the closest element that is not the cursor itself.
               if (intersectedObjs[i].object !== this.object3D) {
-                intersectedObjs[i].object.el.click();
-                break;
+                return intersectedObjs[i];
               }
             }
+            return null;
+          }
+        },
+
+        handleClick: {
+          value: function () {
+            var closest = this.getClosestIntersected();
+            if (closest) { closest.object.el.click(); }
           }
         },
 
         handleMouseEnter: {
           value: function () {
-            // Eventually we can support all types of custom mouse events à la jQuery's mouse events:
-            // https://api.jquery.com/category/events/mouse-events/
-            var scene = this.sceneEl.object3D;
-            var intersectedObjs = this.intersect(scene.children);
-            for (var i = 0; i < intersectedObjs.length; ++i) {
-              if (intersectedObjs[i].object !== this.object3D) {
-                // Find the closest element that is not the cursor itself.
-                this.handleIntersection(intersectedObjs[i]);
-                return;
-              }
+            var closest = this.getClosestIntersected();
+            if (closest) {
+              this.handleIntersection(closest);
+              return;
             }
             // If we have no intersections other than the cursor itself,
             // but we still have a previously intersected element, clear it.
