@@ -30,17 +30,26 @@ document.registerElement(
           value: function () {
             var width = this.getAttribute('width', 10);
             var height = this.getAttribute('height', 10);
+
             return new THREE.PlaneGeometry(width, height, 1, 1);
+
+            /* By default we should make dimensions match image size, unless user overrides */
+            /* If user does override, they should also have option to have image fit to geometry, or overflow while maintaining proportions */
           }
         },
 
         getMaterial: {
           value: function () {
             var imgSrc = this.getAttribute('src');
-            return new THREE.MeshBasicMaterial({
+            var material = new THREE.MeshBasicMaterial({
               map: THREE.ImageUtils.loadTexture(imgSrc),
+              transparent: true,
               side: THREE.DoubleSide
             });
+
+            /* Would be better to only add transparency if needed. Starting heuristic could be if image type is PNG, for example). */
+
+            return material;
           }
         }
       })

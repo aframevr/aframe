@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pano Explorer</title>
+    <meta name="description" content="Pano explorer example scene">
+    <link rel="stylesheet" href="code.cdn.mozilla.net/fonts/fira.css">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+
+    <div class="title">
+      <img src="images/loops.png" class="logo">
+      <p>
+        A proof of concept scene driven by the <a href="https://docs.google.com/spreadsheets/d/1Kd70yf1EMYeffY5E1Ql-PtHqH8UWVThvRzXLxLUnPyI/edit#gid=0">features targeted</a> for the Sep 16-29 sprint. Details of the scene are listed in GitHub <a href="https://github.com/MozVR/vr-markup/issues/154">issue #154</a>.
+      </p>
+      <p class="builtwith">
+        Built with <a href="http://github.com/mozvr/vr-markup">aframe</a>.
+      </p>
+    </div>
+
+    <img src="images/mozilla.svg" class="mozilla">
+
+    <vr-assets>
+      <vr-material id="frameWhite" color="#fff"></vr-material> <!-- materials are acting very strangely. Want a nice white surface without needing to fight with lighting. -->
+      <vr-animation id="zoom" attribute="scale" to="1 1 0.1" duration="4000" delay="0" loop="true"></vr-animation>
+      <vr-animation id="linksAppear" attribute="position" to="0 1 -4" duration="2" delay="1000" loop="true"></vr-animation>
+    </vr-assets>
+    
+    <vr-scene>
+      
+      <vr-controls locomotion="false" position="0 1.8 0"> <!-- locomotion false not working -->
+        <vr-camera near="0.2">
+          <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
+        </vr-camera>
+      </vr-controls>
+
+      <!-- STARTING PAGE: -->
+
+      <!-- A 360° image in the background -->
+      <!-- <vr-skybox src="images/abandoned/"></vr-skybox> --> <!-- skybox rotation not currently working. Something to do with shader in component -->
+      <!-- <vr-skysphere src="images/city.jpg"></vr-skysphere> -->
+
+      <vr-video360 id="player" src="" autoplay="true" loop="true" rotation="0 180 0"></vr-video360>
+
+      <vr-object id="frame" position="0 0 1" animation="zoom" scale="1 1 4.5">
+        <vr-image src="images/white.png" id="top" width="10" height="10" rotation="90 0 0" position="0 4 0"></vr-image>
+        <vr-image src="images/white.png" id="bottom" width="10" height="10" rotation="-90 0 0" position="0 0 0"></vr-image>
+        <vr-image src="images/white.png" id="left" width="10" height="4" rotation="0 -90 0" position="5 2 0"></vr-image>
+        <vr-image src="images/white.png" id="right" width="10" height="4" rotation="0 90 0" position="-5 2 0"></vr-image>
+        <vr-image src="images/white.png" id="back" width="10" height="4" rotation="0 180 0" position="0 2 5"></vr-plane>
+      </vr-object>
+      
+      <!-- A 3D model at their feet -->
+      <!-- <vr-model src="models/city1/city.dae" position="0 0.5 1" scale="1 1 1"></vr-model> --> <!-- Model component not currently working. -->
+
+      <!-- A logo and labels with the brand and instructional information -->
+<!--       <vr-image src="images/loops.png" width="4" height="2" position="0 2 -10"></vr-image>
+      <vr-image src="images/logos.png" width="4" height="2" position="0 0 -10"></vr-image>
+ -->
+      <!-- Links to other scenes. They change color and play sound effect when looked at. -->
+      <vr-object id="links" position="0 -1 -4" animation="linksAppear">
+        <vr-image width="1" height="0.5" src="images/title.png" position="-0.8 0 0"></vr-image>
+      </vr-object>
+      
+      <!-- <vr-grid></vr-grid> --> <!-- temporary, just for helping place items in scene -->
+
+    </vr-scene>
+
+    <script>
+      var links = {
+        "data": [
+          {
+            "title": "City",
+            "thumb": "thumb-city.png",
+            "url": "http://mozvr.github.io/loops/shared/video/city/city-4096-mp4-30fps-x264-ffmpeg.mp4"
+          },
+          {
+            "title": "Cubes",
+            "thumb": "thumb-cube.png",
+            "url": "http://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4"
+          },
+          {
+            "title": "Knot",
+            "thumb": "thumb-knot.png",
+            "url": "http://mozvr.github.io/loops/shared/video/knot/knot-2048-mp4-30fps.mp4"
+          }
+        ]
+      };
+
+      var scene = document.querySelector('vr-scene');
+      var holder = document.getElementById('links')
+      var player = document.getElementById('player');
+      var width= 0.5;
+      var height = 0.5;
+
+      // Setup first video
+
+      player.setAttribute('src', links.data[0].url);
+
+      // Create links
+
+      for (var i = 0; i < links.data.length; i++) {
+        
+        var el = document.createElement('vr-image');
+        var xPos = i * (width * 1.1);
+        
+        el.setAttribute('position', {
+          x: xPos,
+          y: 0,
+          z: 0
+        });
+        el.setAttribute('src', "images/" + links.data[i].thumb);
+        el.setAttribute('width', width);
+        el.setAttribute('height', height);
+        el.setAttribute('href', links.data[i].url);
+
+        el.addEventListener('click', function () {
+          var href = this.getAttribute('href');
+
+          if (href) {
+            player.setAttribute('src', href);
+            // window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
+            console.log(href)
+          }
+        });
+
+        // el.addEventListener('mouseenter', function () {
+        //   this.setAttribute('material', 'hover');
+        // });
+
+        // el.addEventListener('mouseleave', function () {
+        //   this.setAttribute('material', 'normal');
+        // });
+
+
+
+        holder.appendChild(el);
+      }
+    </script>
+  </body>
+</html>
