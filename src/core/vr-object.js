@@ -287,6 +287,14 @@ var proto = {
     writable: window.debug
   },
 
+  /**
+   * If attribute is a component, it parses the style-like string into an
+   * object. Returned component data does not include applied mixins or
+   * defaults.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
+   */
   getAttribute: {
     value: function (attr) {
       var component = VRComponents[attr];
@@ -298,9 +306,11 @@ var proto = {
   },
 
   /**
-   * Returns the computed attribute from the element itself,
-   * applied mixins and default values
-   * @type {string} attr - Atrribute name
+   * If attribute is a component, it returns component data including applied
+   * mixins and defaults.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
    */
   getComputedAttribute: {
     value: function (attr) {
