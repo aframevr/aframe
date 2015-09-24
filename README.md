@@ -7,7 +7,7 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 
 ## Usage
 
-If you would like to embed this library in your project, simply include these files:
+If you would like to use this library in your project:
 
 * [`vr-markup.min.js`](dist/vr-markup.min.js)
 * [`vr-markup.min.css`](dist/vr-markup.min.css)
@@ -17,7 +17,7 @@ Or if you'd prefer unminified files for local development (and source maps for t
 * [`vr-markup.css`](dist/vr-markup.css)
 * [`vr-markup.js`](dist/vr-markup.js)
 
-__Also, be sure to check out the awesome [examples](examples/).__
+__Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-components/examples/) ([source](https://github.com/mozvr/vr-components/tree/master/examples)).__
 
 
 ## Local installation
