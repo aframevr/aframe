@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -r ./src/vr-markup.js:vr-markup | garnish -v",
+    "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9001 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -r ./src/vr-markup.js:vr-markup | garnish -v",
     "build": "mkdir -p build && browserify -r ./src/vr-markup.js:vr-markup -o build/vr-markup.js --debug",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js:dev && npm run dist:js:min && npm run dist:css:dev && npm run dist:css:min &&  git commit -am 'Bump dist'",
     "dist:js:dev": "browserify -r ./src/vr-markup.js:vr-markup -o dist/vr-markup.js --debug",
@@ -41,7 +41,7 @@
     "dist:css:min": "crass ./style/vr-markup.css > dist/vr-markup.min.css",
     "replacepaths": "replace '../build/vr-markup.js' '../dist/vr-markup.min.js' gh-pages/ -r && replace '../style/vr-markup.css' '../dist/vr-markup.min.css' gh-pages/ -r",
     "gh-pages": "npm run ghpages",
-    "preghpages": "mkdir -p gh-pages && cp -r {components,dist,examples,lib} gh-pages/. && npm run replacepaths",
+    "preghpages": "mkdir -p gh-pages && cp -r {dist,examples,lib,index.html} gh-pages/.",
     "ghpages": "gh-pages -d gh-pages && rm -rf gh-pages",
     "release": "npm version patch --minor && npm login && npm publish",
     "test": "karma start ./test/karma.conf.js",
@@ -56,7 +56,7 @@
   "semistandard": {
     "ignore": [
       "dist/**",
-      "examples/js/**",
+      "examples/_js/**",
       "lib/vendor/**",
       "src/shaders/**"
     ]

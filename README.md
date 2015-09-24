@@ -7,17 +7,24 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 
 ## Usage
 
-If you would like to use this library in your project:
+__NOTE:__ For folks creating scenes and third-party components, we recommend getting started by instead using the [__`vr-components`__ library](https://github.com/MozVR/vr-components), a set of core resuable components.
+
+Proceed below if you would like to use the minimal set of primitive components available here in __`vr-markup`__.
+
+To get started, simply include these files in your project:
 
 * [`vr-markup.min.js`](dist/vr-markup.min.js)
 * [`vr-markup.min.css`](dist/vr-markup.min.css)
 
-Or if you'd prefer unminified files for local development (and source maps for the JS):
+Or for local development you can use the unminified bundles (with source maps for the JS):
 
-* [`vr-markup.css`](dist/vr-markup.css)
 * [`vr-markup.js`](dist/vr-markup.js)
+* [`vr-markup.css`](dist/vr-markup.css)
 
-__Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-components/examples/) ([source](https://github.com/mozvr/vr-components/tree/master/examples)).__
+__Also, be sure to check out these awesome examples:__
+
+* [__`vr-markup`__ examples](http://mozvr.github.io/vr-markup/examples/) ([source](https://github.com/MozVR/vr-markup/tree/master/examples/))
+* [__`vr-components`__ examples](http://mozvr.github.io/vr-components/examples/) ([source](https://github.com/MozVR/vr-components/tree/master/examples/))
 
 
 ## Local installation
@@ -29,7 +36,7 @@ __Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-c
 
     npm install
     npm start
-    open http://localhost:9000/examples/
+    open http://localhost:9001/examples/
 
 ## Running tests
 
@@ -41,7 +48,7 @@ __Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-c
     git pull --rebase
     npm install
     npm start
-    open http://localhost:9000/examples/
+    open http://localhost:9001/examples/
 
 ## Releasing and publishing a new version to npm
 
