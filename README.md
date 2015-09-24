@@ -46,3 +46,14 @@ If you'd like to hack on this project and don't have access to the npm repos, co
     npm login
 
 And fire up __[http://localhost:9000](http://localhost:9000)__!
+
+
+## Publishing to GitHub Pages
+
+To publish to __https://mozvr.github.io/vr-components/__:
+
+    npm run ghpages
+
+To publish to __https://cvan.github.io/vr-components/__:
+
+    npm run ghpages cvan
