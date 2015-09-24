@@ -11,6 +11,8 @@ __NOTE:__ For folks creating scenes and third-party components, we recommend get
 
 Proceed below if you would like to use the minimal set of primitive components available here in __`vr-markup`__.
 
+### Downloads
+
 To get started, simply include these files in your project:
 
 * [`vr-markup.min.js`](dist/vr-markup.min.js)
@@ -26,6 +28,15 @@ __Also, be sure to check out these awesome examples:__
 * [__`vr-markup`__ examples](http://mozvr.github.io/vr-markup/examples/) ([source](https://github.com/MozVR/vr-markup/tree/master/examples/))
 * [__`vr-components`__ examples](http://mozvr.github.io/vr-components/examples/) ([source](https://github.com/MozVR/vr-components/tree/master/examples/))
 
+### npm
+
+First install from npm:
+
+    npm install @mozvr/vr-markup
+
+And in your Browserify/Webpack modules, simply require the module:
+
+    require('@mozvr/vr-markup')
 
 ## Local installation
 
@@ -37,6 +48,10 @@ __Also, be sure to check out these awesome examples:__
     npm install
     npm start
     open http://localhost:9001/examples/
+
+If you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:
+
+    npm login
 
 ## Running tests
 
@@ -54,19 +69,22 @@ __Also, be sure to check out these awesome examples:__
 
 Assuming you want to publish a version of `dev` to the private package for testing:
 
-    npm run dist
     npm run release
 
-## Publishing the latest official `dist` to GitHub Pages
-
-    npm run gh-pages
-
-## Publishing the latest changes to GitHub Pages
+## Updating `dist` files
 
     npm run dist
-    npm run gh-pages
+    git commit -am 'Bump dist'
 
-## Publishing to Production
+## Publishing to GitHub Pages
+
+To publish to __https://mozvr.github.io/vr-markup/__:
+
+    npm run ghpages
+
+To publish to __https://cvan.github.io/vr-markup/__:
+
+    npm run ghpages cvan
 
 ### Releasing and tagging a **production** release to GitHub
 
@@ -75,6 +93,7 @@ Assuming `dev` has already been reviewed and merged to `master`:
     git checkout master
     git pull --rebase
     npm run dist
+    git commit -am 'Version 0.1.8'
     git tag 0.1.8
     git push origin head --tags
 
