@@ -1,8 +1,7 @@
-/* global CustomEvent */
-
 var registerComponent = require('../core/register-component');
 var requestInterval = require('request-interval');
 var THREE = require('../../lib/three');
+var VRUtils = require('../vr-utils');
 
 module.exports.Component = registerComponent('raycaster', {
   init: {
@@ -17,7 +16,13 @@ module.exports.Component = registerComponent('raycaster', {
   attachEventListeners: {
     value: function () {
       var el = this.el;
-      document.addEventListener('mousedown', this.onMouseDown.bind(this), false);
+
+      document.addEventListener('mousedown', this.fireMouseDown.bind(this));
+      document.addEventListener('mouseup', this.fireMouseUp.bind(this));
+      document.addEventListener('click', this.fireClick.bind(this));
+
+      el.addEventListener('mousedown', this.onMouseDown.bind(this));
+      el.addEventListener('mouseup', this.onMouseUp.bind(this));
       el.addEventListener('click', this.onClick.bind(this));
     }
   },
@@ -28,16 +33,45 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
-  onClick: {
+  fireMouseDown: {
     value: function () {
-      var closest = this.getClosestIntersected();
-      if (closest) { closest.object.el.click(); }
+      VRUtils.fireEvent(this.el, 'mousedown');
+    }
+  },
+
+  fireMouseUp: {
+    value: function () {
+      VRUtils.fireEvent(this.el, 'mouseup');
+    }
+  },
+
+  fireClick: {
+    value: function () {
+      VRUtils.fireEvent(this.el, 'click');
     }
   },
 
   onMouseDown: {
     value: function () {
-      this.el.click();
+      var closest = this.getClosestIntersected();
+      if (!closest) { return; }
+      VRUtils.fireEvent(closest.object.el, 'mousedown');
+    }
+  },
+
+  onMouseUp: {
+    value: function () {
+      var closest = this.getClosestIntersected();
+      if (!closest) { return; }
+      VRUtils.fireEvent(closest.object.el, 'mouseup');
+    }
+  },
+
+  onClick: {
+    value: function () {
+      var closest = this.getClosestIntersected();
+      if (!closest) { return; }
+      VRUtils.fireEvent(closest.object.el, 'click');
     }
   },
 
@@ -72,7 +106,7 @@ module.exports.Component = registerComponent('raycaster', {
 
   clearExistingIntersection: {
     value: function () {
-      this.intersectedEl.dispatchEvent(new CustomEvent('mouseleave'));
+      VRUtils.fireEvent(this.intersectedEl, 'mouseleave');
       this.intersectedEl = null;
     }
   },
@@ -95,7 +129,8 @@ module.exports.Component = registerComponent('raycaster', {
   setExistingIntersection: {
     value: function (el) {
       this.intersectedEl = el;
-      el.dispatchEvent(new CustomEvent('mouseenter'));
+      VRUtils.fireEvent(el, 'mouseenter');
+      VRUtils.fireEvent(el, 'hover');
     }
   },
 

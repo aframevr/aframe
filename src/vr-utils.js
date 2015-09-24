@@ -1,3 +1,16 @@
+/* global CustomEvent, Event */
+
+/**
+ * Fires a DOM event.
+ *
+ * @param {Element} el Element to fire the event on.
+ * @param {String} name Name of the event.
+ * @param {Object} detail Custom data to pass as `detail` if the event is a Custom Event.
+ */
+module.exports.fireEvent = function (el, name, detail) {
+  el.dispatchEvent(detail ? new CustomEvent(name, detail) : new Event(name));
+};
+
 /**
  * Throws an error given a message.
  *

@@ -9,28 +9,73 @@
     <script src="../../build/vr-markup.js"></script>
   </head>
   <body>
+    <vr-assets>
+      <vr-mixin id="cube" geometry="primitive: box" material="color: gray"></vr-mixin>
+    </vr-assets>
+
     <vr-scene>
-      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
+      <vr-object position="-3 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
         <vr-object position="0 0 -5" geometry="primitive: sphere; radius: 0.04" material="color: red" raycaster=""></vr-object>
       </vr-object>
 
       <vr-object position="-10 0 0" rotation="0 0 0">
-        <vr-object  geometry="primitive: box" material="color: red">
+        <vr-object mixin="cube" material="color: red">
           <vr-animation begin="click" attribute="position" from="0 0 0" to="0 0 -10" dur="2000" fill="both"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object position="0 0 0" rotation="0 0 0">
-        <vr-object  geometry="primitive: box" material="color: green">
+        <vr-object mixin="cube" material="color: green">
           <vr-animation begin="click" attribute="rotation" to="0 360 0" easing="linear" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object position="10 0 0" rotation="0 45 0">
-        <vr-object  geometry="primitive: box" material="color: blue">
+        <vr-object mixin="cube" material="color: blue">
           <vr-animation fill="forward" repeat="1" direction="alternate" begin="click" attribute="position" from="0 0 0" to="15 0 0" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
     </vr-scene>
+
+    <script>
+      (function () {
+        // If you want to respond to mouse events, this is how. Otherwise,
+        // if you just want a working cursor, you don't need any of this.
+        var cubes = document.querySelectorAll('vr-object[mixin=cube]');
+        var i;
+        for (i = 0; i < cubes.length; ++i) {
+          cubes[i].addEventListener('click', function () {
+            console.log('click', this);
+            var href = this.getAttribute('href');
+            if (href) {
+              window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
+            }
+          });
+
+          cubes[i].addEventListener('mousedown', function () {
+            console.log('mousedown', this);
+            this.dataset.materialBeforeMouseDown = this.getAttribute('material');
+            this.setAttribute('material', 'color: #fc0; metallic: 1.0');
+          });
+
+          cubes[i].addEventListener('mouseup', function () {
+            console.log('mouseup', this);
+            this.setAttribute('material', this.dataset.materialBeforeMouseDown);
+          });
+
+          // You could also use the 'hover' alias.
+          cubes[i].addEventListener('mouseenter', function () {
+            console.log('mouseenter', this);
+            this.dataset.materialBeforeMouseEnter = this.getAttribute('material');
+            this.setAttribute('material', 'color: #0ff; metallic: 0.75');
+          });
+
+          cubes[i].addEventListener('mouseleave', function () {
+            console.log('mouseleave', this);
+            this.setAttribute('material', this.dataset.materialBeforeMouseEnter);
+          });
+        }
+      })();
+    </script>
   </body>
 </html>
