@@ -49,7 +49,7 @@ repo.ghPagesUrl = 'https://' + repo.username + '.github.io/' + repo.name + '/';
 
 console.log('Publishing to', repo.url);
 
-ghpages.clean();
+ghpages.clean();  // Wipe out the checkout from scratch every time in case we change repos.
 ghpages.publish(path.join(process.cwd(), 'gh-pages'), {
   repo: repo.url,
   dotfiles: true,
