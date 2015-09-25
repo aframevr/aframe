@@ -48,7 +48,7 @@ module.exports = document.registerElement(
 
             // See comments of the function ComputeEnvColor for the explanations on this hug number of cubemaps.
             // Cube Map mip 0
-            var path = 'images/pbr/maskonaive_m00_c0';
+            var path = '../_images/pbr/maskonaive_m00_c0';
             var format = '.png';
             var urls = [
               path + '0' + format, path + '1' + format,
@@ -59,7 +59,7 @@ module.exports = document.registerElement(
             cubeMapMip0.format = THREE.RGBFormat;
 
             // Cube Map mip 1
-            path = 'images/pbr/maskonaive_m01_c0';
+            path = '../_images/pbr/maskonaive_m01_c0';
             format = '.png';
             urls = [
               path + '0' + format, path + '1' + format,
@@ -70,7 +70,7 @@ module.exports = document.registerElement(
             cubeMapMip1.format = THREE.RGBFormat;
 
             // Cube Map mip 2
-            path = 'images/pbr/maskonaive_m02_c0';
+            path = '../_images/pbr/maskonaive_m02_c0';
             format = '.png';
             urls = [
               path + '0' + format, path + '1' + format,
@@ -81,7 +81,7 @@ module.exports = document.registerElement(
             cubeMapMip2.format = THREE.RGBFormat;
 
             // Cube Map mip 3
-            path = 'images/pbr/maskonaive_m03_c0';
+            path = '../_images/pbr/maskonaive_m03_c0';
             format = '.png';
             urls = [
               path + '0' + format, path + '1' + format,
@@ -92,7 +92,7 @@ module.exports = document.registerElement(
             cubeMapMip3.format = THREE.RGBFormat;
 
             // Cube Map mip 4
-            path = 'images/pbr/maskonaive_m04_c0';
+            path = '../_images/pbr/maskonaive_m04_c0';
             format = '.png';
             urls = [
               path + '0' + format, path + '1' + format,
@@ -103,7 +103,7 @@ module.exports = document.registerElement(
             cubeMapMip4.format = THREE.RGBFormat;
 
             // Cube Map mip 5
-            path = 'images/pbr/maskonaive_m05_c0';
+            path = '../_images/pbr/maskonaive_m05_c0';
             format = '.png';
             urls = [
               path + '0' + format, path + '1' + format,
