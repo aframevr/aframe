@@ -11,9 +11,7 @@ module.exports = document.registerElement(
       {
         createdCallback: {
           value: function () {
-            var camera = this.object3D = new THREE.PerspectiveCamera();
-            // This should probably managed within vr-scene
-            this.sceneEl.camera = camera;
+            this.object3D = new THREE.PerspectiveCamera();
             this.saveInitialValues();
             this.load();
           }
