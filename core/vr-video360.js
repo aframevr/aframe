@@ -8,16 +8,38 @@ document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
+        /**
+         * `vr-video360` calls `attributeCreatedCallback` to be DRY.
+         *
+         * @namespace vr-video360
+         */
         createdCallback: {
           value: function () {
-            var material = this.getMaterial();
-            var geometry = this.getGeometry();
-            this.object3D = new THREE.Mesh(geometry, material);
+            this.attributeChangedCallback();
             this.load();
-          }
+          },
+          configurable: window.debug
         },
 
-        /* no `update` function needed */
+        /**
+         * Handles `vr-video360` parsing attribute values on initialization and change.
+         *
+         * @namespace vr-video360
+         */
+        attributeChangedCallback: {
+          value: function () {
+            var geometry = this.getGeometry();
+            var material = this.getMaterial();
+
+            if (this.hasLoaded) {
+              this.object3D.geometry = geometry;
+              this.object3D.material = material;
+            } else {
+              this.object3D = new THREE.Mesh(geometry, material);
+            }
+          },
+          configurable: window.debug
+        },
 
         getGeometry: {
           value: function () {
@@ -28,7 +50,10 @@ document.registerElement(
 
         getMaterial: {
           value: function () {
-            var video = document.createElement('video');
+            var video = this.video;
+            if (!video) {
+              video = this.video = document.createElement('video');
+            }
             video.crossOrigin = 'anonymous';
             video.src = this.getAttribute('src');
             video.autoplay = this.getAttribute('autoplay', false);

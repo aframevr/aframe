@@ -2,30 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>My WebVR Scene</title>
-    <script src="build/vr-components.js"></script>
+    <meta http-equiv="refresh" content="0; url=examples/">
   </head>
-  <body>
-    <vr-assets>
-      <vr-material id="highlight" type="MeshBasicMaterial" color="yellow"></vr-material>
-      <vr-material id="normal" type="MeshNormalMaterial" color="cyan"></vr-material>
-      <vr-animation id="slide" attribute="position" to="0 1 0" duration="2000"></vr-animation>
-      <vr-animation id="spin" attribute="rotation" to="0 360 0" duration="5000" delay="2000"></vr-animation>
-      <vr-animation id="grow" attribute="scale" to="2 2 2" duration="3000" delay="7000"></vr-animation>
-    </vr-assets>
-    <vr-scene>
-      <vr-controls position="0 1.8 20">
-        <vr-camera></vr-camera>
-      </vr-controls>
-      <vr-cube animation="slide spin grow" position="0 2 -8" material="normal" width="4" height="4" depth="4"></vr-cube>
-      <vr-cube position="6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
-      <vr-cube position="-6 2 0" material="normal" width="4" height="4" depth="4"></vr-cube>
-      <vr-object class="cubes-group" position="-5 0 10">
-        <vr-cube id="cube" width="5" height="2" depth="2" rotation="45 45 0" position="-10 0 0"></vr-cube>
-        <vr-cube id="cube" width="5" height="2" depth="2" rotation="45 45 0" position="0 0 0"></vr-cube>
-        <vr-cube id="cube" width="5" height="2" depth="2" rotation="45 45 0" position="10 0 0"></vr-cube>
-      </vr-object>
-      <vr-grid size="50"></vr-grid>
-    </vr-scene>
-  </body>
+  <body></body>
 </html>

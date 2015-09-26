@@ -4,20 +4,35 @@
     <meta charset="utf-8">
     <title>Pano Explorer</title>
     <meta name="description" content="Pano explorer example scene">
+    <link rel="stylesheet" href="code.cdn.mozilla.net/fonts/fira.css">
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="styles/styles.css">
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
 
+    <div class="title">
+      <img src="images/loops.png" class="logo">
+      <p>
+        A proof of concept scene driven by the <a href="https://docs.google.com/spreadsheets/d/1Kd70yf1EMYeffY5E1Ql-PtHqH8UWVThvRzXLxLUnPyI/edit#gid=0">features targeted</a> for the Sep 16-29 sprint. Details of the scene are listed in GitHub <a href="https://github.com/MozVR/vr-markup/issues/154">issue #154</a>.
+      </p>
+      <p class="builtwith">
+        Built with <a href="http://github.com/mozvr/vr-markup">aframe</a>.
+      </p>
+    </div>
+
+    <img src="images/mozilla.svg" class="mozilla">
+
     <vr-assets>
       <vr-material id="frameWhite" color="#fff"></vr-material> <!-- materials are acting very strangely. Want a nice white surface without needing to fight with lighting. -->
       <vr-animation id="zoom" attribute="scale" to="1 1 0.1" duration="4000" delay="0" loop="true"></vr-animation>
-      <vr-animation id="linksAppear" attribute="position" to="0 1 -4" duration="2000" delay="1000" loop="true"></vr-animation>
+      <vr-animation id="linksAppear" attribute="position" to="0 1 -4" duration="2" delay="1000" loop="true"></vr-animation>
     </vr-assets>
     
     <vr-scene>
       
-      <vr-controls locomotion="false"> <!-- locomotion false not working -->
-        <vr-camera position="0 1.8 0" near="0.2">
+      <vr-controls locomotion="false" position="0 1.8 0"> <!-- locomotion false not working -->
+        <vr-camera near="0.2">
           <vr-cursor position="0 0 -1" radius="0.005"></vr-cursor>
         </vr-camera>
       </vr-controls>
@@ -28,7 +43,7 @@
       <!-- <vr-skybox src="images/abandoned/"></vr-skybox> --> <!-- skybox rotation not currently working. Something to do with shader in component -->
       <!-- <vr-skysphere src="images/city.jpg"></vr-skysphere> -->
 
-      <vr-video360 src="http://mozvr.github.io/loops/shared/video/city/city-4096-mp4-30fps-x264-ffmpeg.mp4" autoplay="true" loop="true" rotation="0 180 0"></vr-video360>
+      <vr-video360 id="player" src="" autoplay="true" loop="true" rotation="0 180 0"></vr-video360>
 
       <vr-object id="frame" position="0 0 1" animation="zoom" scale="1 1 4.5">
         <vr-image src="images/white.png" id="top" width="10" height="10" rotation="90 0 0" position="0 4 0"></vr-image>
@@ -58,29 +73,34 @@
       var links = {
         "data": [
           {
+            "title": "City",
+            "thumb": "thumb-city.png",
+            "url": "http://mozvr.github.io/loops/shared/video/city/city-4096-mp4-30fps-x264-ffmpeg.mp4"
+          },
+          {
             "title": "Cubes",
-            "thumb": "thumb1.png",
-            "url": "cubes"
+            "thumb": "thumb-cube.png",
+            "url": "http://mozvr.github.io/loops/shared/video/cubes/cubes-4096-mp4-30fps-3.mp4"
           },
           {
             "title": "Knot",
-            "thumb": "thumb2.png",
-            "url": "knot"
-          },
-          {
-            "title": "City",
-            "thumb": "thumb3.png",
-            "url": "city"
+            "thumb": "thumb-knot.png",
+            "url": "http://mozvr.github.io/loops/shared/video/knot/knot-2048-mp4-30fps.mp4"
           }
         ]
       };
 
       var scene = document.querySelector('vr-scene');
       var holder = document.getElementById('links')
+      var player = document.getElementById('player');
       var width= 0.5;
       var height = 0.5;
 
-      // console.log(links);
+      // Setup first video
+
+      player.setAttribute('src', links.data[0].url);
+
+      // Create links
 
       for (var i = 0; i < links.data.length; i++) {
         
@@ -99,9 +119,9 @@
 
         el.addEventListener('click', function () {
           var href = this.getAttribute('href');
-          console.log("TEST");
 
           if (href) {
+            player.setAttribute('src', href);
             // window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
             console.log(href)
           }
@@ -114,6 +134,8 @@
         // el.addEventListener('mouseleave', function () {
         //   this.setAttribute('material', 'normal');
         // });
+
+
 
         holder.appendChild(el);
       }
