@@ -36,18 +36,6 @@ var proto = {
   updateComponent: {
     value: function (name) {
       var component = VRComponents[name];
-      if (name === 'position') {
-        this.updatePosition();
-        return;
-      }
-      if (name === 'rotation') {
-        this.updateRotation();
-        return;
-      }
-      if (name === 'scale') {
-        this.updateScale();
-        return;
-      }
       if (!component) {
         VRUtils.warn('Unkown component name: ' + name);
         return;
@@ -55,34 +43,6 @@ var proto = {
       this.components[name].updateAttributes(this.getAttribute(name));
     },
     writable: window.debug
-  },
-
-  updatePosition: {
-    value: function () {
-      var position = this.getAttribute('position', {x: 0, y: 0, z: 0});
-      // Updates three.js object
-      this.object3D.position.set(position.x, position.y, position.z);
-    }
-  },
-
-  updateRotation: {
-    value: function () {
-      var rotation = this.getAttribute('rotation', {x: 0, y: 0, z: 0});
-      var rotationX = THREE.Math.degToRad(rotation.x);
-      var rotationY = THREE.Math.degToRad(rotation.y);
-      var rotationZ = THREE.Math.degToRad(rotation.z);
-      // Updates three.js object
-      this.object3D.rotation.set(rotationX, rotationY, rotationZ);
-    }
-  },
-
-  updateScale: {
-    value: function () {
-      // Scale
-      var scale = this.getAttribute('scale', {x: 1, y: 1, z: 1});
-      // Updates three.js object
-      this.object3D.scale.set(scale.x, scale.y, scale.z);
-    }
   },
 
   updateStyle: {
@@ -201,10 +161,6 @@ var proto = {
   updateComponents: {
     value: function () {
       var components = Object.keys(this.components);
-      // Update, rotation and scale need to be componetize
-      this.updatePosition();
-      this.updateRotation();
-      this.updateScale();
       // Updates components
       components.forEach(this.updateComponent.bind(this));
     },

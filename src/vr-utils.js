@@ -1,4 +1,4 @@
-  /**
+/**
  * Throws an error given a message.
  *
  * @param {String} msg Error message.
@@ -96,4 +96,17 @@ module.exports.stringifyAttributeValue = function (value) {
   }
 
   return String(value);
+};
+
+/**
+ * It mixes properties of source object into dest
+ * @param  {object} dest   The object where properties will be copied TO
+ * @param  {object} source The object where properties will be copied FROM
+ */
+module.exports.mixin = function (dest, source) {
+  var keys = Object.keys(source);
+  keys.forEach(mix);
+  function mix (key) {
+    dest[key] = source[key];
+  }
 };

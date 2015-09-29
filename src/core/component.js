@@ -1,10 +1,29 @@
 var cssParser = require('parse-css');
+var mixin = require('../vr-utils').mixin;
 
-var mixinAttributes = function (obj, attrs) {
-  attrs.forEach(assignAttr);
-  function assignAttr (attr) {
+/**
+ * The CSS parser returns the attributes
+ * in a nested object. We flatten the structure
+ * into flat key value pairs
+ */
+var flattenAttributes = function (attrs) {
+  var obj = {};
+  attrs.forEach(flatten);
+  function flatten (attr) {
     obj[attr.name] = attr.value[1].value;
   }
+  return obj;
+};
+
+var mixAttributes = function (str, obj) {
+  var attrs = str;
+  if (!str) { return; }
+  // The attributes can come in the form of a string or already pre parsed in an object
+  // like rotation, position and scale
+  if (typeof str === 'string') {
+    attrs = flattenAttributes(cssParser.parseAListOfDeclarations(str));
+  }
+  mixin(obj, attrs);
 };
 
 var Component = function (el) {
@@ -35,15 +54,9 @@ Component.prototype = {
    * If there's a style its values will be mixed in
    */
   parseAttributes: function (str) {
-    var attrs;
     var styleStr = this.el.VRStyle && this.el.VRStyle.getAttribute(this.name);
-    if (styleStr) {
-      attrs = cssParser.parseAListOfDeclarations(styleStr);
-      mixinAttributes(this, attrs);
-    }
-    if (!str) { return; }
-    attrs = cssParser.parseAListOfDeclarations(str);
-    mixinAttributes(this, attrs);
+    mixAttributes(styleStr, this);
+    mixAttributes(str, this);
   }
 };
 
