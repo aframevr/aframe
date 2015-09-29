@@ -17,9 +17,7 @@ module.exports.Component = registerComponent('camera', {
 
   setupCamera: {
     value: function () {
-      var camera = new THREE.PerspectiveCamera();
-      this.camera = this.objectcamera;
-      return camera;
+      return new THREE.PerspectiveCamera();
     }
   }
 });

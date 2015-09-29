@@ -15,7 +15,6 @@ require('./core/vr-scene');
 require('./vr-animation');
 require('./vr-behavior');
 require('./vr-cursor');
-require('./vr-fog');
 
 module.exports = {
   THREE: THREE,
