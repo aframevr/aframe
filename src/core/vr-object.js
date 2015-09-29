@@ -103,7 +103,7 @@ var proto = {
     value: function () {
       var parent = this.parentEl = this.parentNode;
       var attachedToParent = this.attachedToParent;
-      if (!parent || attachedToParent) { return; }
+      if (!parent || attachedToParent || !VRNode.prototype.isPrototypeOf(parent)) { return; }
       // To prevent an object to attach itself multiple times to the parent
       this.attachedToParent = true;
       parent.add(this);

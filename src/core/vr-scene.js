@@ -1,12 +1,12 @@
 /* global MessageChannel, performance, Promise */
 
-require('../vr-register-element');
+var registerElement = require('../vr-register-element');
 
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
 
-var VRScene = module.exports = document.registerElement(
+var VRScene = module.exports = registerElement(
   'vr-scene',
   {
     prototype: Object.create(
@@ -16,7 +16,7 @@ var VRScene = module.exports = document.registerElement(
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
             this.vrButton = null;
-            this.attachEventListeners();
+            document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
             this.attachFullscreenListeners();
             this.setupScene();
           }
@@ -44,22 +44,24 @@ var VRScene = module.exports = document.registerElement(
               this.pendingElements++;
               assets.addEventListener('loaded', elementLoaded);
             }
-            traverseDOM(this);
-            function traverseDOM (node) {
-              // We have to wait for the element
-              // If the node it's not the scene itself
-              // and it's a VR element
-              // and the node has not loaded yet
-              if (node !== self && self.isVRNode(node) && !node.hasLoaded) {
+
+            var children = this.querySelectorAll('*');
+            Array.prototype.slice.call(children).forEach(countElement);
+            if (!this.pendingElements) {
+              elementLoaded();
+            }
+
+            function countElement (node) {
+              // We wait for all the elements inside the scene to load.
+              if (!self.isVRNode(node)) { return; }
+              var isCamera = node.components && node.components.camera;
+              if (isCamera) { self.cameraEl = node; }
+              if (!node.hasLoaded) {
                 attachEventListener(node);
                 self.pendingElements++;
               }
-              node = node.firstChild;
-              while (node) {
-                traverseDOM(node);
-                node = node.nextSibling;
-              }
             }
+
             function attachEventListener (node) {
               node.addEventListener('loaded', elementLoaded);
             }
@@ -68,19 +70,7 @@ var VRScene = module.exports = document.registerElement(
 
         isVRNode: {
           value: function (node) {
-            // To check if a DOM elemnt is a VR element
-            // We should be checking for the prototype like this
-            // if (VRNode.prototype.isPrototypeOf(node))
-            // Safari and Chrome doesn't seem to have the proper
-            // prototype attached to the node before the createdCallback
-            // function is called. To determine that an element is a VR
-            // related node we check if the tag name starts with VR-
-            // This is fragile. We have to understand why the behaviour between
-            // firefox and the other browsers
-            // is not consistent. Firefox is the only one that behaves as one
-            // expects: The nodes have the proper prototype attached to them at
-            // any time during their lifecycle.
-            return node.tagName && node.tagName.indexOf('VR-') === 0;
+            return VRNode.prototype.isPrototypeOf(node);
           }
         },
 
@@ -129,19 +119,20 @@ var VRScene = module.exports = document.registerElement(
         },
 
         elementLoaded: {
-          value: function (evt) {
-            var el = evt.currentTarget;
+          value: function () {
             this.pendingElements--;
-            if (el.components && el.components.camera) { this.cameraEl = el; }
-            // If we still need to wait for more elements
+            // If we still need to wait for more elements.
             if (this.pendingElements > 0) { return; }
-            // If the render loop is already running
+            // If the render loop is already running.
             if (this.renderLoopStarted) { return; }
+            // If somehow there's not a camera.
+            if (!this.cameraEl) { return console.error('Expected a camera element'); }
+
             this.setupLoader();
-            // three.js camera setup
+            // three.js camera setup.
             this.setupCamera();
             this.resizeCanvas();
-            // It kicks off the render loop
+            // Kick off the render loop.
             this.render(performance.now());
             this.renderLoopStarted = true;
             this.load();
