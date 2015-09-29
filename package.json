@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --live --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t browserify-css | garnish -v",
+    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t browserify-css | garnish -v",
     "browserify": "browserify ./index.js -s 'vr-components' -t browserify-css",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js",
     "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js",
