@@ -1,4 +1,4 @@
-var registerComponent = require('./register-component');
+var registerComponent = require('../core/register-component');
 var VRUtils = require('../vr-utils');
 var THREE = require('../../lib/three');
 

@@ -1,4 +1,4 @@
-var registerComponent = require('./register-component');
+var registerComponent = require('../core/register-component');
 var THREE = require('../../lib/three');
 
 module.exports.Component = registerComponent('camera', {
