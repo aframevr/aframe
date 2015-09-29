@@ -1,4 +1,4 @@
-/**
+  /**
  * Throws an error given a message.
  *
  * @param {String} msg Error message.

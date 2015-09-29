@@ -132,7 +132,7 @@ var VRScene = module.exports = document.registerElement(
           value: function (evt) {
             var el = evt.currentTarget;
             this.pendingElements--;
-            if (el.camera) { this.cameraEl = el; }
+            if (el.components.camera) { this.cameraEl = el; }
             // If we still need to wait for more elements
             if (this.pendingElements > 0) { return; }
             // If the render loop is already running
@@ -289,7 +289,7 @@ var VRScene = module.exports = document.registerElement(
         resizeCanvas: {
           value: function () {
             var canvas = this.canvas;
-            var camera = this.cameraEl.camera;
+            var camera = this.cameraEl.components.camera.camera;
             // Make it visually fill the positioned parent
             canvas.style.width = '100%';
             canvas.style.height = '100%';
@@ -326,7 +326,7 @@ var VRScene = module.exports = document.registerElement(
 
         render: {
           value: function (t) {
-            var camera = this.cameraEl.camera;
+            var camera = this.cameraEl.components.camera.camera;
             TWEEN.update(t);
             // Updates behaviors
             this.behaviors.forEach(function (behavior) {

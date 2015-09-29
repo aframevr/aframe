@@ -9,7 +9,7 @@ var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 
 require('./core/vr-assets');
-require('./core/vr-object-template');
+require('./core/vr-style');
 require('./core/vr-camera');
 require('./core/vr-scene');
 

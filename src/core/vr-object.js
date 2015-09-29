@@ -32,6 +32,7 @@ var proto = {
   createdCallback: {
     value: function () {
       this.object3D = new THREE.Mesh();
+      this.components = {};
       this.load();
     },
     writable: window.debug
@@ -39,24 +40,31 @@ var proto = {
 
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
-      this.updateComponent(attrName, oldVal);
+      this.updateComponent(attrName);
     },
     writable: window.debug
   },
 
   updateComponent: {
-    value: function (name, oldVal) {
-      // Capitalizes first letter of attribute name.
-      var component = name.charAt(0).toUpperCase() + name.slice(1);
-      var funcName = 'update' + component;
-      var updateComponent = this[funcName];
-      var value = this.getAttribute(name);
-
-      if (typeof updateComponent !== 'function') {
-        VRUtils.warn('Unknown Attribute ' + name);
+    value: function (name) {
+      var component = VRComponents[name];
+      if (name === 'position') {
+        this.updatePosition();
         return;
       }
-      updateComponent.call(this, value, oldVal);
+      if (name === 'rotation') {
+        this.updateRotation();
+        return;
+      }
+      if (name === 'scale') {
+        this.updateScale();
+        return;
+      }
+      if (!component) {
+        VRUtils.warn('Unkown component name: ' + name);
+        return;
+      }
+      this.components[name].updateAttributes(this.getAttribute(name));
     },
     writable: window.debug
   },
@@ -89,26 +97,24 @@ var proto = {
     }
   },
 
-  updateTemplate: {
+  updateStyle: {
     value: function (value, oldVal) {
-      var templateId = this.getAttribute('template');
-      if (oldVal) {
-        this.removeFromTemplate(oldVal);
-      }
-      if (!templateId) { return; }
-      var template = document.querySelector('#' + templateId);
-      if (!template) { return; }
-      this.template = template;
-      this.template.add(this);
+      var styleId = this.getAttribute('class');
+      if (oldVal) { this.removeFromStyle(oldVal); }
+      if (!styleId) { return; }
+      var style = document.querySelector('#' + styleId);
+      if (!style) { return; }
+      this.VRStyle = style;
+      this.VRStyle.add(this);
     }
   },
 
-  removeFromTemplate: {
+  removeFromStyle: {
     value: function (id) {
-      var template = document.querySelector('#' + id);
-      this.template = null;
-      if (!template) { return; }
-      template.remove(this);
+      var style = document.querySelector('#' + id);
+      this.style = null;
+      if (!style) { return; }
+      style.remove(this);
     }
   },
 
@@ -163,8 +169,10 @@ var proto = {
       this.addToParent();
       // It sets default values on the attributes if they're not defined
       this.initAttributes();
-      // Updates the template if there's any
-      this.updateTemplate();
+      // Updates the style if there's any
+      this.updateStyle();
+      // Components initializaion
+      this.initComponents();
       // Updates components to match attributes values
       this.updateComponents();
       // Setup animations if there's any
@@ -188,21 +196,29 @@ var proto = {
     writable: window.debug
   },
 
+  initComponents: {
+    value: function () {
+      var style = this.VRStyle;
+      var self = this;
+      Object.keys(VRComponents).forEach(initComponent);
+      function initComponent (key) {
+        if (self.hasAttribute(key) || (style && style.hasAttribute(key))) {
+          if (!VRComponents[key].Component) { return; }
+          self.components[key] = new VRComponents[key].Component(self);
+        }
+      }
+    }
+  },
+
   updateComponents: {
     value: function () {
-      var controls;
-      var camera;
+      var components = Object.keys(this.components);
+      // Update, rotation and scale need to be componetize
       this.updatePosition();
       this.updateRotation();
       this.updateScale();
-      this.updateMaterial(this.getAttribute('material'));
-      this.updateGeometry(this.getAttribute('geometry'));
-      camera = this.getAttribute('camera');
-      if (!camera) { return; }
-      this.updateCamera(camera);
-      controls = this.getAttribute('controls');
-      if (!controls) { return; }
-      this.updateControls(controls);
+      // Updates components
+      components.forEach(this.updateComponent.bind(this));
     },
     writable: window.debug
   },
