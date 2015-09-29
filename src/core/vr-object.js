@@ -5,18 +5,6 @@ var VRComponents = require('./components');
 var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
-var mixinPrototype = function (destination, source) {
-  for (var key in source) {
-    destination[key] = { value: source[key], writable: window.debug };
-  }
-};
-
-var mixinComponents = function (proto, components) {
-  for (var key in components) {
-    mixinPrototype(proto, components[key]);
-  }
-};
-
 /**
  *
  * VRObject represents all elements that are part of the 3D scene.
@@ -258,8 +246,6 @@ var proto = {
     writable: window.debug
   }
 };
-
-mixinComponents(proto, VRComponents);
 
 module.exports = document.registerElement(
   'vr-object',
