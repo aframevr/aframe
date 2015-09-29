@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --live --port 9001 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- ./src/vr-markup.js -s 'vr-markup' | garnish -v",
+    "dev": "npm run build && budo src/vr-markup.js:build/vr-markup.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- ./src/vr-markup.js -s 'vr-markup' | garnish -v",
     "browserify": "browserify ./src/vr-markup.js -s 'vr-markup'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-markup.js",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js && npm run dist:css",
