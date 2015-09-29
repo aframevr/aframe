@@ -54,7 +54,7 @@ Component.prototype = {
    * If there's a style its values will be mixed in
    */
   parseAttributes: function (str) {
-    var styleStr = this.el.VRStyle && this.el.VRStyle.getAttribute(this.name);
+    var styleStr = this.el.mixin && this.el.mixin.getAttribute(this.name);
     mixAttributes(styleStr, this);
     mixAttributes(str, this);
   }

@@ -3,7 +3,7 @@ require('../vr-register-element');
 var VRNode = require('./vr-node');
 
 module.exports = document.registerElement(
-  'vr-style',
+  'vr-mixin',
   {
     prototype: Object.create(
       VRNode.prototype,

@@ -28,6 +28,10 @@ var proto = {
 
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
+      if (attrName === 'mixin') {
+        this.updateMixin();
+        return;
+      }
       this.updateComponent(attrName);
     },
     writable: window.debug
@@ -45,24 +49,24 @@ var proto = {
     writable: window.debug
   },
 
-  updateStyle: {
+  updateMixin: {
     value: function (value, oldVal) {
-      var styleId = this.getAttribute('class');
-      if (oldVal) { this.removeFromStyle(oldVal); }
-      if (!styleId) { return; }
-      var style = document.querySelector('#' + styleId);
-      if (!style) { return; }
-      this.VRStyle = style;
-      this.VRStyle.add(this);
+      var mixinId = this.getAttribute('mixin');
+      if (oldVal) { this.removeFromMixin(oldVal); }
+      if (!mixinId) { return; }
+      var mixin = document.querySelector('#' + mixinId);
+      if (!mixin) { return; }
+      this.mixin = mixin;
+      this.mixin.add(this);
     }
   },
 
-  removeFromStyle: {
+  removeFromMixin: {
     value: function (id) {
-      var style = document.querySelector('#' + id);
-      this.style = null;
-      if (!style) { return; }
-      style.remove(this);
+      var mixin = document.querySelector('#' + id);
+      this.mixin = null;
+      if (!mixin) { return; }
+      mixin.remove(this);
     }
   },
 
@@ -117,8 +121,8 @@ var proto = {
       this.addToParent();
       // It sets default values on the attributes if they're not defined
       this.initAttributes();
-      // Updates the style if there's any
-      this.updateStyle();
+      // Updates the mixin if there's any
+      this.updateMixin();
       // Components initializaion
       this.initComponents();
       // Updates components to match attributes values
@@ -146,11 +150,11 @@ var proto = {
 
   initComponents: {
     value: function () {
-      var style = this.VRStyle;
+      var mixin = this.mixin;
       var self = this;
       Object.keys(VRComponents).forEach(initComponent);
       function initComponent (key) {
-        if (self.hasAttribute(key) || (style && style.hasAttribute(key))) {
+        if (self.hasAttribute(key) || (mixin && mixin.hasAttribute(key))) {
           if (!VRComponents[key].Component) { return; }
           self.components[key] = new VRComponents[key].Component(self);
         }
