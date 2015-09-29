@@ -46,7 +46,7 @@ module.exports = document.registerElement(
               rotY: this.getAttribute('rotY', 0),
               rotZ: this.getAttribute('rotZ', 0),
               fov: this.getAttribute('fov', 45),
-              near: this.getAttribute('nar', 1),
+              near: this.getAttribute('near', 1),
               far: this.getAttribute('far', 10000),
               aspect: this.getAttribute('aspect',
                                         window.innerWidth / window.innerHeight)
