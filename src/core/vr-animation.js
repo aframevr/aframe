@@ -29,9 +29,11 @@ module.exports = document.registerElement(
             var el = this.el = this.parentNode;
             var attribute = this.attribute;
             var from = el.getAttribute(attribute);
+            var repeat = this.loop ? Infinity : 1;
             new TWEEN.Tween(from)
               .to(this.to, this.duration)
               .delay(this.delay)
+              .repeat(repeat)
               .onUpdate(function () {
                 el.setAttribute(attribute, this);
               })

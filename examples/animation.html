@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Animation</title>
+  <meta name="description" content="Animation">
+  <link rel="stylesheet" type="text/css" href="../style/vr-markup.css">
+  <link rel="stylesheet" type="text/css" href="_style/main.css">
+  <script src="../build/vr-markup.js"></script>
+</head>
+
+<body>
+  <vr-scene>
+    <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true"></vr-object>
+    <vr-object class="cube" geometry="primitive: box" material="color: blue">
+      <vr-animation attribute="rotation" to="0 360 0" loop="true" duration="3000"></vr-animation>
+    </vr-object>
+  </vr-scene>
+</body>
+</html>
