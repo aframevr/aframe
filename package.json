@@ -14,6 +14,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "budo": "cvan/budo#7391d13",
+    "chai-shallow-deep-equal": "^1.3.0",
     "crass": "^0.7.7",
     "garnish": "^3.2.0",
     "gh-pages": "^0.4.0",
@@ -25,6 +26,7 @@
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.0",
     "karma-sinon-chai": "^1.1.0",
+    "mocha": "^2.3.3",
     "mozilla-download": "^1.0.5",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
