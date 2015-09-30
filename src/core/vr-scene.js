@@ -132,7 +132,7 @@ var VRScene = module.exports = document.registerElement(
           value: function (evt) {
             var el = evt.currentTarget;
             this.pendingElements--;
-            if (el.components.camera) { this.cameraEl = el; }
+            if (el.components && el.components.camera) { this.cameraEl = el; }
             // If we still need to wait for more elements
             if (this.pendingElements > 0) { return; }
             // If the render loop is already running
