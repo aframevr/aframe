@@ -1,18 +1,26 @@
 var registerComponent = require('../core/register-component');
 var THREE = require('../../lib/three');
 
+var defaults = {
+  color: Math.random() * 0xffffff,
+  roughness: 1.0,
+  metallic: 0.5,
+  lightIntensity: 7.001
+};
+
 module.exports.Component = registerComponent('material', {
   update: {
     value: function () {
+      var data = this.data;
       var object3D = this.el.object3D;
-      var material = this.material || this.setupMaterial();
-      var color = this.color || Math.random() * 0xffffff;
+      var material = data.material = data.material || this.setupMaterial();
+      var color = data.color || defaults.color;
       color = new THREE.Color(color);
       color = new THREE.Vector3(color.r, color.g, color.b);
       material.uniforms.baseColor.value = color;
-      material.uniforms.roughness.value = this.roughness || 1.0;
-      material.uniforms.metallic.value = this.metallic || 0.5;
-      material.uniforms.lightIntensity.value = this.lightIntensity || 7.001;
+      material.uniforms.roughness.value = data.roughness || defaults.roughness;
+      material.uniforms.metallic.value = data.metallic || defaults.metallic;
+      material.uniforms.lightIntensity.value = data.lightIntensity || defaults.lightIntensity;
       object3D.material = material;
     }
   },

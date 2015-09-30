@@ -4,8 +4,9 @@ module.exports.Component = registerComponent('position', {
   update: {
     value: function () {
       var object3D = this.el.object3D;
+      var data = this.data;
       // Updates three.js object
-      object3D.position.set(this.x, this.y, this.z);
+      object3D.position.set(data.x, data.y, data.z);
     }
   }
 });

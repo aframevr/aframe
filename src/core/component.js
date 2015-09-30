@@ -29,6 +29,8 @@ var mixAttributes = function (str, obj) {
 var Component = function (el) {
   var str = el.getAttribute(this.name);
   this.el = el;
+  // To store the component specific data
+  this.data = {};
   this.updateAttributes(str);
 };
 
@@ -55,8 +57,8 @@ Component.prototype = {
    */
   parseAttributes: function (str) {
     var styleStr = this.el.mixin && this.el.mixin.getAttribute(this.name);
-    mixAttributes(styleStr, this);
-    mixAttributes(str, this);
+    mixAttributes(styleStr, this.data);
+    mixAttributes(str, this.data);
   }
 };
 

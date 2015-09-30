@@ -289,7 +289,7 @@ var VRScene = module.exports = document.registerElement(
         resizeCanvas: {
           value: function () {
             var canvas = this.canvas;
-            var camera = this.cameraEl.components.camera.camera;
+            var camera = this.cameraEl.components.camera.data.camera;
             // Make it visually fill the positioned parent
             canvas.style.width = '100%';
             canvas.style.height = '100%';
@@ -326,7 +326,7 @@ var VRScene = module.exports = document.registerElement(
 
         render: {
           value: function (t) {
-            var camera = this.cameraEl.components.camera.camera;
+            var camera = this.cameraEl.components.camera.data.camera;
             TWEEN.update(t);
             // Updates behaviors
             this.behaviors.forEach(function (behavior) {

@@ -1,6 +1,10 @@
 var registerComponent = require('../core/register-component');
 var THREE = require('../../lib/three');
 
+var defaults = {
+  acceleration: 65
+};
+
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
@@ -16,7 +20,7 @@ module.exports.Component = registerComponent('controls', {
       this.keys = {};
       this.mouseDown = false;
 
-      this.acceleration = 65;
+      this.acceleration = defaults.acceleration;
       this.velocity = new THREE.Vector3();
 
       this.pitchObject = new THREE.Object3D();
@@ -50,7 +54,7 @@ module.exports.Component = registerComponent('controls', {
       var rotation = el.getAttribute('rotation', {x: 0, y: 0, z: 0});
       var rotZ = rotation.z;
 
-      if (this.locomotion === 'true') {
+      if (this.data.locomotion === 'true') {
         if (keys[65]) { // Left
           velocity.x -= acceleration * delta;
         }
@@ -105,7 +109,7 @@ module.exports.Component = registerComponent('controls', {
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var mouseDown = this.mouseDown;
-      var mouseLook = this.mouselook === 'true';
+      var mouseLook = this.data.mouselook === 'true';
 
       if (!mouseDown || !mouseLook) { return; }
 

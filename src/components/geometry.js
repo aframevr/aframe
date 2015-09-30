@@ -2,6 +2,13 @@ var registerComponent = require('../core/register-component');
 var VRUtils = require('../vr-utils');
 var THREE = require('../../lib/three');
 
+var defaults = {
+  size: 5,
+  radius: 200,
+  tube: 10,
+  segments: 32
+};
+
 module.exports.Component = registerComponent('geometry', {
   update: {
     value: function () {
@@ -12,23 +19,24 @@ module.exports.Component = registerComponent('geometry', {
 
   setupGeometry: {
     value: function () {
-      var primitive = this.primitive;
+      var data = this.data;
+      var primitive = data.primitive;
       var geometry;
       var radius;
       switch (primitive) {
         case 'box':
-          var width = this.width || 5;
-          var height = this.height || 5;
-          var depth = this.depth || 5;
+          var width = data.width || defaults.size;
+          var height = data.height || defaults.size;
+          var depth = data.depth || defaults.size;
           geometry = new THREE.BoxGeometry(width, height, depth);
           break;
         case 'sphere':
-          radius = this.radius || 5;
-          geometry = new THREE.SphereGeometry(radius, 32, 32);
+          radius = data.radius || defaults.size;
+          geometry = new THREE.SphereGeometry(radius, defaults.segments, defaults.segments);
           break;
         case 'torus':
-          radius = this.radius || 200;
-          var tube = this.tube || 10;
+          radius = data.radius || defaults.radius;
+          var tube = data.tube || defaults.tube;
           geometry = new THREE.TorusGeometry(radius, tube);
           break;
         default:
