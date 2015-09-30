@@ -16,7 +16,51 @@ var utils = {
       sel = (parent || document).querySelectorAll(sel);
     }
     return Array.prototype.slice.call(sel);
+  },
+  'transformAttr': function (name, val) {
+    return val;
   }
+};
+
+/**
+ * ES6-style string formatting
+ *
+ * > format('${0}', ['zzz'])
+ * "zzz"
+ *
+ * > format('${0}{1}', 1, 2)
+ * "12"
+ *
+ * > format('${x}', {x: 1})
+ * "1"
+ *
+ * > format('my favourite color is ${color=blue}', {x: 1})
+ * "my favourite color is blue"
+ *
+ */
+utils.format = (function () {
+  var re = /\$?\{\s*([^}= ]+)(\s*=\s*(.+))?\s*\}/g;
+  return function (s, args) {
+    if (!s) { throw new Error('Format string is empty!'); }
+    if (!args) { return; }
+    if (!(args instanceof Array || args instanceof Object)) {
+      args = Array.prototype.slice.call(arguments, 1);
+    }
+    return s.replace(re, function (_, name, rhs, defaultVal) {
+      var val = args[name];
+
+      if (typeof val === 'undefined') {
+        return (defaultVal || '?').trim().replace(/^["']|["']$/g, '');
+      }
+
+      return (val || '?').trim().replace(/^["']|["']$/g, '');
+    });
+  };
+})();
+
+utils.template = function (s) {
+  if (!s) { throw new Error('Template string is empty!'); }
+  return function (args) { return utils.format(s, args); };
 };
 
 module.exports = document.registerElement(
@@ -38,9 +82,7 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function () {
-            console.log('they');
-          },
+          value: function () { /* unsupported use case */ },
           writable: window.debug
         },
 
@@ -87,7 +129,6 @@ module.exports = document.registerElement(
 
         load: {
           value: function () {
-            // console.log('vr-template.load');
             // To prevent emitting the loaded event more than once.
             if (this.hasLoaded) { return; }
             var event = new Event('loaded');
@@ -98,7 +139,6 @@ module.exports = document.registerElement(
 
         inject: {
           value: function () {
-            // console.log('vr-template.inject');
             var self = this;
 
             var tagName = self.getAttribute('register');
@@ -110,10 +150,26 @@ module.exports = document.registerElement(
             placeholders.forEach(function (placeholder) {
               var then = window.performance.now();
 
-              utils.$$(self.children).forEach(function (node) {
-                var dollyTheNode = node.cloneNode(true);
-                sceneEl.add(dollyTheNode);
-                placeholder.appendChild(dollyTheNode);
+              var placeholderAttrs = {};
+              // Use any defaults defined on the `<vr-template register="yolo" color="cyan">`.
+              utils.$$(self.attributes).forEach(function (attr) {
+                placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
+              });
+              // Use the attributes passed on the `<vr-yolo color="salmon">`.
+              utils.$$(placeholder.attributes).forEach(function (attr) {
+                placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
+              });
+
+              utils.$$(self.children).forEach(function (child) {
+                var el = child.cloneNode();  // NOTE: This is slow.
+
+                utils.$$(el.attributes).forEach(function (attr) {
+                  if (attr.value.indexOf('${') === -1) { return; }
+                  el.setAttribute(attr.name, utils.format(attr.value, placeholderAttrs));
+                });
+
+                sceneEl.add(el);
+                placeholder.appendChild(el);
               });
 
               console.log('<%s> took %.4f ms to inject', tagName, window.performance.now() - then);
