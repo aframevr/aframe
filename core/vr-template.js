@@ -3,11 +3,15 @@
 var VRMarkup = require('@mozvr/vr-markup');
 
 var VRNode = VRMarkup.VRNode;
+var VRObject = VRMarkup.VRObject;
 
 var internals = {
   isRegistered: function (tagName) {
-    return tagName.toLowerCase();
-  }
+    tagName = tagName.toLowerCase();
+    if (tagName in internals.registeredTags) { return true; }
+    return VRNode.prototype.isPrototypeOf(document.createElement(tagName));
+  },
+  registeredTags: {}
 };
 
 var utils = {
@@ -82,7 +86,6 @@ module.exports = document.registerElement(
 
         attachedCallback: {
           value: function () {
-            this.registeredTags = {};
             this.addEventListener('loaded', this.inject.bind(this));
             document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
           }
@@ -140,16 +143,58 @@ module.exports = document.registerElement(
           }
         },
 
+        register: {
+          value: function (tagName) {
+            tagName = tagName.toLowerCase();
+
+            console.log('registering <%s>', tagName);
+
+            internals.registeredTags[tagName] = true;
+
+            document.registerElement(
+              tagName,
+              {
+                prototype: Object.create(
+                  VRObject.prototype, {
+                    createdCallback: {
+                      value: function () {
+                        /* no-op */
+                        console.log('createdCallback');
+                      },
+                      writable: window.debug
+                    },
+
+                    attachedCallback: {
+                      value: function () {
+                        console.log('attachedCallback');
+                      },
+                      writable: window.debug
+                    },
+
+                    attributeChangedCallback: {
+                      value: function () {
+                        console.log('attributeChangedCallback');
+                      },
+                      writable: window.debug
+                    }
+                  }
+                )
+              });
+          }
+        },
+
         inject: {
           value: function () {
             var self = this;
 
             var tagName = self.getAttribute('name');
             if (!tagName) { return; }
-            if (internals.isRegistered(tagName)) {
-              console.warn('<%s> is already registered', tagName);
-              return;
-            }
+            // if (internals.isRegistered(tagName)) {
+            //   console.warn('<%s> already registered', tagName);
+            //   return;
+            // }
+
+            self.register(tagName);
 
             var sceneEl = utils.$('vr-scene');
             var placeholders = utils.$$(tagName, sceneEl);
@@ -157,13 +202,13 @@ module.exports = document.registerElement(
             placeholders.forEach(function (placeholder) {
               var then = window.performance.now();
 
-              var placeholderAttrs = {};
               // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
-              utils.$$(self.attributes).forEach(function (attr) {
-                placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
-              });
+              var attrsDefault = utils.$$(self.attributes);
               // Use the attributes passed on the `<vr-yolo color="salmon">`.
-              utils.$$(placeholder.attributes).forEach(function (attr) {
+              var attrsPassed = utils.$$(placeholder.attributes);
+              // Use both, in that order.
+              var placeholderAttrs = {};
+              attrsDefault.concat(attrsPassed).forEach(function (attr) {
                 placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
               });
 
