@@ -29,6 +29,17 @@ var utils = {
   },
   'transformAttr': function (name, val) {
     return val;
+  },
+  'replaceVariables': function (elSrc, elDest, newVals) {
+    utils.$$(elSrc.attributes).forEach(function (attr) {
+      if (attr.value.indexOf('${') === -1) { return; }
+      var newAttr = utils.format(attr.value, newVals);
+      if (newAttr !== elDest.getAttribute(attr.name)) {
+        elDest.setAttribute(attr.name, newAttr);
+      }
+    });
+
+    // TODO: Also handle innerHTML (useful for text, for example).
   }
 };
 
@@ -145,35 +156,53 @@ module.exports = document.registerElement(
 
         register: {
           value: function (tagName) {
-            tagName = tagName.toLowerCase();
+            var tagNameLower = tagName.toLowerCase();
 
-            console.log('registering <%s>', tagName);
+            console.log('registering <%s>', tagNameLower);
 
-            internals.registeredTags[tagName] = true;
+            internals.registeredTags[tagNameLower] = true;
 
             document.registerElement(
-              tagName,
+              tagNameLower,
               {
                 prototype: Object.create(
                   VRObject.prototype, {
                     createdCallback: {
                       value: function () {
                         /* no-op */
-                        console.log('createdCallback');
+                        console.log('\tcreatedCallback');
                       },
                       writable: window.debug
                     },
 
                     attachedCallback: {
                       value: function () {
-                        console.log('attachedCallback');
+                        console.log('\tattachedCallback');
                       },
                       writable: window.debug
                     },
 
                     attributeChangedCallback: {
                       value: function () {
-                        console.log('attributeChangedCallback');
+                        console.log('\tattributeChangedCallback');
+
+                        if (!this.fakeChildren) { return; }
+
+                        // Use any defaults defined on the original `<vr-template>`.
+                        var placeholder = utils.$('vr-template[name="' + tagName + '"]');
+                        var attrsDefault = placeholder ? utils.$$(placeholder.attributes) : [];
+
+                        // Use the attributes passed on this element.
+                        var attrsPassed = utils.$$(this.attributes);
+                        // Use both, in that order.
+                        var placeholderAttrs = {};
+                        attrsDefault.concat(attrsPassed).forEach(function (attr) {
+                          placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
+                        });
+
+                        this.fakeChildren.forEach(function (data) {
+                          utils.replaceVariables(data.placeholder, data.node, placeholderAttrs);
+                        });
                       },
                       writable: window.debug
                     }
@@ -202,12 +231,8 @@ module.exports = document.registerElement(
             // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
             var attrsDefault = utils.$$(self.attributes);
 
-            placeholders.forEach(function (placeholderOriginal) {
+            placeholders.forEach(function (placeholder) {
               var then = window.performance.now();
-
-              var placeholder = document.createElement(tagName);
-              placeholder.outerHTML = placeholderOriginal.outerHTML;
-              placeholderOriginal.parentNode.replaceChild(placeholder, placeholderOriginal);
 
               // Use the attributes passed on the `<vr-yolo color="salmon">`.
               var attrsPassed = utils.$$(placeholder.attributes);
@@ -217,19 +242,18 @@ module.exports = document.registerElement(
                 placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
               });
 
-              utils.$$('*', self).forEach(function (child) {
+              placeholder.fakeChildren = utils.$$('*', self).map(function (child) {
                 var el = child.cloneNode();  // NOTE: This is slow.
 
-                utils.$$(el.attributes).forEach(function (attr) {
-                  if (attr.value.indexOf('${') === -1) { return; }
-                  var newAttr = utils.format(attr.value, placeholderAttrs);
-                  if (newAttr !== el.getAttribute(attr.name)) {
-                    el.setAttribute(attr.name, newAttr);
-                  }
-                });
+                utils.replaceVariables(child, el, placeholderAttrs);
 
-                sceneEl.add(el);
                 // placeholder.appendChild(el);
+                sceneEl.add(el);
+
+                return {
+                  placeholder: child,
+                  node: el
+                };
               });
 
               console.log('<%s> took %.4f ms to inject', tagName, window.performance.now() - then);
