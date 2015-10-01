@@ -110,3 +110,16 @@ module.exports.mixin = function (dest, source) {
     dest[key] = source[key];
   }
 };
+
+/**
+ * It mixes properties of source object into dest
+ * @param  {object} dest   The object where properties will be copied TO
+ * @param  {object} source The object where properties will be copied FROM
+ */
+module.exports.isVRObject = function (dest, source) {
+  var keys = Object.keys(source);
+  keys.forEach(mix);
+  function mix (key) {
+    dest[key] = source[key];
+  }
+};

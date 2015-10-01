@@ -1,3 +1,5 @@
+/* global MutationObserver */
+
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
@@ -29,7 +31,7 @@ var proto = {
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
       if (attrName === 'mixin') {
-        this.updateMixin();
+        this.mixinChanged(newVal, oldVal);
         return;
       }
       this.updateComponent(attrName);
@@ -37,36 +39,45 @@ var proto = {
     writable: window.debug
   },
 
-  updateComponent: {
-    value: function (name) {
-      var component = VRComponents[name];
-      if (!component) {
-        VRUtils.warn('Unkown component name: ' + name);
-        return;
-      }
-      this.components[name].updateAttributes(this.getAttribute(name));
-    },
-    writable: window.debug
-  },
-
-  updateMixin: {
-    value: function (value, oldVal) {
-      var mixinId = this.getAttribute('mixin');
-      if (oldVal) { this.removeFromMixin(oldVal); }
-      if (!mixinId) { return; }
-      var mixin = document.querySelector('#' + mixinId);
-      if (!mixin) { return; }
-      this.mixin = mixin;
-      this.mixin.add(this);
+  mixinChanged: {
+    value: function (newMixin, oldMixin) {
+      if (oldMixin) { this.removeMixinListener(oldMixin); }
+      this.attachMixinListener(newMixin);
     }
   },
 
-  removeFromMixin: {
-    value: function (id) {
-      var mixin = document.querySelector('#' + id);
-      this.mixin = null;
-      if (!mixin) { return; }
-      mixin.remove(this);
+  removeMixinListener: {
+    value: function () {
+      var observer = this.mixinObserver;
+      if (!observer) { return; }
+      observer.disconnect();
+      this.mixinObserver = null;
+    }
+  },
+
+  attachMixinListener: {
+    value: function (mixinId) {
+      var self = this;
+      var mixinEl = this.mixinEl = document.querySelector('#' + mixinId);
+      if (!mixinEl) { return; }
+      var observer = new MutationObserver(function (mutations) {
+        var attr = mutations[0].attributeName;
+        self.applyMixin(attr);
+      });
+      var config = { attributes: true };
+      observer.observe(mixinEl, config);
+      this.mixinObserver = observer;
+      this.applyMixin();
+    }
+  },
+
+  applyMixin: {
+    value: function (attr) {
+      if (!attr) {
+        this.updateComponents();
+        return;
+      }
+      this.updateComponent(attr);
     }
   },
 
@@ -121,14 +132,9 @@ var proto = {
       this.addToParent();
       // It sets default values on the attributes if they're not defined
       this.initAttributes();
-      // Updates the mixin if there's any
-      this.updateMixin();
       // Components initializaion
       this.initComponents();
-      // Updates components to match attributes values
-      this.updateComponents();
-      // Setup animations if there's any
-      this.addAnimations();
+      // Call the parent class
       VRNode.prototype.load.call(this);
     },
     writable: window.debug
@@ -150,15 +156,17 @@ var proto = {
 
   initComponents: {
     value: function () {
-      var mixin = this.mixin;
+      var mixinEl = this.mixinEl;
       var self = this;
       Object.keys(VRComponents).forEach(initComponent);
       function initComponent (key) {
-        if (self.hasAttribute(key) || (mixin && mixin.hasAttribute(key))) {
+        if (self.hasAttribute(key) || (mixinEl && mixinEl.hasAttribute(key))) {
           if (!VRComponents[key].Component) { return; }
           self.components[key] = new VRComponents[key].Component(self);
         }
       }
+      // Updates components to match attributes values
+      this.updateComponents();
     }
   },
 
@@ -171,30 +179,29 @@ var proto = {
     writable: window.debug
   },
 
+  updateComponent: {
+    value: function (name) {
+      var component = VRComponents[name];
+      if (!component) {
+        VRUtils.warn('Unkown component name: ' + name);
+        return;
+      }
+      this.components[name].updateAttributes(this.getAttribute(name));
+    },
+    writable: window.debug
+  },
+
   initAttributes: {
     value: function (el) {
       var position = this.hasAttribute('position');
       var rotation = this.hasAttribute('rotation');
       var scale = this.hasAttribute('scale');
+      var mixin = this.hasAttribute('mixin');
       if (!position) { this.setAttribute('position', '0 0 0'); }
       if (!rotation) { this.setAttribute('rotation', '0 0 0'); }
       if (!scale) { this.setAttribute('scale', '1 1 1'); }
-    },
-    writable: window.debug
-  },
-
-  addAnimations: {
-    value: function () {
-      var self = this;
-      var animations = this.getAttribute('animation');
-      if (!animations) { return; }
-      animations = animations.split(' ');
-      animations.forEach(attachObject);
-      function attachObject (animationName) {
-        var el = document.getElementById(animationName);
-        if (!el) { return; }
-        el.add(self);
-      }
+      // Listens to changes on the mixin if there's any
+      if (mixin) { this.attachMixinListener(this.getAttribute('mixin')); }
     },
     writable: window.debug
   },

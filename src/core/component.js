@@ -56,7 +56,8 @@ Component.prototype = {
    * If there's a style its values will be mixed in
    */
   parseAttributes: function (str) {
-    var styleStr = this.el.mixin && this.el.mixin.getAttribute(this.name);
+    var mixinEl = this.el.mixinEl;
+    var styleStr = mixinEl && mixinEl.getAttribute(this.name);
     mixAttributes(styleStr, this.data);
     mixAttributes(str, this.data);
   }

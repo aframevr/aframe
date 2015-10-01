@@ -15,12 +15,18 @@ module.exports = document.registerElement(
       VRNode.prototype, {
         createdCallback: {
           value: function () {
+            this.update();
+            this.load();
+          }
+        },
+
+        update: {
+          value: function () {
             this.delay = this.getAttribute('delay', defaults.delay);
             this.duration = this.getAttribute('duration', defaults.duration);
             this.loop = this.getAttribute('loop', defaults.loop);
             this.attribute = this.getAttribute('attribute');
             this.to = this.getAttribute('to', {x: 0, y: 0, z: 0});
-            this.load();
           }
         },
 
