@@ -1,4 +1,4 @@
-/* global Event, HTMLElement */
+/* global Event, HTMLElement, HTMLImports */
 
 var VRMarkup = require('@mozvr/vr-markup');
 
@@ -34,9 +34,10 @@ var utils = {
     utils.$$(elSrc.attributes).forEach(function (attr) {
       if (attr.value.indexOf('${') === -1) { return; }
       var newAttr = utils.format(attr.value, newVals);
-      if (newAttr !== elDest.getAttribute(attr.name)) {
-        elDest.setAttribute(attr.name, newAttr);
-      }
+      // if (newAttr !== elDest.getAttribute(attr.name)) {
+      //   elDest.setAttribute(attr.name, newAttr);
+      // }
+      elDest.setAttribute(attr.name, newAttr);
     });
 
     // TODO: Also handle innerHTML (useful for text, for example).
@@ -84,27 +85,60 @@ utils.template = function (s) {
   return function (args) { return utils.format(s, args); };
 };
 
+function importTemplates () {
+  Object.keys(HTMLImports.importer.documents).forEach(function (key) {
+    var doc = HTMLImports.importer.documents[key];
+    console.log('docs', doc);
+    utils.$$('vr-template', doc).forEach(function (template) {
+      var templateEl = document.importNode(template, true);
+      document.body.appendChild(templateEl);
+    });
+  });
+}
+
+window.addEventListener('HTMLImportsLoaded', function () {
+  console.log('importTemplates HTMLImportsLoaded');
+  importTemplates();
+});
+
+var hasHtmlImports = !!('import' in document.createElement('link'));
+if (hasHtmlImports) {
+  // importTemplates();
+} else {
+  require('../lib/vendor/HTMLImports');  // Polyfill HTML Imports.
+  // importTemplates();
+
+  // var script = document.createElement('script');
+  // script.src = 'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.14/HTMLImports.min.js';
+  // document.head.insertBefore(script, document.head.firstChild);
+
+  // script.addEventListener('load', function () {
+    // window.addEventListener('HTMLImportsLoaded', function () {
+    //   console.log('importTemplates HTMLImportsLoaded');
+    //   importTemplates();
+    // });
+  // });
+}
+
+document.addEventListener('vr-markup-ready', function () {
+  internals.vrMarkupReady = true;
+});
+
 module.exports = document.registerElement(
   'vr-template',
   {
     prototype: Object.create(
       HTMLElement.prototype,
       {
-        createdCallback: {
-          value: function () { /* no-op */ },
-          writable: window.debug
-        },
-
         attachedCallback: {
           value: function () {
+            if (internals.vrMarkupReady && !this.injected) {
+              this.inject();
+            }
+
             this.addEventListener('loaded', this.inject.bind(this));
             document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
           }
-        },
-
-        attributeChangedCallback: {
-          value: function () { /* unsupported use case */ },
-          writable: window.debug
         },
 
         attachEventListeners: {
@@ -205,6 +239,14 @@ module.exports = document.registerElement(
                         });
                       },
                       writable: window.debug
+                    },
+
+                    initAttributes: {
+                      value: function () {
+                        // We don't want the default attributes
+                        // (e.g., `position`, `rotation`, `scale`) to get set.
+                      },
+                      writable: window.debug
                     }
                   }
                 )
@@ -215,6 +257,8 @@ module.exports = document.registerElement(
         inject: {
           value: function () {
             var self = this;
+
+            self.injected = true;
 
             var tagName = self.getAttribute('name');
             if (!tagName) { return; }
@@ -242,12 +286,16 @@ module.exports = document.registerElement(
                 placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
               });
 
+              console.log('attrsPassed', attrsPassed);
+
               placeholder.fakeChildren = utils.$$('*', self).map(function (child) {
                 var el = child.cloneNode();  // NOTE: This is slow.
 
+                console.log('before', el, placeholderAttrs);
                 utils.replaceVariables(child, el, placeholderAttrs);
+                console.log('after', el);
 
-                // placeholder.appendChild(el);
+                placeholder.appendChild(el);
                 sceneEl.add(el);
 
                 return {

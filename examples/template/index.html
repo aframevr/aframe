@@ -1,74 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Template</title>
-    <meta name="description" content="Template vr-component">
-    <script src="../../build/vr-components.js"></script>
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700">
+    <title>vr-components/template examples</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        font-size: 11px;
+      }
+      body {
+        background: rgb(53,196,232);
+        color: #fff;
+        font: 2rem/1.5 'Montserrat', sans-serif;
+        margin: 0;
+        padding: 3rem;
+      }
+      h1 {
+        margin: 0 0 3rem;
+      }
+      ul {
+        line-height: 1.5;
+        list-style: none;
+      }
+      a {
+        color: #036;
+        display: block;
+        padding: .5rem 0;
+      }
+      a:hover {
+        color: #369;
+      }
+    </style>
   </head>
   <body>
-    <vr-assets>
-      <vr-style id="cube" geometry="primitive: box" material="color: red"></vr-style>
-      <vr-style id="sphere" geometry="primitive: sphere" material="color: blue"></vr-style>
-    </vr-assets>
-
-    <vr-scene>
-
-
-      <!-- using plain old objects -->
-
-      <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
-      <vr-object class="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
-
-
-
-
-      <!-- using my fancy templates -->
-
-      <vr-oval color="green"></vr-oval>
-
-      <vr-package></vr-package>
-      <vr-package color="hotpink" position="11 8 -4" rotation="30 -50 10"></vr-package>
-      <vr-package color="#fd0" position="16 8 -4" rotation="35 -15 10"></vr-package>
-
-      <vr-bigcubes></vr-bigcubes>
-
-      <vr-saturn></vr-saturn>
-
-
-    </vr-scene>
-
-
-
-
-    <!-- making my templates -->
-
-    <vr-template name="vr-oval" color="salmon">
-      <vr-object class="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></vr-object>
-    </vr-template>
-
-    <vr-template name="vr-saturn">
-      <vr-football></vr-football>
-      <vr-tennisball></vr-tennisball>
-    </vr-template>
-
-    <vr-template name="vr-football" color="orange">
-      <vr-object class="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".8 .25 .8" material="color: ${color}"></vr-object>
-    </vr-template>
-
-    <vr-template name="vr-tennisball">
-      <vr-object class="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".5 .5 .5" material="color: ${color=yellow}"></vr-object>
-    </vr-template>
-
-    <vr-template name="vr-package" color="cyan" position="13 5 -5" rotation="40 -40 20" scale=".5 .5 .5">
-      <vr-object class="cube" position="${position}" rotation="${rotation}" scale="${scale}" material="color: ${color}"></vr-object>
-    </vr-template>
-
-    <vr-template name="vr-bigcubes" color1="red" color2="white" color3="blue">
-      <vr-object class="cube" position="-8 3 0" rotation="30 45 0" material="color: ${color1}"></vr-object>
-      <vr-object class="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></vr-object>
-      <vr-object class="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></vr-object>
-    </vr-template>
-
+    <h1>vr-components/template examples</h1>
+    <ul>
+      <li><a href="box-import.html">Box <small>(import)</small></a></li>
+      <li><a href="box-inline.html">Box <small>(inline)</small></a></li>
+      <li><a href="multiple-import.html">Multiple <small>(import)</small></a></li>
+      <li><a href="multiple-inline.html">Multiple <small>(inline)</small></a></li>
+    </ul>
   </body>
 </html>
