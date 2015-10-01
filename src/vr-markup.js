@@ -10,7 +10,6 @@ var VRUtils = require('./vr-utils');
 
 require('./core/vr-animation');
 require('./core/vr-assets');
-require('./core/vr-mixin');
 require('./core/vr-scene');
 
 require('./vr-behavior');
