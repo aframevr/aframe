@@ -199,11 +199,16 @@ module.exports = document.registerElement(
             var sceneEl = utils.$('vr-scene');
             var placeholders = utils.$$(tagName, sceneEl);
 
-            placeholders.forEach(function (placeholder) {
+            // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
+            var attrsDefault = utils.$$(self.attributes);
+
+            placeholders.forEach(function (placeholderOriginal) {
               var then = window.performance.now();
 
-              // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
-              var attrsDefault = utils.$$(self.attributes);
+              var placeholder = document.createElement(tagName);
+              placeholder.outerHTML = placeholderOriginal.outerHTML;
+              placeholderOriginal.parentNode.replaceChild(placeholder, placeholderOriginal);
+
               // Use the attributes passed on the `<vr-yolo color="salmon">`.
               var attrsPassed = utils.$$(placeholder.attributes);
               // Use both, in that order.
@@ -212,12 +217,15 @@ module.exports = document.registerElement(
                 placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
               });
 
-              utils.$$(self.children).forEach(function (child) {
+              utils.$$('*', self).forEach(function (child) {
                 var el = child.cloneNode();  // NOTE: This is slow.
 
                 utils.$$(el.attributes).forEach(function (attr) {
                   if (attr.value.indexOf('${') === -1) { return; }
-                  el.setAttribute(attr.name, utils.format(attr.value, placeholderAttrs));
+                  var newAttr = utils.format(attr.value, placeholderAttrs);
+                  if (newAttr !== el.getAttribute(attr.name)) {
+                    el.setAttribute(attr.name, newAttr);
+                  }
                 });
 
                 sceneEl.add(el);
