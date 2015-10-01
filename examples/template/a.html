@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Template A</title>
+    <meta name="description" content="Template vr-component">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-style id="cube" geometry="primitive: box" material="color: red"></vr-style>
+    </vr-assets>
+
+    <vr-scene>
+
+      <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-box></vr-box>
+
+    </vr-scene>
+
+    <vr-template name="vr-box" color="cyan" position="13 5 -5" rotation="40 -40 20" scale=".5 .5 .5">
+      <vr-object class="cube" position="${position}" rotation="${rotation}" scale="${scale}" material="color: ${color}"></vr-object>
+    </vr-template>
+
+    <vr-template name="vr-box"></vr-template>
+
+  </body>
+</html>
