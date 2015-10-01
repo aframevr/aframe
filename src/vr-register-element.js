@@ -1,3 +1,4 @@
+/* global CustomEvent */
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
@@ -44,7 +45,7 @@ module.exports = document.registerElement = function (tagName, obj) {
 };
 
 /**
- * This wrapps some of the obj methods to call those on VRNode base clase
+ * This wraps some of the obj methods to call those on VRNode base clase
  * @param  {object} obj The objects that contains the methods that will be wrapped
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
@@ -131,3 +132,15 @@ function copyProperties (source, destination) {
 
 var VRNode = require('./core/vr-node');
 var VRObject = require('./core/vr-object');
+
+/**
+ * Fires a custom event (as a stand-in for the spec'd `WebComponentsReady` event).
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  // `setTimeout` for Chrome.
+  setTimeout(function () {
+    document.dispatchEvent(new CustomEvent('vr-markup-ready', {
+      bubbles: true
+    }));
+  });
+});
