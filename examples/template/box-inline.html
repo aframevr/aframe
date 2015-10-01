@@ -8,18 +8,17 @@
   </head>
   <body>
     <vr-assets>
-      <vr-style id="cube" geometry="primitive: box" material="color: red"></vr-style>
+      <vr-mixin id="cube" geometry="primitive: box" material="color: red"></vr-style>
     </vr-assets>
 
     <vr-scene>
-
       <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
       <vr-box color="red"></vr-box>
 
     </vr-scene>
 
-    <vr-template name="vr-box" color="cyan" position="0 0 0" rotation="40 -40 20" scale="1 1 1">
-      <vr-object class="cube" position="${position}" rotation="${rotation}" scale="${scale}" material="color: ${color}"></vr-object>
+    <vr-template name="vr-box" color="cyan" position="-10 0 0" rotation="0 45 0" scale="1 1 1">
+      <vr-object mixin="cube" position="${position}" rotation="${rotation}" scale="${scale}" material="color: ${color}"></vr-object>
     </vr-template>
 
   </body>
