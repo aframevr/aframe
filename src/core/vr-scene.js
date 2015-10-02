@@ -11,7 +11,7 @@ var VRScene = module.exports = registerElement(
   {
     prototype: Object.create(
       VRNode.prototype, {
-        createdCallback: {
+        attachedCallback: {
           value: function () {
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
@@ -209,6 +209,11 @@ var VRScene = module.exports = registerElement(
 
         setupScene: {
           value: function () {
+            // Three.js setup
+            // We reuse the scene if there's already one
+            this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
+            VRScene.scene = this.object3D;
+
             this.behaviors = this.querySelectorAll('vr-controls');
             // querySelectorAll returns a NodeList that it's not a normal array
             // We need to convert
@@ -269,11 +274,7 @@ var VRScene = module.exports = registerElement(
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.sortObjects = false;
             VRScene.renderer = renderer;
-
             this.stereoRenderer = new THREE.VREffect(renderer);
-
-            this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
-            VRScene.scene = this.object3D;
           }
         },
 

@@ -8,7 +8,7 @@ module.exports = document.registerElement(
     prototype: Object.create(
       VRNode.prototype,
       {
-        createdCallback: {
+        attachedCallback: {
           value: function () {
             this.sceneEl.addBehavior(this);
           }

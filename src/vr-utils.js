@@ -109,6 +109,7 @@ module.exports.mixin = function (dest, source) {
   function mix (key) {
     dest[key] = source[key];
   }
+  return dest;
 };
 
 /**

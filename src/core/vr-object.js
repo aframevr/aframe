@@ -1,5 +1,3 @@
-/* global MutationObserver */
-
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
@@ -18,57 +16,28 @@ var proto = {
   //  ----------------------------------  //
   //   Native custom elements callbacks   //
   //  ----------------------------------  //
-
-  createdCallback: {
+  attachedCallback: {
     value: function () {
       this.object3D = new THREE.Mesh();
       this.components = {};
+      this.addToParent();
       this.load();
+    },
+    writable: window.debug
+  },
+
+  detachedCallback: {
+    value: function () {
+      this.parentEl.remove(this);
     },
     writable: window.debug
   },
 
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
-      if (attrName === 'mixin') {
-        this.mixinChanged(newVal, oldVal);
-        return;
-      }
       this.updateComponent(attrName);
     },
     writable: window.debug
-  },
-
-  mixinChanged: {
-    value: function (newMixin, oldMixin) {
-      if (oldMixin) { this.removeMixinListener(oldMixin); }
-      this.attachMixinListener(newMixin);
-    }
-  },
-
-  removeMixinListener: {
-    value: function () {
-      var observer = this.mixinObserver;
-      if (!observer) { return; }
-      observer.disconnect();
-      this.mixinObserver = null;
-    }
-  },
-
-  attachMixinListener: {
-    value: function (mixinId) {
-      var self = this;
-      var mixinEl = this.mixinEl = document.querySelector('#' + mixinId);
-      if (!mixinEl) { return; }
-      var observer = new MutationObserver(function (mutations) {
-        var attr = mutations[0].attributeName;
-        self.applyMixin(attr);
-      });
-      var config = { attributes: true };
-      observer.observe(mixinEl, config);
-      this.mixinObserver = observer;
-      this.applyMixin();
-    }
   },
 
   applyMixin: {
@@ -79,25 +48,6 @@ var proto = {
       }
       this.updateComponent(attr);
     }
-  },
-
-  attachedCallback: {
-    value: function () {
-      // When creating an element from JS is not guaranteed to have
-      // a parent after initialization. It's up to the arbitrary
-      // JS to attach the element to the DOM. We cover this
-      // case here.
-      if (!this.hasLoaded) { return; }
-      this.addToParent();
-    },
-    writable: window.debug
-  },
-
-  detachedCallback: {
-    value: function () {
-      this.parentEl.remove(this);
-    },
-    writable: window.debug
   },
 
   add: {
@@ -196,12 +146,9 @@ var proto = {
       var position = this.hasAttribute('position');
       var rotation = this.hasAttribute('rotation');
       var scale = this.hasAttribute('scale');
-      var mixin = this.hasAttribute('mixin');
       if (!position) { this.setAttribute('position', '0 0 0'); }
       if (!rotation) { this.setAttribute('rotation', '0 0 0'); }
       if (!scale) { this.setAttribute('scale', '1 1 1'); }
-      // Listens to changes on the mixin if there's any
-      if (mixin) { this.attachMixinListener(this.getAttribute('mixin')); }
     },
     writable: window.debug
   },

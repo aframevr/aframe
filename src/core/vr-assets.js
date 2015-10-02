@@ -10,7 +10,7 @@ module.exports = registerElement(
     prototype: Object.create(
       HTMLElement.prototype,
       {
-        createdCallback: {
+        attachedCallback: {
           value: function () {
             document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
           }

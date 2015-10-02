@@ -52,7 +52,7 @@ module.exports = document.registerElement = function (tagName, obj) {
  */
 function wrapVRNodeMethods (obj) {
   var newObj = {};
-  wrapMethods(newObj, ['createdCallback'], obj, VRNode.prototype);
+  wrapMethods(newObj, ['attachedCallback'], obj, VRNode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
@@ -65,7 +65,7 @@ function wrapVRNodeMethods (obj) {
  */
 function wrapVRObjectMethods (obj) {
   var newObj = {};
-  var vrNodeMethods = ['createdCallback'];
+  var vrNodeMethods = ['attachedCallback'];
   var vrObjectMethods = [
     'attributeChangedCallback',
     'attachedCallback',
@@ -105,6 +105,8 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
   var derivedMethod = derivedObj[methodName];
   var baseMethod = baseObj[methodName];
   if (!derivedMethod || !baseMethod) { return; }
+  // The derived class doesn't override the one in the base one
+  if (derivedMethod === baseMethod) { return; }
   // Wrapper
   // The base method is called before the one in the derived class
   var wrapperMethod = function () {
