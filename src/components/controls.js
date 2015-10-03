@@ -9,6 +9,12 @@ var defaults = {
 var PI_2 = Math.PI / 2;
 
 module.exports.Component = registerComponent('controls', {
+  init: {
+    value: function () {
+      this.setupControls();
+    }
+  },
+
   setupControls: {
     value: function () {
       var scene = this.el.sceneEl;
@@ -35,7 +41,6 @@ module.exports.Component = registerComponent('controls', {
 
   update: {
     value: function () {
-      if (!this.velocity) { this.setupControls(); }
       var velocity = this.velocity;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;

@@ -9,11 +9,17 @@ var defaults = {
 };
 
 module.exports.Component = registerComponent('material', {
+  init: {
+    value: function () {
+      this.setupMaterial();
+    }
+  },
+
   update: {
     value: function () {
       var data = this.data;
       var object3D = this.el.object3D;
-      var material = data.material = data.material || this.setupMaterial();
+      var material = this.material;
       var color = data.color || defaults.color;
       color = new THREE.Color(color);
       color = new THREE.Vector3(color.r, color.g, color.b);
@@ -163,7 +169,7 @@ module.exports.Component = registerComponent('material', {
         fragmentShader: shaderPBR.fragmentShader
       });
 
-      return material;
+      this.material = material;
     }
   }
 });

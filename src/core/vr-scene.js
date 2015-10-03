@@ -213,11 +213,7 @@ var VRScene = module.exports = registerElement(
             // We reuse the scene if there's already one
             this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
             VRScene.scene = this.object3D;
-
-            this.behaviors = this.querySelectorAll('vr-controls');
-            // querySelectorAll returns a NodeList that it's not a normal array
-            // We need to convert
-            this.behaviors = Array.prototype.slice.call(this.behaviors);
+            this.behaviors = [];
             // The canvas where the WebGL context will be painted
             this.setupCanvas();
             // The three.js renderer setup
@@ -281,7 +277,7 @@ var VRScene = module.exports = registerElement(
         resizeCanvas: {
           value: function () {
             var canvas = this.canvas;
-            var camera = this.cameraEl.components.camera.data.camera;
+            var camera = this.cameraEl.components.camera.camera;
             // Make it visually fill the positioned parent
             canvas.style.width = '100%';
             canvas.style.height = '100%';
@@ -318,7 +314,7 @@ var VRScene = module.exports = registerElement(
 
         render: {
           value: function (t) {
-            var camera = this.cameraEl.components.camera.data.camera;
+            var camera = this.cameraEl.components.camera.camera;
             TWEEN.update(t);
             // Updates behaviors
             this.behaviors.forEach(function (behavior) {

@@ -31,7 +31,9 @@ var Component = function (el) {
   this.el = el;
   // To store the component specific data
   this.data = {};
-  this.updateAttributes(str);
+  this.parseAttributes(str);
+  this.init();
+  this.update();
 };
 
 Component.prototype = {
@@ -43,6 +45,11 @@ Component.prototype = {
     this.parseAttributes(str);
     this.update();
   },
+
+  /**
+   * Called on component initialization
+   */
+  init: function () { /* no-op */ },
 
   /**
    * It is called on the component

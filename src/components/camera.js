@@ -8,11 +8,16 @@ var defaults = {
 };
 
 module.exports.Component = registerComponent('camera', {
+  init: {
+    value: function () {
+      this.setupCamera();
+    }
+  },
+
   update: {
     value: function () {
-      var el = this.el;
       var data = this.data;
-      var camera = el.object3D = data.camera = data.camera || this.setupCamera();
+      var camera = this.camera;
       // Setting three.js camera parameters
       camera.fov = data.fov || defaults.fov;
       camera.near = data.near || defaults.near;
@@ -24,7 +29,9 @@ module.exports.Component = registerComponent('camera', {
 
   setupCamera: {
     value: function () {
-      return new THREE.PerspectiveCamera();
+      var el = this.el;
+      var camera = this.camera = new THREE.PerspectiveCamera();
+      el.object3D.add(camera);
     }
   }
 });
