@@ -28,6 +28,7 @@ var proto = {
 
   detachedCallback: {
     value: function () {
+      if (!this.parentEl) { return; }
       this.parentEl.remove(this);
     },
     writable: window.debug
