@@ -126,8 +126,10 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
 function copyProperties (source, destination) {
   var props = Object.getOwnPropertyNames(source);
   props.forEach(function (prop) {
+    var desc;
     if (!destination[prop]) {
-      destination[prop] = {value: source[prop], writable: window.debug};
+      desc = Object.getOwnPropertyDescriptor(source, prop);
+      destination[prop] = {value: source[prop], writable: desc.writable};
     }
   });
 }
