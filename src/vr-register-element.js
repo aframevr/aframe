@@ -52,7 +52,7 @@ module.exports = document.registerElement = function (tagName, obj) {
  */
 function wrapVRNodeMethods (obj) {
   var newObj = {};
-  wrapMethods(newObj, ['attachedCallback'], obj, VRNode.prototype);
+  wrapMethods(newObj, ['attachedCallback', 'attributeChangedCallback'], obj, VRNode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
@@ -65,7 +65,7 @@ function wrapVRNodeMethods (obj) {
  */
 function wrapVRObjectMethods (obj) {
   var newObj = {};
-  var vrNodeMethods = ['attachedCallback'];
+  var vrNodeMethods = ['attachedCallback', 'attributeChangedCallback'];
   var vrObjectMethods = [
     'attributeChangedCallback',
     'attachedCallback',

@@ -36,6 +36,10 @@ var proto = {
 
   attributeChangedCallback: {
     value: function (attrName, oldVal, newVal) {
+      if (attrName === 'mixin') {
+        this.updateComponents();
+        return;
+      }
       this.updateComponent(attrName);
     },
     writable: window.debug

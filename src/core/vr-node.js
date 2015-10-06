@@ -24,11 +24,8 @@ module.exports = document.registerElement(
         attachedCallback: {
           value: function () {
             var sceneEl = document.querySelector('vr-scene');
-            var mixinId = this.getAttribute('mixin');
-            this.mixinEl = document.querySelector('#' + mixinId);
-            // Listens to changes on the mixin if there's any
             this.sceneEl = sceneEl;
-            this.attachMixinListener(this.mixinEl);
+            this.updateMixin();
           },
           writable: window.debug
         },
@@ -39,8 +36,20 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function () { /* no-op */ },
+          value: function (attr) {
+            if (attr !== 'mixin') { return; }
+            this.updateMixin();
+          },
           writable: window.debug
+        },
+
+        updateMixin: {
+          value: function () {
+            var mixinId = this.getAttribute('mixin');
+            this.mixinEl = document.querySelector('#' + mixinId);
+            // Listens to changes on the mixin if there's any
+            this.attachMixinListener(this.mixinEl);
+          }
         },
 
         load: {
@@ -91,7 +100,9 @@ module.exports = document.registerElement(
         attachMixinListener: {
           value: function (mixinEl) {
             var self = this;
+            var currentObserver = this.mixinObserver;
             if (!mixinEl) { return; }
+            if (currentObserver) { currentObserver.disconnect(); }
             var observer = new MutationObserver(function (mutations) {
               var attr = mutations[0].attributeName;
               self.applyMixin(attr);
