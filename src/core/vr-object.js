@@ -133,7 +133,7 @@ var proto = {
     value: function (name) {
       var component = VRComponents[name];
       if (!component) {
-        VRUtils.warn('Unkown component name: ' + name);
+        VRUtils.warn('Unknown component name: ' + name);
         return;
       }
       this.components[name].updateAttributes(this.getAttribute(name));
