@@ -1,3 +1,4 @@
+/* global CustomEvent */
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
@@ -44,14 +45,14 @@ module.exports = document.registerElement = function (tagName, obj) {
 };
 
 /**
- * This wrapps some of the obj methods to call those on VRNode base clase
+ * This wraps some of the obj methods to call those on VRNode base clase
  * @param  {object} obj The objects that contains the methods that will be wrapped
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
 function wrapVRNodeMethods (obj) {
   var newObj = {};
-  wrapMethods(newObj, ['createdCallback'], obj, VRNode.prototype);
+  wrapMethods(newObj, ['attachedCallback'], obj, VRNode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
@@ -64,7 +65,7 @@ function wrapVRNodeMethods (obj) {
  */
 function wrapVRObjectMethods (obj) {
   var newObj = {};
-  var vrNodeMethods = ['createdCallback'];
+  var vrNodeMethods = ['attachedCallback'];
   var vrObjectMethods = [
     'attributeChangedCallback',
     'attachedCallback',
@@ -104,6 +105,8 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
   var derivedMethod = derivedObj[methodName];
   var baseMethod = baseObj[methodName];
   if (!derivedMethod || !baseMethod) { return; }
+  // The derived class doesn't override the one in the base one
+  if (derivedMethod === baseMethod) { return; }
   // Wrapper
   // The base method is called before the one in the derived class
   var wrapperMethod = function () {
@@ -123,11 +126,25 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
 function copyProperties (source, destination) {
   var props = Object.getOwnPropertyNames(source);
   props.forEach(function (prop) {
+    var desc;
     if (!destination[prop]) {
-      destination[prop] = {value: source[prop], writable: window.debug};
+      desc = Object.getOwnPropertyDescriptor(source, prop);
+      destination[prop] = {value: source[prop], writable: desc.writable};
     }
   });
 }
 
 var VRNode = require('./core/vr-node');
 var VRObject = require('./core/vr-object');
+
+/**
+ * Fires a custom event (as a stand-in for the spec'd `WebComponentsReady` event).
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  // `setTimeout` for Chrome.
+  setTimeout(function () {
+    document.dispatchEvent(new CustomEvent('vr-markup-ready', {
+      bubbles: true
+    }));
+  });
+});

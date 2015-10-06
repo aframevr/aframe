@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Animation</title>
+  <meta name="description" content="Animation">
+  <link rel="stylesheet" type="text/css" href="../style/vr-markup.css">
+  <link rel="stylesheet" type="text/css" href="_style/main.css">
+  <script src="../build/vr-markup.js"></script>
+</head>
+
+<body>
+  <vr-assets>
+    <vr-mixin id="planet" geometry="primitive: sphere; radius: 0.5" material="color: green"></vr-mixin>
+    <vr-mixin id="orbit" attribute="rotation" to="0 0 360" repeat="indefinite" easing="linear" dur="3000"></vr-mixin>
+  </vr-assets>
+  <vr-scene>
+    <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
+    </vr-object>
+    <vr-object rotation="0 0 0" position="0 0 -5">
+      <vr-object mixin="planet" geometry="radius: 3" material="color: yellow"></vr-object>
+
+      <vr-object position="0 0 0">
+        <vr-animation mixin="orbit" dur="8000"></vr-animation>
+        <vr-object mixin="planet" material="color: red" position="8 0 0" geometry="radius: 1"></vr-object>
+      </vr-object>
+
+      <vr-object position="0 0 0">
+        <vr-animation mixin="orbit" dur="4000"></vr-animation>
+        <vr-object mixin="planet" material="color: blue" position="6 0 0"></vr-object>
+      </vr-object>
+
+      <vr-object position="0 0 0">
+        <vr-animation mixin="orbit" dur="2000"></vr-animation>
+        <vr-object mixin="planet" position="4 0 0"></vr-object>
+      </vr-object>
+    </vr-object>
+  </vr-scene>
+</body>
+</html>

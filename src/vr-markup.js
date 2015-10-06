@@ -8,18 +8,12 @@ var VRNode = require('./core/vr-node');
 var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 
-require('./core/vr-camera');
-require('./core/vr-scene');
+require('./core/vr-animation');
 require('./core/vr-assets');
+require('./core/vr-mixin');
+require('./core/vr-scene');
 
-require('./vr-animation');
-require('./vr-behavior');
-require('./vr-controls');
 require('./vr-cursor');
-require('./vr-fog');
-require('./vr-geometry');
-require('./vr-material');
-require('./vr-mesh');
 
 module.exports = {
   THREE: THREE,

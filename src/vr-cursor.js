@@ -12,7 +12,7 @@ module.exports = document.registerElement(
   {
     prototype: Object.create(
       VRObject.prototype, {
-        createdCallback: {
+        attachedCallback: {
           value: function () {
             var material = this.getMaterial();
             var geometry = this.getGeometry();
