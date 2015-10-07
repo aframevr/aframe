@@ -13,8 +13,6 @@ require('./core/vr-assets');
 require('./core/vr-mixin');
 require('./core/vr-scene');
 
-require('./vr-cursor');
-
 module.exports = {
   THREE: THREE,
   VRObject: VRObject,
