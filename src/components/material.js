@@ -1,4 +1,6 @@
 var registerComponent = require('../core/register-component');
+var pbrFragmentShader = require('../shaders/pbrFragment.glsl');
+var pbrVertexShader = require('../shaders/pbrVertex.glsl');
 var THREE = require('../../lib/three');
 
 var defaults = {
@@ -106,8 +108,6 @@ module.exports.Component = registerComponent('material', {
       var cubeMapMip5 = THREE.ImageUtils.loadTextureCube(urls);
       cubeMapMip5.format = THREE.RGBFormat;
 
-      var shaderPBR = THREE.ShaderLib.pbr;
-
       var material = new THREE.ShaderMaterial({
         uniforms: {
           baseColor: {
@@ -165,8 +165,8 @@ module.exports.Component = registerComponent('material', {
             value: new THREE.Vector2(1.0, 1.0)
           }
         },
-        vertexShader: shaderPBR.vertexShader,
-        fragmentShader: shaderPBR.fragmentShader
+        vertexShader: pbrVertexShader(),
+        fragmentShader: pbrFragmentShader()
       });
 
       this.material = material;
