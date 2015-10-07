@@ -72,7 +72,7 @@ function (value, defaultValue) {
 module.exports.parseAttributeString = function (attr, value, defaultValue) {
   if (!attr) { return; }
 
-  var valueLower = (value || '').toLowerCase();
+  var valueLower = typeof value === 'string' ? value.toLowerCase() : value;
   // Internal default value (for position, rotation, scale...)
   var internalDefault = getDefaultValue(attr);
   defaultValue = defaultValue !== undefined ? defaultValue : internalDefault;
