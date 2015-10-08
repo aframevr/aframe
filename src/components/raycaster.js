@@ -32,13 +32,23 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  /**
+   * Returns a closure that emits a DOM event when the cursor intersects
+   * with an object.
+   *
+   * @param {String} name
+   *   Name of event (use a space-delimited string for multiple events).
+   * @param {Object} detail
+   *   Custom data (optional) to pass as `detail` if the event is to
+   *   be a `CustomEvent`.
+   */
   emitOnIntersection: {
-    value: function (eventName) {
+    value: function (name, detail) {
       var self = this;
       return function () {
         var closest = self.getClosestIntersected();
         if (!closest) { return; }
-        closest.object.el.emit(eventName);
+        closest.object.el.emit(name);
       };
     }
   },
@@ -72,6 +82,9 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  /**
+   * Emits a `mouseleave` event and clears info about the last intersection.
+   */
   clearExistingIntersection: {
     value: function () {
       this.intersectedEl.emit('mouseleave');
@@ -79,13 +92,18 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
-  // May return null if no objects are intersected.
+  /**
+   * Returns the closest intersected object.
+   *
+   * @returns {Object|null}
+   *   The closest intersected element that is not the cursor itself.
+   *   If no objects are intersected, `null` is returned.
+   */
   getClosestIntersected: {
     value: function () {
       var scene = this.el.sceneEl.object3D;
       var intersectedObjs = this.intersect(scene.children);
       for (var i = 0; i < intersectedObjs.length; ++i) {
-        // Find the closest element that is not the cursor itself.
         if (intersectedObjs[i].object !== this.el.object3D) {
           return intersectedObjs[i];
         }
@@ -94,6 +112,10 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  /**
+   * Remembers the last intersected element and fires
+   * `mouseenter` and `hover` events.
+   */
   setExistingIntersection: {
     value: function (el) {
       this.intersectedEl = el;
