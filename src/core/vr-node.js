@@ -117,6 +117,44 @@ module.exports = document.registerElement(
         applyMixin: {
           value: function () { /* no-op */ },
           writable: window.debug
+        },
+
+        /**
+         * Emits a DOM event.
+         *
+         * @param {String} name
+         *   Name of event (use a space-delimited string for multiple events).
+         * @param {Object} detail
+         *   Custom data (optional) to pass as `detail` if the event is to
+         *   be a `CustomEvent`.
+         */
+        emit: {
+          value: function (name, detail) {
+            var self = this;
+            return name.split(' ').map(function (eventName) {
+              return VRUtils.fireEvent(self, eventName, detail);
+            });
+          },
+          writable: window.debug
+        },
+
+        /**
+         * Returns a closure that emits a DOM event.
+         *
+         * @param {String} name
+         *   Name of event (use a space-delimited string for multiple events).
+         * @param {Object} detail
+         *   Custom data (optional) to pass as `detail` if the event is to
+         *   be a `CustomEvent`.
+         */
+        emitter: {
+          value: function (name, detail) {
+            var self = this;
+            return function () {
+              self.emit(name, detail);
+            };
+          },
+          writable: window.debug
         }
       })
   }
