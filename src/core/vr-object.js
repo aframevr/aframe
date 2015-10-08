@@ -115,7 +115,8 @@ var proto = {
       var self = this;
       Object.keys(VRComponents).forEach(initComponent);
       function initComponent (key) {
-        if (self.hasAttribute(key) || (mixinEl && mixinEl.hasAttribute(key))) {
+        var componentName = VRComponents[key].Component.prototype.name;
+        if (self.hasAttribute(componentName) || (mixinEl && mixinEl.hasAttribute(key))) {
           if (!VRComponents[key].Component) { return; }
           self.components[key] = new VRComponents[key].Component(self);
         }
