@@ -33,7 +33,7 @@ module.exports.warn = function (msg) {
  * Returns the default value of an attribute based on its attribute name.
  *
  * @param {String} attr The name of the attribute (e.g., the string `'position'`).
- * @returns {Object} The default value of the attribute.
+ * @returns {Object|null} The default value of the attribute.
  */
 var getDefaultValue = function (attr) {
   // Special casing for attributes whose values get transformed to objects.
@@ -44,22 +44,25 @@ var getDefaultValue = function (attr) {
   if (attr === 'scale') {
     return {x: 1, y: 1, z: 1};
   }
+
+  return null;
 };
 
 /**
  * Given a coordinate in a string form "0 0 0"
  * It returns the coordinate parsed as an object
- * { x: 3, y: 4, z: -10} or the default value
+ * {x: 3, y: 4, z: -10} or the default value.
  *
- * @param  {String} value        String to parse
- * @param  {Object} defaultValue Default value
- * @return {Object}              Parsed coordinate
+ * @param  {String} value        String to parse.
+ * @param  {Object} defaultValue Default value.
+ * @return {Object}              Parsed coordinate.
  */
 var parseCoordinate = module.exports.parseCoordinate =
 function (value, defaultValue) {
   var def;
   var values = '';
   if (typeof value !== 'string') { return defaultValue; }
+  if (defaultValue === null) { return value; }
   if (typeof defaultValue === 'object') {
     if ('x' in defaultValue && 'y' in defaultValue && 'z' in defaultValue) {
       def = defaultValue;
@@ -102,7 +105,7 @@ module.exports.parseAttributeString = function (attr, value, defaultValue) {
     case 'boolean':
       return valueLower === 'true';
     default:
-      return value !== undefined ? value : null;
+      return value !== undefined ? value : defaultValue;
   }
 };
 
