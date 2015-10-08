@@ -11,12 +11,29 @@ var VRScene = module.exports = registerElement(
   {
     prototype: Object.create(
       VRNode.prototype, {
+        defaults: {
+          value: {
+            lights: {
+              // Default directional light.
+              0: {
+                color: new THREE.Vector3(1.0, 1.0, 1.0),
+                direction: new THREE.Vector3(-0.5, 1.0, 0.5),
+                position: new THREE.Vector3(0, 0, 0),
+                intensity: 5.0
+              }
+            }
+          }
+        },
+
         attachedCallback: {
           value: function () {
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
+            this.lights = {};
+            this.materials = {};
             this.vrButton = null;
-            document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
+            document.addEventListener('vr-markup-ready',
+                                      this.attachEventListeners.bind(this));
             this.attachFullscreenListeners();
             this.setupScene();
           }
@@ -131,6 +148,8 @@ var VRScene = module.exports = registerElement(
             this.setupLoader();
             // three.js camera setup.
             this.setupCamera();
+            // TODO: initialize lights somewhere else.
+            this.updateMaterials();
             this.resizeCanvas();
             // Kick off the render loop.
             this.render(performance.now());
@@ -322,6 +341,55 @@ var VRScene = module.exports = registerElement(
             });
             this.renderer.render(this.object3D, camera);
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
+          }
+        },
+
+        /**
+         * Registers light to the scene for the scene to keep track.
+         * Light is kept track in a map such that it can be looked up and
+         * updated in place if necessary.
+         * Doing so will update all materials in the scene.
+         *
+         * @param light {object} light attributes (e.g., color, intensity).
+         */
+        registerLight: {
+          value: function (light) {
+            this.lights[light.id] = light;
+            this.updateMaterials();
+          }
+        },
+
+        /**
+         * Registers material component for the scene to keep track.
+         * Scene keeps track of materials in case of needed updates.
+         *
+         * @param id {number} ID of the material to keep track.
+         * @param material {object} material component instance.
+         */
+        registerMaterial: {
+          value: function (id, material) {
+            this.materials[id] = material;
+          }
+        },
+
+        /**
+         * Updates all materials in the scene with the scene's lights.
+         * Prescribes a default light if no lights are set.
+         */
+        updateMaterials: {
+          value: function () {
+            var self = this;
+            // Default lights prescribed if no lights set.
+            var lights = Object.keys(self.lights).length
+                         ? self.lights : this.defaults.lights;
+            // Convert this.lights to array.
+            var lightsArr = Object.keys(lights).map(function (id) {
+              return lights[id];
+            });
+            // Iterate through all materials to update lights.
+            Object.keys(self.materials).forEach(function (id) {
+              self.materials[id].updateLights(lightsArr);
+            });
           }
         }
       }
