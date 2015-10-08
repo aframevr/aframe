@@ -1,5 +1,3 @@
-/* global CustomEvent */
-
 var registerComponent = require('../core/register-component');
 var requestInterval = require('request-interval');
 var THREE = require('../../lib/three');
@@ -17,8 +15,14 @@ module.exports.Component = registerComponent('raycaster', {
   attachEventListeners: {
     value: function () {
       var el = this.el;
-      document.addEventListener('mousedown', this.onMouseDown.bind(this), false);
-      el.addEventListener('click', this.onClick.bind(this));
+
+      document.addEventListener('mousedown', el.emitter('mousedown'));
+      document.addEventListener('mouseup', el.emitter('mouseup'));
+      document.addEventListener('click', el.emitter('click'));
+
+      el.addEventListener('mousedown', this.emitOnIntersection('mousedown'));
+      el.addEventListener('mouseup', this.emitOnIntersection('mouseup'));
+      el.addEventListener('click', this.emitOnIntersection('click'));
     }
   },
 
@@ -28,16 +32,24 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
-  onClick: {
-    value: function () {
-      var closest = this.getClosestIntersected();
-      if (closest) { closest.object.el.click(); }
-    }
-  },
-
-  onMouseDown: {
-    value: function () {
-      this.el.click();
+  /**
+   * Returns a closure that emits a DOM event when the cursor intersects
+   * with an object.
+   *
+   * @param {String} name
+   *   Name of event (use a space-delimited string for multiple events).
+   * @param {Object} detail
+   *   Custom data (optional) to pass as `detail` if the event is to
+   *   be a `CustomEvent`.
+   */
+  emitOnIntersection: {
+    value: function (name, detail) {
+      var self = this;
+      return function () {
+        var closest = self.getClosestIntersected();
+        if (!closest) { return; }
+        closest.object.el.emit(name);
+      };
     }
   },
 
@@ -70,20 +82,28 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  /**
+   * Emits a `mouseleave` event and clears info about the last intersection.
+   */
   clearExistingIntersection: {
     value: function () {
-      this.intersectedEl.dispatchEvent(new CustomEvent('mouseleave'));
+      this.intersectedEl.emit('mouseleave');
       this.intersectedEl = null;
     }
   },
 
-  // May return null if no objects are intersected.
+  /**
+   * Returns the closest intersected object.
+   *
+   * @returns {Object|null}
+   *   The closest intersected element that is not the cursor itself.
+   *   If no objects are intersected, `null` is returned.
+   */
   getClosestIntersected: {
     value: function () {
       var scene = this.el.sceneEl.object3D;
       var intersectedObjs = this.intersect(scene.children);
       for (var i = 0; i < intersectedObjs.length; ++i) {
-        // Find the closest element that is not the cursor itself.
         if (intersectedObjs[i].object !== this.el.object3D) {
           return intersectedObjs[i];
         }
@@ -92,10 +112,14 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  /**
+   * Remembers the last intersected element and fires
+   * `mouseenter` and `hover` events.
+   */
   setExistingIntersection: {
     value: function (el) {
       this.intersectedEl = el;
-      el.dispatchEvent(new CustomEvent('mouseenter'));
+      el.emit('mouseenter hover');
     }
   },
 
