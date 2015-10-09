@@ -45,7 +45,6 @@ module.exports.Component = registerComponent('material', {
         side: THREE.DoubleSide
       });
       material.map = texture;
-      material.needsupdate = true;
       this.textureMaterial = material;
       return material;
     }
