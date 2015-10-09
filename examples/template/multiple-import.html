@@ -9,13 +9,13 @@
   </head>
   <body>
     <vr-assets>
-      <vr-style id="cube" geometry="primitive: box" material="color: red"></vr-style>
-      <vr-style id="sphere" geometry="primitive: sphere" material="color: blue"></vr-style>
+      <vr-mixin id="cube" geometry="primitive: box" material="color: red"></vr-mixin>
+      <vr-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></vr-mixin>
     </vr-assets>
 
     <vr-scene>
       <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
-      <vr-object class="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
+      <vr-object mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
 
 
       <vr-oval color="green"></vr-oval>
