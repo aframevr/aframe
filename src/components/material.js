@@ -11,17 +11,50 @@ var defaults = {
 };
 
 module.exports.Component = registerComponent('material', {
-  init: {
-    value: function () {
-      this.setupMaterial();
-    }
-  },
 
   update: {
     value: function () {
-      var data = this.data;
       var object3D = this.el.object3D;
-      var material = this.material;
+      object3D.material = this.getMaterial();
+    }
+  },
+
+  getMaterial: {
+    value: function () {
+      var data = this.data;
+      var material = data.url ? this.getTextureMaterial() : this.getPBRMaterial();
+      return material;
+    }
+  },
+
+  getTextureMaterial: {
+    value: function () {
+      var data = this.data;
+      var url = data.url;
+      return this.setupTextureMaterial(url);
+    }
+  },
+
+  setupTextureMaterial: {
+    value: function (url) {
+      var data = this.data;
+      var color = data.color || 0xffffff;
+      var texture = THREE.ImageUtils.loadTexture(url);
+      var material = this.textureMaterial || new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide
+      });
+      material.map = texture;
+      material.needsupdate = true;
+      this.textureMaterial = material;
+      return material;
+    }
+  },
+
+  getPBRMaterial: {
+    value: function () {
+      var data = this.data;
+      var material = this.pbrMaterial || this.setupPBRMaterial();
       var color = data.color || defaults.color;
       color = new THREE.Color(color);
       color = new THREE.Vector3(color.r, color.g, color.b);
@@ -29,11 +62,11 @@ module.exports.Component = registerComponent('material', {
       material.uniforms.roughness.value = data.roughness || defaults.roughness;
       material.uniforms.metallic.value = data.metallic || defaults.metallic;
       material.uniforms.lightIntensity.value = data.lightIntensity || defaults.lightIntensity;
-      object3D.material = material;
+      return material;
     }
   },
 
-  setupMaterial: {
+  setupPBRMaterial: {
     value: function () {
       // Shader parameters
       var baseColor = new THREE.Vector3(0.5, 0.5, 0.5);
@@ -169,7 +202,8 @@ module.exports.Component = registerComponent('material', {
         fragmentShader: pbrFragmentShader()
       });
 
-      this.material = material;
+      this.pbrMaterial = material;
+      return material;
     }
   }
 });
