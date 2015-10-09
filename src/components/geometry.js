@@ -23,10 +23,9 @@ module.exports.Component = registerComponent('geometry', {
     value: function () {
       var data = {};
       var geometry;
-      var primitive = this.data.primitive;
       VRUtils.mixin(data, defaults);
       VRUtils.mixin(data, this.data);
-      switch (primitive) {
+      switch (data.primitive) {
         case 'box':
           geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
           break;
