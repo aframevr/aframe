@@ -1,30 +1,34 @@
 var registerComponent = require('../core/register-component');
-var VRUtils = require('../vr-utils');
 var THREE = require('../../lib/three');
+var VRUtils = require('../vr-utils');
 
 var defaults = {
   height: 5,
   width: 5,
   depth: 5,
-  radius: 200,
-  tube: 10,
+  radius: 5,
+  tube: 2,
   segments: 32
 };
 
 module.exports.Component = registerComponent('geometry', {
   update: {
     value: function () {
-      var object3D = this.el.object3D;
-      object3D.geometry = this.setupGeometry();
+      this.setupGeometry();
     }
   },
 
   setupGeometry: {
     value: function () {
-      var data = {};
+      var object3D = this.el.object3D;
+      object3D.geometry = this.getGeometry();
+    }
+  },
+
+  getGeometry: {
+    value: function () {
+      var data = this.applyDefaults(defaults);
       var geometry;
-      VRUtils.mixin(data, defaults);
-      VRUtils.mixin(data, this.data);
       switch (data.primitive) {
         case 'box':
           geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
@@ -33,7 +37,7 @@ module.exports.Component = registerComponent('geometry', {
           geometry = new THREE.SphereGeometry(data.radius, defaults.segments, defaults.segments);
           break;
         case 'torus':
-          geometry = new THREE.TorusGeometry(data.radius, data.tube);
+          geometry = new THREE.TorusGeometry(data.radius, data.tube, defaults.segments, defaults.segments);
           break;
         case 'plane':
           geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
@@ -43,7 +47,6 @@ module.exports.Component = registerComponent('geometry', {
           VRUtils.warn('Primitive type not supported');
           break;
       }
-      this.geometry = geometry;
       return geometry;
     }
   }

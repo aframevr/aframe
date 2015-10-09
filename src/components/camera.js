@@ -16,13 +16,15 @@ module.exports.Component = registerComponent('camera', {
 
   update: {
     value: function () {
-      var data = this.data;
+      var data;
       var camera = this.camera;
+      defaults.aspect = window.innerWidth / window.innerHeight;
+      data = this.applyDefaults(defaults);
       // Setting three.js camera parameters
-      camera.fov = data.fov || defaults.fov;
-      camera.near = data.near || defaults.near;
-      camera.far = data.far || defaults.far;
-      camera.aspect = data.aspect || window.innerWidth / window.innerHeight;
+      camera.fov = data.fov;
+      camera.near = data.near;
+      camera.far = data.far;
+      camera.aspect = data.aspect;
       camera.updateProjectionMatrix();
     }
   },

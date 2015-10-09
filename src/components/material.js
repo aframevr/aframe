@@ -14,16 +14,24 @@ module.exports.Component = registerComponent('material', {
 
   update: {
     value: function () {
+      this.setupMaterial();
+    }
+  },
+
+  setupMaterial: {
+    value: function () {
       var object3D = this.el.object3D;
-      object3D.material = this.getMaterial();
+      var material = this.getMaterial();
+      object3D.material = material;
+      this.cacheMaterial(material);
     }
   },
 
   getMaterial: {
     value: function () {
       var data = this.data;
-      var material = data.url ? this.getTextureMaterial() : this.getPBRMaterial();
-      this.cacheMaterial(material);
+      var url = data.url;
+      var material = data.url ? this.getTextureMaterial(url) : this.getPBRMaterial();
       return material;
     }
   },
@@ -43,14 +51,6 @@ module.exports.Component = registerComponent('material', {
   },
 
   getTextureMaterial: {
-    value: function () {
-      var data = this.data;
-      var url = data.url;
-      return this.setupTextureMaterial(url);
-    }
-  },
-
-  setupTextureMaterial: {
     value: function (url) {
       var data = this.data;
       var color = data.color || 0xffffff;
@@ -66,20 +66,25 @@ module.exports.Component = registerComponent('material', {
 
   getPBRMaterial: {
     value: function () {
-      var data = this.data;
-      var material = this.pbrMaterial || this.setupPBRMaterial();
-      var color = data.color || defaults.color;
-      color = new THREE.Color(color);
+      var material = this.pbrMaterial || this.initPBRMaterial();
+      return this.updatePBRMaterial(material);
+    }
+  },
+
+  updatePBRMaterial: {
+    value: function (material) {
+      var data = this.applyDefaults(defaults);
+      var color = new THREE.Color(data.color);
       color = new THREE.Vector3(color.r, color.g, color.b);
       material.uniforms.baseColor.value = color;
-      material.uniforms.roughness.value = data.roughness || defaults.roughness;
-      material.uniforms.metallic.value = data.metallic || defaults.metallic;
-      material.uniforms.lightIntensity.value = data.lightIntensity || defaults.lightIntensity;
+      material.uniforms.roughness.value = data.roughness;
+      material.uniforms.metallic.value = data.metallic;
+      material.uniforms.lightIntensity.value = data.lightIntensity;
       return material;
     }
   },
 
-  setupPBRMaterial: {
+  initPBRMaterial: {
     value: function () {
       // Shader parameters
       var baseColor = new THREE.Vector3(0.5, 0.5, 0.5);

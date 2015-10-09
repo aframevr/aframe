@@ -45,6 +45,18 @@ Component.prototype = {
   update: function () { /* no-op */ },
 
   /**
+   * Applies defaults to the current data
+   * @param  {Object} defaults Contains the default values
+   * @return {Object}          The current data with the defaults applied
+   */
+  applyDefaults: function (defaults) {
+    var data = {};
+    mixin(data, defaults);
+    mixin(data, this.data);
+    return data;
+  },
+
+  /**
    * Parses the data coming from the entity attribute
    * If there's a style its values will be mixed in
    */
