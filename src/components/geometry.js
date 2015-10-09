@@ -3,7 +3,9 @@ var VRUtils = require('../vr-utils');
 var THREE = require('../../lib/three');
 
 var defaults = {
-  size: 5,
+  height: 5,
+  width: 5,
+  depth: 5,
   radius: 200,
   tube: 10,
   segments: 32
@@ -19,34 +21,23 @@ module.exports.Component = registerComponent('geometry', {
 
   setupGeometry: {
     value: function () {
-      var data = this.data;
-      var primitive = data.primitive;
+      var data = {};
       var geometry;
-      var radius;
-      var width;
-      var height;
-      var depth;
-      var tube;
+      var primitive = this.data.primitive;
+      VRUtils.mixin(data, defaults);
+      VRUtils.mixin(data, this.data);
       switch (primitive) {
         case 'box':
-          width = data.width || defaults.size;
-          height = data.height || defaults.size;
-          depth = data.depth || defaults.size;
-          geometry = new THREE.BoxGeometry(width, height, depth);
+          geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
           break;
         case 'sphere':
-          radius = data.radius || defaults.size;
-          geometry = new THREE.SphereGeometry(radius, defaults.segments, defaults.segments);
+          geometry = new THREE.SphereGeometry(data.radius, defaults.segments, defaults.segments);
           break;
         case 'torus':
-          radius = data.radius || defaults.radius;
-          tube = data.tube || defaults.tube;
-          geometry = new THREE.TorusGeometry(radius, tube);
+          geometry = new THREE.TorusGeometry(data.radius, data.tube);
           break;
         case 'plane':
-          width = data.width || defaults.size;
-          height = data.height || defaults.size;
-          geometry = new THREE.PlaneBufferGeometry(width, height);
+          geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
           break;
         default:
           geometry = new THREE.Geometry();
