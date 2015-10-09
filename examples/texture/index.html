@@ -11,15 +11,15 @@
   <body>
     <vr-assets>
       <vr-mixin id="plane" 
-        geometry="primitive: plane; width: 10; height: 10;" 
-        material="url: ../_images/pbr/maskonaive_00.jpg;"
+        geometry="primitive: sphere; width: 10; height: 10;" 
+        material="url: ../_images/pano/louvre.jpg;"
        ></vr-mixin>
     </vr-assets>
     <vr-scene>
-      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
+      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: true">
       </vr-object>
       <vr-object mixin="plane">
-        <vr-animation repeat="indefinite" to="360 360 360" attribute="rotation" dur="10000" easing="linear"></vr-animation>
+        <vr-animation repeat="indefinite" to="0 360 0" attribute="rotation" dur="30000" easing="linear"></vr-animation>
       </vr-object>
     </vr-scene>
   </body>
