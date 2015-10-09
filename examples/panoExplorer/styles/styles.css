@@ -1,0 +1,50 @@
+body {
+  background: rgb(239,45,94);
+  font-size: 1em;
+  font: normal 500 1em/1em 'Montserrat', sans-serif;
+  margin: 0;
+}
+
+.title {
+  background: #6172B4;
+  color: white;
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: 200;
+  font-size: 1rem;
+  hyphens: auto;
+  left: 2em;
+  line-height: 1.5em;
+  padding: 2em 2em 1em;  
+  position: absolute;
+  top: 2em;
+  width: 14em;
+  z-index: 1;
+}
+
+.title a {
+  color: white;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+}
+
+.title p {
+  border-top: 0.2em solid rgba(0,0,0,0.1);
+  padding-top: 1em;
+}
+
+.builtwith {
+  font-weight: 400;
+}
+
+.logo {
+  padding: 2em 0 0;
+  width: 75%;
+}
+
+.mozilla {
+  bottom: 2em;
+  left: 2em;
+  position: absolute;
+  width: 7em;
+  z-index: 1;
+}
