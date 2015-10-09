@@ -51,8 +51,10 @@ Component.prototype = {
   parseAttributes: function (str) {
     var mixinEl = this.el.mixinEl;
     var styleStr = mixinEl && mixinEl.getAttribute(this.name);
-    mixAttributes(styleStr, this.data);
-    mixAttributes(str, this.data);
+    var data = {};
+    mixAttributes(styleStr, data);
+    mixAttributes(str, data);
+    this.data = data;
   }
 };
 
