@@ -1,18 +1,18 @@
-/* global Event, HTMLElement, HTMLImports */
+/* global HTMLElement, HTMLImports */
+
+// Polyfill HTML Imports.
+window.addEventListener('HTMLImportsLoaded', function () {
+  importTemplates();
+});
+
+require('../lib/vendor/HTMLImports');
 
 var VRMarkup = require('@mozvr/vr-markup');
 
-var VRNode = VRMarkup.VRNode;
 var VRObject = VRMarkup.VRObject;
+var VRUtils = VRMarkup.utils;
 
-var internals = {
-  isRegistered: function (tagName) {
-    tagName = tagName.toLowerCase();
-    if (tagName in internals.registeredTags) { return true; }
-    return VRNode.prototype.isPrototypeOf(document.createElement(tagName));
-  },
-  registeredTags: {}
-};
+var internals = {};
 
 var utils = {
   '$': function (sel) {
@@ -26,21 +26,6 @@ var utils = {
       sel = (parent || document).querySelectorAll(sel);
     }
     return Array.prototype.slice.call(sel);
-  },
-  'transformAttr': function (name, val) {
-    return val;
-  },
-  'replaceVariables': function (elSrc, elDest, newVals) {
-    utils.$$(elSrc.attributes).forEach(function (attr) {
-      if (attr.value.indexOf('${') === -1) { return; }
-      var newAttr = utils.format(attr.value, newVals);
-      // if (newAttr !== elDest.getAttribute(attr.name)) {
-      //   elDest.setAttribute(attr.name, newAttr);
-      // }
-      elDest.setAttribute(attr.name, newAttr);
-    });
-
-    // TODO: Also handle innerHTML (useful for text, for example).
   }
 };
 
@@ -86,38 +71,15 @@ utils.template = function (s) {
 };
 
 function importTemplates () {
-  Object.keys(HTMLImports.importer.documents).forEach(function (key) {
-    var doc = HTMLImports.importer.documents[key];
-    console.log('docs', doc);
-    utils.$$('vr-template', doc).forEach(function (template) {
-      var templateEl = document.importNode(template, true);
-      document.body.appendChild(templateEl);
+  if (!HTMLImports.useNative) {
+    Object.keys(HTMLImports.importer.documents).forEach(function (key) {
+      var doc = HTMLImports.importer.documents[key];
+      utils.$$('vr-template', doc).forEach(function (template) {
+        var templateEl = document.importNode(template, true);
+        document.body.appendChild(templateEl);
+      });
     });
-  });
-}
-
-window.addEventListener('HTMLImportsLoaded', function () {
-  console.log('importTemplates HTMLImportsLoaded');
-  importTemplates();
-});
-
-var hasHtmlImports = !!('import' in document.createElement('link'));
-if (hasHtmlImports) {
-  // importTemplates();
-} else {
-  require('../lib/vendor/HTMLImports');  // Polyfill HTML Imports.
-  // importTemplates();
-
-  // var script = document.createElement('script');
-  // script.src = 'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.14/HTMLImports.min.js';
-  // document.head.insertBefore(script, document.head.firstChild);
-
-  // script.addEventListener('load', function () {
-    // window.addEventListener('HTMLImportsLoaded', function () {
-    //   console.log('importTemplates HTMLImportsLoaded');
-    //   importTemplates();
-    // });
-  // });
+  }
 }
 
 document.addEventListener('vr-markup-ready', function () {
@@ -130,14 +92,32 @@ module.exports = document.registerElement(
     prototype: Object.create(
       HTMLElement.prototype,
       {
+        createdCallback: {
+          value: function () {
+            var self = this;
+            if (self.ownerDocument !== document) {
+              setTimeout(function () {
+                document.body.appendChild(self);
+              });
+            }
+          }
+        },
+
+        attributeBlacklist: {
+          value: {
+            name: true,
+            id: true
+          }
+        },
+
         attachedCallback: {
           value: function () {
-            if (internals.vrMarkupReady && !this.injected) {
+            if (internals.vrMarkupReady) {
               this.inject();
+              return;
             }
-
-            this.addEventListener('loaded', this.inject.bind(this));
             document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
+            this.addEventListener('loaded', this.inject.bind(this));
           }
         },
 
@@ -151,7 +131,7 @@ module.exports = document.registerElement(
               elementLoaded();
             }
             function traverseDOM (node) {
-              if (!self.isVRNode(node)) { return; }
+              if (!node.isVRNode) { return; }
               if (!node.hasLoaded) {
                 attachEventListener(node);
                 self.elementsPending++;
@@ -160,12 +140,6 @@ module.exports = document.registerElement(
             function attachEventListener (node) {
               node.addEventListener('loaded', elementLoaded);
             }
-          }
-        },
-
-        isVRNode: {
-          value: function (node) {
-            return VRNode.prototype.isPrototypeOf(node);
           }
         },
 
@@ -182,9 +156,8 @@ module.exports = document.registerElement(
           value: function () {
             // To prevent emitting the loaded event more than once.
             if (this.hasLoaded) { return; }
-            var event = new Event('loaded');
+            VRUtils.fireEvent(this, 'loaded');
             this.hasLoaded = true;
-            this.dispatchEvent(event);
           }
         },
 
@@ -192,59 +165,43 @@ module.exports = document.registerElement(
           value: function (tagName) {
             var tagNameLower = tagName.toLowerCase();
 
-            console.log('registering <%s>', tagNameLower);
-
-            internals.registeredTags[tagNameLower] = true;
+            VRUtils.log('registering <%s>', tagNameLower);
 
             document.registerElement(
               tagNameLower,
               {
                 prototype: Object.create(
                   VRObject.prototype, {
-                    createdCallback: {
-                      value: function () {
-                        /* no-op */
-                        console.log('\tcreatedCallback');
-                      },
-                      writable: window.debug
-                    },
-
-                    attachedCallback: {
-                      value: function () {
-                        console.log('\tattachedCallback');
-                      },
-                      writable: window.debug
-                    },
-
                     attributeChangedCallback: {
                       value: function () {
-                        console.log('\tattributeChangedCallback');
-
-                        if (!this.fakeChildren) { return; }
-
                         // Use any defaults defined on the original `<vr-template>`.
-                        var placeholder = utils.$('vr-template[name="' + tagName + '"]');
-                        var attrsDefault = placeholder ? utils.$$(placeholder.attributes) : [];
+                        var template = utils.$('vr-template[name="' + tagName + '"]');
+                        var attrsDefault = template ? utils.$$(template.attributes) : [];
 
                         // Use the attributes passed on this element.
                         var attrsPassed = utils.$$(this.attributes);
                         // Use both, in that order.
-                        var placeholderAttrs = {};
+                        var templateAttrs = {};
                         attrsDefault.concat(attrsPassed).forEach(function (attr) {
-                          placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
+                          templateAttrs[attr.name] = attr.value;
                         });
 
-                        this.fakeChildren.forEach(function (data) {
-                          utils.replaceVariables(data.placeholder, data.node, placeholderAttrs);
-                        });
+                        var newHTML = utils.format(template.innerHTML, templateAttrs);
+                        if (this.innerHTML !== newHTML) {
+                          // TODO: In the future use something like Virtual
+                          // so we are doing the fewest number of DOM changes.
+                          this.innerHTML = newHTML;
+                        }
                       },
                       writable: window.debug
                     },
 
-                    initAttributes: {
-                      value: function () {
-                        // We don't want the default attributes
-                        // (e.g., `position`, `rotation`, `scale`) to get set.
+                    initDefaults: {
+                      value: function (force) {
+                        // TODO: Listen for scale change. Scale change for children.
+                        if (force) {
+                          VRObject.prototype.initDefaults.call(this);
+                        }
                       },
                       writable: window.debug
                     }
@@ -257,15 +214,11 @@ module.exports = document.registerElement(
         inject: {
           value: function () {
             var self = this;
-
+            if (self.injected) { return; }
             self.injected = true;
 
             var tagName = self.getAttribute('name');
             if (!tagName) { return; }
-            // if (internals.isRegistered(tagName)) {
-            //   console.warn('<%s> already registered', tagName);
-            //   return;
-            // }
 
             self.register(tagName);
 
@@ -275,36 +228,32 @@ module.exports = document.registerElement(
             // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
             var attrsDefault = utils.$$(self.attributes);
 
-            placeholders.forEach(function (placeholder) {
+            placeholders.forEach(function (placeholder, idx) {
               var then = window.performance.now();
 
               // Use the attributes passed on the `<vr-yolo color="salmon">`.
               var attrsPassed = utils.$$(placeholder.attributes);
               // Use both, in that order.
               var placeholderAttrs = {};
+
               attrsDefault.concat(attrsPassed).forEach(function (attr) {
-                placeholderAttrs[attr.name] = utils.transformAttr(attr.name, attr.value);
+                placeholderAttrs[attr.name] = attr.value;
               });
 
-              console.log('attrsPassed', attrsPassed);
-
-              placeholder.fakeChildren = utils.$$('*', self).map(function (child) {
-                var el = child.cloneNode();  // NOTE: This is slow.
-
-                console.log('before', el, placeholderAttrs);
-                utils.replaceVariables(child, el, placeholderAttrs);
-                console.log('after', el);
-
-                placeholder.appendChild(el);
-                sceneEl.add(el);
-
-                return {
-                  placeholder: child,
-                  node: el
-                };
+              Object.keys(placeholderAttrs).forEach(function (key) {
+                if (key.toLowerCase() in self.attributeBlacklist) { return; }
+                placeholder.setAttribute(key, placeholderAttrs[key]);
               });
 
-              console.log('<%s> took %.4f ms to inject', tagName, window.performance.now() - then);
+              var el = document.createElement('vr-object');
+              el.id = 'injected--' + tagName + '-' + (idx + 1);
+              el.className = 'injected injected--' + tagName + ' injected--' + tagName + '-' + (idx + 1);
+              el.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
+              placeholder.initDefaults(true);
+              placeholder.innerHTML = el.innerHTML;
+              sceneEl.add(el);
+
+              VRUtils.log('<%s> took %.4f ms to inject', tagName, window.performance.now() - then);
             });
           }
         }
