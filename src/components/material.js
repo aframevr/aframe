@@ -23,7 +23,22 @@ module.exports.Component = registerComponent('material', {
     value: function () {
       var data = this.data;
       var material = data.url ? this.getTextureMaterial() : this.getPBRMaterial();
+      this.cacheMaterial(material);
       return material;
+    }
+  },
+
+  cacheMaterial: {
+    value: function (material) {
+      var type = material.type;
+      switch (type) {
+        case 'MeshBasicMaterial':
+          this.textureMaterial = material;
+          break;
+        case 'ShaderMaterial':
+          this.pbrMaterial = material;
+          break;
+      }
     }
   },
 
@@ -45,7 +60,6 @@ module.exports.Component = registerComponent('material', {
         side: THREE.DoubleSide
       });
       material.map = texture;
-      this.textureMaterial = material;
       return material;
     }
   },
@@ -201,7 +215,6 @@ module.exports.Component = registerComponent('material', {
         fragmentShader: pbrFragmentShader()
       });
 
-      this.pbrMaterial = material;
       return material;
     }
   }
