@@ -8,7 +8,9 @@ var defaults = {
   depth: 5,
   radius: 5,
   tube: 2,
-  segments: 32
+  segments: 32,
+  innerRadius: 5,
+  outerRadius: 7
 };
 
 module.exports.Component = registerComponent('geometry', {
@@ -38,6 +40,9 @@ module.exports.Component = registerComponent('geometry', {
           break;
         case 'plane':
           geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
+          break;
+        case 'ring':
+          geometry = new THREE.RingGeometry(0.04, 0.08, defaults.segments);
           break;
         case 'sphere':
           geometry = new THREE.SphereGeometry(data.radius, defaults.segments, defaults.segments);
