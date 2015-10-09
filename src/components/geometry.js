@@ -33,14 +33,17 @@ module.exports.Component = registerComponent('geometry', {
         case 'box':
           geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
           break;
+        case 'circle':
+          geometry = new THREE.CircleGeometry(data.radius, defaults.segments);
+          break;
+        case 'plane':
+          geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
+          break;
         case 'sphere':
           geometry = new THREE.SphereGeometry(data.radius, defaults.segments, defaults.segments);
           break;
         case 'torus':
           geometry = new THREE.TorusGeometry(data.radius, data.tube, defaults.segments, defaults.segments);
-          break;
-        case 'plane':
-          geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
           break;
         default:
           geometry = new THREE.Geometry();
