@@ -42,7 +42,7 @@ module.exports.Component = registerComponent('geometry', {
           geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
           break;
         case 'ring':
-          geometry = new THREE.RingGeometry(0.04, 0.08, defaults.segments);
+          geometry = new THREE.RingGeometry(parseFloat(data.innerRadius), parseFloat(data.outerRadius), defaults.segments);
           break;
         case 'sphere':
           geometry = new THREE.SphereGeometry(data.radius, defaults.segments, defaults.segments);
