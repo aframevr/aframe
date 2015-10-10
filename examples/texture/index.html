@@ -10,16 +10,19 @@
   </head>
   <body>
     <vr-assets>
+      <vr-mixin id="hotspot"
+        material="color: blue"
+        geometry="primitive: ring; outerRadius: 0.2; innerRadius: 0.19"
+      ></vr-mixin>
       <vr-mixin id="pano" 
         geometry="primitive: sphere; width: 10; height: 10;" 
-        material="url: ../_images/pano/louvre.jpg;"></vr-mixin>
+        material="url: ../_images/pano/louvre.jpg;"
+      ></vr-mixin>
     </vr-assets>
     <vr-scene>
-      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
-      </vr-object>
-      <vr-object mixin="pano">
-        <vr-animation repeat="indefinite" to="0 360 0" attribute="rotation" dur="30000" easing="linear"></vr-animation>
-      </vr-object>
+      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false"></vr-object>
+      <vr-object mixin="pano"></vr-object>
+      <vr-object mixin="hotspot" position="0 0 -2"></vr-object>
     </vr-scene>
   </body>
 </html>

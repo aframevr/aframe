@@ -3,14 +3,15 @@ var pbrFragmentShader = require('../shaders/pbrFragment.glsl');
 var pbrVertexShader = require('../shaders/pbrVertex.glsl');
 var THREE = require('../../lib/three');
 
-var defaults = {
-  color: Math.random() * 0xffffff,
-  roughness: 1.0,
-  metallic: 0.5,
-  lightIntensity: 7.001
-};
-
 module.exports.Component = registerComponent('material', {
+  defaults: {
+    value: {
+      color: 'red',
+      roughness: 1.0,
+      metallic: 0.5,
+      lightIntensity: 7.001
+    }
+  },
 
   update: {
     value: function () {
@@ -52,11 +53,9 @@ module.exports.Component = registerComponent('material', {
 
   getTextureMaterial: {
     value: function (url) {
-      var data = this.data;
-      var color = data.color || 0xffffff;
       var texture = THREE.ImageUtils.loadTexture(url);
       var material = this.textureMaterial || new THREE.MeshBasicMaterial({
-        color: color,
+        color: 0xffffff,
         side: THREE.DoubleSide
       });
       material.map = texture;
@@ -73,7 +72,7 @@ module.exports.Component = registerComponent('material', {
 
   updatePBRMaterial: {
     value: function (material) {
-      var data = this.applyDefaults(defaults);
+      var data = this.data;
       var color = new THREE.Color(data.color);
       color = new THREE.Vector3(color.r, color.g, color.b);
       material.uniforms.baseColor.value = color;

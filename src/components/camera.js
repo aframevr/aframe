@@ -1,13 +1,15 @@
 var registerComponent = require('../core/register-component');
 var THREE = require('../../lib/three');
 
-var defaults = {
-  fov: 45,
-  near: 1,
-  far: 10000
-};
-
 module.exports.Component = registerComponent('camera', {
+  defaults: {
+    value: {
+      fov: 45,
+      near: 1,
+      far: 10000
+    }
+  },
+
   init: {
     value: function () {
       this.setupCamera();
@@ -16,15 +18,14 @@ module.exports.Component = registerComponent('camera', {
 
   update: {
     value: function () {
-      var data;
+      var data = this.data;
       var camera = this.camera;
-      defaults.aspect = window.innerWidth / window.innerHeight;
-      data = this.applyDefaults(defaults);
+      var aspect = window.innerWidth / window.innerHeight;
       // Setting three.js camera parameters
       camera.fov = data.fov;
       camera.near = data.near;
       camera.far = data.far;
-      camera.aspect = data.aspect;
+      camera.aspect = data.aspect || aspect;
       camera.updateProjectionMatrix();
     }
   },

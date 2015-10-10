@@ -1,14 +1,16 @@
 var registerComponent = require('../core/register-component');
 var THREE = require('../../lib/three');
 
-var defaults = {
-  acceleration: 65
-};
-
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
 module.exports.Component = registerComponent('controls', {
+  defaults: {
+    value: {
+      acceleration: 65
+    }
+  },
+
   init: {
     value: function () {
       this.setupControls();
@@ -17,6 +19,7 @@ module.exports.Component = registerComponent('controls', {
 
   setupControls: {
     value: function () {
+      var data = this.data;
       var scene = this.el.sceneEl;
       this.prevTime = Date.now();
       // The canvas where the scene is painted
@@ -26,7 +29,7 @@ module.exports.Component = registerComponent('controls', {
       this.keys = {};
       this.mouseDown = false;
 
-      this.acceleration = defaults.acceleration;
+      this.acceleration = data.acceleration;
       this.velocity = new THREE.Vector3();
 
       this.pitchObject = new THREE.Object3D();

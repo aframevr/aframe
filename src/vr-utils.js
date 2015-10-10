@@ -142,14 +142,27 @@ module.exports.mixin = function (dest, source) {
 };
 
 /**
- * It mixes properties of source object into dest
- * @param  {object} dest   The object where properties will be copied TO
- * @param  {object} source The object where properties will be copied FROM
+ * It coerces the strings of the obj object into the types of the schema object
+ * @param  {object} dest   The object that contains the string values to be coerced
+ * @param  {object} schema The object that contains the types
  */
-module.exports.isVRObject = function (dest, source) {
-  var keys = Object.keys(source);
-  keys.forEach(mix);
-  function mix (key) {
-    dest[key] = source[key];
+module.exports.coerce = function (obj, schema) {
+  var keys = Object.keys(obj);
+  keys.forEach(coerce);
+  function coerce (key) {
+    var type;
+    var value = schema[key];
+    if (!value) { return; }
+    type = typeof value;
+    switch (type) {
+      case 'string':
+        return;
+      case 'boolean':
+        obj[key] = obj[key] === 'true';
+        return;
+      case 'number':
+        obj[key] = parseFloat(obj[key]);
+        return;
+    }
   }
 };
