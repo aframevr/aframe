@@ -3,37 +3,87 @@ var pbrFragmentShader = require('../shaders/pbrFragment.glsl');
 var pbrVertexShader = require('../shaders/pbrVertex.glsl');
 var THREE = require('../../lib/three');
 
-var defaults = {
-  color: Math.random() * 0xffffff,
-  roughness: 1.0,
-  metallic: 0.5,
-  lightIntensity: 7.001
-};
-
 module.exports.Component = registerComponent('material', {
-  init: {
-    value: function () {
-      this.setupMaterial();
+  defaults: {
+    value: {
+      color: 'red',
+      roughness: 1.0,
+      metallic: 0.5,
+      lightIntensity: 7.001
     }
   },
 
   update: {
     value: function () {
-      var data = this.data;
-      var object3D = this.el.object3D;
-      var material = this.material;
-      var color = data.color || defaults.color;
-      color = new THREE.Color(color);
-      color = new THREE.Vector3(color.r, color.g, color.b);
-      material.uniforms.baseColor.value = color;
-      material.uniforms.roughness.value = data.roughness || defaults.roughness;
-      material.uniforms.metallic.value = data.metallic || defaults.metallic;
-      material.uniforms.lightIntensity.value = data.lightIntensity || defaults.lightIntensity;
-      object3D.material = material;
+      this.setupMaterial();
     }
   },
 
   setupMaterial: {
+    value: function () {
+      var object3D = this.el.object3D;
+      var material = this.getMaterial();
+      object3D.material = material;
+      this.cacheMaterial(material);
+    }
+  },
+
+  getMaterial: {
+    value: function () {
+      var data = this.data;
+      var url = data.url;
+      var material = data.url ? this.getTextureMaterial(url) : this.getPBRMaterial();
+      return material;
+    }
+  },
+
+  cacheMaterial: {
+    value: function (material) {
+      var type = material.type;
+      switch (type) {
+        case 'MeshBasicMaterial':
+          this.textureMaterial = material;
+          break;
+        case 'ShaderMaterial':
+          this.pbrMaterial = material;
+          break;
+      }
+    }
+  },
+
+  getTextureMaterial: {
+    value: function (url) {
+      var texture = THREE.ImageUtils.loadTexture(url);
+      var material = this.textureMaterial || new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        side: THREE.DoubleSide
+      });
+      material.map = texture;
+      return material;
+    }
+  },
+
+  getPBRMaterial: {
+    value: function () {
+      var material = this.pbrMaterial || this.initPBRMaterial();
+      return this.updatePBRMaterial(material);
+    }
+  },
+
+  updatePBRMaterial: {
+    value: function (material) {
+      var data = this.data;
+      var color = new THREE.Color(data.color);
+      color = new THREE.Vector3(color.r, color.g, color.b);
+      material.uniforms.baseColor.value = color;
+      material.uniforms.roughness.value = data.roughness;
+      material.uniforms.metallic.value = data.metallic;
+      material.uniforms.lightIntensity.value = data.lightIntensity;
+      return material;
+    }
+  },
+
+  initPBRMaterial: {
     value: function () {
       // Shader parameters
       var baseColor = new THREE.Vector3(0.5, 0.5, 0.5);
@@ -169,7 +219,7 @@ module.exports.Component = registerComponent('material', {
         fragmentShader: pbrFragmentShader()
       });
 
-      this.material = material;
+      return material;
     }
   }
 });

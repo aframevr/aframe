@@ -1,5 +1,5 @@
 var styleParser = require('style-attr');
-var mixin = require('../vr-utils').mixin;
+var utils = require('../vr-utils');
 
 var mixAttributes = function (str, obj) {
   var attrs = str;
@@ -9,7 +9,7 @@ var mixAttributes = function (str, obj) {
   if (typeof str === 'string') {
     attrs = styleParser.parse(str);
   }
-  mixin(obj, attrs);
+  utils.mixin(obj, attrs);
 };
 
 var Component = function (el) {
@@ -44,6 +44,9 @@ Component.prototype = {
    */
   update: function () { /* no-op */ },
 
+  /* Contains the data default values */
+  defaults: {},
+
   /**
    * Parses the data coming from the entity attribute
    * If there's a style its values will be mixed in
@@ -52,8 +55,10 @@ Component.prototype = {
     var mixinEl = this.el.mixinEl;
     var styleStr = mixinEl && mixinEl.getAttribute(this.name);
     var data = {};
+    utils.mixin(data, this.defaults);
     mixAttributes(styleStr, data);
     mixAttributes(str, data);
+    utils.coerce(data, this.defaults);
     this.data = data;
   }
 };

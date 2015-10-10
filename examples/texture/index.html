@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Texture</title>
+    <meta name="description" content="Texture — vr-markup">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-mixin id="hotspot"
+        material="color: blue"
+        geometry="primitive: ring; outerRadius: 0.2; innerRadius: 0.19"
+      ></vr-mixin>
+      <vr-mixin id="pano" 
+        geometry="primitive: sphere; width: 10; height: 10;" 
+        material="url: ../_images/pano/louvre.jpg;"
+      ></vr-mixin>
+    </vr-assets>
+    <vr-scene>
+      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false"></vr-object>
+      <vr-object mixin="pano"></vr-object>
+      <vr-object mixin="hotspot" position="0 0 -2"></vr-object>
+    </vr-scene>
+  </body>
+</html>
