@@ -44,12 +44,17 @@ var proto = {
   },
 
   attributeChangedCallback: {
-    value: function (attrName, oldVal, newVal) {
-      if (attrName === 'mixin') {
+    value: function (attr, oldVal, newVal) {
+      // In Firefox the callback is called even if the
+      // attribute value doesn't change. We return
+      // if old and new values are the same
+      var newValStr = VRUtils.stringifyAttributeValue(newVal);
+      if (oldVal === newValStr) { return; }
+      if (attr === 'mixin') {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attrName);
+      this.updateComponent(attr);
     },
     writable: window.debug
   },
@@ -100,13 +105,6 @@ var proto = {
       this.initDefaults();
       // Call the parent class
       VRNode.prototype.load.call(this);
-    },
-    writable: window.debug
-  },
-
-  setAttribute: {
-    value: function (attr, val) {
-      return VRNode.prototype.setAttribute.call(this, attr, val);
     },
     writable: window.debug
   },

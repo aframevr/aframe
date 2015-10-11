@@ -36,7 +36,12 @@ module.exports = document.registerElement(
         },
 
         attributeChangedCallback: {
-          value: function (attr) {
+          value: function (attr, oldVal, newVal) {
+            // In Firefox the callback is called even if the
+            // attribute value doesn't change. We return
+            // if old and new values are the same
+            var newValStr = VRUtils.stringifyAttributeValue(newVal);
+            if (oldVal === newValStr) { return; }
             if (attr !== 'mixin') { return; }
             this.updateMixin();
           },
