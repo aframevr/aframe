@@ -1,4 +1,4 @@
-var registerComponent = require('../core/register-component');
+var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
 // To avoid recalculation at every mouse movement tick

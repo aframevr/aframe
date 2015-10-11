@@ -30,6 +30,15 @@ module.exports.warn = function (msg) {
 };
 
 /**
+ * Emits a console log given a message.
+ *
+ * @param {String} msg Log message.
+ */
+module.exports.log = function (msg) {
+  console.log(msg);
+};
+
+/**
  * Returns the default value of an attribute based on its attribute name.
  *
  * @param {String} attr The name of the attribute (e.g., the string `'position'`).

@@ -1,4 +1,4 @@
-var registerComponent = require('../core/register-component');
+var registerComponent = require('../core/register-component').registerComponent;
 var pbrFragmentShader = require('../shaders/pbrFragment.glsl');
 var pbrVertexShader = require('../shaders/pbrVertex.glsl');
 var THREE = require('../../lib/three');

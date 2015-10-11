@@ -1,6 +1,14 @@
-var registerComponent = require('../core/register-component');
+var registerComponent = require('../core/register-component').registerComponent;
 
 module.exports.Component = registerComponent('scale', {
+  defaults: {
+    value: {
+      x: 1,
+      y: 1,
+      z: 1
+    }
+  },
+
   update: {
     value: function () {
       var data = this.data;

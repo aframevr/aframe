@@ -1,7 +1,7 @@
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
-var VRComponents = require('./components');
+var VRComponents = require('./components').components;
 var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
@@ -12,6 +12,15 @@ var VRUtils = require('../vr-utils');
  *
  */
 var proto = {
+
+  // Default Attribute Values
+  defaults: {
+    value: {
+      position: '0 0 0',
+      rotation: '0 0 0',
+      scale: '1 1 1'
+    }
+  },
 
   //  ----------------------------------  //
   //   Native custom elements callbacks   //
@@ -85,10 +94,10 @@ var proto = {
       this.object3D.el = this;
       // It attaches itself to the threejs parent object3D
       this.addToParent();
-      // It sets default values on the attributes if they're not defined
-      this.initAttributes();
-      // Components initializaion
+      // Components initialization
       this.initComponents();
+      // It sets default values on the attributes if they're not defined
+      this.initDefaults();
       // Call the parent class
       VRNode.prototype.load.call(this);
     },
@@ -111,18 +120,20 @@ var proto = {
 
   initComponents: {
     value: function () {
+      var components = Object.keys(VRComponents);
+      components.forEach(this.initComponent.bind(this));
+    }
+  },
+
+  initComponent: {
+    value: function (name) {
       var mixinEl = this.mixinEl;
-      var self = this;
-      Object.keys(VRComponents).forEach(initComponent);
-      function initComponent (key) {
-        var componentName = VRComponents[key].Component.prototype.name;
-        if (self.hasAttribute(componentName) || (mixinEl && mixinEl.hasAttribute(key))) {
-          if (!VRComponents[key].Component) { return; }
-          self.components[key] = new VRComponents[key].Component(self);
-        }
-      }
-      // Updates components to match attributes values
-      this.updateComponents();
+      var hasMixin = mixinEl && mixinEl.hasAttribute(name);
+      var hasAttribute = this.hasAttribute(name);
+      if (!hasAttribute && !hasMixin) { return; }
+      if (!VRComponents[name]) { return; }
+      this.components[name] = new VRComponents[name].Component(this);
+      VRUtils.log('Component initialized: ' + name);
     }
   },
 
@@ -137,24 +148,28 @@ var proto = {
 
   updateComponent: {
     value: function (name) {
-      var component = VRComponents[name];
-      if (!component) {
-        VRUtils.warn('Unknown component name: ' + name);
+      var component = this.components[name];
+      // Update if component already initialized
+      if (component) {
+        component.updateAttributes(this.getAttribute(name));
+        VRUtils.log('Component updated: ' + name);
         return;
       }
-      this.components[name].updateAttributes(this.getAttribute(name));
+      this.initComponent(name);
     },
     writable: window.debug
   },
 
-  initAttributes: {
+  initDefaults: {
     value: function (el) {
-      var position = this.hasAttribute('position');
-      var rotation = this.hasAttribute('rotation');
-      var scale = this.hasAttribute('scale');
-      if (!position) { this.setAttribute('position', '0 0 0'); }
-      if (!rotation) { this.setAttribute('rotation', '0 0 0'); }
-      if (!scale) { this.setAttribute('scale', '1 1 1'); }
+      var self = this;
+      var defaults = this.defaults;
+      var keys = Object.keys(defaults);
+      keys.forEach(initDefault);
+      function initDefault (key) {
+        if (self.hasAttribute(key)) { return; }
+        self.setAttribute(key, defaults[key]);
+      }
     },
     writable: window.debug
   },

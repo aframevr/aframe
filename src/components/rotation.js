@@ -1,7 +1,15 @@
-var registerComponent = require('../core/register-component');
+var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
 module.exports.Component = registerComponent('rotation', {
+  defaults: {
+    value: {
+      x: 0,
+      y: 0,
+      z: 0
+    }
+  },
+
   update: {
     value: function () {
       var data = this.data;

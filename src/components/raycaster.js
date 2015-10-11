@@ -1,4 +1,4 @@
-var registerComponent = require('../core/register-component');
+var registerComponent = require('../core/register-component').registerComponent;
 var requestInterval = require('request-interval');
 var THREE = require('../../lib/three');
 
