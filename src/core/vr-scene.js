@@ -53,7 +53,7 @@ var VRScene = module.exports = registerElement(
 
             function countElement (node) {
               // We wait for all the elements inside the scene to load.
-              if (!self.isVRNode(node)) { return; }
+              if (!node.isVRNode) { return; }
               var isCamera = node.components && node.components.camera;
               if (isCamera) { self.cameraEl = node; }
               if (!node.hasLoaded) {
@@ -65,12 +65,6 @@ var VRScene = module.exports = registerElement(
             function attachEventListener (node) {
               node.addEventListener('loaded', elementLoaded);
             }
-          }
-        },
-
-        isVRNode: {
-          value: function (node) {
-            return VRNode.prototype.isPrototypeOf(node);
           }
         },
 
