@@ -16,8 +16,8 @@
         <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.02; innerRadius: 0.01;" material="color: white" raycaster></vr-object>
       </vr-object>
 
-      <!-- Panos -->
-      <vr-object id="holder" geometry="primitive:sphere; radius:10;" material="url: images/city.jpg;" position="0 0 0" scale="1 1 1"></vr-object>
+      <!-- Pano -->
+      <vr-object id="holder" geometry="primitive: sphere; radius: 10;" material="url: images/city.jpg;"></vr-object>
 
       <!-- Links to panos -->
       <vr-object id="links" position="-1 -0.3 -2">
@@ -46,6 +46,8 @@
           }
         ];
 
+        var links = document.querySelector('#links');
+        var holder = document.querySelector('#holder');
         var width = 0.5;
         var height = 0.5;
 
@@ -61,12 +63,12 @@
           el.setAttribute('material', 'url: images/' + pano.thumb);
           
           // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
-          el.addEventListener('click', function(){
-            window.holder.setAttribute('material', 'url: images/' + pano.url);
-          })
+          el.addEventListener('click', function () {
+            holder.setAttribute('material', 'url: images/' + pano.url);
+          });
 
-          // Add the link to the links object
-          window.links.appendChild(el);
+          // Add the link to the links element
+          links.appendChild(el);
         });
 
       })();
