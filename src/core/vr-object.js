@@ -92,7 +92,9 @@ var proto = {
       var self = this;
       var newMixinsIds = newMixins.split(' ');
       var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+      // The list of mixins that might have been removed on update
       var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+      // Remove the mixins that are gone on update
       diff.forEach(function (mixinId) {
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
@@ -168,13 +170,17 @@ var proto = {
       var mixinEls = this.mixinEls;
       var hasMixin = false;
       var i;
+      // If it's not a component name
+      if (!VRComponents[name]) { return; }
+      // If any of the mixins contains the component
       for (i = 0; i < mixinEls.length; ++i) {
         hasMixin = mixinEls[i].hasAttribute(name);
         if (hasMixin) { break; }
       }
+      // If the element contains the component
       var hasAttribute = this.hasAttribute(name);
+      // Either the element or the mixins have to contain the component
       if (!hasAttribute && !hasMixin) { return; }
-      if (!VRComponents[name]) { return; }
       this.components[name] = new VRComponents[name].Component(this);
       VRUtils.log('Component initialized: ' + name);
     }
