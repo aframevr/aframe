@@ -20,7 +20,12 @@ module.exports.Component = registerComponent('controls', {
   setupControls: {
     value: function () {
       var data = this.data;
+      var object3D = this.el.object3D;
       var scene = this.el.sceneEl;
+
+      // To avoid gimbal lock
+      object3D.rotation.order = 'YXZ';
+
       this.prevTime = Date.now();
       // The canvas where the scene is painted
       this.canvasEl = document.querySelector('vr-scene').canvas;
