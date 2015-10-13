@@ -96,7 +96,6 @@ function (value, defaultValue) {
  */
 module.exports.parseAttributeString = function (attr, value, defaultValue) {
   if (!attr) { return; }
-
   var valueLower = typeof value === 'string' ? value.toLowerCase() : value;
   // Internal default value (for position, rotation, scale...)
   var internalDefault = getDefaultValue(attr);
@@ -126,6 +125,7 @@ module.exports.parseAttributeString = function (attr, value, defaultValue) {
  */
 module.exports.stringifyAttributeValue = function (value) {
   if (typeof value === 'object') {
+    if (value === null) { return ''; }
     if ('x' in value && 'y' in value && 'z' in value) {
       return [value.x, value.y, value.z].join(' ');
     }

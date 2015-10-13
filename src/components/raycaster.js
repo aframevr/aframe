@@ -87,7 +87,9 @@ module.exports.Component = registerComponent('raycaster', {
    */
   clearExistingIntersection: {
     value: function () {
-      this.intersectedEl.emit('mouseleave');
+      var el = this.intersectedEl;
+      el.removeState('hovered');
+      el.emit('mouseleave');
       this.intersectedEl = null;
     }
   },
@@ -119,6 +121,7 @@ module.exports.Component = registerComponent('raycaster', {
   setExistingIntersection: {
     value: function (el) {
       this.intersectedEl = el;
+      el.addState('hovered');
       el.emit('mouseenter hover');
     }
   },

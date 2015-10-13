@@ -10,28 +10,33 @@
   </head>
   <body>
     <vr-assets>
-      <vr-mixin id="cube" geometry="primitive: box" material="color: gray"></vr-mixin>
+      <vr-mixin id="cube" geometry="primitive: box"></vr-mixin>
+      <vr-mixin id="cube-hovered" material="color: pink"></vr-mixin>
+      <vr-mixin id="red" material="color: red"></vr-mixin>
+      <vr-mixin id="green" material="color: green"></vr-mixin>
+      <vr-mixin id="blue" material="color: blue"></vr-mixin>
+      <vr-mixin id="sphere" geometry="primitive: sphere"></vr-mixin>
     </vr-assets>
 
     <vr-scene>
       <vr-object position="-3 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
-        <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.06; innerRadius: 0.04;" material="color: red" raycaster=""></vr-object>
+        <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.12; innerRadius: 0.08;" material="color: red" raycaster=""></vr-object>
       </vr-object>
 
       <vr-object position="-10 0 0" rotation="0 0 0">
-        <vr-object mixin="cube" material="color: red">
+        <vr-object mixin="cube red">
           <vr-animation begin="click" attribute="position" from="0 0 0" to="0 0 -10" dur="2000" fill="both"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object position="0 0 0" rotation="0 0 0">
-        <vr-object mixin="cube" material="color: green">
+        <vr-object mixin="cube green">
           <vr-animation begin="click" attribute="rotation" to="0 360 0" easing="linear" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object position="10 0 0" rotation="0 45 0">
-        <vr-object mixin="cube" material="color: blue">
+        <vr-object mixin="cube blue">
           <vr-animation fill="forward" repeat="1" direction="alternate" begin="click" attribute="position" from="0 0 0" to="15 0 0" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
@@ -50,30 +55,7 @@
             if (href) {
               window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
             }
-          });
-
-          cubes[i].addEventListener('mousedown', function () {
-            console.log('mousedown', this);
-            this.dataset.materialBeforeMouseDown = this.getAttribute('material');
-            this.setAttribute('material', 'color: #fc0; metallic: 1.0');
-          });
-
-          cubes[i].addEventListener('mouseup', function () {
-            console.log('mouseup', this);
-            this.setAttribute('material', this.dataset.materialBeforeMouseDown);
-          });
-
-          // You could also use the 'hover' alias.
-          cubes[i].addEventListener('mouseenter', function () {
-            console.log('mouseenter', this);
-            this.dataset.materialBeforeMouseEnter = this.getAttribute('material');
-            this.setAttribute('material', 'color: #0ff; metallic: 0.75');
-          });
-
-          cubes[i].addEventListener('mouseleave', function () {
-            console.log('mouseleave', this);
-            this.setAttribute('material', this.dataset.materialBeforeMouseEnter);
-          });
+          })
         }
       })();
     </script>
