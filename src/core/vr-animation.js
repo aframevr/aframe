@@ -68,27 +68,6 @@ module.exports = document.registerElement(
           }
         },
 
-        /**
-         * Given a coordinate in a string form "0 0 0"
-         * It returns the coordinate parsed as an object
-         * {x: 3, y: 4, z: -10}.
-         *
-         * @param  {string} value        String to parse.
-         * @return {object}              Parsed coordinate.
-         */
-        parseCoordinate: {
-          value: function (value) {
-            if (typeof value !== 'string') { return value; }
-            var values = value.split(' ');
-            return {
-              x: parseFloat(values[0]),
-              y: parseFloat(values[1]),
-              z: parseFloat(values[2])
-            };
-          },
-          writable: window.debug
-        },
-
         init: {
           value: function () {
             // Stop previous tween
@@ -97,10 +76,10 @@ module.exports = document.registerElement(
             var el = this.el;
             var attribute = data.attribute;
             var current = el.getAttribute(attribute);
-            var from = data.from ? this.parseCoordinate(data.from) : current;
+            var from = data.from ? utils.parseCoordinate(data.from) : current;
             var tween = this.tween;
             var begin = parseInt(data.begin, 10);
-            var to = this.parseCoordinate(data.to);
+            var to = utils.parseCoordinate(data.to);
             var easing = easingFunctions[data.easing];
             var fill = data.fill;
             var count = this.count;

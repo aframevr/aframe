@@ -53,6 +53,24 @@ module.exports.mixin = function (dest, source) {
 };
 
 /**
+ * Given a coordinate in a string form "0 0 0"
+ * It returns the coordinate parsed as an object
+ * {x: 3, y: 4, z: -10}.
+ *
+ * @param  {string} value        String to parse.
+ * @return {object}              Parsed coordinate.
+ */
+module.exports.parseCoordinate = function (value) {
+  if (typeof value !== 'string') { return value; }
+  var values = value.split(' ');
+  return {
+    x: parseFloat(values[0]),
+    y: parseFloat(values[1]),
+    z: parseFloat(values[2])
+  };
+};
+
+/**
  * It coerces the strings of the obj object into the types of the schema object
  * @param  {object} dest   The object that contains the string values to be coerced
  * @param  {object} schema The object that contains the types
