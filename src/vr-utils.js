@@ -58,15 +58,17 @@ module.exports.mixin = function (dest, source) {
  * {x: 3, y: 4, z: -10}.
  *
  * @param  {string} value        String to parse.
+ * @param  {object} default      contains the coordinate default values.
  * @return {object}              Parsed coordinate.
  */
-module.exports.parseCoordinate = function (value) {
+module.exports.parseCoordinate = function (value, defaults) {
+  defaults = defaults || {};
   if (typeof value !== 'string') { return value; }
   var values = value.split(' ');
   return {
-    x: parseFloat(values[0]),
-    y: parseFloat(values[1]),
-    z: parseFloat(values[2])
+    x: parseFloat(values[0] || defaults.x),
+    y: parseFloat(values[1] || defaults.y),
+    z: parseFloat(values[2] || defaults.z)
   };
 };
 

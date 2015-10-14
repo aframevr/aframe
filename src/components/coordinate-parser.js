@@ -1,3 +1,5 @@
+var utils = require('../vr-utils');
+
 module.exports = {
   defaults: {
     value: {
@@ -9,14 +11,7 @@ module.exports = {
 
   parseAttributesString: {
     value: function (attrs) {
-      var defaults = this.defaults;
-      if (typeof attrs !== 'string') { return attrs; }
-      var values = attrs.split(' ');
-      return {
-        x: parseFloat(values[0] || defaults.x),
-        y: parseFloat(values[1] || defaults.y),
-        z: parseFloat(values[2] || defaults.z)
-      };
+      return utils.parseCoordinate(attrs, this.defaults);
     }
   },
 
