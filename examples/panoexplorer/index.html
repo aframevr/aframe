@@ -58,13 +58,13 @@
           var xPos = idx * width * 1.1;
 
           var el = document.createElement('vr-object');
-          el.setAttribute('position', xPos + ' 0 0');
-          el.setAttribute('geometry', 'primitive: plane; width: ' + width + '; height: ' + height + ';');
-          el.setAttribute('material', 'url: images/' + pano.thumb);
+          el.setAttribute('position', {x: xPos});
+          el.setAttribute('geometry', {primitive: "plane", width: width, height: height});
+          el.setAttribute('material', {url: 'images/' + pano.thumb});
           
           // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
           el.addEventListener('click', function () {
-            holder.setAttribute('material', 'url: images/' + pano.url);
+            holder.setAttribute('material', {url: 'images/' + pano.url});
           });
 
           // Add the link to the links element
