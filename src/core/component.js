@@ -47,12 +47,6 @@ Component.prototype = {
   defaults: {},
 
   /**
-   * What other components it depends on.
-   * It will determine the load order
-   */
-  dependencies: {},
-
-  /**
    * Parses the data coming from the entity attribute
    * If there are mixins its values will be mixed in
    * Defaults are mixed in first, followed by the mixins
