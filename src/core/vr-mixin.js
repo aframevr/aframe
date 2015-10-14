@@ -1,3 +1,4 @@
+/* global HTMLElement */
 var registerElement = require('../vr-register-element');
 
 var VRComponents = require('./components').components;
@@ -22,15 +23,15 @@ module.exports = registerElement(
             if (component && typeof value === 'object') {
               value = component.stringifyAttributes(value);
             }
-            VRNode.prototype.setAttribute.call(this, attr, value);
+            HTMLElement.prototype.setAttribute.call(this, attr, value);
           },
           writable: window.debug
         },
 
         getAttribute: {
-          value: function (attr, defaultValue) {
+          value: function (attr) {
             var component = VRComponents[attr];
-            var value = VRNode.prototype.getAttribute.call(this, attr, defaultValue);
+            var value = HTMLElement.prototype.getAttribute.call(this, attr);
             if (!component || typeof value !== 'string') { return value; }
             return component.parseAttributesString(value);
           },
