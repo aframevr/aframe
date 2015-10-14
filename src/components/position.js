@@ -3,14 +3,6 @@ var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../vr-utils');
 
 var proto = {
-  defaults: {
-    value: {
-      x: 0,
-      y: 0,
-      z: 0
-    }
-  },
-
   update: {
     value: function () {
       var object3D = this.el.object3D;

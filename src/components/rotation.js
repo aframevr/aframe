@@ -4,14 +4,6 @@ var THREE = require('../../lib/three');
 var utils = require('../vr-utils');
 
 var proto = {
-  defaults: {
-    value: {
-      x: 0,
-      y: 0,
-      z: 0
-    }
-  },
-
   update: {
     value: function () {
       var data = this.data;
