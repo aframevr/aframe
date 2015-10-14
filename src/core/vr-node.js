@@ -93,7 +93,7 @@ module.exports = document.registerElement(
 
         addMixin: {
           value: function (mixinId) {
-            var mixinEl = document.querySelector('#' + mixinId);
+            var mixinEl = document.querySelector('vr-mixin#' + mixinId);
             if (!mixinEl) { return; }
             this.attachMixinListener(mixinEl);
             this.mixinEls.push(mixinEl);
