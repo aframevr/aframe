@@ -43,9 +43,8 @@ module.exports = document.registerElement(
             // In Firefox the callback is called even if the
             // attribute value doesn't change. We return
             // if old and new values are the same
-            var newValStr = VRUtils.stringifyAttributeValue(newVal);
-            if (oldVal === newValStr) { return; }
             if (attr !== 'mixin') { return; }
+            if (oldVal === newVal) { return; }
             this.updateMixins(newVal, oldVal);
           },
           writable: window.debug
@@ -58,22 +57,6 @@ module.exports = document.registerElement(
             var event = new Event('loaded');
             this.hasLoaded = true;
             this.dispatchEvent(event);
-          },
-          writable: window.debug
-        },
-
-        setAttribute: {
-          value: function (attr, value) {
-            value = VRUtils.stringifyAttributeValue(value);
-            HTMLElement.prototype.setAttribute.call(this, attr, value);
-          },
-          writable: window.debug
-        },
-
-        getAttribute: {
-          value: function (attr, defaultValue) {
-            var value = HTMLElement.prototype.getAttribute.call(this, attr);
-            return VRUtils.parseAttributeString(attr, value, defaultValue);
           },
           writable: window.debug
         },

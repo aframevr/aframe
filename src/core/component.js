@@ -13,11 +13,10 @@ var mixAttributes = function (str, obj) {
 };
 
 var Component = function (el) {
-  var str = el.getAttribute(this.name);
   this.el = el;
   // To store the component specific data
   this.data = {};
-  this.parseAttributes(str);
+  this.parseAttributes();
   this.init();
   this.update();
 };
@@ -27,8 +26,8 @@ Component.prototype = {
    * Parses the data coming from the entity attribute
    * and its mixins and calls update
    */
-  updateAttributes: function () {
-    this.parseAttributes();
+  updateAttributes: function (values) {
+    this.parseAttributes(values);
     this.update();
   },
 
@@ -52,15 +51,17 @@ Component.prototype = {
    * If there are mixins its values will be mixed in
    * Defaults are mixed in first, followed by the mixins
    * and finally the entity attributes that have the highest
-   * precedence.
-   * Finally the values are coerced to the types of the defaults
+   * precedence. Lastly the values are coerced to the
+   * types of the defaults
+   *  @param  {object} [attrs] It contains the attribute values
+   *  @return {undefined}
    */
-  parseAttributes: function () {
+  parseAttributes: function (attrs) {
     var data = {};
-    var entity = this.el;
-    var entityAttrs = entity.getAttribute(this.name);
+    var el = this.el;
+    var elAttrs = attrs || el.getAttribute(this.name);
     var self = this;
-    var mixinEls = entity.mixinEls;
+    var mixinEls = el.mixinEls;
     utils.mixin(data, this.defaults);
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
@@ -68,9 +69,19 @@ Component.prototype = {
       if (!str) { return; }
       mixAttributes(str, data);
     }
-    mixAttributes(entityAttrs, data);
+    mixAttributes(elAttrs, data);
     utils.coerce(data, this.defaults);
     this.data = data;
+  },
+
+  parseAttributesString: function (attrs) {
+    if (typeof attrs !== 'string') { return attrs; }
+    return styleParser.parse(attrs);
+  },
+
+  stringifyAttributes: function (attrs) {
+    if (typeof attrs !== 'object') { return attrs; }
+    return styleParser.stringify(attrs);
   }
 };
 

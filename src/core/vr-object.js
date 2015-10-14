@@ -1,3 +1,4 @@
+/* global HTMLElement */
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
@@ -49,7 +50,11 @@ var proto = {
       // In Firefox the callback is called even if the
       // attribute value doesn't change. We return
       // if old and new values are the same
-      var newValStr = VRUtils.stringifyAttributeValue(newVal);
+      var newValStr = newVal;
+      var component = VRComponents[attr];
+      if (component && typeof newVal !== 'string') {
+        newValStr = component.stringifyAttributes(newVal);
+      }
       if (oldVal === newValStr) { return; }
       if (attr === 'mixin') {
         this.updateStateMixins(newVal, oldVal);
@@ -141,10 +146,10 @@ var proto = {
       this.object3D.el = this;
       // It attaches itself to the threejs parent object3D
       this.addToParent();
+      // It sets default components on the attributes if they're not defined
+      this.initDefaultComponents();
       // Components initialization
       this.initComponents();
-      // It sets default values on the attributes if they're not defined
-      this.initDefaults();
       // Call the parent class
       VRNode.prototype.load.call(this);
     },
@@ -158,6 +163,14 @@ var proto = {
     writable: window.debug
   },
 
+  initDefaultComponents: {
+    value: function (el) {
+      var defaults = Object.keys(this.defaults);
+      defaults.forEach(this.initComponent.bind(this));
+    },
+    writable: window.debug
+  },
+
   initComponents: {
     value: function () {
       var components = Object.keys(VRComponents);
@@ -165,23 +178,46 @@ var proto = {
     }
   },
 
+  /**
+   * For a given component name it checks if it's defined
+   * in the elements itself, the mixins or the default
+   * values
+   * @type {string} name The component name
+   */
+  isComponentDefined: {
+    value: function (name) {
+      var i;
+      var inMixin = false;
+      var mixinEls = this.mixinEls;
+      // If the defaults contain the component
+      var inDefaults = this.defaults[name];
+      // If the element contains the component
+      var inAttribute = this.hasAttribute(name);
+      if (inDefaults || inAttribute) { return true; }
+     // If any of the mixins contains the component
+      for (i = 0; i < mixinEls.length; ++i) {
+        inMixin = mixinEls[i].hasAttribute(name);
+        if (inMixin) { break; }
+      }
+      return inMixin;
+    }
+  },
+
   initComponent: {
     value: function (name) {
-      var mixinEls = this.mixinEls;
-      var hasMixin = false;
-      var i;
-      // If it's not a component name
-      if (!VRComponents[name]) { return; }
-      // If any of the mixins contains the component
-      for (i = 0; i < mixinEls.length; ++i) {
-        hasMixin = mixinEls[i].hasAttribute(name);
-        if (hasMixin) { break; }
-      }
-      // If the element contains the component
+      var defaults = this.defaults;
+      var hasDefault = defaults[name];
       var hasAttribute = this.hasAttribute(name);
-      // Either the element or the mixins have to contain the component
-      if (!hasAttribute && !hasMixin) { return; }
+      // If it's not a component name or
+      // If the component is already initialized
+      if (!VRComponents[name] || this.components[name]) { return; }
+      // If the component is not defined for the element
+      if (!this.isComponentDefined(name)) { return; }
       this.components[name] = new VRComponents[name].Component(this);
+      // If the attribute is not defined but has a default we set it
+      if (!hasAttribute && hasDefault) {
+        this.setAttribute(name, defaults[name]);
+      }
       VRUtils.log('Component initialized: ' + name);
     }
   },
@@ -209,23 +245,23 @@ var proto = {
     writable: window.debug
   },
 
-  initDefaults: {
-    value: function (el) {
-      var self = this;
-      var defaults = this.defaults;
-      var keys = Object.keys(defaults);
-      keys.forEach(initDefault);
-      function initDefault (key) {
-        if (self.hasAttribute(key)) { return; }
-        self.setAttribute(key, defaults[key]);
+  setAttribute: {
+    value: function (attr, value) {
+      var component = VRComponents[attr];
+      if (component && typeof value === 'object') {
+        value = component.stringifyAttributes(value);
       }
+      HTMLElement.prototype.setAttribute.call(this, attr, value);
     },
     writable: window.debug
   },
 
   getAttribute: {
-    value: function (attrName, defaultValue) {
-      return VRNode.prototype.getAttribute.call(this, attrName, defaultValue);
+    value: function (attr, defaultValue) {
+      var component = VRComponents[attr];
+      var value = HTMLElement.prototype.getAttribute.call(this, attr, defaultValue);
+      if (!component || typeof value !== 'string') { return value; }
+      return component.parseAttributesString(value);
     },
     writable: window.debug
   },
