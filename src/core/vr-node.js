@@ -24,8 +24,11 @@ module.exports = document.registerElement(
         attachedCallback: {
           value: function () {
             var sceneEl = document.querySelector('vr-scene');
+            var mixins = this.getAttribute('mixin');
             this.sceneEl = sceneEl;
-            this.updateMixin();
+            this.mixinEls = [];
+            this.mixinObservers = {};
+            if (mixins) { this.updateMixins(mixins); }
           },
           writable: window.debug
         },
@@ -40,21 +43,11 @@ module.exports = document.registerElement(
             // In Firefox the callback is called even if the
             // attribute value doesn't change. We return
             // if old and new values are the same
-            var newValStr = VRUtils.stringifyAttributeValue(newVal);
-            if (oldVal === newValStr) { return; }
             if (attr !== 'mixin') { return; }
-            this.updateMixin();
+            if (oldVal === newVal) { return; }
+            this.updateMixins(newVal, oldVal);
           },
           writable: window.debug
-        },
-
-        updateMixin: {
-          value: function () {
-            var mixinId = this.getAttribute('mixin');
-            this.mixinEl = document.querySelector('#' + mixinId);
-            // Listens to changes on the mixin if there's any
-            this.attachMixinListener(this.mixinEl);
-          }
         },
 
         load: {
@@ -68,36 +61,51 @@ module.exports = document.registerElement(
           writable: window.debug
         },
 
-        setAttribute: {
-          value: function (attr, value) {
-            value = VRUtils.stringifyAttributeValue(value);
-            HTMLElement.prototype.setAttribute.call(this, attr, value);
+        updateMixins: {
+          value: function (newMixins, oldMixins) {
+            var newMixinsIds = newMixins.split(' ');
+            var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+            // To determine what listeners will be removed
+            var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+            this.mixinEls = [];
+            diff.forEach(this.removeMixin.bind(this));
+            newMixinsIds.forEach(this.addMixin.bind(this));
           },
           writable: window.debug
         },
 
-        getAttribute: {
-          value: function (attr, defaultValue) {
-            var value = HTMLElement.prototype.getAttribute.call(this, attr);
-            return VRUtils.parseAttributeString(attr, value, defaultValue);
-          },
-          writable: window.debug
+        addMixin: {
+          value: function (mixinId) {
+            var mixinEl = document.querySelector('vr-mixin#' + mixinId);
+            if (!mixinEl) { return; }
+            this.attachMixinListener(mixinEl);
+            this.mixinEls.push(mixinEl);
+          }
         },
 
-        mixinChanged: {
-          value: function (newMixin, oldMixin) {
-            if (oldMixin) { this.removeMixinListener(oldMixin); }
-            this.attachMixinListener(newMixin);
+        removeMixin: {
+          value: function (mixinId) {
+            var mixinEls = this.mixinEls;
+            var mixinEl;
+            var i;
+            for (i = 0; i < mixinEls.length; ++i) {
+              mixinEl = mixinEls[i];
+              if (mixinId === mixinEl.id) {
+                mixinEls.splice(i, 1);
+                break;
+              }
+            }
+            this.removeMixinListener(mixinId);
           },
           writable: window.debug
         },
 
         removeMixinListener: {
-          value: function () {
-            var observer = this.mixinObserver;
+          value: function (mixinId) {
+            var observer = this.mixinObservers[mixinId];
             if (!observer) { return; }
             observer.disconnect();
-            this.mixinObserver = null;
+            this.mixinObservers[mixinId] = null;
           },
           writable: window.debug
         },
@@ -105,16 +113,17 @@ module.exports = document.registerElement(
         attachMixinListener: {
           value: function (mixinEl) {
             var self = this;
-            var currentObserver = this.mixinObserver;
+            var mixinId = mixinEl.id;
+            var currentObserver = this.mixinObservers[mixinId];
             if (!mixinEl) { return; }
-            if (currentObserver) { currentObserver.disconnect(); }
+            if (currentObserver) { return; }
             var observer = new MutationObserver(function (mutations) {
               var attr = mutations[0].attributeName;
               self.applyMixin(attr);
             });
             var config = { attributes: true };
             observer.observe(mixinEl, config);
-            this.mixinObserver = observer;
+            this.mixinObservers[mixinId] = observer;
           },
           writable: window.debug
         },

@@ -1,3 +1,4 @@
+/* global HTMLElement */
 require('../vr-register-element');
 
 var THREE = require('../../lib/three');
@@ -29,6 +30,7 @@ var proto = {
     value: function () {
       this.object3D = new THREE.Mesh();
       this.components = {};
+      this.states = [];
       this.addToParent();
       this.load();
     },
@@ -48,9 +50,14 @@ var proto = {
       // In Firefox the callback is called even if the
       // attribute value doesn't change. We return
       // if old and new values are the same
-      var newValStr = VRUtils.stringifyAttributeValue(newVal);
+      var newValStr = newVal;
+      var component = VRComponents[attr];
+      if (component && typeof newVal !== 'string') {
+        newValStr = component.stringifyAttributes(newVal);
+      }
       if (oldVal === newValStr) { return; }
       if (attr === 'mixin') {
+        this.updateStateMixins(newVal, oldVal);
         this.updateComponents();
         return;
       }
@@ -66,7 +73,47 @@ var proto = {
         return;
       }
       this.updateComponent(attr);
-    }
+    },
+    writable: window.debug
+  },
+
+  mapStateMixins: {
+    value: function (state, op) {
+      var mixins = this.getAttribute('mixin');
+      var mixinIds;
+      if (!mixins) { return; }
+      mixinIds = mixins.split(' ');
+      mixinIds.forEach(function (id) {
+        var mixinId = id + '-' + state;
+        op(mixinId);
+      });
+      this.updateComponents();
+    },
+    writable: window.debug
+  },
+
+  updateStateMixins: {
+    value: function (newMixins, oldMixins) {
+      var self = this;
+      var newMixinsIds = newMixins.split(' ');
+      var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+      // The list of mixins that might have been removed on update
+      var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+      // Remove the mixins that are gone on update
+      diff.forEach(function (mixinId) {
+        // State Mixins
+        var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
+        var stateMixinIds = stateMixinsEls.map(function (el) { return el.id; });
+        stateMixinIds.forEach(self.removeMixin.bind(self));
+      });
+      this.states.forEach(function (state) {
+        newMixinsIds.forEach(function (id) {
+          var mixinId = id + '-' + state;
+          self.addMixin(mixinId);
+        });
+      });
+    },
+    writable: window.debug
   },
 
   add: {
@@ -99,10 +146,10 @@ var proto = {
       this.object3D.el = this;
       // It attaches itself to the threejs parent object3D
       this.addToParent();
+      // It sets default components on the attributes if they're not defined
+      this.initDefaultComponents();
       // Components initialization
       this.initComponents();
-      // It sets default values on the attributes if they're not defined
-      this.initDefaults();
       // Call the parent class
       VRNode.prototype.load.call(this);
     },
@@ -116,6 +163,14 @@ var proto = {
     writable: window.debug
   },
 
+  initDefaultComponents: {
+    value: function (el) {
+      var defaults = Object.keys(this.defaults);
+      defaults.forEach(this.initComponent.bind(this));
+    },
+    writable: window.debug
+  },
+
   initComponents: {
     value: function () {
       var components = Object.keys(VRComponents);
@@ -123,14 +178,46 @@ var proto = {
     }
   },
 
+  /**
+   * For a given component name it checks if it's defined
+   * in the elements itself, the mixins or the default
+   * values
+   * @type {string} name The component name
+   */
+  isComponentDefined: {
+    value: function (name) {
+      var i;
+      var inMixin = false;
+      var mixinEls = this.mixinEls;
+      // If the defaults contain the component
+      var inDefaults = this.defaults[name];
+      // If the element contains the component
+      var inAttribute = this.hasAttribute(name);
+      if (inDefaults || inAttribute) { return true; }
+     // If any of the mixins contains the component
+      for (i = 0; i < mixinEls.length; ++i) {
+        inMixin = mixinEls[i].hasAttribute(name);
+        if (inMixin) { break; }
+      }
+      return inMixin;
+    }
+  },
+
   initComponent: {
     value: function (name) {
-      var mixinEl = this.mixinEl;
-      var hasMixin = mixinEl && mixinEl.hasAttribute(name);
+      var defaults = this.defaults;
+      var hasDefault = defaults[name];
       var hasAttribute = this.hasAttribute(name);
-      if (!hasAttribute && !hasMixin) { return; }
-      if (!VRComponents[name]) { return; }
+      // If it's not a component name or
+      // If the component is already initialized
+      if (!VRComponents[name] || this.components[name]) { return; }
+      // If the component is not defined for the element
+      if (!this.isComponentDefined(name)) { return; }
       this.components[name] = new VRComponents[name].Component(this);
+      // If the attribute is not defined but has a default we set it
+      if (!hasAttribute && hasDefault) {
+        this.setAttribute(name, defaults[name]);
+      }
       VRUtils.log('Component initialized: ' + name);
     }
   },
@@ -149,7 +236,7 @@ var proto = {
       var component = this.components[name];
       // Update if component already initialized
       if (component) {
-        component.updateAttributes(this.getAttribute(name));
+        component.updateAttributes();
         VRUtils.log('Component updated: ' + name);
         return;
       }
@@ -158,23 +245,55 @@ var proto = {
     writable: window.debug
   },
 
-  initDefaults: {
-    value: function (el) {
-      var self = this;
-      var defaults = this.defaults;
-      var keys = Object.keys(defaults);
-      keys.forEach(initDefault);
-      function initDefault (key) {
-        if (self.hasAttribute(key)) { return; }
-        self.setAttribute(key, defaults[key]);
+  setAttribute: {
+    value: function (attr, value) {
+      var component = VRComponents[attr];
+      if (component && typeof value === 'object') {
+        value = component.stringifyAttributes(value);
       }
+      HTMLElement.prototype.setAttribute.call(this, attr, value);
     },
     writable: window.debug
   },
 
   getAttribute: {
-    value: function (attrName, defaultValue) {
-      return VRNode.prototype.getAttribute.call(this, attrName, defaultValue);
+    value: function (attr, defaultValue) {
+      var component = VRComponents[attr];
+      var value = HTMLElement.prototype.getAttribute.call(this, attr, defaultValue);
+      if (!component || typeof value !== 'string') { return value; }
+      return component.parseAttributesString(value);
+    },
+    writable: window.debug
+  },
+
+  addState: {
+    value: function (state) {
+      if (this.is(state)) { return; }
+      this.states.push(state);
+      this.mapStateMixins(state, this.addMixin.bind(this));
+      this.emit('state-added', {state: state});
+    },
+    writable: window.debug
+  },
+
+  removeState: {
+    value: function (state) {
+      var stateIndex = this.is(state);
+      if (stateIndex === false) { return; }
+      this.states.splice(stateIndex, 1);
+      this.mapStateMixins(state, this.removeMixin.bind(this));
+      this.emit('state-removed', {state: state});
+    },
+    writable: window.debug
+  },
+
+  is: {
+    value: function (state) {
+      var is = false;
+      this.states.forEach(function (elState, index) {
+        if (elState === state) { is = index; }
+      });
+      return is;
     },
     writable: window.debug
   }

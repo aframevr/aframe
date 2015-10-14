@@ -76,10 +76,10 @@ module.exports = document.registerElement(
             var el = this.el;
             var attribute = data.attribute;
             var current = el.getAttribute(attribute);
-            var from = utils.parseAttributeString(attribute, data.from, current);
+            var from = data.from ? utils.parseCoordinate(data.from) : current;
             var tween = this.tween;
             var begin = parseInt(data.begin, 10);
-            var to = data.to;
+            var to = utils.parseCoordinate(data.to);
             var easing = easingFunctions[data.easing];
             var fill = data.fill;
             var count = this.count;
@@ -136,7 +136,6 @@ module.exports = document.registerElement(
               el.setAttribute(data.attribute, this.initValue);
             }
             if (this.count === 0) {
-              this.lastDirection = undefined;
               this.count = undefined;
               return;
             }
