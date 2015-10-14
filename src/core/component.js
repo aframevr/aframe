@@ -25,10 +25,10 @@ var Component = function (el) {
 Component.prototype = {
   /**
    * Parses the data coming from the entity attribute
-   * and updates the component
+   * and its mixins and calls update
    */
-  updateAttributes: function (str) {
-    this.parseAttributes(str);
+  updateAttributes: function () {
+    this.parseAttributes();
     this.update();
   },
 
@@ -49,15 +49,26 @@ Component.prototype = {
 
   /**
    * Parses the data coming from the entity attribute
-   * If there's a style its values will be mixed in
+   * If there are mixins its values will be mixed in
+   * Defaults are mixed in first, followed by the mixins
+   * and finally the entity attributes that have the highest
+   * precedence.
+   * Finally the values are coerced to the types of the defaults
    */
-  parseAttributes: function (str) {
-    var mixinEl = this.el.mixinEl;
-    var styleStr = mixinEl && mixinEl.getAttribute(this.name);
+  parseAttributes: function () {
     var data = {};
+    var entity = this.el;
+    var entityAttrs = entity.getAttribute(this.name);
+    var self = this;
+    var mixinEls = entity.mixinEls;
     utils.mixin(data, this.defaults);
-    mixAttributes(styleStr, data);
-    mixAttributes(str, data);
+    mixinEls.forEach(applyMixin);
+    function applyMixin (mixinEl) {
+      var str = mixinEl.getAttribute(self.name);
+      if (!str) { return; }
+      mixAttributes(str, data);
+    }
+    mixAttributes(entityAttrs, data);
     utils.coerce(data, this.defaults);
     this.data = data;
   }

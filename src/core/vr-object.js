@@ -29,6 +29,7 @@ var proto = {
     value: function () {
       this.object3D = new THREE.Mesh();
       this.components = {};
+      this.states = [];
       this.addToParent();
       this.load();
     },
@@ -51,6 +52,7 @@ var proto = {
       var newValStr = VRUtils.stringifyAttributeValue(newVal);
       if (oldVal === newValStr) { return; }
       if (attr === 'mixin') {
+        this.updateStateMixins(newVal, oldVal);
         this.updateComponents();
         return;
       }
@@ -66,7 +68,47 @@ var proto = {
         return;
       }
       this.updateComponent(attr);
-    }
+    },
+    writable: window.debug
+  },
+
+  mapStateMixins: {
+    value: function (state, op) {
+      var mixins = this.getAttribute('mixin');
+      var mixinIds;
+      if (!mixins) { return; }
+      mixinIds = mixins.split(' ');
+      mixinIds.forEach(function (id) {
+        var mixinId = id + '-' + state;
+        op(mixinId);
+      });
+      this.updateComponents();
+    },
+    writable: window.debug
+  },
+
+  updateStateMixins: {
+    value: function (newMixins, oldMixins) {
+      var self = this;
+      var newMixinsIds = newMixins.split(' ');
+      var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+      // The list of mixins that might have been removed on update
+      var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+      // Remove the mixins that are gone on update
+      diff.forEach(function (mixinId) {
+        // State Mixins
+        var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
+        var stateMixinIds = stateMixinsEls.map(function (el) { return el.id; });
+        stateMixinIds.forEach(self.removeMixin.bind(self));
+      });
+      this.states.forEach(function (state) {
+        newMixinsIds.forEach(function (id) {
+          var mixinId = id + '-' + state;
+          self.addMixin(mixinId);
+        });
+      });
+    },
+    writable: window.debug
   },
 
   add: {
@@ -125,11 +167,20 @@ var proto = {
 
   initComponent: {
     value: function (name) {
-      var mixinEl = this.mixinEl;
-      var hasMixin = mixinEl && mixinEl.hasAttribute(name);
-      var hasAttribute = this.hasAttribute(name);
-      if (!hasAttribute && !hasMixin) { return; }
+      var mixinEls = this.mixinEls;
+      var hasMixin = false;
+      var i;
+      // If it's not a component name
       if (!VRComponents[name]) { return; }
+      // If any of the mixins contains the component
+      for (i = 0; i < mixinEls.length; ++i) {
+        hasMixin = mixinEls[i].hasAttribute(name);
+        if (hasMixin) { break; }
+      }
+      // If the element contains the component
+      var hasAttribute = this.hasAttribute(name);
+      // Either the element or the mixins have to contain the component
+      if (!hasAttribute && !hasMixin) { return; }
       this.components[name] = new VRComponents[name].Component(this);
       VRUtils.log('Component initialized: ' + name);
     }
@@ -149,7 +200,7 @@ var proto = {
       var component = this.components[name];
       // Update if component already initialized
       if (component) {
-        component.updateAttributes(this.getAttribute(name));
+        component.updateAttributes();
         VRUtils.log('Component updated: ' + name);
         return;
       }
@@ -175,6 +226,38 @@ var proto = {
   getAttribute: {
     value: function (attrName, defaultValue) {
       return VRNode.prototype.getAttribute.call(this, attrName, defaultValue);
+    },
+    writable: window.debug
+  },
+
+  addState: {
+    value: function (state) {
+      if (this.is(state)) { return; }
+      this.states.push(state);
+      this.mapStateMixins(state, this.addMixin.bind(this));
+      this.emit('state-added', {state: state});
+    },
+    writable: window.debug
+  },
+
+  removeState: {
+    value: function (state) {
+      var stateIndex = this.is(state);
+      if (stateIndex === false) { return; }
+      this.states.splice(stateIndex, 1);
+      this.mapStateMixins(state, this.removeMixin.bind(this));
+      this.emit('state-removed', {state: state});
+    },
+    writable: window.debug
+  },
+
+  is: {
+    value: function (state) {
+      var is = false;
+      this.states.forEach(function (elState, index) {
+        if (elState === state) { is = index; }
+      });
+      return is;
     },
     writable: window.debug
   }
