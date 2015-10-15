@@ -2,21 +2,22 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Imported template (Box)</title>
-    <meta name="description" content="Imported template (Box) vr-component">
+    <title>Templated boxes (inlined)</title>
+    <meta name="description" content="Templated boxes (inlined) vr-component">
     <script src="../../build/vr-components.js"></script>
     <link rel="import" href="templates/vr-box.html">
   </head>
   <body>
     <vr-assets>
-      <vr-mixin id="cube" geometry="primitive: box" material="color: red"></vr-mixin>
+      <vr-mixin id="cube" geometry="primitive: box"></vr-mixin>
     </vr-assets>
 
     <vr-scene>
-
       <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
-      <vr-box color="red"></vr-box>
 
+      <vr-box color="hotpink" position="-5 0 0"></vr-box>
+
+      <vr-box color="cyan" position="1 -1 0" rotation="-45 -45 0"></vr-box>
     </vr-scene>
   </body>
 </html>

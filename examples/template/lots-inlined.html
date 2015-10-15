@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Templates (inline)</title>
-    <meta name="description" content="Templates (inline) vr-component">
+    <title>Lots of templated objects (inlined)</title>
+    <meta name="description" content="Lots of templated objects (inlined) vr-component">
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
@@ -13,18 +13,11 @@
     </vr-assets>
 
     <vr-scene>
-
-
       <!-- using plain old objects -->
-
       <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
       <vr-object mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
 
-
-
-
       <!-- using my fancy templates -->
-
       <vr-oval color="green"></vr-oval>
 
       <vr-box position="13 5 -5" rotation="40 -40 20"></vr-box>
@@ -34,15 +27,9 @@
       <vr-bigcubes></vr-bigcubes>
 
       <vr-saturn></vr-saturn>
-
-
     </vr-scene>
 
-
-
-
     <!-- making my templates -->
-
     <vr-template name="vr-oval" color="salmon">
       <vr-object mixin="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></vr-object>
     </vr-template>
@@ -69,6 +56,5 @@
       <vr-object mixin="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></vr-object>
       <vr-object mixin="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></vr-object>
     </vr-template>
-
   </body>
 </html>
