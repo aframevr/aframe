@@ -229,10 +229,10 @@ module.exports = document.registerElement(
                       writable: window.debug
                     },
 
-                    initDefaults: {
+                    initDefaultComponents: {
                       value: function (force) {
                         if (force) {
-                          VRObject.prototype.initDefaults.call(this);
+                          VRObject.prototype.initDefaultComponents.call(this);
                         }
                       },
                       writable: window.debug
@@ -309,7 +309,7 @@ module.exports = document.registerElement(
               el.id = 'injected--' + tagName + '-' + (idx + 1);
               el.className = 'injected injected--' + tagName + ' injected--' + tagName + '-' + (idx + 1);
               el.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
-              placeholder.initDefaults(true);  // We want this to happen only *after* we've added our attributes.
+              placeholder.initDefaultComponents(true);  // We want this to happen only *after* we've added our attributes.
               placeholder.originalAttrs = utils.$$(placeholder.attributes);
               placeholder.innerHTML = el.innerHTML;
               placeholder.replaced = true;
