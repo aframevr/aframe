@@ -1,4 +1,4 @@
-/* global HTMLElement, HTMLImports */
+/* global HTMLElement, HTMLImports, MutationObserver */
 
 // Polyfill HTML Imports.
 window.addEventListener('HTMLImportsLoaded', function () {
@@ -95,6 +95,7 @@ module.exports = document.registerElement(
         createdCallback: {
           value: function () {
             var self = this;
+            self.placeholders = [];
             if (self.ownerDocument !== document) {
               setTimeout(function () {
                 document.body.appendChild(self);
@@ -112,6 +113,7 @@ module.exports = document.registerElement(
 
         attachedCallback: {
           value: function () {
+            this.sceneEl = utils.$('vr-scene');
             if (internals.vrMarkupReady) {
               this.inject();
               return;
@@ -119,6 +121,17 @@ module.exports = document.registerElement(
             document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
             this.addEventListener('loaded', this.inject.bind(this));
           }
+        },
+
+        detachedCallback: {
+          value: function () {
+            var self = this;
+            self.removeTemplateListener();
+            self.placeholders.forEach(function (el) {
+              self.sceneEl.remove(el);
+            });
+          },
+          writable: window.debug
         },
 
         attachEventListeners: {
@@ -163,6 +176,9 @@ module.exports = document.registerElement(
 
         register: {
           value: function (tagName) {
+            if (this.registered) { return; }
+            this.registered = true;
+
             var tagNameLower = tagName.toLowerCase();
 
             VRUtils.log('registering <%s>', tagNameLower);
@@ -174,17 +190,32 @@ module.exports = document.registerElement(
                   VRObject.prototype, {
                     attributeChangedCallback: {
                       value: function () {
-                        // Use any defaults defined on the original `<vr-template>`.
+                        this.rerender();
+                      }
+                    },
+
+                    rerender: {
+                      value: function (force) {
+                        if (!this.replaced) { return; }
+                        if (!force && this.lastOuterHTML === this.outerHTML) { return; }
+
+                        // Use the defaults defined on the original `<vr-template>`.
                         var template = utils.$('vr-template[name="' + tagName + '"]');
                         var attrsDefault = template ? utils.$$(template.attributes) : [];
 
-                        // Use the attributes passed on this element.
-                        var attrsPassed = utils.$$(this.attributes);
-                        // Use both, in that order.
                         var templateAttrs = {};
-                        attrsDefault.concat(attrsPassed).forEach(function (attr) {
+                        attrsDefault.concat(this.originalAttrs).forEach(function (attr) {
                           templateAttrs[attr.name] = attr.value;
                         });
+
+                        if (force) {
+                          // If the template has changed, remove any attributes
+                          // that were added after this element was created.
+                          utils.$$(this.attributes).forEach(function (attr) {
+                            if (attr.name in templateAttrs) { return; }
+                            this.removeAttribute(attr.name);
+                          }, this);
+                        }
 
                         var newHTML = utils.format(template.innerHTML, templateAttrs);
                         if (this.innerHTML !== newHTML) {
@@ -192,13 +223,14 @@ module.exports = document.registerElement(
                           // so we are doing the fewest number of DOM changes.
                           this.innerHTML = newHTML;
                         }
+
+                        this.lastOuterHTML = this.outerHTML;
                       },
                       writable: window.debug
                     },
 
                     initDefaults: {
                       value: function (force) {
-                        // TODO: Listen for scale change. Scale change for children.
                         if (force) {
                           VRObject.prototype.initDefaults.call(this);
                         }
@@ -211,6 +243,34 @@ module.exports = document.registerElement(
           }
         },
 
+        removeTemplateListener: {
+          value: function () {
+            if (!this.mixinObserver) { return; }
+            this.mixinObserver.disconnect();
+            this.mixinObserver = null;
+          },
+          writable: window.debug
+        },
+
+        attachTemplateListener: {
+          value: function (tagName) {
+            var self = this;
+            if (self.mixinObserver) { self.mixinObserver.disconnect(); }
+            self.mixinObserver = new MutationObserver(function (mutations) {
+              self.placeholders.forEach(function (el) {
+                el.rerender(true);
+              });
+            });
+            self.mixinObserver.observe(self, {
+              attributes: true,
+              characterData: true,
+              childList: true,
+              subtree: true
+            });
+          },
+          writable: window.debug
+        },
+
         inject: {
           value: function () {
             var self = this;
@@ -220,10 +280,10 @@ module.exports = document.registerElement(
             var tagName = self.getAttribute('name');
             if (!tagName) { return; }
 
+            self.attachTemplateListener(tagName);
             self.register(tagName);
 
-            var sceneEl = utils.$('vr-scene');
-            var placeholders = utils.$$(tagName, sceneEl);
+            var placeholders = utils.$$(tagName, self.sceneEl);
 
             // Use any defaults defined on the `<vr-template name="yolo" color="cyan">`.
             var attrsDefault = utils.$$(self.attributes);
@@ -249,11 +309,15 @@ module.exports = document.registerElement(
               el.id = 'injected--' + tagName + '-' + (idx + 1);
               el.className = 'injected injected--' + tagName + ' injected--' + tagName + '-' + (idx + 1);
               el.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
-              placeholder.initDefaults(true);
+              placeholder.initDefaults(true);  // We want this to happen only *after* we've added our attributes.
+              placeholder.originalAttrs = utils.$$(placeholder.attributes);
               placeholder.innerHTML = el.innerHTML;
-              sceneEl.add(el);
+              placeholder.replaced = true;
+              self.sceneEl.add(el);
 
-              VRUtils.log('<%s> took %.4f ms to inject', tagName, window.performance.now() - then);
+              VRUtils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - then);
+
+              self.placeholders.push(placeholder);
             });
           }
         }
