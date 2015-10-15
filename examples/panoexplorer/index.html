@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pano Explorer</title>
+    <meta name="description" content="Pano Explorer — vr-markup">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+
+      <!-- Controls -->
+      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
+        <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.02; innerRadius: 0.01;" material="color: white" raycaster></vr-object>
+      </vr-object>
+
+      <!-- Pano -->
+      <vr-object id="holder" geometry="primitive: sphere; radius: 10;" material="url: images/city.jpg;"></vr-object>
+
+      <!-- Links to panos -->
+      <vr-object id="links" position="-1 -0.3 -2">
+      </vr-object>
+    </vr-scene>
+
+    <script>
+      (function () {
+
+        // Data for our panos
+        var panos = [
+          {
+            'title': 'Cubes',
+            'thumb': 'thumb-cubes.png',
+            'url': 'cubes.jpg'
+          },
+          {
+            'title': 'City',
+            'thumb': 'thumb-city.png',
+            'url': 'city.jpg'
+          },
+          {
+            'title': 'Sechelt',
+            'thumb': 'thumb-sechelt.png',
+            'url': 'sechelt.jpg'
+          }
+        ];
+
+        var links = document.querySelector('#links');
+        var holder = document.querySelector('#holder');
+        var width = 0.5;
+        var height = 0.5;
+
+        // Create a link for each item in panos[]
+        panos.forEach(function (pano, idx) {
+
+          // Arrange the links horizontally without any overlaps
+          var xPos = idx * width * 1.1;
+
+          var el = document.createElement('vr-object');
+          el.setAttribute('position', {x: xPos});
+          el.setAttribute('geometry', {primitive: "plane", width: width, height: height});
+          el.setAttribute('material', {url: 'images/' + pano.thumb});
+          
+          // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
+          el.addEventListener('click', function () {
+            holder.setAttribute('material', {url: 'images/' + pano.url});
+          });
+
+          // Add the link to the links element
+          links.appendChild(el);
+        });
+
+      })();
+
+    </script>
+
+  </body>
+</html>
