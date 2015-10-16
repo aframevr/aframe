@@ -4,6 +4,7 @@ module.exports = {
   'vr-curvedPlane1': require('./vr-curvedPlane1'),
   'vr-curvedPlane2': require('./vr-curvedPlane2'),
   'vr-cylinder': require('./vr-cylinder'),
+  'vr-element': require('./vr-element'),
   'vr-grid': require('./vr-grid'),
   'vr-hemispherelight': require('./vr-hemispherelight'),
   'vr-image': require('./vr-image'),
@@ -13,7 +14,6 @@ module.exports = {
   'vr-skybox': require('./vr-skybox'),
   'vr-skysphere': require('./vr-skysphere'),
   'vr-sphere': require('./vr-sphere'),
-  'vr-template': require('./vr-template'),
   'vr-text': require('./vr-text'),
   'vr-video': require('./vr-video'),
   'vr-video360': require('./vr-video360')
