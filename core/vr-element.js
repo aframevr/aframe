@@ -232,6 +232,15 @@ module.exports = document.registerElement(
                       writable: window.debug
                     },
 
+                    /**
+                     * Overrides `initDefaultComponents` from `VRObject`.
+                     *
+                     * By default, this will get called when the element is attached.
+                     * But we want to initialize the default components
+                     * only *after* we've added our attributes.
+                     *
+                     * @param {Boolean} force Whether to call the original method from `VRObject`.
+                     */
                     initDefaultComponents: {
                       value: function (force) {
                         if (force) {
