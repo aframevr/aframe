@@ -3,58 +3,115 @@ var pbrFragmentShader = require('../shaders/pbrFragment.glsl');
 var pbrVertexShader = require('../shaders/pbrVertex.glsl');
 var THREE = require('../../lib/three');
 
+var MATERIAL_TYPE__PBR = 'ShaderMaterial';
+var MATERIAL_TYPE__TEXTURE = 'MeshBasicMaterial';
+
+var id = 1;
+
+/**
+ * Material component.
+ *
+ * Currently, hardcoded to use Physically-Based Rendering (PBR).
+ * Our PBR shaders have been adapted from code online to be able to handle
+ * non-hard-coded lighting.
+ *
+ * @params {string} color
+ * @params {number} metallic
+ * @params {number} roughness
+ * @namespace material
+ */
 module.exports.Component = registerComponent('material', {
   defaults: {
     value: {
       color: 'red',
-      roughness: 1.0,
-      metallic: 0.5,
-      lightIntensity: 7.001
+      metallic: 0.0,
+      roughness: 0.5
     }
   },
 
+  init: {
+    value: function () {
+      this.id = this.id || id++;
+      this.lights = this.lights || [];
+
+      // Initialize material.
+      var material = this.getMaterial();
+      this.el.object3D.material = material;
+
+      // Register material to the scene to subscribe to light updates.
+      this.el.sceneEl.registerMaterial(this.id, this);
+    }
+  },
+
+  /**
+   * Update the material uniforms, but don't recreate the three.js material.
+   * TODO: be able to find out what attribute is being changed.
+   */
   update: {
     value: function () {
-      this.setupMaterial();
+      var self = this;
+      var material = self.el.object3D.material;
+
+      if (material.type === MATERIAL_TYPE__TEXTURE && !self.data.src ||
+          material.type === MATERIAL_TYPE__PBR && self.data.src) {
+        // Change material type. Should we support this?
+        self.el.object3D.material = self.getMaterial();
+      }
+
+      if (material.type === MATERIAL_TYPE__PBR) {
+        // Update PBR uniforms.
+        var newUniform = self.getPBRUniforms();
+        Object.keys(newUniform).forEach(function (key) {
+          if (material.uniforms[key] !== newUniform[key]) {
+            material.uniforms[key] = newUniform[key];
+          }
+        });
+        material.needsUpdate = true;
+      }
     }
   },
 
-  setupMaterial: {
-    value: function () {
-      var object3D = this.el.object3D;
-      var material = this.getMaterial();
-      object3D.material = material;
-      this.cacheMaterial(material);
+  /**
+   * Store updated lights. Not used for texture materials.
+   * If the number of lights changed, recreate material.
+   * Else just update the material.
+   *
+   * @params (array) lights - array of light objects.
+   */
+  updateLights: {
+    value: function (lights) {
+      var previousLights = this.lights;
+      this.lights = lights || [];
+
+      if (this.el.object3D.material.type === MATERIAL_TYPE__TEXTURE) {
+        // Lights not used for texture materials. Store lights anyways.
+        return;
+      }
+      if (previousLights.length === this.lights.length) {
+        // Attribute of light changed, update uniforms.
+        this.update();
+      } else {
+        // Number of lights changed, need to recompile the shader.
+        this.el.object3D.material = this.getMaterial();
+      }
     }
   },
 
   getMaterial: {
     value: function () {
-      var data = this.data;
-      var url = data.url;
-      var material = data.url ? this.getTextureMaterial(url) : this.getPBRMaterial();
-      return material;
+      return this.data.url ? this.getTextureMaterial() : this.getPBRMaterial();
     }
   },
 
-  cacheMaterial: {
-    value: function (material) {
-      var type = material.type;
-      switch (type) {
-        case 'MeshBasicMaterial':
-          this.textureMaterial = material;
-          break;
-        case 'ShaderMaterial':
-          this.pbrMaterial = material;
-          break;
-      }
-    }
-  },
-
+  /**
+   * Creates a new material object for handling textures.
+   *
+   * @returns {object} material - three.js MeshBasicMaterial.
+   */
   getTextureMaterial: {
-    value: function (url) {
-      var texture = THREE.ImageUtils.loadTexture(url);
-      var material = this.textureMaterial || new THREE.MeshBasicMaterial({
+    value: function () {
+      var texture = THREE.ImageUtils.loadTexture(this.data.url);
+      var material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide
       });
@@ -63,163 +120,125 @@ module.exports.Component = registerComponent('material', {
     }
   },
 
+  /**
+   * Creates a new PBR material object.
+   *
+   * @returns {object} material - three.js ShaderMaterial.
+   */
   getPBRMaterial: {
     value: function () {
-      var material = this.pbrMaterial || this.initPBRMaterial();
-      return this.updatePBRMaterial(material);
-    }
-  },
-
-  updatePBRMaterial: {
-    value: function (material) {
-      var data = this.data;
-      var color = new THREE.Color(data.color);
-      color = new THREE.Vector3(color.r, color.g, color.b);
-      material.uniforms.baseColor.value = color;
-      material.uniforms.roughness.value = data.roughness;
-      material.uniforms.metallic.value = data.metallic;
-      material.uniforms.lightIntensity.value = data.lightIntensity;
-      return material;
-    }
-  },
-
-  initPBRMaterial: {
-    value: function () {
-      // Shader parameters
-      var baseColor = new THREE.Vector3(0.5, 0.5, 0.5);
-      var roughness = 1.0;
-      var metallic = 0.5;
-      var lightIntensity = 7.001;
-
-      // See comments of the function ComputeEnvColor for the explanations on this hug number of cubemaps.
-      // Cube Map mip 0
-      var path = '../_images/pbr/maskonaive_m00_c0';
-      var format = '.png';
-      var urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip0 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip0.format = THREE.RGBFormat;
-
-      // Cube Map mip 1
-      path = '../_images/pbr/maskonaive_m01_c0';
-      format = '.png';
-      urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip1 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip1.format = THREE.RGBFormat;
-
-      // Cube Map mip 2
-      path = '../_images/pbr/maskonaive_m02_c0';
-      format = '.png';
-      urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip2 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip2.format = THREE.RGBFormat;
-
-      // Cube Map mip 3
-      path = '../_images/pbr/maskonaive_m03_c0';
-      format = '.png';
-      urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip3 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip3.format = THREE.RGBFormat;
-
-      // Cube Map mip 4
-      path = '../_images/pbr/maskonaive_m04_c0';
-      format = '.png';
-      urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip4 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip4.format = THREE.RGBFormat;
-
-      // Cube Map mip 5
-      path = '../_images/pbr/maskonaive_m05_c0';
-      format = '.png';
-      urls = [
-        path + '0' + format, path + '1' + format,
-        path + '2' + format, path + '3' + format,
-        path + '4' + format, path + '5' + format
-      ];
-      var cubeMapMip5 = THREE.ImageUtils.loadTextureCube(urls);
-      cubeMapMip5.format = THREE.RGBFormat;
-
-      var material = new THREE.ShaderMaterial({
-        uniforms: {
-          baseColor: {
-            type: 'v3',
-            value: baseColor
-          },
-
-          envMap0: {
-            type: 't',
-            value: cubeMapMip0
-          },
-
-          envMap1: {
-            type: 't',
-            value: cubeMapMip1
-          },
-
-          envMap2: {
-            type: 't',
-            value: cubeMapMip2
-          },
-
-          envMap3: {
-            type: 't',
-            value: cubeMapMip3
-          },
-
-          envMap4: {
-            type: 't',
-            value: cubeMapMip4
-          },
-
-          envMap5: {
-            type: 't',
-            value: cubeMapMip5
-          },
-
-          roughness: {
-            type: 'f',
-            value: roughness
-          },
-
-          metallic: {
-            type: 'f',
-            value: metallic
-          },
-
-          lightIntensity: {
-            type: 'f',
-            value: lightIntensity
-          },
-
-          uvScale: {
-            type: 'v2',
-            value: new THREE.Vector2(1.0, 1.0)
-          }
-        },
+      return new THREE.ShaderMaterial({
         vertexShader: pbrVertexShader(),
-        fragmentShader: pbrFragmentShader()
+        fragmentShader: pbrFragmentShader({
+          // Keep this param > 1 since GLSL won't allow arrays w/ length=0.
+          lightArraySize: this.lights.length || 1
+        }),
+        uniforms: this.getPBRUniforms()
       });
+    }
+  },
 
-      return material;
+  /**
+   * Builds uniforms object given component attributes to pass into shaders.
+   *
+   * @returns {object} uniforms - shader uniforms.
+   */
+  getPBRUniforms: {
+    value: function () {
+      // Format baseColor to a vector.
+      var color = new THREE.Color(this.data.color);
+      color = new THREE.Vector3(color.r, color.g, color.b);
+
+      var uniforms = {
+        baseColor: {
+          type: 'v3',
+          value: color
+        },
+        metallic: {
+          type: 'f',
+          value: this.data.metallic
+        },
+        roughness: {
+          type: 'f',
+          value: this.data.roughness
+        },
+        uvScale: {
+          type: 'v2',
+          value: new THREE.Vector2(1.0, 1.0)
+        }
+      };
+
+      // Add lights to uniform.
+      if (this.lights.length) {
+        uniforms.lightColors = {
+          type: '3fv',
+          value: flattenVector3Array(
+            this.lights.map(function (light) {
+              return light.color;
+            })
+          )
+        };
+        uniforms.lightDirections = {
+          type: '3fv',
+          value: flattenVector3Array(
+            this.lights.map(function (light) {
+              return light.direction;
+            })
+          )
+        };
+        uniforms.lightIntensities = {
+          type: 'iv1',
+          value: this.lights.map(function (light) {
+            // TODO: accept floats (e.g., 1.0), but JS keeps changing 1.0 -> 1.
+            return Math.round(light.intensity);
+          })
+        };
+        uniforms.lightPositions = {
+          type: '3fv',
+          value: flattenVector3Array(
+            this.lights.map(function (light) {
+              return light.position;
+            })
+          )
+        };
+      }
+
+      // Add cubemap for reflections to uniform.
+      // TODO: allow user to specify their own cubemap.
+      for (var i = 0; i < 6; i++) {
+        // See computeEnvColor() for explanation of cubemap.
+        var path = 'images/pbr/maskonaive_m0' + i + '_c0';
+        var format = '.png';
+        var urls = [
+          path + '0' + format, path + '1' + format,
+          path + '2' + format, path + '3' + format,
+          path + '4' + format, path + '5' + format
+        ];
+        var cubeMapMip = THREE.ImageUtils.loadTextureCube(urls);
+        cubeMapMip.format = THREE.RGBFormat;
+
+        uniforms['envMap' + i] = {
+          type: 't',
+          value: cubeMapMip
+        };
+      }
+
+      return uniforms;
     }
   }
 });
+
+/**
+ * Flattens an array of three-dimensional vectors into a single array.
+ * Used to pass multiple vectors into the shader program using type 3fv.
+ *
+ * @param {array} vector3s - array of THREE.Vector3, the `s` denotes plural.
+ * @returns {array} arr - float values.
+ */
+function flattenVector3Array (vector3s) {
+  var arr = [];
+  vector3s.forEach(function (vector3) {
+    arr = arr.concat([vector3.x, vector3.y, vector3.z]);
+  });
+  return arr;
+}
