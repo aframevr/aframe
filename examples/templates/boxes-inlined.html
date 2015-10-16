@@ -19,8 +19,10 @@
       <vr-box color="cyan" position="1 -1 0" rotation="-45 -45 0"></vr-box>
     </vr-scene>
 
-    <vr-template name="vr-box" color="orange" rotation="0 45 0">
-      <vr-object mixin="cube" position="${position}" rotation="${rotation}" material="color: ${color}"></vr-object>
-    </vr-template>
+    <vr-element name="vr-box" color="orange" rotation="0 45 0">
+      <template>
+        <vr-object mixin="cube" position="${position}" rotation="${rotation}" material="color: ${color}"></vr-object>
+      </template>
+    </vr-element>
   </body>
 </html>
