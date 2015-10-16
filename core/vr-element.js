@@ -1,11 +1,14 @@
 /* global HTMLElement, HTMLImports, MutationObserver */
 
-// Polyfill HTML Imports.
 window.addEventListener('HTMLImportsLoaded', function () {
   importTemplates();
 });
 
-require('../lib/vendor/HTMLImports');
+// NOTE: HTML Imports polyfill must come before we include `vr-markup`.
+var hasImports = document.createElement('link').import;
+if (!hasImports) {
+  require('../lib/vendor/HTMLImports');
+}
 
 var VRMarkup = require('@mozvr/vr-markup');
 
@@ -71,7 +74,7 @@ utils.template = function (s) {
 };
 
 function importTemplates () {
-  if (!HTMLImports.useNative) {
+  if (HTMLImports && !HTMLImports.useNative) {
     Object.keys(HTMLImports.importer.documents).forEach(function (key) {
       var doc = HTMLImports.importer.documents[key];
       utils.$$('vr-element', doc).forEach(function (template) {
