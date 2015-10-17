@@ -21,21 +21,17 @@ module.exports.error = function (msg) {
 };
 
 /**
- * Emits a console warning given a message.
- *
- * @param {String} msg Warning message.
+ * Emits a console warning given passed message argument(s).
  */
-module.exports.warn = function (msg) {
-  console.warn(msg);
+module.exports.warn = function () {
+  console.warn.apply(console, arguments);
 };
 
 /**
- * Emits a console log given a message.
- *
- * @param {String} msg Log message.
+ * Emits a console log given passed message argument(s).
  */
-module.exports.log = function (msg) {
-  console.log(msg);
+module.exports.log = function () {
+  console.log.apply(console, arguments);
 };
 
 /**

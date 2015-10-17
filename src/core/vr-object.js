@@ -223,7 +223,7 @@ var proto = {
       if (!hasAttribute && hasDefault) {
         this.setAttribute(name, defaults[name]);
       }
-      VRUtils.log('Component initialized: ' + name);
+      VRUtils.log('Component initialized: %s', name);
     }
   },
 
