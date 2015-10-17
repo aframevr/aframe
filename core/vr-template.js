@@ -1,4 +1,4 @@
-/* global HTMLElement, HTMLImports, MutationObserver */
+/* global HTMLTemplateElement, HTMLImports, MutationObserver */
 
 window.addEventListener('HTMLImportsLoaded', function () {
   importTemplates();
@@ -77,7 +77,7 @@ function importTemplates () {
   if (HTMLImports && !HTMLImports.useNative) {
     Object.keys(HTMLImports.importer.documents).forEach(function (key) {
       var doc = HTMLImports.importer.documents[key];
-      utils.$$('vr-element', doc).forEach(function (template) {
+      utils.$$('template[is="vr-template"]', doc).forEach(function (template) {
         var templateEl = document.importNode(template, true);
         document.body.appendChild(templateEl);
       });
@@ -90,10 +90,11 @@ document.addEventListener('vr-markup-ready', function () {
 });
 
 module.exports = document.registerElement(
-  'vr-element',
+  'vr-template',
   {
+    extends: 'template',
     prototype: Object.create(
-      HTMLElement.prototype,
+      HTMLTemplateElement.prototype,
       {
         createdCallback: {
           value: function () {
@@ -202,8 +203,8 @@ module.exports = document.registerElement(
                         if (!this.replaced) { return; }
                         if (!force && this.lastOuterHTML === this.outerHTML) { return; }
 
-                        // Use the defaults defined on the original `<vr-element>`.
-                        var template = utils.$('vr-element[name="' + tagName + '"]');
+                        // Use the defaults defined on the original `<template is="vr-template">`.
+                        var template = utils.$('template[is="vr-template"][name="' + tagName + '"]');
                         var attrsDefault = template ? utils.$$(template.attributes) : [];
 
                         var templateAttrs = {};
@@ -220,7 +221,7 @@ module.exports = document.registerElement(
                           }, this);
                         }
 
-                        var newHTML = utils.format(template.querySelector('template').innerHTML, templateAttrs);
+                        var newHTML = utils.format(template.innerHTML, templateAttrs);
                         if (this.innerHTML !== newHTML) {
                           // TODO: In the future use something like Virtual
                           // so we are doing the fewest number of DOM changes.
@@ -286,6 +287,7 @@ module.exports = document.registerElement(
         inject: {
           value: function () {
             var self = this;
+
             if (self.injected) { return; }
             self.injected = true;
 
@@ -297,7 +299,7 @@ module.exports = document.registerElement(
 
             var placeholders = utils.$$(tagName, self.sceneEl);
 
-            // Use any defaults defined on the `<vr-element name="yolo" color="cyan">`.
+            // Use any defaults defined on the `<template is="vr-template" name="yolo" color="cyan">`.
             var attrsDefault = utils.$$(self.attributes);
 
             placeholders.forEach(function (placeholder, idx) {
@@ -317,15 +319,11 @@ module.exports = document.registerElement(
                 placeholder.setAttribute(key, placeholderAttrs[key]);
               });
 
-              var el = document.createElement('vr-object');
-              el.id = 'injected--' + tagName + '-' + (idx + 1);
-              el.className = 'injected injected--' + tagName + ' injected--' + tagName + '-' + (idx + 1);
-              el.innerHTML = utils.format(self.querySelector('template').innerHTML, placeholderAttrs);
               placeholder.initDefaultComponents(true);  // We want this to happen only *after* we've added our attributes.
               placeholder.originalAttrs = utils.$$(placeholder.attributes);
-              placeholder.innerHTML = el.innerHTML;
+              placeholder.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
               placeholder.replaced = true;
-              self.sceneEl.add(el);
+              self.sceneEl.add(placeholder);
 
               VRUtils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - then);
 
