@@ -2,8 +2,6 @@
 
 var registerElement = require('../vr-register-element');
 
-var VRNode = require('./vr-node');
-
 module.exports = registerElement(
   'vr-assets',
   {
@@ -29,7 +27,7 @@ module.exports = registerElement(
             }
 
             function countElement (node) {
-              if (!self.isVRNode(node)) { return; }
+              if (!node.isVRNode) { return; }
               if (!node.hasLoaded) {
                 attachEventListener(node);
                 self.assetsPending++;
@@ -39,12 +37,6 @@ module.exports = registerElement(
             function attachEventListener (node) {
               node.addEventListener('loaded', assetLoaded);
             }
-          }
-        },
-
-        isVRNode: {
-          value: function (node) {
-            return VRNode.prototype.isPrototypeOf(node);
           }
         },
 
