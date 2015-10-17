@@ -11,67 +11,12 @@ if (!hasImports) {
 }
 
 var VRMarkup = require('@mozvr/vr-markup');
+var registerTemplate = require('./lib/register-template');
+var utils = require('./lib/utils');
 
-var VRObject = VRMarkup.VRObject;
 var VRUtils = VRMarkup.utils;
 
 var internals = {};
-
-var utils = {
-  '$': function (sel) {
-    if (sel && typeof sel === 'string') {
-      sel = document.querySelector(sel);
-    }
-    return sel;
-  },
-  '$$': function (sel, parent) {
-    if (sel && typeof sel === 'string') {
-      sel = (parent || document).querySelectorAll(sel);
-    }
-    return Array.prototype.slice.call(sel);
-  }
-};
-
-/**
- * ES6-style string formatting
- *
- * > format('${0}', ['zzz'])
- * "zzz"
- *
- * > format('${0}{1}', 1, 2)
- * "12"
- *
- * > format('${x}', {x: 1})
- * "1"
- *
- * > format('my favourite color is ${color=blue}', {x: 1})
- * "my favourite color is blue"
- *
- */
-utils.format = (function () {
-  var re = /\$?\{\s*([^}= ]+)(\s*=\s*(.+))?\s*\}/g;
-  return function (s, args) {
-    if (!s) { throw new Error('Format string is empty!'); }
-    if (!args) { return; }
-    if (!(args instanceof Array || args instanceof Object)) {
-      args = Array.prototype.slice.call(arguments, 1);
-    }
-    return s.replace(re, function (_, name, rhs, defaultVal) {
-      var val = args[name];
-
-      if (typeof val === 'undefined') {
-        return (defaultVal || '?').trim().replace(/^["']|["']$/g, '');
-      }
-
-      return (val || '?').trim().replace(/^["']|["']$/g, '');
-    });
-  };
-})();
-
-utils.template = function (s) {
-  if (!s) { throw new Error('Template string is empty!'); }
-  return function (args) { return utils.format(s, args); };
-};
 
 function importTemplates () {
   if (HTMLImports && !HTMLImports.useNative) {
@@ -184,77 +129,7 @@ module.exports = document.registerElement(
           value: function (tagName) {
             if (this.registered) { return; }
             this.registered = true;
-
-            var tagNameLower = tagName.toLowerCase();
-
-            VRUtils.log('registering <%s>', tagNameLower);
-
-            document.registerElement(
-              tagNameLower,
-              {
-                prototype: Object.create(
-                  VRObject.prototype, {
-                    attributeChangedCallback: {
-                      value: function () {
-                        this.rerender();
-                      }
-                    },
-
-                    rerender: {
-                      value: function (force) {
-                        if (!this.replaced) { return; }
-                        if (!force && this.lastOuterHTML === this.outerHTML) { return; }
-
-                        // Use the defaults defined on the original `<template is="vr-template">`.
-                        var template = utils.$('template[is="vr-template"][name="' + tagName + '"]');
-                        var attrsDefault = template ? utils.$$(template.attributes) : [];
-
-                        var templateAttrs = {};
-                        attrsDefault.concat(this.originalAttrs).forEach(function (attr) {
-                          templateAttrs[attr.name] = attr.value;
-                        });
-
-                        if (force) {
-                          // If the template has changed, remove any attributes
-                          // that were added after this element was created.
-                          utils.$$(this.attributes).forEach(function (attr) {
-                            if (attr.name in templateAttrs) { return; }
-                            this.removeAttribute(attr.name);
-                          }, this);
-                        }
-
-                        var newHTML = utils.format(template.innerHTML, templateAttrs);
-                        if (this.innerHTML !== newHTML) {
-                          // TODO: In the future use something like Virtual
-                          // so we are doing the fewest number of DOM changes.
-                          this.innerHTML = newHTML;
-                        }
-
-                        this.lastOuterHTML = this.outerHTML;
-                      },
-                      writable: window.debug
-                    },
-
-                    /**
-                     * Overrides `initDefaultComponents` from `VRObject`.
-                     *
-                     * By default, this will get called when the element is attached.
-                     * But we want to initialize the default components
-                     * only *after* we've added our attributes.
-                     *
-                     * @param {Boolean} force Whether to call the original method from `VRObject`.
-                     */
-                    initDefaultComponents: {
-                      value: function (force) {
-                        if (force) {
-                          VRObject.prototype.initDefaultComponents.call(this);
-                        }
-                      },
-                      writable: window.debug
-                    }
-                  }
-                )
-              });
+            return registerTemplate(tagName);
           }
         },
 
