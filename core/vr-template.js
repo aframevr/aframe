@@ -101,6 +101,8 @@ module.exports = document.registerElement(
             var self = this;
             self.placeholders = [];
             if (self.ownerDocument !== document) {
+              // TODO: Fix native HTML Imports for Chrome.
+              // See https://github.com/MozVR/vr-components/issues/53
               setTimeout(function () {
                 document.body.appendChild(self);
               });
