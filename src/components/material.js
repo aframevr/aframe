@@ -207,7 +207,7 @@ module.exports.Component = registerComponent('material', {
       // TODO: allow user to specify their own cubemap.
       for (var i = 0; i < 6; i++) {
         // See computeEnvColor() for explanation of cubemap.
-        var path = 'images/pbr/maskonaive_m0' + i + '_c0';
+        var path = '/examples/_images/pbr/maskonaive_m0' + i + '_c0';
         var format = '.png';
         var urls = [
           path + '0' + format, path + '1' + format,
