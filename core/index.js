@@ -13,6 +13,7 @@ module.exports = {
   'vr-skybox': require('./vr-skybox'),
   'vr-skysphere': require('./vr-skysphere'),
   'vr-sphere': require('./vr-sphere'),
+  'vr-template': require('./vr-template'),
   'vr-text': require('./vr-text'),
   'vr-video': require('./vr-video'),
   'vr-video360': require('./vr-video360')
