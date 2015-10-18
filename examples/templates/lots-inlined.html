@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lots of templated objects (inlined)</title>
+    <meta name="description" content="Lots of templated objects (inlined) vr-component">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-mixin id="cube" geometry="primitive: box" material="color: red"></vr-mixin>
+      <vr-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></vr-mixin>
+    </vr-assets>
+
+    <vr-scene>
+      <!-- using plain old objects -->
+      <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-object mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
+
+      <!-- using fancy templates -->
+      <vr-oval color="green"></vr-oval>
+
+      <vr-box position="13 5 -5" rotation="40 -40 20"></vr-box>
+      <vr-box color="hotpink" scale=".75 .25 .25" position="11 8 -4" rotation="30 -50 10"></vr-box>
+      <vr-box color="#fd0" scale=".25 .25 .5" position="16 8 -4" rotation="35 -15 10"></vr-box>
+
+      <vr-bigcubes></vr-bigcubes>
+
+      <vr-saturn></vr-saturn>
+    </vr-scene>
+
+    <!-- making templates -->
+    <template is="vr-template" name="vr-oval" color="salmon">
+      <vr-object mixin="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></vr-object>
+    </template>
+
+    <template is="vr-template" name="vr-saturn">
+      <vr-football></vr-football>
+      <vr-tennisball></vr-tennisball>
+    </template>
+
+    <template is="vr-template" name="vr-football" color="orange">
+      <vr-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".8 .25 .8" material="color: ${color}"></vr-object>
+    </template>
+
+    <template is="vr-template" name="vr-tennisball">
+      <vr-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".5 .5 .5" material="color: ${color=yellow}"></vr-object>
+    </template>
+
+    <template is="vr-template" name="vr-box" color="cyan" position="0 0 0" rotation="40 -40 20" scale=".75 .75 .75">
+      <vr-object mixin="cube" position="${position}" rotation="${rotation}" scale="${scale}" material="color: ${color}"></vr-object>
+    </template>
+
+    <template is="vr-template" name="vr-bigcubes" color1="red" color2="white" color3="blue">
+      <vr-object mixin="cube" position="-8 3 0" rotation="30 45 0" material="color: ${color1}"></vr-object>
+      <vr-object mixin="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></vr-object>
+      <vr-object mixin="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></vr-object>
+    </template>
+  </body>
+</html>

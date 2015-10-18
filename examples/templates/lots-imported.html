@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lots of templated objects (imported)</title>
+    <meta name="description" content="Lots of templated objects (imported) vr-component">
+    <script src="../../build/vr-components.js"></script>
+    <link rel="import" href="templates/multiple/index.html">
+  </head>
+  <body>
+    <vr-assets>
+      <vr-mixin id="cube" geometry="primitive: box" material="color: red"></vr-mixin>
+      <vr-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></vr-mixin>
+    </vr-assets>
+
+    <vr-scene>
+      <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-object mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></vr-object>
+
+
+      <vr-oval color="green"></vr-oval>
+
+      <vr-box position="13 5 -5" rotation="40 -40 20"></vr-box>
+      <vr-box color="hotpink" scale=".75 .25 .25" position="11 8 -4" rotation="30 -50 10"></vr-box>
+      <vr-box color="#fd0" scale=".25 .25 .5" position="16 8 -4" rotation="35 -15 10"></vr-box>
+
+      <vr-bigcubes></vr-bigcubes>
+
+      <vr-saturn></vr-saturn>
+
+    </vr-scene>
+  </body>
+</html>

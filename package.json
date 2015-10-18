@@ -47,6 +47,7 @@
     "ignore": [
       "build/**",
       "dist/**",
+      "lib/vendor/**",
       "examples/_js/**"
     ]
   },
