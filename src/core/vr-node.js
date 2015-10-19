@@ -41,6 +41,10 @@ module.exports = document.registerElement(
 
         attributeChangedCallback: {
           value: function (attr, oldVal, newVal) {
+            // When creating objects programmatically and setting attributes
+            // the object is not part of the scene until is inserted in the
+            // DOM
+            if (!this.hasLoaded) { return; }
             // In Firefox the callback is called even if the
             // attribute value doesn't change. We return
             // if old and new values are the same
