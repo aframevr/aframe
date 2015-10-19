@@ -54,6 +54,10 @@ var proto = {
       var newValStr = newVal;
       var component = VRComponents[attr];
       var light = this.light;
+      // When creating objects programmatically and setting attributes
+      // the object is not part of the scene until is inserted in the
+      // DOM
+      if (!this.hasLoaded) { return; }
       if (component && typeof newVal !== 'string') {
         newValStr = component.stringifyAttributes(newVal);
       }
