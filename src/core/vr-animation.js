@@ -32,10 +32,21 @@ module.exports = document.registerElement(
           value: function () {
             this.el = this.parentNode;
             // preemptive binding to attach/dettach event listeners (see update method)
-            this.start = this.start.bind(this);
+            this.bindMethods();
             this.applyMixin();
             this.load();
-          }
+          },
+          writable: window.debug
+        },
+
+        bindMethods: {
+          value: function () {
+            this.start = this.start.bind(this);
+            this.stop = this.stop.bind(this);
+            this.onStateAdded = this.onStateAdded.bind(this);
+            this.onStateRemoved = this.onStateRemoved.bind(this);
+          },
+          writable: window.debug
         },
 
         attributeChangedCallback: {
@@ -48,24 +59,59 @@ module.exports = document.registerElement(
 
         update: {
           value: function () {
-            var el = this.el;
-            var evt = this.evt;
             var data = this.data;
             var begin = data.begin;
             // begin is an event name
-            // Cancel previous event listener
-            if (evt) { el.removeEventListener(evt, this.start); }
+            // Cancel previous event listeners
+            this.removeEventListeners(this.evt);
+            this.addEventListeners(begin);
             // Store new event name
             this.evt = begin;
-            // New event listener
-            el.addEventListener('click', this.start);
-            // If begin is a number we start the animation righ away
+            // If begin is a number we start the animation right away
             if (!isNaN(begin)) {
               this.stop();
               this.start();
               return;
             }
           }
+        },
+
+        addEventListeners: {
+          value: function (evt) {
+            var el = this.el;
+            el.addEventListener(evt, this.start);
+            el.addEventListener('stateadded', this.onStateAdded);
+            el.addEventListener('stateremoved', this.onStateRemoved);
+          },
+          writable: window.debug
+        },
+
+        removeEventListeners: {
+          value: function (evt) {
+            var el = this.el;
+            el.removeEventListener(evt, this.start);
+            el.removeEventListener('stateadded', this.onStateAdded);
+            el.removeEventListener('stateremoved', this.onStateRemoved);
+          },
+          writable: window.debug
+        },
+
+        onStateAdded: {
+          value: function (evt) {
+            if (evt.detail.state === this.data.begin) {
+              this.start();
+            }
+          },
+          writable: true
+        },
+
+        onStateRemoved: {
+          value: function (evt) {
+            if (evt.detail.state === this.data.begin) {
+              this.stop();
+            }
+          },
+          writable: true
         },
 
         init: {
@@ -110,7 +156,8 @@ module.exports = document.registerElement(
               })
               .onComplete(this.onCompleted.bind(this));
             return tween;
-          }
+          },
+          writable: window.debug
         },
 
         getDirection: {
@@ -124,7 +171,8 @@ module.exports = document.registerElement(
               return this.lastDirection;
             }
             return direction;
-          }
+          },
+          writable: window.debug
         },
 
         onCompleted: {
@@ -142,7 +190,8 @@ module.exports = document.registerElement(
             this.running = false;
             this.count -= 1;
             this.start();
-          }
+          },
+          writable: true
         },
 
         stop: {
@@ -154,7 +203,8 @@ module.exports = document.registerElement(
             tween.stop();
             this.running = false;
             el.setAttribute(data.attribute, this.initValue);
-          }
+          },
+          writable: true
         },
 
         start: {
