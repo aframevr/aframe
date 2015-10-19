@@ -58,7 +58,8 @@ module.exports = document.registerElement(
         attributeBlacklist: {
           value: {
             name: true,
-            id: true
+            id: true,
+            is: true
           }
         },
 
