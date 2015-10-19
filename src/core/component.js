@@ -27,7 +27,10 @@ Component.prototype = {
    * and its mixins and calls update
    */
   updateAttributes: function (values) {
+    var previousData = utils.mixin({}, this.data);
     this.parseAttributes(values);
+    // Don't update if properties haven't changed
+    if (utils.deepEqual(previousData, this.data)) { return; }
     this.update();
   },
 
@@ -62,14 +65,18 @@ Component.prototype = {
     var elAttrs = attrs || el.getAttribute(this.name);
     var self = this;
     var mixinEls = el.mixinEls;
+    // Copy the default first. Lowest precedence
     utils.mixin(data, this.defaults);
+    // Copy mixin values
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
       var str = mixinEl.getAttribute(self.name);
       if (!str) { return; }
       mixAttributes(str, data);
     }
+    // Copy attribute values. Maximum precedence
     mixAttributes(elAttrs, data);
+    // Coerce to the type of the defaults
     utils.coerce(data, this.defaults);
     this.data = data;
   },

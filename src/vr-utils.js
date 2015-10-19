@@ -80,7 +80,7 @@ module.exports.coerce = function (obj, schema) {
   function coerce (key) {
     var type;
     var value = schema[key];
-    if (!value) { return; }
+    if (value === undefined) { return; }
     type = typeof value;
     switch (type) {
       case 'string':
@@ -94,3 +94,22 @@ module.exports.coerce = function (obj, schema) {
     }
   }
 };
+
+/**
+ * Checks if a and b objects have the same attributes and the values
+ * are equal.
+ * @param  {object} a
+ * @param  {object} b
+ * @return {boolean}   True if objects are equal. False otherwise
+ */
+module.exports.deepEqual = function (a, b) {
+  var keysA = Object.keys(a);
+  var keysB = Object.keys(b);
+  var i;
+  if (keysA.length !== keysB.length) { return false; }
+  for (i = 0; i < keysA.length; ++i) {
+    if (a[keysA[i]] !== b[keysA[i]]) { return false; }
+  }
+  return true;
+};
+
