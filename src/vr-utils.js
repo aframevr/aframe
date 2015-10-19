@@ -8,7 +8,8 @@
  * @param {Object} detail Custom data to pass as `detail` if the event is a Custom Event.
  */
 module.exports.fireEvent = function (el, name, detail) {
-  el.dispatchEvent(detail ? new CustomEvent(name, detail) : new Event(name));
+  var evt = detail ? new CustomEvent(name, { detail: detail }) : new Event(name);
+  el.dispatchEvent(evt);
 };
 
 /**
