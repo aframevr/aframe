@@ -110,15 +110,17 @@ var proto = {
       var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
       // Remove the mixins that are gone on update
       diff.forEach(function (mixinId) {
+        var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = stateMixinsEls.map(function (el) { return el.id; });
-        stateMixinIds.forEach(self.removeMixin.bind(self));
+        var stateMixinIds = [];
+        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
+        stateMixinIds.forEach(self.deRegisterMixin.bind(self));
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
           var mixinId = id + '-' + state;
-          self.addMixin(mixinId);
+          self.registerMixin(mixinId);
         });
       });
     },
@@ -279,8 +281,8 @@ var proto = {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, this.addMixin.bind(this));
-      this.emit('state-added', {state: state});
+      this.mapStateMixins(state, this.registerMixin.bind(this));
+      this.emit('stateadded', {state: state});
     },
     writable: window.debug
   },
@@ -290,8 +292,8 @@ var proto = {
       var stateIndex = this.is(state);
       if (stateIndex === false) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, this.removeMixin.bind(this));
-      this.emit('state-removed', {state: state});
+      this.mapStateMixins(state, this.deRegisterMixin.bind(this));
+      this.emit('stateremoved', {state: state});
     },
     writable: window.debug
   },

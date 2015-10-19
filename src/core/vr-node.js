@@ -73,13 +73,43 @@ module.exports = document.registerElement(
             // To determine what listeners will be removed
             var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
             this.mixinEls = [];
-            diff.forEach(this.removeMixin.bind(this));
-            newMixinsIds.forEach(this.addMixin.bind(this));
+            diff.forEach(this.deRegisterMixin.bind(this));
+            newMixinsIds.forEach(this.registerMixin.bind(this));
           },
           writable: window.debug
         },
 
         addMixin: {
+          value: function (mixinId) {
+            var mixins = this.getAttribute('mixin');
+            var mixinIds = mixins.split(' ');
+            var i;
+            for (i = 0; i < mixinIds.length; ++i) {
+              if (mixinIds[i] === mixinId) { return; }
+            }
+            mixinIds.push(mixinId);
+            this.setAttribute('mixin', mixinIds.join(' '));
+          },
+          writable: window.debug
+        },
+
+        removeMixin: {
+          value: function (mixinId) {
+            var mixins = this.getAttribute('mixin');
+            var mixinIds = mixins.split(' ');
+            var i;
+            for (i = 0; i < mixinIds.length; ++i) {
+              if (mixinIds[i] === mixinId) {
+                mixinIds.splice(i, 1);
+                this.setAttribute('mixin', mixinIds.join(' '));
+                return;
+              }
+            }
+          },
+          writable: window.debug
+        },
+
+        registerMixin: {
           value: function (mixinId) {
             var mixinEl = document.querySelector('vr-mixin#' + mixinId);
             if (!mixinEl) { return; }
@@ -88,7 +118,7 @@ module.exports = document.registerElement(
           }
         },
 
-        removeMixin: {
+        deRegisterMixin: {
           value: function (mixinId) {
             var mixinEls = this.mixinEls;
             var mixinEl;
