@@ -12,7 +12,7 @@
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && git checkout dist/ && replace 'build/vr-components.js' 'dist/vr-components.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release": "npm version patch --minor && npm login && npm publish",
+    "release": "npm login && npm version patch --minor && npm publish",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
