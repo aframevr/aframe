@@ -30,7 +30,8 @@ module.exports = function (tagName) {
               var attrsDefault = template ? utils.$$(template.attributes) : [];
 
               var templateAttrs = {};
-              attrsDefault.concat(this.originalAttrs).forEach(function (attr) {
+              var passedAttrs = force ? this.originalAttrs : utils.$$(this.attributes);
+              attrsDefault.concat(passedAttrs).forEach(function (attr) {
                 templateAttrs[attr.name] = attr.value;
               });
 
