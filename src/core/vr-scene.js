@@ -354,6 +354,24 @@ var VRScene = module.exports = registerElement(
         },
 
         /**
+         * Transforms this.lights into an array. Uses default lights if no
+         * lights have been registered.
+         *
+         * @param light {array} - array of lights.
+         */
+        getLightsAsArray: {
+          value: function () {
+            // Default lights prescribed if no lights set.
+            var lights = Object.keys(this.lights).length
+                         ? this.lights : this.defaults.lights;
+            // Convert this.lights to array.
+            return Object.keys(lights).map(function (id) {
+              return lights[id];
+            });
+          }
+        },
+
+        /**
          * Registers material component for the scene to keep track.
          * Scene keeps track of materials in case of needed updates.
          *
@@ -363,6 +381,7 @@ var VRScene = module.exports = registerElement(
         registerMaterial: {
           value: function (id, material) {
             this.materials[id] = material;
+            material.updateLights(this.getLightsAsArray());
           }
         },
 
@@ -373,13 +392,8 @@ var VRScene = module.exports = registerElement(
         updateMaterials: {
           value: function () {
             var self = this;
-            // Default lights prescribed if no lights set.
-            var lights = Object.keys(self.lights).length
-                         ? self.lights : this.defaults.lights;
             // Convert this.lights to array.
-            var lightsArr = Object.keys(lights).map(function (id) {
-              return lights[id];
-            });
+            var lightsArr = self.getLightsAsArray();
             // Iterate through all materials to update lights.
             Object.keys(self.materials).forEach(function (id) {
               self.materials[id].updateLights(lightsArr);
