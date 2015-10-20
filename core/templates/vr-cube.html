@@ -1,0 +1,16 @@
+<template is="vr-template"
+          name="vr-cube"
+          height="5"
+          width="5"
+          depth="5"
+          color="gray"
+          metallic="0.0"
+          roughness="0.5">
+  <vr-object geometry="primitive: box;
+                       height: ${height};
+                       width: ${width};
+                       depth: ${depth}"
+             material="color: ${color};
+                       metallic: ${metallic};
+                       roughness: ${roughness}"></vr-object>
+</template>
