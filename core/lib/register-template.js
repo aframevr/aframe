@@ -26,7 +26,7 @@ module.exports = function (tagName) {
               if (!force && this.lastOuterHTML === this.outerHTML) { return; }
 
               // Use the defaults defined on the original `<template is="vr-template">`.
-              var template = utils.$('template[is="vr-template"][name="' + tagName + '"]');
+              var template = utils.$('template[is="vr-template"][element="' + tagName + '"]');
               var attrsDefault = template ? utils.$$(template.attributes) : [];
 
               var templateAttrs = {};

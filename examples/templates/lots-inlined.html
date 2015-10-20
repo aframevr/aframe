@@ -30,28 +30,28 @@
     </vr-scene>
 
     <!-- making templates -->
-    <template is="vr-template" name="vr-oval" color="salmon">
+    <template is="vr-template" element="vr-oval" color="salmon">
       <vr-object mixin="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></vr-object>
     </template>
 
-    <template is="vr-template" name="vr-saturn">
+    <template is="vr-template" element="vr-saturn">
       <vr-football></vr-football>
       <vr-tennisball></vr-tennisball>
     </template>
 
-    <template is="vr-template" name="vr-football" color="orange">
+    <template is="vr-template" element="vr-football" color="orange">
       <vr-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".8 .25 .8" material="color: ${color}"></vr-object>
     </template>
 
-    <template is="vr-template" name="vr-tennisball">
+    <template is="vr-template" element="vr-tennisball">
       <vr-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".5 .5 .5" material="color: ${color=yellow}"></vr-object>
     </template>
 
-    <template is="vr-template" name="vr-box" color="cyan">
+    <template is="vr-template" element="vr-box" color="cyan">
       <vr-object mixin="cube" material="color: ${color}"></vr-object>
     </template>
 
-    <template is="vr-template" name="vr-bigcubes" color1="red" color2="white" color3="blue">
+    <template is="vr-template" element="vr-bigcubes" color1="red" color2="white" color3="blue">
       <vr-object mixin="cube" position="-8 3 0" rotation="30 45 0" material="color: ${color1}"></vr-object>
       <vr-object mixin="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></vr-object>
       <vr-object mixin="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></vr-object>
