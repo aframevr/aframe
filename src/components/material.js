@@ -35,38 +35,26 @@ module.exports.Component = registerComponent('material', {
       this.lights = this.lights || [];
 
       // Initialize material.
-      var material = this.getMaterial();
-      this.el.object3D.material = material;
+      this.el.object3D.material = this.getMaterial();
 
       // Register material to the scene to subscribe to light updates.
       this.el.sceneEl.registerMaterial(this.id, this);
     }
   },
 
-  /**
-   * Update the material uniforms, but don't recreate the three.js material.
-   * TODO: be able to find out what attribute is being changed.
-   */
   update: {
     value: function () {
-      var self = this;
-      var material = self.el.object3D.material;
+      var material = this.el.object3D.material = this.getMaterial();
 
-      if (material.type === MATERIAL_TYPE__TEXTURE && !self.data.src ||
-          material.type === MATERIAL_TYPE__PBR && self.data.src) {
-        // Change material type. Should we support this?
-        self.el.object3D.material = self.getMaterial();
-      }
-
+      // Update PBR uniforms.
       if (material.type === MATERIAL_TYPE__PBR) {
-        // Update PBR uniforms.
-        var newUniform = self.getPBRUniforms();
+        var newUniform = this.getPBRUniforms();
         Object.keys(newUniform).forEach(function (key) {
           if (material.uniforms[key] !== newUniform[key]) {
             material.uniforms[key] = newUniform[key];
+            material.needsUpdate = true;
           }
         });
-        material.needsUpdate = true;
       }
     }
   },
@@ -99,7 +87,12 @@ module.exports.Component = registerComponent('material', {
 
   getMaterial: {
     value: function () {
-      return this.data.url ? this.getTextureMaterial() : this.getPBRMaterial();
+      var currentMaterial = this.el.object3D.material;
+      var url = this.data.url;
+      var isPBR = currentMaterial && currentMaterial.type === MATERIAL_TYPE__PBR;
+      if (url) { return this.getTextureMaterial(); }
+      if (isPBR) { return currentMaterial; }
+      return this.getPBRMaterial();
     }
   },
 
