@@ -57,7 +57,7 @@ module.exports = document.registerElement(
 
         attributeBlacklist: {
           value: {
-            name: true,
+            element: true,
             id: true,
             is: true
           }
@@ -169,7 +169,7 @@ module.exports = document.registerElement(
             if (self.injected) { return; }
             self.injected = true;
 
-            var tagName = self.getAttribute('name');
+            var tagName = self.getAttribute('element');
             if (!tagName) { return; }
 
             self.attachTemplateListener(tagName);
@@ -177,7 +177,7 @@ module.exports = document.registerElement(
 
             var placeholders = utils.$$(tagName, self.sceneEl);
 
-            // Use any defaults defined on the `<template is="vr-template" name="yolo" color="cyan">`.
+            // Use any defaults defined on the `<template is="vr-template" element="yolo" color="cyan">`.
             var attrsDefault = utils.$$(self.attributes);
 
             placeholders.forEach(function (placeholder, idx) {
