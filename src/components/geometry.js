@@ -11,8 +11,12 @@ module.exports.Component = registerComponent('geometry', {
       radius: 5,
       tube: 2,
       segments: 32,
+      segmentsWidth: 36,
+      segmentsHeight: 18,
+      segmentsRadius: 36,
       innerRadius: 5,
-      outerRadius: 7
+      outerRadius: 7,
+      openEnded: false
     }
   },
 
@@ -40,6 +44,9 @@ module.exports.Component = registerComponent('geometry', {
         case 'circle':
           geometry = new THREE.CircleGeometry(data.radius, data.segments);
           break;
+        case 'cylinder':
+          geometry = new THREE.CircleGeometry(data.radius, data.radius, data.height, data.segmentsRadius, data.segmentsHeight, data.openEnded);
+          break;
         case 'plane':
           geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
           break;
@@ -47,7 +54,7 @@ module.exports.Component = registerComponent('geometry', {
           geometry = new THREE.RingGeometry(data.innerRadius, data.outerRadius, data.segments);
           break;
         case 'sphere':
-          geometry = new THREE.SphereGeometry(data.radius, data.segments, data.segments);
+          geometry = new THREE.SphereGeometry(data.radius, data.segmentsWidth, data.segmentsHeight);
           break;
         case 'torus':
           geometry = new THREE.TorusGeometry(data.radius, data.tube, data.segments, data.segments);
