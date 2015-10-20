@@ -11,13 +11,15 @@ If you want to get hacking immediately, just fire up [__this Codepen example sce
 
 ### Downloads
 
-If you would like to embed this library in your project, simply include this single file:
+If you would like to embed this library in your project, simply include these files:
 
 * [`vr-components.min.js`](https://mozvr.github.io/vr-components/dist/vr-components.min.js)
+* [`vr-components.min.html`](https://mozvr.github.io/vr-components/dist/vr-components.min.html)
 
 Or if you'd prefer unminified files for local development (with source maps):
 
 * [`vr-components.js`](https://mozvr.github.io/vr-components/dist/vr-components.js)
+* [`vr-components.html`](https://mozvr.github.io/vr-components/dist/vr-components.html)
 
 __Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-components/examples/).__
 
