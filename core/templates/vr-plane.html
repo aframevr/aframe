@@ -1,0 +1,14 @@
+<template is="vr-template"
+          element="vr-plane"
+          width="1"
+          height="1"
+          color="gray"
+          metallic="0.0"
+          roughness="0.5">
+  <vr-object geometry="primitive: plane;
+                       height: ${height};
+                       width: ${width}"
+             material="color: ${color};
+                       metallic: ${metallic};
+                       roughness: ${roughness}"></vr-object>
+</template>
