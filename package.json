@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t browserify-css -t [ browserify-shader --parameterize=true ] | garnish -v",
-    "browserify": "browserify ./index.js -s 'vr-components' -t browserify-css -t [ browserify-shader --parameterize=true ]",
-    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js",
-    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js",
+    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy' -- -s 'vr-components' -t [ browserify-shader --parameterize=true ] | garnish -v",
+    "browserify": "browserify ./index.js -s 'vr-components' -t [ browserify-shader --parameterize=true ]",
+    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js && vulcanize --inline core/templates/index.html > build/vr-components.html",
+    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js && vulcanize --inline core/templates/index.html > dist/vr-components.html && vulcanize --inline core/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/vr-components.min.html",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && git checkout dist/ && replace 'build/vr-components.js' 'dist/vr-components.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
@@ -25,11 +25,14 @@
     "budo": "cvan/budo#7391d13",
     "garnish": "^3.0.0",
     "gh-pages": "^0.4.0",
+    "html-minifier": "^0.8.0",
+    "html2js-browserify": "^1.1.0",
     "husky": "^0.10.1",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
     "snazzy": "^2.0.1",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "vulcanize": "^1.13.1"
   },
   "dependencies": {
     "@mozvr/vr-markup": "^0.1.38"
@@ -37,7 +40,8 @@
   "link": true,
   "browserify": {
     "transform": [
-      "browserify-css"
+      "browserify-css",
+      "html2js-browserify"
     ]
   },
   "browserify-css": {
