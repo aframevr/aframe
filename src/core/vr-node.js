@@ -73,7 +73,7 @@ module.exports = document.registerElement(
             // To determine what listeners will be removed
             var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
             this.mixinEls = [];
-            diff.forEach(this.deRegisterMixin.bind(this));
+            diff.forEach(this.unregisterMixin.bind(this));
             newMixinsIds.forEach(this.registerMixin.bind(this));
           },
           writable: window.debug
@@ -118,7 +118,7 @@ module.exports = document.registerElement(
           }
         },
 
-        deRegisterMixin: {
+        unregisterMixin: {
           value: function (mixinId) {
             var mixinEls = this.mixinEls;
             var mixinEl;

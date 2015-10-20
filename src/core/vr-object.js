@@ -115,7 +115,7 @@ var proto = {
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
         var stateMixinIds = [];
         forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.deRegisterMixin.bind(self));
+        stateMixinIds.forEach(self.unregisterMixin.bind(self));
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
@@ -292,7 +292,7 @@ var proto = {
       var stateIndex = this.is(state);
       if (stateIndex === false) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, this.deRegisterMixin.bind(this));
+      this.mapStateMixins(state, this.unregisterMixin.bind(this));
       this.emit('stateremoved', {state: state});
     },
     writable: window.debug
