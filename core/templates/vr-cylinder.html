@@ -12,15 +12,15 @@
           roughness="0.5"
           url="">
   <vr-object geometry="primitive: cylinder;
-                       radius: ${radius};
-                       height: ${height};
-                       segmentsRadius: ${segments-radius};
-                       segmentsHeight: ${segments-height};
-                       thetaStart: ${theta-start};
-                       thetaLength: ${theta-length};
-                       openEnded: ${open-ended}"
-             material="color: ${color};
-                       metalness: ${metalness};
-                       roughness: ${roughness};
-                       url: ${url}"></vr-object>
+                       radius: {{ radius }};
+                       height: {{ height }};
+                       segmentsRadius: {{ segments-radius }};
+                       segmentsHeight: {{ segments-height }};
+                       thetaStart: {{ theta-start }};
+                       thetaLength: {{ theta-length }};
+                       openEnded: {{ open-ended }"
+             material="color: {{ color }};
+                       metalness: {{ metalness }};
+                       roughness: {{ roughness }};
+                       src: url({{ url }})"></vr-object>
 </template>

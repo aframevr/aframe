@@ -1,7 +1,10 @@
 var VRMarkup = require('@mozvr/vr-markup');
 var VREvent = require('../vr-event/vr-event');
+var nunjucks = require('nunjucks');
 
 var registerElement = VRMarkup.registerElement.registerElement;
+
+nunjucks.configure({autoescape: true});
 
 /**
  * Wraps `querySelector` à la jQuery's `$`.
@@ -80,50 +83,22 @@ module.exports.mergeAttrs = function () {
 };
 
 /**
- * Does ES6-style (or mustache-style) string formatting.
+ * Returns HTML compiled from Nunjucks template and data object.
  *
- * > format('${0}', ['zzz'])
- * "zzz"
- *
- * > format('${0}{1}', 1, 2)
- * "12"
- *
- * > format('${x}', {x: 1})
- * "1"
- *
- * > format('my favourite color is ${color=blue}', {x: 1})
+ * > format('my favourite color is {{ color }}', {color: blue})
  * "my favourite color is blue"
  *
- * @returns {String} Formatted string with interpolated variables.
+ * @param {String} str Nunjucks template (or just plain old raw HTML).
+ * @param {Object=} data Context variables to pass to template.
+ * @returns {String} Formatted string with interpolated data.
  */
-module.exports.format = (function () {
-  var regexes = [
-    /\$?\{\s*([^}= ]+)(\s*=\s*(.+))?\s*\}/g,
-    /\$?%7B\s*([^}= ]+)(\s*=\s*(.+))?\s*%7D/g
-  ];
-  return function (s, args) {
-    if (!s) { throw new Error('Format string is empty!'); }
-    if (!args) { return; }
-    if (!(args instanceof Array || args instanceof Object)) {
-      args = Array.prototype.slice.call(arguments, 1);
-    }
-    Object.keys(args).forEach(function (key) {
-      args[String(key).toLowerCase()] = args[key];
-    });
-    regexes.forEach(function (re) {
-      s = s.replace(re, function (_, name, rhs, defaultVal) {
-        var val = args[name.toLowerCase()];
-
-        if (typeof val === 'undefined') {
-          return (defaultVal || '').trim().replace(/^["']|["']$/g, '');
-        }
-
-        return (val || '').trim().replace(/^["']|["']$/g, '');
-      });
-    });
-    return s;
-  };
-})();
+module.exports.format = function (str, data) {
+  data = data || {};
+  Object.keys(data).forEach(function (key) {
+    data[String(key).toLowerCase()] = data[key];
+  });
+  return nunjucks.renderString(str, data);
+};
 
 /**
  * Wraps an element as a new one with a different name.
