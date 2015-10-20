@@ -4,6 +4,8 @@ var utils = require('./utils');
 var VRObject = VRMarkup.VRObject;
 var VRUtils = VRMarkup.utils;
 
+document.registerElement('vr-root', {prototype: Object.create(VRObject.prototype)});
+
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
   var perfStart = window.performance.now();
@@ -18,6 +20,10 @@ module.exports = function (tagName) {
           attachedCallback: {
             value: function () {
               VRUtils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - perfStart);
+              // We emit an event so `<vr-object>` knows when we've been
+              // registered and adds our children as `object3D`s.
+              this.emit('nodeready');
+              this.rerender();
             }
           },
 
@@ -42,16 +48,24 @@ module.exports = function (tagName) {
           rerender: {
             value: function (force) {
               if (!force && this.lastOuterHTML === this.outerHTML) { return; }
-
               var template = utils.$('template[is="vr-template"][element="' + tagName + '"]');
               if (!template) { return; }
 
               // Use the defaults defined on the original `<template is="vr-template">`.
               var templateAttrs = utils.mergeAttrs(template.attributes, this.attributes);
 
+              this.root = utils.$$(this.children).filter(function (el) {
+                return el.tagName.toLowerCase() === 'vr-root';
+              })[0];
+
+              if (!this.root) {
+                this.root = document.createElement('vr-root');
+                this.appendChild(this.root);
+              }
+
               var newHTML = utils.format(template.innerHTML, templateAttrs);
-              if (newHTML !== this.innerHTML) {
-                this.innerHTML = newHTML;
+              if (newHTML !== this.root.innerHTML) {
+                this.root.innerHTML = newHTML;
               }
 
               this.lastOuterHTML = this.outerHTML;
