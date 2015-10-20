@@ -23,10 +23,9 @@ module.exports = document.registerElement(
 
         attachedCallback: {
           value: function () {
-            var sceneEl = document.querySelector('vr-scene');
             var mixins = this.getAttribute('mixin');
             this.isVRNode = true;
-            this.sceneEl = sceneEl;
+            this.sceneEl = document.querySelector('vr-scene');
             this.mixinEls = [];
             this.mixinObservers = {};
             if (mixins) { this.updateMixins(mixins); }
