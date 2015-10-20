@@ -1,0 +1,16 @@
+<template is="vr-template"
+          element="vr-sphere"
+          radius="5"
+          segments-width="36"
+          segments-height="18"
+          color="gray"
+          metallic="0.0"
+          roughness="0.5">
+  <vr-object geometry="primitive: sphere;
+                       radius: ${radius};
+                       segmentsWidth: ${segments-width};
+                       segmentsHeight: ${segments-height}"
+             material="color: ${color};
+                       metallic: ${metallic};
+                       roughness: ${roughness}"></vr-object>
+</template>
