@@ -71,6 +71,10 @@ Assuming you want to publish a version of `dev` to the private package for testi
 
     npm run release
 
+And to push the tags to GitHub:
+
+   git push --tags
+
 ## Updating `dist` files
 
     npm run dist
@@ -85,17 +89,6 @@ To publish to __https://mozvr.github.io/vr-markup/__:
 To publish to __https://cvan.github.io/vr-markup/__:
 
     npm run ghpages cvan
-
-### Releasing and tagging a **production** release to GitHub
-
-Assuming `dev` has already been reviewed and merged to `master`:
-
-    git checkout master
-    git pull --rebase
-    npm run dist
-    git commit -am 'Version 0.1.8'
-    git tag 0.1.8
-    git push origin head --tags
 
 
 ## License
