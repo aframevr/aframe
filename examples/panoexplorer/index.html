@@ -11,7 +11,8 @@
   <body>
     <vr-asset>
       <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
-      <vr-mixin id="selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
+      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
     </vr-asset>
     <vr-scene>
 
@@ -90,10 +91,10 @@
           var pano = panos[index];
           var linkEL = pano.el;
           if (selectedLinkEl === pano.el) { return; }
-          if (selectedLinkEl) { selectedLinkEl.removeMixin('selected'); }
+          if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
           holder.setAttribute('material', {url: 'images/' + pano.url});
           selectedLinkEl = linkEL;
-          selectedLinkEl.addMixin('selected');
+          selectedLinkEl.addState('selected');
         }
 
       })();
