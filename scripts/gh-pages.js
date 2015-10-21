@@ -8,13 +8,13 @@
  * ------------
  *
  * % node ./scripts/gh-pages
- * gh-pages -d dist -r git@github.com:MozVR/vr-markup.git
+ * gh-pages -d dist -r git@github.com:MozVR/aframe-core.git
  *
  * % node ./scripts/gh-pages cvan
- * gh-pages -d dist -r git@github.com:cvan/vr-markup.git
+ * gh-pages -d dist -r git@github.com:cvan/aframe-core.git
  *
- * % node ./scripts/gh-pages git@github.com:dmarcos/vr-markup.git
- * gh-pages -d dist -r git@github.com:dmarcos/vr-markup.git
+ * % node ./scripts/gh-pages git@github.com:dmarcos/aframe-core.git
+ * gh-pages -d dist -r git@github.com:dmarcos/aframe-core.git
  *
  */
 
@@ -25,7 +25,7 @@ var path = require('path');
 
 var repo = {
   username: 'MozVR',
-  name: 'vr-markup'
+  name: 'aframe-core'
 };
 
 var arg = process.argv[2];
