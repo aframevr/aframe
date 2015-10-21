@@ -6,6 +6,7 @@ var VRUtils = VRMarkup.utils;
 
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
+  var perfStart = window.performance.now();
 
   VRUtils.log('registering <%s>', tagNameLower);
 
@@ -14,40 +15,42 @@ module.exports = function (tagName) {
     {
       prototype: Object.create(
         VRObject.prototype, {
-          attributeChangedCallback: {
+          attachedCallback: {
             value: function () {
-              this.rerender();
+              VRUtils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - perfStart);
             }
+          },
+
+          attributeChangedCallback: {
+            value: function (attr, oldVal, newVal) {
+              if (oldVal === newVal) { return; }
+              this.rerender();
+            },
+            writable: window.debug
+          },
+
+          detachedCallback: {
+            value: function () {
+              if (!this.sceneEl) {
+                this.sceneEl = utils.$('vr-scene');
+              }
+              this.sceneEl.remove(this);
+            },
+            writable: window.debug
           },
 
           rerender: {
             value: function (force) {
-              if (!this.replaced) { return; }
               if (!force && this.lastOuterHTML === this.outerHTML) { return; }
 
-              // Use the defaults defined on the original `<template is="vr-template">`.
               var template = utils.$('template[is="vr-template"][element="' + tagName + '"]');
-              var attrsDefault = template ? utils.$$(template.attributes) : [];
+              if (!template) { return; }
 
-              var templateAttrs = {};
-              var passedAttrs = force ? this.originalAttrs : utils.$$(this.attributes);
-              attrsDefault.concat(passedAttrs).forEach(function (attr) {
-                templateAttrs[attr.name] = attr.value;
-              });
-
-              if (force) {
-                // If the template has changed, remove any attributes
-                // that were added after this element was created.
-                utils.$$(this.attributes).forEach(function (attr) {
-                  if (attr.name in templateAttrs) { return; }
-                  this.removeAttribute(attr.name);
-                }, this);
-              }
+              // Use the defaults defined on the original `<template is="vr-template">`.
+              var templateAttrs = utils.mergeAttrs(template.attributes, this.attributes);
 
               var newHTML = utils.format(template.innerHTML, templateAttrs);
-              if (this.innerHTML !== newHTML) {
-                // TODO: In the future use something like Virtual
-                // so we are doing the fewest number of DOM changes.
+              if (newHTML !== this.innerHTML) {
                 this.innerHTML = newHTML;
               }
 
