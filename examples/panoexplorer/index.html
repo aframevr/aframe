@@ -9,18 +9,24 @@
     <script src="../../build/vr-markup.js"></script>
   </head>
   <body>
+    <vr-asset>
+      <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
+      <vr-mixin id="selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+    </vr-asset>
     <vr-scene>
 
       <!-- Controls -->
       <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
-        <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.02; innerRadius: 0.01;" material="color: white" raycaster></vr-object>
+        <vr-object position="0 0 -3" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14;" material="color: blue" cursor="timeout: 1500; fuse: true">
+          <vr-animation begin="hovering" easing="ease-in" attribute="scale" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></vr-animation>
+        </vr-object>
       </vr-object>
 
       <!-- Pano -->
-      <vr-object id="holder" geometry="primitive: sphere; radius: 10;" material="url: images/city.jpg;"></vr-object>
+      <vr-object id="holder" geometry="primitive: sphere; radius: 10;"></vr-object>
 
       <!-- Links to panos -->
-      <vr-object id="links" position="-1 -0.3 -2">
+      <vr-object id="links" position="-1 -0.3 -4">
       </vr-object>
     </vr-scene>
 
@@ -47,29 +53,48 @@
         ];
 
         var links = document.querySelector('#links');
+        var scene = document.querySelector('vr-scene');
         var holder = document.querySelector('#holder');
-        var width = 0.5;
-        var height = 0.5;
+        var width = 1.0;
+        var height = 1.0;
+        var selectedLinkEl;
 
         // Create a link for each item in panos[]
         panos.forEach(function (pano, idx) {
-
           // Arrange the links horizontally without any overlaps
-          var xPos = idx * width * 1.1;
+          var xPos = idx * width * 1.5;
 
           var el = document.createElement('vr-object');
+          el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
-          el.setAttribute('geometry', {primitive: "plane", width: width, height: height});
+          el.setAttribute('mixin', 'link');
           el.setAttribute('material', {url: 'images/' + pano.thumb});
-          
+          panos[idx].el = el;
+
           // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
-          el.addEventListener('click', function () {
-            holder.setAttribute('material', {url: 'images/' + pano.url});
-          });
+          el.addEventListener('click', handleClick);
 
           // Add the link to the links element
           links.appendChild(el);
+
         });
+
+        scene.addEventListener('loaded', function() { selectPano (1); });
+
+        function handleClick (evt) {
+          var index = evt.currentTarget.dataset.id;
+          selectPano(index);
+        }
+
+        function selectPano(index) {
+          var pano = panos[index];
+          var linkEL = pano.el;
+          if (selectedLinkEl === pano.el) { return; }
+          if (selectedLinkEl) { selectedLinkEl.removeMixin('selected'); }
+          holder.setAttribute('material', {url: 'images/' + pano.url});
+          selectedLinkEl = linkEL;
+          selectedLinkEl.addMixin('selected');
+        }
 
       })();
 

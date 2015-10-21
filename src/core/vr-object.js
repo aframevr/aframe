@@ -54,7 +54,7 @@ var proto = {
       var newValStr = newVal;
       var component = VRComponents[attr];
       var light = this.light;
-      // When creating objects programmatically and setting attributes
+      // When creating objects programatically and setting attributes
       // the object is not part of the scene until is inserted in the
       // DOM
       if (!this.hasLoaded) { return; }
@@ -158,9 +158,11 @@ var proto = {
       // It attaches itself to the threejs parent object3D
       this.addToParent();
       // It sets default components on the attributes if they're not defined
-      this.initDefaultComponents();
+      // position, rotation and scale are assumed to be available for any
+      // component. We initialize them first
+      this.initComponents(this.defaults);
       // Components initialization
-      this.initComponents();
+      this.initComponents(VRComponents);
       // Call the parent class
       VRNode.prototype.load.call(this);
     },
@@ -174,19 +176,15 @@ var proto = {
     writable: window.debug
   },
 
-  initDefaultComponents: {
-    value: function (el) {
-      var defaults = Object.keys(this.defaults);
-      defaults.forEach(this.initComponent.bind(this));
+  initComponents: {
+    value: function (components) {
+      var self = this;
+      var keys = Object.keys(components);
+      keys.forEach(function (key) {
+        self.initComponent(key);
+      });
     },
     writable: window.debug
-  },
-
-  initComponents: {
-    value: function () {
-      var components = Object.keys(VRComponents);
-      components.forEach(this.initComponent.bind(this));
-    }
   },
 
   /**
@@ -204,7 +202,7 @@ var proto = {
       var inDefaults = this.defaults[name];
       // If the element contains the component
       var inAttribute = this.hasAttribute(name);
-      if (inDefaults || inAttribute) { return true; }
+      if (inDefaults !== undefined || inAttribute) { return true; }
      // If any of the mixins contains the component
       for (i = 0; i < mixinEls.length; ++i) {
         inMixin = mixinEls[i].hasAttribute(name);
@@ -215,21 +213,37 @@ var proto = {
   },
 
   initComponent: {
-    value: function (name) {
+    value: function (name, attrs) {
       var defaults = this.defaults;
-      var hasDefault = defaults[name];
       var hasAttribute = this.hasAttribute(name);
       // If it's not a component name or
       // If the component is already initialized
       if (!VRComponents[name] || this.components[name]) { return; }
       // If the component is not defined for the element
-      if (!this.isComponentDefined(name)) { return; }
+      if (!this.isComponentDefined(name) && attrs === undefined) { return; }
+      this.initComponentDependencies(name);
       this.components[name] = new VRComponents[name].Component(this);
       // If the attribute is not defined but has a default we set it
-      if (!hasAttribute && hasDefault) {
-        this.setAttribute(name, defaults[name]);
+      if (!hasAttribute) {
+        attrs = defaults[name] ? defaults[name] : attrs;
+        if (attrs !== undefined) { this.setAttribute(name, attrs); }
       }
       VRUtils.log('Component initialized: %s', name);
+    }
+  },
+
+  initComponentDependencies: {
+    value: function (name) {
+      var self = this;
+      var component = VRComponents[name];
+      var dependencies;
+      // If the component doesn't exist
+      if (!component) { return; }
+      dependencies = VRComponents[name].dependencies;
+      if (!dependencies) { return; }
+      Object.keys(dependencies).forEach(function (key) {
+        self.initComponent(key, dependencies[key]);
+      });
     }
   },
 

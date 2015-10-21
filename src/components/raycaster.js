@@ -7,53 +7,17 @@ module.exports.Component = registerComponent('raycaster', {
     value: function () {
       this.raycaster = new THREE.Raycaster();
       this.intersectedEl = null;
-      this.attachEventListeners();
       this.pollForHoverIntersections();
-    }
-  },
-
-  attachEventListeners: {
-    value: function () {
-      var el = this.el;
-
-      document.addEventListener('mousedown', el.emitter('mousedown'));
-      document.addEventListener('mouseup', el.emitter('mouseup'));
-      document.addEventListener('click', el.emitter('click'));
-
-      el.addEventListener('mousedown', this.emitOnIntersection('mousedown'));
-      el.addEventListener('mouseup', this.emitOnIntersection('mouseup'));
-      el.addEventListener('click', this.emitOnIntersection('click'));
     }
   },
 
   pollForHoverIntersections: {
     value: function () {
-      requestInterval(100, this.onMouseEnter.bind(this));
+      requestInterval(100, this.getIntersections.bind(this));
     }
   },
 
-  /**
-   * Returns a closure that emits a DOM event when the cursor intersects
-   * with an object.
-   *
-   * @param {String} name
-   *   Name of event (use a space-delimited string for multiple events).
-   * @param {Object} detail
-   *   Custom data (optional) to pass as `detail` if the event is to
-   *   be a `CustomEvent`.
-   */
-  emitOnIntersection: {
-    value: function (name, detail) {
-      var self = this;
-      return function () {
-        var closest = self.getClosestIntersected();
-        if (!closest) { return; }
-        closest.object.el.emit(name);
-      };
-    }
-  },
-
-  onMouseEnter: {
+  getIntersections: {
     value: function () {
       var closest = this.getClosestIntersected();
       if (closest) {
@@ -83,18 +47,6 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Emits a `mouseleave` event and clears info about the last intersection.
-   */
-  clearExistingIntersection: {
-    value: function () {
-      var el = this.intersectedEl;
-      el.removeState('hovered');
-      el.emit('mouseleave');
-      this.intersectedEl = null;
-    }
-  },
-
-  /**
    * Returns the closest intersected object.
    *
    * @returns {Object|null}
@@ -104,25 +56,38 @@ module.exports.Component = registerComponent('raycaster', {
   getClosestIntersected: {
     value: function () {
       var scene = this.el.sceneEl.object3D;
+      var cursorEl = this.el;
+      var inersectedObj;
       var intersectedObjs = this.intersect(scene.children);
       for (var i = 0; i < intersectedObjs.length; ++i) {
-        if (intersectedObjs[i].object !== this.el.object3D) {
-          return intersectedObjs[i];
-        }
+        inersectedObj = intersectedObjs[i];
+        // If the intersected object is the cursor itself
+        // or the object is further than the max distance
+        if (inersectedObj.object.el === cursorEl) { return; }
+        return intersectedObjs[i];
       }
       return null;
     }
   },
 
   /**
-   * Remembers the last intersected element and fires
-   * `mouseenter` and `hover` events.
+   * Remembers the last intersected element
    */
   setExistingIntersection: {
-    value: function (el) {
+    value: function (el, distance) {
       this.intersectedEl = el;
-      el.addState('hovered');
-      el.emit('mouseenter hover');
+      this.el.emit('intersection', { el: el, distance: distance });
+    }
+  },
+
+  /**
+   * Emits a `mouseleave` event and clears info about the last intersection.
+   */
+  clearExistingIntersection: {
+    value: function () {
+      var intersectedEl = this.intersectedEl;
+      this.el.emit('intersectioncleared', { el: intersectedEl });
+      this.intersectedEl = null;
     }
   },
 
@@ -130,15 +95,12 @@ module.exports.Component = registerComponent('raycaster', {
     value: function (obj) {
       var el = obj.object.el;
 
-      if (!this.intersectedEl) {
-        // A new intersection where previously there was none.
-        this.setExistingIntersection(el);
-      } else if (this.intersectedEl !== el) {
-        // A new intersection where previously a different element was
-        // and now needs a mouseleave event.
+      // A new intersection where previously a different element was
+      // and now needs a mouseleave event.
+      if (this.intersectedEl !== el) {
         this.clearExistingIntersection();
-        this.setExistingIntersection(el);
       }
+      this.setExistingIntersection(el, obj.distance);
     }
   }
 
