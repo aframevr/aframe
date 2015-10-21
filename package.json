@@ -35,7 +35,7 @@
     "vulcanize": "^1.13.1"
   },
   "dependencies": {
-    "@mozvr/vr-markup": "^0.1.38"
+    "@mozvr/vr-markup": "^0.1.39"
   },
   "link": true,
   "browserify": {
