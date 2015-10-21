@@ -197,7 +197,6 @@ module.exports = document.registerElement(
                 placeholder.setAttribute(key, placeholderAttrs[key]);
               });
 
-              placeholder.initDefaultComponents(true);  // We want this to happen only *after* we've added our attributes.
               placeholder.originalAttrs = utils.$$(placeholder.attributes);
               placeholder.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
               placeholder.replaced = true;
