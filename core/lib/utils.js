@@ -23,7 +23,36 @@ module.exports.$$ = function (sel, parent) {
   if (sel && typeof sel === 'string') {
     sel = (parent || document).querySelectorAll(sel);
   }
+  if (Array.isArray(sel)) {
+    return sel;
+  }
   return Array.prototype.slice.call(sel);
+};
+
+/**
+ * Wraps `Array.prototype.forEach`.
+ *
+ * @param {Array|NamedNodeMap|NodeList|HTMLCollection} arr An array-like object.
+ * @returns {Array} A real array.
+ */
+var forEach = module.exports.forEach = function (arr, fn) {
+  return Array.prototype.forEach.call(arr, fn);
+};
+
+/**
+ * Merges attributes à la `Object.assign`.
+ *
+ * @param {...Array|NamedNodeMap} attrs Parent from which to query.
+ * @returns {Array} Array of merged attributes.
+ */
+module.exports.mergeAttrs = function () {
+  var mergedAttrs = {};
+  forEach(arguments, function (attrs) {
+    forEach(attrs, function (attr) {
+      mergedAttrs[attr.name] = attr.value;
+    });
+  });
+  return mergedAttrs;
 };
 
 /**
