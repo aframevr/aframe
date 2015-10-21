@@ -1,0 +1,20 @@
+<template is="vr-template"
+          element="vr-cylinder"
+          radius="0.5"
+          height="1"
+          segments-radius="36"
+          segments-height="4"
+          open-ended="false"
+          color="gray"
+          metallic="0.0"
+          roughness="0.5">
+  <vr-object geometry="primitive: cylinder;
+                       radius: ${radius};
+                       height: ${height};
+                       segmentsRadius: ${segments-radius};
+                       segmentsHeight: ${segments-height};
+                       openEnded: ${open-ended}"
+             material="color: ${color};
+                       metallic: ${metallic};
+                       roughness: ${roughness}"></vr-object>
+</template>
