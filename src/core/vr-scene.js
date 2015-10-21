@@ -59,28 +59,26 @@ var VRScene = module.exports = registerElement(
             var assets = document.querySelector('vr-assets');
             if (assets && !assets.hasLoaded) {
               this.pendingElements++;
-              assets.addEventListener('loaded', elementLoaded);
+              attachEventListener(assets);
             }
 
             var children = this.querySelectorAll('*');
             Array.prototype.slice.call(children).forEach(countElement);
-            if (!this.pendingElements) {
-              elementLoaded();
-            }
 
             function countElement (node) {
               // We wait for all the elements inside the scene to load.
               if (!node.isVRNode) { return; }
-              var isCamera = node.components && node.components.camera;
-              if (isCamera) { self.cameraEl = node; }
+              self.pendingElements++;
               if (!node.hasLoaded) {
                 attachEventListener(node);
-                self.pendingElements++;
+              } else {
+                elementLoaded(node);
               }
             }
 
-            function attachEventListener (node) {
-              node.addEventListener('loaded', elementLoaded);
+            function attachEventListener (evt) {
+              var node = evt.currentTarget;
+              node.addEventListener('loaded', function () { elementLoaded(node); });
             }
           }
         },
@@ -130,18 +128,20 @@ var VRScene = module.exports = registerElement(
         },
 
         elementLoaded: {
-          value: function () {
+          value: function (node) {
             this.pendingElements--;
             // If we still need to wait for more elements.
             if (this.pendingElements > 0) { return; }
             // If the render loop is already running.
             if (this.renderLoopStarted) { return; }
-            // If somehow there's not a camera.
-            if (!this.cameraEl) { return console.error('Expected a camera element'); }
-
             this.setupLoader();
-            // three.js camera setup.
-            this.setupCamera();
+            this.cameraEl = this.querySelector('vr-object[camera]');
+            if (!this.cameraEl) {
+              // If there's no user defined camera we
+              // introduce a default one
+              this.setupCamera();
+              return;
+            }
             // TODO: initialize lights somewhere else.
             this.updateMaterials();
             this.resizeCanvas();
@@ -247,14 +247,14 @@ var VRScene = module.exports = registerElement(
 
         setupCamera: {
           value: function () {
-            var cameraEl;
+            var defaultCamera;
             // If there's a user defined camera
             if (this.cameraEl) { return; }
             // We create a default camera
-            cameraEl = document.createElement('vr-object');
-            this.cameraEl = cameraEl;
-            cameraEl.setAttribute('camera', 'fov: 45');
-            this.appendChild(cameraEl);
+            defaultCamera = document.createElement('vr-object');
+            defaultCamera.setAttribute('camera', {fov: 45});
+            defaultCamera.addEventListener('loaded', this.elementLoaded.bind(this));
+            this.appendChild(defaultCamera);
           }
         },
 
