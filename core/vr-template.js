@@ -55,14 +55,6 @@ module.exports = document.registerElement(
           }
         },
 
-        attributeBlacklist: {
-          value: {
-            element: true,
-            id: true,
-            is: true
-          }
-        },
-
         attachedCallback: {
           value: function () {
             this.sceneEl = utils.$('vr-scene');
@@ -174,38 +166,6 @@ module.exports = document.registerElement(
 
             self.attachTemplateListener(tagName);
             self.register(tagName);
-
-            var placeholders = utils.$$(tagName, self.sceneEl);
-
-            // Use any defaults defined on the `<template is="vr-template" element="yolo" color="cyan">`.
-            var attrsDefault = utils.$$(self.attributes);
-
-            placeholders.forEach(function (placeholder, idx) {
-              var then = window.performance.now();
-
-              // Use the attributes passed on the `<vr-yolo color="salmon">`.
-              var attrsPassed = utils.$$(placeholder.attributes);
-              // Use both, in that order.
-              var placeholderAttrs = {};
-
-              attrsDefault.concat(attrsPassed).forEach(function (attr) {
-                placeholderAttrs[attr.name] = attr.value;
-              });
-
-              Object.keys(placeholderAttrs).forEach(function (key) {
-                if (key.toLowerCase() in self.attributeBlacklist) { return; }
-                placeholder.setAttribute(key, placeholderAttrs[key]);
-              });
-
-              placeholder.originalAttrs = utils.$$(placeholder.attributes);
-              placeholder.innerHTML = utils.format(self.innerHTML, placeholderAttrs);
-              placeholder.replaced = true;
-              self.sceneEl.add(placeholder);
-
-              VRUtils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - then);
-
-              self.placeholders.push(placeholder);
-            });
           }
         }
       }
