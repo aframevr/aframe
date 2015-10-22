@@ -14,12 +14,11 @@ var VRUtils = require('../vr-utils');
  */
 var proto = {
 
-  // Default Attribute Values
   defaults: {
     value: {
-      position: '0 0 0',
-      rotation: '0 0 0',
-      scale: '1 1 1'
+      position: '',
+      rotation: '',
+      scale: ''
     }
   },
 
@@ -214,7 +213,6 @@ var proto = {
 
   initComponent: {
     value: function (name, attrs) {
-      var defaults = this.defaults;
       var hasAttribute = this.hasAttribute(name);
       // If it's not a component name or
       // If the component is already initialized
@@ -225,8 +223,8 @@ var proto = {
       this.components[name] = new VRComponents[name].Component(this);
       // If the attribute is not defined but has a default we set it
       if (!hasAttribute) {
-        attrs = defaults[name] ? defaults[name] : attrs;
-        if (attrs !== undefined) { this.setAttribute(name, attrs); }
+        attrs = attrs !== undefined ? attrs : '';
+        this.setAttribute(name, attrs);
       }
       VRUtils.log('Component initialized: %s', name);
     }
