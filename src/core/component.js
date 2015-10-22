@@ -1,3 +1,4 @@
+/* global HTMLElement */
 var styleParser = require('style-attr');
 var utils = require('../vr-utils');
 
@@ -26,9 +27,9 @@ Component.prototype = {
    * Parses the data coming from the entity attribute
    * and its mixins and calls update
    */
-  updateAttributes: function (values) {
+  updateAttributes: function () {
     var previousData = utils.mixin({}, this.data);
-    this.parseAttributes(values);
+    this.parseAttributes();
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
     this.update();
@@ -59,10 +60,11 @@ Component.prototype = {
    *  @param  {object} [attrs] It contains the attribute values
    *  @return {undefined}
    */
-  parseAttributes: function (attrs) {
+  parseAttributes: function () {
     var data = {};
     var el = this.el;
-    var elAttrs = attrs || el.getAttribute(this.name);
+    var unparsedAttrs = HTMLElement.prototype.getAttribute.call(el, this.name);
+    var elAttrs = unparsedAttrs === '' ? {} : el.getAttribute(this.name);
     var self = this;
     var mixinEls = el.mixinEls;
     // Copy the default first. Lowest precedence
