@@ -1,10 +1,11 @@
 var VRMarkup = require('@mozvr/vr-markup');
 var utils = require('./utils');
 
+var registerElement = VRMarkup.registerElement.registerElement;
 var VRObject = VRMarkup.VRObject;
 var VRUtils = VRMarkup.utils;
 
-document.registerElement('vr-root', {prototype: Object.create(VRObject.prototype)});
+registerElement('vr-root', {prototype: Object.create(VRObject.prototype)});
 
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
@@ -12,7 +13,7 @@ module.exports = function (tagName) {
 
   VRUtils.log('registering <%s>', tagNameLower);
 
-  return document.registerElement(
+  return registerElement(
     tagNameLower,
     {
       prototype: Object.create(

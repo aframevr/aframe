@@ -1,12 +1,9 @@
 /* global HTMLTemplateElement, HTMLImports, MutationObserver */
 
-window.addEventListener('HTMLImportsLoaded', function () {
-  importTemplates();
-});
+window.addEventListener('HTMLImportsLoaded', injectFromPolyfilledImports);
 
 // NOTE: HTML Imports polyfill must come before we include `vr-markup`.
-var hasImports = document.createElement('link').import;
-if (!hasImports) {
+if (!('import' in document.createElement('link'))) {
   require('../lib/vendor/HTMLImports');
 }
 
@@ -14,30 +11,37 @@ var VRMarkup = require('@mozvr/vr-markup');
 var registerTemplate = require('./lib/register-template');
 var utils = require('./lib/utils');
 
+var registerElement = VRMarkup.registerElement.registerElement;
 var VRUtils = VRMarkup.utils;
 
-var internals = {};
+function injectFromPolyfilledImports () {
+  if (!HTMLImports || HTMLImports.useNative) { return; }
 
-function importTemplates () {
-  if (HTMLImports && !HTMLImports.useNative) {
-    Object.keys(HTMLImports.importer.documents).forEach(function (key) {
-      var doc = HTMLImports.importer.documents[key];
-      utils.$$('template[is="vr-template"]', doc).forEach(function (template) {
-        var templateEl = document.importNode(template, true);
-        document.body.appendChild(templateEl);
-      });
+  Object.keys(HTMLImports.importer.documents).forEach(function (key) {
+    var doc = HTMLImports.importer.documents[key];
+    utils.$$('template[is="vr-template"]', doc).forEach(function (template) {
+      var templateEl = document.importNode(template, true);
+      document.body.appendChild(templateEl);
     });
-  }
+  });
 }
 
-document.addEventListener('vr-markup-ready', function () {
-  internals.vrMarkupReady = true;
-});
+function runAfterSceneLoaded (cb) {
+  var sceneEl = utils.$('vr-scene');
+  if (!sceneEl) { return; }
+  if (sceneEl.hasLoaded) {
+    cb(sceneEl);
+    return;
+  }
+  sceneEl.addEventListener('loaded', function () {
+    cb(sceneEl);
+  });
+}
 
-module.exports = document.registerElement(
+module.exports = registerElement(
   'vr-template',
   {
-    extends: 'template',
+    extends: 'template',  // This lets us do `<template is="vr-template">`.
     prototype: Object.create(
       HTMLTemplateElement.prototype,
       {
@@ -45,26 +49,27 @@ module.exports = document.registerElement(
           value: function () {
             var self = this;
             self.placeholders = [];
-            if (self.ownerDocument !== document) {
-              // TODO: Fix native HTML Imports for Chrome.
-              // See https://github.com/MozVR/vr-components/issues/53
-              setTimeout(function () {
-                document.body.appendChild(self);
-              });
-            }
-          }
+            // For Chrome: https://github.com/MozVR/aframe-core/issues/321
+            window.addEventListener('load', function () {
+              runAfterSceneLoaded(appendElement);
+              function appendElement () {
+                var isInDocument = self.ownerDocument === document;
+                if (!isInDocument) { document.body.appendChild(self); }
+              }
+            });
+          },
+          writable: window.debug
         },
 
         attachedCallback: {
           value: function () {
-            this.sceneEl = utils.$('vr-scene');
-            if (internals.vrMarkupReady) {
-              this.inject();
-              return;
-            }
-            document.addEventListener('vr-markup-ready', this.attachEventListeners.bind(this));
-            this.addEventListener('loaded', this.inject.bind(this));
-          }
+            var self = this;
+            runAfterSceneLoaded(function () {
+              self.load();
+              self.inject();
+            });
+          },
+          writable: window.debug
         },
 
         detachedCallback: {
@@ -78,44 +83,14 @@ module.exports = document.registerElement(
           writable: window.debug
         },
 
-        attachEventListeners: {
-          value: function () {
-            var self = this;
-            var elementLoaded = this.elementLoaded.bind(this);
-            this.elementsPending = 0;
-            utils.$$('*', this).forEach(traverseDOM);
-            if (!this.elementsPending) {
-              elementLoaded();
-            }
-            function traverseDOM (node) {
-              if (!node.isVRNode) { return; }
-              if (!node.hasLoaded) {
-                attachEventListener(node);
-                self.elementsPending++;
-              }
-            }
-            function attachEventListener (node) {
-              node.addEventListener('loaded', elementLoaded);
-            }
-          }
-        },
-
-        elementLoaded: {
-          value: function () {
-            this.elementsPending--;
-            if (this.elementsPending <= 0) {
-              this.load();
-            }
-          }
-        },
-
         load: {
           value: function () {
             // To prevent emitting the loaded event more than once.
             if (this.hasLoaded) { return; }
             VRUtils.fireEvent(this, 'loaded');
             this.hasLoaded = true;
-          }
+          },
+          writable: window.debug
         },
 
         register: {
@@ -123,7 +98,8 @@ module.exports = document.registerElement(
             if (this.registered) { return; }
             this.registered = true;
             return registerTemplate(tagName);
-          }
+          },
+          writable: window.debug
         },
 
         removeTemplateListener: {
@@ -166,7 +142,8 @@ module.exports = document.registerElement(
 
             self.attachTemplateListener(tagName);
             self.register(tagName);
-          }
+          },
+          writable: window.debug
         }
       }
     )
