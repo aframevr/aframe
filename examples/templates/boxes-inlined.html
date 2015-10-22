@@ -7,10 +7,6 @@
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
-    <vr-assets>
-      <vr-mixin id="cube" geometry="primitive: box"></vr-mixin>
-    </vr-assets>
-
     <vr-scene>
       <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
 
@@ -20,7 +16,7 @@
     </vr-scene>
 
     <template is="vr-template" element="vr-box" color="cyan">
-      <vr-object mixin="cube" material="color: ${color}"></vr-object>
+      <vr-object geometry="primitive: box" material="color: ${color}"></vr-object>
     </template>
   </body>
 </html>
