@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cylinders</title>
+    <meta name="description" content="Cylinders — vr-components">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-cylinder position="-10 0 0" rotation="90 -90 20" radius="2" segments-radius="6" color="red"></vr-cylinder>
+      <vr-cylinder position="0 0 0" rotation="-80 -75 -20" height="10" open-ended="true" color="green"></vr-cylinder>
+      <vr-cylinder position="10 0 0" rotation="45 -45 0" radius="3" height="1" segments-height="1" color="blue" metallic=".9"></vr-cylinder>
+    </vr-scene>
+  </body>
+</html>
