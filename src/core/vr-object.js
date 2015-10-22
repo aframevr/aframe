@@ -57,7 +57,7 @@ var proto = {
       // the object is not part of the scene until is inserted in the
       // DOM
       if (!this.hasLoaded) { return; }
-      if (component && typeof newVal !== 'string') {
+      if (component && typeof newVal !== 'string' && newVal !== null) {
         newValStr = component.stringifyAttributes(newVal);
       }
       if (oldVal === newValStr) { return; }
