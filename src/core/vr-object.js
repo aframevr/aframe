@@ -138,12 +138,23 @@ var proto = {
 
   addToParent: {
     value: function () {
+      var self = this;
       var parent = this.parentEl = this.parentNode;
       var attachedToParent = this.attachedToParent;
-      if (!parent || attachedToParent || !parent.isVRNode) { return; }
-      // To prevent an object to attach itself multiple times to the parent
-      this.attachedToParent = true;
-      parent.add(this);
+      if (!parent || attachedToParent) { return; }
+      if (parent.isVRNode) {
+        attach();
+        return;
+      }
+      // If the parent isn't a VR node but eventually it will be
+      // when a templated element is created, we want to attach
+      // this element to the parent then
+      parent.addEventListener('nodeready', attach);
+      function attach () {
+        // To prevent an object to attach itself multiple times to the parent
+        self.attachedToParent = true;
+        parent.add(self);
+      }
     },
     writable: window.debug
   },
