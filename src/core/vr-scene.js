@@ -127,7 +127,7 @@ var VRScene = module.exports = registerElement(
         },
 
         elementLoaded: {
-          value: function (node) {
+          value: function () {
             this.pendingElements--;
             // If we still need to wait for more elements.
             if (this.pendingElements > 0) { return; }
@@ -252,6 +252,8 @@ var VRScene = module.exports = registerElement(
             // We create a default camera
             defaultCamera = document.createElement('vr-object');
             defaultCamera.setAttribute('camera', {fov: 45});
+            defaultCamera.setAttribute('position', {x: 0, y: 0, z: 20});
+            this.pendingElements++;
             defaultCamera.addEventListener('loaded', this.elementLoaded.bind(this));
             this.appendChild(defaultCamera);
           }
