@@ -282,9 +282,9 @@ var proto = {
   },
 
   getAttribute: {
-    value: function (attr, defaultValue) {
+    value: function (attr) {
       var component = VRComponents[attr];
-      var value = HTMLElement.prototype.getAttribute.call(this, attr, defaultValue);
+      var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parseAttributesString(value);
     },
