@@ -76,8 +76,7 @@ var VRScene = module.exports = registerElement(
               }
             }
 
-            function attachEventListener (evt) {
-              var node = evt.currentTarget;
+            function attachEventListener (node) {
               node.addEventListener('loaded', function () { elementLoaded(node); });
             }
           }
