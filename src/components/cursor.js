@@ -44,6 +44,7 @@ module.exports.Component = registerComponent('cursor', {
     value: function () {
       this.emit('mouseup');
       if (this.data.fuse) { return; }
+      if (!this.intersectedEl) { return; }
       if (this.mouseDownEl === this.intersectedEl) {
         this.emit('click');
         this.intersectedEl.emit('click');
