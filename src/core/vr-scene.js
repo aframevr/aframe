@@ -3,6 +3,7 @@
 var registerElement = require('../vr-register-element');
 
 var THREE = require('../../lib/three');
+var RStats = require('../../lib/vendor/rStats');
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
 
@@ -25,6 +26,13 @@ var VRScene = module.exports = registerElement(
           }
         },
 
+        attributeChangedCallback: {
+          value: function (attr, oldVal, newVal) {
+            if (oldVal === newVal) { return; }
+            if (attr === 'stats') { this.setupStats(); }
+          }
+        },
+
         attachedCallback: {
           value: function () {
             this.insideIframe = window.top !== window.self;
@@ -32,6 +40,7 @@ var VRScene = module.exports = registerElement(
             this.lights = {};
             this.materials = {};
             this.vrButton = null;
+            this.setupStats();
             document.addEventListener('vr-markup-ready',
                                       this.attachEventListeners.bind(this));
             this.attachFullscreenListeners();
@@ -219,6 +228,28 @@ var VRScene = module.exports = registerElement(
           }
         },
 
+        setupStats: {
+          value: function () {
+            var statsEnabled = this.getAttribute('stats') === 'true';
+            var statsEl = document.querySelector('.rs-base');
+            if (!statsEnabled) {
+              if (statsEl) { statsEl.classList.add('hidden'); }
+              return;
+            }
+            if (statsEl) { statsEl.classList.remove('hidden'); }
+            if (this.stats) { return; }
+            this.stats = new RStats({
+              CSSPath: '../../style/',
+              values: {
+                fps: { caption: 'Framerate (FPS)', below: 30 }
+              },
+              groups: [
+                { caption: 'Framerate', values: [ 'fps' ] }
+              ]
+            });
+          }
+        },
+
         setupScene: {
           value: function () {
             // Three.js setup
@@ -328,6 +359,11 @@ var VRScene = module.exports = registerElement(
 
         render: {
           value: function (t) {
+            var stats = this.stats;
+            if (stats) {
+              stats('rAF').tick();
+              stats('FPS').frame();
+            }
             var camera = this.cameraEl.components.camera.camera;
             TWEEN.update(t);
             // Updates behaviors
@@ -335,6 +371,7 @@ var VRScene = module.exports = registerElement(
               behavior.update(t);
             });
             this.renderer.render(this.object3D, camera);
+            if (stats) { stats().update(); }
             this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
           }
         },
