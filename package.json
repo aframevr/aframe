@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --port 9000 --onupdate 'semistandard -v $(git ls-files '*.js') | snazzy && vulcanize --inline core/templates/index.html > build/vr-components.html' -- -s 'vr-components' -t [ browserify-shader --parameterize=true ] | garnish -v",
+    "dev": "npm run build && budo index.js:build/vr-components.js --debug -v --port 9000 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy && vulcanize --inline core/templates/index.html > build/vr-components.html' -- -s 'vr-components' -t [ browserify-shader --parameterize=true ] | garnish -v",
     "browserify": "browserify ./index.js -s 'vr-components' -t [ browserify-shader --parameterize=true ]",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js && vulcanize --inline core/templates/index.html > build/vr-components.html",
     "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js && vulcanize --inline core/templates/index.html > dist/vr-components.html && vulcanize --inline core/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/vr-components.min.html",
