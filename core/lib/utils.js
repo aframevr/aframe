@@ -80,8 +80,11 @@ module.exports.format = (function () {
     if (!(args instanceof Array || args instanceof Object)) {
       args = Array.prototype.slice.call(arguments, 1);
     }
+    Object.keys(args).forEach(function (key) {
+      args[String(key).toLowerCase()] = args[key];
+    });
     return s.replace(re, function (_, name, rhs, defaultVal) {
-      var val = args[name];
+      var val = args[name.toLowerCase()];
 
       if (typeof val === 'undefined') {
         return (defaultVal || '?').trim().replace(/^["']|["']$/g, '');
