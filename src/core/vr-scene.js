@@ -1,6 +1,8 @@
 /* global MessageChannel, performance, Promise */
 
-var registerElement = require('../vr-register-element');
+var re = require('../vr-register-element');
+var registerElement = re.registerElement;
+var isNode = re.isNode;
 
 var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
@@ -41,10 +43,11 @@ var VRScene = module.exports = registerElement(
             this.materials = {};
             this.vrButton = null;
             this.setupStats();
-            document.addEventListener('vr-markup-ready',
-                                      this.attachEventListeners.bind(this));
-            this.attachFullscreenListeners();
             this.setupScene();
+            this.attachEventListeners();
+            this.attachFullscreenListeners();
+            // For Chrome: https://github.com/MozVR/aframe-core/issues/321
+            window.addEventListener('load', this.resizeCanvas.bind(this));
           }
         },
 
@@ -75,8 +78,7 @@ var VRScene = module.exports = registerElement(
             Array.prototype.slice.call(children).forEach(countElement);
 
             function countElement (node) {
-              // We wait for all the elements inside the scene to load.
-              if (!node.isVRNode) { return; }
+              if (!isNode(node)) { return; }
               self.pendingElements++;
               if (!node.hasLoaded) {
                 attachEventListener(node);

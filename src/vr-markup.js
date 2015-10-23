@@ -1,4 +1,4 @@
-require('./vr-register-element');
+var registerElement = require('./vr-register-element');
 
 var VRObject = require('./core/vr-object');
 var VRNode = require('./core/vr-node');
@@ -15,7 +15,8 @@ require('./core/vr-scene');
 
 module.exports = {
   THREE: THREE,
-  VRObject: VRObject,
   VRNode: VRNode,
+  VRObject: VRObject,
+  registerElement: registerElement,
   utils: VRUtils
 };

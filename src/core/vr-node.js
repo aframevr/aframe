@@ -1,5 +1,5 @@
 /* global Event, HTMLElement, MutationObserver */
-require('../vr-register-element');
+var registerElement = require('../vr-register-element').registerElement;
 
 var VRUtils = require('../vr-utils');
 
@@ -10,7 +10,7 @@ var VRUtils = require('../vr-utils');
  *
  */
 
-module.exports = document.registerElement(
+module.exports = registerElement(
   'vr-node',
   {
     prototype: Object.create(
@@ -24,7 +24,8 @@ module.exports = document.registerElement(
         attachedCallback: {
           value: function () {
             var mixins = this.getAttribute('mixin');
-            this.isVRNode = true;
+            this.isNode = true;
+            this.emit('nodeready');
             this.sceneEl = document.querySelector('vr-scene');
             this.mixinEls = [];
             this.mixinObservers = {};

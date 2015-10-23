@@ -1,4 +1,3 @@
-/* global CustomEvent */
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
@@ -20,23 +19,44 @@ require('document-register-element');
 */
 var registerElement = document.registerElement;
 
+var knownTags = module.exports.knownTags = {};
+
+var addTagName = function (tagName) {
+  knownTags[tagName.toLowerCase()] = true;
+};
+
 /**
- * @param  {string} tagName The name of the tag to register
- * @param  {object} obj The prototype of the new element
- * @return {object} The prototype of the new element
+ * Returns whether the element type is one of our known registered ones
+ *
+ * @param   {string} node The name of the tag to register
+ * @returns {boolean} Whether the tag name matches that of our registered
+ *                    custom elements
  */
-module.exports = document.registerElement = function (tagName, obj) {
+module.exports.isNode = function (node) {
+  return node.tagName.toLowerCase() in knownTags || node.isNode;
+};
+
+/**
+ * @param   {string} tagName The name of the tag to register
+ * @param   {object} obj The prototype of the new element
+ * @returns {object} The prototype of the new element
+ */
+module.exports.registerElement = document.registerElement = function (tagName, obj) {
   var proto = Object.getPrototypeOf(obj.prototype);
   var newObj = obj;
+  var isVRNode = VRNode && proto === VRNode.prototype;
+  var isVRObject = VRObject && proto === VRObject.prototype;
+
+  if (isVRNode || isVRObject) { addTagName(tagName); }
 
   // Does the element inherit from VRNode?
-  if (VRNode && proto === VRNode.prototype) {
+  if (isVRNode) {
     newObj = wrapVRNodeMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
   // Does the element inherit from VRObject?
-  if (VRObject && proto === VRObject.prototype) {
+  if (isVRObject) {
     newObj = wrapVRObjectMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
@@ -136,15 +156,3 @@ function copyProperties (source, destination) {
 
 var VRNode = require('./core/vr-node');
 var VRObject = require('./core/vr-object');
-
-/**
- * Fires a custom event (as a stand-in for the spec'd `WebComponentsReady` event).
- */
-document.addEventListener('DOMContentLoaded', function () {
-  // `setTimeout` for Chrome.
-  setTimeout(function () {
-    document.dispatchEvent(new CustomEvent('vr-markup-ready', {
-      bubbles: true
-    }));
-  });
-});

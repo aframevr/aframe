@@ -1,5 +1,7 @@
 /* global HTMLElement */
-require('../vr-register-element');
+var re = require('../vr-register-element');
+var registerElement = re.registerElement;
+var isNode = re.isNode;
 
 var THREE = require('../../lib/three');
 var VRComponents = require('./components').components;
@@ -142,7 +144,7 @@ var proto = {
       var parent = this.parentEl = this.parentNode;
       var attachedToParent = this.attachedToParent;
       if (!parent || attachedToParent) { return; }
-      if (parent.isVRNode) {
+      if (isNode(parent)) {
         attach();
         return;
       }
@@ -352,7 +354,7 @@ var proto = {
   }
 };
 
-module.exports = document.registerElement(
+module.exports = registerElement(
   'vr-object',
   { prototype: Object.create(VRNode.prototype, proto) }
 );
