@@ -6,6 +6,7 @@ require('../components/cursor');
 require('../components/geometry');
 require('../components/hmd-controls');
 require('../components/light');
+require('../components/loader');
 require('../components/material');
 require('../components/position');
 require('../components/raycaster');

@@ -1,5 +1,4 @@
 /* global MessageChannel, performance, Promise */
-
 var re = require('../vr-register-element');
 var registerElement = re.registerElement;
 var isNode = re.isNode;
@@ -8,7 +7,7 @@ var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
-var VRUtils = require('../vr-utils');
+var utils = require('../vr-utils');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
@@ -249,8 +248,8 @@ var VRScene = module.exports = registerElement(
           value: function () {
             // Three.js setup
             // We reuse the scene if there's already one
-            this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
-            VRScene.scene = this.object3D;
+            var scene = this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
+            VRScene.scene = scene;
             this.behaviors = [];
             // The canvas where the WebGL context will be painted
             this.setupCanvas();
@@ -349,7 +348,7 @@ var VRScene = module.exports = registerElement(
             var canvas = this.canvas;
 
             // Use the fullscreen method on effect when on desktop.
-            if (!VRUtils.isMobile()) {
+            if (!utils.isMobile()) {
               this.stereoRenderer.setFullScreen(true);
               return;
             }
