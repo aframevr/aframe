@@ -87,10 +87,10 @@ module.exports.format = (function () {
       var val = args[name.toLowerCase()];
 
       if (typeof val === 'undefined') {
-        return (defaultVal || '?').trim().replace(/^["']|["']$/g, '');
+        return (defaultVal || '').trim().replace(/^["']|["']$/g, '');
       }
 
-      return (val || '?').trim().replace(/^["']|["']$/g, '');
+      return (val || '').trim().replace(/^["']|["']$/g, '');
     });
   };
 })();
