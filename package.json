@@ -26,7 +26,6 @@
     "garnish": "^3.0.0",
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",
-    "html2js-browserify": "^1.1.0",
     "husky": "^0.10.1",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
@@ -40,8 +39,7 @@
   "link": true,
   "browserify": {
     "transform": [
-      "browserify-css",
-      "html2js-browserify"
+      "browserify-css"
     ]
   },
   "browserify-css": {
