@@ -114,4 +114,3 @@ module.exports.deepEqual = function (a, b) {
   }
   return true;
 };
-
