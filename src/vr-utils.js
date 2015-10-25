@@ -80,6 +80,8 @@ module.exports.coerce = function (obj, schema) {
   function coerce (key) {
     var type;
     var value = schema[key];
+    // We only coerce strings
+    if (typeof obj[key] !== 'string') { return; }
     if (value === undefined) { return; }
     type = typeof value;
     switch (type) {
