@@ -21,7 +21,8 @@ module.exports = function (config) {
       'TEST_ENV'
     ],
     files: [
-      'tests/**/*.test.js'
+      'tests/**/*.test.js',
+      { pattern: 'examples/_sounds/click.ogg', included: false, served: true }
     ],
     frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
                  'browserify'],
