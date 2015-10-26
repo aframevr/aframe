@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Single-Page App</title>
+    <meta name="description" content="Single-Page App — vr-components">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-assets></vr-assets>
+    <vr-scene>
+      <vr-object camera="fov: 45" position="0 0 20" controls="mouselook: true; locomotion: true"></vr-object>
+    </vr-scene>
+    <vr-templates></vr-templates>
+    <main></main>
+    <script>
+      (function () {
+        var counter = 0;
+        var worlds = [
+          '../cubes/',
+          // '../images/',
+          '../legos/',
+          '../panoExplorer/',
+          '../spheres/',
+        ];
+        var main = document.querySelector('main');
+
+        function injectAsHTML (el) {
+          // Reuse the elements and actually use new camera.
+          var temp = document.createElement('template');
+          var div = document.createElement('div');
+          div.className = el.className;
+          div.innerHTML = el.innerHTML;
+          temp.appendChild(div);
+
+          // TODO: Load external templates!
+
+          // var templates = document.querySelectorAll('template[is="vr-template"]');
+          // Array.prototype.forEach.call(templates, function (template) {
+          //   template.parentNode.removeChild(template);
+          // });
+
+          ['vr-assets', 'vr-scene', 'vr-templates'].forEach(function (selector) {
+            replaceHTML(temp.querySelector(selector), document.querySelector(selector));
+          });
+
+          // var currentMainEl = document.querySelector('main');
+          // if (currentMainEl) {
+          //   currentMainEl.innerHTML = temp.innerHTML;
+          // }
+
+          // var templates = fragment.querySelectorAll('template[is="vr-template"]');
+          // Array.prototype.forEach.call(templates, function (template) {
+          //   main(template);
+          // });
+        }
+
+        function replaceHTML (srcEl, destEl) {
+          if (!srcEl || !destEl) { return; }
+          destEl.innerHTML = srcEl.innerHTML;
+          srcEl.parentNode.removeChild(srcEl);
+        }
+
+        function loadWorld (idx) {
+          // Could just use `XMLHttpRequest` directly, but THREE's `XHRLoader`
+          // does nice caching.
+          var loader = new vrComponents.VRMarkup.THREE.XHRLoader();
+          loader.setCrossOrigin('');
+          loader.setResponseType('document');
+          loader.load(worlds[idx], function (res) {
+            injectAsHTML(res.body);
+          }, function () {}, function (res) {
+            throw new Error('Could not load "' + worlds[idx] + '": ' + res.statusText);
+            console.error(res);
+          });
+        }
+
+        loadWorld(counter);
+
+        window.addEventListener('keydown', function (e) {
+          if (e.keyCode === 37) {
+            counter--;
+          }
+          if (e.keyCode === 39) {
+            counter++;
+          }
+          if (e.keyCode === 37 || e.keyCode === 39) {
+            if (counter < 0) {
+              counter = worlds.length - 1;
+            }
+            if (counter >= worlds.length) {
+              counter = 0;
+            }
+            loadWorld(counter);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
