@@ -52,7 +52,14 @@ module.exports = function (tagName) {
               if (!template) { return; }
 
               // Use the defaults defined on the original `<template is="vr-template">`.
-              var templateAttrs = utils.mergeAttrs(template.attributes, this.attributes);
+              var templateAttrs = utils.mergeAttrs(template, this);
+              Object.keys(templateAttrs).filter(function (key) {
+                var value = templateAttrs[key];
+                var component = this.components[key];
+                if (component && typeof value === 'object') {
+                  templateAttrs[key] = component.stringifyAttributes(value);
+                }
+              }, this);
 
               this.root = utils.$$(this.children).filter(function (el) {
                 return el.tagName.toLowerCase() === 'vr-root';
