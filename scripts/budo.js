@@ -26,7 +26,7 @@ var app = budo('./index.js:build/vr-components.js', {
 
 app
 .watch('**/*.{css,js,html}')
-.live()
+// .live()
 .on('watch', function (eventType, fn) {
   if (eventType !== 'change' && eventType !== 'add') { return; }
 
