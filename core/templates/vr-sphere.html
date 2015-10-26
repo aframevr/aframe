@@ -3,6 +3,8 @@
           radius="5"
           segments-width="36"
           segments-height="18"
+          theta-start="0"
+          theta-length="6.3"
           color="gray"
           metallic="0.0"
           roughness="0.5"
@@ -10,7 +12,9 @@
   <vr-object geometry="primitive: sphere;
                        radius: ${radius};
                        segmentsWidth: ${segments-width};
-                       segmentsHeight: ${segments-height}"
+                       segmentsHeight: ${segments-height};
+                       thetaStart: ${theta-start};
+                       thetaLength: ${theta-length}"
              material="color: ${color};
                        metallic: ${metallic};
                        roughness: ${roughness};
