@@ -80,7 +80,11 @@
 
         });
 
-        scene.addEventListener('loaded', function() { selectPano (1); });
+        if (scene.hasLoaded) {
+          selectPano(1);
+        } else {
+          scene.on('loaded', function () { selectPano (1); });
+        }
 
         function handleClick (evt) {
           var index = evt.currentTarget.dataset.id;
