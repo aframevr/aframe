@@ -42,14 +42,16 @@ var forEach = module.exports.forEach = function (arr, fn) {
 /**
  * Merges attributes à la `Object.assign`.
  *
- * @param {...Array|NamedNodeMap} attrs Parent from which to query.
+ * @param {...Array|NamedNodeMap} els Parent element from which to query.
  * @returns {Array} Array of merged attributes.
  */
 module.exports.mergeAttrs = function () {
   var mergedAttrs = {};
-  forEach(arguments, function (attrs) {
-    forEach(attrs, function (attr) {
-      mergedAttrs[attr.name] = attr.value;
+  forEach(arguments, function (el) {
+    forEach(el.attributes, function (attr) {
+      // NOTE: We use `getAttribute` instead of `attr.value` so our wrapper
+      // for coordinate objects gets used.
+      mergedAttrs[attr.name] = el.getAttribute(attr.name);
     });
   });
   return mergedAttrs;
