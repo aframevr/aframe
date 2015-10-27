@@ -112,8 +112,9 @@ module.exports.Component = registerComponent('controls', {
 
       // Mouse Events
       canvasEl.addEventListener('mousedown', this.onMouseDown.bind(this), true);
-      canvasEl.addEventListener('mouseup', this.onMouseUp.bind(this), true);
       canvasEl.addEventListener('mousemove', this.onMouseMove.bind(this), true);
+      canvasEl.addEventListener('mouseup', this.releaseMouse.bind(this), true);
+      canvasEl.addEventListener('mouseout', this.releaseMouse.bind(this), true);
     }
   },
 
@@ -143,7 +144,7 @@ module.exports.Component = registerComponent('controls', {
     }
   },
 
-  onMouseUp: {
+  releaseMouse: {
     value: function () {
       this.mouseDown = false;
     }
