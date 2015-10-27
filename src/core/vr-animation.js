@@ -1,4 +1,4 @@
-require('../vr-register-element');
+var registerElement = require('../vr-register-element').registerElement;
 
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
@@ -24,7 +24,7 @@ var easingFunctions = {
   'ease-in-out': TWEEN.Easing.Cubic.InOut
 };
 
-module.exports = document.registerElement(
+module.exports = registerElement(
   'vr-animation', {
     prototype: Object.create(
       VRNode.prototype, {

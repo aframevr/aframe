@@ -1,5 +1,5 @@
 /* global HTMLElement */
-var registerElement = require('../vr-register-element');
+var registerElement = require('../vr-register-element').registerElement;
 
 var VRComponents = require('./components').components;
 var VRNode = require('./vr-node');
