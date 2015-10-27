@@ -25,7 +25,8 @@ module.exports.Component = registerComponent('material', {
     value: {
       color: 'red',
       metallic: 0.0,
-      roughness: 0.5
+      roughness: 0.5,
+      opacity: 1.0
     }
   },
 
@@ -103,13 +104,15 @@ module.exports.Component = registerComponent('material', {
    */
   getTextureMaterial: {
     value: function () {
-      var texture = THREE.ImageUtils.loadTexture(this.data.url);
-      var material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide
+      var data = this.data;
+      var texture = THREE.ImageUtils.loadTexture(data.url);
+      return new THREE.MeshBasicMaterial({
+        color: data.color,
+        side: THREE.DoubleSide,
+        opacity: data.opacity,
+        transparent: data.opacity < 1,
+        map: texture
       });
-      material.map = texture;
-      return material;
     }
   },
 
@@ -120,13 +123,15 @@ module.exports.Component = registerComponent('material', {
    */
   getPBRMaterial: {
     value: function () {
+      var data = this.data;
       return new THREE.ShaderMaterial({
         vertexShader: pbrVertexShader(),
         fragmentShader: pbrFragmentShader({
           // Keep this param > 1 since GLSL won't allow arrays w/ length=0.
           lightArraySize: this.lights.length || 1
         }),
-        uniforms: this.getPBRUniforms()
+        uniforms: this.getPBRUniforms(),
+        transparent: data.opacity < 1
       });
     }
   },
@@ -154,6 +159,10 @@ module.exports.Component = registerComponent('material', {
         roughness: {
           type: 'f',
           value: this.data.roughness
+        },
+        opacity: {
+          type: 'f',
+          value: this.data.opacity
         },
         uvScale: {
           type: 'v2',
