@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Visibility</title>
+    <meta name="description" content="Visibility — vr-markup">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <vr-mixin id="cube" geometry="primitive: box"></vr-mixin>
+      <vr-mixin id="cube-hovered" material="color: pink"></vr-mixin>
+      <vr-mixin id="cube-selected" material="color: cyan"></vr-mixin>
+      <vr-mixin id="red" material="color: red"></vr-mixin>
+      <vr-mixin id="green" material="color: green"></vr-mixin>
+      <vr-mixin id="blue" material="color: blue"></vr-mixin>
+      <vr-mixin id="yellow" material="color: yellow"></vr-mixin>
+      <vr-mixin id="sphere" geometry="primitive: sphere"></vr-mixin>
+    </vr-assets>
+
+    <vr-scene stats="true">
+      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
+        <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.30; innerRadius: 0.20;" material="color: red" cursor="maxDistance: 30"></vr-object>
+      </vr-object>
+
+      <vr-object id="blueCube"
+        position="5 0 0"
+        material="color: blue"
+        geometry="primitive: box"
+        rotation="25 25 0"></vr-object>
+
+      <vr-object id="redSphere"
+        position="5 0 0"
+        material="color: red"
+        geometry="primitive: sphere; radius: 5"
+        visible="false"></vr-object>
+
+      <vr-object id="greenCylinder"
+        position="-7 0 0"
+        rotation="25 25 0"
+        material="color: green"
+        geometry="primitive: cylinder; radius: 5"></vr-object>
+
+      <vr-object id="pinkTorus"
+        position="16 0 2"
+        rotation="25 -25 0"
+        material="color: hotpink"
+        geometry="primitive: torus; radius: 2.5"></vr-object>
+    </vr-scene>
+    <script>
+      (function () {
+        var blueCube = document.querySelector('#blueCube');
+        var redSphere = document.querySelector('#redSphere');
+        var greenCylinder = document.querySelector('#greenCylinder');
+        document.addEventListener('click', function (e) {
+          switch (e.target) {
+            case blueCube:
+              redSphere.setAttribute('visible', true);
+              break;
+            case redSphere:
+              redSphere.setAttribute('visible', false);
+              break;
+            case greenCylinder:
+              var oldVisible = greenCylinder.getComputedAttribute('visible');
+              // See issue: https://github.com/MozVR/aframe-core/issues/349
+              if (oldVisible === null) { oldVisible = true; }
+              greenCylinder.setAttribute('visible', !oldVisible);
+              break;
+            case pinkTorus:
+              // Yes, this is gross. See https://github.com/MozVR/aframe-core/issues/235
+              var oldMaterial = pinkTorus.getComputedAttribute('material');
+              var oldOpacity = oldMaterial.opacity;
+              var newOpacity = oldOpacity === 1 ? 0 : 1;
+              var newMaterial = oldMaterial;
+              newMaterial.opacity = newOpacity;
+              pinkTorus.setAttribute('material', newMaterial);
+              break;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
