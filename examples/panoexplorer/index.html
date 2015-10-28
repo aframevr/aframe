@@ -13,12 +13,14 @@
       <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
       <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
       <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+      <vr-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14" material="color: gray"></vr-mixin>
+      <vr-mixin id="cursor-hovering" material="color: springgreen"></vr-mixin>
     </vr-asset>
     <vr-scene stats="true">
 
       <!-- Controls -->
       <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
-        <vr-object position="0 0 -3" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14;" material="color: blue" cursor="timeout: 1500; fuse: true">
+        <vr-object mixin="cursor" position="0 0 -3" cursor="timeout: 1500; fuse: true">
           <vr-animation begin="hovering" easing="ease-in" attribute="scale" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></vr-animation>
         </vr-object>
       </vr-object>
