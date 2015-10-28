@@ -13,7 +13,7 @@ require('document-register-element');
  It wraps some of the prototype methods
  of the created element to make sure that the corresponding
  functions in the base classes (VRObject and VRNode) are also
- invoked. The method in the base class is always call before the
+ invoked. The method in the base class is always called before the
  one in the derived object.
 
 */
