@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Events</title>
+    <meta name="description" content="Events — vr-components">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <template is="vr-template" element="vr-pano-nav">
+    </template>
+
+    <vr-scene>
+      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
+        <vr-object id="cursor" position="0 0 -3" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14" material="color: gray" cursor="timeout: 1500; fuse: true">
+          <vr-mouseenter material="color: springgreen"></vr-mouseenter>
+          <vr-mouseleave material="color: gray"></vr-mouseleave>
+          <vr-animation begin="hovering" easing="ease-in" attribute="scale" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></vr-animation>
+        </vr-object>
+      </vr-object>
+
+      <vr-pano-holder id="holder" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/city.jpg"></vr-pano-holder>
+
+      <vr-pano-nav id="links" position="-1 -0.3 -4">
+        <vr-pano-link data-id="0" position="0 0 0" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/thumb-cubes.png" data-selected="false">
+          <vr-click target="#holder" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/cubes.jpg"></vr-click>
+          <vr-click target="vr-pano-link:not([data-id='0'])" size="1.0" data-selected="false"></vr-click>
+          <vr-click size="1.4" data-selected="true"></vr-click>
+          <vr-mouseenter target="vr-pano-link[data-id='0']:not([data-selected='true'])" size="1.2"></vr-mouseenter>
+          <vr-mouseenter target="vr-pano-link:not([data-id='0']):not([data-selected='true'])" size="1.0"></vr-mouseenter>
+          <vr-mouseleave target="vr-pano-link[data-id='0'][data-selected='false']" size="1.0"></vr-mouseleave>
+        </vr-pano-link>
+
+        <vr-pano-link data-id="1" position="1.5 0 0" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/thumb-city.png" data-selected="true" size="1.4">
+          <vr-click target="#holder" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/city.jpg" size="1.4"></vr-click>
+          <vr-click target="vr-pano-link:not([data-id='1'])" size="1.0" data-selected="false"></vr-click>
+          <vr-click size="1.4" data-selected="true"></vr-click>
+          <vr-mouseenter target="vr-pano-link[data-id='1']:not([data-selected='true'])" size="1.2"></vr-mouseenter>
+          <vr-mouseenter target="vr-pano-link:not([data-id='1']):not([data-selected='true'])" size="1.0"></vr-mouseenter>
+          <vr-mouseleave target="vr-pano-link[data-id='1'][data-selected='false']" size="1.0"></vr-mouseleave>
+        </vr-pano-link>
+
+        <vr-pano-link data-id="2" position="3 0 0" type="link" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/thumb-sechelt.png" data-selected="false">
+          <vr-event type="click" target="#holder" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/sechelt.jpg" size="1.4"></vr-event>
+          <vr-event type="click" target="vr-pano-link:not([data-id='2'])" size="1.0" data-selected="false"></vr-event>
+          <vr-event type="click" size="1.4" data-selected="true"></vr-event>
+          <vr-event type="mouseenter" target="vr-pano-link[data-id='2']:not([data-selected='true'])" size="1.2"></vr-event>
+          <vr-event type="mouseenter" target="vr-pano-link:not([data-id='2']):not([data-selected='true'])" size="1.0"></vr-event>
+          <vr-event type="mouseleave" target="vr-pano-link[data-id='2'][data-selected='false']" size="1.0"></vr-event>
+        </vr-pano-link>
+      </vr-pano-nav>
+    </vr-scene>
+
+    <template is="vr-template" element="vr-pano-holder" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/city.jpg">
+      <vr-object geometry="primitive: sphere; radius: 10" material="url: ${url}"></vr-object>
+    </template>
+
+    <template is="vr-template" element="vr-pano-link" url="https://mozvr.github.io/aframe-core/examples/panoexplorer/images/city.jpg" type="link" size="1.0">
+      <vr-object geometry="primitive: plane; width: ${size}; height: ${size}" material="url: ${url}"></vr-object>
+    </template>
+  </body>
+</html>
