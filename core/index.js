@@ -1,4 +1,5 @@
 var modules = {
+  'vr-event': require('./vr-event'),
   'vr-template': require('./vr-template')
 };
 
