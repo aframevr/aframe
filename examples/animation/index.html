@@ -10,23 +10,38 @@
   </head>
   <body>
     <vr-assets>
-      <vr-mixin id="planet" geometry="primitive: sphere; radius: 0.5" material="color: green"></vr-mixin>
-      <vr-mixin id="orbit" attribute="rotation" to="0 0 360" repeat="indefinite" easing="linear" dur="3000"></vr-mixin>
+      <vr-mixin id="planet" geometry="primitive: sphere; radius: 0.5"
+                material="color: green"></vr-mixin>
+      <vr-mixin id="orbit" attribute="rotation" to="0 0 360"
+                repeat="indefinite" easing="linear" dur="3000"></vr-mixin>
+      <vr-mixin id="spin" attribute="rotation" to="0 360 0"
+                repeat="indefinite" easing="linear" dur="96000"></vr-mixin>
     </vr-assets>
+
     <vr-scene stats="true">
-      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
+      <vr-object position="0 0 20" camera="fov: 45"
+                 controls="mouselook: true; locomotion: true">
       </vr-object>
       <vr-object rotation="0 0 0" position="0 0 -5">
-        <vr-object mixin="planet" geometry="radius: 3" material="color: yellow"></vr-object>
+        <!-- Lights. -->
+        <vr-object light="type: point; intensity: 2"></vr-object>
+        <vr-object light="type: ambient; color: #888"></vr-object>
+
+        <vr-object mixin="planet" geometry="radius: 3"
+                   material="url: images/sun.jpg" rotation="0 0 0">
+          <vr-animation mixin="spin"></vr-animation>
+        </vr-object>
 
         <vr-object position="0 0 0">
           <vr-animation mixin="orbit" dur="8000"></vr-animation>
-          <vr-object mixin="planet" material="color: red" position="8 0 0" geometry="radius: 1"></vr-object>
+          <vr-object mixin="planet" material="color: red" position="8 0 0"
+                     geometry="radius: 1"></vr-object>
         </vr-object>
 
         <vr-object position="0 0 0">
           <vr-animation mixin="orbit" dur="4000"></vr-animation>
-          <vr-object mixin="planet" material="color: blue" position="6 0 0"></vr-object>
+          <vr-object mixin="planet" material="color: blue"
+                     position="6 0 0"></vr-object>
         </vr-object>
 
         <vr-object position="0 0 0">

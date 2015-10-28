@@ -10,25 +10,13 @@ var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
+var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+
 var VRScene = module.exports = registerElement(
   'vr-scene',
   {
     prototype: Object.create(
       VRNode.prototype, {
-        defaults: {
-          value: {
-            lights: {
-              // Default directional light.
-              0: {
-                color: new THREE.Vector3(1.0, 1.0, 1.0),
-                direction: new THREE.Vector3(-0.5, 1.0, 0.5),
-                position: new THREE.Vector3(0, 0, 0),
-                intensity: 5.0
-              }
-            }
-          }
-        },
-
         attributeChangedCallback: {
           value: function (attr, oldVal, newVal) {
             if (oldVal === newVal) { return; }
@@ -40,8 +28,9 @@ var VRScene = module.exports = registerElement(
           value: function () {
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
-            this.lights = {};
-            this.materials = {};
+            this.defaultLightsEnabled = true;
+            this.lightComponents = {};
+            this.materialComponents = {};
             this.vrButton = null;
             this.setupStats();
             this.setupScene();
@@ -89,7 +78,9 @@ var VRScene = module.exports = registerElement(
             }
 
             function attachEventListener (node) {
-              node.addEventListener('loaded', function () { elementLoaded(node); });
+              node.addEventListener('loaded', function () {
+                elementLoaded(node);
+              });
             }
           }
         },
@@ -123,15 +114,20 @@ var VRScene = module.exports = registerElement(
         attachFullscreenListeners: {
           value: function () {
             // handle fullscreen changes
-            document.addEventListener('mozfullscreenchange', this.fullscreenChange.bind(this));
-            document.addEventListener('webkitfullscreenchange', this.fullscreenChange.bind(this));
+            document.addEventListener('mozfullscreenchange',
+                                      this.fullscreenChange.bind(this));
+            document.addEventListener('webkitfullscreenchange',
+                                      this.fullscreenChange.bind(this));
           }
         },
 
         fullscreenChange: {
           value: function (e) {
-            // switch back to the mono renderer if we have dropped out of fullscreen VR mode.
-            var fsElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+            // Switch back to the mono renderer if we have dropped out of
+            // fullscreen VR mode.
+            var fsElement = document.fullscreenElement ||
+                            document.mozFullScreenElement ||
+                            document.webkitFullscreenElement;
             if (!fsElement) {
               this.renderer = this.monoRenderer;
             }
@@ -153,8 +149,6 @@ var VRScene = module.exports = registerElement(
               this.setupCamera();
               return;
             }
-            // TODO: initialize lights somewhere else.
-            this.updateMaterials();
             this.resizeCanvas();
             // Kick off the render loop.
             this.render(performance.now());
@@ -266,6 +260,7 @@ var VRScene = module.exports = registerElement(
             this.setupRenderer();
             // cursor camera setup
             this.setupCursor();
+            this.setupDefaultLights();
           }
         },
 
@@ -288,7 +283,8 @@ var VRScene = module.exports = registerElement(
             defaultCamera.setAttribute('camera', {fov: 45});
             defaultCamera.setAttribute('position', {x: 0, y: 0, z: 20});
             this.pendingElements++;
-            defaultCamera.addEventListener('loaded', this.elementLoaded.bind(this));
+            defaultCamera.addEventListener('loaded',
+                                           this.elementLoaded.bind(this));
             this.appendChild(defaultCamera);
           }
         },
@@ -299,6 +295,27 @@ var VRScene = module.exports = registerElement(
             if (cursor) {
               this.cursor = cursor;
             }
+          }
+        },
+
+        /**
+         * Prescibe default lights to the scene.
+         * Does so by injecting markup such that this state is not invisible.
+         * These lights are removed if the user adds any lights.
+         */
+        setupDefaultLights: {
+          value: function () {
+            var ambientLight = document.createElement('vr-object');
+            ambientLight.setAttribute('light',
+                                      {color: '#333', type: 'ambient'});
+            ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+            this.appendChild(ambientLight);
+
+            var directionalLight = document.createElement('vr-object');
+            directionalLight.setAttribute('light', {intensity: 5});
+            directionalLight.setAttribute('position', {x: -1, y: 1, z: 0});
+            directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+            this.appendChild(directionalLight);
           }
         },
 
@@ -336,8 +353,10 @@ var VRScene = module.exports = registerElement(
           value: function () {
             var canvas = this.canvas;
             var renderer = this.renderer = this.monoRenderer =
-              (VRScene && VRScene.renderer) || // To prevent creating multiple rendering contexts
-              new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+              (VRScene && VRScene.renderer) ||
+              // To prevent creating multiple rendering contexts.
+              new THREE.WebGLRenderer({canvas: canvas, antialias: true,
+                                       alpha: true});
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.sortObjects = false;
             VRScene.renderer = renderer;
@@ -383,6 +402,54 @@ var VRScene = module.exports = registerElement(
           }
         },
 
+        /**
+         * Registers light component to the scene.
+         *
+         * @param {number} id - generated ID from the light component.
+         * @param {object} lightComponent - light component instance.
+         */
+        registerLightComponent: {
+          value: function (id, lightComponent) {
+            if (this.defaultLightsEnabled &&
+                !lightComponent.el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
+              // User has added a light, remove default lights through DOM.
+              var defaultLights = document.querySelectorAll(
+                '[' + DEFAULT_LIGHT_ATTR + ']');
+              for (var i = 0; i < defaultLights.length; i++) {
+                this.removeChild(defaultLights[i]);
+              }
+              this.defaultLightsEnabled = false;
+            }
+            this.lightComponents[id] = lightComponent;
+            this.updateMaterials();
+          }
+        },
+
+        /**
+         * Registers material component for the scene to keep track in case
+         * materials need updates.
+         *
+         * @param id {number} ID of the material to keep track.
+         * @param material {object} material component instance.
+         */
+        registerMaterialComponent: {
+          value: function (id, materialComponent) {
+            this.materialComponents[id] = materialComponent;
+          }
+        },
+
+        /**
+         * Triggers an update to all materials in the scene.
+         */
+        updateMaterials: {
+          value: function () {
+            var self = this;
+            Object.keys(self.materialComponents).forEach(function (id) {
+              self.materialComponents[id].refresh();
+            });
+          }
+        },
+
         render: {
           value: function (t) {
             var stats = this.stats;
@@ -398,70 +465,8 @@ var VRScene = module.exports = registerElement(
             });
             this.renderer.render(this.object3D, camera);
             if (stats) { stats().update(); }
-            this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
-          }
-        },
-
-        /**
-         * Registers light to the scene for the scene to keep track.
-         * Light is kept track in a map such that it can be looked up and
-         * updated in place if necessary.
-         * Doing so will update all materials in the scene.
-         *
-         * @param light {object} light attributes (e.g., color, intensity).
-         */
-        registerLight: {
-          value: function (light) {
-            this.lights[light.id] = light;
-            this.updateMaterials();
-          }
-        },
-
-        /**
-         * Transforms this.lights into an array. Uses default lights if no
-         * lights have been registered.
-         *
-         * @param light {array} - array of lights.
-         */
-        getLightsAsArray: {
-          value: function () {
-            // Default lights prescribed if no lights set.
-            var lights = Object.keys(this.lights).length
-                         ? this.lights : this.defaults.lights;
-            // Convert this.lights to array.
-            return Object.keys(lights).map(function (id) {
-              return lights[id];
-            });
-          }
-        },
-
-        /**
-         * Registers material component for the scene to keep track.
-         * Scene keeps track of materials in case of needed updates.
-         *
-         * @param id {number} ID of the material to keep track.
-         * @param material {object} material component instance.
-         */
-        registerMaterial: {
-          value: function (id, material) {
-            this.materials[id] = material;
-            material.updateLights(this.getLightsAsArray());
-          }
-        },
-
-        /**
-         * Updates all materials in the scene with the scene's lights.
-         * Prescribes a default light if no lights are set.
-         */
-        updateMaterials: {
-          value: function () {
-            var self = this;
-            // Convert this.lights to array.
-            var lightsArr = self.getLightsAsArray();
-            // Iterate through all materials to update lights.
-            Object.keys(self.materials).forEach(function (id) {
-              self.materials[id].updateLights(lightsArr);
-            });
+            this.animationFrameID = window.requestAnimationFrame(
+              this.render.bind(this));
           }
         }
       }
