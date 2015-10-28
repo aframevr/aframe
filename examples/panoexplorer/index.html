@@ -83,7 +83,7 @@
         if (scene.hasLoaded) {
           selectPano(1);
         } else {
-          scene.on('loaded', function () { selectPano (1); });
+          scene.addEventListener('loaded', function () { selectPano (1); });
         }
 
         function handleClick (evt) {
