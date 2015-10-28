@@ -25,13 +25,13 @@
         <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.30; innerRadius: 0.20;" material="color: red" cursor="maxDistance: 30"></vr-object>
       </vr-object>
 
-      <vr-object position="-10 0 0" rotation="0 0 0">
+      <vr-object position="-10 0 0">
         <vr-object mixin="cube red">
           <vr-animation begin="click" attribute="position" from="0 0 0" to="0 0 -10" dur="2000" fill="both"></vr-animation>
         </vr-object>
       </vr-object>
 
-      <vr-object position="0 0 0" rotation="0 0 0">
+      <vr-object>
         <vr-object mixin="cube green">
           <vr-animation begin="click" attribute="rotation" to="0 360 0" easing="linear" dur="2000"></vr-animation>
         </vr-object>
