@@ -63,8 +63,8 @@ module.exports.Component = registerComponent('controls', {
       velocity.x -= velocity.x * 10.0 * delta;
       velocity.z -= velocity.z * 10.0 * delta;
 
-      var position = el.getAttribute('position');
-      var rotation = el.getAttribute('rotation');
+      var position = el.getComputedAttribute('position');
+      var rotation = el.getComputedAttribute('rotation');
       var rotZ = rotation.z;
 
       if (this.data.locomotion === 'true') {

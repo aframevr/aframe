@@ -1,17 +1,5 @@
-/* global HTMLElement */
 var styleParser = require('style-attr');
 var utils = require('../vr-utils');
-
-var mixAttributes = function (str, obj) {
-  var attrs = str;
-  if (!str) { return; }
-  // Attributes can come in the form of a string or pre-parsed as an object
-  // such as pos/rot/scale.
-  if (typeof str === 'string') {
-    attrs = styleParser.parse(str);
-  }
-  utils.mixin(obj, attrs);
-};
 
 var Component = function (el) {
   this.el = el;
@@ -22,13 +10,30 @@ var Component = function (el) {
   this.update();
 };
 
+/**
+ * Given a source value or object it overrides the properties of
+ * the destination argument
+ * @param  {} dest   The destination object or value
+ * @param  {} source The source object or value
+ * @return {}        The overriden object or value
+ */
+var applyData = function (dest, source) {
+  var isSourceObject = typeof source === 'object';
+  if (source === null) { return dest; }
+  if (!isSourceObject) {
+    if (source === undefined) { return dest; }
+    return source;
+  }
+  return utils.mixin(dest, source);
+};
+
 Component.prototype = {
   /**
    * Parses the data coming from the entity attribute
    * and its mixins and calls update
    */
   updateAttributes: function () {
-    var previousData = utils.mixin({}, this.data);
+    var previousData = applyData({}, this.data);
     this.parseAttributes();
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
@@ -62,25 +67,32 @@ Component.prototype = {
    */
   parseAttributes: function () {
     var data = {};
+    var defaults = this.defaults;
     var el = this.el;
-    var unparsedAttrs = HTMLElement.prototype.getAttribute.call(el, this.name);
-    var elAttrs = unparsedAttrs === '' ? {} : el.getAttribute(this.name);
+    var elAttrs = el.getAttribute(this.name);
     var self = this;
     var mixinEls = el.mixinEls;
-    // Copy the default first. Lowest precedence
-    utils.mixin(data, this.defaults);
+    // Copy the defaults first. Lowest precedence
+    data = applyData(data, defaults);
     // Copy mixin values
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
-      var str = mixinEl.getAttribute(self.name);
-      if (!str) { return; }
-      mixAttributes(str, data);
+      var mixinData = mixinEl.getAttribute(self.name);
+      data = applyData(data, mixinData);
     }
-    // Copy attribute values. Maximum precedence
-    mixAttributes(elAttrs, data);
+    // Copy attribute values. highest precedence
+    data = applyData(data, elAttrs);
     // Coerce to the type of the defaults
-    utils.coerce(data, this.defaults);
+    utils.coerce(data, defaults);
     this.data = data;
+  },
+
+  getData: function () {
+    var data = this.data;
+    // Primitive data type.
+    if (typeof data !== 'object') { return data; }
+    // Return a copy of data
+    return utils.mixin({}, data);
   },
 
   parseAttributesString: function (attrs) {

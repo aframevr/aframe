@@ -41,7 +41,9 @@ module.exports.log = function () {
  * @param  {object} source The object where properties will be copied FROM
  */
 module.exports.mixin = function (dest, source) {
-  var keys = Object.keys(source);
+  var keys;
+  if (!source) { return dest; }
+  keys = Object.keys(source);
   keys.forEach(mix);
   function mix (key) {
     dest[key] = source[key];
@@ -71,37 +73,39 @@ module.exports.parseCoordinate = function (value, defaults) {
 
 /**
  * It coerces the strings of the obj object into the types of the schema object
- * @param  {object} dest   The object that contains the string values to be coerced
- * @param  {object} schema The object that contains the types
+ * In the case of a primitive value obj is coerced to the type of schema
+ * @param  {} dest   The object that contains the string values to be coerced
+ * @param  {} schema It contains the type or types
  */
 module.exports.coerce = function (obj, schema) {
   var keys = Object.keys(obj);
+  if (typeof obj !== 'object') { return coerceValue(obj, schema); }
   keys.forEach(coerce);
+  return obj;
   function coerce (key) {
-    var type;
     var value = schema[key];
-    // We only coerce strings
-    if (typeof obj[key] !== 'string') { return; }
+    var type = typeof value;
     if (value === undefined) { return; }
-    type = typeof value;
+    obj[key] = coerceValue(obj[key], type);
+  }
+  function coerceValue (value, type) {
+    if (typeof value !== 'string') { return value; }
     switch (type) {
-      case 'string':
-        return;
       case 'boolean':
-        obj[key] = obj[key] === 'true';
-        return;
+        return value === 'true';
       case 'number':
-        obj[key] = parseFloat(obj[key]);
-        return;
+        return parseFloat(value);
+      default:
+        return value;
     }
   }
 };
 
 /**
  * Checks if a and b objects have the same attributes and the values
- * are equal.
- * @param  {object} a
- * @param  {object} b
+ * are equal. In the case of primitive types the values are compared directly
+ * @param  {} a
+ * @param  {} b
  * @return {boolean}   True if objects are equal. False otherwise
  */
 module.exports.deepEqual = function (a, b) {
@@ -109,6 +113,8 @@ module.exports.deepEqual = function (a, b) {
   var keysB = Object.keys(b);
   var i;
   if (keysA.length !== keysB.length) { return false; }
+  // If there are no keys we just compare the objects
+  if (keysA.length === 0) { return a === b; }
   for (i = 0; i < keysA.length; ++i) {
     if (a[keysA[i]] !== b[keysA[i]]) { return false; }
   }

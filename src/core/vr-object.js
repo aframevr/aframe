@@ -226,7 +226,6 @@ var proto = {
 
   initComponent: {
     value: function (name, attrs) {
-      var hasAttribute = this.hasAttribute(name);
       // If it's not a component name or
       // If the component is already initialized
       if (!VRComponents[name] || this.components[name]) { return; }
@@ -234,11 +233,6 @@ var proto = {
       if (!this.isComponentDefined(name) && attrs === undefined) { return; }
       this.initComponentDependencies(name);
       this.components[name] = new VRComponents[name].Component(this);
-      // If the attribute is not defined but has a default we set it
-      if (!hasAttribute) {
-        attrs = attrs !== undefined ? attrs : '';
-        this.setAttribute(name, attrs);
-      }
       VRUtils.log('Component initialized: %s', name);
     }
   },
@@ -253,7 +247,7 @@ var proto = {
       dependencies = VRComponents[name].dependencies;
       if (!dependencies) { return; }
       Object.keys(dependencies).forEach(function (key) {
-        self.initComponent(key, dependencies[key]);
+        self.setAttribute(key, dependencies[key]);
       });
     }
   },
@@ -298,6 +292,20 @@ var proto = {
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parseAttributesString(value);
+    },
+    writable: window.debug
+  },
+
+  /**
+   * Returns the computed attribute from the element itself,
+   * applied mixins and default values
+   * @type {string} attribe name
+   */
+  getComputedAttribute: {
+    value: function (attr) {
+      var component = this.components[attr];
+      if (component) { return component.getData(); }
+      return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },

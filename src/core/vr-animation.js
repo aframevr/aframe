@@ -121,7 +121,7 @@ module.exports = registerElement(
             var repeat = data.repeat === 'indefinite' ? Infinity : 0;
             var el = this.el;
             var attribute = data.attribute;
-            var current = el.getAttribute(attribute);
+            var current = el.getComputedAttribute(attribute);
             var from = data.from ? utils.parseCoordinate(data.from) : current;
             var tween = this.tween;
             var begin = parseInt(data.begin, 10);
@@ -250,7 +250,7 @@ module.exports = registerElement(
             Object.keys(defaults).forEach(copyAttribute);
             function copyAttribute (key) {
               if (el.hasAttribute(key)) {
-                data[key] = el.getAttribute(key, defaults[key]);
+                data[key] = el.getAttribute(key);
               }
             }
             return data;
