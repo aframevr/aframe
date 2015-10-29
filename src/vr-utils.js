@@ -1,14 +1,19 @@
-/* global CustomEvent, Event */
+/* global CustomEvent */
 
 /**
- * Fires a DOM event.
+ * Fires a custom DOM event.
  *
- * @param {Element} el Element to fire the event on.
+ * @param {Element} el Element on which to fire the event.
  * @param {String} name Name of the event.
- * @param {Object} detail Custom data to pass as `detail` if the event is a Custom Event.
+ * @param {Object=} [data={bubbles: true, {detail: <el>}}]
+ *   Data to pass as `customEventInit` to the event.
  */
-module.exports.fireEvent = function (el, name, detail) {
-  var evt = detail ? new CustomEvent(name, { detail: detail }) : new Event(name);
+module.exports.fireEvent = function (el, name, data) {
+  data = data || {};
+  data.detail = data.detail || {};
+  data.detail.target = data.detail.target || el;
+  var evt = new CustomEvent(name, data);
+  evt.target = el;
   el.dispatchEvent(evt);
 };
 
