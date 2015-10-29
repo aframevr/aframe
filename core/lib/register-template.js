@@ -66,10 +66,9 @@ module.exports = function (tagName) {
               var templateAttrs = utils.mergeAttrs(template, this);
               Object.keys(templateAttrs).filter(function (key) {
                 if (key in this.attributeBlacklist) {
-                  delete templateAttrs[key];
-                  console.warn('Skipped "%s" key when cloning attributes ' +
-                               'from template for "%s"', key, tagName);
-                  return;
+                  // Move these unique identifier attributes over
+                  // (i.e., `id`, `name`, `class`, `target`).
+                  this.removeAttribute(key);
                 }
                 var value = templateAttrs[key];
                 var component = this.components[key];
