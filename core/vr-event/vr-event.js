@@ -5,6 +5,20 @@ var utils = require('../lib/utils');
 
 var registerElement = VRMarkup.registerElement.registerElement;
 
+// Synthesize events for cursor `mouseenter` and `mouseleave`.
+window.addEventListener('stateadded', function (e) {
+  var detail = e.detail;
+  if (detail.state === 'hovering') {
+    e.target.emit('mouseenter');
+  }
+});
+window.addEventListener('stateremoved', function (e) {
+  var detail = e.detail;
+  if (detail.state === 'hovering') {
+    e.target.emit('mouseleave');
+  }
+});
+
 module.exports = registerElement(
   'vr-event',
   {
@@ -15,6 +29,7 @@ module.exports = registerElement(
           value: function () {
             this.type = this.type || this.getAttribute('type');
             this.target = this.getAttribute('target');
+            this.listeners = {};
             this.attachEventListener();
           },
           writable: window.debug
@@ -22,7 +37,10 @@ module.exports = registerElement(
 
         detachedCallback: {
           value: function () {
-            // TODO: Remove event listener.
+            // Remove all event listeners.
+            Object.keys(this.listeners).forEach(function (key) {
+              this.detachEventListener(this.listeners[key]);
+            }, this);
           },
           writable: window.debug
         },
@@ -52,20 +70,46 @@ module.exports = registerElement(
         attachEventListener: {
           value: function () {
             var self = this;
-            self.parentNode.removeEventListener(self.type, updateAttrs);
             if (!self.parentNode) { return; }
+
             var target = self.target || self.parentNode;
             utils.$$(target).forEach(addEventListener);
+
             function addEventListener (targetEl) {
-              self.parentNode.addEventListener(self.type, updateAttrs.bind(targetEl));
+              self.detachEventListener(targetEl);
+
+              var listenerFunc = self.updateTargetElAttributes(targetEl);
+              self.listeners[targetEl] = listenerFunc;
+              self.parentNode.addEventListener(self.type, listenerFunc);
             }
-            function updateAttrs () {
-              var el = this;
+          },
+          writable: window.debug
+        },
+
+        detachEventListener: {
+          value: function (targetEl) {
+            if (!this.type) { return; }
+
+            var oldListenerFunc = this.listeners[targetEl];
+            if (!oldListenerFunc) { return; }
+
+            this.parentNode.removeEventListener(this.type, oldListenerFunc);
+            delete this.listeners[targetEl];
+          },
+          writable: window.debug
+        },
+
+        updateTargetElAttributes: {
+          value: function (targetEl) {
+            var self = this;
+            return function () {
               utils.$$(self.attributes).forEach(function (attr) {
                 if (attr.name in self.attributeBlacklist) { return; }
-                el.setAttribute(attr.name, attr.value);
+                // TODO: Handle removing unique attributes
+                // (e.g., `class`, `id`, `name`, etc.).
+                targetEl.setAttribute(attr.name, attr.value);
               });
-            }
+            };
           },
           writable: window.debug
         }

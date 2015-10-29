@@ -7,9 +7,11 @@
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
-    <template is="vr-template" element="vr-pano-nav">
-    </template>
-
+    <vr-assets>
+      <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
+      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
+      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+    </vr-assets>
     <vr-scene>
       <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
         <vr-object id="cursor" position="0 0 -3" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14" material="color: gray" cursor="timeout: 1500; fuse: true">
@@ -19,33 +21,24 @@
         </vr-object>
       </vr-object>
 
-      <vr-pano-holder id="holder" url="city.jpg"></vr-pano-holder>
+      <vr-object id="holder" geometry="primitive: sphere; radius: 10" material="url: images/city.jpg"></vr-object>
 
-      <vr-pano-nav id="links" position="-1 -0.3 -4">
-        <vr-pano-link data-id="0" position="0 0 0" thumbUrl="thumb-cubes.png" panoUrl="cubes.jpg" data-selected="false">
-        </vr-pano-link>
+      <vr-object id="links" position="-1 -0.3 -4">
+        <vr-object position="0 0 0" mixin="link" material="url: images/thumb-cubes.png">
+          <vr-click target="#holder" material="url: images/cubes.jpg"></vr-click>
+          <vr-click selected></vr-click>
+        </vr-object>
 
-        <vr-pano-link data-id="1" position="1.5 0 0" thumbUrl="thumb-city.png" panoUrl="city.jpg" data-selected="true" size="1.4">
-        </vr-pano-link>
+        <vr-object position="1.5 0 0" mixin="link" material="url: images/thumb-city.png" selected>
+          <vr-click target="#holder" material="url: images/city.jpg"></vr-click>
+          <vr-click selected></vr-click>
+        </vr-object>
 
-        <vr-pano-link data-id="2" position="3 0 0" type="link" thumbUrl="thumb-sechelt.png" panoUrl="sechelt.jpg" data-selected="false">
-        </vr-pano-link>
-      </vr-pano-nav>
-    </vr-scene>
-
-    <template is="vr-template" element="vr-pano-holder" url="city.jpg">
-      <vr-object geometry="primitive: sphere; radius: 10" material="url: https://mozvr.github.io/aframe-core/examples/panoexplorer/images/${url}"></vr-object>
-    </template>
-
-    <template is="vr-template" element="vr-pano-link" type="link" size="1.0">
-      <vr-object geometry="primitive: plane; width: ${size}; height: ${size}" material="url: https://mozvr.github.io/aframe-core/examples/panoexplorer/images/${thumbUrl}">
-        <vr-click target="#holder" size="1.4" url="${panoUrl}"></vr-click>
-        <vr-click target="vr-pano-link:not([data-id='${data-id}'])" size="1.0" data-selected="false"></vr-click>
-        <vr-click target="vr-pano-link[data-id='${data-id}']" size="1.4" data-selected="true"></vr-click>
-        <vr-mouseenter target="vr-pano-link[data-id='${data-id}']:not([data-selected='true'])" size="1.2"></vr-mouseenter>
-        <vr-mouseenter target="vr-pano-link:not([data-id='${data-id}']):not([data-selected='true'])" size="1.0"></vr-mouseenter>
-        <vr-mouseleave target="vr-pano-link[data-id='${data-id}'][data-selected='false']" size="1.0"></vr-mouseleave>
+        <vr-object position="3 0 0" mixin="link" material="url: images/thumb-sechelt.png">
+          <vr-click target="#holder" material="url: images/sechelt.jpg"></vr-click>
+          <vr-click selected></vr-click>
+        </vr-object>
       </vr-object>
-    </template>
+    </vr-scene>
   </body>
 </html>
