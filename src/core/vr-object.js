@@ -355,8 +355,8 @@ var proto = {
         // Store the light in case the entity's position or rotation changes.
         this.light = light;
       }
-      light.direction = this.getAttribute('rotation');
-      light.position = this.getAttribute('position');
+      light.direction = this.getComputedAttribute('rotation');
+      light.position = this.getComputedAttribute('position');
       this.sceneEl.registerLight(light);
     }
   }
