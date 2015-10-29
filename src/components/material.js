@@ -37,15 +37,6 @@ module.exports.Component = registerComponent('material', {
     }
   },
 
-  /**
-   * Recompile shader (e.g., number or types of lights in the scene changes).
-   */
-  refresh: {
-    value: function () {
-      this.el.object3D.material.needsUpdate = true;
-    }
-  },
-
   getMaterial: {
     value: function () {
       var currentMaterial = this.el.object3D.material;

@@ -1,8 +1,6 @@
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
-var id = 0;
-
 /**
  * Light component.
  *
@@ -37,10 +35,9 @@ module.exports.Component = registerComponent('light', {
   init: {
     value: function () {
       var el = this.el;
-      this.id = id++;
       this.light = this.getLight();
       el.object3D.add(this.light);
-      el.sceneEl.registerLightComponent(this.id, this);
+      el.sceneEl.registerLight(el);
     }
   },
 

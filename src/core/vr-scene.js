@@ -29,8 +29,6 @@ var VRScene = module.exports = registerElement(
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
             this.defaultLightsEnabled = true;
-            this.lightComponents = {};
-            this.materialComponents = {};
             this.vrButton = null;
             this.setupStats();
             this.setupScene();
@@ -319,6 +317,26 @@ var VRScene = module.exports = registerElement(
           }
         },
 
+        /**
+         * Notify scene that light has been added and to remove the default
+         *
+         * @param {object} el - element holding the light component.
+         */
+        registerLight: {
+          value: function (el) {
+            if (this.defaultLightsEnabled &&
+                !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
+              // User added a light, remove default lights through DOM.
+              var defaultLights = document.querySelectorAll(
+                '[' + DEFAULT_LIGHT_ATTR + ']');
+              for (var i = 0; i < defaultLights.length; i++) {
+                this.removeChild(defaultLights[i]);
+              }
+              this.defaultLightsEnabled = false;
+            }
+          }
+        },
+
         enterVR: {
           value: function () {
             this.renderer = this.stereoRenderer;
@@ -399,54 +417,6 @@ var VRScene = module.exports = registerElement(
           value: function (el) {
             if (!el.object3D) { return; }
             this.object3D.remove(el.object3D);
-          }
-        },
-
-        /**
-         * Registers light component to the scene.
-         *
-         * @param {number} id - generated ID from the light component.
-         * @param {object} lightComponent - light component instance.
-         */
-        registerLightComponent: {
-          value: function (id, lightComponent) {
-            if (this.defaultLightsEnabled &&
-                !lightComponent.el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
-              // User has added a light, remove default lights through DOM.
-              var defaultLights = document.querySelectorAll(
-                '[' + DEFAULT_LIGHT_ATTR + ']');
-              for (var i = 0; i < defaultLights.length; i++) {
-                this.removeChild(defaultLights[i]);
-              }
-              this.defaultLightsEnabled = false;
-            }
-            this.lightComponents[id] = lightComponent;
-            this.updateMaterials();
-          }
-        },
-
-        /**
-         * Registers material component for the scene to keep track in case
-         * materials need updates.
-         *
-         * @param id {number} ID of the material to keep track.
-         * @param material {object} material component instance.
-         */
-        registerMaterialComponent: {
-          value: function (id, materialComponent) {
-            this.materialComponents[id] = materialComponent;
-          }
-        },
-
-        /**
-         * Triggers an update to all materials in the scene.
-         */
-        updateMaterials: {
-          value: function () {
-            var self = this;
-            Object.keys(self.materialComponents).forEach(function (id) {
-              self.materialComponents[id].refresh();
-            });
           }
         },
 
