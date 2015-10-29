@@ -173,15 +173,16 @@ module.exports = registerElement(
          *
          * @param {String} name
          *   Name of event (use a space-delimited string for multiple events).
-         * @param {Object} detail
-         *   Custom data (optional) to pass as `detail` if the event is to
-         *   be a `CustomEvent`.
+         * @param {Object=} [detail={}]
+         *   Custom data to pass as `detail` to the event.
          */
         emit: {
           value: function (name, detail) {
             var self = this;
+            detail = detail || {};
+            var data = {bubbles: true, detail: detail};
             return name.split(' ').map(function (eventName) {
-              return VRUtils.fireEvent(self, eventName, detail);
+              return VRUtils.fireEvent(self, eventName, data);
             });
           },
           writable: window.debug
