@@ -8,6 +8,7 @@ var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
+var VRUtils = require('../vr-utils');
 
 var VRScene = module.exports = registerElement(
   'vr-scene',
@@ -304,7 +305,30 @@ var VRScene = module.exports = registerElement(
         enterVR: {
           value: function () {
             this.renderer = this.stereoRenderer;
-            this.stereoRenderer.setFullScreen(true);
+            this.setFullscreen();
+          }
+        },
+
+        setFullscreen: {
+          value: function () {
+            var canvas = this.canvas;
+
+            // Use the fullscreen method on effect when on desktop.
+            if (!VRUtils.isMobile()) {
+              this.stereoRenderer.setFullScreen(true);
+              return;
+            }
+
+            // For non-VR enabled mobile devices, the controls are polyfilled, but not the
+            // vrDisplay, so the fullscreen method on the effect renderer does not work and
+            // we request it here manually instead.
+            if (canvas.requestFullscreen) {
+              canvas.requestFullscreen();
+            } else if (canvas.mozRequestFullScreen) {
+              canvas.mozRequestFullScreen();
+            } else if (canvas.webkitRequestFullscreen) {
+              canvas.webkitRequestFullscreen();
+            }
           }
         },
 

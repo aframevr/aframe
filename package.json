@@ -9,7 +9,8 @@
     "request-interval": "^1.0.0",
     "style-attr": "^1.0.1",
     "three": "^0.72.0",
-    "tween.js": "^15.0.0"
+    "tween.js": "^15.0.0",
+    "webvr-polyfill": "caseyyee/webvr-polyfill"
   },
   "devDependencies": {
     "browserify": "^11.0.1",
