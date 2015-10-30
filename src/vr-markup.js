@@ -1,3 +1,5 @@
+require('webvr-polyfill');
+
 var registerElement = require('./vr-register-element');
 
 var VRObject = require('./core/vr-object');
