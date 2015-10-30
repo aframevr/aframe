@@ -185,6 +185,7 @@ module.exports = registerElement(
             }
             if (this.count === 0) {
               this.count = undefined;
+              this.emit('animationend');
               return;
             }
             this.running = false;
@@ -215,6 +216,7 @@ module.exports = registerElement(
             tween = this.tween;
             this.running = true;
             tween.start();
+            this.emit('animationstart');
           },
           // For preemptive binding. See update method
           writable: true
