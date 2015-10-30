@@ -20,7 +20,8 @@ var proto = {
     value: {
       position: '',
       rotation: '',
-      scale: ''
+      scale: '',
+      visible: ''
     }
   },
 
