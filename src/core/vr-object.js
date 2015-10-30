@@ -32,7 +32,6 @@ var proto = {
       this.object3D = new THREE.Mesh();
       this.components = {};
       this.states = [];
-      this.light = null;
       this.addToParent();
       this.load();
     },
@@ -54,7 +53,6 @@ var proto = {
       // if old and new values are the same
       var newValStr = newVal;
       var component = VRComponents[attr];
-      var light = this.light;
       // When creating objects programatically and setting attributes
       // the object is not part of the scene until is inserted in the
       // DOM
@@ -69,9 +67,6 @@ var proto = {
         return;
       }
       this.updateComponent(attr);
-      if (light && ['position', 'rotation'].indexOf(attr) !== -1) {
-        this.registerLight(light);
-      }
     },
     writable: window.debug
   },
@@ -340,25 +335,6 @@ var proto = {
       return is;
     },
     writable: window.debug
-  },
-
-  /**
-   * Registers light component data to the vr-scene.
-   * Attaches entity's position/rotation to the light component data.
-   * Use entity's rotation as light's direction.
-   *
-   * @param {object} light - light attributes (e.g., color, intensity).
-   */
-  registerLight: {
-    value: function (light) {
-      if (!this.light) {
-        // Store the light in case the entity's position or rotation changes.
-        this.light = light;
-      }
-      light.direction = this.getComputedAttribute('rotation');
-      light.position = this.getComputedAttribute('position');
-      this.sceneEl.registerLight(light);
-    }
   }
 };
 
