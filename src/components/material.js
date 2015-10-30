@@ -107,7 +107,7 @@ module.exports.Component = registerComponent('material', {
       var data = this.data;
       var texture = THREE.ImageUtils.loadTexture(data.url);
       return new THREE.MeshBasicMaterial({
-        color: data.color,
+        color: 0xffffff,
         side: THREE.DoubleSide,
         opacity: data.opacity,
         transparent: data.opacity < 1,
