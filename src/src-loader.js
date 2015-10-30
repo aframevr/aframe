@@ -28,7 +28,7 @@ module.exports.loadSrc = function loadSrc (src, loadImage, loadVideo) {
   textureEl = getEl(src);
   if (!textureEl) {
     if (textureEl === null) {
-      utils.warn('There is no element that mathes the selector: "%s"', src);
+      utils.warn('There is no element that matches the selector: "%s"', src);
     }
     return;
   }
@@ -65,7 +65,7 @@ function getEl (selector) {
   try {
     return document.querySelector(selector);
   } catch (e) { // Capture exception if it's not a valid selector
-    utils.warn('The provided source "%s" is not a valid css selector', selector);
+    utils.warn('The provided source "%s" is not a valid CSS selector', selector);
     return undefined;
   }
 }
