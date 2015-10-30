@@ -3,10 +3,12 @@
           width="2"
           height="2"
           color="gray"
-          url="">
+          src="">
+  <img id="image" 
+       src="${src}">
   <vr-object geometry="primitive: plane;
                        width: ${width};
                        height: ${height}"
              material="color: ${color};
-                       url: ${url}"></vr-object>
+                       url: #image"></vr-object>
 </template>
