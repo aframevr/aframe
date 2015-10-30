@@ -40,18 +40,18 @@
         var panos = [
           {
             'title': 'Cubes',
-            'thumb': 'thumb-cubes.png',
-            'url': 'cubes.jpg'
+            'thumb': 'images/thumb-cubes.png',
+            'url': 'images/cubes.jpg'
           },
           {
             'title': 'City',
-            'thumb': 'thumb-city.png',
-            'url': 'city.jpg'
+            'thumb': 'images/thumb-city.png',
+            'url': 'images/city.jpg'
           },
           {
             'title': 'Sechelt',
-            'thumb': 'thumb-sechelt.png',
-            'url': 'sechelt.jpg'
+            'thumb': 'images/thumb-sechelt.png',
+            'url': 'images/sechelt.jpg'
           }
         ];
 
@@ -71,7 +71,7 @@
           el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
           el.setAttribute('mixin', 'link');
-          el.setAttribute('material', {url: 'images/' + pano.thumb});
+          el.setAttribute('material', {src: 'url(' + pano.thumb + ')'});
           panos[idx].el = el;
 
           // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
@@ -98,7 +98,7 @@
           var linkEL = pano.el;
           if (selectedLinkEl === pano.el) { return; }
           if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
-          holder.setAttribute('material', {url: 'images/' + pano.url});
+          holder.setAttribute('material', {src: 'url(' + pano.url  + ')'});
           selectedLinkEl = linkEL;
           selectedLinkEl.addState('selected');
         }
