@@ -47,7 +47,6 @@ module.exports.Component = registerComponent('cursor', {
       if (!this.intersectedEl) { return; }
       if (this.mouseDownEl === this.intersectedEl) {
         this.emit('click');
-        this.intersectedEl.emit('click');
       }
     }
   },
