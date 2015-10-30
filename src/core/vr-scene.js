@@ -305,13 +305,13 @@ var VRScene = module.exports = registerElement(
           value: function () {
             var ambientLight = document.createElement('vr-object');
             ambientLight.setAttribute('light',
-                                      {color: '#333', type: 'ambient'});
+                                      {color: '#bebebe', type: 'ambient'});
             ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
             this.appendChild(ambientLight);
 
             var directionalLight = document.createElement('vr-object');
-            directionalLight.setAttribute('light', {intensity: 5});
-            directionalLight.setAttribute('position', {x: -1, y: 1, z: 0});
+            directionalLight.setAttribute('light', {intensity: 2.5});
+            directionalLight.setAttribute('position', {x: -10, y: 20, z: 10});
             directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
             this.appendChild(directionalLight);
           }
