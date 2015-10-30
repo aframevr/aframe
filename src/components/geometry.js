@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('geometry', {
       thetaStart: 0,
       tube: 2,
       tubularSegments: 8,
-      width: 5,
+      width: 5
     }
   },
 
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('geometry', {
         }
         case 'torus': {
           return new THREE.TorusGeometry(
-            data.radius, data.tube,  data.segments, data.segments);
+            data.radius, data.tube, data.segments, data.segments);
         }
         case 'torusKnot': {
           return new THREE.TorusKnotGeometry(
