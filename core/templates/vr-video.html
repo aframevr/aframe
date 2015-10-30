@@ -1,10 +1,23 @@
 <template is="vr-template"
           element="vr-video"
-          height="3.2"
-          width="1.8"
-          src="">
+          src=""
+          width="4"
+          height="2"
+          autoplay="true"
+          loop="true"
+          crossOrigin="anonymous">
+  <video  id="video"
+          src="${src}"
+          width="${width}"
+          height="${height}"
+          autoplay="${autoplay}"
+          loop="${loop}"
+          crossOrigin="${crossOrigin}"
+          style="display:none;">
+  </video>
   <vr-object geometry="primitive: plane;
                        height: ${height};
-                       width: ${width};
-             material="src: ${src};"></vr-object>
+                       width: ${width};"
+             material="src: #video;">
+  </vr-object>
 </template>
