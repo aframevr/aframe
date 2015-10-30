@@ -16,6 +16,7 @@
  * @param lightPositions (array of vec3)
  * @param metallic (float)
  * @param roughness (float)
+ * @param opacity (float)
  *
  * Currently supports directional light.
  * TODO: add support and defaults for ambient lighting.
@@ -42,6 +43,7 @@ uniform int lightIntensities[{{lightArraySize}}];
 uniform vec3 lightPositions[{{lightArraySize}}];
 uniform float metallic;
 uniform float roughness;
+uniform float opacity;
 
 varying vec2 vUv;
 varying mat3 tbn;
@@ -202,5 +204,5 @@ void main() {
   }
 
   gl_FragColor = vec4(totalLighting + 1.0 * envFresnel * envColor +
-                      realAlbedo * 0.01, 1.0);
+                      realAlbedo * 0.01, opacity);
 }
