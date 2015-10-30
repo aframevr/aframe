@@ -77,9 +77,12 @@ module.exports = registerElement(
         },
 
         addEventListeners: {
-          value: function (evt) {
+          value: function (evts) {
             var el = this.el;
-            el.addEventListener(evt, this.start);
+            var start = this.start;
+            utils.splitString(evts).forEach(function (evt) {
+              el.addEventListener(evt, start);
+            });
             el.addEventListener('stateadded', this.onStateAdded);
             el.addEventListener('stateremoved', this.onStateRemoved);
           },
@@ -87,9 +90,12 @@ module.exports = registerElement(
         },
 
         removeEventListeners: {
-          value: function (evt) {
+          value: function (evts) {
             var el = this.el;
-            el.removeEventListener(evt, this.start);
+            var start = this.start;
+            utils.splitString(evts).forEach(function (evt) {
+              el.removeEventListener(evt, start);
+            });
             el.removeEventListener('stateadded', this.onStateAdded);
             el.removeEventListener('stateremoved', this.onStateRemoved);
           },
