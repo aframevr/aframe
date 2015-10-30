@@ -3,8 +3,6 @@ var loadSrc = require('../src-loader').loadSrc;
 var THREE = require('../../lib/three');
 var utils = require('../vr-utils');
 
-var MATERIAL_TYPE__PBR = 'MeshPhysicalMaterial';
-
 /**
  * Material component.
  *
@@ -35,21 +33,40 @@ module.exports.Component = registerComponent('material', {
     }
   },
 
+  /**
+   * Update material.
+   * Support switching between basic/texture and physical material.
+   */
   update: {
     value: function () {
-      this.el.object3D.material = this.getMaterial();
+      var data = this.data;
+      var material = this.el.object3D.material;
+      var src = data.src;
+
+      if (!src && material.type === 'MeshBasicMaterial' ||
+          src && material.type === 'MeshPhysicalMaterial' ||
+          src) {
+        // Recreate material if switching material types.
+        // And always recreate material when textured.
+        this.el.object3D.material = this.getMaterial();
+      } else {
+        this.updatePhysicalMaterial();
+      }
     }
   },
 
+  /**
+   * Creates a new material, type depending on the component attributes.
+   *
+   * @return {object} material
+   */
   getMaterial: {
     value: function () {
-      var currentMaterial = this.el.object3D.material;
-      var src = this.data.src;
-      if (src) { return this.getTextureMaterial(src); }
-      var isPBR = currentMaterial &&
-                  currentMaterial.type === MATERIAL_TYPE__PBR;
-      if (isPBR) { return currentMaterial; }
-      return this.getPBRMaterial();
+      if (this.data.src) {
+        return this.getTextureMaterial();
+      } else {
+        return this.getPhysicalMaterial();
+      }
     }
   },
 
@@ -59,7 +76,7 @@ module.exports.Component = registerComponent('material', {
    * @returns {object} material - three.js MeshBasicMaterial.
    */
   getTextureMaterial: {
-    value: function (src) {
+    value: function () {
       var data = this.data;
       var material = this.material = new THREE.MeshBasicMaterial({
         color: 0xffffff,
@@ -67,7 +84,8 @@ module.exports.Component = registerComponent('material', {
         opacity: data.opacity,
         transparent: data.opacity < 1
       });
-      loadSrc(src, this.loadImage.bind(this), this.loadVideo.bind(this));
+      loadSrc(this.data.src, this.loadImage.bind(this),
+              this.loadVideo.bind(this));
       return material;
     }
   },
@@ -77,11 +95,27 @@ module.exports.Component = registerComponent('material', {
    *
    * @returns {object} material - three.js MeshPhysicalMaterial.
    */
-  getPBRMaterial: {
+  getPhysicalMaterial: {
     value: function () {
       var data = this.data;
+      data.color = new THREE.Color(data.color);
       data.transparent = data.opacity < 1;
       return new THREE.MeshPhysicalMaterial(data);
+    }
+  },
+
+  /**
+   * Updates an existing physical material.
+   */
+  updatePhysicalMaterial: {
+    value: function () {
+      var data = this.data;
+      var material = this.el.object3D.material;
+
+      data.color = new THREE.Color(data.color);
+      Object.keys(data).forEach(function (key) {
+        material[key] = data[key];
+      });
     }
   },
 
@@ -147,5 +181,4 @@ module.exports.Component = registerComponent('material', {
       this.material.needsUpdate = true;
     }
   }
-
 });
