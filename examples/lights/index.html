@@ -11,32 +11,73 @@
 
 <body>
   <vr-assets>
-    <vr-mixin id="orbit" attribute="position" to="20 10 0"
-              repeat="indefinite" easing="linear" dur="10000"></vr-mixin>
+    <vr-mixin id="light" geometry="primitive: sphere; radius: 2"
+              material="src: url(../_images/sun.jpg)"
+              light="color: #DDDDFF; distance: 100; intensity: 2; type: point">
+    </vr-mixin>
+    <vr-mixin id="torus-knot" geometry="primitive: torusKnot"
+              material="color: red"></vr-mixin>
   </vr-assets>
   <vr-scene stats="true">
     <!-- Camera. -->
-    <vr-object position="0 0 20" camera="fov: 45"
+    <vr-object position="0 0 100" camera="fov: 45"
                controls="mouselook: true; locomotion: true"></vr-object>
 
-    <!-- Lights. -->
-    <vr-object light="type: ambient; color: #888">
-    <vr-object light="type: point; intensity: 2" position="-20 10 0">
-      <vr-animation mixin="orbit"></vr-animation>
-    </vr-object>
-    <vr-object light="type: spot; angle: 1.5; intensity: 10"
-               position="0 0 25"></vr-object>
+    <!-- Skysphere. -->
+    <vr-object geometry="primitive: sphere; radius: 300"
+               material="color: #111" scale="-1 -1 -1"></vr-object>
 
-    <!-- Lit objects. -->
-    <vr-object position="-10 0 0" geometry="primitive: sphere; radius: 3"
-               material="color: red; metalness: 1; roughness: 0"></vr-object>
-    <vr-object position="-20 0 0" geometry="primitive: sphere; radius: 3"
-               material="color: blue; metalness: 0; roughness: 1"></vr-object>
-    <vr-object position="0 0 0" rotation="0 45 0" geometry="primitive: box"
-               material="color: yellow; metalness: 1; roughness: 0">
+    <!-- Lights. -->
+    <vr-object position="0 0 0">
+      <vr-animation attribute="rotation" to="0 0 360"
+                    repeat="indefinite" easing="linear" dur="4096">
+      </vr-animation>
+      <vr-object mixin="light" position="30 0 0"></vr-object>
     </vr-object>
-    <vr-object position="10 0 0" rotation="0 0 45" geometry="primitive: box"
-               material="color: green; metalness: 0; roughness: 0"></vr-object>
+
+    <vr-object position="0 0 0">
+      <vr-animation attribute="rotation" to="360 0 0"
+                    repeat="indefinite" easing="linear" dur="4096">
+      </vr-animation>
+      <vr-object mixin="light" position="0 0 30"></vr-object>
+    </vr-object>
   </vr-scene>
+
+  <script type="text/javascript">
+    var scene = document.querySelector('vr-scene');
+
+    function getRandColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function getRandCoord() {
+      var coord = Math.random() * 100;
+      return Math.random() < .5 ? coord + 5 : coord * -1 - 5;
+    }
+
+    for (var i = 0; i < 500; i++) {
+      var obj = document.createElement('vr-object');
+      obj.setAttribute('geometry', {
+        primitive: 'torusKnot',
+        radius: Math.random() * 10,
+        p: Math.round(Math.random() * 10),
+        q: Math.round(Math.random() * 10)
+      });
+      obj.setAttribute('material', {
+        color: getRandColor()
+      });
+      obj.setAttribute('position', {
+        x: getRandCoord(),
+        y: getRandCoord(),
+        z: getRandCoord()
+      });
+      scene.appendChild(obj);
+    }
+  </script>
 </body>
 </html>
