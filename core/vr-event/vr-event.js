@@ -11,15 +11,44 @@ window.addEventListener('stateadded', function (e) {
   if (detail.state === 'hovering') {
     e.target.emit('mouseenter');
   }
+  if (detail.state !== 'selected') { return; }
+  console.log('º [added] selected state for', e.target);
+  console.log('º ;;;;;', new Date());
+  console.log('º ;;;; a');
+  utils.$$('[selected]').forEach(function (el) {
+    if (e.target === el || getRealNode(e.target) === el) { return; }
+    if (el instanceof VREvent) { console.log('º ;;;; el did not match', el); return; }
+    // console.log('º e.target=', e.target, ';;;;;;;;;;;;;;;;;; el=', el);
+    var parentEl = getRealNode(el);
+    parentEl.removeState('selected');
+    parentEl.removeAttribute('selected');
+    console.log('º ;;;; removed selected from', el);
+  });
+  console.log('º ;;;; b');
 });
+
 window.addEventListener('stateremoved', function (e) {
   var detail = e.detail;
   if (detail.state === 'hovering') {
     e.target.emit('mouseleave');
   }
+  console.log('º [removed] selected state for', e.target);
+  // if (detail.state !== 'selected') { return; }
+  // console.log('º state removed', e.target, detail.state);
+  // utils.$$('[mixin~="selected"]').removeState('selected');
 });
 
-module.exports = registerElement(
+function getRealNode (el) {
+  if (el instanceof VREvent) {
+    return getRealNode(el.parentNode);
+  }
+  if (el.closest('vr-root')) {
+    return el.parentNode;
+  }
+  return el;
+}
+
+var VREvent = registerElement(
   'vr-event',
   {
     prototype: Object.create(
@@ -27,6 +56,7 @@ module.exports = registerElement(
       {
         attachedCallback: {
           value: function () {
+            this.isVREvent = true;
             this.type = this.type || this.getAttribute('type');
             this.target = this.getAttribute('target');
             this.listeners = {};
@@ -103,12 +133,31 @@ module.exports = registerElement(
           value: function (targetEl) {
             var self = this;
             return function () {
-              utils.$$(self.attributes).forEach(function (attr) {
+              var attrsSeen = utils.$$(self.attributes);
+              attrsSeen.forEach(function (attr) {
+                attrsSeen[attr.name] = true;
+
                 if (attr.name in self.attributeBlacklist) { return; }
                 // TODO: Handle removing unique attributes
                 // (e.g., `class`, `id`, `name`, etc.).
                 targetEl.setAttribute(attr.name, attr.value);
+
+                if (attr.name === 'selected') {
+                  console.log('º now selected: ', getRealNode(self));
+                  var parentEl = getRealNode(self);
+                  console.log('º set state selected ;;;;;;;;;', parentEl);
+                  parentEl.addState('selected');
+                  console.log('º set attr selected');
+                  parentEl.setAttribute('selected', '');
+                }
               });
+
+              // if (!('selected' in attrsSeen)) {
+              //   var parentEl = getRealNode(self);
+              //   console.log('ººººº not seen', parentEl);
+              //   parentEl.removeState('selected');
+              //   parentEl.removeAttribute('selected');
+              // }
             };
           },
           writable: window.debug
@@ -117,3 +166,5 @@ module.exports = registerElement(
     )
   }
 );
+
+module.exports = VREvent;
