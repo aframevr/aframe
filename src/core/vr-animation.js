@@ -11,7 +11,7 @@ var defaults = {
   easing: 'ease',
   direction: 'normal',
   fill: 'none',
-  from: undefined,
+  from: { x: 0, y: 0, z: 0 },
   repeat: 0,
   to: undefined
 };
@@ -146,7 +146,7 @@ module.exports = registerElement(
             if (fill === 'backwards' || fill === 'both') {
               el.setAttribute(attribute, from);
             }
-            this.tween = new TWEEN.Tween(from)
+            this.tween = new TWEEN.Tween(utils.mixin({}, from))
               .to(to, data.dur)
               .delay(begin)
               .easing(easing)
