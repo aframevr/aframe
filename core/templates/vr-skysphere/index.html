@@ -1,0 +1,15 @@
+<template is="vr-template" 
+          element="vr-skysphere"
+          src="/templates/vr-skysphere/default-skysphere.jpg"
+          radius="5000"
+          segments-width="32"
+          segments-height="32">
+  <img id="image" src="${src}" style="display:none;">
+  <vr-object geometry="primitive: sphere;
+                       radius: ${radius};
+                       segmentsWidth: ${segments-width};
+                       segmentsHeight: ${segments-height}"
+             material="src: #image"
+             scale="-1 1 1">
+  </vr-object>
+</template>
