@@ -156,3 +156,19 @@ module.exports.wrapVREventElement = function (newTagName, eventName, data) {
   };
   return wrapElement(newTagName, VREvent, data);
 };
+
+/**
+ * Splits a string into an array based on a delimiter.
+ *
+ * @param   {string=} [str='']        Source string
+ * @param   {string=} [delimiter=' '] Delimiter to use
+ * @returns {array}                   Array of delimited strings
+ */
+module.exports.splitString = function (str, delimiter) {
+  if (typeof delimiter === 'undefined') { delimiter = ' '; }
+  // First collapse the whitespace (or whatever the delimiter is).
+  var regex = new RegExp(delimiter, 'g');
+  str = (str || '').replace(regex, delimiter);
+  // Then split.
+  return str.split(delimiter);
+};

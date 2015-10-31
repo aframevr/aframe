@@ -1,0 +1,52 @@
+<vr-assets>
+  <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
+  <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
+  <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+</vr-assets>
+
+<template is="vr-template" element="vr-pano-link" src="" holderSrc="">
+  <vr-object mixin="link" material="receiveLight: false; src: url(${src})">
+    <vr-click target="#holder" material="receiveLight: false; src: url(${holderSrc})"></vr-click>
+    <vr-click state="selected"></vr-click>
+  </vr-object>
+</template>
+
+<template is="vr-template"
+          element="vr-cursor-gaze"
+          fov="45"
+          mouselook="true"
+          locomotion="true"
+          colorDefault="gray"
+          colorHover="springgreen"
+          dur="1500"
+          from="1 1 1"
+          to="0.2 0.2 0.2"
+          primitive="ring"
+          outerRadius="0.20"
+          innerRadius="0.14"
+          timeout="1500">
+  <vr-object camera="fov: ${fov}"
+             controls="mouselook: ${mouselook}; locomotion: ${locomotion}">
+    <vr-object id="cursor"
+               position="0 0 -3"
+               geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
+               material="color: ${colorDefault}"
+               cursor="timeout: ${timeout}; fuse: true">
+      <vr-mouseenter target="#cursor" material="color: ${colorHover}"></vr-mouseenter>
+      <vr-mouseleave target="#cursor" material="color: ${colorDefault}"></vr-mouseleave>
+      <vr-animation begin="hovering"
+                    easing="ease-in"
+                    attribute="scale"
+                    from="${from}"
+                    to="${to}"
+                    dur="${dur}"></vr-animation>
+    </vr-object>
+  </vr-object>
+</template>
+
+<template is="vr-template" element="vr-pano-holder" size="10">
+  <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="receiveLight: false; src: url(${src})"></vr-object>
+</template>
+
+<template is="vr-template" element="vr-pano-nav">
+</template>

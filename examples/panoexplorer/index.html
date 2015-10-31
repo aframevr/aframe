@@ -5,39 +5,24 @@
     <title>Events</title>
     <meta name="description" content="Events — vr-components">
     <script src="../../build/vr-components.js"></script>
+    <link rel="import" href="templates/index.html">
   </head>
   <body>
-    <vr-assets>
-      <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
-      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
-      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
-    </vr-assets>
     <vr-scene>
-      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
-        <vr-object id="cursor" position="0 0 -3" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14" material="color: gray" cursor="timeout: 1500; fuse: true">
-          <vr-mouseenter material="color: springgreen"></vr-mouseenter>
-          <vr-mouseleave material="color: gray"></vr-mouseleave>
-          <vr-animation begin="hovering" easing="ease-in" attribute="scale" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></vr-animation>
-        </vr-object>
-      </vr-object>
+      <vr-cursor-gaze></vr-cursor-gaze>
 
-      <vr-object id="holder" geometry="primitive: sphere; radius: 10" material="url: images/city.jpg"></vr-object>
+      <vr-pano-holder src="images/city.jpg"></vr-pano-holder>
 
       <vr-object id="links" position="-1 -0.3 -4">
-        <vr-object position="0 0 0" mixin="link" material="url: images/thumb-cubes.png">
-          <vr-click target="#holder" material="url: images/cubes.jpg"></vr-click>
-          <vr-click selected></vr-click>
-        </vr-object>
+        <vr-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
+        </vr-pano-link>
 
-        <vr-object position="1.5 0 0" mixin="link" material="url: images/thumb-city.png" selected>
-          <vr-click target="#holder" material="url: images/city.jpg"></vr-click>
-          <vr-click selected></vr-click>
-        </vr-object>
+        <vr-pano-link position="1.5 0 0" src="images/thumb-city.png" holderSrc="images/city.jpg">
+          <vr-load state="selected"></vr-load>
+        </vr-pano-link>
 
-        <vr-object position="3 0 0" mixin="link" material="url: images/thumb-sechelt.png">
-          <vr-click target="#holder" material="url: images/sechelt.jpg"></vr-click>
-          <vr-click selected></vr-click>
-        </vr-object>
+        <vr-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
+        </vr-pano-link>
       </vr-object>
     </vr-scene>
   </body>
