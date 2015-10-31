@@ -4,22 +4,176 @@ var VRMarkup = require('@mozvr/vr-markup');
 var utils = require('../lib/utils');
 
 var registerElement = VRMarkup.registerElement.registerElement;
+var stateEls = {};
+var listeners = {};
+var targetData = {};
 
-// Synthesize events for cursor `mouseenter` and `mouseleave`.
+var attributeBlacklist = {
+  // TODO: Consider ignoring unique attributes too
+  // (e.g., `class`, `id`, `name`, etc.).
+  target: true
+};
+
+// State management
+
+function addState (el, state) {
+  el.addState(state);
+  recordState(el, state);
+}
+
+function recordState (el, state) {
+  if (state in stateEls) {
+    stateEls[state].push(el);
+  } else {
+    stateEls[state] = [el];
+  }
+}
+
+function unrecordState (el, state) {
+  if (!(state in stateEls)) { return; }
+  var elIdx = stateEls[state].indexOf(el);
+  if (elIdx === -1) { return; }
+  stateEls[state].splice(elIdx, 1);
+}
+
+function removeState (el, state) {
+  el.removeState(state);
+  unrecordState(el, state);
+}
+
+function hasState (el, state) {
+  if (!(state in stateEls)) { return false; }
+  var elIdx = stateEls[state].indexOf(el);
+  return elIdx !== -1;
+}
+
+// Unique event listeners
+
+function recordListener (el, type) {
+  if (type in listeners) {
+    listeners[type].push(el);
+  } else {
+    listeners[type] = [el];
+  }
+}
+
+function hasListener (el, type) {
+  if (!(type in listeners)) { return false; }
+  var elIdx = listeners[type].indexOf(el);
+  return elIdx !== -1;
+}
+
+function addDelegatedListener (el, type, listener, useCapture) {
+  if (hasListener(el, type)) { return; }  // Add the event listener only once.
+  recordListener(el, type);
+  el.addEventListener(type, listener, useCapture);
+}
+
+// Target data
+
+function recordTargetData (type, sourceEl, targetSel, attributes) {
+  var key = type;
+  var obj = {sourceEl: sourceEl, targetSel: targetSel, attributes: attributes};
+  if (key in targetData) {
+    targetData[key].push(obj);
+  } else {
+    targetData[key] = [obj];
+  }
+}
+
+function getTargetData (type) {
+  var key = type;
+  return targetData[key];
+}
+
+function targetListener (e) {
+  // Not to be confused with the `target` we are modifying below.
+  var eventFiredOnEl = e.target;
+  var eventType = e.type;
+
+  var allTargetData = getTargetData(eventType, eventFiredOnEl);
+  if (!allTargetData) { return; }
+
+  allTargetData.forEach(updateTargetEl);
+
+  function updateTargetEl (targetData) {
+    var sourceEl = targetData.sourceEl;
+    if (sourceEl !== eventFiredOnEl) { return; }
+
+    var targetAttributes = targetData.attributes;
+    // TODO: Support updating multiple elements later by using `$$` and iterating.
+    var targetSel = targetData.targetSel;
+    var targetEl = typeof targetSel === 'string' ? utils.$(targetSel) : targetSel;
+
+    if (!targetEl) { return; }
+
+    updateAttrs(targetEl, targetAttributes);
+  }
+}
+
+function updateAttrs (targetEl, targetAttributes) {
+  utils.$$(targetAttributes).forEach(function (attr) {
+    if (attr.name in attributeBlacklist) { return; }
+
+    if (attr.name === 'state') {
+      var states = utils.splitString(attr.value);
+      states.forEach(function (state) {
+        // Set the state on this element.
+        addState(targetEl, state);
+        // Remove the state on the other element(s).
+        stateEls[state].forEach(function (el) {
+          if (el === targetEl) { return; }  // Don't remove my state!
+          removeState(el, state);
+        });
+      });
+    } else {
+      targetEl.setAttribute(attr.name, attr.value);
+    }
+  });
+}
+
+// Synthesize events for cursor `mouseenter` and `mouseleave`
+
 window.addEventListener('stateadded', function (e) {
   var detail = e.detail;
-  if (detail.state === 'hovering') {
-    e.target.emit('mouseenter');
+  var state = detail.state;
+  var el = e.target;
+
+  recordState(el, state);
+
+  if (state === 'hovering') {
+    el.emit('mouseenter');
   }
-});
-window.addEventListener('stateremoved', function (e) {
-  var detail = e.detail;
-  if (detail.state === 'hovering') {
-    e.target.emit('mouseleave');
+  if (state === 'hovered') {
+    if (hasState(el, 'selected')) {
+      removeState(el, 'hovered');
+    }
   }
 });
 
-module.exports = registerElement(
+window.addEventListener('stateremoved', function (e) {
+  var detail = e.detail;
+  var state = detail.state;
+  var el = e.target;
+
+  unrecordState(el, state);
+
+  if (state === 'hovering') {
+    el.emit('mouseleave');
+  }
+});
+
+function getRealNode (el) {
+  if (el.isVREvent) {
+    return getRealNode(el.parentNode);
+  }
+  // if (el.root) {
+  //   return el.root;
+  // }
+  return el;
+}
+
+var VREvent = registerElement(
   'vr-event',
   {
     prototype: Object.create(
@@ -27,9 +181,10 @@ module.exports = registerElement(
       {
         attachedCallback: {
           value: function () {
+            this.isVREvent = true;
             this.type = this.type || this.getAttribute('type');
-            this.target = this.getAttribute('target');
-            this.listeners = {};
+            this.target = this.target || this.getAttribute('target');
+            this.sceneEl = utils.$('vr-scene');
             this.attachEventListener();
           },
           writable: window.debug
@@ -37,32 +192,19 @@ module.exports = registerElement(
 
         detachedCallback: {
           value: function () {
-            // Remove all event listeners.
-            Object.keys(this.listeners).forEach(function (key) {
-              this.detachEventListener(this.listeners[key]);
-            }, this);
+            // TODO: Remove all event listeners.
           },
           writable: window.debug
         },
 
         attributeChangedCallback: {
           value: function (attr, oldVal, newVal) {
+            if (oldVal === newVal) { return; }
             if (attr === 'type') {
               this.type = newVal;
             } else if (attr === 'target') {
               this.target = newVal;
-            } else {
-              return;
             }
-            if (oldVal === newVal) { return; }
-            this.attachEventListener();
-          },
-          writable: window.debug
-        },
-
-        attributeBlacklist: {
-          value: {
-            target: true
           },
           writable: window.debug
         },
@@ -70,46 +212,29 @@ module.exports = registerElement(
         attachEventListener: {
           value: function () {
             var self = this;
-            if (!self.parentNode) { return; }
 
-            var target = self.target || self.parentNode;
-            utils.$$(target).forEach(addEventListener);
+            // TODO: Land `on` PR in `aframe-core`: https://github.com/MozVR/aframe-core/pull/330
 
-            function addEventListener (targetEl) {
-              self.detachEventListener(targetEl);
+            this.sceneEl = this.sceneEl || utils.$('vr-scene');
 
-              var listenerFunc = self.updateTargetElAttributes(targetEl);
-              self.listeners[targetEl] = listenerFunc;
-              self.parentNode.addEventListener(self.type, listenerFunc);
+            if (self.type === 'load') {
+              var sourceEl = getRealNode(self.parentNode);
+              var targetEl = self.target ? utils.$(self.target) : getRealNode(self.parentNode);
+              var listener = function (e) {
+                if (e.target !== sourceEl) { return; }
+                updateAttrs(targetEl, self.attributes);
+              };
+              if (sourceEl && sourceEl.hasLoaded) {
+                listener();
+                return;
+              }
+              this.sceneEl.addEventListener('load', listener);
+              return;
             }
-          },
-          writable: window.debug
-        },
 
-        detachEventListener: {
-          value: function (targetEl) {
-            if (!this.type) { return; }
-
-            var oldListenerFunc = this.listeners[targetEl];
-            if (!oldListenerFunc) { return; }
-
-            this.parentNode.removeEventListener(this.type, oldListenerFunc);
-            delete this.listeners[targetEl];
-          },
-          writable: window.debug
-        },
-
-        updateTargetElAttributes: {
-          value: function (targetEl) {
-            var self = this;
-            return function () {
-              utils.$$(self.attributes).forEach(function (attr) {
-                if (attr.name in self.attributeBlacklist) { return; }
-                // TODO: Handle removing unique attributes
-                // (e.g., `class`, `id`, `name`, etc.).
-                targetEl.setAttribute(attr.name, attr.value);
-              });
-            };
+            // We must delegate events because the target nodes may not exist yet.
+            addDelegatedListener(this.sceneEl, self.type, targetListener);
+            recordTargetData(self.type, getRealNode(self.parentNode), self.target || self.parentNode, self.attributes);
           },
           writable: window.debug
         }
@@ -117,3 +242,5 @@ module.exports = registerElement(
     )
   }
 );
+
+module.exports = VREvent;
