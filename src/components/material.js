@@ -43,9 +43,7 @@ module.exports.Component = registerComponent('material', {
       var material = this.el.object3D.material;
       var src = data.src;
 
-      if (!src && material.type === 'MeshBasicMaterial' ||
-          src && material.type === 'MeshPhysicalMaterial' ||
-          src) {
+      if (!src && material.type === 'MeshBasicMaterial' || src) {
         // Recreate material if switching material types.
         // And always recreate material when textured.
         this.el.object3D.material = this.getMaterial();
@@ -84,7 +82,7 @@ module.exports.Component = registerComponent('material', {
         opacity: data.opacity,
         transparent: data.opacity < 1
       });
-      loadSrc(this.data.src, this.loadImage.bind(this),
+      loadSrc(data.src, this.loadImage.bind(this),
               this.loadVideo.bind(this));
       return material;
     }
