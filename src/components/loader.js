@@ -1,5 +1,5 @@
 var registerComponent = require('../core/register-component').registerComponent;
-var parseURL = require('../utils/src-loader').parseURL;
+var parseUrl = require('../utils/src-loader').parseUrl;
 var THREE = require('../../lib/three');
 var VRUtils = require('../vr-utils');
 
@@ -19,7 +19,7 @@ module.exports.Component = registerComponent('loader', {
       var el = this.el;
       var data = this.data;
       var model = this.model;
-      var url = parseURL(data.src);
+      var url = parseUrl(data.src);
       var format = data.format;
       if (model) { el.object3D.remove(model); }
       if (!url) {

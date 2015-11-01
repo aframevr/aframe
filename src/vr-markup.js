@@ -9,6 +9,7 @@ var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
 require('webvr-polyfill');
 
+require('./core/cubemap');
 require('./core/vr-animation');
 require('./core/vr-assets');
 require('./core/vr-mixin');

@@ -2,61 +2,109 @@
 var utils = require('../vr-utils');
 
 /**
- * Loads an image/video src.
- * If it's a CSS selector, we check if it's a valid one
- * If it's an URL, we check if it's a valid image or video
+ * Validates a texture, either as a selector or as a URL.
+ * Detects whether `src` is pointing to an image or to a video, and invokes the
+ * appropriate callback.
  *
- * @params {string} src - A CSS selector or an url to load
- * @params {function} loadImage - function to load an image
- * @params {function} loadVideo - function to load a video
+ * If `src` is selector, check if it's valid, return the el in the callback.
+ * An el is returned so that it can be reused for texture loading.
+ *
+ * If `src` is a URL, check if it's valid, return the src in the callback.
+ *
+ * @params {string} src - A selector or a URL. URLs must be wrapped by `url()`.
+ * @params {function} isImageCb - callback if texture is an image.
+ * @params {function} isVideoCb - callback if texture is a video.
  */
-function loadSrc (src, loadImage, loadVideo) {
+function validateSrc (src, isImageCb, isVideoCb) {
   var textureEl;
   var isImage;
   var isVideo;
-  var url = parseURL(src);
-  // if src is a url
+  var url = parseUrl(src);
+
+  // src is a url.
   if (url) {
-    isImageURL(url, function isAnImageURL (isImage) {
-      if (!isImage) { loadVideo(url); return; }
-      loadImage(url);
+    validateImageUrl(url, function isAnImageUrl (isImage) {
+      if (!isImage) { isVideoCb(url); return; }
+      isImageCb(url);
     });
     return;
   }
-  // if src is a CSS Selector
-  textureEl = getEl(src);
-  if (!textureEl) {
-    if (textureEl === null) {
-      utils.warn('There is no element that matches the selector: "%s"', src);
-    }
-    return;
-  }
-  // If src is a valid selector
+
+  // src is a query selector.
+  textureEl = validateAndGetQuerySelector(src);
+  if (!textureEl) { return; }
   isImage = textureEl && textureEl.tagName === 'IMG';
   isVideo = textureEl && textureEl.tagName === 'VIDEO';
-  if (isImage) { loadImage(textureEl); return; }
-  if (isVideo) { loadVideo(textureEl); return; }
-  // src is a valid selector but doesn't match with a <img> or <video> element
-  utils.warn('The provided source "%s" is not a valid <img> or <video> element', src);
+  if (isImage) { return isImageCb(textureEl); }
+  if (isVideo) { return isVideoCb(textureEl); }
+
+  // src is a valid selector but doesn't match with a <img> or <video> element.
+  utils.warn('"%s" does not point to a valid <img> or <video> element', src);
 }
 
 /**
- * Parses a src string
- * @param  {string} src The src string to parse
- * @return {string}     The parsed src if the input can be parsed
+ * Validates six images as a cubemap, either as selector or comma-separated
+ * URLs.
+ *
+ * @param {string} src - A selector or comma-separated image URLs. Image URLs
+          must be wrapped by `url()`.
+ * @param {string} src - A selector or comma-separated image URLs. Image URLs
+          must be wrapped by `url()`.
  */
-function parseURL (src) {
+function validateCubemapSrc (src, cb) {
+  var aCubemap;
+  var cubemapSrcRegex = '';
+  var i;
+  var urls;
+  var validatedUrls = [];
+
+  for (i = 0; i < 6; i++) {
+    cubemapSrcRegex += 'url\((.+)\)\s*,\s*';
+  }
+  urls = src.match(cubemapSrcRegex);
+
+  // `src` is a comma-separated list of URLs.
+  // In this case, re-use validateSrc for each side of the cube.
+  function isImageCb (url) {
+    validatedUrls.push(url);
+    if (validatedUrls.length === 6) {
+      cb(validatedUrls);
+    }
+  }
+  if (urls) {
+    for (i = 1; i < 7; i++) {
+      validateSrc(urls[i], isImageCb);
+    }
+    return;
+  }
+
+  // `src` is a query selector to <a-cubemap> containing six $([src])s.
+  aCubemap = validateAndGetQuerySelector(src);
+  if (!aCubemap) { return; }
+  if (aCubemap.tagName === 'A-CUBEMAP' && aCubemap.srcs) {
+    return cb(aCubemap.srcs);
+  }
+  // Else if aCubeMap is not a <a-cubemap>.
+  utils.warn('Selector "%s" does not point to <a-cubemap>', src);
+}
+
+/**
+ * Parses src from `url(src)`.
+ * @param  {string} src - String to parse.
+ * @return {string} The parsed src, if parseable.
+ */
+function parseUrl (src) {
   var parsedSrc = src.match(/\url\((.+)\)/);
   if (!parsedSrc) { return; }
   return parsedSrc[1];
 }
 
 /**
- * Checks if src is a valid image url
+ * Validate src is a valid image url
  * @param  {string} src - url that will be tested
  * @param  {function} onResult - callback with the test result
  */
-function isImageURL (src, onResult) {
+function validateImageUrl (src, onResult) {
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
@@ -66,21 +114,28 @@ function isImageURL (src, onResult) {
 }
 
 /**
- * Query an element and captures the exception in case of
- * an invalid selector
- * @param  {string} selector A CSS selector
- * @return {object}          The selected DOM element if any
+ * Query and validate a query selector,
+ *
+ * @param  {string} selector - DOM selector.
+ * @return {object|null|undefined} Selected DOM element if exists.
+           null if query yields no results.
+           undefined if `selector` is not a valid selector.
  */
-function getEl (selector) {
+function validateAndGetQuerySelector (selector) {
   try {
-    return document.querySelector(selector);
-  } catch (e) { // Capture exception if it's not a valid selector
-    utils.warn('The provided source "%s" is not a valid CSS selector', selector);
+    var el = document.querySelector(selector);
+    if (!el) {
+      utils.warn('No element was found matching the selector: "%s"', selector);
+    }
+    return el;
+  } catch (e) {  // Capture exception if it's not a valid selector.
+    utils.warn('"%s" is not a valid selector', selector);
     return undefined;
   }
 }
 
 module.exports = {
-  loadSrc: loadSrc,
-  parseURL: parseURL
+  parseUrl: parseUrl,
+  validateSrc: validateSrc,
+  validateCubemapSrc: validateCubemapSrc
 };

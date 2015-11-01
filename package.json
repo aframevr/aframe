@@ -8,7 +8,7 @@
     "document-register-element": "^0.5.0",
     "request-interval": "^1.0.0",
     "style-attr": "^1.0.1",
-    "three-dev": "0.74.0-beta1",
+    "three-dev": "0.74.0-beta2",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "cvan/webvr-polyfill#7a9eb0b"
   },

@@ -1,30 +1,41 @@
+/* global Promise */
 var registerComponent = require('../core/register-component').registerComponent;
-var loadSrc = require('../utils/src-loader').loadSrc;
+var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
 var utils = require('../vr-utils');
+
+var CubeLoader = new THREE.CubeTextureLoader();
+var texturePromises = {};
 
 /**
  * Material component.
  *
- * @params {string} color - base color of the PBR material
- * @params {number} height - the height of the texture image
- * @params {number} metalness - PBR parameter
- * @params {number} opacity - [0-1].
- * @params {boolean} receiveLight - Determines if the material is shaded
- * @params {number} roughness - PBR parameter
- * @params {string} src - The src to be used as a texture - url() or CSS Selector
- * @params {boolean} transparent - If the alpha channel of a texture image is rendered transparent
- * @params {number} width - the width of the texture image
  * @namespace material
+ * @params {string} color - Diffuse color.
+ * @params {string} envMap - To load a environment cubemap. Takes a selector
+           to an element containing six img elements, or a comma-separated
+           string of direct url()s.
+ * @params {number} height - Height to render texture.
+ * @params {number} metalness - Parameter for physical/standard material.
+ * @params {number} opacity - [0-1].
+ * @params {boolean} receiveLight - Determines whether the material is shaded.
+ * @params {number} roughness - Parameter for physical/standard material.
+ * @params {string} src - To load a texture. takes a selector to an img/video
+           element or a direct url().
+ * @params {boolean} transparent - Whether alpha channel of texture image is
+           rendered transparent.
+ * @params {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
   defaults: {
     value: {
       color: '#FFF',
+      envMap: '',
       height: 360,
       metalness: 0.0,
       opacity: 1.0,
       receiveLight: true,
+      reflectivity: 1.0,
       roughness: 0.5,
       src: '',
       transparent: false,
@@ -38,7 +49,8 @@ module.exports.Component = registerComponent('material', {
   init: {
     value: function () {
       this.textureSrc = null;
-      this.el.object3D.material = this.getMaterial();
+      this.isLoadingEnvMap = false;
+      this.el.object3D.material = this.updateOrCreateMaterial();
     }
   },
 
@@ -47,35 +59,43 @@ module.exports.Component = registerComponent('material', {
    */
   update: {
     value: function () {
-      this.el.object3D.material = this.getMaterial();
+      this.el.object3D.material = this.updateOrCreateMaterial();
     }
   },
 
   /**
-   * Get or create material.
+   * Update or create material.
    * Returned material type depends on receiveLight.
-   *   receiveLight: false - MeshBasicMaterial
-   *   receiveLight: true - MeshPhysicalMaterial
+   *   receiveLight: false - MeshBasicMaterial.
+   *   receiveLight: true - MeshStandardMaterial.
    *
    * @return {object} material
    */
-  getMaterial: {
+  updateOrCreateMaterial: {
     value: function () {
       var data = this.data;
       var material;
 
       if (data.receiveLight) {
         // Physical material.
-        material = this.updateOrCreateMaterial({
+        material = this.updateOrCreateMaterialHelper({
           color: new THREE.Color(data.color),
           side: this.getSides(),
           opacity: data.opacity,
           transparent: data.opacity < 1,
           metalness: data.metalness,
+          reflectivity: data.reflectivity,
           roughness: data.roughness
         }, 'MeshPhysicalMaterial');
+        // Environment cubemaps.
+        if (data.envMap && !this.isLoadingEnvMap) {
+          this.loadEnvMap(material, data.envMap);
+        } else {
+          material.envMap = null;
+          material.needsUpdate = true;
+        }
       } else {
-        material = this.updateOrCreateMaterial({
+        material = this.updateOrCreateMaterialHelper({
           // Basic material.
           color: new THREE.Color(data.color),
           side: this.getSides(),
@@ -90,13 +110,15 @@ module.exports.Component = registerComponent('material', {
         if (src !== this.textureSrc) {
           // Texture added or changed.
           this.textureSrc = src;
-          loadSrc(src, this.loadImage.bind(this), this.loadVideo.bind(this));
+          srcLoader.validateSrc(src, this.loadImage.bind(this),
+                                this.loadVideo.bind(this));
         }
       } else {
         // Texture removed.
         material.map = null;
         material.needsUpdate = true;
       }
+
       return material;
     }
   },
@@ -105,11 +127,11 @@ module.exports.Component = registerComponent('material', {
    * Updates this.material using data, creates new material if this.material
    * doesn't yet exist.
    *
-   * @params {object} data - attributes to set on the material.
-   * @params {string} type - type of material to create (if necessary).
+   * @params {object} data - Attributes to set on the material.
+   * @params {string} type - Type of material to create (if necessary).
    * @returns {object} material - three.js material based on `type`.
    */
-  updateOrCreateMaterial: {
+  updateOrCreateMaterialHelper: {
     value: function (data, type) {
       var material = this.material;
       var reuseMaterial = material && material.type === type;
@@ -143,9 +165,42 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
-   * Loads an image to be used as a texture
+   * Handle environment cubemap. Textures are cached in texturePromises.
    *
-   * @params {string|object} src - a <img> element or url to an image file
+   * @param {object} material - three.js material.
+   * @param {string} envMap - Query selector or comma-separated list of url()s.
+   */
+  loadEnvMap: {
+    value: function (material, envMap) {
+      var self = this;
+      self.isLoadingEnvMap = true;
+      if (texturePromises[envMap]) {
+        // Another material is already loading this texture. Wait on promise.
+        texturePromises[envMap].then(function (cube) {
+          self.isLoadingEnvMap = false;
+          material.envMap = cube;
+          material.needsUpdate = true;
+        });
+      } else {
+        // Material is first to load this texture. Load and resolve texture.
+        texturePromises[envMap] = new Promise(function (resolve) {
+          srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+            CubeLoader.load(urls, function (cube) {
+              // Texture loaded.
+              self.isLoadingEnvMap = false;
+              material.envMap = cube;
+              resolve(cube);
+            });
+          });
+        });
+      }
+    }
+  },
+
+  /**
+   * Sets image texture on material as map.
+   *
+   * @params {string|object} src - An <img> element or url to an image file.
    */
   loadImage: {
     value: function (src) {
@@ -163,11 +218,11 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
-   * It creates a video element to be used as a texture
+   * Creates a video element to be used as a texture.
    *
-   * @params {string} src - the url pointing to the video file
+   * @params {string} src - the url pointing to the video file.
    */
-  getVideoEl: {
+  createVideoEl: {
     value: function (src) {
       var el = this.videoEl || document.createElement('video');
       function onError () {
@@ -189,13 +244,14 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
-   * Creates a new material object for handling video texture.
+   * Sets video texture on material as map.
    *
-   * @params {string|object} src - a <video> element or url to a video file
+   * @params {string|object} src - A <video> element or url to a video file.
    */
   loadVideo: {
     value: function (src) {
-      var videoEl = typeof src !== 'string' ? src : this.getVideoEl(src);
+      // three.js video texture loader requires a <video>.
+      var videoEl = typeof src !== 'string' ? src : this.createVideoEl(src);
       var texture = new THREE.VideoTexture(videoEl);
       texture.minFilter = THREE.LinearFilter;
       texture.needsUpdate = true;

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Physically-Based Materials</title>
+  <meta name="description" content="Physically-Based Materials">
+  <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+  <link rel="stylesheet" type="text/css" href="../_style/main.css">
+  <script src="../../build/vr-markup.js"></script>
+</head>
+
+<body>
+  <vr-assets>
+    <a-cubemap id="reflection">
+      <img src="../_images/milkyway/px.jpg">
+      <img src="../_images/milkyway/nx.jpg">
+      <img src="../_images/milkyway/py.jpg">
+      <img src="../_images/milkyway/ny.jpg">
+      <img src="../_images/milkyway/pz.jpg">
+      <img src="../_images/milkyway/nz.jpg">
+    </a-cubemap>
+    <vr-mixin id="animation" easing="linear" dur="4096" repeat="indefinite">
+    </vr-mixin>
+    <vr-mixin id="light" geometry="primitive: sphere; radius: .25"
+              light="color: #FFF; intensity: .5; type: point"
+              material="receiveLight: false">
+    </vr-mixin>
+    <vr-mixin id="sphere" geometry="primitive: sphere; radius: 5"></vr-mixin>
+  </vr-assets>
+
+  <vr-scene stats="true">
+    <!-- Camera. -->
+    <vr-object camera="fov: 45" position="0 1.8 0" rotation="-10 0 0"
+               controls="acceleration: 300; mouselook: true;
+                         locomotion: true"></vr-object>
+
+    <!-- Skysphere. -->
+    <vr-object geometry="primitive: sphere; radius: 500"
+               material="color: #111; receiveLight: false"
+               scale="1 1 -1"></vr-object>
+
+    <!-- Lights. -->
+    <vr-object light="color: #666; type: ambient"></vr-object>
+    <vr-object position="0 0 -40">
+      <vr-animation mixin="animation" attribute="rotation" to="0 360 0">
+      </vr-animation>
+      <vr-object mixin="light" position="0 0 70"></vr-object>
+    </vr-object>
+    <vr-object position="0 0 -40">
+      <vr-animation mixin="animation" attribute="rotation" to="360 0 0">
+      </vr-animation>
+      <vr-object mixin="light" position="0 70 0"></vr-object>
+    </vr-object>
+  </vr-scene>
+
+  <script type="text/javascript">
+    /**
+     * Creates matrix of objects with varying diffuse colors, metalnesses, and
+     * roughnesses.
+     */
+    var scene = document.querySelector('vr-scene');
+
+    for (var alpha = 0; alpha <= 1.0; alpha += 0.25) {
+      for (var beta = 0; beta <= 1.0; beta += 0.25) {
+        for (var gamma = 0; gamma <= 1.0; gamma += 0.25) {
+          var obj = document.createElement('vr-object');
+          obj.setAttribute('mixin', 'sphere');
+          obj.setAttribute('material', {
+            color: new THREE.Color(gamma, gamma, gamma).getStyle(),
+            envMap: '#reflection',
+            metalness: alpha,
+            roughness: beta,
+          });
+          obj.setAttribute('position', {
+            x: alpha * 50,
+            y: beta * 50 - 25,
+            z: gamma * 50 - 150
+          });
+          scene.appendChild(obj);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
