@@ -60,8 +60,12 @@ module.exports.Component = registerComponent('material', {
    */
   getMaterial: {
     value: function () {
-      if (this.data.src) {
-        this.material = this.getTextureMaterial();
+      var src = this.data.src;
+      if (src) {
+        this.material = this.getBasicMaterial();
+        // loads image or video
+        loadSrc(src, this.loadImage.bind(this),
+                     this.loadVideo.bind(this));
       } else {
         this.material = this.getPhysicalMaterial();
       }
@@ -74,7 +78,7 @@ module.exports.Component = registerComponent('material', {
    *
    * @returns {object} material - three.js MeshBasicMaterial.
    */
-  getTextureMaterial: {
+  getBasicMaterial: {
     value: function () {
       var data = this.data;
       var material = this.material || new THREE.MeshBasicMaterial({
@@ -83,8 +87,6 @@ module.exports.Component = registerComponent('material', {
         opacity: data.opacity,
         transparent: data.opacity < 1
       });
-      loadSrc(data.src, this.loadImage.bind(this),
-              this.loadVideo.bind(this));
       return material;
     }
   },
