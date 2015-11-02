@@ -10,7 +10,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   dependencies: {
-    value: { raycaster: '' }
+    value: [ 'raycaster' ]
   },
 
   init: {

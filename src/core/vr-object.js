@@ -221,12 +221,12 @@ var proto = {
   },
 
   initComponent: {
-    value: function (name, attrs) {
+    value: function (name, isDependency) {
       // If it's not a component name or
       // If the component is already initialized
       if (!VRComponents[name] || this.components[name]) { return; }
       // If the component is not defined for the element
-      if (!this.isComponentDefined(name) && attrs === undefined) { return; }
+      if (!this.isComponentDefined(name) && !isDependency) { return; }
       this.initComponentDependencies(name);
       this.components[name] = new VRComponents[name].Component(this);
       VRUtils.log('Component initialized: %s', name);
@@ -242,8 +242,8 @@ var proto = {
       if (!component) { return; }
       dependencies = VRComponents[name].dependencies;
       if (!dependencies) { return; }
-      Object.keys(dependencies).forEach(function (key) {
-        self.setAttribute(key, dependencies[key]);
+      dependencies.forEach(function (component) {
+        self.initComponent(component, true);
       });
     }
   },
