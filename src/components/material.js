@@ -39,17 +39,7 @@ module.exports.Component = registerComponent('material', {
    */
   update: {
     value: function () {
-      var data = this.data;
-      var material = this.el.object3D.material;
-      var src = data.src;
-
-      if (!src && material.type === 'MeshBasicMaterial' || src) {
-        // Recreate material if switching material types.
-        // And always recreate material when textured.
-        this.el.object3D.material = this.getMaterial();
-      } else {
-        this.updatePhysicalMaterial();
-      }
+      this.el.object3D.material = this.getMaterial();
     }
   },
 
@@ -62,14 +52,24 @@ module.exports.Component = registerComponent('material', {
     value: function () {
       var src = this.data.src;
       if (src) {
-        this.material = this.getBasicMaterial();
-        // loads image or video
-        loadSrc(src, this.loadImage.bind(this),
-                     this.loadVideo.bind(this));
+        return this.setupTextureMaterial(src);
       } else {
-        this.material = this.getPhysicalMaterial();
+        return this.setupPhysicalMaterial();
       }
-      return this.material;
+    }
+  },
+
+  /**
+   * Setups a material and loads the video or an image to be used as
+   * as a texture
+   */
+  setupTextureMaterial: {
+    value: function (src) {
+      var material = this.setupBasicMaterial();
+      // loads image or video
+      loadSrc(src, this.loadImage.bind(this),
+                   this.loadVideo.bind(this));
+      return material;
     }
   },
 
@@ -78,15 +78,17 @@ module.exports.Component = registerComponent('material', {
    *
    * @returns {object} material - three.js MeshBasicMaterial.
    */
-  getBasicMaterial: {
+  setupBasicMaterial: {
     value: function () {
       var data = this.data;
-      var material = this.material || new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide,
-        opacity: data.opacity,
-        transparent: data.opacity < 1
-      });
+      var material = this.material;
+      var reuseMaterial = material && material.type === 'MeshBasicMaterial';
+      material = reuseMaterial ? material : new THREE.MeshBasicMaterial();
+      material.color.set(0xffffff);
+      material.side = THREE.DoubleSide;
+      material.opacity = data.opacity;
+      material.transparent = data.opacity < 1;
+      this.material = material;
       return material;
     }
   },
@@ -96,12 +98,19 @@ module.exports.Component = registerComponent('material', {
    *
    * @returns {object} material - three.js MeshPhysicalMaterial.
    */
-  getPhysicalMaterial: {
+  setupPhysicalMaterial: {
     value: function () {
       var data = this.data;
-      data.color = new THREE.Color(data.color);
-      data.transparent = data.opacity < 1;
-      return new THREE.MeshPhysicalMaterial(data);
+      var material = this.material;
+      var reuseMaterial = material && material.type === 'MeshPhysicalMaterial';
+      material = reuseMaterial ? material : new THREE.MeshPhysicalMaterial();
+      material.color.set(data.color);
+      material.opacity = data.opacity;
+      material.transparent = data.opacity < 1;
+      material.metalness = data.metalness;
+      material.roughness = data.roughness;
+      this.material = material;
+      return material;
     }
   },
 
@@ -133,8 +142,8 @@ module.exports.Component = registerComponent('material', {
         texture.needsUpdate = true;
       } else {
         texture = THREE.ImageUtils.loadTexture(src);
-        this.material.needsUpdate = true;
       }
+      this.material.needsUpdate = true;
       this.material.map = texture;
     }
   },
