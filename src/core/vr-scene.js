@@ -125,6 +125,12 @@ var VRScene = module.exports = registerElement(
             var fsElement = document.fullscreenElement ||
                             document.mozFullScreenElement ||
                             document.webkitFullscreenElement;
+
+            // lock to landsape orientation on mobile.
+            if (fsElement && utils.isMobile()) {
+              window.screen.orientation.lock('landscape');
+            }
+
             if (!fsElement) {
               this.renderer = this.monoRenderer;
             }
