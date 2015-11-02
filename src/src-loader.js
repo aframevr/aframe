@@ -10,17 +10,16 @@ var utils = require('./vr-utils');
  * @params {function} loadImage - function to load an image
  * @params {function} loadVideo - function to load a video
  */
-module.exports.loadSrc = function loadSrc (src, loadImage, loadVideo) {
+function loadSrc (src, loadImage, loadVideo) {
   var textureEl;
   var isImage;
   var isVideo;
-  var url = src.match(/\url\((.+)\)/);
+  var url = parseURL(src);
   // if src is a url
   if (url) {
-    src = url[1];
-    isImageURL(src, function isAnImageURL (isImage) {
-      if (!isImage) { loadVideo(src); return; }
-      loadImage(src);
+    isImageURL(url, function isAnImageURL (isImage) {
+      if (!isImage) { loadVideo(url); return; }
+      loadImage(url);
     });
     return;
   }
@@ -39,7 +38,18 @@ module.exports.loadSrc = function loadSrc (src, loadImage, loadVideo) {
   if (isVideo) { loadVideo(textureEl); return; }
   // src is a valid selector but doesn't match with a <img> or <video> element
   utils.warn('The provided source "%s" is not a valid <img> or <video> element', src);
-};
+}
+
+/**
+ * Parses a src string
+ * @param  {string} src The src string to parse
+ * @return {string}     The parsed src if the input can be parsed
+ */
+function parseURL (src) {
+  var parsedSrc = src.match(/\url\((.+)\)/);
+  if (!parsedSrc) { return; }
+  return parsedSrc[1];
+}
 
 /**
  * Checks if src is a valid image url
@@ -69,3 +79,8 @@ function getEl (selector) {
     return undefined;
   }
 }
+
+module.exports = {
+  loadSrc: loadSrc,
+  parseURL: parseURL
+};
