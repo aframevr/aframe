@@ -26,19 +26,23 @@ var VRScene = module.exports = registerElement(
 
         attachedCallback: {
           value: function () {
+            var isMobile = this.isMobile = utils.isMobile();
+            var resizeCanvas = this.resizeCanvas.bind(this);
             this.insideIframe = window.top !== window.self;
             this.insideLoader = false;
             this.defaultLightsEnabled = true;
             this.vrButton = null;
+            this.setupMetatags();
             this.setupStats();
             this.setupScene();
             this.attachEventListeners();
             this.attachFullscreenListeners();
-            this.isMobile = utils.isMobile();
-            // Setup wakelock for mobile.
-            if (this.isMobile) this.wakelock = new Wakelock();
             // For Chrome: https://github.com/MozVR/aframe-core/issues/321
-            window.addEventListener('load', this.resizeCanvas.bind(this));
+            window.addEventListener('load', resizeCanvas);
+            if (isMobile) {
+              // Setup wakelock for mobile.
+              this.wakelock = new Wakelock();
+            }
           }
         },
 
@@ -129,20 +133,16 @@ var VRScene = module.exports = registerElement(
             var fsElement = document.fullscreenElement ||
                             document.mozFullScreenElement ||
                             document.webkitFullscreenElement;
-
             // Lock to landsape orientation on mobile.
             if (fsElement && this.isMobile) {
               window.screen.orientation.lock('landscape');
             }
-
             // No longer fullscreen/VR mode.
             if (!fsElement) {
-              this.renderer = this.monoRenderer;
+              this.showUI();
+              this.setMonoRenderer();
             }
-
-            if (this.wakelock) {
-              this.wakelock.release();
-            }
+            if (this.wakelock) { this.wakelock.release(); }
           }
         },
 
@@ -173,7 +173,8 @@ var VRScene = module.exports = registerElement(
             if (this.vrButton) { return; }
             var vrButton = this.vrButton = document.createElement('button');
             vrButton.textContent = 'Enter VR';
-            vrButton.className = 'vr-button';
+            vrButton.classList.add('button');
+            vrButton.classList.add('enter-vr');
             document.body.appendChild(vrButton);
             vrButton.addEventListener('click', this.enterVR.bind(this));
           }
@@ -197,6 +198,42 @@ var VRScene = module.exports = registerElement(
                 resolve(!!message.data.data.isVr);
               };
             });
+          }
+        },
+
+        /**
+         * Injects the necessary metatags in the document for mobile support:
+         * 1. To prevent the user to zoom in the document
+         * 2. To ensure that window.innerWidth and window.innerHeight
+         * have the correct values and the canvas is properly scaled
+         * 3. To allow fullscreen mode when pinning a web app on the home screen on iOS
+         * @type {Object}
+         */
+        setupMetatags: {
+          value: function () {
+            var headEl;
+            var meta = document.querySelector('meta[name="viewport"]');
+            // Nothing to do if we're on desktop or there's an existing meta tag
+            if (!this.isMobile || meta) { return; }
+            headEl = document.getElementsByTagName('head')[0];
+            meta = document.createElement('meta');
+            meta.name = 'viewport';
+            // I don't understand why this metatag is necessary in order to have correct
+            // window.innerWidth/window.innerHeight values
+            // Found here: https://www.reddit.com/r/web_design/comments/3la04p/
+            meta.content = 'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no';
+            headEl.appendChild(meta);
+            // iOS specific meta tags for fullscreen behaviour
+            // when adding the site to home screen
+            meta = document.createElement('meta');
+            meta.name = 'apple-mobile-web-app-capable';
+            meta.content = 'yes';
+            headEl.appendChild(meta);
+
+            meta = document.createElement('meta');
+            meta.name = 'apple-mobile-web-app-status-bar-style';
+            meta.content = 'black';
+            headEl.appendChild(meta);
           }
         },
 
@@ -240,9 +277,9 @@ var VRScene = module.exports = registerElement(
         setupStats: {
           value: function () {
             var statsEnabled = this.getAttribute('stats') === 'true';
-            var statsEl = document.querySelector('.rs-base');
-            if (!statsEnabled) {
-              if (statsEl) { statsEl.classList.add('hidden'); }
+            var statsEl = this.statsEl = document.querySelector('.rs-base');
+            if (statsEl && !statsEnabled) {
+              statsEl.classList.add('hidden');
               return;
             }
             if (statsEl) { statsEl.classList.remove('hidden'); }
@@ -256,6 +293,7 @@ var VRScene = module.exports = registerElement(
                 { caption: 'Framerate', values: [ 'fps' ] }
               ]
             });
+            this.statsEl = document.querySelector('.rs-base');
           }
         },
 
@@ -289,20 +327,25 @@ var VRScene = module.exports = registerElement(
 
         setupCamera: {
           value: function () {
+            var cameraWrapperEl;
             var defaultCamera;
             // If there's a user defined camera
             if (this.cameraEl) { return; }
+            cameraWrapperEl = document.createElement('vr-object');
+            // Default camera height at human level, and back such that
+            // objects at (0, 0, 0) are perfectly framed.
+            cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 10});
+            cameraWrapperEl.setAttribute('keyboard-controls');
+            cameraWrapperEl.setAttribute('mouse-controls');
             // We create a default camera
             defaultCamera = document.createElement('vr-object');
             defaultCamera.setAttribute('camera', {fov: 45});
-            // Default camera height at human level, and back such that
-            // objects at (0, 0, 0) are perfectly framed.
-            defaultCamera.setAttribute('position', {x: 0, y: 1.8, z: 10});
-            defaultCamera.setAttribute('controls', {mouseLook: true, locomotion: true});
+            defaultCamera.setAttribute('hmd-controls');
             this.pendingElements++;
             defaultCamera.addEventListener('loaded',
                                            this.elementLoaded.bind(this));
-            this.appendChild(defaultCamera);
+            cameraWrapperEl.appendChild(defaultCamera);
+            this.appendChild(cameraWrapperEl);
           }
         },
 
@@ -358,7 +401,8 @@ var VRScene = module.exports = registerElement(
 
         enterVR: {
           value: function () {
-            this.renderer = this.stereoRenderer;
+            this.hideUI();
+            this.setStereoRenderer();
             this.setFullscreen();
           }
         },
@@ -373,7 +417,7 @@ var VRScene = module.exports = registerElement(
             }
 
             // set wakelock for mobile devices.
-            this.wakelock.request();
+            if (this.wakelock) { this.wakelock.request(); }
 
             // For non-VR enabled mobile devices, the controls are polyfilled, but not the
             // vrDisplay, so the fullscreen method on the effect renderer does not work and
@@ -385,6 +429,23 @@ var VRScene = module.exports = registerElement(
             } else if (canvas.webkitRequestFullscreen) {
               canvas.webkitRequestFullscreen();
             }
+          }
+        },
+
+        showUI: {
+          value: function () {
+            var statsEnabled = this.getAttribute('stats') === 'true';
+            if (statsEnabled) {
+              this.statsEl.classList.remove('hidden');
+            }
+            this.vrButton.classList.remove('hidden');
+          }
+        },
+
+        hideUI: {
+          value: function () {
+            this.statsEl.classList.add('hidden');
+            this.vrButton.classList.add('hidden');
           }
         },
 
@@ -405,19 +466,31 @@ var VRScene = module.exports = registerElement(
 
         resizeCanvas: {
           value: function () {
-            var canvas = this.canvas;
             var camera = this.cameraEl.components.camera.camera;
-            // Make it visually fill the positioned parent
-            canvas.style.width = '100%';
-            canvas.style.height = '100%';
-            // Set the internal size to match
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
+            var size = this.getCanvasSize();
             // Updates camera
-            camera.aspect = canvas.offsetWidth / canvas.offsetHeight;
+            camera.aspect = size.width / size.height;
             camera.updateProjectionMatrix();
             // Notify the renderer of the size change
-            this.renderer.setSize(canvas.width, canvas.height);
+            this.renderer.setSize(size.width, size.height, true);
+          }
+        },
+
+        getCanvasSize: {
+          value: function () {
+            var canvas = this.canvas;
+            if (this.isMobile) {
+              return {
+                height: window.innerHeight,
+                width: window.innerWidth
+              };
+            }
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            return {
+              height: canvas.offsetHeight,
+              width: canvas.offsetWidth
+            };
           }
         },
 

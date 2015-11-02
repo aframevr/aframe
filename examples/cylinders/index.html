@@ -10,7 +10,9 @@
   </head>
   <body>
     <vr-scene stats="true">
-      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-object mouse-controls keyboard-controls position="0 0 20">
+        <vr-object camera="fov: 45" hmd-controls></vr-object>
+      </vr-object>
       <vr-object position="-10 0 0" rotation="45 0 -45" geometry="primitive: cylinder; radius: 2; height: 5; openEnded: false;" material="color: aqua"></vr-object>
       <vr-object position="0 0 0" rotation="25 0 10" geometry="primitive: cylinder; radius: 4; height: 2; openEnded: true;" material="color: crimson"></vr-object>
       <vr-object position="10 0 0" rotation="75 0 0" geometry="primitive: cylinder; radius: 2; height: 4; openEnded: false; thetaLength: 4.5" material="color: gold"></vr-object>
