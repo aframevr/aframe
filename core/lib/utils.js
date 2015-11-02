@@ -75,7 +75,10 @@ module.exports.mergeAttrs = function () {
  * @returns {String} Formatted string with interpolated variables.
  */
 module.exports.format = (function () {
-  var re = /\$?\{\s*([^}= ]+)(\s*=\s*(.+))?\s*\}/g;
+  var regexes = [
+    /\$?\{\s*([^}= ]+)(\s*=\s*(.+))?\s*\}/g,
+    /\$?%7B\s*([^}= ]+)(\s*=\s*(.+))?\s*%7D/g
+  ];
   return function (s, args) {
     if (!s) { throw new Error('Format string is empty!'); }
     if (!args) { return; }
@@ -85,14 +88,17 @@ module.exports.format = (function () {
     Object.keys(args).forEach(function (key) {
       args[String(key).toLowerCase()] = args[key];
     });
-    return s.replace(re, function (_, name, rhs, defaultVal) {
-      var val = args[name.toLowerCase()];
+    regexes.forEach(function (re) {
+      s = s.replace(re, function (_, name, rhs, defaultVal) {
+        var val = args[name.toLowerCase()];
 
-      if (typeof val === 'undefined') {
-        return (defaultVal || '').trim().replace(/^["']|["']$/g, '');
-      }
+        if (typeof val === 'undefined') {
+          return (defaultVal || '').trim().replace(/^["']|["']$/g, '');
+        }
 
-      return (val || '').trim().replace(/^["']|["']$/g, '');
+        return (val || '').trim().replace(/^["']|["']$/g, '');
+      });
     });
+    return s;
   };
 })();
