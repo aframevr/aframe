@@ -61,10 +61,11 @@ module.exports.Component = registerComponent('material', {
   getMaterial: {
     value: function () {
       if (this.data.src) {
-        return this.getTextureMaterial();
+        this.material = this.getTextureMaterial();
       } else {
-        return this.getPhysicalMaterial();
+        this.material = this.getPhysicalMaterial();
       }
+      return this.material;
     }
   },
 
@@ -76,7 +77,7 @@ module.exports.Component = registerComponent('material', {
   getTextureMaterial: {
     value: function () {
       var data = this.data;
-      var material = this.material = new THREE.MeshBasicMaterial({
+      var material = this.material || new THREE.MeshBasicMaterial({
         color: 0xffffff,
         side: THREE.DoubleSide,
         opacity: data.opacity,
@@ -109,7 +110,6 @@ module.exports.Component = registerComponent('material', {
     value: function () {
       var data = this.data;
       var material = this.el.object3D.material;
-
       data.color = new THREE.Color(data.color);
       Object.keys(data).forEach(function (key) {
         material[key] = data[key];
