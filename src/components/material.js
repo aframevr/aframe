@@ -62,6 +62,8 @@ module.exports.Component = registerComponent('material', {
   /**
    * Setups a material and loads the video or an image to be used as
    * as a texture
+   *
+   * @params {string} src where the texture is located
    */
   setupTextureMaterial: {
     value: function (src) {
@@ -74,6 +76,28 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
+   * Generic function to create materials.
+   * It tries to reuse the cached material if posible
+   *
+   * @params {string} data attributes of the material
+   * @params {string} type type of the material to be created
+   *
+   * @returns {object} material - three.js based on the passed type.
+   */
+  setupMaterial: {
+    value: function (data, type) {
+      var material = this.material;
+      var reuseMaterial = material && material.type === type;
+      material = reuseMaterial ? material : new THREE[type](data);
+      Object.keys(data).forEach(function (key) {
+        material[key] = data[key];
+      });
+      this.material = material;
+      return material;
+    }
+  },
+
+  /**
    * Creates a new material object for handling textures.
    *
    * @returns {object} material - three.js MeshBasicMaterial.
@@ -81,15 +105,12 @@ module.exports.Component = registerComponent('material', {
   setupBasicMaterial: {
     value: function () {
       var data = this.data;
-      var material = this.material;
-      var reuseMaterial = material && material.type === 'MeshBasicMaterial';
-      material = reuseMaterial ? material : new THREE.MeshBasicMaterial();
-      material.color.set(0xffffff);
-      material.side = THREE.DoubleSide;
-      material.opacity = data.opacity;
-      material.transparent = data.opacity < 1;
-      this.material = material;
-      return material;
+      return this.setupMaterial({
+        color: new THREE.Color(0xffffff),
+        side: THREE.DoubleSide,
+        opacity: data.opacity,
+        transparent: data.opacity < 1
+      }, 'MeshBasicMaterial');
     }
   },
 
@@ -101,16 +122,13 @@ module.exports.Component = registerComponent('material', {
   setupPhysicalMaterial: {
     value: function () {
       var data = this.data;
-      var material = this.material;
-      var reuseMaterial = material && material.type === 'MeshPhysicalMaterial';
-      material = reuseMaterial ? material : new THREE.MeshPhysicalMaterial();
-      material.color.set(data.color);
-      material.opacity = data.opacity;
-      material.transparent = data.opacity < 1;
-      material.metalness = data.metalness;
-      material.roughness = data.roughness;
-      this.material = material;
-      return material;
+      return this.setupMaterial({
+        color: new THREE.Color(data.color),
+        opacity: data.opacity,
+        transparent: data.opacity < 1,
+        metalness: data.metalness,
+        roughness: data.roughness
+      }, 'MeshPhysicalMaterial');
     }
   },
 
