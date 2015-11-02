@@ -2,13 +2,9 @@
           element="vr-image"
           width="2"
           height="2"
-          color="gray"
           src="">
-  <img id="image" 
-       src="${src}">
   <vr-object geometry="primitive: plane;
                        width: ${width};
                        height: ${height}"
-             material="color: ${color};
-                       url: #image"></vr-object>
+             material="src: url(${src})"></vr-object>
 </template>
