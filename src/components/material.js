@@ -1,5 +1,5 @@
 var registerComponent = require('../core/register-component').registerComponent;
-var loadSrc = require('../src-loader').loadSrc;
+var loadSrc = require('../utils/src-loader').loadSrc;
 var THREE = require('../../lib/three');
 var utils = require('../vr-utils');
 
