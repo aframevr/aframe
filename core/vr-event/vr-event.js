@@ -6,39 +6,60 @@ var utils = require('../lib/utils');
 var registerComponent = VRMarkup.registerComponent.registerComponent;
 var registerElement = VRMarkup.registerElement.registerElement;
 
-var proto = {
-  defaults: {
-    value: false
-  },
+// var proto = {
+//   defaults: {
+//     value: false
+//   },
 
-  update: {
-    value: function (a, b, c) {
-      console.log('ººº ;;; update selected = ', a, b, c, this.data, this.el);
-      if (this.data) {
-        this.el.addState('selected');
-      } else {
-        this.el.removeState('selected');
-      }
-    }
-  },
+//   update: {
+//     value: function (a, b, c) {
+//       if (this.data) {
+//         this.el.addState('selected');
+//       } else {
+//         this.el.removeState('selected');
+//       }
+//     }
+//   },
 
-  parseAttributesString: {
-    value: function (attrs) {
-      return attrs === 'true';
-    }
-  },
+//   parseAttributesString: {
+//     value: function (attrs) {
+//       return attrs === 'true';
+//     }
+//   },
 
-  stringifyAttributes: {
-    value: function (attrs) {
-      return attrs.toString();
-    }
+//   stringifyAttributes: {
+//     value: function (attrs) {
+//       return attrs.toString();
+//     }
+//   }
+// };
+
+// module.exports.Component = registerComponent('selected', proto);
+
+
+var stateEls = {};
+
+function addState (el, state) {
+  el.addState(state);
+  if (state in stateEls) {
+    stateEls[state].push(el);
+  } else {
+    stateEls[state] = [el];
   }
-};
+}
 
-module.exports.Component = registerComponent('selected', proto);
-
-
-
+function removeState (el, state) {
+  console.error('1')
+  if (!(state in stateEls)) { return; }
+  console.error('2')
+  var elIdx = stateEls[state].indexOf(el);
+  console.error('3')
+  if (elIdx === -1) { return; }
+  console.error('4')
+  el.removeState(state);
+  console.error('5')
+  stateEls[state].splice(elIdx, 1);
+}
 
 // Synthesize events for cursor `mouseenter` and `mouseleave`.
 window.addEventListener('stateadded', function (e) {
@@ -46,18 +67,7 @@ window.addEventListener('stateadded', function (e) {
   if (detail.state === 'hovering') {
     e.target.emit('mouseenter');
   }
-  if (detail.state !== 'selected') { return; }
-  utils.$$('[selected]').forEach(function (el) {
-    if (e.target === el || getRealNode(e.target) === el) { return; }
-    if (el.isVREvent) { console.log('º ;;;; el did not match', el); return; }
-    var parentEl = getRealNode(el);
-    try {
-      parentEl.removeState('selected');
-    } catch (e) {
-      console.log('ººº;;; poop', el, parentEl);
-    }
-    parentEl.removeAttribute('selected');
-  });
+  console.log('º stateadded', detail.state, detail.target);
 });
 
 window.addEventListener('stateremoved', function (e) {
@@ -65,14 +75,17 @@ window.addEventListener('stateremoved', function (e) {
   if (detail.state === 'hovering') {
     e.target.emit('mouseleave');
   }
+  // console.log('º stateremoved', detail.state, detail.target);
 });
 
 function getRealNode (el) {
   if (el.isVREvent) {
-    return getRealNode(el);
+    return getRealNode(el.parentNode);
   }
-  var root = el.closest('vr-root');
-  return (root || el).parentNode;
+  if (el.root) {
+    return el.root;
+  }
+  return el;
 }
 
 var VREvent = registerElement(
@@ -85,7 +98,7 @@ var VREvent = registerElement(
           value: function () {
             this.isVREvent = true;
             this.type = this.type || this.getAttribute('type');
-            this.target = this.getAttribute('target');
+            this.target = this.target || this.getAttribute('target');
             this.listeners = {};
             this.attachEventListener();
           },
@@ -107,6 +120,7 @@ var VREvent = registerElement(
             if (attr === 'type') {
               this.type = newVal;
             } else if (attr === 'target') {
+              // console.log('º setting target', this.target);
               this.target = newVal;
             } else {
               return;
@@ -127,10 +141,13 @@ var VREvent = registerElement(
         attachEventListener: {
           value: function () {
             var self = this;
-            if (!self.parentNode) { return; }
 
-            var target = self.target || self.parentNode;
-            utils.$$(target).forEach(addEventListener);
+            if (!self.target) {
+              self.target = getRealNode(self);
+            }
+            // console.log('target•••••••••••', self, self.target);
+
+            utils.$$(self.target).forEach(addEventListener);
 
             function addEventListener (targetEl) {
               self.detachEventListener(targetEl);
@@ -160,28 +177,29 @@ var VREvent = registerElement(
           value: function (targetEl) {
             var self = this;
             return function () {
-              var attrsSeen = utils.$$(self.attributes);
-              attrsSeen.forEach(function (attr) {
-                attrsSeen[attr.name] = true;
+              // console.log('ººº FIRED', self.type, self);
+              utils.$$(self.attributes).forEach(function (attr) {
 
                 if (attr.name in self.attributeBlacklist) { return; }
                 // TODO: Handle removing unique attributes
                 // (e.g., `class`, `id`, `name`, etc.).
-                targetEl.setAttribute(attr.name, attr.value);
-
-                if (attr.name === 'selected') {
-                  var parentEl = getRealNode(self);
-                  parentEl.addState('selected');
-                  parentEl.setAttribute('selected', 'true');
+                if (attr.name === 'state') {
+                  var states = utils.splitString(attr.value);
+                  // console.log('ºº states: ', states);
+                  states.forEach(function (state) {
+                    // Set the state on this element.
+                    addState(targetEl, state);
+                    // Remove the state on the other element(s).
+                    stateEls[state].forEach(function (el) {
+                      if (el === targetEl) { return; }  // Don't remove my state!
+                      console.error('removing state', el, state);
+                      removeState(el, state);
+                    });
+                  });
+                } else {
+                  targetEl.setAttribute(attr.name, attr.value);
                 }
               });
-
-              if (!('selected' in attrsSeen)) {
-                var parentEl = getRealNode(self);
-                console.log('ººººº not seen', parentEl);
-                parentEl.removeState('selected');
-                parentEl.removeAttribute('selected');
-              }
             };
           },
           writable: window.debug
