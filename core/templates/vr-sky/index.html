@@ -1,4 +1,4 @@
-<template is="vr-template" 
+<template is="vr-template"
           element="vr-sky"
           src=""
           radius="5000"
@@ -8,7 +8,7 @@
                        radius: ${radius};
                        segmentsWidth: ${segments-width};
                        segmentsHeight: ${segments-height}"
-             material="src: url(${src})"
+             material="receiveLight: false; src: url(${src})"
              scale="-1 1 1">
   </vr-object>
 </template>
