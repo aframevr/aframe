@@ -21,29 +21,39 @@
     </vr-assets>
 
     <vr-scene stats="true">
-      <vr-object position="-3 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
-        <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.30; innerRadius: 0.20;" material="color: red" cursor="maxDistance: 30"></vr-object>
+      <vr-object position="-3 0 20" camera="fov: 45"
+                controls="mouselook: true; locomotion: true">
+        <vr-object position="0 0 -5"
+                   geometry="primitive: ring; outerRadius: 0.30;
+                             innerRadius: 0.20;"
+                   material="color: red; receiveLight: false"
+                   cursor="maxDistance: 30"></vr-object>
       </vr-object>
 
       <vr-object position="-10 0 0">
         <vr-object mixin="cube red">
-          <vr-animation begin="click" attribute="position" from="0 0 0" to="0 0 -10" dur="2000" fill="both"></vr-animation>
+          <vr-animation begin="click" attribute="position" from="0 0 0"
+                        to="0 0 -10" dur="2000" fill="both"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object>
         <vr-object mixin="cube green">
-          <vr-animation begin="click" attribute="rotation" to="0 360 0" easing="linear" dur="2000"></vr-animation>
+          <vr-animation begin="click" attribute="rotation" to="0 360 0"
+                        easing="linear" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
 
       <vr-object position="10 0 0" rotation="0 45 0">
         <vr-object mixin="cube blue">
-          <vr-animation begin="click" fill="forward" repeat="1" direction="alternate" attribute="position" from="0 0 0" to="15 0 0" dur="2000"></vr-animation>
+          <vr-animation begin="click" fill="forward" repeat="1"
+                        direction="alternate" attribute="position" from="0 0 0"
+                        to="15 0 0" dur="2000"></vr-animation>
         </vr-object>
       </vr-object>
 
-      <vr-object class="clickable" mixin="cube yellow" position="0 -5 0" rotation="0 45 0" scale=".5 .5 .5"></vr-object>
+      <vr-object class="clickable" mixin="cube yellow" position="0 -5 0"
+                 rotation="0 45 0" scale=".5 .5 .5"></vr-object>
     </vr-scene>
 
     <script>
@@ -53,7 +63,9 @@
         var els = document.querySelectorAll('vr-object');
         Array.prototype.forEach.call(els, function (el) {
           el.addEventListener('click', function () {
-            if (clickedEl && clickedEl !== el) { clickedEl.removeState('selected'); }
+            if (clickedEl && clickedEl !== el) {
+              clickedEl.removeState('selected');
+            }
             if (!el.classList.contains('clickable')) { return; }
             clickedEl = el;
             clickedEl.addState('selected');
@@ -69,7 +81,8 @@
             console.log('click', this);
             var href = this.getAttribute('href');
             if (href) {
-              window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
+              window.top.postMessage({type: 'navigate', data: {url: href}},
+                                     '*');
             }
           })
         }
