@@ -139,7 +139,6 @@ var VRScene = module.exports = registerElement(
             // If the render loop is already running.
             if (this.renderLoopStarted) { return; }
             this.setupLoader();
-            this.cameraEl = this.querySelector('vr-object[camera]');
             if (!this.cameraEl) {
               // If there's no user defined camera we
               // introduce a default one

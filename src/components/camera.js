@@ -18,6 +18,7 @@ module.exports.Component = registerComponent('camera', {
 
   update: {
     value: function () {
+      var sceneEl = this.el.sceneEl;
       var data = this.data;
       var camera = this.camera;
       var aspect = window.innerWidth / window.innerHeight;
@@ -27,6 +28,7 @@ module.exports.Component = registerComponent('camera', {
       camera.far = data.far;
       camera.aspect = data.aspect || aspect;
       camera.updateProjectionMatrix();
+      sceneEl.cameraEl = this.el;
     }
   },
 
