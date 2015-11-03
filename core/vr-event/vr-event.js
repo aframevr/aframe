@@ -3,14 +3,15 @@
 var VRMarkup = require('@mozvr/vr-markup');
 var utils = require('../lib/utils');
 
-var registerComponent = VRMarkup.registerComponent.registerComponent;
 var registerElement = VRMarkup.registerElement.registerElement;
-
-
 var stateEls = {};
 
 function addState (el, state) {
   el.addState(state);
+  recordState(el, state);
+}
+
+function recordState (el, state) {
   if (state in stateEls) {
     stateEls[state].push(el);
   } else {
@@ -18,34 +19,51 @@ function addState (el, state) {
   }
 }
 
-function removeState (el, state) {
-  console.error('1')
+function unrecordState (el, state) {
   if (!(state in stateEls)) { return; }
-  console.error('2')
   var elIdx = stateEls[state].indexOf(el);
-  console.error('3')
   if (elIdx === -1) { return; }
-  console.error('4')
-  el.removeState(state);
-  console.error('5')
   stateEls[state].splice(elIdx, 1);
+}
+
+function removeState (el, state) {
+  el.removeState(state);
+  unrecordState(el, state);
+}
+
+function hasState (el, state) {
+  var elIdx = stateEls[state].indexOf(el);
+  return elIdx !== -1;
 }
 
 // Synthesize events for cursor `mouseenter` and `mouseleave`.
 window.addEventListener('stateadded', function (e) {
   var detail = e.detail;
-  if (detail.state === 'hovering') {
-    e.target.emit('mouseenter');
+  var state = detail.state;
+  var el = e.target;
+
+  recordState(el, state);
+
+  if (state === 'hovering') {
+    el.emit('mouseenter');
   }
-  console.log('º stateadded', detail.state, detail.target);
+  if (state === 'hovered') {
+    if (hasState(el, 'selected')) {
+      removeState(el, 'hovered');
+    }
+  }
 });
 
 window.addEventListener('stateremoved', function (e) {
   var detail = e.detail;
-  if (detail.state === 'hovering') {
-    e.target.emit('mouseleave');
+  var state = detail.state;
+  var el = e.target;
+
+  unrecordState(el, state);
+
+  if (state === 'hovering') {
+    el.emit('mouseleave');
   }
-  // console.log('º stateremoved', detail.state, detail.target);
 });
 
 function getRealNode (el) {
@@ -90,7 +108,6 @@ var VREvent = registerElement(
             if (attr === 'type') {
               this.type = newVal;
             } else if (attr === 'target') {
-              // console.log('º setting target', this.target);
               this.target = newVal;
             } else {
               return;
@@ -117,18 +134,17 @@ var VREvent = registerElement(
             if (!self.target) {
               self.target = getRealNode(self);
             }
-            // console.log('target•••••••••••', self, self.target);
 
             utils.$$(self.target).forEach(addEventListener);
 
             function addEventListener (targetEl) {
-              self.detachEventListener(targetEl);
-
+              // TODO: Land `on` PR in `aframe-core`: https://github.com/MozVR/aframe-core/pull/330
               if (self.type === 'load' && targetEl.hasLoaded) {
-                console.log('º load targetEl.hasLoaded', self.type, targetEl);
                 self.updateTargetElAttributes(targetEl)();
                 return;
               }
+
+              self.detachEventListener(targetEl);
 
               var listenerFunc = self.updateTargetElAttributes(targetEl);
               self.listeners[targetEl] = listenerFunc;
@@ -155,8 +171,9 @@ var VREvent = registerElement(
           value: function (targetEl) {
             var self = this;
             return function () {
-              // console.log('ººº FIRED', self.type, self);
               utils.$$(self.attributes).forEach(function (attr) {
+                console.log('ººººººººººº', attr.name, '=>', attr.value);
+
                 if (attr.name in self.attributeBlacklist) { return; }
 
                 if (attr.name === 'state') {
@@ -164,11 +181,9 @@ var VREvent = registerElement(
                   states.forEach(function (state) {
                     // Set the state on this element.
                     addState(targetEl, state);
-                    console.log('º adding state', targetEl, state);
                     // Remove the state on the other element(s).
                     stateEls[state].forEach(function (el) {
                       if (el === targetEl) { return; }  // Don't remove my state!
-                      console.error('removing state', el, state);
                       removeState(el, state);
                     });
                   });
