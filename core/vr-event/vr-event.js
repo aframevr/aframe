@@ -3,7 +3,42 @@
 var VRMarkup = require('@mozvr/vr-markup');
 var utils = require('../lib/utils');
 
+var registerComponent = VRMarkup.registerComponent.registerComponent;
 var registerElement = VRMarkup.registerElement.registerElement;
+
+var proto = {
+  defaults: {
+    value: false
+  },
+
+  update: {
+    value: function (a, b, c) {
+      console.log('ººº ;;; update selected = ', a, b, c, this.data, this.el);
+      if (this.data) {
+        this.el.addState('selected');
+      } else {
+        this.el.removeState('selected');
+      }
+    }
+  },
+
+  parseAttributesString: {
+    value: function (attrs) {
+      return attrs === 'true';
+    }
+  },
+
+  stringifyAttributes: {
+    value: function (attrs) {
+      return attrs.toString();
+    }
+  }
+};
+
+module.exports.Component = registerComponent('selected', proto);
+
+
+
 
 // Synthesize events for cursor `mouseenter` and `mouseleave`.
 window.addEventListener('stateadded', function (e) {
@@ -14,9 +49,13 @@ window.addEventListener('stateadded', function (e) {
   if (detail.state !== 'selected') { return; }
   utils.$$('[selected]').forEach(function (el) {
     if (e.target === el || getRealNode(e.target) === el) { return; }
-    if (el instanceof VREvent) { console.log('º ;;;; el did not match', el); return; }
+    if (el.isVREvent) { console.log('º ;;;; el did not match', el); return; }
     var parentEl = getRealNode(el);
-    parentEl.removeState('selected');
+    try {
+      parentEl.removeState('selected');
+    } catch (e) {
+      console.log('ººº;;; poop', el, parentEl);
+    }
     parentEl.removeAttribute('selected');
   });
 });
@@ -29,13 +68,11 @@ window.addEventListener('stateremoved', function (e) {
 });
 
 function getRealNode (el) {
-  if (el instanceof VREvent) {
-    return getRealNode(el.parentNode);
+  if (el.isVREvent) {
+    return getRealNode(el);
   }
-  if (el.closest('vr-root')) {
-    return el.parentNode;
-  }
-  return el;
+  var root = el.closest('vr-root');
+  return (root || el).parentNode;
 }
 
 var VREvent = registerElement(
@@ -135,16 +172,16 @@ var VREvent = registerElement(
                 if (attr.name === 'selected') {
                   var parentEl = getRealNode(self);
                   parentEl.addState('selected');
-                  parentEl.setAttribute('selected', '');
+                  parentEl.setAttribute('selected', 'true');
                 }
               });
 
-              // if (!('selected' in attrsSeen)) {
-              //   var parentEl = getRealNode(self);
-              //   console.log('ººººº not seen', parentEl);
-              //   parentEl.removeState('selected');
-              //   parentEl.removeAttribute('selected');
-              // }
+              if (!('selected' in attrsSeen)) {
+                var parentEl = getRealNode(self);
+                console.log('ººººº not seen', parentEl);
+                parentEl.removeState('selected');
+                parentEl.removeAttribute('selected');
+              }
             };
           },
           writable: window.debug
