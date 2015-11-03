@@ -6,36 +6,6 @@ var utils = require('../lib/utils');
 var registerComponent = VRMarkup.registerComponent.registerComponent;
 var registerElement = VRMarkup.registerElement.registerElement;
 
-// var proto = {
-//   defaults: {
-//     value: false
-//   },
-
-//   update: {
-//     value: function (a, b, c) {
-//       if (this.data) {
-//         this.el.addState('selected');
-//       } else {
-//         this.el.removeState('selected');
-//       }
-//     }
-//   },
-
-//   parseAttributesString: {
-//     value: function (attrs) {
-//       return attrs === 'true';
-//     }
-//   },
-
-//   stringifyAttributes: {
-//     value: function (attrs) {
-//       return attrs.toString();
-//     }
-//   }
-// };
-
-// module.exports.Component = registerComponent('selected', proto);
-
 
 var stateEls = {};
 
@@ -133,6 +103,8 @@ var VREvent = registerElement(
 
         attributeBlacklist: {
           value: {
+            // TODO: Consider ignoring unique attributes too
+            // (e.g., `class`, `id`, `name`, etc.).
             target: true
           },
           writable: window.debug
@@ -152,9 +124,15 @@ var VREvent = registerElement(
             function addEventListener (targetEl) {
               self.detachEventListener(targetEl);
 
+              if (self.type === 'load' && targetEl.hasLoaded) {
+                console.log('º load targetEl.hasLoaded', self.type, targetEl);
+                self.updateTargetElAttributes(targetEl)();
+                return;
+              }
+
               var listenerFunc = self.updateTargetElAttributes(targetEl);
               self.listeners[targetEl] = listenerFunc;
-              self.parentNode.addEventListener(self.type, listenerFunc);
+              targetEl.addEventListener(self.type, listenerFunc);
             }
           },
           writable: window.debug
@@ -167,7 +145,7 @@ var VREvent = registerElement(
             var oldListenerFunc = this.listeners[targetEl];
             if (!oldListenerFunc) { return; }
 
-            this.parentNode.removeEventListener(this.type, oldListenerFunc);
+            targetEl.removeEventListener(this.type, oldListenerFunc);
             delete this.listeners[targetEl];
           },
           writable: window.debug
@@ -179,16 +157,14 @@ var VREvent = registerElement(
             return function () {
               // console.log('ººº FIRED', self.type, self);
               utils.$$(self.attributes).forEach(function (attr) {
-
                 if (attr.name in self.attributeBlacklist) { return; }
-                // TODO: Handle removing unique attributes
-                // (e.g., `class`, `id`, `name`, etc.).
+
                 if (attr.name === 'state') {
                   var states = utils.splitString(attr.value);
-                  // console.log('ºº states: ', states);
                   states.forEach(function (state) {
                     // Set the state on this element.
                     addState(targetEl, state);
+                    console.log('º adding state', targetEl, state);
                     // Remove the state on the other element(s).
                     stateEls[state].forEach(function (el) {
                       if (el === targetEl) { return; }  // Don't remove my state!
