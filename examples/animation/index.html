@@ -10,8 +10,8 @@
   </head>
   <body>
     <vr-assets>
-      <vr-mixin id="planet" geometry="primitive: sphere; radius: 0.5"
-                material="color: green"></vr-mixin>
+      <vr-mixin id="planet" geometry="primitive: sphere; radius: 0.5">
+      </vr-mixin>
       <vr-mixin id="orbit" attribute="rotation" to="0 360 0"
                 repeat="indefinite" easing="linear" dur="3000"></vr-mixin>
       <vr-mixin id="spin" attribute="rotation" to="0 360 0"
@@ -28,7 +28,9 @@
         <vr-object light="type: ambient; color: #888"></vr-object>
 
         <vr-object mixin="planet" geometry="radius: 3"
-                   material="src: url(../_images/sun.jpg)" rotation="0 0 0">
+                   material="receiveLight: false;
+                             src: url(../_images/sun.jpg);"
+                   rotation="0 0 0">
           <vr-animation mixin="spin"></vr-animation>
         </vr-object>
 

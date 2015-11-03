@@ -11,13 +11,14 @@
   <body>
     <vr-assets>
       <img class="louvre" src="../_images/pano/louvre.jpg">
-      <vr-mixin id="pano"
-        geometry="primitive: sphere; width: 10; height: 10;"
-        material="src: .louvre"
+      <vr-mixin id="pano" geometry="primitive: sphere"
+                material="src: .louvre; receiveLight: false"
+                scale="1 1 -1"
       ></vr-mixin>
     </vr-assets>
     <vr-scene stats="true">
-      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false"></vr-object>
+      <vr-object camera="fov: 45"
+                 controls="mouselook: true; locomotion: false"></vr-object>
       <vr-object mixin="pano"></vr-object>
     </vr-scene>
   </body>

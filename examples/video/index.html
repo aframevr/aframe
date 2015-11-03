@@ -12,12 +12,17 @@
     <vr-assets>
       <video id="lego"
              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"
-             width="360" height="360" autoplay loop="true" crossOrigin="anonymous">
-      </video>
+             width="360" height="360" autoplay loop="true"
+             crossOrigin="anonymous"></video>
     </vr-assets>
+
     <vr-scene stats="true">
-      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false"></vr-object>
-      <vr-object material="src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm)" geometry="primitive: sphere; radius: 5" scale="-1 1 1"></vr-object>
+      <vr-object camera="fov: 45" controls="mouselook: true;
+                                           locomotion: false"></vr-object>
+      <vr-object material="receiveLight: false;
+                           src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm)"
+                 geometry="primitive: sphere; radius: 5" scale="-1 1 1">
+      </vr-object>
     </vr-scene>
   </body>
 </html>
