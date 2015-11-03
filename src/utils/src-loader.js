@@ -1,5 +1,5 @@
 /* global Image */
-var utils = require('./vr-utils');
+var utils = require('../vr-utils');
 
 /**
  * Loads an image/video src.
