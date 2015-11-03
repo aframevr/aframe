@@ -12,19 +12,13 @@ window.addEventListener('stateadded', function (e) {
     e.target.emit('mouseenter');
   }
   if (detail.state !== 'selected') { return; }
-  console.log('º [added] selected state for', e.target);
-  console.log('º ;;;;;', new Date());
-  console.log('º ;;;; a');
   utils.$$('[selected]').forEach(function (el) {
     if (e.target === el || getRealNode(e.target) === el) { return; }
     if (el instanceof VREvent) { console.log('º ;;;; el did not match', el); return; }
-    // console.log('º e.target=', e.target, ';;;;;;;;;;;;;;;;;; el=', el);
     var parentEl = getRealNode(el);
     parentEl.removeState('selected');
     parentEl.removeAttribute('selected');
-    console.log('º ;;;; removed selected from', el);
   });
-  console.log('º ;;;; b');
 });
 
 window.addEventListener('stateremoved', function (e) {
@@ -32,10 +26,6 @@ window.addEventListener('stateremoved', function (e) {
   if (detail.state === 'hovering') {
     e.target.emit('mouseleave');
   }
-  console.log('º [removed] selected state for', e.target);
-  // if (detail.state !== 'selected') { return; }
-  // console.log('º state removed', e.target, detail.state);
-  // utils.$$('[mixin~="selected"]').removeState('selected');
 });
 
 function getRealNode (el) {
@@ -143,11 +133,8 @@ var VREvent = registerElement(
                 targetEl.setAttribute(attr.name, attr.value);
 
                 if (attr.name === 'selected') {
-                  console.log('º now selected: ', getRealNode(self));
                   var parentEl = getRealNode(self);
-                  console.log('º set state selected ;;;;;;;;;', parentEl);
                   parentEl.addState('selected');
-                  console.log('º set attr selected');
                   parentEl.setAttribute('selected', '');
                 }
               });
