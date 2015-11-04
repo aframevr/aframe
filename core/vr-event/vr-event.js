@@ -32,6 +32,7 @@ function removeState (el, state) {
 }
 
 function hasState (el, state) {
+  if (!(state in stateEls)) { return; }
   var elIdx = stateEls[state].indexOf(el);
   return elIdx !== -1;
 }
@@ -146,9 +147,16 @@ var VREvent = registerElement(
 
               self.detachEventListener(targetEl);
 
+              console.log('adding event listener for', self.type, targetEl);
+
               var listenerFunc = self.updateTargetElAttributes(targetEl);
               self.listeners[targetEl] = listenerFunc;
-              targetEl.addEventListener(self.type, listenerFunc);
+              // targetEl.parentNode.addEventListener('click', function (e) {
+              //   console.error('º––received click', e.target, e.detail.target);
+              // });
+              self.sourceNode = getRealNode(self);
+              self.sourceNode.addEventListener(self.type, listenerFunc, true);
+              self.attached = true;
             }
           },
           writable: window.debug
@@ -170,10 +178,11 @@ var VREvent = registerElement(
         updateTargetElAttributes: {
           value: function (targetEl) {
             var self = this;
-            return function () {
-              utils.$$(self.attributes).forEach(function (attr) {
-                console.log('ººººººººººº', attr.name, '=>', attr.value);
+            return function (e) {
+              // if (!e || e.detail.target !== targetEl) { return; }
+              console.error('ººººººººººº targetEl', self.type, self);
 
+              utils.$$(self.attributes).forEach(function (attr) {
                 if (attr.name in self.attributeBlacklist) { return; }
 
                 if (attr.name === 'state') {

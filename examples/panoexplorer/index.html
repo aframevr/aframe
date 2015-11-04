@@ -21,22 +21,22 @@
         </vr-object>
       </vr-object>
 
-      <vr-object id="holder" geometry="primitive: sphere; radius: 10" material="url: images/city.jpg"></vr-object>
+      <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: 10" material="receiveLight: false; src: url(images/city.jpg)"></vr-object>
 
       <vr-object id="links" position="-1 -0.3 -4">
-        <vr-object position="0 0 0" mixin="link" material="url: images/thumb-cubes.png">
-          <vr-click target="#holder" material="url: images/cubes.jpg"></vr-click>
+        <vr-object position="0 0 0" mixin="link" material="receiveLight: false; src: url(images/thumb-cubes.png)">
+          <vr-click target="#holder" material="receiveLight: false; src: url(images/cubes.jpg)"></vr-click>
           <vr-click state="selected"></vr-click>
         </vr-object>
 
-        <vr-object position="1.5 0 0" mixin="link" material="url: images/thumb-city.png">
+        <vr-object position="1.5 0 0" mixin="link" material="receiveLight: false; src: url(images/thumb-city.png)">
           <vr-load state="selected"></vr-load>
-          <vr-click target="#holder" material="url: images/city.jpg"></vr-click>
+          <vr-click target="#holder" material="receiveLight: false; src: url(images/city.jpg)"></vr-click>
           <vr-click state="selected"></vr-click>
         </vr-object>
 
-        <vr-object position="3 0 0" mixin="link" material="url: images/thumb-sechelt.png">
-          <vr-click target="#holder" material="url: images/sechelt.jpg"></vr-click>
+        <vr-object position="3 0 0" mixin="link" material="receiveLight: false; src: url(images/thumb-sechelt.png)">
+          <vr-click target="#holder" material="receiveLight: false; src: url(images/sechelt.jpg)"></vr-click>
           <vr-click state="selected"></vr-click>
         </vr-object>
       </vr-object>
