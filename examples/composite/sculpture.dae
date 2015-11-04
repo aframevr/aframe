@@ -18,7 +18,7 @@
         <effect id="ID2">
             <profile_COMMON>
                 <technique sid="COMMON">
-                    <blinn>
+                    <constant>
                         <diffuse>
                             <color>0.8 0.8 0.8 1</color>
                         </diffuse>
@@ -28,7 +28,7 @@
                         <shininess>
                             <float>0.5</float>
                         </shininess>
-                    </blinn>
+                    </constant>
                 </technique>
             </profile_COMMON>
         </effect>
@@ -45,11 +45,11 @@
                     </sampler2D>
                 </newparam>
                 <technique sid="COMMON">
-                    <blinn>
+                    <constant>
                         <diffuse>
                             <texture texture="ID7" texcoord="UVSET0"/>
                         </diffuse>
-                    </blinn>
+                    </constant>
                 </technique>
             </profile_COMMON>
         </effect>
