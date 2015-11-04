@@ -5,6 +5,7 @@ var isNode = re.isNode;
 
 var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
+var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 var TWEEN = require('tween.js');
 var VRNode = require('./vr-node');
 var utils = require('../vr-utils');
@@ -33,6 +34,9 @@ var VRScene = module.exports = registerElement(
             this.setupScene();
             this.attachEventListeners();
             this.attachFullscreenListeners();
+            this.isMobile = utils.isMobile();
+            // Setup wakelock for mobile.
+            if (this.isMobile) this.wakelock = new Wakelock();
             // For Chrome: https://github.com/MozVR/aframe-core/issues/321
             window.addEventListener('load', this.resizeCanvas.bind(this));
           }
@@ -126,13 +130,18 @@ var VRScene = module.exports = registerElement(
                             document.mozFullScreenElement ||
                             document.webkitFullscreenElement;
 
-            // lock to landsape orientation on mobile.
-            if (fsElement && utils.isMobile()) {
+            // Lock to landsape orientation on mobile.
+            if (fsElement && this.isMobile) {
               window.screen.orientation.lock('landscape');
             }
 
+            // No longer fullscreen/VR mode.
             if (!fsElement) {
               this.renderer = this.monoRenderer;
+            }
+
+            if (this.wakelock) {
+              this.wakelock.release();
             }
           }
         },
@@ -356,12 +365,14 @@ var VRScene = module.exports = registerElement(
         setFullscreen: {
           value: function () {
             var canvas = this.canvas;
-
             // Use the fullscreen method on effect when on desktop.
-            if (!utils.isMobile()) {
+            if (!this.isMobile) {
               this.stereoRenderer.setFullScreen(true);
               return;
             }
+
+            // set wakelock for mobile devices.
+            this.wakelock.request();
 
             // For non-VR enabled mobile devices, the controls are polyfilled, but not the
             // vrDisplay, so the fullscreen method on the effect renderer does not work and
