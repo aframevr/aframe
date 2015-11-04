@@ -3,42 +3,42 @@
   <head>
     <meta charset="utf-8">
     <title>Legos</title>
-    <meta name="description" content="Legos — vr-component">
-    <script src="../../dist/vr-components.min.js"></script>
+    <meta name="description" content="Legos — a-component">
+    <script src="../../dist/a-components.min.js"></script>
   </head>
   <body>
-    <vr-scene>
-      <vr-camera position="0 0 20" fov="45" mouselook="true" locomotion="true"></vr-camera>
-      <vr-object light="color: #ccc" rotation="5.4 5.2 5.2"></vr-object>
-      <vr-object light="color: #ccc" rotation="5.4 5.2 -5.2"></vr-object>
-      <vr-object light="color: #ccc" rotation="-5.4 5.2 5.2"></vr-object>
-      <vr-object light="color: #ccc" rotation="-5.4 -5.4 -5.2"></vr-object>
+    <a-scene>
+      <a-camera position="0 0 20" fov="45" mouselook="true" locomotion="true"></a-camera>
+      <a-object light="color: #ccc" rotation="5.4 5.2 5.2"></a-object>
+      <a-object light="color: #ccc" rotation="5.4 5.2 -5.2"></a-object>
+      <a-object light="color: #ccc" rotation="-5.4 5.2 5.2"></a-object>
+      <a-object light="color: #ccc" rotation="-5.4 -5.4 -5.2"></a-object>
 
-      <vr-lego color="red" rotation="45 -45 0"></vr-lego>
-      <vr-lego color="green" position="-8 5 0" rotation="45 -15 -5" scale="0.5 0.5 0.5"></vr-lego>
-      <vr-lego color="blue" position="3 -4.25 0" rotation="45 -45 0"></vr-lego>
-    </vr-scene>
+      <a-lego color="red" rotation="45 -45 0"></a-lego>
+      <a-lego color="green" position="-8 5 0" rotation="45 -15 -5" scale="0.5 0.5 0.5"></a-lego>
+      <a-lego color="blue" position="3 -4.25 0" rotation="45 -45 0"></a-lego>
+    </a-scene>
 
-    <template is="vr-template" element="vr-lego" color="red">
-      <vr-lego-block color="${color}">
-        <vr-lego-stud position="-2.25 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="-.5 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="1.25 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="3 2 -0.5" color="${color}"></vr-lego-stud>
+    <template is="a-template" element="a-lego" color="red">
+      <a-lego-block color="${color}">
+        <a-lego-stud position="-2.25 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="-.5 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="1.25 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="3 2 -0.5" color="${color}"></a-lego-stud>
 
-        <vr-lego-stud position="-2.25 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="-0.5 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="1.25 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="3 2 1.5" color="${color}"></vr-lego-stud>
-      </vr-lego-block>
+        <a-lego-stud position="-2.25 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="-0.5 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="1.25 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="3 2 1.5" color="${color}"></a-lego-stud>
+      </a-lego-block>
     </template>
 
-    <template is="vr-template" element="vr-lego-block" color="red">
-      <vr-cube width="8.5" height="3" depth="5" color="${color}"></vr-cube>
+    <template is="a-template" element="a-lego-block" color="red">
+      <a-cube width="8.5" height="3" depth="5" color="${color}"></a-cube>
     </template>
 
-    <template is="vr-template" element="vr-lego-stud" color="red">
-      <vr-cylinder height="0.5" radius="0.5" color="${color}"></vr-cylinder>
+    <template is="a-template" element="a-lego-stud" color="red">
+      <a-cylinder height="0.5" radius="0.5" color="${color}"></a-cylinder>
     </template>
   </body>
 </html>
