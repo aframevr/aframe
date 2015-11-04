@@ -1,58 +1,100 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
   <head>
+    <title>A-Frame Core Examples</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="//code.cdn.mozilla.net/fonts/fira.css">
-    <title>aframe-core examples</title>
-    <style>
+    <style type="text/css">
       body {
         background: rgb(239,45,94);
-        color: #fff;
         font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
+        color: white;
         padding: 2rem;
       }
-      h1 {
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 3rem;
-        font-weight: 200;
-        margin: 0 0 3rem;
-        text-transform: uppercase;
-      }
-      ul {
-        line-height: 1.5;
-        list-style: none;
-      }
+
       ul, li {
+        list-style: none;
         margin: 0;
         padding: 0;
+        line-height: 2.2rem;
       }
+
+      .note, .note a, .date {
+        color: rgba(255,255,255,0.4);
+        font-family: 'Fira Mono', sans-serif;
+      }
+
+      .note {
+        padding-bottom: 2rem;
+        border-bottom: 1px dashed rgba(255,255,255,0.4);
+      }
+
+      .note a:hover {
+        color: white;
+      }
+
+      .date {
+        padding-right: 3rem;
+      }
+
+      h1 {
+        font-size: 3rem;
+        font-family: 'Fira Sans', sans-serif;
+        font-weight: 200;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
       a {
         color: white;
-        display: block;
-        padding: .5rem 0;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(255,255,255,0.6);
       }
+
+      .links a {
+        font-family: 'Fira Sans';
+        font-weight: 300;
+        letter-spacing: 0.01em;
+      }
+
       li a:hover {
         background-color: rgba(0,0,0,0.1);
         border-bottom: 1px solid #E92958;
       }
+
+      #logo-moz {
+        position: absolute;
+        bottom: 3rem;
+        right: 3rem;
+        width: 6rem;
+      }
     </style>
   </head>
   <body>
+
     <h1>A-Frame Core Examples</h1>
-    <ul>
-      <li><a href="animation/">Animation</a></li>
-      <li><a href="controls/">Controls</a></li>
-      <li><a href="cursor/">Cursor</a></li>
-      <li><a href="cubes/">Cubes</a></li>
-      <li><a href="cylinders/">Cylinders</a></li>
-      <li><a href="lights/">Lights</a></li>
-      <li><a href="mixin/">Mixin</a></li>
-      <li><a href="opacity/">Opacity</a></li>
-      <li><a href="model/">Model</a></li>
-      <li><a href="texture/">Texture</a></li>
-      <li><a href="panoexplorer/">Pano Explorer</a></li>
-      <li><a href="video/">Video</a></li>
+    <p class="note">
+      <a href="https://aframe.io">aframe.io</a>
+    </p>
+
+    <ul class="links">
+      <li><span class="date">20151003</span><a href="animation/">Animation</a></li>
+      <li><span class="date">20151003</span><a href="controls/">Controls</a></li>
+      <li><span class="date">20151003</span><a href="cursor/">Cursor</a></li>
+      <li><span class="date">20151003</span><a href="cubes/">Cubes</a></li>
+      <li><span class="date">20151003</span><a href="cylinders/">Cylinders</a></li>
+      <li><span class="date">20151003</span><a href="lights/">Lights</a></li>
+      <li><span class="date">20151003</span><a href="mixin/">Mixin</a></li>
+      <li><span class="date">20151003</span><a href="opacity/">Opacity</a></li>
+      <li><span class="date">20151003</span><a href="model/">Model</a></li>
+      <li><span class="date">20151003</span><a href="texture/">Texture</a></li>
+      <li><span class="date">20151003</span><a href="panoexplorer/">Pano Explorer</a></li>
+      <li><span class="date">20151003</span><a href="video/">Video</a></li>
     </ul>
+
+    <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
+
   </body>
 </html>
