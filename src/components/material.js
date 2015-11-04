@@ -21,6 +21,7 @@ module.exports.Component = registerComponent('material', {
       opacity: 1.0,
       receiveLight: true,
       roughness: 0.5,
+      src: '',
       width: 640
     }
   },
@@ -30,6 +31,7 @@ module.exports.Component = registerComponent('material', {
    */
   init: {
     value: function () {
+      this.textureSrc = null;
       this.el.object3D.material = this.getMaterial();
     }
   },
@@ -77,10 +79,15 @@ module.exports.Component = registerComponent('material', {
       }
 
       // Textures.
-      if (data.src) {
-        loadSrc(data.src, this.loadImage.bind(this),
-                this.loadVideo.bind(this));
+      var src = data.src;
+      if (src) {
+        if (src !== this.textureSrc) {
+          // Texture added or changed.
+          this.textureSrc = src;
+          loadSrc(src, this.loadImage.bind(this), this.loadVideo.bind(this));
+        }
       } else {
+        // Texture removed.
         material.map = null;
         material.needsUpdate = true;
       }
@@ -162,8 +169,7 @@ module.exports.Component = registerComponent('material', {
       }
       el.width = this.data.width;
       el.height = this.data.height;
-      // If it's a brand new video element we need to attach
-      // event listeners.
+      // Attach event listeners if brand new video element.
       if (el !== this.videoEl) {
         el.autoplay = true;
         el.loop = true;
