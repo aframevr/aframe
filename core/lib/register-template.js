@@ -36,6 +36,16 @@ module.exports = function (tagName) {
             writable: window.debug
           },
 
+          attributeBlacklist: {
+            value: {
+              id: true,
+              name: true,
+              class: true,
+              target: true
+            },
+            writable: window.debug
+          },
+
           detachedCallback: {
             value: function () {
               if (!this.sceneEl) {
@@ -55,6 +65,11 @@ module.exports = function (tagName) {
               // Use the defaults defined on the original `<template is="vr-template">`.
               var templateAttrs = utils.mergeAttrs(template, this);
               Object.keys(templateAttrs).filter(function (key) {
+                if (key in this.attributeBlacklist) {
+                  // Move these unique identifier attributes over
+                  // (i.e., `id`, `name`, `class`, `target`).
+                  this.removeAttribute(key);
+                }
                 var value = templateAttrs[key];
                 var component = this.components[key];
                 if (component && typeof value === 'object') {

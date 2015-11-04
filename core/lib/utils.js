@@ -1,3 +1,8 @@
+var VRMarkup = require('@mozvr/vr-markup');
+var VREvent = require('../vr-event/vr-event');
+
+var registerElement = VRMarkup.registerElement.registerElement;
+
 /**
  * Wraps `querySelector` à la jQuery's `$`.
  *
@@ -6,10 +11,11 @@
  * @returns {Element} Element matched by selector.
  */
 module.exports.$ = function (sel, parent) {
+  var el = sel;
   if (sel && typeof sel === 'string') {
-    sel = (parent || document).querySelector(sel);
+    el = (parent || document).querySelector(sel);
   }
-  return sel;
+  return el;
 };
 
 /**
@@ -20,19 +26,33 @@ module.exports.$ = function (sel, parent) {
  * @returns {Array} Array of elements matched by selector.
  */
 module.exports.$$ = function (sel, parent) {
+  if (Array.isArray(sel)) { return sel; }
+  var els = sel;
   if (sel && typeof sel === 'string') {
-    sel = (parent || document).querySelectorAll(sel);
+    els = (parent || document).querySelectorAll(sel);
   }
-  if (Array.isArray(sel)) {
-    return sel;
+  return toArray(els);
+};
+
+/**
+ * Turns an array-like object into an array.
+ *
+ * @param {String|Element} obj CSS selector to match elements.
+ * @param {Array|NamedNodeMap|NodeList|HTMLCollection} arr An array-like object.
+ * @returns {Array} Array of elements matched by selector.
+ */
+var toArray = module.exports.toArray = function (obj) {
+  if (Array.isArray(obj)) { return obj; }
+  if (typeof obj === 'object' && typeof obj.length === 'number') {
+    return Array.prototype.slice.call(obj);
   }
-  return Array.prototype.slice.call(sel);
+  return [obj];
 };
 
 /**
  * Wraps `Array.prototype.forEach`.
  *
- * @param {Array|NamedNodeMap|NodeList|HTMLCollection} arr An array-like object.
+ * @param {Object} arr An array-like object.
  * @returns {Array} A real array.
  */
 var forEach = module.exports.forEach = function (arr, fn) {
@@ -42,7 +62,9 @@ var forEach = module.exports.forEach = function (arr, fn) {
 /**
  * Merges attributes à la `Object.assign`.
  *
- * @param {...Array|NamedNodeMap} els Parent element from which to query.
+ * @param {...Object} els
+ *   Array-like object (NodeMap, array, etc.) of
+ *   parent elements from which to query.
  * @returns {Array} Array of merged attributes.
  */
 module.exports.mergeAttrs = function () {
@@ -102,3 +124,51 @@ module.exports.format = (function () {
     return s;
   };
 })();
+
+/**
+ * Wraps an element as a new one with a different name.
+ *
+ * @param {String} newTagName - Name of the new custom element.
+ * @param {Element} srcElement - Original custom element to wrap.
+ * @param {Object=} [data={}] - Data for the new prototype.
+ * @returns {Array} Wrapped custom element.
+ */
+var wrapElement = module.exports.wrapElement = function (newTagName, srcElement, data) {
+  data = data || {};
+  return registerElement(newTagName, {
+    prototype: Object.create(srcElement.prototype, data)
+  });
+};
+
+/**
+ * Wraps `<vr-event>` for a particular event `type`.
+ *
+ * @param {String} newTagName - Name of the new custom element.
+ * @param {Element} eventName - Name of event type.
+ * @param {Object=} [data={}] - Data for the new prototype.
+ * @returns {Array} Wrapped custom element.
+ */
+module.exports.wrapVREventElement = function (newTagName, eventName, data) {
+  data = data || {};
+  data.type = {
+    value: eventName,
+    writable: window.debug
+  };
+  return wrapElement(newTagName, VREvent, data);
+};
+
+/**
+ * Splits a string into an array based on a delimiter.
+ *
+ * @param   {string=} [str='']        Source string
+ * @param   {string=} [delimiter=' '] Delimiter to use
+ * @returns {array}                   Array of delimited strings
+ */
+module.exports.splitString = function (str, delimiter) {
+  if (typeof delimiter === 'undefined') { delimiter = ' '; }
+  // First collapse the whitespace (or whatever the delimiter is).
+  var regex = new RegExp(delimiter, 'g');
+  str = (str || '').replace(regex, delimiter);
+  // Then split.
+  return str.split(delimiter);
+};

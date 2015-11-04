@@ -19,10 +19,26 @@ function injectFromPolyfilledImports () {
 
   Object.keys(HTMLImports.importer.documents).forEach(function (key) {
     var doc = HTMLImports.importer.documents[key];
-    utils.$$('template[is="vr-template"]', doc).forEach(function (template) {
-      var templateEl = document.importNode(template, true);
-      document.body.appendChild(templateEl);
-    });
+    insertTemplateElements(doc);
+  });
+}
+
+function insertTemplateElements (doc) {
+  var sceneEl = utils.$('vr-scene');
+  var assetsEl = utils.$('vr-assets');
+  if (!assetsEl) {
+    assetsEl = document.createElement('vr-assets');
+    sceneEl.parentNode.insertBefore(assetsEl, sceneEl);
+  }
+
+  utils.$$('vr-mixin', doc).forEach(function (mixinEl) {
+    var mixinCloneEl = document.importNode(mixinEl, true);
+    assetsEl.appendChild(mixinCloneEl);
+  });
+
+  utils.$$('template[is="vr-template"]', doc).forEach(function (templateEl) {
+    var templateCloneEl = document.importNode(templateEl, true);
+    document.body.appendChild(templateCloneEl);
   });
 }
 
@@ -54,6 +70,7 @@ module.exports = registerElement(
               runAfterSceneLoaded(appendElement);
               function appendElement () {
                 var isInDocument = self.ownerDocument === document;
+                // TODO: Handle `<vr-mixin>` from imported templates for Chrome.
                 if (!isInDocument) { document.body.appendChild(self); }
               }
             });

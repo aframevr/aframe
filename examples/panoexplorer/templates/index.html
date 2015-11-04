@@ -1,0 +1,67 @@
+<template is="vr-template"
+          element="vr-cursor-gaze"
+          fov="45"
+          mouselook="true"
+          locomotion="true"
+          colorDefault="gray"
+          colorHover="springgreen"
+          dur="1500"
+          from="1 1 1"
+          to="0.2 0.2 0.2"
+          primitive="ring"
+          outerRadius="0.20"
+          innerRadius="0.14"
+          timeout="1500">
+  <vr-object camera="fov: 45"
+             controls="mouselook: mouselook; locomotion: locomotion">
+    <vr-object id="cursor"
+               position="0 0 -3"
+               geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14"
+               material="color: gray"
+               cursor="timeout: 1500; fuse: true">
+      <vr-mouseenter material="color: springgreen"></vr-mouseenter>
+      <vr-mouseleave material="color: gray"></vr-mouseleave>
+      <vr-animation begin="hovering"
+                    easing="ease-in"
+                    attribute="scale"
+                    from="1 1 1"
+                    to="0.2 0.2 0.2"
+                    dur="1500"></vr-animation>
+    </vr-object>
+  </vr-object>
+</template>
+
+<template is="vr-template" element="vr-pano-link" src="" holderSrc="">
+  <vr-object mixin="link" material="receiveLight: false; src: url(${src})">
+    <vr-click target="#holder" material="receiveLight: false; src: url(${holderSrc})"></vr-click>
+    <vr-click state="selected"></vr-click>
+  </vr-object>
+</template>
+
+<template is="vr-template" element="vr-pano-nav">
+  <vr-object></vr-object>
+</template>
+
+<template is="vr-template" element="vr-pano-holder" size="10">
+  <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="receiveLight: false; src: url(${src})"></vr-object>
+</template>
+
+<!--
+ <vr-object camera="fov: 45"
+     controls="mouselook: true; locomotion: true">
+  <vr-object id="cursor"
+             position="0 0 -3"
+             geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14"
+             material="color: gray"
+             cursor="timeout: 1500; fuse: true">
+    <vr-mouseenter material="color: springgreen"></vr-mouseenter>
+    <vr-mouseleave material="color: gray"></vr-mouseleave>
+    <vr-animation begin="hovering"
+                  easing="ease-in"
+                  attribute="scale"
+                  from="1 1 1"
+                  to="0.2 0.2 0.2"
+                  dur="1500"></vr-animation>
+  </vr-object>
+</vr-object>
+-->
