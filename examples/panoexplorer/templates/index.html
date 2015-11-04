@@ -1,3 +1,9 @@
+<vr-assets>
+  <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
+  <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
+  <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
+</vr-assets>
+
 <template is="vr-template" element="vr-pano-link" src="" holderSrc="">
   <vr-object mixin="link" material="receiveLight: false; src: url(${src})">
     <vr-click target="#holder" material="receiveLight: false; src: url(${holderSrc})"></vr-click>
@@ -45,4 +51,3 @@
 <template is="vr-template" element="vr-pano-nav">
   <vr-object></vr-object>
 </template>
-
