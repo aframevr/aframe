@@ -86,7 +86,7 @@ module.exports.Component = registerComponent('material', {
           metalness: data.metalness,
           reflectivity: data.reflectivity,
           roughness: data.roughness
-        }, 'MeshPhysicalMaterial');
+        }, 'MeshStandardMaterial');
         // Environment cubemaps.
         if (data.envMap && !this.isLoadingEnvMap) {
           this.loadEnvMap(material, data.envMap);
