@@ -10,18 +10,30 @@
   </head>
   <body>
     <vr-asset>
-      <vr-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0"></vr-mixin>
-      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2"></vr-mixin>
-      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"></vr-mixin>
-      <vr-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20; innerRadius: 0.14" material="color: gray"></vr-mixin>
+      <vr-mixin id="link"
+                geometry="primitive: plane; width: 1.0; height: 1.0">
+      </vr-mixin>
+      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2;
+                                            height: 1.2">
+      </vr-mixin>
+      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4;
+                                             height: 1.4">
+      </vr-mixin>
+      <vr-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20;
+                                      innerRadius: 0.14"
+                material="color: gray"></vr-mixin>
       <vr-mixin id="cursor-hovering" material="color: springgreen"></vr-mixin>
     </vr-asset>
     <vr-scene stats="true">
 
       <!-- Controls -->
-      <vr-object camera="fov: 45" controls="mouselook: true; locomotion: false">
-        <vr-object mixin="cursor" position="0 0 -3" cursor="timeout: 1500; fuse: true">
-          <vr-animation begin="hovering" easing="ease-in" attribute="scale" from="1 1 1" to="0.2 0.2 0.2" dur="1500"></vr-animation>
+      <vr-object camera="fov: 45" controls="mouselook: true;
+                                            locomotion: false">
+        <vr-object mixin="cursor" position="0 0 -3"
+                   cursor="timeout: 1500; fuse: true">
+          <vr-animation begin="hovering" easing="ease-in" attribute="scale"
+                        from="1 1 1" to="0.2 0.2 0.2" dur="1500">
+          </vr-animation>
         </vr-object>
       </vr-object>
 
@@ -30,13 +42,11 @@
                  material="receiveLight: false" scale="1 1 -1"></vr-object>
 
       <!-- Links to panos -->
-      <vr-object id="links" position="-1 -0.3 -4">
-      </vr-object>
+      <vr-object id="links" position="-1 -0.3 -4"></vr-object>
     </vr-scene>
 
     <script>
       (function () {
-
         // Data for our panos
         var panos = [
           {
@@ -75,7 +85,8 @@
           el.setAttribute('material', {src: 'url(' + pano.thumb + ')'});
           panos[idx].el = el;
 
-          // When a link is clicked, change the displayed pano by changing the material attribute of the holder element
+          // When a link is clicked, change the displayed pano by changing the
+          // material attribute of the holder element
           el.addEventListener('click', handleClick);
 
           // Add the link to the links element
@@ -99,14 +110,14 @@
           var linkEL = pano.el;
           if (selectedLinkEl === pano.el) { return; }
           if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
-          holder.setAttribute('material', {src: 'url(' + pano.url  + ')'});
+          holder.setAttribute('material', {
+            receiveLight: false,
+            src: 'url(' + pano.url  + ')'
+          });
           selectedLinkEl = linkEL;
           selectedLinkEl.addState('selected');
         }
-
       })();
-
     </script>
-
   </body>
 </html>
