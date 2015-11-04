@@ -3,46 +3,46 @@
   <head>
     <meta charset="utf-8">
     <title>Pano Explorer</title>
-    <meta name="description" content="Pano Explorer — vr-markup">
-    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <meta name="description" content="Pano Explorer — A-Frame Core">
+    <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
-    <script src="../../build/vr-markup.js"></script>
+    <script src="../../build/aframe-core.js"></script>
   </head>
   <body>
-    <vr-asset>
-      <vr-mixin id="link"
-                geometry="primitive: plane; width: 1.0; height: 1.0">
-      </vr-mixin>
-      <vr-mixin id="link-hovered" geometry="primitive: plane; width: 1.2;
-                                            height: 1.2">
-      </vr-mixin>
-      <vr-mixin id="link-selected" geometry="primitive: plane; width: 1.4;
-                                             height: 1.4">
-      </vr-mixin>
-      <vr-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20;
-                                      innerRadius: 0.14"
-                material="color: gray"></vr-mixin>
-      <vr-mixin id="cursor-hovering" material="color: springgreen"></vr-mixin>
-    </vr-asset>
-    <vr-scene stats="true">
+    <a-asset>
+      <a-mixin id="link"
+               geometry="primitive: plane; width: 1.0; height: 1.0">
+      </a-mixin>
+      <a-mixin id="link-hovered" geometry="primitive: plane; width: 1.2;
+                                           height: 1.2">
+      </a-mixin>
+      <a-mixin id="link-selected" geometry="primitive: plane; width: 1.4;
+                                            height: 1.4">
+      </a-mixin>
+      <a-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20;
+                                     innerRadius: 0.14"
+               material="color: gray"></a-mixin>
+      <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
+    </a-asset>
+    <a-scene stats="true">
 
       <!-- Controls -->
-      <vr-object camera="fov: 45" look-controls>
-        <vr-object mixin="cursor" position="0 0 -3"
-                   cursor="timeout: 1500; fuse: true">
-          <vr-animation begin="hovering" easing="ease-in" attribute="scale"
-                        from="1 1 1" to="0.2 0.2 0.2" dur="1500">
-          </vr-animation>
-        </vr-object>
-      </vr-object>
+      <a-object camera="fov: 45" look-controls>
+        <a-object mixin="cursor" position="0 0 -3"
+                  cursor="timeout: 1500; fuse: true">
+          <a-animation begin="hovering" easing="ease-in" attribute="scale"
+                       from="1 1 1" to="0.2 0.2 0.2" dur="1500">
+          </a-animation>
+        </a-object>
+      </a-object>
 
       <!-- Pano -->
-      <vr-object id="holder" geometry="primitive: sphere; radius: 10;"
-                 material="shader: flat" scale="1 1 -1"></vr-object>
+      <a-object id="holder" geometry="primitive: sphere; radius: 10;"
+                material="shader: flat" scale="1 1 -1"></a-object>
 
       <!-- Links to panos -->
-      <vr-object id="links" position="-1 -0.3 -4"></vr-object>
-    </vr-scene>
+      <a-object id="links" position="-1 -0.3 -4"></a-object>
+    </a-scene>
 
     <script>
       (function () {
@@ -66,7 +66,7 @@
         ];
 
         var links = document.querySelector('#links');
-        var scene = document.querySelector('vr-scene');
+        var scene = document.querySelector('a-scene');
         var holder = document.querySelector('#holder');
         var width = 1.0;
         var height = 1.0;
@@ -77,7 +77,7 @@
           // Arrange the links horizontally without any overlaps
           var xPos = idx * width * 1.5;
 
-          var el = document.createElement('vr-object');
+          var el = document.createElement('a-object');
           el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
           el.setAttribute('mixin', 'link');

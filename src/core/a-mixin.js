@@ -1,14 +1,14 @@
 /* global HTMLElement */
-var registerElement = require('../vr-register-element').registerElement;
+var registerElement = require('../a-register-element').registerElement;
 
-var VRComponents = require('./components').components;
-var VRNode = require('./vr-node');
+var AComponents = require('./components').components;
+var ANode = require('./a-node');
 
 module.exports = registerElement(
-  'vr-mixin',
+  'a-mixin',
   {
     prototype: Object.create(
-      VRNode.prototype,
+      ANode.prototype,
       {
         attachedCallback: {
           value: function () {
@@ -19,7 +19,7 @@ module.exports = registerElement(
 
         setAttribute: {
           value: function (attr, value) {
-            var component = VRComponents[attr];
+            var component = AComponents[attr];
             if (component && typeof value === 'object') {
               value = component.stringifyAttributes(value);
             }
@@ -30,7 +30,7 @@ module.exports = registerElement(
 
         getAttribute: {
           value: function (attr) {
-            var component = VRComponents[attr];
+            var component = AComponents[attr];
             var value = HTMLElement.prototype.getAttribute.call(this, attr);
             if (!component || typeof value !== 'string') { return value; }
             return component.parseAttributesString(value);

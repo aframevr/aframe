@@ -1,15 +1,15 @@
 /* global HTMLElement */
-var re = require('../vr-register-element');
+var re = require('../a-register-element');
 var registerElement = re.registerElement;
 var isNode = re.isNode;
 
+var AComponents = require('./components').components;
+var ANode = require('./a-node');
 var debug = require('../utils/debug');
 var THREE = require('../../lib/three');
-var VRComponents = require('./components').components;
-var VRNode = require('./vr-node');
 
-var log = debug('core:vr-object');
-var error = debug('core:vr-object:error');
+var log = debug('core:a-object');
+var error = debug('core:a-object:error');
 var warn = debug('components:material:warn');
 
 /**
@@ -146,12 +146,12 @@ var proto = {
         attach();
         return;
       }
-      // If the parent isn't a VR node but eventually it will be
+      // If the parent isn't an `ANode` but eventually it will be
       // when a templated element is created, we want to attach
-      // this element to the parent then
+      // this element to the parent then.
       parent.addEventListener('nodeready', attach);
       function attach () {
-        // To prevent an object to attach itself multiple times to the parent
+        // To prevent an object to attach itself multiple times to the parent.
         self.attachedToParent = true;
         parent.add(self);
       }
@@ -170,7 +170,7 @@ var proto = {
       // Components initialization
       this.updateComponents();
       // Call the parent class
-      VRNode.prototype.load.call(this);
+      ANode.prototype.load.call(this);
     },
     writable: window.debug
   },
@@ -217,11 +217,11 @@ var proto = {
     value: function (name, isDependency) {
       // If it's not a component name or
       // If the component is already initialized
-      if (!VRComponents[name] || this.components[name]) { return; }
+      if (!AComponents[name] || this.components[name]) { return; }
       // If the component is not defined for the element
       if (!this.isComponentDefined(name) && !isDependency) { return; }
       this.initComponentDependencies(name);
-      this.components[name] = new VRComponents[name].Component(this);
+      this.components[name] = new AComponents[name].Component(this);
       log('Component initialized: %s', name);
     }
   },
@@ -229,11 +229,11 @@ var proto = {
   initComponentDependencies: {
     value: function (name) {
       var self = this;
-      var component = VRComponents[name];
+      var component = AComponents[name];
       var dependencies;
       // If the component doesn't exist
       if (!component) { return; }
-      dependencies = VRComponents[name].dependencies;
+      dependencies = AComponents[name].dependencies;
       if (!dependencies) { return; }
       dependencies.forEach(function (component) {
         self.initComponent(component, true);
@@ -244,7 +244,7 @@ var proto = {
   updateComponents: {
     value: function () {
       var self = this;
-      var components = Object.keys(VRComponents);
+      var components = Object.keys(AComponents);
       // Updates components
       components.forEach(updateComponent);
       function updateComponent (name) {
@@ -297,7 +297,7 @@ var proto = {
 
   removeAttribute: {
     value: function (attr) {
-      var component = VRComponents[attr];
+      var component = AComponents[attr];
       if (component) { this.setEntityAttribute(attr, undefined, null); }
       HTMLElement.prototype.removeAttribute.call(this, attr);
     },
@@ -338,7 +338,7 @@ var proto = {
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
-      var component = VRComponents[attr];
+      var component = AComponents[attr];
       oldVal = oldVal || this.getAttribute(attr);
       // When creating objects programatically and setting attributes
       // the object is not part of the scene until is inserted in the
@@ -374,7 +374,7 @@ var proto = {
   setAttribute: {
     value: function (attr, newValue, componentAttrValue) {
       var self = this;
-      var component = VRComponents[attr];
+      var component = AComponents[attr];
       var newValueStr = newValue;
       // Make sure we send a string to native setAttribute
       // It updates one attribute of the component
@@ -383,7 +383,7 @@ var proto = {
         newValue = this.setComponentAttribute(attr, newValue, componentAttrValue);
         callSuper();
       } else { // It updates the whole attribute set
-        // We need to call first on VRNode to make sure mixins are updated
+        // We need to call first on Anode to make sure mixins are updated
         // before updating components
         callSuper();
         this.setEntityAttribute(attr, undefined, newValue);
@@ -391,7 +391,7 @@ var proto = {
 
       function callSuper () {
         if (component) { newValueStr = component.stringifyAttributes(newValue); }
-        VRNode.prototype.setAttribute.call(self, attr, newValueStr);
+        ANode.prototype.setAttribute.call(self, attr, newValueStr);
       }
     },
     writable: window.debug
@@ -407,7 +407,7 @@ var proto = {
    */
   getAttribute: {
     value: function (attr) {
-      var component = VRComponents[attr];
+      var component = AComponents[attr];
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parseAttributesString(value);
@@ -468,6 +468,6 @@ var proto = {
   }
 };
 
-module.exports = registerElement('vr-object', {
-  prototype: Object.create(VRNode.prototype, proto)
+module.exports = registerElement('a-object', {
+  prototype: Object.create(ANode.prototype, proto)
 });

@@ -1,5 +1,5 @@
 var styleParser = require('style-attr');
-var utils = require('../vr-utils');
+var utils = require('../utils/');
 
 /**
  * Component class definition.

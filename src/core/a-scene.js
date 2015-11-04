@@ -1,10 +1,10 @@
 /* global MessageChannel, performance, Promise */
-var re = require('../vr-register-element');
+var re = require('../a-register-element');
 var RStats = require('../../lib/vendor/rStats');
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
-var utils = require('../vr-utils');
-var VRObject = require('./vr-object');
+var utils = require('../utils/');
+var AObject = require('./a-object');
 var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
 var isNode = re.isNode;
@@ -23,7 +23,7 @@ var registerElement = re.registerElement;
  * @member {bool} insideIframe
  * @member {bool} insideLoader
  * @member {bool} isScene - Differentiates this as a scene object as opposed
-           to other VRObjects.
+           to other `AObject`s.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - The root three.js Scene object.
  * @member {object} monoRenderer
@@ -36,8 +36,8 @@ var registerElement = re.registerElement;
  * @member {object} vrButton
  * @member {object} wakelock
  */
-var VRScene = module.exports = registerElement('vr-scene', {
-  prototype: Object.create(VRObject.prototype, {
+var AScene = module.exports = registerElement('a-scene', {
+  prototype: Object.create(AObject.prototype, {
     createdCallback: {
       value: function () {
         this.behaviors = [];
@@ -45,8 +45,8 @@ var VRScene = module.exports = registerElement('vr-scene', {
         this.insideIframe = window.top !== window.self;
         this.insideLoader = false;
         this.isScene = true;
-        this.object3D = VRScene.scene || new THREE.Scene();
-        VRScene.scene = this.object3D;
+        this.object3D = AScene.scene || new THREE.Scene();
+        AScene.scene = this.object3D;
         this.vrButton = null;
       }
     },
@@ -114,7 +114,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
         var self = this;
         var elementLoadedCallback = this.elementLoadedCallback.bind(this);
         this.pendingElements = 0;
-        var assets = document.querySelector('vr-assets');
+        var assets = document.querySelector('a-assets');
         if (assets && !assets.hasLoaded) {
           this.pendingElements++;
           attachEventListener(assets);
@@ -202,8 +202,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
         if (this.vrButton) { return; }
         var vrButton = this.vrButton = document.createElement('button');
         vrButton.textContent = 'Enter VR';
-        vrButton.classList.add('button');
-        vrButton.classList.add('enter-vr');
+        vrButton.className = 'a-button a-enter-vr-button';
         document.body.appendChild(vrButton);
         vrButton.addEventListener('click', this.enterVR.bind(this));
       }
@@ -267,7 +266,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
         // and to prevent triggering loaded if there are still
         // pending elements to be loaded
         if (this.hasLoaded || this.pendingElements !== 0) { return; }
-        VRObject.prototype.load.call(this);
+        AObject.prototype.load.call(this);
       }
     },
 
@@ -375,7 +374,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
     setupCanvas: {
       value: function () {
         var canvas = this.canvas = document.createElement('canvas');
-        canvas.classList.add('vr-canvas');
+        canvas.classList.add('a-canvas');
         // Prevents overscroll on mobile devices.
         canvas.addEventListener('touchmove', function (evt) {
           evt.preventDefault();
@@ -400,9 +399,9 @@ var VRScene = module.exports = registerElement('vr-scene', {
         if (this.cameraEl) { return; }
 
         // DOM calls to create camera.
-        cameraWrapperEl = document.createElement('vr-object');
+        cameraWrapperEl = document.createElement('a-object');
         cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 10});
-        defaultCamera = document.createElement('vr-object');
+        defaultCamera = document.createElement('a-object');
         defaultCamera.setAttribute('camera', {fov: 45});
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
@@ -421,13 +420,13 @@ var VRScene = module.exports = registerElement('vr-scene', {
      */
     setupDefaultLights: {
       value: function () {
-        var ambientLight = document.createElement('vr-object');
+        var ambientLight = document.createElement('a-object');
         ambientLight.setAttribute('light',
                                   {color: '#bebebe', type: 'ambient'});
         ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(ambientLight);
 
-        var directionalLight = document.createElement('vr-object');
+        var directionalLight = document.createElement('a-object');
         directionalLight.setAttribute('light', {intensity: 2.5});
         directionalLight.setAttribute('position', {x: -10, y: 20, z: 10});
         directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
@@ -463,13 +462,13 @@ var VRScene = module.exports = registerElement('vr-scene', {
       value: function () {
         var canvas = this.canvas;
         var renderer = this.renderer = this.monoRenderer =
-          (VRScene && VRScene.renderer) ||
+          (AScene && AScene.renderer) ||
           // To prevent creating multiple rendering contexts.
           new THREE.WebGLRenderer({canvas: canvas, antialias: true,
                                    alpha: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        VRScene.renderer = renderer;
+        AScene.renderer = renderer;
         this.stereoRenderer = new THREE.VREffect(renderer);
       },
       writable: window.debug

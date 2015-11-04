@@ -3,24 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Texture</title>
-    <meta name="description" content="Texture — vr-markup">
-    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <meta name="description" content="Texture — A-Frame Core">
+    <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
-    <script src="../../build/vr-markup.js"></script>
+    <script src="../../build/aframe-core.js"></script>
   </head>
   <body>
-    <vr-assets>
+    <a-assets>
       <img class="louvre" src="../_images/pano/louvre.jpg">
-      <vr-mixin id="pano" geometry="primitive: sphere"
-                material="src: .louvre; shader: flat"
-                scale="1 1 -1"
-      ></vr-mixin>
-    </vr-assets>
-    <vr-scene stats="true">
-      <vr-object>
-        <vr-object camera="fov: 45" look-controls></vr-object>
-      </vr-object>
-      <vr-object mixin="pano"></vr-object>
-    </vr-scene>
+      <a-mixin id="pano" geometry="primitive: sphere"
+               material="src: .louvre; shader: flat"
+               scale="1 1 -1"></a-mixin>
+    </a-assets>
+    <a-scene stats="true">
+      <a-object>
+        <a-object camera="fov: 45" look-controls></a-object>
+      </a-object>
+      <a-object mixin="pano"></a-object>
+    </a-scene>
   </body>
 </html>

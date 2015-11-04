@@ -3,58 +3,58 @@
   <head>
     <meta charset="utf-8">
     <title>Visibility</title>
-    <meta name="description" content="Visibility — vr-markup">
-    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <meta name="description" content="Visibility — A-Frame Core">
+    <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
-    <script src="../../build/vr-markup.js"></script>
+    <script src="../../build/aframe-core.js"></script>
   </head>
   <body>
-    <vr-assets>
-      <vr-mixin id="cube" geometry="primitive: box"></vr-mixin>
-      <vr-mixin id="cube-hovered" material="color: pink"></vr-mixin>
-      <vr-mixin id="cube-selected" material="color: cyan"></vr-mixin>
-      <vr-mixin id="red" material="color: red"></vr-mixin>
-      <vr-mixin id="green" material="color: green"></vr-mixin>
-      <vr-mixin id="blue" material="color: blue"></vr-mixin>
-      <vr-mixin id="yellow" material="color: yellow"></vr-mixin>
-      <vr-mixin id="sphere" geometry="primitive: sphere"></vr-mixin>
-    </vr-assets>
+    <a-assets>
+      <a-mixin id="cube" geometry="primitive: box"></a-mixin>
+      <a-mixin id="cube-hovered" material="color: pink"></a-mixin>
+      <a-mixin id="cube-selected" material="color: cyan"></a-mixin>
+      <a-mixin id="red" material="color: red"></a-mixin>
+      <a-mixin id="green" material="color: green"></a-mixin>
+      <a-mixin id="blue" material="color: blue"></a-mixin>
+      <a-mixin id="yellow" material="color: yellow"></a-mixin>
+      <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
+    </a-assets>
 
-    <vr-scene stats="true">
-      <vr-object position="0 0 20">
-        <vr-object camera="fov: 45" look-controls wasd-controls>
-          <vr-object position="0 0 -5"
+    <a-scene stats="true">
+      <a-object position="0 0 20">
+        <a-object camera="fov: 45" look-controls wasd-controls>
+          <a-object position="0 0 -5"
                      geometry="primitive: ring; outerRadius: 0.30;
                                innerRadius: 0.20"
                      material="color: red; shader: flat"
-                     cursor="maxDistance: 30"></vr-object>
-        </vr-object>
-      </vr-object>
+                     cursor="maxDistance: 30"></a-object>
+        </a-object>
+      </a-object>
 
-      <vr-object id="blueCube"
+      <a-object id="blueCube"
         position="5 0 0"
         material="color: blue"
         geometry="primitive: box"
-        rotation="25 25 0"></vr-object>
+        rotation="25 25 0"></a-object>
 
-      <vr-object id="redSphere"
+      <a-object id="redSphere"
         position="5 0 0"
         material="color: red"
         geometry="primitive: sphere; radius: 5"
-        visible="false"></vr-object>
+        visible="false"></a-object>
 
-      <vr-object id="greenCylinder"
+      <a-object id="greenCylinder"
         position="-7 0 0"
         rotation="25 25 0"
         material="color: green"
-        geometry="primitive: cylinder; radius: 5"></vr-object>
+        geometry="primitive: cylinder; radius: 5"></a-object>
 
-      <vr-object id="pinkTorus"
+      <a-object id="pinkTorus"
         position="16 0 2"
         rotation="25 -25 0"
         material="color: hotpink"
-        geometry="primitive: torus; radius: 2.5"></vr-object>
-    </vr-scene>
+        geometry="primitive: torus; radius: 2.5"></a-object>
+    </a-scene>
     <script>
       (function () {
         var blueCube = document.querySelector('#blueCube');

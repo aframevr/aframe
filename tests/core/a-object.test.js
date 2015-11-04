@@ -1,16 +1,16 @@
 /* global assert, process, setup, sinon, suite, test */
-var VRObject = require('core/vr-object');
-var THREE = require('vr-markup').THREE;
-var helpers = require('../helpers.js');
+var AObject = require('core/a-object');
+var THREE = require('aframe-core').THREE;
+var helpers = require('../helpers');
 
 var entityFactory = helpers.entityFactory;
 var mixinFactory = helpers.mixinFactory;
 
-suite('vr-object', function () {
+suite('a-object', function () {
   'use strict';
 
   test('adds itself to parent when attached', function (done) {
-    var el = document.createElement('vr-object');
+    var el = document.createElement('a-object');
     var parentEl = entityFactory();
 
     el.object3D = new THREE.Mesh();
@@ -34,9 +34,9 @@ suite('vr-object', function () {
 
     test('calls load method', function (done) {
       var el = entityFactory();
-      this.sinon.spy(VRObject.prototype, 'load');
+      this.sinon.spy(AObject.prototype, 'load');
       el.addEventListener('loaded', function () {
-        sinon.assert.called(VRObject.prototype.load);
+        sinon.assert.called(AObject.prototype.load);
         done();
       });
     });
@@ -97,7 +97,7 @@ suite('vr-object', function () {
   suite('detachedCallback', function () {
     test('removes itself from object parent', function (done) {
       var parentEl = entityFactory();
-      var el = document.createElement('vr-object');
+      var el = document.createElement('a-object');
 
       parentEl.addEventListener('loaded', function () {
         parentEl.appendChild(el);

@@ -1,5 +1,4 @@
 /* global CustomEvent */
-
 var objectAssign = require('object-assign');
 
 /**
@@ -168,3 +167,6 @@ module.exports.getElData = function (el, defaults) {
   }
   return data;
 };
+
+// Must be at bottom to avoid circular dependency.
+module.exports.srcLoader = require('./src-loader');

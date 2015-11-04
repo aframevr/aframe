@@ -1,12 +1,12 @@
 /* global HTMLElement */
 
-var re = require('../vr-register-element');
+var re = require('../a-register-element');
 var registerElement = re.registerElement;
-var utils = require('../vr-utils');
+var utils = require('../utils/');
 var isNode = re.isNode;
 
 module.exports = registerElement(
-  'vr-assets',
+  'a-assets',
   {
     prototype: Object.create(
       HTMLElement.prototype,

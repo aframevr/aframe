@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers.js').entityFactory;
+var entityFactory = require('../helpers').entityFactory;
 
 suite('light', function () {
   'use strict';

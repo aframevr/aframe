@@ -1,6 +1,6 @@
 var coordinateParser = require('../utils/coordinate-parser');
 var registerComponent = require('../core/register-component').registerComponent;
-var utils = require('../vr-utils');
+var utils = require('../utils/');
 
 var proto = {
   defaults: {

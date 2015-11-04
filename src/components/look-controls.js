@@ -23,7 +23,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   setupMouseControls: {
     value: function () {
-      this.canvasEl = document.querySelector('vr-scene').canvas;
+      this.canvasEl = document.querySelector('a-scene').canvas;
       // The canvas where the scene is painted
       this.mouseDown = false;
       this.pitchObject = new THREE.Object3D();
@@ -44,7 +44,8 @@ module.exports.Component = registerComponent('look-controls', {
 
   attachEventListeners: {
     value: function () {
-      var canvasEl = document.querySelector('vr-scene').canvas;
+      var canvasEl = document.querySelector('a-scene').canvas;
+
       // Mouse Events
       canvasEl.addEventListener('mousedown', this.onMouseDown.bind(this), true);
       canvasEl.addEventListener('mousemove', this.onMouseMove.bind(this), true);
