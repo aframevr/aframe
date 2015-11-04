@@ -161,6 +161,7 @@ var VRScene = module.exports = registerElement(
 
         createEnterVrButton: {
           value: function () {
+            if (this.vrButton) { return; }
             var vrButton = this.vrButton = document.createElement('button');
             vrButton.textContent = 'Enter VR';
             vrButton.className = 'vr-button';
