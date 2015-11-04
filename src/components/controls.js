@@ -7,6 +7,8 @@ var PI_2 = Math.PI / 2;
 module.exports.Component = registerComponent('controls', {
   defaults: {
     value: {
+      locomotion: true,
+      mouseLook: true,
       acceleration: 65
     }
   },
@@ -67,7 +69,7 @@ module.exports.Component = registerComponent('controls', {
       var rotation = el.getComputedAttribute('rotation');
       var rotZ = rotation.z;
 
-      if (this.data.locomotion === 'true') {
+      if (this.data.locomotion) {
         if (keys[65]) { // Left
           velocity.x -= acceleration * delta;
         }
@@ -123,7 +125,7 @@ module.exports.Component = registerComponent('controls', {
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var mouseDown = this.mouseDown;
-      var mouseLook = this.data.mouselook === 'true';
+      var mouseLook = this.data.mouseLook;
 
       if (!mouseDown || !mouseLook) { return; }
 
