@@ -5,6 +5,7 @@
     <title>Events</title>
     <meta name="description" content="Events — vr-components">
     <script src="../../build/vr-components.js"></script>
+    <link rel="import" href="templates/index.html">
   </head>
   <body>
     <vr-assets>
@@ -16,7 +17,6 @@
       <vr-cursor-gaze></vr-cursor-gaze>
 
       <vr-pano-holder src="images/city.jpg"></vr-pano-holder>
-      <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: 10" material="receiveLight: false; src: url(images/city.jpg)"></vr-object>
 
       <vr-pano-nav id="links" position="-1 -0.3 -4">
         <vr-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
@@ -29,51 +29,6 @@
         <vr-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
         </vr-pano-link>
       </vr-pano-nav>
-
-      <template is="vr-template" element="vr-pano-link" src="" holderSrc="">
-        <vr-object mixin="link" material="receiveLight: false; src: url(${src})">
-          <vr-click target="#holder" material="receiveLight: false; src: url(${holderSrc})"></vr-click>
-          <vr-click state="selected"></vr-click>
-        </vr-object>
-      </template>
-
-      <template is="vr-template"
-                element="vr-cursor-gaze"
-                fov="45"
-                mouselook="true"
-                locomotion="true"
-                colorDefault="gray"
-                colorHover="springgreen"
-                dur="1500"
-                from="1 1 1"
-                to="0.2 0.2 0.2"
-                primitive="ring"
-                outerRadius="0.20"
-                innerRadius="0.14"
-                timeout="1500">
-        <vr-object camera="fov: ${fov}"
-                   controls="mouselook: ${mouselook}; locomotion: ${locomotion}">
-          <vr-object id="cursor"
-                     position="0 0 -3"
-                     geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
-                     material="color: ${colorDefault}"
-                     cursor="timeout: ${timeout}; fuse: true">
-            <vr-mouseenter material="color: ${colorHover}"></vr-mouseenter>
-            <vr-mouseleave material="color: ${colorDefault}"></vr-mouseleave>
-            <vr-animation begin="hovering"
-                          easing="ease-in"
-                          attribute="scale"
-                          from="${from}"
-                          to="${to}"
-                          dur="${dur}"></vr-animation>
-          </vr-object>
-        </vr-object>
-      </template>
-
-      <template is="vr-template" element="vr-pano-nav">
-        <vr-object></vr-object>
-      </template>
-
     </vr-scene>
   </body>
 </html>

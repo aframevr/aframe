@@ -147,13 +147,8 @@ var VREvent = registerElement(
 
               self.detachEventListener(targetEl);
 
-              console.log('adding event listener for', self.type, targetEl);
-
               var listenerFunc = self.updateTargetElAttributes(targetEl);
               self.listeners[targetEl] = listenerFunc;
-              // targetEl.parentNode.addEventListener('click', function (e) {
-              //   console.error('º––received click', e.target, e.detail.target);
-              // });
               self.sourceNode = getRealNode(self);
               self.sourceNode.addEventListener(self.type, listenerFunc, true);
               self.attached = true;
@@ -178,10 +173,7 @@ var VREvent = registerElement(
         updateTargetElAttributes: {
           value: function (targetEl) {
             var self = this;
-            return function (e) {
-              // if (!e || e.detail.target !== targetEl) { return; }
-              console.error('ººººººººººº targetEl', self.type, self);
-
+            return function () {
               utils.$$(self.attributes).forEach(function (attr) {
                 if (attr.name in self.attributeBlacklist) { return; }
 
