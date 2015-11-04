@@ -60,6 +60,7 @@ module.exports.Component = registerComponent('material', {
         // Physical material.
         material = this.updateOrCreateMaterial({
           color: new THREE.Color(data.color),
+          side: this.getSides(),
           opacity: data.opacity,
           transparent: data.opacity < 1,
           metalness: data.metalness,
@@ -69,7 +70,7 @@ module.exports.Component = registerComponent('material', {
         material = this.updateOrCreateMaterial({
           // Basic material.
           color: new THREE.Color(data.color),
-          side: THREE.DoubleSide,
+          side: this.getSides(),
           opacity: data.opacity,
           transparent: data.opacity < 1
         }, 'MeshBasicMaterial');
@@ -108,6 +109,23 @@ module.exports.Component = registerComponent('material', {
       }
       this.material = material;
       return material;
+    }
+  },
+
+  /**
+   * Returns an integer for which new material face sides will be rendered.
+   *
+   * @returns {Integer} `THREE.DoubleSide` (`0`) or `THREE.FrontSide` (`2`)
+   */
+  getSides: {
+    value: function () {
+      var geometry = this.el.components.geometry;
+      if (geometry && geometry.data.openEnded) {
+        // For performance reasons, we special case open-ended cylinders
+        // for rendering both faces.
+        return THREE.DoubleSide;
+      }
+      return THREE.FrontSide;
     }
   },
 
