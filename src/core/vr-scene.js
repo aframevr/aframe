@@ -270,6 +270,8 @@ var VRScene = module.exports = registerElement(
           value: function () {
             var canvas = this.canvas = document.createElement('canvas');
             canvas.classList.add('vr-canvas');
+            // Prevents overscroll on mobile devices
+            canvas.addEventListener('touchmove', function (evt) { evt.preventDefault(); });
             document.body.appendChild(canvas);
             window.addEventListener('resize', this.resizeCanvas.bind(this), false);
           }
