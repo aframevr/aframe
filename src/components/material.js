@@ -6,10 +6,15 @@ var utils = require('../vr-utils');
 /**
  * Material component.
  *
- * @params {string} color
- * @params {number} metalness
+ * @params {string} color - base color of the PBR material
+ * @params {number} height - the height of the texture image
+ * @params {number} metalness - PBR parameter
  * @params {number} opacity - [0-1].
- * @params {number} roughness
+ * @params {boolean} receiveLight - Determines if the material is shaded
+ * @params {number} roughness - PBR parameter
+ * @params {string} src - The src to be used as a texture - url() or CSS Selector
+ * @params {boolean} transparent - If the alpha channel of a texture image is rendered transparent
+ * @params {number} width - the width of the texture image
  * @namespace material
  */
 module.exports.Component = registerComponent('material', {
@@ -22,6 +27,7 @@ module.exports.Component = registerComponent('material', {
       receiveLight: true,
       roughness: 0.5,
       src: '',
+      transparent: false,
       width: 640
     }
   },
@@ -74,7 +80,7 @@ module.exports.Component = registerComponent('material', {
           color: new THREE.Color(data.color),
           side: this.getSides(),
           opacity: data.opacity,
-          transparent: data.opacity < 1
+          transparent: data.transparent
         }, 'MeshBasicMaterial');
       }
 
