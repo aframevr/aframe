@@ -1,5 +1,3 @@
-require('webvr-polyfill');
-
 var registerElement = require('./vr-register-element');
 
 var VRObject = require('./core/vr-object');
@@ -9,6 +7,7 @@ var VRNode = require('./core/vr-node');
 // use three.js without alteration
 var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
+require('webvr-polyfill');
 
 require('./core/vr-animation');
 require('./core/vr-assets');
