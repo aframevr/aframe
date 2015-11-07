@@ -10,7 +10,7 @@
     "style-attr": "^1.0.1",
     "three-dev": "0.74.0-beta1",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "caseyyee/webvr-polyfill"
+    "webvr-polyfill": "cvan/webvr-polyfill#c26e774"
   },
   "devDependencies": {
     "browserify": "^11.0.1",
