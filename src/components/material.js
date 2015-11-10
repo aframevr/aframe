@@ -1,8 +1,10 @@
 /* global Promise */
+var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
-var utils = require('../vr-utils');
+
+var warn = debug('components:material:warn');
 
 var CubeLoader = new THREE.CubeTextureLoader();
 var texturePromises = {};
@@ -238,7 +240,7 @@ function loadImageTexture (material, src, repeat) {
 function createVideoEl (material, src, width, height) {
   var el = material.videoEl || document.createElement('video');
   function onError () {
-    utils.warn('The url "$s" is not a valid image or video', src);
+    warn('The url "$s" is not a valid image or video', src);
   }
   el.width = width;
   el.height = height;

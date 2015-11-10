@@ -53,6 +53,16 @@ If you'd like to hack on this project and don't have access to the npm repos, co
 
     npm login
 
+### Browser console logging
+
+If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
+
+    localStorage.logs = 1
+
+And to disable:
+
+    localStorage.logs = 0
+
 ## Running tests
 
     npm test

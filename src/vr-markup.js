@@ -1,3 +1,5 @@
+var debug = require('./utils/debug');
+
 var registerElement = require('./vr-register-element');
 
 var VRObject = require('./core/vr-object');
@@ -22,6 +24,7 @@ require('./core/vr-mixin');
 require('./core/vr-scene');
 
 module.exports = {
+  debug: debug,
   THREE: THREE,
   VRNode: VRNode,
   VRObject: VRObject,

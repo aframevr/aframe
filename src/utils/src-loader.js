@@ -1,5 +1,7 @@
 /* global Image */
-var utils = require('../vr-utils');
+var debug = require('./debug');
+
+var warn = debug('utils:src-loader:warn');
 
 /**
  * Validates a texture, either as a selector or as a URL.
@@ -39,7 +41,7 @@ function validateSrc (src, isImageCb, isVideoCb) {
   if (isVideo) { return isVideoCb(textureEl); }
 
   // src is a valid selector but doesn't match with a <img> or <video> element.
-  utils.warn('"%s" does not point to a valid <img> or <video> element', src);
+  warn('"%s" does not point to a valid <img> or <video> element', src);
 }
 
 /**
@@ -85,7 +87,7 @@ function validateCubemapSrc (src, cb) {
     return cb(aCubemap.srcs);
   }
   // Else if aCubeMap is not a <a-cubemap>.
-  utils.warn('Selector "%s" does not point to <a-cubemap>', src);
+  warn('Selector "%s" does not point to <a-cubemap>', src);
 }
 
 /**
@@ -125,11 +127,11 @@ function validateAndGetQuerySelector (selector) {
   try {
     var el = document.querySelector(selector);
     if (!el) {
-      utils.warn('No element was found matching the selector: "%s"', selector);
+      warn('No element was found matching the selector: "%s"', selector);
     }
     return el;
   } catch (e) {  // Capture exception if it's not a valid selector.
-    utils.warn('"%s" is not a valid selector', selector);
+    warn('"%s" is not a valid selector', selector);
     return undefined;
   }
 }
