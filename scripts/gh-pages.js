@@ -49,8 +49,19 @@ repo.ghPagesUrl = 'https://' + repo.username + '.github.io/' + repo.name + '/';
 
 console.log('Publishing to', repo.url);
 
-ghpages.clean();  // Wipe out the checkout from scratch every time in case we change repos.
+function getCacheDir (repoUsername, repoName) {
+  repoUsername = (repoUsername || '').toLowerCase().trim();
+  repoName = (repoName || '').toLowerCase().trim();
+  var pathAbsolute = path.resolve(
+    __dirname,
+    '..',
+    '.cache', 'gh-pages', repoUsername, repoName
+  );
+  return path.relative(process.cwd(), pathAbsolute);
+}
+
 ghpages.publish(path.join(process.cwd(), 'gh-pages'), {
+  clone: getCacheDir(repo.username, repo.name),
   repo: repo.url,
   dotfiles: true,
   logger: function (message) {
