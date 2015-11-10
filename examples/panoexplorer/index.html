@@ -3,27 +3,27 @@
   <head>
     <meta charset="utf-8">
     <title>Events</title>
-    <meta name="description" content="Events — a-components">
-    <script src="../../dist/a-components.min.js"></script>
+    <meta name="description" content="Events — vr-components">
+    <script src="../../dist/vr-components.min.js"></script>
     <link rel="import" href="templates/index.html">
   </head>
   <body>
-    <a-scene>
-      <a-cursor-gaze></a-cursor-gaze>
+    <vr-scene>
+      <vr-cursor-gaze></vr-cursor-gaze>
 
-      <a-pano-holder src="images/city.jpg"></a-pano-holder>
+      <vr-pano-holder src="images/city.jpg"></vr-pano-holder>
 
-      <a-object id="links" position="-1 -0.3 -4">
-        <a-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
-        </a-pano-link>
+      <vr-object id="links" position="-1 -0.3 -4">
+        <vr-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
+        </vr-pano-link>
 
-        <a-pano-link position="1.5 0 0" src="images/thumb-city.png" holderSrc="images/city.jpg">
-          <a-load state="selected"></a-load>
-        </a-pano-link>
+        <vr-pano-link position="1.5 0 0" src="images/thumb-city.png" holderSrc="images/city.jpg">
+          <vr-load state="selected"></vr-load>
+        </vr-pano-link>
 
-        <a-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
-        </a-pano-link>
-      </a-object>
-    </a-scene>
+        <vr-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
+        </vr-pano-link>
+      </vr-object>
+    </vr-scene>
   </body>
 </html>

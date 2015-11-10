@@ -4,49 +4,49 @@
   <meta charset="utf-8">
   <title>Lights</title>
   <meta name="description" content="Lights">
-  <script src="../../dist/a-components.min.js"></script>
+  <script src="../../dist/vr-components.min.js"></script>
 </head>
 
 <body>
-  <a-assets>
-    <a-mixin id="light" geometry="primitive: sphere; radius: 1.5"
+  <vr-assets>
+    <vr-mixin id="light" geometry="primitive: sphere; radius: 1.5"
               material="color: #FFF; receiveLight: false"
               light="color: #DDDDFF; distance: 120; intensity: 2; type: point">
-    </a-mixin>
-    <a-mixin id="torus-knot" geometry="primitive: torusKnot"
-              material="color: red"></a-mixin>
-  </a-assets>
-  <a-scene stats="true">
+    </vr-mixin>
+    <vr-mixin id="torus-knot" geometry="primitive: torusKnot"
+              material="color: red"></vr-mixin>
+  </vr-assets>
+  <vr-scene stats="true">
     <!-- Camera. -->
-    <a-object position="0 0 80" camera="fov: 45"
-               controls="mouselook: true; locomotion: true"></a-object>
+    <vr-object position="0 0 80" camera="fov: 45"
+               controls="mouselook: true; locomotion: true"></vr-object>
 
     <!-- Skysphere. -->
-    <a-object geometry="primitive: sphere; radius: 300"
+    <vr-object geometry="primitive: sphere; radius: 300"
                material="color: #111; receiveLight: false"
-               scale="-1 -1 -1"></a-object>
+               scale="-1 -1 -1"></vr-object>
 
     <!-- Lights. -->
-    <a-object position="0 0 0">
-      <a-animation attribute="rotation" to="0 0 360"
+    <vr-object position="0 0 0">
+      <vr-animation attribute="rotation" to="0 0 360"
                     repeat="indefinite" easing="linear" dur="4096">
-      </a-animation>
-      <a-object mixin="light" position="30 0 0"></a-object>
-    </a-object>
+      </vr-animation>
+      <vr-object mixin="light" position="30 0 0"></vr-object>
+    </vr-object>
 
-    <a-object position="0 0 0">
-      <a-animation attribute="rotation" to="360 0 0"
+    <vr-object position="0 0 0">
+      <vr-animation attribute="rotation" to="360 0 0"
                     repeat="indefinite" easing="linear" dur="4096">
-      </a-animation>
-      <a-object mixin="light" position="0 0 40"></a-object>
-    </a-object>
-  </a-scene>
+      </vr-animation>
+      <vr-object mixin="light" position="0 0 40"></vr-object>
+    </vr-object>
+  </vr-scene>
 
   <script>
-    var scene = document.querySelector('a-scene');
+    var scene = document.querySelector('vr-scene');
 
     for (var i = 0; i < 120; i++) {
-      var obj = document.createElement('a-object');
+      var obj = document.createElement('vr-object');
       obj.setAttribute('geometry', {
         primitive: 'torusKnot',
         radius: Math.random() * 10,
