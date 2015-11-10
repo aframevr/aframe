@@ -1,0 +1,13 @@
+<!doctype html>
+
+<template is="vr-template"
+          element="vr-cubes-repeater"
+          number="1">
+  {% set number = number|int %}
+  {% set offset = offset|int %}
+  {% for i in range(number) %}
+    <vr-object position="-10 {{ offset * i }} 0" rotation="0 45 0" geometry="primitive: box; height: 1" material="color: red"></vr-object>
+    <vr-object position="0 {{ offset * i }} 0" rotation="0 45 0" geometry="primitive: box; height: 1" material="color: green"></vr-object>
+    <vr-object position="10 {{ offset * i }} 0" rotation="0 45 0" geometry="primitive: box; height: 1" material="color: blue"></vr-object>
+  {% endfor %}
+</template>
