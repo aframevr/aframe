@@ -1,3 +1,4 @@
+.cache
 .DS_Store
 build
 gh-pages/
