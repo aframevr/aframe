@@ -89,7 +89,7 @@ function wrapVRObjectMethods (obj) {
   var vrObjectMethods = [
     'attributeChangedCallback',
     'attachedCallback',
-    'dettachedCallback'
+    'detachedCallback'
   ];
   wrapMethods(newObj, vrNodeMethods, obj, VRNode.prototype);
   wrapMethods(newObj, vrObjectMethods, obj, VRObject.prototype);
