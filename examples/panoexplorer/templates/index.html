@@ -14,8 +14,8 @@
 <template is="vr-template"
           element="vr-cursor-gaze"
           fov="45"
-          mouse="true"
-          keyboard="false"
+          look-controls="true"
+          wasd-controls="true"
           colorDefault="gray"
           colorHover="springgreen"
           dur="1500"
@@ -26,8 +26,8 @@
           innerRadius="0.14"
           timeout="1500">
   <vr-object camera="fov: ${fov}"
-             mouse-controls="${mouse}"
-             keyboard-controls="${keyboard}">
+             look-controls="${look-controls}"
+             wasd-controls="${wasd-controls}">
     <vr-object id="cursor"
                position="0 0 -3"
                geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
