@@ -61,9 +61,9 @@ module.exports.mixin = function (dest, source) {
  * It returns the coordinate parsed as an object
  * {x: 3, y: 4, z: -10}.
  *
- * @param  {string} value        String to parse.
- * @param  {object} default      contains the coordinate default values.
- * @return {object}              Parsed coordinate.
+ * @param   {string} value        String to parse.
+ * @param   {object} default      contains the coordinate default values.
+ * @returns {object}              Parsed coordinate.
  */
 module.exports.parseCoordinate = function (value, defaults) {
   defaults = defaults || {};
@@ -109,9 +109,9 @@ module.exports.coerce = function (obj, schema) {
 /**
  * Checks if a and b objects have the same attributes and the values
  * are equal. In the case of primitive types the values are compared directly
- * @param  {} a
- * @param  {} b
- * @return {boolean}   True if objects are equal. False otherwise
+ * @param   {} a
+ * @param   {} b
+ * @returns {boolean}   True if objects are equal. False otherwise
  */
 module.exports.deepEqual = function (a, b) {
   var keysA = Object.keys(a);
@@ -138,4 +138,20 @@ module.exports.isMobile = function () {
     }
   })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
+};
+
+/**
+ * Splits a string into an array based on a delimiter.
+ *
+ * @param   {string=} [str='']        Source string
+ * @param   {string=} [delimiter=' '] Delimiter to use
+ * @returns {array}                   Array of delimited strings
+ */
+module.exports.splitString = function (str, delimiter) {
+  if (typeof delimiter === 'undefined') { delimiter = ' '; }
+  // First collapse the whitespace (or whatever the delimiter is).
+  var regex = new RegExp(delimiter, 'g');
+  str = (str || '').replace(regex, delimiter);
+  // Then split.
+  return str.split(delimiter);
 };
