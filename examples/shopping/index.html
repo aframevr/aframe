@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shopping</title>
+    <meta name="description" content="Shopping - A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+
+      <!-- model -->
+      <vr-object >
+        <vr-model rotation="0 -20 0" scale="3 3 3" position="-1 0 0" src="../_models/man/man.dae">
+          <vr-image src="../_images/radial-shadow-2.png" position="0.1 0 -0.3" rotation="-90 0 0" scale="0.5 0.5 0.5"></vr-image>
+        </vr-model>
+      </vr-object>
+
+      <!-- mozvr -->
+      <vr-image src="../_images/mozvr.png" width="1" height="0.2" position="-4.1 4 -2" scale="4.25 4.25 4.25"></vr-image>
+
+      <!-- price -->
+      <vr-image src="price.png" width="5" height="3.5" position="1.8 4 -2" scale="0.2 0.2 0.2"></vr-image>
+
+      <!-- goggles -->
+      <vr-object position="6 5 -3">
+        <vr-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="750" begin="1000" fill="backwards"></vr-animation>
+        <vr-cylinder color="#101010" height="0.02" rotation="90 0 0"></vr-cylinder>
+        <vr-image src="../_images/goggles.png" width="2" height="1" position="0 0 0.05" scale="0.35 0.35 0.35"></vr-image>
+      </vr-object>
+
+      <!-- menu -->
+      <vr-plane width="6" height="1.2" position="0 0.2 5" color="#FFF">
+        <vr-image src="fall.png" width="2" height="0.5" position="-2.2 0 0.02" scale="0.5 0.5 0.5"></vr-image>
+        <vr-image src="shoes.png" width="0.8" height="0.3" position="1.8 0 0.02" scale="2.75 2.75 2.75"></vr-image>
+      </vr-plane>
+
+
+      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></vr-object>
+      <vr-object light="type: ambient; color: #FFF;"></vr-object>
+
+    </vr-scene>
+  </body>
+</html>
