@@ -27,6 +27,32 @@ var applyData = function (dest, source) {
   return utils.mixin(dest, source);
 };
 
+/**
+ * Converts string from hyphen to camel case
+ * @param  {string} str Input string to be converted
+ * @return {string}     Camel cased string
+ */
+function toCamelCase (str) {
+  return str.replace(/-([a-z])/g, camelCase);
+  function camelCase (g) { return g[1].toUpperCase(); }
+}
+
+/**
+ * Returns the same object but with the keys
+ * converted from hyphen to camelCase e.g: max-value -> maxValue
+ * @param  {object} obj The object wich keys will be camel cased
+ * @return {object}     The object with the keys camel cased
+ */
+function transformKeysToCamelCase (obj) {
+  var keys = Object.keys(obj);
+  var camelCaseObj = {};
+  keys.forEach(function (key) {
+    var camelCaseKey = toCamelCase(key);
+    camelCaseObj[camelCaseKey] = obj[key];
+  });
+  return camelCaseObj;
+}
+
 Component.prototype = {
   /**
    * Parses the data coming from the entity attribute
@@ -97,7 +123,8 @@ Component.prototype = {
 
   parseAttributesString: function (attrs) {
     if (typeof attrs !== 'string') { return attrs; }
-    return styleParser.parse(attrs);
+    // We camel case keys so for instance max-value is equivalent to maxValue
+    return transformKeysToCamelCase(styleParser.parse(attrs));
   },
 
   stringifyAttributes: function (attrs) {
