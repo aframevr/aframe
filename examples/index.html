@@ -21,22 +21,19 @@
         line-height: 2.2rem;
       }
 
-      .note, .note a, .date {
+      .note, .note a {
         color: rgba(255,255,255,0.4);
         font-family: 'Fira Mono', sans-serif;
-      }
-
-      .note {
-        padding-bottom: 2rem;
-        border-bottom: 1px dashed rgba(255,255,255,0.4);
       }
 
       .note a:hover {
         color: white;
       }
 
-      .date {
-        padding-right: 3rem;
+      .view-source {
+        margin-left: 15px;
+        border: none;
+        font-size: 0.8em;
       }
 
       h1 {
@@ -45,12 +42,22 @@
         font-weight: 200;
         text-transform: uppercase;
         letter-spacing: 0.04em;
+        line-height: 3rem;
+        margin: 0;
       }
 
       a {
         color: white;
         text-decoration: none;
         border-bottom: 1px solid rgba(255,255,255,0.6);
+      }
+
+      .links {
+        padding-top: 20px;
+        border-top: 1px dashed rgba(255,255,255,0.4);
+        border-bottom: 1px dashed rgba(255,255,255,0.4);
+        padding-bottom: 20px;
+        margin-bottom: 20px;
       }
 
       .links a {
@@ -65,9 +72,8 @@
       }
 
       #logo-moz {
-        position: absolute;
-        bottom: 3rem;
-        right: 3rem;
+        float: right;
+        margin-right: 5px;
         width: 6rem;
       }
     </style>
@@ -79,22 +85,23 @@
     </p>
 
     <ul class="links">
-      <li><span class="date">20151003</span><a href="animation/">Animation</a></li>
-      <li><span class="date">20151003</span><a href="controls/">Controls</a></li>
-      <li><span class="date">20151003</span><a href="cursor/">Cursor</a></li>
-      <li><span class="date">20151003</span><a href="cubes/">Cubes</a></li>
-      <li><span class="date">20151003</span><a href="cylinders/">Cylinders</a></li>
-      <li><span class="date">20151003</span><a href="lights/">Lights</a></li>
-      <li><span class="date">20151003</span><a href="mixin/">Mixin</a></li>
-      <li><span class="date">20151003</span><a href="model/">Model</a></li>
-      <li><span class="date">20151003</span><a href="opacity/">Opacity</a></li>
-      <li><span class="date">20151003</span><a href="physical/">Physically-Based Materials</a></li>
-      <li><span class="date">20151003</span><a href="panoexplorer/">Pano Explorer</a></li>
-      <li><span class="date">20151003</span><a href="texture/">Texture</a></li>
-      <li><span class="date">20151003</span><a href="video/">Video</a></li>
-      <li><span class="date">20151009</span><a href="visibility/">Visibility</a></li>
+      <li><a href="animation/">Animation</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/animation/index.html">view source</a></li>
+      <li><a href="controls/">Controls</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/controls/index.html">view source</a></li>
+      <li><a href="cursor/">Cursor</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/cursor/index.html">view source</a></li>
+      <li><a href="cubes/">Cubes</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/cubes/index.html">view source</a></li>
+      <li><a href="cylinders/">Cylinders</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/cylinders/index.html">view source</a></li>
+      <li><a href="lights/">Lights</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/lights/index.html">view source</a></li>
+      <li><a href="mixin/">Mixin</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/mixin/index.html">view source</a></li>
+      <li><a href="model/">Model</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/model/index.html">view source</a></li>
+      <li><a href="opacity/">Opacity</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/opacity/index.html">view source</a></li>
+      <li><a href="physical/">Physically-Based Materials</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/physical/index.html">view source</a></li>
+      <li><a href="panoexplorer/">Pano Explorer</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/panoexplorer/index.html">view source</a></li>
+      <li><a href="texture/">Texture</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/texture/index.html">view source</a></li>
+      <li><a href="video/">Video</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/video/index.html">view source</a></li>
+      <li><a href="visibility/">Visibility</a><a class="note view-source" href="https://github.com/MozVR/aframe-core/blob/master/examples/visibility/index.html">view source</a></li>
     </ul>
-
-    <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
+    <footer>
+      <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
+    </footer>
   </body>
 </html>

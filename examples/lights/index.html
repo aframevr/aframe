@@ -20,8 +20,9 @@
   </vr-assets>
   <vr-scene stats="true">
     <!-- Camera. -->
-    <vr-object position="0 0 100" camera="fov: 45"
-               controls="mouselook: true; locomotion: true"></vr-object>
+    <vr-object position="0 0 100" keyboard-controls mouse-controls>
+      <vr-object  camera="fov: 45" hmd-controls></vr-object>
+    <vr-object>
 
     <!-- Skysphere. -->
     <vr-object geometry="primitive: sphere; radius: 300"

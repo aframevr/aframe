@@ -1,5 +1,5 @@
 .rs-base{
-  position: absolute;
+  position: fixed;
   z-index: 10000;
   padding: 10px;
   background-color: #222;

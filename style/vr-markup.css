@@ -1,16 +1,21 @@
-html, body {
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
+html {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 }
 
-.vr-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+body {
   height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hidden {
+  display: none;
 }
 
 vr-scene video, vr-assets video,

@@ -7,6 +7,11 @@ var VRNode = require('./core/vr-node');
 // use three.js without alteration
 var THREE = window.THREE = require('../lib/three');
 var VRUtils = require('./vr-utils');
+
+// Webvr polyfill configuration
+window.WebVRConfig = {
+  TOUCH_PANNER_DISABLED: true
+};
 require('webvr-polyfill');
 
 require('./core/cubemap');

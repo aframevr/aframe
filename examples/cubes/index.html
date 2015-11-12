@@ -10,8 +10,9 @@
   </head>
   <body>
     <vr-scene stats="true">
-      <vr-object position="0 0 20" camera="fov: 45"
-                 controls="mouselook: true; locomotion: true"></vr-object>
+      <vr-object mouse-controls keyboard-controls position="0 0 20">
+        <vr-object camera="fov: 45" hmd-controls></vr-object>
+      </vr-object>
       <vr-object position="-10 0 0" rotation="0 45 0" geometry="primitive: box"
                  material="color: red"></vr-object>
       <vr-object rotation="0 45 0" geometry="primitive: box"

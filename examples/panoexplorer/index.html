@@ -27,13 +27,14 @@
     <vr-scene stats="true">
 
       <!-- Controls -->
-      <vr-object camera="fov: 45" controls="mouselook: true;
-                                            locomotion: false">
-        <vr-object mixin="cursor" position="0 0 -3"
-                   cursor="timeout: 1500; fuse: true">
-          <vr-animation begin="hovering" easing="ease-in" attribute="scale"
-                        from="1 1 1" to="0.2 0.2 0.2" dur="1500">
-          </vr-animation>
+      <vr-object mouse-controls>
+        <vr-object camera="fov: 45" hmd-controls>
+          <vr-object mixin="cursor" position="0 0 -3"
+                     cursor="timeout: 1500; fuse: true">
+            <vr-animation begin="hovering" easing="ease-in" attribute="scale"
+                          from="1 1 1" to="0.2 0.2 0.2" dur="1500">
+            </vr-animation>
+          </vr-object>
         </vr-object>
       </vr-object>
 
