@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cube</title>
+    <meta name="description" content="Cube">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+  <body>
+    <vr-scene stats="true">
+      <!-- Camera. -->
+      <vr-object position="0 1.8 0" keyboard-controls mouse-controls>
+        <vr-object camera="fov: 45" hmd-controls></vr-object>
+      </vr-object>
+
+      <!-- Cube. -->
+      <vr-object geometry="primitive: box" material="color: red"
+                 position="0 0 -20" rotation="0 45 0"></vr-object>
+    </vr-scene>
+  </body>
+</html>

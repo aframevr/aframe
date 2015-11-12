@@ -19,11 +19,14 @@ var texturePromises = {};
  * @params {number} metalness - Parameter for physical/standard material.
  * @params {number} opacity - [0-1].
  * @params {boolean} receiveLight - Determines whether the material is shaded.
+ * @params {number} reflectivity - Parameter for physical/standard material.
+ * @params {string} repeat - X and Y value for size of texture repeating
+           (in UV units).
  * @params {number} roughness - Parameter for physical/standard material.
  * @params {string} src - To load a texture. takes a selector to an img/video
            element or a direct url().
- * @params {boolean} transparent - Whether alpha channel of texture image is
-           rendered transparent.
+ * @params {boolean} transparent - Whether to render transparent the alpha
+           channel of a texture (e.g., .png).
  * @params {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
@@ -36,6 +39,7 @@ module.exports.Component = registerComponent('material', {
       opacity: 1.0,
       receiveLight: true,
       reflectivity: 1.0,
+      repeat: '',
       roughness: 0.5,
       src: '',
       transparent: false,
@@ -204,6 +208,8 @@ module.exports.Component = registerComponent('material', {
    */
   loadImage: {
     value: function (src) {
+      var repeat = this.data.repeat;
+      var repeatXY;
       var texture;
       var isEl = typeof src !== 'string';
       if (isEl) {
@@ -211,6 +217,15 @@ module.exports.Component = registerComponent('material', {
         texture.needsUpdate = true;
       } else {
         texture = THREE.ImageUtils.loadTexture(src);
+      }
+      if (repeat) {
+        repeatXY = repeat.split(' ');
+        if (repeatXY.length === 2) {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(parseInt(repeatXY[0], 10),
+                             parseInt(repeatXY[1], 10));
+        }
       }
       this.material.needsUpdate = true;
       this.material.map = texture;
