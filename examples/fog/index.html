@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fog</title>
+    <meta name="description" content="A-Frame Core example of scene fog.">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+
+  <body>
+    <vr-assets>
+      <vr-mixin id="move" attribute="position" direction="alternate" dur="8192"
+                          fill="forward" easing="linear" repeat="indefinite">
+      </vr-mixin>
+      <vr-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; tube: .5"
+                         material="color: #2F3C4F"></vr-mixin>
+      <vr-mixin id="spin" attribute="rotation" dur="4096" to="-360 0 0"
+                          easing="linear" repeat="indefinite"></vr-mixin>
+    </vr-assets>
+    <vr-scene fog="type: linear; color: #AAB; far: 120; near: 5"
+              stats="true">
+      <!-- Camera. -->
+      <vr-object position="0 1.8 0">
+        <vr-object camera="fov: 45" look-controls wasd-controls></vr-object>
+      </vr-object>
+
+      <!-- Skysphere. -->
+      <vr-object geometry="primitive: sphere; radius: 80"
+                 material="receiveLight: false;
+                           src: url(../_images/pano/louvre.jpg)"
+                 position="0 1.8 0" scale="1 1 -1"></vr-object>
+
+      <vr-object mixin="box" position="-40 0 0">
+        <vr-animation mixin="move" from="-40 0 0 " to="-80 0 0">
+        </vr-animation>
+        <vr-animation mixin="spin"></vr-animation>
+      </vr-object>
+      <vr-object mixin="box" position="40 0 0">
+        <vr-animation mixin="move" from="40 0 0" to="80 0 0"></vr-animation>
+        <vr-animation mixin="spin"></vr-animation>
+      </vr-object>
+      <vr-object mixin="box" position="0 0 -40">
+        <vr-animation mixin="move" from="0 0 -40" to="0 0 -80">
+        </vr-animation>
+        <vr-animation mixin="spin"></vr-animation>
+      </vr-object>
+      <vr-object mixin="box" position="0 0 40">
+        <vr-animation mixin="move" from="0 0 40" to="0 0 80"></vr-animation>
+        <vr-animation mixin="spin"></vr-animation>
+      </vr-object>
+    </vr-scene>
+  </body>
+</html>
