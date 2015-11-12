@@ -111,6 +111,10 @@ module.exports = registerElement('vr-animation', {
     removeEventListeners: {
       value: function (evts) {
         var el = this.el;
+        var start = this.start;
+        utils.splitString(evts).forEach(function (evt) {
+          el.removeEventListener(evt, start);
+        });
         el.removeEventListener('stateadded', this.onStateAdded);
         el.removeEventListener('stateremoved', this.onStateRemoved);
       },
