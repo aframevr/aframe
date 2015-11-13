@@ -19,15 +19,15 @@ If you want to get hacking immediately:
 
 If you would like to embed this library in your project, simply include these files:
 
-* [`vr-components.min.js`](https://mozvr.github.io/vr-components/dist/vr-components.min.js)
-* [`vr-components.min.html`](https://mozvr.github.io/vr-components/dist/vr-components.min.html)
+* [`vr-components.min.js`](https://mozvr.github.io/aframe/dist/vr-components.min.js)
+* [`vr-components.min.html`](https://mozvr.github.io/aframe/dist/vr-components.min.html)
 
 Or if you'd prefer unminified files for local development (with source maps):
 
-* [`vr-components.js`](https://mozvr.github.io/vr-components/dist/vr-components.js)
-* [`vr-components.html`](https://mozvr.github.io/vr-components/dist/vr-components.html)
+* [`vr-components.js`](https://mozvr.github.io/aframe/dist/vr-components.js)
+* [`vr-components.html`](https://mozvr.github.io/aframe/dist/vr-components.html)
 
-__Also, be sure to check out the awesome [examples](https://mozvr.github.io/vr-components/examples/).__
+__Also, be sure to check out the awesome [examples](https://mozvr.github.io/aframe/examples/).__
 
 ### npm
 
@@ -87,10 +87,10 @@ From your __`vr-components`__ directory:
 
 ## Publishing to GitHub Pages
 
-To publish to __https://mozvr.github.io/vr-components/__:
+To publish to __https://mozvr.github.io/aframe/__:
 
     npm run ghpages
 
-To publish to __https://cvan.github.io/vr-components/__:
+To publish to __https://cvan.github.io/aframe/__:
 
     npm run ghpages cvan
