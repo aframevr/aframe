@@ -1,9 +1,10 @@
 <template is="vr-template"
           element="vr-camera"
           fov="45"
-          mouselook="true"
-          locomotion="true">
+          mouse="true"
+          keyboard="true">
     <vr-object camera="fov: ${fov}"
-               controls="mouselook: ${mouselook}; locomotion: ${locomotion}">
+               mouse-controls="${mouse}"
+               keyboard-controls="${keyboard}">
     </vr-object>
 </template>

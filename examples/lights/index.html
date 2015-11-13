@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Lights</title>
-  <meta name="description" content="Lights">
+  <meta name="description" content="Lights – A-Frame">
   <script src="../../build/vr-components.js"></script>
 </head>
 
@@ -16,10 +16,10 @@
     <vr-mixin id="torus-knot" geometry="primitive: torusKnot"
               material="color: red"></vr-mixin>
   </vr-assets>
-  <vr-scene stats="true">
+  <vr-scene>
     <!-- Camera. -->
     <vr-object position="0 0 80" camera="fov: 45"
-               controls="mouselook: true; locomotion: true"></vr-object>
+               mouse-controls keyboard-controls></vr-object>
 
     <!-- Skysphere. -->
     <vr-object geometry="primitive: sphere; radius: 300"

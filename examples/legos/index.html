@@ -3,20 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>Legos</title>
-    <meta name="description" content="Legos — vr-component">
+    <meta name="description" content="Legos – A-Frame">
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
     <vr-scene>
-      <vr-camera position="0 0 20" fov="45" mouselook="true" locomotion="true"></vr-camera>
       <vr-object light="color: #ccc" rotation="5.4 5.2 5.2"></vr-object>
       <vr-object light="color: #ccc" rotation="5.4 5.2 -5.2"></vr-object>
       <vr-object light="color: #ccc" rotation="-5.4 5.2 5.2"></vr-object>
       <vr-object light="color: #ccc" rotation="-5.4 -5.4 -5.2"></vr-object>
 
-      <vr-lego color="red" rotation="45 -45 0"></vr-lego>
-      <vr-lego color="green" position="-8 5 0" rotation="45 -15 -5" scale="0.5 0.5 0.5"></vr-lego>
-      <vr-lego color="blue" position="3 -4.25 0" rotation="45 -45 0"></vr-lego>
+      <vr-lego color="red" position="0 0 -10" rotation="45 -45 0"></vr-lego>
+      <vr-lego color="green" position="-8 5 -10" rotation="45 -15 -5" scale="0.5 0.5 0.5"></vr-lego>
+      <vr-lego color="blue" position="3 -4.25 -10" rotation="45 -45 0"></vr-lego>
     </vr-scene>
 
     <template is="vr-template" element="vr-lego" color="red">
