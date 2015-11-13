@@ -6,6 +6,7 @@
   "main": "src/vr-markup.js",
   "dependencies": {
     "document-register-element": "^0.5.0",
+    "object-assign": "^4.0.1",
     "request-interval": "^1.0.0",
     "style-attr": "^1.0.1",
     "three-dev": "0.74.0-beta3",

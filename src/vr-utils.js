@@ -1,5 +1,7 @@
 /* global CustomEvent */
 
+var objectAssign = require('object-assign');
+
 /**
  * Fires a custom DOM event.
  *
@@ -41,20 +43,12 @@ module.exports.log = function () {
 };
 
 /**
- * It mixes properties of source object into dest
- * @param  {object} dest   The object where properties will be copied TO
- * @param  {object} source The object where properties will be copied FROM
+ * Mix the properties of source object(s) into a destination object.
+ *
+ * @param  {object} dest - The object to which properties will be copied.
+ * @param  {...object} source - The object(s) from which properties will be copied.
  */
-module.exports.mixin = function (dest, source) {
-  var keys;
-  if (!source) { return dest; }
-  keys = Object.keys(source);
-  keys.forEach(mix);
-  function mix (key) {
-    dest[key] = source[key];
-  }
-  return dest;
-};
+module.exports.extend = objectAssign;
 
 /**
  * Given a coordinate in a string form "0 0 0"
