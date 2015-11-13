@@ -14,8 +14,8 @@
 <template is="vr-template"
           element="vr-cursor-gaze"
           fov="45"
-          mouselook="true"
-          locomotion="true"
+          mouse="true"
+          keyboard="false"
           colorDefault="gray"
           colorHover="springgreen"
           dur="1500"
@@ -26,7 +26,8 @@
           innerRadius="0.14"
           timeout="1500">
   <vr-object camera="fov: ${fov}"
-             controls="mouselook: ${mouselook}; locomotion: ${locomotion}">
+             mouse-controls="${mouse}"
+             keyboard-controls="${keyboard}">
     <vr-object id="cursor"
                position="0 0 -3"
                geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
