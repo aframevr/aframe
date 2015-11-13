@@ -6,7 +6,7 @@ var VRUtils = require('../vr-utils');
  * Geometry component. Combined with material component to make mesh in
  * 3D object.
  *
- * @param {number} arc
+ * @param {number} [arc=2 * PI]
  * @param {number} depth
  * @param {number} height
  * @param {number} innerRadius
@@ -29,7 +29,7 @@ var VRUtils = require('../vr-utils');
 module.exports.Component = registerComponent('geometry', {
   defaults: {
     value: {
-      arc: Math.PI / 2,
+      arc: Math.PI * 2,
       depth: 5,
       height: 5,
       innerRadius: 5,
