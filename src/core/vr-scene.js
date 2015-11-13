@@ -278,8 +278,8 @@ var VRScene = module.exports = registerElement(
           value: function () {
             var statsEnabled = this.getAttribute('stats') === 'true';
             var statsEl = this.statsEl = document.querySelector('.rs-base');
-            if (statsEl && !statsEnabled) {
-              statsEl.classList.add('hidden');
+            if (!statsEnabled) {
+              if (statsEl) { statsEl.classList.add('hidden'); }
               return;
             }
             if (statsEl) { statsEl.classList.remove('hidden'); }
