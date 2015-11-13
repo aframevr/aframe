@@ -21,8 +21,14 @@
     </vr-assets>
 
     <vr-scene stats="true">
-      <vr-object position="0 0 20" camera="fov: 45" controls="mouselook: true; locomotion: true">
-        <vr-object position="0 0 -5" geometry="primitive: ring; outerRadius: 0.30; innerRadius: 0.20;" material="color: red" cursor="maxDistance: 30"></vr-object>
+      <vr-object position="0 0 20" mouse-controls keyboard-controls>
+        <vr-object camera="fov: 45" hmd-controls>
+          <vr-object position="0 0 -5"
+                     geometry="primitive: ring; outerRadius: 0.30;
+                               innerRadius: 0.20"
+                     material="color: red; receiveLight: false"
+                     cursor="maxDistance: 30"></vr-object>
+        </vr-object>
       </vr-object>
 
       <vr-object id="blueCube"
