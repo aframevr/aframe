@@ -1,6 +1,6 @@
 {
   "name": "@mozvr/vr-components",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Components for use with vr-markup",
   "main": "index.js",
   "scripts": {
