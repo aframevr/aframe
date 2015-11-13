@@ -13,7 +13,7 @@ There are a couple ways to get started.
 
 If you want to get hacking immediately:
 
-[__Open Codepen example scene >__](http://codepen.io/mozvr/pen/zvqGqO/left/?editors=100)
+[__Open Codepen example scene >__](http://codepen.io/team/mozvr/pen/1d1816df793bd808a3cc6b9515a163f6?editors=100)
 
 ### Downloads
 
