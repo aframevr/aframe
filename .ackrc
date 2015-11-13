@@ -1,0 +1,4 @@
+--ignore-dir=.cache/
+--ignore-dir=build/
+--ignore-dir=dist/
+--ignore-dir=gh-pages/
