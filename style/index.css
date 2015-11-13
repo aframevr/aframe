@@ -1,35 +1,47 @@
-html, body {
+html {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+body {
   height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 
-.vr-canvas {
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
+.hidden {
+  display: none;
 }
 
-button {
+vr-scene video, vr-assets video,
+vr-scene img, vr-assets img {
+  display: none;
+}
+
+.button {
   background-color: #303030;
-  border: 1px solid white;
+  border: 1px solid gray;
   color: white;
   cursor: pointer;
-  left: 0;
-  padding: 5px;
-  position: absolute;
-  top: 0;
   width: 90px;
+  height: 25px;
+  line-height: 20px;
+  vertical-align: middle;
   z-index: 999999;
 }
 
-button:hover {
+.button:hover {
   background-color: gray;
   color: white;
 }
 
-.vr-button {
+.enter-vr {
+  position: fixed;
   top: 20px;
   left: 30px;
 }
