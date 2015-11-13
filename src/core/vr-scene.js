@@ -7,7 +7,7 @@ var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
 var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 var TWEEN = require('tween.js');
-var VRNode = require('./vr-node');
+var VRObject = require('./vr-object');
 var utils = require('../vr-utils');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
@@ -15,8 +15,15 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var VRScene = module.exports = registerElement(
   'vr-scene',
   {
+
     prototype: Object.create(
-      VRNode.prototype, {
+      VRObject.prototype, {
+        createdCallback: {
+          value: function () {
+            this.object3D = VRScene.scene || new THREE.Scene();
+          }
+        },
+
         attributeChangedCallback: {
           value: function (attr, oldVal, newVal) {
             if (oldVal === newVal) { return; }
@@ -301,8 +308,6 @@ var VRScene = module.exports = registerElement(
           value: function () {
             // Three.js setup
             // We reuse the scene if there's already one
-            var scene = this.object3D = (VRScene && VRScene.scene) || new THREE.Scene();
-            VRScene.scene = scene;
             this.behaviors = [];
             // The canvas where the WebGL context will be painted
             this.setupCanvas();
@@ -494,23 +499,9 @@ var VRScene = module.exports = registerElement(
           }
         },
 
-        add: {
-          value: function (el) {
-            if (!el.object3D) { return; }
-            this.object3D.add(el.object3D);
-          }
-        },
-
         addBehavior: {
           value: function (behavior) {
             this.behaviors.push(behavior);
-          }
-        },
-
-        remove: {
-          value: function (el) {
-            if (!el.object3D) { return; }
-            this.object3D.remove(el.object3D);
           }
         },
 
