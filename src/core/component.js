@@ -121,6 +121,11 @@ Component.prototype = {
     return utils.mixin({}, data);
   },
 
+  /**
+   * Calls style parser on a component string.
+   *
+   * @returns {object}
+   */
   parseAttributesString: function (attrs) {
     if (typeof attrs !== 'string') { return attrs; }
     // We camel case keys so for instance max-value is equivalent to maxValue
