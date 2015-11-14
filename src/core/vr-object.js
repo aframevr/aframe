@@ -28,11 +28,16 @@ var proto = {
   //  ----------------------------------  //
   //   Native custom elements callbacks   //
   //  ----------------------------------  //
+  createdCallback: {
+    value: function () {
+      this.states = [];
+      this.components = {};
+      this.object3D = new THREE.Mesh();
+    }
+  },
+
   attachedCallback: {
     value: function () {
-      this.object3D = new THREE.Mesh();
-      this.components = {};
-      this.states = [];
       this.addToParent();
       this.load();
     },
@@ -295,7 +300,7 @@ var proto = {
   /**
    * Returns the computed attribute from the element itself,
    * applied mixins and default values
-   * @type {string} attribe name
+   * @type {string} attr - Atrribute name
    */
   getComputedAttribute: {
     value: function (attr) {
@@ -327,6 +332,10 @@ var proto = {
     writable: window.debug
   },
 
+  /**
+   * Checks if the element is in a given state. e.g. el.is('alive');
+   * @type {string} state - Name of the state we want to check
+   */
   is: {
     value: function (state) {
       var is = false;

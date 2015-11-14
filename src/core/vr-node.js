@@ -20,15 +20,19 @@ module.exports = registerElement(
         //  ----------------------------------  //
         //   Native custom elements callbacks   //
         //  ----------------------------------  //
+        createdCallback: {
+          value: function () {
+            this.isNode = true;
+            this.mixinEls = [];
+            this.mixinObservers = {};
+          }
+        },
 
         attachedCallback: {
           value: function () {
             var mixins = this.getAttribute('mixin');
-            this.isNode = true;
-            this.emit('nodeready');
             this.sceneEl = document.querySelector('vr-scene');
-            this.mixinEls = [];
-            this.mixinObservers = {};
+            this.emit('nodeready', {}, false);
             if (mixins) { this.updateMixins(mixins); }
           },
           writable: window.debug
@@ -177,10 +181,10 @@ module.exports = registerElement(
          *   Custom data to pass as `detail` to the event.
          */
         emit: {
-          value: function (name, detail) {
+          value: function (name, detail, bubbles) {
             var self = this;
             detail = detail || {};
-            var data = {bubbles: true, detail: detail};
+            var data = { bubbles: bubbles, detail: detail };
             return name.split(' ').map(function (eventName) {
               return VRUtils.fireEvent(self, eventName, data);
             });
