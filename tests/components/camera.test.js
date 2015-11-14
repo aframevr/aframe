@@ -1,8 +1,9 @@
 /* global assert, process, setup, sinon, suite, test */
 var camera = require('components/camera').Component;
 var VRObject = require('core/vr-object');
+var entityFactory = require('../helpers.js').entityFactory;
 
-suite.only('camera', function () {
+suite('camera', function () {
   'use strict';
 
   setup(function (done) {

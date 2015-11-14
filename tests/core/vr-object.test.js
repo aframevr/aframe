@@ -1,31 +1,22 @@
 /* global assert, process, setup, sinon, suite, test */
 var VRObject = require('core/vr-object');
+var THREE = require('vr-markup').THREE;
+var entityFactory = require('../helpers.js').entityFactory;
 
 suite('vr-object', function () {
   'use strict';
 
-  suite('add', function () {
-    setup(function () {
-    });
+  test('adds itself to parent when attached', function (done) {
+    var el = document.createElement('vr-object');
+    var parentEl = entityFactory();
+    var sinon = this.sinon;
 
-    test('calls parent object3D.add when child is added', function (done) {
-      var el = document.createElement('vr-object');
-      var object3DMock;
-      var parentEl = entityFactory();
-      var sinon = this.sinon;
-
-      el.object3D = {};
-      parentEl.addEventListener('loaded', function () {
-        // Mock object3D *after* entity has loaded.
-        object3DMock = sinon.mock(parentEl.object3D);
-        object3DMock.expects('add').once();
-        parentEl.appendChild(el);
-        // Add child to parent, wait for it to load and attempt to add its
-        // object3D to the parent's object3D.
-        el.addEventListener('loaded', function () {
-          object3DMock.verify();
-          done();
-        });
+    el.object3D = new THREE.Mesh();
+    parentEl.addEventListener('loaded', function () {
+      parentEl.appendChild(el);
+      el.addEventListener('loaded', function () {
+        assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+        done();
       });
     });
   });
@@ -70,40 +61,32 @@ suite('vr-object', function () {
   });
 
   suite('detachedCallback', function () {
-    test('tells object parent to remove object3D', function (done) {
-      var object3DMock;
+    test('removes itself from object parent', function (done) {
       var parentEl = entityFactory();
       var el = document.createElement('vr-object');
-      var sinon = this.sinon;
 
       parentEl.addEventListener('loaded', function () {
-        object3DMock = sinon.mock(parentEl.object3D);
-        object3DMock.expects('remove').once();
         parentEl.appendChild(el);
 
         el.addEventListener('loaded', function () {
           parentEl.removeChild(el);
           process.nextTick(function () {
-            object3DMock.verify();
+            assert.equal(parentEl.object3D.children.length, 0);
             done();
           });
         });
       });
     });
 
-    test('tells scene parent to remove object3D', function (done) {
-      var object3DMock;
+    test('removes itself from scene parent', function (done) {
       var el = entityFactory();
       var parentEl = el.parentNode;
-      var sinon = this.sinon;
 
       parentEl.appendChild(el);
       el.addEventListener('loaded', function () {
-        object3DMock = sinon.mock(parentEl.object3D);
-        object3DMock.expects('remove').once();
         parentEl.removeChild(el);
         process.nextTick(function () {
-          object3DMock.verify();
+          assert.equal(parentEl.object3D.children.length, 0);
           done();
         });
       });
@@ -130,24 +113,6 @@ suite('vr-object', function () {
         el.setAttribute('geometry', 'primitive: box; width: 5');
         componentData = el.getComputedAttribute('geometry');
         assert.deepEqual(componentData, { primitive: 'box', width: 5 });
-      });
-    });
-  });
-
-  suite('remove', function () {
-    test('called on object3D when removing child', function () {
-      var childEl = document.createElement('vr-object');
-      var object3DMock;
-      var parentEl = document.createElement('vr-object');
-
-      parentEl.appendChild(childEl);
-      document.body.appendChild(parentEl);
-
-      object3DMock = this.sinon.mock(parentEl.object3D);
-      parentEl.addEventListener('loaded', function () {
-        object3DMock.expects('remove').once();
-        parentEl.remove(childEl);
-        object3DMock.verify();
       });
     });
   });
