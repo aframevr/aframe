@@ -1,6 +1,16 @@
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
+// Used to detect whether light type has changed.
+// TODO: use update() diff once that is implemented.
+var LIGHT_TYPES = {
+  'ambient': 'AmbientLight',
+  'directional': 'DirectionalLight',
+  'hemisphere': 'HemisphereLight',
+  'point': 'PointLight',
+  'spot': 'SpotLight'
+};
+
 /**
  * Light component.
  *
@@ -12,7 +22,8 @@ var THREE = require('../../lib/three');
           light. For point and spot lights.
  * @param {number} [exponent=10.0] - rapidity of falloff of light from its
           target direction. For spot lights.
- * @param {string} [groundColor=#FFF] - ground light color. For hemisphere lights.
+ * @param {string} [groundColor=#FFF] - ground light color. For hemisphere
+          lights.
  * @param {number} [intensity=1.0] - light strength. For every light except
           ambient.
  * @param {string} [type=directional] - light type (ambient, directional,
@@ -32,19 +43,47 @@ module.exports.Component = registerComponent('light', {
     }
   },
 
+  /**
+   * Notifies scene a light has been added to remove default lighting.
+   */
   init: {
     value: function () {
       var el = this.el;
-      this.light = this.getLight();
-      el.object3D.add(this.light);
+      this.light = null;
       el.sceneEl.registerLight(el);
     }
   },
 
   update: {
     value: function () {
+      var data = this.data;
       var el = this.el;
-      el.object3D.remove(this.light);
+      var light = this.light;
+
+      // Existing light.
+      if (light) {
+        if (!el.hasAttribute('light')) {
+          // Light attribute removed. Remove light.
+          el.object3D.remove(light);
+        } else if (LIGHT_TYPES[data.type] !== light.type) {
+          // Light type has changed. Recreate light.
+          var newLight = this.getLight();
+          el.object3D.remove(light);
+          el.object3D.add(newLight);
+          this.light = newLight;
+        } else {
+          // Light type has not changed. Update light.
+          Object.keys(data).forEach(function (key) {
+            if (['color', 'groundColor'].indexOf(key) !== -1) {
+              data[key] = new THREE.Color(data[key]);
+            }
+            light[key] = data[key];
+          });
+        }
+        return;
+      }
+
+      // No light yet.
       this.light = this.getLight();
       el.object3D.add(this.light);
     }
@@ -86,7 +125,7 @@ module.exports.Component = registerComponent('light', {
                                      data.angle, data.exponent, data.decay);
         }
         default: {
-          return new THREE.AmbientLight(color);
+          return new THREE.DirectionalLight(color, intensity);
         }
       }
     }

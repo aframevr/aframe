@@ -16,5 +16,13 @@ setup(function () {
 });
 
 teardown(function () {
+  // Clean up any attached elements.
+  ['vr-assets', 'vr-scene'].forEach(function (tagName) {
+    var els = document.querySelectorAll(tagName);
+    for (var i = 0; i < els.length; i++) {
+      els[i].parentNode.removeChild(els[i]);
+    }
+  });
+
   this.sinon.restore();
 });

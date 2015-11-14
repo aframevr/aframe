@@ -1,5 +1,4 @@
-/* global assert, process, setup, sinon, suite, test */
-var VRObject = require('core/vr-object');
+/* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers.js').entityFactory;
 
 suite('material', function () {
@@ -22,9 +21,8 @@ suite('material', function () {
       var el = this.el;
       el.setAttribute('material', 'color: #F0F');
       process.nextTick(function () {
-        assert.equal(el.object3D.material.color.r, 1);
-        assert.equal(el.object3D.material.color.g, 0);
-        assert.equal(el.object3D.material.color.b, 1);
+        assert.shallowDeepEqual(el.object3D.material.color,
+                               {r: 1, g: 0, b: 1});
         done();
       });
     });
