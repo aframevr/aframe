@@ -14,3 +14,17 @@ setup(function () {
 teardown(function () {
   this.sinon.restore();
 });
+
+/**
+ * Helper method to create a scene, create an object, add object to scene,
+ * add scene to document.
+ *
+ * @returns {object} A <vr-object> element.
+ */
+global.entityFactory = function () {
+  var scene = document.createElement('vr-scene');
+  var object = document.createElement('vr-object');
+  scene.appendChild(object);
+  document.body.appendChild(scene);
+  return object;
+}
