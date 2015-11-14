@@ -1,6 +1,4 @@
 /* global assert, process, setup, suite, test */
-require('components/camera').Component;
-require('core/vr-object');
 var entityFactory = require('../helpers.js').entityFactory;
 
 suite('camera', function () {

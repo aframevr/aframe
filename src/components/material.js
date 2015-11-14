@@ -47,23 +47,11 @@ module.exports.Component = registerComponent('material', {
     }
   },
 
-  /**
-   * Initialize material.
-   */
   init: {
     value: function () {
       this.textureSrc = null;
       this.isLoadingEnvMap = false;
-      this.el.object3D.material = this.updateOrCreateMaterial();
-    }
-  },
-
-  /**
-   * Update material.
-   */
-  update: {
-    value: function () {
-      this.el.object3D.material = this.updateOrCreateMaterial();
+      this.material = null;
     }
   },
 
@@ -75,7 +63,7 @@ module.exports.Component = registerComponent('material', {
    *
    * @return {object} material
    */
-  updateOrCreateMaterial: {
+  update: {
     value: function () {
       var data = this.data;
       var material;
@@ -123,7 +111,7 @@ module.exports.Component = registerComponent('material', {
         material.needsUpdate = true;
       }
 
-      return material;
+      this.el.object3D.material = this.material = material;
     }
   },
 
@@ -146,7 +134,6 @@ module.exports.Component = registerComponent('material', {
       } else {
         material = new THREE[type](data);
       }
-      this.material = material;
       return material;
     }
   },

@@ -1,7 +1,7 @@
-var coordinateParser = require('./coordinate-parser');
+var coordinateParser = require('../utils/coordinate-parser');
 var registerComponent = require('../core/register-component').registerComponent;
-var utils = require('../vr-utils');
 var THREE = require('../../lib/three');
+var utils = require('../vr-utils');
 
 var proto = {
   defaults: {
