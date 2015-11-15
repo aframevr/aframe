@@ -1,7 +1,7 @@
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
-module.exports.Component = registerComponent('keyboard-controls', {
+module.exports.Component = registerComponent('wasd-controls', {
   defaults: {
     value: {
       easing: 20,
@@ -92,12 +92,14 @@ module.exports.Component = registerComponent('keyboard-controls', {
       var direction = new THREE.Vector3(0, 0, 0);
       var rotation = new THREE.Euler(0, 0, 0, 'YXZ');
       return function (delta) {
-        var object3D = this.el.object3D;
         var velocity = this.velocity;
-        direction.copy(velocity).multiplyScalar(delta);
-        if (!this.data.fly) { return direction; }
+        var elRotation = this.el.getAttribute('rotation');
+        direction.set(velocity.x * delta, 0, velocity.z * delta);
+        if (!elRotation) { return direction; }
+        if (!this.data.fly) { elRotation.x = 0; }
+        rotation.set(THREE.Math.degToRad(elRotation.x),
+                     THREE.Math.degToRad(elRotation.y), 0);
         direction.applyEuler(rotation);
-        rotation.set(object3D.rotation.x, object3D.rotation.y, 0);
         return direction;
       };
     })()

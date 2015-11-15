@@ -4,7 +4,7 @@ var THREE = require('../../lib/three');
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
-module.exports.Component = registerComponent('mouse-controls', {
+module.exports.Component = registerComponent('look-controls', {
   defaults: {
     value: {
       enabled: true
@@ -14,15 +14,40 @@ module.exports.Component = registerComponent('mouse-controls', {
   init: {
     value: function () {
       var scene = this.el.sceneEl;
-      this.setupControls();
+      this.setupMouseControls();
+      this.setupHMDControls();
       this.attachEventListeners();
       scene.addBehavior(this);
     }
   },
 
+  setupMouseControls: {
+    value: function () {
+      var object3D = this.el.object3D;
+      this.canvasEl = document.querySelector('vr-scene').canvas;
+      // The canvas where the scene is painted
+      this.mouseDown = false;
+      // To avoid gimbal lock
+      object3D.rotation.order = 'YXZ';
+      this.pitchObject = new THREE.Object3D();
+      this.yawObject = new THREE.Object3D();
+      this.yawObject.position.y = 10;
+      this.yawObject.add(this.pitchObject);
+    }
+  },
+
+  setupHMDControls: {
+    value: function () {
+      this.dolly = new THREE.Object3D();
+      this.euler = new THREE.Euler();
+      this.controls = new THREE.VRControls(this.dolly);
+      this.zeroQuaternion = new THREE.Quaternion();
+    }
+  },
+
   attachEventListeners: {
     value: function () {
-      var canvasEl = this.canvasEl;
+      var canvasEl = document.querySelector('vr-scene').canvas;
       // Mouse Events
       canvasEl.addEventListener('mousedown', this.onMouseDown.bind(this), true);
       canvasEl.addEventListener('mousemove', this.onMouseMove.bind(this), true);
@@ -36,39 +61,49 @@ module.exports.Component = registerComponent('mouse-controls', {
     }
   },
 
-  setupControls: {
-    value: function () {
-      var object3D = this.el.object3D;
-      // The canvas where the scene is painted
-      this.canvasEl = document.querySelector('vr-scene').canvas;
-      this.mouseDown = false;
-      // To avoid gimbal lock
-      object3D.rotation.order = 'YXZ';
-      this.pitchObject = new THREE.Object3D();
-      this.yawObject = new THREE.Object3D();
-      this.yawObject.position.y = 10;
-      this.yawObject.add(this.pitchObject);
-    }
+  update: {
+    value: (function () {
+      var hmdEuler = new THREE.Euler();
+      return function () {
+        var hmdQuaternion;
+        var pitchObject = this.pitchObject;
+        var yawObject = this.yawObject;
+        if (!this.data.enabled) { return; }
+        hmdQuaternion = this.updateHMDQuaternion();
+        hmdEuler.setFromQuaternion(hmdQuaternion);
+        this.el.setAttribute('rotation', {
+          x: THREE.Math.radToDeg(hmdEuler.x) + THREE.Math.radToDeg(pitchObject.rotation.x),
+          y: THREE.Math.radToDeg(hmdEuler.y) + THREE.Math.radToDeg(yawObject.rotation.y),
+          z: THREE.Math.radToDeg(hmdEuler.z)
+        });
+      };
+    })()
   },
 
-  update: {
+  updateHMDQuaternion: {
+    value: (function () {
+      var hmdQuaternion = new THREE.Quaternion();
+      return function () {
+        var dolly = this.dolly;
+        this.controls.update();
+        if (!this.zeroed && !dolly.quaternion.equals(this.zeroQuaternion)) {
+          this.zeroOrientation();
+          this.zeroed = true;
+        }
+        hmdQuaternion.copy(this.zeroQuaternion).multiply(dolly.quaternion);
+        return hmdQuaternion;
+      };
+    })()
+  },
+
+  zeroOrientation: {
     value: function () {
-      var el = this.el;
-      var pitchObject = this.pitchObject;
-      var yawObject = this.yawObject;
-      var rotation;
-      // Nothing to do if nothing has changed
-      if (!this.dirty) { return; }
-      rotation = el.getComputedAttribute('rotation');
-      el.setAttribute('rotation', {
-        x: rotation.x + THREE.Math.radToDeg(pitchObject.rotation.x),
-        y: rotation.y + THREE.Math.radToDeg(yawObject.rotation.y),
-        z: rotation.z
-      });
-      // Resets pitch and yaw
-      pitchObject.rotation.set(0, 0, 0);
-      yawObject.rotation.set(0, 0, 0);
-      this.dirty = false;
+      var euler = new THREE.Euler();
+      euler.setFromQuaternion(this.dolly.quaternion.clone().inverse());
+      // Cancel out roll and pitch. We want to only reset yaw
+      euler.z = 0;
+      euler.x = 0;
+      this.zeroQuaternion.setFromEuler(euler);
     }
   },
 
@@ -85,7 +120,6 @@ module.exports.Component = registerComponent('mouse-controls', {
       yawObject.rotation.y -= movementX * 0.002;
       pitchObject.rotation.x -= movementY * 0.002;
       pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
-      this.dirty = true;
     }
   },
 
@@ -124,7 +158,6 @@ module.exports.Component = registerComponent('mouse-controls', {
         x: e.touches[0].pageX,
         y: e.touches[0].pageY
       };
-      this.dirty = true;
     }
   },
 
