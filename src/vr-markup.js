@@ -10,7 +10,8 @@ var VRUtils = require('./vr-utils');
 
 // Webvr polyfill configuration
 window.WebVRConfig = {
-  TOUCH_PANNER_DISABLED: true
+  TOUCH_PANNER_DISABLED: true,
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
 require('webvr-polyfill');
 
