@@ -1,4 +1,4 @@
-/* global assert, process, setup, sinon, suite, test */
+/* global assert, process, sinon, suite, test */
 var VRObject = require('core/vr-object');
 var THREE = require('vr-markup').THREE;
 var entityFactory = require('../helpers.js').entityFactory;
@@ -9,7 +9,6 @@ suite('vr-object', function () {
   test('adds itself to parent when attached', function (done) {
     var el = document.createElement('vr-object');
     var parentEl = entityFactory();
-    var sinon = this.sinon;
 
     el.object3D = new THREE.Mesh();
     parentEl.addEventListener('loaded', function () {
