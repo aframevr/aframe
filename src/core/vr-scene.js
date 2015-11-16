@@ -340,12 +340,11 @@ var VRScene = module.exports = registerElement(
             // Default camera height at human level, and back such that
             // objects at (0, 0, 0) are perfectly framed.
             cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 10});
-            cameraWrapperEl.setAttribute('keyboard-controls');
-            cameraWrapperEl.setAttribute('mouse-controls');
             // We create a default camera
             defaultCamera = document.createElement('vr-object');
             defaultCamera.setAttribute('camera', {fov: 45});
-            defaultCamera.setAttribute('hmd-controls');
+            defaultCamera.setAttribute('wasd-controls');
+            defaultCamera.setAttribute('look-controls');
             this.pendingElements++;
             defaultCamera.addEventListener('loaded',
                                            this.elementLoaded.bind(this));
