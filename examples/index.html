@@ -6,104 +6,34 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="//code.cdn.mozilla.net/fonts/fira.css">
-    <style type="text/css">
-      body {
-        background: rgb(239,45,94);
-        font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
-        color: white;
-        padding: 2rem;
-      }
-
-      ul, li {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        line-height: 2.2rem;
-      }
-
-      .note, .note a {
-        color: rgba(255,255,255,0.4);
-        font-family: 'Fira Mono', sans-serif;
-      }
-
-      .note a:hover {
-        color: white;
-      }
-
-      .view-source {
-        margin-left: 15px;
-        border: none;
-        font-size: 0.8em;
-      }
-
-      h1 {
-        font-size: 3rem;
-        font-family: 'Fira Sans', sans-serif;
-        font-weight: 200;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        line-height: 3rem;
-        margin: 0;
-      }
-
-      a {
-        color: white;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(255,255,255,0.6);
-      }
-
-      .links {
-        padding-top: 20px;
-        border-top: 1px dashed rgba(255,255,255,0.4);
-        border-bottom: 1px dashed rgba(255,255,255,0.4);
-        padding-bottom: 20px;
-        margin-bottom: 20px;
-      }
-
-      .links a {
-        font-family: 'Fira Sans';
-        font-weight: 300;
-        letter-spacing: 0.01em;
-      }
-
-      li a:hover {
-        background-color: rgba(0,0,0,0.1);
-        border-bottom: 1px solid #E92958;
-      }
-
-      #logo-moz {
-        float: right;
-        margin-right: 5px;
-        width: 6rem;
-      }
-    </style>
+    <link rel="stylesheet" href="_style/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/document-register-element/0.5.0/document-register-element.js"></script>
+    <script src="_js/example-link.js"></script>
   </head>
   <body>
     <h1>A-Frame Core Examples</h1>
     <p class="note">
       <a href="https://aframe.io">aframe.io</a>
     </p>
-
     <ul class="links">
-      <li><a href="animation/">Animation</a><a class="note view-source" href="view-source:animation/">view source</a></li>
-      <li><a href="controls/">Controls</a><a class="note view-source" href="view-source:controls/">view source</a></li>
-      <li><a href="cursor/">Cursor</a><a class="note view-source" href="view-source:cursor/">view source</a></li>
-      <li><a href="cylinders/">Cylinders</a><a class="note view-source" href="view-source:cylinders/">view source</a></li>
-      <li><a href="cube/">Cube</a><a class="note view-source" href="view-source:cube/">view source</a></li>
-      <li><a href="geometries/">Geometries</a><a class="note view-source" href="view-source:geometries/">view source</a></li>
-      <li><a href="lights/">Lights</a><a class="note view-source" href="view-source:lights/">view source</a></li>
-      <li><a href="mixin/">Mixin</a><a class="note view-source" href="view-source:mixin/">view source</a></li>
-      <li><a href="model/">Model</a><a class="note view-source" href="view-source:model/">view source</a></li>
-      <li><a href="opacity/">Opacity</a><a class="note view-source" href="view-source:opacity/">view source</a></li>
-      <li><a href="physical/">Physically-Based Materials</a><a class="note view-source" href="view-source:physical/">view source</a></li>
-      <li><a href="panoexplorer/">Pano Explorer</a><a class="note view-source" href="view-source:panoexplorer/">view source</a></li>
-      <li><a href="texture/">Texture</a><a class="note view-source" href="view-source:texture/">view source</a></li>
-      <li><a href="video/">Video</a><a class="note view-source" href="view-source:video/">view source</a></li>
-      <li><a href="visibility/">Visibility</a><a class="note view-source" href="view-source:visibility/">view source</a></li>
+      <a-example-link href="animation/">Animation</a-example-link>
+      <a-example-link href="controls/">Controls</a-example-link>
+      <a-example-link href="cursor/">Cursor</a-example-link>
+      <a-example-link href="cube/">Cube</a-example-link>
+      <a-example-link href="cylinders/">Cylinders</a-example-link>
+      <a-example-link href="geometries/">Geometries</a-example-link>
+      <a-example-link href="lights/">Lights</a-example-link>
+      <a-example-link href="mixin/">Mixin</a-example-link>
+      <a-example-link href="model/">Model</a-example-link>
+      <a-example-link href="opacity/">Opacity</a-example-link>
+      <a-example-link href="physical/">Physically-Based Materials</a-example-link>
+      <a-example-link href="panoexplorer/">Pano Explorer</a-example-link>
+      <a-example-link href="texture/">Texture</a-example-link>
+      <a-example-link href="video/">Video</a-example-link>
+      <a-example-link href="visibility/">Visibility</a-example-link>
     </ul>
-
     <footer>
-      <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
+      <img src="_images/logo-mozilla-white.svg" alt="Mozilla">
     </footer>
   </body>
 </html>
