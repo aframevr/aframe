@@ -45,16 +45,21 @@ Component.prototype = {
   update: function () { /* no-op */ },
 
   /**
+   * Called whenever component is completely removed. Use to clean up
+   * component from the entity.
+   */
+  remove: function () { /* no-op */ },
+
+  /**
    * Called when new data is coming from the entity (e.g., attributeChangedCb)
    * or from its mixins. Does some parsing and applying before updating the
    * component.
    * Does not update if data has not changed.
    */
   updateAttributes: function () {
-    var hasAttribute = this.el.hasAttribute(this.name);
     var prevData = extend({}, this.data);
     this.parseAttributes();
-    if (hasAttribute && utils.deepEqual(prevData, this.data)) { return; }
+    if (utils.deepEqual(prevData, this.data)) { return; }
     this.update();
   },
 

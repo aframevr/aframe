@@ -52,9 +52,9 @@ module.exports = registerElement(
             // In Firefox the callback is called even if the
             // attribute value doesn't change. We return
             // if old and new values are the same
-            if (attr !== 'mixin') { return; }
-            if (oldVal === newVal) { return; }
-            this.updateMixins(newVal, oldVal);
+            if (attr === 'mixin' && oldVal !== newVal) {
+              this.updateMixins(newVal, oldVal);
+            }
           },
           writable: window.debug
         },
