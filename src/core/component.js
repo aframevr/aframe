@@ -13,6 +13,8 @@ var utils = require('../vr-utils');
  * @property {object} data - Stores component data, populated by parsing the
  *           attribute name of the component plus applying defaults and mixins.
  * @property {object} el - Reference to the entity element.
+ * @property {string} name - Name of the attribute the component is connected
+             to..
  */
 var Component = function (el) {
   this.el = el;
@@ -49,9 +51,10 @@ Component.prototype = {
    * Does not update if data has not changed.
    */
   updateAttributes: function () {
+    var hasAttribute = this.el.hasAttribute(this.name);
     var prevData = extend({}, this.data);
     this.parseAttributes();
-    if (utils.deepEqual(prevData, this.data)) { return; }
+    if (hasAttribute && utils.deepEqual(prevData, this.data)) { return; }
     this.update();
   },
 
