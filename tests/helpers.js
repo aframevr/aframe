@@ -13,3 +13,27 @@ module.exports.entityFactory = function () {
   document.body.appendChild(scene);
   return object;
 };
+
+/**
+ * Creates and attaches a mixin element (and a vr-assets element if necessary).
+ *
+ * @param {string} id - ID of mixin.
+ * @param {object} obj - Map of component names to attribute values.
+ * @returns {object} An attached <vr-mixin> element.
+ */
+module.exports.mixinFactory = function (id, obj) {
+  var mixinEl = document.createElement('vr-mixin');
+  mixinEl.setAttribute('id', id);
+  Object.keys(obj).forEach(function (componentName) {
+    mixinEl.setAttribute(componentName, obj[componentName]);
+  });
+
+  var assetsEl = document.querySelector('vr-assets');
+  if (!assetsEl) {
+    assetsEl = document.createElement('vr-assets');
+    document.body.appendChild(assetsEl);
+  }
+  assetsEl.appendChild(mixinEl);
+
+  return mixinEl;
+};

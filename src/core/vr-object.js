@@ -9,13 +9,18 @@ var VRNode = require('./vr-node');
 var VRUtils = require('../vr-utils');
 
 /**
+ * Entity element definition.
+ * Entities represent all elements that are part of the scene, and always have
+ * a position, rotation, and scale.
+ * In the entity-component system, entities are just a container of components.
  *
- * VRObject represents all elements that are part of the 3D scene.
- * They all have a position, rotation and a scale.
  *
+ * @namespace Entity
+ * @member {object} components - entity's currently initialized components.
+ * @member {object} object3D - three.js object.
+ * @member {array} states
  */
 var proto = {
-
   defaults: {
     value: {
       position: '',
@@ -25,9 +30,6 @@ var proto = {
     }
   },
 
-  //  ----------------------------------  //
-  //   Native custom elements callbacks   //
-  //  ----------------------------------  //
   createdCallback: {
     value: function () {
       this.states = [];
@@ -44,24 +46,21 @@ var proto = {
     writable: window.debug
   },
 
-  detachedCallback: {
-    value: function () {
-      if (!this.parentEl) { return; }
-      this.parentEl.remove(this);
-    },
-    writable: window.debug
-  },
-
+  /**
+   * Update component(s) if necessary.
+   *
+   * Note in Firefox, the callback is called even if the attribute value does
+   * not change. In this case, do not update.
+   *
+   * @param {string} attr - Attribute name changed.
+   * @param oldVal - Previous value.
+   * @param newVal - Updated value. Will be `null` in case of attr removal.
+   */
   attributeChangedCallback: {
     value: function (attr, oldVal, newVal) {
-      // In Firefox the callback is called even if the
-      // attribute value doesn't change. We return
-      // if old and new values are the same
       var newValStr = newVal;
       var component = VRComponents[attr];
-      // When creating objects programatically and setting attributes
-      // the object is not part of the scene until is inserted in the
-      // DOM
+      // Don't need to update until entity is fully part of the scene.
       if (!this.hasLoaded) { return; }
       if (component && typeof newVal !== 'string' && newVal !== null) {
         newValStr = component.stringifyAttributes(newVal);
@@ -72,7 +71,15 @@ var proto = {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attr);
+      this.updateComponent(attr, oldVal, newVal);
+    },
+    writable: window.debug
+  },
+
+  detachedCallback: {
+    value: function () {
+      if (!this.parentEl) { return; }
+      this.parentEl.remove(this);
     },
     writable: window.debug
   },
@@ -262,15 +269,31 @@ var proto = {
     writable: window.debug
   },
 
+  /**
+   * Initialize, update, or remove a single component based on whether the
+   * component is already initialized and the updated values.
+   *
+   * When initializing, we set the component on `this.components`.
+   *
+   * @param {string} name - Component name.
+   * @param oldVal
+   * @param newVal
+   */
   updateComponent: {
-    value: function (name) {
+    value: function (name, oldVal, newVal) {
       var component = this.components[name];
-      // Update if component already initialized
       if (component) {
+        // Attribute was removed. Remove component.
+        if (!this.isComponentDefined(name)) {
+          component.remove();
+          delete this.components[name];
+          return;
+        }
+        // Component already initialized. Update component.
         // TODO: update component attribute more granularly.
-        component.updateAttributes();
-        return;
+        return component.updateAttributes();
       }
+      // Component not yet initialized. Initialize component.
       this.initComponent(name);
     },
     writable: window.debug
@@ -358,7 +381,6 @@ var proto = {
   }
 };
 
-module.exports = registerElement(
-  'vr-object',
-  { prototype: Object.create(VRNode.prototype, proto) }
-);
+module.exports = registerElement('vr-object', {
+  prototype: Object.create(VRNode.prototype, proto)
+});

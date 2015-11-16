@@ -1,7 +1,10 @@
-/* global assert, process, sinon, suite, test */
+/* global assert, process, setup, sinon, suite, test */
 var VRObject = require('core/vr-object');
 var THREE = require('vr-markup').THREE;
-var entityFactory = require('../helpers.js').entityFactory;
+var helpers = require('../helpers.js');
+
+var entityFactory = helpers.entityFactory;
+var mixinFactory = helpers.mixinFactory;
 
 suite('vr-object', function () {
   'use strict';
@@ -43,19 +46,67 @@ suite('vr-object', function () {
    * Tests full component set + get flow on one of the most basic components.
    */
   suite('attributeChangedCallback', function () {
+    setup(function (done) {
+      var el = this.el = entityFactory();
+      el.addEventListener('loaded', function () {
+        done();
+      });
+    });
+
+    test('can remove component', function (done) {
+      var el = this.el;
+      el.setAttribute('geometry', 'primitive: box');
+
+      process.nextTick(function () {
+        assert.ok('geometry' in el.components);
+        el.removeAttribute('geometry');
+        setTimeout(function () {
+          assert.notOk('geometry' in el.components);
+          done();
+        });
+      });
+    });
+
+    test('does not remove default component', function (done) {
+      var el = this.el;
+      process.nextTick(function () {
+        assert.ok('position' in el.components);
+        el.removeAttribute('position');
+        setTimeout(function () {
+          assert.ok('position' in el.components);
+          done();
+        });
+      });
+    });
+
+    test('does not remove mixed-in component', function (done) {
+      var el = this.el;
+      var mixinId = 'geometry';
+      mixinFactory(mixinId, {geometry: 'primitive: box'});
+      el.setAttribute('mixin', mixinId);
+      el.setAttribute('geometry', 'primitive: sphere');
+      process.nextTick(function () {
+        assert.ok('geometry' in el.components);
+        el.removeAttribute('geometry');
+        setTimeout(function () {
+          // Geometry still exists since it is mixed in.
+          assert.ok('geometry' in el.components);
+          done();
+        });
+      });
+    });
+
     test('can update component data', function () {
-      var el = entityFactory();
+      var el = this.el;
       var position;
 
-      el.addEventListener('loaded', function () {
-        el.setAttribute('position', '10 20 30');
-        position = el.getAttribute('position');
-        assert.deepEqual(position, {x: 10, y: 20, z: 30});
+      el.setAttribute('position', '10 20 30');
+      position = el.getAttribute('position');
+      assert.deepEqual(position, {x: 10, y: 20, z: 30});
 
-        el.setAttribute('position', {x: 30, y: 20, z: 10});
-        position = el.getAttribute('position');
-        assert.deepEqual(position, {x: 30, y: 20, z: 10});
-      });
+      el.setAttribute('position', {x: 30, y: 20, z: 10});
+      position = el.getAttribute('position');
+      assert.deepEqual(position, {x: 30, y: 20, z: 10});
     });
   });
 
@@ -93,25 +144,34 @@ suite('vr-object', function () {
   });
 
   suite('getAttribute', function () {
-    test('returns full component data', function () {
+    test('returns parsed component data', function (done) {
       var componentData;
       var el = entityFactory();
       el.addEventListener('loaded', function () {
         el.setAttribute('geometry', 'primitive: box; width: 5');
-        componentData = el.getAttribute('geometry');
-        assert.ok('height' in componentData);
+        process.nextTick(function () {
+          componentData = el.getAttribute('geometry');
+          assert.equal(componentData.width, 5);
+          assert.notOk('height' in componentData);
+          done();
+        });
       });
     });
   });
 
   suite('getComputedAttribute', function () {
-    test('returns parsed component data', function () {
+    test('returns fully parsed component data', function (done) {
       var componentData;
       var el = entityFactory();
       el.addEventListener('loaded', function () {
         el.setAttribute('geometry', 'primitive: box; width: 5');
-        componentData = el.getComputedAttribute('geometry');
-        assert.deepEqual(componentData, { primitive: 'box', width: 5 });
+        process.nextTick(function () {
+          componentData = el.getComputedAttribute('geometry');
+          assert.equal(componentData.primitive, 'box');
+          assert.equal(componentData.width, 5);
+          assert.ok('height' in componentData);
+          done();
+        });
       });
     });
   });
