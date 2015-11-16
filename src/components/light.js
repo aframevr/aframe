@@ -62,30 +62,37 @@ module.exports.Component = registerComponent('light', {
 
       // Existing light.
       if (light) {
-        if (!el.hasAttribute('light')) {
-          // Light attribute removed. Remove light.
-          el.object3D.remove(light);
-        } else if (LIGHT_TYPES[data.type] !== light.type) {
-          // Light type has changed. Recreate light.
+        // Light type has changed. Recreate light.
+        if (LIGHT_TYPES[data.type] !== light.type) {
           var newLight = this.getLight();
           el.object3D.remove(light);
           el.object3D.add(newLight);
           this.light = newLight;
-        } else {
-          // Light type has not changed. Update light.
-          Object.keys(data).forEach(function (key) {
-            if (['color', 'groundColor'].indexOf(key) !== -1) {
-              data[key] = new THREE.Color(data[key]);
-            }
-            light[key] = data[key];
-          });
+          return;
         }
+        // Light type has not changed. Update light.
+        Object.keys(this.defaults).forEach(function (key) {
+          var value = data[key];
+          if (['color', 'groundColor'].indexOf(key) !== -1) {
+            value = new THREE.Color(value);
+          }
+          light[key] = value;
+        });
         return;
       }
 
-      // No light yet.
+      // No light yet. Create and add light.
       this.light = this.getLight();
       el.object3D.add(this.light);
+    }
+  },
+
+  /**
+   * Remove light on remove (callback).
+   */
+  remove: {
+    value: function () {
+      if (this.light) { this.el.object3D.remove(this.light); }
     }
   },
 

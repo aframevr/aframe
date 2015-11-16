@@ -116,6 +116,16 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
+   * Remove material on remove (callback).
+   */
+  remove: {
+    value: function () {
+      var object3D = this.el.object3D;
+      if (object3D) { object3D.material = null; }
+    }
+  },
+
+  /**
    * Updates this.material using data, creates new material if this.material
    * doesn't yet exist.
    *

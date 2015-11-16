@@ -45,15 +45,6 @@ suite('light', function () {
         done();
       });
     });
-
-    test.skip('handles removal', function (done) {
-      var el = this.el;
-      el.removeAttribute('light');
-      process.nextTick(function () {
-        assert.equal(el.object3D.children.length, 0);
-        done();
-      });
-    });
   });
 
   suite('getLight', function () {
@@ -107,6 +98,17 @@ suite('light', function () {
       el.setAttribute('light', 'type: black');
       process.nextTick(function () {
         assert.equal(el.object3D.children[0].type, 'DirectionalLight');
+        done();
+      });
+    });
+  });
+
+  suite('remove', function () {
+    test('removes light', function (done) {
+      var el = this.el;
+      el.removeAttribute('light');
+      setTimeout(function () {
+        assert.equal(el.object3D.children.length, 0);
         done();
       });
     });

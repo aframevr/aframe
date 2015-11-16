@@ -55,4 +55,15 @@ suite('material', function () {
       });
     });
   });
+
+  suite('remove', function () {
+    test('removes material', function () {
+      var el = this.el;
+      assert.ok(el.object3D.material);
+      el.removeAttribute('material');
+      setTimeout(function () {
+        assert.notOk(el.object3D.material);
+      });
+    });
+  });
 });
