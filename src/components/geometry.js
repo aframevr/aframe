@@ -3,8 +3,11 @@ var THREE = require('../../lib/three');
 var VRUtils = require('../vr-utils');
 
 /**
- * Geometry component. Combined with material component to make mesh in
+ * Geometry component. Combined with material component to make a mesh in
  * 3D object.
+ *
+ * TODO: rename component attributes to be consistent with three.js parameters
+ *       names is exposed in object3D.geometry.parameters.
  *
  * @param {number} [arc=2 * PI]
  * @param {number} depth
@@ -21,7 +24,7 @@ var VRUtils = require('../vr-utils');
  * @param {number} segmentsRadius
  * @param {number} segmentsWidth
  * @param {number} thetaLength
- * @param {number} thetaSTart
+ * @param {number} thetaStart
  * @param {number} tube
  * @param {number} tubularSegments
  * @param {number} width
@@ -29,14 +32,14 @@ var VRUtils = require('../vr-utils');
 module.exports.Component = registerComponent('geometry', {
   defaults: {
     value: {
-      arc: Math.PI * 2,
+      arc: 2 * Math.PI,
       depth: 5,
       height: 5,
       innerRadius: 5,
       openEnded: false,
       outerRadius: 7,
       p: 2,
-      primitive: null,
+      primitive: '',
       q: 3,
       radius: 5,
       segments: 32,
@@ -51,12 +54,28 @@ module.exports.Component = registerComponent('geometry', {
     }
   },
 
+  /**
+   * Creates a new geometry on every update as there's not an easy way to
+   * update a geometry that would be faster than just creating a new one.
+   */
   update: {
     value: function () {
       this.el.object3D.geometry = this.getGeometry();
     }
   },
 
+  /**
+   * Removes geometry on remove (callback).
+   */
+  remove: {
+    value: function () {
+      this.el.object3D.geometry = null;
+    }
+  },
+
+  /**
+   * @returns {object} geometry
+   */
   getGeometry: {
     value: function () {
       var data = this.data;
