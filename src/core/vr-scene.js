@@ -343,7 +343,6 @@ var VRScene = module.exports = registerElement(
             // We create a default camera
             defaultCamera = document.createElement('vr-object');
             defaultCamera.setAttribute('camera', {fov: 45});
-            defaultCamera.setAttribute('hmd-controls');
             defaultCamera.setAttribute('wasd-controls');
             defaultCamera.setAttribute('look-controls');
             this.pendingElements++;
