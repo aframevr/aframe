@@ -23,12 +23,9 @@ module.exports.Component = registerComponent('look-controls', {
 
   setupMouseControls: {
     value: function () {
-      var object3D = this.el.object3D;
       this.canvasEl = document.querySelector('vr-scene').canvas;
       // The canvas where the scene is painted
       this.mouseDown = false;
-      // To avoid gimbal lock
-      object3D.rotation.order = 'YXZ';
       this.pitchObject = new THREE.Object3D();
       this.yawObject = new THREE.Object3D();
       this.yawObject.position.y = 10;
@@ -64,6 +61,7 @@ module.exports.Component = registerComponent('look-controls', {
   update: {
     value: (function () {
       var hmdEuler = new THREE.Euler();
+      hmdEuler.order = 'YXZ';
       return function () {
         var hmdQuaternion;
         var pitchObject = this.pitchObject;
