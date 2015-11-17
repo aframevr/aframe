@@ -96,6 +96,8 @@ module.exports.Component = registerComponent('material', {
         }, 'MeshBasicMaterial');
       }
 
+      this.el.object3D.material = this.material = material;
+
       // Textures.
       var src = data.src;
       if (src) {
@@ -110,8 +112,6 @@ module.exports.Component = registerComponent('material', {
         material.map = null;
         material.needsUpdate = true;
       }
-
-      this.el.object3D.material = this.material = material;
     }
   },
 
