@@ -23,6 +23,8 @@ var texturePromises = {};
  * @params {string} repeat - X and Y value for size of texture repeating
            (in UV units).
  * @params {number} roughness - Parameter for physical/standard material.
+ * @params {string} [side=front] - Which side(s) to render (i.e., front, back,
+           both).
  * @params {string} src - To load a texture. takes a selector to an img/video
            element or a direct url().
  * @params {boolean} transparent - Whether to render transparent the alpha
@@ -41,6 +43,7 @@ module.exports.Component = registerComponent('material', {
       reflectivity: 1.0,
       repeat: '',
       roughness: 0.5,
+      side: 'front',
       src: '',
       transparent: false,
       width: 640
@@ -71,7 +74,7 @@ module.exports.Component = registerComponent('material', {
       var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
       var materialData = {
         color: new THREE.Color(data.color),
-        side: this.getSides(),
+        side: getSide(data.side),
         opacity: data.opacity,
         transparent: data.transparent
       };
@@ -149,23 +152,6 @@ module.exports.Component = registerComponent('material', {
         material = new THREE[type](data);
       }
       return material;
-    }
-  },
-
-  /**
-   * Returns an integer for which new material face sides will be rendered.
-   *
-   * @returns {Integer} `THREE.DoubleSide` (`0`) or `THREE.FrontSide` (`2`)
-   */
-  getSides: {
-    value: function () {
-      var geometry = this.el.components.geometry;
-      if (geometry && geometry.data.openEnded) {
-        // For performance reasons, we special case open-ended cylinders
-        // for rendering both faces.
-        return THREE.DoubleSide;
-      }
-      return THREE.FrontSide;
     }
   },
 
@@ -282,4 +268,26 @@ function loadVideoTexture (material, src, height, width) {
   texture.needsUpdate = true;
   material.map = texture;
   material.needsUpdate = true;
+}
+
+/**
+ * Returns a three.js constant determining which material face sides to render
+ * based on the side parameter (passed as a component attribute).
+ *
+ * @param {string} [side=front] - `front`, `back`, or `double`.
+ * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
+ */
+function getSide (side) {
+  switch (side) {
+    case 'back': {
+      return THREE.BackSide;
+    }
+    case 'double': {
+      return THREE.DoubleSide;
+    }
+    default: {
+      // Including case `front`.
+      return THREE.FrontSide;
+    }
+  }
 }

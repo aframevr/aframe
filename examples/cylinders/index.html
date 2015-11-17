@@ -9,14 +9,28 @@
     <script src="../../build/vr-markup.js"></script>
   </head>
   <body>
+    <vr-assets>
+      <vr-mixin id="cylinder" geometry="primitive: cylinder"></vr-mixin>
+      <vr-mixin id="open-ended" geometry="openEnded: true"
+                                material="side: double"></vr-mixin>
+    </vr-assets>
     <vr-scene stats="true">
       <vr-object position="0 0 20">
         <vr-object camera="fov: 45" look-controls wasd-controls></vr-object>
       </vr-object>
-      <vr-object position="-10 0 0" rotation="45 0 -45" geometry="primitive: cylinder; radius: 2; height: 5; openEnded: false;" material="color: aqua"></vr-object>
-      <vr-object position="0 0 0" rotation="25 0 10" geometry="primitive: cylinder; radius: 4; height: 2; openEnded: true;" material="color: crimson"></vr-object>
-      <vr-object position="10 0 0" rotation="75 0 0" geometry="primitive: cylinder; radius: 2; height: 4; openEnded: false; thetaLength: 4.5" material="color: gold"></vr-object>
-       <vr-object position="0 4 0" rotation="0 0 0" geometry="primitive: cylinder; radius: 4; height: 2; openEnded: true; thetaLength: 3; thetaStart: 3" material="color: orchid"></vr-object>
+
+      <vr-object mixin="cylinder" position="-10 0 0" rotation="45 0 -45"
+                 geometry="radius: 2; height: 5;"
+                 material="color: aqua"></vr-object>
+      <vr-object mixin="open-ended cylinder" rotation="25 0 10"
+                 geometry="radius: 4; height: 2"
+                 material="color: crimson"></vr-object>
+      <vr-object mixin="cylinder" position="10 0 0" rotation="75 0 0"
+                 geometry="radius: 2; height: 4; thetaLength: 4.5"
+                 material="color: gold; side: double"></vr-object>
+      <vr-object mixin="open-ended cylinder" position="0 4 0"
+                 geometry="radius: 4; height: 2; thetaLength: 3; thetaStart: 3"
+                 material="color: orchid"></vr-object>
     </vr-scene>
   </body>
 </html>
