@@ -74,7 +74,7 @@ module.exports.Component = registerComponent('material', {
           color: new THREE.Color(data.color),
           side: this.getSides(),
           opacity: data.opacity,
-          transparent: data.opacity < 1,
+          transparent: data.transparent,
           metalness: data.metalness,
           reflectivity: data.reflectivity,
           roughness: data.roughness
