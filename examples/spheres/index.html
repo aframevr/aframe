@@ -8,9 +8,39 @@
   </head>
   <body>
     <vr-scene>
-      <vr-sphere position="-2.5 1 0" rotation="-5 45 -10" radius="2" color="red" metallic="0" roughness="0.8" width-segments="32" height-segments="24"></vr-sphere>
-      <vr-sphere position="1 0 0" rotation="20 25 0" radius="1" color="green" roughness="0.2"></vr-sphere>
-      <vr-sphere position="3 -1 0" rotation="5 -45 0" radius="0.5" color="blue" metalness="0.9"></vr-sphere>
+
+      <!-- Orange -->
+      <vr-sphere position="0 4 -5" radius="4" color="#F16745" metallic="0" roughness="0.8" width-segments="32" height-segments="24">
+        <vr-image position="0 -4 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="4 4 4"></vr-image>
+      </vr-sphere>
+
+      <!-- Green -->
+      <vr-sphere position="-3 2 0" radius="2" color="#7BC8A4" roughness="0.2">
+        <vr-image position="0 -2 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></vr-image>
+      </vr-sphere>
+ 
+      <!-- Blue -->
+      <vr-sphere position="1 1 0" radius="1" color="#4CC3D9" metalness="0.1">
+        <vr-image position="0 -1 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></vr-image>
+      </vr-sphere>
+
+      <!-- Yellow -->
+      <vr-sphere position="3 0.5 1" radius="0.5" color="#FFC65D" metalness="0">
+        <vr-image position="0 -0.5 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.5 0.5 0.5"></vr-image>
+      </vr-sphere>
+
+      <!-- Purple -->
+      <vr-sphere position="-0.5 0.25 2" radius="0.25" color="#93648D" metalness="0">
+        <vr-image position="0 -0.25 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.25 0.25 0.25"></vr-image>
+      </vr-sphere>
+
+      <!-- Highlight -->
+      <vr-image position="0 -0.1 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></vr-image>
+
+      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></vr-object>
+      <vr-object light="type: ambient; color: #FFF;"></vr-object>
+
     </vr-scene>
   </body>
 </html>

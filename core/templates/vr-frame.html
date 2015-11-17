@@ -1,0 +1,21 @@
+<template is="vr-template"
+          element="vr-frame"
+          size="10"
+          thickness="0.1"
+          color="#404040">
+  <vr-cube position="5 5 0" rotation="0 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="5 -5 0" rotation="0 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="-5 5 0" rotation="0 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="-5 -5 0" rotation="0 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+
+  <vr-cube position="0 5 5" rotation="0 90 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="0 5 -5" rotation="0 90 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="0 -5 5" rotation="0 90 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="0 -5 -5" rotation="0 90 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+
+  <vr-cube position="5 0 5" rotation="90 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="5 0 -5" rotation="90 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="-5 0 5" rotation="90 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+  <vr-cube position="-5 0 -5" rotation="90 0 0" width="${thickness}" height="${thickness}" depth="${size}" color="${color}"></vr-cube>
+
+</template>
