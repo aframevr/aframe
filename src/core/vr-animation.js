@@ -165,7 +165,7 @@ module.exports = registerElement('vr-animation', {
         if (isNaN(begin)) { begin = 0; }
 
         // Store initial state.
-        this.initValue = utils.mixin({}, currentValue);
+        this.initValue = utils.extend({}, currentValue);
 
         // Handle indefinite + forward + alternate yoyo edge-case (#405).
         if (repeat === Infinity && fill === 'forward' &&
@@ -176,8 +176,8 @@ module.exports = registerElement('vr-animation', {
         // If reversing, swap from and to.
         if (direction === 'reverse') {
           toTemp = to;
-          to = utils.mixin({}, from);
-          from = utils.mixin({}, toTemp);
+          to = utils.extend({}, from);
+          from = utils.extend({}, toTemp);
         }
 
         // If fill is backwards or both, start animation at the specified from.
@@ -186,7 +186,7 @@ module.exports = registerElement('vr-animation', {
         }
 
         // Create Tween.
-        return new TWEEN.Tween(utils.mixin({}, from))
+        return new TWEEN.Tween(utils.extend({}, from))
           .to(to, data.dur)
           .delay(begin)
           .easing(easing)
@@ -283,9 +283,7 @@ module.exports = registerElement('vr-animation', {
         mixinData = mixinEl ? getElData(mixinEl, DEFAULTS) : {};
 
         elData = getElData(this, DEFAULTS);
-        utils.mixin(data, DEFAULTS);
-        utils.mixin(data, mixinData);
-        utils.mixin(data, elData);
+        utils.extend(data, DEFAULTS, mixinData, elData);
         this.data = data;
       },
       writable: window.debug

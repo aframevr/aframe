@@ -111,7 +111,7 @@ Component.prototype = {
   getData: function () {
     var data = this.data;
     if (typeof data !== 'object') { return data; }
-    return utils.mixin({}, data);
+    return utils.extend({}, data);
   },
 
   /**
@@ -145,7 +145,7 @@ function extend (dest, source) {
     if (source === undefined) { return dest; }
     return source;
   }
-  return utils.mixin(dest, source);
+  return utils.extend(dest, source);
 }
 
 /**

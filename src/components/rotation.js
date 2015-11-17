@@ -27,5 +27,5 @@ var proto = {
   }
 };
 
-utils.mixin(proto, coordinateParser);
+utils.extend(proto, coordinateParser);
 module.exports.Component = registerComponent('rotation', proto);
