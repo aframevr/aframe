@@ -57,9 +57,10 @@ Component.prototype = {
    * Does not update if data has not changed.
    */
   updateAttributes: function () {
-    var prevData = extend({}, this.data);
+    var previousData = extend({}, this.data);
     this.parseAttributes();
-    if (utils.deepEqual(prevData, this.data)) { return; }
+    // Don't update if properties haven't changed
+    if (utils.deepEqual(previousData, this.data)) { return; }
     this.update();
   },
 
