@@ -1,16 +1,15 @@
 /* global MessageChannel, performance, Promise */
 var re = require('../vr-register-element');
-var registerElement = re.registerElement;
-var isNode = re.isNode;
-
-var THREE = require('../../lib/three');
 var RStats = require('../../lib/vendor/rStats');
-var Wakelock = require('../../lib/vendor/wakelock/wakelock');
+var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
-var VRObject = require('./vr-object');
 var utils = require('../vr-utils');
+var VRObject = require('./vr-object');
+var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+var isNode = re.isNode;
+var registerElement = re.registerElement;
 
 var VRScene = module.exports = registerElement(
   'vr-scene',
@@ -20,6 +19,7 @@ var VRScene = module.exports = registerElement(
       VRObject.prototype, {
         createdCallback: {
           value: function () {
+            this.isScene = true;
             this.object3D = VRScene.scene || new THREE.Scene();
           }
         },

@@ -60,8 +60,11 @@ var proto = {
     value: function (attr, oldVal, newVal) {
       var newValStr = newVal;
       var component = VRComponents[attr];
-      // Don't need to update until entity is fully part of the scene.
-      if (!this.hasLoaded) { return; }
+      if (!this.hasLoaded && !this.isScene) {
+        // Don't update until entity is fully part of the scene.
+        // But do update if this object *is* the scene.
+        return;
+      }
       if (component && typeof newVal !== 'string' && newVal !== null) {
         newValStr = component.stringifyAttributes(newVal);
       }
