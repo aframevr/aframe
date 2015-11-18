@@ -149,3 +149,22 @@ module.exports.splitString = function (str, delimiter) {
   // Then split.
   return str.split(delimiter);
 };
+
+/**
+ * Extracts data from the element given an object that contains expected keys.
+ *
+ * @param {Element} Source element.
+ * @param {Object} [defaults={}] Object of default key-value pairs.
+ * @returns {Object}
+ */
+module.exports.getElData = function (el, defaults) {
+  defaults = defaults || {};
+  var data = {};
+  Object.keys(defaults).forEach(copyAttribute);
+  function copyAttribute (key) {
+    if (el.hasAttribute(key)) {
+      data[key] = el.getAttribute(key);
+    }
+  }
+  return data;
+};
