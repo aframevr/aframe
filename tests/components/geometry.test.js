@@ -105,6 +105,19 @@ suite('geometry', function () {
       });
     });
 
+    test('creates cylinder geometry with radius shortcut', function (done) {
+      var el = this.el;
+      var geometry;
+      el.setAttribute('geometry', 'primitive: cylinder; radius: 8');
+      setTimeout(function () {
+        geometry = el.object3D.geometry;
+        assert.equal(geometry.type, 'CylinderGeometry');
+        assert.equal(geometry.parameters.radiusTop, 8);
+        assert.equal(geometry.parameters.radiusBottom, 8);
+        done();
+      });
+    });
+
     test('creates plane geometry', function (done) {
       var el = this.el;
       var geometry;

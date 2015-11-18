@@ -84,13 +84,8 @@ module.exports.Component = registerComponent('geometry', {
     value: function () {
       var data = this.data;
       var defaults = this.defaults;
-
-      var radiusTop = data.radius;
-      var radiusBottom = data.radius;
-      if (data.radius === defaults.radius) {
-        radiusTop = data.radiusTop;
-        radiusBottom = data.radiusBottom;
-      }
+      var radiusBottom;
+      var radiusTop;
 
       switch (data.primitive) {
         case 'box': {
@@ -101,6 +96,13 @@ module.exports.Component = registerComponent('geometry', {
             data.radius, data.segments, data.thetaStart, data.thetaLength);
         }
         case 'cylinder': {
+          // Shortcut for specifying both top and bottom radius.
+          radiusTop = data.radius;
+          radiusBottom = data.radius;
+          if (data.radius === defaults.radius) {
+            radiusTop = data.radiusTop;
+            radiusBottom = data.radiusBottom;
+          }
           return new THREE.CylinderGeometry(
             radiusTop, radiusBottom, data.height, data.segmentsRadius,
             data.segmentsHeight, data.openEnded, data.thetaStart,
