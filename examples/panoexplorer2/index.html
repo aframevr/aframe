@@ -5,7 +5,6 @@
     <title>Pano Explorer 2</title>
     <meta name="description" content="Pano Explorer 2 — A-Frame">
     <script src="../../build/vr-components.js"></script>
-    <link rel="import" href="templates/index.html">
   </head>
   <body>
     <vr-scene>
@@ -31,10 +30,78 @@
       <!-- When clicked they swap out multiple elements. Sky, soundtrack, title images, -->
       <!-- They move the marker on the model from one place to the next -->
 
-      <vr-camera position="0 1.8 10"></vr-camera>
+      <vr-camera position="0 0 10"></vr-camera>
       
-      <vr-object></vr-object>
+      <vr-object>
+        <vr-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="2000" fill="backwards"></vr-animation>
 
+        <!-- intro -->
+        <vr-object>
+          <vr-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="forward"></vr-animation>
+          <vr-object position="0 2 0">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
+          </vr-object>
+
+          <vr-object position="0 -2 0" rotation="0 0 180">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
+          </vr-object>
+        </vr-object>
+
+        <vr-object>
+          <vr-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" begin="200" dur="2000" fill="backwards"></vr-animation>
+          <vr-object position="0 2 0">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
+          </vr-object>
+
+          <vr-object position="0 -2 0" rotation="0 0 180">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
+          </vr-object>
+        </vr-object>
+
+        <vr-object>
+          <vr-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" begin="400" dur="2000" fill="backwards"></vr-animation>
+          <vr-object position="0 2 0">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
+          </vr-object>
+
+          <vr-object position="0 -2 0" rotation="0 0 180">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
+          </vr-object>
+        </vr-object>
+
+        <vr-object>
+          <vr-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" begin="600" dur="2000" fill="backwards"></vr-animation>
+          <vr-object position="0 2 0">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
+          </vr-object>
+
+          <vr-object position="0 -2 0" rotation="0 0 180">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
+          </vr-object>
+        </vr-object>
+
+        <vr-object>
+          <vr-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" begin="800" dur="2000" fill="backwards"></vr-animation>
+          <vr-object position="0 2 0">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
+          </vr-object>
+
+          <vr-object position="0 -2 0" rotation="0 0 180">
+            <vr-animation attribute="scale" from="1 20 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
+            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
+          </vr-object>
+        </vr-object>
+
+      </vr-object>
 
       <!-- <vr-sky src="../_skies/city-2.png"></vr-sky> -->
 
@@ -50,6 +117,13 @@
           <a-click></a-click>
         </vr-image>
       </vr-object>
+
+      
+
+      <!-- Custom lighting setup -->
+      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></vr-object>
+      <vr-object light="type: ambient; color: #FFF;"></vr-object>
+
 
     </vr-scene>
   </body>
