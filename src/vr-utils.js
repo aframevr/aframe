@@ -62,7 +62,7 @@ module.exports.extend = objectAssign;
 module.exports.parseCoordinate = function (value, defaults) {
   defaults = defaults || {};
   if (typeof value !== 'string') { return value; }
-  var values = value.split(' ');
+  var values = value.trim().replace(/\s+/g, ' ').split(' ');
   return {
     x: parseFloat(values[0] || defaults.x),
     y: parseFloat(values[1] || defaults.y),
