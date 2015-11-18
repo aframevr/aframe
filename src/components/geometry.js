@@ -2,6 +2,8 @@ var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 var VRUtils = require('../vr-utils');
 
+var DEFAULT_RADIUS = 5;
+
 /**
  * Geometry component. Combined with material component to make mesh in
  * 3D object.
@@ -38,7 +40,9 @@ module.exports.Component = registerComponent('geometry', {
       p: 2,
       primitive: null,
       q: 3,
-      radius: 5,
+      radius: DEFAULT_RADIUS,
+      radiusTop: DEFAULT_RADIUS,
+      radiusBottom: DEFAULT_RADIUS,
       segments: 32,
       segmentsHeight: 18,
       segmentsRadius: 36,
@@ -60,6 +64,15 @@ module.exports.Component = registerComponent('geometry', {
   getGeometry: {
     value: function () {
       var data = this.data;
+      var defaults = this.defaults;
+
+      var radiusTop = data.radius;
+      var radiusBottom = data.radius;
+      if (data.radius === defaults.radius) {
+        radiusTop = data.radiusTop;
+        radiusBottom = data.radiusBottom;
+      }
+
       switch (data.primitive) {
         case 'box': {
           return new THREE.BoxGeometry(data.width, data.height, data.depth);
@@ -70,7 +83,7 @@ module.exports.Component = registerComponent('geometry', {
         }
         case 'cylinder': {
           return new THREE.CylinderGeometry(
-            data.radius, data.radius, data.height, data.segmentsRadius,
+            radiusTop, radiusBottom, data.height, data.segmentsRadius,
             data.segmentsHeight, data.openEnded, data.thetaStart,
             data.thetaLength);
         }
