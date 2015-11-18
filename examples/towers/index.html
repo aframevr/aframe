@@ -139,7 +139,7 @@
             opts.depth = 1;
           }
 
-          var firstCubeOpts = Object.assign({rotation: '0 45 0'}, opts);
+          var firstCubeOpts = Object.assign({rotation: {x: 0, y: 45, z: 0}, opts);
           firstCubeOpts.mixin = 'layer-1--light';
 
           var parentCube = createCube(firstCubeOpts);
