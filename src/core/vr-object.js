@@ -10,6 +10,7 @@ var VRNode = require('./vr-node');
 
 var log = debug('core:vr-object');
 var error = debug('core:vr-object:error');
+var warn = debug('components:material:warn');
 
 /**
  * Entity element definition.
@@ -44,43 +45,16 @@ var proto = {
     }
   },
 
+  attributeChangedCallback: {
+    value: function (attr, oldVal, newVal) {
+      this.setEntityAttribute(attr, oldVal, newVal);
+    }
+  },
+
   attachedCallback: {
     value: function () {
       this.addToParent();
       this.load();
-    },
-    writable: window.debug
-  },
-
-  /**
-   * Update component(s) if necessary.
-   *
-   * Note in Firefox, the callback is called even if the attribute value does
-   * not change. In this case, do not update.
-   *
-   * @param {string} attr - Attribute name changed.
-   * @param oldVal - Previous value.
-   * @param newVal - Updated value. Will be `null` in case of attr removal.
-   */
-  attributeChangedCallback: {
-    value: function (attr, oldVal, newVal) {
-      var newValStr = newVal;
-      var component = VRComponents[attr];
-      if (!this.hasLoaded && !this.isScene) {
-        // Don't update until entity is fully part of the scene.
-        // But do update if this object *is* the scene.
-        return;
-      }
-      if (component && typeof newVal !== 'string' && newVal !== null) {
-        newValStr = component.stringifyAttributes(newVal);
-      }
-      if (oldVal === newValStr) { return; }
-      if (attr === 'mixin') {
-        this.updateStateMixins(newVal, oldVal);
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attr, oldVal, newVal);
     },
     writable: window.debug
   },
@@ -100,11 +74,12 @@ var proto = {
 
   applyMixin: {
     value: function (attr) {
+      var attrValue = this.getAttribute(attr);
       if (!attr) {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attr);
+      this.updateComponent(attr, attrValue);
     },
     writable: window.debug
   },
@@ -127,6 +102,7 @@ var proto = {
   updateStateMixins: {
     value: function (newMixins, oldMixins) {
       var self = this;
+      oldMixins = oldMixins || '';
       var newMixinsIds = newMixins.split(' ');
       var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
       // The list of mixins that might have been removed on update
@@ -191,12 +167,8 @@ var proto = {
       this.object3D.el = this;
       // It attaches itself to the threejs parent object3D
       this.addToParent();
-      // It sets default components on the attributes if they're not defined
-      // position, rotation and scale are assumed to be available for any
-      // component. We initialize them first
-      this.initComponents(this.defaults);
       // Components initialization
-      this.initComponents(VRComponents);
+      this.updateComponents();
       // Call the parent class
       VRNode.prototype.load.call(this);
     },
@@ -210,17 +182,6 @@ var proto = {
     writable: window.debug
   },
 
-  initComponents: {
-    value: function (components) {
-      var self = this;
-      var keys = Object.keys(components);
-      keys.forEach(function (key) {
-        self.initComponent(key);
-      });
-    },
-    writable: window.debug
-  },
-
   /**
    * For a given component name it checks if it's defined
    * in the elements itself, the mixins or the default
@@ -229,14 +190,20 @@ var proto = {
    */
   isComponentDefined: {
     value: function (name) {
-      var i;
-      var inMixin = false;
-      var mixinEls = this.mixinEls;
       // If the defaults contain the component
       var inDefaults = this.defaults[name];
       // If the element contains the component
       var inAttribute = this.hasAttribute(name);
       if (inDefaults !== undefined || inAttribute) { return true; }
+      return this.isComponentMixedIn(name);
+    }
+  },
+
+  isComponentMixedIn: {
+    value: function (name) {
+      var i;
+      var inMixin = false;
+      var mixinEls = this.mixinEls;
      // If any of the mixins contains the component
       for (i = 0; i < mixinEls.length; ++i) {
         inMixin = mixinEls[i].hasAttribute(name);
@@ -276,36 +243,51 @@ var proto = {
 
   updateComponents: {
     value: function () {
-      var components = Object.keys(this.components);
+      var self = this;
+      var components = Object.keys(VRComponents);
       // Updates components
-      components.forEach(this.updateComponent.bind(this));
+      components.forEach(updateComponent);
+      function updateComponent (name) {
+        var elValue = self.getAttribute(name);
+        self.updateComponent(name, elValue);
+      }
     },
     writable: window.debug
   },
 
   /**
-   * Initialize, update, or remove a single component based on whether the
-   * component is already initialized and the updated values.
+   * Initialize, update, or remove a single component.
    *
    * When initializing, we set the component on `this.components`.
    *
    * @param {string} name - Component name.
-   * @param oldVal
-   * @param newVal
+   * @param {object} newData - The new attributes assigned to the component
    */
   updateComponent: {
-    value: function (name, oldVal, newVal) {
+    value: function (name, newData) {
       var component = this.components[name];
+      var isDefault = name in this.defaults;
+      var isMixedIn = this.isComponentMixedIn(name);
       if (component) {
         // Attribute was removed. Remove component.
-        if (!this.isComponentDefined(name)) {
+        // 1. If the component is not defined in the defaults,
+        // mixins or element attribute
+        // 2. If the new data is null, it's not a default
+        // component and the component it's not defined via
+        // mixins
+        if (!this.isComponentDefined(name) ||
+            newData === null && !isDefault && !isMixedIn) {
           component.remove();
           delete this.components[name];
           return;
         }
+        if (typeof newData === 'string') {
+          newData = component.parseAttributesString(newData);
+        }
         // Component already initialized. Update component.
         // TODO: update component attribute more granularly.
-        return component.updateAttributes();
+        component.updateAttributes(newData);
+        return;
       }
       // Component not yet initialized. Initialize component.
       this.initComponent(name);
@@ -313,13 +295,104 @@ var proto = {
     writable: window.debug
   },
 
-  setAttribute: {
-    value: function (attr, value) {
+  removeAttribute: {
+    value: function (attr) {
       var component = VRComponents[attr];
-      if (component && typeof value === 'object') {
-        value = component.stringifyAttributes(value);
+      if (component) { this.setEntityAttribute(attr, undefined, null); }
+      HTMLElement.prototype.removeAttribute.call(this, attr);
+    },
+    writable: window.debug
+  },
+
+  /**
+   * For a given component name it sets the value of one of its
+   * attributes
+   *
+   * @param {string} componentName - The name of the component
+   * @param {string} attrName - The name of the attribute
+   * @param {string} attrValue - The new value of the attribute
+   *
+   */
+  setComponentAttribute: {
+    value: function (componentName, attrName, attrValue) {
+      var attrs = this.getAttribute(componentName);
+      var component = this.components[componentName];
+      if (!component) {
+        warn('Trying to update an attribute of component "%s" ' +
+              'that is not defined on the entity', componentName);
       }
-      HTMLElement.prototype.setAttribute.call(this, attr, value);
+      attrs[attrName] = attrValue;
+      this.updateComponent(componentName, attrs);
+      return attrs;
+    },
+    writable: window.debug
+  },
+
+  /**
+   * It deals with updates on entity specific attributes: components and mixins
+   *
+   * @param {string} attr - Attribute name
+   * @param {string} oldVal - Previous value of the attribute
+   * @param {string|object} newVal - New value of the attribute
+   *
+   */
+  setEntityAttribute: {
+    value: function (attr, oldVal, newVal) {
+      var component = VRComponents[attr];
+      oldVal = oldVal || this.getAttribute(attr);
+      // When creating objects programatically and setting attributes
+      // the object is not part of the scene until is inserted in the
+      // DOM
+      if (!this.hasLoaded) { return; }
+      if (attr === 'mixin') {
+        this.updateStateMixins(newVal, oldVal);
+        this.updateComponents();
+        return;
+      }
+      if (component) { this.updateComponent(attr, newVal); }
+    }
+  },
+
+  /**
+   * If the attribute name corresponds to the name of a component.
+   * setAttribute will update, initialize or remove the component
+   * from the entity.
+   *
+   * Examples:
+   *
+   * setAttribute('id', 'my-element');
+   * setAttribute('material', { color: 'crimson' });
+   * setAttribute('material', 'color', 'crimson');
+   *
+   * @param {string} attr - attribute name. setAttribute will update or initialize
+   *        a component if the attribute name corresponds to a registered component.
+   * @param {string|object} value - The value of the attribute or component.
+   *        It accepts objects in the case of a component
+   * @param {string} componentAttrValue - If defined, value will act as the attribute
+   *        name and setAttribute will only set a single component attribute.
+   */
+  setAttribute: {
+    value: function (attr, newValue, componentAttrValue) {
+      var self = this;
+      var component = VRComponents[attr];
+      var newValueStr = newValue;
+      // Make sure we send a string to native setAttribute
+      // It updates one attribute of the component
+      if (arguments.length === 3) {
+        // Update only one attribute of the given component
+        newValue = this.setComponentAttribute(attr, newValue, componentAttrValue);
+        callSuper();
+      } else { // It updates the whole attribute set
+        // We need to call first on VRNode to make sure mixins are updated
+        // before updating components
+        callSuper();
+        this.setEntityAttribute(attr, undefined, newValue);
+      }
+
+      function callSuper () {
+        if (component) { newValueStr = component.stringifyAttributes(newValue); }
+        VRNode.prototype.setAttribute.call(self, attr, newValueStr);
+      }
     },
     writable: window.debug
   },

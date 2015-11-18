@@ -70,7 +70,8 @@ var VRScene = module.exports = registerElement('vr-scene', {
 
         // For Chrome (https://github.com/MozVR/aframe-core/issues/321).
         window.addEventListener('load', resizeCanvas);
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -133,9 +134,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
         }
 
         function attachEventListener (node) {
-          node.addEventListener('loaded', function () {
-            elementLoadedCallback(node);
-          });
+          node.addEventListener('loaded', elementLoadedCallback);
         }
       }
     },
@@ -259,6 +258,16 @@ var VRScene = module.exports = registerElement('vr-scene', {
           height: canvas.offsetHeight,
           width: canvas.offsetWidth
         };
+      }
+    },
+
+    load: {
+      value: function () {
+        // To prevent emmitting the loaded event more than once
+        // and to prevent triggering loaded if there are still
+        // pending elements to be loaded
+        if (this.hasLoaded || this.pendingElements !== 0) { return; }
+        VRObject.prototype.load.call(this);
       }
     },
 

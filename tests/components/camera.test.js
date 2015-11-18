@@ -7,6 +7,7 @@ suite('camera', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('camera', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });
@@ -27,18 +28,14 @@ suite('camera', function () {
       var el = this.el;
       assert.notEqual(el.object3D.fov, 40);
       el.setAttribute('camera', 'fov: 65');
-      process.nextTick(function () {
-        assert.equal(el.object3D.children[0].fov, 65);
-      });
+      assert.equal(el.object3D.children[0].fov, 65);
     });
 
     test('does not create a new camera object', function () {
       var el = this.el;
       var cameraId = el.object3D.children[0].uuid;
       el.setAttribute('camera', 'fov: 65');
-      process.nextTick(function () {
-        assert.equal(el.object3D.children[0].uuid, cameraId);
-      });
+      assert.equal(el.object3D.children[0].uuid, cameraId);
     });
   });
 });

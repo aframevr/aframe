@@ -5,6 +5,7 @@ var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
 var utils = require('../vr-utils.js');
 
+var error = debug('components:material:error');
 var warn = debug('components:material:warn');
 
 var CubeLoader = new THREE.CubeTextureLoader();
@@ -214,7 +215,7 @@ function loadImageTexture (material, src, repeat) {
   var onLoad = createTexture;
   var onProgress = function () {};
   var onError = function (xhr) {
-    utils.error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
+    error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
                 xhr.status, xhr.statusText);
   };
 

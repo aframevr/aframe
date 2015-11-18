@@ -1,7 +1,8 @@
-/* global Event, HTMLElement */
+/* global HTMLElement */
 
 var re = require('../vr-register-element');
 var registerElement = re.registerElement;
+var utils = require('../vr-utils');
 var isNode = re.isNode;
 
 module.exports = registerElement(
@@ -55,9 +56,9 @@ module.exports = registerElement(
           value: function () {
             // To prevent emitting the loaded event more than once.
             if (this.hasLoaded) { return; }
-            var event = new Event('loaded');
             this.hasLoaded = true;
-            this.dispatchEvent(event);
+            var data = { bubbles: false, detail: {} };
+            utils.fireEvent(this, 'loaded', data);
           }
         }
       }
