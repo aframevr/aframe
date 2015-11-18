@@ -19,9 +19,7 @@ var app = budo('./index.js:build/vr-components.js', {
   stream: process.stdout,  // log to stdout
   host: '0.0.0.0',
   port: 9000,
-  browserifyArgs: (
-    '-s vr-components -t [browserify-shader --parameterize=true]'.split(' ')
-  )
+  browserifyArgs: '-s vr-components'.split(' ')
 });
 
 app
