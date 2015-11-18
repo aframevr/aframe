@@ -67,8 +67,8 @@ module.exports.Component = registerComponent('material', {
     value: function () {
       var data = this.data;
       var src = data.src;
-      var standardMaterial = data.receiveLight;
-      var materialType = standardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
+      var isStandardMaterial = data.receiveLight;
+      var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
       var materialData = {
         color: new THREE.Color(data.color),
         side: this.getSides(),
@@ -77,10 +77,11 @@ module.exports.Component = registerComponent('material', {
       };
 
       // Physical material extra parameters
-      if (standardMaterial) {
+      if (isStandardMaterial) {
         materialData.metalness = data.metalness;
         materialData.reflectivity = data.reflectivity;
         materialData.roughness = data.roughness;
+        materialData.transparent = data.opacity < 1.0;
       }
 
       // Create or reuse an existing material
@@ -88,7 +89,7 @@ module.exports.Component = registerComponent('material', {
       this.el.object3D.material = this.material;
 
       // Load textures and/or cubmaps
-      if (standardMaterial) { this.updateEnvMap(); }
+      if (isStandardMaterial) { this.updateEnvMap(); }
       this.updateTexture(src);
     }
   },
