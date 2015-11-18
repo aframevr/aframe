@@ -18,7 +18,7 @@
         <vr-frame position="6 2 5" scale="0.15 0.75 0.75" thickness="0.15" color="#A5D1F3"></vr-frame>
         <vr-frame position="8 2 5" scale="0.15 0.75 0.75" thickness="0.15" color="#A5D1F3"></vr-frame>
         <vr-frame position="2 2 -10" scale="2 2 2" thickness="0.02" color="#FFF"></vr-frame>
-        
+
         <vr-frame position="0 0 -10" thickness="0.05" color="#999"></vr-frame>
         <vr-frame position="0 -10.5 -10" thickness="0.05" color="#999"></vr-frame>
         <vr-frame position="0 -21 -10" thickness="0.05" color="#999"></vr-frame>
@@ -27,9 +27,8 @@
       </vr-object>
 
       <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-1 2 1"></vr-object>
-      <vr-object light="type: ambient; color: #FFF;"></vr-object>
-
+      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
+      <vr-light type="ambient" color="#fff"></vr-light>
     </vr-scene>
   </body>
 </html>
