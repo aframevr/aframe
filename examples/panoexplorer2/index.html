@@ -10,24 +10,47 @@
   <body>
     <vr-scene>
 
+      <!-- DOM scene frames the page -->
+      <!-- It disappears when the user enters VR mode -->
 
-      <!-- Fade in from black -->
-      <!-- * Tween opacity on sky template to 0 after 1000. -->
-      <!--
-      <vr-sky src="../_skies/black-gradient-1.jpg.png" radius="4800">
-        <vr-animation attribute="opacity" from="1" to="0" dur="750" begin="1000" fill="backwards"></vr-animation>
-      </vr-sky>
-      -->
+      <!-- Logo appears, rotates, disappera -->
+      <!-- Tween opacity or scale on smaller element w/ black material. 0 to 1000. -->      
 
-      <vr-cylinder position="0 0 0" rotation="0 90 0" radius="1.5" height="1" theta-start="0" theta-length="3.15" open-ended="true" color="#93648D" src="../_images/checkerboard-1.png" scale="1 1 -1"></vr-cylinder>
+      <!-- Transition in from black -->
+      <!-- Tween opacity or scale on smaller element w/ black material. 0 to 1000. -->
 
-      <vr-sky src="../_skies/city-2.png"></vr-sky>
+      <!-- A 360° image in the background -->
+      <!-- <a-sky src="images/city.jpg"></a-sky> -->
 
+      <!-- A 3D model at their feet -->
+      <!-- <a-model src="models/city.dae" scale="1 1 1"></a-model> -->
+
+      <!-- Images provide instructions and logo for the experience -->
+
+      <!-- Images in the scene are links. -->
+      <!-- When clicked they swap out multiple elements. Sky, soundtrack, title images, -->
+      <!-- They move the marker on the model from one place to the next -->
+
+      <vr-camera position="0 1.8 10"></vr-camera>
+      
+      <vr-object></vr-object>
+
+
+      <!-- <vr-sky src="../_skies/city-2.png"></vr-sky> -->
+
+      <!-- Links. When clicked they change the background -->
       <vr-object id="links" position="0 0.5 0">
-        <vr-image position="-2 0 0" width="1" height="1" src="images/thumb-cubes.png"></vr-image>
-        <vr-image position="0 0 0" width="1" height="1" src="images/thumb-city.png"></vr-image>
-        <vr-image position="2 0 0" width="1" height="1" src="images/thumb-sechelt.png"></vr-image>
+        <vr-image position="-2 0 0" width="1" height="1" src="images/thumb-cubes.png">
+          <a-click></a-click>
+        </vr-image>
+        <vr-image position="0 0 0" width="1" height="1" src="images/thumb-city.png">
+          <a-click></a-click>
+        </vr-image>
+        <vr-image position="2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
+          <a-click></a-click>
+        </vr-image>
       </vr-object>
+
     </vr-scene>
   </body>
 </html>
