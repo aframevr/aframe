@@ -1,5 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers.js').entityFactory;
+var THREE = require('vr-markup').THREE;
 
 suite('material', function () {
   'use strict';
@@ -63,6 +64,28 @@ suite('material', function () {
       el.removeAttribute('material');
       setTimeout(function () {
         assert.notOk(el.object3D.material);
+      });
+    });
+  });
+
+  suite('side', function (done) {
+    test('defaults to front side', function () {
+      assert.equal(this.el.object3D.material.side, THREE.FrontSide);
+    });
+
+    test('can be set to back', function () {
+      var el = this.el;
+      el.setAttribute('material', 'side: back');
+      process.nextTick(function () {
+        assert.equal(el.object3D.material.side, THREE.BackSide);
+      });
+    });
+
+    test('can be set to double', function () {
+      var el = this.el;
+      el.setAttribute('material', 'side: double');
+      process.nextTick(function () {
+        assert.equal(el.object3D.material.side, THREE.DoubleSide);
       });
     });
   });
