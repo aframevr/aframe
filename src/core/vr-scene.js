@@ -257,13 +257,6 @@ var VRScene = module.exports = registerElement('vr-scene', {
       }
     },
 
-    hideUI: {
-      value: function () {
-        this.statsEl.classList.add('hidden');
-        this.vrButton.classList.add('hidden');
-      }
-    },
-
     /**
      * Notify scene that light has been added and to remove the default
      *
@@ -486,7 +479,20 @@ var VRScene = module.exports = registerElement('vr-scene', {
         if (statsEnabled) {
           this.statsEl.classList.remove('hidden');
         }
-        this.vrButton.classList.remove('hidden');
+        if (this.vrButton) {
+          this.vrButton.classList.remove('hidden');
+        }
+      }
+    },
+
+    hideUI: {
+      value: function () {
+        if (this.statsEl) {
+          this.statsEl.classList.add('hidden');
+        }
+        if (this.vrButton) {
+          this.vrButton.classList.add('hidden');
+        }
       }
     },
 
