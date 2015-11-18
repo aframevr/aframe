@@ -66,52 +66,55 @@ module.exports.Component = registerComponent('material', {
   update: {
     value: function () {
       var data = this.data;
-      var material;
+      var src = data.src;
+      var standardMaterial = data.receiveLight;
+      var materialType = standardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
+      var materialData = {
+        color: new THREE.Color(data.color),
+        side: this.getSides(),
+        opacity: data.opacity,
+        transparent: data.transparent
+      };
 
-      if (data.receiveLight) {
-        // Physical material.
-        material = this.updateOrCreateMaterialHelper({
-          color: new THREE.Color(data.color),
-          side: this.getSides(),
-          opacity: data.opacity,
-          transparent: data.transparent,
-          metalness: data.metalness,
-          reflectivity: data.reflectivity,
-          roughness: data.roughness
-        }, 'MeshStandardMaterial');
-        // Environment cubemaps.
-        if (data.envMap && !this.isLoadingEnvMap) {
-          this.loadEnvMap(material, data.envMap);
-        } else {
-          material.envMap = null;
-          material.needsUpdate = true;
-        }
-      } else {
-        material = this.updateOrCreateMaterialHelper({
-          // Basic material.
-          color: new THREE.Color(data.color),
-          side: this.getSides(),
-          opacity: data.opacity,
-          transparent: data.transparent
-        }, 'MeshBasicMaterial');
+      // Physical material extra parameters
+      if (standardMaterial) {
+        materialData.metalness = data.metalness;
+        materialData.reflectivity = data.reflectivity;
+        materialData.roughness = data.roughness;
       }
 
-      this.el.object3D.material = this.material = material;
+      // Create or reuse an existing material
+      this.material = this.updateOrCreateMaterialHelper(materialData, materialType);
+      this.el.object3D.material = this.material;
 
-      // Textures.
-      var src = data.src;
+      // Load textures and/or cubmaps
+      if (standardMaterial) { this.updateEnvMap(); }
+      this.updateTexture(src);
+    }
+  },
+
+  /*
+   * Updates texture applied to the material
+   *
+   * @params {string|object} src - An <img> / <video> element or url to an image/video file.
+   */
+  updateTexture: {
+    value: function (src) {
+      var data = this.data;
+      var material = this.material;
       if (src) {
         if (src !== this.textureSrc) {
           // Texture added or changed.
           this.textureSrc = src;
-          srcLoader.validateSrc(src, this.loadImage.bind(this),
-                                this.loadVideo.bind(this));
+          srcLoader.validateSrc(src, loadImage, loadVideo);
         }
       } else {
         // Texture removed.
         material.map = null;
         material.needsUpdate = true;
       }
+      function loadImage (src) { loadImageTexture(material, src, data.repeat); }
+      function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
     }
   },
 
@@ -168,13 +171,19 @@ module.exports.Component = registerComponent('material', {
   /**
    * Handle environment cubemap. Textures are cached in texturePromises.
    *
-   * @param {object} material - three.js material.
-   * @param {string} envMap - Query selector or comma-separated list of url()s.
-   */
-  loadEnvMap: {
-    value: function (material, envMap) {
+  */
+  updateEnvMap: {
+    value: function () {
       var self = this;
-      self.isLoadingEnvMap = true;
+      var material = this.material;
+      var envMap = this.data.envMap;
+      // Environment cubemaps.
+      if (!envMap || this.isLoadingEnvMap) {
+        material.envMap = null;
+        material.needsUpdate = true;
+        return;
+      }
+      this.isLoadingEnvMap = true;
       if (texturePromises[envMap]) {
         // Another material is already loading this texture. Wait on promise.
         texturePromises[envMap].then(function (cube) {
@@ -196,79 +205,80 @@ module.exports.Component = registerComponent('material', {
         });
       }
     }
-  },
-
-  /**
-   * Sets image texture on material as map.
-   *
-   * @params {string|object} src - An <img> element or url to an image file.
-   */
-  loadImage: {
-    value: function (src) {
-      var repeat = this.data.repeat;
-      var repeatXY;
-      var texture;
-      var isEl = typeof src !== 'string';
-      if (isEl) {
-        texture = new THREE.Texture(src);
-        texture.needsUpdate = true;
-      } else {
-        texture = THREE.ImageUtils.loadTexture(src);
-      }
-      if (repeat) {
-        repeatXY = repeat.split(' ');
-        if (repeatXY.length === 2) {
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(parseInt(repeatXY[0], 10),
-                             parseInt(repeatXY[1], 10));
-        }
-      }
-      this.material.needsUpdate = true;
-      this.material.map = texture;
-    }
-  },
-
-  /**
-   * Creates a video element to be used as a texture.
-   *
-   * @params {string} src - the url pointing to the video file.
-   */
-  createVideoEl: {
-    value: function (src) {
-      var el = this.videoEl || document.createElement('video');
-      function onError () {
-        utils.warn('The url "$s" is not a valid image or video', src);
-      }
-      el.width = this.data.width;
-      el.height = this.data.height;
-      // Attach event listeners if brand new video element.
-      if (el !== this.videoEl) {
-        el.autoplay = true;
-        el.loop = true;
-        el.crossOrigin = true;
-        el.addEventListener('error', onError, true);
-        this.videoEl = el;
-      }
-      el.src = src;
-      return el;
-    }
-  },
-
-  /**
-   * Sets video texture on material as map.
-   *
-   * @params {string|object} src - A <video> element or url to a video file.
-   */
-  loadVideo: {
-    value: function (src) {
-      // three.js video texture loader requires a <video>.
-      var videoEl = typeof src !== 'string' ? src : this.createVideoEl(src);
-      var texture = new THREE.VideoTexture(videoEl);
-      texture.minFilter = THREE.LinearFilter;
-      texture.needsUpdate = true;
-      this.material.map = texture;
-      this.material.needsUpdate = true;
-    }
   }
 });
+
+/**
+ * Sets image texture on material as map.
+ *
+ * @params {object} material - three.js material.
+ * @params {string|object} src - An <img> element or url to an image file.
+ * @params {string} repeat - X and Y value for size of texture repeating (in UV units).
+ */
+function loadImageTexture (material, src, repeat) {
+  var repeatXY;
+  var texture;
+  var isEl = typeof src !== 'string';
+  if (isEl) {
+    texture = new THREE.Texture(src);
+    texture.needsUpdate = true;
+  } else {
+    texture = THREE.ImageUtils.loadTexture(src);
+  }
+  if (repeat) {
+    repeatXY = repeat.split(' ');
+    if (repeatXY.length === 2) {
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(parseInt(repeatXY[0], 10),
+                         parseInt(repeatXY[1], 10));
+    }
+  }
+  material.needsUpdate = true;
+  material.map = texture;
+}
+
+/**
+ * Creates a video element to be used as a texture.
+ *
+ * @params {object} material - three.js material.
+ * @params {string} src - url to a video file.
+ * @params {number} width - width of the video.
+ * @params {number} height - height of the video.
+ */
+function createVideoEl (material, src, width, height) {
+  var el = material.videoEl || document.createElement('video');
+  function onError () {
+    utils.warn('The url "$s" is not a valid image or video', src);
+  }
+  el.width = width;
+  el.height = height;
+  // Attach event listeners if brand new video element.
+  if (el !== this.videoEl) {
+    el.autoplay = true;
+    el.loop = true;
+    el.crossOrigin = true;
+    el.addEventListener('error', onError, true);
+    material.videoEl = el;
+  }
+  el.src = src;
+  return el;
+}
+
+/**
+ * Sets video texture on material as map.
+ * @params {object} material - three.js material.
+ * @params {string} src - url to a video file.
+ * @params {number} width - width of the video.
+ * @params {number} height - height of the video.
+ *
+*/
+function loadVideoTexture (material, src, height, width) {
+  // three.js video texture loader requires a <video>.
+  var videoEl = typeof src !== 'string' ? src : createVideoEl(material, src, height, width);
+  var texture = new THREE.VideoTexture(videoEl);
+  texture.minFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  material.map = texture;
+  material.needsUpdate = true;
+}
