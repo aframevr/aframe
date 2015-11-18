@@ -30,11 +30,14 @@
       <!-- When clicked they swap out multiple elements. Sky, soundtrack, title images, -->
       <!-- They move the marker on the model from one place to the next -->
 
-      <vr-camera position="0 0 0"></vr-camera>
+      <vr-camera position="0 0 0" near="0.1"></vr-camera>
 
       <!-- Logo appears, rotates, disappears -->
-      <vr-object position="0 0 -0.5" scale="0.15 0.15 0.15">
+      <vr-object position="0 0.03 -0.5" scale="0.075 0.075 0.075">
 
+        <!-- <vr-animation attribute="position" to="0 0.03 -1" begin="3100" dur="500" fill="backwards" easing="ease-out"></vr-animation> -->
+
+        <!-- Box -->
         <vr-object>
           
           <vr-animation attribute="scale" from="0 0 0" to="1 1 1" begin="500" dur="500" fill="backwards" easing="ease-out"></vr-animation>
@@ -46,10 +49,11 @@
 
         </vr-object>
 
-        <vr-object position="0 -0.8 0">
+        <!-- Name -->
+        <vr-object>
 
-          <vr-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" begin="1750" dur="200" fill="backwards" easing="ease-out"></vr-animation>
-          <vr-animation attribute="position" from="0 -3 0" to="0 -0.8 0" begin="1250" dur="1000" fill="backwards" easing="ease-out"></vr-animation>
+          <vr-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" begin="1250" dur="200" fill="backwards" easing="ease-out"></vr-animation>
+          <vr-animation attribute="position" from="0 -3 0" to="0 -0.7 0" begin="750" dur="1000" fill="backwards" easing="ease-out"></vr-animation>
 
           <vr-image src="images/aframe-logo.png" width="1.4" height="0.3"></vr-image>
 
