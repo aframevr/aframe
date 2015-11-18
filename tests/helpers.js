@@ -1,4 +1,4 @@
-/* Test helpers. */
+/* global suite */
 
 /**
  * Helper method to create a scene, create an object, add object to scene,
@@ -36,4 +36,15 @@ module.exports.mixinFactory = function (id, obj) {
   assetsEl.appendChild(mixinEl);
 
   return mixinEl;
+};
+
+/**
+ * Test that is only run locally and is skipped on CI.
+ */
+module.exports.getSkipCISuite = function () {
+  if (window.__env__.TEST_ENV === 'ci') {
+    return suite.skip;
+  } else {
+    return suite;
+  }
 };

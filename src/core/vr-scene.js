@@ -45,6 +45,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
         this.insideLoader = false;
         this.isScene = true;
         this.object3D = VRScene.scene || new THREE.Scene();
+        VRScene.scene = this.object3D;
         this.vrButton = null;
       }
     },
@@ -88,6 +89,7 @@ var VRScene = module.exports = registerElement('vr-scene', {
     detachedCallback: {
       value: function () {
         window.cancelAnimationFrame(this.animationFrameID);
+        this.animationFrameID = null;
       }
     },
 
@@ -448,7 +450,8 @@ var VRScene = module.exports = registerElement('vr-scene', {
         renderer.sortObjects = false;
         VRScene.renderer = renderer;
         this.stereoRenderer = new THREE.VREffect(renderer);
-      }
+      },
+      writable: window.debug
     },
 
     /**

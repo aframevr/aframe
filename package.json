@@ -24,6 +24,7 @@
     "karma": "^0.13.15",
     "karma-browserify": "^4.4.0",
     "karma-chai-shallow-deep-equal": "0.0.4",
+    "karma-env-preprocessor": "^0.1.1",
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
     "karma-mocha-reporter": "^1.1.0",
@@ -48,7 +49,7 @@
     "gh-pages": "npm run ghpages",
     "release": "npm login && npm version patch --minor && npm publish",
     "test": "karma start ./tests/karma.conf.js",
-    "test:ci": "karma start ./tests/karma.conf.js --single-run",
+    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
