@@ -1,8 +1,7 @@
 'use strict';
 module.exports = function (config) {
   config.set({
-    frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
-                 'browserify'],
+    basePath: '../',
     browserify: {
       debug: true,
       paths: ['src']
@@ -14,17 +13,21 @@ module.exports = function (config) {
         prefs: { /* empty */ }
       }
     },
-    reporters: ['mocha'],
     client: {
       captureConsole: true,
       mocha: {'ui': 'tdd'}
     },
-    basePath: '../',
+    envPreprocessor: [
+      'TEST_ENV'
+    ],
     files: [
       'tests/**/*.test.js'
     ],
+    frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
+                 'browserify'],
     preprocessors: {
-      'tests/**/*.js': ['browserify']
-    }
+      'tests/**/*.js': ['browserify', 'env']
+    },
+    reporters: ['mocha']
   });
 };

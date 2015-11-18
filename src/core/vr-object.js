@@ -14,6 +14,9 @@ var VRUtils = require('../vr-utils');
  * a position, rotation, and scale.
  * In the entity-component system, entities are just a container of components.
  *
+ * For convenience of inheriting components, the scene element inherits from
+ * this prototype. When necessary, it differentiates itself by setting
+ * `this.isScene`.
  *
  * @namespace Entity
  * @member {object} components - entity's currently initialized components.
@@ -79,9 +82,14 @@ var proto = {
     writable: window.debug
   },
 
+  /**
+   * Tell parent to remove this element's object3D from its object3D.
+   * Do not call on scene element because that will cause a call to
+   * document.body.remove().
+   */
   detachedCallback: {
     value: function () {
-      if (!this.parentEl) { return; }
+      if (!this.parentEl || this.isScene) { return; }
       this.parentEl.remove(this);
     },
     writable: window.debug
