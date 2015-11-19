@@ -110,7 +110,7 @@
           if (selectedLinkEl === pano.el) { return; }
           if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
           holder.setAttribute('material', {
-            shader: flat,
+            shader: 'flat',
             src: 'url(' + pano.url  + ')'
           });
           selectedLinkEl = linkEL;
