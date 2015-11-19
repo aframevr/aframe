@@ -44,11 +44,11 @@ suite('material', function () {
 
     test('can toggle material to flat shading', function (done) {
       var el = this.el;
-      el.setAttribute('material', 'receiveLight: false');
+      el.setAttribute('material', 'shader: flat');
       process.nextTick(function () {
         assert.equal(el.object3D.material.type, 'MeshBasicMaterial');
 
-        el.setAttribute('material', 'receiveLight: true');
+        el.setAttribute('material', 'shader: standard');
         setTimeout(function () {
           assert.equal(el.object3D.material.type, 'MeshStandardMaterial');
           done();

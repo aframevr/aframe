@@ -38,7 +38,7 @@
 
       <!-- Pano -->
       <vr-object id="holder" geometry="primitive: sphere; radius: 10;"
-                 material="receiveLight: false" scale="1 1 -1"></vr-object>
+                 material="shader: flat" scale="1 1 -1"></vr-object>
 
       <!-- Links to panos -->
       <vr-object id="links" position="-1 -0.3 -4"></vr-object>
@@ -110,7 +110,7 @@
           if (selectedLinkEl === pano.el) { return; }
           if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
           holder.setAttribute('material', {
-            receiveLight: false,
+            shader: flat,
             src: 'url(' + pano.url  + ')'
           });
           selectedLinkEl = linkEL;

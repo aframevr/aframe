@@ -13,22 +13,24 @@ var texturePromises = {};
  * @namespace material
  * @params {string} color - Diffuse color.
  * @params {string} envMap - To load a environment cubemap. Takes a selector
-           to an element containing six img elements, or a comma-separated
-           string of direct url()s.
+ *         to an element containing six img elements, or a comma-separated
+ *         string of direct url()s.
  * @params {number} height - Height to render texture.
  * @params {number} metalness - Parameter for physical/standard material.
  * @params {number} opacity - [0-1].
- * @params {boolean} receiveLight - Determines whether the material is shaded.
  * @params {number} reflectivity - Parameter for physical/standard material.
  * @params {string} repeat - X and Y value for size of texture repeating
-           (in UV units).
+ *         (in UV units).
  * @params {number} roughness - Parameter for physical/standard material.
  * @params {string} [side=front] - Which side(s) to render (i.e., front, back,
-           both).
+ *         both).
+ * @params {string} shader - Determines how material is shaded. Defaults to `standard`,
+ *         three.js's implementation of PBR. Another option is `flat` where we use
+ *         MeshBasicMaterial.
  * @params {string} src - To load a texture. takes a selector to an img/video
-           element or a direct url().
+ *         element or a direct url().
  * @params {boolean} transparent - Whether to render transparent the alpha
-           channel of a texture (e.g., .png).
+ *         channel of a texture (e.g., .png).
  * @params {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
@@ -39,10 +41,10 @@ module.exports.Component = registerComponent('material', {
       height: 360,
       metalness: 0.0,
       opacity: 1.0,
-      receiveLight: true,
       reflectivity: 1.0,
       repeat: '',
       roughness: 0.5,
+      shader: 'standard',
       side: 'front',
       src: '',
       transparent: false,
@@ -60,9 +62,9 @@ module.exports.Component = registerComponent('material', {
 
   /**
    * Update or create material.
-   * Returned material type depends on receiveLight.
-   *   receiveLight: false - MeshBasicMaterial.
-   *   receiveLight: true - MeshStandardMaterial.
+   * Returned material type depends on shader.
+   *   shader=flat - MeshBasicMaterial.
+   *   shader=XXX - MeshStandardMaterial.
    *
    * @return {object} material
    */
@@ -70,7 +72,7 @@ module.exports.Component = registerComponent('material', {
     value: function () {
       var data = this.data;
       var src = data.src;
-      var isStandardMaterial = data.receiveLight;
+      var isStandardMaterial = data.shader !== 'flat';
       var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
       var materialData = {
         color: new THREE.Color(data.color),
