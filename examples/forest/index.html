@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Forest</title>
+    <meta name="description" content="Cubes — vr-components">
+    <script src="../../dist/vr-components.min.js"></script>
+</head>
+
+<body>
+    <vr-scene>
+        <vr-object id="camera" camera="fov: 45" look-controls wasd-controls>
+            <vr-object id="cursor" position="0 0 -10" geometry="primitive: ring; outerRadius: 0.30; innerRadius: 0.20;" material="color: red; receiveLight: false" cursor="maxDistance: 30" visible="false"></vr-object>
+        </vr-object>
+        <vr-object geometry="primitive: sphere; radius: 80" material="color: #FFFEA7; receiveLight: false" scale="1 1 -1"></vr-object>
+        <vr-object light="color:#CEE4B5; type:ambient;"></vr-object>
+        <vr-object position="-10 20 10" light="color:#DBDCE4; intensity:0.5"></vr-object>
+
+        <vr-object position="-20 -1.5 -20" id="floor"><vr-object position="0 0 0" rotation="-90 0 0" material="color: #2E2A23" geometry="primitive: plane; width: 20; height: 20"></vr-object><vr-object position="0 0 20" rotation="-90 0 0" material="color: #2E2A23" geometry="primitive: plane; width: 20; height: 20"></vr-object><vr-object position="20 0 0" rotation="-90 0 0" material="color: #2E2A23" geometry="primitive: plane; width: 20; height: 20"></vr-object><vr-object position="20 0 20" rotation="-90 0 0" material="color: #2E2A23" geometry="primitive: plane; width: 20; height: 20"></vr-object></vr-object>
+
+        <vr-object position="-1.997465968132019 -1.5734343528747559 -3.4988925457000732" rotation="0 14.656198247707145 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/campfire.dae); format: collada"></vr-object>
+        <vr-object position="-3.7903575897216797 -1.4746029376983643 -5.850816249847412" rotation="0 30.068174306339447 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/Fox.dae); format: collada"></vr-object>
+        <vr-object position="-2.9872167110443115 -1.0381262302398682 -10.724238395690918" rotation="0 32.30415840899466 0" material="color: #5AA89A" scale="1.5 1.5 1.5" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-5.761174201965332 -0.8788647055625916 -12.676177024841309" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-11.913952827453613 -1.1176599264144897 -12.701966285705566" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-7.995438098907471 -2.299243927001953 -8.570465087890625" rotation="0 30.77465434282985 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-10.588080406188965 -3.372554302215576 -7.837634563446045" rotation="0 60.78430080363364 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-5.0073957443237305 -3.4289779663085938 -12.3182954788208" rotation="0 46.73199461560694 0" material="color: #5AA89A" scale="1.2 1.2 1.2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-3.725708484649658 -1.494323968887329 -17.41994857788086" rotation="0 37.10418898616151 0" material="color: #5AA89A" scale="1.2 1.2 1.2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-1.2579830884933472 -2.8978288173675537 -15.530455589294434" rotation="0 43.239905987243596 0" material="color: #5AA89A" scale="1.2 1.2 1.2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-6.981045722961426 -1.2169824838638306 -3.035706043243408" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-13.679744720458984 -0.6991527080535889 -3.0082454681396484" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-14.433542251586914 -1.5536803007125854 -3.9953935146331787" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-16.71183204650879 -2.7827720642089844 -6.707279682159424" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-21.70183753967285 -1.1176599264144897 -0.2752295732498169" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-3.5557825565338135 -1.7312333583831787 -15.075261116027832" rotation="0 5.614498105885495 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-3.5028634071350098 -3.522742509841919 -21.535295486450195" rotation="0 6.229048250364338 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-5.218230724334717 -3.6906239986419678 -23.78847885131836" rotation="0 9.522853513083623 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-11.673396110534668 -3.485278606414795 -18.276086807250977" rotation="0 27.77872424763862 0" material="color: #5AA89A" scale="0.3 0.3 0.3" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-14.210606575012207 -3.485278367996216 -11.459423065185547" rotation="0 21.385638271933427 0" material="color: #5AA89A" scale="0.3 0.3 0.3" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-13.344254493713379 -4.811797618865967 -17.251195907592773" rotation="0 25.37930376369171 0" material="color: #5AA89A" scale="0.3 0.3 0.3" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-9.393404006958008 -5.107010841369629 -10.965953826904297" rotation="0 24.984214908506345 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-13.4390287399292 -2.801976442337036 -9.97951889038086" rotation="0 28.065425662991483 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-13.872856140136719 -4.385638236999512 -5.210059642791748" rotation="0 25.428605504008896 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-21.804882049560547 -2.030970811843872 -11.828606605529785" rotation="0 25.956483481931613 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-20.92893409729004 -2.5514724254608154 -15.117513656616211" rotation="0 19.454601373943945 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-21.186145782470703 -2.4352633953094482 -17.341529846191406" rotation="0 16.507113748204254 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-17.225555419921875 -2.2602972984313965 -18.381458282470703" rotation="0 9.294529856403692 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-18.77311134338379 -1.137513279914856 -15.299797058105469" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-20.815887451171875 -1.8492934703826904 -11.559460639953613" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-23.691865921020508 -1.454890251159668 -17.747922897338867" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="1.6993615627288818 -1.2566686868667603 -4.275834083557129" rotation="0 25.904407899904452 0" material="color: #5AA89A" scale="1.5 1.5 1.5" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-8.575424194335938 -3.353719472885132 -13.25255012512207" rotation="0 90 0" material="color: #5AA89A" scale="1.5 1.5 1.5" loader="src: url(models/pine.dae); format: collada"></vr-object>
+        <vr-object position="-6.235893249511719 -3.447758436203003 -11.454561233520508" rotation="0 14.624402726595534 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="0.6839432716369629 -3.316009044647217 -7.514010429382324" rotation="0 6.014584057424831 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+        <vr-object position="-5.066005229949951 -2.2797751426696777 -0.7304463982582092" rotation="0 25.571645850534996 0" material="color: #5AA89A" scale="0.5 0.5 0.5" loader="src: url(models/fir.dae); format: collada"></vr-object>
+
+
+        <!-- rock -->
+        <vr-object position="0.47829580307006836 -4.259394645690918 -8.984362602233887" rotation="0 -6.0209648921517545 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="1.4421511888504028 -1.4547170400619507 -15.85042953491211" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="0.9975124597549438 -1.2542401552200317 -20.754663467407227" rotation="0 90 0" material="color: #5AA89A" scale="1.5 1.5 1" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="0.8794705867767334 -2.628744125366211 -23.60285186767578" rotation="0 90 0" material="color: #5AA89A" scale="1.5 1.5 1" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-1.2495428323745728 -4.260288238525391 -25.48807144165039" rotation="0 90 0" material="color: #5AA89A" scale="1.5 1.5 1" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-6.837891101837158 -3.225557565689087 -23.860322952270508" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-8.241564750671387 -5.219326972961426 -17.05356788635254" rotation="0 30.99051803903101 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-18.44646644592285 -4.8118181228637695 -20.05891227722168" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-16.288681030273438 -5.777750015258789 -19.83313751220703" rotation="0 66.78345535348025 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-14.325698852539062 -6.63883638381958 -18.56802749633789" rotation="0 43.26376737284928 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-23.111087799072266 -2.1824610233306885 -16.685150146484375" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-22.504776000976562 -2.8079118728637695 -12.484169006347656" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-16.303375244140625 -5.256384372711182 -12.011913299560547" rotation="0 13.548157840474863 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-19.458160400390625 -3.391374349594116 -6.531698703765869" rotation="0 35.02681660349309 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-17.830732345581055 -4.288717269897461 -2.7552523612976074" rotation="0 27.66547084109375 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-17.067697525024414 -4.313602924346924 -0.22063040733337402" rotation="0 -29.68134206151509 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+        <vr-object position="-12.269378662109375 -4.439481258392334 -4.8785295486450195" rotation="0 90 0" material="color: #5AA89A" scale="2 2 2" loader="src: url(models/rock.dae); format: collada"></vr-object>
+
+    </vr-scene>
+</body>
