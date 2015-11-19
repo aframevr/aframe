@@ -1,17 +1,23 @@
 <template is="vr-template"
           element="vr-cube"
-          height="5"
           width="5"
+          height="5"
           depth="5"
           color="gray"
+          opacity="1.0"
+          shader="flat"
+          transparent="true"
           metalness="0.0"
           roughness="0.5"
           src="">
   <vr-object geometry="primitive: box;
-                       height: ${height};
                        width: ${width};
+                       height: ${height};
                        depth: ${depth}"
              material="color: ${color};
+                       opacity: ${opacity};
+                       shader: ${shader};
+                       transparent: ${transparent};
                        metalness: ${metalness};
                        roughness: ${roughness};
                        src: url(${src})"></vr-object>
