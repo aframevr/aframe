@@ -291,9 +291,9 @@ module.exports = registerElement('vr-animation', {
 
         // Get mixin data.
         mixinEl = document.querySelector('#' + this.getAttribute('mixin'));
-        mixinData = mixinEl ? getElData(mixinEl, DEFAULTS) : {};
+        mixinData = mixinEl ? utils.getElData(mixinEl, DEFAULTS) : {};
 
-        elData = getElData(this, DEFAULTS);
+        elData = utils.getElData(this, DEFAULTS);
         utils.extend(data, DEFAULTS, mixinData, elData);
         this.data = data;
       },
@@ -301,18 +301,3 @@ module.exports = registerElement('vr-animation', {
     }
   })
 });
-
-/**
- * Extract data from the element given an object that contains expected keys.
- *
- * @returns {object}
- */
-function getElData (el, defaults) {
-  var data = {};
-  Object.keys(defaults).forEach(function copyAttribute (key) {
-    if (el.hasAttribute(key)) {
-      data[key] = el.getAttribute(key);
-    }
-  });
-  return data;
-}
