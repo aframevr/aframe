@@ -10,7 +10,7 @@
 <body>
   <vr-assets>
     <vr-mixin id="light" geometry="primitive: sphere; radius: 1.5"
-              material="color: #FFF; receiveLight: false"
+              material="color: #FFF; shader: flat"
               light="color: #DDDDFF; distance: 120; intensity: 2; type: point">
     </vr-mixin>
     <vr-mixin id="torus-knot" geometry="primitive: torusKnot"
@@ -23,7 +23,7 @@
 
     <!-- Skysphere. -->
     <vr-object geometry="primitive: sphere; radius: 300"
-               material="color: #111; receiveLight: false"
+               material="color: #111; shader: flat"
                scale="-1 -1 -1"></vr-object>
 
     <!-- Lights. -->
