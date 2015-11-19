@@ -287,6 +287,8 @@ var VRScene = module.exports = registerElement('vr-scene', {
 
     resizeCanvas: {
       value: function () {
+        // It's possible that the camera is not injected yet.
+        if (!this.cameraEl) { return; }
         var camera = this.cameraEl.components.camera.camera;
         var size = this.getCanvasSize();
         // Updates camera
