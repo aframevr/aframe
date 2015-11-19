@@ -5,8 +5,8 @@
 </vr-assets>
 
 <template is="vr-template" element="vr-pano-link" src="" holderSrc="">
-  <vr-object mixin="link" material="receiveLight: false; src: url(${src})">
-    <vr-click target="#holder" material="receiveLight: false; src: url(${holderSrc})"></vr-click>
+  <vr-object mixin="link" material="shader: flat; src: url(${src})">
+    <vr-click target="#holder" material="shader: flat; src: url(${holderSrc})"></vr-click>
     <vr-click state="selected"></vr-click>
   </vr-object>
 </template>
@@ -46,7 +46,7 @@
 </template>
 
 <template is="vr-template" element="vr-pano-holder" size="10">
-  <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="receiveLight: false; src: url(${src})"></vr-object>
+  <vr-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="shader: flat; src: url(${src})"></vr-object>
 </template>
 
 <template is="vr-template" element="vr-pano-nav">
