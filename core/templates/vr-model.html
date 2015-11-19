@@ -1,8 +1,10 @@
 <template is="vr-template"
           element="vr-model"
+          opacity="1.0"
           src=""
           format="collada">
-  <vr-object loader="src: url(${src}); format: ${format}">
+  <vr-object material="opacity: ${opacity}"
+             loader="src: url(${src}); format: ${format}">
   </vr-object>
 </template>
 

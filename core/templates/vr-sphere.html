@@ -6,6 +6,9 @@
           theta-start="0"
           theta-length="6.3"
           color="gray"
+          opacity="1.0"
+          shader="flat"
+          transparent="true"
           metalness="0.0"
           roughness="0.5"
           src="">
@@ -16,6 +19,9 @@
                        thetaStart: ${theta-start};
                        thetaLength: ${theta-length}"
              material="color: ${color};
+                       opacity: ${opacity};
+                       shader: ${shader};
+                       transparent: ${transparent};
                        metalness: ${metalness};
                        roughness: ${roughness};
                        src: url(${src})"></vr-object>

@@ -1,6 +1,8 @@
 <template is="vr-template"
           element="vr-cylinder"
           radius="0.5"
+          radius-top="0.5"
+          radius-bottom="0.5"
           height="1"
           segments-radius="36"
           segments-height="1"
@@ -8,12 +10,17 @@
           theta-length="6.3"
           open-ended="false"
           color="gray"
+          opacity="1.0"
+          shader="flat"
+          transparent="true"
           metalness="0.0"
           roughness="0.5"
           side="front"
           src="">
   <vr-object geometry="primitive: cylinder;
                        radius: ${radius};
+                       radiusTop: ${radius-top};
+                       radiusBottom: ${radius-bottom};
                        height: ${height};
                        segmentsRadius: ${segments-radius};
                        segmentsHeight: ${segments-height};
@@ -21,6 +28,9 @@
                        thetaLength: ${theta-length};
                        openEnded: ${open-ended}"
              material="color: ${color};
+                       opacity: ${opacity};
+                       shader: ${shader};
+                       transparent: ${transparent};
                        metalness: ${metalness};
                        roughness: ${roughness};
                        side: ${side};
