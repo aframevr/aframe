@@ -23,7 +23,7 @@
     </vr-mixin>
     <vr-mixin id="light" geometry="primitive: sphere; radius: .25"
               light="color: #FFF; intensity: .5; type: point"
-              material="receiveLight: false">
+              material="shader: flat">
     </vr-mixin>
     <vr-mixin id="sphere" geometry="primitive: sphere; radius: 5"></vr-mixin>
   </vr-assets>
@@ -36,7 +36,7 @@
 
     <!-- Skysphere. -->
     <vr-object geometry="primitive: sphere; radius: 500"
-               material="color: #111; receiveLight: false"
+               material="color: #111; shader: flat"
                scale="1 1 -1"></vr-object>
 
     <!-- Lights. -->
