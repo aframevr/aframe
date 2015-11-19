@@ -46,7 +46,19 @@ module.exports = registerElement('vr-animation', {
   prototype: Object.create(VRNode.prototype, {
     attachedCallback: {
       value: function () {
-        this.el = this.parentNode;
+        var el = this.el = this.parentNode;
+        if (el.isNode) {
+          this.init();
+        } else {
+          // To handle elements that are not yet `<vr-object>`s (e.g., templates).
+          el.addEventListener('nodeready', this.init.bind(this));
+        }
+      },
+      writable: window.debug
+    },
+
+    init: {
+      value: function () {
         this.bindMethods();
         this.applyMixin();
         this.update();
@@ -145,7 +157,6 @@ module.exports = registerElement('vr-animation', {
         // Stop previous tween.
         var data = this.data;
         var el = this.el;
-
         var attribute = data.attribute;
         var begin = parseInt(data.begin, 10);
         var currentValue = el.getComputedAttribute(attribute);
