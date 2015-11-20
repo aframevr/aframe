@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animations: Spiral</title>
+    <meta name="description" content="Animations: Spiral - A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+
+      <vr-camera position="0 0 10" near="0.1"></vr-camera>
+
+      <vr-object position="0 0 0">
+
+        <vr-animation attribute="rotation" from="15 15 35" to="15 15 45" dur="2000"></vr-animation>
+
+        <vr-object position="0 0.6 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 0.4 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 -180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.5" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 0.2 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object>
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 -180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.5" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -0.2 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -0.4 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 -180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.5" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -0.6 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -0.8 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 -180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.5" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -1 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -1.2 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 -180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.5" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -1.4 0">
+          <vr-animation attribute="scale" from="1 0 1" to="1 1.4 1" dur="1000" fill="forward" repeat="1" direction="alternate"></vr-animation>
+          <vr-animation attribute="rotation" from="0 180 0" to="0 0 0" dur="2000" fill="forward" easing="linear"></vr-animation>
+          <vr-cylinder position="0 0 0" radius="1.4" height="0.2" theta-start="0" theta-length="5" open-ended="true" color="#EE2F5E"></vr-cylinder>
+        </vr-object>
+
+      </vr-object>
+
+      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <vr-light type="directional" color="#FFF" intensity="0.2" position="-1 2 1"></vr-light>
+      <vr-light type="ambient" color="#FFF"></vr-light>
+
+    </vr-scene>
+  </body>
+</html>
