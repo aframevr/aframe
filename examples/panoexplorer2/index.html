@@ -7,16 +7,28 @@
     <script src="../../build/vr-components.js"></script>
   </head>
   <body>
+
+    <vr-assets>
+      <vr-mixin id="link" scale="1 1 1"></vr-mixin>
+      <vr-mixin id="link-hovered" scale="2 2 1"></vr-mixin>
+      <vr-mixin id="link-selected" scale="2 4 1"></vr-mixin>
+    </vr-assets>
+
+
     <vr-scene>
 
       <!-- 
 
       Nov 20:
 
+      COMMENTS:
+
+      * Interactions are pretty hard to figure out. Don't seem to be working with templates.
+
       TODO
 
+      * Get help from cvan on cursor interactions. Mixins don't work on templates?
       * Fix intro animation
-      * Confirm <vr-camera> wasd-controls and look-controls =false work.
       * Try Look-at component
       * Put animations inside templates 
       * Declarative interactions
@@ -37,9 +49,13 @@
       * Responsive cursor
 
       FILE ISSUE
-
+  
+      * Look at works, until I move the camera?
+      * Add cursor to vr-camera by default?
+      * Mixins not working on templates?
       * "Send to Mobile" workflow
       * Add keyboard shortcuts for Enter VR and Reset Sensor
+      * Tighten default camera near/far
 
       REQUEST FIX
       
@@ -60,13 +76,25 @@
 
       <!-- CAMERA -->
 
-      <vr-camera position="0 0 0" near="0.1" look-controls="false">
-        <!-- BUG: image should inherit p/r/s from parent -->
-        <!-- <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image> -->
-      </vr-camera>
-
-
       
+     <!--  <vr-camera id="camera" position="0 0 0" near="0.1" look-controls="false">
+        <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
+      </vr-camera>
+      --> 
+
+      <!--  -->
+      <vr-object>
+        <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
+          <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
+                     material="color: #FFF"
+                     cursor="maxDistance: 30">
+          </vr-object>
+          <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
+        </vr-object>
+      </vr-object>
+      
+
+      <vr-object mixin="link" look-at="#camera" position="0 0 -3" geometry="primitive: box; width: 1; height: 1; depth: 0.5" rotation="45 45 0" material="color: yellow"></vr-object>
 
 
       <!-- INTRODUCTION -->
@@ -155,22 +183,26 @@
       
       <vr-object>
         
-        <vr-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="backwards"></vr-animation>
+        <!-- <vr-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="backwards"></vr-animation> -->
         
         <!-- Sky -->
         <vr-sky id="pano" src="../_skies/city-2.png"></vr-sky>
 
         <!-- Links. When clicked they change the background -->
-        <vr-object id="links" position="0 -0.25 -2" scale="0.2 0.2 0.2">
-          <vr-image position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
+        <vr-object position="0 -0.25 -2" scale="0.2 0.2 0.2">
+          
+          <vr-image mixin="link" position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
+            <a-click></a-click>
+          </vr-image>
+          
+          <vr-image mixin="link" position="0 0 0" width="1" height="1" src="images/thumb-city.png">
             <!-- <a-click></a-click> -->
           </vr-image>
-          <vr-image position="0 0 0" width="1" height="1" src="images/thumb-city.png">
-            <!-- <a-click></a-click> -->
+          
+          <vr-image mixin="link" position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
+            <vr-click scale="5 2 1"></vr-click>
           </vr-image>
-          <vr-image position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
-            <!-- <a-click></a-click> -->
-          </vr-image>
+
         </vr-object>
 
       </vr-object>
