@@ -11,49 +11,62 @@
 
       <!-- 
 
-      TODO (Nov 18):
+      Nov 20:
 
-      * Rename to <a-
-      * Animate opacity
-      * Add better way of hiding and/or removing elements from the scene. Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
-      * Add declarative interactions.
+      TODO
+
+      * Fix intro animation
+      * Confirm <vr-camera> wasd-controls and look-controls =false work.
+      * Try Look-at component
+      * Put animations inside templates 
+      * Declarative interactions
         - Trigger "scene" transitions (eg: change sky, bg audio, title image)
         - Trigger in-scene hotspots (eg: reveal video excerpt or audio snippet)
-      * Add 3D model
-      * Add sounds
+      * Test cursor w/ clicks. If it works, update default camera.
+      * Curved cylinder template
       * Add images
-      * Add curved cylinders
-        - Redesign theta-start / theta-length to be more intuitive
-        - Red
-      * Add DOM elements framing the scene (credits, onboarding info, etc)    
-      * Add other easing curves in core animation
-      * Add keyboard shortcuts for Enter VR and Reset Sensor
-      * Add cursor to <vr-camera> and default A-Frame camera
-      * Change default lighting in core to be more like setup here (and in other template scenes).
-      * Add light template
-      * Add sound template
-      * Add disc template (add disc (aka circle in threejs) to core geometry also)
-
-      * Fix: click instead of fuse for 
-      * Fix: animations inside templates 
-      * Fix: camera template wasd-controls and look-controls (cannot currently disable).
-      * Fix: camera children should inherit pos/rot/scale.
+      * Add disc template
       * Fix animation from values (probably need to create big test scene w/ multiple animations).
- 
+      * DOM elements framing the scene (credits, onboarding info, etc)
+      * Change default lighting in core to be more like aframe.
 
-      NOTE: all references to links and scenes are figures of speach. Am not referring to true link traversal or multiple <a-scene> instances.
+      BLOCKED ON
+
+      * Sound component / template
+      * Rename <a-
+      * Responsive cursor
+
+      FILE ISSUE
+
+      * "Send to Mobile" workflow
+      * Add keyboard shortcuts for Enter VR and Reset Sensor
+
+      REQUEST FIX
+      
+      * Setting false on wasd and look controls has no effect
+        - https://github.com/MozVR/aframe/issues/194
+      * Add other easing curves in core animation:
+        - https://github.com/MozVR/aframe-core/issues/253
+      * Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
+        - https://github.com/MozVR/aframe/issues/193
+
+      FIX LATER
+  
+      * Add better way of hiding and/or removing elements from the scene. Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
+      * Animate opacity
 
       -->
 
 
       <!-- CAMERA -->
 
-      <vr-camera position="0 0 0" near="0.1">
-        <!-- I'd like to fix elements to the camera, but it doesn't seem to work -->
+      <vr-camera position="0 0 0" near="0.1" look-controls="false">
+        <!-- BUG: image should inherit p/r/s from parent -->
         <!-- <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image> -->
       </vr-camera>
 
 
+      
 
 
       <!-- INTRODUCTION -->
