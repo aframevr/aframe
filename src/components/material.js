@@ -5,6 +5,7 @@ var THREE = require('../../lib/three');
 var utils = require('../vr-utils');
 
 var CubeLoader = new THREE.CubeTextureLoader();
+var TextureLoader = new THREE.TextureLoader();
 var texturePromises = {};
 
 /**
@@ -205,26 +206,37 @@ module.exports.Component = registerComponent('material', {
  * @params {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
-  var repeatXY;
-  var texture;
   var isEl = typeof src !== 'string';
+
+  var onLoad = createTexture;
+  var onProgress = function () {};
+  var onError = function (xhr) {
+    utils.error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
+                xhr.status, xhr.statusText);
+  };
+
   if (isEl) {
-    texture = new THREE.Texture(src);
-    texture.needsUpdate = true;
+    createTexture(src);
   } else {
-    texture = THREE.ImageUtils.loadTexture(src);
+    TextureLoader.load(src, onLoad, onProgress, onError);
   }
-  if (repeat) {
-    repeatXY = repeat.split(' ');
-    if (repeatXY.length === 2) {
-      texture.wrapS = THREE.RepeatWrapping;
-      texture.wrapT = THREE.RepeatWrapping;
-      texture.repeat.set(parseInt(repeatXY[0], 10),
-                         parseInt(repeatXY[1], 10));
+
+  function createTexture (texture) {
+    if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+    var repeatXY;
+    if (repeat) {
+      repeatXY = repeat.split(' ');
+      if (repeatXY.length === 2) {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(parseInt(repeatXY[0], 10),
+                           parseInt(repeatXY[1], 10));
+      }
     }
+    material.map = texture;
+    texture.needsUpdate = true;
+    material.needsUpdate = true;
   }
-  material.needsUpdate = true;
-  material.map = texture;
 }
 
 /**
