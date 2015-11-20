@@ -27,15 +27,17 @@
 
       TODO
 
-      * Get help from cvan on cursor interactions. Mixins don't work on templates?
-      * Fix intro animation
-      * Try Look-at component
+      * Fix intro animation (cylinders double side)
+      * Create Look-at test scene
+        - Is working as expected w/ templates. Templates can be targets or lookers.
+        - Except it does not track the <vr-camera>.
       * Put animations inside templates 
       * Declarative interactions
         - Trigger "scene" transitions (eg: change sky, bg audio, title image)
         - Trigger in-scene hotspots (eg: reveal video excerpt or audio snippet)
       * Test cursor w/ clicks. If it works, update default camera.
       * Curved cylinder template
+      * More specific camera templates
       * Add images
       * Add disc template
       * Fix animation from values (probably need to create big test scene w/ multiple animations).
@@ -44,6 +46,15 @@
 
       BLOCKED ON
 
+      * Interactions
+        - Mixins don't work on templates
+          - Prevents basic rollovers
+          - Create test scene
+          - File issue
+        - Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
+          - https://github.com/MozVR/aframe/issues/193
+
+      * Look-At target 
       * Sound component / template
       * Rename <a-
       * Responsive cursor
@@ -77,13 +88,12 @@
       <!-- CAMERA -->
 
       
-     <!--  <vr-camera id="camera" position="0 0 0" near="0.1" look-controls="false">
+      <vr-camera id="camera" position="0 0 0" near="0.1" look-controls="false">
         <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
       </vr-camera>
-      --> 
 
-      <!--  -->
-      <vr-object>
+
+      <!--<vr-object>
         <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
           <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
                      material="color: #FFF"
@@ -91,8 +101,13 @@
           </vr-object>
           <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
         </vr-object>
-      </vr-object>
+      </vr-object>-->
+
+      <vr-sphere id="target" color="black" radius="0.5">
+        <vr-animation attribute="position" from="-40 1 -40" to="40 -1 -40" dur="2000" repeat="infinite" direction="alternate"></vr-animation>
+      </vr-sphere>
       
+      <vr-cube mixin="link" color="blue" look-at="#target" position="4 2 -6"></vr-cube>
 
       <vr-object mixin="link" look-at="#camera" position="0 0 -3" geometry="primitive: box; width: 1; height: 1; depth: 0.5" rotation="45 45 0" material="color: yellow"></vr-object>
 
