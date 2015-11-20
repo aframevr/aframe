@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mario</title>
+    <meta name="description" content="Mario — A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+
+      <vr-camera position="0 0 12"></vr-camera>
+
+      <vr-cylinder id="grass" rotation="25 0 0" position="0 0 -6" radius="5" color="#6e7">
+
+        <vr-cylinder id="dirt" position="0 -7.5 0" height="14" radius-top="4.5" radius-bottom="0.25" color="#a63"></vr-cylinder>
+
+        <vr-cylinder id="bigCoins" position="-2 0.6 0" height="0.1" radius="0.5" color="goldenrod">
+          <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+            <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+              <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+                <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+                </vr-cylinder>
+              </vr-cylinder>
+            </vr-cylinder>
+          </vr-cylinder>
+        </vr-cylinder>
+
+        <vr-cylinder id="smallCoins" position="-0.98 0.6 0" height="0.1" radius="0.5" color="goldenrod">
+          <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+            <vr-cylinder position="0 0.11 0" height="0.1" radius="0.5" color="goldenrod">
+            </vr-cylinder>
+          </vr-cylinder>
+        </vr-cylinder>
+
+        <vr-cylinder id="bigTube" position="1 1.5 0" height="2" radius="0.5" segments-radius="18" open-ended="true" color="forestgreen">
+          <vr-cylinder height="0.25" position="0 1 0" radius="0.6" segments-radius="18" color="forestgreen">
+            <vr-cylinder height="0.25" position="0 0.01 0" radius="0.5" segments-radius="18" color="#000d00">
+            </vr-cylinder>
+          </vr-cylinder>
+        </vr-cylinder>
+
+        <vr-cylinder id="smallTube" position="3 1 -2" height="1" radius="0.5" segments-radius="18" open-ended="true" color="forestgreen">
+          <vr-cylinder height="0.25" position="0 0.5 0" radius="0.6" segments-radius="18" color="forestgreen">
+            <vr-cylinder height="0.25" position="0 0.01 0" radius="0.5" segments-radius="18" color="#000d00">
+            </vr-cylinder>
+          </vr-cylinder>
+        </vr-cylinder>
+
+      </vr-cylinder>
+
+      <vr-object light="type: directional; color: #fff; intensity: 0.4" position="-1 4 1"></vr-object>
+      <vr-object light="type: ambient; color: #ccc;"></vr-object>
+
+    </vr-scene>
+  </body>
+</html>
