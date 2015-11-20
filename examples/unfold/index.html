@@ -16,7 +16,7 @@
         <vr-object>
           <vr-animation attribute="rotation" to="90 0 0" dur="1500" fill="forwards"></vr-animation>
           <vr-cube position="0 0 1" width="6" height="0.02" depth="2" color="#F16745"></vr-cube>
-          
+
           <vr-object position="0 0 2" rotation="-180 0 0">
             <vr-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="250" fill="forwards"></vr-animation>
             <vr-cube position="0 0 1" width="6" height="0.02" depth="2" color="#FFC65D"></vr-cube>
@@ -32,7 +32,7 @@
                 <vr-object position="0 0 2" rotation="-180 0 0">
                   <vr-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="1000" fill="forwards"></vr-animation>
                   <vr-cube position="0 0 1" width="6" height="0.02" depth="2" color="#93648D"></vr-cube>
-                
+
                 </vr-object>
               </vr-object>
             </vr-object>
@@ -43,8 +43,8 @@
       <vr-image position="0 -1 0" src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="6 6 6"></vr-image>
 
       <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></vr-object>
-      <vr-object light="type: ambient; color: #FFF;"></vr-object>
+      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
+      <vr-light type="ambient" color="#fff"></vr-light>
 
     </vr-scene>
   </body>
