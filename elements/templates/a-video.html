@@ -1,0 +1,23 @@
+<template is="a-template"
+          element="a-video"
+          src=""
+          width="4"
+          height="2"
+          autoplay="true"
+          loop="true"
+          crossOrigin="anonymous">
+  <video id="video"
+         src="${src}"
+         width="${width}"
+         height="${height}"
+         autoplay="${autoplay}"
+         loop="${loop}"
+         crossOrigin="${crossOrigin}"
+         style="display: none">
+  </video>
+  <a-object geometry="primitive: plane;
+                      height: ${height};
+                      width: ${width}"
+            material="shader: flat; src: #video">
+  </a-object>
+</template>

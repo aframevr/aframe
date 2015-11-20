@@ -1,0 +1,15 @@
+<template is="a-template"
+          element="a-image"
+          width="2"
+          height="2"
+          opacity="1.0"
+          src="">
+  <a-object geometry="primitive: plane;
+                      width: ${width};
+                      height: ${height}"
+            material="shader: flat;
+                      src: url(${src});
+                      opacity: ${opacity};
+                      transparent: true">
+  </a-object>
+</template>
