@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pano Explorer 2</title>
+    <meta name="description" content="Pano Explorer 2 — A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+
+    <vr-assets>
+      <vr-mixin id="link" scale="1 1 1"></vr-mixin>
+      <vr-mixin id="link-hovered" scale="2 2 1"></vr-mixin>
+      <vr-mixin id="link-selected" scale="2 4 1"></vr-mixin>
+    </vr-assets>
+
+
+    <vr-scene>
+
+      <!-- 
+
+      Nov 20:
+
+      COMMENTS:
+
+      * Interactions are pretty hard to figure out. Don't seem to be working with templates.
+
+      TODO
+
+      * Fix intro animation (cylinders double side)
+      * Create Look-at test scene
+        - Is working as expected w/ templates. Templates can be targets or lookers.
+        - Except it does not track the <vr-camera>.
+      * Put animations inside templates 
+      * Declarative interactions
+        - Trigger "scene" transitions (eg: change sky, bg audio, title image)
+        - Trigger in-scene hotspots (eg: reveal video excerpt or audio snippet)
+      * Test cursor w/ clicks. If it works, update default camera.
+      * Curved cylinder template
+      * More specific camera templates
+      * Add images
+      * Add disc template
+      * Fix animation from values (probably need to create big test scene w/ multiple animations).
+      * DOM elements framing the scene (credits, onboarding info, etc)
+      * Change default lighting in core to be more like aframe.
+
+      BLOCKED ON
+
+      * Interactions
+        - Mixins don't work on templates
+          - Prevents basic rollovers
+          - Create test scene
+          - File issue
+        - Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
+          - https://github.com/MozVR/aframe/issues/193
+
+      * Look-At target 
+      * Sound component / template
+      * Rename <a-
+      * Responsive cursor
+
+      FILE ISSUE
+  
+      * Look at works, until I move the camera?
+      * Add cursor to vr-camera by default?
+      * Mixins not working on templates?
+      * "Send to Mobile" workflow
+      * Add keyboard shortcuts for Enter VR and Reset Sensor
+      * Tighten default camera near/far
+
+      REQUEST FIX
+      
+      * Setting false on wasd and look controls has no effect
+        - https://github.com/MozVR/aframe/issues/194
+      * Add other easing curves in core animation:
+        - https://github.com/MozVR/aframe-core/issues/253
+      * Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
+        - https://github.com/MozVR/aframe/issues/193
+
+      FIX LATER
+  
+      * Add better way of hiding and/or removing elements from the scene. Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
+      * Animate opacity
+
+      -->
+
+
+      <!-- CAMERA -->
+
+      
+      <vr-camera id="camera" position="0 0 0" near="0.1" look-controls="false">
+        <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
+      </vr-camera>
+
+
+      <!--<vr-object>
+        <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
+          <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
+                     material="color: #FFF"
+                     cursor="maxDistance: 30">
+          </vr-object>
+          <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
+        </vr-object>
+      </vr-object>-->
+
+      <vr-sphere id="target" color="black" radius="0.5">
+        <vr-animation attribute="position" from="-40 1 -40" to="40 -1 -40" dur="2000" repeat="infinite" direction="alternate"></vr-animation>
+      </vr-sphere>
+      
+      <vr-cube look-at="#target" position="0 0 -2" width="1" depth="1" height="1" color="#F16745"></vr-cube>
+
+      <vr-object mixin="link" look-at="#camera" position="0 0 -3" geometry="primitive: box; width: 1; height: 1; depth: 0.5" rotation="45 45 0" material="color: yellow"></vr-object>
+
+
+      <!-- INTRODUCTION -->
+
+      <!-- Logo appears, rotates, disappears -->
+      <vr-object>
+
+        <!-- Scale animation "hides" the whole intro heirarchy -->
+        <vr-animation attribute="scale" from="1 1 1" to="0 0 0" begin="4000" dur="1" fill="forward"></vr-animation>
+      
+        <!-- Background -->  
+        <vr-sky src="../_skies/gray-gradient-2.jpg"></vr-sky>
+      
+        <!-- Logo -->
+        <vr-object position="0 0.03 -1" scale="0.12 0.12 0.12">
+
+          <vr-object>
+            <vr-animation attribute="scale" from="1 1 1" to="0 0 0" begin="4000" dur="1" fill="forward"></vr-animation>
+
+            <!-- Box -->
+            <vr-object>
+              <vr-animation attribute="scale" from="0 0 0" to="1 1 1" begin="500" dur="500" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-animation attribute="position" from="0 -0.5 0" to="0 0 0" begin="500" dur="500" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-animation attribute="rotation" from="0 -300 0" to="30 50 30" begin="500" dur="1200" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-cube width="0.25" depth="0.25" height="0.25" color="#EF2D5E"></vr-cube>
+              <vr-frame scale="0.04 0.04 0.04"></vr-frame>
+            </vr-object>
+
+            <!-- Dots -->
+            <vr-object rotation="0 0 45">
+              <vr-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-object position="0 1.5 0">
+                <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="forward" easing="ease-out"></vr-animation>
+                <vr-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+              </vr-object>
+
+              <vr-object position="0 -1.5 0" rotation="0 0 180">
+                <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="forward" easing="ease-out"></vr-animation>
+                <vr-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+              </vr-object>
+            </vr-object>
+
+            <vr-object rotation="0 0 -45">
+              <vr-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-object position="0 1.5 0">
+                <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="forward" easing="ease-out"></vr-animation>
+                <vr-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+              </vr-object>
+
+              <vr-object position="0 -1.5 0" rotation="0 0 180">
+                <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="forward" easing="ease-out"></vr-animation>
+                <vr-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+              </vr-object>
+            </vr-object>
+
+            <!-- Name -->
+            <vr-object>
+              <vr-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" begin="1500" dur="200" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-animation attribute="position" from="0 -3 0" to="0 -0.7 0" begin="1000" dur="1000" fill="backwards" easing="ease-out"></vr-animation>
+              <vr-image src="images/aframe-logo.png" width="1.4" height="0.3"></vr-image>
+            </vr-object>
+
+          </vr-object>
+        </vr-object>
+      </vr-object>
+
+      <!-- Mask obscures the scene momentarily, during which we hide the intro and reveal the rest of the scene -->
+      <vr-object rotation="0 0 0">
+        <vr-animation attribute="scale" from="1 0 1" to="1 1 1" begin="3000" dur="1000" fill="backwards" easing="ease-in"></vr-animation>
+        
+        <vr-object position="0 0.5 0">
+          <vr-animation attribute="scale" from="1 1 1" to="1 0 1" begin="4500" dur="1000" fill="backwards" easing="ease-in"></vr-animation>
+          <vr-cylinder radius="0.8" height="0.5" position="0 -0.25 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+        </vr-object>
+
+        <vr-object position="0 -0.5 0" rotation="0 0 0">
+          <vr-animation attribute="scale" from="1 1 1" to="1 0 1" begin="4500" dur="1000" fill="backwards" easing="ease-in"></vr-animation>
+          <vr-cylinder radius="0.8" height="0.5" position="0 0.25 0" color="#EF2D5E" open-ended="true"></vr-cylinder>
+        </vr-object>
+      </vr-object>
+
+
+
+
+      <!-- PANORAMAS -->
+      
+      <vr-object>
+        
+        <!-- <vr-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="backwards"></vr-animation> -->
+        
+        <!-- Sky -->
+        <vr-sky id="pano" src="../_skies/city-2.png"></vr-sky>
+
+        <!-- Links. When clicked they change the background -->
+        <vr-object position="0 -0.25 -2" scale="0.2 0.2 0.2">
+          
+          <vr-image mixin="link" position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
+            <a-click></a-click>
+          </vr-image>
+          
+          <vr-image mixin="link" position="0 0 0" width="1" height="1" src="images/thumb-city.png">
+            <!-- <a-click></a-click> -->
+          </vr-image>
+          
+          <vr-image mixin="link" position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
+            <vr-click scale="5 2 1"></vr-click>
+          </vr-image>
+
+        </vr-object>
+
+      </vr-object>
+
+
+
+
+      <!-- LIGHTING -->
+
+      <vr-object light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></vr-object>
+      <vr-object light="type: ambient; color: #FFF;"></vr-object>
+
+
+    </vr-scene>
+  </body>
+</html>
