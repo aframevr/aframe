@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Interactions</title>
+    <meta name="description" content="Interactions - A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    
+    <vr-assets>
+      <vr-mixin id="link" scale="1 0.5 1"></vr-mixin>
+      <vr-mixin id="link-hovered" scale="2 2 1"></vr-mixin>
+      <vr-mixin id="link-selected" scale="2 4 1"></vr-mixin>
+    </vr-assets>
+    <vr-scene>
+
+      <!-- Camera -->
+      <vr-object position="0 1.8 5">
+        <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
+          <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
+                     material="color: #FFF"
+                     cursor="maxDistance: 30">
+          </vr-object>
+        </vr-object>
+      </vr-object>
+
+      <!-- Target object -->
+      <vr-cylinder id="target" position="0 3.5 -2" radius="0.75" height="0.3" segments-radius="6" color="#93648D"></vr-cylinder>
+
+      <!-- Mixin + template (orange) -->
+      <vr-cube mixin="link" position="-1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#F16745"></vr-cube>
+
+      <!-- Click template + template (yellow) -->
+      <vr-cube position="1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#FFC65D">
+        <vr-click target="#target" scale="2 2 2"></vr-click>
+      </vr-cube>
+
+      <!-- Mixin + object (green) -->
+      <vr-object mixin="link" position="-1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #7BC8A4"></vr-object>
+
+      <!-- Mouseenter/leave + template (blue) -->
+      <vr-object position="1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #4CC3D9">
+        <vr-mouseenter scale="2 2 2"></vr-mouseenter>
+        <vr-mouseleave scale="1 1 1"></vr-mouseenter>
+      </vr-object>
+
+
+      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
+      <vr-light type="ambient" color="#fff"></vr-light>
+
+    </vr-scene>
+  </body>
+</html>
