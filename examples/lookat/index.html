@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Look At</title>
+    <meta name="description" content="Look At - A-Frame">
+    <script src="../../build/vr-components.js"></script>
+  </head>
+  <body>
+    <vr-scene>
+
+      <!-- A camera  -->
+      <vr-camera id="camera" position="0 1.8 10"></vr-camera>
+
+      <!-- A target object -->
+      <vr-sphere id="target" color="#404040" radius="0.5">
+        <vr-animation attribute="position" from="-12 6 -15" to="8 3 -5" dur="1800" repeat="indefinite" fill="forward" direction="alternate"></vr-animation>
+      </vr-sphere>
+
+      <!-- Objects look at the target -->
+      <vr-cube width="1" depth="1" height="1" color="#4CC3D9" look-at="#target" position="-4 0 -5"></vr-cube>
+      <vr-cylinder radius="0.6" height="2" color="#7BC8A4" look-at="#target" position="0 0 -5"></vr-cylinder>
+      <vr-cube width="0.5" depth="1" height="2" color="#F16745" look-at="#target" position="4 0 -5"></vr-cube>
+      <vr-cylinder radius="0.2" height="2" color="#7BC8A4" look-at="#target" position="-4 0 -1"></vr-cylinder>
+      <vr-cube width="2" depth="1" height="0.25" color="#93648D" look-at="#target" position="0 0 -1"></vr-cube>
+      <vr-cube width="1" depth="2" height="0.5" color="#999" look-at="#target" position="4 0 -1"></vr-cube>
+
+      <!-- This object looks at the camera. Use WASD controls to test it -->
+      <vr-cube width="2" depth="2" height="2" color="#FFC65D" look-at="#camera" position="-6 2.5 -5"></vr-cube>
+    
+      <vr-image position="0 -1.2 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></vr-image>
+      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
+      <vr-light type="ambient" color="#fff"></vr-light>
+
+    </vr-scene>
+  </body>
+</html>
