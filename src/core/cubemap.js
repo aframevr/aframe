@@ -1,7 +1,9 @@
 /* global HTMLElement */
 var registerElement = require('../vr-register-element').registerElement;
 
-var utils = require('../vr-utils');
+var debug = require('../utils/debug');
+
+var warn = debug('core:cubemap:warn');
 
 /**
  * Cubemap element that handles validation and exposes list of URLs.
@@ -38,7 +40,7 @@ module.exports = registerElement('a-cubemap', {
           return srcs;
         }
         // Else if there are not six elements, throw a warning.
-        utils.warn(
+        warn(
           '<a-cubemap> did not contain exactly six elements each with a ' +
           '`src` attribute.');
       },

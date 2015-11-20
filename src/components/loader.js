@@ -1,7 +1,9 @@
+var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var parseUrl = require('../utils/src-loader').parseUrl;
 var THREE = require('../../lib/three');
-var VRUtils = require('../vr-utils');
+
+var warn = debug('components:loader:warn');
 
 module.exports.Component = registerComponent('loader', {
   dependencies: {
@@ -23,7 +25,7 @@ module.exports.Component = registerComponent('loader', {
       var format = data.format;
       if (model) { el.object3D.remove(model); }
       if (!url) {
-        VRUtils.warn('Model URL not provided');
+        warn('Model URL not provided');
         return;
       }
       switch (format) {
@@ -34,7 +36,7 @@ module.exports.Component = registerComponent('loader', {
           this.loadCollada(url);
           break;
         default:
-          VRUtils.warn('Model format not supported');
+          warn('Model format not supported');
       }
     }
   },

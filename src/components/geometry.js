@@ -1,6 +1,8 @@
+var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
-var VRUtils = require('../vr-utils');
+
+var warn = debug('components:geometry:warn');
 
 var DEFAULT_RADIUS = 5;
 
@@ -130,7 +132,7 @@ module.exports.Component = registerComponent('geometry', {
             data.p, data.q);
         }
         default: {
-          VRUtils.warn('Primitive type not supported: ' + data.primitive);
+          warn('Primitive type not supported: ' + data.primitive);
           return new THREE.Geometry();
         }
       }

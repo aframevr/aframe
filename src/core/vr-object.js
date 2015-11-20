@@ -3,10 +3,13 @@ var re = require('../vr-register-element');
 var registerElement = re.registerElement;
 var isNode = re.isNode;
 
+var debug = require('../utils/debug');
 var THREE = require('../../lib/three');
 var VRComponents = require('./components').components;
 var VRNode = require('./vr-node');
-var VRUtils = require('../vr-utils');
+
+var log = debug('core:vr-object');
+var error = debug('core:vr-object:error');
 
 /**
  * Entity element definition.
@@ -150,7 +153,7 @@ var proto = {
   add: {
     value: function (el) {
       if (!el.object3D) {
-        VRUtils.error("Trying to add an object3D that doesn't exist");
+        error("Trying to add an object3D that doesn't exist");
       }
       this.object3D.add(el.object3D);
     },
@@ -252,7 +255,7 @@ var proto = {
       if (!this.isComponentDefined(name) && !isDependency) { return; }
       this.initComponentDependencies(name);
       this.components[name] = new VRComponents[name].Component(this);
-      VRUtils.log('Component initialized: %s', name);
+      log('Component initialized: %s', name);
     }
   },
 
