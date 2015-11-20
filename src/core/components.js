@@ -6,6 +6,7 @@ require('../components/fog');
 require('../components/geometry');
 require('../components/light');
 require('../components/loader');
+require('../components/look-at');
 require('../components/look-controls');
 require('../components/material');
 require('../components/position');

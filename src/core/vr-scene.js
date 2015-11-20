@@ -15,7 +15,8 @@ var registerElement = re.registerElement;
  * Scene element, holds all entities.
  *
  * @member {number} animationFrameID
- * @member {array} behaviors
+ * @member {array} behaviors - Component instances that have registered themselves to be
+           updated on every tick.
  * @member {object} cameraEl - Set the entity with a camera component.
  * @member {object} canvas
  * @member {bool} defaultLightsEnabled - false if user has not added lights.
@@ -93,6 +94,10 @@ var VRScene = module.exports = registerElement('vr-scene', {
       }
     },
 
+    /**
+     * @param {object} behavior - Generally a component. Must implement a .update() method to
+     *        be called on every tick.
+     */
     addBehavior: {
       value: function (behavior) {
         this.behaviors.push(behavior);
@@ -274,6 +279,18 @@ var VRScene = module.exports = registerElement('vr-scene', {
           }
           this.defaultLightsEnabled = false;
         }
+      }
+    },
+
+    /**
+     * @param {object} behavior - Generally a component. Has registered itself to behaviors.
+     */
+    removeBehavior: {
+      value: function (behavior) {
+        var behaviors = this.behaviors;
+        var index = behaviors.indexOf(behavior);
+        if (index === -1) { return; }
+        behaviors.splice(index, 1);
       }
     },
 

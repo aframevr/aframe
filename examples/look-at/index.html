@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Look-At</title>
+    <meta name="description" content="A-Frame Core Look-At component">
+    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../_style/main.css">
+    <script src="../../build/vr-markup.js"></script>
+  </head>
+  <body>
+    <vr-assets>
+      <img id="floor" src="../_images/textures/marble.jpg">
+      <img id="follower-img" src="../_images/pano/tintamarre.jpg">
+      <vr-mixin id="follower" geometry="primitive: box; depth: .1;"
+                material="src: #follower-img">
+      </vr-mixin>
+    </vr-assets>
+
+    <vr-scene stats="true">
+      <!-- Camera. -->
+      <vr-object position="0 1.8 15">
+        <vr-object id="camera" camera="fov: 45" look-controls wasd-controls></vr-object>
+      </vr-object>
+
+      <!-- Light. -->
+      <vr-object light="type: ambient; color: #BBB"></vr-object>
+
+      <!-- Floor. -->
+      <vr-object geometry="primitive: cylinder; height: .2; radius: 15;"
+                 material="src: #floor; metallic: .2; repeat: 50 20; roughness: .1"
+                 position="0 0 0"></vr-object>
+
+      <!-- Skysphere. -->
+      <vr-object geometry="primitive: sphere; radius: 100"
+                 material="color: #333; shader: flat" scale="1 1 -1">
+      </vr-object>
+
+      <!-- Moving object. -->
+      <vr-object position="0 2 0">
+        <vr-object id="squirrel" geometry="primitive: sphere; radius: .2"
+                                 light="type: point; color: #555"
+                                 material="color: #FFF; shading: flat"
+                                 position="20 0 0">
+        </vr-object>
+        <vr-animation attribute="rotation" direction="alternate" dur="5000"
+                      easing="ease-in-out" fill="forward" repeat="indefinite"
+                      to="0 360 180"></vr-animation>
+      </vr-object>
+
+      <vr-object mixin="follower" look-at="#squirrel" position="0 3 0"></vr-object>
+      <vr-object mixin="follower" look-at="#camera" position="0 10 0"></vr-object>
+    </vr-scene>
+  </body>
+</html>
