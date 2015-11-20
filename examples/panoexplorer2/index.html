@@ -21,10 +21,6 @@
 
       Nov 20:
 
-      COMMENTS:
-
-      * Interactions are pretty hard to figure out. Don't seem to be working with templates.
-
       TODO
 
       * Fix intro animation (cylinders double side)
@@ -32,7 +28,6 @@
       * Declarative interactions
         - Trigger "scene" transitions (eg: change sky, bg audio, title image)
         - Trigger in-scene hotspots (eg: reveal video excerpt or audio snippet)
-      * Test cursor w/ clicks. If it works, update default camera.
       * Curved cylinder template
       * More specific camera templates
       * Add images
@@ -40,26 +35,25 @@
       * Fix animation from values (probably need to create big test scene w/ multiple animations).
       * DOM elements framing the scene (credits, onboarding info, etc)
       * Change default lighting in core to be more like aframe.
+      * Add "click to start animation" to Interactions example
 
       BLOCKED ON
 
       * Interactions
-        - Mixins don't work on templates
-          - Prevents basic rollovers
-          - Create test scene
-          - File issue
+        - Mixin hover status don't work on templates
+          - Initial state only. Hover does not work: https://github.com/MozVR/aframe/issues/103
         - Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
           - https://github.com/MozVR/aframe/issues/193
       * Sound component / template
       * Rename <a-
       * Responsive cursor
+      * Look-At does not follow <vr-camera>
 
       FILE ISSUE
   
-      * Flicker of animation at start. See Look At example.
       * Look At does not follow <vr-camera>
+      * Flicker of animation at start. See Look At example.
       * Add cursor to vr-camera by default?
-      * Mixins not working on templates?
       * "Send to Mobile" workflow
       * Add keyboard shortcuts for Enter VR and Reset Sensor
       * Tighten default camera near/far
@@ -75,7 +69,7 @@
 
       FIX LATER
   
-      * Add better way of hiding and/or removing elements from the scene. Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
+      * Add better way of hiding and/or removing elements from the scene? Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
       * Animate opacity
 
       -->
