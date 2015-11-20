@@ -52,6 +52,8 @@
       * Responsive cursor
       * Y-axis rotation of <vr-camera> is tilting
         - https://github.com/MozVR/aframe/issues/202
+      * Animation should take existing attribute values as start point if "from" is not specified
+        - https://github.com/MozVR/aframe-core/issues/494
 
 
       NICE TO HAVE:
@@ -62,6 +64,8 @@
         - https://github.com/MozVR/aframe/pull/196
       * Add other easing curves in core animation:
         - https://github.com/MozVR/aframe-core/issues/253
+      * Resolve alphas automatically
+        - https://github.com/MozVR/aframe-core/issues/498
 
       FILE ISSUE
   
@@ -194,11 +198,11 @@
           </vr-image>
           
           <vr-image mixin="link" position="0 0 0" width="1" height="1" src="images/thumb-city.png">
-            
+            <vr-click></vr-click>
           </vr-image>
           
           <vr-image mixin="link" position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
-            
+            <vr-click></vr-click>
           </vr-image>
 
         </vr-object>
