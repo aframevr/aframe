@@ -1,13 +1,15 @@
-var VRMarkup = require('@mozvr/vr-markup');
-var core = require('./core/');
+var aframeCore = require('@mozvr/aframe-core');
+var coreElements = require('./elements/');
 var css = require('./style/index.css');
 
 module.exports = {
   // Main library.
-  VRMarkup: VRMarkup,
+  aframeCore: aframeCore,
 
-  // Core components.
-  core: core,
+  // Custom elements.
+  elements: {
+    core: coreElements
+  },
 
   // Boilerplate styles.
   css: css

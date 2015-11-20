@@ -4,33 +4,33 @@
     <meta charset="utf-8">
     <title>Hallway</title>
     <meta name="description" content="Hallway - A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
+    <a-scene>
 
-      <vr-object>
-        <vr-animation attribute="position" from="0 0 -10" to="0 0 10" dur="5000" easing="linear"></vr-animation>
+      <a-object>
+        <a-animation attribute="position" from="0 0 -10" to="0 0 10" dur="5000" easing="linear"></a-animation>
 
-        <vr-frame position="0 0 0" scale="0.25 0.25 0.25" thickness="0.2" color="#ef2d5e"></vr-frame>
-        <vr-cube position="-10 0 0" width="10" height="10" depth="1" thickness="0.2" color="#301626"></vr-cube>
-        <vr-cube position="-10 6 4" width="10" height="10" depth="1" thickness="0.2" color="#301626"></vr-cube>
+        <a-frame position="0 0 0" scale="0.25 0.25 0.25" thickness="0.2" color="#ef2d5e"></a-frame>
+        <a-cube position="-10 0 0" width="10" height="10" depth="1" thickness="0.2" color="#301626"></a-cube>
+        <a-cube position="-10 6 4" width="10" height="10" depth="1" thickness="0.2" color="#301626"></a-cube>
 
-        <vr-object id="hallway" scale="2 2 20">
-          <vr-plane position="0 5 0" width="10" height="10" rotation="90 0 0" color="#180a13"></vr-plane>
-          <vr-plane position="0 -5 0" width="10" height="10" rotation="-90 0 0" color="#180a13"></vr-plane>
-          <vr-plane position="5 0 0" width="10" height="10" rotation="0 -90 90" color="#180a13"></vr-plane>
-          <vr-plane position="-5 0 0" width="10" height="10" rotation="0 90 90" color="#180a13"></vr-plane>
-        </vr-object>
+        <a-object id="hallway" scale="2 2 20">
+          <a-plane position="0 5 0" width="10" height="10" rotation="90 0 0" color="#180a13"></a-plane>
+          <a-plane position="0 -5 0" width="10" height="10" rotation="-90 0 0" color="#180a13"></a-plane>
+          <a-plane position="5 0 0" width="10" height="10" rotation="0 -90 90" color="#180a13"></a-plane>
+          <a-plane position="-5 0 0" width="10" height="10" rotation="0 90 90" color="#180a13"></a-plane>
+        </a-object>
 
-      </vr-object>
+      </a-object>
 
-      <vr-image position="0 -1 0" src="shadow2.png" rotation="-90 0 0" scale="6 6 6"></vr-image>
+      <a-image position="0 -1 0" src="shadow2.png" rotation="-90 0 0" scale="6 6 6"></a-image>
 
-      <vr-sky src="../_images/sky-black.jpg"></vr-sky>
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#fff"></vr-light>
+      <a-sky src="../_images/sky-black.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
 
-    </vr-scene>
+    </a-scene>
   </body>
 </html>

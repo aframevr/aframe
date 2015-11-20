@@ -4,166 +4,166 @@
     <meta charset="utf-8">
     <title>Animations: Warps</title>
     <meta name="description" content="Animations: Warps - A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
+    <a-scene>
 
       <!-- Warp 1 -->
-      <vr-object position="-2 1.5 -2">
-        <vr-animation attribute="scale" from="0 1 0" to="1 1 1" begin="1000" dur="2000" fill="backwards"></vr-animation>
+      <a-object position="-2 1.5 -2">
+        <a-animation attribute="scale" from="0 1 0" to="1 1 1" begin="1000" dur="2000" fill="backwards"></a-animation>
 
         <!-- Ring 1 (green) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="forward"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="forward"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 2 (orange) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" begin="200" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" begin="200" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="200" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="200" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 3 (blue) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" begin="400" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" begin="400" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 4 (yellow) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" begin="600" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" begin="600" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 5 (purple) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" begin="800" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" begin="800" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 40 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 40 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
-      </vr-object>
+      </a-object>
 
 
       <!-- Warp 2 -->
-      <vr-object position="2 1.5 -2">
+      <a-object position="2 1.5 -2">
 
         <!-- Ring 1 (green) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="forward"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="2000" fill="forward"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#7BC8A4" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 2 (orange) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" begin="200" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.9 0 0.9" to="0.9 1 0.9" begin="200" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="200" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="200" dur="2000" fill="forward"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="200" dur="2000" fill="forward"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#F16745" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 3 (blue) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" begin="400" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.8 0 0.8" to="0.8 1 0.8" begin="400" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="400" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#4CC3D9" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 4 (yellow) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" begin="600" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.7 0 0.7" to="0.7 1 0.7" begin="600" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="600" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#FFC65D" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
         <!-- Ring 5 (purple) -->
-        <vr-object>
-          <vr-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" begin="800" dur="2000" fill="backwards"></vr-animation>
-          <vr-object position="0 2 0">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
-          </vr-object>
+        <a-object>
+          <a-animation attribute="scale" from="0.6 0 0.6" to="0.6 1 0.6" begin="800" dur="2000" fill="backwards"></a-animation>
+          <a-object position="0 2 0">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></a-cylinder>
+          </a-object>
 
-          <vr-object position="0 -2 0" rotation="0 0 180">
-            <vr-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></vr-animation>
-            <vr-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></vr-cylinder>
-          </vr-object>
-        </vr-object>
+          <a-object position="0 -2 0" rotation="0 0 180">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="2000" fill="backwards"></a-animation>
+            <a-cylinder radius="2" height="2" position="0 -1 0" color="#93648D" open-ended="true"></a-cylinder>
+          </a-object>
+        </a-object>
 
-      </vr-object>
-      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-light type="directional" color="#FFF" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#FFF"></vr-light>
+      </a-object>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#FFF" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#FFF"></a-light>
 
-    </vr-scene>
+    </a-scene>
   </body>
 </html>
