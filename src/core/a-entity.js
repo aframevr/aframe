@@ -9,8 +9,8 @@ var debug = require('../utils/debug');
 var THREE = require('../../lib/three');
 var utils = require('../utils');
 
-var log = debug('core:a-object');
-var error = debug('core:a-object:error');
+var log = debug('core:a-entity');
+var error = debug('core:a-entity:error');
 
 /**
  * Entity element definition.
@@ -164,7 +164,8 @@ var proto = {
       this.updateComponents();
       // Call the parent class
       ANode.prototype.load.call(this);
-    }
+    },
+    writable: window.debug
   },
 
   remove: {
@@ -427,6 +428,6 @@ var proto = {
   }
 };
 
-module.exports = registerElement('a-object', {
+module.exports = registerElement('a-entity', {
   prototype: Object.create(ANode.prototype, proto)
 });

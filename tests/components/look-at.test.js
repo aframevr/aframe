@@ -5,7 +5,7 @@ var entityFactory = require('../helpers').entityFactory;
  * Creates a sibling element to `el`.
  */
 function squirrelFactory (el) {
-  var anotherEl = document.createElement('a-object');
+  var anotherEl = document.createElement('a-entity');
   anotherEl.setAttribute('id', 'squirrel');
   anotherEl.setAttribute('position', '1 2 3');
   el.parentNode.appendChild(anotherEl);
@@ -59,11 +59,11 @@ suite('look-at', function () {
       });
     });
 
-    test('can look at a nested object', function (done) {
+    test('can look at a nested entity', function (done) {
       var el = this.el;
       var spy = this.spy;
       var anotherEl = squirrelFactory(el);
-      var nestedEl = document.createElement('a-object');
+      var nestedEl = document.createElement('a-entity');
       nestedEl.setAttribute('position', '1 2 3');
       nestedEl.setAttribute('id', 'squirrel-nest');
       anotherEl.appendChild(nestedEl);
@@ -78,7 +78,7 @@ suite('look-at', function () {
       });
     });
 
-    test('can track an object', function (done) {
+    test('can track an entity', function (done) {
       var el = this.el;
       var spy = this.spy;
       var anotherEl = squirrelFactory(el);

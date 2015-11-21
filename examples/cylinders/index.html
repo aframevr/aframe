@@ -15,26 +15,26 @@
                                 material="side: double"></a-mixin>
     </a-assets>
     <a-scene stats="true">
-      <a-object position="0 0 20">
-        <a-object camera="fov: 45" look-controls wasd-controls></a-object>
-      </a-object>
+      <a-entity position="0 0 20">
+        <a-entity camera="fov: 45" look-controls wasd-controls></a-entity>
+      </a-entity>
 
-      <a-object mixin="cylinder" position="-10 0 0" rotation="45 0 -45"
+      <a-entity mixin="cylinder" position="-10 0 0" rotation="45 0 -45"
                 geometry="radius: 2; height: 5;"
-                material="color: aqua"></a-object>
-      <a-object mixin="open-ended cylinder" rotation="25 0 10"
+                material="color: aqua"></a-entity>
+      <a-entity mixin="open-ended cylinder" rotation="25 0 10"
                 geometry="radius: 4; height: 2"
-                material="color: crimson"></a-object>
-      <a-object mixin="cylinder" position="10 0 0" rotation="75 0 0"
+                material="color: crimson"></a-entity>
+      <a-entity mixin="cylinder" position="10 0 0" rotation="75 0 0"
                 geometry="radius: 2; height: 4; thetaLength: 4.5"
-                material="color: gold; side: double"></a-object>
-      <a-object mixin="open-ended cylinder" position="0 4 0"
+                material="color: gold; side: double"></a-entity>
+      <a-entity mixin="open-ended cylinder" position="0 4 0"
                 geometry="radius: 4; height: 2; thetaLength: 3; thetaStart: 3"
-                material="color: orchid"></a-object>
+                material="color: orchid"></a-entity>
 
-      <a-object mixin="cylinder" position="4 -5 0" rotation="0 0 0"
+      <a-entity mixin="cylinder" position="4 -5 0" rotation="0 0 0"
                 geometry="radiusTop: 3; radiusBottom: 0.1; height: 2"
-                material="color: green"></a-object>
+                material="color: green"></a-entity>
     </a-scene>
   </body>
 </html>
