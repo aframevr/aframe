@@ -1,4 +1,4 @@
-/* global Event, HTMLElement, MutationObserver */
+/* global HTMLElement, MutationObserver */
 var registerElement = require('../vr-register-element').registerElement;
 
 var VRUtils = require('../vr-utils');
@@ -45,16 +45,7 @@ module.exports = registerElement(
 
         attributeChangedCallback: {
           value: function (attr, oldVal, newVal) {
-            // When creating objects programmatically and setting attributes
-            // the object is not part of the scene until is inserted in the
-            // DOM
-            if (!this.hasLoaded) { return; }
-            // In Firefox the callback is called even if the
-            // attribute value doesn't change. We return
-            // if old and new values are the same
-            if (attr === 'mixin' && oldVal !== newVal) {
-              this.updateMixins(newVal, oldVal);
-            }
+            if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
           },
           writable: window.debug
         },
@@ -63,9 +54,8 @@ module.exports = registerElement(
           value: function () {
             // To prevent emmitting the loaded event more than once
             if (this.hasLoaded) { return; }
-            var event = new Event('loaded');
             this.hasLoaded = true;
-            this.dispatchEvent(event);
+            this.emit('loaded', {}, false);
           },
           writable: window.debug
         },
@@ -120,6 +110,14 @@ module.exports = registerElement(
             this.attachMixinListener(mixinEl);
             this.mixinEls.push(mixinEl);
           }
+        },
+
+        setAttribute: {
+          value: function (attr, newValue) {
+            if (attr === 'mixin') { this.updateMixins(newValue); }
+            HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+          },
+          writable: window.debug
         },
 
         unregisterMixin: {
@@ -184,7 +182,7 @@ module.exports = registerElement(
           value: function (name, detail, bubbles) {
             var self = this;
             detail = detail || {};
-            var data = { bubbles: bubbles, detail: detail };
+            var data = { bubbles: !!bubbles, detail: detail };
             return name.split(' ').map(function (eventName) {
               return VRUtils.fireEvent(self, eventName, data);
             });

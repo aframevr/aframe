@@ -53,47 +53,31 @@ suite('vr-object', function () {
       });
     });
 
-    test('can remove component', function (done) {
+    test('can remove component', function () {
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box');
-
-      process.nextTick(function () {
-        assert.ok('geometry' in el.components);
-        el.removeAttribute('geometry');
-        setTimeout(function () {
-          assert.notOk('geometry' in el.components);
-          done();
-        });
-      });
+      assert.ok('geometry' in el.components);
+      el.removeAttribute('geometry');
+      assert.notOk('geometry' in el.components);
     });
 
-    test('does not remove default component', function (done) {
+    test('does not remove default component', function () {
       var el = this.el;
-      process.nextTick(function () {
-        assert.ok('position' in el.components);
-        el.removeAttribute('position');
-        setTimeout(function () {
-          assert.ok('position' in el.components);
-          done();
-        });
-      });
+      assert.ok('position' in el.components);
+      el.removeAttribute('position');
+      assert.ok('position' in el.components);
     });
 
-    test('does not remove mixed-in component', function (done) {
+    test('does not remove mixed-in component', function () {
       var el = this.el;
       var mixinId = 'geometry';
       mixinFactory(mixinId, {geometry: 'primitive: box'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('geometry', 'primitive: sphere');
-      process.nextTick(function () {
-        assert.ok('geometry' in el.components);
-        el.removeAttribute('geometry');
-        setTimeout(function () {
-          // Geometry still exists since it is mixed in.
-          assert.ok('geometry' in el.components);
-          done();
-        });
-      });
+      assert.ok('geometry' in el.components);
+      el.removeAttribute('geometry');
+      // Geometry still exists since it is mixed in.
+      assert.ok('geometry' in el.components);
     });
 
     test('can update component data', function () {

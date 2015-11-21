@@ -17,9 +17,10 @@ var utils = require('../vr-utils');
              to..
  */
 var Component = function (el) {
+  var attrs = el.getAttribute(this.name);
   this.el = el;
   this.data = {};
-  this.parseAttributes();
+  this.parseAttributes(attrs);
   this.init();
   this.update();
 };
@@ -56,9 +57,9 @@ Component.prototype = {
    * component.
    * Does not update if data has not changed.
    */
-  updateAttributes: function () {
+  updateAttributes: function (newData) {
     var previousData = extend({}, this.data);
-    this.parseAttributes();
+    this.parseAttributes(newData);
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
     this.update();
@@ -76,12 +77,11 @@ Component.prototype = {
    * 3. Attribute data.
    * Finally coerce the data to the types of the defaults.
    */
-  parseAttributes: function () {
+  parseAttributes: function (newData) {
     var self = this;
     var data = {};
     var defaults = self.defaults;
     var el = self.el;
-    var elData;
     var mixinEls = el.mixinEls;
     var name = self.name;
 
@@ -96,8 +96,7 @@ Component.prototype = {
     }
 
     // 3. Attribute values (highest precendence).
-    elData = el.getAttribute(name);
-    data = extend(data, elData);
+    data = extend(data, newData);
 
     // Coerce to the type of the defaults.
     this.data = utils.coerce(data, defaults);

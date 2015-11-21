@@ -4,22 +4,21 @@ var entityFactory = require('../helpers.js').entityFactory;
 suite('fog', function () {
   'use strict';
 
-  setup(function (done) {
-    var entityEl = this.entityEl = entityFactory();
+  setup(function () {
+    this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
+    // We force loading of the scene since the logic
+    // that fires the event is in attachedCallback
+    // which is stubbed to avoid running any WebGL code
+    el.pendingElements = 0;
+    el.load();
     el.setAttribute('fog', '');
-    entityEl.addEventListener('loaded', function () {
-      done();
-    });
   });
 
-  test('does not set fog for entities', function (done) {
+  test('does not set fog for entities', function () {
     var entityEl = this.entityEl;
     entityEl.setAttribute('fog', '');
-    process.nextTick(function () {
-      assert.notOk(entityEl.object3D.fog);
-      done();
-    });
+    assert.notOk(entityEl.object3D.fog);
   });
 
   suite('update', function () {
@@ -27,70 +26,47 @@ suite('fog', function () {
       assert.ok(this.el.object3D.fog);
     });
 
-    test('updates fog', function (done) {
+    test('updates fog', function () {
       var el = this.el;
       el.setAttribute('fog', 'color: #F0F');
-      process.nextTick(function () {
-        assert.shallowDeepEqual(el.object3D.fog.color, {r: 1, g: 0, b: 1});
-        done();
-      });
+      assert.shallowDeepEqual(el.object3D.fog.color, {r: 1, g: 0, b: 1});
     });
 
-    test('does not recreate fog when updating', function (done) {
+    test('does not recreate fog when updating', function () {
       var el = this.el;
       var uuid = el.object3D.fog.uuid;
       el.setAttribute('fog', 'color: #F0F');
-      process.nextTick(function () {
-        assert.equal(el.object3D.fog.uuid, uuid);
-        done();
-      });
+      assert.equal(el.object3D.fog.uuid, uuid);
     });
 
-    test('can update fog type', function (done) {
+    test('can update fog type', function () {
       var el = this.el;
       el.setAttribute('fog', 'type: exponential; density: 0.25');
-      process.nextTick(function () {
-        el.setAttribute('fog', 'density: 0.25');
-        setTimeout(function () {
-          assert.notOk('density' in el.object3D.fog);
-          assert.ok('near' in el.object3D.fog);
-          done();
-        });
-      });
+      el.setAttribute('fog', 'density: 0.25');
+      assert.notOk('density' in el.object3D.fog);
+      assert.ok('near' in el.object3D.fog);
     });
 
-    test('can remove and add linear fog', function (done) {
+    test('can remove and add linear fog', function () {
       var el = this.el;
       el.removeAttribute('fog');
-      setTimeout(function () {
-        el.setAttribute('fog');
-        process.nextTick(function () {
-          assert.isAbove(el.object3D.fog.far, 0);
-          done();
-        });
-      });
+      el.setAttribute('fog');
     });
   });
 
   suite('remove', function () {
-    test('removes fog when detaching fog', function (done) {
+    test('removes fog when detaching fog', function () {
       var el = this.el;
       el.removeAttribute('fog');
-      process.nextTick(function () {
-        assert.equal(el.object3D.fog.far, 0);
-        assert.equal(el.object3D.fog.near, 0);
-        done();
-      });
+      assert.equal(el.object3D.fog.far, 0);
+      assert.equal(el.object3D.fog.near, 0);
     });
 
-    test('removes exp. fog when detaching fog', function (done) {
+    test('removes exp. fog when detaching fog', function () {
       var el = this.el;
       el.setAttribute('fog', 'type: exponential');
       el.removeAttribute('fog');
-      process.nextTick(function () {
-        assert.equal(el.object3D.fog.density, 0);
-        done();
-      });
+      assert.equal(el.object3D.fog.density, 0);
     });
   });
 });
