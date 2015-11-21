@@ -1,6 +1,5 @@
 var debugLib = require('debug');
-
-var utils = require('../vr-utils');
+var utils = require('./main');
 
 var settings = {
   colors: {
@@ -97,6 +96,6 @@ if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   };
 }
 
-window.logs = debug;
+if (process.browser) { window.logs = debug; }
 
 module.exports = debug;

@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers.js').entityFactory;
-var THREE = require('vr-markup').THREE;
+var entityFactory = require('../helpers').entityFactory;
+var THREE = require('aframe-core').THREE;
 
 suite('material', function () {
   'use strict';

@@ -1,8 +1,8 @@
 var TWEEN = require('tween.js');
 
-var VRNode = require('./vr-node');
-var registerElement = require('../vr-register-element').registerElement;
-var utils = require('../vr-utils');
+var ANode = require('./a-node');
+var registerElement = require('../a-register-element').registerElement;
+var utils = require('../utils/');
 
 var DEFAULTS = {
   attribute: 'rotation',
@@ -42,15 +42,15 @@ var EASING_FUNCTIONS = {
           a number or `indefinite`).
  * @param {number} to - End value.
  */
-module.exports = registerElement('vr-animation', {
-  prototype: Object.create(VRNode.prototype, {
+module.exports = registerElement('a-animation', {
+  prototype: Object.create(ANode.prototype, {
     attachedCallback: {
       value: function () {
         var el = this.el = this.parentNode;
         if (el.isNode) {
           this.init();
         } else {
-          // To handle elements that are not yet `<vr-object>`s (e.g., templates).
+          // To handle elements that are not yet `<a-object>`s (e.g., templates).
           el.addEventListener('nodeready', this.init.bind(this));
         }
       },

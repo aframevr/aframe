@@ -7,12 +7,12 @@ require('document-register-element');
  ------------------------------------------------------------
 
  This module wraps registerElement to deal with
- components that inherit from VRNode and VRObject.
+ components that inherit from `ANode` and `AObject`.
  It's a pass through in any other case.
 
  It wraps some of the prototype methods
  of the created element to make sure that the corresponding
- functions in the base classes (VRObject and VRNode) are also
+ functions in the base classes (`AObject` and `ANode`) are also
  invoked. The method in the base class is always called before the
  one in the derived object.
 
@@ -44,20 +44,20 @@ module.exports.isNode = function (node) {
 module.exports.registerElement = document.registerElement = function (tagName, obj) {
   var proto = Object.getPrototypeOf(obj.prototype);
   var newObj = obj;
-  var isVRNode = VRNode && proto === VRNode.prototype;
-  var isVRObject = VRObject && proto === VRObject.prototype;
+  var isANode = ANode && proto === ANode.prototype;
+  var isAObject = AObject && proto === AObject.prototype;
 
-  if (isVRNode || isVRObject) { addTagName(tagName); }
+  if (isANode || isAObject) { addTagName(tagName); }
 
-  // Does the element inherit from VRNode?
-  if (isVRNode) {
-    newObj = wrapVRNodeMethods(obj.prototype);
+  // Does the element inherit from `ANode`?
+  if (isANode) {
+    newObj = wrapANodeMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  // Does the element inherit from VRObject?
-  if (isVRObject) {
-    newObj = wrapVRObjectMethods(obj.prototype);
+  // Does the element inherit from `AObject`?
+  if (isAObject) {
+    newObj = wrapAObjectMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
@@ -65,51 +65,51 @@ module.exports.registerElement = document.registerElement = function (tagName, o
 };
 
 /**
- * This wraps some of the obj methods to call those on VRNode base clase
- * @param  {object} obj The objects that contains the methods that will be wrapped
+ * This wraps some of the obj methods to call those on `ANode` base clase.
+ * @param  {object} obj The objects that contains the methods that will be wrapped.
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
-function wrapVRNodeMethods (obj) {
+function wrapANodeMethods (obj) {
   var newObj = {};
-  var vrNodeMethods = [
+  var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback'
   ];
-  wrapMethods(newObj, vrNodeMethods, obj, VRNode.prototype);
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
 
 /**
- * This wrapps some of the obj methods to call those on VRObject base clase
- * @param  {object} obj The objects that contains the methods that will be wrapped
+ * This wraps some of the obj methods to call those on `AObject` base class.
+ * @param  {object} obj The objects that contains the methods that will be wrapped.
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
-function wrapVRObjectMethods (obj) {
+function wrapAObjectMethods (obj) {
   var newObj = {};
-  var vrNodeMethods = [
+  var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback'
   ];
-  var vrObjectMethods = [
+  var AObjectMethods = [
     'attributeChangedCallback',
     'attachedCallback',
     'createdCallback',
     'detachedCallback'
   ];
-  wrapMethods(newObj, vrNodeMethods, obj, VRNode.prototype);
-  wrapMethods(newObj, vrObjectMethods, obj, VRObject.prototype);
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
+  wrapMethods(newObj, AObjectMethods, obj, AObject.prototype);
   // Copies the remaining properties into the new object
   copyProperties(obj, newObj);
   return newObj;
 }
 
 /**
- * Wraps a list a methods to ensure that those in the base class are called through the derived one
+ * Wraps a list a methods to ensure that those in the base class are called through the derived one.
  * @param  {object} targetObj Object that will contain the wrapped methods
  * @param  {array} methodList List of methods from the derivedObj that will be wrapped
  * @param  {object} derivedObject Object that inherits from the baseObj
@@ -164,5 +164,5 @@ function copyProperties (source, destination) {
   });
 }
 
-var VRNode = require('./core/vr-node');
-var VRObject = require('./core/vr-object');
+var ANode = require('./core/a-node');
+var AObject = require('./core/a-object');

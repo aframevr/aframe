@@ -1,4 +1,4 @@
-# VR MARKUP [![Build Status](https://magnum.travis-ci.com/MozVR/vr-markup.svg?token=65kfkjdCsqTSnqx7qtHg&branch=dev)](https://magnum.travis-ci.com/MozVR/vr-markup)
+# aframe-core [![Build Status](https://magnum.travis-ci.com/MozVR/aframe-core.svg?token=65kfkjdCsqTSnqx7qtHg&branch=dev)](https://magnum.travis-ci.com/MozVR/aframe-core)
 
 The goal of this project is to design a set of HTML tags to describe 3D scenes in the browser.
 
@@ -7,41 +7,45 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 
 ## Usage
 
-__NOTE:__ For folks creating scenes and third-party components, we recommend getting started by instead using the [__`vr-components`__ library](https://github.com/MozVR/vr-components), a set of core resuable components.
+__NOTE:__ For folks creating scenes and third-party components + elements, we recommend getting started by instead using the [__`aframe`__ library](https://github.com/MozVR/aframe), a set of core resuable elements.
 
-Proceed below if you would like to use the minimal set of primitive components available here in __`vr-markup`__.
+Proceed below if you would like to use the minimal set of primitive components and elements available here in __`aframe-core`__.
+
+### Codepen
+
+If you want to get hacking immediately, just fire up [this Codepen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)!
 
 ### Downloads
 
 To get started, simply include these files in your project:
 
-* [`vr-markup.min.js`](dist/vr-markup.min.js)
-* [`vr-markup.min.css`](dist/vr-markup.min.css)
+* [`aframe-core.min.js`](dist/aframe-core.min.js)
+* [`aframe-core.min.css`](dist/aframe-core.min.css)
 
 Or for local development you can use the unminified bundles (with source maps for the JS):
 
-* [`vr-markup.js`](dist/vr-markup.js)
-* [`vr-markup.css`](dist/vr-markup.css)
+* [`aframe-core.js`](dist/aframe-core.js)
+* [`aframe-core.css`](dist/aframe-core.css)
 
 __Also, be sure to check out these awesome examples:__
 
-* [__`vr-markup`__ examples](http://mozvr.github.io/vr-markup/examples/) ([source](https://github.com/MozVR/vr-markup/tree/master/examples/))
-* [__`vr-components`__ examples](http://mozvr.github.io/vr-components/examples/) ([source](https://github.com/MozVR/vr-components/tree/master/examples/))
+* [__`aframe-core`__ examples](http://mozvr.github.io/aframe-core/examples/) ([source](https://github.com/MozVR/aframe-core/tree/master/examples/))
+* [__`aframe`__ examples](http://mozvr.github.io/aframe/examples/) ([source](https://github.com/MozVR/aframe/tree/master/examples/))
 
 ### npm
 
 First install from npm:
 
-    npm install @mozvr/vr-markup
+    npm install @mozvr/aframe-core
 
 And in your Browserify/Webpack modules, simply require the module:
 
-    require('@mozvr/vr-markup')
+    require('@mozvr/aframe-core')
 
 ## Local installation
 
-    git clone https://github.com/MozVR/vr-markup.git
-    cd vr-markup
+    git clone https://github.com/MozVR/aframe-core.git
+    cd aframe-core
 
 ## Local development
 
@@ -53,7 +57,35 @@ If you'd like to hack on this project and don't have access to the npm repos, co
 
     npm login
 
-### Browser console logging
+### Working with [`aframe`](https://github.com/MozVR/aframe/) library
+
+If you want to make changes to the [__`aframe`__](https://github.com/MozVR/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.
+
+#### Linking
+
+When you are in the directory of your __`aframe-core`__ repo checkout:
+
+    npm link
+
+When you are in the directory of your __`aframe`__ repo checkout:
+
+    npm link @mozvr/aframe-core
+
+Now when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).
+
+#### Unlinking
+
+You'll need to `npm unlink` when you are done testing things and want to actually use the npm-published versions, not your versions that are locally linked.
+
+From your __`aframe-core`__ directory:
+
+    npm unlink
+
+From your __`aframe`__ directory:
+
+    npm unlink @mozvr/aframe-core
+
+## Browser console logging
 
 If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
 
@@ -92,11 +124,11 @@ And to push the tags to GitHub:
 
 ## Publishing to GitHub Pages
 
-To publish to __https://mozvr.github.io/vr-markup/__:
+To publish to __https://mozvr.github.io/aframe-core/__:
 
     npm run ghpages
 
-To publish to __https://cvan.github.io/vr-markup/__:
+To publish to __https://cvan.github.io/aframe-core/__:
 
     npm run ghpages cvan
 

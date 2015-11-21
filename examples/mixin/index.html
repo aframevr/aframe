@@ -4,23 +4,23 @@
     <meta charset="utf-8">
     <title>Style mixins</title>
     <meta name="description" content="Style mixins">
-    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
-    <script src="../../build/vr-markup.js"></script>
+    <script src="../../build/aframe-core.js"></script>
   </head>
   <body>
-    <vr-assets>
-      <vr-mixin id="cube" geometry="primitive: box" material="color: red" rotation="0 45 0"></vr-mixin>
-      <vr-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></vr-mixin>
-    </vr-assets>
-    <vr-scene stats="true">
-      <vr-object position="0 0 20">
-        <vr-object camera="fov: 45" look-controls wasd-controls></vr-object>
-      </vr-object>
+    <a-assets>
+      <a-mixin id="cube" geometry="primitive: box" material="color: red" rotation="0 45 0"></a-mixin>
+      <a-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></a-mixin>
+    </a-assets>
+    <a-scene stats="true">
+      <a-object position="0 0 20">
+        <a-object camera="fov: 45" look-controls wasd-controls></a-object>
+      </a-object>
       <!-- specialization of a particular component with an applied mixin -->
-      <vr-object mixin="cube" position="-10 0 0" material="color: yellow"></vr-object>
-      <vr-object mixin="cube"></vr-object>
-      <vr-object mixin="cube" position="10 0 0"></vr-object>
-    </vr-scene>
+      <a-object mixin="cube" position="-10 0 0" material="color: yellow"></a-object>
+      <a-object mixin="cube"></a-object>
+      <a-object mixin="cube" position="10 0 0"></a-object>
+    </a-scene>
   </body>
 </html>

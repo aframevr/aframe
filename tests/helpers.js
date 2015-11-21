@@ -4,33 +4,33 @@
  * Helper method to create a scene, create an object, add object to scene,
  * add scene to document.
  *
- * @returns {object} A <vr-object> element.
+ * @returns {object} An `<a-object>` element.
  */
 module.exports.entityFactory = function () {
-  var scene = document.createElement('vr-scene');
-  var object = document.createElement('vr-object');
+  var scene = document.createElement('a-scene');
+  var object = document.createElement('a-object');
   scene.appendChild(object);
   document.body.appendChild(scene);
   return object;
 };
 
 /**
- * Creates and attaches a mixin element (and a vr-assets element if necessary).
+ * Creates and attaches a mixin element (and an `<a-assets>` element if necessary).
  *
  * @param {string} id - ID of mixin.
  * @param {object} obj - Map of component names to attribute values.
- * @returns {object} An attached <vr-mixin> element.
+ * @returns {object} An attached `<a-mixin>` element.
  */
 module.exports.mixinFactory = function (id, obj) {
-  var mixinEl = document.createElement('vr-mixin');
+  var mixinEl = document.createElement('a-mixin');
   mixinEl.setAttribute('id', id);
   Object.keys(obj).forEach(function (componentName) {
     mixinEl.setAttribute(componentName, obj[componentName]);
   });
 
-  var assetsEl = document.querySelector('vr-assets');
+  var assetsEl = document.querySelector('a-assets');
   if (!assetsEl) {
-    assetsEl = document.createElement('vr-assets');
+    assetsEl = document.createElement('a-assets');
     document.body.appendChild(assetsEl);
   }
   assetsEl.appendChild(mixinEl);

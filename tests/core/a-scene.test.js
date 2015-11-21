@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test */
 'use strict';
-var helpers = require('../helpers.js');
-var VRScene = require('core/vr-scene');
+var helpers = require('../helpers');
+var AScene = require('core/a-scene');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -11,9 +11,9 @@ var VRScene = require('core/vr-scene');
  * to only be run locally since WebGL contexts break CI due to the headless
  * environment.
  */
-suite('vr-scene (without renderer)', function () {
+suite('a-scene (without renderer)', function () {
   setup(function () {
-    var el = this.el = document.createElement('vr-scene');
+    var el = this.el = document.createElement('a-scene');
     document.body.appendChild(el);
   });
 
@@ -23,7 +23,7 @@ suite('vr-scene (without renderer)', function () {
     });
 
     test('reuses scene object', function () {
-      var anotherEl = document.createElement('vr-scene');
+      var anotherEl = document.createElement('a-scene');
       document.body.appendChild(anotherEl);
       assert.equal(anotherEl.object3D.uuid, this.el.object3D.uuid);
     });
@@ -71,7 +71,7 @@ suite('vr-scene (without renderer)', function () {
 
     test('removes default lights when more lights are added', function (done) {
       var el = this.el;
-      var light = document.createElement('vr-object');
+      var light = document.createElement('a-object');
       light.setAttribute('light', '');
 
       el.setupDefaultLights();
@@ -90,13 +90,13 @@ suite('vr-scene (without renderer)', function () {
 /**
  * Skipped on CI using environment variable defined in the npm test script.
  */
-helpers.getSkipCISuite()('vr-scene (with renderer)', function () {
+helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   setup(function (done) {
     var el;
     var self = this;
-    VRScene.prototype.attachedCallback.restore();
+    AScene.prototype.attachedCallback.restore();
     process.nextTick(function () {
-      el = self.el = document.createElement('vr-scene');
+      el = self.el = document.createElement('a-scene');
       document.body.appendChild(el);
       el.addEventListener('loaded', function () {
         done();

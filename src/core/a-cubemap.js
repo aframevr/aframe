@@ -1,5 +1,5 @@
 /* global HTMLElement */
-var registerElement = require('../vr-register-element').registerElement;
+var registerElement = require('../a-register-element').registerElement;
 
 var debug = require('../utils/debug');
 

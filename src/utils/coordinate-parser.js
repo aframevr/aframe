@@ -1,4 +1,4 @@
-var utils = require('../vr-utils');
+var utils = require('../utils/');
 
 module.exports = {
   parseAttributesString: {

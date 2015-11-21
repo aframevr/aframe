@@ -1,11 +1,11 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers.js').entityFactory;
+var entityFactory = require('../helpers').entityFactory;
 
 /**
  * Creates a sibling element to `el`.
  */
 function squirrelFactory (el) {
-  var anotherEl = document.createElement('vr-object');
+  var anotherEl = document.createElement('a-object');
   anotherEl.setAttribute('id', 'squirrel');
   anotherEl.setAttribute('position', '1 2 3');
   el.parentNode.appendChild(anotherEl);
@@ -63,7 +63,7 @@ suite('look-at', function () {
       var el = this.el;
       var spy = this.spy;
       var anotherEl = squirrelFactory(el);
-      var nestedEl = document.createElement('vr-object');
+      var nestedEl = document.createElement('a-object');
       nestedEl.setAttribute('position', '1 2 3');
       nestedEl.setAttribute('id', 'squirrel-nest');
       anotherEl.appendChild(nestedEl);

@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8">
     <title>Model</title>
-    <meta name="description" content="Model — vr-markup">
-    <link rel="stylesheet" type="text/css" href="../../style/vr-markup.css">
+    <meta name="description" content="Model — A-Frame Core">
+    <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
-    <script src="../../build/vr-markup.js"></script>
+    <script src="../../build/aframe-core.js"></script>
   </head>
   <body>
-    <vr-scene stats="true">
-      <vr-object mouse-controls position="0 0 20">
-        <vr-object camera="fov: 45" look-controls wasd-controls></vr-object>
-      </vr-object>
-      <vr-object loader="src: url(models/monster.dae); format: collada"
-                 material="color: green" scale="0.25 0.25 0.25"
-                 position="-5 -3 0"></vr-object>
-    </vr-scene>
+    <a-scene stats="true">
+      <a-object mouse-controls position="0 0 20">
+        <a-object camera="fov: 45" look-controls wasd-controls></a-object>
+      </a-object>
+      <a-object loader="src: url(models/monster.dae); format: collada"
+                material="color: green" scale="0.25 0.25 0.25"
+                position="-5 -3 0"></a-object>
+    </a-scene>
   </body>
 </html>

@@ -1,7 +1,9 @@
+var debug = require('../utils/debug');
 var coordinateParser = require('../utils/coordinate-parser');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
-var utils = require('../vr-utils');
+
+var warn = debug('components:look-at:warn');
 
 /**
  * Look-at component.
@@ -55,7 +57,7 @@ module.exports.Component = registerComponent('look-at', {
       if (targetSelector) {
         targetEl = document.querySelector(targetSelector);
         if (!targetEl) {
-          utils.warn(targetSelector + ' does not point to a valid entity to look-at');
+          warn('"' + targetSelector + '" does not point to a valid entity to look-at');
           return;
         }
         if (!targetEl.object3D) {
