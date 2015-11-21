@@ -3,6 +3,7 @@ var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
+var utils = require('../vr-utils.js');
 
 var warn = debug('components:material:warn');
 
