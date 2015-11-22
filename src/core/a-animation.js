@@ -91,7 +91,6 @@ module.exports = registerElement('a-animation', {
         if (el.isNode) {
           init();
         } else {
-          el.addEventListener('nodeready', this.init.bind(this));
           // To handle elements that are not yet `<a-object>`s (e.g., templates).
           el.addEventListener('nodeready', init.bind(self));
         }
@@ -99,6 +98,7 @@ module.exports = registerElement('a-animation', {
         function init () {
           self.bindMethods();
           self.applyMixin();
+          self.update();
           self.load();
         }
       }
@@ -194,7 +194,8 @@ module.exports = registerElement('a-animation', {
           this.stop();
           this.start();
         }
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -285,7 +286,7 @@ module.exports = registerElement('a-animation', {
     addEventListeners: {
       value: function (evts) {
         var el = this.el;
-        var start = this.start;
+        var start = this.start.bind(this);
         utils.splitString(evts).forEach(function (evt) {
           el.addEventListener(evt, start);
         });
