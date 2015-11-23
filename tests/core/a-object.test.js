@@ -1,5 +1,4 @@
-/* global assert, process, setup, sinon, suite, test */
-var AObject = require('core/a-object');
+/* global assert, process, setup, suite, test */
 var THREE = require('aframe-core').THREE;
 var helpers = require('../helpers');
 
