@@ -7,13 +7,16 @@
     <link rel="stylesheet" type="text/css" href="../../style/aframe-core.css">
     <link rel="stylesheet" type="text/css" href="../_style/main.css">
     <script src="../../build/aframe-core.js"></script>
+    <style>
+      body { background-color: black; }
+    </style>
   </head>
   <body>
     <a-scene stats="true">
-
       <!-- Cube -->
-      <a-object geometry="primitive: box" material="color: red"
-                position="0 0 -20" rotation="0 45 0"></a-object>
+      <a-object position="0 0 -20" rotation="45 30 0"
+                geometry="primitive: box; height: 10; width: 10; depth: 10;"
+                material="color: #167341; roughness: 1.0; metalness: 0.2;"></a-object>
     </a-scene>
   </body>
 </html>
