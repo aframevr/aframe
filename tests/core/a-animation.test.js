@@ -223,6 +223,18 @@ suite('a-animation', function () {
         done();
       });
     });
+
+    test('sets isRunning when begin event is triggered', function (done) {
+      var animationEl = document.createElement('a-animation');
+      animationEl.setAttribute('begin', 'click');
+      var el = helpers.entityFactory();
+      el.appendChild(animationEl);
+      animationEl.addEventListener('loaded', function () {
+        el.emit('click');
+        assert.ok(animationEl.isRunning);
+        done();
+      });
+    });
   });
 
   suite('stop', function () {
