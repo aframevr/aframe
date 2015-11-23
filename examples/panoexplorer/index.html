@@ -4,26 +4,26 @@
     <meta charset="utf-8">
     <title>Pano Explorer</title>
     <meta name="description" content="Pano Explorer — A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
     <link rel="import" href="templates/index.html">
   </head>
   <body>
-    <vr-scene>
-      <vr-cursor-gaze></vr-cursor-gaze>
+    <a-scene>
+      <a-cursor-gaze></a-cursor-gaze>
 
-      <vr-pano-holder src="images/city.jpg"></vr-pano-holder>
+      <a-pano-holder src="images/city.jpg"></a-pano-holder>
 
-      <vr-object id="links" position="-1 -0.3 -4">
-        <vr-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
-        </vr-pano-link>
+      <a-object id="links" position="-1 -0.3 -4">
+        <a-pano-link position="0 0 0" src="images/thumb-cubes.png" holderSrc="images/cubes.jpg">
+        </a-pano-link>
 
-        <vr-pano-link position="1.5 0 0" src="images/thumb-city.png" holderSrc="images/city.jpg">
-          <vr-load state="selected"></vr-load>
-        </vr-pano-link>
+        <a-pano-link position="1.5 0 0" src="images/thumb-city.png" holderSrc="images/city.jpg">
+          <a-load state="selected"></a-load>
+        </a-pano-link>
 
-        <vr-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
-        </vr-pano-link>
-      </vr-object>
-    </vr-scene>
+        <a-pano-link position="3 0 0" src="images/thumb-sechelt.png" holderSrc="images/sechelt.jpg">
+        </a-pano-link>
+      </a-object>
+    </a-scene>
   </body>
 </html>

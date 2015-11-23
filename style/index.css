@@ -18,12 +18,12 @@ body {
   display: none;
 }
 
-vr-scene video, vr-assets video,
-vr-scene img, vr-assets img {
+a-scene video, a-assets video,
+a-scene img, a-assets img {
   display: none;
 }
 
-.button {
+.a-button {
   background-color: #303030;
   border: 1px solid gray;
   color: white;
@@ -35,12 +35,12 @@ vr-scene img, vr-assets img {
   z-index: 999999;
 }
 
-.button:hover {
+.a-button:hover {
   background-color: gray;
   color: white;
 }
 
-.enter-vr {
+.a-enter-vr-button {
   position: fixed;
   top: 20px;
   left: 30px;
