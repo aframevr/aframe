@@ -1,22 +1,22 @@
 {
-  "name": "@mozvr/vr-components",
-  "version": "0.1.1",
-  "description": "Components for use with vr-markup",
+  "name": "@mozvr/aframe",
+  "version": "0.0.0",
+  "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run build && node ./scripts/budo | garnish -v",
-    "browserify": "browserify ./index.js -s 'vr-components'",
-    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/vr-components.js && vulcanize --inline core/templates/index.html > build/vr-components.html",
-    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/vr-components.js && uglifyjs dist/vr-components.js -c warnings=false -m -o dist/vr-components.min.js && vulcanize --inline core/templates/index.html > dist/vr-components.html && vulcanize --inline core/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/vr-components.min.html",
-    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && git checkout dist/ && replace 'build/vr-components.js' 'dist/vr-components.min.js' gh-pages/ -r --silent",
+    "browserify": "browserify ./index.js -s 'aframe'",
+    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js && vulcanize --inline elements/templates/index.html > build/aframe.html",
+    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js && vulcanize --inline elements/templates/index.html > dist/aframe.html && vulcanize --inline core/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/aframe.min.html",
+    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
     "release": "npm login && npm version patch --minor && npm publish",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
-  "repository": "MozVR/vr-components",
+  "repository": "MozVR/aframe",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^11.0.1",
@@ -33,7 +33,7 @@
     "vulcanize": "^1.13.1"
   },
   "dependencies": {
-    "@mozvr/vr-markup": "^0.1.40"
+    "@mozvr/aframe-core": "^0.0.0"
   },
   "link": true,
   "browserify": {
@@ -53,8 +53,13 @@
     ]
   },
   "keywords": [
+    "aframe",
+    "aframe-core",
     "vr",
-    "vr-markup",
-    "vr-components"
+    "webvr",
+    "3d",
+    "three",
+    "components",
+    "elements"
   ]
 }

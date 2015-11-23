@@ -4,42 +4,42 @@
     <meta charset="utf-8">
     <title>Cubes</title>
     <meta name="description" content="Cubes - A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
+    <a-scene>
 
-      <vr-object rotation="0 45 0">
+      <a-object rotation="0 45 0">
 
-        <vr-cube position="-5 0 -2" rotation="0 0 0" width="1" color="#F16745"></vr-cube>
-        <vr-cube position="0 0 0" rotation="0 0 0" height="2" color="#FFC65D"></vr-cube>
-        <vr-cube position="5 0 2" rotation="0 0 0" depth="5" color="#7BC8A4"></vr-cube>
-        <vr-cube position="5 5 -5" rotation="0 0 0" width="1" height="2" depth="22" color="#4CC3D9"></vr-cube>
-        <vr-cube position="1 2 1" rotation="0 0 0" width="1" height="1" depth="1" color="#93648D"></vr-cube>
-        <vr-cube position="-3 0 0" rotation="0 0 0" width="0.5" height="10" depth="0.5" color="#404040"></vr-cube>
+        <a-cube position="-5 0 -2" rotation="0 0 0" width="1" color="#F16745"></a-cube>
+        <a-cube position="0 0 0" rotation="0 0 0" height="2" color="#FFC65D"></a-cube>
+        <a-cube position="5 0 2" rotation="0 0 0" depth="5" color="#7BC8A4"></a-cube>
+        <a-cube position="5 5 -5" rotation="0 0 0" width="1" height="2" depth="22" color="#4CC3D9"></a-cube>
+        <a-cube position="1 2 1" rotation="0 0 0" width="1" height="1" depth="1" color="#93648D"></a-cube>
+        <a-cube position="-3 0 0" rotation="0 0 0" width="0.5" height="10" depth="0.5" color="#404040"></a-cube>
 
-        <vr-frame position="-2 5 4" scale="0.15 0.15 0.15" rotation="0 0 0" thickness="0.1" color="#999"></vr-frame>
+        <a-frame position="-2 5 4" scale="0.15 0.15 0.15" rotation="0 0 0" thickness="0.1" color="#999"></a-frame>
 
-        <vr-object id="bits" position="-6 -1 0">
-          <vr-cube position="0 -0.2 0" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#4CC3D9"></vr-cube>
-          <vr-cube position="0.5 -0.2 0.5" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#93648D"></vr-cube>
-          <vr-cube position="0 0 2" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#7BC8A4"></vr-cube>
-          <vr-cube position="-0.5 -0,5 3" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#FFC65D"></vr-cube>
-          <vr-cube position="0 0 4" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#F16745"></vr-cube>
-          <vr-cube position="-0.2 -0.4 5" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#FFC65D"></vr-cube>
-          <vr-cube position="0 0 6" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#4CC3D9"></vr-cube>
-          <vr-cube position="0.2 0 7" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#93648D"></vr-cube>
-        </vr-object>
+        <a-object id="bits" position="-6 -1 0">
+          <a-cube position="0 -0.2 0" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#4CC3D9"></a-cube>
+          <a-cube position="0.5 -0.2 0.5" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#93648D"></a-cube>
+          <a-cube position="0 0 2" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#7BC8A4"></a-cube>
+          <a-cube position="-0.5 -0,5 3" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#FFC65D"></a-cube>
+          <a-cube position="0 0 4" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#F16745"></a-cube>
+          <a-cube position="-0.2 -0.4 5" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#FFC65D"></a-cube>
+          <a-cube position="0 0 6" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#4CC3D9"></a-cube>
+          <a-cube position="0.2 0 7" rotation="0 0 0" width="0.1" height="0.1" depth="0.1" color="#93648D"></a-cube>
+        </a-object>
 
-        <vr-frame position="0 0 0" scale="3 3 3" rotation="0 0 0" thickness="0.02" color="#CCC"></vr-frame>
+        <a-frame position="0 0 0" scale="3 3 3" rotation="0 0 0" thickness="0.02" color="#CCC"></a-frame>
 
-      </vr-object>
+      </a-object>
 
-      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
 
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#fff"></vr-light>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
 
-    </vr-scene>
+    </a-scene>
   </body>
 </html>

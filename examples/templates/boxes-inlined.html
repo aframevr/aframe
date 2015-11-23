@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8">
     <title>Templated boxes (inlined)</title>
-    <meta name="description" content="Templated boxes (inlined) vr-component">
-    <script src="../../build/vr-components.js"></script>
+    <meta name="description" content="Templated boxes (inlined) – A-Frame">
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <template is="vr-template" element="vr-box" color="cyan">
-      <vr-object geometry="primitive: box" material="color: ${color}"></vr-object>
+    <template is="a-template" element="a-box" color="cyan">
+      <a-object geometry="primitive: box" material="color: ${color}"></a-object>
     </template>
 
-    <vr-scene>
-      <vr-box color="hotpink" position="-2 0 2" scale=".25 .25 .25"></vr-box>
-      <vr-box color="cyan" position="2 2 0" rotation="25 -45 0"></vr-box>
-    </vr-scene>
+    <a-scene>
+      <a-box color="hotpink" position="-2 0 2" scale=".25 .25 .25"></a-box>
+      <a-box color="cyan" position="2 2 0" rotation="25 -45 0"></a-box>
+    </a-scene>
   </body>
 </html>

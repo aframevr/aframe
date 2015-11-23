@@ -4,42 +4,42 @@
     <meta charset="utf-8">
     <title>Shopping</title>
     <meta name="description" content="Shopping - A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
+    <a-scene>
 
       <!-- model -->
-      <vr-object >
-        <vr-model rotation="0 -20 0" scale="3 3 3" position="-1 0 0" src="../_models/man/man.dae">
-          <vr-image src="../_images/radial-shadow-2.png" position="0.1 0 -0.3" rotation="-90 0 0" scale="0.5 0.5 0.5"></vr-image>
-        </vr-model>
-      </vr-object>
+      <a-object >
+        <a-model rotation="0 -20 0" scale="3 3 3" position="-1 0 0" src="../_models/man/man.dae">
+          <a-image src="../_images/radial-shadow-2.png" position="0.1 0 -0.3" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
+        </a-model>
+      </a-object>
 
       <!-- mozvr -->
-      <vr-image src="../_images/mozvr.png" width="1" height="0.2" position="-4.1 4 -2" scale="4.25 4.25 4.25"></vr-image>
+      <a-image src="../_images/mozvr.png" width="1" height="0.2" position="-4.1 4 -2" scale="4.25 4.25 4.25"></a-image>
 
       <!-- price -->
-      <vr-image src="price.png" width="5" height="3.5" position="1.8 4 -2" scale="0.2 0.2 0.2"></vr-image>
+      <a-image src="price.png" width="5" height="3.5" position="1.8 4 -2" scale="0.2 0.2 0.2"></a-image>
 
       <!-- goggles -->
-      <vr-object position="6 5 -3">
-        <vr-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="750" begin="1000" fill="backwards"></vr-animation>
-        <vr-cylinder color="#101010" height="0.02" rotation="90 0 0"></vr-cylinder>
-        <vr-image src="../_images/goggles.png" width="2" height="1" position="0 0 0.05" scale="0.35 0.35 0.35"></vr-image>
-      </vr-object>
+      <a-object position="6 5 -3">
+        <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="750" begin="1000" fill="backwards"></a-animation>
+        <a-cylinder color="#101010" height="0.02" rotation="90 0 0"></a-cylinder>
+        <a-image src="../_images/goggles.png" width="2" height="1" position="0 0 0.05" scale="0.35 0.35 0.35"></a-image>
+      </a-object>
 
       <!-- menu -->
-      <vr-plane width="6" height="1.2" position="0 0.2 5" color="#FFF">
-        <vr-image src="fall.png" width="2" height="0.5" position="-2.2 0 0.02" scale="0.5 0.5 0.5"></vr-image>
-        <vr-image src="shoes.png" width="0.8" height="0.3" position="1.8 0 0.02" scale="2.75 2.75 2.75"></vr-image>
-      </vr-plane>
+      <a-plane width="6" height="1.2" position="0 0.2 5" color="#FFF">
+        <a-image src="fall.png" width="2" height="0.5" position="-2.2 0 0.02" scale="0.5 0.5 0.5"></a-image>
+        <a-image src="shoes.png" width="0.8" height="0.3" position="1.8 0 0.02" scale="2.75 2.75 2.75"></a-image>
+      </a-plane>
 
 
-      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#fff"></vr-light>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
 
-    </vr-scene>
+    </a-scene>
   </body>
 </html>

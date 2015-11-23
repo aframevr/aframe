@@ -4,39 +4,39 @@
     <meta charset="utf-8">
     <title>Legos</title>
     <meta name="description" content="Legos – A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
-      <vr-lego color="#F16745" position="0 0 -10" rotation="45 -45 0"></vr-lego>
-      <vr-lego color="#FFC65D" position="-8 5 -10" rotation="45 -15 -5" scale="0.5 0.5 0.5"></vr-lego>
-      <vr-lego color="#7BC8A4" position="3 -4.25 -10" rotation="45 -45 0"></vr-lego>
+    <a-scene>
+      <a-lego color="#F16745" position="0 0 -10" rotation="45 -45 0"></a-lego>
+      <a-lego color="#FFC65D" position="-8 5 -10" rotation="45 -15 -5" scale="0.5 0.5 0.5"></a-lego>
+      <a-lego color="#7BC8A4" position="3 -4.25 -10" rotation="45 -45 0"></a-lego>
 
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#ccc"></vr-light>
-      <vr-sky src="../_skies/peach-gradient-1.jpg"></vr-sky>
-    </vr-scene>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#ccc"></a-light>
+      <a-sky src="../_skies/peach-gradient-1.jpg"></a-sky>
+    </a-scene>
 
-    <template is="vr-template" element="vr-lego" color="red">
-      <vr-lego-block color="${color}">
-        <vr-lego-stud position="-2.25 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="-.5 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="1.25 2 -0.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="3 2 -0.5" color="${color}"></vr-lego-stud>
+    <template is="a-template" element="a-lego" color="red">
+      <a-lego-block color="${color}">
+        <a-lego-stud position="-2.25 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="-.5 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="1.25 2 -0.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="3 2 -0.5" color="${color}"></a-lego-stud>
 
-        <vr-lego-stud position="-2.25 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="-0.5 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="1.25 2 1.5" color="${color}"></vr-lego-stud>
-        <vr-lego-stud position="3 2 1.5" color="${color}"></vr-lego-stud>
-      </vr-lego-block>
+        <a-lego-stud position="-2.25 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="-0.5 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="1.25 2 1.5" color="${color}"></a-lego-stud>
+        <a-lego-stud position="3 2 1.5" color="${color}"></a-lego-stud>
+      </a-lego-block>
     </template>
 
-    <template is="vr-template" element="vr-lego-block" color="red">
-      <vr-cube width="8.5" height="3" depth="5" color="${color}"></vr-cube>
+    <template is="a-template" element="a-lego-block" color="red">
+      <a-cube width="8.5" height="3" depth="5" color="${color}"></a-cube>
     </template>
 
-    <template is="vr-template" element="vr-lego-stud" color="red">
-      <vr-cylinder height="0.5" radius="0.5" color="${color}"></vr-cylinder>
+    <template is="a-template" element="a-lego-stud" color="red">
+      <a-cylinder height="0.5" radius="0.5" color="${color}"></a-cylinder>
     </template>
   </body>
 </html>
