@@ -11,7 +11,6 @@ var utils = require('../utils');
 
 var log = debug('core:a-object');
 var error = debug('core:a-object:error');
-var warn = debug('components:material:warn');
 
 /**
  * Entity element definition.

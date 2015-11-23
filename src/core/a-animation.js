@@ -232,7 +232,8 @@ module.exports = registerElement('a-animation', {
         this.isRunning = true;
         this.tween.start();
         this.emit('animationstart');
-      }
+      },
+      writable: true
     },
 
     stop: {
@@ -244,7 +245,8 @@ module.exports = registerElement('a-animation', {
         tween.stop();
         this.isRunning = false;
         el.setAttribute(data.attribute, this.initValue);
-      }
+      },
+      writable: true
     },
 
     /**
@@ -310,13 +312,15 @@ module.exports = registerElement('a-animation', {
     onStateAdded: {
       value: function (evt) {
         if (evt.detail.state === this.data.begin) { this.start(); }
-      }
+      },
+      writable: true
     },
 
     onStateRemoved: {
       value: function (evt) {
         if (evt.detail.state === this.data.begin) { this.stop(); }
-      }
+      },
+      writable: true
     },
 
     /**
