@@ -7,6 +7,7 @@ var AComponents = require('./components').components;
 var ANode = require('./a-node');
 var debug = require('../utils/debug');
 var THREE = require('../../lib/three');
+var utils = require('../utils');
 
 var log = debug('core:a-object');
 var error = debug('core:a-object:error');
@@ -55,8 +56,7 @@ var proto = {
     value: function () {
       this.addToParent();
       this.load();
-    },
-    writable: window.debug
+    }
   },
 
   /**
@@ -68,8 +68,7 @@ var proto = {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
       this.parentEl.remove(this);
-    },
-    writable: window.debug
+    }
   },
 
   applyMixin: {
@@ -80,8 +79,7 @@ var proto = {
         return;
       }
       this.updateComponent(attr, attrValue);
-    },
-    writable: window.debug
+    }
   },
 
   mapStateMixins: {
@@ -95,8 +93,7 @@ var proto = {
         op(mixinId);
       });
       this.updateComponents();
-    },
-    writable: window.debug
+    }
   },
 
   updateStateMixins: {
@@ -122,8 +119,7 @@ var proto = {
           self.registerMixin(mixinId);
         });
       });
-    },
-    writable: window.debug
+    }
   },
 
   add: {
@@ -132,8 +128,7 @@ var proto = {
         error("Trying to add an object3D that doesn't exist");
       }
       this.object3D.add(el.object3D);
-    },
-    writable: window.debug
+    }
   },
 
   addToParent: {
@@ -155,8 +150,7 @@ var proto = {
         self.attachedToParent = true;
         parent.add(self);
       }
-    },
-    writable: window.debug
+    }
   },
 
   load: {
@@ -171,22 +165,19 @@ var proto = {
       this.updateComponents();
       // Call the parent class
       ANode.prototype.load.call(this);
-    },
-    writable: window.debug
+    }
   },
 
   remove: {
     value: function (el) {
       this.object3D.remove(el.object3D);
-    },
-    writable: window.debug
+    }
   },
 
   /**
-   * For a given component name it checks if it's defined
-   * in the elements itself, the mixins or the default
-   * values
-   * @type {string} name The component name
+   * Check if a component is defined for an entity, including defaults and mixins.
+   *
+   * @param {string} name - Component name.
    */
   isComponentDefined: {
     value: function (name) {
@@ -251,8 +242,7 @@ var proto = {
         var elValue = self.getAttribute(name);
         self.updateComponent(name, elValue);
       }
-    },
-    writable: window.debug
+    }
   },
 
   /**
@@ -291,8 +281,7 @@ var proto = {
       }
       // Component not yet initialized. Initialize component.
       this.initComponent(name);
-    },
-    writable: window.debug
+    }
   },
 
   removeAttribute: {
@@ -300,49 +289,22 @@ var proto = {
       var component = AComponents[attr];
       if (component) { this.setEntityAttribute(attr, undefined, null); }
       HTMLElement.prototype.removeAttribute.call(this, attr);
-    },
-    writable: window.debug
+    }
   },
 
   /**
-   * For a given component name it sets the value of one of its
-   * attributes
+   * Deals with updates on entity-specific attributes (i.e., components and mixins).
    *
-   * @param {string} componentName - The name of the component
-   * @param {string} attrName - The name of the attribute
-   * @param {string} attrValue - The new value of the attribute
-   *
-   */
-  setComponentAttribute: {
-    value: function (componentName, attrName, attrValue) {
-      var attrs = this.getAttribute(componentName);
-      var component = this.components[componentName];
-      if (!component) {
-        warn('Trying to update an attribute of component "%s" ' +
-              'that is not defined on the entity', componentName);
-      }
-      attrs[attrName] = attrValue;
-      this.updateComponent(componentName, attrs);
-      return attrs;
-    },
-    writable: window.debug
-  },
-
-  /**
-   * It deals with updates on entity specific attributes: components and mixins
-   *
-   * @param {string} attr - Attribute name
-   * @param {string} oldVal - Previous value of the attribute
-   * @param {string|object} newVal - New value of the attribute
-   *
+   * @param {string} attr
+   * @param {string} oldVal
+   * @param {string|object} newVal
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
       var component = AComponents[attr];
       oldVal = oldVal || this.getAttribute(attr);
-      // When creating objects programatically and setting attributes
-      // the object is not part of the scene until is inserted in the
-      // DOM
+      // When creating objects programatically and setting attributes, the object is not part
+      // of the scene until is inserted into the DOM.
       if (!this.hasLoaded) { return; }
       if (attr === 'mixin') {
         this.updateStateMixins(newVal, oldVal);
@@ -354,9 +316,8 @@ var proto = {
   },
 
   /**
-   * If the attribute name corresponds to the name of a component.
-   * setAttribute will update, initialize or remove the component
-   * from the entity.
+   * If attribute is a component, setAttribute will apply the value to the
+   * existing component data, not replace it. Examples:
    *
    * Examples:
    *
@@ -364,43 +325,41 @@ var proto = {
    * setAttribute('material', { color: 'crimson' });
    * setAttribute('material', 'color', 'crimson');
    *
-   * @param {string} attr - attribute name. setAttribute will update or initialize
-   *        a component if the attribute name corresponds to a registered component.
-   * @param {string|object} value - The value of the attribute or component.
-   *        It accepts objects in the case of a component
-   * @param {string} componentAttrValue - If defined, value will act as the attribute
+   * @param {string} attr - Attribute name. setAttribute will initialize or update
+   *        a component if the name corresponds to a registered component.
+   * @param {string|object} value - If a string, setAttribute will update the attribute or.
+   *        component. If an object, the value will be mixed into the component.
+   * @param {string} componentAttrValue - If defined, `value` will act as the attribute
    *        name and setAttribute will only set a single component attribute.
    */
   setAttribute: {
-    value: function (attr, newValue, componentAttrValue) {
+    value: function (attr, value, componentAttrValue) {
       var self = this;
       var component = AComponents[attr];
-      var newValueStr = newValue;
-      // Make sure we send a string to native setAttribute
-      // It updates one attribute of the component
-      if (arguments.length === 3) {
-        // Update only one attribute of the given component
-        newValue = this.setComponentAttribute(attr, newValue, componentAttrValue);
-        callSuper();
-      } else { // It updates the whole attribute set
-        // We need to call first on Anode to make sure mixins are updated
-        // before updating components
-        callSuper();
-        this.setEntityAttribute(attr, undefined, newValue);
+      var partialComponentData;
+      var valueStr = value;
+
+      if (component) {
+        partialComponentData = self.getAttribute(attr) || {};
+        if (typeof value === 'object') {
+          // Update currently-defined component data with the object.
+          value = utils.extend({}, partialComponentData, value);
+        } else if (typeof value === 'string' && componentAttrValue !== undefined) {
+          // Update currently-defined component data with the new attribute value.
+          partialComponentData[value] = componentAttrValue;
+          value = partialComponentData;
+        }
+        valueStr = component.stringifyAttributes(value);
       }
 
-      function callSuper () {
-        if (component) { newValueStr = component.stringifyAttributes(newValue); }
-        ANode.prototype.setAttribute.call(self, attr, newValueStr);
-      }
-    },
-    writable: window.debug
+      ANode.prototype.setAttribute.call(self, attr, valueStr);
+      self.setEntityAttribute(attr, undefined, value);
+    }
   },
 
   /**
-   * If attribute is a component, it parses the style-like string into an
-   * object. Returned component data does not include applied mixins or
-   * defaults.
+   * If attribute is a component, it parses the style-like string into an object.
+   * Returned component data does not include applied mixins or defaults.
    *
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
@@ -411,13 +370,12 @@ var proto = {
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parseAttributesString(value);
-    },
-    writable: window.debug
+    }
   },
 
   /**
-   * If attribute is a component, it returns component data including applied
-   * mixins and defaults.
+   * If attribute is a component, it returns component data including applied mixins and
+   * defaults.
    *
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
@@ -427,8 +385,7 @@ var proto = {
       var component = this.components[attr];
       if (component) { return component.getData(); }
       return HTMLElement.prototype.getAttribute.call(this, attr);
-    },
-    writable: window.debug
+    }
   },
 
   addState: {
@@ -437,8 +394,7 @@ var proto = {
       this.states.push(state);
       this.mapStateMixins(state, this.registerMixin.bind(this));
       this.emit('stateadded', {state: state});
-    },
-    writable: window.debug
+    }
   },
 
   removeState: {
@@ -448,8 +404,7 @@ var proto = {
       this.states.splice(stateIndex, 1);
       this.mapStateMixins(state, this.unregisterMixin.bind(this));
       this.emit('stateremoved', {state: state});
-    },
-    writable: window.debug
+    }
   },
 
   /**
@@ -463,8 +418,7 @@ var proto = {
         if (elState === state) { is = index; }
       });
       return is;
-    },
-    writable: window.debug
+    }
   }
 };
 
