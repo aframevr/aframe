@@ -14,8 +14,8 @@
 <template is="a-template"
           element="a-cursor-gaze"
           fov="45"
-          look-controls="true"
-          wasd-controls="true"
+          look-controls-enabled="true"
+          wasd-controls-enabled="true"
           colorDefault="gray"
           colorHover="springgreen"
           dur="1500"
@@ -26,8 +26,8 @@
           innerRadius="0.14"
           timeout="1500">
   <a-object camera="fov: ${fov}"
-            look-controls="${look-controls}"
-            wasd-controls="${wasd-controls}">
+            look-controls="enabled: ${look-controls-enabled}"
+            wasd-controls="enabled: ${wasd-controls-enabled}">
     <a-object id="cursor"
               position="0 0 -3"
               geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
