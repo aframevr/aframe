@@ -216,7 +216,6 @@ suite('a-animation', function () {
       var animationEl = document.createElement('a-animation');
       animationEl.setAttribute('begin', 'click');
       var el = helpers.entityFactory();
-      el.setAttribute('material', {color: 'red'});
       el.appendChild(animationEl);
       animationEl.addEventListener('loaded', function () {
         el.emit('click');
