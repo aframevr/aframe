@@ -1,5 +1,6 @@
-/* global assert, setup, suite, test */
+/* global assert, setup, suite, sinon, test */
 var helpers = require('../helpers.js');
+var AAnimation = require('core/a-animation');
 
 /**
  * Helpers to start initialize an animation.
@@ -50,6 +51,16 @@ suite('a-animation', function () {
         mixin: 'walt'
       }, function (el, animationEl) {
         assert.equal(animationEl.data.repeat, 'indefinite');
+        done();
+      });
+    });
+  });
+
+  suite('update', function () {
+    test('it is called on initialization', function (done) {
+      this.sinon.stub(AAnimation.prototype, 'update');
+      setupAnimation({}, function (el, animationEl) {
+        sinon.assert.called(AAnimation.prototype.update);
         done();
       });
     });
@@ -196,6 +207,19 @@ suite('a-animation', function () {
 
     test('sets isRunning', function (done) {
       setupAnimation({}, function (el, animationEl) {
+        assert.ok(animationEl.isRunning);
+        done();
+      });
+    });
+
+    test('sets isRunning when begin event is triggered', function (done) {
+      var animationEl = document.createElement('a-animation');
+      animationEl.setAttribute('begin', 'click');
+      var el = helpers.entityFactory();
+      el.setAttribute('material', {color: 'red'});
+      el.appendChild(animationEl);
+      animationEl.addEventListener('loaded', function () {
+        el.emit('click');
         assert.ok(animationEl.isRunning);
         done();
       });
