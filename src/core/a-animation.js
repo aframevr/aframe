@@ -1,45 +1,14 @@
 var ANode = require('./a-node');
+var constants = require('../constants/animation');
 var registerElement = require('../a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 
-var FILLS = {
-  backwards: 'backwards',
-  both: 'both',
-  forwards: 'forwards',
-  none: 'none'
-};
-
-var DIRECTIONS = {
-  alternate: 'alternate',
-  alternateReverse: 'alternate-reverse',
-  normal: 'normal',
-  reverse: 'reverse'
-};
-
-var REPEATS = {
-  indefinite: 'indefinite'
-};
-
-var EASING_FUNCTIONS = {
-  'ease': TWEEN.Easing.Cubic.InOut,
-  'ease-in': TWEEN.Easing.Cubic.In,
-  'ease-in-out': TWEEN.Easing.Cubic.InOut,
-  'ease-out': TWEEN.Easing.Cubic.Out,
-  'linear': TWEEN.Easing.Linear.None
-};
-
-var DEFAULTS = {
-  attribute: 'rotation',
-  begin: '0',
-  dur: 1000,
-  easing: 'ease',
-  direction: DIRECTIONS.normal,
-  fill: FILLS.forwards,
-  from: undefined,
-  repeat: 0,
-  to: undefined
-};
+var DEFAULTS = constants.defaults;
+var DIRECTIONS = constants.directions;
+var EASING_FUNCTIONS = constants.easingFunctions;
+var FILLS = constants.fills;
+var REPEATS = constants.repeats;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
