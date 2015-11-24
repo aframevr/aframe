@@ -72,9 +72,13 @@ module.exports.mergeAttrs = function () {
   var mergedAttrs = {};
   forEach(arguments, function (el) {
     forEach(el.attributes, function (attr) {
-      // NOTE: We use `getAttribute` instead of `attr.value` so our wrapper
-      // for coordinate objects gets used.
-      mergedAttrs[attr.name] = el.getAttribute(attr.name);
+      // NOTE: We use `getComputedAttribute` instead of `attr.value` so our
+      // wrapper for coordinate objects, etc. gets used.
+      if (el.getComputedAttribute) {
+        mergedAttrs[attr.name] = el.getComputedAttribute(attr.name);
+      } else {
+        mergedAttrs[attr.name] = el.getAttribute(attr.name);
+      }
     });
   });
   return mergedAttrs;
@@ -160,6 +164,7 @@ module.exports.wrapAEventElement = function (newTagName, eventName, data) {
 
 // Useful utils from aframe-core.
 module.exports.error = aframeCoreUtils.error;
+module.exports.extend = aframeCoreUtils.extend;
 module.exports.fireEvent = aframeCoreUtils.fireEvent;
 module.exports.log = aframeCoreUtils.log;
 module.exports.splitString = aframeCoreUtils.splitString;
