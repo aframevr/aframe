@@ -11,9 +11,15 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  remove: {
+    value: function () {
+      requestInterval.clear(this.pollInterval);
+    }
+  },
+
   pollForHoverIntersections: {
     value: function () {
-      requestInterval(100, this.getIntersections.bind(this));
+      this.pollInterval = requestInterval(100, this.getIntersections.bind(this));
     }
   },
 
