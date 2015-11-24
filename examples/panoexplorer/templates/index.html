@@ -5,10 +5,10 @@
 </a-assets>
 
 <template is="a-template" element="a-pano-link" src="" holderSrc="">
-  <a-object mixin="link" material="shader: flat; src: url(${src})">
+  <a-entity mixin="link" material="shader: flat; src: url(${src})">
     <a-click target="#holder" material="shader: flat; src: url(${holderSrc})"></a-click>
     <a-click state="selected"></a-click>
-  </a-object>
+  </a-entity>
 </template>
 
 <template is="a-template"
@@ -25,10 +25,10 @@
           outerRadius="0.20"
           innerRadius="0.14"
           timeout="1500">
-  <a-object camera="fov: ${fov}"
+  <a-entity camera="fov: ${fov}"
             look-controls="enabled: ${look-controls-enabled}"
             wasd-controls="enabled: ${wasd-controls-enabled}">
-    <a-object id="cursor"
+    <a-entity id="cursor"
               position="0 0 -3"
               geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
               material="color: ${colorDefault}"
@@ -41,12 +41,12 @@
                    from="${from}"
                    to="${to}"
                    dur="${dur}"></a-animation>
-    </a-object>
-  </a-object>
+    </a-entity>
+  </a-entity>
 </template>
 
 <template is="a-template" element="a-pano-holder" size="10">
-  <a-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="shader: flat; src: url(${src})"></a-object>
+  <a-entity id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="shader: flat; src: url(${src})"></a-entity>
 </template>
 
 <template is="a-template" element="a-pano-nav">

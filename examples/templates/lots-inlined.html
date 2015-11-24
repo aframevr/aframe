@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Lots of templated objects (inlined)</title>
-    <meta name="description" content="Lots of templated objects (inlined) – A-Frame">
+    <title>Lots of templated entities (inlined)</title>
+    <meta name="description" content="Lots of templated entities (inlined) – A-Frame">
     <script src="../../build/aframe.js"></script>
   </head>
   <body>
@@ -15,8 +15,8 @@
     <a-scene>
       <a-camera position="0 0 35"></a-camera>
 
-      <!-- using plain old objects -->
-      <a-object mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></a-object>
+      <!-- using plain old entities -->
+      <a-entity mixin="cube" position="-18 -3 0" rotation="0 -45 0" material="color: purple"></a-entity>
 
       <!-- using fancy templates -->
       <a-oval color="green"></a-oval>
@@ -32,7 +32,7 @@
 
     <!-- making templates -->
     <template is="a-template" element="a-oval" color="salmon">
-      <a-object mixin="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></a-object>
+      <a-entity mixin="sphere" position="-2 -7 -4" rotation="0 45 0" scale="1 .25 .05" material="color: ${color}"></a-entity>
     </template>
 
     <template is="a-template" element="a-saturn">
@@ -41,21 +41,21 @@
     </template>
 
     <template is="a-template" element="a-football" color="orange">
-      <a-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".8 .25 .8" material="color: ${color}"></a-object>
+      <a-entity mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".8 .25 .8" material="color: ${color}"></a-entity>
     </template>
 
     <template is="a-template" element="a-tennisball">
-      <a-object mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".5 .5 .5" material="color: ${color=yellow}"></a-object>
+      <a-entity mixin="sphere" position="-8 -4 -2" rotation="0 45 0" scale=".5 .5 .5" material="color: ${color=yellow}"></a-entity>
     </template>
 
     <template is="a-template" element="a-box" color="cyan">
-      <a-object mixin="cube" material="color: ${color}"></a-object>
+      <a-entity mixin="cube" material="color: ${color}"></a-entity>
     </template>
 
     <template is="a-template" element="a-bigcubes" color1="red" color2="white" color3="blue">
-      <a-object mixin="cube" position="-8 3 0" rotation="30 45 0" material="color: ${color1}"></a-object>
-      <a-object mixin="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></a-object>
-      <a-object mixin="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></a-object>
+      <a-entity mixin="cube" position="-8 3 0" rotation="30 45 0" material="color: ${color1}"></a-entity>
+      <a-entity mixin="cube" position="0 2 2" rotation="30 45 0" material="color: ${color2}"></a-entity>
+      <a-entity mixin="cube" position="7 -3 2" rotation="30 45 0" material="color: ${color3}"></a-entity>
     </template>
   </body>
 </html>
