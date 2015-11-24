@@ -8,7 +8,7 @@ Compatible with WebVR for Oculus and Cardboard.
 
 ### Codepen
 
-If you want to get hacking immediately, just fire up [__this Codepen example scene__](http://codepen.io/mozvr/pen/zvqGqO/left/?editors=100)!
+If you want to get hacking immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
 
 ### Downloads
 
