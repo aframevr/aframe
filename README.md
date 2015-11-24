@@ -11,7 +11,7 @@ __NOTE:__ For folks creating scenes and third-party components + elements, we re
 
 Proceed below if you would like to use the minimal set of primitive components and elements available here in __`aframe-core`__.
 
-### Codepen
+### CodePen
 
 If you want to get hacking immediately, just fire up __[this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!
 
