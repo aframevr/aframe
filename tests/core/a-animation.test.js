@@ -4,10 +4,10 @@ var AAnimation = require('core/a-animation');
 
 /**
  * Helpers to start initialize an animation.
- * Attaches <a-scene><a-object elAttrs><a-animation animatonAttrs/></a-object></a-scene>
+ * Attaches <a-scene><a-entity elAttrs><a-animation animatonAttrs/></a-entity></a-scene>
  *
  * @param {function} cb - Callback function after animation has loaded and started.
- * @param {object} animationAttrs - Attributes to set on created animation object.
+ * @param {object} animationAttrs - Attributes to set on created animation entity.
  * @param {object} elAttrs - Attributes to set on the entity.
  * @returns {Element} entityEl and {Element} animationEl in callback.
  */

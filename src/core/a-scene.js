@@ -22,7 +22,7 @@ var registerElement = re.registerElement;
  * @member {bool} defaultLightsEnabled - false if user has not added lights.
  * @member {bool} insideIframe
  * @member {bool} insideLoader
- * @member {bool} isScene - Differentiates this as a scene object as opposed
+ * @member {bool} isScene - Differentiates this as a scene entity as opposed
            to other `AEntity`s.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - The root three.js Scene object.
