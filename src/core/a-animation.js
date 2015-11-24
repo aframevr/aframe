@@ -98,9 +98,9 @@ module.exports = registerElement('a-animation', {
         var direction = this.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
-        var from = data.from ? utils.parseCoordinate(data.from) : currentValue;
+        var from = data.from ? utils.coordinates.parse(data.from) : currentValue;
         var repeat = data.repeat === REPEATS.indefinite ? Infinity : 0;
-        var to = utils.parseCoordinate(data.to);
+        var to = utils.coordinates.parse(data.to);
         var toTemp;
         var yoyo = false;
 
@@ -315,3 +315,75 @@ module.exports = registerElement('a-animation', {
     }
   })
 });
+
+function cloneValue (val) {
+  return utils.extend({}, val);
+}
+
+/**
+ * Deduces different animation values based on whether we are:
+ *   - animating an inner attribute of a component.
+ *   - animating a coordinate component.
+ *   - animating a generic attribute.
+ *
+ * @param {Element} el
+ * @param {string} attribute - Tells what to animate based on whether it is dot-separated.
+ * @param {string} dataFrom - Data `from` value.
+ * @param {string} dataTo - Data `to` value.
+ * @param currentValue
+ * @returns {object}
+ *   Object with keys [from, to, partialSetAttribute]. `partialSetAttribute` is a
+ *   closured-function that tells animation system how to update the component.
+ */
+function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
+  var attributeSplit = attribute.split('.');
+  var coerceSchema;
+  var component;
+  var componentAttrName;
+  var componentName;
+  var from = {};
+  var partialSetAttribute;
+  var to = {};
+
+  if (attributeSplit.length === 2) {
+    // Animating a component that has multiple attributes.
+    componentName = attributeSplit[0];
+    componentAttrName = attributeSplit[1];
+    component = el.components[componentName];
+    if (!component) {
+      el.setAttribute(componentName, '');
+      component = el.components[componentName];
+    }
+    coerceSchema = component.defaults;
+    if (dataFrom === undefined) {
+      from[attribute] = el.getComputedAttribute(componentName)[componentAttrName];
+    } else {
+      from[attribute] = dataFrom;
+    }
+    from[attribute] = coerce(from[attribute], coerceSchema, componentAttrName);
+    to[attribute] = coerce(dataTo, coerceSchema, componentAttrName);
+    partialSetAttribute = function (value) {
+      el.setAttribute(componentName, componentAttrName, value[attribute]);
+    };
+  } else if (dataTo && coordinates.isCoordinate(dataTo)) {
+    // Animating a component that is an XYZ coordinate.
+    from = dataFrom ? coordinates.parse(dataFrom) : currentValue;
+    to = coordinates.parse(dataTo);
+    partialSetAttribute = function (value) {
+      el.setAttribute(attribute, value);
+    };
+  } else {
+    // Animating a generic numbered attribute.
+    from[attribute] = parseFloat(dataFrom || el.getAttribute(attribute));
+    to[attribute] = parseFloat(dataTo);
+    partialSetAttribute = function (value) {
+      el.setAttribute(attribute, value[attribute]);
+    };
+  }
+  return {
+    from: from,
+    partialSetAttribute: partialSetAttribute,
+    to: to,
+  };
+}
+module.exports.getAnimationValues = getAnimationValues;

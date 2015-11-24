@@ -1,8 +1,8 @@
-var coordinateParser = require('../utils/coordinate-parser');
+var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../utils/');
 
-var proto = {
+module.exports.Component = registerComponent('position', utils.extend({
   defaults: {
     value: {
       x: 0,
@@ -15,11 +15,7 @@ var proto = {
     value: function () {
       var object3D = this.el.object3D;
       var data = this.data;
-      // Updates three.js object
       object3D.position.set(data.x, data.y, data.z);
     }
   }
-};
-
-utils.extend(proto, coordinateParser);
-module.exports.Component = registerComponent('position', proto);
+}, coordinatesMixin));
