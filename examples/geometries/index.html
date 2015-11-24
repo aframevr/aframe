@@ -60,6 +60,7 @@
                repeat="indefinite" easing="linear" dur="10000"></a-mixin>
 
       <a-mixin id="color" material="color: #FFFFC3"></a-mixin>
+      <a-mixin id="doubleside" material="side: double"></a-mixin>
 
       <img id="carpet" src="../_images/textures/carpet.jpg">
       <img id="floor" src="../_images/textures/marble.jpg">
@@ -118,10 +119,10 @@
       <a-object position="-2.5 0 -15">
         <a-object mixin="column">
           <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color circle">
+          <a-object mixin="object-on-column color doubleside circle">
             <a-animation mixin="spin"></a-animation>
           </a-object>
-          <a-object mixin="object-on-column color circle">
+          <a-object mixin="object-on-column color doubleside circle">
             <a-animation mixin="spin-x"></a-animation>
           </a-object>
         </a-object>
@@ -143,10 +144,10 @@
       <a-object position="2.5 0 -5">
         <a-object mixin="column">
           <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color ring">
+          <a-object mixin="object-on-column color doubleside ring">
             <a-animation mixin="spin" dur="6000"></a-animation>
           </a-object>
-          <a-object mixin="object-on-column color ring">
+          <a-object mixin="object-on-column color doubleside ring">
             <a-animation mixin="spin" to="360 0 0" dur="6000"></a-animation>
           </a-object>
         </a-object>
