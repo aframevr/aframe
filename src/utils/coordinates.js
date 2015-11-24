@@ -41,7 +41,7 @@ module.exports.stringify = stringify;
  */
 module.exports.isCoordinate = function (value) {
   return regex.test(value);
-}
+};
 
 /**
  * Prototype mixin for coordinate-only components.

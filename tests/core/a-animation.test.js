@@ -1,6 +1,8 @@
 /* global assert, setup, suite, sinon, test */
+'use strict';
 var helpers = require('../helpers.js');
-var AAnimation = require('core/a-animation');
+var AAnimation = require('core/a-animation').AAnimation;
+var getAnimationValues = require('core/a-animation').getAnimationValues;
 
 /**
  * Helpers to start initialize an animation.
@@ -42,8 +44,6 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
  * Flaky tests? Play with the durations and `tween.update(t)`s. Try to increase the values.
  */
 suite('a-animation', function () {
-  'use strict';
-
   suite('attachedCallback', function () {
     test('applies mixin', function (done) {
       helpers.mixinFactory('walt', { repeat: 'indefinite' });
@@ -66,23 +66,37 @@ suite('a-animation', function () {
     });
   });
 
-  suite('tween', function () {
-    test('sets values in between `from` and `to` during animation', function (done) {
-      var position;
+  suite('component attribute animation', function () {
+    setup(function (done) {
+      var self = this;
       setupAnimation({
-        attribute: 'position',
-        dur: 10000,
-        to: '10 10 10'
+        attribute: 'light.intensity',
+        dur: 1000,
+        fill: 'both',
+        from: 0,
+        to: 1
       }, function (el, animationEl) {
-        animationEl.tween.update(5000);
-        // Partially done with animation.
-        position = el.getAttribute('position');
-        ['x', 'y', 'z'].forEach(function (axis) {
-          assert.isAbove(position[axis], 0);
-          assert.isBelow(position[axis], 10);
-        });
+        self.el = el;
+        self.animationEl = animationEl;
         done();
-      });
+      }, { light: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute('light').intensity, 0);
+    });
+
+    test('between value', function () {
+      var intensity;
+      this.animationEl.tween.update(999);
+      intensity = this.el.getComputedAttribute('light').intensity;
+      assert.isAbove(intensity, 0);
+      assert.isBelow(intensity, 1);
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(10000);
+      assert.equal(this.el.getComputedAttribute('light').intensity, 1);
     });
   });
 
@@ -209,6 +223,40 @@ suite('a-animation', function () {
     });
   });
 
+  suite('generic attribute animation', function () {
+    setup(function (done) {
+      var self = this;
+      setupAnimation({
+        attribute: 'opacity',
+        dur: 1000,
+        fill: 'both',
+        from: 0,
+        to: 1
+      }, function (el, animationEl) {
+        self.el = el;
+        self.animationEl = animationEl;
+        done();
+      }, { opacity: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(parseFloat(this.el.getAttribute('opacity')), 0);
+    });
+
+    test('between value', function () {
+      var opacity;
+      this.animationEl.tween.update(999);
+      opacity = parseFloat(this.el.getAttribute('opacity'));
+      assert.isAbove(opacity, 0);
+      assert.isBelow(opacity, 1);
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(10000);
+      assert.equal(this.el.getAttribute('opacity'), 1);
+    });
+  });
+
   suite('start', function () {
     test('creates a Tween', function (done) {
       setupAnimation({}, function (el, animationEl) {
@@ -237,12 +285,69 @@ suite('a-animation', function () {
     });
   });
 
+  suite('getAnimationValues', function () {
+    setup(function (done) {
+      var el = this.el = helpers.entityFactory();
+      el.addEventListener('loaded', function () {
+        done();
+      });
+    });
+
+    test('gets correct values for multiple-attribute component', function () {
+      var values = getAnimationValues(this.el, 'light.intensity', 0, 1);
+      assert.shallowDeepEqual(values.from, { 'light.intensity': 0 });
+      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+    });
+
+    test('gets correct values multiple-attribute component with no `from`', function () {
+      var el = this.el;
+      var values;
+      el.setAttribute('light', 'intensity: 0.5');
+      values = getAnimationValues(el, 'light.intensity', undefined, '1');
+      assert.shallowDeepEqual(values.from, { 'light.intensity': 0.5 });
+      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+    });
+
+    test('gets correct values coordinate component', function () {
+      var values = getAnimationValues(this.el, 'position', '1 2 3', '4 5 6');
+      assert.shallowDeepEqual(values.from, { x: 1, y: 2, z: 3 });
+      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+    });
+
+    test('gets correct values coordinate component with no `from`', function () {
+      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6',
+                                      { x: 0, y: 0, z: 0 });
+      assert.shallowDeepEqual(values.from, { x: 0, y: 0, z: 0 });
+      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+    });
+  });
+
   suite('stop', function () {
     test('unsets isRunning', function (done) {
       setupAnimation({}, function (el, animationEl) {
         assert.ok(animationEl.isRunning);
         animationEl.stop();
         assert.notOk(animationEl.isRunning);
+        done();
+      });
+    });
+  });
+
+  suite('tween', function () {
+    test('sets values in between `from` and `to` during animation', function (done) {
+      var position;
+      setupAnimation({
+        attribute: 'position',
+        dur: 10000,
+        to: '10 10 10'
+      }, function (el, animationEl) {
+        animationEl.tween.update(5000);
+        // Partially done with animation.
+        position = el.getAttribute('position');
+        ['x', 'y', 'z'].forEach(function (axis) {
+          assert.isAbove(position[axis], 0);
+          assert.isBelow(position[axis], 10);
+        });
         done();
       });
     });

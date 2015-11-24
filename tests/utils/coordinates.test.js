@@ -15,16 +15,16 @@ suite('utils.coordinates', function () {
 
   suite('parse', function () {
     test('parses string', function () {
-      assert.shallowDeepEqual(coordinates.parse('1 2.5 -3'), { x: 1, y : 2.5, z: -3 });
+      assert.shallowDeepEqual(coordinates.parse('1 2.5 -3'), { x: 1, y: 2.5, z: -3 });
     });
 
     test('can return fallback values', function () {
-      assert.shallowDeepEqual(coordinates.parse('1 2', { z: -3 }), { x: 1, y : 2, z: -3 });
+      assert.shallowDeepEqual(coordinates.parse('1 2', { z: -3 }), { x: 1, y: 2, z: -3 });
     });
 
     test('returns already-parsed object', function () {
-      assert.shallowDeepEqual(coordinates.parse({ x: 1, y: 2, z: -3}),
-                              { x: 1, y : 2, z: -3 });
+      assert.shallowDeepEqual(coordinates.parse({ x: 1, y: 2, z: -3 }),
+                              { x: 1, y: 2, z: -3 });
     });
   });
 
