@@ -211,7 +211,13 @@ var proto = {
       // If the component is not defined for the element
       if (!this.isComponentDefined(name) && !isDependency) { return; }
       this.initComponentDependencies(name);
-      this.components[name] = new AComponents[name].Component(this);
+      if (isDependency) {
+        // If it's a component dependency the component won't be part
+        // of the element attributes so we have to add it.
+        this.setAttribute(name, '');
+      } else {
+        this.components[name] = new AComponents[name].Component(this);
+      }
       log('Component initialized: %s', name);
     }
   },
