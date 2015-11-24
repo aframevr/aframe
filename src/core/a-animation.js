@@ -91,7 +91,7 @@ module.exports = registerElement('a-animation', {
         if (el.isNode) {
           init();
         } else {
-          // To handle elements that are not yet `<a-object>`s (e.g., templates).
+          // To handle elements that are not yet `<a-entity>`s (e.g., templates).
           el.addEventListener('nodeready', init.bind(self));
         }
 
