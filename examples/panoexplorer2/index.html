@@ -36,68 +36,15 @@
       * Change default lighting in core to be more like aframe.
       * Add "click to start animation" to Interactions example
 
-      BLOCKERS:
-
-      * Click events don't work on templates
-        - https://github.com/MozVR/aframe/issues/201
-      * Mixin hover status don't work on templates
-        - Initial state only. Hover does not work:
-        - https://github.com/MozVR/aframe/issues/103
-      * Objects and templates inside `<vr-camera>` do not inherit camera position/rotation
-        - https://github.com/MozVR/aframe/issues/193
-      * Setting false on wasd and look controls has no effect
-        - https://github.com/MozVR/aframe/issues/194
-      * Sound component / template
-      * Rename <a-
-      * Responsive cursor
-      * Y-axis rotation of <vr-camera> is tilting
-        - https://github.com/MozVR/aframe/issues/202
-      * Animation should take existing attribute values as start point if "from" is not specified
-        - https://github.com/MozVR/aframe-core/issues/494
-
-
-      NICE TO HAVE:
-
-      * Pivots would make code more concise
-        - https://github.com/MozVR/aframe-core/issues/101
-      * Look-At does not follow <vr-camera>
-        - https://github.com/MozVR/aframe/pull/196
-      * Add other easing curves in core animation:
-        - https://github.com/MozVR/aframe-core/issues/253
-      * Resolve alphas automatically
-        - https://github.com/MozVR/aframe-core/issues/498
-
-      FILE ISSUE
-  
-      * Add cursor to vr-camera by default?
-      * "Send to Mobile" workflow
-      * Add keyboard shortcuts for Enter VR and Reset Sensor
-      * Tighten default camera near/far      
-
-      FIX LATER
-  
-      * Add better way of hiding and/or removing elements from the scene? Am currently animating scale. eg <vr-animation attribute="scale" to="0 0 0" dur="1">
-      * Animate opacity
-
       -->
 
 
 
       <!-- CAMERA -->
       
-      <vr-camera id="camera" position="0 0 0" near="0.1" wasd-controls="false">
+      <vr-camera id="camera" position="0 0 0" near="0.1" wasd-controls-enabled="false">
         <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
       </vr-camera>
-
-      <!--<vr-object>
-        <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
-          <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
-                     material="color: #FFF"
-                     cursor="maxDistance: 30">
-          </vr-object>
-          <vr-image position="-0.3 0.2 -1" src="images/title-1.png" width="0.2" height="0.1" ></vr-image>
-        </vr-object>
-      </vr-object>-->
 
 
 
