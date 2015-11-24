@@ -9,36 +9,36 @@
   <body>
     <a-scene>
 
-      <a-object position="0 0 0" scale="1 0.5 0.5">
+      <a-entity position="0 0 0" scale="1 0.5 0.5">
         <a-animation attribute="position" to="0 4.5 0" dur="1800" fill="forwards"></a-animation>
         <a-animation attribute="rotation" from="0 60 0" to="0 30 0" dur="2500" fill="forwards"></a-animation>
 
-        <a-object>
+        <a-entity>
           <a-animation attribute="rotation" to="90 0 0" dur="1500" fill="forwards"></a-animation>
           <a-cube position="0 0 1" width="6" height="0.02" depth="2" color="#F16745"></a-cube>
 
-          <a-object position="0 0 2" rotation="-180 0 0">
+          <a-entity position="0 0 2" rotation="-180 0 0">
             <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="250" fill="forwards"></a-animation>
             <a-cube position="0 0 1" width="6" height="0.02" depth="2" color="#FFC65D"></a-cube>
 
-            <a-object position="0 0 2" rotation="-180 0 0">
+            <a-entity position="0 0 2" rotation="-180 0 0">
               <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="500" fill="forwards"></a-animation>
               <a-cube position="0 0 1" width="6" height="0.02" depth="2" color="#7BC8A4"></a-cube>
 
-              <a-object position="0 0 2" rotation="-180 0 0">
+              <a-entity position="0 0 2" rotation="-180 0 0">
                 <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="750" fill="forwards"></a-animation>
                 <a-cube position="0 0 1" width="6" height="0.02" depth="2" color="#4CC3D9"></a-cube>
 
-                <a-object position="0 0 2" rotation="-180 0 0">
+                <a-entity position="0 0 2" rotation="-180 0 0">
                   <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="1000" fill="forwards"></a-animation>
                   <a-cube position="0 0 1" width="6" height="0.02" depth="2" color="#93648D"></a-cube>
 
-                </a-object>
-              </a-object>
-            </a-object>
-          </a-object>
-        </a-object>
-      </a-object>
+                </a-entity>
+              </a-entity>
+            </a-entity>
+          </a-entity>
+        </a-entity>
+      </a-entity>
 
       <a-image position="0 -1 0" src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="6 6 6"></a-image>
 

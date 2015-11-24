@@ -2,7 +2,7 @@ var aframeCore = require('@mozvr/aframe-core');
 var utils = require('./utils');
 
 var registerElement = aframeCore.registerElement.registerElement;
-var AObject = aframeCore.AObject;
+var AEntity = aframeCore.AEntity;
 var AComponents = aframeCore.AComponents;
 
 var ATTRIBUTE_BLACKLIST = utils.extend({
@@ -13,7 +13,7 @@ var ATTRIBUTE_BLACKLIST = utils.extend({
 });
 var COMPONENT_BLACKLIST = utils.extend({}, AComponents);
 
-registerElement('a-root', {prototype: Object.create(AObject.prototype)});
+registerElement('a-root', {prototype: Object.create(AEntity.prototype)});
 
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
@@ -25,11 +25,11 @@ module.exports = function (tagName) {
     tagNameLower,
     {
       prototype: Object.create(
-        AObject.prototype, {
+        AEntity.prototype, {
           attachedCallback: {
             value: function () {
               utils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - perfStart);
-              // We emit an event so `<a-object>` knows when we've been
+              // We emit an event so `<a-entity>` knows when we've been
               // registered and adds our children as `object3D`s.
               this.emit('nodeready');
               this.rerender(false, true);
