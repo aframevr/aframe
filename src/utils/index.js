@@ -2,6 +2,7 @@
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
 
+module.exports.coerce = require('./coerce');
 module.exports.coordinates = require('./coordinates');
 
 /**
@@ -51,36 +52,6 @@ module.exports.log = function () {
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
 module.exports.extend = objectAssign;
-
-/**
- * It coerces the strings of the obj object into the types of the schema object
- * In the case of a primitive value obj is coerced to the type of schema
- * @param  {} dest   The object that contains the string values to be coerced
- * @param  {} schema It contains the type or types
- */
-module.exports.coerce = function (obj, schema) {
-  var keys = Object.keys(obj);
-  if (typeof obj !== 'object') { return coerceValue(obj, schema); }
-  keys.forEach(coerce);
-  return obj;
-  function coerce (key) {
-    var value = schema[key];
-    var type = typeof value;
-    if (value === undefined) { return; }
-    obj[key] = coerceValue(obj[key], type);
-  }
-  function coerceValue (value, type) {
-    if (typeof value !== 'string') { return value; }
-    switch (type) {
-      case 'boolean':
-        return value === 'true';
-      case 'number':
-        return parseFloat(value);
-      default:
-        return value;
-    }
-  }
-};
 
 /**
  * Checks if a and b objects have the same attributes and the values
