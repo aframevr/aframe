@@ -138,6 +138,18 @@ suite('a-animation', function () {
     });
   });
 
+  test('fill mode: backwards when `from` is not defined', function (done) {
+    setupAnimation({
+      attribute: 'scale',
+      dur: 100,
+      fill: 'backwards',
+      to: '10 10 10'
+    }, function (el, animationEl) {
+      assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
+      done();
+    });
+  });
+
   suite('fill mode: both', function () {
     setup(function (done) {
       var self = this;

@@ -36,7 +36,7 @@ var DEFAULTS = {
   easing: 'ease',
   direction: DIRECTIONS.normal,
   fill: FILLS.forwards,
-  from: { x: 0, y: 0, z: 0 },
+  from: undefined,
   repeat: 0,
   to: undefined
 };
