@@ -19,37 +19,37 @@
 
     <a-scene stats="true">
       <!-- Camera. -->
-      <a-object position="0 1.8 15">
-        <a-object id="camera" camera="fov: 45" look-controls wasd-controls></a-object>
-      </a-object>
+      <a-entity position="0 1.8 15">
+        <a-entity id="camera" camera="fov: 45" look-controls wasd-controls></a-entity>
+      </a-entity>
 
       <!-- Light. -->
-      <a-object light="type: ambient; color: #BBB"></a-object>
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
 
       <!-- Floor. -->
-      <a-object geometry="primitive: cylinder; height: .2; radius: 15;"
+      <a-entity geometry="primitive: cylinder; height: .2; radius: 15;"
                 material="src: #floor; metallic: .2; repeat: 50 20; roughness: .1"
-                position="0 0 0"></a-object>
+                position="0 0 0"></a-entity>
 
       <!-- Skysphere. -->
-      <a-object geometry="primitive: sphere; radius: 100"
+      <a-entity geometry="primitive: sphere; radius: 100"
                 material="color: #333; shader: flat" scale="1 1 -1">
-      </a-object>
+      </a-entity>
 
       <!-- Moving object. -->
-      <a-object position="0 2 0">
-        <a-object id="squirrel" geometry="primitive: sphere; radius: .2"
+      <a-entity position="0 2 0">
+        <a-entity id="squirrel" geometry="primitive: sphere; radius: .2"
                                 light="type: point; color: #555"
                                 material="color: #FFF; shading: flat"
                                 position="20 0 0">
-        </a-object>
+        </a-entity>
         <a-animation attribute="rotation" direction="alternate" dur="5000"
                      easing="ease-in-out" fill="forwards" repeat="indefinite"
                      to="0 360 180"></a-animation>
-      </a-object>
+      </a-entity>
 
-      <a-object mixin="follower" look-at="#squirrel" position="0 3 0"></a-object>
-      <a-object mixin="follower" look-at="#camera" position="0 10 0"></a-object>
+      <a-entity mixin="follower" look-at="#squirrel" position="0 3 0"></a-entity>
+      <a-entity mixin="follower" look-at="#camera" position="0 10 0"></a-entity>
     </a-scene>
   </body>
 </html>

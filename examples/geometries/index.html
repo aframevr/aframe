@@ -68,134 +68,134 @@
 
     <a-scene stats="true">
       <!-- Camera. -->
-      <a-object position="0 1.8 0">
-        <a-object camera="fov: 45" look-controls wasd-controls>
-        </a-object>
-      </a-object>
+      <a-entity position="0 1.8 0">
+        <a-entity camera="fov: 45" look-controls wasd-controls>
+        </a-entity>
+      </a-entity>
 
       <!-- Lights. -->
-      <a-object light="type: ambient; color: #444"></a-object>
-      <a-object light="type: directional; color: #EEE"
+      <a-entity light="type: ambient; color: #444"></a-entity>
+      <a-entity light="type: directional; color: #EEE"
                 position="0 1 1">
-      </a-object>
+      </a-entity>
 
       <!-- Skysphere. -->
-      <a-object geometry="primitive: sphere; radius: 80"
+      <a-entity geometry="primitive: sphere; radius: 80"
                 material="color: #112; shader: flat" scale="1 1 -1">
-      </a-object>
+      </a-entity>
 
       <!-- Floor. -->
-      <a-object geometry="primitive: cylinder; height: .2; radius: 25;"
+      <a-entity geometry="primitive: cylinder; height: .2; radius: 25;"
                 material="color: #BABABA; src: #floor;
                           metallic: .2; repeat: 50 20; roughness: .1"
-                position="0 0 -25"></a-object>
+                position="0 0 -25"></a-entity>
 
       <!-- Carpet. -->
-      <a-object geometry="primitive: box; depth: 50; height: 0.025; width: 2"
+      <a-entity geometry="primitive: box; depth: 50; height: 0.025; width: 2"
                 material="color: #440000; metallic: 0; src: #carpet;
                           repeat: 3 40; roughness: 1"
                 position="0 .2 -25">
-      </a-object>
+      </a-entity>
 
       <!-- Boxes. -->
-      <a-object position="-2.5 0 -5">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color box">
+      <a-entity position="-2.5 0 -5">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color box">
             <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color box" position=".18 1.2 .1">
+          </a-entity>
+          <a-entity mixin="object-on-column color box" position=".18 1.2 .1">
             <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color box"
+          </a-entity>
+          <a-entity mixin="object-on-column color box"
                     position="-.18 1.2 -.2">
             <a-animation mixin="spin" to="360 360 0"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Circles. -->
-      <a-object position="-2.5 0 -15">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color doubleside circle">
+      <a-entity position="-2.5 0 -15">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color doubleside circle">
             <a-animation mixin="spin"></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color doubleside circle">
+          </a-entity>
+          <a-entity mixin="object-on-column color doubleside circle">
             <a-animation mixin="spin-x"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Cylinders. -->
-      <a-object position="-2.5 0 -25">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color cylinder">
+      <a-entity position="-2.5 0 -25">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color cylinder">
             <a-animation mixin="spin-x"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Rings. -->
-      <a-object position="2.5 0 -5">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color doubleside ring">
+      <a-entity position="2.5 0 -5">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color doubleside ring">
             <a-animation mixin="spin" dur="6000"></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color doubleside ring">
+          </a-entity>
+          <a-entity mixin="object-on-column color doubleside ring">
             <a-animation mixin="spin" to="360 0 0" dur="6000"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Spheres. -->
-      <a-object position="2.5 0 -15">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color sphere"
+      <a-entity position="2.5 0 -15">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color sphere"
                     position="-.2 1.2 0">
             <a-animation mixin="yoyo" attribute="position" from="-.2 1 0"
                          to="-.2 1.8 0"></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color sphere">
+          </a-entity>
+          <a-entity mixin="object-on-column color sphere">
             <a-animation mixin="yoyo" attribute="position" from="0 1.8 0"
                          to="0 1 0" ></a-animation>
-          </a-object>
-          <a-object mixin="object-on-column color sphere" position=".2 1 0">
+          </a-entity>
+          <a-entity mixin="object-on-column color sphere" position=".2 1 0">
             <a-animation mixin="yoyo" attribute="position" from=".2 1 0"
                          to=".2 1.8 0"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Torus. -->
-      <a-object position="2.5 0 -25">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color torus">
+      <a-entity position="2.5 0 -25">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color torus">
             <a-animation mixin="spin"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
 
       <!-- Torus Knot. -->
-      <a-object position="2.5 0 -35">
-        <a-object mixin="column">
-          <a-object mixin="column-light"></a-object>
-          <a-object mixin="object-on-column color torus-knot">
+      <a-entity position="2.5 0 -35">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color torus-knot">
             <a-animation mixin="spin"></a-animation>
-          </a-object>
-        </a-object>
-        <a-object mixin="column-bottom"></a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
     </a-scene>
   </body>
 </html>

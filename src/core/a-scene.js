@@ -4,7 +4,7 @@ var RStats = require('../../lib/vendor/rStats');
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
-var AObject = require('./a-object');
+var AEntity = require('./a-entity');
 var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
 var isNode = re.isNode;
@@ -23,7 +23,7 @@ var registerElement = re.registerElement;
  * @member {bool} insideIframe
  * @member {bool} insideLoader
  * @member {bool} isScene - Differentiates this as a scene object as opposed
-           to other `AObject`s.
+           to other `AEntity`s.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - The root three.js Scene object.
  * @member {object} monoRenderer
@@ -37,7 +37,7 @@ var registerElement = re.registerElement;
  * @member {object} wakelock
  */
 var AScene = module.exports = registerElement('a-scene', {
-  prototype: Object.create(AObject.prototype, {
+  prototype: Object.create(AEntity.prototype, {
     createdCallback: {
       value: function () {
         this.behaviors = [];
@@ -266,7 +266,7 @@ var AScene = module.exports = registerElement('a-scene', {
         // and to prevent triggering loaded if there are still
         // pending elements to be loaded
         if (this.hasLoaded || this.pendingElements !== 0) { return; }
-        AObject.prototype.load.call(this);
+        AEntity.prototype.load.call(this);
       }
     },
 
@@ -399,9 +399,9 @@ var AScene = module.exports = registerElement('a-scene', {
         if (this.cameraEl) { return; }
 
         // DOM calls to create camera.
-        cameraWrapperEl = document.createElement('a-object');
+        cameraWrapperEl = document.createElement('a-entity');
         cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 10});
-        defaultCamera = document.createElement('a-object');
+        defaultCamera = document.createElement('a-entity');
         defaultCamera.setAttribute('camera', {fov: 45});
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
@@ -420,13 +420,13 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     setupDefaultLights: {
       value: function () {
-        var ambientLight = document.createElement('a-object');
+        var ambientLight = document.createElement('a-entity');
         ambientLight.setAttribute('light',
                                   {color: '#bebebe', type: 'ambient'});
         ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(ambientLight);
 
-        var directionalLight = document.createElement('a-object');
+        var directionalLight = document.createElement('a-entity');
         directionalLight.setAttribute('light', {intensity: 2.5});
         directionalLight.setAttribute('position', {x: -10, y: 20, z: 10});
         directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');

@@ -1,8 +1,6 @@
-require('webvr-polyfill');
-
 var registerElement = require('./a-register-element');
 
-var AObject = require('./core/a-object');
+var AEntity = require('./core/a-entity');
 var ANode = require('./core/a-node');
 
 // Must be required after `AObject` so all the components are registered.
@@ -13,6 +11,8 @@ var AComponents = require('./core/components').components;
 var THREE = window.THREE = require('../lib/three');
 var utils = require('./utils/');
 
+require('webvr-polyfill');
+
 require('./core/a-animation');
 require('./core/a-assets');
 require('./core/a-cubemap');
@@ -22,8 +22,8 @@ require('./core/a-scene');
 module.exports = {
   THREE: THREE,
   ANode: ANode,
-  AObject: AObject,
   AComponents: AComponents,
+  AEntity: AEntity,
   registerElement: registerElement,
   utils: utils
 };

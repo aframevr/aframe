@@ -11,13 +11,13 @@
   </head>
   <body>
     <a-scene stats="true">
-      <!-- We wrap the camera in an <a-object> so we can position it without colliding with the HMD updates -->
-      <a-object position="0 0 20">
-        <a-object camera="fov: 45" look-controls wasd-controls></a-object>
-      </a-object>
-      <a-object position="-10 0 0" rotation="0 45 0" geometry="primitive: box" material="color: red"></a-object>
-      <a-object position="0 0 0" rotation="0 45 0" geometry="primitive: box" material="color: green"></a-object>
-      <a-object class="cube" position="10 0 0" rotation="0 45 0" geometry="primitive: box" material="color: blue"></a-object>
+      <!-- We wrap the camera in an <a-entity> so we can position it without colliding with the HMD updates -->
+      <a-entity position="0 0 20">
+        <a-entity camera="fov: 45" look-controls wasd-controls></a-entity>
+      </a-entity>
+      <a-entity position="-10 0 0" rotation="0 45 0" geometry="primitive: box" material="color: red"></a-entity>
+      <a-entity position="0 0 0" rotation="0 45 0" geometry="primitive: box" material="color: green"></a-entity>
+      <a-entity class="cube" position="10 0 0" rotation="0 45 0" geometry="primitive: box" material="color: blue"></a-entity>
     </a-scene>
   </body>
 </html>

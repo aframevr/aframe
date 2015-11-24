@@ -21,47 +21,47 @@
     </a-assets>
 
     <a-scene stats="true">
-      <a-object position="-3 0 20">
-        <a-object camera="fov: 45" look-controls wasd-controls>
-          <a-object position="0 0 -5"
+      <a-entity position="-3 0 20">
+        <a-entity camera="fov: 45" look-controls wasd-controls>
+          <a-entity position="0 0 -5"
                     geometry="primitive: ring; outerRadius: 0.30;
                               innerRadius: 0.20;"
                     material="color: red; shader: flat"
-                    cursor="maxDistance: 30"></a-object>
-        </a-object>
-      </a-object>
+                    cursor="maxDistance: 30"></a-entity>
+        </a-entity>
+      </a-entity>
 
-      <a-object position="-10 0 0">
-        <a-object mixin="cube red">
+      <a-entity position="-10 0 0">
+        <a-entity mixin="cube red">
           <a-animation begin="click" attribute="position" from="0 0 0"
                        to="0 0 -10" dur="2000" fill="both"></a-animation>
-        </a-object>
-      </a-object>
+        </a-entity>
+      </a-entity>
 
-      <a-object>
-        <a-object mixin="cube green">
+      <a-entity>
+        <a-entity mixin="cube green">
           <a-animation begin="click" attribute="rotation" to="0 360 0"
-                       easing="linear" dur="2000"></a-animation>
-        </a-object>
-      </a-object>
+                       easing="linear" dur="2000" fill="backwards"></a-animation>
+        </a-entity>
+      </a-entity>
 
-      <a-object position="10 0 0" rotation="0 45 0">
-        <a-object mixin="cube blue">
+      <a-entity position="10 0 0" rotation="0 45 0">
+        <a-entity mixin="cube blue">
           <a-animation begin="click" fill="forwards" repeat="1"
                        direction="alternate" attribute="position" from="0 0 0"
                        to="15 0 0" dur="2000"></a-animation>
-        </a-object>
-      </a-object>
+        </a-entity>
+      </a-entity>
 
-      <a-object class="clickable" mixin="cube yellow" position="0 -5 0"
-                rotation="0 45 0" scale=".5 .5 .5"></a-object>
+      <a-entity class="clickable" mixin="cube yellow" position="0 -5 0"
+                rotation="0 45 0" scale=".5 .5 .5"></a-entity>
     </a-scene>
 
     <script>
       (function () {
         // This snippet demonstrates custom states.
         var clickedEl = null;
-        var els = document.querySelectorAll('a-object');
+        var els = document.querySelectorAll('a-entity');
         Array.prototype.forEach.call(els, function (el) {
           el.addEventListener('click', function () {
             if (clickedEl && clickedEl !== el) {
@@ -75,7 +75,7 @@
 
         // If you want to respond to mouse events, this is how. Otherwise,
         // if you just want a working cursor, you don't need any of this.
-        var cubes = document.querySelectorAll('a-object[mixin=cube]');
+        var cubes = document.querySelectorAll('a-entity[mixin=cube]');
         var i;
         for (i = 0; i < cubes.length; ++i) {
           cubes[i].addEventListener('click', function () {

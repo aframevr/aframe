@@ -22,34 +22,34 @@
     <a-scene fog="type: linear; color: #AAB; far: 120; near: 5"
              stats="true">
       <!-- Camera. -->
-      <a-object position="0 1.8 0">
-        <a-object camera="fov: 45" look-controls wasd-controls></a-object>
-      </a-object>
+      <a-entity position="0 1.8 0">
+        <a-entity camera="fov: 45" look-controls wasd-controls></a-entity>
+      </a-entity>
 
       <!-- Skysphere. -->
-      <a-object geometry="primitive: sphere; radius: 80"
+      <a-entity geometry="primitive: sphere; radius: 80"
                 material="shader: flat;
                           src: url(../_images/pano/louvre.jpg)"
-                position="0 1.8 0" scale="1 1 -1"></a-object>
+                position="0 1.8 0" scale="1 1 -1"></a-entity>
 
-      <a-object mixin="box" position="-40 0 0">
+      <a-entity mixin="box" position="-40 0 0">
         <a-animation mixin="move" from="-40 0 0 " to="-80 0 0">
         </a-animation>
         <a-animation mixin="spin"></a-animation>
-      </a-object>
-      <a-object mixin="box" position="40 0 0">
+      </a-entity>
+      <a-entity mixin="box" position="40 0 0">
         <a-animation mixin="move" from="40 0 0" to="80 0 0"></a-animation>
         <a-animation mixin="spin"></a-animation>
-      </a-object>
-      <a-object mixin="box" position="0 0 -40">
+      </a-entity>
+      <a-entity mixin="box" position="0 0 -40">
         <a-animation mixin="move" from="0 0 -40" to="0 0 -80">
         </a-animation>
         <a-animation mixin="spin"></a-animation>
-      </a-object>
-      <a-object mixin="box" position="0 0 40">
+      </a-entity>
+      <a-entity mixin="box" position="0 0 40">
         <a-animation mixin="move" from="0 0 40" to="0 0 80"></a-animation>
         <a-animation mixin="spin"></a-animation>
-      </a-object>
+      </a-entity>
     </a-scene>
   </body>
 </html>

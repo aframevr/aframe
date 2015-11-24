@@ -27,21 +27,21 @@
     <a-scene stats="true">
 
       <!-- Controls -->
-      <a-object camera="fov: 45" look-controls>
-        <a-object mixin="cursor" position="0 0 -3"
+      <a-entity camera="fov: 45" look-controls>
+        <a-entity mixin="cursor" position="0 0 -3"
                   cursor="timeout: 1500; fuse: true">
           <a-animation begin="hovering" easing="ease-in" attribute="scale"
                        fill="backwards" from="1 1 1" to="0.2 0.2 0.2" dur="1500">
           </a-animation>
-        </a-object>
-      </a-object>
+        </a-entity>
+      </a-entity>
 
       <!-- Pano -->
-      <a-object id="holder" geometry="primitive: sphere; radius: 10;"
-                material="shader: flat" scale="1 1 -1"></a-object>
+      <a-entity id="holder" geometry="primitive: sphere; radius: 10;"
+                material="shader: flat" scale="1 1 -1"></a-entity>
 
       <!-- Links to panos -->
-      <a-object id="links" position="-1 -0.3 -4"></a-object>
+      <a-entity id="links" position="-1 -0.3 -4"></a-entity>
     </a-scene>
 
     <script>
@@ -77,7 +77,7 @@
           // Arrange the links horizontally without any overlaps
           var xPos = idx * width * 1.5;
 
-          var el = document.createElement('a-object');
+          var el = document.createElement('a-entity');
           el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
           el.setAttribute('mixin', 'link');

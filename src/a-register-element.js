@@ -7,12 +7,12 @@ require('document-register-element');
  ------------------------------------------------------------
 
  This module wraps registerElement to deal with
- components that inherit from `ANode` and `AObject`.
+ components that inherit from `ANode` and `AEntity`.
  It's a pass through in any other case.
 
  It wraps some of the prototype methods
  of the created element to make sure that the corresponding
- functions in the base classes (`AObject` and `ANode`) are also
+ functions in the base classes (`AEntity` and `ANode`) are also
  invoked. The method in the base class is always called before the
  one in the derived object.
 
@@ -45,9 +45,9 @@ module.exports.registerElement = document.registerElement = function (tagName, o
   var proto = Object.getPrototypeOf(obj.prototype);
   var newObj = obj;
   var isANode = ANode && proto === ANode.prototype;
-  var isAObject = AObject && proto === AObject.prototype;
+  var isAEntity = AEntity && proto === AEntity.prototype;
 
-  if (isANode || isAObject) { addTagName(tagName); }
+  if (isANode || isAEntity) { addTagName(tagName); }
 
   // Does the element inherit from `ANode`?
   if (isANode) {
@@ -55,9 +55,9 @@ module.exports.registerElement = document.registerElement = function (tagName, o
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  // Does the element inherit from `AObject`?
-  if (isAObject) {
-    newObj = wrapAObjectMethods(obj.prototype);
+  // Does the element inherit from `AEntity`?
+  if (isAEntity) {
+    newObj = wrapAEntityMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
@@ -83,26 +83,26 @@ function wrapANodeMethods (obj) {
 }
 
 /**
- * This wraps some of the obj methods to call those on `AObject` base class.
+ * This wraps some of the obj methods to call those on `AEntity` base class.
  * @param  {object} obj The objects that contains the methods that will be wrapped.
  * @return {object} An object with the same properties as the input parameter but
  * with some of methods wrapped.
  */
-function wrapAObjectMethods (obj) {
+function wrapAEntityMethods (obj) {
   var newObj = {};
   var ANodeMethods = [
     'attachedCallback',
     'attributeChangedCallback',
     'createdCallback'
   ];
-  var AObjectMethods = [
+  var AEntityMethods = [
     'attributeChangedCallback',
     'attachedCallback',
     'createdCallback',
     'detachedCallback'
   ];
   wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
-  wrapMethods(newObj, AObjectMethods, obj, AObject.prototype);
+  wrapMethods(newObj, AEntityMethods, obj, AEntity.prototype);
   // Copies the remaining properties into the new object
   copyProperties(obj, newObj);
   return newObj;
@@ -165,4 +165,4 @@ function copyProperties (source, destination) {
 }
 
 var ANode = require('./core/a-node');
-var AObject = require('./core/a-object');
+var AEntity = require('./core/a-entity');

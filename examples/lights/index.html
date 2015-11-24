@@ -20,28 +20,28 @@
   </a-assets>
   <a-scene stats="true">
     <!-- Camera. -->
-    <a-object position="0 0 150">
-      <a-object camera="fov: 60" look-controls wasd-controls></a-object>
-    <a-object>
+    <a-entity position="0 0 150">
+      <a-entity camera="fov: 60" look-controls wasd-controls></a-entity>
+    <a-entity>
 
     <!-- Skysphere. -->
-    <a-object geometry="primitive: sphere; radius: 300"
-              material="color: #111" scale="-1 -1 -1"></a-object>
+    <a-entity geometry="primitive: sphere; radius: 300"
+              material="color: #111" scale="-1 -1 -1"></a-entity>
 
     <!-- Lights. -->
-    <a-object position="0 0 0">
+    <a-entity position="0 0 0">
       <a-animation attribute="rotation" to="0 0 360"
                     repeat="indefinite" easing="linear" dur="4096">
       </a-animation>
-      <a-object mixin="light" position="30 0 0"></a-object>
-    </a-object>
+      <a-entity mixin="light" position="30 0 0"></a-entity>
+    </a-entity>
 
-    <a-object position="0 0 0">
+    <a-entity position="0 0 0">
       <a-animation attribute="rotation" to="360 0 0"
                     repeat="indefinite" easing="linear" dur="4096">
       </a-animation>
-      <a-object mixin="light" position="0 0 30"></a-object>
-    </a-object>
+      <a-entity mixin="light" position="0 0 30"></a-entity>
+    </a-entity>
   </a-scene>
 
   <script type="text/javascript">
@@ -62,7 +62,7 @@
     }
 
     for (var i = 0; i < 500; i++) {
-      var obj = document.createElement('a-object');
+      var obj = document.createElement('a-entity');
       obj.setAttribute('geometry', {
         primitive: 'torusKnot',
         radius: Math.random() * 10,

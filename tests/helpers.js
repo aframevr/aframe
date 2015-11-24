@@ -1,17 +1,17 @@
 /* global suite */
 
 /**
- * Helper method to create a scene, create an object, add object to scene,
+ * Helper method to create a scene, create an entity, add entity to scene,
  * add scene to document.
  *
- * @returns {object} An `<a-object>` element.
+ * @returns {object} An `<a-entity>` element.
  */
 module.exports.entityFactory = function () {
   var scene = document.createElement('a-scene');
-  var object = document.createElement('a-object');
-  scene.appendChild(object);
+  var entity = document.createElement('a-entity');
+  scene.appendChild(entity);
   document.body.appendChild(scene);
-  return object;
+  return entity;
 };
 
 /**

@@ -1,11 +1,12 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, sinon, setup, suite, test */
+var AEntity = require('core/a-entity');
 var THREE = require('aframe-core').THREE;
 var helpers = require('../helpers');
 
 var entityFactory = helpers.entityFactory;
 var mixinFactory = helpers.mixinFactory;
 
-suite('a-object', function () {
+suite('a-entity', function () {
   'use strict';
 
   setup(function (done) {
@@ -16,9 +17,8 @@ suite('a-object', function () {
   });
 
   test('adds itself to parent when attached', function (done) {
-    var el = document.createElement('a-object');
+    var el = document.createElement('a-entity');
     var parentEl = this.el;
-
     el.object3D = new THREE.Mesh();
     parentEl.appendChild(el);
     el.addEventListener('loaded', function () {
@@ -28,8 +28,21 @@ suite('a-object', function () {
   });
 
   suite('attachedCallback', function () {
-    test('initializes 3D object', function () {
-      assert.isDefined(this.el.object3D);
+    test('initializes 3D object', function (done) {
+      var el = entityFactory();
+      el.addEventListener('loaded', function () {
+        assert.isDefined(el.object3D);
+        done();
+      });
+    });
+
+    test('calls load method', function (done) {
+      var el = entityFactory();
+      this.sinon.spy(AEntity.prototype, 'load');
+      el.addEventListener('loaded', function () {
+        sinon.assert.called(AEntity.prototype.load);
+        done();
+      });
     });
   });
 
@@ -79,9 +92,9 @@ suite('a-object', function () {
   });
 
   suite('detachedCallback', function () {
-    test('removes itself from object parent', function (done) {
-      var parentEl = this.el;
-      var el = document.createElement('a-object');
+    test('removes itself from entity parent', function (done) {
+      var parentEl = entityFactory();
+      var el = document.createElement('a-entity');
 
       parentEl.appendChild(el);
 

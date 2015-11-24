@@ -71,7 +71,7 @@ suite('a-scene (without renderer)', function () {
 
     test('removes default lights when more lights are added', function (done) {
       var el = this.el;
-      var light = document.createElement('a-object');
+      var light = document.createElement('a-entity');
       light.setAttribute('light', '');
 
       el.setupDefaultLights();
