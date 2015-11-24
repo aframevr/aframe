@@ -4,53 +4,52 @@
     <meta charset="utf-8">
     <title>Interactions</title>
     <meta name="description" content="Interactions - A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    
-    <vr-assets>
-      <vr-mixin id="link" scale="1 0.5 1"></vr-mixin>
-      <vr-mixin id="link-hovered" scale="2 2 1"></vr-mixin>
-      <vr-mixin id="link-selected" scale="2 4 1"></vr-mixin>
-    </vr-assets>
-    <vr-scene>
+
+    <a-assets>
+      <a-mixin id="link" scale="1 0.5 1"></a-mixin>
+      <a-mixin id="link-hovered" scale="2 2 1"></a-mixin>
+      <a-mixin id="link-selected" scale="2 4 1"></a-mixin>
+    </a-assets>
+    <a-scene>
 
       <!-- Camera -->
-      <vr-object position="0 1.8 5">
-        <vr-object id="camera" camera="near: 0.1" look-controls wasd-controls>
-          <vr-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
-                     material="color: #FFF"
-                     cursor="maxDistance: 30">
-          </vr-object>
-        </vr-object>
-      </vr-object>
+      <a-object position="0 1.8 5">
+        <a-object id="camera" camera="near: 0.1" look-controls wasd-controls>
+          <a-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
+                    material="color: #FFF"
+                    cursor="maxDistance: 30">
+          </a-object>
+        </a-object>
+      </a-object>
 
       <!-- Target object -->
-      <vr-cylinder id="target" position="0 3.5 -2" radius="0.75" height="0.3" segments-radius="6" color="#93648D"></vr-cylinder>
+      <a-cylinder id="target" position="0 3.5 -2" radius="0.75" height="0.3" segments-radius="6" color="#93648D"></a-cylinder>
 
       <!-- Mixin + template (orange) -->
-      <vr-cube mixin="link" position="-1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#F16745"></vr-cube>
+      <a-cube mixin="link" position="-1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#F16745"></a-cube>
 
       <!-- Click template + template (yellow) -->
-      <vr-cube position="1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#FFC65D">
-        <vr-click target="#target" scale="2 2 2"></vr-click>
-        <vr-click scale="2 2 2"></vr-click>
-      </vr-cube>
+      <a-cube position="1 2 -2" rotation="30 30 0" width="1" depth="1" height="1" color="#FFC65D">
+        <a-click target="#target" scale="2 2 2"></a-click>
+        <a-click scale="2 2 2"></a-click>
+      </a-cube>
 
       <!-- Mixin + object (green) -->
-      <vr-object mixin="link" position="-1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #7BC8A4"></vr-object>
+      <a-object mixin="link" position="-1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #7BC8A4"></a-object>
 
       <!-- Mouseenter/leave + template (blue) -->
-      <vr-object position="1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #4CC3D9">
-        <vr-mouseenter scale="2 2 2"></vr-mouseenter>
-        <vr-mouseleave scale="1 1 1"></vr-mouseenter>
-      </vr-object>
+      <a-object position="1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #4CC3D9">
+        <a-mouseenter scale="2 2 2"></a-mouseenter>
+        <a-mouseleave scale="1 1 1"></a-mouseenter>
+      </a-object>
 
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
 
-      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#fff"></vr-light>
-
-    </vr-scene>
+    </a-scene>
   </body>
 </html>
