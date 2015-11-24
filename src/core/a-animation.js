@@ -33,7 +33,7 @@ var DEFAULTS = {
   attribute: 'rotation',
   begin: '0',
   dur: 1000,
-  easing: 'linear',
+  easing: 'ease',
   direction: DIRECTIONS.normal,
   fill: FILLS.forwards,
   from: { x: 0, y: 0, z: 0 },
