@@ -87,7 +87,7 @@ module.exports = function (tagName) {
                 if (key in this.attributeBlacklist) {
                   // Move these unique identifier attributes over
                   // (i.e., `id`, `name`, `class`, `target`).
-                  this.removeAttribute(key);
+                  delete templateAttrs[key];
                 }
                 var value = templateAttrs[key];
                 var component = this.components[key];

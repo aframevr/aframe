@@ -88,7 +88,7 @@ function getTargetData (type) {
 
 function targetListener (e) {
   // Not to be confused with the `target` we are modifying below.
-  var eventFiredOnEl = e.target;
+  var eventFiredOnEl = getRealNode(e.target);
   var eventType = e.type;
 
   var allTargetData = getTargetData(eventType, eventFiredOnEl);
@@ -163,13 +163,16 @@ window.addEventListener('stateremoved', function (e) {
   }
 });
 
+/**
+ * Returns the true node (useful for a wrapped object in a template instance).
+ */
 function getRealNode (el) {
-  if (el.isAEvent) {
-    return getRealNode(el.parentNode);
+  if (el.tagName.toLowerCase() === 'a-root') {
+    return el.parentNode;
   }
-  // if (el.root) {
-  //   return el.root;
-  // }
+  if (!el.previousElementSibling && !el.nextElementSibling && el.closest('a-root')) {
+    return el.closest('a-root').parentNode;
+  }
   return el;
 }
 
@@ -181,11 +184,21 @@ var AEvent = registerElement(
       {
         attachedCallback: {
           value: function () {
-            this.isAEvent = true;
-            this.type = this.type || this.getAttribute('type');
-            this.target = this.target || this.getAttribute('target');
-            this.sceneEl = utils.$('a-scene');
-            this.attachEventListener();
+            var self = this;
+            var el = self.parentNode;
+            if (el.isNode) {
+              attach();
+            } else {
+              el.addEventListener('nodeready', attach);
+            }
+
+            function attach () {
+              self.isAEvent = true;
+              self.type = self.type || self.getAttribute('type');
+              self.target = self.target || self.getAttribute('target');
+              self.sceneEl = utils.$('a-scene');
+              self.attachEventListener();
+            }
           },
           writable: window.debug
         },
@@ -212,15 +225,18 @@ var AEvent = registerElement(
         attachEventListener: {
           value: function () {
             var self = this;
+            var sourceEl;
+            var targetEl;
+            var listener;
 
             // TODO: Land `on` PR in `aframe-core`: https://github.com/MozVR/aframe-core/pull/330
 
             this.sceneEl = this.sceneEl || utils.$('a-scene');
 
             if (self.type === 'load') {
-              var sourceEl = getRealNode(self.parentNode);
-              var targetEl = self.target ? utils.$(self.target) : getRealNode(self.parentNode);
-              var listener = function (e) {
+              sourceEl = getRealNode(self.parentNode);
+              targetEl = self.target ? utils.$(self.target) : sourceEl;
+              listener = function (e) {
                 if (e.target !== sourceEl) { return; }
                 updateAttrs(targetEl, self.attributes);
               };
@@ -232,9 +248,13 @@ var AEvent = registerElement(
               return;
             }
 
+            listener = targetListener;
+
             // We must delegate events because the target nodes may not exist yet.
-            addDelegatedListener(this.sceneEl, self.type, targetListener);
-            recordTargetData(self.type, getRealNode(self.parentNode), self.target || self.parentNode, self.attributes);
+            addDelegatedListener(this.sceneEl, self.type, listener);
+            sourceEl = getRealNode(self.parentNode);
+            targetEl = self.target || sourceEl;
+            recordTargetData(self.type, sourceEl, targetEl, self.attributes);
           },
           writable: window.debug
         }
