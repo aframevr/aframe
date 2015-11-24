@@ -4,25 +4,23 @@
     <meta charset="utf-8">
     <title>Cursor</title>
     <meta name="description" content="Cursor — A-Frame">
-    <script src="../../build/vr-components.js"></script>
+    <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <vr-scene>
+    <a-scene>
 
       <!-- Camera with customized cursor -->
-      <vr-camera position="0 1.8 10" cursor-visible="true" cursor-scale="4" cursor-color="black" cursor-distance="2" cursor-depth="1000"></vr-camera>
+      <a-camera position="0 1.8 10" cursor-visible="true" cursor-scale="3" cursor-color="black" cursor-distance="2" cursor-depth="1000"></a-camera>
 
       <!-- Orange sphere -->
-      <vr-cube position="0 3 -5" rotation="30 30 0" width="3" depth="3" height="3" color="#F16745" metallic="0" roughness="0.8"></vr-cube>
-      <vr-image position="0 0 -5" src="../_images/radial-shadow-2.png" opacity="0.5" rotation="-90 0 0" scale="3 3 3"></vr-image>
+      <a-cube position="0 3 -5" rotation="30 30 0" width="3" depth="3" height="3" color="#F16745" metallic="0" roughness="0.8"></a-cube>
+      <a-image position="0 0 -5" src="../_images/radial-shadow-2.png" opacity="0.5" rotation="-90 0 0" scale="3 3 3"></a-image>
 
-      <!-- Highlight -->
-      <vr-image position="0 -0.2 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></vr-image>
+      <a-image position="0 -0.2 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></a-image>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
 
-      <vr-sky src="../_skies/gray-gradient-1.jpg"></vr-sky>
-      <vr-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></vr-light>
-      <vr-light type="ambient" color="#fff"></vr-light>
-
-    </vr-scene>
+    </a-scene>
   </body>
 </html>
