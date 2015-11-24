@@ -13,7 +13,7 @@ Proceed below if you would like to use the minimal set of primitive components a
 
 ### Codepen
 
-If you want to get hacking immediately, just fire up [this Codepen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)!
+If you want to get hacking immediately, just fire up __[this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!
 
 ### Downloads
 
