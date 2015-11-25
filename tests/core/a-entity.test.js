@@ -134,7 +134,7 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
-    test('returns parsed component data', function () {
+    test('returns partial component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
@@ -142,10 +142,16 @@ suite('a-entity', function () {
       assert.equal(componentData.width, 5);
       assert.notOk('height' in componentData);
     });
+
+    test('falls back to HTML getAttribute if not a component', function () {
+      var el = this.el;
+      el.setAttribute('class', 'pied piper');
+      assert.equal(el.getAttribute('class'), 'pied piper');
+    });
   });
 
   suite('getComputedAttribute', function () {
-    test('returns fully parsed component data', function () {
+    test('returns full component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
@@ -153,6 +159,12 @@ suite('a-entity', function () {
       assert.equal(componentData.primitive, 'box');
       assert.equal(componentData.width, 5);
       assert.ok('height' in componentData);
+    });
+
+    test('falls back to HTML getAttribute if not a component', function () {
+      var el = this.el;
+      el.setAttribute('class', 'pied piper');
+      assert.equal(el.getComputedAttribute('class'), 'pied piper');
     });
   });
 

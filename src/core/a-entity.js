@@ -364,8 +364,12 @@ var proto = {
   },
 
   /**
-   * If attribute is a component, it parses the style-like string into an object.
-   * Returned component data does not include applied mixins or defaults.
+   * If `attr` is a component, returns JUST the component data specified in the HTML
+   * by parsing the style-like string into an object. Like a partial version of
+   * `getComputedAttribute` as returned component data does not include applied mixins or
+   * defaults.
+   *
+   * If `attr` is not a component, fall back to HTML getAttribute.
    *
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
@@ -380,8 +384,10 @@ var proto = {
   },
 
   /**
-   * If attribute is a component, it returns component data including applied mixins and
+   * If `attr` is a component, returns ALL component data including applied mixins and
    * defaults.
+   *
+   * If `attr` is not a component, fall back to HTML getAttribute.
    *
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
