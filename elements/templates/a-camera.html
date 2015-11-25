@@ -14,11 +14,11 @@
             look-controls="enabled: ${look-controls-enabled}"
             wasd-controls="enabled: ${wasd-controls-enabled}">
     <a-entity visible="${cursor-visible}"
-                 position="0 0 -${cursor-distance}" 
-                 geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
-                 material="color: ${cursor-color}; shader: flat;"
-                 scale="${cursor-scale} ${cursor-scale} ${cursor-scale}"
-                 cursor="maxDistance: ${cursor-depth};">
+              position="0 0 -${cursor-distance}" 
+              geometry="primitive: ring; outerRadius: 0.016; innerRadius: 0.01"
+              material="color: ${cursor-color}; shader: flat;"
+              scale="${cursor-scale} ${cursor-scale} ${cursor-scale}"
+              cursor="maxDistance: ${cursor-depth};">
     </a-entity>
   </a-entity>
 </template>
