@@ -38,10 +38,6 @@ function insertTemplateElements (doc) {
   utils.$$('template[is="a-template"]', doc).forEach(function (templateEl) {
     var templateCloneEl = document.importNode(templateEl, true);
     document.body.appendChild(templateCloneEl);
-    // XXX: Hack for VS to hide templates from source.
-    setTimeout(function () {
-      document.body.removeChild(templateCloneEl);
-    });
   });
 }
 
