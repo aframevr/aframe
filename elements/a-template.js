@@ -41,18 +41,6 @@ function insertTemplateElements (doc) {
   });
 }
 
-function runAfterSceneLoaded (cb) {
-  var sceneEl = utils.$('a-scene');
-  if (!sceneEl) { return; }
-  if (sceneEl.hasLoaded) {
-    cb(sceneEl);
-    return;
-  }
-  sceneEl.addEventListener('loaded', function () {
-    cb(sceneEl);
-  });
-}
-
 module.exports = registerElement(
   'a-template',
   {
@@ -66,7 +54,7 @@ module.exports = registerElement(
             self.placeholders = [];
             // For Chrome: https://github.com/MozVR/aframe-core/issues/321
             window.addEventListener('load', function () {
-              runAfterSceneLoaded(appendElement);
+              appendElement();
               function appendElement () {
                 var isInDocument = self.ownerDocument === document;
                 // TODO: Handle `<a-mixin>` from imported templates for Chrome.
@@ -79,11 +67,8 @@ module.exports = registerElement(
 
         attachedCallback: {
           value: function () {
-            var self = this;
-            runAfterSceneLoaded(function () {
-              self.load();
-              self.inject();
-            });
+            this.load();
+            this.inject();
           },
           writable: window.debug
         },
