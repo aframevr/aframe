@@ -96,18 +96,10 @@ module.exports = function (tagName) {
                 }
               }, this);
 
-              this.root = utils.$$(this.children).filter(function (el) {
-                return el.tagName.toLowerCase() === 'a-root';
-              })[0];
-
-              if (!this.root) {
-                this.root = document.createElement('a-root');
-                this.appendChild(this.root);
-              }
-
-              var newHTML = utils.format(template.innerHTML, templateAttrs);
-              if (newHTML !== this.root.innerHTML) {
-                this.root.innerHTML = newHTML;
+              var lightHTML = this.lightHTML = this.lightHTML || this.innerHTML;
+              var shadowHTML = utils.format(template.innerHTML, templateAttrs);
+              if (shadowHTML !== this.innerHTML) {
+                this.innerHTML = lightHTML + shadowHTML;
               }
 
               this.lastOuterHTML = this.outerHTML;
