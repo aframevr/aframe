@@ -225,7 +225,7 @@ var AEvent = registerElement(
                 updateAttrs(targetEl, self.attributes);
               };
               if (sourceEl && sourceEl.hasLoaded) {
-                listener();
+                listener(sourceEl);
                 return;
               }
               this.sceneEl.addEventListener('load', listener);
