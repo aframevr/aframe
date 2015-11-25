@@ -201,13 +201,12 @@ module.exports = registerElement(
          * @param {Object} detail
          *   Custom data (optional) to pass as `detail` if the event is to
          *   be a `CustomEvent`.
-         * @param {Boolean=} [bubbles=true]
+         * @param {Boolean} bubbles
          *   Whether the event should be bubble.
          */
         emitter: {
           value: function (name, detail, bubbles) {
             var self = this;
-            if (bubbles === undefined) { bubbles = true; }
             return function () {
               self.emit(name, detail, bubbles);
             };
