@@ -177,11 +177,14 @@ module.exports = registerElement(
          *   Name of event (use a space-delimited string for multiple events).
          * @param {Object=} [detail={}]
          *   Custom data to pass as `detail` to the event.
+         * @param {Boolean=} [bubbles=true]
+         *   Whether the event should bubble.
          */
         emit: {
           value: function (name, detail, bubbles) {
             var self = this;
             detail = detail || {};
+            if (bubbles === undefined) { bubbles = true; }
             var data = { bubbles: !!bubbles, detail: detail };
             return name.split(' ').map(function (eventName) {
               return utils.fireEvent(self, eventName, data);
@@ -198,12 +201,15 @@ module.exports = registerElement(
          * @param {Object} detail
          *   Custom data (optional) to pass as `detail` if the event is to
          *   be a `CustomEvent`.
+         * @param {Boolean=} [bubbles=true]
+         *   Whether the event should be bubble.
          */
         emitter: {
-          value: function (name, detail) {
+          value: function (name, detail, bubbles) {
             var self = this;
+            if (bubbles === undefined) { bubbles = true; }
             return function () {
-              self.emit(name, detail);
+              self.emit(name, detail, bubbles);
             };
           },
           writable: window.debug
