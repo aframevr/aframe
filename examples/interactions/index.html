@@ -16,16 +16,16 @@
     <a-scene>
 
       <!-- Camera -->
-      <a-object position="0 1.8 5">
-        <a-object id="camera" camera="near: 0.1" look-controls wasd-controls>
-          <a-object position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
+      <a-entity position="0 1.8 5">
+        <a-entity id="camera" camera="near: 0.1" look-controls wasd-controls>
+          <a-entity position="0 0 -1" geometry="primitive: ring; outerRadius: 0.008; innerRadius: 0.006"
                     material="color: #FFF"
                     cursor="maxDistance: 30">
-          </a-object>
-        </a-object>
-      </a-object>
+          </a-entity>
+        </a-entity>
+      </a-entity>
 
-      <!-- Target object -->
+      <!-- Target entity -->
       <a-cylinder id="target" position="0 3.5 -2" radius="0.75" height="0.3" segments-radius="6" color="#93648D"></a-cylinder>
 
       <!-- Mixin + template (orange) -->
@@ -37,14 +37,14 @@
         <a-click scale="2 2 2"></a-click>
       </a-cube>
 
-      <!-- Mixin + object (green) -->
-      <a-object mixin="link" position="-1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #7BC8A4"></a-object>
+      <!-- Mixin + entity (green) -->
+      <a-entity mixin="link" position="-1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #7BC8A4"></a-entity>
 
       <!-- Mouseenter/leave + template (blue) -->
-      <a-object position="1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #4CC3D9">
+      <a-entity position="1 0 -2" rotation="30 30 0" geometry="primitive: box; width: 1; height: 1; depth: 1" material="color: #4CC3D9">
         <a-mouseenter scale="2 2 2"></a-mouseenter>
         <a-mouseleave scale="1 1 1"></a-mouseleave>
-      </a-object>
+      </a-entity>
 
       <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>

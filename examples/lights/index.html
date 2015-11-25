@@ -18,35 +18,35 @@
 
     <a-scene>
       <!-- Camera. -->
-      <a-object position="0 0 80" camera="fov: 45"
-                look-controls wasd-controls></a-object>
+      <a-entity position="0 0 80" camera="fov: 45"
+                look-controls wasd-controls></a-entity>
 
       <!-- Skysphere. -->
-      <a-object geometry="primitive: sphere; radius: 300"
+      <a-entity geometry="primitive: sphere; radius: 300"
                 material="color: #111; shader: flat"
-                scale="-1 -1 -1"></a-object>
+                scale="-1 -1 -1"></a-entity>
 
       <!-- Lights. -->
-      <a-object position="0 0 0">
+      <a-entity position="0 0 0">
         <a-animation attribute="rotation" to="0 0 360"
                      repeat="indefinite" easing="linear" dur="4096">
         </a-animation>
-        <a-object mixin="light" position="30 0 0"></a-object>
-      </a-object>
+        <a-entity mixin="light" position="30 0 0"></a-entity>
+      </a-entity>
 
-      <a-object position="0 0 0">
+      <a-entity position="0 0 0">
         <a-animation attribute="rotation" to="360 0 0"
                      repeat="indefinite" easing="linear" dur="4096">
         </a-animation>
-        <a-object mixin="light" position="0 0 40"></a-object>
-      </a-object>
+        <a-entity mixin="light" position="0 0 40"></a-entity>
+      </a-entity>
     </a-scene>
 
     <script>
       var scene = document.querySelector('a-scene');
 
       for (var i = 0; i < 120; i++) {
-        var obj = document.createElement('a-object');
+        var obj = document.createElement('a-entity');
         obj.setAttribute('geometry', {
           primitive: 'torusKnot',
           radius: Math.random() * 10,

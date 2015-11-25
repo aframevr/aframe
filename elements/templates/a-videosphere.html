@@ -16,11 +16,11 @@
          crossOrigin="${crossOrigin}"
          style="display: none">
   </video>
-  <a-object geometry="primitive: sphere;
+  <a-entity geometry="primitive: sphere;
                       radius: ${radius};
                       segmentsWidth: ${segments-width};
                       segmentsHeight: ${segments-height};"
             material="shader: flat; src: #video;"
             scale="-1 1 1">
-  </a-object>
+  </a-entity>
 </template>
