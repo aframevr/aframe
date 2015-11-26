@@ -8,15 +8,16 @@
           cursor-visible="true"
           cursor-distance="1"
           cursor-color="#FFF"
-          cursor-depth="10"
-          cursor-scale="1">
+          cursor-maxdepth="10"
+          cursor-scale="1"
+          cursor-opacity="1">
   <a-entity camera="fov: ${fov}; near: ${near}; far: ${far}"
             look-controls="enabled: ${look-controls-enabled}"
             wasd-controls="enabled: ${wasd-controls-enabled}">
     <a-entity visible="${cursor-visible}"
               position="0 0 -${cursor-distance}" 
               geometry="primitive: ring; outerRadius: 0.016; innerRadius: 0.01"
-              material="color: ${cursor-color}; shader: flat;"
+              material="color: ${cursor-color}; shader: flat; transparent: true; opacity: ${cursor-opacity}"
               scale="${cursor-scale} ${cursor-scale} ${cursor-scale}"
               cursor="maxDistance: ${cursor-depth};">
     </a-entity>
