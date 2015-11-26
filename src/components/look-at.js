@@ -1,5 +1,5 @@
 var debug = require('../utils/debug');
-var coordinateParser = require('../utils/coordinate-parser');
+var coordinates = require('../utils/coordinates');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -99,12 +99,12 @@ module.exports.Component = registerComponent('look-at', {
    * Determine whether attribute value is a target selector or a position.
    * Parse the attribute value if it is a position.
    *
-   * @param {string} attrs - HTML attribute of component.
+   * @param {string} value - HTML attribute of component.
    * @returns {object}
    */
   parse: {
-    value: function (attrs) {
-      if (!attrs) {
+    value: function (value) {
+      if (!value) {
         return {
           position: null,
           targetSelector: null
@@ -112,18 +112,18 @@ module.exports.Component = registerComponent('look-at', {
       }
       // Check if value is a position. Need to match digits since a target selector could have
       // three values as well (e.g., look-at="#el .el .box").
-      if (attrs.match(/\s*\d+\s*\d+\s*\d+\s*/)) {
+      if (coordinates.isCoordinate(value)) {
         return {
-          position: coordinateParser.parse.value(attrs),
+          position: coordinates.parse(value),
           targetSelector: null
         };
       }
       return {
         position: null,
-        targetSelector: attrs
+        targetSelector: value
       };
     }
   },
 
-  stringify: coordinateParser.stringify
+  stringify: coordinates.componentMixin.stringify
 });

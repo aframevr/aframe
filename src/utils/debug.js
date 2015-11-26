@@ -1,5 +1,5 @@
 var debugLib = require('debug');
-var utils = require('./main');
+var extend = require('object-assign');
 
 var settings = {
   colors: {
@@ -22,7 +22,7 @@ var debug = function (namespace) {
 
   return d;
 };
-utils.extend(debug, debugLib);
+extend(debug, debugLib);
 
 /**
  * Returns the type of the namespace (e.g., `error`, `warn`).

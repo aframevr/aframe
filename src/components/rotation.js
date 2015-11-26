@@ -1,9 +1,9 @@
-var coordinateParser = require('../utils/coordinate-parser');
+var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 var utils = require('../utils/');
 
-var proto = {
+module.exports.Component = registerComponent('rotation', utils.extend({
   defaults: {
     value: {
       x: 0,
@@ -25,7 +25,4 @@ var proto = {
       object3D.rotation.order = 'YXZ';
     }
   }
-};
-
-utils.extend(proto, coordinateParser);
-module.exports.Component = registerComponent('rotation', proto);
+}, coordinatesMixin));

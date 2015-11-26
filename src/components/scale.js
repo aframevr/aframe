@@ -1,12 +1,11 @@
-var coordinateParser = require('../utils/coordinate-parser');
+var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../utils/');
 
-// To avoid triggering a 0 determinat
-// wich makes the object3D matrix non invertible
+// Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
 var zeroScale = 0.000000000001;
 
-var proto = {
+module.exports.Component = registerComponent('scale', utils.extend({
   defaults: {
     value: {
       x: 1,
@@ -25,7 +24,4 @@ var proto = {
       object3D.scale.set(x, y, z);
     }
   }
-};
-
-utils.extend(proto, coordinateParser);
-module.exports.Component = registerComponent('scale', proto);
+}, coordinatesMixin));
