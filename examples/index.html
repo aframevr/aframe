@@ -7,28 +7,73 @@
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="//code.cdn.mozilla.net/fonts/fira.css">
     <style type="text/css">
+      
+      html {
+        font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
+      }
+
       body {
         background: rgb(239,45,94);
-        font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
         color: white;
         padding: 2rem;
       }
 
-      ul, li {
+      .note, .note a {
+        color: rgba(0,0,0,0.25);
+        font: 0.85rem/1.5em 'Fira Mono', sans-serif;
+        margin-right: 0.8em;
+        padding: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+      }
+
+      .note a:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
+        font: 100 3rem/1em 'Fira Sans', sans-serif;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        color: rgba(0,0,0,0.5);
+        font: 300 1rem 'Fira Mono', sans-serif;
+        margin-top: 2rem;
+        padding: 0;
+      }
+
+      hr {
+        background: none;
+        border: 0;
+        border-bottom: 1px dashed rgba(255,255,255,1);
+        margin: 2rem 0;
+      }
+
+      ul {
         list-style: none;
         margin: 0;
         padding: 0;
-        line-height: 2.2rem;
+        white-space: nowrap;
       }
 
-      .note, .note a, .date {
-        color: rgba(255,255,255,0.4);
-        font-family: 'Fira Mono', sans-serif;
-      }
-
-
-      .note a:hover {
+      li a {
+        border-bottom: 1px solid rgba(255,255,255,0.2);
         color: white;
+        display: block;
+        font-family: 'Fira Sans';
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 0.01em;
+        line-height: 2em;
+        text-decoration: none;
+      }
+
+      li a:hover {
+        background-color: rgba(0,0,0,0.1);
+        /*border-bottom: 1px solid #E92958;*/
       }
 
       .link--upload {
@@ -44,46 +89,6 @@
         color: #333;
       }
 
-      .date {
-        padding-right: 3rem;
-      }
-
-      h1 {
-        font-size: 3rem;
-        font-family: 'Fira Sans', sans-serif;
-        font-weight: 200;
-        text-transform: uppercase;
-        line-height: 1em;
-        letter-spacing: 0.04em;
-      }
-
-      a {
-        color: white;
-        text-decoration: none;
-        border-bottom: 1px solid rgba(255,255,255,0.6);
-      }
-
-      hr {
-        border: 0;
-        border-bottom: 1px dashed rgba(255,255,255,0.4);
-        background: none;
-        margin: 2rem 0;
-      }
-
-      .links a {
-        font-family: 'Fira Sans';
-        font-weight: 300;
-        letter-spacing: 0.01em;
-      }
-
-      li {
-        white-space: nowrap;
-      }
-
-      li a:hover {
-        background-color: rgba(0,0,0,0.1);
-        border-bottom: 1px solid #E92958;
-      }
 
       #logo-moz {
         padding-top: 6rem;
@@ -94,68 +99,64 @@
   <body>
 
     <h1>A-Frame Examples</h1>
-    <p class="note">
-      <a href="http://aframe.io">aframe.io</a>
-    </p>
+    <div class="note">
+      <a href="http://aframe.io">Aframe.io</a>
+      <a href="http://github.com/aframevr">Github</a>
+      <a href="http://aframevr.slack.com">Slack</a>
+      <a href="http://twitter.com/aframevr">Twitter</a>
+      <a href="_uploader">Upload Assets</a>
+    </div>
 
     <hr>
 
-    <p>Basics</p>
+    <h2>Basics</h2>
 
     <ul class="links">
-      <li><span class="date">20151125</span><a href="cube/">Basic Cube</a></li>
-      <li><span class="date">20151109</span><a href="cubes/">Cubes</a></li>
-      <li><span class="date">20151124</span><a href="cursor/">Cursor</a></li>
-      <li><span class="date">20151103</span><a href="cylinders/">Cylinders</a></li>
-      <li><span class="date">20151109</span><a href="frames/">Frames</a></li>
-      <!-- <li><span class="date">20151109</span><a href="hallway/">Hallway</a></li> -->
-      <li><span class="date">20151109</span><a href="images/">Images</a></li>
-      <li><span class="date">20151120</span><a href="interactions/">Interactions</a></li>
-      <li><span class="date">20151120</span><a href="lookat/">Look At</a></li>
-      <li><span class="date">20151109</span><a href="models/">Models</a></li>
-      <li><span class="date">20151103</span><a href="planes/">Planes</a></li>
-      <li><span class="date">20151109</span><a href="spheres/">Spheres</a></li>
-      <li><span class="date">20151109</span><a href="sky/">Sky</a></li>
-      <li><span class="date">20151103</span><a href="templates/">Templates</a></li>
-      <li><span class="date">20151103</span><a href="videos/">Videos</a></li>
-      <li><span class="date">20151103</span><a href="videosphere/">Video Sphere</a></li>
+      <li><a href="cube/">Basic Cube</a></li>
+      <li><a href="cubes/">Cubes</a></li>
+      <li><a href="cursor/">Cursor</a></li>
+      <li><a href="cylinders/">Cylinders</a></li>
+      <li><a href="frames/">Frames</a></li>
+      <!-- <li><a href="hallway/">Hallway</a></li> -->
+      <li><a href="images/">Images</a></li>
+      <li><a href="interactions/">Interactions</a></li>
+      <li><a href="lookat/">Look At</a></li>
+      <li><a href="models/">Models</a></li>
+      <li><a href="planes/">Planes</a></li>
+      <li><a href="spheres/">Spheres</a></li>
+      <li><a href="sky/">Sky</a></li>
+      <li><a href="templates/">Templates</a></li>
+      <li><a href="videos/">Videos</a></li>
+      <li><a href="videosphere/">Video Sphere</a></li>
     </ul>
 
-    <p>Animations</p>
+    <h2>Animations</h2>
 
     <ul class="links">
-      <li><span class="date">20151109</span><a href="animation-plane-reveals/">Plane Reveals</a></li>
-      <li><span class="date">20151117</span><a href="animation-spiral/">Spiral</a></li>
-      <li><span class="date">20151117</span><a href="animation-warps/">Warps</a></li>
+      <li><a href="animation-plane-reveals/">Plane Reveals</a></li>
+      <li><a href="animation-spiral/">Spiral</a></li>
+      <li><a href="animation-warps/">Warps</a></li>
     </ul>
 
-    <p>Scenes</p>
+    <h2>Scenes</h2>
 
     <ul class="links">
-      <li><span class="date">20151109</span><a href="animeUI/">Anime UI</a></li>
-      <li><span class="date">20151103</span><a href="composite/">Composite</a></li>
-      <!-- <li><span class="date">20151109</span><a href="hallway/">Hallway</a></li> -->
-      <li><span class="date">20151109</span><a href="legos/">Legos</a></li>
-      <li><span class="date">20151103</span><a href="lights/">Lights</a></li>
-      <li><span class="date">20151119</span><a href="mario/">Mario</a></li>
-      <li><span class="date">20151103</span><a href="panoexplorer/">Pano Explorer</a></li>
-      <li><span class="date">20151110</span><a href="shopping/">Shopping</a></li>
-      <li><span class="date">20151109</span><a href="unfold/">Unfold</a></li>
+      <li><a href="animeUI/">Anime UI</a></li>
+      <li><a href="composite/">Composite</a></li>
+      <!-- <li><a href="hallway/">Hallway</a></li> -->
+      <li><a href="legos/">Legos</a></li>
+      <li><a href="lights/">Lights</a></li>
+      <li><a href="mario/">Mario</a></li>
+      <li><a href="panoexplorer/">Pano Explorer</a></li>
+      <li><a href="shopping/">Shopping</a></li>
+      <li><a href="unfold/">Unfold</a></li>
     </ul>
 
-    <p>Tests</p>
+    <h2>Tests</h2>
 
     <ul class="links">
-      <li><span class="date">2015115</span><a href="animation-template-test/">Animations + Templates</a></li>
+      <li><a href="animation-template-test/">Animations + Templates</a></li>
     </ul>
-
-    <hr>
-
-    <p>
-      <a href="_uploader/" class="link--upload">Upload assets</a>
-    </p>
-
-    <hr>
 
     <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
 
