@@ -3,7 +3,7 @@ var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../utils/');
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
-var zeroScale = 0.000000000001;
+var zeroScale = 0.00001;
 
 module.exports.Component = registerComponent('scale', utils.extend({
   defaults: {
