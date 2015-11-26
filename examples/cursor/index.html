@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cursor</title>
+    <meta name="description" content="Cursor — A-Frame">
+    <script src="../../build/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+      <!-- Camera with customized cursor -->
+      <a-camera position="0 1.8 10" cursor-visible="true" cursor-scale="2" cursor-color="#4CC3D9" cursor-distance="2" cursor-maxdepth="1000" cursor-opacity="0.5"></a-camera>
+
+      <!-- Orange cube -->
+      <a-cube position="0 4 -5" rotation="30 30 0" width="2" depth="2" height="2" color="#F16745" roughness="0.8">
+        
+        <a-mouseenter scale="1.5 1.5 1.5" color="#FFC65D"></a-mouseenter>
+        <a-mouseenter target="#shadow" scale="3 3 3"></a-mouseenter>
+
+        <a-mouseleave scale="1 1 1" color="#F16745"></a-mouseleave>
+        <a-mouseleave target="#shadow" scale="2 2 2"></a-mouseleave>
+
+      </a-cube>
+      
+      <!-- Cube shadow -->
+      <a-image id="shadow" position="0 0 -5" src="../_images/radial-shadow-2.png" opacity="0.5" rotation="-90 0 0" scale="2 2 2"></a-image>
+
+      <a-image position="0 -0.2 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></a-image>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
+
+    </a-scene>
+  </body>
+</html>
