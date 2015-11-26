@@ -102,7 +102,7 @@ module.exports.Component = registerComponent('look-at', {
    * @param {string} attrs - HTML attribute of component.
    * @returns {object}
    */
-  parseAttributesString: {
+  parse: {
     value: function (attrs) {
       if (!attrs) {
         return {
@@ -114,7 +114,7 @@ module.exports.Component = registerComponent('look-at', {
       // three values as well (e.g., look-at="#el .el .box").
       if (attrs.match(/\s*\d+\s*\d+\s*\d+\s*/)) {
         return {
-          position: coordinateParser.parseAttributesString.value(attrs),
+          position: coordinateParser.parse.value(attrs),
           targetSelector: null
         };
       }
@@ -125,5 +125,5 @@ module.exports.Component = registerComponent('look-at', {
     }
   },
 
-  stringifyAttributes: coordinateParser.stringifyAttributes
+  stringify: coordinateParser.stringify
 });

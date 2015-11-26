@@ -278,7 +278,7 @@ var proto = {
           return;
         }
         if (typeof newData === 'string') {
-          newData = component.parseAttributesString(newData);
+          newData = component.parse(newData);
         }
         // Component already initialized. Update component.
         // TODO: update component attribute more granularly.
@@ -355,7 +355,7 @@ var proto = {
           partialComponentData[value] = componentAttrValue;
           value = partialComponentData;
         }
-        valueStr = component.stringifyAttributes(value);
+        valueStr = component.stringify(value);
       }
 
       ANode.prototype.setAttribute.call(self, attr, valueStr);
@@ -379,7 +379,7 @@ var proto = {
       var component = AComponents[attr];
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
-      return component.parseAttributesString(value);
+      return component.parse(value);
     }
   },
 
