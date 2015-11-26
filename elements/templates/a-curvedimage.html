@@ -1,0 +1,26 @@
+<template is="a-template"
+          element="a-curvedimage"
+          radius="2"
+          height="1"
+          segments-radius="36"
+          theta-start="0"
+          theta-length="6.3"
+          open-ended="false"
+          opacity="1.0"
+          transparent="true"
+          src="">
+  <a-entity geometry="primitive: cylinder;
+                      radius: ${radius};
+                      height: ${height};
+                      segmentsRadius: ${segments-radius};
+                      segmentsHeight: 1;
+                      thetaStart: ${theta-start};
+                      thetaLength: ${theta-length};
+                      openEnded: true"
+            scale="-1 1 1"
+            material="opacity: ${opacity};
+                      shader: flat;
+                      side: front;
+                      transparent: ${transparent};
+                      src: url(${src})"></a-entity>
+</template>

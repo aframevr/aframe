@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Curved Images</title>
+    <meta name="description" content="Curved Images - A-Frame">
+    <script src="../../build/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+      <a-camera fov="80" near="0.2"></a-camera>
+
+      <!-- <a-cylinder id="darken" color="black" opacity="0.5" scale="2.6 2.6 2.6" radius="0.57" height="2" open-ended="true" side="back" shader="flat"></a-cylinder> -->
+      <a-curvedimage src="../_images/hiro/ui-1-3.png" scale="2.4 2.4 2.4" radius="0.57" height="0.9"></a-curvedimage>
+      <a-curvedimage src="../_images/hiro/ui-1-2.png" scale="2.2 2.2 2.2" radius="0.57" height="0.9"></a-curvedimage>
+      <a-curvedimage src="../_images/hiro/ui-1-1.png" scale="2 2 2" radius="0.57" height="0.9"></a-curvedimage>
+
+      <a-sky src="../_skies/city-2.png"></a-sky>
+
+    </a-scene>
+  </body>
+</html>
