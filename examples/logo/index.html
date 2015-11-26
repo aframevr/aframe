@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Logo</title>
+    <meta name="description" content="Logo - A-Frame">
+    <script src="../../build/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+
+      <!-- Quasi-isometric camera  -->
+      <a-camera id="camera" position="0 880 1290" fov="7" cursor-visible="false" rotation="-34 0 0" look-controls-enabled="false"></a-camera>
+
+      <a-entity id="logo" rotation="0 45 0">
+
+        <!-- Right side -->
+        <a-entity rotation="-20 0 0" position="0 0 10.75">
+          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="1000" easing="ease-out"></a-animation>
+          <a-cube width="12.5" depth="1.2" height="30" color="#CCC" position="0 15 0">
+
+            <!-- Left side -->
+            <a-entity rotation="-140 0 0" position="0 15 0">
+              <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="800" begin="600" easing="ease-out" fill="backwards"></a-animation>
+              <a-cube width="12.5" depth="1.2" height="30" color="#CCC" position="0 15 0"></a-cube>
+            </a-entity>
+
+          </a-cube>
+        </a-entity>
+        
+        <!-- Cross-bar -->
+        <a-entity rotation="-90 0 0" position="0 8 7.5">
+          <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="600" begin="750" easing="ease-out" fill="backwards"></a-animation>
+          <a-cube width="12.5" depth="1.2" height="15" color="#CCC" position="0 7.5 0"></a-cube>
+        </a-entity>
+
+        <!-- Base -->
+        <a-plane width="30" height="30" color="#CCC" position="0 0 0" rotation="-90 0 0">
+          <a-animation attribute="scale" from="0 0 1" to="1 1 1" dur="800" easing="ease-out"></a-animation>
+        </a-plane>
+
+      </a-entity>
+
+      <a-image position="0 -1.2 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></a-image>
+      <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.45" position="4 2 1"></a-light>
+      <a-light type="ambient" color="#d4d4d4"></a-light>
+
+    </a-scene>
+  </body>
+</html>
