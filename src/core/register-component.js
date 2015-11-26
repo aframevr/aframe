@@ -18,8 +18,8 @@ module.exports.registerComponent = function (name, proto) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    parseAttributesString: NewComponent.prototype.parseAttributesString.bind(NewComponent.prototype),
-    stringifyAttributes: NewComponent.prototype.stringifyAttributes.bind(NewComponent.prototype)
+    parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
+    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype)
   };
   return NewComponent;
 };

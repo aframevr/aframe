@@ -14,7 +14,15 @@ var utils = require('../utils/');
  *           attribute name of the component plus applying defaults and mixins.
  * @property {object} el - Reference to the entity element.
  * @property {string} name - Name of the attribute the component is connected
-             to..
+ *           to.
+ * @member {Element} el
+ * @member {object} data
+ * @member {function} getData
+ * @member {function} init
+ * @member {function} update
+ * @member {function} remove
+ * @member {function} parse
+ * @member {function} stringify
  */
 var Component = function (el) {
   var attrs = el.getAttribute(this.name);
@@ -33,23 +41,65 @@ Component.prototype = {
   defaults: {},
 
   /**
-   * Component initialization which is run only once.
-   * Use to set initial things up.
+   * Init handler. Similar to attachedCallback.
+   * Called during component initialization and is only run once.
+   * Components can use this to set initial state.
    */
   init: function () { /* no-op */ },
 
   /**
+   * Update handler. Similar to attributeChangedCallback.
    * Called whenever component's data changes.
-   * Note that this is also called on component initialization where the
-   * component receives its initial data.
+   * Also called on component initialization when the component receives initial data.
    */
   update: function () { /* no-op */ },
 
   /**
-   * Called whenever component is completely removed. Use to clean up
-   * component from the entity.
+   * Remove handler. Similar to detachedCallback.
+   * Called whenever component is removed from the entity (i.e., removeAttribute).
+   * Components can use this to reset behavior on the entity.
    */
   remove: function () { /* no-op */ },
+
+  /**
+   * Describes how the component should deserialize HTML attribute into data.
+   * Can be overridden by the component.
+   *
+   * The default parsing is parsing style-like strings, camelCasing keys for
+   * error-tolerance (`max-value` ~= `maxValue`).
+   *
+   * @param {string} value - HTML attribute.
+   * @returns {object} Data.
+   */
+  parse: function (value) {
+    if (typeof value !== 'string') { return value; }
+    return transformKeysToCamelCase(styleParser.parse(value));
+  },
+
+  /**
+   * Describes how the component should serialize data to a string to update the DOM.
+   * Can be overridden by the component.
+   *
+   * The default stringify is to a style-like string.
+   *
+   * @param {object} data
+   * @returns {string}
+   */
+  stringify: function (data) {
+    if (typeof data !== 'object') { return data; }
+    return styleParser.stringify(data);
+  },
+
+  /**
+   * Returns a copy of data such that we don't expose the private this.data.
+   *
+   * @returns {object} data
+   */
+  getData: function () {
+    var data = this.data;
+    if (typeof data !== 'object') { return data; }
+    return utils.extend({}, data);
+  },
 
   /**
    * Called when new data is coming from the entity (e.g., attributeChangedCb)
@@ -58,7 +108,7 @@ Component.prototype = {
    * Does not update if data has not changed.
    */
   updateAttributes: function (newData) {
-    var previousData = extend({}, this.data);
+    var previousData = utils.extend({}, this.data);
     this.parseAttributes(newData);
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
@@ -86,66 +136,22 @@ Component.prototype = {
     var name = self.name;
 
     // 1. Default values (lowest precendence).
-    data = extend(data, defaults);
+    data = utils.extend(data, defaults);
 
     // 2. Mixin values.
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
       var mixinData = mixinEl.getAttribute(name);
-      data = extend(data, mixinData);
+      data = utils.extend(data, mixinData);
     }
 
     // 3. Attribute values (highest precendence).
-    data = extend(data, newData);
+    data = utils.extend(data, newData);
 
     // Coerce to the type of the defaults.
     this.data = utils.coerce(data, defaults);
-  },
-
-  /**
-   * Returns a copy of data such that we don't expose the private this.data.
-   *
-   * @returns {object} data
-   */
-  getData: function () {
-    var data = this.data;
-    if (typeof data !== 'object') { return data; }
-    return utils.extend({}, data);
-  },
-
-  /**
-   * Calls style parser on a component string.
-   * camelCases keys for error-tolerance (`max-value` ~= `maxValue`).
-   *
-   * @returns {object}
-   */
-  parseAttributesString: function (attrs) {
-    if (typeof attrs !== 'string') { return attrs; }
-    return transformKeysToCamelCase(styleParser.parse(attrs));
-  },
-
-  stringifyAttributes: function (attrs) {
-    if (typeof attrs !== 'object') { return attrs; }
-    return styleParser.stringify(attrs);
   }
 };
-
-/**
- * Does object extending, applying data from source onto dest.
- *
- * @param dest - Destination object or value.
- * @param source - Source object or value
- * @return Overridden object or value.
- */
-function extend (dest, source) {
-  var isSourceObject = typeof source === 'object';
-  if (source === null) { return dest; }
-  if (!isSourceObject) {
-    if (source === undefined) { return dest; }
-    return source;
-  }
-  return utils.extend(dest, source);
-}
 
 /**
  * Converts string from hyphen to camelCase.

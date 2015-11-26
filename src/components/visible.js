@@ -12,13 +12,13 @@ var proto = {
     }
   },
 
-  parseAttributesString: {
+  parse: {
     value: function (attrs) {
       return attrs === 'true';
     }
   },
 
-  stringifyAttributes: {
+  stringify: {
     value: function (attrs) {
       return attrs.toString();
     }

@@ -21,7 +21,7 @@ module.exports = registerElement(
           value: function (attr, value) {
             var component = AComponents[attr];
             if (component && typeof value === 'object') {
-              value = component.stringifyAttributes(value);
+              value = component.stringify(value);
             }
             HTMLElement.prototype.setAttribute.call(this, attr, value);
           },
@@ -33,7 +33,7 @@ module.exports = registerElement(
             var component = AComponents[attr];
             var value = HTMLElement.prototype.getAttribute.call(this, attr);
             if (!component || typeof value !== 'string') { return value; }
-            return component.parseAttributesString(value);
+            return component.parse(value);
           },
           writable: window.debug
         }
