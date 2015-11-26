@@ -2,6 +2,7 @@ var ANode = require('./a-node');
 var coerce = require('../utils/').coerce;
 var constants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
+var isCoordinate = coordinates.isCoordinate;
 var registerElement = require('../a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
@@ -383,7 +384,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     partialSetAttribute = function (value) {
       el.setAttribute(componentName, componentAttrName, value[attribute]);
     };
-  } else if (dataTo && coordinates.isCoordinate(dataTo)) {
+  } else if (dataTo && isCoordinate(dataTo)) {
     // Animating a component that is an XYZ coordinate.
     from = dataFrom ? coordinates.parse(dataFrom) : currentValue;
     to = coordinates.parse(dataTo);

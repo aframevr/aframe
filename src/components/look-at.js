@@ -1,5 +1,6 @@
 var debug = require('../utils/debug');
 var coordinates = require('../utils/coordinates');
+var isCoordinate = coordinates.isCoordinate;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -112,7 +113,7 @@ module.exports.Component = registerComponent('look-at', {
       }
       // Check if value is a position. Need to match digits since a target selector could have
       // three values as well (e.g., look-at="#el .el .box").
-      if (coordinates.isCoordinate(value)) {
+      if (isCoordinate(value)) {
         return {
           position: coordinates.parse(value),
           targetSelector: null
