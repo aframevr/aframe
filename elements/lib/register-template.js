@@ -92,7 +92,7 @@ module.exports = function (tagName) {
                 var value = templateAttrs[key];
                 var component = this.components[key];
                 if (component && typeof value === 'object') {
-                  templateAttrs[key] = component.stringifyAttributes(value);
+                  templateAttrs[key] = component.stringify(value);
                 }
               }, this);
 
