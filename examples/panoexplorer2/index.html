@@ -37,9 +37,9 @@
 
       <!-- CAMERA -->
       
-      <a-camera id="camera" position="0 0 0" near="0.1" wasd-controls-enabled="false">
-        <a-entity id="hud" position="0 0 -1">
-          <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="both"></a-animation>
+      <a-camera fov="80" id="camera" position="0 0 0" near="0.1" wasd-controls-enabled="true">
+        <a-entity id="hud" position="0 0 -0.5">
+          <!-- <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="both"></a-animation> -->
           <a-image position="-0.3 0.2 0" src="images/title-1.png" width="0.2" height="0.1"></a-image>
         </a-entity>
       </a-camera>
@@ -49,22 +49,18 @@
       <!-- INTRODUCTION -->
 
       <!-- Logo appears, rotates, disappears -->
-      <a-entity>
+      <!-- <a-entity>
 
-        <!-- Scale animation "hides" the whole intro heirarchy -->
         <a-animation attribute="scale" from="1 1 1" to="0 0 0" begin="4000" dur="1" fill="forwards"></a-animation>
       
-        <!-- Background -->  
-        <a-sky src="../_skies/gray-gradient-2.jpg"></a-sky>
+        <a-sky id="background" src="../_skies/gray-gradient-2.jpg"></a-sky>
       
-        <!-- Logo -->
-        <a-entity position="0 0.03 -1" scale="0.12 0.12 0.12">
+        <a-entity id="logo" position="0 0.03 -1" scale="0.12 0.12 0.12">
 
           <a-entity>
             <a-animation attribute="scale" from="1 1 1" to="0 0 0" begin="4000" dur="1" fill="forwards"></a-animation>
 
-            <!-- Box -->
-            <a-entity>
+            <a-entity id="box">
               <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="500" dur="500" fill="both" easing="ease-out"></a-animation>
               <a-animation attribute="position" from="0 -0.5 0" to="0 0 0" begin="500" dur="500" fill="both" easing="ease-out"></a-animation>
               <a-animation attribute="rotation" from="0 -300 0" to="30 50 30" begin="500" dur="1200" fill="both" easing="ease-out"></a-animation>
@@ -72,8 +68,7 @@
               <a-frame scale="0.04 0.04 0.04"></a-frame>
             </a-entity>
 
-            <!-- Dots -->
-            <a-entity rotation="0 0 45">
+            <a-entity id="dots1" rotation="0 0 45">
               <a-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
               <a-entity position="0 1.5 0">
                 <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
@@ -86,7 +81,7 @@
               </a-entity>
             </a-entity>
 
-            <a-entity rotation="0 0 -45">
+            <a-entity id="dots2" rotation="0 0 -45">
               <a-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
               <a-entity position="0 1.5 0">
                 <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
@@ -99,22 +94,20 @@
               </a-entity>
             </a-entity>
 
-            <!-- Name -->
-            <a-image src="images/aframe-logo.png" width="1.4" height="0.3">
+            <a-image id="name" src="images/aframe-logo.png" width="1.4" height="0.3">
               <a-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" begin="1500" dur="200" fill="both" easing="ease-out"></a-animation>
               <a-animation attribute="position" from="0 -3 0" to="0 -0.7 0" begin="1000" dur="1000" fill="both" easing="ease-out"></a-animation>
             </a-image>
 
           </a-entity>
         </a-entity>
-      </a-entity>
+      </a-entity> -->
 
       <!-- Mask obscures the scene momentarily, during which we hide the intro and reveal the rest of the scene -->
-      <a-sphere radius="0.5" color="black" shader="flat" side="back">
+      <!-- <a-sphere radius="0.5" color="black" shader="flat" side="back">
         <a-animation attribute="opacity" from="0" to="1" begin="3000" dur="750"></a-animation>
         <a-animation attribute="opacity" from="1" to="0" begin="4500" dur="1000"></a-animation>
-        <!-- <a-animation attribute="opacity" from="0" to="1" begin="4500" dur="1000" fill="both"></a-animation> -->
-      </a-sphere>
+      </a-sphere> -->
 
 
 
@@ -122,29 +115,41 @@
       
       <a-entity>
         
-        <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="both"></a-animation>
+        <!-- <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="both"></a-animation> -->
 
         <!-- Sky -->
         <a-sky id="pano" src="../_skies/city-2.png"></a-sky>
 
-        <!-- Links. When clicked they change the background -->
-        <a-entity position="0 -0.25 -2" scale="0.2 0.2 0.2">
+        <a-cylinder id="darken" position="0 -0.25 0" height="0.5" radius="1.5" side="back" open-ended="true" color="black" opacity="0.25"></a-cylinder>
 
-          <!-- <a-cube></a-cube> -->
-          
+        <!-- <a-cylinder src="images/thumb-cubes.png" scale="-1 1 1" position="0 -0.25 0" radius="1" height="1" open-ended="true"></a-cylinder> -->
+
+        <!-- Links. When clicked they change the background -->
+        <a-entity position="0 -0.5 -1" scale="0.3 0.3 0.3">         
+
           <a-image mixin="link" position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
             <a-click target="#pano" src="../_skies/peach-gradient-1.jpg"></a-click>
+            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
+            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
           </a-image>
           
           <a-image mixin="link" position="0 0 0" width="1" height="1" src="images/thumb-city.png">
             <a-click target="#pano" src="../_skies/city-2.png"></a-click>
+            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
+            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
           </a-image>
           
           <a-image mixin="link" position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
             <a-click target="#pano" src="../_skies/lake.jpg"></a-click>
+            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
+            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
           </a-image>
 
         </a-entity>
+
+        
+
+
       </a-entity>
 
 
