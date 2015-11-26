@@ -108,7 +108,7 @@ Component.prototype = {
    * Does not update if data has not changed.
    */
   updateAttributes: function (newData) {
-    var previousData = utils.extend({}, this.data);
+    var previousData = extendWithCheck({}, this.data);
     this.parseAttributes(newData);
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
@@ -136,22 +136,40 @@ Component.prototype = {
     var name = self.name;
 
     // 1. Default values (lowest precendence).
-    data = utils.extend(data, defaults);
+    data = extendWithCheck(data, defaults);
 
     // 2. Mixin values.
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
       var mixinData = mixinEl.getAttribute(name);
-      data = utils.extend(data, mixinData);
+      data = extendWithCheck(data, mixinData);
     }
 
     // 3. Attribute values (highest precendence).
-    data = utils.extend(data, newData);
+    data = extendWithCheck(data, newData);
 
     // Coerce to the type of the defaults.
     this.data = utils.coerce(data, defaults);
   }
 };
+
+/**
+* Object extending, but checks if `source` is an object first.
+* If not, `source` is a primitive and we don't do any extending.
+*
+* @param dest - Destination object or value.
+* @param source - Source object or value
+* @returns Overridden object or value.
+*/
+function extendWithCheck (dest, source) {
+  var isSourceObject = typeof source === 'object';
+  if (source === null) { return dest; }
+  if (!isSourceObject) {
+    if (source === undefined) { return dest; }
+    return source;
+  }
+  return utils.extend(dest, source);
+}
 
 /**
  * Converts string from hyphen to camelCase.
