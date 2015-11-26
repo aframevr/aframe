@@ -1,9 +1,10 @@
 var registerComponent = require('../core/register-component').registerComponent;
+var utils = require('../utils/');
 
 module.exports.Component = registerComponent('cursor', {
   defaults: {
     value: {
-      timeout: 0,
+      timeout: 1500,
       maxDistance: 5,
       fuse: false
     }
@@ -16,6 +17,8 @@ module.exports.Component = registerComponent('cursor', {
   init: {
     value: function () {
       this.raycaster = this.el.components.raycaster;
+      // The cursor defaults to fuse in mobile environments
+      this.defaults.fuse = utils.isMobile();
       this.attachEventListeners();
     }
   },
@@ -69,6 +72,7 @@ module.exports.Component = registerComponent('cursor', {
 
   onIntersection: {
     value: function (evt) {
+      var self = this;
       var data = this.data;
       var el = evt.detail.el;
       var distance = evt.detail.distance;
@@ -80,7 +84,12 @@ module.exports.Component = registerComponent('cursor', {
       this.el.addState('hovering');
       if (data.timeout === 0) { return; }
       if (!data.fuse) { return; }
-      this.fuseTimeout = setTimeout(this.emitter('click'), data.timeout);
+      this.el.addState('fusing');
+      this.fuseTimeout = setTimeout(fuse, data.timeout);
+      function fuse () {
+        self.el.removeState('fusing');
+        self.emit('click');
+      }
     }
   },
 
@@ -92,6 +101,7 @@ module.exports.Component = registerComponent('cursor', {
       el.removeState('hovered');
       el.emit('mouseleave');
       this.el.removeState('hovering');
+      this.el.removeState('fusing');
       clearTimeout(this.fuseTimeout);
     }
   }

@@ -21,18 +21,20 @@
       </a-mixin>
       <a-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20;
                                      innerRadius: 0.14"
-               material="color: gray"></a-mixin>
+               material="color: gray" cursor></a-mixin>
       <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
+      <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale" fill="backwards"
+               from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+      <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
+               fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
     </a-asset>
     <a-scene stats="true">
 
       <!-- Controls -->
       <a-entity camera="fov: 45" look-controls>
-        <a-entity mixin="cursor" position="0 0 -3"
-                  cursor="timeout: 1500; fuse: true">
-          <a-animation begin="hovering" easing="ease-in" attribute="scale"
-                       fill="backwards" from="1 1 1" to="0.2 0.2 0.2" dur="1500">
-          </a-animation>
+        <a-entity mixin="cursor" position="0 0 -3">
+          <a-animation mixin="click-animation"></a-animation>
+          <a-animation mixin="fuse-animation"></a-animation>
         </a-entity>
       </a-entity>
 
