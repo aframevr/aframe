@@ -45,6 +45,7 @@
       </a-camera>
 
 
+
       <!-- INTRODUCTION -->
 
       <!-- Logo appears, rotates, disappears -->
@@ -109,19 +110,11 @@
       </a-entity>
 
       <!-- Mask obscures the scene momentarily, during which we hide the intro and reveal the rest of the scene -->
-      <a-entity>
-        <a-animation attribute="scale" from="1 0 1" to="1 1 1" begin="3000" dur="1000" fill="both" easing="ease-in"></a-animation>
-        
-        <a-entity position="0 0.5 0">
-          <a-animation attribute="scale" from="1 1 1" to="1 0 1" begin="4500" dur="1000" fill="both" easing="ease-in"></a-animation>
-          <a-cylinder radius="0.8" height="0.5" position="0 -0.25 0" color="#EF2D5E" open-ended="true" side="back"></a-cylinder>
-        </a-entity>
-
-        <a-entity position="0 -0.5 0" rotation="0 0 0">
-          <a-animation attribute="scale" from="1 1 1" to="1 0 1" begin="4500" dur="1000" fill="both" easing="ease-in"></a-animation>
-          <a-cylinder radius="0.8" height="0.5" position="0 0.25 0" color="#EF2D5E" open-ended="true" side="back"></a-cylinder>
-        </a-entity>
-      </a-entity>
+      <a-sphere radius="0.5" color="black" shader="flat" side="back">
+        <a-animation attribute="opacity" from="0" to="1" begin="3000" dur="750"></a-animation>
+        <a-animation attribute="opacity" from="1" to="0" begin="4500" dur="1000"></a-animation>
+        <!-- <a-animation attribute="opacity" from="0" to="1" begin="4500" dur="1000" fill="both"></a-animation> -->
+      </a-sphere>
 
 
 
@@ -136,6 +129,8 @@
 
         <!-- Links. When clicked they change the background -->
         <a-entity position="0 -0.25 -2" scale="0.2 0.2 0.2">
+
+          <!-- <a-cube></a-cube> -->
           
           <a-image mixin="link" position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
             <a-click target="#pano" src="../_skies/peach-gradient-1.jpg"></a-click>
@@ -150,7 +145,6 @@
           </a-image>
 
         </a-entity>
-
       </a-entity>
 
 

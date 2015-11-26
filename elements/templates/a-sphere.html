@@ -11,7 +11,8 @@
           transparent="true"
           metalness="0.0"
           roughness="0.5"
-          src="">
+          src=""
+          side="front">
   <a-entity geometry="primitive: sphere;
                       radius: ${radius};
                       segmentsWidth: ${segments-width};
@@ -23,6 +24,7 @@
                       shader: ${shader};
                       transparent: ${transparent};
                       metalness: ${metalness};
+                      side: ${side};
                       roughness: ${roughness};
                       src: url(${src})"></a-entity>
 </template>
