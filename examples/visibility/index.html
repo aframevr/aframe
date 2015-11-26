@@ -21,39 +21,39 @@
     </a-assets>
 
     <a-scene stats="true">
-      <a-entity position="0 0 20">
-        <a-entity camera="fov: 45" look-controls wasd-controls>
-          <a-entity position="0 0 -5"
-                     geometry="primitive: ring; outerRadius: 0.30;
-                               innerRadius: 0.20"
+      <a-entity position="0 1.8 4">
+        <a-entity camera look-controls wasd-controls>
+          <a-entity position="0 0 -1"
+                     geometry="primitive: ring; outerRadius: 0.05;
+                               innerRadius: 0.03"
                      material="color: red; shader: flat"
-                     cursor="maxDistance: 30"></a-entity>
+                     cursor="maxDistance: 100"></a-entity>
         </a-entity>
       </a-entity>
 
       <a-entity id="blueCube"
-        position="5 0 0"
+        position="0 0 0"
         material="color: blue"
         geometry="primitive: box"
         rotation="25 25 0"></a-entity>
 
       <a-entity id="redSphere"
-        position="5 0 0"
+        position="0 0 0"
         material="color: red"
-        geometry="primitive: sphere; radius: 5"
+        geometry="primitive: sphere;"
         visible="false"></a-entity>
 
       <a-entity id="greenCylinder"
-        position="-7 0 0"
+        position="-3.5 0 0"
         rotation="25 25 0"
         material="color: green"
-        geometry="primitive: cylinder; radius: 5"></a-entity>
+        geometry="primitive: cylinder;"></a-entity>
 
       <a-entity id="pinkTorus"
-        position="16 0 2"
+        position="3.5 0 0"
         rotation="25 -25 0"
         material="color: hotpink"
-        geometry="primitive: torus; radius: 2.5"></a-entity>
+        geometry="primitive: torus;"></a-entity>
     </a-scene>
     <script>
       (function () {

@@ -5,8 +5,8 @@ module.exports.Component = registerComponent('camera', {
   defaults: {
     value: {
       far: 10000,
-      fov: 45,
-      near: 1
+      fov: 80,
+      near: 0.5
     }
   },
 

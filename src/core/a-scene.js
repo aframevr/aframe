@@ -400,9 +400,9 @@ var AScene = module.exports = registerElement('a-scene', {
 
         // DOM calls to create camera.
         cameraWrapperEl = document.createElement('a-entity');
-        cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 10});
+        cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
         defaultCamera = document.createElement('a-entity');
-        defaultCamera.setAttribute('camera', {fov: 45});
+        defaultCamera.setAttribute('camera');
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
         this.pendingElements++;

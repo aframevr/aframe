@@ -15,8 +15,8 @@
                                 material="side: double"></a-mixin>
     </a-assets>
     <a-scene stats="true">
-      <a-entity position="0 0 20">
-        <a-entity camera="fov: 45" look-controls wasd-controls></a-entity>
+      <a-entity position="0 0 8">
+        <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>
 
       <a-entity mixin="cylinder" position="-10 0 0" rotation="45 0 -45"
@@ -32,7 +32,7 @@
                 geometry="radius: 4; height: 2; thetaLength: 3; thetaStart: 3"
                 material="color: orchid"></a-entity>
 
-      <a-entity mixin="cylinder" position="4 -5 0" rotation="0 0 0"
+      <a-entity mixin="cylinder" position="5 -5 0" rotation="-45 0 0"
                 geometry="radiusTop: 3; radiusBottom: 0.1; height: 2"
                 material="color: green"></a-entity>
     </a-scene>
