@@ -1,10 +1,10 @@
 var debug = require('../utils/debug');
 var coordinates = require('../utils/coordinates');
-var isCoordinate = coordinates.isCoordinate;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
 var warn = debug('components:look-at:warn');
+var isCoordinate = coordinates.isCoordinate;
 
 /**
  * Look-at component.

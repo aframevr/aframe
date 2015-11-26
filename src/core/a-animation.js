@@ -2,7 +2,6 @@ var ANode = require('./a-node');
 var coerce = require('../utils/').coerce;
 var constants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
-var isCoordinate = coordinates.isCoordinate;
 var registerElement = require('../a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
@@ -12,6 +11,7 @@ var DIRECTIONS = constants.directions;
 var EASING_FUNCTIONS = constants.easingFunctions;
 var FILLS = constants.fills;
 var REPEATS = constants.repeats;
+var isCoordinate = coordinates.isCoordinate;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
