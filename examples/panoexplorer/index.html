@@ -31,7 +31,7 @@
     <a-scene stats="true">
 
       <!-- Controls -->
-      <a-entity camera="fov: 45" look-controls>
+      <a-entity camera look-controls>
         <a-entity mixin="cursor" position="0 0 -3">
           <a-animation mixin="click-animation"></a-animation>
           <a-animation mixin="fuse-animation"></a-animation>
@@ -43,7 +43,7 @@
                 material="shader: flat" scale="1 1 -1"></a-entity>
 
       <!-- Links to panos -->
-      <a-entity id="links" position="-1 -0.3 -4"></a-entity>
+      <a-entity id="links" position="-1.5 -1 -4"></a-entity>
     </a-scene>
 
     <script>

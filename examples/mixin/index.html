@@ -14,13 +14,10 @@
       <a-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></a-mixin>
     </a-assets>
     <a-scene stats="true">
-      <a-entity position="0 0 20">
-        <a-entity camera="fov: 45" look-controls wasd-controls></a-entity>
-      </a-entity>
       <!-- specialization of a particular component with an applied mixin -->
-      <a-entity mixin="cube" position="-10 0 0" material="color: yellow"></a-entity>
-      <a-entity mixin="cube"></a-entity>
-      <a-entity mixin="cube" position="10 0 0"></a-entity>
+      <a-entity mixin="cube" position="-3.5 1 0" material="color: yellow"></a-entity>
+      <a-entity mixin="cube" position="0 1 0"></a-entity>
+      <a-entity mixin="cube" position="3.5 1 0"></a-entity>
     </a-scene>
   </body>
 </html>

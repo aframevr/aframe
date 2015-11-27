@@ -4,7 +4,7 @@ var THREE = require('../../lib/three');
 
 var warn = debug('components:geometry:warn');
 
-var DEFAULT_RADIUS = 5;
+var DEFAULT_RADIUS = 1;
 
 /**
  * Geometry component. Combined with material component to make a mesh in
@@ -37,11 +37,11 @@ module.exports.Component = registerComponent('geometry', {
   defaults: {
     value: {
       arc: 2 * Math.PI,
-      depth: 5,
-      height: 5,
-      innerRadius: 5,
+      depth: 2,
+      height: 2,
+      innerRadius: 0.8,
       openEnded: false,
-      outerRadius: 7,
+      outerRadius: 1.2,
       p: 2,
       primitive: '',
       q: 3,
@@ -54,9 +54,9 @@ module.exports.Component = registerComponent('geometry', {
       segmentsWidth: 36,
       thetaLength: 6.3,
       thetaStart: 0,
-      tube: 2,
+      tube: 0.2,
       tubularSegments: 8,
-      width: 5
+      width: 2
     }
   },
 

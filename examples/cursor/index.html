@@ -21,8 +21,8 @@
     </a-assets>
 
     <a-scene stats="true">
-      <a-entity position="-3 0 20">
-        <a-entity camera="fov: 45" look-controls wasd-controls>
+      <a-entity position="0 2.2 4">
+        <a-entity camera look-controls wasd-controls>
           <a-entity position="0 0 -5"
                     geometry="primitive: ring; outerRadius: 0.30;
                               innerRadius: 0.20;"
@@ -31,21 +31,21 @@
         </a-entity>
       </a-entity>
 
-      <a-entity position="-10 0 0">
+      <a-entity position="-3.5 1 0">
         <a-entity mixin="cube red">
           <a-animation begin="click" attribute="position" from="0 0 0"
                        to="0 0 -10" dur="2000" fill="both"></a-animation>
         </a-entity>
       </a-entity>
 
-      <a-entity>
+      <a-entity position="0 1 0">
         <a-entity mixin="cube green">
           <a-animation begin="click" attribute="rotation" to="0 360 0"
                        easing="linear" dur="2000" fill="backwards"></a-animation>
         </a-entity>
       </a-entity>
 
-      <a-entity position="10 0 0" rotation="0 45 0">
+      <a-entity position="3.5 1 0" rotation="0 45 0">
         <a-entity mixin="cube blue">
           <a-animation begin="click" fill="forwards" repeat="1"
                        direction="alternate" attribute="position" from="0 0 0"
@@ -53,7 +53,7 @@
         </a-entity>
       </a-entity>
 
-      <a-entity class="clickable" mixin="cube yellow" position="0 -5 0"
+      <a-entity position="0 3 0" class="clickable" mixin="cube yellow"
                 rotation="0 45 0" scale=".5 .5 .5"></a-entity>
     </a-scene>
 

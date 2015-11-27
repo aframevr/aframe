@@ -43,7 +43,7 @@
     </a-assets>
 
     <a-scene stats="true">
-      <a-entity id="world" rotation="30 0 0" position="0 0 3"></a-entity>
+      <a-entity id="world" rotation="0 0 0" position="0 -3 0"></a-entity>
 
       <a-entity class="light--light" light="type: directional; color: #fff; intensity: 0.2" position="-10 20 10"></a-entity>
       <a-entity class="light--light" light="type: ambient; color: #eee;"></a-entity>
@@ -130,13 +130,13 @@
         function addTower (opts, numCubes) {
           opts = opts || {};
           if (!('width' in opts)) {
-            opts.width = 1;
+            opts.width = 1.5;
           }
           if (!('height' in opts)) {
             opts.height = 0.25;
           }
           if (!('depth' in opts)) {
-            opts.depth = 1;
+            opts.depth = 1.5;
           }
 
           var firstCubeOpts = Object.assign({rotation: {x: 0, y: 45, z: 0}}, opts);
