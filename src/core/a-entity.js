@@ -67,6 +67,7 @@ var proto = {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
       this.parentEl.remove(this);
+      this.updateComponents();
     }
   },
 
@@ -272,6 +273,7 @@ var proto = {
         // component and the component it's not defined via
         // mixins
         if (!this.isComponentDefined(name) ||
+            !this.parentNode ||
             newData === null && !isDefault && !isMixedIn) {
           component.remove();
           delete this.components[name];
