@@ -66,8 +66,8 @@ var proto = {
   detachedCallback: {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
+      this.removeComponents();
       this.parentEl.remove(this);
-      this.updateComponents();
     }
   },
 
@@ -239,6 +239,17 @@ var proto = {
     }
   },
 
+  removeComponents: {
+    value: function () {
+      var self = this;
+      var components = Object.keys(this.components);
+      components.forEach(removeComponent);
+      function removeComponent (name) {
+        self.components[name].remove();
+        delete self.components[name];
+      }
+    }
+  },
   updateComponents: {
     value: function () {
       var self = this;
@@ -273,7 +284,6 @@ var proto = {
         // component and the component it's not defined via
         // mixins
         if (!this.isComponentDefined(name) ||
-            !this.parentNode ||
             newData === null && !isDefault && !isMixedIn) {
           component.remove();
           delete this.components[name];
