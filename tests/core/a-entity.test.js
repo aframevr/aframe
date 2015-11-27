@@ -188,16 +188,15 @@ suite('a-entity', function () {
       assert.equal(material.metalness, 0.75);
     });
 
-    test('can update a component with an object', function () {
+    test('can replace component attributes with an object', function () {
       var el = this.el;
       var material;
-      var value = { color: '#000', metalness: 0.75 };
+      var value = { color: '#000' };
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
       el.setAttribute('material', value);
       material = el.getAttribute('material');
       assert.equal(material.color, '#000');
-      assert.equal(material.roughness, 0.25);
-      assert.equal(material.metalness, 0.75);
+      assert.equal(material.roughness, undefined);
     });
 
     test('can set a single component via a single attribute', function () {
