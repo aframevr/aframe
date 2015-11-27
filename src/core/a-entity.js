@@ -250,6 +250,7 @@ var proto = {
       }
     }
   },
+
   updateComponents: {
     value: function () {
       var self = this;
