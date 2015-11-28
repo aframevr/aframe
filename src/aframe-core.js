@@ -11,6 +11,11 @@ var AComponents = require('./core/components').components;
 var THREE = window.THREE = require('../lib/three');
 var utils = require('./utils/');
 
+// Webvr polyfill configuration
+window.WebVRConfig = {
+  TOUCH_PANNER_DISABLED: true,
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+};
 require('webvr-polyfill');
 
 require('./core/a-animation');
