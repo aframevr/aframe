@@ -28,7 +28,7 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
 
   animationEl.addEventListener('animationstart', function () {
     if (!done) {
-      cb(el, animationEl);
+      cb(el, animationEl, window.performance.now());
       done = true;
     }
   });
@@ -40,8 +40,9 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
 
 /**
  * Uses tween.update(t) to simulate animations.
- * Make sure to register `animationend` listeners *before* doing tween.update.
- * Flaky tests? Play with the durations and `tween.update(t)`s. Try to increase the values.
+ * t is the absolute time. To advance the animation to the point
+ * you want to test you need to do: animationStartTime + timeElapsed.
+ * Make sure to register `animationend` addEventListenerers *before* doing tween.update.
  */
 suite('a-animation', function () {
   suite('attachedCallback', function () {
@@ -74,10 +75,12 @@ suite('a-animation', function () {
         dur: 1000,
         fill: 'both',
         from: 0,
-        to: 1
-      }, function (el, animationEl) {
+        to: 1,
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
         self.el = el;
         self.animationEl = animationEl;
+        self.startTime = startTime;
         done();
       }, { light: '' });
     });
@@ -88,14 +91,14 @@ suite('a-animation', function () {
 
     test('between value', function () {
       var intensity;
-      this.animationEl.tween.update(999);
+      this.animationEl.tween.update(this.startTime + 500);
       intensity = this.el.getComputedAttribute('light').intensity;
       assert.isAbove(intensity, 0);
       assert.isBelow(intensity, 1);
     });
 
     test('finish value', function () {
-      this.animationEl.tween.update(10000);
+      this.animationEl.tween.update(this.startTime + 1000);
       assert.equal(this.el.getComputedAttribute('light').intensity, 1);
     });
   });
@@ -109,14 +112,14 @@ suite('a-animation', function () {
         fill: 'backwards',
         from: '0 0 0',
         to: '10 10 10'
-      }, function (el, animationEl) {
+      }, function (el, animationEl, startTime) {
         animationEl.tween = animationEl.tween;
         assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 10, y: 10, z: 10 });
         animationEl.addEventListener('animationend', function () {
           assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 0, y: 0, z: 0 });
           done();
         });
-        animationEl.tween.update(5000);
+        animationEl.tween.update(startTime + 1000);
       });
     });
   });
@@ -126,13 +129,14 @@ suite('a-animation', function () {
       var self = this;
       setupAnimation({
         attribute: 'scale',
-        dur: 100,
+        dur: 1000,
         fill: 'backwards',
         from: '5 10 5',
         to: '10 10 10'
-      }, function (el, animationEl) {
+      }, function (el, animationEl, startTime) {
         self.el = el;
         self.animationEl = animationEl;
+        self.startTime = startTime;
         done();
       }, { scale: '1 1 1' });
     });
@@ -148,7 +152,7 @@ suite('a-animation', function () {
         assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
         done();
       });
-      animationEl.tween.update(9999);
+      animationEl.tween.update(this.startTime + 1000);
     });
   });
 
@@ -173,9 +177,10 @@ suite('a-animation', function () {
         fill: 'both',
         from: '5 10 5',
         to: '10 10 10'
-      }, function (el, animationEl) {
+      }, function (el, animationEl, startTime) {
         self.animationEl = animationEl;
         self.el = el;
+        self.startTime = startTime;
         done();
       }, { scale: '1 1 1' });
     });
@@ -191,7 +196,7 @@ suite('a-animation', function () {
         assert.shallowDeepEqual(el.getAttribute('scale'), { x: 10, y: 10, z: 10 });
         done();
       });
-      animationEl.tween.update(5000);
+      animationEl.tween.update(this.startTime + 1000);
     });
   });
 
@@ -204,9 +209,10 @@ suite('a-animation', function () {
         fill: 'forwards',
         from: '45 0 45',
         to: '360 0 360'
-      }, function (el, animationEl) {
+      }, function (el, animationEl, startTime) {
         self.el = el;
         self.animationEl = animationEl;
+        self.startTime = startTime;
         done();
       }, { rotation: '10 10 10' });
     });
@@ -218,7 +224,7 @@ suite('a-animation', function () {
     test('stays at `to`', function () {
       var animationEl = this.animationEl;
       var el = this.el;
-      animationEl.tween.update(10000);
+      animationEl.tween.update(this.startTime + 1000);
       assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 360, y: 0, z: 360 });
     });
   });
@@ -232,9 +238,10 @@ suite('a-animation', function () {
         fill: 'both',
         from: 0,
         to: 1
-      }, function (el, animationEl) {
+      }, function (el, animationEl, startTime) {
         self.el = el;
         self.animationEl = animationEl;
+        self.startTime = startTime;
         done();
       }, { opacity: '' });
     });
@@ -245,14 +252,14 @@ suite('a-animation', function () {
 
     test('between value', function () {
       var opacity;
-      this.animationEl.tween.update(999);
+      this.animationEl.tween.update(this.startTime + 500);
       opacity = parseFloat(this.el.getAttribute('opacity'));
       assert.isAbove(opacity, 0);
       assert.isBelow(opacity, 1);
     });
 
     test('finish value', function () {
-      this.animationEl.tween.update(10000);
+      this.animationEl.tween.update(this.startTime + 1000);
       assert.equal(this.el.getAttribute('opacity'), 1);
     });
   });
@@ -338,10 +345,10 @@ suite('a-animation', function () {
       var position;
       setupAnimation({
         attribute: 'position',
-        dur: 10000,
+        dur: 1000,
         to: '10 10 10'
-      }, function (el, animationEl) {
-        animationEl.tween.update(5000);
+      }, function (el, animationEl, startTime) {
+        animationEl.tween.update(startTime + 500);
         // Partially done with animation.
         position = el.getAttribute('position');
         ['x', 'y', 'z'].forEach(function (axis) {
