@@ -1,3 +1,4 @@
+var debug = require('./utils/debug');
 var registerElement = require('./a-register-element');
 
 var AEntity = require('./core/a-entity');
@@ -25,6 +26,7 @@ require('./core/a-mixin');
 require('./core/a-scene');
 
 module.exports = {
+  debug: debug,
   THREE: THREE,
   ANode: ANode,
   AComponents: AComponents,
