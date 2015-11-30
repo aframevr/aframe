@@ -7,7 +7,6 @@ var AComponents = require('./components').components;
 var ANode = require('./a-node');
 var debug = require('../utils/debug');
 var THREE = require('../../lib/three');
-var utils = require('../utils');
 
 var log = debug('core:a-entity');
 var error = debug('core:a-entity:error');
@@ -359,12 +358,9 @@ var proto = {
       var valueStr = value;
 
       if (component) {
-        partialComponentData = self.getAttribute(attr) || {};
-        if (typeof value === 'object') {
-          // Update currently-defined component data with the object.
-          value = utils.extend({}, partialComponentData, value);
-        } else if (typeof value === 'string' && componentAttrValue !== undefined) {
+        if (typeof value === 'string' && componentAttrValue !== undefined) {
           // Update currently-defined component data with the new attribute value.
+          partialComponentData = self.getAttribute(attr) || {};
           partialComponentData[value] = componentAttrValue;
           value = partialComponentData;
         }
