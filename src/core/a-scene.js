@@ -564,7 +564,7 @@ var AScene = module.exports = registerElement('a-scene', {
         }
         TWEEN.update(t);
         this.behaviors.forEach(function (behavior) {
-          behavior.update(t);
+          behavior.update();
         });
         this.renderer.render(this.object3D, camera);
         if (stats) { stats().update(); }
