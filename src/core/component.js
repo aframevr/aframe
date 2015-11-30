@@ -51,8 +51,10 @@ Component.prototype = {
    * Update handler. Similar to attributeChangedCallback.
    * Called whenever component's data changes.
    * Also called on component initialization when the component receives initial data.
+   *
+   * @param {object} [previousData]- The previous values of the component attributes
    */
-  update: function () { /* no-op */ },
+  update: function (previousData) { /* no-op */ },
 
   /**
    * Remove handler. Similar to detachedCallback.
@@ -112,7 +114,7 @@ Component.prototype = {
     this.parseAttributes(newData);
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
-    this.update();
+    this.update(previousData);
   },
 
   /**
