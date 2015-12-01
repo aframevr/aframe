@@ -45,9 +45,11 @@ var AScene = module.exports = registerElement('a-scene', {
         this.insideIframe = window.top !== window.self;
         this.insideLoader = false;
         this.isScene = true;
+        this.materials = {};
         this.object3D = AScene.scene || new THREE.Scene();
-        AScene.scene = this.object3D;
         this.vrButton = null;
+
+        AScene.scene = this.object3D;
       }
     },
 
@@ -260,6 +262,17 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
+    hideUI: {
+      value: function () {
+        if (this.statsEl) {
+          this.statsEl.classList.add('hidden');
+        }
+        if (this.vrButton) {
+          this.vrButton.classList.add('hidden');
+        }
+      }
+    },
+
     load: {
       value: function () {
         // To prevent emmitting the loaded event more than once
@@ -287,6 +300,17 @@ var AScene = module.exports = registerElement('a-scene', {
           }
           this.defaultLightsEnabled = false;
         }
+      }
+    },
+
+    /**
+     * Keep track of material in case an update trigger is needed (e.g., fog).
+     *
+     * @param {object} material
+     */
+    registerMaterial: {
+      value: function (material) {
+        this.materials[material.uuid] = material;
       }
     },
 
@@ -518,15 +542,28 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    hideUI: {
-      value: function () {
-        if (this.statsEl) {
-          this.statsEl.classList.add('hidden');
-        }
-        if (this.vrButton) {
-          this.vrButton.classList.add('hidden');
-        }
+    /**
+     * Stops tracking material.
+     *
+     * @param {object} material
+     */
+    unregisterMaterial: {
+      value: function (material) {
+        delete this.materials[material.uuid];
       }
+    },
+
+    /**
+     * Trigger update to all registered materials.
+     */
+    updateMaterials: {
+      value: function (material) {
+        var materials = this.materials;
+        Object.keys(materials).forEach(function (uuid) {
+          materials[uuid].needsUpdate = true;
+        });
+      },
+      writable: window.debug
     },
 
     /**

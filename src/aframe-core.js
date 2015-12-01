@@ -3,16 +3,16 @@ var registerElement = require('./a-register-element');
 
 var AEntity = require('./core/a-entity');
 var ANode = require('./core/a-node');
+var AScene = require('./core/a-scene');
 
-// Must be required after `AObject` so all the components are registered.
+// Required after `AEntity` so that all components are registered.
 var AComponents = require('./core/components').components;
 
-// Exports THREE to the window object so we can
-// use three.js without alteration
+// Exports THREE to the window object so three.js can be used without alteration.
 var THREE = window.THREE = require('../lib/three');
 var utils = require('./utils/');
 
-// Webvr polyfill configuration
+// Webvr polyfill configuration.
 window.WebVRConfig = {
   TOUCH_PANNER_DISABLED: true,
   MOUSE_KEYBOARD_CONTROLS_DISABLED: true
@@ -26,11 +26,12 @@ require('./core/a-mixin');
 require('./core/a-scene');
 
 module.exports = {
-  debug: debug,
-  THREE: THREE,
-  ANode: ANode,
   AComponents: AComponents,
   AEntity: AEntity,
+  ANode: ANode,
+  AScene: AScene,
+  debug: debug,
   registerElement: registerElement,
+  THREE: THREE,
   utils: utils
 };

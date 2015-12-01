@@ -1,9 +1,12 @@
 var register = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
+var debug = require('../utils/debug');
+
+var warn = debug('components:fog:warn');
 
 /**
  * Fog component.
- * Applies only to the scene itself.
+ * Applies only to the scene entity.
  */
 module.exports.Component = register('fog', {
   defaults: {
@@ -22,11 +25,15 @@ module.exports.Component = register('fog', {
       var el = this.el;
       var fog = this.el.object3D.fog;
 
-      if (!el.isScene) { return; }
+      if (!el.isScene) {
+        warn('Fog component can only be applied to <a-scene>');
+        return;
+      }
 
       // (Re)create fog if fog doesn't exist or fog type changed.
       if (!fog || data.type !== fog.name) {
-        el.object3D.fog = this.getFog();
+        el.object3D.fog = getFog(data);
+        el.updateMaterials();
         return;
       }
 
@@ -51,24 +58,22 @@ module.exports.Component = register('fog', {
         fog.near = 0;
       }
     }
-  },
-
-  /**
-   * Creates a fog object. Sets fog.name to be able to detect fog type changes.
-   *
-   * @returns {object} fog
-   */
-  getFog: {
-    value: function () {
-      var data = this.data;
-      var fog;
-      if (data.type === 'exponential') {
-        fog = new THREE.FogExp2(data.color, data.density);
-      } else {
-        fog = new THREE.Fog(data.color, data.near, data.far);
-      }
-      fog.name = data.type;
-      return fog;
-    }
   }
 });
+
+/**
+ * Creates a fog object. Sets fog.name to be able to detect fog type changes.
+ *
+ * @param {object} data - Fog data.
+ * @returns {object} fog
+ */
+function getFog (data) {
+  var fog;
+  if (data.type === 'exponential') {
+    fog = new THREE.FogExp2(data.color, data.density);
+  } else {
+    fog = new THREE.Fog(data.color, data.near, data.far);
+  }
+  fog.name = data.type;
+  return fog;
+}
