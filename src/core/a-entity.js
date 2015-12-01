@@ -302,10 +302,26 @@ var proto = {
     }
   },
 
+  /**
+   * If `attr` is a component name and `componentAttr` is not defined, removeAttribute removes
+   * the entire component from the entity.
+   *
+   * If `attr` is a component name and `componentAttr` is defined, removeAttribute removes a
+   * single attribute from the component.
+   *
+   * @param {string} attr - Attribute name, which could also be a component name.
+   * @param {string} componentAttr - Component attribute name.
+   */
   removeAttribute: {
-    value: function (attr) {
+    value: function (attr, componentAttr) {
       var component = AComponents[attr];
-      if (component) { this.setEntityAttribute(attr, undefined, null); }
+      if (component) {
+        if (componentAttr) {
+          this.setAttribute(attr, componentAttr, undefined);
+        } else {
+          this.setEntityAttribute(attr, undefined, null);
+        }
+      }
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },

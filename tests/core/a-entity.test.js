@@ -223,4 +223,31 @@ suite('a-entity', function () {
       assert.ok(el.outerHTML.indexOf('position="10 20 30"') !== -1);
     });
   });
+
+  suite('removeAttribute', function () {
+    test('can remove a normal attribute', function () {
+      var el = this.el;
+      el.setAttribute('id', 'id-entity');
+      assert.equal(el.getAttribute('id'), 'id-entity');
+      el.removeAttribute('id');
+      assert.notOk(el.getAttribute('id'));
+    });
+
+    test('can remove a component', function () {
+      var el = this.el;
+      el.setAttribute('material', 'color: #F0F');
+      assert.ok(el.components.material);
+      el.removeAttribute('material');
+      assert.notOk(el.components.material);
+    });
+
+    test('can remove a component attribute', function () {
+      var el = this.el;
+      el.setAttribute('material', 'color: #F0F; transparent: true');
+      assert.ok(el.getAttribute('material', 'transparent'));
+      el.removeAttribute('material', 'transparent');
+      assert.notOk(el.getAttribute('material', 'transparent'));
+      assert.equal(el.getAttribute('material', 'color', '#F0F'));
+    });
+  });
 });
