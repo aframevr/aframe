@@ -520,10 +520,10 @@ var AScene = module.exports = registerElement('a-scene', {
         this.stats = new RStats({
           CSSPath: '../../style/',
           values: {
-            fps: { caption: 'Framerate (FPS)', below: 30 }
+            fps: { caption: 'fps', below: 30 }
           },
           groups: [
-            { caption: 'Framerate', values: [ 'fps' ] }
+            { caption: 'Framerate', values: [ 'fps', 'raf' ] }
           ]
         });
         this.statsEl = document.querySelector('.rs-base');

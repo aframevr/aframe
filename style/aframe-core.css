@@ -39,9 +39,9 @@ a-scene img, a-assets img {
   color: white;
   cursor: pointer;
   height: 25px;
-  left: 30px;
   line-height: 20px;
   position: fixed;
+  right: 30px;
   top: 20px;
   vertical-align: middle;
   width: 90px;
