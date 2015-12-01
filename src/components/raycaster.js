@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('raycaster', {
         intersectedObj = intersectedObjs[i];
         // If the intersected object is the cursor itself
         // or the object is further than the max distance
-        if (intersectedObj.object.el === cursorEl) { return; }
+        if (intersectedObj.object.el === cursorEl) { continue; }
         if (!intersectedObj.object.visible) { continue; }
         return intersectedObj;
       }
