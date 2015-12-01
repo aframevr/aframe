@@ -24,6 +24,13 @@ suite('utils.coerce', function () {
         { doubleSided: false, radius: 1 }
       ), { doubleSided: true, radius: 5.5 });
     });
+
+    test('with a coordinate', function () {
+      assert.shallowDeepEqual(coerce(
+        { position: '-1 2.5 3' },
+        { position: { x: 0, y: 0, z: 0 } }
+      ), { position: { x: -1, y: 2.5, z: 3 } });
+    });
   });
 
   suite('coerces string', function () {
@@ -38,6 +45,12 @@ suite('utils.coerce', function () {
     test('with already-coerced values', function () {
       assert.equal(coerce(true, { doubleSided: false }, 'anything'), true);
       assert.equal(coerce(5.5, { radius: 1 }, 'anything'), 5.5);
+    });
+
+    test('with a coordinate', function () {
+      assert.shallowDeepEqual(
+        coerce('-1 2.5 3', { position: { x: 0, y: 0, z: 0 } }, 'position'),
+        { x: -1, y: 2.5, z: 3 });
     });
   });
 });
