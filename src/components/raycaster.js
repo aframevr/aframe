@@ -56,8 +56,8 @@ module.exports.Component = registerComponent('raycaster', {
    * Returns the closest intersected object.
    *
    * @returns {Object|null}
-   *   The closest intersected element that is not the cursor itself
-   *   nor an invisible element.
+   *   The closest intersected element that is not the cursor itself,
+   *   an invisible element, or not a a-frame entity element.
    *   If no objects are intersected, `null` is returned.
    */
   getClosestIntersected: {
@@ -70,6 +70,7 @@ module.exports.Component = registerComponent('raycaster', {
         intersectedObj = intersectedObjs[i];
         // If the intersected object is the cursor itself
         // or the object is further than the max distance
+        if (intersectedObj.object.el === undefined) { continue; }
         if (intersectedObj.object.el === cursorEl) { continue; }
         if (!intersectedObj.object.visible) { continue; }
         return intersectedObj;
