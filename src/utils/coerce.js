@@ -14,7 +14,6 @@ var utils = require('./index');
  */
 module.exports = function (value, schema, schemaAttr) {
   var obj = value;
-  var schemaValue = schema[schemaAttr];
 
   // Batch coerce.
   if (typeof value === 'object') {

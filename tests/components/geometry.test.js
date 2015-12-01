@@ -207,5 +207,12 @@ suite('geometry', function () {
       });
       assert.shallowDeepEqual(el.object3D.geometry.vertices, DEFAULT_VERTICES);
     });
+
+    test('does not recreate geometry when just pivoting', function () {
+      var el = this.el;
+      var uuid = el.object3D.geometry.uuid;
+      el.setAttribute('geometry', 'pivot', '-2 4 2');
+      assert.equal(el.object3D.geometry.uuid, uuid);
+    });
   });
 });

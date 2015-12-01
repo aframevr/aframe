@@ -54,23 +54,54 @@ module.exports.log = function () {
 module.exports.extend = objectAssign;
 
 /**
- * Checks if a and b objects have the same attributes and the values
- * are equal. In the case of primitive types the values are compared directly
- * @param   {} a
- * @param   {} b
- * @returns {boolean}   True if objects are equal. False otherwise
+ * Checks if two objects have the same attributes and values, including nested objects.
+ *
+ * @param {object} a - First object.
+ * @param {object} b - Second object.
+ * @returns {boolean} Whether two objects are deeply equal.
  */
-module.exports.deepEqual = function (a, b) {
+function deepEqual (a, b) {
   var keysA = Object.keys(a);
   var keysB = Object.keys(b);
   var i;
   if (keysA.length !== keysB.length) { return false; }
-  // If there are no keys we just compare the objects
+  // If there are no keys, compare the objects.
   if (keysA.length === 0) { return a === b; }
   for (i = 0; i < keysA.length; ++i) {
     if (a[keysA[i]] !== b[keysA[i]]) { return false; }
   }
   return true;
+}
+module.exports.deepEqual = deepEqual;
+
+/**
+ * Computes the difference between two objects.
+ *
+ * @param {object} a - First object to compare.
+ * @param {object} b - First object to compare.
+ * @returns {object}
+ *   Difference object where set of keys note which values were not equal, and values are an
+ *   array of `a` and `b`'s values respectively.
+ */
+module.exports.diff = function (a, b) {
+  var diff = {};
+  var keys = Object.keys(a);
+  Object.keys(b).forEach(function collectKeys (bKey) {
+    if (keys.indexOf(bKey) === -1) {
+      keys.push(bKey);
+    }
+  });
+  keys.forEach(function doDiff (key) {
+    var aVal = a[key];
+    var bVal = b[key];
+    var isComparingObjects = aVal && bVal &&
+                             aVal.constructor === Object && bVal.constructor === Object;
+    if ((isComparingObjects && !deepEqual(aVal, bVal)) ||
+        (!isComparingObjects && aVal !== bVal)) {
+      diff[key] = [aVal, bVal];
+    }
+  });
+  return diff;
 };
 
 /**

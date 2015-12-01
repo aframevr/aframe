@@ -1,5 +1,3 @@
-var Component = require('../core/component');
-var coordinates = require('../utils/coordinates');
 var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
@@ -67,14 +65,23 @@ module.exports.Component = registerComponent('geometry', {
   /**
    * Creates a new geometry on every update as there's not an easy way to
    * update a geometry that would be faster than just creating a new one.
-   * TODO: don't recreate geometry when only updating pivot.
    */
   update: {
     value: function (previousData) {
+      previousData = previousData || {};
       var data = this.data;
-      var previousData = this.previousData || {};
-      var geometry = this.el.object3D.geometry = this.getGeometry();
-      applyPivot(geometry, data.pivot, previousData.pivot || this.defaults.pivot);
+      var currentPivot = previousData.pivot || this.defaults.pivot;
+      var diff = utils.diff(previousData, data);
+      var geometry = this.el.object3D.geometry;
+      var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'pivot' in diff);
+      var pivotNeedsUpdate = !utils.deepEqual(data.pivot, currentPivot);
+
+      if (geometryNeedsUpdate) {
+        geometry = this.el.object3D.geometry = this.getGeometry();
+      }
+      if (pivotNeedsUpdate) {
+        applyPivot(geometry, data.pivot, currentPivot);
+      }
     }
   },
 
@@ -156,10 +163,8 @@ module.exports.Component = registerComponent('geometry', {
  * @param {object} pivot - New absolute pivot point.
  * @param {object} currentPivot - Current pivot point.
  */
-function applyPivot(geometry, pivot, currentPivot) {
-  var translation;
-  if (utils.deepEqual(pivot, currentPivot)) { return; }
-  translation = helperMatrix.makeTranslation(
+function applyPivot (geometry, pivot, currentPivot) {
+  var translation = helperMatrix.makeTranslation(
     pivot.x - currentPivot.x,
     pivot.y - currentPivot.y,
     pivot.z - currentPivot.z
