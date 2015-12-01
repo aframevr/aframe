@@ -13,7 +13,7 @@ module.exports.regex = regex;
 function parse (value, defaults) {
   var coordinate;
   defaults = defaults || {};
-  if (typeof value !== 'string') { return value; }
+  if (typeof value !== 'string' || value === null) { return value; }
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
   return {
     x: parseFloat(coordinate[0] || defaults.x),

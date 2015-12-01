@@ -18,6 +18,10 @@ suite('utils.coordinates', function () {
       assert.shallowDeepEqual(coordinates.parse('1 2.5 -3'), { x: 1, y: 2.5, z: -3 });
     });
 
+    test('parses null', function () {
+      assert.equal(coordinates.parse(null), null);
+    });
+
     test('can return fallback values', function () {
       assert.shallowDeepEqual(coordinates.parse('1 2', { z: -3 }), { x: 1, y: 2, z: -3 });
     });
