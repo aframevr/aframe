@@ -32,3 +32,23 @@ a-scene video, a-assets video,
 a-scene img, a-assets img {
   display: none;
 }
+
+.a-enter-vr-button {
+  background-color: #303030;
+  border: 1px solid gray;
+  color: white;
+  cursor: pointer;
+  height: 25px;
+  left: 30px;
+  line-height: 20px;
+  position: fixed;
+  top: 20px;
+  vertical-align: middle;
+  width: 90px;
+  z-index: 999999;
+}
+
+.a-enter-vr-button:hover {
+  background-color: gray;
+  color: white;
+}
