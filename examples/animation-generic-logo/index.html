@@ -7,10 +7,11 @@
     <script src="../../build/aframe.js"></script>
   </head>
   <body>
-
     <a-scene>
       
       <a-camera fov="80" near="0.1" wasd-controls-enabled="false" cursor-visible="false"></a-camera>
+
+      <!-- A generic logo made of animated elements -->
 
       <a-entity id="logo" position="0 0.15 -1" scale=".5 .5 .5">
 
@@ -23,27 +24,23 @@
         </a-entity>
 
         <a-entity id="dots1" rotation="0 0 45">
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-          <a-entity position="0 1.5 0">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-            <a-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></a-cylinder>
-          </a-entity>
-          <a-entity position="0 -1.5 0" rotation="0 0 180">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-            <a-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></a-cylinder>
-          </a-entity>
+          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          <a-cylinder position="0 2 0" radius="0.04" height="2" translate="0 -1 0" color="#EF2D5E" open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" translate="0 1 0" color="#EF2D5E" open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
         </a-entity>
 
-        <a-entity id="dots2" rotation="0 0 -45">
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-          <a-entity position="0 1.5 0">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-            <a-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></a-cylinder>
-          </a-entity>
-          <a-entity position="0 -1.5 0" rotation="0 0 180">
-            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="1000" dur="750" fill="both" easing="ease-out"></a-animation>
-            <a-cylinder radius="0.04" height="1.5" position="0 -1 0" color="#EF2D5E" open-ended="true"></a-cylinder>
-          </a-entity>
+        <a-entity id="dots1" rotation="0 0 -45">
+          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          <a-cylinder position="0 2 0" radius="0.04" height="2" translate="0 -1 0" color="#EF2D5E" open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" translate="0 1 0" color="#EF2D5E" open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750" fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
         </a-entity>
 
         <a-image id="webvr" src="../_images/webvr.png" width="1" height="0.21" opacity="0.75">
