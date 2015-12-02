@@ -77,11 +77,11 @@ module.exports.deepEqual = deepEqual;
 /**
  * Computes the difference between two objects.
  *
- * @param {object} a - First object to compare.
- * @param {object} b - First object to compare.
+ * @param {object} a - First object to compare (e.g., oldData).
+ * @param {object} b - Second object to compare (e.g., newData).
  * @returns {object}
- *   Difference object where set of keys note which values were not equal, and values are an
- *   array of `a` and `b`'s values respectively.
+ *   Difference object where set of keys note which values were not equal, and values are
+ *   `b`'s values.
  */
 module.exports.diff = function (a, b) {
   var diff = {};
@@ -98,7 +98,7 @@ module.exports.diff = function (a, b) {
                              aVal.constructor === Object && bVal.constructor === Object;
     if ((isComparingObjects && !deepEqual(aVal, bVal)) ||
         (!isComparingObjects && aVal !== bVal)) {
-      diff[key] = [aVal, bVal];
+      diff[key] = bVal;
     }
   });
   return diff;

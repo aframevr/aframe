@@ -14,7 +14,7 @@ suite('utils.objects', function () {
       var objA = { position: { x: 1, y: 2, z: 3 } };
       var objB = { position: { x: 4, y: 5, z: 6 } };
       assert.shallowDeepEqual(diff(objA, objB), {
-        position: [objA.position, objB.position]
+        position: objB.position
       });
     });
 
@@ -22,7 +22,7 @@ suite('utils.objects', function () {
       var objA = { height: 10 };
       var objB = { height: 20 };
       assert.shallowDeepEqual(diff(objA, objB), {
-        height: [10, 20]
+        height: 20
       });
     });
 
@@ -30,7 +30,7 @@ suite('utils.objects', function () {
       var objA = { primitive: 'sphere' };
       var objB = {};
       assert.shallowDeepEqual(diff(objA, objB), {
-        primitive: ['sphere', undefined]
+        primitive: undefined
       });
     });
 
@@ -38,7 +38,7 @@ suite('utils.objects', function () {
       var objA = {};
       var objB = { primitive: 'sphere' };
       assert.shallowDeepEqual(diff(objA, objB), {
-        primitive: [undefined, 'sphere']
+        primitive: 'sphere'
       });
     });
 
@@ -46,8 +46,8 @@ suite('utils.objects', function () {
       var objA = { metallic: 0.5 };
       var objB = { roughness: 1 };
       assert.shallowDeepEqual(diff(objA, objB), {
-        metallic: [0.5, undefined],
-        roughness: [undefined, 1]
+        metallic: undefined,
+        roughness: 1
       });
     });
   });
