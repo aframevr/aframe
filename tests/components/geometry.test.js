@@ -52,10 +52,9 @@ suite('geometry', function () {
     test('creates circle geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute(
-        'geometry',
-        'primitive: circle; radius: 5; segments: 4; thetaStart: 1; ' +
-        'thetaLength: 2');
+      el.setAttribute('geometry', {
+        primitive: 'circle', radius: 5, segments: 4, thetaStart: 1, thetaLength: 2
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CircleGeometry');
       assert.equal(geometry.parameters.radius, 5);
@@ -67,10 +66,10 @@ suite('geometry', function () {
     test('creates cylinder geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute(
-        'geometry',
-        'primitive: cylinder; radius: 1; height: 2; segmentsRadius: 3; ' +
-        'segmentsHeight: 4; openEnded: true; thetaStart: 3.1; thetaLength: 6');
+      el.setAttribute('geometry', {
+        primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3, segmentsHeight: 4,
+        openEnded: true, thetaStart: 3.1, thetaLength: 6
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CylinderGeometry');
       assert.equal(geometry.parameters.radiusBottom, 1);
@@ -86,7 +85,7 @@ suite('geometry', function () {
     test('creates cylinder geometry with radius shortcut', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: cylinder; radius: 8');
+      el.setAttribute('geometry', { primitive: 'cylinder', radius: 8 });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CylinderGeometry');
       assert.equal(geometry.parameters.radiusTop, 8);
@@ -96,7 +95,7 @@ suite('geometry', function () {
     test('creates plane geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: plane; width: 1; height: 2');
+      el.setAttribute('geometry', { primitive: 'plane', width: 1, height: 2 });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'PlaneBufferGeometry');
       assert.equal(geometry.parameters.width, 1);
@@ -106,8 +105,8 @@ suite('geometry', function () {
     test('creates ring geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: ring; innerRadius: 1; ' +
-                      'outerRadius: 2; segments: 3');
+      el.setAttribute('geometry', {
+        primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'RingGeometry');
       assert.equal(geometry.parameters.innerRadius, 1);
@@ -118,8 +117,9 @@ suite('geometry', function () {
     test('creates sphere geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: sphere; radius: 1; ' +
-                      'segmentsWidth: 2; segmentsHeight: 3');
+      el.setAttribute('geometry', {
+        primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'SphereGeometry');
       assert.equal(geometry.parameters.radius, 1);
@@ -130,13 +130,15 @@ suite('geometry', function () {
     test('creates torus geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: torus; radius: 1; ' +
-                      'tube: 2; segments: 3; tubularSegments: 4; arc: 5.1');
+      el.setAttribute('geometry', {
+        primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3, segmentsTubular: 4,
+        arc: 5.1
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'TorusGeometry');
       assert.equal(geometry.parameters.radius, 1);
-      assert.equal(geometry.parameters.tube, 2);
       assert.equal(geometry.parameters.radialSegments, 3);
+      assert.equal(geometry.parameters.tube, 4);
       assert.equal(geometry.parameters.tubularSegments, 4);
       assert.equal(geometry.parameters.arc, 5.1);
     });
@@ -144,12 +146,14 @@ suite('geometry', function () {
     test('creates torus knot geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', 'primitive: torusKnot; radius: 1; ' +
-                      'tube: 2; segments: 3; tubularSegments: 4; p: 5; q: 6');
+      el.setAttribute('geometry', {
+        primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
+        segmentsTubular: 4, p: 5, q: 6
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'TorusKnotGeometry');
       assert.equal(geometry.parameters.radius, 1);
-      assert.equal(geometry.parameters.tube, 2);
+      assert.equal(geometry.parameters.tube, 4);
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.tubularSegments, 4);
       assert.equal(geometry.parameters.p, 5);

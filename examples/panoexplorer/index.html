@@ -21,12 +21,11 @@
                                             width: 1.4; height: 1.4"
               sound="src: ../_sounds/click.ogg">
       </a-mixin>
-      <a-mixin id="cursor" geometry="primitive: ring; outerRadius: 0.20;
-                                     innerRadius: 0.14"
+      <a-mixin id="cursor" geometry="primitive: ring; radiusOuter: 0.20; radiusInner: 0.14"
                material="color: gray" cursor></a-mixin>
       <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
-      <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale" fill="backwards"
-               from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+      <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale"
+               fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
       <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
                fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
     </a-asset>
