@@ -52,7 +52,7 @@ Component.prototype = {
    * Called whenever component's data changes.
    * Also called on component initialization when the component receives initial data.
    *
-   * @param {object} [previousData]- The previous values of the component attributes
+   * @param {object} previousData - Previous attributes of the component.
    */
   update: function (previousData) { /* no-op */ },
 

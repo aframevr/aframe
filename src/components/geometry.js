@@ -1,14 +1,14 @@
 var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
-
-var warn = debug('components:geometry:warn');
+var utils = require('../utils');
 
 var DEFAULT_RADIUS = 1;
+var helperMatrix = new THREE.Matrix4();
+var warn = debug('components:geometry:warn');
 
 /**
- * Geometry component. Combined with material component to make a mesh in
- * 3D object.
+ * Geometry component. Combined with material component to make a mesh in 3D object.
  *
  * TODO: rename component attributes to be consistent with three.js parameters
  *       names is exposed in object3D.geometry.parameters.
@@ -19,9 +19,10 @@ var DEFAULT_RADIUS = 1;
  * @param {number} innerRadius
  * @param {bool} openEnded
  * @param {number} outerRadius
- * @param {number} [p=2] - coprime of q that helps define torus knot.
- * @param {number} [q=3] - coprime of p that helps define torus knot.
- * @param {number} [primitive=null] - type of shape (e.g., box, sphere).
+ * @param {number} [p=2] - Coprime of q that helps define torus knot.
+ * @param pivot - Defined as a coordinate (e.g., `-1 0 5`) that translates geometry vertices.
+ * @param {number} [primitive=null] - Type of shape (e.g., box, sphere).
+ * @param {number} [q=3] - Coprime of p that helps define torus knot.
  * @param {number} radius
  * @param {number} segments
  * @param {number} segmentsHeight
@@ -43,6 +44,7 @@ module.exports.Component = registerComponent('geometry', {
       openEnded: false,
       outerRadius: 1.2,
       p: 2,
+      pivot: { x: 0, y: 0, z: 0 },
       primitive: '',
       q: 3,
       radius: DEFAULT_RADIUS,
@@ -65,8 +67,21 @@ module.exports.Component = registerComponent('geometry', {
    * update a geometry that would be faster than just creating a new one.
    */
   update: {
-    value: function () {
-      this.el.object3D.geometry = this.getGeometry();
+    value: function (previousData) {
+      previousData = previousData || {};
+      var data = this.data;
+      var currentPivot = previousData.pivot || this.defaults.pivot;
+      var diff = utils.diff(previousData, data);
+      var geometry = this.el.object3D.geometry;
+      var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'pivot' in diff);
+      var pivotNeedsUpdate = !utils.deepEqual(data.pivot, currentPivot);
+
+      if (geometryNeedsUpdate) {
+        geometry = this.el.object3D.geometry = this.getGeometry();
+      }
+      if (pivotNeedsUpdate) {
+        applyPivot(geometry, data.pivot, currentPivot);
+      }
     }
   },
 
@@ -139,3 +154,21 @@ module.exports.Component = registerComponent('geometry', {
     }
   }
 });
+
+/**
+ * Applies pivot transform to geometry relative to current pivot.
+ * Then triggers update to vertices.
+ *
+ * @param {object} geometry - three.js geometry.
+ * @param {object} pivot - New absolute pivot point.
+ * @param {object} currentPivot - Current pivot point.
+ */
+function applyPivot (geometry, pivot, currentPivot) {
+  var translation = helperMatrix.makeTranslation(
+    pivot.x - currentPivot.x,
+    pivot.y - currentPivot.y,
+    pivot.z - currentPivot.z
+  );
+  geometry.applyMatrix(translation);
+  geometry.verticesNeedsUpdate = true;
+}

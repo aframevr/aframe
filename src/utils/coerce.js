@@ -1,3 +1,6 @@
+var coordinates = require('./coordinates');
+var utils = require('./index');
+
 /**
  * If `value` is object, coerce values of `val` into types defined by `schema`.
  * If `value` is string and `schemaAttr` defined, coerces `value` into the value in `schema`
@@ -10,27 +13,34 @@
  * @returns Coerced value or object.
  */
 module.exports = function (value, schema, schemaAttr) {
-  // Handle case: object.
   var obj = value;
+
+  // Batch coerce.
   if (typeof value === 'object') {
     Object.keys(obj).forEach(function (key) {
       var schemaValue = schema[key];
       if (schemaValue === undefined) { return; }
-      obj[key] = coerceValue(obj[key], typeof schemaValue);
+      obj[key] = coerceValue(obj[key], schemaValue);
     });
     return obj;
   }
 
   // Handle case: string.
-  return coerceValue(value, typeof schema[schemaAttr]);
+  return coerceValue(value, schema[schemaAttr]);
 
-  function coerceValue (value, type) {
+  function coerceValue (value, targetValue) {
     if (typeof value !== 'string') { return value; }
-    switch (type) {
+
+    switch (typeof targetValue) {
       case 'boolean':
         return value === 'true';
       case 'number':
         return parseFloat(value);
+      case 'object':
+        if (utils.deepEqual(Object.keys(targetValue), ['x', 'y', 'z'])) {
+          return coordinates.parse(value);
+        }
+        return value;
       default:
         return value;
     }
