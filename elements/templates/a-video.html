@@ -3,6 +3,7 @@
           src=""
           width="4"
           height="2"
+          translate="0 0 0"
           autoplay="true"
           loop="true"
           crossOrigin="anonymous">
@@ -17,7 +18,8 @@
   </video>
   <a-entity geometry="primitive: plane;
                       height: ${height};
-                      width: ${width}"
+                      width: ${width};
+                      translate: ${translate}"
             material="shader: flat; src: #video">
   </a-entity>
 </template>

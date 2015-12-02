@@ -9,32 +9,39 @@
   <body>
     <a-scene>
 
-      <!-- model -->
-      <a-entity >
-        <a-model rotation="0 -20 0" scale="3 3 3" position="-1 0 0" src="../_models/man/man.dae">
-          <a-image src="../_images/radial-shadow-2.png" position="0.1 0 -0.3" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
-        </a-model>
+      <a-camera position="0 1.6 0"></a-camera>
+
+      <a-entity position="0 1.6 0" id="camera"></a-entity>
+
+      <!-- Model -->
+      <a-entity id="model" position="0 0 -2">
+        <a-animation attribute="rotation" from="0 -30 0" to="0 330 0" dur="15000" easing="linear" repeat="inifite"></a-animation>
+        <a-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5" src="../_models/man/man.dae"></a-model>
+        <a-image src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
       </a-entity>
+      
+      <!-- Mozvr -->
+      <a-image src="../_images/mozvr.png" width="1" height="0.2" position="-4.5 3.25 -6" scale="4 4 4"></a-image>
 
-      <!-- mozvr -->
-      <a-image src="../_images/mozvr.png" width="1" height="0.2" position="-4.1 4 -2" scale="4.25 4.25 4.25"></a-image>
+      <!-- Price -->
+      <a-image src="price.png" width="5" height="3.5" position="2.25 3.25 -6" scale="0.2 0.2 0.2">
+        <a-animation attribute="position" from="0 3.25 -6" to="2.25 3.25 -6" begin="1000" dur="1000"></a-animation>
+      </a-image>
 
-      <!-- price -->
-      <a-image src="price.png" width="5" height="3.5" position="1.8 4 -2" scale="0.2 0.2 0.2"></a-image>
-
-      <!-- goggles -->
-      <a-entity position="6 5 -3">
+      <!-- Goggles -->
+      <a-entity position="8 4 -9">
         <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="750" begin="1000" fill="backwards"></a-animation>
         <a-cylinder color="#101010" height="0.02" rotation="90 0 0"></a-cylinder>
         <a-image src="../_images/goggles.png" width="2" height="1" position="0 0 0.05" scale="0.35 0.35 0.35"></a-image>
       </a-entity>
 
-      <!-- menu -->
-      <a-plane width="6" height="1.2" position="0 0.2 5" color="#FFF">
+      <!-- Menu -->
+      <a-plane width="6" height="1.2" position="0 0.6 0" color="#FFF">
         <a-image src="fall.png" width="2" height="0.5" position="-2.2 0 0.02" scale="0.5 0.5 0.5"></a-image>
         <a-image src="shoes.png" width="0.8" height="0.3" position="1.8 0 0.02" scale="2.75 2.75 2.75"></a-image>
       </a-plane>
 
+      <a-cylinder position="0 0.5 0" radius="4" height="1.6" side="back" open-ended="true" color="#FFF"></a-cylinder>
 
       <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>

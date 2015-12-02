@@ -2,40 +2,119 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Spheres</title>
-    <meta name="description" content="Spheres — A-Frame">
+    <title>Spheres and Fog</title>
+    <meta name="description" content="Spheres and Fog — A-Frame">
     <script src="../../build/aframe.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene fog="type: linear; color: #AAB; far: 30; near: 0">
+
+      <a-image position="0 -.2 5" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="30 30 30"></a-image>
 
       <!-- Orange -->
-      <a-sphere position="0 4 -5" radius="4" color="#F16745" metallic="0" roughness="0.8" width-segments="32" height-segments="24">
-        <a-image position="0 -4 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="4 4 4"></a-image>
+      <a-sphere position="0 0 -5" translate="0 4.2 0" radius="4.2" color="#F16745" roughness="0.8" width-segments="52" height-segments="52">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="3 3 3"></a-image>
       </a-sphere>
 
       <!-- Green -->
-      <a-sphere position="-3 2 0" radius="2" color="#7BC8A4" roughness="0.2">
-        <a-image position="0 -2 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></a-image>
+      <a-sphere position="-3 0 0" translate="0 1.75 0" radius="1.75" color="#7BC8A4" roughness="0.2">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="1.75 1.75 1.75"></a-image>
       </a-sphere>
 
       <!-- Blue -->
-      <a-sphere position="1 1 0" radius="1" color="#4CC3D9" metalness="0.1">
-        <a-image position="0 -1 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></a-image>
+      <a-sphere position="1 0 0" translate="0 1 0" radius="1" color="#4CC3D9" metalness="0.1">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="1 1 1"></a-image>
       </a-sphere>
 
       <!-- Yellow -->
-      <a-sphere position="3 0.5 1" radius="0.5" color="#FFC65D" metalness="0">
-        <a-image position="0 -0.5 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
+      <a-sphere position="3 0 1" translate="0 0.5 0" radius="0.5" color="#FFC65D">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.5 0.5 0.5"></a-image>
       </a-sphere>
 
       <!-- Purple -->
-      <a-sphere position="-0.5 0.25 2" radius="0.25" color="#93648D" metalness="0">
-        <a-image position="0 -0.25 0" src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.25 0.25 0.25"></a-image>
+      <a-sphere position="-0.5 0 2" translate="0 0.25 0" radius="0.25" color="#93648D">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.25 0.25 0.25"></a-image>
       </a-sphere>
 
+      <!-- Purple -->
+      <a-sphere position="20 0 -2" translate="0 10 0" radius="10" color="#93648D" segments-width="52" segments-height="52">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="9 9 9"></a-image>
+      </a-sphere>
+
+      <!-- White -->
+      <a-sphere position="-24 0 -34" translate="0 18 0" radius="18" color="#FFC65D" segments-width="52" segments-height="52">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="8 8 8"></a-image>
+      </a-sphere>
+
+      <!-- Green -->
+      <a-sphere position="25 0 20" translate="0 12 0" radius="12" color="#7BC8A4">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="8 8 8"></a-image>
+      </a-sphere>
+
+      <!-- White -->
+      <a-sphere position="-15 0 5" translate="0 3 0" radius="3" color="#ECECEC">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="3 3 3"></a-image>
+      </a-sphere>
+
+      <!-- Orange -->
+      <a-sphere position="-6 0 6" translate="0 1 0" radius="1" color="#F16745" roughness="0.8">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="1 1 1"></a-image>
+      </a-sphere>
+
+      <!-- Yellow -->
+      <a-sphere position="-20 0 30" translate="0 30 0" radius="30" color="#FFC65D" roughness="0.6" width-segments="52" height-segments="52">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="15 15 15"></a-image>
+      </a-sphere>
+
+      <!-- Blue -->
+      <a-sphere position="-1 0 14" translate="0 2 0" radius="2" color="#4CC3D9">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></a-image>
+      </a-sphere>
+
+      <!-- Orange -->
+      <a-sphere position="10 0 15" translate="0 4 0" radius="4" color="#F16745" roughness="1">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></a-image>
+      </a-sphere>
+
+      <!-- Blue -->
+      <a-sphere position="6 0 4" translate="0 1.5 0" radius="1.5" color="#4CC3D9" metalness="0.1">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="1.5 1.5 1.5"></a-image>
+      </a-sphere>
+
+      <!-- Yellow -->
+      <a-sphere position="5 0 14" translate="0 .6 0" radius=".6" color="#FFC65D">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.6 0.6 0.6"></a-image>
+      </a-sphere>
+
+      <!-- Purple -->
+      <a-sphere position="5 0 25" translate="0 2 0" radius="2" color="#93648D">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="2 2 2"></a-image>
+      </a-sphere>
+
+      <!-- White -->
+      <a-sphere position="2 0 15" translate="0 0.2 0" radius="0.2" color="#ECECEC" width-segments="16" height-segments="16">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.2 0.2 0.2" opacity="0.5"></a-image>
+      </a-sphere>
+
+      <!-- Purple -->
+      <a-sphere position="4 0 10" translate="0 0.15 0" radius="0.15" color="#93648D" width-segments="16" height-segments="16">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.25 0.25 0.25" opacity="0.6"></a-image>
+      </a-sphere>
+
+      <!-- Blue -->
+      <a-sphere position="4 0 11" translate="0 0.1 0" radius="0.1" color="#4CC3D9" width-segments="16" height-segments="16">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.15 0.15 0.15" opacity="0.6"></a-image>
+      </a-sphere>
+
+      <!-- Green -->
+      <a-sphere position="5 0 11" translate="0 0.3 0" radius="0.3" color="#7BC8A4" width-segments="16" height-segments="16">
+        <a-image src="../_images/radial-shadow-3.png" rotation="-90 0 0" scale="0.25 0.25 0.25" opacity="0.6"></a-image>
+      </a-sphere>
+
+
+
       <!-- Highlight -->
-      <a-image position="0 -0.1 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="10 10 10"></a-image>
+      
 
       <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
