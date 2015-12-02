@@ -48,7 +48,7 @@
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,style,index.html} gh-pages/. && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent && replace 'style/aframe-core.css' 'dist/aframe-core.min.css' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release": "npm login && npm version patch --minor && npm publish",
+    "release": "npm login && npm version patch --minor && npm publish && git push --follow-tags",
     "test": "karma start ./tests/karma.conf.js",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
