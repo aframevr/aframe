@@ -1,15 +1,9 @@
+var diff = require('../utils').diff;
+var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
-// Used to detect whether light type has changed.
-// TODO: use update() diff once that is implemented.
-var LIGHT_TYPES = {
-  'ambient': 'AmbientLight',
-  'directional': 'DirectionalLight',
-  'hemisphere': 'HemisphereLight',
-  'point': 'PointLight',
-  'spot': 'SpotLight'
-};
+var warn = debug('components:light:warn');
 
 /**
  * Light component.
@@ -54,24 +48,28 @@ module.exports.Component = registerComponent('light', {
     }
   },
 
+  /**
+   * (Re)create or update light.
+   */
   update: {
-    value: function () {
+    value: function (oldData) {
       var data = this.data;
+      var diffData = diff(data, oldData || {});
       var el = this.el;
       var light = this.light;
 
       // Existing light.
       if (light) {
         // Light type has changed. Recreate light.
-        if (LIGHT_TYPES[data.type] !== light.type) {
-          var newLight = this.getLight();
+        if ('type' in diffData) {
+          var newLight = getLight(data);
           el.object3D.remove(light);
           el.object3D.add(newLight);
           this.light = newLight;
           return;
         }
         // Light type has not changed. Update light.
-        Object.keys(this.defaults).forEach(function (key) {
+        Object.keys(diffData).forEach(function (key) {
           var value = data[key];
           if (['color', 'groundColor'].indexOf(key) !== -1) {
             value = new THREE.Color(value);
@@ -82,7 +80,7 @@ module.exports.Component = registerComponent('light', {
       }
 
       // No light yet. Create and add light.
-      this.light = this.getLight();
+      this.light = getLight(data);
       el.object3D.add(this.light);
     }
   },
@@ -94,47 +92,43 @@ module.exports.Component = registerComponent('light', {
     value: function () {
       if (this.light) { this.el.object3D.remove(this.light); }
     }
-  },
-
-  /**
-   * Creates a new three.js light object given the current attributes of the
-   * component.
-   *
-   * @namespace light
-   */
-  getLight: {
-    value: function () {
-      var data = this.data;
-      var color = new THREE.Color(data.color).getHex();
-      var intensity = data.intensity;
-      var type = data.type;
-
-      if (type) {
-        type = type.toLowerCase();
-      }
-      switch (type) {
-        case 'ambient': {
-          return new THREE.AmbientLight(color);
-        }
-        case 'directional': {
-          return new THREE.DirectionalLight(color, intensity);
-        }
-        case 'hemisphere': {
-          return new THREE.HemisphereLight(
-            color, this.data.groundColor, intensity);
-        }
-        case 'point': {
-          return new THREE.PointLight(color, intensity, data.distance,
-                                      data.decay);
-        }
-        case 'spot': {
-          return new THREE.SpotLight(color, intensity, data.distance,
-                                     data.angle, data.exponent, data.decay);
-        }
-        default: {
-          return new THREE.DirectionalLight(color, intensity);
-        }
-      }
-    }
   }
 });
+
+/**
+ * Creates a new three.js light object given data object defining the light.
+ *
+ * @param {object} data
+ */
+function getLight (data) {
+  var angle = data.angle;
+  var color = new THREE.Color(data.color).getHex();
+  var decay = data.decay;
+  var distance = data.distance;
+  var groundColor = new THREE.Color(data.groundColor).getHex();
+  var intensity = data.intensity;
+  var type = data.type || '';
+
+  switch (type.toLowerCase()) {
+    case 'ambient': {
+      return new THREE.AmbientLight(color);
+    }
+    case 'directional': {
+      return new THREE.DirectionalLight(color, intensity);
+    }
+    case 'hemisphere': {
+      return new THREE.HemisphereLight(color, groundColor, intensity);
+    }
+    case 'point': {
+      return new THREE.PointLight(color, intensity, distance, decay);
+    }
+    case 'spot': {
+      return new THREE.SpotLight(color, intensity, distance, angle, data.exponent, decay);
+    }
+    default: {
+      warn('%s is not a valid light type. ' +
+           'Choose from ambient, directional, hemisphere, point, spot.', type);
+      return new THREE.DirectionalLight(color, intensity);
+    }
+  }
+}
