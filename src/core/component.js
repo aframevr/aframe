@@ -115,6 +115,14 @@ Component.prototype = {
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
     this.update(previousData);
+    this.el.emit(
+      'componentchanged',
+      {
+        name: this.name,
+        newData: this.getData(),
+        oldData: previousData
+      }
+    );
   },
 
   /**
