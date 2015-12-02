@@ -20,7 +20,6 @@ var warn = debug('components:geometry:warn');
  * @param {bool} openEnded
  * @param {number} outerRadius
  * @param {number} [p=2] - Coprime of q that helps define torus knot.
- * @param pivot - Defined as a coordinate (e.g., `-1 0 5`) that translates geometry vertices.
  * @param {number} [primitive=null] - Type of shape (e.g., box, sphere).
  * @param {number} [q=3] - Coprime of p that helps define torus knot.
  * @param {number} radius
@@ -30,6 +29,9 @@ var warn = debug('components:geometry:warn');
  * @param {number} segmentsWidth
  * @param {number} thetaLength
  * @param {number} thetaStart
+ * @param {string} translate -
+ *   Defined as a coordinate (e.g., `-1 0 5`) that translates geometry vertices. Useful for
+ *   effectively changing the pivot point.
  * @param {number} tube
  * @param {number} tubularSegments
  * @param {number} width
@@ -44,7 +46,7 @@ module.exports.Component = registerComponent('geometry', {
       openEnded: false,
       outerRadius: 1.2,
       p: 2,
-      pivot: { x: 0, y: 0, z: 0 },
+      translate: { x: 0, y: 0, z: 0 },
       primitive: '',
       q: 3,
       radius: DEFAULT_RADIUS,
@@ -70,17 +72,17 @@ module.exports.Component = registerComponent('geometry', {
     value: function (previousData) {
       previousData = previousData || {};
       var data = this.data;
-      var currentPivot = previousData.pivot || this.defaults.pivot;
+      var currentTranslate = previousData.translate || this.defaults.translate;
       var diff = utils.diff(previousData, data);
       var geometry = this.el.object3D.geometry;
-      var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'pivot' in diff);
-      var pivotNeedsUpdate = !utils.deepEqual(data.pivot, currentPivot);
+      var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'translate' in diff);
+      var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
 
       if (geometryNeedsUpdate) {
         geometry = this.el.object3D.geometry = this.getGeometry();
       }
-      if (pivotNeedsUpdate) {
-        applyPivot(geometry, data.pivot, currentPivot);
+      if (translateNeedsUpdate) {
+        applyTranslate(geometry, data.translate, currentTranslate);
       }
     }
   },
@@ -156,18 +158,17 @@ module.exports.Component = registerComponent('geometry', {
 });
 
 /**
- * Applies pivot transform to geometry relative to current pivot.
- * Then triggers update to vertices.
+ * Translates geometry vertices.
  *
  * @param {object} geometry - three.js geometry.
- * @param {object} pivot - New absolute pivot point.
- * @param {object} currentPivot - Current pivot point.
+ * @param {object} translate - New translation.
+ * @param {object} currentTranslate - Currently applied translation.
  */
-function applyPivot (geometry, pivot, currentPivot) {
+function applyTranslate (geometry, translate, currentTranslate) {
   var translation = helperMatrix.makeTranslation(
-    pivot.x - currentPivot.x,
-    pivot.y - currentPivot.y,
-    pivot.z - currentPivot.z
+    translate.x - currentTranslate.x,
+    translate.y - currentTranslate.y,
+    translate.z - currentTranslate.z
   );
   geometry.applyMatrix(translation);
   geometry.verticesNeedsUpdate = true;

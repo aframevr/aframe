@@ -157,7 +157,7 @@ suite('geometry', function () {
     });
   });
 
-  suite('pivot', function () {
+  suite('translate', function () {
     var DEFAULT_VERTICES = [
       {x: 0.5, y: 0.5, z: 0.5}, {x: 0.5, y: 0.5, z: -0.5}, {x: 0.5, y: -0.5, z: 0.5},
       {x: 0.5, y: -0.5, z: -0.5}, {x: -0.5, y: 0.5, z: -0.5}, {x: -0.5, y: 0.5, z: 0.5},
@@ -173,32 +173,32 @@ suite('geometry', function () {
       });
     });
 
-    test('defaults pivot to center', function () {
+    test('defaults translate to center', function () {
       assert.shallowDeepEqual(this.el.object3D.geometry.vertices, DEFAULT_VERTICES);
     });
 
-    test('can set pivot', function () {
+    test('can set translate', function () {
       var el = this.el;
-      el.setAttribute('geometry', 'pivot', '-2 4 2');
+      el.setAttribute('geometry', 'translate', '-2 4 2');
       assert.shallowDeepEqual(el.object3D.geometry.vertices, [
         {x: -1.5, y: 4.5, z: 2.5}, {x: -1.5, y: 4.5, z: 1.5}, {x: -1.5, y: 3.5, z: 2.5},
         {x: -1.5, y: 3.5, z: 1.5}, {x: -2.5, y: 4.5, z: 1.5}, {x: -2.5, y: 4.5, z: 2.5},
         {x: -2.5, y: 3.5, z: 1.5}, {x: -2.5, y: 3.5, z: 2.5}]);
     });
 
-    test('can update pivot', function (done) {
+    test('can update translate', function (done) {
       var el = this.el;
-      el.setAttribute('geometry', 'pivot', '-2 4 2');
-      el.setAttribute('geometry', 'pivot', '0 0 0');
+      el.setAttribute('geometry', 'translate', '-2 4 2');
+      el.setAttribute('geometry', 'translate', '0 0 0');
       setTimeout(function () {
         assert.shallowDeepEqual(el.object3D.geometry.vertices, DEFAULT_VERTICES);
         done();
       });
     });
 
-    test('can remove pivot', function () {
+    test('can remove translate', function () {
       var el = this.el;
-      el.setAttribute('geometry', 'pivot', '-2 4 2');
+      el.setAttribute('geometry', 'translate', '-2 4 2');
       this.el.setAttribute('geometry', {
         primitive: 'box',
         depth: 1,
@@ -208,10 +208,10 @@ suite('geometry', function () {
       assert.shallowDeepEqual(el.object3D.geometry.vertices, DEFAULT_VERTICES);
     });
 
-    test('does not recreate geometry when just pivoting', function () {
+    test('does not recreate geometry when just translating', function () {
       var el = this.el;
       var uuid = el.object3D.geometry.uuid;
-      el.setAttribute('geometry', 'pivot', '-2 4 2');
+      el.setAttribute('geometry', 'translate', '-2 4 2');
       assert.equal(el.object3D.geometry.uuid, uuid);
     });
   });
