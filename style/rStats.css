@@ -8,8 +8,8 @@
   overflow: hidden;
   padding: 10px;
   position: fixed;
-  left: 10px;
-  top: 10px;
+  left: 5px;
+  top: 5px;
   width: 270px;
   z-index: 10000;
 }
@@ -54,4 +54,11 @@
 
 .rs-canvas {
   order: 2;
+}
+
+@media (min-width: 480px) {
+  .rs-base {
+    left: 10px;
+    top: 10px;
+  }
 }
