@@ -22,15 +22,15 @@
           from="1 1 1"
           to="0.2 0.2 0.2"
           primitive="ring"
-          outerRadius="0.20"
-          innerRadius="0.14"
+          radiusOuter="0.20"
+          radiusInner="0.14"
           timeout="1500">
   <a-entity camera="fov: ${fov}"
             look-controls="enabled: ${look-controls-enabled}"
             wasd-controls="enabled: ${wasd-controls-enabled}">
     <a-entity id="cursor"
               position="0 0 -3"
-              geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
+              geometry="primitive: ${primitive}; radiusOuter: ${radiusOuter}; radiusInner: ${radiusInner}; segmentsTheta: 64"
               material="color: ${colorDefault}"
               cursor="timeout: ${timeout}; fuse: true">
       <a-mouseenter target="#cursor" material="color: ${colorHover}"></a-mouseenter>
