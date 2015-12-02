@@ -9,14 +9,15 @@
   <body>
     <a-scene>
 
-      <a-camera fov="80" near="0.2"></a-camera>
+      <a-camera fov="80" position="0 1.8 0" near="0.2" cursor-color="#33CCFF" cursor-opacity="1"></a-camera>
 
-      <!-- <a-cylinder id="darken" color="black" opacity="0.5" scale="2.6 2.6 2.6" radius="0.57" height="2" open-ended="true" side="back" shader="flat"></a-cylinder> -->
-      <a-curvedimage src="../_images/hiro/ui-1-3.png" scale="2.4 2.4 2.4" radius="0.57" height="0.9" segments-radius="48"></a-curvedimage>
-      <a-curvedimage src="../_images/hiro/ui-1-2.png" scale="2.2 2.2 2.2" radius="0.57" height="0.9" segments-radius="48"></a-curvedimage>
-      <a-curvedimage src="../_images/hiro/ui-1-1.png" scale="2 2 2" radius="0.57" height="0.9" segments-radius="48"></a-curvedimage>
+      <a-curvedimage src="../_images/ui/3.png" radius="5.7" theta-length="3.15" height="9" rotation="0 90 0" scale="1.2 1.2 1.2"></a-curvedimage>
+      <a-curvedimage src="../_images/mozvr.png" radius="5.7" theta-length=".31" height=".36" rotation="0 130 0" position="0 2 0" opacity="0.2"></a-curvedimage>
+      <a-curvedimage src="../_images/ui/1.png" radius="5.7" theta-length="1.26" height="2.6" rotation="0 -30 0" position="0 0.7 0" scale="0.6 0.6 0.6"></a-curvedimage>
+      <a-curvedimage src="../_images/ui/2.png" radius="5.7" theta-length="1.26" height="3.02" rotation="0 123 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
-      <a-sky src="../_skies/city-2.png"></a-sky>
+      <a-image position="0 -5 0" src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="6 6 6"></a-image>
+      <a-sky color="#f8f8f8"></a-sky>
 
     </a-scene>
   </body>

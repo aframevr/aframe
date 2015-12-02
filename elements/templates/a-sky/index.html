@@ -1,6 +1,7 @@
 <template is="a-template"
           element="a-sky"
           src=""
+          color="#FFF"
           radius="5000"
           segments-width="64"
           segments-height="64">
@@ -8,7 +9,9 @@
                       radius: ${radius};
                       segmentsWidth: ${segments-width};
                       segmentsHeight: ${segments-height}"
-            material="shader: flat; src: url(${src})"
+            material="shader: flat; 
+                      src: url(${src});
+                      color: ${color}"
             scale="-1 1 1">
   </a-entity>
 </template>
