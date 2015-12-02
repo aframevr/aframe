@@ -1,4 +1,4 @@
-var registerComponent = require('../core/register-component').registerComponent;
+var registerComponent = require('../core/component').registerComponent;
 
 /**
  * Visibility component.
@@ -6,25 +6,17 @@ var registerComponent = require('../core/register-component').registerComponent;
  * @param {bool}
  */
 module.exports.Component = registerComponent('visible', {
-  schema: {
-    value: { default: true }
+  schema: { default: true },
+
+  update: function () {
+    this.el.object3D.visible = this.data;
   },
 
-  update: {
-    value: function () {
-      this.el.object3D.visible = this.data;
-    }
+  parse: function (value) {
+    return value !== 'false';
   },
 
-  parse: {
-    value: function (value) {
-      return value !== 'false';
-    }
-  },
-
-  stringify: {
-    value: function (value) {
-      return value.toString();
-    }
+  stringify: function (value) {
+    return value.toString();
   }
 });

@@ -47,12 +47,9 @@ module.exports.isCoordinate = function (value) {
  * Prototype mixin for coordinate-only components.
  */
 module.exports.componentMixin = {
-  parse: {
-    value: function (value) {
-      return parse(value, this.schema);
-    }
+  parse: function (value) {
+    return parse(value, this.schema);
   },
-  stringify: {
-    value: stringify
-  }
+
+  stringify: stringify
 };

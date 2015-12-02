@@ -1,6 +1,6 @@
 var diff = require('../utils').diff;
 var debug = require('../utils/debug');
-var registerComponent = require('../core/register-component').registerComponent;
+var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
 var rad = THREE.Math.degToRad;
@@ -26,79 +26,71 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    value: {
-      angle: { default: 60 },
-      color: { default: '#FFF' },
-      groundColor: { default: '#FFF' },
-      decay: { default: 1 },
-      distance: { default: 0.0, min: 0 },
-      exponent: { default: 10.0 },
-      intensity: { default: 1.0, min: 0 },
-      type: { default: 'directional',
-              oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
-      }
+    angle: { default: 60 },
+    color: { default: '#FFF' },
+    groundColor: { default: '#FFF' },
+    decay: { default: 1 },
+    distance: { default: 0.0, min: 0 },
+    exponent: { default: 10.0 },
+    intensity: { default: 1.0, min: 0 },
+    type: { default: 'directional',
+            oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
     }
   },
 
   /**
    * Notifies scene a light has been added to remove default lighting.
    */
-  init: {
-    value: function () {
-      var el = this.el;
-      this.light = null;
-      el.sceneEl.registerLight(el);
-    }
+  init: function () {
+    var el = this.el;
+    this.light = null;
+    el.sceneEl.registerLight(el);
   },
 
   /**
    * (Re)create or update light.
    */
-  update: {
-    value: function (oldData) {
-      var data = this.data;
-      var diffData = diff(data, oldData || {});
-      var el = this.el;
-      var light = this.light;
+  update: function (oldData) {
+    var data = this.data;
+    var diffData = diff(data, oldData || {});
+    var el = this.el;
+    var light = this.light;
 
-      // Existing light.
-      if (light) {
-        // Light type has changed. Recreate light.
-        if ('type' in diffData) {
-          var newLight = getLight(data);
-          if (newLight) {
-            el.object3D.remove(light);
-            el.object3D.add(newLight);
-            this.light = newLight;
-          }
-          return;
+    // Existing light.
+    if (light) {
+      // Light type has changed. Recreate light.
+      if ('type' in diffData) {
+        var newLight = getLight(data);
+        if (newLight) {
+          el.object3D.remove(light);
+          el.object3D.add(newLight);
+          this.light = newLight;
         }
-        // Light type has not changed. Update light.
-        Object.keys(diffData).forEach(function (key) {
-          var value = data[key];
-          if (['color', 'groundColor'].indexOf(key) !== -1) {
-            value = new THREE.Color(value);
-          }
-          light[key] = value;
-        });
         return;
       }
+      // Light type has not changed. Update light.
+      Object.keys(diffData).forEach(function (key) {
+        var value = data[key];
+        if (['color', 'groundColor'].indexOf(key) !== -1) {
+          value = new THREE.Color(value);
+        }
+        light[key] = value;
+      });
+      return;
+    }
 
-      // No light yet. Create and add light.
-      this.light = getLight(data);
-      if (this.light) {
-        el.object3D.add(this.light);
-      }
+    // No light yet. Create and add light.
+    this.light = getLight(data);
+    if (this.light) {
+      el.object3D.add(this.light);
     }
   },
 
   /**
    * Remove light on remove (callback).
    */
-  remove: {
-    value: function () {
-      if (this.light) { this.el.object3D.remove(this.light); }
-    }
+  remove: function () {
+    if (this.light) { this.el.object3D.remove(this.light); }
   }
 });
 
