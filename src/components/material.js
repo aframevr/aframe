@@ -74,17 +74,17 @@ module.exports.Component = registerComponent('material', {
   update: {
     value: function () {
       var data = this.data;
-      var src = data.src;
       var isStandardMaterial = data.shader !== 'flat';
-      var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
       var materialData = {
         color: new THREE.Color(data.color),
         side: getSide(data.side),
         opacity: data.opacity,
         transparent: data.transparent
       };
+      var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
+      var src = data.src;
 
-      // Physical material extra parameters
+      // Attach standard material parameters.
       if (isStandardMaterial) {
         materialData.metalness = data.metalness;
         materialData.reflectivity = data.reflectivity;
@@ -92,38 +92,13 @@ module.exports.Component = registerComponent('material', {
         materialData.transparent = data.opacity < 1.0;
       }
 
-      // Create or reuse an existing material
+      // Create or reuse an existing material.
       this.material = this.updateOrCreateMaterialHelper(materialData, materialType);
       this.el.object3D.material = this.material;
 
-      // Load textures and/or cubmaps
+      // Load textures and/or cubemaps.
       if (isStandardMaterial) { this.updateEnvMap(); }
       this.updateTexture(src);
-    }
-  },
-
-  /*
-   * Updates texture applied to the material
-   *
-   * @params {string|object} src - An <img> / <video> element or url to an image/video file.
-   */
-  updateTexture: {
-    value: function (src) {
-      var data = this.data;
-      var material = this.material;
-      if (src) {
-        if (src !== this.textureSrc) {
-          // Texture added or changed.
-          this.textureSrc = src;
-          srcLoader.validateSrc(src, loadImage, loadVideo);
-        }
-      } else {
-        // Texture removed.
-        material.map = null;
-        material.needsUpdate = true;
-      }
-      function loadImage (src) { loadImageTexture(material, src, data.repeat); }
-      function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
     }
   },
 
@@ -132,14 +107,16 @@ module.exports.Component = registerComponent('material', {
    */
   remove: {
     value: function () {
-      var object3D = this.el.object3D;
+      var el = this.el;
+      var object3D = el.object3D;
       if (object3D) { object3D.material = null; }
+      el.sceneEl.unregisterMaterial(this.material);
     }
   },
 
   /**
-   * Updates this.material using data, creates new material if this.material
-   * doesn't yet exist.
+   * Updates this.material using data, creates new material if this.material doesn't yet
+   * exist.
    *
    * @params {object} data - Attributes to set on the material.
    * @params {string} type - Type of material to create (if necessary).
@@ -149,12 +126,20 @@ module.exports.Component = registerComponent('material', {
     value: function (data, type) {
       var material = this.material;
       var reuseMaterial = material && material.type === type;
+      var sceneEl = this.el.sceneEl;
+
       if (reuseMaterial) {
+        // Updating existing material.
         Object.keys(data).forEach(function (key) {
           material[key] = data[key];
         });
       } else {
+        // Creating new material.
+        if (this.material) {
+          sceneEl.unregisterMaterial(this.material);
+        }
         material = new THREE[type](data);
+        sceneEl.registerMaterial(material);
       }
       return material;
     }
@@ -162,8 +147,7 @@ module.exports.Component = registerComponent('material', {
 
   /**
    * Handle environment cubemap. Textures are cached in texturePromises.
-   *
-  */
+   */
   updateEnvMap: {
     value: function () {
       var self = this;
@@ -197,11 +181,36 @@ module.exports.Component = registerComponent('material', {
         });
       }
     }
+  },
+
+  /*
+   * Updates material texture map.
+   *
+   * @param {string|object} src - An <img> / <video> element or url to an image/video file.
+   */
+  updateTexture: {
+    value: function (src) {
+      var data = this.data;
+      var material = this.material;
+      if (src) {
+        if (src !== this.textureSrc) {
+          // Texture added or changed.
+          this.textureSrc = src;
+          srcLoader.validateSrc(src, loadImage, loadVideo);
+        }
+      } else {
+        // Texture removed.
+        material.map = null;
+        material.needsUpdate = true;
+      }
+      function loadImage (src) { loadImageTexture(material, src, data.repeat); }
+      function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
+    }
   }
 });
 
 /**
- * Sets image texture on material as map.
+ * Sets image texture on material as `map`.
  *
  * @params {object} material - three.js material.
  * @params {string|object} src - An <img> element or url to an image file.

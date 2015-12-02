@@ -1,12 +1,16 @@
 /* global assert, process, setup, suite, test */
+var AScene = require('aframe-core').AScene;
 var entityFactory = require('../helpers').entityFactory;
 
 suite('fog', function () {
   'use strict';
 
   setup(function () {
+    var el;
     this.entityEl = entityFactory();
-    var el = this.el = this.entityEl.parentNode;
+    el = this.el = this.entityEl.parentNode;
+    this.updateMaterialsSpy = this.sinon.spy(AScene.prototype, 'updateMaterials');
+
     // We force loading of the scene since the logic
     // that fires the event is in attachedCallback
     // which is stubbed to avoid running any WebGL code
@@ -24,6 +28,10 @@ suite('fog', function () {
   suite('update', function () {
     test('creates fog', function () {
       assert.ok(this.el.object3D.fog);
+    });
+
+    test('triggers material update when adding fog', function () {
+      assert.ok(this.updateMaterialsSpy.called);
     });
 
     test('updates fog', function () {

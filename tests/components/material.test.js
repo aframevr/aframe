@@ -18,6 +18,12 @@ suite('material', function () {
       assert.ok(this.el.object3D.material);
     });
 
+    test('registers material to scene', function () {
+      var el = this.el;
+      var material = el.object3D.material;
+      assert.equal(el.sceneEl.materials[material.uuid], material);
+    });
+
     test('updates material', function () {
       var el = this.el;
       el.setAttribute('material', 'color: #F0F');
@@ -41,6 +47,18 @@ suite('material', function () {
       el.setAttribute('material', 'shader: flat');
       el.setAttribute('material', 'shader: standard');
       assert.equal(el.object3D.material.type, 'MeshStandardMaterial');
+    });
+
+    test('re-registers material when toggling material to flat shading', function () {
+      var el = this.el;
+      var oldMaterial = el.object3D.material;
+      var newMaterial;
+      el.setAttribute('material', 'shader: flat');
+      el.setAttribute('material', 'shader: standard');
+
+      newMaterial = el.object3D.material;
+      assert.notOk(el.sceneEl.materials[oldMaterial.uuid]);
+      assert.equal(el.sceneEl.materials[newMaterial.uuid], newMaterial);
     });
   });
 
