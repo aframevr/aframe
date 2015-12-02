@@ -179,7 +179,7 @@ var AScene = module.exports = registerElement('a-scene', {
             switch (e.data.type) {
               case 'loaderReady': {
                 self.insideLoader = true;
-                self.removeEnterVrButton();
+                self.removeEnterVRButton();
                 break;
               }
               case 'fullscreen': {
@@ -196,17 +196,6 @@ var AScene = module.exports = registerElement('a-scene', {
             }
           }
         });
-      }
-    },
-
-    createEnterVrButton: {
-      value: function () {
-        if (this.vrButton) { return; }
-        var vrButton = this.vrButton = document.createElement('button');
-        vrButton.textContent = 'Enter VR';
-        vrButton.className = 'a-button a-enter-vr-button';
-        document.body.appendChild(vrButton);
-        vrButton.addEventListener('click', this.enterVR.bind(this));
       }
     },
 
@@ -273,6 +262,20 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
+    /**
+     * Injects a button into the page that, when clicked, will enter into stereo-rendering
+     * mode for VR. Does not create a button if one already exists.
+     */
+    injectEnterVRButton: {
+      value: function () {
+        if (this.vrButton) { return; }
+        var vrButton = this.vrButton = document.createElement('button');
+        vrButton.className = 'a-enter-vr-button';
+        vrButton.addEventListener('click', this.enterVR.bind(this));
+        document.body.appendChild(vrButton);
+      }
+    },
+
     load: {
       value: function () {
         // To prevent emmitting the loaded event more than once
@@ -326,7 +329,7 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    removeEnterVrButton: {
+    removeEnterVRButton: {
       value: function () {
         if (this.vrButton) {
           this.vrButton.parentNode.removeChild(this.vrButton);
@@ -477,7 +480,7 @@ var AScene = module.exports = registerElement('a-scene', {
           });
         }
         if (!self.insideLoader) {
-          self.createEnterVrButton();
+          self.injectEnterVRButton();
         }
       }
     },
