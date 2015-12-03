@@ -5,32 +5,32 @@
 </a-assets>
 
 <template is="a-template" element="a-pano-link" src="" holderSrc="">
-  <a-object mixin="link" material="shader: flat; src: url(${src})">
+  <a-entity mixin="link" material="shader: flat; src: url(${src})">
     <a-click target="#holder" material="shader: flat; src: url(${holderSrc})"></a-click>
     <a-click state="selected"></a-click>
-  </a-object>
+  </a-entity>
 </template>
 
 <template is="a-template"
           element="a-cursor-gaze"
           fov="45"
-          look-controls="true"
-          wasd-controls="true"
+          look-controls-enabled="true"
+          wasd-controls-enabled="true"
           colorDefault="gray"
           colorHover="springgreen"
           dur="1500"
           from="1 1 1"
           to="0.2 0.2 0.2"
           primitive="ring"
-          outerRadius="0.20"
-          innerRadius="0.14"
+          radiusOuter="0.20"
+          radiusInner="0.14"
           timeout="1500">
-  <a-object camera="fov: ${fov}"
-            look-controls="${look-controls}"
-            wasd-controls="${wasd-controls}">
-    <a-object id="cursor"
+  <a-entity camera="fov: ${fov}"
+            look-controls="enabled: ${look-controls-enabled}"
+            wasd-controls="enabled: ${wasd-controls-enabled}">
+    <a-entity id="cursor"
               position="0 0 -3"
-              geometry="primitive: ${primitive}; outerRadius: ${outerRadius}; innerRadius: ${innerRadius}"
+              geometry="primitive: ${primitive}; radiusOuter: ${radiusOuter}; radiusInner: ${radiusInner}; segmentsTheta: 64"
               material="color: ${colorDefault}"
               cursor="timeout: ${timeout}; fuse: true">
       <a-mouseenter target="#cursor" material="color: ${colorHover}"></a-mouseenter>
@@ -41,12 +41,12 @@
                    from="${from}"
                    to="${to}"
                    dur="${dur}"></a-animation>
-    </a-object>
-  </a-object>
+    </a-entity>
+  </a-entity>
 </template>
 
 <template is="a-template" element="a-pano-holder" size="10">
-  <a-object id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="shader: flat; src: url(${src})"></a-object>
+  <a-entity id="holder" scale="1 1 -1" geometry="primitive: sphere; radius: ${size}" material="shader: flat; src: url(${src})"></a-entity>
 </template>
 
 <template is="a-template" element="a-pano-nav">
