@@ -20,21 +20,20 @@
       </a-mixin>
       <a-mixin id="cylinder"
                geometry="primitive: cylinder; radius: 0.2; height: .5;
-                         segmentsRadius: 50; segmentsHeight: 50:
+                         segmentsRadial: 50; segmentsHeight: 50:
                          openEnded: true; thetaStart: 0; thetaEnd: 3">
       </a-mixin>
       <a-mixin id="ring"
-                geometry="primitive: ring; innerRadius: .3;
-                          openEnded: true; outerRadius: .5;
-                          segments: 50"></a-mixin>
+                geometry="primitive: ring; radiusInner: .3; openEnded: true; radiusOuter: .5;
+                          segmentsTheta: 50"></a-mixin>
       <a-mixin id="sphere"
                 geometry="primitive: sphere; radius: .1"></a-mixin>
       <a-mixin id="torus"
-                geometry="primitive: torus; arc: 6; radius: .3; tube: .05;
+                geometry="primitive: torus; arc: 6; radius: .3; radiusTubular: .05;
                           segments: 32; tubularSegments: 10;"></a-mixin>
       <a-mixin id="torus-knot"
                 geometry="primitive: torusKnot; p: 3; q: 7; radius: .25;
-                          segments: 32; tube: .07; tubularSegments: 10">
+                          segments: 32; radiusTubular: .07; segmentsTubular: 10">
       </a-mixin>
 
       <!-- Layout mixins. -->
