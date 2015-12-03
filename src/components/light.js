@@ -63,9 +63,11 @@ module.exports.Component = registerComponent('light', {
         // Light type has changed. Recreate light.
         if ('type' in diffData) {
           var newLight = getLight(data);
-          el.object3D.remove(light);
-          el.object3D.add(newLight);
-          this.light = newLight;
+          if (newLight) {
+            el.object3D.remove(light);
+            el.object3D.add(newLight);
+            this.light = newLight;
+          }
           return;
         }
         // Light type has not changed. Update light.
@@ -81,7 +83,9 @@ module.exports.Component = registerComponent('light', {
 
       // No light yet. Create and add light.
       this.light = getLight(data);
-      el.object3D.add(this.light);
+      if (this.light) {
+        el.object3D.add(this.light);
+      }
     }
   },
 
@@ -107,7 +111,7 @@ function getLight (data) {
   var distance = data.distance;
   var groundColor = new THREE.Color(data.groundColor).getHex();
   var intensity = data.intensity;
-  var type = data.type || '';
+  var type = data.type;
 
   switch (type.toLowerCase()) {
     case 'ambient': {
@@ -128,7 +132,6 @@ function getLight (data) {
     default: {
       warn('%s is not a valid light type. ' +
            'Choose from ambient, directional, hemisphere, point, spot.', type);
-      return new THREE.DirectionalLight(color, intensity);
     }
   }
 }
