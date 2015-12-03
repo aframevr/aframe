@@ -10,6 +10,8 @@ var AComponents = require('./core/components').components;
 
 // Exports THREE to the window object so three.js can be used without alteration.
 var THREE = window.THREE = require('../lib/three');
+
+var pkg = require('../package');
 var utils = require('./utils/');
 
 // Webvr polyfill configuration.
@@ -33,5 +35,6 @@ module.exports = {
   debug: debug,
   registerElement: registerElement,
   THREE: THREE,
-  utils: utils
+  utils: utils,
+  version: pkg.version
 };
