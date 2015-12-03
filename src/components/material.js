@@ -306,7 +306,7 @@ function getMaterialData (data) {
     color: data.color,
     side: data.side,
     opacity: data.opacity,
-    transparent: data.transparent
+    transparent: data.opacity < 1.0
   };
   if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
     // Attach standard material parameters.
