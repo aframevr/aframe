@@ -7,6 +7,7 @@ var utils = require('../utils/');
 var AEntity = require('./a-entity');
 var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
+var controls = new THREE.VRControls();
 var isNode = re.isNode;
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
@@ -65,6 +66,7 @@ var AScene = module.exports = registerElement('a-scene', {
 
         this.setupStats();
         this.setupCanvas();
+        this.setupKeyboardShortcuts();
         this.setupRenderer();
         this.setupDefaultLights();
         this.attachEventListeners();
@@ -455,6 +457,25 @@ var AScene = module.exports = registerElement('a-scene', {
         directionalLight.setAttribute('position', {x: -10, y: 20, z: 10});
         directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(directionalLight);
+      }
+    },
+
+    /**
+     * Set up keyboard shortcuts to:
+     *   - Enter VR when `f` is pressed.
+     *   - Reset sensor when `z` is pressed.
+     */
+    setupKeyboardShortcuts: {
+      value: function () {
+        var self = this;
+        window.addEventListener('keyup', function (event) {
+          if (event.keyCode === 70) {  // f.
+            self.enterVR();
+          }
+          if (event.keyCode === 90) {  // z.
+            controls.resetSensor();
+          }
+        }, false);
       }
     },
 
