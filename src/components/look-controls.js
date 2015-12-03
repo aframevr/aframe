@@ -110,11 +110,18 @@ module.exports.Component = registerComponent('look-controls', {
     value: function (event) {
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
+      var previousMouseEvent = this.previousMouseEvent;
 
       if (!this.mouseDown || !this.data.enabled) { return; }
 
-      var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
-      var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+      var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
+      var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
+
+      if (movementX === undefined || movementY === undefined) {
+        movementX = event.screenX - previousMouseEvent.screenX;
+        movementY = event.screenY - previousMouseEvent.screenY;
+      }
+      this.previousMouseEvent = event;
 
       yawObject.rotation.y -= movementX * 0.002;
       pitchObject.rotation.x -= movementY * 0.002;
@@ -125,6 +132,7 @@ module.exports.Component = registerComponent('look-controls', {
   onMouseDown: {
     value: function (event) {
       this.mouseDown = true;
+      this.previousMouseEvent = event;
     }
   },
 
