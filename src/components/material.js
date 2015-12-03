@@ -1,5 +1,6 @@
 /* global Promise */
 var debug = require('../utils/debug');
+var diff = require('../utils').diff;
 var registerComponent = require('../core/register-component').registerComponent;
 var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
@@ -10,31 +11,34 @@ var TextureLoader = new THREE.TextureLoader();
 var texturePromises = {};
 var warn = debug('components:material:warn');
 
+var MATERIAL_TYPE_BASIC = 'MeshBasicMaterial';
+var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
+
 /**
  * Material component.
  *
  * @namespace material
- * @params {string} color - Diffuse color.
- * @params {string} envMap - To load a environment cubemap. Takes a selector
+ * @param {string} color - Diffuse color.
+ * @param {string} envMap - To load a environment cubemap. Takes a selector
  *         to an element containing six img elements, or a comma-separated
  *         string of direct url()s.
- * @params {number} height - Height to render texture.
- * @params {number} metalness - Parameter for physical/standard material.
- * @params {number} opacity - [0-1].
- * @params {number} reflectivity - Parameter for physical/standard material.
- * @params {string} repeat - X and Y value for size of texture repeating
+ * @param {number} height - Height to render texture.
+ * @param {number} metalness - Parameter for physical/standard material.
+ * @param {number} opacity - [0-1].
+ * @param {number} reflectivity - Parameter for physical/standard material.
+ * @param {string} repeat - X and Y value for size of texture repeating
  *         (in UV units).
- * @params {number} roughness - Parameter for physical/standard material.
- * @params {string} [side=front] - Which side(s) to render (i.e., front, back,
+ * @param {number} roughness - Parameter for physical/standard material.
+ * @param {string} [side=front] - Which side(s) to render (i.e., front, back,
  *         both).
- * @params {string} shader - Determines how material is shaded. Defaults to `standard`,
+ * @param {string} shader - Determines how material is shaded. Defaults to `standard`,
  *         three.js's implementation of PBR. Another option is `flat` where we use
  *         MeshBasicMaterial.
- * @params {string} src - To load a texture. takes a selector to an img/video
+ * @param {string} src - To load a texture. takes a selector to an img/video
  *         element or a direct url().
- * @params {boolean} transparent - Whether to render transparent the alpha
+ * @param {boolean} transparent - Whether to render transparent the alpha
  *         channel of a texture (e.g., .png).
- * @params {number} width - Width to render texture.
+ * @param {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
   defaults: {
@@ -57,47 +61,36 @@ module.exports.Component = registerComponent('material', {
 
   init: {
     value: function () {
-      this.textureSrc = null;
       this.isLoadingEnvMap = false;
       this.material = null;
+      this.textureSrc = null;
     }
   },
 
   /**
    * Update or create material.
-   * Returned material type depends on shader.
+   *
+   * Material type depends on shader:
    *   shader=flat - MeshBasicMaterial.
    *   shader=XXX - MeshStandardMaterial.
    *
-   * @return {object} material
+   * @param {object|null} oldData
    */
   update: {
-    value: function () {
+    value: function (oldData) {
       var data = this.data;
-      var isStandardMaterial = data.shader !== 'flat';
-      var materialData = {
-        color: new THREE.Color(data.color),
-        side: getSide(data.side),
-        opacity: data.opacity,
-        transparent: data.transparent
-      };
-      var materialType = isStandardMaterial ? 'MeshStandardMaterial' : 'MeshBasicMaterial';
+      var material;
+      var materialType = getMaterialType(data);
       var src = data.src;
 
-      // Attach standard material parameters.
-      if (isStandardMaterial) {
-        materialData.metalness = data.metalness;
-        materialData.reflectivity = data.reflectivity;
-        materialData.roughness = data.roughness;
-        materialData.transparent = data.opacity < 1.0;
+      if (!oldData || getMaterialType(oldData) !== materialType) {
+        material = this.createMaterial(getMaterialData(data), materialType);
+      } else {
+        material = this.updateMaterial(processMaterialData(diff(oldData, data)));
       }
 
-      // Create or reuse an existing material.
-      this.material = this.updateOrCreateMaterialHelper(materialData, materialType);
-      this.el.object3D.material = this.material;
-
       // Load textures and/or cubemaps.
-      if (isStandardMaterial) { this.updateEnvMap(); }
+      if (material.type === MATERIAL_TYPE_STANDARD) { this.updateEnvMap(); }
       this.updateTexture(src);
     }
   },
@@ -115,32 +108,38 @@ module.exports.Component = registerComponent('material', {
   },
 
   /**
-   * Updates this.material using data, creates new material if this.material doesn't yet
-   * exist.
+   * (Re)create new material. Has side-effects of setting `this.material` and updating
+   * material registration in scene.
    *
-   * @params {object} data - Attributes to set on the material.
-   * @params {string} type - Type of material to create (if necessary).
-   * @returns {object} material - three.js material based on `type`.
+   * @param {object} data - Material component data.
+   * @param {object} type - Material type to create.
+   * @returns {object} Material.
    */
-  updateOrCreateMaterialHelper: {
+  createMaterial: {
     value: function (data, type) {
-      var material = this.material;
-      var reuseMaterial = material && material.type === type;
+      var material;
       var sceneEl = this.el.sceneEl;
-
-      if (reuseMaterial) {
-        // Updating existing material.
-        Object.keys(data).forEach(function (key) {
-          material[key] = data[key];
-        });
-      } else {
-        // Creating new material.
-        if (this.material) {
-          sceneEl.unregisterMaterial(this.material);
-        }
-        material = new THREE[type](data);
-        sceneEl.registerMaterial(material);
+      if (this.material) {
+        sceneEl.unregisterMaterial(this.material);
       }
+      material = this.material = this.el.object3D.material = new THREE[type](data);
+      sceneEl.registerMaterial(material);
+      return material;
+    }
+  },
+
+  /**
+   * Updating existing material.
+   *
+   * @param {object} data - Material component data.
+   * @returns {object} Material.
+   */
+  updateMaterial: {
+    value: function (data) {
+      var material = this.material;
+      Object.keys(data).forEach(function (key) {
+        material[key] = data[key];
+      });
       return material;
     }
   },
@@ -212,9 +211,9 @@ module.exports.Component = registerComponent('material', {
 /**
  * Sets image texture on material as `map`.
  *
- * @params {object} material - three.js material.
- * @params {string|object} src - An <img> element or url to an image file.
- * @params {string} repeat - X and Y value for size of texture repeating (in UV units).
+ * @param {object} material - three.js material.
+ * @param {string|object} src - An <img> element or url to an image file.
+ * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
   var isEl = typeof src !== 'string';
@@ -253,10 +252,11 @@ function loadImageTexture (material, src, repeat) {
 /**
  * Creates a video element to be used as a texture.
  *
- * @params {object} material - three.js material.
- * @params {string} src - url to a video file.
- * @params {number} width - width of the video.
- * @params {number} height - height of the video.
+ * @param {object} material - three.js material.
+ * @param {string} src - Url to a video file.
+ * @param {number} width - Width of the video.
+ * @param {number} height - Height of the video.
+ * @returns {Element} Video element.
  */
 function createVideoEl (material, src, width, height) {
   var el = material.videoEl || document.createElement('video');
@@ -279,11 +279,11 @@ function createVideoEl (material, src, width, height) {
 
 /**
  * Sets video texture on material as map.
- * @params {object} material - three.js material.
- * @params {string} src - url to a video file.
- * @params {number} width - width of the video.
- * @params {number} height - height of the video.
  *
+ * @param {object} material - three.js material.
+ * @param {string} src - Url to a video file.
+ * @param {number} width - Width of the video.
+ * @param {number} height - Height of the video.
 */
 function loadVideoTexture (material, src, height, width) {
   // three.js video texture loader requires a <video>.
@@ -293,6 +293,54 @@ function loadVideoTexture (material, src, height, width) {
   texture.needsUpdate = true;
   material.map = texture;
   material.needsUpdate = true;
+}
+
+/**
+ * Builds and normalize material data, normalizing stuff along the way.
+ *
+ * @param {object} data - Material data.
+ * @returns {object} data - Processed material data.
+ */
+function getMaterialData (data) {
+  var materialData = {
+    color: new THREE.Color(data.color),
+    side: getSide(data.side),
+    opacity: data.opacity,
+    transparent: data.transparent
+  };
+  if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
+    // Attach standard material parameters.
+    materialData.metalness = data.metalness;
+    materialData.reflectivity = data.reflectivity;
+    materialData.roughness = data.roughness;
+  }
+  return processMaterialData(materialData);
+}
+
+/**
+ * Necessary transforms to material data before passing to three.js.
+ *
+ * @param {object} data - Material data.
+ * @returns {object} Processed material data.
+ */
+function processMaterialData (data) {
+  if ('color' in data) {
+    data.color = new THREE.Color(data.color);
+  }
+  if ('side' in data) {
+    data.side = getSide(data.side);
+  }
+  return data;
+}
+
+/**
+ * Get material type based on shader.
+ *
+ * @param {object} Material component data.
+ * @returns {string} Material type (as three.js constructor name)
+ */
+function getMaterialType(data) {
+  return data.shader === 'flat' ? MATERIAL_TYPE_BASIC : MATERIAL_TYPE_STANDARD;
 }
 
 /**

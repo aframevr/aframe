@@ -26,9 +26,10 @@ suite('material', function () {
 
     test('updates material', function () {
       var el = this.el;
-      el.setAttribute('material', 'color: #F0F');
+      el.setAttribute('material', 'color: #F0F; side: double');
       assert.shallowDeepEqual(el.object3D.material.color,
                              {r: 1, g: 0, b: 1});
+      assert.shallowDeepEqual(el.object3D.material.side, THREE.DoubleSide);
     });
 
     test('defaults to standard material', function () {
