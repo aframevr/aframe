@@ -21,7 +21,7 @@
 
       Dec 3:
 
-      UPDATES
+      JOSH TODO
 
       * Put animations inside templates 
       * Use translate where makes sense
@@ -32,90 +32,88 @@
       * Add hotspots for interactive scenes
       * Create and use curved cylinder template?
 
-      INTERACTIONS for PREV/NEXT
+      INTERACTIONS
  
-      * Click links in DOM
-      * Click links in scene
-      * Left-Right keys
+      * Preload content before revealing scene
+      * Click link object (a-image) to load pano
+      * Press left-Right keys to load panos
+      * Press space to show/hide menu of links to pano
 
-      * Show/hide menu?
+      EACH PANO HAS...
 
-      TRANSITIONS
+      * Pano image src link (equirectangular image)
+      * Label image src link (png with transparency)
+      * Background audio src link (mp3)
+      
+      SCENE TRANSITION LOOKS LIKE
 
-      * Fade to black
-      * Fade out audio
-      * Swap pano (change attribute)
-      * Fade in audio
-      * Fade from black
-      * Animate name of pano
-      * Reveal assets
+      * Fire "transition-start" event
+        - Animate opacity of #mask to 1
+        - Animate opacity of #label to 0
+        - Animate volume of #audio to 0
+
+      * Once screen is black
+        - Set src on #pano and #audio to start loading new assets
+
+      * Once pano load is complete
+        - Fire "pano-loaded" 
+        - Animate opacity of #mask to 0 and set visible=none so it does not block cursor raycast.
+        - Animate opacity of #label to 1 (delayed slightly, so it appears a few moments after the mask fades out)
+        - Animate volume of #audio to 1
 
       -->
 
-      <!-- Click object, change attribute -->
-      <!-- Hover object, select/hover with mixins -->
-      <!--  -->
 
-
-      <!-- CAMERA -->
-      
+      <!-- Camera -->
       <a-camera fov="80" id="camera" near="0.1" wasd-controls-enabled="false"></a-camera>
 
 
-      <!-- INTRODUCTION -->
-
-      <!-- Mask obscures the scene momentarily, during which we hide the intro and reveal the rest of the scene -->
-      <a-sphere radius="0.5" color="black" shader="flat" side="back">
-        <a-animation attribute="opacity" from="1" to="0" begin="500" dur="1000" fill="both"></a-animation>
+      <!-- Mask: hides the pano while we transition -->
+      <a-sphere id="mask" radius="0.5" opacity="0" color="black" shader="flat" side="back">
+        <a-animation attribute="opacity" from="1" to="0" begin="transition-start" dur="1000" fill="both"></a-animation>
+        <a-animation attribute="opacity" from="1" to="0" begin="pano-loaded" dur="1000" fill="both"></a-animation>
       </a-sphere>
-
-
-      <!-- PANORAMAS -->
       
-      <a-entity>
+
+      <!-- Pano -->
+      <a-sky id="pano" src="../_skies/city-2.png"></a-sky>
+
+
+      <!-- Audio -->
+      <a-entity id="audio" sound="src: ...; autoplay: false; loop: true; volume: 0"></a-entity>
+
+
+      <!-- Label -->
+      <a-image id="label" src="images/label-city.png" width="1.13" height="0.56" position="-1 1 -2"></a-image>
+
+
+      <!-- Menu -->
+      <a-entity id="menu" position="0 -0.5 -1" scale="0.3 0.3 0.3">         
+
+        <a-image position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
+          <a-click target="#pano" src="../_skies/peach-gradient-1.jpg"></a-click>
+          <a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>
+          <a-mouseleave scale="1 1 1"></a-mouseleave>
+        </a-image>
         
-        <!-- <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="4000" dur="1" fill="both"></a-animation> -->
-
-        <!-- Sky -->
-        <a-sky id="pano" src="../_skies/city-2.png"></a-sky>
-
-        <!-- <a-cylinder id="darken" position="0 -0.25 0" height="0.5" radius="1.5" side="back" open-ended="true" color="black" opacity="0.25"></a-cylinder> -->
-
-        <!-- <a-cylinder src="images/thumb-cubes.png" scale="-1 1 1" position="0 -0.25 0" radius="1" height="1" open-ended="true"></a-cylinder> -->
-
-        <!-- Links. When clicked they change the background -->
-        <a-entity position="0 -0.5 -1" scale="0.3 0.3 0.3">         
-
-          <a-image mixin="link" position="-1.2 0 0" width="1" height="1" src="images/thumb-cubes.png">
-            <a-click target="#pano" src="../_skies/peach-gradient-1.jpg"></a-click>
-            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
-            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
-          </a-image>
-          
-          <a-image mixin="link" position="0 0 0" width="1" height="1" src="images/thumb-city.png">
-            <a-click target="#pano" src="../_skies/city-2.png"></a-click>
-            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
-            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
-          </a-image>
-          
-          <a-image mixin="link" position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
-            <a-click target="#pano" src="../_skies/lake.jpg"></a-click>
-            <a-mouseenter target="#darken" opacity="0.5"></a-mouseenter>
-            <a-mouseleave target="#darken" opacity="0.25"></a-mouseleave>
-          </a-image>
-
-        </a-entity>
-
+        <a-image position="0 0 0" width="1" height="1" src="images/thumb-city.png">
+          <a-click target="#pano" src="../_skies/city-2.png"></a-click>
+          <a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>
+          <a-mouseleave scale="1 1 1"></a-mouseleave>
+        </a-image>
         
+        <a-image position="1.2 0 0" width="1" height="1" src="images/thumb-sechelt.png">
+          <a-click target="#pano" src="../_skies/lake.jpg"></a-click>
+          <a-mouseenter scale="1.1 1.1 1.1"></a-mouseenter>
+          <a-mouseleave scale="1 1 1"></a-mouseleave>
+        </a-image>
+
       </a-entity>
 
 
-
-      <!-- LIGHTING -->
-
+      <!-- Scene lighting -->
       <a-entity light="type: directional; color: #FFF; intensity: 0.2" position="-10 20 10"></a-entity>
       <a-entity light="type: ambient; color: #FFF;"></a-entity>
-
 
     </a-scene>
   </body>
