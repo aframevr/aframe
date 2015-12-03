@@ -73,6 +73,15 @@ suite('material', function () {
   });
 
   suite('side', function () {
+    test('can be set with initial material', function (done) {
+      var el = entityFactory();
+      el.setAttribute('material', 'side: double');
+      el.addEventListener('loaded', function () {
+        assert.ok(el.object3D.material.side, THREE.DoubleSide);
+        done();
+      });
+    });
+
     test('defaults to front side', function () {
       assert.equal(this.el.object3D.material.side, THREE.FrontSide);
     });

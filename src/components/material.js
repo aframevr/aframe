@@ -303,8 +303,8 @@ function loadVideoTexture (material, src, height, width) {
  */
 function getMaterialData (data) {
   var materialData = {
-    color: new THREE.Color(data.color),
-    side: getSide(data.side),
+    color: data.color,
+    side: data.side,
     opacity: data.opacity,
     transparent: data.transparent
   };
