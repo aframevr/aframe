@@ -339,7 +339,7 @@ function processMaterialData (data) {
  * @param {object} Material component data.
  * @returns {string} Material type (as three.js constructor name)
  */
-function getMaterialType(data) {
+function getMaterialType (data) {
   return data.shader === 'flat' ? MATERIAL_TYPE_BASIC : MATERIAL_TYPE_STANDARD;
 }
 
