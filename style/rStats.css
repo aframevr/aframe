@@ -1,77 +1,64 @@
-.rs-base{
-  position: fixed;
-  z-index: 10000;
-  padding: 10px;
-  background-color: #222;
+.rs-base {
+  background-color: #EF2D5E;
+  border-radius: 5px;
+  font-family: 'Roboto Condensed', tahoma, sans-serif;
   font-size: 10px;
   line-height: 1.2em;
-  width: 350px;
-  font-family: 'Roboto Condensed', tahoma, sans-serif;
-  right: 0;
-  top: 0;
+  opacity: 0.75;
   overflow: hidden;
+  padding: 10px;
+  position: fixed;
+  left: 5px;
+  top: 5px;
+  width: 270px;
+  z-index: 10000;
 }
 
 .rs-base.hidden {
   display: none;
 }
 
-.rs-base h1{
-  margin: 0;
-  padding: 0;
-  font-size: 1.4em;
+.rs-base h1 {
   color: #fff;
-  margin-bottom: 5px;
   cursor: pointer;
-}
-
-.rs-base div.rs-group{
-  margin-bottom: 10px;
-}
-
-.rs-base div.rs-group.hidden{
-  display: none;
-}
-
-.rs-base div.rs-fraction{
-  position: relative;
-  margin-bottom: 5px;
-}
-
-.rs-base div.rs-fraction p{
-  width: 120px;
-  text-align: right;
-  margin: 0;
+  font-size: 1.4em;
+  font-weight: 300;
+  margin: 0 0 5px;
   padding: 0;
 }
 
-.rs-base div.rs-legend{
-  position: absolute;
-  line-height: 1em;
+.rs-group {
+  display: flex;
+  flex-direction: column-reverse;
 }
 
-.rs-base div.rs-counter-base{
-  position: relative;
+.rs-counter-base {
+  align-items: center;
+  display: flex;
+  height: 10px;
+  justify-content: space-between;
   margin: 2px 0;
-  height: 1em;
 }
 
-.rs-base span.rs-counter-id{
-  position: absolute;
-  left: 0;
-  top: 0;
+.rs-counter-id {
+  font-weight: 300;
+  order: 0;
 }
 
-.rs-base div.rs-counter-value{
-  position: absolute;
-  left: 90px;
-  width: 30px;
-  height: 1em;
-  top: 0;
+.rs-counter-value {
+  font-weight: 300;
+  order: 1;
   text-align: right;
+  width: 25px;
 }
 
-.rs-base canvas.rs-canvas{
-  position: absolute;
-  right: 0;
+.rs-canvas {
+  order: 2;
+}
+
+@media (min-width: 480px) {
+  .rs-base {
+    left: 10px;
+    top: 10px;
+  }
 }
