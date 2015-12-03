@@ -28,31 +28,43 @@
 }
 
 .rs-group {
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column-reverse;
   flex-direction: column-reverse;
 }
 
 .rs-counter-base {
   align-items: center;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
   height: 10px;
+  -webkit-justify-content: space-between;
   justify-content: space-between;
   margin: 2px 0;
 }
 
 .rs-counter-id {
   font-weight: 300;
+  -webkit-box-ordinal-group: 0;
+  -webkit-order: 0;
   order: 0;
 }
 
 .rs-counter-value {
   font-weight: 300;
+  -webkit-box-ordinal-group: 1;
+  -webkit-order: 1;
   order: 1;
   text-align: right;
   width: 25px;
 }
 
 .rs-canvas {
+  -webkit-box-ordinal-group: 2;
+  -webkit-order: 2;
   order: 2;
 }
 
