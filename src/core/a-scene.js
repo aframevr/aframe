@@ -10,6 +10,7 @@ var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 var controls = new THREE.VRControls();
 var isNode = re.isNode;
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var registerElement = re.registerElement;
 
 /**
@@ -430,6 +431,7 @@ var AScene = module.exports = registerElement('a-scene', {
         // DOM calls to create camera.
         cameraWrapperEl = document.createElement('a-entity');
         cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
+        cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
         defaultCamera = document.createElement('a-entity');
         defaultCamera.setAttribute('camera');
         defaultCamera.setAttribute('wasd-controls');
