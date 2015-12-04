@@ -1,5 +1,6 @@
 // TODO: Extract to aframe-primiives.
 var AEvent = require('../a-event/a-event');
+var dotProp = require('dot-prop');
 
 var aframeCoreUtils = require('../../utils');
 var registerElement = require('../../core/a-register-element').registerElement;

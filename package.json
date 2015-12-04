@@ -25,6 +25,7 @@
   "dependencies": {
     "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
+    "dot-prop": "^2.2.0",
     "document-register-element": "^0.5.2",
     "es6-promise": "^3.0.2",
     "object-assign": "^4.0.1",
@@ -60,7 +61,8 @@
     "rimraf": "2.5.0",
     "semistandard": "^7.0.2",
     "standard-reporter": "^1.0.5",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "vulcanize": "^1.13.1"
   },
   "link": true,
   "browserify": {
