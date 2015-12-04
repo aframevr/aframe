@@ -453,13 +453,14 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         var ambientLight = document.createElement('a-entity');
         ambientLight.setAttribute('light',
-                                  {color: '#bebebe', type: 'ambient'});
+                                  {color: '#fff', type: 'ambient'});
         ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(ambientLight);
 
         var directionalLight = document.createElement('a-entity');
-        directionalLight.setAttribute('light', {intensity: 2.5});
-        directionalLight.setAttribute('position', {x: -10, y: 20, z: 10});
+        directionalLight.setAttribute('light',
+                                      {color: '#fff', intensity: 0.2});
+        directionalLight.setAttribute('position', {x: -1, y: 2, z: 1});
         directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(directionalLight);
       }
