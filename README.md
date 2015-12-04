@@ -115,7 +115,7 @@ Assuming you want to publish a version of `dev` to the private package for testi
 
 And to push the tags to GitHub:
 
-   git push --tags
+    git push --tags
 
 ## Updating `dist` files
 
