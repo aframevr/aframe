@@ -306,7 +306,7 @@ function getMaterialData (data) {
     color: data.color,
     side: data.side,
     opacity: data.opacity,
-    transparent: data.opacity < 1.0
+    transparent: data.transparent !== false || data.opacity < 1.0
   };
   if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
     // Attach standard material parameters.
@@ -326,6 +326,9 @@ function getMaterialData (data) {
 function processMaterialData (data) {
   if ('color' in data) {
     data.color = new THREE.Color(data.color);
+  }
+  if ('opacity' in data && data.opacity < 1) {
+    data.transparent = true;
   }
   if ('side' in data) {
     data.side = getSide(data.side);

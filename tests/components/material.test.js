@@ -98,4 +98,29 @@ suite('material', function () {
       assert.equal(el.object3D.material.side, THREE.DoubleSide);
     });
   });
+
+  suite('transparent', function () {
+    test('can set transparent', function () {
+      var el = this.el;
+      assert.notOk(el.object3D.material.transparent);
+      el.setAttribute('material', 'opacity: 1; transparent: true');
+      assert.equal(el.object3D.material.opacity, 1);
+      assert.ok(el.object3D.material.transparent);
+    });
+
+    test('can be set to false', function () {
+      var el = this.el;
+      el.setAttribute('material', 'opacity: 1; transparent: false');
+      assert.equal(el.object3D.material.opacity, 1);
+      assert.notOk(el.object3D.material.transparent);
+    });
+
+    test('is inferred if opacity is less than 1', function () {
+      var el = this.el;
+      assert.notOk(el.object3D.material.transparent);
+      el.setAttribute('material', 'opacity: 0.75');
+      assert.equal(el.object3D.material.opacity, 0.75);
+      assert.ok(el.object3D.material.transparent);
+    });
+  });
 });
