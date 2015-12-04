@@ -150,7 +150,7 @@ function wrapMethod (obj, methodName, derivedObj, baseObj) {
  * It copies the properties from source to destination object
  * if they don't exist already
  * @param  {object} source The object where properties are copied from
- * @param  {[type]} destination The object where properties are copied to
+ * @param  {type} destination The object where properties are copied to
  * @return {undefined}
  */
 function copyProperties (source, destination) {
