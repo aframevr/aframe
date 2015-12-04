@@ -1,15 +1,33 @@
+var debug = require('../utils/debug');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 var utils = require('../utils');
 
-var proto = {
+var warn = debug('components:sound:warn');
+
+/**
+ * Sound component.
+ *
+ * @param {bool} [autoplay=false]
+ * @param {string} on
+ * @param {bool} [loop=false]
+ * @param {number} [volume=1]
+ */
+module.exports.Component = registerComponent('sound', {
   defaults: {
     value: {
-      on: 'click',
       autoplay: false,
+      on: 'click',
       loop: false,
       volume: 1
+    }
+  },
+
+  init: {
+    value: function () {
+      this.listener = null;
+      this.sound = null;
     }
   },
 
@@ -17,39 +35,43 @@ var proto = {
     value: function (oldData) {
       var data = this.data;
       var diffData = diff(oldData || {}, data);
+      var el = this.el;
+      var sound = this.sound;
       var src = data.src;
-      var sound = this.getSound();
+      var srcChanged = 'src' in diffData;
 
-      if ('src' in diffData) {
+      // Create new sound if not yet created or changing `src`.
+      if (srcChanged) {
         if (!src) {
-          utils.warn('Sound src not specified');
+          warn('Audio source was not specified with `src`');
           return;
         }
-        sound.load(src);
+        sound = this.setupSound();
       }
 
-      if ('autoplay' in diffData) {
+      if (srcChanged || 'autoplay' in diffData) {
         sound.autoplay = data.autoplay;
       }
 
-      if ('loop' in diffData) {
+      if (srcChanged || 'loop' in diffData) {
         sound.setLoop(data.loop);
       }
 
-      if ('volume' in diffData) {
+      if (srcChanged || 'volume' in diffData) {
         sound.setVolume(data.volume);
       }
-    }
-  },
 
-  getSound: {
-    value: function () {
-      var el = this.el;
-      var listener = this.listener = new THREE.AudioListener();
-      var sound = this.sound = this.sound || new THREE.Audio(listener);
-      el.object3D.add(sound);
-      el.addEventListener(this.data.on, this.play.bind(this));
-      return sound;
+      if ('on' in diffData) {
+        if (oldData && oldData.on) {
+          el.removeEventListener(oldData.on);
+        }
+        el.addEventListener(data.on, this.play.bind(this));
+      }
+
+      // All sound values set. Load in `src.
+      if (srcChanged) {
+        sound.load(src);
+      }
     }
   },
 
@@ -59,16 +81,41 @@ var proto = {
     }
   },
 
+  /**
+   * Removes current sound object, creates new sound object, adds to entity.
+   *
+   * @returns {object} sound
+   */
+  setupSound: {
+    value: function () {
+      var el = this.el;
+      var listener;
+      var sound = this.sound;
+
+      if (sound) {
+        this.stop();
+        el.object3D.remove(sound);
+      }
+
+      listener = this.listener = new THREE.AudioListener();
+      sound = this.sound = new THREE.Audio(listener);
+      el.object3D.add(sound);
+      return sound;
+    }
+  },
+
   play: {
     value: function () {
       this.sound.play();
-    }
+    },
+    writable: window.debug
   },
 
   stop: {
     value: function () {
       this.sound.stop();
-    }
+    },
+    writable: window.debug
   },
 
   pause: {
@@ -76,7 +123,4 @@ var proto = {
       this.sound.pause();
     }
   }
-
-};
-
-module.exports.Component = registerComponent('sound', proto);
+});
