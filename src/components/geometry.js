@@ -127,11 +127,11 @@ function getGeometry (data, defaults) {
     }
     case 'cylinder': {
       // Shortcut for specifying both top and bottom radius.
-      radiusTop = data.radius;
-      radiusBottom = data.radius;
-      if (data.radius === defaults.radius) {
-        radiusTop = data.radiusTop;
-        radiusBottom = data.radiusBottom;
+      radiusTop = data.radiusTop;
+      radiusBottom = data.radiusBottom;
+      if (data.radius !== defaults.radius) {
+        radiusTop = data.radius;
+        radiusBottom = data.radius;
       }
       return new THREE.CylinderGeometry(
         radiusTop, radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight,
