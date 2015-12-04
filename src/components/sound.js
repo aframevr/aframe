@@ -2,7 +2,6 @@ var debug = require('../utils/debug');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
-var utils = require('../utils');
 
 var warn = debug('components:sound:warn');
 
