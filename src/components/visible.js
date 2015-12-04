@@ -6,8 +6,8 @@ var registerComponent = require('../core/register-component').registerComponent;
  * @param {bool}
  */
 module.exports.Component = registerComponent('visible', {
-  defaults: {
-    value: true
+  schema: {
+    value: { default: true }
   },
 
   update: {

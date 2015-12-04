@@ -376,7 +376,9 @@ var proto = {
       var self = this;
       var component = AComponents[attr];
       var partialComponentData;
+      value = value === undefined ? '' : value;
       var valueStr = value;
+      var oldValue;
       if (component) {
         if (typeof value === 'string' && componentAttrValue !== undefined) {
           // Update currently-defined component data with the new attribute value.
@@ -387,8 +389,9 @@ var proto = {
         valueStr = component.stringify(value);
       }
 
+      oldValue = this.getAttribute(attr);
       ANode.prototype.setAttribute.call(self, attr, valueStr);
-      self.setEntityAttribute(attr, undefined, value);
+      self.setEntityAttribute(attr, oldValue, value);
     },
     writable: window.debug
   },

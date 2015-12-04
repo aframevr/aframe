@@ -5,9 +5,9 @@ var THREE = require('../../lib/three');
 var PI_2 = Math.PI / 2;
 
 module.exports.Component = registerComponent('look-controls', {
-  defaults: {
+  schema: {
     value: {
-      enabled: true
+      enabled: { default: true }
     }
   },
 

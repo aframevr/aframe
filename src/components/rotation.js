@@ -4,11 +4,11 @@ var THREE = require('../../lib/three');
 var utils = require('../utils/');
 
 module.exports.Component = registerComponent('rotation', utils.extend({
-  defaults: {
+  schema: {
     value: {
-      x: 0,
-      y: 0,
-      z: 0
+      x: { default: 0 },
+      y: { default: 0 },
+      z: { default: 0 }
     }
   },
 

@@ -10,15 +10,15 @@ module.exports.regex = regex;
  * @param {string} defaults - fallback value.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaults) {
+function parse (value, schema) {
   var coordinate;
-  defaults = defaults || {};
+  schema = schema || {};
   if (typeof value !== 'string' || value === null) { return value; }
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
   return {
-    x: parseFloat(coordinate[0] || defaults.x),
-    y: parseFloat(coordinate[1] || defaults.y),
-    z: parseFloat(coordinate[2] || defaults.z)
+    x: parseFloat(coordinate[0] || schema.x.default),
+    y: parseFloat(coordinate[1] || schema.y.default),
+    z: parseFloat(coordinate[2] || schema.z.default)
   };
 }
 module.exports.parse = parse;
@@ -49,7 +49,7 @@ module.exports.isCoordinate = function (value) {
 module.exports.componentMixin = {
   parse: {
     value: function (value) {
-      return parse(value, this.defaults);
+      return parse(value, this.schema);
     }
   },
   stringify: {

@@ -394,7 +394,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
       el.setAttribute(componentName, '');
       component = el.components[componentName];
     }
-    coerceSchema = component.defaults;
+    coerceSchema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
       from[attribute] = el.getComputedAttribute(componentName)[componentAttrName];
     } else {

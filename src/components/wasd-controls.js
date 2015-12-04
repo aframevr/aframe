@@ -22,16 +22,18 @@ var MAX_DELTA = 0.2;
  * @param {bool} [adInverted=false] - AD Axis is inverted
  */
 module.exports.Component = registerComponent('wasd-controls', {
-  defaults: {
+  schema: {
     value: {
-      easing: 20,
-      acceleration: 65,
-      enabled: true,
-      fly: false,
-      wsAxis: 'z',
-      adAxis: 'x',
-      wsInverted: false,
-      adInverted: false
+      easing: { default: 20 },
+      acceleration: { default: 65 },
+      enabled: { default: true },
+      fly: { default: false },
+      wsAxis: { default: 'z', oneOf: [ 'x', 'y', 'z' ] },
+      adAxis: { default: 'x', oneOf: [ 'x', 'y', 'z' ] },
+      wsInverted: { default: false },
+      wsEnabled: { default: true },
+      adInverted: { default: false },
+      adEnabled: { default: true }
     }
   },
 
@@ -84,10 +86,14 @@ module.exports.Component = registerComponent('wasd-controls', {
       var position = el.getComputedAttribute('position');
 
       if (this.data.enabled) {
-        if (keys[65]) { velocity[adAxis] -= adSign * acceleration * delta; } // Left
-        if (keys[68]) { velocity[adAxis] += adSign * acceleration * delta; } // Right
-        if (keys[87]) { velocity[wsAxis] -= wsSign * acceleration * delta; } // Up
-        if (keys[83]) { velocity[wsAxis] += wsSign * acceleration * delta; } // Down
+        if (data.adEnabled) {
+          if (keys[65]) { velocity[adAxis] -= adSign * acceleration * delta; } // Left
+          if (keys[68]) { velocity[adAxis] += adSign * acceleration * delta; } // Right
+        }
+        if (data.wsEnabled) {
+          if (keys[87]) { velocity[wsAxis] -= wsSign * acceleration * delta; } // Up
+          if (keys[83]) { velocity[wsAxis] += wsSign * acceleration * delta; } // Down
+        }
       }
 
       movementVector = this.getMovementVector(delta);

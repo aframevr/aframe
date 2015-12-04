@@ -2,11 +2,11 @@ var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
 module.exports.Component = registerComponent('camera', {
-  defaults: {
+  schema: {
     value: {
-      far: 10000,
-      fov: 80,
-      near: 0.5
+      far: { default: 10000 },
+      fov: { default: 80, min: 0 },
+      near: { default: 0.5, min: 0 }
     }
   },
 

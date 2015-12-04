@@ -14,12 +14,13 @@ var warn = debug('components:sound:warn');
  * @param {number} [volume=1]
  */
 module.exports.Component = registerComponent('sound', {
-  defaults: {
+  schema: {
     value: {
-      autoplay: false,
-      on: 'click',
-      loop: false,
-      volume: 1
+      src: { default: '' },
+      on: { default: 'click' },
+      autoplay: { default: false },
+      loop: { default: false },
+      volume: { default: 1 }
     }
   },
 

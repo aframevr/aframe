@@ -10,6 +10,16 @@ module.exports.Component = registerComponent('loader', {
     value: [ 'material' ]
   },
 
+  schema: {
+    value: {
+      src: { default: '' },
+      format: {
+        default: 'obj',
+        oneOf: ['obj', 'collada']
+      }
+    }
+  },
+
   update: {
     value: function () {
       this.load();

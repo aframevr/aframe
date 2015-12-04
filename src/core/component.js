@@ -35,10 +35,10 @@ var Component = function (el) {
 
 Component.prototype = {
   /**
-   * Contains default data values.
+   * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  defaults: {},
+  schema: {},
 
   /**
    * Init handler. Similar to attachedCallback.
@@ -140,13 +140,16 @@ Component.prototype = {
   parseAttributes: function (newData) {
     var self = this;
     var data = {};
-    var defaults = self.defaults;
+    var schema = self.schema;
     var el = self.el;
     var mixinEls = el.mixinEls;
     var name = self.name;
 
     // 1. Default values (lowest precendence).
-    data = extendWithCheck(data, defaults);
+    Object.keys(schema).forEach(applyDefault);
+    function applyDefault (key) {
+      data[key] = schema[key].default;
+    }
 
     // 2. Mixin values.
     mixinEls.forEach(applyMixin);
@@ -159,7 +162,7 @@ Component.prototype = {
     data = extendWithCheck(data, newData);
 
     // Coerce to the type of the defaults.
-    this.data = utils.coerce(data, defaults);
+    this.data = utils.coerce(data, schema);
   }
 };
 

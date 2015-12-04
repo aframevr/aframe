@@ -21,37 +21,38 @@
     <a-scene stats="true">
       <a-entity position="0 1.8 4">
         <a-entity camera look-controls wasd-controls>
-          <a-entity position="0 0 -1"
-                     geometry="primitive: ring; outerRadius: 0.05;
-                               innerRadius: 0.03"
-                     material="color: red; shader: flat"
-                     cursor="maxDistance: 100"></a-entity>
+          <a-entity position="0 0 -2"
+                    geometry="primitive: ring; radiusOuter: 0.10; radiusInner: 0.06"
+                    material="color: red; shader: flat"
+                    cursor="maxDistance: 100"></a-entity>
         </a-entity>
       </a-entity>
 
-      <a-entity id="blueCube"
-        position="0 0 0"
-        material="color: blue"
-        geometry="primitive: box"
-        rotation="25 25 0"></a-entity>
+      <a-entity id="shapes" position="0 0 -2">
+        <a-entity id="blueCube"
+          position="0 0 0"
+          material="color: blue"
+          geometry="primitive: box"
+          rotation="25 25 0"></a-entity>
 
-      <a-entity id="redSphere"
-        position="0 0 0"
-        material="color: red"
-        geometry="primitive: sphere;"
-        visible="false"></a-entity>
+        <a-entity id="redSphere"
+          position="0 0 0"
+          material="color: red"
+          geometry="primitive: sphere;"
+          visible="false"></a-entity>
 
-      <a-entity id="greenCylinder"
-        position="-3.5 0 0"
-        rotation="25 25 0"
-        material="color: green"
-        geometry="primitive: cylinder;"></a-entity>
+        <a-entity id="greenCylinder"
+          position="-3.5 0 0"
+          rotation="25 25 0"
+          material="color: green"
+          geometry="primitive: cylinder;"></a-entity>
 
-      <a-entity id="pinkTorus"
-        position="3.5 0 0"
-        rotation="25 -25 0"
-        material="color: hotpink"
-        geometry="primitive: torus;"></a-entity>
+        <a-entity id="pinkTorus"
+          position="3.5 0 0"
+          rotation="25 -25 0"
+          material="color: hotpink"
+          geometry="primitive: torus;"></a-entity>
+      </a-entity>
     </a-scene>
     <script>
       (function () {
