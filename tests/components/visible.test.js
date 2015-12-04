@@ -13,6 +13,12 @@ suite('visible', function () {
   });
 
   suite('update', function () {
+    test('treats empty as true', function () {
+      var el = this.el;
+      el.setAttribute('visible', '');
+      assert.ok(el.object3D.visible);
+    });
+
     test('can set to visible', function () {
       var el = this.el;
       el.setAttribute('visible', true);

@@ -18,7 +18,7 @@ module.exports.Component = registerComponent('visible', {
 
   parse: {
     value: function (value) {
-      return value === 'true';
+      return value !== 'false';
     }
   },
 
