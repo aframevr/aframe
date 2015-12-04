@@ -327,6 +327,27 @@ suite('a-animation', function () {
       assert.shallowDeepEqual(values.from, { x: 0, y: 0, z: 0 });
       assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
     });
+
+    test('gets correct values for bool component', function () {
+      var values = getAnimationValues(this.el, 'visible', 'false', 'true');
+      assert.shallowDeepEqual(values.from, { visible: 0 });
+      assert.shallowDeepEqual(values.to, { visible: 1 });
+    });
+
+    test('gets correct values coordinate component with no `from`', function () {
+      var values = getAnimationValues(this.el, 'transparent', undefined, 'true');
+      assert.shallowDeepEqual(values.from, { transparent: 0 });
+      assert.shallowDeepEqual(values.to, { transparent: 1 });
+    });
+
+    test('gets correct partialSetAttribute for bool component', function () {
+      var el = this.el;
+      var values = getAnimationValues(el, 'visible', 'false', 'true');
+      values.partialSetAttribute({ visible: 0 });
+      assert.equal(el.getAttribute('visible'), false);
+      values.partialSetAttribute({ visible: 1 });
+      assert.equal(el.getAttribute('visible'), true);
+    });
   });
 
   suite('stop', function () {
