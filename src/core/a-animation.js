@@ -343,7 +343,8 @@ function cloneValue (val) {
  * Deduces different animation values based on whether we are:
  *   - animating an inner attribute of a component.
  *   - animating a coordinate component.
- *   - animating a generic attribute.
+ *   - animating a boolean.
+ *   - animating a number.
  *
  * @param {Element} el
  * @param {string} attribute - Tells what to animate based on whether it is dot-separated.
@@ -351,8 +352,11 @@ function cloneValue (val) {
  * @param {string} dataTo - Data `to` value.
  * @param currentValue
  * @returns {object}
- *   Object with keys [from, to, partialSetAttribute]. `partialSetAttribute` is a
- *   closured-function that tells animation system how to update the component.
+ *   Object with keys [from, to, partialSetAttribute].
+ *     `from` and `to`
+ *        Objects where key is attribute being animated and value is value.
+ *     `partialSetAttribute`
+ *        Closured-function that tells tween how to update the component.
  */
 function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var attributeSplit = attribute.split('.');
@@ -365,7 +369,24 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var to = {};
 
   if (attributeSplit.length === 2) {
-    // Animating a component that has multiple attributes.
+    getForComponentAttribute();
+  } else if (dataTo && isCoordinate(dataTo)) {
+    getForCoordinateComponent();
+  } else if (['true', 'false'].indexOf(dataTo) !== -1) {
+    getForBoolean();
+  } else {
+    getForNumber();
+  }
+  return {
+    from: from,
+    partialSetAttribute: partialSetAttribute,
+    to: to
+  };
+
+  /**
+   * Animating a component that has multiple attributes (e.g., geometry.width).
+   */
+  function getForComponentAttribute () {
     componentName = attributeSplit[0];
     componentAttrName = attributeSplit[1];
     component = el.components[componentName];
@@ -384,15 +405,41 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     partialSetAttribute = function (value) {
       el.setAttribute(componentName, componentAttrName, value[attribute]);
     };
-  } else if (dataTo && isCoordinate(dataTo)) {
-    // Animating a component that is an XYZ coordinate.
+  }
+
+  /**
+   * Animating a component that is an XYZ coordinate (e.g., position).
+   * Will be tweening {x, y, z} all at once.
+   */
+  function getForCoordinateComponent () {
     from = dataFrom ? coordinates.parse(dataFrom) : currentValue;
     to = coordinates.parse(dataTo);
     partialSetAttribute = function (value) {
       el.setAttribute(attribute, value);
     };
-  } else {
-    // Animating a generic numbered attribute.
+  }
+
+  /**
+   * Animation a boolean (e.g., visible).
+   * Have to convert from boolean to an integer (0 is false, > 0 is true) for tween.
+   */
+  function getForBoolean () {
+    if (dataFrom === undefined) {
+      from[attribute] = false;
+    } else {
+      from[attribute] = strToBool(dataFrom);
+    }
+    from[attribute] = boolToNum(from[attribute]);
+    to[attribute] = boolToNum(strToBool(dataTo));
+    partialSetAttribute = function (value) {
+      el.setAttribute(attribute, !!value[attribute]);
+    };
+  }
+
+  /**
+   * Animating a numbered attribute (e.g., opacity).
+   */
+  function getForNumber () {
     if (dataFrom === undefined) {  // dataFrom can be 0.
       from[attribute] = parseFloat(el.getAttribute(attribute));
     } else {
@@ -403,10 +450,26 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
       el.setAttribute(attribute, value[attribute]);
     };
   }
-  return {
-    from: from,
-    partialSetAttribute: partialSetAttribute,
-    to: to
-  };
 }
 module.exports.getAnimationValues = getAnimationValues;
+
+/**
+ * Converts string to bool.
+ *
+ * @param {string} str - `true` or `false`.
+ * @returns {bool}
+ */
+function strToBool (str) {
+  if (str === 'true') { return true; }
+  return false;
+}
+
+/**
+ * Converts boolean to number.
+ *
+ * @param {bool}
+ * @returns {number}
+ */
+function boolToNum (bool) {
+  return bool ? 1 : 0;
+}
