@@ -1,3 +1,4 @@
+var diff = require('../utils').diff;
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 var utils = require('../utils');
@@ -13,18 +14,31 @@ var proto = {
   },
 
   update: {
-    value: function () {
+    value: function (oldData) {
       var data = this.data;
+      var diffData = diff(oldData || {}, data);
       var src = data.src;
       var sound = this.getSound();
-      if (!src) {
-        utils.warn('Sound src not specified');
-        return;
+
+      if ('src' in diffData) {
+        if (!src) {
+          utils.warn('Sound src not specified');
+          return;
+        }
+        sound.load(src);
       }
-      sound.load(src);
-      sound.autoplay = data.autoplay;
-      sound.setLoop(data.loop);
-      sound.setVolume(data.volume);
+
+      if ('autoplay' in diffData) {
+        sound.autoplay = data.autoplay;
+      }
+
+      if ('loop' in diffData) {
+        sound.setLoop(data.loop);
+      }
+
+      if ('volume' in diffData) {
+        sound.setVolume(data.volume);
+      }
     }
   },
 
