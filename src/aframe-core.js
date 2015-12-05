@@ -1,3 +1,5 @@
+require('../style/aframe-core.css');
+require('../style/rStats.css');
 var debug = require('./utils/debug');
 var registerElement = require('./a-register-element');
 
