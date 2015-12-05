@@ -26,7 +26,7 @@ var warn = debug('components:geometry:warn');
  * @param {number} [radiusTop=1] - Used by cylinder.
  * @param {number} [radiusTube=0.2] - Used by torus. Tube radius.
  * @param {number} [scaleHeight=1] - Used by torusKnot.
- * @param {number} [segments] - Used by circle. Number of segments.
+ * @param {number} [segments=8] - Used by circle. Number of segments.
  * @param {number} [segmentsHeight=18] - Used by cylinder, sphere. Number of segments.
  * @param {number} [segmentsPhi=8] - Used by ring.
  * @param {number} [segmentsRadial=36] - Used by cylinder. Number of segments.
