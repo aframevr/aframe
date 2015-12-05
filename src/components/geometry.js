@@ -5,13 +5,14 @@ var utils = require('../utils');
 
 var DEFAULT_RADIUS = 1;
 var helperMatrix = new THREE.Matrix4();
+var rad = THREE.Math.degToRad;
 var warn = debug('components:geometry:warn');
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
  *
- * @param {number} [arc=2 * PI] -
- *   Used by torus. A central angle that determines arc length of the torus.
+ * @param {number} [arc=360] -
+ *   Used by torus. A central angle that determines arc length of the torus. In degrees.
  * @param {number} [depth=2] - Used by box. Depth of the sides on the Z axis.
  * @param {number} [height=2] -
  *   Used by box, cylinder, plane. Height of the sides on the Y axis.
@@ -35,8 +36,8 @@ var warn = debug('components:geometry:warn');
  *   Minimum is 3.
  * @param {number} [segmentsTubular=8] - Used by torus, torusKnot. Number of segments.
  * @param {number} [segmentsWidth=36] - Used by sphere.
- * @param {number} [thetaLength=2 * PI] - Used by circle, cylinder, ring.
- * @param {number} [thetaStart=0] - Used by circle, cylinder, ring.
+ * @param {number} [thetaLength=360] - Used by circle, cylinder, ring. In degrees.
+ * @param {number} [thetaStart=0] - Used by circle, cylinder, ring. In degrees.
  * @param {string} translate -
  *   Defined as a coordinate (e.g., `-1 0 5`) that translates geometry vertices. Useful for
  *   effectively changing the pivot point.
@@ -45,7 +46,7 @@ var warn = debug('components:geometry:warn');
 module.exports.Component = registerComponent('geometry', {
   defaults: {
     value: {
-      arc: 2 * Math.PI,
+      arc: 360,
       depth: 2,
       height: 2,
       openEnded: false,
@@ -67,7 +68,7 @@ module.exports.Component = registerComponent('geometry', {
       segmentsTheta: 8,
       segmentsTubular: 8,
       segmentsWidth: 36,
-      thetaLength: 6.3,
+      thetaLength: 360,
       thetaStart: 0,
       width: 2
     }
@@ -123,7 +124,7 @@ function getGeometry (data, defaults) {
     }
     case 'circle': {
       return new THREE.CircleGeometry(
-        data.radius, data.segments, data.thetaStart, data.thetaLength);
+        data.radius, data.segments, rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'cylinder': {
       // Shortcut for specifying both top and bottom radius.
@@ -135,7 +136,7 @@ function getGeometry (data, defaults) {
       }
       return new THREE.CylinderGeometry(
         radiusTop, radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, data.thetaStart, data.thetaLength);
+        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'plane': {
       return new THREE.PlaneBufferGeometry(data.width, data.height);
@@ -143,7 +144,7 @@ function getGeometry (data, defaults) {
     case 'ring': {
       return new THREE.RingGeometry(
         data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
-        data.thetaStart, data.thetaLength);
+        rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'sphere': {
       return new THREE.SphereGeometry(
@@ -152,7 +153,7 @@ function getGeometry (data, defaults) {
     case 'torus': {
       return new THREE.TorusGeometry(
         data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        data.arc);
+        rad(data.arc));
     }
     case 'torusKnot': {
       return new THREE.TorusKnotGeometry(

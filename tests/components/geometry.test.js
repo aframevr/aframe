@@ -1,5 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var rad = require('aframe-core').THREE.Math.degToRad;
 
 suite('geometry', function () {
   'use strict';
@@ -53,14 +54,14 @@ suite('geometry', function () {
       var el = this.el;
       var geometry;
       el.setAttribute('geometry', {
-        primitive: 'circle', radius: 5, segments: 4, thetaStart: 1, thetaLength: 2
+        primitive: 'circle', radius: 5, segments: 4, thetaStart: 0, thetaLength: 350
       });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CircleGeometry');
       assert.equal(geometry.parameters.radius, 5);
       assert.equal(geometry.parameters.segments, 4);
-      assert.equal(geometry.parameters.thetaStart, 1);
-      assert.equal(geometry.parameters.thetaLength, 2);
+      assert.equal(geometry.parameters.thetaStart, 0);
+      assert.equal(geometry.parameters.thetaLength, rad(350));
     });
 
     test('creates cylinder geometry', function () {
@@ -68,7 +69,7 @@ suite('geometry', function () {
       var geometry;
       el.setAttribute('geometry', {
         primitive: 'cylinder', radiusBottom: 1, radiusTop: 2, height: 2, segmentsRadial: 3,
-        segmentsHeight: 4, openEnded: true, thetaStart: 3.1, thetaLength: 6
+        segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
       });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CylinderGeometry');
@@ -78,8 +79,8 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.heightSegments, 4);
       assert.equal(geometry.parameters.openEnded, true);
-      assert.equal(geometry.parameters.thetaStart, 3.1);
-      assert.equal(geometry.parameters.thetaLength, 6);
+      assert.equal(geometry.parameters.thetaStart, rad(240));
+      assert.equal(geometry.parameters.thetaLength, rad(350));
     });
 
     test('creates cylinder geometry with radius shortcut', function () {
@@ -137,7 +138,7 @@ suite('geometry', function () {
       var geometry;
       el.setAttribute('geometry', {
         primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3, segmentsTubular: 4,
-        arc: 5.1
+        arc: 350
       });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'TorusGeometry');
@@ -145,7 +146,7 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.tube, 4);
       assert.equal(geometry.parameters.tubularSegments, 4);
-      assert.equal(geometry.parameters.arc, 5.1);
+      assert.equal(geometry.parameters.arc, rad(350));
     });
 
     test('creates torus knot geometry', function () {

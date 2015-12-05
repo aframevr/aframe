@@ -9,8 +9,7 @@
   <body>
     <a-assets>
       <a-mixin id="cylinder" geometry="primitive: cylinder"></a-mixin>
-      <a-mixin id="open-ended" geometry="openEnded: true"
-                                material="side: double"></a-mixin>
+      <a-mixin id="open-ended" geometry="openEnded: true" material="side: double"></a-mixin>
     </a-assets>
     <a-scene stats="true">
       <a-entity position="0 0 8">
@@ -24,10 +23,10 @@
                 geometry="radius: 4; height: 2"
                 material="color: crimson"></a-entity>
       <a-entity mixin="cylinder" position="10 0 0" rotation="75 0 0"
-                geometry="radius: 2; height: 4; thetaLength: 4.5"
+                geometry="radius: 2; height: 4; thetaLength: 270"
                 material="color: gold; side: double"></a-entity>
       <a-entity mixin="open-ended cylinder" position="0 4 0"
-                geometry="radius: 4; height: 2; thetaLength: 3; thetaStart: 3"
+                geometry="radius: 4; height: 2; thetaLength: 160; thetaStart: 160"
                 material="color: orchid"></a-entity>
 
       <a-entity mixin="cylinder" position="5 -5 0" rotation="-45 0 0"
