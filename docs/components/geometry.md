@@ -11,6 +11,11 @@ material component is usually defined alongside the geometry component.
 We will go through the basic primitives and their respective attributes
 one-by-one.
 
+| Attribute | Description                                                                          | Default Value |
+|-----------|--------------------------------------------------------------------------------------|---------------|
+| primitive | One of `box`, `circle`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`. | None          |
+| translate | Translates the geometry relative to its pivot point.                                 | 0 0 0         |
+
 ### Box
 
 The box primitive defines boxes (square or rectangle).
