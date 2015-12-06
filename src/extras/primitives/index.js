@@ -1,0 +1,11 @@
+require('./primitives/a-cube');
+require('./primitives/a-curvedimage');
+require('./primitives/a-cylinder');
+require('./primitives/a-image');
+require('./primitives/a-light');
+require('./primitives/a-model');
+require('./primitives/a-plane');
+require('./primitives/a-sky');
+require('./primitives/a-sphere');
+require('./primitives/a-video');
+require('./primitives/a-videosphere');
