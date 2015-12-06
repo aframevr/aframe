@@ -2,8 +2,6 @@ title: "Geometry"
 category: component
 ---
 
-## Geometry
-
 The geometry component defines the shape and size of an entity. The general
 geometry is defined by the `primitive` attribute. "Geoemtric primitives", in
 computer graphics, simply means an extremely basic shape. With the primitive
