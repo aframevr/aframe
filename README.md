@@ -7,21 +7,21 @@ Building blocks for the VR Web.
 
 ### CodePen
 
-If you want to get hacking immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
+If you want to get hacking immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/aframevr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
 
 ### Downloads
 
 If you would like to embed this library in your project, simply include these files:
 
-* [`aframe.min.js`](https://mozvr.github.io/aframe/dist/aframe.min.js)
-* [`aframe.min.html`](https://mozvr.github.io/aframe/dist/aframe.min.html)
+* [`aframe.min.js`](https://aframevr.github.io/aframe/dist/aframe.min.js)
+* [`aframe.min.html`](https://aframevr.github.io/aframe/dist/aframe.min.html)
 
 Or if you'd prefer unminified files for local development (with source maps):
 
-* [`aframe.js`](https://mozvr.github.io/aframe/dist/aframe.js)
-* [`aframe.html`](https://mozvr.github.io/aframe/dist/aframe.html)
+* [`aframe.js`](https://aframevr.github.io/aframe/dist/aframe.js)
+* [`aframe.html`](https://aframevr.github.io/aframe/dist/aframe.html)
 
-__Also, be sure to check out the awesome [examples](https://mozvr.github.io/aframe/examples/).__
+__Also, be sure to check out the awesome [examples](https://aframevr.github.io/aframe/examples/).__
 
 ### npm
 
@@ -38,10 +38,8 @@ And in your Browserify/Webpack modules, simply require the module:
 
 If you'd like to hack on components and/or examples, simply run these commands to get started:
 
-    git clone git@github.com:MozVR/aframe.git
-    cd aframe
-    npm install
-    npm start
+    git clone git@github.com:aframevr/aframe.git
+    cd aframe && npm install && npm start
 
 If you'd like to hack on this project and don't have access to the npm packages, contact @cvan and he'll give you the info you'll need to log in:
 
@@ -50,9 +48,9 @@ If you'd like to hack on this project and don't have access to the npm packages,
 And fire up __[http://localhost:9000](http://localhost:9000)__!
 
 
-### Working with [`aframe-core`](https://github.com/MozVR/aframe-core/) library
+### Working with [`aframe-core`](https://github.com/aframevr/aframe-core/) library
 
-If you want to make changes to the [__`aframe-core`__](https://github.com/MozVR/aframe-core/) library and test with `aframe`, you'll need to run these commands to link things up correctly.
+If you want to make changes to the [__`aframe-core`__](https://github.com/aframevr/aframe-core/) library and test with `aframe`, you'll need to run these commands to link things up correctly.
 
 #### Linking
 
@@ -81,10 +79,10 @@ From your __`aframe`__ directory:
 
 ## Publishing to GitHub Pages
 
-To publish to __https://mozvr.github.io/aframe/__:
+To publish to __https://aframevr.github.io/aframe/__:
 
     npm run ghpages
 
-To publish to __https://cvan.github.io/aframe/__:
+To publish to __https://your_username.github.io/aframe/__:
 
-    npm run ghpages cvan
+    npm run ghpages your_username

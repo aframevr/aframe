@@ -16,7 +16,7 @@
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
-  "repository": "MozVR/aframe",
+  "repository": "aframevr/aframe",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^11.0.1",
