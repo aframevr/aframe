@@ -9,7 +9,7 @@
     "browserify": "browserify ./index.js -s 'aframe'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js && vulcanize --inline elements/templates/index.html > build/aframe.html",
     "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js && vulcanize --inline elements/templates/index.html > dist/aframe.html && vulcanize --inline elements/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/aframe.min.html",
-    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
+    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
     "release": "npm login && npm version patch --minor && npm publish && git push --follow-tags",
