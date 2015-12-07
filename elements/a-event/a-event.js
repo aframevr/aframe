@@ -229,7 +229,7 @@ var AEvent = registerElement(
             var targetEl;
             var listener;
 
-            // TODO: Land `on` PR in `aframe-core`: https://github.com/MozVR/aframe-core/pull/330
+            // TODO: Land `on` PR in `aframe-core`: https://github.com/aframevr/aframe-core/pull/330
 
             this.sceneEl = this.sceneEl || utils.$('a-scene');
 
