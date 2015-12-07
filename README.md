@@ -2,11 +2,11 @@
 
 A DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.
 
-## Entity/Component
+## Entity Component
 
 It's an architectural pattern commonly used in game engines like Unity, Playcanvas or Unreal Engine 4+.
 
-There's only one basic element called ```entity``` that just defines a scale, position and a rotation in the scene. Components encapsulate logic and data that can be attached to entities to extend their functionality, appearance and behaviour. This is what a simple scene with a cube and a camera looks like:
+There's only one basic element called **entity** that defines a scale, position and a rotation in the scene. **Components** encapsulate logic and data that can be attached to entities to extend their functionality, appearance and behaviour. Entities are represented by ```a-entity`` elements and components as their attributes. This is what a simple scene with a cube and a camera looks like:
 
 ````html
 <a-scene>
