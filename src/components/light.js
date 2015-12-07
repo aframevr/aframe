@@ -3,14 +3,15 @@ var debug = require('../utils/debug');
 var registerComponent = require('../core/register-component').registerComponent;
 var THREE = require('../../lib/three');
 
+var rad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
 
 /**
  * Light component.
  *
  * @namespace light
- * @param {number} [angle=PI / 3] - maximum extent of light from its direction,
-          in radians. For spot lights.
+ * @param {number} [angle=60] - maximum extent of light from its direction,
+          in degrees. For spot lights.
  * @param {string} [color=#FFF] - light color. For every light.
  * @param {number} [decay=1] - amount the light dims along the distance of the
           light. For point and spot lights.
@@ -26,7 +27,7 @@ var warn = debug('components:light:warn');
 module.exports.Component = registerComponent('light', {
   defaults: {
     value: {
-      angle: Math.PI / 3,
+      angle: 60,
       color: '#FFF',
       groundColor: '#FFF',
       decay: 1,
@@ -127,7 +128,8 @@ function getLight (data) {
       return new THREE.PointLight(color, intensity, distance, decay);
     }
     case 'spot': {
-      return new THREE.SpotLight(color, intensity, distance, angle, data.exponent, decay);
+      return new THREE.SpotLight(color, intensity, distance, rad(angle), data.exponent,
+                                 decay);
     }
     default: {
       warn('%s is not a valid light type. ' +
