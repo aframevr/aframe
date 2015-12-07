@@ -1,9 +1,21 @@
-# aframe-core [![Build Status](https://magnum.travis-ci.com/aframevr/aframe-core.svg?token=65kfkjdCsqTSnqx7qtHg&branch=dev)](https://magnum.travis-ci.com/aframevr/aframe-core)
+# AFrame Core
 
-The goal of this project is to design a set of HTML tags to describe 3D scenes in the browser.
+A DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.
 
-We use three.js to render the new tags but the aim is to provide a way to declare 3D scenes independent from the rendering engine.
+## Entity/Component
 
+It's an architectural pattern commonly used in game engines like Unity, Playcanvas or Unreal Engine 4+.
+
+There's only one basic element called ```entity``` that just defines a scale, position and a rotation in the scene. Components encapsulate logic and data that can be attached to entities to extend their functionality, appearance and behaviour. This is what a simple scene with a cube and a camera looks like:
+
+````html
+<a-scene>
+    <a-entity camera="fov: 45"></a-entity>
+    <a-entity position="0 0 -10" rotation="45 30 0"
+              geometry="primitive: box; height: 4; width: 4; depth: 4;"
+              material="color: green;"></a-entity>
+</a-scene>
+````
 
 ## Usage
 
