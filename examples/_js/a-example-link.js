@@ -15,13 +15,17 @@ document.registerElement('a-example-link', {
 
         // Link to example.
         exampleLink = document.createElement('a');
-        exampleLink.setAttribute('href', href)
+        exampleLink.setAttribute('href', href);
         exampleLink.innerHTML = title;
         this.appendChild(exampleLink);
 
         // Link to source code.
         var githubLink =
           'https://github.com/aframevr/aframe-core/blob/master/examples/';
+        if (!navigator.onLine && navigator.appName === 'Netscape') {
+          // Chrome doesn't allow `view-source:` links.
+          githubLink = 'view-source:';
+        }
         viewSourceLink = document.createElement('a');
         viewSourceLink.setAttribute('href',
           githubLink + href + 'index.html');
