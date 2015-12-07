@@ -1,7 +1,7 @@
 {
   "name": "@mozvr/aframe-core",
   "version": "0.0.3",
-  "homepage": "https://github.com/MozVR/aframe-core",
+  "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
   "main": "src/aframe-core.js",
   "dependencies": {
@@ -55,9 +55,9 @@
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
-  "repository": "MozVR/aframe-core",
+  "repository": "aframevr/aframe-core",
   "bugs": {
-    "url": "https://github.com/MozVR/aframe-core/issues"
+    "url": "https://github.com/aframevr/aframe-core/issues"
   },
   "semistandard": {
     "ignore": [

@@ -21,7 +21,7 @@ document.registerElement('a-example-link', {
 
         // Link to source code.
         var githubLink =
-          'https://github.com/MozVR/aframe-core/blob/master/examples/';
+          'https://github.com/aframevr/aframe-core/blob/master/examples/';
         viewSourceLink = document.createElement('a');
         viewSourceLink.setAttribute('href',
           githubLink + href + 'index.html');

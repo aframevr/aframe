@@ -8,7 +8,7 @@
  * ------------
  *
  * % node ./scripts/gh-pages
- * gh-pages -d dist -r git@github.com:MozVR/aframe-core.git
+ * gh-pages -d dist -r git@github.com:aframevr/aframe-core.git
  *
  * % node ./scripts/gh-pages cvan
  * gh-pages -d dist -r git@github.com:cvan/aframe-core.git
@@ -24,7 +24,7 @@ var ghpages = require('gh-pages');
 var path = require('path');
 
 var repo = {
-  username: 'MozVR',
+  username: 'aframevr',
   name: 'aframe-core'
 };
 

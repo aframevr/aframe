@@ -1,4 +1,4 @@
-# aframe-core [![Build Status](https://magnum.travis-ci.com/MozVR/aframe-core.svg?token=65kfkjdCsqTSnqx7qtHg&branch=dev)](https://magnum.travis-ci.com/MozVR/aframe-core)
+# aframe-core [![Build Status](https://magnum.travis-ci.com/aframevr/aframe-core.svg?token=65kfkjdCsqTSnqx7qtHg&branch=dev)](https://magnum.travis-ci.com/aframevr/aframe-core)
 
 The goal of this project is to design a set of HTML tags to describe 3D scenes in the browser.
 
@@ -7,7 +7,7 @@ We use three.js to render the new tags but the aim is to provide a way to declar
 
 ## Usage
 
-__NOTE:__ For folks creating scenes and third-party components + elements, we recommend getting started by instead using the [__`aframe`__ library](https://github.com/MozVR/aframe), a set of core resuable elements.
+__NOTE:__ For folks creating scenes and third-party components + elements, we recommend getting started by instead using the [__`aframe`__ library](https://github.com/aframevr/aframe), a set of core resuable elements.
 
 Proceed below if you would like to use the minimal set of primitive components and elements available here in __`aframe-core`__.
 
@@ -29,8 +29,8 @@ Or for local development you can use the unminified bundles (with source maps fo
 
 __Also, be sure to check out these awesome examples:__
 
-* [__`aframe-core`__ examples](http://mozvr.github.io/aframe-core/examples/) ([source](https://github.com/MozVR/aframe-core/tree/master/examples/))
-* [__`aframe`__ examples](http://mozvr.github.io/aframe/examples/) ([source](https://github.com/MozVR/aframe/tree/master/examples/))
+* [__`aframe-core`__ examples](http://aframevr.github.io/aframe-core/examples/) ([source](https://github.com/aframevr/aframe-core/tree/master/examples/))
+* [__`aframe`__ examples](http://aframevr.github.io/aframe/examples/) ([source](https://github.com/aframevr/aframe/tree/master/examples/))
 
 ### npm
 
@@ -44,7 +44,7 @@ And in your Browserify/Webpack modules, simply require the module:
 
 ## Local installation
 
-    git clone https://github.com/MozVR/aframe-core.git
+    git clone https://github.com/aframevr/aframe-core.git
     cd aframe-core
 
 ## Local development
@@ -57,9 +57,9 @@ If you'd like to hack on this project and don't have access to the npm repos, co
 
     npm login
 
-### Working with [`aframe`](https://github.com/MozVR/aframe/) library
+### Working with [`aframe`](https://github.com/aframevr/aframe/) library
 
-If you want to make changes to the [__`aframe`__](https://github.com/MozVR/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.
+If you want to make changes to the [__`aframe`__](https://github.com/aframevr/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.
 
 #### Linking
 
@@ -124,7 +124,7 @@ And to push the tags to GitHub:
 
 ## Publishing to GitHub Pages
 
-To publish to __https://mozvr.github.io/aframe-core/__:
+To publish to __https://aframevr.github.io/aframe-core/__:
 
     npm run ghpages
 

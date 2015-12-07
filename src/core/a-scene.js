@@ -73,7 +73,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.attachEventListeners();
         this.attachFullscreenListeners();
 
-        // For Chrome (https://github.com/MozVR/aframe-core/issues/321).
+        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', resizeCanvas);
       },
       writable: window.debug
