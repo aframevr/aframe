@@ -206,15 +206,18 @@ var proto = {
 
   initComponent: {
     value: function (name, isDependency) {
+      var isComponentDefined;
       // If it's not a component name or
       // If the component is already initialized
       if (!AComponents[name] || this.components[name]) { return; }
+      isComponentDefined = this.isComponentDefined(name);
       // If the component is not defined for the element
-      if (!this.isComponentDefined(name) && !isDependency) { return; }
+      if (!isComponentDefined && !isDependency) { return; }
       this.initComponentDependencies(name);
-      if (isDependency) {
-        // If it's a component dependency the component won't be part
-        // of the element attributes so we have to add it.
+      // If a component it's a dependency of another but it's not defined
+      // on the attribute, mixins or entity defaults
+      // we have to add it.
+      if (isDependency && !isComponentDefined) {
         this.setAttribute(name, '');
       } else {
         this.components[name] = new AComponents[name].Component(this);
@@ -372,7 +375,6 @@ var proto = {
       var component = AComponents[attr];
       var partialComponentData;
       var valueStr = value;
-
       if (component) {
         if (typeof value === 'string' && componentAttrValue !== undefined) {
           // Update currently-defined component data with the new attribute value.
@@ -385,7 +387,8 @@ var proto = {
 
       ANode.prototype.setAttribute.call(self, attr, valueStr);
       self.setEntityAttribute(attr, undefined, value);
-    }
+    },
+    writable: window.debug
   },
 
   /**
@@ -405,7 +408,8 @@ var proto = {
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parse(value);
-    }
+    },
+    writable: window.debug
   },
 
   /**

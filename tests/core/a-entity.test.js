@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, test */
+/* global assert, process, sinon, setup, suite, test, HTMLElement */
 var AEntity = require('core/a-entity');
 var THREE = require('aframe-core').THREE;
 var helpers = require('../helpers');
@@ -248,6 +248,47 @@ suite('a-entity', function () {
       el.removeAttribute('material', 'transparent');
       assert.notOk(el.getAttribute('material', 'transparent'));
       assert.equal(el.getAttribute('material', 'color', '#F0F'));
+    });
+  });
+
+  suite('initComponent', function () {
+    test('the component is initialized', function () {
+      var el = this.el;
+      var nativeSetAttribute = HTMLElement.prototype.setAttribute;
+      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
+      el.setAttribute('material', 'color: #F0F; transparent: true');
+      el.initComponent('material');
+      assert.ok(el.components.material);
+    });
+
+    test('a non registered component does not initialize', function () {
+      var el = this.el;
+      var nativeSetAttribute = HTMLElement.prototype.setAttribute;
+      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
+      el.setAttribute('fake-component', 'color: #F0F;');
+      el.initComponent('fake-component');
+      assert.notOk(el.components.fakeComponent);
+    });
+
+    test('a dependency component initializes and the attribute is set', function () {
+      var el = this.el;
+      var nativeGetAttribute = HTMLElement.prototype.getAttribute;
+      this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
+      el.initComponent('material', true);
+      assert.equal(el.getAttribute('material'), '');
+    });
+
+    test('a dependency component initializes and the' +
+         'current attribute is honored', function () {
+      var el = this.el;
+      var materialAttribute = 'color: #F0F; transparent: true';
+      var nativeSetAttribute = HTMLElement.prototype.setAttribute;
+      var nativeGetAttribute = HTMLElement.prototype.getAttribute;
+      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
+      this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
+      el.setAttribute('material', materialAttribute);
+      el.initComponent('material', true);
+      assert.equal(el.getAttribute('material'), materialAttribute);
     });
   });
 });
