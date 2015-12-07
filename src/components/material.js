@@ -101,8 +101,10 @@ module.exports.Component = registerComponent('material', {
   remove: {
     value: function () {
       var el = this.el;
+      var defaultColor = this.defaults.color;
+      var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
       var object3D = el.object3D;
-      if (object3D) { object3D.material = null; }
+      if (object3D) { object3D.material = defaultMaterial; }
       el.sceneEl.unregisterMaterial(this.material);
     }
   },
