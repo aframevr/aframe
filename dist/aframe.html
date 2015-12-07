@@ -6,11 +6,12 @@
     </a-entity>
   </a-entity>
 </template>
-<template is="a-template" element="a-cube" width="5" height="5" depth="5" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
+<template is="a-template" element="a-cube" width="5" height="5" depth="5" translate="0 0 0" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
   <a-entity geometry="primitive: box;
                       width: ${width};
                       height: ${height};
-                      depth: ${depth}" material="color: ${color};
+                      depth: ${depth};
+                      translate: ${translate}" material="color: ${color};
                       opacity: ${opacity};
                       shader: ${shader};
                       transparent: ${transparent};
@@ -18,7 +19,7 @@
                       roughness: ${roughness};
                       src: url(${src})"></a-entity>
 </template>
-<template is="a-template" element="a-curvedimage" radius="2" height="1" segments-radius="48" theta-start="0" theta-length="6.3" open-ended="false" opacity="1.0" transparent="true" src="">
+<template is="a-template" element="a-curvedimage" radius="2" height="1" segments-radius="48" theta-start="0" theta-length="360" open-ended="false" opacity="1.0" transparent="true" src="">
   <a-entity geometry="primitive: cylinder;
                       radius: ${radius};
                       height: ${height};
@@ -32,7 +33,7 @@
                       transparent: ${transparent};
                       src: url(${src})"></a-entity>
 </template>
-<template is="a-template" element="a-cylinder" radius="0.5" radius-top="0.5" radius-bottom="0.5" height="1" segments-radial="36" segments-height="1" theta-start="0" theta-length="6.3" open-ended="false" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" side="front" src="">
+<template is="a-template" element="a-cylinder" radius="0.5" radius-top="0.5" radius-bottom="0.5" height="1" segments-radial="36" segments-height="1" theta-start="0" theta-length="360" open-ended="false" translate="0 0 0" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" side="front" src="">
   <a-entity geometry="primitive: cylinder;
                       radius: ${radius};
                       radiusTop: ${radius-top};
@@ -42,7 +43,8 @@
                       segmentsHeight: ${segments-height};
                       thetaStart: ${theta-start};
                       thetaLength: ${theta-length};
-                      openEnded: ${open-ended}" material="color: ${color};
+                      openEnded: ${open-ended};
+                      translate: ${translate}" material="color: ${color};
                       opacity: ${opacity};
                       shader: ${shader};
                       metalness: ${metalness};
@@ -91,10 +93,11 @@
   <a-entity material="opacity: ${opacity}" loader="src: url(${src}); format: ${format}">
   </a-entity>
 </template>
-<template is="a-template" element="a-plane" width="1" height="1" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
+<template is="a-template" element="a-plane" width="1" height="1" translate="0 0 0" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
   <a-entity geometry="primitive: plane;
                       height: ${height};
-                      width: ${width}" material="color: ${color};
+                      width: ${width};
+                      translate: ${translate}" material="color: ${color};
                       opacity: ${opacity};
                       shader: ${shader};
                       transparent: ${transparent};
@@ -111,13 +114,12 @@
                       color: ${color}" scale="-1 1 1">
   </a-entity>
 </template>
-<template is="a-template" element="a-sphere" radius="5" segments-width="36" segments-height="18" theta-start="0" theta-length="6.3" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
+<template is="a-template" element="a-sphere" radius="5" segments-width="36" segments-height="18" translate="0 0 0" color="gray" opacity="1.0" shader="standard" transparent="true" metalness="0.0" roughness="0.5" src="">
   <a-entity geometry="primitive: sphere;
                       radius: ${radius};
                       segmentsWidth: ${segments-width};
                       segmentsHeight: ${segments-height};
-                      thetaStart: ${theta-start};
-                      thetaLength: ${theta-length}" material="color: ${color};
+                      translate: ${translate}" material="color: ${color};
                       opacity: ${opacity};
                       shader: ${shader};
                       transparent: ${transparent};
@@ -125,12 +127,13 @@
                       roughness: ${roughness};
                       src: url(${src})"></a-entity>
 </template>
-<template is="a-template" element="a-video" src="" width="4" height="2" autoplay="true" loop="true" crossorigin="anonymous">
+<template is="a-template" element="a-video" src="" width="4" height="2" translate="0 0 0" autoplay="true" loop="true" crossorigin="anonymous">
   <video id="video" src="$%7Bsrc%7D" width="${width}" height="${height}" autoplay="${autoplay}" loop="${loop}" crossorigin="${crossOrigin}" style="display: none">
   </video>
   <a-entity geometry="primitive: plane;
                       height: ${height};
-                      width: ${width}" material="shader: flat; src: #video">
+                      width: ${width};
+                      translate: ${translate}" material="shader: flat; src: #video">
   </a-entity>
 </template>
 <template is="a-template" element="a-videosphere" src="" radius="5000" segments-width="64" segments-height="64" autoplay="true" loop="true" crossorigin="anonymous">

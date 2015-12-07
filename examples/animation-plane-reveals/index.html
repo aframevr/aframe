@@ -9,31 +9,28 @@
   <body>
     <a-scene>
 
-      <a-entity position="-1 0 0" rotation="0 45 0">
+      <!-- A series of planes that use translate, position and animated scales to reveal themselves -->
 
-        <a-entity position="0 3 0">
+      <a-entity position="-2 0 -3" rotation="0 35 0">
+
+        <a-plane width="4" height="1" position="0 6 0" translate="2 -0.5 0" color="#F16745">
           <a-animation attribute="scale" from="1 0 1" to="1 1 1" dur="750" begin="500" fill="backwards"></a-animation>
-          <a-entity geometry="primitive: plane; width: 2; height: 0.5" position="1 -0.25 0" material="color: #F16745"></a-entity>
-        </a-entity>
+        </a-plane>
 
-        <a-entity position="0 2 0">
-          <a-animation attribute="scale" from="0 0 1" to="1 1 1" dur="750" begin="500" fill="backwards"></a-animation>
-          <a-entity geometry="primitive: plane; width: 2; height: 0.5" position="1 -0.25 0" material="color: #7BC8A4"></a-entity>
-        </a-entity>
-
-        <a-entity position="0 1 0">
+        <a-plane width="4" height="1" position="0 4 0" translate="2 -0.5 0" color="#7BC8A4">
           <a-animation attribute="scale" from="0 1 1" to="1 1 1" dur="750" begin="500" fill="backwards"></a-animation>
-          <a-entity geometry="primitive: plane; width: 2; height: 0.5" position="1 -0.25 0" material="color: #4CC3D9"></a-entity>
-        </a-entity>
+        </a-plane>
 
-        <a-entity position="0 0 0">
+        <a-plane width="4" height="1" position="0 2 0" translate="2 -0.5 0" color="#4CC3D9">
+          <a-animation attribute="scale" from="0 0.05 1" to="1 0.05 1" dur="500" begin="500" fill="backwards"></a-animation>
+          <a-animation attribute="scale" from="1 0.05 1" to="1 1 1" dur="250" begin="1000" fill="backwards"></a-animation>
+        </a-plane>
+
+        <a-plane width="4" height="1" position="0 0 0" translate="2 -0.5 0" color="#EF2D5E">
           <a-animation attribute="rotation" from="90 0 0" to="0 0 0" dur="750" begin="500" fill="backwards"></a-animation>
-          <a-entity geometry="primitive: plane; width: 2; height: 0.5" position="1 -0.25 0" material="color: #EF2D5E"></a-entity>
-        </a-entity>
+        </a-plane>
 
       </a-entity>
-
-      <a-image position="0 -1 0" src="../_images/radial-highlight-1.png" rotation="-90 0 0" scale="5 5 5"></a-image>
 
       <a-sky src="../_skies/gray-gradient-1.jpg"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
