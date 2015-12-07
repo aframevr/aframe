@@ -68,7 +68,7 @@ suite('material', function () {
       var el = this.el;
       assert.ok(el.object3D.material);
       el.removeAttribute('material');
-      assert.notOk(el.object3D.material);
+      assert.equal(el.object3D.material.type, 'MeshBasicMaterial');
     });
   });
 

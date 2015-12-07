@@ -44,7 +44,7 @@ suite('geometry', function () {
       test('removes geometry', function () {
         var el = this.el;
         el.removeAttribute('geometry');
-        assert.equal(el.object3D.geometry, null);
+        assert.equal(el.object3D.geometry.type, 'Geometry');
       });
     });
   });

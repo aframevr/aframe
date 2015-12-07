@@ -102,7 +102,7 @@ module.exports.Component = registerComponent('geometry', {
    */
   remove: {
     value: function () {
-      this.el.object3D.geometry = null;
+      this.el.object3D.geometry = new THREE.Geometry();
     }
   }
 });
