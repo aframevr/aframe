@@ -20,7 +20,6 @@
   "license": "MIT",
   "devDependencies": {
     "browserify": "^11.0.1",
-    "browserify-css": "^0.7.1",
     "budo": "cvan/budo#81c9e33",
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",
@@ -35,14 +34,6 @@
     "@mozvr/aframe-core": "^0.0.0"
   },
   "link": true,
-  "browserify": {
-    "transform": [
-      "browserify-css"
-    ]
-  },
-  "browserify-css": {
-    "minify": true
-  },
   "semistandard": {
     "ignore": [
       "build/**",
