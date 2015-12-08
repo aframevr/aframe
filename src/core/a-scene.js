@@ -12,6 +12,7 @@ var controls = new THREE.VRControls(dummyDolly);
 var isNode = re.isNode;
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+var HIDDEN_CLASS = 'a-hidden';
 var registerElement = re.registerElement;
 var ENTER_VR_CLASS = 'a-enter-vr';
 var ENTER_VR_NO_HEADSET = 'data-a-enter-vr-no-headset';
@@ -264,10 +265,10 @@ var AScene = module.exports = registerElement('a-scene', {
     hideUI: {
       value: function () {
         if (this.statsEl) {
-          this.statsEl.classList.add('hidden');
+          this.statsEl.classList.add(HIDDEN_CLASS);
         }
         if (this.enterVREl) {
-          this.enterVREl.classList.add('hidden');
+          this.enterVREl.classList.add(HIDDEN_CLASS);
         }
       }
     },
@@ -539,10 +540,10 @@ var AScene = module.exports = registerElement('a-scene', {
         var statsEnabled = this.getAttribute('stats') === 'true';
         var statsEl = this.statsEl = document.querySelector('.rs-base');
         if (!statsEnabled) {
-          if (statsEl) { statsEl.classList.add('hidden'); }
+          if (statsEl) { statsEl.classList.add(HIDDEN_CLASS); }
           return;
         }
-        if (statsEl) { statsEl.classList.remove('hidden'); }
+        if (statsEl) { statsEl.classList.remove(HIDDEN_CLASS); }
         if (this.stats) { return; }
         this.stats = new RStats({
           CSSPath: '../../style/',
@@ -561,10 +562,10 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         var statsEnabled = this.getAttribute('stats') === 'true';
         if (statsEnabled) {
-          this.statsEl.classList.remove('hidden');
+          this.statsEl.classList.remove(HIDDEN_CLASS);
         }
         if (this.enterVREl) {
-          this.enterVREl.classList.remove('hidden');
+          this.enterVREl.classList.remove(HIDDEN_CLASS);
         }
       }
     },
