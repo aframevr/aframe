@@ -289,12 +289,33 @@ function createVideoEl (material, src, width, height) {
 */
 function loadVideoTexture (material, src, height, width) {
   // three.js video texture loader requires a <video>.
-  var videoEl = typeof src !== 'string' ? src : createVideoEl(material, src, height, width);
+  var videoEl = typeof src !== 'string' ? fixVideoAttributes(src) : createVideoEl(material, src, height, width);
   var texture = new THREE.VideoTexture(videoEl);
   texture.minFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   material.map = texture;
   material.needsUpdate = true;
+}
+
+/**
+ * Fixes a video element's attributes to prevent developers from accidentally
+ * passing the wrong attribute values to commonly misused video attributes.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#Attributes
+ * @param {Element} videoEl - Video element.
+ * @returns {Element} Video element with the correct properties updated.
+ */
+function fixVideoAttributes (videoEl) {
+  // The `<video>` element treats `loop` and `muted` as boolean attributes, but
+  // of course does not with `autoplay`, `controls`, `preload` (and `crossorigin`).
+  // If we get passed a `<video autoplay="false">`, let's assume the dev wanted
+  // `autoplay` to be disabled.
+  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
+  videoEl.controls = videoEl.getAttribute('controls') !== 'false';
+  if (videoEl.getAttribute('preload') === 'false') {
+    videoEl.preload = 'none';
+  }
+  return videoEl;
 }
 
 /**
