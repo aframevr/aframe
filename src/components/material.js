@@ -1,7 +1,7 @@
 /* global Promise */
 var debug = require('../utils/debug');
 var diff = require('../utils').diff;
-var registerComponent = require('../core/register-component').registerComponent;
+var registerComponent = require('../core/component').registerComponent;
 var srcLoader = require('../utils/src-loader');
 var THREE = require('../../lib/three');
 
@@ -42,29 +42,25 @@ var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    value: {
-      color: { default: '#FFF' },
-      envMap: { default: '' },
-      height: { default: 360 },
-      metalness: { default: 0.0, min: 0.0, max: 1.0 },
-      opacity: { default: 1.0, min: 0.0, max: 1.0 },
-      reflectivity: { default: 1.0, min: 0.0, max: 1.0 },
-      repeat: { default: '' },
-      roughness: { default: 0.5, min: 0.0, max: 1.0 },
-      shader: { default: 'standard', oneOf: ['flat', 'standard'] },
-      side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-      src: { default: '' },
-      transparent: { default: false },
-      width: { default: 640 }
-    }
+    color: { default: '#FFF' },
+    envMap: { default: '' },
+    height: { default: 360 },
+    metalness: { default: 0.0, min: 0.0, max: 1.0 },
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    reflectivity: { default: 1.0, min: 0.0, max: 1.0 },
+    repeat: { default: '' },
+    roughness: { default: 0.5, min: 0.0, max: 1.0 },
+    shader: { default: 'standard', oneOf: ['flat', 'standard'] },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    src: { default: '' },
+    transparent: { default: false },
+    width: { default: 640 }
   },
 
-  init: {
-    value: function () {
-      this.isLoadingEnvMap = false;
-      this.material = null;
-      this.textureSrc = null;
-    }
+  init: function () {
+    this.isLoadingEnvMap = false;
+    this.material = null;
+    this.textureSrc = null;
   },
 
   /**
@@ -76,37 +72,33 @@ module.exports.Component = registerComponent('material', {
    *
    * @param {object|null} oldData
    */
-  update: {
-    value: function (oldData) {
-      var data = this.data;
-      var material;
-      var materialType = getMaterialType(data);
-      var src = data.src;
+  update: function (oldData) {
+    var data = this.data;
+    var material;
+    var materialType = getMaterialType(data);
+    var src = data.src;
 
-      if (!oldData || getMaterialType(oldData) !== materialType) {
-        material = this.createMaterial(getMaterialData(data), materialType);
-      } else {
-        material = this.updateMaterial(processMaterialData(diff(oldData, data)));
-      }
-
-      // Load textures and/or cubemaps.
-      if (material.type === MATERIAL_TYPE_STANDARD) { this.updateEnvMap(); }
-      this.updateTexture(src);
+    if (!oldData || getMaterialType(oldData) !== materialType) {
+      material = this.createMaterial(getMaterialData(data), materialType);
+    } else {
+      material = this.updateMaterial(processMaterialData(diff(oldData, data)));
     }
+
+    // Load textures and/or cubemaps.
+    if (material.type === MATERIAL_TYPE_STANDARD) { this.updateEnvMap(); }
+    this.updateTexture(src);
   },
 
   /**
    * Remove material on remove (callback).
    */
-  remove: {
-    value: function () {
-      var el = this.el;
-      var defaultColor = this.schema.color.default;
-      var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
-      var object3D = el.object3D;
-      if (object3D) { object3D.material = defaultMaterial; }
-      el.sceneEl.unregisterMaterial(this.material);
-    }
+  remove: function () {
+    var el = this.el;
+    var defaultColor = this.schema.color.default;
+    var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
+    var object3D = el.object3D;
+    if (object3D) { object3D.material = defaultMaterial; }
+    el.sceneEl.unregisterMaterial(this.material);
   },
 
   /**
@@ -117,17 +109,15 @@ module.exports.Component = registerComponent('material', {
    * @param {object} type - Material type to create.
    * @returns {object} Material.
    */
-  createMaterial: {
-    value: function (data, type) {
-      var material;
-      var sceneEl = this.el.sceneEl;
-      if (this.material) {
-        sceneEl.unregisterMaterial(this.material);
-      }
-      material = this.material = this.el.object3D.material = new THREE[type](data);
-      sceneEl.registerMaterial(material);
-      return material;
+  createMaterial: function (data, type) {
+    var material;
+    var sceneEl = this.el.sceneEl;
+    if (this.material) {
+      sceneEl.unregisterMaterial(this.material);
     }
+    material = this.material = this.el.object3D.material = new THREE[type](data);
+    sceneEl.registerMaterial(material);
+    return material;
   },
 
   /**
@@ -136,51 +126,47 @@ module.exports.Component = registerComponent('material', {
    * @param {object} data - Material component data.
    * @returns {object} Material.
    */
-  updateMaterial: {
-    value: function (data) {
-      var material = this.material;
-      Object.keys(data).forEach(function (key) {
-        material[key] = data[key];
-      });
-      return material;
-    }
+  updateMaterial: function (data) {
+    var material = this.material;
+    Object.keys(data).forEach(function (key) {
+      material[key] = data[key];
+    });
+    return material;
   },
 
   /**
    * Handle environment cubemap. Textures are cached in texturePromises.
    */
-  updateEnvMap: {
-    value: function () {
-      var self = this;
-      var material = this.material;
-      var envMap = this.data.envMap;
-      // Environment cubemaps.
-      if (!envMap || this.isLoadingEnvMap) {
-        material.envMap = null;
+  updateEnvMap: function () {
+    var self = this;
+    var material = this.material;
+    var envMap = this.data.envMap;
+    // Environment cubemaps.
+    if (!envMap || this.isLoadingEnvMap) {
+      material.envMap = null;
+      material.needsUpdate = true;
+      return;
+    }
+    this.isLoadingEnvMap = true;
+    if (texturePromises[envMap]) {
+      // Another material is already loading this texture. Wait on promise.
+      texturePromises[envMap].then(function (cube) {
+        self.isLoadingEnvMap = false;
+        material.envMap = cube;
         material.needsUpdate = true;
-        return;
-      }
-      this.isLoadingEnvMap = true;
-      if (texturePromises[envMap]) {
-        // Another material is already loading this texture. Wait on promise.
-        texturePromises[envMap].then(function (cube) {
-          self.isLoadingEnvMap = false;
-          material.envMap = cube;
-          material.needsUpdate = true;
-        });
-      } else {
-        // Material is first to load this texture. Load and resolve texture.
-        texturePromises[envMap] = new Promise(function (resolve) {
-          srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
-            CubeLoader.load(urls, function (cube) {
-              // Texture loaded.
-              self.isLoadingEnvMap = false;
-              material.envMap = cube;
-              resolve(cube);
-            });
+      });
+    } else {
+      // Material is first to load this texture. Load and resolve texture.
+      texturePromises[envMap] = new Promise(function (resolve) {
+        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+          CubeLoader.load(urls, function (cube) {
+            // Texture loaded.
+            self.isLoadingEnvMap = false;
+            material.envMap = cube;
+            resolve(cube);
           });
         });
-      }
+      });
     }
   },
 
@@ -189,24 +175,22 @@ module.exports.Component = registerComponent('material', {
    *
    * @param {string|object} src - An <img> / <video> element or url to an image/video file.
    */
-  updateTexture: {
-    value: function (src) {
-      var data = this.data;
-      var material = this.material;
-      if (src) {
-        if (src !== this.textureSrc) {
-          // Texture added or changed.
-          this.textureSrc = src;
-          srcLoader.validateSrc(src, loadImage, loadVideo);
-        }
-      } else {
-        // Texture removed.
-        material.map = null;
-        material.needsUpdate = true;
+  updateTexture: function (src) {
+    var data = this.data;
+    var material = this.material;
+    if (src) {
+      if (src !== this.textureSrc) {
+        // Texture added or changed.
+        this.textureSrc = src;
+        srcLoader.validateSrc(src, loadImage, loadVideo);
       }
-      function loadImage (src) { loadImageTexture(material, src, data.repeat); }
-      function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
+    } else {
+      // Texture removed.
+      material.map = null;
+      material.needsUpdate = true;
     }
+    function loadImage (src) { loadImageTexture(material, src, data.repeat); }
+    function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
   }
 });
 

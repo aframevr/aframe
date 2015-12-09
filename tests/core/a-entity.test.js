@@ -252,7 +252,7 @@ suite('a-entity', function () {
   });
 
   suite('initComponent', function () {
-    test('the component is initialized', function () {
+    test('initializes component', function () {
       var el = this.el;
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
       this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
@@ -261,7 +261,7 @@ suite('a-entity', function () {
       assert.ok(el.components.material);
     });
 
-    test('a non registered component does not initialize', function () {
+    test('does not initialized non-registered component', function () {
       var el = this.el;
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
       this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
@@ -270,7 +270,7 @@ suite('a-entity', function () {
       assert.notOk(el.components.fakeComponent);
     });
 
-    test('a dependency component initializes and the attribute is set', function () {
+    test('initializes dependency component and can set attribute', function () {
       var el = this.el;
       var nativeGetAttribute = HTMLElement.prototype.getAttribute;
       this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
@@ -278,8 +278,7 @@ suite('a-entity', function () {
       assert.equal(el.getAttribute('material'), '');
     });
 
-    test('a dependency component initializes and the' +
-         'current attribute is honored', function () {
+    test('initializes dependency component and current attribute honored', function () {
       var el = this.el;
       var materialAttribute = 'color: #F0F; transparent: true';
       var nativeSetAttribute = HTMLElement.prototype.setAttribute;
