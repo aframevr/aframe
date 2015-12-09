@@ -1,6 +1,6 @@
 .rs-base {
   background-color: #EF2D5E;
-  border-radius: 5px;
+  border-radius: 0;
   font-family: 'Roboto Condensed', tahoma, sans-serif;
   font-size: 10px;
   line-height: 1.2em;
@@ -70,7 +70,7 @@
 
 @media (min-width: 480px) {
   .rs-base {
-    left: 10px;
-    top: 10px;
+    left: 20px;
+    top: 20px;
   }
 }
