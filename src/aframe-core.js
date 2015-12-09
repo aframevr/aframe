@@ -1,3 +1,6 @@
+require('es6-promise').polyfill();  // Polyfill `Promise`.
+require('present');  // Polyfill `performance.now()`.
+
 require('../style/aframe-core.css');
 require('../style/rStats.css');
 var debug = require('./utils/debug');
