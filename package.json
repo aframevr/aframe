@@ -8,7 +8,7 @@
     "dev": "npm run build && node ./scripts/budo",
     "browserify": "browserify ./index.js -s 'aframe'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
-    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
+    "dist": "mkdir -p dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "budo": "^7.0.2",
+    "exorcist": "^0.4.0",
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",
     "husky": "^0.10.1",
