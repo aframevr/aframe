@@ -17,6 +17,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupHMDControls();
     this.attachEventListeners();
     scene.addBehavior(this);
+    this.previousPosition = new THREE.Vector3();
+    this.deltaPosition = new THREE.Vector3();
   },
 
   setupMouseControls: function () {
@@ -105,17 +107,15 @@ module.exports.Component = registerComponent('look-controls', {
     };
   })(),
 
-  calculateDeltaPosition: (function () {
-    var previousPosition = new THREE.Vector3();
-    var deltaPosition = new THREE.Vector3();
-    return function () {
-      var dolly = this.dolly;
-      deltaPosition.copy(dolly.position);
-      deltaPosition.sub(previousPosition);
-      previousPosition.copy(dolly.position);
-      return deltaPosition;
-    };
-  })(),
+  calculateDeltaPosition: function () {
+    var dolly = this.dolly;
+    var deltaPosition = this.deltaPosition;
+    var previousPosition = this.previousPosition;
+    deltaPosition.copy(dolly.position);
+    deltaPosition.sub(previousPosition);
+    previousPosition.copy(dolly.position);
+    return deltaPosition;
+  },
 
   updateHMDQuaternion: (function () {
     var hmdQuaternion = new THREE.Quaternion();
