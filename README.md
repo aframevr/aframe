@@ -11,15 +11,13 @@ If you want to get hacking immediately, just fire up [__this CodePen example sce
 
 ### Downloads
 
-If you would like to embed this library in your project, simply include these files:
+If you would like to embed this library in your project, simply include this file:
 
 * [`aframe.min.js`](https://aframevr.github.io/aframe/dist/aframe.min.js)
-* [`aframe.min.html`](https://aframevr.github.io/aframe/dist/aframe.min.html)
 
 Or if you'd prefer unminified files for local development (with source maps):
 
 * [`aframe.js`](https://aframevr.github.io/aframe/dist/aframe.js)
-* [`aframe.html`](https://aframevr.github.io/aframe/dist/aframe.html)
 
 __Also, be sure to check out the awesome [examples](https://aframevr.github.io/aframe/examples/).__
 
