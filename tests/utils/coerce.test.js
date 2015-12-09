@@ -7,14 +7,14 @@ suite('utils.coerce', function () {
     test('with a bool', function () {
       assert.shallowDeepEqual(coerce(
         { doubleSided: 'true' },
-        { doubleSided: false }
+        { doubleSided: { default: false } }
       ), { doubleSided: true });
     });
 
     test('with a number', function () {
       assert.shallowDeepEqual(coerce(
         { radius: '5.5' },
-        { radius: 1 }
+        { radius: { default: 1 } }
       ), { radius: 5.5 });
     });
 
@@ -27,30 +27,31 @@ suite('utils.coerce', function () {
 
     test('with a coordinate', function () {
       assert.shallowDeepEqual(coerce(
-        { position: '-1 2.5 3' },
-        { position: { x: 0, y: 0, z: 0 } }
-      ), { position: { x: -1, y: 2.5, z: 3 } });
+        '-1 2.5 3',
+        { default: { x: 0, y: 0, z: 0 } }
+      ), { x: -1, y: 2.5, z: 3 });
     });
   });
 
   suite('coerces string', function () {
     test('with a bool', function () {
-      assert.equal(coerce('true', { doubleSided: false }, 'doubleSided'), true);
+      assert.equal(coerce('true', { default: false }), true);
     });
 
     test('with a number', function () {
-      assert.equal(coerce('5.5', { radius: 1 }, 'radius'), 5.5);
+      assert.equal(coerce('5.5', { radius: { default: 1 } }, 'radius'), 5.5);
     });
 
     test('with already-coerced values', function () {
-      assert.equal(coerce(true, { doubleSided: false }, 'anything'), true);
-      assert.equal(coerce(5.5, { radius: 1 }, 'anything'), 5.5);
+      assert.equal(coerce(true, { doubleSided: { default: false } }, 'anything'), true);
+      assert.equal(coerce(5.5, { radius: { default: 1 } }, 'anything'), 5.5);
     });
 
     test('with a coordinate', function () {
-      assert.shallowDeepEqual(
-        coerce('-1 2.5 3', { position: { x: 0, y: 0, z: 0 } }, 'position'),
-        { x: -1, y: 2.5, z: 3 });
+      assert.shallowDeepEqual(coerce(
+        '-1 2.5 3',
+        { default: { x: 0, y: 0, z: 0 } }
+      ), { x: -1, y: 2.5, z: 3 });
     });
   });
 });

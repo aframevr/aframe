@@ -25,16 +25,18 @@ var warn = debug('components:light:warn');
           hemisphere, point, spot).
  */
 module.exports.Component = registerComponent('light', {
-  defaults: {
+  schema: {
     value: {
-      angle: 60,
-      color: '#FFF',
-      groundColor: '#FFF',
-      decay: 1,
-      distance: 0.0,
-      exponent: 10.0,
-      intensity: 1.0,
-      type: 'directional'
+      angle: { default: 60 },
+      color: { default: '#FFF' },
+      groundColor: { default: '#FFF' },
+      decay: { default: 1 },
+      distance: { default: 0.0, min: 0 },
+      exponent: { default: 10.0 },
+      intensity: { default: 1.0, min: 0 },
+      type: { default: 'directional',
+              oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
+      }
     }
   },
 

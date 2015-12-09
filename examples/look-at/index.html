@@ -26,7 +26,7 @@
 
       <!-- Floor. -->
       <a-entity geometry="primitive: cylinder; height: .2; radius: 15;"
-                material="src: #floor; metallic: .2; repeat: 50 20; roughness: .1"
+                material="src: #floor; metalness: .2; repeat: 50 20; roughness: .1"
                 position="0 0 0"></a-entity>
 
       <!-- Skysphere. -->
@@ -38,7 +38,7 @@
       <a-entity position="0 2 0">
         <a-entity id="squirrel" geometry="primitive: sphere; radius: .2"
                                 light="type: point; color: #555"
-                                material="color: #FFF; shading: flat"
+                                material="color: #FFF; shader: flat"
                                 position="20 0 0">
         </a-entity>
         <a-animation attribute="rotation" direction="alternate" dur="5000"

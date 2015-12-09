@@ -18,7 +18,13 @@ module.exports = function (value, schema, schemaAttr) {
   // Batch coerce.
   if (typeof value === 'object') {
     Object.keys(obj).forEach(function (key) {
-      var schemaValue = schema[key];
+      var attrSchema = schema[key];
+      var schemaValue;
+      if (!attrSchema) {
+        utils.warn('Unkown component attribute ' + key);
+        return;
+      }
+      schemaValue = attrSchema.default;
       if (schemaValue === undefined) { return; }
       obj[key] = coerceValue(obj[key], schemaValue);
     });
@@ -26,7 +32,7 @@ module.exports = function (value, schema, schemaAttr) {
   }
 
   // Handle case: string.
-  return coerceValue(value, schema[schemaAttr]);
+  return coerceValue(value, schema.default);
 
   function coerceValue (value, targetValue) {
     if (typeof value !== 'string') { return value; }

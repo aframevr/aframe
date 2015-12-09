@@ -41,21 +41,21 @@ var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
  * @param {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
-  defaults: {
+  schema: {
     value: {
-      color: '#FFF',
-      envMap: '',
-      height: 360,
-      metalness: 0.0,
-      opacity: 1.0,
-      reflectivity: 1.0,
-      repeat: '',
-      roughness: 0.5,
-      shader: 'standard',
-      side: 'front',
-      src: '',
-      transparent: false,
-      width: 640
+      color: { default: '#FFF' },
+      envMap: { default: '' },
+      height: { default: 360 },
+      metalness: { default: 0.0, min: 0.0, max: 1.0 },
+      opacity: { default: 1.0, min: 0.0, max: 1.0 },
+      reflectivity: { default: 1.0, min: 0.0, max: 1.0 },
+      repeat: { default: '' },
+      roughness: { default: 0.5, min: 0.0, max: 1.0 },
+      shader: { default: 'standard', oneOf: ['flat', 'standard'] },
+      side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+      src: { default: '' },
+      transparent: { default: false },
+      width: { default: 640 }
     }
   },
 
@@ -101,7 +101,7 @@ module.exports.Component = registerComponent('material', {
   remove: {
     value: function () {
       var el = this.el;
-      var defaultColor = this.defaults.color;
+      var defaultColor = this.schema.color.default;
       var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
       var object3D = el.object3D;
       if (object3D) { object3D.material = defaultMaterial; }

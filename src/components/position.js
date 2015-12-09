@@ -3,11 +3,11 @@ var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../utils/');
 
 module.exports.Component = registerComponent('position', utils.extend({
-  defaults: {
+  schema: {
     value: {
-      x: 0,
-      y: 0,
-      z: 0
+      x: { default: 0 },
+      y: { default: 0 },
+      z: { default: 0 }
     }
   },
 

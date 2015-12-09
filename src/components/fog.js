@@ -9,13 +9,13 @@ var warn = debug('components:fog:warn');
  * Applies only to the scene entity.
  */
 module.exports.Component = register('fog', {
-  defaults: {
+  schema: {
     value: {
-      color: '#000',
-      density: 0.00025,
-      far: 1000,
-      near: 1,
-      type: 'linear'
+      color: { default: '#000' },
+      density: { default: 0.00025 },
+      far: { default: 1000, min: 0 },
+      near: { default: 1, min: 0 },
+      type: { default: 'linear', oneOf: ['linear', 'exponential'] }
     }
   },
 
@@ -38,7 +38,7 @@ module.exports.Component = register('fog', {
       }
 
       // Fog data changed. Update fog.
-      Object.keys(this.defaults).forEach(function (key) {
+      Object.keys(this.schema).forEach(function (key) {
         var value = data[key];
         if (key === 'color') { value = new THREE.Color(value); }
         fog[key] = value;

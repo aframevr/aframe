@@ -2,11 +2,11 @@ var registerComponent = require('../core/register-component').registerComponent;
 var utils = require('../utils/');
 
 module.exports.Component = registerComponent('cursor', {
-  defaults: {
+  schema: {
     value: {
-      timeout: 1500,
-      maxDistance: 5,
-      fuse: false
+      timeout: { default: 1500, min: 0 },
+      maxDistance: { default: 5, min: 0 },
+      fuse: { default: false }
     }
   },
 
@@ -18,7 +18,7 @@ module.exports.Component = registerComponent('cursor', {
     value: function () {
       this.raycaster = this.el.components.raycaster;
       // The cursor defaults to fuse in mobile environments
-      this.defaults.fuse = utils.isMobile();
+      this.schema.fuse.default = utils.isMobile();
       this.attachEventListeners();
     }
   },
