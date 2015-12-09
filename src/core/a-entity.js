@@ -147,7 +147,9 @@ var proto = {
       function attach () {
         // To prevent an object to attach itself multiple times to the parent.
         self.attachedToParent = true;
-        parent.add(self);
+        if (parent.add) {
+          parent.add(self);
+        }
       }
     }
   },
