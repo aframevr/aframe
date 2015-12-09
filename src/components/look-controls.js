@@ -5,6 +5,8 @@ var THREE = require('../../lib/three');
 var PI_2 = Math.PI / 2;
 
 module.exports.Component = registerComponent('look-controls', {
+  dependencies: ['position', 'rotation'],
+
   schema: {
     enabled: { default: true }
   },
@@ -49,21 +51,69 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.addEventListener('touchend', this.onTouchEnd.bind(this));
   },
 
-  update: (function () {
+  update: function () {
+    if (!this.data.enabled) { return; }
+    this.controls.update();
+    this.updateOrientation();
+    this.updatePosition();
+  },
+
+  updateOrientation: (function () {
     var hmdEuler = new THREE.Euler();
     hmdEuler.order = 'YXZ';
     return function () {
-      var hmdQuaternion;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
-      if (!this.data.enabled) { return; }
-      hmdQuaternion = this.updateHMDQuaternion();
+      var hmdQuaternion = this.calculateHMDQuaternion();
       hmdEuler.setFromQuaternion(hmdQuaternion);
       this.el.setAttribute('rotation', {
         x: THREE.Math.radToDeg(hmdEuler.x) + THREE.Math.radToDeg(pitchObject.rotation.x),
         y: THREE.Math.radToDeg(hmdEuler.y) + THREE.Math.radToDeg(yawObject.rotation.y),
         z: THREE.Math.radToDeg(hmdEuler.z)
       });
+    };
+  })(),
+
+  calculateHMDQuaternion: (function () {
+    var hmdQuaternion = new THREE.Quaternion();
+    return function () {
+      var dolly = this.dolly;
+      if (!this.zeroed && !dolly.quaternion.equals(this.zeroQuaternion)) {
+        this.zeroOrientation();
+        this.zeroed = true;
+      }
+      hmdQuaternion.copy(this.zeroQuaternion).multiply(dolly.quaternion);
+      return hmdQuaternion;
+    };
+  })(),
+
+  updatePosition: (function () {
+    var position = new THREE.Vector3();
+    var quaternion = new THREE.Quaternion();
+    var scale = new THREE.Vector3();
+    return function () {
+      var el = this.el;
+      var deltaPosition = this.calculateDeltaPosition();
+      var currentPosition = el.getComputedAttribute('position');
+      this.el.object3D.matrixWorld.decompose(position, quaternion, scale);
+      deltaPosition.applyQuaternion(quaternion);
+      el.setAttribute('position', {
+        x: currentPosition.x + deltaPosition.x,
+        y: currentPosition.y + deltaPosition.y,
+        z: currentPosition.z + deltaPosition.z
+      });
+    };
+  })(),
+
+  calculateDeltaPosition: (function () {
+    var previousPosition = new THREE.Vector3();
+    var deltaPosition = new THREE.Vector3();
+    return function () {
+      var dolly = this.dolly;
+      deltaPosition.copy(dolly.position);
+      deltaPosition.sub(previousPosition);
+      previousPosition.copy(dolly.position);
+      return deltaPosition;
     };
   })(),
 
