@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec;
-var fs = require('fs');
 var path = require('path');
 
 var budo = require('budo');
@@ -35,15 +34,7 @@ app
   } else if (path.extname(fn) === '.js') {
     app.reload(fn);
   } else if (fn.indexOf('elements/templates') === 0) {
-    var templatesWriteStream = fs.createWriteStream('./build/aframe.html');
-    var p = exec('vulcanize --inline elements/templates/index.html').stdout;
-    p.pipe(templatesWriteStream);
-    p.on('end', function () {
-      app.reload('build/aframe.html');
-    });
-    templatesWriteStream.on('error', function (err) {
-      console.error('Could not vulcanize HTML templates: %s', err);
-    });
+    app.reload();
   }
 }).on('update', function (ev) {
   execCmd('semistandard -v $(git ls-files "*.js") | snazzy');

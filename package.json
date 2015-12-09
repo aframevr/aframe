@@ -7,8 +7,8 @@
     "start": "npm run dev",
     "dev": "npm run build && node ./scripts/budo",
     "browserify": "browserify ./index.js -s 'aframe'",
-    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js && vulcanize --inline elements/templates/index.html > build/aframe.html",
-    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js && vulcanize --inline elements/templates/index.html > dist/aframe.html && vulcanize --inline elements/templates/index.html | html-minifier --minify-css --minify-js --collapse-whitespace > dist/aframe.min.html",
+    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
+    "dist": "mkdir -p dist/ && npm run browserify -- --debug -o dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
@@ -24,16 +24,21 @@
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",
     "husky": "^0.10.1",
+    "polymerize": "^1.0.0",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
     "snazzy": "^2.0.1",
-    "uglifyjs": "^2.4.10",
-    "vulcanize": "^1.13.1"
+    "uglifyjs": "^2.4.10"
   },
   "dependencies": {
     "@mozvr/aframe-core": "^0.0.0"
   },
   "link": true,
+  "browserify": {
+    "transform": [
+      ["polymerize", {"match": ".*.html$"}]
+    ]
+  },
   "semistandard": {
     "ignore": [
       "build/**",
