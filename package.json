@@ -20,7 +20,7 @@
   "license": "MIT",
   "devDependencies": {
     "browserify": "^11.0.1",
-    "budo": "cvan/budo#81c9e33",
+    "budo": "^7.0.2",
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",
     "husky": "^0.10.1",
@@ -36,7 +36,12 @@
   "link": true,
   "browserify": {
     "transform": [
-      ["polymerize", {"match": ".*.html$"}]
+      [
+        "polymerize",
+        {
+          "match": ".*.html$"
+        }
+      ]
     ]
   },
   "semistandard": {
