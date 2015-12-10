@@ -17,9 +17,6 @@ registerElement('a-root', {prototype: Object.create(AEntity.prototype)});
 
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
-  var perfStart = window.performance.now();
-
-  utils.log('registering <%s>', tagNameLower);
 
   return registerElement(
     tagNameLower,
@@ -28,7 +25,6 @@ module.exports = function (tagName) {
         AEntity.prototype, {
           attachedCallback: {
             value: function () {
-              utils.log('<%s> injected (%.4f ms)', tagName, window.performance.now() - perfStart);
               // We emit an event so `<a-entity>` knows when we've been
               // registered and adds our children as `object3D`s.
               this.emit('nodeready');
