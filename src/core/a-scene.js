@@ -674,9 +674,9 @@ function createEnterVR (enterVRHandler) {
   compatModal.className = ENTER_VR_MODAL_CLASS;
   compatModalText = document.createElement('p');
   compatModalLink = document.createElement('a');
-  compatModalLink.setAttribute('href', 'http://mozvr.com#viewing-vr');
+  compatModalLink.setAttribute('href', 'http://mozvr.com/#start');
   compatModalLink.setAttribute('target', '_blank');
-  compatModalLink.innerHTML = 'Learn more at mozvr.com';
+  compatModalLink.innerHTML = 'Learn more.';
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
 
@@ -689,13 +689,13 @@ function createEnterVR (enterVRHandler) {
   wrapper.appendChild(vrButton);
 
   if (!checkHeadsetConnected()) {
-    compatModalText.innerHTML = 'A virtual reality headset was not detected.';
+    compatModalText.innerHTML = 'Use a VR headset or mobile phone for VR.';
     wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
   }
 
   // Handle enter VR flows.
   if (!hasWebVR) {
-    compatModalText.innerHTML = 'Sorry, your browser does not support virtual reality.';
+    compatModalText.innerHTML = 'Use a VR-compatible browser or mobile phone for VR.';
     wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
   } else {
     vrButton.addEventListener('click', enterVRHandler);
