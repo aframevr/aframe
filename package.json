@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.0.9",
+  "version": "0.1.0-pre",
   "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {
-    "aframe-core": "^0.0.3"
+    "aframe-core": "0.0.9"
   },
   "link": true,
   "browserify": {
