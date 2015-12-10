@@ -1,6 +1,6 @@
 {
   "name": "aframe-core",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
   "main": "src/aframe-core.js",
