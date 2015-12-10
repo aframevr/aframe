@@ -7,7 +7,7 @@ if (!('import' in document.createElement('link'))) {
   require('../lib/vendor/HTMLImports');
 }
 
-var aframeCore = require('@mozvr/aframe-core');
+var aframeCore = require('aframe-core');
 var registerTemplate = require('./lib/register-template');
 var utils = require('./lib/utils');
 

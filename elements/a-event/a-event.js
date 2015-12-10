@@ -1,6 +1,6 @@
 /* global HTMLElement */
 
-var aframeCore = require('@mozvr/aframe-core');
+var aframeCore = require('aframe-core');
 var utils = require('../lib/utils');
 
 var registerElement = aframeCore.registerElement.registerElement;

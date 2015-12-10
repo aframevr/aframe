@@ -1,4 +1,4 @@
-var aframeCore = require('@mozvr/aframe-core');
+var aframeCore = require('aframe-core');
 var AEvent = require('../a-event/a-event');
 
 var aframeCoreUtils = aframeCore.utils;

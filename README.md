@@ -58,7 +58,7 @@ When you are in the directory of your __`aframe-core`__ repo checkout:
 
 When you are in the directory of your __`aframe`__ repo checkout:
 
-    npm link @mozvr/aframe-core
+    npm link aframe-core
 
 Now when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).
 
@@ -72,7 +72,7 @@ From your __`aframe-core`__ directory:
 
 From your __`aframe`__ directory:
 
-    npm unlink @mozvr/aframe-core
+    npm unlink aframe-core
 
 
 ## Publishing to GitHub Pages

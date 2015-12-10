@@ -1,4 +1,4 @@
-var aframeCore = require('@mozvr/aframe-core');
+var aframeCore = require('aframe-core');
 var utils = require('./utils');
 
 var registerElement = aframeCore.registerElement.registerElement;
