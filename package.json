@@ -1,6 +1,6 @@
 {
-  "name": "@mozvr/aframe",
-  "version": "0.0.0",
+  "name": "aframe",
+  "version": "0.0.9",
   "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {
-    "@mozvr/aframe-core": "^0.0.0"
+    "aframe-core": "^0.0.3"
   },
   "link": true,
   "browserify": {
