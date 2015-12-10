@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.1.0-pre",
+  "version": "0.0.1",
   "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "repository": "aframevr/aframe",
   "license": "MIT",
   "devDependencies": {
+    "aframe-core": "0.0.9",
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
     "budo": "^7.0.2",

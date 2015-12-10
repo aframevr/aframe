@@ -54260,13 +54260,29 @@ module.exports={
     "node": ">= 0.12.7",
     "npm": ">= 2.12.1"
   },
-  "readme": "# AFrame Core\n\nA DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.\n\n## Entity Component\n\nIt's an architectural pattern commonly used in game engines like Unity, Playcanvas or Unreal Engine 4+.\n\nThere's only one basic element called **entity** that defines a scale, a position and a rotation in the scene. **Components** encapsulate logic and data that can be attached to entities to extend their functionality, appearance and behaviour. In AFrame, entities are represented by ```a-entity``` DOM elements and components as their attributes. This is what a simple scene with a cube and a camera looks like:\n\n````html\n<a-scene>\n    <a-entity camera=\"fov: 45\"></a-entity>\n    <a-entity position=\"0 0 -10\" rotation=\"45 30 0\"\n              geometry=\"primitive: box; height: 4; width: 4; depth: 4;\"\n              material=\"color: green;\"></a-entity>\n</a-scene>\n````\n\n## Usage\n\n__NOTE:__ For folks creating scenes and third-party components + elements, we recommend getting started by instead using the [__`aframe`__ library](https://github.com/aframevr/aframe), a set of core resuable elements.\n\nProceed below if you would like to use the minimal set of primitive components and elements available here in __`aframe-core`__.\n\n### CodePen\n\nIf you want to get hacking immediately, just fire up __[this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!\n\n### Downloads\n\nTo get started, simply include these files in your project:\n\n* [`aframe-core.min.js`](dist/aframe-core.min.js)\n* [`aframe-core.min.css`](dist/aframe-core.min.css)\n\nOr for local development you can use the unminified bundles (with source maps for the JS):\n\n* [`aframe-core.js`](dist/aframe-core.js)\n* [`aframe-core.css`](dist/aframe-core.css)\n\n__Also, be sure to check out these awesome examples:__\n\n* [__`aframe-core`__ examples](http://aframevr.github.io/aframe-core/examples/) ([source](https://github.com/aframevr/aframe-core/tree/master/examples/))\n* [__`aframe`__ examples](http://aframevr.github.io/aframe/examples/) ([source](https://github.com/aframevr/aframe/tree/master/examples/))\n\n### npm\n\nFirst install from npm:\n\n    npm install @mozvr/aframe-core\n\nAnd in your Browserify/Webpack modules, simply require the module:\n\n    require('@mozvr/aframe-core')\n\n## Local installation\n\n    git clone https://github.com/aframevr/aframe-core.git\n    cd aframe-core\n\n## Local development\n\n    npm install\n    npm start\n    open http://localhost:9001/examples/\n\nIf you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:\n\n    npm login\n\n### Working with [`aframe`](https://github.com/aframevr/aframe/) library\n\nIf you want to make changes to the [__`aframe`__](https://github.com/aframevr/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.\n\n#### Linking\n\nWhen you are in the directory of your __`aframe-core`__ repo checkout:\n\n    npm link\n\nWhen you are in the directory of your __`aframe`__ repo checkout:\n\n    npm link @mozvr/aframe-core\n\nNow when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).\n\n#### Unlinking\n\nYou'll need to `npm unlink` when you are done testing things and want to actually use the npm-published versions, not your versions that are locally linked.\n\nFrom your __`aframe-core`__ directory:\n\n    npm unlink\n\nFrom your __`aframe`__ directory:\n\n    npm unlink @mozvr/aframe-core\n\n## Browser console logging\n\nIf you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:\n\n    localStorage.logs = 1\n\nAnd to disable:\n\n    localStorage.logs = 0\n\n## Running tests\n\n    npm test\n\n## Pulling the lastest remote changes\n\n    git checkout dev\n    git pull --rebase\n    npm install\n    npm start\n    open http://localhost:9001/examples/\n\n## Releasing and publishing a new version to npm\n\nAssuming you want to publish a version of `dev` to the private package for testing:\n\n    npm run release\n\nAnd to push the tags to GitHub:\n\n    git push --tags\n\n## Updating `dist` files\n\n    npm run dist\n    git commit -am 'Bump dist'\n\n## Publishing to GitHub Pages\n\nTo publish to __https://aframevr.github.io/aframe-core/__:\n\n    npm run ghpages\n\nTo publish to __https://cvan.github.io/aframe-core/__:\n\n    npm run ghpages cvan\n\n\n## License\n\nThis program is free software and is distributed under an [MIT License](LICENSE).\n",
-  "readmeFilename": "README.md",
   "gitHead": "4015f955b7e7bf53f062d3fc2113da70723c14f8",
   "description": "A DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.",
   "_id": "aframe-core@0.0.9",
   "_shasum": "6b15330075ba05c88a384ffd3bac7614dedec347",
-  "_from": "aframe-core@*"
+  "_from": "aframe-core@0.0.9",
+  "_npmVersion": "2.12.1",
+  "_nodeVersion": "0.12.7",
+  "_npmUser": {
+    "name": "mozvr",
+    "email": "cvan@mozilla.com"
+  },
+  "dist": {
+    "shasum": "6b15330075ba05c88a384ffd3bac7614dedec347",
+    "tarball": "http://registry.npmjs.org/aframe-core/-/aframe-core-0.0.9.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "mozvr",
+      "email": "cvan@mozilla.com"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/aframe-core/-/aframe-core-0.0.9.tgz"
 }
 
 },{}],54:[function(require,module,exports){
@@ -59363,7 +59379,7 @@ process.umask = function() { return 0; };
 },{}],91:[function(require,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.1.0-pre",
+  "version": "0.0.1",
   "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
@@ -59382,6 +59398,7 @@ module.exports={
   "repository": "aframevr/aframe",
   "license": "MIT",
   "devDependencies": {
+    "aframe-core": "0.0.9",
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
     "budo": "^7.0.2",
