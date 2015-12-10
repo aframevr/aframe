@@ -1,6 +1,6 @@
 <template is="a-template"
           element="a-curvedimage"
-          radius="2"
+          radius="1"
           height="1"
           segments-radius="48"
           theta-start="0"
@@ -20,7 +20,7 @@
             scale="1 1 -1"
             material="opacity: ${opacity};
                       shader: flat;
-                      side: front;
+                      side: double;
                       transparent: ${transparent};
                       src: url(${src})"></a-entity>
 </template>
