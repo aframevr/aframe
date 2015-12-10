@@ -19,10 +19,9 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
-    "budo": "cvan/budo#7391d13",
+    "budo": "^7.0.2",
     "chai-shallow-deep-equal": "^1.3.0",
     "crass": "^0.7.7",
-    "garnish": "^3.2.0",
     "gh-pages": "^0.4.0",
     "husky": "^0.10.1",
     "karma": "^0.13.15",
@@ -42,7 +41,7 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo src/aframe-core.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/aframe-core.js -s 'aframe-core' | garnish -v",
+    "dev": "npm run build && budo src/aframe-core.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/aframe-core.js -s 'aframe-core'",
     "browserify": "browserify ./src/aframe-core.js -s 'aframe-core'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe-core.js",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js && npm run dist:css",
