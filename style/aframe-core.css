@@ -38,7 +38,7 @@ a-scene img {
   bottom: 5px;
   display: flex;
   display: -webkit-flex;
-  font-family: 'Roboto Condensed', tahoma, sans-serif;
+  font-family: 'Roboto Condensed', monospace, sans-serif;
   font-size: 14px;
   font-weight: 300;
   height: 72px;
