@@ -52335,8 +52335,8 @@ module.exports = WebVRPolyfill;
 
 },{}],26:[function(require,module,exports){
 module.exports={
-  "name": "@mozvr/aframe-core",
-  "version": "0.0.3",
+  "name": "aframe-core",
+  "version": "0.1.0-pre",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
   "main": "src/aframe-core.js",
