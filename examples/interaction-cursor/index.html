@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Cursor</title>
     <meta name="description" content="Cursor — A-Frame">
-    <script src="../../build/aframe.js"></script>
+    <script src="../../dist/aframe.js"></script>
   </head>
   <body>
     <a-scene>
@@ -14,7 +14,7 @@
 
       <!-- Orange cube -->
       <a-cube position="0 3.5 -2" rotation="30 30 0" width="2" depth="2" height="2" color="#F16745" roughness="0.8">
-        
+
         <a-mouseenter scale="3 1 1" color="#FFC65D"></a-mouseenter>
         <a-mouseenter target="#shadow" scale="3 2 2"></a-mouseenter>
 
@@ -22,7 +22,7 @@
         <a-mouseleave target="#shadow" scale="2 2 2"></a-mouseleave>
 
       </a-cube>
-      
+
       <!-- Cube's shadow -->
       <a-image id="shadow" position="0 0 -2" src="../_images/radial-shadow-2.png" opacity="0.5" rotation="-90 0 0" scale="2 2 2"></a-image>
 
