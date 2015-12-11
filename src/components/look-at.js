@@ -58,7 +58,7 @@ module.exports.Component = registerComponent('look-at', {
         warn('"' + targetSelector + '" does not point to a valid entity to look-at');
         return;
       }
-      if (!targetEl.object3D) {
+      if (!targetEl.hasLoaded) {
         return targetEl.addEventListener('loaded', function () {
           self.beginTracking(targetEl);
         });

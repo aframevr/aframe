@@ -67,14 +67,12 @@ suite('look-at', function () {
       nestedEl.setAttribute('position', '1 2 3');
       nestedEl.setAttribute('id', 'squirrel-nest');
       anotherEl.appendChild(nestedEl);
-      nestedEl.addEventListener('loaded', function () {
+      nestedEl.parentNode.addEventListener('loaded', function () {
         el.setAttribute('look-at', '#squirrel-nest');
         el.parentNode.object3D.updateMatrixWorld();
-        setTimeout(function () {
-          el.components['look-at'].update();
-          assert.ok(spy.calledWith({x: 2, y: 4, z: 6}));
-          done();
-        });
+        el.components['look-at'].update();
+        assert.ok(spy.calledWith({x: 2, y: 4, z: 6}));
+        done();
       });
     });
 
