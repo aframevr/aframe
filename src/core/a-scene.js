@@ -689,13 +689,13 @@ function createEnterVR (enterVRHandler) {
   wrapper.appendChild(vrButton);
 
   if (!checkHeadsetConnected()) {
-    compatModalText.innerHTML = 'Use a VR headset or mobile phone for VR.';
+    compatModalText.innerHTML = 'Your browser supports WebVR. To enter VR, connect a headset, or use a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
   }
 
   // Handle enter VR flows.
   if (!hasWebVR) {
-    compatModalText.innerHTML = 'Use a VR-compatible browser or mobile phone for VR.';
+    compatModalText.innerHTML = 'Your browser does not support WebVR. To enter VR, use a VR-compatible browser, or a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
   } else {
     vrButton.addEventListener('click', enterVRHandler);
