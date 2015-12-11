@@ -31,7 +31,7 @@ a-scene video,
 a-scene img {
   display: none;
 }
-  
+
 .a-enter-vr {
   align-items: flex-end;
   -webkit-align-items: flex-end;
@@ -85,7 +85,7 @@ a-scene img {
   opacity: 0;
   margin-right: 10px;
   padding: 9px;
-  width: 400px;
+  width: 280px;
   position: relative;
   transition: opacity .05s ease;
   -webkit-transition: opacity .05s ease;
@@ -127,5 +127,8 @@ a-scene img {
   .a-enter-vr {
     bottom: 20px;
     right: 20px;
+  }
+  .a-enter-vr-modal {
+    width: 400px;
   }
 }
