@@ -31,15 +31,15 @@ a-scene video,
 a-scene img {
   display: none;
 }
-
+  
 .a-enter-vr {
   align-items: flex-end;
   -webkit-align-items: flex-end;
   bottom: 5px;
   display: flex;
   display: -webkit-flex;
-  font-family: 'Fira Sans', monospace, sans-serif;
-  font-size: 14px;
+  font-family: sans-serif, monospace;
+  font-size: 13px;
   font-weight: 200;
   line-height: 16px;
   height: 72px;
@@ -55,19 +55,19 @@ a-scene img {
   color: #FFF;
   cursor: pointer;
   height: 50px;
-  transition: background .1s ease;
-  -webkit-transition: background .1s ease;
+  transition: background .05s ease;
+  -webkit-transition: background .05s ease;
   width: 60px;
   z-index: 999999;
 }
 
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
-  background-color: #333333;
+  background-color: #666666;
 }
 
 [data-a-enter-vr-no-webvr] .a-enter-vr-button {
-  border-color: #333;
+  border-color: #666666;
   opacity: 0.65;
 }
 
@@ -78,22 +78,22 @@ a-scene img {
 }
 
 .a-enter-vr-modal {
-  background-color: #333333;
+  background-color: #666666;
   border-radius: 0;
   color: #FFF;
   height: 32px;
   opacity: 0;
   margin-right: 10px;
   padding: 9px;
-  width: 220px;
+  width: 250px;
   position: relative;
-  transition: opacity .1s ease;
-  -webkit-transition: opacity .1s ease;
+  transition: opacity .05s ease;
+  -webkit-transition: opacity .05s ease;
 }
 
 .a-enter-vr-modal:after {
   border-bottom: 10px solid transparent;
-  border-left: 10px solid #333333;
+  border-left: 10px solid #666666;
   border-top: 10px solid transparent;
   display: inline-block;
   content: '';
@@ -111,13 +111,11 @@ a-scene img {
 
 .a-enter-vr-modal p:after {
   content: ' ';
-  /*padding: 2px 30px 2px 0;*/
 }
 
 .a-enter-vr-modal a {
   color: #FFF;
   display: inline;
-  /*padding: 2px 30px 2px 0;*/
 }
 
 [data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal,
