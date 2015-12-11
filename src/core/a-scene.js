@@ -19,6 +19,7 @@ var ENTER_VR_NO_HEADSET = 'data-a-enter-vr-no-headset';
 var ENTER_VR_NO_WEBVR = 'data-a-enter-vr-no-webvr';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
 var ENTER_VR_MODAL_CLASS = 'a-enter-vr-modal';
+var isMobile = utils.isMobile();
 
 /**
  * Scene element, holds all entities.
@@ -64,7 +65,7 @@ var AScene = module.exports = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var isMobile = this.isMobile = utils.isMobile();
+        this.isMobile = isMobile;
         var resizeCanvas = this.resizeCanvas.bind(this);
 
         if (isMobile) {
@@ -662,7 +663,7 @@ function createEnterVR (enterVRHandler) {
   var compatModalLink;
   var compatModalText;
   // window.hasNativeVRSupport is set in src/aframe-core.js.
-  var hasWebVR = this.isMobile || window.hasNonPolyfillWebVRSupport;
+  var hasWebVR = isMobile || window.hasNonPolyfillWebVRSupport;
   var orientation;
   var vrButton;
   var wrapper;
@@ -688,7 +689,7 @@ function createEnterVR (enterVRHandler) {
   }
   wrapper.appendChild(vrButton);
 
-  if (!checkHeadsetConnected()) {
+  if (!checkHeadsetConnected() && !isMobile) {
     compatModalText.innerHTML = 'Your browser supports WebVR. To enter VR, connect a headset, or use a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
   }
