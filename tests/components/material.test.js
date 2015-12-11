@@ -50,6 +50,13 @@ suite('material', function () {
       assert.equal(el.object3D.material.type, 'MeshStandardMaterial');
     });
 
+    test('can unset fog', function () {
+      var el = this.el;
+      assert.ok(el.object3D.material.fog);
+      el.setAttribute('material', 'fog: false');
+      assert.notOk(el.object3D.material.fog);
+    });
+
     test('re-registers material when toggling material to flat shading', function () {
       var el = this.el;
       var oldMaterial = el.object3D.material;

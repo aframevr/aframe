@@ -22,6 +22,7 @@ var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
  * @param {string} envMap - To load a environment cubemap. Takes a selector
  *         to an element containing six img elements, or a comma-separated
  *         string of direct url()s.
+ * @param {boolean} fog - Whether or not to be affected by fog.
  * @param {number} height - Height to render texture.
  * @param {number} metalness - Parameter for physical/standard material.
  * @param {number} opacity - [0-1].
@@ -44,6 +45,7 @@ module.exports.Component = registerComponent('material', {
   schema: {
     color: { default: '#FFF' },
     envMap: { default: '' },
+    fog: { default: true },
     height: { default: 360 },
     metalness: { default: 0.0, min: 0.0, max: 1.0 },
     opacity: { default: 1.0, min: 0.0, max: 1.0 },
