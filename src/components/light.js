@@ -26,13 +26,13 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    angle: { default: 60 },
+    angle: { default: 60, if: { type: ['spot'] } },
     color: { default: '#FFF' },
-    groundColor: { default: '#FFF' },
-    decay: { default: 1 },
-    distance: { default: 0.0, min: 0 },
-    exponent: { default: 10.0 },
-    intensity: { default: 1.0, min: 0 },
+    groundColor: { default: '#FFF', if: { type: ['hemisphere'] } },
+    decay: { default: 1, if: { type: ['point', 'spot'] } },
+    distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
+    exponent: { default: 10.0, if: { type: ['spot'] } },
+    intensity: { default: 1.0, min: 0, if: { type: ['directional', 'hemisphere', 'point', 'spot'] } },
     type: { default: 'directional',
             oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
     }
