@@ -59363,7 +59363,7 @@ process.umask = function() { return 0; };
 },{}],91:[function(require,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Building blocks for the VR Web",
   "main": "index.js",
   "scripts": {
