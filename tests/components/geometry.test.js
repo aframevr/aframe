@@ -68,13 +68,13 @@ suite('geometry', function () {
       var el = this.el;
       var geometry;
       el.setAttribute('geometry', {
-        primitive: 'cylinder', radiusBottom: 1, radiusTop: 2, height: 2, segmentsRadial: 3,
+        primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
         segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
       });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CylinderGeometry');
-      assert.equal(geometry.parameters.radiusBottom, 1);
-      assert.equal(geometry.parameters.radiusTop, 2);
+      assert.equal(geometry.parameters.radiusTop, 1);
+      assert.equal(geometry.parameters.radiusTop, 1);
       assert.equal(geometry.parameters.height, 2);
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.heightSegments, 4);
@@ -83,19 +83,22 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.thetaLength, rad(350));
     });
 
-    test('creates cylinder geometry with radius shortcut', function () {
+    test('creates cone geometry', function () {
       var el = this.el;
       var geometry;
-      el.setAttribute('geometry', { primitive: 'cylinder', radius: 8 });
+      el.setAttribute('geometry', {
+        primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2, segmentsRadial: 3,
+        segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'CylinderGeometry');
-      assert.equal(geometry.parameters.radiusTop, 8);
-      assert.equal(geometry.parameters.radiusBottom, 8);
-
-      el.setAttribute('geometry', 'radius', 1);
-      geometry = el.object3D.geometry;
       assert.equal(geometry.parameters.radiusTop, 1);
-      assert.equal(geometry.parameters.radiusBottom, 1);
+      assert.equal(geometry.parameters.radiusBottom, 5);
+      assert.equal(geometry.parameters.radialSegments, 3);
+      assert.equal(geometry.parameters.heightSegments, 4);
+      assert.equal(geometry.parameters.openEnded, true);
+      assert.equal(geometry.parameters.thetaStart, rad(240));
+      assert.equal(geometry.parameters.thetaLength, rad(350));
     });
 
     test('creates plane geometry', function () {

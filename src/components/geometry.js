@@ -112,9 +112,6 @@ module.exports.Component = registerComponent('geometry', {
  * @returns {object} geometry
  */
 function getGeometry (data, schema) {
-  var radiusBottom;
-  var radiusTop;
-
   switch (data.primitive) {
     case 'box': {
       return new THREE.BoxGeometry(data.width, data.height, data.depth);
@@ -123,16 +120,16 @@ function getGeometry (data, schema) {
       return new THREE.CircleGeometry(
         data.radius, data.segments, rad(data.thetaStart), rad(data.thetaLength));
     }
-    case 'cylinder': {
-      // Shortcut for specifying both top and bottom radius.
-      radiusTop = data.radiusTop;
-      radiusBottom = data.radiusBottom;
-      if (data.radius !== schema.radius.default) {
-        radiusTop = data.radius;
-        radiusBottom = data.radius;
-      }
+    case 'cone': {
       return new THREE.CylinderGeometry(
-        radiusTop, radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight,
+        data.radiusTop, data.radiusBottom, data.height,
+        data.segmentsRadial, data.segmentsHeight,
+        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
+    }
+    case 'cylinder': {
+      return new THREE.CylinderGeometry(
+        data.radius, data.radius, data.height,
+        data.segmentsRadial, data.segmentsHeight,
         data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'plane': {
