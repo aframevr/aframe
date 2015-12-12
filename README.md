@@ -65,10 +65,6 @@ And in your Browserify/Webpack modules, simply require the module:
     npm start
     open http://localhost:9001/examples/
 
-If you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:
-
-    npm login
-
 ### Working with [`aframe`](https://github.com/aframevr/aframe/) library
 
 If you want to make changes to the [__`aframe`__](https://github.com/aframevr/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.
@@ -140,9 +136,9 @@ To publish to __https://aframevr.github.io/aframe-core/__:
 
     npm run ghpages
 
-To publish to __https://cvan.github.io/aframe-core/__:
+To publish to __https://your_username.github.io/aframe-core/__:
 
-    npm run ghpages cvan
+    npm run ghpages your_username
 
 
 ## License
