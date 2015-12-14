@@ -58,7 +58,7 @@ suite('a-animation', function () {
   });
 
   suite('update', function () {
-    test('it is called on initialization', function (done) {
+    test('called on initialization', function (done) {
       this.sinon.stub(AAnimation.prototype, 'update');
       setupAnimation({}, function (el, animationEl) {
         sinon.assert.called(AAnimation.prototype.update);

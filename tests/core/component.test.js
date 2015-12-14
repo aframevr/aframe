@@ -35,12 +35,14 @@ suite('component', function () {
 
     test('can change behavior of entity', function (done) {
       var el = entityFactory();
+      registerComponent('clone', cloneComponent);
+
       el.addEventListener('loaded', function () {
         assert.notOk('clone' in el.components);
         assert.notOk(el.object3D.children.length);
         el.setAttribute('clone', '');
         assert.ok('clone' in el.components);
-        assert.ok(el.object3D.children[0].uuid, 'Bubble Fett');
+        assert.equal(el.object3D.children[0].uuid, 'Bubble Fett');
         done();
       });
     });

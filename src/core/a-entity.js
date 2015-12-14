@@ -52,23 +52,8 @@ var proto = {
 
   attachedCallback: {
     value: function () {
-      var self = this;
-      var children = this.getChildEntities();
-      var childrenLoaded = [];
-
-      children.forEach(function (child, i) {
-        childrenLoaded.push(new Promise(function (resolve) {
-          child.addEventListener('loaded', function () {
-            resolve();
-          });
-        }));
-      });
-
       this.addToParent();
-
-      Promise.all(childrenLoaded).then(function () {
-        self.load();
-      });
+      this.load();
     }
   },
 
@@ -189,7 +174,7 @@ var proto = {
   },
 
   load: {
-    value: function () {
+    value: function (childFilter) {
       // To prevent calling load more than once
       if (this.hasLoaded) { return; }
       // Handle to the associated DOM element
@@ -199,7 +184,9 @@ var proto = {
       // Components initialization
       this.updateComponents();
       // Call the parent class
-      ANode.prototype.load.call(this);
+      ANode.prototype.load.call(this, childFilter || function (el) {
+        return el.isEntity;
+      });
     },
     writable: window.debug
   },
@@ -332,7 +319,6 @@ var proto = {
           newData = component.parse(newData);
         }
         // Component already initialized. Update component.
-        // TODO: update component attribute more granularly.
         component.updateAttributes(newData);
         return;
       }
@@ -376,9 +362,10 @@ var proto = {
     value: function (attr, oldVal, newVal) {
       var component = components[attr];
       oldVal = oldVal || this.getAttribute(attr);
-      // When creating objects programatically and setting attributes, the object is not part
-      // of the scene until is inserted into the DOM.
-      if (!this.hasLoaded) { return; }
+      // When creating entities programatically and setting attributes, it is not part
+      // of the scene until it is inserted into the DOM. This does not apply to scenes as
+      // scenes depend on its child entities to load.
+      if (!this.hasLoaded && !this.isScene) { return; }
       if (attr === 'mixin') {
         this.updateStateMixins(newVal, oldVal);
         this.updateComponents();

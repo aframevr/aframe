@@ -98,7 +98,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     process.nextTick(function () {
       el = self.el = document.createElement('a-scene');
       document.body.appendChild(el);
-      el.addEventListener('loaded', function () {
+      el.addEventListener('renderstart', function () {
         done();
       });
     });
@@ -125,10 +125,19 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
       var cancelSpy = this.sinon.spy(window, 'cancelAnimationFrame');
 
       assert.ok(el.animationFrameID);
-      el.parentNode.removeChild(el);
+      document.body.removeChild(el);
       process.nextTick(function () {
         assert.notOk(el.animationFrameID);
         assert.ok(cancelSpy.calledWith(animationFrameID));
+        done();
+      });
+    });
+
+    test('does not destroy document.body', function (done) {
+      var el = this.el;
+      document.body.removeChild(el);
+      process.nextTick(function () {
+        assert.ok(document.body);
         done();
       });
     });

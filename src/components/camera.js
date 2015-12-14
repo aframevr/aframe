@@ -16,7 +16,7 @@ module.exports.Component = registerComponent('camera', {
     var camera = this.camera = new THREE.PerspectiveCamera();
     var el = this.el;
     el.object3D.add(camera);
-    el.sceneEl.cameraEl = el;
+    el.sceneEl.registerCamera(el);
   },
 
   /**
