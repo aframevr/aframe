@@ -21,20 +21,17 @@ module.exports = registerElement('a-node', {
         this.sceneEl = document.querySelector('a-scene');
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
-      },
-      writable: window.debug
+      }
     },
 
     detachedCallback: {
-      value: function () { /* no-op */ },
-      writable: window.debug
+      value: function () { /* no-op */ }
     },
 
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
         if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
-      },
-      writable: window.debug
+      }
     },
 
     load: {
@@ -43,8 +40,7 @@ module.exports = registerElement('a-node', {
         if (this.hasLoaded) { return; }
         this.hasLoaded = true;
         this.emit('loaded', {}, false);
-      },
-      writable: window.debug
+      }
     },
 
     updateMixins: {
@@ -56,8 +52,7 @@ module.exports = registerElement('a-node', {
         this.mixinEls = [];
         diff.forEach(this.unregisterMixin.bind(this));
         newMixinsIds.forEach(this.registerMixin.bind(this));
-      },
-      writable: window.debug
+      }
     },
 
     addMixin: {
@@ -70,8 +65,7 @@ module.exports = registerElement('a-node', {
         }
         mixinIds.push(mixinId);
         this.setAttribute('mixin', mixinIds.join(' '));
-      },
-      writable: window.debug
+      }
     },
 
     removeMixin: {
@@ -86,8 +80,7 @@ module.exports = registerElement('a-node', {
             return;
           }
         }
-      },
-      writable: window.debug
+      }
     },
 
     registerMixin: {
@@ -103,8 +96,7 @@ module.exports = registerElement('a-node', {
       value: function (attr, newValue) {
         if (attr === 'mixin') { this.updateMixins(newValue); }
         HTMLElement.prototype.setAttribute.call(this, attr, newValue);
-      },
-      writable: window.debug
+      }
     },
 
     unregisterMixin: {
@@ -120,8 +112,7 @@ module.exports = registerElement('a-node', {
           }
         }
         this.removeMixinListener(mixinId);
-      },
-      writable: window.debug
+      }
     },
 
     removeMixinListener: {
@@ -130,8 +121,7 @@ module.exports = registerElement('a-node', {
         if (!observer) { return; }
         observer.disconnect();
         this.mixinObservers[mixinId] = null;
-      },
-      writable: window.debug
+      }
     },
 
     attachMixinListener: {
@@ -148,13 +138,11 @@ module.exports = registerElement('a-node', {
         var config = { attributes: true };
         observer.observe(mixinEl, config);
         this.mixinObservers[mixinId] = observer;
-      },
-      writable: window.debug
+      }
     },
 
     applyMixin: {
-      value: function () { /* no-op */ },
-      writable: window.debug
+      value: function () { /* no-op */ }
     },
 
     /**
@@ -176,8 +164,7 @@ module.exports = registerElement('a-node', {
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
-      },
-      writable: window.debug
+      }
     },
 
     /**
@@ -197,8 +184,7 @@ module.exports = registerElement('a-node', {
         return function () {
           self.emit(name, detail, bubbles);
         };
-      },
-      writable: window.debug
+      }
     }
   })
 });
