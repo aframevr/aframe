@@ -147,8 +147,8 @@ module.exports.Component = registerComponent('look-controls', {
 
     if (!this.mouseDown || !this.data.enabled) { return; }
 
-    var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
-    var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
+    var movementX = event.movementX || event.mozMovementX;
+    var movementY = event.movementY || event.mozMovementY;
 
     if (movementX === undefined || movementY === undefined) {
       movementX = event.screenX - previousMouseEvent.screenX;
