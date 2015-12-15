@@ -65,7 +65,6 @@ module.exports = registerElement('a-node', {
           });
         });
 
-
         Promise.all(childrenLoaded).then(function () {
           if (cb) { cb(); }
           self.hasLoaded = true;
