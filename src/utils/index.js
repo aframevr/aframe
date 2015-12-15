@@ -126,6 +126,14 @@ var isIOS = module.exports.isIOS = function () {
 };
 
 /**
+ * Checks mobile device orientation
+ * @return {Boolean} True if landscape orientation
+ */
+module.exports.isLandscape = function () {
+  return window.orientation === 90 || window.orientation === -90;
+};
+
+/**
  * Splits a string into an array based on a delimiter.
  *
  * @param   {string=} [str='']        Source string
