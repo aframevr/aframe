@@ -13,6 +13,7 @@ module.exports = registerElement('a-node', {
   prototype: Object.create(HTMLElement.prototype, {
     createdCallback: {
       value: function () {
+        this.hasLoaded = false;
         this.isNode = true;
         this.mixinEls = [];
         this.mixinObservers = {};
@@ -44,7 +45,7 @@ module.exports = registerElement('a-node', {
      * Then emit `loaded` event and set `hasLoaded`.
      */
     load: {
-      value: function (childFilter) {
+      value: function (cb, childFilter) {
         var children;
         var childrenLoaded;
         var self = this;
@@ -64,7 +65,9 @@ module.exports = registerElement('a-node', {
           });
         });
 
+
         Promise.all(childrenLoaded).then(function () {
+          if (cb) { cb(); }
           self.hasLoaded = true;
           self.emit('loaded', {}, false);
         });

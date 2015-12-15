@@ -91,7 +91,7 @@ var proto = {
 
       for (var i = 0; i < this.children.length; i++) {
         var child = children[i];
-        if (child.isEntity) {
+        if (child.tagName === this.tagName) {
           childEntities.push(child);
         }
       }
@@ -174,19 +174,19 @@ var proto = {
   },
 
   load: {
-    value: function (childFilter) {
-      // To prevent calling load more than once
+    value: function () {
       if (this.hasLoaded) { return; }
-      // Handle to the associated DOM element
       this.object3D.el = this;
-      // It attaches itself to the threejs parent object3D
+
+      // Attach to parent object3D.
       this.addToParent();
-      // Components initialization
-      this.updateComponents();
-      // Call the parent class
-      ANode.prototype.load.call(this, childFilter || function (el) {
-        return el.isEntity;
-      });
+
+      if (this.isScene) {
+        ANode.prototype.load.call(this, this.updateComponents.bind(this));
+      } else {
+        ANode.prototype.load.call(this, this.updateComponents.bind(this),
+                                  function (el) { return el.isEntity; });
+      }
     },
     writable: window.debug
   },
