@@ -165,6 +165,8 @@ var AScene = module.exports = registerElement('a-scene', {
           // Lock to landscape orientation on mobile.
           if (fsElement && this.isMobile) {
             window.screen.orientation.lock('landscape');
+          } else {
+            window.screen.orientation.unlock();
           }
           if (!fsElement) {
             this.showUI();
