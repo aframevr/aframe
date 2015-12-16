@@ -27,7 +27,7 @@ Proceed below if you would like to use the minimal set of primitive components a
 
 ### CodePen
 
-If you want to get started immediately, just fire up [__this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!
+If you want to get started immediately, just fire up __[this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!
 
 ### Downloads
 
@@ -65,7 +65,9 @@ Alternatively, you can clone this repository to work locally on this project.
 To start the local development server:
 
     npm start
-    open http://localhost:9001/examples/
+
+And fire up __[http://localhost:9001](http://localhost:9001)__!
+
 
 ### Running tests
 
