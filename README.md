@@ -7,7 +7,7 @@ Building blocks for the VR Web.
 
 ### CodePen
 
-If you want to get starting immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/aframevr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
+If you want to get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/aframevr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
 
 ### Downloads
 
@@ -19,7 +19,7 @@ Or if you'd prefer the unminified version for local development (with source map
 
 * [`aframe.js`](https://aframevr.github.io/aframe/dist/aframe.js)
 
-__Also, be sure to check out the awesome [examples](https://aframevr.github.io/aframe/examples/).__
+__Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/).__
 
 ### npm
 
