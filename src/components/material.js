@@ -354,7 +354,7 @@ function getMaterialType (data) {
 
 /**
  * Returns a three.js constant determining which material face sides to render
- * based on the side parameter (passed as a component attribute).
+ * based on the side parameter (passed as a component property).
  *
  * @param {string} [side=front] - `front`, `back`, or `double`.
  * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
