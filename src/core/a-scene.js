@@ -255,6 +255,24 @@ var AScene = module.exports = registerElement('a-scene', {
         this.render();
         this.renderLoopStarted = true;
         this.load();
+        this.checkUrlParameters();
+      }
+    },
+
+    /**
+     * Enters VR when ?mode=vr is specified in the querystring.
+     */
+    checkUrlParameters: {
+      value: function () {
+        var mode = utils.getUrlParameter('mode');
+        if (mode === 'vr') {
+          this.enterVR();
+        }
+
+        var ui = utils.getUrlParameter('ui');
+        if (ui === 'false') {
+          this.hideUI();
+        }
       }
     },
 

@@ -1,4 +1,4 @@
-/* global CustomEvent */
+/* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
 
@@ -166,6 +166,18 @@ module.exports.getElData = function (el, defaults) {
     }
   }
   return data;
+};
+
+/**
+ * Retrieves querystring value.
+ * @param  {String} name Name of querystring key.
+ * @return {String}      Value
+ */
+module.exports.getUrlParameter = function (name) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 // Must be at bottom to avoid circular dependency.
