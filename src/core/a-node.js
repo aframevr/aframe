@@ -53,19 +53,17 @@ module.exports = registerElement('a-node', {
         if (self.hasLoaded) { return; }
 
         // Default to waiting for all nodes.
-        if (!childFilter) {
-          childFilter = function (el) { return el.isNode; };
-        }
+        childFilter = childFilter || function (el) { return el.isNode; };
 
         // Wait for children to load (if any), then load.
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
-          return new Promise(function (resolve) {
+          return new Promise(function waitForLoaded (resolve) {
             child.addEventListener('loaded', resolve);
           });
         });
 
-        Promise.all(childrenLoaded).then(function () {
+        Promise.all(childrenLoaded).then(function emitLoaded () {
           if (cb) { cb(); }
           self.hasLoaded = true;
           self.emit('loaded', {}, false);

@@ -1,6 +1,5 @@
 var ANode = require('./a-node');
-var re = require('../a-register-element');
-var registerElement = re.registerElement;
+var registerElement = require('./a-register-element').registerElement;
 
 /**
  * TODO: Block on assets before loading.
