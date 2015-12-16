@@ -55966,6 +55966,24 @@ var AScene = module.exports = registerElement('a-scene', {
         this.render();
         this.renderLoopStarted = true;
         this.load();
+        this.checkUrlParameters();
+      }
+    },
+
+    /**
+     * Enters VR when ?mode=vr is specified in the querystring.
+     */
+    checkUrlParameters: {
+      value: function () {
+        var mode = utils.getUrlParameter('mode');
+        if (mode === 'vr') {
+          this.enterVR();
+        }
+
+        var ui = utils.getUrlParameter('ui');
+        if (ui === 'false') {
+          this.hideUI();
+        }
       }
     },
 
@@ -56981,7 +56999,7 @@ module.exports = debug;
 }).call(this,require('_process'))
 
 },{"_process":90,"debug":11,"object-assign":16}],57:[function(require,module,exports){
-/* global CustomEvent */
+/* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
 
@@ -57149,6 +57167,18 @@ module.exports.getElData = function (el, defaults) {
     }
   }
   return data;
+};
+
+/**
+ * Retrieves querystring value.
+ * @param  {String} name Name of querystring key.
+ * @return {String}      Value
+ */
+module.exports.getUrlParameter = function (name) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 // Must be at bottom to avoid circular dependency.
