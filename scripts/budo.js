@@ -18,7 +18,7 @@ var app = budo('./index.js:build/aframe.js', {
   stream: process.stdout,  // log to stdout
   host: '0.0.0.0',
   port: 9000,
-  browserifyArgs: '-s aframe'.split(' ')
+  browserifyArgs: '-s AFRAME'.split(' ')
 });
 
 app
