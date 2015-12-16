@@ -19,6 +19,7 @@ var ENTER_VR_NO_HEADSET = 'data-a-enter-vr-no-headset';
 var ENTER_VR_NO_WEBVR = 'data-a-enter-vr-no-webvr';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
 var ENTER_VR_MODAL_CLASS = 'a-enter-vr-modal';
+var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 var isMobile = utils.isMobile();
 
 /**
@@ -80,6 +81,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setupDefaultLights();
         this.attachEventListeners();
         this.attachFullscreenListeners();
+        this.attachOrientationListeners();
 
         // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', resizeCanvas);
@@ -148,6 +150,23 @@ var AScene = module.exports = registerElement('a-scene', {
 
         function attachEventListener (node) {
           node.addEventListener('loaded', elementLoadedCallback);
+        }
+      }
+    },
+
+    attachOrientationListeners: {
+      value: function (e) {
+        window.addEventListener('orientationchange', this.showOrientationModal.bind(this));
+      }
+    },
+
+    showOrientationModal: {
+      value: function () {
+        if (!utils.isIOS()) { return; }
+        if (!utils.isLandscape() && this.renderer === this.stereoRenderer) {
+          this.orientationModal.classList.remove(HIDDEN_CLASS);
+        } else {
+          this.orientationModal.classList.add(HIDDEN_CLASS);
         }
       }
     },
@@ -244,6 +263,15 @@ var AScene = module.exports = registerElement('a-scene', {
         this.hideUI();
         this.setStereoRenderer();
         this.setFullscreen();
+        this.showOrientationModal();
+      }
+    },
+
+    exitVR: {
+      value: function () {
+        this.showUI();
+        this.setMonoRenderer();
+        this.orientationModal.classList.add(HIDDEN_CLASS);
       }
     },
 
@@ -470,6 +498,21 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
+    setupOrientationModal: {
+      value: function () {
+        var modal = this.orientationModal = document.createElement('div');
+        modal.className = ORIENTATION_MODAL_CLASS;
+        modal.classList.add(HIDDEN_CLASS);
+
+        var exit = document.createElement('button');
+        exit.innerHTML = 'Exit VR';
+        exit.addEventListener('click', this.exitVR.bind(this));
+        modal.appendChild(exit);
+
+        document.body.appendChild(modal);
+      }
+    },
+
     /**
      * Set up keyboard shortcuts to:
      *   - Enter VR when `f` is pressed.
@@ -509,6 +552,7 @@ var AScene = module.exports = registerElement('a-scene', {
         }
         if (!self.insideLoader) {
           self.setupEnterVR();
+          self.setupOrientationModal();
         }
       }
     },
