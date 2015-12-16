@@ -831,7 +831,7 @@ head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-pla
 },{}],23:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sky\" src=\"\" color=\"#FFF\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; \n                      src: url(${src});\n                      color: ${color}\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sky\" src=\"\" color=\"#FFF\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; \n                      src: url(${src});\n                      color: ${color};\n                      fog: false\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
 
 })
 },{}],24:[function(require,module,exports){
@@ -54177,7 +54177,7 @@ module.exports = WebVRPolyfill;
 },{}],53:[function(require,module,exports){
 module.exports={
   "name": "aframe-core",
-  "version": "0.0.10",
+  "version": "0.0.9",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
   "main": "src/aframe-core.js",
@@ -54260,13 +54260,30 @@ module.exports={
     "node": ">= 0.12.7",
     "npm": ">= 2.12.1"
   },
-  "readme": "# AFrame Core\n\nA DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.\n\n## Entity Component\n\nIt's an architectural pattern commonly used in game engines like Unity, Playcanvas or Unreal Engine 4+.\n\nThere's only one basic element called **entity** that defines a scale, a position and a rotation in the scene. **Components** encapsulate logic and data that can be attached to entities to extend their functionality, appearance and behaviour. In AFrame, entities are represented by ```a-entity``` DOM elements and components as their attributes. This is what a simple scene with a cube and a camera looks like:\n\n````html\n<a-scene>\n    <a-entity camera=\"fov: 45\"></a-entity>\n    <a-entity position=\"0 0 -10\" rotation=\"45 30 0\"\n              geometry=\"primitive: box; height: 4; width: 4; depth: 4;\"\n              material=\"color: green;\"></a-entity>\n</a-scene>\n````\n\n## Usage\n\n__NOTE:__ For folks creating scenes and third-party components + elements, we recommend getting started by instead using the [__`aframe`__ library](https://github.com/aframevr/aframe), a set of core resuable elements.\n\nProceed below if you would like to use the minimal set of primitive components and elements available here in __`aframe-core`__.\n\n### CodePen\n\nIf you want to get hacking immediately, just fire up __[this CodePen example scene](http://codepen.io/team/mozvr/pen/df736964b5ee14288a18199d4e27afe3?editors=100)__!\n\n### Downloads\n\nTo get started, simply include these files in your project:\n\n* [`aframe-core.min.js`](dist/aframe-core.min.js)\n* [`aframe-core.min.css`](dist/aframe-core.min.css)\n\nOr for local development you can use the unminified bundles (with source maps for the JS):\n\n* [`aframe-core.js`](dist/aframe-core.js)\n* [`aframe-core.css`](dist/aframe-core.css)\n\n__Also, be sure to check out these awesome examples:__\n\n* [__`aframe-core`__ examples](http://aframevr.github.io/aframe-core/examples/) ([source](https://github.com/aframevr/aframe-core/tree/master/examples/))\n* [__`aframe`__ examples](http://aframevr.github.io/aframe/examples/) ([source](https://github.com/aframevr/aframe/tree/master/examples/))\n\n### npm\n\nFirst install from npm:\n\n    npm install aframe-core\n\nAnd in your Browserify/Webpack modules, simply require the module:\n\n    require('aframe-core')\n\n## Local installation\n\n    git clone https://github.com/aframevr/aframe-core.git\n    cd aframe-core\n\n## Local development\n\n    npm install\n    npm start\n    open http://localhost:9001/examples/\n\nIf you'd like to hack on this project and don't have access to the npm repos, contact @cvan and he'll give you the info you'll need to log in:\n\n    npm login\n\n### Working with [`aframe`](https://github.com/aframevr/aframe/) library\n\nIf you want to make changes to the [__`aframe`__](https://github.com/aframevr/aframe/) library and test with `aframe-core`, you'll need to run these commands to link things up correctly.\n\n#### Linking\n\nWhen you are in the directory of your __`aframe-core`__ repo checkout:\n\n    npm link\n\nWhen you are in the directory of your __`aframe`__ repo checkout:\n\n    npm link aframe-core\n\nNow when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).\n\n#### Unlinking\n\nYou'll need to `npm unlink` when you are done testing things and want to actually use the npm-published versions, not your versions that are locally linked.\n\nFrom your __`aframe-core`__ directory:\n\n    npm unlink\n\nFrom your __`aframe`__ directory:\n\n    npm unlink aframe-core\n\n## Browser console logging\n\nIf you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:\n\n    localStorage.logs = 1\n\nAnd to disable:\n\n    localStorage.logs = 0\n\n## Running tests\n\n    npm test\n\n## Pulling the lastest remote changes\n\n    git checkout dev\n    git pull --rebase\n    npm install\n    npm start\n    open http://localhost:9001/examples/\n\n## Releasing and publishing a new version to npm\n\nAssuming you want to publish a version of `dev` to the private package for testing:\n\n    npm run release\n\nAnd to push the tags to GitHub:\n\n    git push --tags\n\n## Updating `dist` files\n\n    npm run dist\n    git commit -am 'Bump dist'\n\n## Publishing to GitHub Pages\n\nTo publish to __https://aframevr.github.io/aframe-core/__:\n\n    npm run ghpages\n\nTo publish to __https://cvan.github.io/aframe-core/__:\n\n    npm run ghpages cvan\n\n\n## License\n\nThis program is free software and is distributed under an [MIT License](LICENSE).\n",
-  "readmeFilename": "README.md",
-  "gitHead": "bc41bf4facb0c0178d724207d26ba3ba9ecd3cfa",
+  "gitHead": "4015f955b7e7bf53f062d3fc2113da70723c14f8",
   "description": "A DOM based [Entity Component System](https://en.wikipedia.org/wiki/Entity_component_system) to declaratively create 3D worlds in the browser.",
-  "_id": "aframe-core@0.0.10",
-  "_shasum": "d16eabe4c3f49db1d370806f4f373814f6ccb730",
-  "_from": "aframe-core@0.0.10"
+  "_id": "aframe-core@0.0.9",
+  "_shasum": "6b15330075ba05c88a384ffd3bac7614dedec347",
+  "_from": "aframe-core@0.0.9",
+  "_npmVersion": "2.12.1",
+  "_nodeVersion": "0.12.7",
+  "_npmUser": {
+    "name": "mozvr",
+    "email": "cvan@mozilla.com"
+  },
+  "dist": {
+    "shasum": "6b15330075ba05c88a384ffd3bac7614dedec347",
+    "tarball": "http://registry.npmjs.org/aframe-core/-/aframe-core-0.0.9.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "mozvr",
+      "email": "cvan@mozilla.com"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/aframe-core/-/aframe-core-0.0.9.tgz",
+  "readme": "ERROR: No README data found!"
 }
 
 },{}],54:[function(require,module,exports){
@@ -58359,9 +58376,9 @@ function createEnterVR (enterVRHandler) {
   compatModal.className = ENTER_VR_MODAL_CLASS;
   compatModalText = document.createElement('p');
   compatModalLink = document.createElement('a');
-  compatModalLink.setAttribute('href', 'http://mozvr.com/#start');
+  compatModalLink.setAttribute('href', 'http://mozvr.com#viewing-vr');
   compatModalLink.setAttribute('target', '_blank');
-  compatModalLink.innerHTML = 'Learn more.';
+  compatModalLink.innerHTML = 'Learn more at mozvr.com';
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
 
@@ -58374,13 +58391,13 @@ function createEnterVR (enterVRHandler) {
   wrapper.appendChild(vrButton);
 
   if (!checkHeadsetConnected()) {
-    compatModalText.innerHTML = 'Use a VR headset or mobile phone for VR.';
+    compatModalText.innerHTML = 'A virtual reality headset was not detected.';
     wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
   }
 
   // Handle enter VR flows.
   if (!hasWebVR) {
-    compatModalText.innerHTML = 'Use a VR-compatible browser or mobile phone for VR.';
+    compatModalText.innerHTML = 'Sorry, your browser does not support virtual reality.';
     wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
   } else {
     vrButton.addEventListener('click', enterVRHandler);
@@ -59212,7 +59229,7 @@ module.exports = {
 };
 
 },{"./debug":84}],87:[function(require,module,exports){
-var css = "html {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\nbody {\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  padding: 0;\n  width: 100%;\n}\n.a-hidden {\n  display: none;\n}\n.a-canvas {\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\na-assets,\na-scene video,\na-scene img {\n  display: none;\n}\n.a-enter-vr {\n  align-items: flex-end;\n  -webkit-align-items: flex-end;\n  bottom: 5px;\n  display: flex;\n  display: -webkit-flex;\n  font-family: 'Fira Sans', monospace, sans-serif;\n  font-size: 14px;\n  font-weight: 200;\n  line-height: 16px;\n  height: 72px;\n  position: fixed;\n  right: 5px;\n}\n.a-enter-vr-button {\n  background: rgba(0, 0, 0, 0.35) url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50% no-repeat;\n  background-size: 70% 70%;\n  border: 0;\n  bottom: 0;\n  color: #FFF;\n  cursor: pointer;\n  height: 50px;\n  transition: background .1s ease;\n  -webkit-transition: background .1s ease;\n  width: 60px;\n  z-index: 999999;\n}\n.a-enter-vr-button:active,\n.a-enter-vr-button:hover {\n  background-color: #333333;\n}\n[data-a-enter-vr-no-webvr] .a-enter-vr-button {\n  border-color: #333;\n  opacity: 0.65;\n}\n[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,\n[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover {\n  background-color: rgba(0, 0, 0, .35);\n  cursor: not-allowed;\n}\n.a-enter-vr-modal {\n  background-color: #333333;\n  border-radius: 0;\n  color: #FFF;\n  height: 32px;\n  opacity: 0;\n  margin-right: 10px;\n  padding: 9px;\n  width: 220px;\n  position: relative;\n  transition: opacity .1s ease;\n  -webkit-transition: opacity .1s ease;\n}\n.a-enter-vr-modal:after {\n  border-bottom: 10px solid transparent;\n  border-left: 10px solid #333333;\n  border-top: 10px solid transparent;\n  display: inline-block;\n  content: '';\n  position: absolute;\n  right: -5px;\n  top: 5px;\n  width: 0;\n  height: 0;\n}\n.a-enter-vr-modal p {\n  margin: 0;\n  display: inline;\n}\n.a-enter-vr-modal p:after {\n  content: ' ';\n  /*padding: 2px 30px 2px 0;*/\n}\n.a-enter-vr-modal a {\n  color: #FFF;\n  display: inline;\n  /*padding: 2px 30px 2px 0;*/\n}\n[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal,\n[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal {\n  opacity: 1;\n}\n@media (min-width: 480px) {\n  .a-enter-vr {\n    bottom: 20px;\n    right: 20px;\n  }\n}\n"; (require("browserify-css").createStyle(css, { "href": "node_modules/aframe-core/style/aframe-core.css"})); module.exports = css;
+var css = "html {\n  bottom: 0;\n  left: 0;\n  position: fixed;\n  right: 0;\n  top: 0;\n}\nbody {\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  padding: 0;\n  width: 100%;\n}\n.a-hidden {\n  display: none;\n}\n.a-canvas {\n  height: 100%;\n  left: 0;\n  position: absolute;\n  top: 0;\n  width: 100%;\n}\na-assets,\na-scene video,\na-scene img {\n  display: none;\n}\n.a-enter-vr {\n  align-items: flex-end;\n  -webkit-align-items: flex-end;\n  bottom: 5px;\n  display: flex;\n  display: -webkit-flex;\n  font-family: 'Roboto Condensed', monospace, sans-serif;\n  font-size: 14px;\n  font-weight: 300;\n  height: 72px;\n  position: fixed;\n  right: 5px;\n}\n.a-enter-vr-button {\n  background: rgba(0, 0, 0, 0.35) url(data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0D%0A%3C%21--%20Generator%3A%20Adobe%20Illustrator%2018.0.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%206.00%20Build%200%29%20%20--%3E%0D%0A%3C%21DOCTYPE%20svg%20PUBLIC%20%22-%2F%2FW3C%2F%2FDTD%20SVG%201.1%2F%2FEN%22%20%22http%3A%2F%2Fwww.w3.org%2FGraphics%2FSVG%2F1.1%2FDTD%2Fsvg11.dtd%22%3E%0D%0A%3Csvg%20version%3D%221.1%22%20id%3D%22Layer_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20x%3D%220px%22%20y%3D%220px%22%0D%0A%09%20viewBox%3D%225596.6%20-116.5%20599.8%20599.8%22%20enable-background%3D%22new%205596.6%20-116.5%20599.8%20599.8%22%20xml%3Aspace%3D%22preserve%22%3E%0D%0A%3Crect%20x%3D%225596.6%22%20y%3D%22-116.5%22%20fill%3D%22none%22%20width%3D%22599.8%22%20height%3D%22599.8%22%2F%3E%0D%0A%3Cpath%20id%3D%22goggles%22%20fill%3D%22%23FFFFFF%22%20d%3D%22M6152.1%2C145.5h-37.4v-33.4c-1.1-27.4-21.3-48.2-48.7-48.2h-166.5h-166%0D%0A%09c-27.4%2C0-47.7%2C20.8-47.7%2C48.2v33.4h-37.7v69h37.7v36.7c0%2C27.4%2C20.3%2C52%2C47.7%2C52h126c3.8%2C0%2C7.1-3.3%2C9.3-6l20.3-34%0D%0A%09c5.5-6.6%2C15.9-7.1%2C21.9-0.5l20.3%2C34.5c2.2%2C3.3%2C5.5%2C6%2C9.3%2C6h126c27.4%2C0%2C48.2-24.6%2C48.2-52v-36.7h37.4V145.5L6152.1%2C145.5z%0D%0A%09%20M5806.3%2C261.6c-44.4%2C0-80-35.6-80-80s35.6-80%2C80-80s80%2C35.6%2C80%2C80S5850.1%2C261.6%2C5806.3%2C261.6z%20M5993.1%2C261.6c-44.4%2C0-80-35.6-80-80%0D%0A%09s35.6-80%2C80-80s80%2C35.6%2C80%2C80S6036.9%2C261.6%2C5993.1%2C261.6z%22%2F%3E%0D%0A%3C%2Fsvg%3E%0D%0A) 50% 0 no-repeat;\n  background-size: auto 100%;\n  border: 0;\n  bottom: 0;\n  color: #FFF;\n  cursor: pointer;\n  height: 50px;\n  transition: background .1s ease;\n  -webkit-transition: background .1s ease;\n  width: 60px;\n  z-index: 999999;\n}\n.a-enter-vr-button:active,\n.a-enter-vr-button:hover {\n  background-color: #EF2D5E;\n}\n[data-a-enter-vr-no-webvr] .a-enter-vr-button {\n  border-color: #333;\n  opacity: 0.65;\n}\n[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,\n[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover {\n  background-color: rgba(0, 0, 0, .35);\n  cursor: not-allowed;\n}\n.a-enter-vr-modal {\n  background-color: #EF2D5E;\n  border-radius: 0;\n  color: #FFF;\n  height: 32px;\n  opacity: 0;\n  margin-right: 10px;\n  padding: 9px;\n  position: relative;\n  transition: opacity .1s ease;\n  -webkit-transition: opacity .1s ease;\n}\n.a-enter-vr-modal:after {\n  border-bottom: 10px solid transparent;\n  border-left: 10px solid #EF2D5E;\n  border-top: 10px solid transparent;\n  display: inline-block;\n  content: '';\n  position: absolute;\n  right: -5px;\n  top: 5px;\n  width: 0;\n  height: 0;\n}\n.a-enter-vr-modal p {\n  margin: 0;\n}\n.a-enter-vr-modal a {\n  color: #FFF;\n  display: inline-block;\n  padding: 2px 30px 2px 0;\n}\n[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal,\n[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal {\n  opacity: 1;\n}\n@media (min-width: 480px) {\n  .a-enter-vr {\n    bottom: 20px;\n    right: 20px;\n  }\n}\n"; (require("browserify-css").createStyle(css, { "href": "node_modules/aframe-core/style/aframe-core.css"})); module.exports = css;
 },{"browserify-css":89}],88:[function(require,module,exports){
 var css = ".rs-base {\n  background-color: #EF2D5E;\n  border-radius: 0;\n  font-family: 'Roboto Condensed', tahoma, sans-serif;\n  font-size: 10px;\n  line-height: 1.2em;\n  opacity: 0.75;\n  overflow: hidden;\n  padding: 10px;\n  position: fixed;\n  left: 5px;\n  top: 5px;\n  width: 270px;\n  z-index: 10000;\n}\n.rs-base.hidden {\n  display: none;\n}\n.rs-base h1 {\n  color: #fff;\n  cursor: pointer;\n  font-size: 1.4em;\n  font-weight: 300;\n  margin: 0 0 5px;\n  padding: 0;\n}\n.rs-group {\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  -webkit-flex-direction: column-reverse;\n  flex-direction: column-reverse;\n}\n.rs-counter-base {\n  align-items: center;\n  display: -webkit-box;\n  display: -webkit-flex;\n  display: flex;\n  height: 10px;\n  -webkit-justify-content: space-between;\n  justify-content: space-between;\n  margin: 2px 0;\n}\n.rs-counter-id {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 0;\n  -webkit-order: 0;\n  order: 0;\n}\n.rs-counter-value {\n  font-weight: 300;\n  -webkit-box-ordinal-group: 1;\n  -webkit-order: 1;\n  order: 1;\n  text-align: right;\n  width: 25px;\n}\n.rs-canvas {\n  -webkit-box-ordinal-group: 2;\n  -webkit-order: 2;\n  order: 2;\n}\n@media (min-width: 480px) {\n  .rs-base {\n    left: 20px;\n    top: 20px;\n  }\n}\n"; (require("browserify-css").createStyle(css, { "href": "node_modules/aframe-core/style/rStats.css"})); module.exports = css;
 },{"browserify-css":89}],89:[function(require,module,exports){
@@ -59375,14 +59392,14 @@ module.exports={
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release": "npm login && npm version patch --minor && npm publish && git push --follow-tags",
+    "release:bump": "npm version patch --preminor",
+    "release:push": "npm login && npm publish && git push --follow-tags",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
   "devDependencies": {
-    "aframe-core": "0.0.10",
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
     "budo": "^7.0.2",
