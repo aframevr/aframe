@@ -52336,7 +52336,7 @@ module.exports = WebVRPolyfill;
 },{}],26:[function(require,module,exports){
 module.exports={
   "name": "aframe-core",
-  "version": "0.1.0-pre",
+  "version": "0.0.10",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
   "main": "src/aframe-core.js",
@@ -52357,7 +52357,7 @@ module.exports={
     "browserify-css": "^0.8.2",
     "budo": "^7.0.2",
     "chai-shallow-deep-equal": "^1.3.0",
-    "crass": "^0.7.7",
+    "exorcist": "^0.4.0",
     "gh-pages": "^0.4.0",
     "husky": "^0.10.1",
     "karma": "^0.13.15",
@@ -52380,13 +52380,13 @@ module.exports={
     "dev": "npm run build && budo src/aframe-core.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/aframe-core.js -s 'aframe-core'",
     "browserify": "browserify ./src/aframe-core.js -s 'aframe-core'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe-core.js",
-    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js && npm run dist:css",
+    "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js",
     "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
-    "dist:css": "cp ./style/aframe-core.css dist/. && crass ./style/aframe-core.css > dist/aframe-core.min.css",
-    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,style,index.html} gh-pages/. && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent && replace 'style/aframe-core.css' 'dist/aframe-core.min.css' gh-pages/ -r --silent",
+    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,style,index.html} gh-pages/. && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release": "npm login && npm version patch --minor && npm publish && git push --follow-tags",
+    "release:bump": "npm version patch --preminor",
+    "release:push": "npm login && npm publish && git push --follow-tags",
     "test": "karma start ./tests/karma.conf.js",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
@@ -52887,35 +52887,34 @@ var warn = debug('components:geometry:warn');
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    arc: { default: 360 },
-    depth: { default: 2, min: 0 },
-    height: { default: 2, min: 0 },
-    openEnded: { default: false },
-    p: { default: 2 },
+    arc: { default: 360, if: { primitive: ['torus'] } },
+    depth: { default: 2, min: 0, if: { primitive: ['box'] } },
+    height: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } },
+    openEnded: { default: false, if: { primitive: ['cylinder'] } },
+    p: { default: 2, if: { primitive: ['torusKnot'] } },
     translate: { default: { x: 0, y: 0, z: 0 } },
     primitive: {
       default: '',
-      oneOf: ['box', 'circle', 'cylinder', 'plane',
-              'ring', 'sphere', 'torus', 'torusKnot']
-    },
-    q: { default: 3 },
-    radius: { default: DEFAULT_RADIUS, min: 0 },
-    radiusBottom: { default: DEFAULT_RADIUS, min: 0 },
-    radiusInner: { default: 0.8, min: 0 },
-    radiusOuter: { default: 1.2, min: 0 },
-    radiusTop: { default: DEFAULT_RADIUS },
-    radiusTubular: { default: 0.2, min: 0 },
-    scaleHeight: { default: 1, min: 0 },
-    segments: { default: 8, min: 0 },
-    segmentsHeight: { default: 18, min: 0 },
-    segmentsPhi: { default: 8, min: 0 },
-    segmentsRadial: { default: 36, min: 0 },
-    segmentsTheta: { default: 8, min: 0 },
-    segmentsTubular: { default: 8, min: 0 },
-    segmentsWidth: { default: 36, min: 0 },
-    thetaLength: { default: 360, min: 0 },
-    thetaStart: { default: 0 },
-    width: { default: 2, min: 0 }
+      oneOf: ['', 'box', 'circle', 'cylinder', 'plane',
+              'ring', 'sphere', 'torus', 'torusKnot'] },
+    q: { default: 3, if: { primitive: ['torusKnot'] } },
+    radius: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['circle', 'cylinder', 'sphere', 'torus', 'torusKnot'] } },
+    radiusBottom: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['cylinder'] } },
+    radiusInner: { default: 0.8, min: 0, if: { primitive: ['ring'] } },
+    radiusOuter: { default: 1.2, min: 0, if: { primitive: ['ring'] } },
+    radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder'] } },
+    radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus'] } },
+    scaleHeight: { default: 1, min: 0, if: { primitive: ['torusKnot'] } },
+    segments: { default: 8, min: 0, if: { primitive: ['circle'] } },
+    segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere'] } },
+    segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] } },
+    segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder'] } },
+    segmentsTheta: { default: 8, min: 0, if: { primitive: ['ring'] } },
+    segmentsTubular: { default: 8, min: 0, if: { primitive: ['torus', 'torusKnot'] } },
+    segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] } },
+    thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring'] } },
+    thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring'] } },
+    width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
   /**
@@ -52955,9 +52954,6 @@ module.exports.Component = registerComponent('geometry', {
  * @returns {object} geometry
  */
 function getGeometry (data, schema) {
-  var radiusBottom;
-  var radiusTop;
-
   switch (data.primitive) {
     case 'box': {
       return new THREE.BoxGeometry(data.width, data.height, data.depth);
@@ -52966,16 +52962,16 @@ function getGeometry (data, schema) {
       return new THREE.CircleGeometry(
         data.radius, data.segments, rad(data.thetaStart), rad(data.thetaLength));
     }
-    case 'cylinder': {
-      // Shortcut for specifying both top and bottom radius.
-      radiusTop = data.radiusTop;
-      radiusBottom = data.radiusBottom;
-      if (data.radius !== schema.radius.default) {
-        radiusTop = data.radius;
-        radiusBottom = data.radius;
-      }
+    case 'cone': {
       return new THREE.CylinderGeometry(
-        radiusTop, radiusBottom, data.height, data.segmentsRadial, data.segmentsHeight,
+        data.radiusTop, data.radiusBottom, data.height,
+        data.segmentsRadial, data.segmentsHeight,
+        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
+    }
+    case 'cylinder': {
+      return new THREE.CylinderGeometry(
+        data.radius, data.radius, data.height,
+        data.segmentsRadial, data.segmentsHeight,
         data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'plane': {
@@ -53071,13 +53067,13 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    angle: { default: 60 },
+    angle: { default: 60, if: { type: ['spot'] } },
     color: { default: '#FFF' },
-    groundColor: { default: '#FFF' },
-    decay: { default: 1 },
-    distance: { default: 0.0, min: 0 },
-    exponent: { default: 10.0 },
-    intensity: { default: 1.0, min: 0 },
+    groundColor: { default: '#FFF', if: { type: ['hemisphere'] } },
+    decay: { default: 1, if: { type: ['point', 'spot'] } },
+    distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
+    exponent: { default: 10.0, if: { type: ['spot'] } },
+    intensity: { default: 1.0, min: 0, if: { type: ['directional', 'hemisphere', 'point', 'spot'] } },
     type: { default: 'directional',
             oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
     }
@@ -53524,8 +53520,8 @@ module.exports.Component = registerComponent('look-controls', {
 
     if (!this.mouseDown || !this.data.enabled) { return; }
 
-    var movementX = event.movementX || event.mozMovementX || event.webkitMovementX;
-    var movementY = event.movementY || event.mozMovementY || event.webkitMovementY;
+    var movementX = event.movementX || event.mozMovementX;
+    var movementY = event.movementY || event.mozMovementY;
 
     if (movementX === undefined || movementY === undefined) {
       movementX = event.screenX - previousMouseEvent.screenX;
@@ -53599,6 +53595,7 @@ var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
  * @param {string} envMap - To load a environment cubemap. Takes a selector
  *         to an element containing six img elements, or a comma-separated
  *         string of direct url()s.
+ * @param {boolean} fog - Whether or not to be affected by fog.
  * @param {number} height - Height to render texture.
  * @param {number} metalness - Parameter for physical/standard material.
  * @param {number} opacity - [0-1].
@@ -53621,12 +53618,13 @@ module.exports.Component = registerComponent('material', {
   schema: {
     color: { default: '#FFF' },
     envMap: { default: '' },
+    fog: { default: true },
     height: { default: 360 },
-    metalness: { default: 0.0, min: 0.0, max: 1.0 },
+    metalness: { default: 0.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    reflectivity: { default: 1.0, min: 0.0, max: 1.0 },
+    reflectivity: { default: 1.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     repeat: { default: '' },
-    roughness: { default: 0.5, min: 0.0, max: 1.0 },
+    roughness: { default: 0.5, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     shader: { default: 'standard', oneOf: ['flat', 'standard'] },
     side: { default: 'front', oneOf: ['front', 'back', 'double'] },
     src: { default: '' },
@@ -55614,222 +55612,194 @@ module.exports = registerElement(
 },{"../a-register-element":27,"./a-node":52,"./component":54}],52:[function(require,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = require('../a-register-element').registerElement;
-
 var utils = require('../utils/');
 
 /**
- *
- * `ANode` is the base class for all of aframe-core/aframe.
- * It manages loading of objects.
- *
+ * Base class for A-Frame that manages loading of objects.
  */
+module.exports = registerElement('a-node', {
+  prototype: Object.create(HTMLElement.prototype, {
+    createdCallback: {
+      value: function () {
+        this.isNode = true;
+        this.mixinEls = [];
+        this.mixinObservers = {};
+      }
+    },
 
-module.exports = registerElement(
-  'a-node',
-  {
-    prototype: Object.create(
-      HTMLElement.prototype,
-      {
+    attachedCallback: {
+      value: function () {
+        var mixins = this.getAttribute('mixin');
+        this.sceneEl = document.querySelector('a-scene');
+        this.emit('nodeready', {}, false);
+        if (mixins) { this.updateMixins(mixins); }
+      }
+    },
 
-        //  ----------------------------------  //
-        //   Native custom elements callbacks   //
-        //  ----------------------------------  //
-        createdCallback: {
-          value: function () {
-            this.isNode = true;
-            this.mixinEls = [];
-            this.mixinObservers = {};
-          }
-        },
+    detachedCallback: {
+      value: function () { /* no-op */ }
+    },
 
-        attachedCallback: {
-          value: function () {
-            var mixins = this.getAttribute('mixin');
-            this.sceneEl = document.querySelector('a-scene');
-            this.emit('nodeready', {}, false);
-            if (mixins) { this.updateMixins(mixins); }
-          },
-          writable: window.debug
-        },
+    attributeChangedCallback: {
+      value: function (attr, oldVal, newVal) {
+        if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
+      }
+    },
 
-        detachedCallback: {
-          value: function () { /* no-op */ },
-          writable: window.debug
-        },
+    load: {
+      value: function () {
+        // To prevent emmitting the loaded event more than once
+        if (this.hasLoaded) { return; }
+        this.hasLoaded = true;
+        this.emit('loaded', {}, false);
+      }
+    },
 
-        attributeChangedCallback: {
-          value: function (attr, oldVal, newVal) {
-            if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
-          },
-          writable: window.debug
-        },
+    updateMixins: {
+      value: function (newMixins, oldMixins) {
+        var newMixinsIds = newMixins.split(' ');
+        var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+        // To determine what listeners will be removed
+        var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+        this.mixinEls = [];
+        diff.forEach(this.unregisterMixin.bind(this));
+        newMixinsIds.forEach(this.registerMixin.bind(this));
+      }
+    },
 
-        load: {
-          value: function () {
-            // To prevent emmitting the loaded event more than once
-            if (this.hasLoaded) { return; }
-            this.hasLoaded = true;
-            this.emit('loaded', {}, false);
-          },
-          writable: window.debug
-        },
-
-        updateMixins: {
-          value: function (newMixins, oldMixins) {
-            var newMixinsIds = newMixins.split(' ');
-            var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-            // To determine what listeners will be removed
-            var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
-            this.mixinEls = [];
-            diff.forEach(this.unregisterMixin.bind(this));
-            newMixinsIds.forEach(this.registerMixin.bind(this));
-          },
-          writable: window.debug
-        },
-
-        addMixin: {
-          value: function (mixinId) {
-            var mixins = this.getAttribute('mixin');
-            var mixinIds = mixins.split(' ');
-            var i;
-            for (i = 0; i < mixinIds.length; ++i) {
-              if (mixinIds[i] === mixinId) { return; }
-            }
-            mixinIds.push(mixinId);
-            this.setAttribute('mixin', mixinIds.join(' '));
-          },
-          writable: window.debug
-        },
-
-        removeMixin: {
-          value: function (mixinId) {
-            var mixins = this.getAttribute('mixin');
-            var mixinIds = mixins.split(' ');
-            var i;
-            for (i = 0; i < mixinIds.length; ++i) {
-              if (mixinIds[i] === mixinId) {
-                mixinIds.splice(i, 1);
-                this.setAttribute('mixin', mixinIds.join(' '));
-                return;
-              }
-            }
-          },
-          writable: window.debug
-        },
-
-        registerMixin: {
-          value: function (mixinId) {
-            var mixinEl = document.querySelector('a-mixin#' + mixinId);
-            if (!mixinEl) { return; }
-            this.attachMixinListener(mixinEl);
-            this.mixinEls.push(mixinEl);
-          }
-        },
-
-        setAttribute: {
-          value: function (attr, newValue) {
-            if (attr === 'mixin') { this.updateMixins(newValue); }
-            HTMLElement.prototype.setAttribute.call(this, attr, newValue);
-          },
-          writable: window.debug
-        },
-
-        unregisterMixin: {
-          value: function (mixinId) {
-            var mixinEls = this.mixinEls;
-            var mixinEl;
-            var i;
-            for (i = 0; i < mixinEls.length; ++i) {
-              mixinEl = mixinEls[i];
-              if (mixinId === mixinEl.id) {
-                mixinEls.splice(i, 1);
-                break;
-              }
-            }
-            this.removeMixinListener(mixinId);
-          },
-          writable: window.debug
-        },
-
-        removeMixinListener: {
-          value: function (mixinId) {
-            var observer = this.mixinObservers[mixinId];
-            if (!observer) { return; }
-            observer.disconnect();
-            this.mixinObservers[mixinId] = null;
-          },
-          writable: window.debug
-        },
-
-        attachMixinListener: {
-          value: function (mixinEl) {
-            var self = this;
-            var mixinId = mixinEl.id;
-            var currentObserver = this.mixinObservers[mixinId];
-            if (!mixinEl) { return; }
-            if (currentObserver) { return; }
-            var observer = new MutationObserver(function (mutations) {
-              var attr = mutations[0].attributeName;
-              self.applyMixin(attr);
-            });
-            var config = { attributes: true };
-            observer.observe(mixinEl, config);
-            this.mixinObservers[mixinId] = observer;
-          },
-          writable: window.debug
-        },
-
-        applyMixin: {
-          value: function () { /* no-op */ },
-          writable: window.debug
-        },
-
-        /**
-         * Emits a DOM event.
-         *
-         * @param {String} name
-         *   Name of event (use a space-delimited string for multiple events).
-         * @param {Object=} [detail={}]
-         *   Custom data to pass as `detail` to the event.
-         * @param {Boolean=} [bubbles=true]
-         *   Whether the event should bubble.
-         */
-        emit: {
-          value: function (name, detail, bubbles) {
-            var self = this;
-            detail = detail || {};
-            if (bubbles === undefined) { bubbles = true; }
-            var data = { bubbles: !!bubbles, detail: detail };
-            return name.split(' ').map(function (eventName) {
-              return utils.fireEvent(self, eventName, data);
-            });
-          },
-          writable: window.debug
-        },
-
-        /**
-         * Returns a closure that emits a DOM event.
-         *
-         * @param {String} name
-         *   Name of event (use a space-delimited string for multiple events).
-         * @param {Object} detail
-         *   Custom data (optional) to pass as `detail` if the event is to
-         *   be a `CustomEvent`.
-         * @param {Boolean} bubbles
-         *   Whether the event should be bubble.
-         */
-        emitter: {
-          value: function (name, detail, bubbles) {
-            var self = this;
-            return function () {
-              self.emit(name, detail, bubbles);
-            };
-          },
-          writable: window.debug
+    addMixin: {
+      value: function (mixinId) {
+        var mixins = this.getAttribute('mixin');
+        var mixinIds = mixins.split(' ');
+        var i;
+        for (i = 0; i < mixinIds.length; ++i) {
+          if (mixinIds[i] === mixinId) { return; }
         }
-      })
-  }
-);
+        mixinIds.push(mixinId);
+        this.setAttribute('mixin', mixinIds.join(' '));
+      }
+    },
+
+    removeMixin: {
+      value: function (mixinId) {
+        var mixins = this.getAttribute('mixin');
+        var mixinIds = mixins.split(' ');
+        var i;
+        for (i = 0; i < mixinIds.length; ++i) {
+          if (mixinIds[i] === mixinId) {
+            mixinIds.splice(i, 1);
+            this.setAttribute('mixin', mixinIds.join(' '));
+            return;
+          }
+        }
+      }
+    },
+
+    registerMixin: {
+      value: function (mixinId) {
+        var mixinEl = document.querySelector('a-mixin#' + mixinId);
+        if (!mixinEl) { return; }
+        this.attachMixinListener(mixinEl);
+        this.mixinEls.push(mixinEl);
+      }
+    },
+
+    setAttribute: {
+      value: function (attr, newValue) {
+        if (attr === 'mixin') { this.updateMixins(newValue); }
+        HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+      }
+    },
+
+    unregisterMixin: {
+      value: function (mixinId) {
+        var mixinEls = this.mixinEls;
+        var mixinEl;
+        var i;
+        for (i = 0; i < mixinEls.length; ++i) {
+          mixinEl = mixinEls[i];
+          if (mixinId === mixinEl.id) {
+            mixinEls.splice(i, 1);
+            break;
+          }
+        }
+        this.removeMixinListener(mixinId);
+      }
+    },
+
+    removeMixinListener: {
+      value: function (mixinId) {
+        var observer = this.mixinObservers[mixinId];
+        if (!observer) { return; }
+        observer.disconnect();
+        this.mixinObservers[mixinId] = null;
+      }
+    },
+
+    attachMixinListener: {
+      value: function (mixinEl) {
+        var self = this;
+        var mixinId = mixinEl.id;
+        var currentObserver = this.mixinObservers[mixinId];
+        if (!mixinEl) { return; }
+        if (currentObserver) { return; }
+        var observer = new MutationObserver(function (mutations) {
+          var attr = mutations[0].attributeName;
+          self.applyMixin(attr);
+        });
+        var config = { attributes: true };
+        observer.observe(mixinEl, config);
+        this.mixinObservers[mixinId] = observer;
+      }
+    },
+
+    applyMixin: {
+      value: function () { /* no-op */ }
+    },
+
+    /**
+     * Emits a DOM event.
+     *
+     * @param {String} name
+     *   Name of event (use a space-delimited string for multiple events).
+     * @param {Object=} [detail={}]
+     *   Custom data to pass as `detail` to the event.
+     * @param {Boolean=} [bubbles=true]
+     *   Whether the event should bubble.
+     */
+    emit: {
+      value: function (name, detail, bubbles) {
+        var self = this;
+        detail = detail || {};
+        if (bubbles === undefined) { bubbles = true; }
+        var data = { bubbles: !!bubbles, detail: detail };
+        return name.split(' ').map(function (eventName) {
+          return utils.fireEvent(self, eventName, data);
+        });
+      }
+    },
+
+    /**
+     * Returns a closure that emits a DOM event.
+     *
+     * @param {String} name
+     *   Name of event (use a space-delimited string for multiple events).
+     * @param {Object} detail
+     *   Custom data (optional) to pass as `detail` if the event is to
+     *   be a `CustomEvent`.
+     * @param {Boolean} bubbles
+     *   Whether the event should be bubble.
+     */
+    emitter: {
+      value: function (name, detail, bubbles) {
+        var self = this;
+        return function () {
+          self.emit(name, detail, bubbles);
+        };
+      }
+    }
+  })
+});
 
 },{"../a-register-element":27,"../utils/":58}],53:[function(require,module,exports){
 /* global MessageChannel, Promise */
@@ -55853,6 +55823,8 @@ var ENTER_VR_NO_HEADSET = 'data-a-enter-vr-no-headset';
 var ENTER_VR_NO_WEBVR = 'data-a-enter-vr-no-webvr';
 var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
 var ENTER_VR_MODAL_CLASS = 'a-enter-vr-modal';
+var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
+var isMobile = utils.isMobile();
 
 /**
  * Scene element, holds all entities.
@@ -55898,7 +55870,7 @@ var AScene = module.exports = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var isMobile = this.isMobile = utils.isMobile();
+        this.isMobile = isMobile;
         var resizeCanvas = this.resizeCanvas.bind(this);
 
         if (isMobile) {
@@ -55913,6 +55885,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setupDefaultLights();
         this.attachEventListeners();
         this.attachFullscreenListeners();
+        this.attachOrientationListeners();
 
         // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', resizeCanvas);
@@ -55985,6 +55958,23 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
+    attachOrientationListeners: {
+      value: function (e) {
+        window.addEventListener('orientationchange', this.showOrientationModal.bind(this));
+      }
+    },
+
+    showOrientationModal: {
+      value: function () {
+        if (!utils.isIOS()) { return; }
+        if (!utils.isLandscape() && this.renderer === this.stereoRenderer) {
+          this.orientationModal.classList.remove(HIDDEN_CLASS);
+        } else {
+          this.orientationModal.classList.add(HIDDEN_CLASS);
+        }
+      }
+    },
+
     /**
      * Switch back to mono renderer if no longer in fullscreen VR.
      * Lock to landscape orientation on mobile when fullscreen.
@@ -55998,6 +55988,8 @@ var AScene = module.exports = registerElement('a-scene', {
           // Lock to landscape orientation on mobile.
           if (fsElement && this.isMobile) {
             window.screen.orientation.lock('landscape');
+          } else {
+            window.screen.orientation.unlock();
           }
           if (!fsElement) {
             this.showUI();
@@ -56067,6 +56059,24 @@ var AScene = module.exports = registerElement('a-scene', {
         this.render();
         this.renderLoopStarted = true;
         this.load();
+        this.checkUrlParameters();
+      }
+    },
+
+    /**
+     * Enters VR when ?mode=vr is specified in the querystring.
+     */
+    checkUrlParameters: {
+      value: function () {
+        var mode = utils.getUrlParameter('mode');
+        if (mode === 'vr') {
+          this.enterVR();
+        }
+
+        var ui = utils.getUrlParameter('ui');
+        if (ui === 'false') {
+          this.hideUI();
+        }
       }
     },
 
@@ -56075,6 +56085,15 @@ var AScene = module.exports = registerElement('a-scene', {
         this.hideUI();
         this.setStereoRenderer();
         this.setFullscreen();
+        this.showOrientationModal();
+      }
+    },
+
+    exitVR: {
+      value: function () {
+        this.showUI();
+        this.setMonoRenderer();
+        this.orientationModal.classList.add(HIDDEN_CLASS);
       }
     },
 
@@ -56301,6 +56320,21 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
+    setupOrientationModal: {
+      value: function () {
+        var modal = this.orientationModal = document.createElement('div');
+        modal.className = ORIENTATION_MODAL_CLASS;
+        modal.classList.add(HIDDEN_CLASS);
+
+        var exit = document.createElement('button');
+        exit.innerHTML = 'Exit VR';
+        exit.addEventListener('click', this.exitVR.bind(this));
+        modal.appendChild(exit);
+
+        document.body.appendChild(modal);
+      }
+    },
+
     /**
      * Set up keyboard shortcuts to:
      *   - Enter VR when `f` is pressed.
@@ -56340,6 +56374,7 @@ var AScene = module.exports = registerElement('a-scene', {
         }
         if (!self.insideLoader) {
           self.setupEnterVR();
+          self.setupOrientationModal();
         }
       }
     },
@@ -56496,7 +56531,7 @@ function createEnterVR (enterVRHandler) {
   var compatModalLink;
   var compatModalText;
   // window.hasNativeVRSupport is set in src/aframe-core.js.
-  var hasWebVR = this.isMobile || window.hasNonPolyfillWebVRSupport;
+  var hasWebVR = isMobile || window.hasNonPolyfillWebVRSupport;
   var orientation;
   var vrButton;
   var wrapper;
@@ -56522,14 +56557,14 @@ function createEnterVR (enterVRHandler) {
   }
   wrapper.appendChild(vrButton);
 
-  if (!checkHeadsetConnected()) {
-    compatModalText.innerHTML = 'Use a VR headset or mobile phone for VR.';
+  if (!checkHeadsetConnected() && !isMobile) {
+    compatModalText.innerHTML = 'Your browser supports WebVR. To enter VR, connect a headset, or use a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
   }
 
   // Handle enter VR flows.
   if (!hasWebVR) {
-    compatModalText.innerHTML = 'Use a VR-compatible browser or mobile phone for VR.';
+    compatModalText.innerHTML = 'Your browser does not support WebVR. To enter VR, use a VR-compatible browser, or a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
   } else {
     vrButton.addEventListener('click', enterVRHandler);
@@ -56861,7 +56896,7 @@ module.exports = function (value, schema, schemaAttr) {
       var attrSchema = schema[key];
       var schemaValue;
       if (!attrSchema) {
-        utils.warn('Unkown component attribute ' + key);
+        utils.warn('Unknown component attribute: ' + key);
         return;
       }
       schemaValue = attrSchema.default;
@@ -57057,7 +57092,7 @@ module.exports = debug;
 }).call(this,require('_process'))
 
 },{"_process":11,"debug":12,"object-assign":17}],58:[function(require,module,exports){
-/* global CustomEvent */
+/* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
 
@@ -57173,8 +57208,23 @@ module.exports.isMobile = function () {
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
       check = true;
     }
+    if (isIOS()) {
+      check = true;
+    }
   })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
+};
+
+var isIOS = module.exports.isIOS = function () {
+  return /iPad|iPhone|iPod/.test(navigator.platform);
+};
+
+/**
+ * Checks mobile device orientation
+ * @return {Boolean} True if landscape orientation
+ */
+module.exports.isLandscape = function () {
+  return window.orientation === 90 || window.orientation === -90;
 };
 
 /**
@@ -57210,6 +57260,18 @@ module.exports.getElData = function (el, defaults) {
     }
   }
   return data;
+};
+
+/**
+ * Retrieves querystring value.
+ * @param  {String} name Name of querystring key.
+ * @return {String}      Value
+ */
+module.exports.getUrlParameter = function (name) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
 // Must be at bottom to avoid circular dependency.
@@ -57361,7 +57423,7 @@ module.exports = {
 };
 
 },{"./debug":57}],60:[function(require,module,exports){
-var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:'Fira Sans',monospace,sans-serif;font-size:14px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;transition:background .1s ease;-webkit-transition:background .1s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#333}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#333;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#333;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:10px;padding:9px;width:220px;position:relative;transition:opacity .1s ease;-webkit-transition:opacity .1s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #333;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal{opacity:1}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}}"; (require("browserify-css").createStyle(css, { "href": "style/aframe-core.css"})); module.exports = css;
+var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:10px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (require("browserify-css").createStyle(css, { "href": "style/aframe-core.css"})); module.exports = css;
 },{"browserify-css":10}],61:[function(require,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "style/rStats.css"})); module.exports = css;
 },{"browserify-css":10}]},{},[28])(28)
