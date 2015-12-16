@@ -9,7 +9,7 @@ var AScene = require('./core/a-scene');
 var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
-var registerElement = require('./a-register-element');
+var registerElement = require('./core/a-register-element');
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('../lib/three');
 

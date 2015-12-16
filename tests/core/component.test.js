@@ -1,8 +1,8 @@
 /* global assert, process, suite, test */
 'use strict';
-var components = require('aframe-core').components;
+var components = require('index').components;
 var helpers = require('../helpers');
-var registerComponent = require('aframe-core').registerComponent;
+var registerComponent = require('index').registerComponent;
 
 var cloneComponent = {
   init: function () {

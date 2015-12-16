@@ -1,7 +1,6 @@
 /* global HTMLElement */
-var registerElement = require('../a-register-element').registerElement;
-
 var debug = require('../utils/debug');
+var registerElement = require('./a-register-element').registerElement;
 
 var warn = debug('core:cubemap:warn');
 

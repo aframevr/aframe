@@ -1,6 +1,6 @@
 /* global assert, suite, test */
 'use strict';
-var coerce = require('aframe-core').utils.coerce;
+var coerce = require('index').utils.coerce;
 
 suite('utils.coerce', function () {
   suite('coerces object', function () {

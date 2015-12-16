@@ -1,5 +1,5 @@
 /* global assert, process, setup, suite, test */
-var AScene = require('aframe-core').AScene;
+var AScene = require('index').AScene;
 var entityFactory = require('../helpers').entityFactory;
 
 suite('fog', function () {

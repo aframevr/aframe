@@ -1,5 +1,5 @@
 /* global MessageChannel, Promise */
-var re = require('../a-register-element');
+var re = require('./a-register-element');
 var RStats = require('../../lib/vendor/rStats');
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');

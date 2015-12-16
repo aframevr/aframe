@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var rad = require('aframe-core').THREE.Math.degToRad;
+var rad = require('index').THREE.Math.degToRad;
 
 suite('geometry', function () {
   'use strict';

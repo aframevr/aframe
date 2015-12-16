@@ -1,9 +1,9 @@
 /* global HTMLElement */
-
-var re = require('../a-register-element');
-var registerElement = re.registerElement;
+var re = require('./a-register-element');
 var utils = require('../utils/');
+
 var isNode = re.isNode;
+var registerElement = re.registerElement;
 
 module.exports = registerElement(
   'a-assets',

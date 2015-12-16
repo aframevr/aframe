@@ -1,7 +1,7 @@
 /* global HTMLElement */
-var registerElement = require('../a-register-element').registerElement;
 var AComponents = require('./component').components;
 var ANode = require('./a-node');
+var registerElement = require('./a-register-element').registerElement;
 
 module.exports = registerElement(
   'a-mixin',

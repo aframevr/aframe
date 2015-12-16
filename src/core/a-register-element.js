@@ -164,5 +164,5 @@ function copyProperties (source, destination) {
   });
 }
 
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity');
+var ANode = require('./a-node');
+var AEntity = require('./a-entity');

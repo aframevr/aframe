@@ -2,7 +2,7 @@ var ANode = require('./a-node');
 var coerce = require('../utils/').coerce;
 var constants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
-var registerElement = require('../a-register-element').registerElement;
+var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 

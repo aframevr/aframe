@@ -1,6 +1,6 @@
 /* global assert, suite, test */
 'use strict';
-var coordinates = require('aframe-core').utils.coordinates;
+var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
   suite('isCoordinate', function () {

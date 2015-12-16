@@ -1,6 +1,6 @@
 /* global assert, process, sinon, setup, suite, test, HTMLElement */
 var AEntity = require('core/a-entity');
-var THREE = require('aframe-core').THREE;
+var THREE = require('index').THREE;
 var helpers = require('../helpers');
 
 var entityFactory = helpers.entityFactory;

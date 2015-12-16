@@ -1,15 +1,14 @@
 /* global HTMLElement */
-var re = require('../a-register-element');
-var registerElement = re.registerElement;
-var isNode = re.isNode;
-
-var components = require('./component').components;
 var ANode = require('./a-node');
+var components = require('./component').components;
 var debug = require('../utils/debug');
+var re = require('./a-register-element');
 var THREE = require('../../lib/three');
 
+var isNode = re.isNode;
 var log = debug('core:a-entity');
 var error = debug('core:a-entity:error');
+var registerElement = re.registerElement;
 
 /**
  * Entity element definition.

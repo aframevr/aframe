@@ -1,6 +1,6 @@
 /* global assert, suite, test */
 'use strict';
-var diff = require('aframe-core').utils.diff;
+var diff = require('index').utils.diff;
 
 suite('utils.objects', function () {
   suite('diff', function () {

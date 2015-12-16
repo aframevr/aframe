@@ -1,5 +1,5 @@
 /* global HTMLElement, MutationObserver */
-var registerElement = require('../a-register-element').registerElement;
+var registerElement = require('./a-register-element').registerElement;
 var utils = require('../utils/');
 
 /**

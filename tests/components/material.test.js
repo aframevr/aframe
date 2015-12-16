@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var THREE = require('aframe-core').THREE;
+var THREE = require('index').THREE;
 
 suite('material', function () {
   'use strict';
