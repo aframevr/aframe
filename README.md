@@ -13,13 +13,13 @@ If you want to get started immediately, just fire up [__this CodePen example sce
 
 If you would like to embed this library in your project, simply include this file:
 
-* [`aframe.min.js`](https://aframevr.github.io/aframe/dist/aframe.min.js)
+* [`aframe.min.js`](https://aframe.io/releases/latest/aframe.min.js)
 
 Or if you'd prefer the unminified version for local development (with source maps):
 
-* [`aframe.js`](https://aframevr.github.io/aframe/dist/aframe.js)
+* [`aframe.js`](https://aframe.io/releases/latest/aframe.js)
 
-__Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/).__
+__Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
 ### npm
 
@@ -32,21 +32,35 @@ And in your Browserify/Webpack modules, simply require the module:
     require('aframe')
 
 
-## Local Development
+## Local installation and development
 
-If you'd like to hack on components and/or examples, simply run these commands to get started:
+Alternatively, you can clone this repository to work locally on this project and explore the examples.
 
     git clone git@github.com:aframevr/aframe.git
-    cd aframe && npm install && npm start
+    cd aframe && npm install
 
-If you'd like to hack on this project and don't have access to the npm packages, contact @cvan and he'll give you the info you'll need to log in:
+To start the local development server:
 
-    npm login
+    npm start
 
 And fire up __[http://localhost:9000](http://localhost:9000)__!
 
+## Browser console logging
 
-### Working with [`aframe-core`](https://github.com/aframevr/aframe-core/) library
+If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
+
+    localStorage.logs = 1
+
+And to disable:
+
+    localStorage.logs = 0
+
+
+## Maintainers
+
+Ensure you have [cloned the repo and installed the dependencies](#local-installation-and-development).
+
+### Developing alongside the other aframe packages (e.g., [`aframe-core`](https://github.com/aframevr/aframe-core/))
 
 If you want to make changes to the [__`aframe-core`__](https://github.com/aframevr/aframe-core/) library and test with `aframe`, you'll need to run these commands to link things up correctly.
 
@@ -75,12 +89,33 @@ From your __`aframe`__ directory:
     npm unlink aframe-core
 
 
+### Releasing and publishing a new version to [npm](https://www.npmjs.com/)
+
+To increment the preminor version of the package (e.g., `0.1.19` to `0.1.20`) and create a git tag (e.g., `v0.1.20`):
+
+    npm run release:bump
+
+___NOTE:___ npm versions __cannot__ be unpublished.
+
+Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1.20`) and to the new tag to GitHub (e.g., `v0.1.20`):
+
+    npm run release:push
+
+## Updating `dist` files
+
+    npm run dist
+    git commit -am 'Bump dist'
+
 ## Publishing to GitHub Pages
 
-To publish to __https://aframevr.github.io/aframe/__:
+To publish to __https://aframevr.github.io/aframecore/__:
 
     npm run ghpages
 
 To publish to __https://your_username.github.io/aframe/__:
 
     npm run ghpages your_username
+
+## License
+
+This program is free software and is distributed under an [MIT License](LICENSE).
