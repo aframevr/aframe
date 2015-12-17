@@ -1,6 +1,10 @@
 # aframe
 
-Building blocks for the VR Web.
+__Building blocks for the VR Web.__
+
+To learn more, head over to the [A-Frame site](https://aframe.io/) for [examples](https://aframe.io/examples/), [docs](https://aframe.io/docs/), and [FAQ](https://aframe.io/faq/).
+
+> For the core library, check out [A-Frame Core](https://github.com/aframevr/aframe-core/).
 
 
 ## Usage
