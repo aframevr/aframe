@@ -378,7 +378,7 @@ var AScene = module.exports = registerElement('a-scene', {
     removeEnterVR: {
       value: function () {
         if (this.enterVREl) {
-          this.enterVREl.parentNode.removeChild(this.enterVRElement);
+          this.enterVREl.parentNode.removeChild(this.enterVREl);
         }
       }
     },
