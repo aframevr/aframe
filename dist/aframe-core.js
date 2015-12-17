@@ -52336,10 +52336,10 @@ module.exports = WebVRPolyfill;
 },{}],26:[function(require,module,exports){
 module.exports={
   "name": "aframe-core",
-  "version": "0.0.10",
+  "version": "0.1.2",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
-  "main": "src/aframe-core.js",
+  "main": "src/index.js",
   "dependencies": {
     "debug": "^2.2.0",
     "document-register-element": "^0.5.2",
@@ -52377,15 +52377,15 @@ module.exports={
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo src/aframe-core.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/aframe-core.js -s 'aframe-core'",
-    "browserify": "browserify ./src/aframe-core.js -s 'aframe-core'",
+    "dev": "npm run build && budo src/index.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/index.js -s 'aframe-core'",
+    "browserify": "browserify ./src/index.js -s 'aframe-core'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe-core.js",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js",
     "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,style,index.html} gh-pages/. && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release:bump": "npm version patch --preminor",
+    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
     "release:push": "npm login && npm publish && git push --follow-tags",
     "test": "karma start ./tests/karma.conf.js",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
@@ -52419,226 +52419,6 @@ module.exports={
 }
 
 },{}],27:[function(require,module,exports){
-// Polyfill `document.registerElement`.
-require('document-register-element');
-
-/*
- ------------------------------------------------------------
- ------------- WARNING WARNING WARNING WARNING --------------
- ------------------------------------------------------------
-
- This module wraps registerElement to deal with
- components that inherit from `ANode` and `AEntity`.
- It's a pass through in any other case.
-
- It wraps some of the prototype methods
- of the created element to make sure that the corresponding
- functions in the base classes (`AEntity` and `ANode`) are also
- invoked. The method in the base class is always called before the
- one in the derived object.
-
-*/
-var registerElement = document.registerElement;
-
-var knownTags = module.exports.knownTags = {};
-
-var addTagName = function (tagName) {
-  knownTags[tagName.toLowerCase()] = true;
-};
-
-/**
- * Returns whether the element type is one of our known registered ones
- *
- * @param   {string} node The name of the tag to register
- * @returns {boolean} Whether the tag name matches that of our registered
- *                    custom elements
- */
-module.exports.isNode = function (node) {
-  return node.tagName.toLowerCase() in knownTags || node.isNode;
-};
-
-/**
- * @param   {string} tagName The name of the tag to register
- * @param   {object} obj The prototype of the new element
- * @returns {object} The prototype of the new element
- */
-module.exports.registerElement = document.registerElement = function (tagName, obj) {
-  var proto = Object.getPrototypeOf(obj.prototype);
-  var newObj = obj;
-  var isANode = ANode && proto === ANode.prototype;
-  var isAEntity = AEntity && proto === AEntity.prototype;
-
-  if (isANode || isAEntity) { addTagName(tagName); }
-
-  // Does the element inherit from `ANode`?
-  if (isANode) {
-    newObj = wrapANodeMethods(obj.prototype);
-    newObj = {prototype: Object.create(proto, newObj)};
-  }
-
-  // Does the element inherit from `AEntity`?
-  if (isAEntity) {
-    newObj = wrapAEntityMethods(obj.prototype);
-    newObj = {prototype: Object.create(proto, newObj)};
-  }
-
-  return registerElement.call(document, tagName, newObj);
-};
-
-/**
- * This wraps some of the obj methods to call those on `ANode` base clase.
- * @param  {object} obj The objects that contains the methods that will be wrapped.
- * @return {object} An object with the same properties as the input parameter but
- * with some of methods wrapped.
- */
-function wrapANodeMethods (obj) {
-  var newObj = {};
-  var ANodeMethods = [
-    'attachedCallback',
-    'attributeChangedCallback',
-    'createdCallback'
-  ];
-  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
-  copyProperties(obj, newObj);
-  return newObj;
-}
-
-/**
- * This wraps some of the obj methods to call those on `AEntity` base class.
- * @param  {object} obj The objects that contains the methods that will be wrapped.
- * @return {object} An object with the same properties as the input parameter but
- * with some of methods wrapped.
- */
-function wrapAEntityMethods (obj) {
-  var newObj = {};
-  var ANodeMethods = [
-    'attachedCallback',
-    'attributeChangedCallback',
-    'createdCallback'
-  ];
-  var AEntityMethods = [
-    'attributeChangedCallback',
-    'attachedCallback',
-    'createdCallback',
-    'detachedCallback'
-  ];
-  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
-  wrapMethods(newObj, AEntityMethods, obj, AEntity.prototype);
-  // Copies the remaining properties into the new object
-  copyProperties(obj, newObj);
-  return newObj;
-}
-
-/**
- * Wraps a list a methods to ensure that those in the base class are called through the derived one.
- * @param  {object} targetObj Object that will contain the wrapped methods
- * @param  {array} methodList List of methods from the derivedObj that will be wrapped
- * @param  {object} derivedObject Object that inherits from the baseObj
- * @param  {object} baseObj Object that derivedObj inherits from
- * @return {undefined}
- */
-function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
-  methodList.forEach(function (methodName) {
-    wrapMethod(targetObj, methodName, derivedObj, baseObj);
-  });
-}
-
-/**
- * Wraps one method to ensure that the one in the base class is called before the one
- * in the derived one
- * @param  {object} obj Object that will contain the wrapped method
- * @param  {string} methodName The name of the method that will be wrapped
- * @param  {object} derivedObject Object that inherits from the baseObj
- * @param  {object} baseObj Object that derivedObj inherits from
- * @return {undefined}
- */
-function wrapMethod (obj, methodName, derivedObj, baseObj) {
-  var derivedMethod = derivedObj[methodName];
-  var baseMethod = baseObj[methodName];
-  if (!derivedMethod || !baseMethod) { return; }
-  // The derived class doesn't override the one in the base one
-  if (derivedMethod === baseMethod) { return; }
-  // Wrapper
-  // The base method is called before the one in the derived class
-  var wrapperMethod = function () {
-    baseMethod.apply(this, arguments);
-    return derivedMethod.apply(this, arguments);
-  };
-  obj[methodName] = {value: wrapperMethod, writable: window.debug};
-}
-
-/**
- * It copies the properties from source to destination object
- * if they don't exist already
- * @param  {object} source The object where properties are copied from
- * @param  {type} destination The object where properties are copied to
- * @return {undefined}
- */
-function copyProperties (source, destination) {
-  var props = Object.getOwnPropertyNames(source);
-  props.forEach(function (prop) {
-    var desc;
-    if (!destination[prop]) {
-      desc = Object.getOwnPropertyDescriptor(source, prop);
-      destination[prop] = {value: source[prop], writable: desc.writable};
-    }
-  });
-}
-
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity');
-
-},{"./core/a-entity":50,"./core/a-node":52,"document-register-element":15}],28:[function(require,module,exports){
-require('es6-promise').polyfill();  // Polyfill `Promise`.
-require('present');  // Polyfill `performance.now()`.
-
-require('../style/aframe-core.css');
-require('../style/rStats.css');
-
-// Required before `AEntity` so that all components are registered.
-var AScene = require('./core/a-scene');
-var components = require('./core/component').components;
-var debug = require('./utils/debug');
-var registerComponent = require('./core/component').registerComponent;
-var registerElement = require('./a-register-element');
-// Exports THREE to window so three.js can be used without alteration.
-var THREE = window.THREE = require('../lib/three');
-
-var pkg = require('../package');
-var utils = require('./utils/');
-
-require('./components/index');  // Register core components.
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
-
-// Webvr polyfill configuration.
-window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
-window.WebVRConfig = {
-  TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
-};
-require('webvr-polyfill');
-
-require('./core/a-animation');
-require('./core/a-assets');
-require('./core/a-cubemap');
-require('./core/a-mixin');
-require('./core/a-scene');
-
-module.exports = {
-  AEntity: AEntity,
-  ANode: ANode,
-  AScene: AScene,
-  components: components,
-  debug: debug,
-  registerComponent: registerComponent,
-  registerElement: registerElement,
-  THREE: THREE,
-  utils: utils,
-  version: pkg.version
-};
-
-},{"../lib/three":1,"../package":26,"../style/aframe-core.css":60,"../style/rStats.css":61,"./a-register-element":27,"./components/index":33,"./core/a-animation":47,"./core/a-assets":48,"./core/a-cubemap":49,"./core/a-entity":50,"./core/a-mixin":51,"./core/a-node":52,"./core/a-scene":53,"./core/component":54,"./utils/":58,"./utils/debug":57,"es6-promise":16,"present":18,"webvr-polyfill":25}],29:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -52674,7 +52454,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54}],30:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53}],28:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
@@ -52764,7 +52544,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":54,"../utils/":58}],31:[function(require,module,exports){
+},{"../core/component":53,"../utils/":58}],29:[function(require,module,exports){
 var register = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var debug = require('../utils/debug');
@@ -52839,7 +52619,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils/debug":57}],32:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils/debug":57}],30:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
@@ -53020,7 +52800,7 @@ function applyTranslate (geometry, translate, currentTranslate) {
   geometry.verticesNeedsUpdate = true;
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":58,"../utils/debug":57}],33:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils":58,"../utils/debug":57}],31:[function(require,module,exports){
 require('../components/camera');
 require('../components/cursor');
 require('../components/fog');
@@ -53038,7 +52818,7 @@ require('../components/sound');
 require('../components/visible');
 require('../components/wasd-controls');
 
-},{"../components/camera":29,"../components/cursor":30,"../components/fog":31,"../components/geometry":32,"../components/light":34,"../components/loader":35,"../components/look-at":36,"../components/look-controls":37,"../components/material":38,"../components/position":39,"../components/raycaster":40,"../components/rotation":41,"../components/scale":42,"../components/sound":43,"../components/visible":44,"../components/wasd-controls":45}],34:[function(require,module,exports){
+},{"../components/camera":27,"../components/cursor":28,"../components/fog":29,"../components/geometry":30,"../components/light":32,"../components/loader":33,"../components/look-at":34,"../components/look-controls":35,"../components/material":36,"../components/position":37,"../components/raycaster":38,"../components/rotation":39,"../components/scale":40,"../components/sound":41,"../components/visible":42,"../components/wasd-controls":43}],32:[function(require,module,exports){
 var diff = require('../utils').diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
@@ -53173,7 +52953,7 @@ function getLight (data) {
   }
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":58,"../utils/debug":57}],35:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils":58,"../utils/debug":57}],33:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var parseUrl = require('../utils/src-loader').parseUrl;
@@ -53248,7 +53028,7 @@ module.exports.Component = registerComponent('loader', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils/debug":57,"../utils/src-loader":59}],36:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils/debug":57,"../utils/src-loader":59}],34:[function(require,module,exports){
 var debug = require('../utils/debug');
 var coordinates = require('../utils/coordinates');
 var registerComponent = require('../core/component').registerComponent;
@@ -53370,7 +53150,7 @@ module.exports.Component = registerComponent('look-at', {
   stringify: coordinates.componentMixin.stringify
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils/coordinates":56,"../utils/debug":57}],37:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils/coordinates":56,"../utils/debug":57}],35:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -53570,7 +53350,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54}],38:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53}],36:[function(require,module,exports){
 /* global Promise */
 var debug = require('../utils/debug');
 var diff = require('../utils').diff;
@@ -53950,7 +53730,7 @@ function getSide (side) {
   }
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":58,"../utils/debug":57,"../utils/src-loader":59}],39:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils":58,"../utils/debug":57,"../utils/src-loader":59}],37:[function(require,module,exports){
 var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -53969,7 +53749,7 @@ module.exports.Component = registerComponent('position', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../core/component":54,"../utils/":58,"../utils/coordinates":56}],40:[function(require,module,exports){
+},{"../core/component":53,"../utils/":58,"../utils/coordinates":56}],38:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var requestInterval = require('request-interval');
 var THREE = require('../../lib/three');
@@ -54068,7 +53848,7 @@ module.exports.Component = registerComponent('raycaster', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54,"request-interval":19}],41:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"request-interval":19}],39:[function(require,module,exports){
 var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
@@ -54094,7 +53874,7 @@ module.exports.Component = registerComponent('rotation', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../../lib/three":1,"../core/component":54,"../utils/":58,"../utils/coordinates":56}],42:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils/":58,"../utils/coordinates":56}],40:[function(require,module,exports){
 var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -54119,7 +53899,7 @@ module.exports.Component = registerComponent('scale', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../core/component":54,"../utils/":58,"../utils/coordinates":56}],43:[function(require,module,exports){
+},{"../core/component":53,"../utils/":58,"../utils/coordinates":56}],41:[function(require,module,exports){
 var debug = require('../utils/debug');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/component').registerComponent;
@@ -54229,7 +54009,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils":58,"../utils/debug":57}],44:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53,"../utils":58,"../utils/debug":57}],42:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -54253,7 +54033,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":54}],45:[function(require,module,exports){
+},{"../core/component":53}],43:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -54390,7 +54170,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })()
 });
 
-},{"../../lib/three":1,"../core/component":54}],46:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":53}],44:[function(require,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -54492,12 +54272,12 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":24}],47:[function(require,module,exports){
+},{"tween.js":24}],45:[function(require,module,exports){
 var ANode = require('./a-node');
 var coerce = require('../utils/').coerce;
 var constants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
-var registerElement = require('../a-register-element').registerElement;
+var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 
@@ -54969,13 +54749,13 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../a-register-element":27,"../constants/animation":46,"../utils/":58,"./a-node":52,"tween.js":24}],48:[function(require,module,exports){
+},{"../constants/animation":44,"../utils/":58,"./a-node":50,"./a-register-element":51,"tween.js":24}],46:[function(require,module,exports){
 /* global HTMLElement */
-
-var re = require('../a-register-element');
-var registerElement = re.registerElement;
+var re = require('./a-register-element');
 var utils = require('../utils/');
+
 var isNode = re.isNode;
+var registerElement = re.registerElement;
 
 module.exports = registerElement(
   'a-assets',
@@ -55038,11 +54818,10 @@ module.exports = registerElement(
   }
 );
 
-},{"../a-register-element":27,"../utils/":58}],49:[function(require,module,exports){
+},{"../utils/":58,"./a-register-element":51}],47:[function(require,module,exports){
 /* global HTMLElement */
-var registerElement = require('../a-register-element').registerElement;
-
 var debug = require('../utils/debug');
+var registerElement = require('./a-register-element').registerElement;
 
 var warn = debug('core:cubemap:warn');
 
@@ -55090,19 +54869,18 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../a-register-element":27,"../utils/debug":57}],50:[function(require,module,exports){
+},{"../utils/debug":57,"./a-register-element":51}],48:[function(require,module,exports){
 /* global HTMLElement */
-var re = require('../a-register-element');
-var registerElement = re.registerElement;
-var isNode = re.isNode;
-
-var components = require('./component').components;
 var ANode = require('./a-node');
+var components = require('./component').components;
 var debug = require('../utils/debug');
+var re = require('./a-register-element');
 var THREE = require('../../lib/three');
 
+var isNode = re.isNode;
 var log = debug('core:a-entity');
 var error = debug('core:a-entity:error');
+var registerElement = re.registerElement;
 
 /**
  * Entity element definition.
@@ -55565,11 +55343,11 @@ module.exports = registerElement('a-entity', {
   prototype: Object.create(ANode.prototype, proto)
 });
 
-},{"../../lib/three":1,"../a-register-element":27,"../utils/debug":57,"./a-node":52,"./component":54}],51:[function(require,module,exports){
+},{"../../lib/three":1,"../utils/debug":57,"./a-node":50,"./a-register-element":51,"./component":53}],49:[function(require,module,exports){
 /* global HTMLElement */
-var registerElement = require('../a-register-element').registerElement;
 var AComponents = require('./component').components;
 var ANode = require('./a-node');
+var registerElement = require('./a-register-element').registerElement;
 
 module.exports = registerElement(
   'a-mixin',
@@ -55609,9 +55387,9 @@ module.exports = registerElement(
   }
 );
 
-},{"../a-register-element":27,"./a-node":52,"./component":54}],52:[function(require,module,exports){
+},{"./a-node":50,"./a-register-element":51,"./component":53}],50:[function(require,module,exports){
 /* global HTMLElement, MutationObserver */
-var registerElement = require('../a-register-element').registerElement;
+var registerElement = require('./a-register-element').registerElement;
 var utils = require('../utils/');
 
 /**
@@ -55801,9 +55579,179 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../a-register-element":27,"../utils/":58}],53:[function(require,module,exports){
+},{"../utils/":58,"./a-register-element":51}],51:[function(require,module,exports){
+// Polyfill `document.registerElement`.
+require('document-register-element');
+
+/*
+ ------------------------------------------------------------
+ ------------- WARNING WARNING WARNING WARNING --------------
+ ------------------------------------------------------------
+
+ This module wraps registerElement to deal with
+ components that inherit from `ANode` and `AEntity`.
+ It's a pass through in any other case.
+
+ It wraps some of the prototype methods
+ of the created element to make sure that the corresponding
+ functions in the base classes (`AEntity` and `ANode`) are also
+ invoked. The method in the base class is always called before the
+ one in the derived object.
+
+*/
+var registerElement = document.registerElement;
+
+var knownTags = module.exports.knownTags = {};
+
+var addTagName = function (tagName) {
+  knownTags[tagName.toLowerCase()] = true;
+};
+
+/**
+ * Returns whether the element type is one of our known registered ones
+ *
+ * @param   {string} node The name of the tag to register
+ * @returns {boolean} Whether the tag name matches that of our registered
+ *                    custom elements
+ */
+module.exports.isNode = function (node) {
+  return node.tagName.toLowerCase() in knownTags || node.isNode;
+};
+
+/**
+ * @param   {string} tagName The name of the tag to register
+ * @param   {object} obj The prototype of the new element
+ * @returns {object} The prototype of the new element
+ */
+module.exports.registerElement = document.registerElement = function (tagName, obj) {
+  var proto = Object.getPrototypeOf(obj.prototype);
+  var newObj = obj;
+  var isANode = ANode && proto === ANode.prototype;
+  var isAEntity = AEntity && proto === AEntity.prototype;
+
+  if (isANode || isAEntity) { addTagName(tagName); }
+
+  // Does the element inherit from `ANode`?
+  if (isANode) {
+    newObj = wrapANodeMethods(obj.prototype);
+    newObj = {prototype: Object.create(proto, newObj)};
+  }
+
+  // Does the element inherit from `AEntity`?
+  if (isAEntity) {
+    newObj = wrapAEntityMethods(obj.prototype);
+    newObj = {prototype: Object.create(proto, newObj)};
+  }
+
+  return registerElement.call(document, tagName, newObj);
+};
+
+/**
+ * This wraps some of the obj methods to call those on `ANode` base clase.
+ * @param  {object} obj The objects that contains the methods that will be wrapped.
+ * @return {object} An object with the same properties as the input parameter but
+ * with some of methods wrapped.
+ */
+function wrapANodeMethods (obj) {
+  var newObj = {};
+  var ANodeMethods = [
+    'attachedCallback',
+    'attributeChangedCallback',
+    'createdCallback'
+  ];
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
+  copyProperties(obj, newObj);
+  return newObj;
+}
+
+/**
+ * This wraps some of the obj methods to call those on `AEntity` base class.
+ * @param  {object} obj The objects that contains the methods that will be wrapped.
+ * @return {object} An object with the same properties as the input parameter but
+ * with some of methods wrapped.
+ */
+function wrapAEntityMethods (obj) {
+  var newObj = {};
+  var ANodeMethods = [
+    'attachedCallback',
+    'attributeChangedCallback',
+    'createdCallback'
+  ];
+  var AEntityMethods = [
+    'attributeChangedCallback',
+    'attachedCallback',
+    'createdCallback',
+    'detachedCallback'
+  ];
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
+  wrapMethods(newObj, AEntityMethods, obj, AEntity.prototype);
+  // Copies the remaining properties into the new object
+  copyProperties(obj, newObj);
+  return newObj;
+}
+
+/**
+ * Wraps a list a methods to ensure that those in the base class are called through the derived one.
+ * @param  {object} targetObj Object that will contain the wrapped methods
+ * @param  {array} methodList List of methods from the derivedObj that will be wrapped
+ * @param  {object} derivedObject Object that inherits from the baseObj
+ * @param  {object} baseObj Object that derivedObj inherits from
+ * @return {undefined}
+ */
+function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
+  methodList.forEach(function (methodName) {
+    wrapMethod(targetObj, methodName, derivedObj, baseObj);
+  });
+}
+
+/**
+ * Wraps one method to ensure that the one in the base class is called before the one
+ * in the derived one
+ * @param  {object} obj Object that will contain the wrapped method
+ * @param  {string} methodName The name of the method that will be wrapped
+ * @param  {object} derivedObject Object that inherits from the baseObj
+ * @param  {object} baseObj Object that derivedObj inherits from
+ * @return {undefined}
+ */
+function wrapMethod (obj, methodName, derivedObj, baseObj) {
+  var derivedMethod = derivedObj[methodName];
+  var baseMethod = baseObj[methodName];
+  if (!derivedMethod || !baseMethod) { return; }
+  // The derived class doesn't override the one in the base one
+  if (derivedMethod === baseMethod) { return; }
+  // Wrapper
+  // The base method is called before the one in the derived class
+  var wrapperMethod = function () {
+    baseMethod.apply(this, arguments);
+    return derivedMethod.apply(this, arguments);
+  };
+  obj[methodName] = {value: wrapperMethod, writable: window.debug};
+}
+
+/**
+ * It copies the properties from source to destination object
+ * if they don't exist already
+ * @param  {object} source The object where properties are copied from
+ * @param  {type} destination The object where properties are copied to
+ * @return {undefined}
+ */
+function copyProperties (source, destination) {
+  var props = Object.getOwnPropertyNames(source);
+  props.forEach(function (prop) {
+    var desc;
+    if (!destination[prop]) {
+      desc = Object.getOwnPropertyDescriptor(source, prop);
+      destination[prop] = {value: source[prop], writable: desc.writable};
+    }
+  });
+}
+
+var ANode = require('./a-node');
+var AEntity = require('./a-entity');
+
+},{"./a-entity":48,"./a-node":50,"document-register-element":15}],52:[function(require,module,exports){
 /* global MessageChannel, Promise */
-var re = require('../a-register-element');
+var re = require('./a-register-element');
 var RStats = require('../../lib/vendor/rStats');
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
@@ -56618,7 +56566,7 @@ function injectMetaTags () {
   headEl.appendChild(meta);
 }
 
-},{"../../lib/three":1,"../../lib/vendor/rStats":7,"../../lib/vendor/wakelock/wakelock":9,"../a-register-element":27,"../utils/":58,"./a-entity":50,"tween.js":24}],54:[function(require,module,exports){
+},{"../../lib/three":1,"../../lib/vendor/rStats":7,"../../lib/vendor/wakelock/wakelock":9,"../utils/":58,"./a-entity":48,"./a-register-element":51,"tween.js":24}],53:[function(require,module,exports){
 var debug = require('../utils/debug');
 var styleParser = require('style-attr');
 var utils = require('../utils/');
@@ -56872,7 +56820,57 @@ function transformKeysToCamelCase (obj) {
   return camelCaseObj;
 }
 
-},{"../utils/":58,"../utils/debug":57,"style-attr":22}],55:[function(require,module,exports){
+},{"../utils/":58,"../utils/debug":57,"style-attr":22}],54:[function(require,module,exports){
+require('es6-promise').polyfill();  // Polyfill `Promise`.
+require('present');  // Polyfill `performance.now()`.
+
+require('../style/aframe-core.css');
+require('../style/rStats.css');
+
+// Required before `AEntity` so that all components are registered.
+var AScene = require('./core/a-scene');
+var components = require('./core/component').components;
+var debug = require('./utils/debug');
+var registerComponent = require('./core/component').registerComponent;
+var registerElement = require('./core/a-register-element');
+// Exports THREE to window so three.js can be used without alteration.
+var THREE = window.THREE = require('../lib/three');
+
+var pkg = require('../package');
+var utils = require('./utils/');
+
+require('./components/index');  // Register core components.
+var ANode = require('./core/a-node');
+var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
+
+// Webvr polyfill configuration.
+window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
+window.WebVRConfig = {
+  TOUCH_PANNER_DISABLED: true,
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+};
+require('webvr-polyfill');
+
+require('./core/a-animation');
+require('./core/a-assets');
+require('./core/a-cubemap');
+require('./core/a-mixin');
+require('./core/a-scene');
+
+module.exports = {
+  AEntity: AEntity,
+  ANode: ANode,
+  AScene: AScene,
+  components: components,
+  debug: debug,
+  registerComponent: registerComponent,
+  registerElement: registerElement,
+  THREE: THREE,
+  utils: utils,
+  version: pkg.version
+};
+
+},{"../lib/three":1,"../package":26,"../style/aframe-core.css":60,"../style/rStats.css":61,"./components/index":31,"./core/a-animation":45,"./core/a-assets":46,"./core/a-cubemap":47,"./core/a-entity":48,"./core/a-mixin":49,"./core/a-node":50,"./core/a-register-element":51,"./core/a-scene":52,"./core/component":53,"./utils/":58,"./utils/debug":57,"es6-promise":16,"present":18,"webvr-polyfill":25}],55:[function(require,module,exports){
 var coordinates = require('./coordinates');
 var utils = require('./index');
 
@@ -57426,6 +57424,6 @@ module.exports = {
 var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:10px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (require("browserify-css").createStyle(css, { "href": "style/aframe-core.css"})); module.exports = css;
 },{"browserify-css":10}],61:[function(require,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "style/rStats.css"})); module.exports = css;
-},{"browserify-css":10}]},{},[28])(28)
+},{"browserify-css":10}]},{},[54])(54)
 });
 //# sourceMappingURL=aframe-core.js.map
