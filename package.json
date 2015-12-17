@@ -12,7 +12,8 @@
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
-    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
+    "version": "npm run dist",
+    "release:bump": "npm version patch --preminor && git commit -a -C HEAD --amend",
     "release:push": "npm login && npm publish && git push --follow-tags",
     "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
     "precommit": "npm run lint"
