@@ -25,6 +25,7 @@ app
 .live()
 .on('watch', function (eventType, fn) {
   if (eventType !== 'change' && eventType !== 'add') { return; }
+
   if (path.extname(fn) === '.css') {
     // We want to trigger a reload of the entire document, since
     // browserify-css injects CSS into the page.
