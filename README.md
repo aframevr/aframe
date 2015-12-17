@@ -7,7 +7,7 @@ Building blocks for the VR Web.
 
 ### CodePen
 
-If you want to get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/aframevr/pen/6e013bf4b446e85d8f268e937ee09143?editors=100)!
+If you want to get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/BjygdO?editors=100)!
 
 ### Downloads
 
