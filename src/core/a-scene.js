@@ -760,7 +760,7 @@ function createEnterVR (enterVRHandler) {
 
   // Handle enter VR flows.
   if (!hasWebVR) {
-    compatModalText.innerHTML = 'Your browser does not support WebVR. To enter VR, use a VR-compatible browser, or a mobile phone.';
+    compatModalText.innerHTML = 'Your browser does not support WebVR. To enter VR, use a VR-compatible browser or a mobile phone.';
     wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
   } else {
     vrButton.addEventListener('click', enterVRHandler);
