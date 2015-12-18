@@ -35,7 +35,7 @@ suite('geometry', function () {
     test('can change type of geometry', function () {
       var el = this.el;
       el.setAttribute('geometry', 'primitive: sphere');
-      assert.equal(el.object3D.geometry.type, 'SphereGeometry');
+      assert.equal(el.object3D.geometry.type, 'SphereBufferGeometry');
       el.setAttribute('geometry', 'primitive: box');
       assert.equal(el.object3D.geometry.type, 'BoxGeometry');
     });
@@ -130,7 +130,7 @@ suite('geometry', function () {
         primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3
       });
       geometry = el.object3D.geometry;
-      assert.equal(geometry.type, 'SphereGeometry');
+      assert.equal(geometry.type, 'SphereBufferGeometry');
       assert.equal(geometry.parameters.radius, 1);
       assert.equal(geometry.parameters.widthSegments, 2);
       assert.equal(geometry.parameters.heightSegments, 3);
