@@ -665,7 +665,7 @@ e    * @param {object} el - element holding the camera component.
         }
         TWEEN.update(t);
         this.behaviors.forEach(function (behavior) {
-          behavior.update();
+          behavior.update(t);
         });
         this.renderer.render(this.object3D, camera);
         if (stats) { stats().update(); }
