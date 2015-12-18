@@ -9,7 +9,6 @@ var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
-var isNode = re.isNode;
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var HIDDEN_CLASS = 'a-hidden';
@@ -30,6 +29,7 @@ var isMobile = utils.isMobile();
            updated on every tick.
  * @member {object} cameraEl - Set the entity with a camera component.
  * @member {object} canvas
+ * @member {bool} defaultCameraEnabled - false if user has not added camera.
  * @member {bool} defaultLightsEnabled - false if user has not added lights.
  * @member {Element} enterVREl
  * @member {bool} insideIframe
@@ -39,10 +39,8 @@ var isMobile = utils.isMobile();
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - The root three.js Scene object.
  * @member {object} monoRenderer
- * @member {number} pendingElements - Number of elements currently waiting to
- *         initialize before beginning rendering.
  * @member {object} renderer
- * @member {bool} renderLoopStarted
+ * @member {bool} renderStarted
  * @member {object} stats
  * @member {object} stereoRenderer
  * @member {object} wakelock
@@ -52,6 +50,7 @@ var AScene = module.exports = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.behaviors = [];
+        this.defaultCameraEnabled = true;
         this.defaultLightsEnabled = true;
         this.enterVREl = null;
         this.insideIframe = window.top !== window.self;
@@ -78,10 +77,11 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setupCanvas();
         this.setupKeyboardShortcuts();
         this.setupRenderer();
+        this.setupDefaultCamera();
         this.setupDefaultLights();
-        this.attachEventListeners();
         this.attachFullscreenListeners();
         this.attachOrientationListeners();
+        this.start();
 
         // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', resizeCanvas);
@@ -117,40 +117,6 @@ var AScene = module.exports = registerElement('a-scene', {
     addBehavior: {
       value: function (behavior) {
         this.behaviors.push(behavior);
-      }
-    },
-
-    /**
-     * Attaches event listeners to all assets and entities and wait for them
-     * all to load before kicking things off.
-     */
-    attachEventListeners: {
-      value: function () {
-        var self = this;
-        var elementLoadedCallback = this.elementLoadedCallback.bind(this);
-        this.pendingElements = 0;
-        var assets = document.querySelector('a-assets');
-        if (assets && !assets.hasLoaded) {
-          this.pendingElements++;
-          attachEventListener(assets);
-        }
-
-        var children = this.querySelectorAll('*');
-        Array.prototype.slice.call(children).forEach(countElement);
-
-        function countElement (node) {
-          if (!isNode(node)) { return; }
-          self.pendingElements++;
-          if (!node.hasLoaded) {
-            attachEventListener(node);
-          } else {
-            elementLoadedCallback(node);
-          }
-        }
-
-        function attachEventListener (node) {
-          node.addEventListener('loaded', elementLoadedCallback);
-        }
       }
     },
 
@@ -232,34 +198,6 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Handler attached to elements to help scene know when to kick off.
-     * Scene waits for all entities to load.
-     */
-    elementLoadedCallback: {
-      value: function () {
-        this.pendingElements--;
-        // Still waiting on elements.
-        if (this.pendingElements > 0) { return; }
-        // Render loop already running.
-        if (this.renderLoopStarted) { return; }
-
-        this.setupLoader();
-        if (!this.cameraEl) {
-          // Add default camera if user has not added one. Wait for it to load.
-          this.setupDefaultCamera();
-          return;
-        }
-        this.resizeCanvas();
-
-        // Kick off render loop.
-        this.render();
-        this.renderLoopStarted = true;
-        this.load();
-        this.checkUrlParameters();
-      }
-    },
-
-    /**
      * Enters VR when ?mode=vr is specified in the querystring.
      */
     checkUrlParameters: {
@@ -322,28 +260,37 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    load: {
-      value: function () {
-        // To prevent emmitting the loaded event more than once
-        // and to prevent triggering loaded if there are still
-        // pending elements to be loaded
-        if (this.hasLoaded || this.pendingElements !== 0) { return; }
-        AEntity.prototype.load.call(this);
+    /**
+     * Notify scene that camera has been added and to remove the default.
+     *
+e    * @param {object} el - element holding the camera component.
+     */
+    registerCamera: {
+      value: function (el) {
+        var defaultCamera;
+        if (this.defaultCameraEnabled && !el.parentNode.hasAttribute(DEFAULT_CAMERA_ATTR)) {
+          // User added a camera, remove default camera through DOM.
+          defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+          if (defaultCamera) {
+            this.removeChild(defaultCamera);
+          }
+          this.cameraEl = el;
+          this.defaultCameraEnabled = false;
+        }
       }
     },
 
     /**
-     * Notify scene that light has been added and to remove the default
+     * Notify scene that light has been added and to remove the default.
      *
      * @param {object} el - element holding the light component.
      */
     registerLight: {
       value: function (el) {
-        if (this.defaultLightsEnabled &&
-            !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
+        var defaultLights;
+        if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
           // User added a light, remove default lights through DOM.
-          var defaultLights = document.querySelectorAll(
-            '[' + DEFAULT_LIGHT_ATTR + ']');
+          defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
           for (var i = 0; i < defaultLights.length; i++) {
             this.removeChild(defaultLights[i]);
           }
@@ -479,9 +426,7 @@ var AScene = module.exports = registerElement('a-scene', {
         defaultCamera.setAttribute('camera');
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
-        this.pendingElements++;
-        defaultCamera.addEventListener('loaded',
-                                       this.elementLoadedCallback.bind(this));
+        this.cameraEl = defaultCamera;
         cameraWrapperEl.appendChild(defaultCamera);
         this.appendChild(cameraWrapperEl);
       }
@@ -632,6 +577,32 @@ var AScene = module.exports = registerElement('a-scene', {
         if (this.enterVREl) {
           this.enterVREl.classList.remove(HIDDEN_CLASS);
         }
+      }
+    },
+
+    /**
+     * Handler attached to elements to help scene know when to kick off.
+     * Scene waits for all entities to load.
+     */
+    start: {
+      value: function () {
+        if (this.renderStarted) { return; }
+
+        this.addEventListener('loaded', function () {
+          if (this.renderStarted) { return; }
+
+          this.setupLoader();
+          this.resizeCanvas();
+
+          // Kick off render loop.
+          this.render();
+          this.renderStarted = true;
+          this.emit('renderstart');
+
+          this.checkUrlParameters();
+        });
+
+        AEntity.prototype.load.call(this);
       }
     },
 

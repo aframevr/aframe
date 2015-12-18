@@ -44,6 +44,21 @@ suite('a-entity', function () {
         done();
       });
     });
+
+    test('waits for children to load', function (done) {
+      var entity = document.createElement('a-entity');
+      var entityChild1 = document.createElement('a-entity');
+      var entityChild2 = document.createElement('a-entity');
+      entity.appendChild(entityChild1);
+      entity.appendChild(entityChild2);
+      document.body.appendChild(entity);
+
+      entity.addEventListener('loaded', function () {
+        assert.ok(entityChild1.hasLoaded);
+        assert.ok(entityChild2.hasLoaded);
+        done();
+      });
+    });
   });
 
   /**
@@ -147,6 +162,26 @@ suite('a-entity', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
       assert.equal(el.getAttribute('class'), 'pied piper');
+    });
+  });
+
+  suite('getChildEntities', function () {
+    test('returns child entities', function (done) {
+      var entity = document.createElement('a-entity');
+      var animationChild = document.createElement('a-animation');
+      var entityChild1 = document.createElement('a-entity');
+      var entityChild2 = document.createElement('a-entity');
+      entity.appendChild(animationChild);
+      entity.appendChild(entityChild1);
+      entity.appendChild(entityChild2);
+      document.body.appendChild(entity);
+
+      entity.addEventListener('loaded', function () {
+        var childEntities = entity.getChildEntities();
+        assert.equal(childEntities.length, 2);
+        assert.equal(childEntities.indexOf(animationChild), -1);
+        done();
+      });
     });
   });
 

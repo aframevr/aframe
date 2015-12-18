@@ -4,11 +4,16 @@ var utils = require('../utils/');
 
 /**
  * Base class for A-Frame that manages loading of objects.
+ *
+ * Nodes can be modified using mixins.
+ * Nodes emit a `loaded` event when they and their children have initialized. Which children
+ * to wait for can be customized using `loadChildrenFilter`.
  */
 module.exports = registerElement('a-node', {
   prototype: Object.create(HTMLElement.prototype, {
     createdCallback: {
       value: function () {
+        this.hasLoaded = false;
         this.isNode = true;
         this.mixinEls = [];
         this.mixinObservers = {};
@@ -18,14 +23,11 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins = this.getAttribute('mixin');
+
         this.sceneEl = document.querySelector('a-scene');
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
       }
-    },
-
-    detachedCallback: {
-      value: function () { /* no-op */ }
     },
 
     attributeChangedCallback: {
@@ -34,12 +36,48 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    detachedCallback: {
+      value: function () { /* no-op */ }
+    },
+
+    /**
+     * Wait for children to load, if any.
+     * Then emit `loaded` event and set `hasLoaded`.
+     */
     load: {
+      value: function (cb, childFilter) {
+        var children;
+        var childrenLoaded;
+        var self = this;
+
+        if (self.hasLoaded) { return; }
+
+        // Default to waiting for all nodes.
+        childFilter = childFilter || function (el) { return el.isNode; };
+
+        // Wait for children to load (if any), then load.
+        children = this.getChildren();
+        childrenLoaded = children.filter(childFilter).map(function (child) {
+          return new Promise(function waitForLoaded (resolve) {
+            child.addEventListener('loaded', resolve);
+          });
+        });
+
+        Promise.all(childrenLoaded).then(function emitLoaded () {
+          if (cb) { cb(); }
+          self.hasLoaded = true;
+          self.emit('loaded', {}, false);
+        });
+      }
+    },
+
+    getChildren: {
       value: function () {
-        // To prevent emmitting the loaded event more than once
-        if (this.hasLoaded) { return; }
-        this.hasLoaded = true;
-        this.emit('loaded', {}, false);
+        var children = [];
+        for (var i = 0; i < this.children.length; i++) {
+          children.push(this.children[i]);
+        }
+        return children;
       }
     },
 

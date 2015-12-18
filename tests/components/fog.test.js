@@ -6,15 +6,11 @@ suite('fog', function () {
   'use strict';
 
   setup(function () {
-    var el;
     this.entityEl = entityFactory();
-    el = this.el = this.entityEl.parentNode;
+    var el = this.el = this.entityEl.parentNode;
     this.updateMaterialsSpy = this.sinon.spy(AScene.prototype, 'updateMaterials');
 
-    // We force loading of the scene since the logic
-    // that fires the event is in attachedCallback
-    // which is stubbed to avoid running any WebGL code
-    el.pendingElements = 0;
+    // Stub scene load to avoid WebGL code.
     el.load();
     el.setAttribute('fog', '');
   });

@@ -72,7 +72,11 @@ module.exports.AAnimation = registerElement('a-animation', {
         var el = self.el = self.parentNode;
 
         if (el.isNode) {
-          init();
+          if (el.hasLoaded) {
+            init();
+          } else {
+            el.addEventListener('loaded', init.bind(self));
+          }
         } else {
           // To handle elements that are not yet `<a-entity>`s (e.g., templates).
           el.addEventListener('nodeready', init.bind(self));
