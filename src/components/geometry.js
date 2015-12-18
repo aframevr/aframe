@@ -141,7 +141,7 @@ function getGeometry (data, schema) {
         rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'sphere': {
-      return new THREE.SphereGeometry(
+      return new THREE.SphereBufferGeometry(
         data.radius, data.segmentsWidth, data.segmentsHeight);
     }
     case 'torus': {
