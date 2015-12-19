@@ -41,8 +41,8 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && budo src/index.js:build/aframe-core.js --debug --verbose --port 9001 --onupdate 'semistandard -v $(git ls-files \"*.js\") | snazzy' -- ./src/index.js -s 'aframe-core'",
-    "browserify": "browserify ./src/index.js -s 'aframe-core'",
+    "dev": "npm run build && node ./scripts/budo",
+    "browserify": "browserify ./src/index.js -s aframe-core",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe-core.js",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js",
     "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
