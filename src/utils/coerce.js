@@ -21,7 +21,7 @@ module.exports = function (value, schema, schemaAttr) {
       var attrSchema = schema[key];
       var schemaValue;
       if (!attrSchema) {
-        utils.warn('Unknown component attribute: ' + key);
+        utils.warn('Unknown component property: ' + key);
         return;
       }
       schemaValue = attrSchema.default;

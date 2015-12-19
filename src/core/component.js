@@ -32,7 +32,7 @@ var Component = module.exports.Component = function (el) {
   var attrs = el.getAttribute(this.name);
   this.el = el;
   this.data = {};
-  this.parseAttributes(attrs);
+  this.parseProperties(attrs);
   this.init();
   this.update();
 };
@@ -113,9 +113,9 @@ Component.prototype = {
    * component.
    * Does not update if data has not changed.
    */
-  updateAttributes: function (newData) {
+  updateProperties: function (newData) {
     var previousData = extendWithCheck({}, this.data);
-    this.parseAttributes(newData);
+    this.parseProperties(newData);
     // Don't update if properties haven't changed
     if (utils.deepEqual(previousData, this.data)) { return; }
     this.update(previousData);
@@ -138,7 +138,7 @@ Component.prototype = {
    * 3. Attribute data.
    * Finally coerce the data to the types of the defaults.
    */
-  parseAttributes: function (newData) {
+  parseProperties: function (newData) {
     var self = this;
     var data = {};
     var schema = self.schema;

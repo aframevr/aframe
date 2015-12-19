@@ -20,8 +20,8 @@ var isCoordinate = coordinates.isCoordinate;
  * @namespace <a-animation>
  * @param {string} attribute -
  *   Entity attribute to animate. Can be a component name (e.g., `position`) if the component
- *   is set via a single value. Or can be a dot-separated componentName.componentAttr to
- *   animate a single component attribute (e.g., `light.intensity`, `material.opacity`).
+ *   is set via a single value. Or can be a dot-separated componentName.componentProp to
+ *   animate a single component property (e.g., `light.intensity`, `material.opacity`).
  * @param {number|string} begin -
  *   Either milliseconds to delay or an event name to wait upon before starting animation.
  * @param {string} direction -
@@ -52,7 +52,7 @@ var isCoordinate = coordinates.isCoordinate;
  * @member {bool} isRunning - Whether animation is currently running.
  * @member {function} partialSetAttribute -
  *   setAttribute function that is agnostic to whether we are setting an attribute value
- *   or a component attribute value. The el and the attribute names are bundled with
+ *   or a component property value. The el and the attribute names are bundled with
  *   the function.
  * @member {object} tween - tween.js object.
  */
@@ -366,7 +366,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var attributeSplit = attribute.split('.');
   var coerceSchema;
   var component;
-  var componentAttrName;
+  var componentPropName;
   var componentName;
   var from = {};
   var partialSetAttribute;
@@ -392,7 +392,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
    */
   function getForComponentAttribute () {
     componentName = attributeSplit[0];
-    componentAttrName = attributeSplit[1];
+    componentPropName = attributeSplit[1];
     component = el.components[componentName];
     if (!component) {
       el.setAttribute(componentName, '');
@@ -400,14 +400,14 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     coerceSchema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttribute(componentName)[componentAttrName];
+      from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
     } else {
       from[attribute] = dataFrom;
     }
-    from[attribute] = coerce(from[attribute], coerceSchema, componentAttrName);
-    to[attribute] = coerce(dataTo, coerceSchema, componentAttrName);
+    from[attribute] = coerce(from[attribute], coerceSchema, componentPropName);
+    to[attribute] = coerce(dataTo, coerceSchema, componentPropName);
     partialSetAttribute = function (value) {
-      el.setAttribute(componentName, componentAttrName, value[attribute]);
+      el.setAttribute(componentName, componentPropName, value[attribute]);
     };
   }
 
