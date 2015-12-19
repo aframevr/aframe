@@ -1,7 +1,8 @@
 var aframeCore = require('aframe-core');
-var coreElements = require('./elements/');
-var pkg = require('./package');
-var registerTemplate = require('./elements/lib/register-template');
+
+var coreElements = require('../elements/');
+var pkg = require('../package');
+var registerTemplate = require('../elements/lib/register-template');
 
 module.exports = {
   // Main library.

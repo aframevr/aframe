@@ -2,11 +2,11 @@
   "name": "aframe",
   "version": "0.1.1",
   "description": "Building blocks for the VR Web",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run build && node ./scripts/budo",
-    "browserify": "browserify ./index.js -s 'AFRAME'",
+    "browserify": "browserify ./src/index.js -s 'AFRAME'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
     "dist": "mkdir -p dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
