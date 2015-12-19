@@ -20,7 +20,6 @@ cube.
 | height       | Height of video if defining a video texture.                                                                                                   | 360           |
 | metalness    | How metallic the material is from 0 to 1. Does not apply if `shader` is set to `flat`.                                                         | 0.5           |
 | opacity      | Extent of transparency. If the `transparent` attribute is not true, then the material will remain opaque and `opacity` will only affect color. | 1.0           |
-| reflectivity | How reflective the material is from 0 to 1 if the `envMap` attribute is set.                                                                   | 1.0           |
 | repeat       | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                                  | 1 1           |
 | roughness    | How rough the material is from 0 to 1. A rougher material will scatter reflected light in more directions than a smooth material. Does not apply if `shader` is set to `flat` | 0.5 |
 | transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                             | false         |
@@ -73,7 +72,7 @@ the `envMap` attribute takes a cubemap, six images put together to form a cube.
 The cubemap is wrapped around the entity and applied as a texture.
 
 If shader is set to `standard`, which it is by default, the clarity of the reflection
-depends on the `metalness`, `roughness`, and `reflectivity` attributes.
+depends on the `metalness`, and `roughness`, attributes.
 
 ```html
 <a-assets>
@@ -100,7 +99,7 @@ recent trend in rendering systems where materials behave realistically to
 lighting conditions. Appearance is a result of the interaction between the
 incoming light and the attributes of the material.
 
-To achieve realism, the diffuse color, metalness, reflectivity, and roughness
+To achieve realism, the diffuse color, metalness, and roughness
 attributes of the material must accurately be controled, often based on
 real-world material studies. Some people have compiled charts of realistic
 values for different kinds of materials that can be used as a starting point.

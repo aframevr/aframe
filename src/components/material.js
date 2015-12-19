@@ -26,7 +26,6 @@ var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
  * @param {number} height - Height to render texture.
  * @param {number} metalness - Parameter for physical/standard material.
  * @param {number} opacity - [0-1].
- * @param {number} reflectivity - Parameter for physical/standard material.
  * @param {string} repeat - X and Y value for size of texture repeating
  *         (in UV units).
  * @param {number} roughness - Parameter for physical/standard material.
@@ -49,7 +48,6 @@ module.exports.Component = registerComponent('material', {
     height: { default: 360 },
     metalness: { default: 0.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    reflectivity: { default: 1.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     repeat: { default: '' },
     roughness: { default: 0.5, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
     shader: { default: 'standard', oneOf: ['flat', 'standard'] },
@@ -320,7 +318,6 @@ function getMaterialData (data) {
   if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
     // Attach standard material parameters.
     materialData.metalness = data.metalness;
-    materialData.reflectivity = data.reflectivity;
     materialData.roughness = data.roughness;
   }
   return processMaterialData(materialData);
