@@ -56,6 +56,8 @@ module.exports.Component = registerComponent('geometry', {
       oneOf: ['', 'box', 'circle', 'cylinder', 'plane',
               'ring', 'sphere', 'torus', 'torusKnot'] },
     q: { default: 3, if: { primitive: ['torusKnot'] } },
+    phiLength: { default: 360, if: { primitive: ['sphere'] } },
+    phiStart: { default: 0, min: 0, if: { primitive: ['sphere'] } },
     radius: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['circle', 'cylinder', 'sphere', 'torus', 'torusKnot'] } },
     radiusBottom: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['cylinder'] } },
     radiusInner: { default: 0.8, min: 0, if: { primitive: ['ring'] } },
@@ -70,8 +72,9 @@ module.exports.Component = registerComponent('geometry', {
     segmentsTheta: { default: 8, min: 0, if: { primitive: ['ring'] } },
     segmentsTubular: { default: 8, min: 0, if: { primitive: ['torus', 'torusKnot'] } },
     segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] } },
-    thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring'] } },
-    thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring'] } },
+    thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring',
+                                                           'sphere'] } },
+    thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
     width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
@@ -141,8 +144,12 @@ function getGeometry (data, schema) {
         rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'sphere': {
+      // thetaLength's default for spheres is different from those of the other geometries.
+      // For now, we detect if thetaLength is exactly 360 to switch to a different default.
+      if (data.thetaLength === 360) { data.thetaLength = 180; }
       return new THREE.SphereBufferGeometry(
-        data.radius, data.segmentsWidth, data.segmentsHeight);
+        data.radius, data.segmentsWidth, data.segmentsHeight, rad(data.phiStart),
+        rad(data.phiLength), rad(data.thetaStart), rad(data.thetaLength));
     }
     case 'torus': {
       return new THREE.TorusGeometry(

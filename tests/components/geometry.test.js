@@ -127,13 +127,18 @@ suite('geometry', function () {
       var el = this.el;
       var geometry;
       el.setAttribute('geometry', {
-        primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3
+        primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
+        phiStart: 45, phiLength: 90, thetaStart: 45
       });
       geometry = el.object3D.geometry;
       assert.equal(geometry.type, 'SphereBufferGeometry');
       assert.equal(geometry.parameters.radius, 1);
       assert.equal(geometry.parameters.widthSegments, 2);
       assert.equal(geometry.parameters.heightSegments, 3);
+      assert.equal(geometry.parameters.phiStart, rad(45));
+      assert.equal(geometry.parameters.phiLength, rad(90));
+      assert.equal(geometry.parameters.thetaStart, rad(45));
+      assert.equal(geometry.parameters.thetaLength, rad(180));
     });
 
     test('creates torus geometry', function () {
