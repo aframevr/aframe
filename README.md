@@ -40,6 +40,14 @@ To start the local development server:
 
 And fire up __[http://localhost:9001](http://localhost:9001)__!
 
+To have the URL open after the server starts:
+
+    OPEN=1 npm start
+
+To enable live reloading (i.e., automatic page refreshing upon any file changes):
+
+    OPEN=1 LIVE=1 npm start
+
 ### Running Tests
 
 After [cloning and installing](#local-installation-and-development), to run tests:
