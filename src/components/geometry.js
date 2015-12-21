@@ -115,6 +115,10 @@ module.exports.Component = registerComponent('geometry', {
  * @returns {object} geometry
  */
 function getGeometry (data, schema) {
+  if (data.primitive === 'cube') {
+    warn('geometry.primitive="cube" should be "box"');
+  }
+
   switch (data.primitive) {
     case 'box': {
       return new THREE.BoxGeometry(data.width, data.height, data.depth);
