@@ -147,11 +147,13 @@ var AScene = module.exports = registerElement('a-scene', {
           var fsElement = document.fullscreenElement ||
                           document.mozFullScreenElement ||
                           document.webkitFullscreenElement;
-          // Lock to landscape orientation on mobile.
-          if (fsElement && this.isMobile) {
-            window.screen.orientation.lock('landscape');
-          } else {
-            window.screen.orientation.unlock();
+          if (window.screen.orientation) {
+            // Lock to landscape orientation on mobile.
+            if (fsElement && this.isMobile) {
+              window.screen.orientation.lock('landscape');
+            } else {
+              window.screen.orientation.unlock();
+            }
           }
           if (!fsElement) {
             this.showUI();
