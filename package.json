@@ -23,7 +23,7 @@
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
-    "budo": "^7.0.2",
+    "budo": "^7.1.0",
     "exorcist": "^0.4.0",
     "gh-pages": "^0.4.0",
     "html-minifier": "^0.8.0",

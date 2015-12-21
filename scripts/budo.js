@@ -13,22 +13,23 @@ function execCmd (cmd) {
 }
 
 var consts = {
-  LIVE: process.env.LIVE,  // To enable: `LIVE=1 npm start`
   NAME: 'AFRAME',
   ENTRY: './src/index.js',
   DIST: 'dist/aframe.js',
   BUILD: 'build/aframe.js',
-  WATCH: '{elements,examples,lib,src}/**/*',
+  WATCH: 'examples/**/*',
   PORT: 9000
 };
 
 var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
-  open: process.env.OPEN,  // To enable: `OPEN=1 npm start`
+  open: Boolean(process.env.OPEN),  // To enable: `OPEN=1 npm start`
+  live: Boolean(process.env.LIVE),  // To enable: `LIVE=1 npm start`
   stream: process.stdout,
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
+  // watchGlob: consts.WATCH,
   browserifyArgs: ['-s', consts.NAME],
   middleware: function (req, res, next) {
     // Route `dist/aframe.js` to `build/aframe.js` so we can
@@ -44,19 +45,6 @@ var opts = {
 };
 
 var app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
-
-app.watch(consts.WATCH)
-.on('update', function () {
+app.on('update', function () {
   execCmd('semistandard -v $(git ls-files "*.js") | snazzy');
 });
-
-if (consts.LIVE) {
-  app.live()
-  .on('watch', function (eventType, fn) {
-    if (eventType !== 'change' && eventType !== 'add') { return; }
-    app.reload(fn);
-  })
-  .on('pending', function () {
-    app.reload(opts.output);
-  });
-}
