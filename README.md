@@ -1,11 +1,18 @@
-# aframe
-
-__Building blocks for the VR Web.__
-
-To learn more, head over to the [A-Frame site](https://aframe.io/) for [examples](https://aframe.io/examples/), [docs](https://aframe.io/docs/), and [FAQ](https://aframe.io/faq/).
+# A-Frame
 
 > For the core library, check out [A-Frame Core](https://github.com/aframevr/aframe-core/).
 
+__Building blocks for the VR Web.__
+
+- **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
+- **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
+- **[Entity-Component System](https://aframe.io/docs/core/)**: Use the entity-component system for better composability and flexibility.
+
+Find out more:
+
+- [Guide](https://aframe.io/docs/guide/)
+- [Docs](https://aframe.io/docs/core/)
+- [Examples](https://aframe.io/examples/)
 
 ## Usage
 
@@ -36,7 +43,7 @@ And in your Browserify/Webpack modules, simply require the module:
     require('aframe')
 
 
-## Local installation and development
+## Local Installation and Development
 
 Alternatively, you can clone this repository to work locally on this project and explore the examples.
 
@@ -72,36 +79,7 @@ And to disable:
 
 Ensure you have [cloned the repo and installed the dependencies](#local-installation-and-development).
 
-### Developing alongside the other aframe packages (e.g., [`aframe-core`](https://github.com/aframevr/aframe-core/))
-
-If you want to make changes to the [__`aframe-core`__](https://github.com/aframevr/aframe-core/) library and test with `aframe`, you'll need to run these commands to link things up correctly.
-
-#### Linking
-
-When you are in the directory of your __`aframe-core`__ repo checkout:
-
-    npm link
-
-When you are in the directory of your __`aframe`__ repo checkout:
-
-    npm link aframe-core
-
-Now when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).
-
-#### Unlinking
-
-You'll need to `npm unlink` when you are done testing things and want to actually use the npm-published versions, not your versions that are locally linked.
-
-From your __`aframe-core`__ directory:
-
-    npm unlink
-
-From your __`aframe`__ directory:
-
-    npm unlink aframe-core
-
-
-### Releasing and publishing a new version to [npm](https://www.npmjs.com/)
+### Publishing to [npm](https://www.npmjs.com/)
 
 To increment the preminor version of the package (e.g., `0.1.19` to `0.1.20`) and create a git tag (e.g., `v0.1.20`):
 
@@ -113,14 +91,14 @@ Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1
 
     npm run release:push
 
-## Updating `dist` files
+## Updating `dist` Files
 
     npm run dist
     git commit -am 'Bump dist'
 
 ## Publishing to GitHub Pages
 
-To publish to __https://aframevr.github.io/aframecore/__:
+To publish to __https://aframevr.github.io/aframe/__:
 
     npm run ghpages
 
