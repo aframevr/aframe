@@ -29,7 +29,7 @@ var opts = {
   stream: process.stdout,
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
-  // watchGlob: consts.WATCH,
+  watchGlob: consts.WATCH,
   browserifyArgs: ['-s', consts.NAME],
   middleware: function (req, res, next) {
     // Route `dist/aframe.js` to `build/aframe.js` so we can
