@@ -21,8 +21,6 @@ var consts = {
   PORT: 9000
 };
 
-console.log(typeof process.env.LIVE)
-
 var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
