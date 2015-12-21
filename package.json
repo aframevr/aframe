@@ -45,7 +45,7 @@
     "browserify": "browserify ./src/index.js -s aframe-core",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe-core.js",
     "dist": "rm -rf dist/ && mkdir -p dist/ && npm run dist:js",
-    "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
+    "dist:js": "npm run browserify -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,style,index.html} gh-pages/. && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
