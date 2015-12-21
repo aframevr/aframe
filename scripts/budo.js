@@ -17,7 +17,7 @@ var consts = {
   ENTRY: './src/index.js',
   DIST: 'dist/aframe.js',
   BUILD: 'build/aframe.js',
-  WATCH: 'examples/**/*',
+  WATCH: 'examples/**/*', // Additional files to watch for LiveReload
   PORT: 9000
 };
 
