@@ -13,6 +13,7 @@ function execCmd (cmd) {
 }
 
 var consts = {
+  LIVE: process.env.LIVE,  // To enable: `LIVE=1 npm start`
   NAME: 'AFRAME',
   ENTRY: './src/index.js',
   DIST: 'dist/aframe.js',
@@ -25,7 +26,6 @@ var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
   open: process.env.OPEN,  // To enable: `OPEN=1 npm start`
-  live: process.env.LIVE,  // To enable: `LIVE=1 npm start`
   stream: process.stdout,
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
@@ -50,7 +50,7 @@ app.watch(consts.WATCH)
   execCmd('semistandard -v $(git ls-files "*.js") | snazzy');
 });
 
-if (opts.live) {
+if (consts.LIVE) {
   app.live()
   .on('watch', function (eventType, fn) {
     if (eventType !== 'change' && eventType !== 'add') { return; }

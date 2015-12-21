@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "npm run dev",
-    "dev": "npm run build && node ./scripts/budo",
+    "dev": "node ./scripts/budo",
     "browserify": "browserify ./src/index.js -s 'AFRAME'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
     "dist": "mkdir -p dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
