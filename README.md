@@ -54,15 +54,15 @@ To start the local development server:
 
     npm start
 
-And fire up __[http://localhost:9000](http://localhost:9000)__!
+And fire up __[http://localhost:9000](http://localhost:9000)__! Saving local JS and HTML files will reload the page.
 
 To have the URL open after the server starts:
 
     OPEN=1 npm start
 
-To enable live reloading (i.e., automatic page refreshing upon any file changes):
+To disable live reloading (i.e., automatic page refreshing upon any file changes):
 
-    OPEN=1 LIVE=1 npm start
+    OPEN=1 LIVE=0 npm start
 
 ## Browser console logging
 

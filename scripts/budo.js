@@ -17,7 +17,7 @@ var consts = {
   ENTRY: './src/index.js',
   DIST: 'dist/aframe.js',
   BUILD: 'build/aframe.js',
-  WATCH: 'examples/**/*', // Additional files to watch for LiveReload
+  WATCH: 'examples/**/*',  // Additional files to watch for LiveReload
   PORT: 9000
 };
 
@@ -25,7 +25,9 @@ var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
   open: Boolean(process.env.OPEN),  // To enable: `OPEN=1 npm start`
-  live: Boolean(process.env.LIVE),  // To enable: `LIVE=1 npm start`
+  live: 'LIVE' in process.env  // To disable: `LIVE=1 npm start`
+    ? Boolean(process.env.LIVE)
+    : true,
   stream: process.stdout,
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
