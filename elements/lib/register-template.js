@@ -15,6 +15,17 @@ var COMPONENT_BLACKLIST = utils.extend({}, AComponents);
 
 registerElement('a-root', {prototype: Object.create(AEntity.prototype)});
 
+// We use counters so we can generate unique `id`s for each template instance.
+// Code will be simplified and this can be removed when "primitives" land.
+// Fixes https://github.com/aframevr/aframe/issues/308
+var counts = {};
+function countIncrement (tagName) {
+  if (!(tagName in counts)) {
+    counts[tagName] = 0;
+  }
+  return counts[tagName]++;
+}
+
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
 
@@ -99,6 +110,10 @@ module.exports = function (tagName) {
               if (!this.root) {
                 this.root = document.createElement('a-root');
                 this.appendChild(this.root);
+              }
+
+              if (firstTime) {
+                templateAttrs.__counter__ = countIncrement(tagNameLower).toString();
               }
 
               var newHTML = utils.format(template.innerHTML, templateAttrs);

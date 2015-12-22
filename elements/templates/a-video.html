@@ -7,7 +7,7 @@
           autoplay="true"
           loop="true"
           crossOrigin="anonymous">
-  <video id="video"
+  <video id="a-video-${__counter__}"
          src="${src}"
          width="${width}"
          height="${height}"
@@ -20,6 +20,6 @@
                       height: ${height};
                       width: ${width};
                       translate: ${translate}"
-            material="shader: flat; src: #video">
+            material="shader: flat; src: #a-video_${__counter__}">
   </a-entity>
 </template>
