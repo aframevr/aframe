@@ -322,9 +322,6 @@ var proto = Object.create(ANode.prototype, {
           delete this.components[name];
           return;
         }
-        if (typeof newData === 'string') {
-          newData = component.parse(newData);
-        }
         // Component already initialized. Update component.
         component.updateProperties(newData);
         return;
@@ -447,6 +444,7 @@ var proto = Object.create(ANode.prototype, {
       value = value === undefined ? '' : value;
       var valueStr = value;
       var oldValue;
+
       if (component) {
         if (typeof value === 'string' && componentPropValue !== undefined) {
           // Update currently-defined component data with the new property value.

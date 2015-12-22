@@ -2,7 +2,6 @@
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
 
-module.exports.coerce = require('./coerce');
 module.exports.coordinates = require('./coordinates');
 
 /**
