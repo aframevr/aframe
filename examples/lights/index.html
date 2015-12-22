@@ -64,7 +64,7 @@
       obj.setAttribute('geometry', {
         primitive: 'torusKnot',
         radius: Math.random() * 10,
-        radiusTubular: 2,
+        radiusTubular: Math.random(),
         p: Math.round(Math.random() * 10),
         q: Math.round(Math.random() * 10)
       });
@@ -74,7 +74,7 @@
       obj.setAttribute('position', {
         x: getRandCoord(),
         y: getRandCoord(),
-        z: getRandCoord()
+        z: getRandCoord() + 25
       });
       scene.appendChild(obj);
     }
