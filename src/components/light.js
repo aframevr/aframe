@@ -53,21 +53,10 @@ module.exports.Component = registerComponent('light', {
   update: function (oldData) {
     var data = this.data;
     var diffData = diff(data, oldData || {});
-    var el = this.el;
     var light = this.light;
 
     // Existing light.
-    if (light) {
-      // Light type has changed. Recreate light.
-      if ('type' in diffData) {
-        var newLight = getLight(data);
-        if (newLight) {
-          el.object3D.remove(light);
-          el.object3D.add(newLight);
-          this.light = newLight;
-        }
-        return;
-      }
+    if (light && !('type' in diffData)) {
       // Light type has not changed. Update light.
       Object.keys(diffData).forEach(function (key) {
         var value = data[key];
@@ -79,9 +68,21 @@ module.exports.Component = registerComponent('light', {
       return;
     }
 
-    // No light yet. Create and add light.
-    this.light = getLight(data);
-    if (this.light) {
+    // No light yet or light type has changed. Create and add light.
+    this.setLight(this.data);
+  },
+
+  setLight: function (data) {
+    var el = this.el;
+
+    var newLight = getLight(data);
+    if (newLight) {
+      if (this.light) {
+        el.object3D.remove(this.light);
+      }
+
+      this.light = newLight;
+      this.light.el = el;
       el.object3D.add(this.light);
     }
   },
