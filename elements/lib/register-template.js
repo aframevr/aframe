@@ -27,6 +27,7 @@ module.exports = function (tagName) {
             value: function () {
               // We emit an event so `<a-entity>` knows when we've been
               // registered and adds our children as `object3D`s.
+              this.emit('loaded');
               this.emit('nodeready');
               this.rerender(false, true);
             }
