@@ -86,4 +86,23 @@ suite('light', function () {
       assert.equal(el.object3D.children.length, 0);
     });
   });
+
+  suite('setLight', function () {
+    test('set a light with incorrect data', function () {
+      var el = this.el;
+      var oldLight = this.el.components.light.light;
+
+      el.components.light.setLight({type: 'nonvalidtype'});
+      assert.equal(oldLight, el.components.light.light);
+    });
+
+    test('set a light with correct data', function () {
+      var el = this.el;
+      var oldLight = this.el.components.light.light;
+
+      el.components.light.setLight({type: 'spot'});
+      assert.notEqual(oldLight, el.components.light.light);
+      assert.equal(oldLight.parent, null);
+    });
+  });
 });
