@@ -54,7 +54,18 @@ To start the local development server:
 
     npm start
 
-And fire up __[http://localhost:9000](http://localhost:9000)__!
+And fire up __[http://localhost:9000](http://localhost:9000)__! Saving local JS and HTML files in `examples/`, `elements/` and so forth will rebuild the bundle and reload the page.
+
+## Browser console logging
+
+If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
+
+    localStorage.logs = 1
+
+And to disable:
+
+    localStorage.logs = 0
+
 
 ## Maintainers
 
