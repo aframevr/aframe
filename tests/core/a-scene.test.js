@@ -47,6 +47,26 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('setActiveCamera', function () {
+    test('sets a new active THREE camera', function () {
+      var camera = new THREE.PerspectiveCamera(45, 2, 1, 1000);
+      this.el.setActiveCamera(camera);
+      assert.equal(this.el.camera, camera);
+    });
+
+    test('sets a new active THREE camera', function (done) {
+      var self = this;
+      var cameraEl = document.createElement('a-entity');
+      cameraEl.setAttribute('camera', '');
+      this.el.appendChild(cameraEl);
+      cameraEl.addEventListener('loaded', function() {
+        self.el.setActiveCamera(cameraEl);
+        assert.equal(self.el.camera, cameraEl.components.camera.camera);
+        done();
+      })
+    });
+  });
+
   suite('setupCanvas', function () {
     test('adds canvas', function (done) {
       assert.notOk(document.querySelector('canvas'));
@@ -105,10 +125,6 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   });
 
   suite('attachedCallback', function () {
-    test('sets up camera', function () {
-      assert.equal(document.querySelectorAll('[camera]').length, 1);
-    });
-
     test('sets up meta tags', function () {
       assert.ok(document.querySelector('meta[name="viewport"]'));
     });

@@ -27,10 +27,7 @@ var isMobile = utils.isMobile();
  * @member {number} animationFrameID
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
- * @member {object} cameraEl - Set the entity with a camera component.
  * @member {object} canvas
- * @member {bool} defaultCameraEnabled - false if user has not added camera.
- * @member {bool} defaultLightsEnabled - false if user has not added lights.
  * @member {Element} enterVREl
  * @member {bool} insideIframe
  * @member {bool} insideLoader
@@ -50,7 +47,6 @@ var AScene = module.exports = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.behaviors = [];
-        this.defaultCameraEnabled = true;
         this.defaultLightsEnabled = true;
         this.enterVREl = null;
         this.insideIframe = window.top !== window.self;
@@ -77,7 +73,6 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setupCanvas();
         this.setupKeyboardShortcuts();
         this.setupRenderer();
-        this.setupDefaultCamera();
         this.setupDefaultLights();
         this.attachFullscreenListeners();
         this.attachOrientationListeners();
@@ -263,22 +258,34 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Notify scene that camera has been added and to remove the default.
+     * Sets a camera to be used by the renderer and removes the default one
      *
-e    * @param {object} el - element holding the camera component.
+     * @param {object} el - object holding an entity with a camera component or THREE camera.
      */
-    registerCamera: {
+    setActiveCamera: {
       value: function (el) {
+        var camera;
+        var cameraEl;
         var defaultCamera;
-        if (this.defaultCameraEnabled && !el.parentNode.hasAttribute(DEFAULT_CAMERA_ATTR)) {
-          // User added a camera, remove default camera through DOM.
-          defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-          if (defaultCamera) {
-            this.removeChild(defaultCamera);
-          }
-          this.cameraEl = el;
-          this.defaultCameraEnabled = false;
-        }
+        var defaultCameraEl;
+        // el is an entity with a camera component
+        if (el.components && el.components.camera) { 
+          camera = el.components.camera.camera; 
+          cameraEl = el;
+        } else if (el instanceof THREE.Camera) {
+          camera = el;
+          cameraEl = camera.el;
+        } else { return; }
+        this.camera = camera;
+        if (!cameraEl) { return; }
+        // Removes default camera
+        defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+        defaultCameraEl = defaultCamera && defaultCamera.querySelector('[camera]');
+        // Return if active camera is the default one
+        if (!defaultCamera || !defaultCameraEl ||
+             defaultCameraEl === cameraEl) { return; }
+        // User added a camera, remove default camera through DOM.
+        this.removeChild(defaultCamera);
       }
     },
 
@@ -334,9 +341,9 @@ e    * @param {object} el - element holding the camera component.
 
     resizeCanvas: {
       value: function () {
+        var camera = this.camera;
         // It's possible that the camera is not injected yet.
-        if (!this.cameraEl) { return; }
-        var camera = this.cameraEl.components.camera.camera;
+        if (!camera) { return; }
         var size = this.getCanvasSize();
         // Updates camera
         camera.aspect = size.width / size.height;
@@ -414,11 +421,11 @@ e    * @param {object} el - element holding the camera component.
      * entities at the origin (0, 0, 0) are well-centered.
      */
     setupDefaultCamera: {
-      value: function () {
+      value: function (loaded) {
         var cameraWrapperEl;
         var defaultCamera;
 
-        if (this.cameraEl) { return; }
+        if (this.camera) { return; }
 
         // DOM calls to create camera.
         cameraWrapperEl = document.createElement('a-entity');
@@ -428,8 +435,8 @@ e    * @param {object} el - element holding the camera component.
         defaultCamera.setAttribute('camera');
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
-        this.cameraEl = defaultCamera;
         cameraWrapperEl.appendChild(defaultCamera);
+        cameraWrapperEl.addEventListener('loaded', loaded);
         this.appendChild(cameraWrapperEl);
       }
     },
@@ -591,17 +598,26 @@ e    * @param {object} el - element holding the camera component.
         if (this.renderStarted) { return; }
 
         this.addEventListener('loaded', function () {
+          var self = this;
           if (this.renderStarted) { return; }
 
           this.setupLoader();
           this.resizeCanvas();
 
-          // Kick off render loop.
-          this.render();
-          this.renderStarted = true;
-          this.emit('renderstart');
+          if (!this.camera) { 
+            this.setupDefaultCamera(startRender);
+            return;
+          }
 
-          this.checkUrlParameters();
+          startRender();
+
+          function startRender() {
+            // Kick off render loop.
+            self.render();
+            self.renderStarted = true;
+            self.emit('renderstart');
+            self.checkUrlParameters();
+          }
         });
 
         AEntity.prototype.load.call(this);
@@ -658,7 +674,7 @@ e    * @param {object} el - element holding the camera component.
      */
     render: {
       value: function (t) {
-        var camera = this.cameraEl.components.camera.camera;
+        var camera = this.camera;
         var stats = this.stats;
 
         if (stats) {

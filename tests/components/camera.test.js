@@ -5,10 +5,15 @@ suite('camera', function () {
   'use strict';
 
   setup(function (done) {
+    var self = this;
     var el = this.el = entityFactory();
     el.setAttribute('camera', '');
-    if (el.hasLoaded) { done(); }
+    if (el.hasLoaded) {
+      this.camera = el.components.camera.camera; 
+      done(); 
+    }
     el.addEventListener('loaded', function () {
+      self.camera = el.components.camera.camera;
       done();
     });
   });
@@ -18,8 +23,8 @@ suite('camera', function () {
       assert.equal(this.el.object3D.children[0].type, 'PerspectiveCamera');
     });
 
-    test('sets sceneEl.cameraEl', function () {
-      assert.equal(this.el.sceneEl.cameraEl, this.el);
+    test('sets sceneEl.camera', function () {
+      assert.equal(this.el.sceneEl.camera, this.camera);
     });
   });
 

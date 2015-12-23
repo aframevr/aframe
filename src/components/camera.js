@@ -17,7 +17,7 @@ module.exports.Component = registerComponent('camera', {
     var el = this.el;
     camera.el = el;
     el.object3D.add(camera);
-    el.sceneEl.registerCamera(el);
+    el.sceneEl.setActiveCamera(camera);
   },
 
   /**
