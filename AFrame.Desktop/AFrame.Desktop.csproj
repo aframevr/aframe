@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DC67C132-6DD8-4D8C-8E62-6706D590CE43}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AFrame.Desktop</RootNamespace>
+    <AssemblyName>AFrame.Desktop</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\DesktopControl.cs" />
+    <Compile Include="Controls\Helpers.cs" />
+    <Compile Include="Controls\Win\WinCalendar.cs" />
+    <Compile Include="Controls\Win\WinCell.cs" />
+    <Compile Include="Controls\Win\WinCheckBox.cs" />
+    <Compile Include="Controls\Win\WinCheckBoxTreeItem.cs" />
+    <Compile Include="Controls\Win\WinMenuItem.cs" />
+    <Compile Include="Controls\Win\WinPane.cs" />
+    <Compile Include="Controls\Win\WinProgressBar.cs" />
+    <Compile Include="Controls\Win\WinTree.cs" />
+    <Compile Include="Controls\Win\WinToolTip.cs" />
+    <Compile Include="Controls\Win\WinToolBar.cs" />
+    <Compile Include="Controls\Win\WinTabPage.cs" />
+    <Compile Include="Controls\Win\WinTabList.cs" />
+    <Compile Include="Controls\Win\WinTable.cs" />
+    <Compile Include="Controls\Win\WinStatusBar.cs" />
+    <Compile Include="Controls\Win\WinSplitButton.cs" />
+    <Compile Include="Controls\Win\WinSpinner.cs" />
+    <Compile Include="Controls\Win\WinSlider.cs" />
+    <Compile Include="Controls\Win\WinSeparator.cs" />
+    <Compile Include="Controls\Win\WinScrollBar.cs" />
+    <Compile Include="Controls\Win\WinRowHeader.cs" />
+    <Compile Include="Controls\Win\WinRow.cs" />
+    <Compile Include="Controls\Win\WinRadioButton.cs" />
+    <Compile Include="Controls\Win\WinTitleBar.cs" />
+    <Compile Include="Controls\Win\WinTreeItem.cs" />
+    <Compile Include="Controls\Win\WinClient.cs" />
+    <Compile Include="Controls\Win\WinColumnHeader.cs" />
+    <Compile Include="Controls\Win\WinComboBox.cs" />
+    <Compile Include="Controls\Win\WinCustom.cs" />
+    <Compile Include="Controls\Win\WinDateTimePicker.cs" />
+    <Compile Include="Controls\Win\WinEdit.cs" />
+    <Compile Include="Controls\Win\WinGroup.cs" />
+    <Compile Include="Controls\Win\WinHyperlink.cs" />
+    <Compile Include="Controls\Win\WinList.cs" />
+    <Compile Include="Controls\Win\WinListItem.cs" />
+    <Compile Include="Controls\Win\WinMenu.cs" />
+    <Compile Include="Controls\Win\WinMenuBar.cs" />
+    <Compile Include="Controls\Win\WinText.cs" />
+    <Compile Include="Controls\Win\WinWindow.cs" />
+    <Compile Include="Controls\Win\WinButton.cs" />
+    <Compile Include="Controls\Win\WinControl.cs" />
+    <Compile Include="Controls\Wpf\WpfCheckbox.cs" />
+    <Compile Include="Controls\Wpf\WpfComboBox.cs" />
+    <Compile Include="Controls\Wpf\WpfCustom.cs" />
+    <Compile Include="Controls\Wpf\WpfDatePicker.cs" />
+    <Compile Include="Controls\Wpf\WpfEdit.cs" />
+    <Compile Include="Controls\Wpf\WpfExpander.cs" />
+    <Compile Include="Controls\Wpf\WpfGroup.cs" />
+    <Compile Include="Controls\Wpf\WpfHyperlink.cs" />
+    <Compile Include="Controls\Wpf\WpfImage.cs" />
+    <Compile Include="Controls\Wpf\WpfListItem.cs" />
+    <Compile Include="Controls\Wpf\WpfMenu.cs" />
+    <Compile Include="Controls\Wpf\WpfMenuItem.cs" />
+    <Compile Include="Controls\Wpf\WpfPane.cs" />
+    <Compile Include="Controls\Wpf\WpfProgressBar.cs" />
+    <Compile Include="Controls\Wpf\WpfRadioButton.cs" />
+    <Compile Include="Controls\Wpf\WpfScrollBar.cs" />
+    <Compile Include="Controls\Wpf\WpfSeparator.cs" />
+    <Compile Include="Controls\Wpf\WpfSlider.cs" />
+    <Compile Include="Controls\Wpf\WpfStatusBar.cs" />
+    <Compile Include="Controls\Wpf\WpfTable.cs" />
+    <Compile Include="Controls\Wpf\WpfTabList.cs" />
+    <Compile Include="Controls\Wpf\WpfTabPage.cs" />
+    <Compile Include="Controls\Wpf\WpfToolBar.cs" />
+    <Compile Include="Controls\Wpf\WpfToolTip.cs" />
+    <Compile Include="Controls\Wpf\WpfTree.cs" />
+    <Compile Include="Controls\Wpf\WpfTreeItem.cs" />
+    <Compile Include="Controls\Wpf\WpfToggleButton.cs" />
+    <Compile Include="Controls\Wpf\WpfTitleBar.cs" />
+    <Compile Include="Controls\Wpf\WpfList.cs" />
+    <Compile Include="Controls\Wpf\WpfCell.cs" />
+    <Compile Include="Controls\Wpf\WpfRow.cs" />
+    <Compile Include="Controls\Wpf\WpfCalendar.cs" />
+    <Compile Include="Controls\Wpf\WpfButton.cs" />
+    <Compile Include="Controls\Wpf\WpfText.cs" />
+    <Compile Include="Controls\Wpf\WpfWindow.cs" />
+    <Compile Include="Controls\Wpf\WpfControl.cs" />
+    <Compile Include="DesktopContext.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AFrame.Desktop.nuspec" />
+    <Content Include="UIAVerify.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AFrame.Core\AFrame.Core.csproj">
+      <Project>{307371e1-1cc7-4e2c-881e-5a99aea7ff33}</Project>
+      <Name>AFrame.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' Or '$(VisualStudioVersion)' == '11.0') And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="UIAutomationTypes" />
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+</head>
+<body>
+
+    <span class="always">Always Here</span>
+
+    <span class="content-change">Standard text Content</span>
+
+    <div id="insert-stuff-here"></div>
+
+    <div id="removed-stuff">
+        <b class='removed-me'>this will get removed via javascript after 10 seconds</b>
+    </div>
+
+    <div class="races">
+        <div class="header">
+            <span>Todays Races</span>
+        </div>
+        <div class="race racex">
+            <div class="items">
+                <div class="other-item">Race1 Fake1</div>
+                <div class="other-item">Race1 Fake2</div>
+                <div class="item">Race1 Item1</div>
+                <div class="item">Race1 Item2</div>
+                <div class="item">Race1 Item3</div>
+                <div class="item">Race1 Item4</div>
+            </div>
+        </div>
+        <div class="race racey">
+            <div class="items">
+                <div class="other-item">Race2 Fake1</div>
+                <div class="other-item">Race2 Fake2</div>
+                <div class="item">Race2 Item1</div>
+                <div class="item">Race2 Item2</div>
+                <div class="item">Race2 Item3</div>
+                <div class="item">Race2 Item4</div>
+                <div class="item">Race2 Item5</div>
+                <div class="item">Race2 Item6</div>
+            </div>
+        </div>
+        <div class="race">
+            <div class="items">
+                <div class="other-item">Race3 Fake1</div>
+                <div class="other-item">Race3 Fake2</div>
+                <div class="item">Race3 Item1</div>
+                <div class="item">Race3 Item2</div>
+                <div class="item">Race3 Item3</div>
+                <div class="item">Race3 Item4</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="find-or">
+        <div class="find-1">Find or 1</div>
+    </div>
+
+    <div id="find-or-multiple">
+        <div class="find-1">Find or 1</div>
+        <div class="find-2">Find or 2</div>
+    </div>
+
+    <div id="highlight-stale-reference">
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+        <span class="stale-ref">I will go stale</span>
+    </div>
+
+    <iframe id="testiframe" src="iframe.html" name="testiframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" height="100" width="200">
+    
+        <!--iframe.html gets injected here-->
+    
+    </iframe>
+
+    <script>
+        $(function () {
+            setTimeout(function () {
+
+                $("#insert-stuff-here")
+                    .html("<b class='i-got-added'>this got added via javascript after 10 seconds</b>");
+
+                $("#removed-stuff .removed-me").remove();
+
+                //removes second race.
+                $(".race:eq(1)").remove();
+
+                $(".content-change").html("Standard changed content");
+
+                $("#find-or").html("<div class='find-2'>Find or 2</div>");
+
+            }, 10000);
+
+            setTimeout(function () {
+                //Stale references stuff
+                $("#highlight-stale-reference .stale-ref").remove();
+                $("#highlight-stale-reference").html("<span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span> <span class='stale-ref'>I will go stale</span>");
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

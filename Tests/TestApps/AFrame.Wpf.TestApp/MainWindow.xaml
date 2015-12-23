@@ -1,0 +1,10 @@
+﻿<Window x:Class="Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" >
+    <Grid>
+        <Button x:Name="ClicksBtn" Content="Update Clicks" HorizontalAlignment="Left" Margin="12,12,0,0" VerticalAlignment="Top" Width="94" Click="ClicksBtn_Click" />
+        <Label x:Name="ClicksLbl" Content="0" HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>

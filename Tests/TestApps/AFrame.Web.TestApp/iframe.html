@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+
+    <div>
+        <input id="inner-frame-textbox" type="text" name="name" value="text box in iframe" style="margin-bottom: 5px"/>
+    </div>
+	
+	<iframe id="testNestedIframe" src="nestedIframe.html" name="test-nested-iframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms" height="50" width="165">
+    
+        <!--nestedIframe.html gets injected here-->
+    
+    </iframe>
+
+</body>
+</html>
