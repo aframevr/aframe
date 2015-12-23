@@ -1,63 +1,125 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/2ti8tnlabd7782fg/branch/master?svg=true)](https://ci.appveyor.com/project/Thwaitesy/aframe/branch/master)
+# aframe
 
-Documentation
-==========================================================================
-[Please view the documentation website (https://aframe.github.io)](https://aframe.github.io)
+__Building blocks for the VR Web.__
 
-Changelog
-==========================================================================
-*0.7.1*
-- Public release
-- No need for constructors if using "CreateControl" everywhere.
-- Fixed parent scoping for desktop & web
-- More tests for the desktop project
+To learn more, head over to the [A-Frame site](https://aframe.io/) for [examples](https://aframe.io/examples/), [docs](https://aframe.io/docs/), and [FAQ](https://aframe.io/faq/).
 
-*0.6.4*
-- (Web) Added support to turn off jQuery check on each request (When using saucelabs/browserstack it can be an additional overhead)
+> For the core library, check out [A-Frame Core](https://github.com/aframevr/aframe-core/).
 
-*0.6.0*
-- [BREAKING CHANGE] Updated iframe functionality to use jQuery selectors instead of just names and id's. See test projects for examples.
 
-*0.5.4*
-- Fix for Selenium StaleElementReferenceException. Will retry once if caught.
+## Usage
 
-*0.5.0*
-- Added 'AlwaysSearch' for all controls or just the individual ones. Should fix stale control issues.  
+### CodePen
 
-*0.4.26*
-- Added launch overload for desktop to allow for System.Diagnostics.ProcessStartInfo 
+If you want to get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/BjygdO?editors=100)!
 
-*0.4.0*
-- [BREAKING CHANGE] Changed name from MainFrame to AFrame.
-- Added preliminary support for desktop automation (WPF, WIN FORMS)
+### Downloads
 
-*0.3.19*
-- [BREAKING CHANGE] Changed MainFrame namespace from MainFrame to MainFrame.Core (NuGet package id has changed also - so please remove and reinstall nuget packages)
-- Relocated files in project
-- Added sample for MainFrame.Web using nuget's website
+If you would like to embed this library in your project, simply include this file:
 
-*0.2.0*
-- Added support for iFrames.
-- Refactored extensively.
+* [`aframe.min.js`](https://aframe.io/releases/latest/aframe.min.js)
 
-*0.1.1*
-- Updated Playback to include a properties / brain to hold information.
-- Added absolute selector debugging 
+Or if you'd prefer the unminified version for local development (with source maps):
 
-*0.1.0*
-- Added support for multiple selectors
-- Added implicit search timeouts
+* [`aframe.js`](https://aframe.io/releases/latest/aframe.js)
 
-*0.0.2*
-- Added jQuery Selectors for web component
+__Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
-*0.0.1*
-- Initial release
+### npm
 
-Contributors
-==========================================================================
-[Sam Thwaites](https://github.com/Thwaitesy)   
+First install from npm:
 
-Licence
-==========================================================================
-See [LICENCE](https://github.com/Thwaitesy/AFrame/blob/master/LICENCE)
+    npm install aframe
+
+And in your Browserify/Webpack modules, simply require the module:
+
+    require('aframe')
+
+
+## Local installation and development
+
+Alternatively, you can clone this repository to work locally on this project and explore the examples.
+
+    git clone git@github.com:aframevr/aframe.git
+    cd aframe && npm install
+
+To start the local development server:
+
+    npm start
+
+And fire up __[http://localhost:9000](http://localhost:9000)__!
+
+## Browser console logging
+
+If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
+
+    localStorage.logs = 1
+
+And to disable:
+
+    localStorage.logs = 0
+
+
+## Maintainers
+
+Ensure you have [cloned the repo and installed the dependencies](#local-installation-and-development).
+
+### Developing alongside the other aframe packages (e.g., [`aframe-core`](https://github.com/aframevr/aframe-core/))
+
+If you want to make changes to the [__`aframe-core`__](https://github.com/aframevr/aframe-core/) library and test with `aframe`, you'll need to run these commands to link things up correctly.
+
+#### Linking
+
+When you are in the directory of your __`aframe-core`__ repo checkout:
+
+    npm link
+
+When you are in the directory of your __`aframe`__ repo checkout:
+
+    npm link aframe-core
+
+Now when you make changes to `aframe-core`, those changes will get reflected when a bundle gets built (the page is refreshed or a `aframe` file is changed), so you can test the `aframe-core` dependency against `aframe` without having to manually push things to `npm` for testing (which is a big no no!).
+
+#### Unlinking
+
+You'll need to `npm unlink` when you are done testing things and want to actually use the npm-published versions, not your versions that are locally linked.
+
+From your __`aframe-core`__ directory:
+
+    npm unlink
+
+From your __`aframe`__ directory:
+
+    npm unlink aframe-core
+
+
+### Releasing and publishing a new version to [npm](https://www.npmjs.com/)
+
+To increment the preminor version of the package (e.g., `0.1.19` to `0.1.20`) and create a git tag (e.g., `v0.1.20`):
+
+    npm run release:bump
+
+___NOTE:___ npm versions __cannot__ be unpublished.
+
+Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1.20`) and to the new tag to GitHub (e.g., `v0.1.20`):
+
+    npm run release:push
+
+## Updating `dist` files
+
+    npm run dist
+    git commit -am 'Bump dist'
+
+## Publishing to GitHub Pages
+
+To publish to __https://aframevr.github.io/aframecore/__:
+
+    npm run ghpages
+
+To publish to __https://your_username.github.io/aframe/__:
+
+    npm run ghpages your_username
+
+## License
+
+This program is free software and is distributed under an [MIT License](LICENSE).
