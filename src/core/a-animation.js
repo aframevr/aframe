@@ -125,7 +125,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var toTemp;
         var yoyo = false;
 
-        animationValues = getAnimationValues(el, attribute, data.from, data.to, currentValue);
+        animationValues = getAnimationValues(el, attribute, data.from || self.initialValue, data.to, currentValue);
         from = animationValues.from;
         to = animationValues.to;
         self.partialSetAttribute = animationValues.partialSetAttribute;
@@ -137,7 +137,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         if (isNaN(begin)) { begin = 0; }
 
         // Store initial state.
-        self.initialValue = cloneValue(currentValue);
+        self.initialValue = self.initialValue || cloneValue(currentValue);
 
         // Handle indefinite + forwards + alternate yoyo edge-case (#405).
         if (repeat === Infinity && fill === FILLS.forwards &&
