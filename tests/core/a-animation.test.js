@@ -35,6 +35,7 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
   animationEl.addEventListener('loaded', function () {
     animationEl.start();
   });
+  el.paused = false;
   el.appendChild(animationEl);
 }
 
@@ -283,6 +284,7 @@ suite('a-animation', function () {
       var animationEl = document.createElement('a-animation');
       animationEl.setAttribute('begin', 'click');
       var el = helpers.entityFactory();
+      el.paused = false;
       el.appendChild(animationEl);
       animationEl.addEventListener('loaded', function () {
         el.emit('click');

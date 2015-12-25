@@ -24,7 +24,7 @@ module.exports = registerElement('a-node', {
       value: function () {
         var mixins = this.getAttribute('mixin');
 
-        this.sceneEl = document.querySelector('a-scene');
+        this.sceneEl = this.closest('a-scene');
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
       }
@@ -33,6 +33,25 @@ module.exports = registerElement('a-node', {
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
         if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
+      }
+    },
+
+    /**
+     * returns the first element that matches a CSS
+     * selector by traversing up the DOM tree starting
+     * from (and including) the receiver element.
+     * @param {string} selector - CSS selector of the matcched element
+     */
+    closest: {
+      value: function closest (selector) {
+        var matches = this.matches || this.mozMatchesSelector ||
+          this.msMatchesSelector || this.oMatchesSelector || this.webkitMatchesSelector;
+        var element = this;
+        while (element) {
+          if (matches.call(element, selector)) { break; }
+          element = element.parentElement;
+        }
+        return element;
       }
     },
 
@@ -68,7 +87,8 @@ module.exports = registerElement('a-node', {
           self.hasLoaded = true;
           self.emit('loaded', {}, false);
         });
-      }
+      },
+      writable: true
     },
 
     getChildren: {

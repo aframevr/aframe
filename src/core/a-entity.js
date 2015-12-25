@@ -26,6 +26,7 @@ var AEntity;
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
  * @member {array} states
+ * @member {boolean} paused - true if dynamic behavior of the entity is paused
  */
 var proto = Object.create(ANode.prototype, {
   defaults: {
@@ -42,6 +43,7 @@ var proto = Object.create(ANode.prototype, {
       this.isEntity = true;
       this.states = [];
       this.components = {};
+      this.paused = true;
       this.object3D = new THREE.Mesh();
     }
   },
@@ -190,7 +192,7 @@ var proto = Object.create(ANode.prototype, {
       var children = this.children;
       var childEntities = [];
 
-      for (var i = 0; i < this.children.length; i++) {
+      for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (child instanceof AEntity) {
           childEntities.push(child);
@@ -248,6 +250,7 @@ var proto = Object.create(ANode.prototype, {
         this.setAttribute(name, '');
       } else {
         this.components[name] = new components[name].Component(this);
+        if (!this.paused) { this.components[name].play(); }
       }
       log('Component initialized: %s', name);
     }
@@ -353,6 +356,46 @@ var proto = Object.create(ANode.prototype, {
       }
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }
+  },
+
+  /**
+   * Starts any dynamic behavior associated to the entity
+   * this involves dynamic components and animations
+   */
+  play: {
+    value: function () {
+      var components = this.components;
+      var componentKeys = Object.keys(components);
+      if (!this.paused) { return; }
+      this.paused = false;
+      componentKeys.forEach(playComponent);
+      this.getChildEntities().forEach(play);
+      function play (obj) { obj.play(); }
+      function playComponent (key) {
+        components[key].play();
+      }
+      this.emit('play');
+    },
+    writable: true
+  },
+
+  /**
+   * Stops any dynamic behavior associated to the entity
+   * This involves dynamic components and animations
+   */
+  pause: {
+    value: function () {
+      var components = this.components;
+      var componentKeys = Object.keys(components);
+      if (this.paused) { return; }
+      this.paused = true;
+      componentKeys.forEach(pauseComponent);
+      this.getChildEntities().forEach(pause);
+      function pause (obj) { obj.pause(); }
+      function pauseComponent (key) { components[key].pause(); }
+      this.emit('pause');
+    },
+    writable: true
   },
 
   /**

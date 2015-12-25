@@ -6,11 +6,20 @@ module.exports.Component = registerComponent('raycaster', {
   init: function () {
     this.raycaster = new THREE.Raycaster();
     this.intersectedEl = null;
+  },
+
+  play: function () {
     this.pollForHoverIntersections();
   },
 
-  remove: function () {
+  pause: function () {
+    var pollInterval = this.pollInterval;
+    if (!pollInterval) { return; }
     requestInterval.clear(this.pollInterval);
+  },
+
+  remove: function () {
+    this.pause();
   },
 
   pollForHoverIntersections: function () {

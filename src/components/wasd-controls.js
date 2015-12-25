@@ -37,17 +37,27 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   init: function () {
-    this.setupControls();
-  },
-
-  setupControls: function () {
-    var scene = this.el.sceneEl;
-    this.prevTime = Date.now();
+    this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
-    this.velocity = new THREE.Vector3();
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+  },
+
+  play: function () {
+    var scene = this.el.sceneEl;
     this.attachEventListeners();
     scene.addBehavior(this);
+  },
+
+  pause: function () {
+    var scene = this.el.sceneEl;
+    this.removeEventListeners();
+    scene.removeBehavior(this);
+  },
+
+  remove: function () {
+    this.pause();
   },
 
   update: function (previousData) {
@@ -55,8 +65,9 @@ module.exports.Component = registerComponent('wasd-controls', {
     var acceleration = data.acceleration;
     var easing = data.easing;
     var velocity = this.velocity;
+    var prevTime = this.prevTime = this.prevTime || Date.now();
     var time = window.performance.now();
-    var delta = (time - this.prevTime) / 1000;
+    var delta = (time - prevTime) / 1000;
     var keys = this.keys;
     var movementVector;
     var adAxis = data.adAxis;
@@ -104,8 +115,14 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   attachEventListeners: function () {
     // Keyboard events
-    window.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    window.addEventListener('keyup', this.onKeyUp.bind(this), false);
+    window.addEventListener('keydown', this.onKeyDown, false);
+    window.addEventListener('keyup', this.onKeyUp, false);
+  },
+
+  removeEventListeners: function () {
+    // Keyboard events
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
   },
 
   onKeyDown: function (event) {

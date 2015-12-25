@@ -127,7 +127,7 @@ suite('a-entity', function () {
       var parentEl = el.parentNode;
       parentEl.removeChild(el);
       process.nextTick(function () {
-        assert.equal(parentEl.object3D.children.length, 0);
+        assert.equal(parentEl.object3D.children.length, 3);
         done();
       });
     });
