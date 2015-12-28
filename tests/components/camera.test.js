@@ -9,8 +9,8 @@ suite('camera', function () {
     var el = this.el = entityFactory();
     el.setAttribute('camera', '');
     if (el.hasLoaded) {
-      this.camera = el.components.camera.camera; 
-      done(); 
+      this.camera = el.components.camera.camera;
+      done();
     }
     el.addEventListener('loaded', function () {
       self.camera = el.components.camera.camera;

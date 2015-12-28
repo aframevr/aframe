@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, THREE */
 'use strict';
 var helpers = require('../helpers');
 var AScene = require('core/a-scene');
@@ -59,11 +59,11 @@ suite('a-scene (without renderer)', function () {
       var cameraEl = document.createElement('a-entity');
       cameraEl.setAttribute('camera', '');
       this.el.appendChild(cameraEl);
-      cameraEl.addEventListener('loaded', function() {
+      cameraEl.addEventListener('loaded', function () {
         self.el.setActiveCamera(cameraEl);
         assert.equal(self.el.camera, cameraEl.components.camera.camera);
         done();
-      })
+      });
     });
   });
 
