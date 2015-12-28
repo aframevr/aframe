@@ -36,7 +36,7 @@
     "mozilla-download": "^1.0.5",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
-    "snazzy": "^2.0.1",
+    "standard-reporter": "^1.0.5",
     "uglifyjs": "^2.4.10"
   },
   "scripts": {
@@ -53,7 +53,7 @@
     "release:push": "npm login && npm publish && git push --follow-tags",
     "test": "karma start ./tests/karma.conf.js",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
-    "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
+    "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
     "precommit": "npm run lint"
   },
   "repository": "aframevr/aframe-core",

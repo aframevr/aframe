@@ -269,8 +269,8 @@ var AScene = module.exports = registerElement('a-scene', {
         var defaultCamera;
         var defaultCameraEl;
         // el is an entity with a camera component
-        if (el.components && el.components.camera) { 
-          camera = el.components.camera.camera; 
+        if (el.components && el.components.camera) {
+          camera = el.components.camera.camera;
           cameraEl = el;
         } else if (el instanceof THREE.Camera) {
           camera = el;
@@ -604,14 +604,14 @@ var AScene = module.exports = registerElement('a-scene', {
           this.setupLoader();
           this.resizeCanvas();
 
-          if (!this.camera) { 
+          if (!this.camera) {
             this.setupDefaultCamera(startRender);
             return;
           }
 
           startRender();
 
-          function startRender() {
+          function startRender () {
             // Kick off render loop.
             self.render();
             self.renderStarted = true;
