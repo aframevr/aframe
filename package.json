@@ -8,7 +8,7 @@
     "dev": "node ./scripts/budo",
     "browserify": "browserify ./src/index.js -s 'AFRAME'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
-    "dist": "mkdir -p dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
+    "dist": "mkdir -p dist/ && npm run browserify -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "ghpages": "node ./scripts/gh-pages",
     "gh-pages": "npm run ghpages",
@@ -65,5 +65,9 @@
     "three",
     "components",
     "elements"
-  ]
+  ],
+  "engines": {
+    "node": ">= 0.12.7",
+    "npm": ">= 2.12.1"
+  }
 }
