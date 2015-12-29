@@ -7,7 +7,7 @@
           autoplay="true"
           loop="true"
           crossOrigin="anonymous">
-  <video id="video"
+  <video id="a-videosphere-${__counter__}"
          src="${src}"
          width="1000"
          height="500"
@@ -19,8 +19,8 @@
   <a-entity geometry="primitive: sphere;
                       radius: ${radius};
                       segmentsWidth: ${segments-width};
-                      segmentsHeight: ${segments-height};"
-            material="shader: flat; src: #video;"
+                      segmentsHeight: ${segments-height}"
+            material="shader: flat; src: #a-videosphere-${__counter__}"
             scale="-1 1 1">
   </a-entity>
 </template>
