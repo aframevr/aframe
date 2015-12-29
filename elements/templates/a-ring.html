@@ -1,7 +1,7 @@
 <template is="a-template"
           element="a-ring"
-          inner-radius="1"
-          outer-radius="2"
+          radius-inner="1"
+          radius-outer="2"
           segments-theta="20"
           segments-phi="5"
           theta-start="0"
@@ -15,8 +15,8 @@
           roughness="0.5"
           src="">
   <a-entity geometry="primitive: ring;
-                      radiusInner: ${inner-radius};
-                      radiusOuter: ${outer-radius};
+                      radiusInner: ${radius-inner};
+                      radiusOuter: ${radius-outer};
                       segmentsTheta: ${segments-theta};
                       segmentsPhi: ${segments-phi};
                       thetaStart: ${theta-start};
