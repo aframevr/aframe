@@ -15,7 +15,7 @@
     "version": "npm run dist",
     "release:bump": "npm version patch --preminor && git commit -a -C HEAD --amend",
     "release:push": "npm login && npm publish && git push --follow-tags",
-    "lint": "semistandard -v $(git ls-files '*.js') | snazzy",
+    "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
     "precommit": "npm run lint"
   },
   "repository": "aframevr/aframe",
@@ -31,7 +31,7 @@
     "polymerize": "^1.0.0",
     "replace": "^0.3.0",
     "semistandard": "^7.0.2",
-    "snazzy": "^2.0.1",
+    "standard-reporter": "^1.0.5",
     "uglifyjs": "^2.4.10"
   },
   "dependencies": {

@@ -45,5 +45,5 @@ var opts = {
 
 var app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
 app.on('update', function () {
-  execCmd('semistandard -v $(git ls-files "*.js") | snazzy');
+  execCmd('semistandard -v $(git ls-files "*.js") | standard-reporter --stylish');
 });
