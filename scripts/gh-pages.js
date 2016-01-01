@@ -18,9 +18,8 @@
  *
  */
 
-var spawn = require('child_process').spawn;
-
 var ghpages = require('gh-pages');
+var open = require('open');
 var path = require('path');
 
 var repo = {
@@ -67,8 +66,12 @@ ghpages.publish(path.join(process.cwd(), 'gh-pages'), {
   logger: function (message) {
     console.log(message);
   }
-}, function () {
+}, function (error) {
+  if (error) {
+    console.log('Error ' + error);
+    return;
+  }
   console.log('Published');
   console.log(repo.ghPagesUrl);
-  spawn('open', [repo.ghPagesUrl]);
+  open(repo.ghPagesUrl);
 });

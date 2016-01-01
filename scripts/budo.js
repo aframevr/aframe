@@ -47,7 +47,7 @@ var app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
 
 app.watch(consts.WATCH)
 .on('update', function () {
-  execCmd('semistandard -v $(git ls-files "*.js") | standard-reporter --stylish');
+  execCmd('semistandard -v');
 });
 
 if (opts.live) {
