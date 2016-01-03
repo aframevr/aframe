@@ -402,13 +402,22 @@ var AScene = module.exports = registerElement('a-scene', {
 
     setupCanvas: {
       value: function () {
-        var canvas = this.canvas = document.createElement('canvas');
+        var canvasSelector = this.getAttribute('canvas');
+        var canvas;
+
+        if (canvasSelector) {
+          canvas = this.canvas = document.querySelector(canvasSelector);
+        } else {
+          canvas = this.canvas = document.createElement('canvas');
+          this.appendChild(canvas);
+        }
+
         canvas.classList.add('a-canvas');
         // Prevents overscroll on mobile devices.
         canvas.addEventListener('touchmove', function (evt) {
           evt.preventDefault();
         });
-        document.body.appendChild(canvas);
+
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
       }
     },

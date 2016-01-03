@@ -68,13 +68,28 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('setupCanvas', function () {
-    test('adds canvas', function (done) {
-      assert.notOk(document.querySelector('canvas'));
+    test('adds canvas to a-scene element by default', function (done) {
+      assert.notOk(this.el.querySelector('canvas'));
       this.el.setupCanvas();
       process.nextTick(function () {
-        assert.ok(document.querySelector('canvas'));
+        assert.ok(this.el.querySelector('canvas'));
         done();
-      });
+      }.bind(this));
+    });
+
+    test('reuses existing canvas when selector is given', function (done) {
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('id', 'canvas');
+      document.body.appendChild(canvas);
+      assert.notOk(canvas.classList.contains('a-canvas'));
+
+      this.el.setAttribute('canvas', '#canvas');
+      this.el.setupCanvas();
+      process.nextTick(function () {
+        assert.ok(canvas.classList.contains('a-canvas'));
+        assert.notOk(this.el.querySelector('canvas'));
+        done();
+      }.bind(this));
     });
   });
 
