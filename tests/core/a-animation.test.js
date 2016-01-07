@@ -383,7 +383,6 @@ suite('a-animation', function () {
 
   suite('direction: alternate', function () {
     test('`from` is defined', function (done) {
-      var position;
       setupAnimation({
         attribute: 'position',
         direction: 'alternate',
@@ -393,7 +392,7 @@ suite('a-animation', function () {
         to: '10 10 10'
       }, function (el, animationEl, startTime) {
         animationEl.tween.update(startTime + 1000);
-        animationEl.addEventListener('animationend', function() {
+        animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
           assert.shallowDeepEqual(position, { x: 5, y: 5, z: 5 });
         });
@@ -402,7 +401,6 @@ suite('a-animation', function () {
     });
 
     test('`from` is not defined', function (done) {
-      var position;
       setupAnimation({
         attribute: 'position',
         direction: 'alternate',
@@ -411,7 +409,7 @@ suite('a-animation', function () {
         to: '10 10 10'
       }, function (el, animationEl, startTime) {
         animationEl.tween.update(startTime + 1000);
-        animationEl.addEventListener('animationend', function() {
+        animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
           assert.shallowDeepEqual(position, { x: 0, y: 0, z: 0 });
         });
