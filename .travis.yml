@@ -20,6 +20,9 @@ env:
     - TEST_SUITE=unit
   matrix:
     - CI_ACTION="npm run test:ci"
+    - CI_ACTION="npm run lint"
+    - CI_ACTION="npm run build"
+    - CI_ACTION="npm run dist:js"
 
 branches:
   only:
