@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Model</title>
+    <meta name="description" content="Model - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-scene stats="true">
+      <a-entity mouse-controls position="0 0 10">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+      <a-entity loader="src: url(models/monster.dae); format: collada"
+                material="color: green" scale="0.25 0.25 0.25"
+                position="-8 -3 1"></a-entity>
+    </a-scene>
+  </body>
+</html>

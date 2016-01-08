@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Controls</title>
+    <meta name="description" content="Controls - A-Frame Core">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-scene stats="true">
+      <!-- We wrap the camera in an <a-entity> so we can position it without colliding with the HMD updates -->
+      <a-entity>
+        <a-entity position="0 1.8 4" camera look-controls wasd-controls></a-entity>
+      </a-entity>
+      <a-entity position="-3.5 1 0" rotation="0 45 0" geometry="primitive: box" material="color: red"></a-entity>
+      <a-entity position="0 1 0" rotation="0 45 0" geometry="primitive: box" material="color: green"></a-entity>
+      <a-entity position="3.5 1 0" rotation="0 45 0" geometry="primitive: box" material="color: blue"></a-entity>
+    </a-scene>
+  </body>
+</html>
