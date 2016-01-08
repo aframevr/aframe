@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fog</title>
+    <meta name="description" content="Fog - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+
+  <body>
+    <a-assets>
+      <a-mixin id="move" attribute="position" direction="alternate" dur="4096"
+                         fill="forwards" easing="linear" repeat="indefinite">
+      </a-mixin>
+      <a-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; radiusTubular: .5;
+                                  radius: 10" material="color: #2F3C4F"></a-mixin>
+      <a-mixin id="spin" attribute="rotation" dur="4096" to="-360 0 0"
+                         easing="linear" repeat="indefinite"></a-mixin>
+    </a-assets>
+    <a-scene fog="type: linear; color: #AAB; far: 150; near: 0"
+             stats="true">
+      <!-- Camera. -->
+      <a-entity position="0 1.8 0">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Skysphere. -->
+      <a-entity geometry="primitive: sphere; radius: 120"
+                material="shader: flat;
+                          src: url(../_images/pano/louvre.jpg)"
+                position="0 1.8 0" scale="1 1 -1" rotation="0 90 0"></a-entity>
+
+      <a-entity mixin="box" position="-30 0 0">
+        <a-animation mixin="move" to="-100 0 0">
+        </a-animation>
+        <a-animation mixin="spin"></a-animation>
+      </a-entity>
+
+      <a-entity mixin="box" position="30 0 0">
+        <a-animation mixin="move" to="100 0 0"></a-animation>
+        <a-animation mixin="spin"></a-animation>
+      </a-entity>
+
+      <a-entity mixin="box" position="0 0 -30">
+        <a-animation mixin="move" to="0 0 -100">
+        </a-animation>
+        <a-animation mixin="spin"></a-animation>
+      </a-entity>
+
+      <a-entity mixin="box" position="0 0 30">
+        <a-animation mixin="move" to="0 0 100"></a-animation>
+        <a-animation mixin="spin"></a-animation>
+      </a-entity>
+
+    </a-scene>
+  </body>
+</html>

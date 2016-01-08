@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mixins</title>
+    <meta name="description" content="Mixins">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-assets>
+      <a-mixin id="cube" geometry="primitive: box" material="color: red" rotation="0 45 0"></a-mixin>
+      <a-mixin id="sphere" geometry="primitive: sphere" material="color: blue"></a-mixin>
+    </a-assets>
+    <a-scene stats="true">
+      <!-- specialization of a particular component with an applied mixin -->
+      <a-entity mixin="cube" position="-3.5 1 0" material="color: yellow"></a-entity>
+      <a-entity mixin="cube" position="0 1 0"></a-entity>
+      <a-entity mixin="cube" position="3.5 1 0"></a-entity>
+    </a-scene>
+  </body>
+</html>
