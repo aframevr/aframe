@@ -1,4 +1,5 @@
 .DS_Store
+.cache
 build
 gh-pages/
 karma.conf.js

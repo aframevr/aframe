@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animation</title>
+    <meta name="description" content="Animation - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-assets>
+      <a-mixin id="planet" geometry="primitive: sphere; radius: 0.5">
+      </a-mixin>
+      <a-mixin id="orbit" attribute="rotation" to="0 360 0"
+                repeat="indefinite" easing="linear" dur="3000"></a-mixin>
+      <a-mixin id="spin" attribute="rotation" to="0 360 0"
+                repeat="indefinite" easing="linear" dur="96000"></a-mixin>
+    </a-assets>
+
+    <a-scene stats="true">
+      <a-entity position="0 0 6">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+      <a-entity rotation="0 0 0" position="0 0 -5">
+        <!-- Lights. -->
+        <a-entity light="type: point; intensity: 2"></a-entity>
+        <a-entity light="type: ambient; color: #888"></a-entity>
+
+        <a-entity mixin="planet" geometry="radius: 3"
+                  material="shader: flat; src: url(../_images/textures/sun.jpg);"
+                  rotation="0 0 0">
+          <a-animation mixin="spin"></a-animation>
+        </a-entity>
+
+        <a-entity position="0 0 0">
+          <a-animation mixin="orbit" dur="8000"></a-animation>
+          <a-entity mixin="planet" material="color: red" position="8 0 0"
+                    geometry="radius: 1"></a-entity>
+        </a-entity>
+
+        <a-entity position="0 0 0">
+          <a-animation mixin="orbit" dur="4000"></a-animation>
+          <a-entity mixin="planet" material="color: blue"
+                     position="6 0 0"></a-entity>
+        </a-entity>
+
+        <a-entity position="0 0 0">
+          <a-animation mixin="orbit" dur="2000"></a-animation>
+          <a-entity geometry="primitive: torusKnot; radius: .5; radiusTubular: .05"
+                    material="color: green" position="4 0 0">
+            <a-animation attribute="geometry.p" direction="alternate" fill="forwards"
+                         ease="linear"
+                         repeat="indefinite" to="4"></a-animation>
+            <a-animation attribute="geometry.q" direction="alternate" fill="forwards"
+                         ease="linear"
+                         repeat="indefinite" to="7"></a-animation>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

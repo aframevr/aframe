@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Geometry Translation</title>
+    <meta name="description" content="Geometry Translation - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-assets>
+      <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1;
+                                   translate: -0.25 0 0; width: 0.5"
+                         material="color: red" rotation="0 0 0"
+                         scale="1 1.25 1"></a-mixin>
+      <a-mixin id="flap" attribute="rotation" direction="alternate" fill="forwards"
+                         repeat="indefinite"></a-mixin>
+    </a-assets>
+    <a-scene stats="true">
+      <!-- Camera. -->
+      <a-entity position="0 1.8 0">
+        <a-entity id="camera" camera="fov: 45" look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Skysphere. -->
+      <a-entity geometry="primitive: sphere; radius: 100"
+                material="color: #335; shader: flat" scale="1 1 -1">
+      </a-entity>
+
+      <!-- Butterfly with pivoting wings via translation. -->
+      <a-entity position="0 2.5 -5">
+        <a-animation attribute="rotation" to="0 360 0" fill="forwards" dur="3000"
+                     easing="linear" repeat="indefinite"></a-animation>
+        <a-entity rotation="0 90 0" position="2.5 0 0">
+          <a-entity rotation="-45 0 90">
+            <a-entity mixin="wing">
+              <a-animation mixin="flap" to="0 120 0"></a-animation>
+            </a-entity>
+          </a-entity>
+          <a-entity rotation="-45 0 90">
+            <a-entity mixin="wing">
+              <a-animation mixin="flap" to="0 -120 0"></a-animation>
+            </a-entity>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
