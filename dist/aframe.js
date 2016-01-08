@@ -54215,7 +54215,6 @@ module.exports={
     "replace": "^0.3.0",
     "rimraf": "2.5.0",
     "semistandard": "^7.0.2",
-    "snazzy": "^2.0.1",
     "standard-reporter": "^1.0.5",
     "uglifyjs": "^2.4.10"
   },
@@ -54384,7 +54383,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":54,"../utils/":86}],30:[function(require,module,exports){
+},{"../core/component":54,"../utils/":88}],30:[function(require,module,exports){
 var register = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var debug = require('../utils/debug');
@@ -54459,7 +54458,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils/debug":85}],31:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils/debug":87}],31:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
@@ -54651,7 +54650,7 @@ function applyTranslate (geometry, translate, currentTranslate) {
   geometry.verticesNeedsUpdate = true;
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":86,"../utils/debug":85}],32:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils":88,"../utils/debug":87}],32:[function(require,module,exports){
 require('../components/camera');
 require('../components/cursor');
 require('../components/fog');
@@ -54805,7 +54804,7 @@ function getLight (data) {
   }
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":86,"../utils/debug":85}],34:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils":88,"../utils/debug":87}],34:[function(require,module,exports){
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var parseUrl = require('../utils/src-loader').parseUrl;
@@ -54880,7 +54879,7 @@ module.exports.Component = registerComponent('loader', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils/debug":85,"../utils/src-loader":87}],35:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils/debug":87,"../utils/src-loader":89}],35:[function(require,module,exports){
 var debug = require('../utils/debug');
 var coordinates = require('../utils/coordinates');
 var registerComponent = require('../core/component').registerComponent;
@@ -55002,7 +55001,7 @@ module.exports.Component = registerComponent('look-at', {
   stringify: coordinates.componentMixin.stringify
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils/coordinates":84,"../utils/debug":85}],36:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils/coordinates":86,"../utils/debug":87}],36:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
@@ -55579,7 +55578,7 @@ function getSide (side) {
   }
 }
 
-},{"../../lib/three":1,"../core/component":54,"../utils":86,"../utils/debug":85,"../utils/src-loader":87}],38:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils":88,"../utils/debug":87,"../utils/src-loader":89}],38:[function(require,module,exports){
 var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -55598,7 +55597,7 @@ module.exports.Component = registerComponent('position', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../core/component":54,"../utils/":86,"../utils/coordinates":84}],39:[function(require,module,exports){
+},{"../core/component":54,"../utils/":88,"../utils/coordinates":86}],39:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 var requestInterval = require('request-interval');
 var THREE = require('../../lib/three');
@@ -55723,7 +55722,7 @@ module.exports.Component = registerComponent('rotation', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../../lib/three":1,"../core/component":54,"../utils/":86,"../utils/coordinates":84}],41:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils/":88,"../utils/coordinates":86}],41:[function(require,module,exports){
 var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
@@ -55748,7 +55747,7 @@ module.exports.Component = registerComponent('scale', utils.extend({
   }
 }, coordinatesMixin));
 
-},{"../core/component":54,"../utils/":86,"../utils/coordinates":84}],42:[function(require,module,exports){
+},{"../core/component":54,"../utils/":88,"../utils/coordinates":86}],42:[function(require,module,exports){
 var debug = require('../utils/debug');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/component').registerComponent;
@@ -55858,7 +55857,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../../lib/three":1,"../core/component":54,"../utils":86,"../utils/debug":85}],43:[function(require,module,exports){
+},{"../../lib/three":1,"../core/component":54,"../utils":88,"../utils/debug":87}],43:[function(require,module,exports){
 var registerComponent = require('../core/component').registerComponent;
 
 /**
@@ -56602,7 +56601,7 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../constants/animation":45,"../utils/":86,"./a-node":51,"./a-register-element":52,"tween.js":25}],47:[function(require,module,exports){
+},{"../constants/animation":45,"../utils/":88,"./a-node":51,"./a-register-element":52,"tween.js":25}],47:[function(require,module,exports){
 var ANode = require('./a-node');
 var registerElement = require('./a-register-element').registerElement;
 
@@ -56670,7 +56669,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":85,"./a-register-element":52}],49:[function(require,module,exports){
+},{"../utils/debug":87,"./a-register-element":52}],49:[function(require,module,exports){
 /* global HTMLElement */
 var ANode = require('./a-node');
 var components = require('./component').components;
@@ -57171,7 +57170,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../../lib/three":1,"../utils/debug":85,"./a-node":51,"./a-register-element":52,"./component":54}],50:[function(require,module,exports){
+},{"../../lib/three":1,"../utils/debug":87,"./a-node":51,"./a-register-element":52,"./component":54}],50:[function(require,module,exports){
 /* global HTMLElement */
 var AComponents = require('./component').components;
 var ANode = require('./a-node');
@@ -57445,7 +57444,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":86,"./a-register-element":52}],52:[function(require,module,exports){
+},{"../utils/":88,"./a-register-element":52}],52:[function(require,module,exports){
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
@@ -58430,7 +58429,7 @@ function injectMetaTags () {
   headEl.appendChild(meta);
 }
 
-},{"../../lib/three":1,"../../lib/vendor/rStats":4,"../../lib/vendor/wakelock/wakelock":6,"../utils/":86,"./a-entity":49,"./a-register-element":52,"tween.js":25}],54:[function(require,module,exports){
+},{"../../lib/three":1,"../../lib/vendor/rStats":4,"../../lib/vendor/wakelock/wakelock":6,"../utils/":88,"./a-entity":49,"./a-register-element":52,"tween.js":25}],54:[function(require,module,exports){
 var debug = require('../utils/debug');
 var styleParser = require('style-attr');
 var utils = require('../utils/');
@@ -58684,7 +58683,7 @@ function transformKeysToCamelCase (obj) {
   return camelCaseObj;
 }
 
-},{"../utils/":86,"../utils/debug":85,"style-attr":19}],55:[function(require,module,exports){
+},{"../utils/":88,"../utils/debug":87,"style-attr":19}],55:[function(require,module,exports){
 var utils = require('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-click', 'click');
@@ -58692,10 +58691,9 @@ module.exports = utils.wrapAEventElement('a-click', 'click');
 },{"../lib/utils":67}],56:[function(require,module,exports){
 /* global HTMLElement */
 
-var aframeCore = require('aframe-core');
 var utils = require('../lib/utils');
 
-var registerElement = aframeCore.registerElement.registerElement;
+var registerElement = require('../../core/a-register-element').registerElement;
 var stateEls = {};
 var listeners = {};
 var targetData = {};
@@ -58957,7 +58955,7 @@ var AEvent = registerElement(
 
 module.exports = AEvent;
 
-},{"../lib/utils":67,"aframe-core":143}],57:[function(require,module,exports){
+},{"../../core/a-register-element":52,"../lib/utils":67}],57:[function(require,module,exports){
 var utils = require('../lib/utils');
 
 /**
@@ -59164,13 +59162,13 @@ require('./templates/index.html');
 
 module.exports = modules;
 
-},{"./a-event":63,"./a-template":64,"./templates/index.html":81}],66:[function(require,module,exports){
-var aframeCore = require('aframe-core');
+},{"./a-event":63,"./a-template":64,"./templates/index.html":83}],66:[function(require,module,exports){
+// TODO: Extract to aframe-primitives.
 var utils = require('./utils');
 
-var registerElement = aframeCore.registerElement.registerElement;
-var AEntity = aframeCore.AEntity;
-var AComponents = aframeCore.AComponents;
+var registerElement = require('../../core/a-register-element').registerElement;
+var AEntity = require('../../core/a-entity');
+var AComponents = require('../../core/component').components;
 
 var ATTRIBUTE_BLACKLIST = utils.extend({
   id: true,
@@ -59181,6 +59179,17 @@ var ATTRIBUTE_BLACKLIST = utils.extend({
 var COMPONENT_BLACKLIST = utils.extend({}, AComponents);
 
 registerElement('a-root', {prototype: Object.create(AEntity.prototype)});
+
+// We use counters so we can generate unique `id`s for each template instance.
+// Code will be simplified and this can be removed when "primitives" land.
+// Fixes https://github.com/aframevr/aframe/issues/308
+var counts = {};
+function countIncrement (tagName) {
+  if (!(tagName in counts)) {
+    counts[tagName] = 0;
+  }
+  return counts[tagName]++;
+}
 
 module.exports = function (tagName) {
   var tagNameLower = tagName.toLowerCase();
@@ -59269,6 +59278,10 @@ module.exports = function (tagName) {
                 this.appendChild(this.root);
               }
 
+              if (firstTime) {
+                templateAttrs.__counter__ = countIncrement(tagNameLower).toString();
+              }
+
               var newHTML = utils.format(template.innerHTML, templateAttrs);
               if (newHTML !== this.root.innerHTML) {
                 this.root.innerHTML = newHTML;
@@ -59283,12 +59296,12 @@ module.exports = function (tagName) {
     });
 };
 
-},{"./utils":67,"aframe-core":143}],67:[function(require,module,exports){
-var aframeCore = require('aframe-core');
+},{"../../core/a-entity":49,"../../core/a-register-element":52,"../../core/component":54,"./utils":67}],67:[function(require,module,exports){
+// TODO: Extract to aframe-primiives.
 var AEvent = require('../a-event/a-event');
 
-var aframeCoreUtils = aframeCore.utils;
-var registerElement = aframeCore.registerElement.registerElement;
+var aframeCoreUtils = require('../../utils');
+var registerElement = require('../../core/a-register-element').registerElement;
 
 /**
  * Wraps `querySelector` à la jQuery's `$`.
@@ -59456,7 +59469,7 @@ module.exports.log = aframeCoreUtils.log;
 module.exports.splitString = aframeCoreUtils.splitString;
 module.exports.warn = aframeCoreUtils.warn;
 
-},{"../a-event/a-event":56,"aframe-core":143}],68:[function(require,module,exports){
+},{"../../core/a-register-element":52,"../../utils":88,"../a-event/a-event":56}],68:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-camera\" fov=\"80\" near=\"0.5\" far=\"10000\" look-controls-enabled=\"true\" wasd-controls-enabled=\"true\" cursor-visible=\"true\" cursor-offset=\"1\" cursor-color=\"#FFF\" cursor-maxdistance=\"1000\" cursor-scale=\"1\" cursor-opacity=\"1\">\n  <a-entity camera=\"fov: ${fov}; near: ${near}; far: ${far}\" look-controls=\"enabled: ${look-controls-enabled}\" wasd-controls=\"enabled: ${wasd-controls-enabled}\">\n    <a-entity visible=\"${cursor-visible}\" position=\"0 0 -${cursor-offset}\" geometry=\"primitive: ring; radiusOuter: 0.016; radiusInner: 0.01\" material=\"color: ${cursor-color}; shader: flat; transparent: true; opacity: ${cursor-opacity}\" scale=\"${cursor-scale} ${cursor-scale} ${cursor-scale}\" cursor=\"maxDistance: ${cursor-maxdistance};\">\n    </a-entity>\n  </a-entity>\n</template>");
@@ -59465,77 +59478,90 @@ head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cam
 },{}],69:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cube\" width=\"1.5\" height=\"1.5\" depth=\"1.5\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: box;\n                      width: ${width};\n                      height: ${height};\n                      depth: ${depth};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cone\" radius-top=\"0.2\" radius-bottom=\"0.75\" height=\"1.5\" segments-radial=\"36\" segments-height=\"1\" theta-start=\"0\" theta-length=\"360\" open-ended=\"false\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" side=\"front\" src=\"\">\n  <a-entity geometry=\"primitive: cone;\n                      radiusTop: ${radius-top};\n                      radiusBottom: ${radius-bottom};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: ${segments-height};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: ${open-ended};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: ${side};\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],70:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-curvedimage\" radius=\"1\" height=\"1\" segments-radius=\"48\" theta-start=\"0\" theta-length=\"360\" opacity=\"1.0\" transparent=\"true\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      height: ${height};\n                      segmentsRadius: ${segments-radius};\n                      segmentsHeight: 1;\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: true\" scale=\"1 1 -1\" material=\"opacity: ${opacity};\n                      shader: flat;\n                      side: double;\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cube\" width=\"1.5\" height=\"1.5\" depth=\"1.5\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: box;\n                      width: ${width};\n                      height: ${height};\n                      depth: ${depth};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],71:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cylinder\" radius=\"0.75\" radius-top=\"0.75\" radius-bottom=\"0.75\" height=\"1.5\" segments-radial=\"36\" segments-height=\"1\" theta-start=\"0\" theta-length=\"360\" open-ended=\"false\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" side=\"front\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      radiusTop: ${radius-top};\n                      radiusBottom: ${radius-bottom};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: ${segments-height};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: ${open-ended};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: ${side};\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-curvedimage\" radius=\"1\" height=\"1\" segments-radial=\"48\" theta-start=\"0\" theta-length=\"360\" opacity=\"1.0\" transparent=\"true\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: 1;\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: true\" scale=\"1 1 -1\" material=\"opacity: ${opacity};\n                      shader: flat;\n                      side: double;\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],72:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-frame\" size=\"10\" thickness=\"0.1\" color=\"#404040\">\n  <a-cube position=\"5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"0 5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cylinder\" radius=\"0.75\" radius-top=\"0.75\" radius-bottom=\"0.75\" height=\"1.5\" segments-radial=\"36\" segments-height=\"1\" theta-start=\"0\" theta-length=\"360\" open-ended=\"false\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" side=\"front\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      radiusTop: ${radius-top};\n                      radiusBottom: ${radius-bottom};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: ${segments-height};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: ${open-ended};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: ${side};\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],73:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-image\" width=\"1.75\" height=\"1.75\" opacity=\"1.0\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      width: ${width};\n                      height: ${height}\" material=\"shader: flat;\n                      src: url(${src});\n                      opacity: ${opacity};\n                      side: double;\n                      transparent: true\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-frame\" size=\"10\" thickness=\"0.1\" color=\"#404040\">\n  <a-cube position=\"5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"0 5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n</template>");
 
 })
 },{}],74:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-light\" angle=\"60\" color=\"#fff\" ground-color=\"#fff\" decay=\"1\" distance=\"0.0\" exponent=\"10.0\" intensity=\"1.0\" type=\"directional\">\n  <a-entity light=\"angle: ${angle};\n                   color: ${color};\n                   groundColor: ${ground-color};\n                   decay: ${decay};\n                   distance: ${distance};\n                   exponent: ${exponent};\n                   intensity: ${intensity};\n                   type: ${type}\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-image\" width=\"1.75\" height=\"1.75\" opacity=\"1.0\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      width: ${width};\n                      height: ${height}\" material=\"shader: flat;\n                      src: url(${src});\n                      opacity: ${opacity};\n                      side: double;\n                      transparent: true\">\n  </a-entity>\n</template>");
 
 })
 },{}],75:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-model\" opacity=\"1.0\" src=\"\" format=\"collada\">\n  <a-entity material=\"opacity: ${opacity}\" loader=\"src: url(${src}); format: ${format}\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-light\" angle=\"60\" color=\"#fff\" ground-color=\"#fff\" decay=\"1\" distance=\"0.0\" exponent=\"10.0\" intensity=\"1.0\" type=\"directional\">\n  <a-entity light=\"angle: ${angle};\n                   color: ${color};\n                   groundColor: ${ground-color};\n                   decay: ${decay};\n                   distance: ${distance};\n                   exponent: ${exponent};\n                   intensity: ${intensity};\n                   type: ${type}\">\n  </a-entity>\n</template>");
 
 })
 },{}],76:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-plane\" width=\"1.75\" height=\"1.75\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: double;\n                      src: url(${src})\"></a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-model\" opacity=\"1.0\" src=\"\" format=\"collada\">\n  <a-entity material=\"opacity: ${opacity}\" loader=\"src: url(${src}); format: ${format}\">\n  </a-entity>\n</template>");
 
 })
 },{}],77:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sky\" src=\"\" color=\"#FFF\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; \n                      src: url(${src});\n                      color: ${color};\n                      fog: false\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-plane\" width=\"1.75\" height=\"1.75\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: double;\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],78:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sphere\" radius=\"0.85\" segments-width=\"36\" segments-height=\"18\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-ring\" radius-inner=\"1\" radius-outer=\"2\" segments-theta=\"20\" segments-phi=\"5\" theta-start=\"0\" theta-length=\"360\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: ring;\n                      radiusInner: ${radius-inner};\n                      radiusOuter: ${radius-outer};\n                      segmentsTheta: ${segments-theta};\n                      segmentsPhi: ${segments-phi};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],79:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-video\" src=\"\" width=\"3\" height=\"1.75\" translate=\"0 0 0\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"video\" src=\"${src}\" width=\"${width}\" height=\"${height}\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"shader: flat; src: #video\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sky\" src=\"\" color=\"#FFF\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; \n                      src: url(${src});\n                      color: ${color};\n                      fog: false\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
 
 })
 },{}],80:[function(require,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
-head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-videosphere\" src=\"\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"video\" src=\"${src}\" width=\"1000\" height=\"500\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height};\" material=\"shader: flat; src: #video;\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sphere\" radius=\"0.85\" segments-width=\"36\" segments-height=\"18\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
 },{}],81:[function(require,module,exports){
+document.addEventListener("DOMContentLoaded",function() {
+var head = document.getElementsByTagName("head")[0];
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-video\" src=\"\" width=\"3\" height=\"1.75\" translate=\"0 0 0\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"a-video-${__counter__}\" src=\"${src}\" width=\"${width}\" height=\"${height}\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"shader: flat; src: #a-video_${__counter__}\">\n  </a-entity>\n</template>");
+
+})
+},{}],82:[function(require,module,exports){
+document.addEventListener("DOMContentLoaded",function() {
+var head = document.getElementsByTagName("head")[0];
+head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-videosphere\" src=\"\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"a-videosphere-${__counter__}\" src=\"${src}\" width=\"1000\" height=\"500\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; src: #a-videosphere-${__counter__}\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
+
+})
+},{}],83:[function(require,module,exports){
 require("./a-camera.html");
+require("./a-cone.html");
 require("./a-cube.html");
 require("./a-curvedimage.html");
 require("./a-cylinder.html");
@@ -59544,6 +59570,7 @@ require("./a-image.html");
 require("./a-light.html");
 require("./a-model.html");
 require("./a-plane.html");
+require("./a-ring.html");
 require("./a-sky/index.html");
 require("./a-sphere.html");
 require("./a-video.html");
@@ -59553,7 +59580,7 @@ var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<meta charset=\"utf-8\">");
 
 })
-},{"./a-camera.html":68,"./a-cube.html":69,"./a-curvedimage.html":70,"./a-cylinder.html":71,"./a-frame.html":72,"./a-image.html":73,"./a-light.html":74,"./a-model.html":75,"./a-plane.html":76,"./a-sky/index.html":77,"./a-sphere.html":78,"./a-video.html":79,"./a-videosphere.html":80}],82:[function(require,module,exports){
+},{"./a-camera.html":68,"./a-cone.html":69,"./a-cube.html":70,"./a-curvedimage.html":71,"./a-cylinder.html":72,"./a-frame.html":73,"./a-image.html":74,"./a-light.html":75,"./a-model.html":76,"./a-plane.html":77,"./a-ring.html":78,"./a-sky/index.html":79,"./a-sphere.html":80,"./a-video.html":81,"./a-videosphere.html":82}],84:[function(require,module,exports){
 require('es6-promise').polyfill();  // Polyfill `Promise`.
 require('present');  // Polyfill `performance.now()`.
 
@@ -59619,7 +59646,7 @@ module.exports = {
   registerTemplate: registerTemplate
 };
 
-},{"../lib/three":1,"../lib/vendor/HTMLImports":2,"../package":27,"../style/aframe-core.css":88,"../style/rStats.css":89,"./components/index":32,"./core/a-animation":46,"./core/a-assets":47,"./core/a-cubemap":48,"./core/a-entity":49,"./core/a-mixin":50,"./core/a-node":51,"./core/a-register-element":52,"./core/a-scene":53,"./core/component":54,"./elements/":65,"./elements/lib/register-template":66,"./utils/":86,"./utils/debug":85,"es6-promise":13,"present":15,"webvr-polyfill":26}],83:[function(require,module,exports){
+},{"../lib/three":1,"../lib/vendor/HTMLImports":2,"../package":27,"../style/aframe-core.css":90,"../style/rStats.css":91,"./components/index":32,"./core/a-animation":46,"./core/a-assets":47,"./core/a-cubemap":48,"./core/a-entity":49,"./core/a-mixin":50,"./core/a-node":51,"./core/a-register-element":52,"./core/a-scene":53,"./core/component":54,"./elements/":65,"./elements/lib/register-template":66,"./utils/":88,"./utils/debug":87,"es6-promise":13,"present":15,"webvr-polyfill":26}],85:[function(require,module,exports){
 var coordinates = require('./coordinates');
 var utils = require('./index');
 
@@ -59675,7 +59702,7 @@ module.exports = function (value, schema, schemaAttr) {
   }
 };
 
-},{"./coordinates":84,"./index":86}],84:[function(require,module,exports){
+},{"./coordinates":86,"./index":88}],86:[function(require,module,exports){
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -59732,7 +59759,7 @@ module.exports.componentMixin = {
   stringify: stringify
 };
 
-},{}],85:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 (function (process){
 var debugLib = require('debug');
 var extend = require('object-assign');
@@ -59838,7 +59865,7 @@ module.exports = debug;
 
 }).call(this,require('_process'))
 
-},{"_process":8,"debug":9,"object-assign":14}],86:[function(require,module,exports){
+},{"_process":8,"debug":9,"object-assign":14}],88:[function(require,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = require('object-assign');
@@ -60024,7 +60051,7 @@ module.exports.getUrlParameter = function (name) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');
 
-},{"./coerce":83,"./coordinates":84,"./src-loader":87,"object-assign":14}],87:[function(require,module,exports){
+},{"./coerce":85,"./coordinates":86,"./src-loader":89,"object-assign":14}],89:[function(require,module,exports){
 /* global Image */
 var debug = require('./debug');
 
@@ -60169,3402 +60196,10 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":85}],88:[function(require,module,exports){
+},{"./debug":87}],90:[function(require,module,exports){
 var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:10px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (require("browserify-css").createStyle(css, { "href": "style/aframe-core.css"})); module.exports = css;
-},{"browserify-css":7}],89:[function(require,module,exports){
+},{"browserify-css":7}],91:[function(require,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "style/rStats.css"})); module.exports = css;
-},{"browserify-css":7}],90:[function(require,module,exports){
-(function (global){
-var THREE = global.THREE = require('three-dev');
-
-// Allow cross-origin images to be loaded.
-if (THREE.TextureLoader) {
-  THREE.TextureLoader.prototype.crossOrigin = '';
-}
-
-// TODO: Eventually include these only if they are needed by a component.
-
-require('../node_modules/three-dev/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
-require('../node_modules/three-dev/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
-require('../lib/vendor/Raycaster');  // THREE.Raycaster
-require('../node_modules/three-dev/examples/js/controls/VRControls');  // THREE.VRControls
-require('../node_modules/three-dev/examples/js/effects/VREffect');  // THREE.VREffect
-
-module.exports = THREE;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"../lib/vendor/Raycaster":91,"../node_modules/three-dev/examples/js/controls/VRControls":108,"../node_modules/three-dev/examples/js/effects/VREffect":109,"../node_modules/three-dev/examples/js/loaders/ColladaLoader":110,"../node_modules/three-dev/examples/js/loaders/OBJLoader":111,"three-dev":107}],91:[function(require,module,exports){
-arguments[4][3][0].apply(exports,arguments)
-},{"dup":3}],92:[function(require,module,exports){
-arguments[4][4][0].apply(exports,arguments)
-},{"dup":4}],93:[function(require,module,exports){
-arguments[4][5][0].apply(exports,arguments)
-},{"dup":5}],94:[function(require,module,exports){
-arguments[4][6][0].apply(exports,arguments)
-},{"./util.js":93,"dup":6}],95:[function(require,module,exports){
-arguments[4][7][0].apply(exports,arguments)
-},{"dup":7}],96:[function(require,module,exports){
-arguments[4][9][0].apply(exports,arguments)
-},{"./debug":97,"dup":9}],97:[function(require,module,exports){
-arguments[4][10][0].apply(exports,arguments)
-},{"dup":10,"ms":98}],98:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],99:[function(require,module,exports){
-arguments[4][12][0].apply(exports,arguments)
-},{"dup":12}],100:[function(require,module,exports){
-(function (process,global){
-/*!
- * @overview es6-promise - a tiny implementation of Promises/A+.
- * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
- * @license   Licensed under MIT license
- *            See https://raw.githubusercontent.com/jakearchibald/es6-promise/master/LICENSE
- * @version   3.0.2
- */
-
-(function() {
-    "use strict";
-    function lib$es6$promise$utils$$objectOrFunction(x) {
-      return typeof x === 'function' || (typeof x === 'object' && x !== null);
-    }
-
-    function lib$es6$promise$utils$$isFunction(x) {
-      return typeof x === 'function';
-    }
-
-    function lib$es6$promise$utils$$isMaybeThenable(x) {
-      return typeof x === 'object' && x !== null;
-    }
-
-    var lib$es6$promise$utils$$_isArray;
-    if (!Array.isArray) {
-      lib$es6$promise$utils$$_isArray = function (x) {
-        return Object.prototype.toString.call(x) === '[object Array]';
-      };
-    } else {
-      lib$es6$promise$utils$$_isArray = Array.isArray;
-    }
-
-    var lib$es6$promise$utils$$isArray = lib$es6$promise$utils$$_isArray;
-    var lib$es6$promise$asap$$len = 0;
-    var lib$es6$promise$asap$$toString = {}.toString;
-    var lib$es6$promise$asap$$vertxNext;
-    var lib$es6$promise$asap$$customSchedulerFn;
-
-    var lib$es6$promise$asap$$asap = function asap(callback, arg) {
-      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len] = callback;
-      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len + 1] = arg;
-      lib$es6$promise$asap$$len += 2;
-      if (lib$es6$promise$asap$$len === 2) {
-        // If len is 2, that means that we need to schedule an async flush.
-        // If additional callbacks are queued before the queue is flushed, they
-        // will be processed by this flush that we are scheduling.
-        if (lib$es6$promise$asap$$customSchedulerFn) {
-          lib$es6$promise$asap$$customSchedulerFn(lib$es6$promise$asap$$flush);
-        } else {
-          lib$es6$promise$asap$$scheduleFlush();
-        }
-      }
-    }
-
-    function lib$es6$promise$asap$$setScheduler(scheduleFn) {
-      lib$es6$promise$asap$$customSchedulerFn = scheduleFn;
-    }
-
-    function lib$es6$promise$asap$$setAsap(asapFn) {
-      lib$es6$promise$asap$$asap = asapFn;
-    }
-
-    var lib$es6$promise$asap$$browserWindow = (typeof window !== 'undefined') ? window : undefined;
-    var lib$es6$promise$asap$$browserGlobal = lib$es6$promise$asap$$browserWindow || {};
-    var lib$es6$promise$asap$$BrowserMutationObserver = lib$es6$promise$asap$$browserGlobal.MutationObserver || lib$es6$promise$asap$$browserGlobal.WebKitMutationObserver;
-    var lib$es6$promise$asap$$isNode = typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
-
-    // test for web worker but not in IE10
-    var lib$es6$promise$asap$$isWorker = typeof Uint8ClampedArray !== 'undefined' &&
-      typeof importScripts !== 'undefined' &&
-      typeof MessageChannel !== 'undefined';
-
-    // node
-    function lib$es6$promise$asap$$useNextTick() {
-      // node version 0.10.x displays a deprecation warning when nextTick is used recursively
-      // see https://github.com/cujojs/when/issues/410 for details
-      return function() {
-        process.nextTick(lib$es6$promise$asap$$flush);
-      };
-    }
-
-    // vertx
-    function lib$es6$promise$asap$$useVertxTimer() {
-      return function() {
-        lib$es6$promise$asap$$vertxNext(lib$es6$promise$asap$$flush);
-      };
-    }
-
-    function lib$es6$promise$asap$$useMutationObserver() {
-      var iterations = 0;
-      var observer = new lib$es6$promise$asap$$BrowserMutationObserver(lib$es6$promise$asap$$flush);
-      var node = document.createTextNode('');
-      observer.observe(node, { characterData: true });
-
-      return function() {
-        node.data = (iterations = ++iterations % 2);
-      };
-    }
-
-    // web worker
-    function lib$es6$promise$asap$$useMessageChannel() {
-      var channel = new MessageChannel();
-      channel.port1.onmessage = lib$es6$promise$asap$$flush;
-      return function () {
-        channel.port2.postMessage(0);
-      };
-    }
-
-    function lib$es6$promise$asap$$useSetTimeout() {
-      return function() {
-        setTimeout(lib$es6$promise$asap$$flush, 1);
-      };
-    }
-
-    var lib$es6$promise$asap$$queue = new Array(1000);
-    function lib$es6$promise$asap$$flush() {
-      for (var i = 0; i < lib$es6$promise$asap$$len; i+=2) {
-        var callback = lib$es6$promise$asap$$queue[i];
-        var arg = lib$es6$promise$asap$$queue[i+1];
-
-        callback(arg);
-
-        lib$es6$promise$asap$$queue[i] = undefined;
-        lib$es6$promise$asap$$queue[i+1] = undefined;
-      }
-
-      lib$es6$promise$asap$$len = 0;
-    }
-
-    function lib$es6$promise$asap$$attemptVertx() {
-      try {
-        var r = require;
-        var vertx = r('vertx');
-        lib$es6$promise$asap$$vertxNext = vertx.runOnLoop || vertx.runOnContext;
-        return lib$es6$promise$asap$$useVertxTimer();
-      } catch(e) {
-        return lib$es6$promise$asap$$useSetTimeout();
-      }
-    }
-
-    var lib$es6$promise$asap$$scheduleFlush;
-    // Decide what async method to use to triggering processing of queued callbacks:
-    if (lib$es6$promise$asap$$isNode) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useNextTick();
-    } else if (lib$es6$promise$asap$$BrowserMutationObserver) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMutationObserver();
-    } else if (lib$es6$promise$asap$$isWorker) {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMessageChannel();
-    } else if (lib$es6$promise$asap$$browserWindow === undefined && typeof require === 'function') {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$attemptVertx();
-    } else {
-      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useSetTimeout();
-    }
-
-    function lib$es6$promise$$internal$$noop() {}
-
-    var lib$es6$promise$$internal$$PENDING   = void 0;
-    var lib$es6$promise$$internal$$FULFILLED = 1;
-    var lib$es6$promise$$internal$$REJECTED  = 2;
-
-    var lib$es6$promise$$internal$$GET_THEN_ERROR = new lib$es6$promise$$internal$$ErrorObject();
-
-    function lib$es6$promise$$internal$$selfFulfillment() {
-      return new TypeError("You cannot resolve a promise with itself");
-    }
-
-    function lib$es6$promise$$internal$$cannotReturnOwn() {
-      return new TypeError('A promises callback cannot return that same promise.');
-    }
-
-    function lib$es6$promise$$internal$$getThen(promise) {
-      try {
-        return promise.then;
-      } catch(error) {
-        lib$es6$promise$$internal$$GET_THEN_ERROR.error = error;
-        return lib$es6$promise$$internal$$GET_THEN_ERROR;
-      }
-    }
-
-    function lib$es6$promise$$internal$$tryThen(then, value, fulfillmentHandler, rejectionHandler) {
-      try {
-        then.call(value, fulfillmentHandler, rejectionHandler);
-      } catch(e) {
-        return e;
-      }
-    }
-
-    function lib$es6$promise$$internal$$handleForeignThenable(promise, thenable, then) {
-       lib$es6$promise$asap$$asap(function(promise) {
-        var sealed = false;
-        var error = lib$es6$promise$$internal$$tryThen(then, thenable, function(value) {
-          if (sealed) { return; }
-          sealed = true;
-          if (thenable !== value) {
-            lib$es6$promise$$internal$$resolve(promise, value);
-          } else {
-            lib$es6$promise$$internal$$fulfill(promise, value);
-          }
-        }, function(reason) {
-          if (sealed) { return; }
-          sealed = true;
-
-          lib$es6$promise$$internal$$reject(promise, reason);
-        }, 'Settle: ' + (promise._label || ' unknown promise'));
-
-        if (!sealed && error) {
-          sealed = true;
-          lib$es6$promise$$internal$$reject(promise, error);
-        }
-      }, promise);
-    }
-
-    function lib$es6$promise$$internal$$handleOwnThenable(promise, thenable) {
-      if (thenable._state === lib$es6$promise$$internal$$FULFILLED) {
-        lib$es6$promise$$internal$$fulfill(promise, thenable._result);
-      } else if (thenable._state === lib$es6$promise$$internal$$REJECTED) {
-        lib$es6$promise$$internal$$reject(promise, thenable._result);
-      } else {
-        lib$es6$promise$$internal$$subscribe(thenable, undefined, function(value) {
-          lib$es6$promise$$internal$$resolve(promise, value);
-        }, function(reason) {
-          lib$es6$promise$$internal$$reject(promise, reason);
-        });
-      }
-    }
-
-    function lib$es6$promise$$internal$$handleMaybeThenable(promise, maybeThenable) {
-      if (maybeThenable.constructor === promise.constructor) {
-        lib$es6$promise$$internal$$handleOwnThenable(promise, maybeThenable);
-      } else {
-        var then = lib$es6$promise$$internal$$getThen(maybeThenable);
-
-        if (then === lib$es6$promise$$internal$$GET_THEN_ERROR) {
-          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$GET_THEN_ERROR.error);
-        } else if (then === undefined) {
-          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
-        } else if (lib$es6$promise$utils$$isFunction(then)) {
-          lib$es6$promise$$internal$$handleForeignThenable(promise, maybeThenable, then);
-        } else {
-          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
-        }
-      }
-    }
-
-    function lib$es6$promise$$internal$$resolve(promise, value) {
-      if (promise === value) {
-        lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$selfFulfillment());
-      } else if (lib$es6$promise$utils$$objectOrFunction(value)) {
-        lib$es6$promise$$internal$$handleMaybeThenable(promise, value);
-      } else {
-        lib$es6$promise$$internal$$fulfill(promise, value);
-      }
-    }
-
-    function lib$es6$promise$$internal$$publishRejection(promise) {
-      if (promise._onerror) {
-        promise._onerror(promise._result);
-      }
-
-      lib$es6$promise$$internal$$publish(promise);
-    }
-
-    function lib$es6$promise$$internal$$fulfill(promise, value) {
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
-
-      promise._result = value;
-      promise._state = lib$es6$promise$$internal$$FULFILLED;
-
-      if (promise._subscribers.length !== 0) {
-        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, promise);
-      }
-    }
-
-    function lib$es6$promise$$internal$$reject(promise, reason) {
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
-      promise._state = lib$es6$promise$$internal$$REJECTED;
-      promise._result = reason;
-
-      lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publishRejection, promise);
-    }
-
-    function lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection) {
-      var subscribers = parent._subscribers;
-      var length = subscribers.length;
-
-      parent._onerror = null;
-
-      subscribers[length] = child;
-      subscribers[length + lib$es6$promise$$internal$$FULFILLED] = onFulfillment;
-      subscribers[length + lib$es6$promise$$internal$$REJECTED]  = onRejection;
-
-      if (length === 0 && parent._state) {
-        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, parent);
-      }
-    }
-
-    function lib$es6$promise$$internal$$publish(promise) {
-      var subscribers = promise._subscribers;
-      var settled = promise._state;
-
-      if (subscribers.length === 0) { return; }
-
-      var child, callback, detail = promise._result;
-
-      for (var i = 0; i < subscribers.length; i += 3) {
-        child = subscribers[i];
-        callback = subscribers[i + settled];
-
-        if (child) {
-          lib$es6$promise$$internal$$invokeCallback(settled, child, callback, detail);
-        } else {
-          callback(detail);
-        }
-      }
-
-      promise._subscribers.length = 0;
-    }
-
-    function lib$es6$promise$$internal$$ErrorObject() {
-      this.error = null;
-    }
-
-    var lib$es6$promise$$internal$$TRY_CATCH_ERROR = new lib$es6$promise$$internal$$ErrorObject();
-
-    function lib$es6$promise$$internal$$tryCatch(callback, detail) {
-      try {
-        return callback(detail);
-      } catch(e) {
-        lib$es6$promise$$internal$$TRY_CATCH_ERROR.error = e;
-        return lib$es6$promise$$internal$$TRY_CATCH_ERROR;
-      }
-    }
-
-    function lib$es6$promise$$internal$$invokeCallback(settled, promise, callback, detail) {
-      var hasCallback = lib$es6$promise$utils$$isFunction(callback),
-          value, error, succeeded, failed;
-
-      if (hasCallback) {
-        value = lib$es6$promise$$internal$$tryCatch(callback, detail);
-
-        if (value === lib$es6$promise$$internal$$TRY_CATCH_ERROR) {
-          failed = true;
-          error = value.error;
-          value = null;
-        } else {
-          succeeded = true;
-        }
-
-        if (promise === value) {
-          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$cannotReturnOwn());
-          return;
-        }
-
-      } else {
-        value = detail;
-        succeeded = true;
-      }
-
-      if (promise._state !== lib$es6$promise$$internal$$PENDING) {
-        // noop
-      } else if (hasCallback && succeeded) {
-        lib$es6$promise$$internal$$resolve(promise, value);
-      } else if (failed) {
-        lib$es6$promise$$internal$$reject(promise, error);
-      } else if (settled === lib$es6$promise$$internal$$FULFILLED) {
-        lib$es6$promise$$internal$$fulfill(promise, value);
-      } else if (settled === lib$es6$promise$$internal$$REJECTED) {
-        lib$es6$promise$$internal$$reject(promise, value);
-      }
-    }
-
-    function lib$es6$promise$$internal$$initializePromise(promise, resolver) {
-      try {
-        resolver(function resolvePromise(value){
-          lib$es6$promise$$internal$$resolve(promise, value);
-        }, function rejectPromise(reason) {
-          lib$es6$promise$$internal$$reject(promise, reason);
-        });
-      } catch(e) {
-        lib$es6$promise$$internal$$reject(promise, e);
-      }
-    }
-
-    function lib$es6$promise$enumerator$$Enumerator(Constructor, input) {
-      var enumerator = this;
-
-      enumerator._instanceConstructor = Constructor;
-      enumerator.promise = new Constructor(lib$es6$promise$$internal$$noop);
-
-      if (enumerator._validateInput(input)) {
-        enumerator._input     = input;
-        enumerator.length     = input.length;
-        enumerator._remaining = input.length;
-
-        enumerator._init();
-
-        if (enumerator.length === 0) {
-          lib$es6$promise$$internal$$fulfill(enumerator.promise, enumerator._result);
-        } else {
-          enumerator.length = enumerator.length || 0;
-          enumerator._enumerate();
-          if (enumerator._remaining === 0) {
-            lib$es6$promise$$internal$$fulfill(enumerator.promise, enumerator._result);
-          }
-        }
-      } else {
-        lib$es6$promise$$internal$$reject(enumerator.promise, enumerator._validationError());
-      }
-    }
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._validateInput = function(input) {
-      return lib$es6$promise$utils$$isArray(input);
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._validationError = function() {
-      return new Error('Array Methods must be provided an Array');
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._init = function() {
-      this._result = new Array(this.length);
-    };
-
-    var lib$es6$promise$enumerator$$default = lib$es6$promise$enumerator$$Enumerator;
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._enumerate = function() {
-      var enumerator = this;
-
-      var length  = enumerator.length;
-      var promise = enumerator.promise;
-      var input   = enumerator._input;
-
-      for (var i = 0; promise._state === lib$es6$promise$$internal$$PENDING && i < length; i++) {
-        enumerator._eachEntry(input[i], i);
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._eachEntry = function(entry, i) {
-      var enumerator = this;
-      var c = enumerator._instanceConstructor;
-
-      if (lib$es6$promise$utils$$isMaybeThenable(entry)) {
-        if (entry.constructor === c && entry._state !== lib$es6$promise$$internal$$PENDING) {
-          entry._onerror = null;
-          enumerator._settledAt(entry._state, i, entry._result);
-        } else {
-          enumerator._willSettleAt(c.resolve(entry), i);
-        }
-      } else {
-        enumerator._remaining--;
-        enumerator._result[i] = entry;
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._settledAt = function(state, i, value) {
-      var enumerator = this;
-      var promise = enumerator.promise;
-
-      if (promise._state === lib$es6$promise$$internal$$PENDING) {
-        enumerator._remaining--;
-
-        if (state === lib$es6$promise$$internal$$REJECTED) {
-          lib$es6$promise$$internal$$reject(promise, value);
-        } else {
-          enumerator._result[i] = value;
-        }
-      }
-
-      if (enumerator._remaining === 0) {
-        lib$es6$promise$$internal$$fulfill(promise, enumerator._result);
-      }
-    };
-
-    lib$es6$promise$enumerator$$Enumerator.prototype._willSettleAt = function(promise, i) {
-      var enumerator = this;
-
-      lib$es6$promise$$internal$$subscribe(promise, undefined, function(value) {
-        enumerator._settledAt(lib$es6$promise$$internal$$FULFILLED, i, value);
-      }, function(reason) {
-        enumerator._settledAt(lib$es6$promise$$internal$$REJECTED, i, reason);
-      });
-    };
-    function lib$es6$promise$promise$all$$all(entries) {
-      return new lib$es6$promise$enumerator$$default(this, entries).promise;
-    }
-    var lib$es6$promise$promise$all$$default = lib$es6$promise$promise$all$$all;
-    function lib$es6$promise$promise$race$$race(entries) {
-      /*jshint validthis:true */
-      var Constructor = this;
-
-      var promise = new Constructor(lib$es6$promise$$internal$$noop);
-
-      if (!lib$es6$promise$utils$$isArray(entries)) {
-        lib$es6$promise$$internal$$reject(promise, new TypeError('You must pass an array to race.'));
-        return promise;
-      }
-
-      var length = entries.length;
-
-      function onFulfillment(value) {
-        lib$es6$promise$$internal$$resolve(promise, value);
-      }
-
-      function onRejection(reason) {
-        lib$es6$promise$$internal$$reject(promise, reason);
-      }
-
-      for (var i = 0; promise._state === lib$es6$promise$$internal$$PENDING && i < length; i++) {
-        lib$es6$promise$$internal$$subscribe(Constructor.resolve(entries[i]), undefined, onFulfillment, onRejection);
-      }
-
-      return promise;
-    }
-    var lib$es6$promise$promise$race$$default = lib$es6$promise$promise$race$$race;
-    function lib$es6$promise$promise$resolve$$resolve(object) {
-      /*jshint validthis:true */
-      var Constructor = this;
-
-      if (object && typeof object === 'object' && object.constructor === Constructor) {
-        return object;
-      }
-
-      var promise = new Constructor(lib$es6$promise$$internal$$noop);
-      lib$es6$promise$$internal$$resolve(promise, object);
-      return promise;
-    }
-    var lib$es6$promise$promise$resolve$$default = lib$es6$promise$promise$resolve$$resolve;
-    function lib$es6$promise$promise$reject$$reject(reason) {
-      /*jshint validthis:true */
-      var Constructor = this;
-      var promise = new Constructor(lib$es6$promise$$internal$$noop);
-      lib$es6$promise$$internal$$reject(promise, reason);
-      return promise;
-    }
-    var lib$es6$promise$promise$reject$$default = lib$es6$promise$promise$reject$$reject;
-
-    var lib$es6$promise$promise$$counter = 0;
-
-    function lib$es6$promise$promise$$needsResolver() {
-      throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
-    }
-
-    function lib$es6$promise$promise$$needsNew() {
-      throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
-    }
-
-    var lib$es6$promise$promise$$default = lib$es6$promise$promise$$Promise;
-    /**
-      Promise objects represent the eventual result of an asynchronous operation. The
-      primary way of interacting with a promise is through its `then` method, which
-      registers callbacks to receive either a promise's eventual value or the reason
-      why the promise cannot be fulfilled.
-
-      Terminology
-      -----------
-
-      - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
-      - `thenable` is an object or function that defines a `then` method.
-      - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
-      - `exception` is a value that is thrown using the throw statement.
-      - `reason` is a value that indicates why a promise was rejected.
-      - `settled` the final resting state of a promise, fulfilled or rejected.
-
-      A promise can be in one of three states: pending, fulfilled, or rejected.
-
-      Promises that are fulfilled have a fulfillment value and are in the fulfilled
-      state.  Promises that are rejected have a rejection reason and are in the
-      rejected state.  A fulfillment value is never a thenable.
-
-      Promises can also be said to *resolve* a value.  If this value is also a
-      promise, then the original promise's settled state will match the value's
-      settled state.  So a promise that *resolves* a promise that rejects will
-      itself reject, and a promise that *resolves* a promise that fulfills will
-      itself fulfill.
-
-
-      Basic Usage:
-      ------------
-
-      ```js
-      var promise = new Promise(function(resolve, reject) {
-        // on success
-        resolve(value);
-
-        // on failure
-        reject(reason);
-      });
-
-      promise.then(function(value) {
-        // on fulfillment
-      }, function(reason) {
-        // on rejection
-      });
-      ```
-
-      Advanced Usage:
-      ---------------
-
-      Promises shine when abstracting away asynchronous interactions such as
-      `XMLHttpRequest`s.
-
-      ```js
-      function getJSON(url) {
-        return new Promise(function(resolve, reject){
-          var xhr = new XMLHttpRequest();
-
-          xhr.open('GET', url);
-          xhr.onreadystatechange = handler;
-          xhr.responseType = 'json';
-          xhr.setRequestHeader('Accept', 'application/json');
-          xhr.send();
-
-          function handler() {
-            if (this.readyState === this.DONE) {
-              if (this.status === 200) {
-                resolve(this.response);
-              } else {
-                reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
-              }
-            }
-          };
-        });
-      }
-
-      getJSON('/posts.json').then(function(json) {
-        // on fulfillment
-      }, function(reason) {
-        // on rejection
-      });
-      ```
-
-      Unlike callbacks, promises are great composable primitives.
-
-      ```js
-      Promise.all([
-        getJSON('/posts'),
-        getJSON('/comments')
-      ]).then(function(values){
-        values[0] // => postsJSON
-        values[1] // => commentsJSON
-
-        return values;
-      });
-      ```
-
-      @class Promise
-      @param {function} resolver
-      Useful for tooling.
-      @constructor
-    */
-    function lib$es6$promise$promise$$Promise(resolver) {
-      this._id = lib$es6$promise$promise$$counter++;
-      this._state = undefined;
-      this._result = undefined;
-      this._subscribers = [];
-
-      if (lib$es6$promise$$internal$$noop !== resolver) {
-        if (!lib$es6$promise$utils$$isFunction(resolver)) {
-          lib$es6$promise$promise$$needsResolver();
-        }
-
-        if (!(this instanceof lib$es6$promise$promise$$Promise)) {
-          lib$es6$promise$promise$$needsNew();
-        }
-
-        lib$es6$promise$$internal$$initializePromise(this, resolver);
-      }
-    }
-
-    lib$es6$promise$promise$$Promise.all = lib$es6$promise$promise$all$$default;
-    lib$es6$promise$promise$$Promise.race = lib$es6$promise$promise$race$$default;
-    lib$es6$promise$promise$$Promise.resolve = lib$es6$promise$promise$resolve$$default;
-    lib$es6$promise$promise$$Promise.reject = lib$es6$promise$promise$reject$$default;
-    lib$es6$promise$promise$$Promise._setScheduler = lib$es6$promise$asap$$setScheduler;
-    lib$es6$promise$promise$$Promise._setAsap = lib$es6$promise$asap$$setAsap;
-    lib$es6$promise$promise$$Promise._asap = lib$es6$promise$asap$$asap;
-
-    lib$es6$promise$promise$$Promise.prototype = {
-      constructor: lib$es6$promise$promise$$Promise,
-
-    /**
-      The primary way of interacting with a promise is through its `then` method,
-      which registers callbacks to receive either a promise's eventual value or the
-      reason why the promise cannot be fulfilled.
-
-      ```js
-      findUser().then(function(user){
-        // user is available
-      }, function(reason){
-        // user is unavailable, and you are given the reason why
-      });
-      ```
-
-      Chaining
-      --------
-
-      The return value of `then` is itself a promise.  This second, 'downstream'
-      promise is resolved with the return value of the first promise's fulfillment
-      or rejection handler, or rejected if the handler throws an exception.
-
-      ```js
-      findUser().then(function (user) {
-        return user.name;
-      }, function (reason) {
-        return 'default name';
-      }).then(function (userName) {
-        // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
-        // will be `'default name'`
-      });
-
-      findUser().then(function (user) {
-        throw new Error('Found user, but still unhappy');
-      }, function (reason) {
-        throw new Error('`findUser` rejected and we're unhappy');
-      }).then(function (value) {
-        // never reached
-      }, function (reason) {
-        // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
-        // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
-      });
-      ```
-      If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
-
-      ```js
-      findUser().then(function (user) {
-        throw new PedagogicalException('Upstream error');
-      }).then(function (value) {
-        // never reached
-      }).then(function (value) {
-        // never reached
-      }, function (reason) {
-        // The `PedgagocialException` is propagated all the way down to here
-      });
-      ```
-
-      Assimilation
-      ------------
-
-      Sometimes the value you want to propagate to a downstream promise can only be
-      retrieved asynchronously. This can be achieved by returning a promise in the
-      fulfillment or rejection handler. The downstream promise will then be pending
-      until the returned promise is settled. This is called *assimilation*.
-
-      ```js
-      findUser().then(function (user) {
-        return findCommentsByAuthor(user);
-      }).then(function (comments) {
-        // The user's comments are now available
-      });
-      ```
-
-      If the assimliated promise rejects, then the downstream promise will also reject.
-
-      ```js
-      findUser().then(function (user) {
-        return findCommentsByAuthor(user);
-      }).then(function (comments) {
-        // If `findCommentsByAuthor` fulfills, we'll have the value here
-      }, function (reason) {
-        // If `findCommentsByAuthor` rejects, we'll have the reason here
-      });
-      ```
-
-      Simple Example
-      --------------
-
-      Synchronous Example
-
-      ```javascript
-      var result;
-
-      try {
-        result = findResult();
-        // success
-      } catch(reason) {
-        // failure
-      }
-      ```
-
-      Errback Example
-
-      ```js
-      findResult(function(result, err){
-        if (err) {
-          // failure
-        } else {
-          // success
-        }
-      });
-      ```
-
-      Promise Example;
-
-      ```javascript
-      findResult().then(function(result){
-        // success
-      }, function(reason){
-        // failure
-      });
-      ```
-
-      Advanced Example
-      --------------
-
-      Synchronous Example
-
-      ```javascript
-      var author, books;
-
-      try {
-        author = findAuthor();
-        books  = findBooksByAuthor(author);
-        // success
-      } catch(reason) {
-        // failure
-      }
-      ```
-
-      Errback Example
-
-      ```js
-
-      function foundBooks(books) {
-
-      }
-
-      function failure(reason) {
-
-      }
-
-      findAuthor(function(author, err){
-        if (err) {
-          failure(err);
-          // failure
-        } else {
-          try {
-            findBoooksByAuthor(author, function(books, err) {
-              if (err) {
-                failure(err);
-              } else {
-                try {
-                  foundBooks(books);
-                } catch(reason) {
-                  failure(reason);
-                }
-              }
-            });
-          } catch(error) {
-            failure(err);
-          }
-          // success
-        }
-      });
-      ```
-
-      Promise Example;
-
-      ```javascript
-      findAuthor().
-        then(findBooksByAuthor).
-        then(function(books){
-          // found books
-      }).catch(function(reason){
-        // something went wrong
-      });
-      ```
-
-      @method then
-      @param {Function} onFulfilled
-      @param {Function} onRejected
-      Useful for tooling.
-      @return {Promise}
-    */
-      then: function(onFulfillment, onRejection) {
-        var parent = this;
-        var state = parent._state;
-
-        if (state === lib$es6$promise$$internal$$FULFILLED && !onFulfillment || state === lib$es6$promise$$internal$$REJECTED && !onRejection) {
-          return this;
-        }
-
-        var child = new this.constructor(lib$es6$promise$$internal$$noop);
-        var result = parent._result;
-
-        if (state) {
-          var callback = arguments[state - 1];
-          lib$es6$promise$asap$$asap(function(){
-            lib$es6$promise$$internal$$invokeCallback(state, child, callback, result);
-          });
-        } else {
-          lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection);
-        }
-
-        return child;
-      },
-
-    /**
-      `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
-      as the catch block of a try/catch statement.
-
-      ```js
-      function findAuthor(){
-        throw new Error('couldn't find that author');
-      }
-
-      // synchronous
-      try {
-        findAuthor();
-      } catch(reason) {
-        // something went wrong
-      }
-
-      // async with promises
-      findAuthor().catch(function(reason){
-        // something went wrong
-      });
-      ```
-
-      @method catch
-      @param {Function} onRejection
-      Useful for tooling.
-      @return {Promise}
-    */
-      'catch': function(onRejection) {
-        return this.then(null, onRejection);
-      }
-    };
-    function lib$es6$promise$polyfill$$polyfill() {
-      var local;
-
-      if (typeof global !== 'undefined') {
-          local = global;
-      } else if (typeof self !== 'undefined') {
-          local = self;
-      } else {
-          try {
-              local = Function('return this')();
-          } catch (e) {
-              throw new Error('polyfill failed because global object is unavailable in this environment');
-          }
-      }
-
-      var P = local.Promise;
-
-      if (P && Object.prototype.toString.call(P.resolve()) === '[object Promise]' && !P.cast) {
-        return;
-      }
-
-      local.Promise = lib$es6$promise$promise$$default;
-    }
-    var lib$es6$promise$polyfill$$default = lib$es6$promise$polyfill$$polyfill;
-
-    var lib$es6$promise$umd$$ES6Promise = {
-      'Promise': lib$es6$promise$promise$$default,
-      'polyfill': lib$es6$promise$polyfill$$default
-    };
-
-    /* global define:true module:true window: true */
-    if (typeof define === 'function' && define['amd']) {
-      define(function() { return lib$es6$promise$umd$$ES6Promise; });
-    } else if (typeof module !== 'undefined' && module['exports']) {
-      module['exports'] = lib$es6$promise$umd$$ES6Promise;
-    } else if (typeof this !== 'undefined') {
-      this['ES6Promise'] = lib$es6$promise$umd$$ES6Promise;
-    }
-
-    lib$es6$promise$polyfill$$default();
-}).call(this);
-
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{"_process":8}],101:[function(require,module,exports){
-arguments[4][14][0].apply(exports,arguments)
-},{"dup":14}],102:[function(require,module,exports){
-(function (global){
-var performance = global.performance || {};
-
-var present = (function () {
-  var names = ['now', 'webkitNow', 'msNow', 'mozNow', 'oNow'];
-  while (names.length) {
-    var name = names.shift();
-    if (name in performance) {
-      return performance[name].bind(performance);
-    }
-  }
-
-  var dateNow = Date.now || function () { return new Date().getTime(); };
-  var navigationStart = (performance.timing || {}).navigationStart || dateNow();
-  return function () {
-    return dateNow() - navigationStart;
-  };
-}());
-
-present.performanceNow = performance.now;
-present.noConflict = function () {
-  performance.now = present.performanceNow;
-};
-present.conflict = function () {
-  performance.now = present;
-};
-present.conflict();
-
-module.exports = present;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-
-},{}],103:[function(require,module,exports){
-arguments[4][16][0].apply(exports,arguments)
-},{"dup":16,"raf":104,"time-now":105}],104:[function(require,module,exports){
-arguments[4][17][0].apply(exports,arguments)
-},{"dup":17}],105:[function(require,module,exports){
-arguments[4][18][0].apply(exports,arguments)
-},{"dup":18}],106:[function(require,module,exports){
-arguments[4][19][0].apply(exports,arguments)
-},{"dup":19}],107:[function(require,module,exports){
-arguments[4][20][0].apply(exports,arguments)
-},{"dup":20}],108:[function(require,module,exports){
-arguments[4][21][0].apply(exports,arguments)
-},{"dup":21}],109:[function(require,module,exports){
-arguments[4][22][0].apply(exports,arguments)
-},{"dup":22}],110:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],111:[function(require,module,exports){
-arguments[4][24][0].apply(exports,arguments)
-},{"dup":24}],112:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"dup":25}],113:[function(require,module,exports){
-arguments[4][26][0].apply(exports,arguments)
-},{"dup":26}],114:[function(require,module,exports){
-module.exports={
-  "name": "aframe-core",
-  "version": "0.1.3",
-  "homepage": "https://github.com/aframevr/aframe-core",
-  "license": "MIT",
-  "main": "src/index.js",
-  "dependencies": {
-    "browserify-css": "^0.8.2",
-    "debug": "^2.2.0",
-    "document-register-element": "^0.5.2",
-    "es6-promise": "^3.0.2",
-    "object-assign": "^4.0.1",
-    "present": "0.0.6",
-    "request-interval": "^1.0.0",
-    "style-attr": "^1.0.1",
-    "three-dev": "^0.74.0-beta8",
-    "tween.js": "^15.0.0",
-    "webvr-polyfill": "borismus/webvr-polyfill#3f47796"
-  },
-  "devDependencies": {
-    "browserify": "^11.0.1",
-    "budo": "^7.0.2",
-    "chai-shallow-deep-equal": "^1.3.0",
-    "copyfiles": "0.2.1",
-    "exorcist": "^0.4.0",
-    "gh-pages": "^0.6.0",
-    "husky": "^0.10.1",
-    "karma": "^0.13.15",
-    "karma-browserify": "^4.4.0",
-    "karma-chai-shallow-deep-equal": "0.0.4",
-    "karma-env-preprocessor": "^0.1.1",
-    "karma-firefox-launcher": "^0.1.6",
-    "karma-mocha": "^0.2.0",
-    "karma-mocha-reporter": "^1.1.0",
-    "karma-sinon-chai": "^1.1.0",
-    "mkdirp": "0.5.1",
-    "mocha": "^2.3.3",
-    "mozilla-download": "^1.0.5",
-    "ncp": "2.0.0",
-    "open": "0.0.5",
-    "replace": "^0.3.0",
-    "rimraf": "2.5.0",
-    "semistandard": "^7.0.2",
-    "standard-reporter": "^1.0.5",
-    "uglifyjs": "^2.4.10"
-  },
-  "scripts": {
-    "start": "npm run dev",
-    "dev": "npm run build && node ./scripts/budo",
-    "browserify": "browserify ./src/index.js -s aframe-core",
-    "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe-core.js",
-    "dist": "rimraf dist/ && mkdirp dist/ && npm run dist:js",
-    "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
-    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && copyfiles -u .nojekyll dist/**/* lib/**/* examples/**/* style/**/* index.html gh-pages && git checkout dist/ && replace 'build/aframe-core.js' 'dist/aframe-core.min.js' gh-pages/ -r --silent",
-    "ghpages": "node ./scripts/gh-pages",
-    "gh-pages": "npm run ghpages",
-    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
-    "release:push": "npm login && npm publish && git push --follow-tags",
-    "test": "karma start ./tests/karma.conf.js",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
-    "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
-    "precommit": "npm run lint"
-  },
-  "repository": "aframevr/aframe-core",
-  "bugs": {
-    "url": "https://github.com/aframevr/aframe-core/issues"
-  },
-  "semistandard": {
-    "ignore": [
-      "dist/**",
-      "examples/_js/**",
-      "lib/vendor/**",
-      "src/shaders/**"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      "browserify-css"
-    ]
-  },
-  "browserify-css": {
-    "minify": true
-  },
-  "engines": {
-    "node": ">= 0.12.7",
-    "npm": ">= 2.12.1"
-  }
-}
-
-},{}],115:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"dup":28}],116:[function(require,module,exports){
-arguments[4][29][0].apply(exports,arguments)
-},{"../core/component":141,"../utils/":146,"dup":29}],117:[function(require,module,exports){
-arguments[4][30][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"../utils/debug":145,"dup":30}],118:[function(require,module,exports){
-var debug = require('../utils/debug');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../../lib/three');
-var utils = require('../utils');
-
-var DEFAULT_RADIUS = 1;
-var helperMatrix = new THREE.Matrix4();
-var rad = THREE.Math.degToRad;
-var warn = debug('components:geometry:warn');
-
-/**
- * Geometry component. Combined with material component to make a mesh in 3D object.
- *
- * @param {number} [arc=360] -
- *   Used by torus. A central angle that determines arc length of the torus. In degrees.
- * @param {number} [depth=2] - Used by box. Depth of the sides on the Z axis.
- * @param {number} [height=2] -
- *   Used by box, cylinder, plane. Height of the sides on the Y axis.
- * @param {bool} [openEnded=false] - Used by cylinder.
- * @param {number} [p=2] - Used by torusKnot. Coprime of q.
- * @param {number} [primitive=null] - type of shape (e.g., box, sphere).
- * @param {number} [q=3] - Used by torusKnot. Coprime of p.
- * @param {number} [radius=1] - Used by circle, cylinder, ring, sphere, torus, torusKnot.
- * @param {number} [radiusBottom=1] - Used by cylinder.
- * @param {number} [radiusInner=0.8] - Used by ring.
- * @param {number} [radiusOuter=1.2] - Used by ring.
- * @param {number} [radiusTop=1] - Used by cylinder.
- * @param {number} [radiusTube=0.2] - Used by torus. Tube radius.
- * @param {number} [scaleHeight=1] - Used by torusKnot.
- * @param {number} [segments=8] - Used by circle. Number of segments.
- * @param {number} [segmentsHeight=18] - Used by cylinder, sphere. Number of segments.
- * @param {number} [segmentsPhi=8] - Used by ring.
- * @param {number} [segmentsRadial=36] - Used by cylinder. Number of segments.
- * @param {number} [segmentsTheta=8] -
- *   Used by ring. Number of segments. A higher number means the ring will be more round.
- *   Minimum is 3.
- * @param {number} [segmentsTubular=8] - Used by torus, torusKnot. Number of segments.
- * @param {number} [segmentsWidth=36] - Used by sphere.
- * @param {number} [thetaLength=360] - Used by circle, cylinder, ring. In degrees.
- * @param {number} [thetaStart=0] - Used by circle, cylinder, ring. In degrees.
- * @param {string} translate -
- *   Defined as a coordinate (e.g., `-1 0 5`) that translates geometry vertices. Useful for
- *   effectively changing the pivot point.
- * @param {number} [width=2] - Used by box, plane.
- */
-module.exports.Component = registerComponent('geometry', {
-  schema: {
-    arc: { default: 360, if: { primitive: ['torus'] } },
-    depth: { default: 2, min: 0, if: { primitive: ['box'] } },
-    height: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } },
-    openEnded: { default: false, if: { primitive: ['cylinder'] } },
-    p: { default: 2, if: { primitive: ['torusKnot'] } },
-    primitive: {
-      default: '',
-      oneOf: ['', 'box', 'circle', 'cylinder', 'plane',
-              'ring', 'sphere', 'torus', 'torusKnot'] },
-    q: { default: 3, if: { primitive: ['torusKnot'] } },
-    phiLength: { default: 360, if: { primitive: ['sphere'] } },
-    phiStart: { default: 0, min: 0, if: { primitive: ['sphere'] } },
-    radius: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['circle', 'cylinder', 'sphere', 'torus', 'torusKnot'] } },
-    radiusBottom: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['cylinder'] } },
-    radiusInner: { default: 0.8, min: 0, if: { primitive: ['ring'] } },
-    radiusOuter: { default: 1.2, min: 0, if: { primitive: ['ring'] } },
-    radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder'] } },
-    radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus'] } },
-    scaleHeight: { default: 1, min: 0, if: { primitive: ['torusKnot'] } },
-    segments: { default: 8, min: 0, if: { primitive: ['circle'] } },
-    segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere'] } },
-    segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] } },
-    segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder'] } },
-    segmentsTheta: { default: 8, min: 0, if: { primitive: ['ring'] } },
-    segmentsTubular: { default: 8, min: 0, if: { primitive: ['torus', 'torusKnot'] } },
-    segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] } },
-    thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring',
-                                                           'sphere'] } },
-    thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
-    translate: { default: { x: 0, y: 0, z: 0 } },
-    width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
-  },
-
-  /**
-   * Creates a new geometry on every update as there's not an easy way to
-   * update a geometry that would be faster than just creating a new one.
-   */
-  update: function (previousData) {
-    previousData = previousData || {};
-    var data = this.data;
-    var currentTranslate = previousData.translate || this.schema.translate.default;
-    var diff = utils.diff(previousData, data);
-    var geometry = this.el.object3D.geometry;
-    var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'translate' in diff);
-    var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
-
-    if (geometryNeedsUpdate) {
-      geometry = this.el.object3D.geometry = getGeometry(this.data, this.schema);
-    }
-    if (translateNeedsUpdate) {
-      applyTranslate(geometry, data.translate, currentTranslate);
-    }
-  },
-
-  /**
-   * Removes geometry on remove (callback).
-   */
-  remove: function () {
-    this.el.object3D.geometry = new THREE.Geometry();
-  }
-});
-
-/**
- * Creates a three.js geometry.
- *
- * @param {object} data
- * @param {object} schema
- * @returns {object} geometry
- */
-function getGeometry (data, schema) {
-  if (data.primitive === 'cube') {
-    warn('geometry.primitive="cube" should be "box"');
-  }
-
-  switch (data.primitive) {
-    case 'box': {
-      return new THREE.BoxGeometry(data.width, data.height, data.depth);
-    }
-    case 'circle': {
-      return new THREE.CircleGeometry(
-        data.radius, data.segments, rad(data.thetaStart), rad(data.thetaLength));
-    }
-    case 'cone': {
-      return new THREE.CylinderGeometry(
-        data.radiusTop, data.radiusBottom, data.height,
-        data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
-    }
-    case 'cylinder': {
-      return new THREE.CylinderGeometry(
-        data.radius, data.radius, data.height,
-        data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
-    }
-    case 'plane': {
-      return new THREE.PlaneBufferGeometry(data.width, data.height);
-    }
-    case 'ring': {
-      return new THREE.RingGeometry(
-        data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
-        rad(data.thetaStart), rad(data.thetaLength));
-    }
-    case 'sphere': {
-      // thetaLength's default for spheres is different from those of the other geometries.
-      // For now, we detect if thetaLength is exactly 360 to switch to a different default.
-      if (data.thetaLength === 360) { data.thetaLength = 180; }
-      return new THREE.SphereBufferGeometry(
-        data.radius, data.segmentsWidth, data.segmentsHeight, rad(data.phiStart),
-        rad(data.phiLength), rad(data.thetaStart), rad(data.thetaLength));
-    }
-    case 'torus': {
-      return new THREE.TorusGeometry(
-        data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        rad(data.arc));
-    }
-    case 'torusKnot': {
-      return new THREE.TorusKnotGeometry(
-        data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        data.p, data.q, data.scaleHeight);
-    }
-    default: {
-      warn('Primitive type not supported: ' + data.primitive);
-      return new THREE.Geometry();
-    }
-  }
-}
-
-/**
- * Translates geometry vertices.
- *
- * @param {object} geometry - three.js geometry.
- * @param {object} translate - New translation.
- * @param {object} currentTranslate - Currently applied translation.
- */
-function applyTranslate (geometry, translate, currentTranslate) {
-  var translation = helperMatrix.makeTranslation(
-    translate.x - currentTranslate.x,
-    translate.y - currentTranslate.y,
-    translate.z - currentTranslate.z
-  );
-  geometry.applyMatrix(translation);
-  geometry.verticesNeedsUpdate = true;
-}
-
-},{"../../lib/three":90,"../core/component":141,"../utils":146,"../utils/debug":145}],119:[function(require,module,exports){
-arguments[4][32][0].apply(exports,arguments)
-},{"../components/camera":115,"../components/cursor":116,"../components/fog":117,"../components/geometry":118,"../components/light":120,"../components/loader":121,"../components/look-at":122,"../components/look-controls":123,"../components/material":124,"../components/position":125,"../components/raycaster":126,"../components/rotation":127,"../components/scale":128,"../components/sound":129,"../components/visible":130,"../components/wasd-controls":131,"dup":32}],120:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"../utils":146,"../utils/debug":145,"dup":33}],121:[function(require,module,exports){
-arguments[4][34][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"../utils/debug":145,"../utils/src-loader":147,"dup":34}],122:[function(require,module,exports){
-var debug = require('../utils/debug');
-var coordinates = require('../utils/coordinates');
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../../lib/three');
-
-var warn = debug('components:look-at:warn');
-var isCoordinate = coordinates.isCoordinate;
-
-/**
- * Look-at component.
- * Modifies rotation to either track another entity OR do a one-time turn towards a position
- * vector.
- *
- * If tracking an object via setting the component value via a selector, look-at will register
- * a behavior to the scene to update rotation on every tick.
- *
- * Examples:
- *
- * look-at="#the-mirror"
- * look-at="0 5 -2"
- *
- * @param Look-at either takes a target selector pointing to another object or a
- *        position.
- * @member {object} target3D - object3D of targeted element that look-at is currently
-           tracking.
- * @member {object} vector - Helper vector to do matrix transformations.
- */
-module.exports.Component = registerComponent('look-at', {
-  schema: {
-    default: ''
-  },
-
-  init: function () {
-    this.target3D = null;
-    this.vector = new THREE.Vector3();
-  },
-
-  /**
-   * If tracking an object, this will be called on every tick.
-   * If looking at a position vector, this will only be called once (until further updates).
-   */
-  update: function () {
-    var self = this;
-    var target = self.data;
-    var object3D = self.el.object3D;
-    var target3D = self.target3D;
-    var targetEl;
-
-    // Track target object position. Depends on parent object keeping global transforms up
-    // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
-    if (target3D) {
-      return object3D.lookAt(self.vector.setFromMatrixPosition(target3D.matrixWorld));
-    }
-
-    // No longer looking at anything (i.e., look-at="").
-    if (!target ||
-        (target.constructor === Object && !Object.keys(target).length)) {
-      return self.remove();
-    }
-
-    // Look at a position.
-    if (target.constructor === Object) {
-      return object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
-    }
-
-    // Assume target is a string.
-    // Query for the element, grab its object3D, then register a behavior on the scene to
-    // track the target on every tick.
-    targetEl = document.querySelector(target);
-    if (!targetEl) {
-      warn('"' + target + '" does not point to a valid entity to look-at');
-      return;
-    }
-    if (!targetEl.hasLoaded) {
-      return targetEl.addEventListener('loaded', function () {
-        self.beginTracking(targetEl);
-      });
-    }
-    return self.beginTracking(targetEl);
-  },
-
-  /**
-   * Remove follow behavior on remove (callback).
-   */
-  remove: function () {
-    if (this.target3D) {
-      this.el.sceneEl.removeBehavior(this);
-      this.target3D = null;
-    }
-  },
-
-  parse: function (value) {
-    if (isCoordinate(value) || value.constructor === Object) {
-      return coordinates.parse(value);
-    }
-    return value;
-  },
-
-  stringify: function (data) {
-    return coordinates.stringify(data);
-  },
-
-  beginTracking: function (targetEl) {
-    this.target3D = targetEl.object3D;
-    this.el.sceneEl.addBehavior(this);
-  }
-});
-
-},{"../../lib/three":90,"../core/component":141,"../utils/coordinates":144,"../utils/debug":145}],123:[function(require,module,exports){
-arguments[4][36][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"dup":36}],124:[function(require,module,exports){
-arguments[4][37][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"../utils":146,"../utils/debug":145,"../utils/src-loader":147,"dup":37}],125:[function(require,module,exports){
-var registerComponent = require('../core/component').registerComponent;
-
-module.exports.Component = registerComponent('position', {
-  schema: {
-    type: 'coordinate',
-    default: { x: 0, y: 0, z: 0 }
-  },
-
-  update: function () {
-    var object3D = this.el.object3D;
-    var data = this.data;
-    object3D.position.set(data.x, data.y, data.z);
-  }
-});
-
-},{"../core/component":141}],126:[function(require,module,exports){
-arguments[4][39][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"dup":39,"request-interval":103}],127:[function(require,module,exports){
-var rad = require('../../lib/three').Math.degToRad;
-var registerComponent = require('../core/component').registerComponent;
-
-module.exports.Component = registerComponent('rotation', {
-  schema: {
-    type: 'coordinate',
-    default: { x: 0, y: 0, z: 0 }
-  },
-
-  /**
-   * Updates object3D rotation.
-   */
-  update: function () {
-    var data = this.data;
-    var object3D = this.el.object3D;
-    object3D.rotation.set(rad(data.x), rad(data.y), rad(data.z));
-    object3D.rotation.order = 'YXZ';
-  }
-});
-
-},{"../../lib/three":90,"../core/component":141}],128:[function(require,module,exports){
-var registerComponent = require('../core/component').registerComponent;
-
-// Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
-var zeroScale = 0.00001;
-
-module.exports.Component = registerComponent('scale', {
-  schema: {
-    type: 'coordinate',
-    default: { x: 1, y: 1, z: 1 }
-  },
-
-  update: function () {
-    var data = this.data;
-    var object3D = this.el.object3D;
-    var x = data.x === 0 ? zeroScale : data.x;
-    var y = data.y === 0 ? zeroScale : data.y;
-    var z = data.z === 0 ? zeroScale : data.z;
-    object3D.scale.set(x, y, z);
-  }
-});
-
-},{"../core/component":141}],129:[function(require,module,exports){
-arguments[4][42][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"../utils":146,"../utils/debug":145,"dup":42}],130:[function(require,module,exports){
-var registerComponent = require('../core/component').registerComponent;
-
-/**
- * Visibility component.
- */
-module.exports.Component = registerComponent('visible', {
-  schema: {
-    type: 'boolean',
-    default: true
-  },
-
-  update: function () {
-    this.el.object3D.visible = this.data;
-  }
-});
-
-},{"../core/component":141}],131:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"../../lib/three":90,"../core/component":141,"dup":44}],132:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"dup":45,"tween.js":112}],133:[function(require,module,exports){
-var ANode = require('./a-node');
-var coerceToSchema = require('./schema').coerce;
-var constants = require('../constants/animation');
-var coordinates = require('../utils/').coordinates;
-var registerElement = require('./a-register-element').registerElement;
-var TWEEN = require('tween.js');
-var utils = require('../utils/');
-
-var DEFAULTS = constants.defaults;
-var DIRECTIONS = constants.directions;
-var EASING_FUNCTIONS = constants.easingFunctions;
-var FILLS = constants.fills;
-var REPEATS = constants.repeats;
-var isCoordinate = coordinates.isCoordinate;
-
-/**
- * Animation element that applies Tween animation to parent element (entity).
- * Takes after the Web Animations spec.
- *
- * @namespace <a-animation>
- * @param {string} attribute -
- *   Entity attribute to animate. Can be a component name (e.g., `position`) if the component
- *   is set via a single value. Or can be a dot-separated componentName.componentProp to
- *   animate a single component property (e.g., `light.intensity`, `material.opacity`).
- * @param {number|string} begin -
- *   Either milliseconds to delay or an event name to wait upon before starting animation.
- * @param {string} direction -
- *   Direction of the animation between from and to.
- *     - alternate: Even iterations played as specified, odd iterations played in reverse
- *                direction from way specified.
- *     - alternate-reverse: Even iterations are played in the reverse direction from way
- *                        specified, odd iterations played as specified.
- *     - normal: All iterations are played as specified.
- *     - reverse: All iterations are played in reverse direction from way specified.
- * @param {number} dur - How long to run the animation in milliseconds.
- * @param {string} easing -
- *   Easing function of animation (e.g., ease, ease-in, ease-in-out, ease-out, linear).
- * @param {string} [fill=forwards] -
- *   Determines effect of animation when not in play.
- *     - backwards: Before animation, set initial value to `from`.
- *     - both: Before animation, backwards fill. After animation, forwards fill.
- *     - forwards: After animation, value will stay at `to`.
- *     - none: Animation has no effect when not in play.
- * @param {number} from - Start value. Defaults to the entity's current value for that attr.
- * @param {number|string} repeat -
- *   How the animation should repeat (e.g., a number or `indefinite`).
- * @param {number} to - End value.
- * @member {number} count -
- *   Decrementing counter for how many cycles of animations left to run.
- * @member {Element} el - Entity which the animation is modifying to.
- * @member initialValue - Value before animation started. Used to restore state.
- * @member {bool} isRunning - Whether animation is currently running.
- * @member {function} partialSetAttribute -
- *   setAttribute function that is agnostic to whether we are setting an attribute value
- *   or a component property value. The el and the attribute names are bundled with
- *   the function.
- * @member {object} tween - tween.js object.
- */
-module.exports.AAnimation = registerElement('a-animation', {
-  prototype: Object.create(ANode.prototype, {
-    createdCallback: {
-      value: function () {
-        this.isRunning = false;
-        this.partialSetAttribute = function () { /* no-op */ };
-        this.tween = null;
-      }
-    },
-
-    attachedCallback: {
-      value: function () {
-        var self = this;
-        var el = self.el = self.parentNode;
-
-        if (el.isNode) {
-          if (el.hasLoaded) {
-            init();
-          } else {
-            el.addEventListener('loaded', init.bind(self));
-          }
-        } else {
-          // To handle elements that are not yet `<a-entity>`s (e.g., templates).
-          el.addEventListener('nodeready', init.bind(self));
-        }
-
-        function init () {
-          self.bindMethods();
-          self.applyMixin();
-          self.update();
-          self.load();
-        }
-      }
-    },
-
-    attributeChangedCallback: {
-      value: function (attr, oldVal, newVal) {
-        if (!this.hasLoaded || !this.isRunning) { return; }
-        this.stop();
-        this.applyMixin();
-        this.update();
-      }
-    },
-
-    /**
-     * Builds a Tween object to handle animations.
-     * Uses tween.js's from, to, delay, easing, repeat, onUpdate, and onComplete.
-     * Note: tween.js takes objects for its `from` and `to` values.
-     *
-     * @returns {object}
-     */
-    getTween: {
-      value: function () {
-        var self = this;
-        var data = self.data;
-        var el = self.el;
-        var animationValues;
-        var attribute = data.attribute;
-        var begin = parseInt(data.begin, 10);
-        var currentValue = el.getComputedAttribute(attribute);
-        var direction = self.getDirection(data.direction);
-        var easing = EASING_FUNCTIONS[data.easing];
-        var fill = data.fill;
-        var from;
-        var repeat = data.repeat === REPEATS.indefinite ? Infinity : 0;
-        var to;
-        var toTemp;
-        var yoyo = false;
-
-        animationValues = getAnimationValues(el, attribute, data.from || self.initialValue, data.to, currentValue);
-        from = animationValues.from;
-        to = animationValues.to;
-        self.partialSetAttribute = animationValues.partialSetAttribute;
-
-        if (self.count === undefined) {
-          self.count = repeat === Infinity ? 0 : parseInt(data.repeat, 10);
-        }
-
-        if (isNaN(begin)) { begin = 0; }
-
-        // Store initial state.
-        self.initialValue = self.initialValue || cloneValue(currentValue);
-
-        // Handle indefinite + forwards + alternate yoyo edge-case (#405).
-        if (repeat === Infinity && fill === FILLS.forwards &&
-            [DIRECTIONS.alternate,
-             DIRECTIONS.alternateReverse].indexOf(data.direction) !== -1) {
-          yoyo = true;
-        }
-
-        // If reversing, swap from and to.
-        if (direction === DIRECTIONS.reverse) {
-          toTemp = to;
-          to = cloneValue(from);
-          from = cloneValue(toTemp);
-        }
-
-        // If fill is backwards or both, start animation at the specified from.
-        if ([FILLS.backwards, FILLS.both].indexOf(fill) !== -1) {
-          self.partialSetAttribute(from);
-        }
-
-        // Create Tween.
-        return new TWEEN.Tween(cloneValue(from))
-          .to(to, data.dur)
-          .delay(begin)
-          .easing(easing)
-          .repeat(repeat)
-          .yoyo(yoyo)
-          .onUpdate(function () {
-            self.partialSetAttribute(this);
-          })
-          .onComplete(self.onCompleted.bind(self));
-      }
-    },
-
-    /**
-     * Animation parameters changed. Stop current animation, get a new one, and start it.
-     */
-    update: {
-      value: function () {
-        var data = this.data;
-        var begin = data.begin;
-        // Cancel previous event listeners
-        this.removeEventListeners(this.evt);
-        this.addEventListeners(begin);
-        // Store new event name.
-        this.evt = begin;
-        // If `begin` is a number, start the animation right away.
-        if (!isNaN(begin)) {
-          this.stop();
-          this.start();
-        }
-      },
-      writable: window.debug
-    },
-
-    /**
-     * Callback for when a cycle of an animation is complete. Handles when to completely
-     * finish the animation.
-     *
-     * If `repeat` is set to a value, this method is called after each repeat. Repeats are
-     * handled by ending the current animation and creating a new one with `count` updated.
-     * Note that this method is *not* called if repeat is set to `indefinite`.
-     */
-    onCompleted: {
-      value: function () {
-        var data = this.data;
-        this.isRunning = false;
-        if ([FILLS.backwards, FILLS.none].indexOf(data.fill) !== -1) {
-          this.partialSetAttribute(this.initialValue);
-        }
-        if (this.count === 0) {
-          this.count = undefined;
-          this.emit('animationend');
-          return;
-        }
-        this.isRunning = false;
-        this.count--;
-        this.start();
-      }
-    },
-
-    start: {
-      value: function () {
-        if (this.isRunning) { return; }
-        this.tween = this.getTween();
-        this.isRunning = true;
-        this.tween.start();
-        this.emit('animationstart');
-      },
-      writable: true
-    },
-
-    stop: {
-      value: function () {
-        var tween = this.tween;
-        if (!tween) { return; }
-        tween.stop();
-        this.isRunning = false;
-        this.partialSetAttribute(this.initialValue);
-      },
-      writable: true
-    },
-
-    /**
-     * Handle alternating directions. Given the current direction, calculate the next one,
-     * and store the current one.
-     *
-     * @param {string} direction
-     * @returns {string} Direction that the next individual cycle of the animation will go
-     *          towards.
-     */
-    getDirection: {
-      value: function (direction) {
-        if (direction === DIRECTIONS.alternate) {
-          this.prevDirection =
-            this.prevDirection === DIRECTIONS.normal ? DIRECTIONS.reverse : DIRECTIONS.normal;
-          return this.prevDirection;
-        }
-        if (direction === DIRECTIONS.alternateReverse) {
-          this.prevDirection =
-            this.prevDirection === DIRECTIONS.reverse ? DIRECTIONS.normal : DIRECTIONS.reverse;
-          return this.prevDirection;
-        }
-        return direction;
-      }
-    },
-
-    /**
-     * Preemptive binding to attach/detach event listeners (see `update`).
-     */
-    bindMethods: {
-      value: function () {
-        this.start = this.start.bind(this);
-        this.stop = this.stop.bind(this);
-        this.onStateAdded = this.onStateAdded.bind(this);
-        this.onStateRemoved = this.onStateRemoved.bind(this);
-      }
-    },
-
-    addEventListeners: {
-      value: function (evts) {
-        var el = this.el;
-        var start = this.start.bind(this);
-        utils.splitString(evts).forEach(function (evt) {
-          el.addEventListener(evt, start);
-        });
-        el.addEventListener('stateadded', this.onStateAdded);
-        el.addEventListener('stateremoved', this.onStateRemoved);
-      }
-    },
-
-    removeEventListeners: {
-      value: function (evts) {
-        var el = this.el;
-        var start = this.start;
-        utils.splitString(evts).forEach(function (evt) {
-          el.removeEventListener(evt, start);
-        });
-        el.removeEventListener('stateadded', this.onStateAdded);
-        el.removeEventListener('stateremoved', this.onStateRemoved);
-      }
-    },
-
-    onStateAdded: {
-      value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.start(); }
-      },
-      writable: true
-    },
-
-    onStateRemoved: {
-      value: function (evt) {
-        if (evt.detail.state === this.data.begin) { this.stop(); }
-      },
-      writable: true
-    },
-
-    /**
-     * Applies animation data from a mixin element.
-     * Works the same as component mixins but reimplemented because animations
-     * aren't components.
-     */
-    applyMixin: {
-      value: function () {
-        var data = {};
-        var elData;
-        var mixinData;
-        var mixinEl;
-
-        // Get mixin data.
-        mixinEl = document.querySelector('#' + this.getAttribute('mixin'));
-        mixinData = mixinEl ? utils.getElData(mixinEl, DEFAULTS) : {};
-
-        elData = utils.getElData(this, DEFAULTS);
-        utils.extend(data, DEFAULTS, mixinData, elData);
-        this.data = data;
-      }
-    }
-  })
-});
-
-function cloneValue (val) {
-  return utils.extend({}, val);
-}
-
-/**
- * Deduces different animation values based on whether we are:
- *   - animating an inner attribute of a component.
- *   - animating a coordinate component.
- *   - animating a boolean.
- *   - animating a number.
- *
- * @param {Element} el
- * @param {string} attribute - Tells what to animate based on whether it is dot-separated.
- * @param {string} dataFrom - Data `from` value.
- * @param {string} dataTo - Data `to` value.
- * @param currentValue
- * @returns {object}
- *   Object with keys [from, to, partialSetAttribute].
- *     `from` and `to`
- *        Objects where key is attribute being animated and value is value.
- *     `partialSetAttribute`
- *        Closured-function that tells tween how to update the component.
- */
-function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
-  var attributeSplit = attribute.split('.');
-  var schema;
-  var component;
-  var componentPropName;
-  var componentName;
-  var from = {};
-  var partialSetAttribute;
-  var to = {};
-
-  if (attributeSplit.length === 2) {
-    getForComponentAttribute();
-  } else if (dataTo && isCoordinate(dataTo)) {
-    getForCoordinateComponent();
-  } else if (['true', 'false'].indexOf(dataTo) !== -1) {
-    getForBoolean();
-  } else {
-    getForNumber();
-  }
-  return {
-    from: from,
-    partialSetAttribute: partialSetAttribute,
-    to: to
-  };
-
-  /**
-   * Animating a component that has multiple attributes (e.g., geometry.width).
-   */
-  function getForComponentAttribute () {
-    componentName = attributeSplit[0];
-    componentPropName = attributeSplit[1];
-    component = el.components[componentName];
-    if (!component) {
-      el.setAttribute(componentName, '');
-      component = el.components[componentName];
-    }
-    schema = component.schema;
-    if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
-    } else {
-      from[attribute] = dataFrom;
-    }
-    from[attribute] = coerceToSchema(from[attribute], schema, componentPropName);
-    to[attribute] = coerceToSchema(dataTo, schema, componentPropName);
-    partialSetAttribute = function (value) {
-      el.setAttribute(componentName, componentPropName, value[attribute]);
-    };
-  }
-
-  /**
-   * Animating a component that is an XYZ coordinate (e.g., position).
-   * Will be tweening {x, y, z} all at once.
-   */
-  function getForCoordinateComponent () {
-    from = dataFrom ? coordinates.parse(dataFrom) : currentValue;
-    to = coordinates.parse(dataTo);
-    partialSetAttribute = function (value) {
-      el.setAttribute(attribute, value);
-    };
-  }
-
-  /**
-   * Animation a boolean (e.g., visible).
-   * Have to convert from boolean to an integer (0 is false, > 0 is true) for tween.
-   */
-  function getForBoolean () {
-    if (dataFrom === undefined) {
-      from[attribute] = false;
-    } else {
-      from[attribute] = strToBool(dataFrom);
-    }
-    from[attribute] = boolToNum(from[attribute]);
-    to[attribute] = boolToNum(strToBool(dataTo));
-    partialSetAttribute = function (value) {
-      el.setAttribute(attribute, !!value[attribute]);
-    };
-  }
-
-  /**
-   * Animating a numbered attribute (e.g., opacity).
-   */
-  function getForNumber () {
-    if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = parseFloat(el.getAttribute(attribute));
-    } else {
-      from[attribute] = parseFloat(dataFrom);
-    }
-    to[attribute] = parseFloat(dataTo);
-    partialSetAttribute = function (value) {
-      el.setAttribute(attribute, value[attribute]);
-    };
-  }
-}
-module.exports.getAnimationValues = getAnimationValues;
-
-/**
- * Converts string to bool.
- *
- * @param {string} str - `true` or `false`.
- * @returns {bool}
- */
-function strToBool (str) {
-  if (str === 'true') { return true; }
-  return false;
-}
-
-/**
- * Converts boolean to number.
- *
- * @param {bool}
- * @returns {number}
- */
-function boolToNum (bool) {
-  return bool ? 1 : 0;
-}
-
-},{"../constants/animation":132,"../utils/":146,"./a-node":138,"./a-register-element":139,"./schema":142,"tween.js":112}],134:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"./a-node":138,"./a-register-element":139,"dup":47}],135:[function(require,module,exports){
-arguments[4][48][0].apply(exports,arguments)
-},{"../utils/debug":145,"./a-register-element":139,"dup":48}],136:[function(require,module,exports){
-/* global HTMLElement */
-var ANode = require('./a-node');
-var components = require('./component').components;
-var debug = require('../utils/debug');
-var re = require('./a-register-element');
-var THREE = require('../../lib/three');
-
-var isNode = re.isNode;
-var log = debug('core:a-entity');
-var error = debug('core:a-entity:error');
-var registerElement = re.registerElement;
-
-var AEntity;
-
-/**
- * Entity element definition.
- * Entities represent all elements that are part of the scene, and always have
- * a position, rotation, and scale.
- * In the entity-component system, entities are just a container of components.
- *
- * For convenience of inheriting components, the scene element inherits from
- * this prototype. When necessary, it differentiates itself by setting
- * `this.isScene`.
- *
- * @namespace Entity
- * @member {object} components - entity's currently initialized components.
- * @member {object} object3D - three.js object.
- * @member {array} states
- */
-var proto = Object.create(ANode.prototype, {
-  defaults: {
-    value: {
-      position: '',
-      rotation: '',
-      scale: '',
-      visible: ''
-    }
-  },
-
-  createdCallback: {
-    value: function () {
-      this.isEntity = true;
-      this.states = [];
-      this.components = {};
-      this.object3D = new THREE.Mesh();
-    }
-  },
-
-  attributeChangedCallback: {
-    value: function (attr, oldVal, newVal) {
-      this.setEntityAttribute(attr, oldVal, newVal);
-    }
-  },
-
-  attachedCallback: {
-    value: function () {
-      this.addToParent();
-      if (!this.isScene) {
-        this.load();
-      }
-    }
-  },
-
-  /**
-   * Tell parent to remove this element's object3D from its object3D.
-   * Do not call on scene element because that will cause a call to
-   * document.body.remove().
-   */
-  detachedCallback: {
-    value: function () {
-      if (!this.parentEl || this.isScene) { return; }
-      this.removeComponents();
-      this.parentEl.remove(this);
-    }
-  },
-
-  applyMixin: {
-    value: function (attr) {
-      var attrValue = this.getAttribute(attr);
-      if (!attr) {
-        this.updateComponents();
-        return;
-      }
-      this.updateComponent(attr, attrValue);
-    }
-  },
-
-  mapStateMixins: {
-    value: function (state, op) {
-      var mixins = this.getAttribute('mixin');
-      var mixinIds;
-      if (!mixins) { return; }
-      mixinIds = mixins.split(' ');
-      mixinIds.forEach(function (id) {
-        var mixinId = id + '-' + state;
-        op(mixinId);
-      });
-      this.updateComponents();
-    }
-  },
-
-  updateStateMixins: {
-    value: function (newMixins, oldMixins) {
-      var self = this;
-      oldMixins = oldMixins || '';
-      var newMixinsIds = newMixins.split(' ');
-      var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-      // The list of mixins that might have been removed on update
-      var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
-      // Remove the mixins that are gone on update
-      diff.forEach(function (mixinId) {
-        var forEach = Array.prototype.forEach;
-        // State Mixins
-        var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = [];
-        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.unregisterMixin.bind(self));
-      });
-      this.states.forEach(function (state) {
-        newMixinsIds.forEach(function (id) {
-          var mixinId = id + '-' + state;
-          self.registerMixin(mixinId);
-        });
-      });
-    }
-  },
-
-  add: {
-    value: function (el) {
-      if (!el.object3D) {
-        error("Trying to add an object3D that doesn't exist");
-      }
-      this.object3D.add(el.object3D);
-    }
-  },
-
-  addToParent: {
-    value: function () {
-      var self = this;
-      var parent = this.parentEl = this.parentNode;
-      var attachedToParent = this.attachedToParent;
-      if (!parent || attachedToParent) { return; }
-      if (isNode(parent)) {
-        attach();
-        return;
-      }
-      // If the parent isn't an `ANode` but eventually it will be
-      // when a templated element is created, we want to attach
-      // this element to the parent then.
-      parent.addEventListener('nodeready', attach);
-      function attach () {
-        // To prevent an object to attach itself multiple times to the parent.
-        self.attachedToParent = true;
-        if (parent.add) {
-          parent.add(self);
-        }
-      }
-    }
-  },
-
-  load: {
-    value: function () {
-      if (this.hasLoaded) { return; }
-      this.object3D.el = this;
-
-      // Attach to parent object3D.
-      this.addToParent();
-
-      if (this.isScene) {
-        ANode.prototype.load.call(this, this.updateComponents.bind(this));
-      } else {
-        ANode.prototype.load.call(this, this.updateComponents.bind(this),
-                                  function (el) { return el.isEntity; });
-      }
-    },
-    writable: window.debug
-  },
-
-  remove: {
-    value: function (el) {
-      this.object3D.remove(el.object3D);
-    }
-  },
-
-  /**
-   * @returns {array} Direct children that are entities.
-   */
-  getChildEntities: {
-    value: function () {
-      var children = this.children;
-      var childEntities = [];
-
-      for (var i = 0; i < this.children.length; i++) {
-        var child = children[i];
-        if (child instanceof AEntity) {
-          childEntities.push(child);
-        }
-      }
-
-      return childEntities;
-    }
-  },
-
-  /**
-   * Check if a component is defined for an entity, including defaults and mixins.
-   *
-   * @param {string} name - Component name.
-   */
-  isComponentDefined: {
-    value: function (name) {
-      // If the defaults contain the component
-      var inDefaults = this.defaults[name];
-      // If the element contains the component
-      var inAttribute = this.hasAttribute(name);
-      if (inDefaults !== undefined || inAttribute) { return true; }
-      return this.isComponentMixedIn(name);
-    }
-  },
-
-  isComponentMixedIn: {
-    value: function (name) {
-      var i;
-      var inMixin = false;
-      var mixinEls = this.mixinEls;
-     // If any of the mixins contains the component
-      for (i = 0; i < mixinEls.length; ++i) {
-        inMixin = mixinEls[i].hasAttribute(name);
-        if (inMixin) { break; }
-      }
-      return inMixin;
-    }
-  },
-
-  initComponent: {
-    value: function (name, isDependency) {
-      var isComponentDefined;
-      // If it's not a component name or
-      // If the component is already initialized
-      if (!components[name] || this.components[name]) { return; }
-      isComponentDefined = this.isComponentDefined(name);
-      // If the component is not defined for the element
-      if (!isComponentDefined && !isDependency) { return; }
-      this.initComponentDependencies(name);
-      // If a component it's a dependency of another but it's not defined
-      // on the attribute, mixins or entity defaults
-      // we have to add it.
-      if (isDependency && !isComponentDefined) {
-        this.setAttribute(name, '');
-      } else {
-        this.components[name] = new components[name].Component(this);
-      }
-      log('Component initialized: %s', name);
-    }
-  },
-
-  initComponentDependencies: {
-    value: function (name) {
-      var self = this;
-      var component = components[name];
-      var dependencies;
-      // If the component doesn't exist
-      if (!component) { return; }
-      dependencies = components[name].dependencies;
-      if (!dependencies) { return; }
-      dependencies.forEach(function (component) {
-        self.initComponent(component, true);
-      });
-    }
-  },
-
-  removeComponents: {
-    value: function () {
-      var self = this;
-      var entityComponents = Object.keys(this.components);
-      entityComponents.forEach(removeComponent);
-      function removeComponent (name) {
-        self.components[name].remove();
-        delete self.components[name];
-      }
-    }
-  },
-
-  updateComponents: {
-    value: function () {
-      var self = this;
-      var entityComponents = Object.keys(components);
-      // Updates components
-      entityComponents.forEach(updateComponent);
-      function updateComponent (name) {
-        var elValue = self.getAttribute(name);
-        self.updateComponent(name, elValue);
-      }
-    }
-  },
-
-  /**
-   * Initialize, update, or remove a single component.
-   *
-   * When initializing, we set the component on `this.components`.
-   *
-   * @param {string} name - Component name.
-   * @param {object} newData - The new properties assigned to the component
-   */
-  updateComponent: {
-    value: function (name, newData) {
-      var component = this.components[name];
-      var isDefault = name in this.defaults;
-      var isMixedIn = this.isComponentMixedIn(name);
-      if (component) {
-        // Attribute was removed. Remove component.
-        // 1. If the component is not defined in the defaults,
-        // mixins or element attribute
-        // 2. If the new data is null, it's not a default
-        // component and the component it's not defined via
-        // mixins
-        if (!this.isComponentDefined(name) ||
-            newData === null && !isDefault && !isMixedIn) {
-          component.remove();
-          delete this.components[name];
-          return;
-        }
-        // Component already initialized. Update component.
-        component.updateProperties(newData);
-        return;
-      }
-      // Component not yet initialized. Initialize component.
-      this.initComponent(name);
-    }
-  },
-
-  /**
-   * If `attr` is a component name and `componentProp` is not defined, removeAttribute removes
-   * the entire component from the entity.
-   *
-   * If `attr` is a component name and `componentProp` is defined, removeAttribute removes a
-   * single property from the component.
-   *
-   * @param {string} attr - Attribute name, which could also be a component name.
-   * @param {string} componentProp - Component property name.
-   */
-  removeAttribute: {
-    value: function (attr, componentProp) {
-      var component = components[attr];
-      if (component) {
-        if (componentProp) {
-          this.setAttribute(attr, componentProp, undefined);
-        } else {
-          this.setEntityAttribute(attr, undefined, null);
-        }
-      }
-      HTMLElement.prototype.removeAttribute.call(this, attr);
-    }
-  },
-
-  /**
-   * Deals with updates on entity-specific attributes (i.e., components and mixins).
-   *
-   * @param {string} attr
-   * @param {string} oldVal
-   * @param {string|object} newVal
-   */
-  setEntityAttribute: {
-    value: function (attr, oldVal, newVal) {
-      var component = components[attr];
-      oldVal = oldVal || this.getAttribute(attr);
-      // When creating entities programatically and setting attributes, it is not part
-      // of the scene until it is inserted into the DOM. This does not apply to scenes as
-      // scenes depend on its child entities to load.
-      if (!this.hasLoaded && !this.isScene) { return; }
-      if (attr === 'mixin') {
-        this.updateStateMixins(newVal, oldVal);
-        this.updateComponents();
-        return;
-      }
-      if (component) { this.updateComponent(attr, newVal); }
-    }
-  },
-
-  /**
-   * If attribute is a component, setAttribute will apply the value to the
-   * existing component data, not replace it. Examples:
-   *
-   * Examples:
-   *
-   * setAttribute('id', 'my-element');
-   * setAttribute('material', { color: 'crimson' });
-   * setAttribute('material', 'color', 'crimson');
-   *
-   * @param {string} attr - Attribute name. setAttribute will initialize or update
-   *        a component if the name corresponds to a registered component.
-   * @param {string|object} value - If a string, setAttribute will update the attribute or.
-   *        component. If an object, the value will be mixed into the component.
-   * @param {string} componentPropValue - If defined, `value` will act as the property
-   *        name and setAttribute will only set a single component property.
-   */
-  setAttribute: {
-    value: function (attr, value, componentPropValue) {
-      var self = this;
-      var component = components[attr];
-      var partialComponentData;
-      value = value === undefined ? '' : value;
-      var valueStr = value;
-      var oldValue;
-
-      if (component) {
-        if (typeof value === 'string' && componentPropValue !== undefined) {
-          // Update currently-defined component data with the new property value.
-          partialComponentData = self.getAttribute(attr) || {};
-          partialComponentData[value] = componentPropValue;
-          value = partialComponentData;
-        }
-        valueStr = component.stringify(value);
-      }
-
-      oldValue = this.getAttribute(attr);
-      ANode.prototype.setAttribute.call(self, attr, valueStr);
-      self.setEntityAttribute(attr, oldValue, value);
-    },
-    writable: window.debug
-  },
-
-  /**
-   * If `attr` is a component, returns JUST the component data specified in the HTML
-   * by parsing the style-like string into an object. Like a partial version of
-   * `getComputedAttribute` as returned component data does not include applied mixins or
-   * defaults.
-   *
-   * If `attr` is not a component, fall back to HTML getAttribute.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getAttribute: {
-    value: function (attr) {
-      var component = components[attr];
-      var value = HTMLElement.prototype.getAttribute.call(this, attr);
-      if (!component || typeof value !== 'string') { return value; }
-      return component.parse(value);
-    },
-    writable: window.debug
-  },
-
-  /**
-   * If `attr` is a component, returns ALL component data including applied mixins and
-   * defaults.
-   *
-   * If `attr` is not a component, fall back to HTML getAttribute.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getComputedAttribute: {
-    value: function (attr) {
-      var component = this.components[attr];
-      if (component) {
-        return component.getData();
-      }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
-    }
-  },
-
-  addState: {
-    value: function (state) {
-      if (this.is(state)) { return; }
-      this.states.push(state);
-      this.mapStateMixins(state, this.registerMixin.bind(this));
-      this.emit('stateadded', {state: state});
-    }
-  },
-
-  removeState: {
-    value: function (state) {
-      var stateIndex = this.is(state);
-      if (stateIndex === false) { return; }
-      this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, this.unregisterMixin.bind(this));
-      this.emit('stateremoved', {state: state});
-    }
-  },
-
-  /**
-   * Checks if the element is in a given state. e.g. el.is('alive');
-   * @type {string} state - Name of the state we want to check
-   */
-  is: {
-    value: function (state) {
-      var is = false;
-      this.states.forEach(function (elState, index) {
-        if (elState === state) { is = index; }
-      });
-      return is;
-    }
-  }
-});
-
-AEntity = registerElement('a-entity', {
-  prototype: proto
-});
-module.exports = AEntity;
-
-},{"../../lib/three":90,"../utils/debug":145,"./a-node":138,"./a-register-element":139,"./component":141}],137:[function(require,module,exports){
-arguments[4][50][0].apply(exports,arguments)
-},{"./a-node":138,"./a-register-element":139,"./component":141,"dup":50}],138:[function(require,module,exports){
-arguments[4][51][0].apply(exports,arguments)
-},{"../utils/":146,"./a-register-element":139,"dup":51}],139:[function(require,module,exports){
-arguments[4][52][0].apply(exports,arguments)
-},{"./a-entity":136,"./a-node":138,"document-register-element":99,"dup":52}],140:[function(require,module,exports){
-arguments[4][53][0].apply(exports,arguments)
-},{"../../lib/three":90,"../../lib/vendor/rStats":92,"../../lib/vendor/wakelock/wakelock":94,"../utils/":146,"./a-entity":136,"./a-register-element":139,"dup":53,"tween.js":112}],141:[function(require,module,exports){
-/* global HTMLElement */
-var schema = require('./schema');
-var debug = require('../utils/debug');
-var styleParser = require('style-attr');
-var utils = require('../utils/');
-
-var coerceToSchema = schema.coerce;
-var coerceValueToSchema = schema.coerceValue;
-var processSchema = schema.process;
-var schemaTypes = schema.types;
-var error = debug('core:register-component:error');
-
-var components = module.exports.components = {};  // Keep track of registered components.
-
-/**
- * Component class definition.
- *
- * Components configure appearance, modify behavior, or add functionality to
- * entities. The behavior and appearance of an entity can be changed at runtime
- * by adding, removing, or updating components. Entities do not share instances
- * of components.
- *
- * @namespace Component
- * @property {object} data - Stores component data, populated by parsing the
- *           attribute name of the component plus applying defaults and mixins.
- * @property {object} el - Reference to the entity element.
- * @property {string} name - Name of the attribute the component is connected
- *           to.
- * @member {Element} el
- * @member {object} data
- * @member {function} getData
- * @member {function} init
- * @member {function} update
- * @member {function} remove
- * @member {function} parse
- * @member {function} stringify
- */
-var Component = module.exports.Component = function (el) {
-  var rawData = HTMLElement.prototype.getAttribute.call(el, this.name);
-  this.el = el;
-  this.data = {};
-  this.buildData(this.parse(rawData));
-  this.init();
-  this.update();
-};
-
-Component.prototype = {
-  /**
-   * Contains the type schema and defaults for the data values.
-   * Data is coerced into the types of the values of the defaults.
-   */
-  schema: {},
-
-  /**
-   * Init handler. Similar to attachedCallback.
-   * Called during component initialization and is only run once.
-   * Components can use this to set initial state.
-   */
-  init: function () { /* no-op */ },
-
-  /**
-   * Update handler. Similar to attributeChangedCallback.
-   * Called whenever component's data changes.
-   * Also called on component initialization when the component receives initial data.
-   *
-   * @param {object} previousData - Previous attributes of the component.
-   */
-  update: function (previousData) { /* no-op */ },
-
-  /**
-   * Remove handler. Similar to detachedCallback.
-   * Called whenever component is removed from the entity (i.e., removeAttribute).
-   * Components can use this to reset behavior on the entity.
-   */
-  remove: function () { /* no-op */ },
-
-  /**
-   * Describes how the component should deserialize HTML attribute into data.
-   * Can be overridden by the component.
-   *
-   * The default parsing is parsing style-like strings, camelCasing keys for
-   * error-tolerance (`max-value` ~= `maxValue`).
-   *
-   * @param {string} value - HTML attribute value.
-   * @returns {object} Component data.
-   */
-  parse: function (value) {
-    var typeName;
-    var type;
-
-    if (isFlatSchema(this.schema)) {
-      typeName = this.schema.type;
-      type = schemaTypes[typeName];
-      if (type) {
-        return type.parse.call(this, value);
-      }
-      return error(typeName + ' is not a valid type.');
-    }
-
-    return objectParse(value);
-  },
-
-  /**
-   * Describes how the component should serialize data to a string to update the DOM.
-   * Can be overridden by the component.
-   *
-   * The default stringify is to a style-like string.
-   *
-   * @param {object} data
-   * @returns {string}
-   */
-  stringify: function (data) {
-    var typeName;
-    var type;
-
-    if (isFlatSchema(this.schema)) {
-      typeName = this.schema.type;
-      type = schemaTypes[typeName];
-      if (type) {
-        return type.stringify.call(this, data);
-      }
-      return error(typeName + ' is not a valid type.');
-    }
-
-    return objectStringify(data);
-  },
-
-  /**
-   * Returns a copy of data such that we don't expose the private this.data.
-   *
-   * @returns {object} data
-   */
-  getData: function () {
-    var data = this.data;
-    if (typeof data !== 'object') { return data; }
-    return utils.extend({}, data);
-  },
-
-  /**
-   * Called when new value is coming from the entity (e.g., attributeChangedCb)
-   * or from its mixins. Does some parsing and applying before updating the
-   * component.
-   * Does not update if data has not changed.
-   *
-   * @param {string} value - HTML attribute value.
-   */
-  updateProperties: function (value) {
-    var isFlat = isFlatSchema(this.schema);
-    var previousData = extendWithFlatSchemaCheck({}, this.data, isFlat);
-    this.buildData(this.parse(value));
-
-    // Don't update if properties haven't changed
-    if (!isFlat && utils.deepEqual(previousData, this.data)) { return; }
-
-    this.update(previousData);
-
-    this.el.emit('componentchanged', {
-      name: this.name,
-      newData: this.getData(),
-      oldData: previousData
-    });
-  },
-
-  /**
-   * Builds component data from the current state of the entity, ultimately
-   * updating this.data.
-   *
-   * If the component was detached completely, set data to null.
-   *
-   * Precedence:
-   * 1. Defaults data
-   * 2. Mixin data.
-   * 3. Attribute data.
-   *
-   * Finally coerce the data to the types of the defaults.
-   */
-  buildData: function (newData) {
-    var self = this;
-    var data = {};
-    var schema = self.schema;
-    var isFlat = isFlatSchema(schema);
-    var el = self.el;
-    var mixinEls = el.mixinEls;
-    var name = self.name;
-
-    // 1. Default values (lowest precendence).
-    if (isFlat) {
-      data = schema.default;
-    } else {
-      Object.keys(schema).forEach(function applyDefault (key) {
-        data[key] = schema[key].default;
-      });
-    }
-
-    // 2. Mixin values.
-    mixinEls.forEach(applyMixin);
-    function applyMixin (mixinEl) {
-      var mixinData = mixinEl.getAttribute(name);
-      extendWithFlatSchemaCheck(data, mixinData, isFlat);
-    }
-
-    // 3. Attribute values (highest precendence).
-    data = extendWithFlatSchemaCheck(data, newData, isFlat);
-
-    // Parse and coerce using the schema.
-    if (isFlat) {
-      this.data = coerceValueToSchema(data, schema.default, schema.parse);
-    } else {
-      this.data = coerceToSchema(data, schema);
-    }
-  }
-};
-
-/**
- * Registers a component to A-Frame.
- *
- * @param {string} name - Component name.
- * @param {object} definition - Component property and methods.
- * @returns {object} Component.
- */
-module.exports.registerComponent = function (name, definition) {
-  var NewComponent;
-  var proto = {};
-
-  // Format definition object to prototype object.
-  Object.keys(definition).forEach(function (key) {
-    proto[key] = {
-      value: definition[key],
-      writable: window.debug
-    };
-  });
-
-  if (components[name]) {
-    error('The component "' + name + '" has been already registered');
-  }
-  NewComponent = function (el) {
-    Component.call(this, el);
-  };
-  NewComponent.prototype = Object.create(Component.prototype, proto);
-  NewComponent.prototype.name = name;
-  NewComponent.prototype.constructor = NewComponent;
-  components[name] = {
-    Component: NewComponent,
-    dependencies: NewComponent.prototype.dependencies,
-    parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    schema: processSchema(NewComponent.prototype.schema),
-    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
-    type: NewComponent.prototype.type
-  };
-  return NewComponent;
-};
-
-function objectParse (value) {
-  var parsedData;
-  if (typeof value !== 'string') { return value; }
-  parsedData = styleParser.parse(value);
-  return transformKeysToCamelCase(parsedData);
-}
-
-function objectStringify (data) {
-  if (typeof data !== 'object') { return data; }
-  return styleParser.stringify(data);
-}
-
-/**
-* Object extending with checking for flat schema.
-*
-* @param dest - Destination object or value.
-* @param source - Source object or value
-* @param {boolean} isFlat - Whether or not schema is flat (single-value).
-* @returns Overridden object or value.
-*/
-function extendWithFlatSchemaCheck (dest, source, isFlat) {
-  if (isFlat) {
-    if (source === undefined) { return dest; }
-    return source;
-  }
-  return utils.extend(dest, source);
-}
-
-/**
- * Converts string from hyphen to camelCase.
- *
- * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
- */
-function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, camelCase);
-  function camelCase (g) { return g[1].toUpperCase(); }
-}
-
-function isFlatSchema (schema) {
-  return 'default' in schema;
-}
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase (obj) {
-  var keys = Object.keys(obj);
-  var camelCaseObj = {};
-  keys.forEach(function (key) {
-    var camelCaseKey = toCamelCase(key);
-    camelCaseObj[camelCaseKey] = obj[key];
-  });
-  return camelCaseObj;
-}
-
-},{"../utils/":146,"../utils/debug":145,"./schema":142,"style-attr":106}],142:[function(require,module,exports){
-var utils = require('../utils/');
-
-var coordinates = utils.coordinates;
-var types = module.exports.types = {};
-
-registerType('boolean', booleanParse, booleanStringify);
-registerType('coordinate', coordinates.parse, coordinates.stringify);
-
-/**
- * A build step to the schema to expand `type` into built-in parsers and stringifiers.
- */
-module.exports.process = function (schema) {
-  Object.keys(schema).forEach(function (property) {
-    var schemaPropDefinition = schema[property];
-    var type = schemaPropDefinition.type;
-    var typeParser;
-
-    if (type) {
-      typeParser = types[type];
-      schemaPropDefinition.parse = typeParser.parse;
-      schemaPropDefinition.stringify = typeParser.stringify;
-    }
-  });
-  return schema;
-};
-
-/**
- * If `value` is object, coerce values of `val` into types defined by `schema`.
- *
- * If `value` is string and `schemaPropDefinition` defined, coerces `value` into the value
- * in `schema` pointed to by `schemaPropDefinition`.
- *
- * In case `value` is a string, `schemaPropDefinition` signifies which value in `schema` to
- * coerce to.
- *
- * @param {object|string} value - value(s) to coerce.
- * @param {object} schema - Object which values will be used to coerce to.
- * @param {string} schemaPropDefinition
- * @returns Coerced value or object.
- */
-module.exports.coerce = function (value, schema, schemaProp) {
-  var obj = value;
-  var schemaPropDefinition;
-
-  // Batch coerce.
-  if (value.constructor === Object) {
-    Object.keys(obj).forEach(function (key) {
-      var schemaPropDefinition = schema[key];
-      var schemaValue;
-      if (!schemaPropDefinition) {
-        utils.warn('Unknown component property: ' + key);
-        return;
-      }
-      schemaValue = schemaPropDefinition.default;
-      if (schemaValue === undefined) { return; }
-      obj[key] = coerceValue(obj[key], schemaValue, schemaPropDefinition.parse);
-    });
-    return obj;
-  }
-
-  // Single-value coerce.
-  schemaPropDefinition = schema[schemaProp];
-  if (!schemaPropDefinition) {
-    utils.warn('Unknown component property: ' + schemaProp);
-    return;
-  }
-  return coerceValue(value, schemaPropDefinition.default, schemaPropDefinition.parse);
-};
-
-function coerceValue (value, targetValue, parser) {
-  if (typeof value !== 'string') { return value; }
-
-  if (parser && parser.constructor === Function) {
-    // Parse/coerce using defined parser function.
-    return parser(value);
-  }
-
-  // Parse using default value.
-  switch (typeof targetValue) {
-    case 'boolean':
-      return value === 'true';
-    case 'number':
-      return parseFloat(value);
-    case 'object':
-      if (utils.deepEqual(Object.keys(targetValue), ['x', 'y', 'z'])) {
-        return coordinates.parse(value);
-      }
-      return value;
-    default:
-      return value;
-  }
-}
-module.exports.coerceValue = coerceValue;
-
-/**
- * Register a parser for re-use such that when someone uses `type` in the schema,
- * `init` will set the property `parse` and `stringify`.
- *
- * @param {string} type
- * @param {function} parse
- * @param {function} stringify
- */
-function registerType (type, parse, stringify) {
-  types[type] = {
-    parse: parse,
-    stringify: stringify
-  };
-}
-module.exports.registerType = registerType;
-
-function booleanParse (value) {
-  return value !== 'false' && value !== false;
-}
-
-function booleanStringify (data) {
-  return data.toString();
-}
-
-},{"../utils/":146}],143:[function(require,module,exports){
-require('es6-promise').polyfill();  // Polyfill `Promise`.
-require('present');  // Polyfill `performance.now()`.
-
-require('../style/aframe-core.css');
-require('../style/rStats.css');
-
-// Required before `AEntity` so that all components are registered.
-var AScene = require('./core/a-scene');
-var components = require('./core/component').components;
-var debug = require('./utils/debug');
-var registerComponent = require('./core/component').registerComponent;
-var registerElement = require('./core/a-register-element');
-// Exports THREE to window so three.js can be used without alteration.
-var THREE = window.THREE = require('../lib/three');
-
-var pkg = require('../package');
-var utils = require('./utils/');
-
-require('./components/index');  // Register core components.
-var ANode = require('./core/a-node');
-var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
-
-// Webvr polyfill configuration.
-window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
-window.WebVRConfig = {
-  TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
-};
-require('webvr-polyfill');
-
-require('./core/a-animation');
-require('./core/a-assets');
-require('./core/a-cubemap');
-require('./core/a-mixin');
-require('./core/a-scene');
-
-module.exports = {
-  AEntity: AEntity,
-  ANode: ANode,
-  AScene: AScene,
-  components: components,
-  debug: debug,
-  registerComponent: registerComponent,
-  registerElement: registerElement,
-  registerType: require('./core/schema').registerType,
-  THREE: THREE,
-  utils: utils,
-  version: pkg.version
-};
-
-},{"../lib/three":90,"../package":114,"../style/aframe-core.css":148,"../style/rStats.css":149,"./components/index":119,"./core/a-animation":133,"./core/a-assets":134,"./core/a-cubemap":135,"./core/a-entity":136,"./core/a-mixin":137,"./core/a-node":138,"./core/a-register-element":139,"./core/a-scene":140,"./core/component":141,"./core/schema":142,"./utils/":146,"./utils/debug":145,"es6-promise":100,"present":102,"webvr-polyfill":113}],144:[function(require,module,exports){
-// Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
-module.exports.regex = regex;
-
-/**
- * Parses coordinates from an "x y z" string.
- * Example: "3 10 -5" to {x: 3, y: 10, z: -5}.
- *
- * @param {string} val - An "x y z" string.
- * @param {string} defaults - fallback value.
- * @returns {object} An object with keys [x, y, z].
- */
-function parse (value, defaultCoordinate) {
-  var coordinate;
-
-  if (value && value.constructor === Object) { return value; }
-
-  if (!defaultCoordinate && this.schema) {
-    if ('default' in this.schema) {
-      defaultCoordinate = this.schema.default;
-    } else {
-      defaultCoordinate = this.schema;
-    }
-  }
-
-  if (typeof value !== 'string' || value === null) {
-    return defaultCoordinate;
-  }
-
-  coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
-  return {
-    x: parseFloat(coordinate[0] || defaultCoordinate.x),
-    y: parseFloat(coordinate[1] || defaultCoordinate.y),
-    z: parseFloat(coordinate[2] || defaultCoordinate.z)
-  };
-}
-module.exports.parse = parse;
-
-/**
- * Stringifies coordinates from an object with keys [x y z].
- * Example: {x: 3, y: 10, z: -5} to "3 10 -5".
- *
- * @param {object|string} data - An object with keys [x y z].
- * @returns {string} An "x y z" string.
- */
-function stringify (data) {
-  if (typeof data !== 'object') { return data; }
-  return [data.x, data.y, data.z].join(' ');
-}
-module.exports.stringify = stringify;
-
-/**
- * @returns {bool}
- */
-module.exports.isCoordinate = function (value) {
-  return regex.test(value);
-};
-
-},{}],145:[function(require,module,exports){
-(function (process){
-var debugLib = require('debug');
-var extend = require('object-assign');
-
-var settings = {
-  colors: {
-    error: 'red',
-    info: 'gray',
-    warn: 'orange',
-    warning: 'orange'
-  }
-};
-
-/**
- * Monkeypatches `debug` so we can colorize error/warning messages.
- *
- * (See issue: https://github.com/visionmedia/debug/issues/137)
- */
-var debug = function (namespace) {
-  var d = debugLib(namespace);
-
-  d.color = getDebugNamespaceColor(namespace);
-
-  return d;
-};
-extend(debug, debugLib);
-
-/**
- * Returns the type of the namespace (e.g., `error`, `warn`).
- *
- * @param {String} namespace
- *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The type of the namespace (e.g., `warn`).
- * @api private
- */
-function getDebugNamespaceType (namespace) {
-  var chunks = namespace.split(':');
-
-  return chunks[chunks.length - 1];  // Return the last one
-}
-
-/**
- * Returns the color of the namespace (e.g., `orange`).
- *
- * @param {String} namespace
- *   The debug logger's namespace (e.g., `components:geometry:warn`).
- * @returns {String} The color of the namespace (e.g., `orange`).
- * @api private
- */
-function getDebugNamespaceColor (namespace) {
-  var type = getDebugNamespaceType(namespace);
-
-  var color = settings.colors && settings.colors[type];
-
-  return color || null;
-}
-
-/**
- * Returns `localStorage` if possible.
- *
- * This is necessary because Safari throws when a user disables
- * cookies or `localStorage` and you attempt to access it.
- *
- * @returns {localStorage}
- * @api private
- */
-function storage () {
-  try {
-    return window.localStorage;
-  } catch (e) {
-  }
-}
-
-/**
- * To enable console logging, type this in the Console of your Dev Tools:
- *
- *   localStorage.logs = 1
- *
- * To disable console logging:
- *
- *   localStorage.logs = 0
- *
- */
-var ls = storage();
-if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
-  debug.enable('*');
-} else {
-  // We do not call `debug.disable` because it requires two reloads to take.
-  // See https://github.com/visionmedia/debug/issues/238
-  // Instead, we call `debug.save` to remove the `debug` namespaces persisted
-  // in `localStorage`.
-  debug.save(null);
-  // And then we `noop` the function so nothing happens.
-  debug = function () {
-    /* noop */
-    return function () {};
-  };
-}
-
-if (process.browser) { window.logs = debug; }
-
-module.exports = debug;
-
-}).call(this,require('_process'))
-
-},{"_process":8,"debug":96,"object-assign":101}],146:[function(require,module,exports){
-/* global CustomEvent, location */
-/* Centralized place to reference utilities since utils is exposed to the user. */
-var objectAssign = require('object-assign');
-
-module.exports.coordinates = require('./coordinates');
-
-/**
- * Fires a custom DOM event.
- *
- * @param {Element} el Element on which to fire the event.
- * @param {String} name Name of the event.
- * @param {Object=} [data={bubbles: true, {detail: <el>}}]
- *   Data to pass as `customEventInit` to the event.
- */
-module.exports.fireEvent = function (el, name, data) {
-  data = data || {};
-  data.detail = data.detail || {};
-  data.detail.target = data.detail.target || el;
-  var evt = new CustomEvent(name, data);
-  evt.target = el;
-  el.dispatchEvent(evt);
-};
-
-/**
- * Throws an error given a message.
- *
- * @param {String} msg Error message.
- */
-module.exports.error = function (msg) {
-  throw new Error(msg);
-};
-
-/**
- * Emits a console warning given passed message argument(s).
- */
-module.exports.warn = function () {
-  console.warn.apply(console, arguments);
-};
-
-/**
- * Emits a console log given passed message argument(s).
- */
-module.exports.log = function () {
-  console.log.apply(console, arguments);
-};
-
-/**
- * Mix the properties of source object(s) into a destination object.
- *
- * @param  {object} dest - The object to which properties will be copied.
- * @param  {...object} source - The object(s) from which properties will be copied.
- */
-module.exports.extend = objectAssign;
-
-/**
- * Checks if two objects have the same attributes and values, including nested objects.
- *
- * @param {object} a - First object.
- * @param {object} b - Second object.
- * @returns {boolean} Whether two objects are deeply equal.
- */
-function deepEqual (a, b) {
-  var keysA = Object.keys(a);
-  var keysB = Object.keys(b);
-  var i;
-  if (keysA.length !== keysB.length) { return false; }
-  // If there are no keys, compare the objects.
-  if (keysA.length === 0) { return a === b; }
-  for (i = 0; i < keysA.length; ++i) {
-    if (a[keysA[i]] !== b[keysA[i]]) { return false; }
-  }
-  return true;
-}
-module.exports.deepEqual = deepEqual;
-
-/**
- * Computes the difference between two objects.
- *
- * @param {object} a - First object to compare (e.g., oldData).
- * @param {object} b - Second object to compare (e.g., newData).
- * @returns {object}
- *   Difference object where set of keys note which values were not equal, and values are
- *   `b`'s values.
- */
-module.exports.diff = function (a, b) {
-  var diff = {};
-  var keys = Object.keys(a);
-  Object.keys(b).forEach(function collectKeys (bKey) {
-    if (keys.indexOf(bKey) === -1) {
-      keys.push(bKey);
-    }
-  });
-  keys.forEach(function doDiff (key) {
-    var aVal = a[key];
-    var bVal = b[key];
-    var isComparingObjects = aVal && bVal &&
-                             aVal.constructor === Object && bVal.constructor === Object;
-    if ((isComparingObjects && !deepEqual(aVal, bVal)) ||
-        (!isComparingObjects && aVal !== bVal)) {
-      diff[key] = bVal;
-    }
-  });
-  return diff;
-};
-
-/**
- * Checks if browser is mobile.
- * @return {Boolean} True if mobile browser detected.
- */
-module.exports.isMobile = function () {
-  var check = false;
-  (function (a) {
-    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
-      check = true;
-    }
-    if (isIOS()) {
-      check = true;
-    }
-  })(navigator.userAgent || navigator.vendor || window.opera);
-  return check;
-};
-
-var isIOS = module.exports.isIOS = function () {
-  return /iPad|iPhone|iPod/.test(navigator.platform);
-};
-
-/**
- * Checks mobile device orientation
- * @return {Boolean} True if landscape orientation
- */
-module.exports.isLandscape = function () {
-  return window.orientation === 90 || window.orientation === -90;
-};
-
-/**
- * Splits a string into an array based on a delimiter.
- *
- * @param   {string=} [str='']        Source string
- * @param   {string=} [delimiter=' '] Delimiter to use
- * @returns {array}                   Array of delimited strings
- */
-module.exports.splitString = function (str, delimiter) {
-  if (typeof delimiter === 'undefined') { delimiter = ' '; }
-  // First collapse the whitespace (or whatever the delimiter is).
-  var regex = new RegExp(delimiter, 'g');
-  str = (str || '').replace(regex, delimiter);
-  // Then split.
-  return str.split(delimiter);
-};
-
-/**
- * Extracts data from the element given an object that contains expected keys.
- *
- * @param {Element} Source element.
- * @param {Object} [defaults={}] Object of default key-value pairs.
- * @returns {Object}
- */
-module.exports.getElData = function (el, defaults) {
-  defaults = defaults || {};
-  var data = {};
-  Object.keys(defaults).forEach(copyAttribute);
-  function copyAttribute (key) {
-    if (el.hasAttribute(key)) {
-      data[key] = el.getAttribute(key);
-    }
-  }
-  return data;
-};
-
-/**
- * Retrieves querystring value.
- * @param  {String} name Name of querystring key.
- * @return {String}      Value
- */
-module.exports.getUrlParameter = function (name) {
-  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-  var results = regex.exec(location.search);
-  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
-
-// Must be at bottom to avoid circular dependency.
-module.exports.srcLoader = require('./src-loader');
-
-},{"./coordinates":144,"./src-loader":147,"object-assign":101}],147:[function(require,module,exports){
-arguments[4][87][0].apply(exports,arguments)
-},{"./debug":145,"dup":87}],148:[function(require,module,exports){
-var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:10px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (require("browserify-css").createStyle(css, { "href": "../vr-markup/style/aframe-core.css"})); module.exports = css;
-},{"browserify-css":95}],149:[function(require,module,exports){
-var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (require("browserify-css").createStyle(css, { "href": "../vr-markup/style/rStats.css"})); module.exports = css;
-},{"browserify-css":95}]},{},[82])(82)
+},{"browserify-css":7}]},{},[84])(84)
 });
 //# sourceMappingURL=aframe.js.map

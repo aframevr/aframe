@@ -1,9 +1,9 @@
-var aframeCore = require('aframe-core');
+// TODO: Extract to aframe-primitives.
 var utils = require('./utils');
 
-var registerElement = aframeCore.registerElement.registerElement;
-var AEntity = aframeCore.AEntity;
-var AComponents = aframeCore.AComponents;
+var registerElement = require('../../core/a-register-element').registerElement;
+var AEntity = require('../../core/a-entity');
+var AComponents = require('../../core/component').components;
 
 var ATTRIBUTE_BLACKLIST = utils.extend({
   id: true,

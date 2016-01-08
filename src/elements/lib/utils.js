@@ -1,8 +1,8 @@
-var aframeCore = require('aframe-core');
+// TODO: Extract to aframe-primiives.
 var AEvent = require('../a-event/a-event');
 
-var aframeCoreUtils = aframeCore.utils;
-var registerElement = aframeCore.registerElement.registerElement;
+var aframeCoreUtils = require('../../utils');
+var registerElement = require('../../core/a-register-element').registerElement;
 
 /**
  * Wraps `querySelector` à la jQuery's `$`.
