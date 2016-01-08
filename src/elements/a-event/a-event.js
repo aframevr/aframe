@@ -1,9 +1,8 @@
 /* global HTMLElement */
 
-var aframeCore = require('aframe-core');
 var utils = require('../lib/utils');
 
-var registerElement = aframeCore.registerElement.registerElement;
+var registerElement = require('../../core/a-register-element').registerElement;
 var stateEls = {};
 var listeners = {};
 var targetData = {};
