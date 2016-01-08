@@ -2,16 +2,11 @@
 
 window.addEventListener('HTMLImportsLoaded', injectFromPolyfilledImports);
 
-// NOTE: HTML Imports polyfill must come before we include `aframe-core`.
-if (!('import' in document.createElement('link'))) {
-  require('../lib/vendor/HTMLImports');
-}
-
-var aframeCore = require('aframe-core');
 var registerTemplate = require('./lib/register-template');
 var utils = require('./lib/utils');
 
-var registerElement = aframeCore.registerElement.registerElement;
+// TODO: Extract to aframe-primitives and require aframe.
+var registerElement = require('../core/a-register-element').registerElement;
 
 function injectFromPolyfilledImports () {
   if (!HTMLImports || HTMLImports.useNative) { return; }

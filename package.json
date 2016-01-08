@@ -4,7 +4,7 @@
   "description": "Building blocks for the VR Web",
   "main": "src/index.js",
   "scripts": {
-    "browserify": "browserify ./index.js -s 'AFRAME'",
+    "browserify": "browserify src/index.js -s 'AFRAME'",
     "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
     "dev": "npm run build && node ./scripts/budo",
     "dist": "mkdir -p dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
