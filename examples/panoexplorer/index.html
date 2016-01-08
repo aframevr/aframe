@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pano Explorer</title>
+    <meta name="description" content="Pano Explorer - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-asset>
+      <a-mixin id="link"
+               geometry="primitive: plane; width: 1.0; height: 1.0">
+      </a-mixin>
+      <a-mixin id="link-hovered" geometry="primitive: plane; width: 1.2;
+                                           height: 1.2">
+      </a-mixin>
+      <!-- Sound from http://www.freesound.org/people/NenadSimic/sounds/171697/ -->
+      <a-mixin id="link-selected" geometry="primitive: plane;
+                                            width: 1.4; height: 1.4"
+              sound="src: ../_sounds/click.ogg">
+      </a-mixin>
+      <a-mixin id="cursor" geometry="primitive: ring; radiusOuter: 0.20; radiusInner: 0.14"
+               material="color: gray" cursor></a-mixin>
+      <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
+      <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale"
+               fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+      <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
+               fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
+    </a-asset>
+    <a-scene stats="true">
+
+      <!-- Controls -->
+      <a-entity camera look-controls>
+        <a-entity mixin="cursor" position="0 0 -3">
+          <a-animation mixin="click-animation"></a-animation>
+          <a-animation mixin="fuse-animation"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <!-- Pano -->
+      <a-entity id="holder" geometry="primitive: sphere; radius: 10;"
+                material="shader: flat" scale="1 1 -1"></a-entity>
+
+      <!-- Links to panos -->
+      <a-entity id="links" position="-1.5 -1 -4"></a-entity>
+    </a-scene>
+
+    <script>
+      (function () {
+        // Data for our panos
+        var panos = [
+          {
+            'title': 'Cubes',
+            'thumb': 'images/thumb-cubes.png',
+            'url': 'images/cubes.jpg'
+          },
+          {
+            'title': 'City',
+            'thumb': 'images/thumb-city.png',
+            'url': 'images/city.jpg'
+          },
+          {
+            'title': 'Sechelt',
+            'thumb': 'images/thumb-sechelt.png',
+            'url': 'images/sechelt.jpg'
+          }
+        ];
+
+        var links = document.querySelector('#links');
+        var scene = document.querySelector('a-scene');
+        var holder = document.querySelector('#holder');
+        var width = 1.0;
+        var height = 1.0;
+        var selectedLinkEl;
+
+        // Create a link for each item in panos[]
+        panos.forEach(function (pano, idx) {
+          // Arrange the links horizontally without any overlaps
+          var xPos = idx * width * 1.5;
+
+          var el = document.createElement('a-entity');
+          el.dataset.id = idx;
+          el.setAttribute('position', {x: xPos});
+          el.setAttribute('mixin', 'link');
+          el.setAttribute('material', {src: 'url(' + pano.thumb + ')'});
+          panos[idx].el = el;
+
+          // When a link is clicked, change the displayed pano by changing the
+          // material attribute of the holder element
+          el.addEventListener('click', handleClick);
+
+          // Add the link to the links element
+          links.appendChild(el);
+
+        });
+
+        if (scene.hasLoaded) {
+          selectPano(1);
+        } else {
+          scene.addEventListener('loaded', function () { selectPano (1); });
+        }
+
+        function handleClick (evt) {
+          var index = evt.currentTarget.dataset.id;
+          selectPano(index);
+        }
+
+        function selectPano(index) {
+          var pano = panos[index];
+          var linkEL = pano.el;
+          if (selectedLinkEl === pano.el) { return; }
+          if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
+          holder.setAttribute('material', {
+            shader: 'flat',
+            src: 'url(' + pano.url  + ')'
+          });
+          selectedLinkEl = linkEL;
+          selectedLinkEl.addState('selected');
+        }
+      })();
+    </script>
+  </body>
+</html>
