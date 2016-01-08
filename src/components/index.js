@@ -1,0 +1,16 @@
+require('../components/camera');
+require('../components/cursor');
+require('../components/fog');
+require('../components/geometry');
+require('../components/light');
+require('../components/loader');
+require('../components/look-at');
+require('../components/look-controls');
+require('../components/material');
+require('../components/position');
+require('../components/raycaster');
+require('../components/rotation');
+require('../components/scale');
+require('../components/sound');
+require('../components/visible');
+require('../components/wasd-controls');
