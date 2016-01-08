@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Look-At</title>
+    <meta name="description" content="Look-At - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-assets>
+      <img id="floor" src="../_images/textures/marble.jpg">
+      <img id="follower-img" src="../_images/pano/tintamarre.jpg">
+      <a-mixin id="follower" geometry="primitive: box; width: 3; height: 3; depth: .1;"
+               material="src: #follower-img">
+      </a-mixin>
+    </a-assets>
+
+    <a-scene stats="true">
+      <!-- Camera. -->
+      <a-entity position="0 1.8 4">
+        <a-entity id="camera" camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <!-- Light. -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+
+      <!-- Floor. -->
+      <a-entity geometry="primitive: cylinder; height: .2; radius: 15;"
+                material="src: #floor; metalness: .2; repeat: 50 20; roughness: .1"
+                position="0 0 0"></a-entity>
+
+      <!-- Skysphere. -->
+      <a-entity geometry="primitive: sphere; radius: 100"
+                material="color: #333; shader: flat" scale="1 1 -1">
+      </a-entity>
+
+      <!-- Moving object. -->
+      <a-entity position="0 2 0">
+        <a-entity id="squirrel" geometry="primitive: sphere; radius: .2"
+                                light="type: point; color: #555"
+                                material="color: #FFF; shader: flat"
+                                position="20 0 0">
+        </a-entity>
+        <a-animation attribute="rotation" direction="alternate" dur="5000"
+                     easing="ease-in-out" fill="forwards" repeat="indefinite"
+                     to="0 360 180"></a-animation>
+      </a-entity>
+
+      <a-entity mixin="follower" look-at="#squirrel" position="0 2 0"></a-entity>
+      <a-entity mixin="follower" look-at="#camera" position="0 5 0"></a-entity>
+    </a-scene>
+  </body>
+</html>
