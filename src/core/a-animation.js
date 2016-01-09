@@ -60,6 +60,7 @@ module.exports.AAnimation = registerElement('a-animation', {
   prototype: Object.create(ANode.prototype, {
     createdCallback: {
       value: function () {
+        this.bindMethods();
         this.isRunning = false;
         this.partialSetAttribute = function () { /* no-op */ };
         this.tween = null;
@@ -83,7 +84,6 @@ module.exports.AAnimation = registerElement('a-animation', {
         }
 
         function init () {
-          self.bindMethods();
           self.applyMixin();
           self.update();
           self.load();
@@ -221,7 +221,7 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     start: {
       value: function () {
-        if (this.isRunning) { return; }
+        if (this.isRunning || this.el.paused) { return; }
         this.tween = this.getTween();
         this.isRunning = true;
         this.tween.start();
@@ -237,6 +237,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         tween.stop();
         this.isRunning = false;
         this.partialSetAttribute(this.initialValue);
+        this.emit('animationstop');
       },
       writable: true
     },
@@ -280,10 +281,12 @@ module.exports.AAnimation = registerElement('a-animation', {
     addEventListeners: {
       value: function (evts) {
         var el = this.el;
-        var start = this.start.bind(this);
+        var self = this;
         utils.splitString(evts).forEach(function (evt) {
-          el.addEventListener(evt, start);
+          el.addEventListener(evt, self.start);
         });
+        el.addEventListener('play', this.start);
+        el.addEventListener('pause', this.stop);
         el.addEventListener('stateadded', this.onStateAdded);
         el.addEventListener('stateremoved', this.onStateRemoved);
       }

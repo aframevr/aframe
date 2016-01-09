@@ -5,6 +5,7 @@ var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 var AEntity = require('./a-entity');
+var ANode = require('./a-node');
 var Wakelock = require('../../lib/vendor/wakelock/wakelock');
 
 var dummyDolly = new THREE.Object3D();
@@ -46,42 +47,54 @@ var AScene = module.exports = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     createdCallback: {
       value: function () {
-        this.behaviors = [];
         this.defaultLightsEnabled = true;
         this.enterVREl = null;
         this.insideIframe = window.top !== window.self;
         this.insideLoader = false;
         this.isScene = true;
-        this.materials = {};
-        this.object3D = AScene.scene || new THREE.Scene();
-
-        AScene.scene = this.object3D;
+        this.object3D = new THREE.Scene();
+        this.init();
       }
+    },
+
+    init: {
+      value: function () {
+        this.isMobile = isMobile;
+        this.behaviors = [];
+        this.materials = {};
+        this.paused = true;
+        this.hasLoaded = false;
+        this.originalHTML = this.innerHTML;
+        this.setupCanvas();
+        this.setupRenderer();
+        this.resizeCanvas();
+        this.setupDefaultLights();
+        this.setupDefaultCamera();
+      },
+      writable: true
     },
 
     attachedCallback: {
       value: function () {
-        this.isMobile = isMobile;
-        var resizeCanvas = this.resizeCanvas.bind(this);
-
-        if (isMobile) {
+        if (this.isMobile) {
           injectMetaTags();
           this.wakelock = new Wakelock();
         }
-
-        this.setupStats();
-        this.setupCanvas();
-        this.setupKeyboardShortcuts();
-        this.setupRenderer();
-        this.setupDefaultLights();
-        this.attachFullscreenListeners();
-        this.attachOrientationListeners();
-        this.start();
-
-        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
-        window.addEventListener('load', resizeCanvas);
+        this.attachEventListeners();
+        this.play();
       },
       writable: window.debug
+    },
+
+    attachEventListeners: {
+      value: function () {
+        var resizeCanvas = this.resizeCanvas.bind(this);
+        this.setupKeyboardShortcuts();
+        this.attachFullscreenListeners();
+        this.attachOrientationListeners();
+        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
+        window.addEventListener('load', resizeCanvas);
+      }
     },
 
     /**
@@ -258,34 +271,67 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Sets a camera to be used by the renderer and removes the default one
+     * Sets a camera to be used by the renderer
+     * It alse removes the default one if any and disables any other camera
+     * in the scene
      *
      * @param {object} el - object holding an entity with a camera component or THREE camera.
      */
     setActiveCamera: {
-      value: function (el) {
-        var camera;
+      value: function (newCamera) {
+        var defaultCameraWrapper = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+        var defaultCameraEl = defaultCameraWrapper && defaultCameraWrapper.querySelector('[camera]');
+        if (newCamera instanceof AEntity) {
+          newCamera.setAttribute('camera', 'active', true);
+          if (newCamera !== defaultCameraEl) { this.removeDefaultCamera(); }
+          return;
+        }
+        this.camera = newCamera;
+        this.updateCameras();
+      }
+    },
+
+    /**
+     * Enables active camera and disables the rest
+     * @type object - activeCamera - The camera used by the renderer
+     */
+    updateCameras: {
+      value: function () {
+        var activeCamera = this.camera;
+        var activeCameraEl = activeCamera && activeCamera.el;
         var cameraEl;
-        var defaultCamera;
-        var defaultCameraEl;
-        // el is an entity with a camera component
-        if (el.components && el.components.camera) {
-          camera = el.components.camera.camera;
-          cameraEl = el;
-        } else if (el instanceof THREE.Camera) {
-          camera = el;
-          cameraEl = camera.el;
-        } else { return; }
-        this.camera = camera;
+        var sceneCameras = this.querySelectorAll('[camera]');
+        var i;
+        if (!activeCamera) {
+          activeCameraEl = sceneCameras[sceneCameras.length - 1];
+          activeCameraEl.setAttribute('camera', 'active', true);
+          return;
+        }
+
+        for (i = 0; i < sceneCameras.length; ++i) {
+          cameraEl = sceneCameras[i];
+
+          if (activeCameraEl === cameraEl) {
+            if (!this.paused) { activeCameraEl.play(); }
+            continue;
+          }
+          cameraEl.setAttribute('camera', 'active', false);
+          cameraEl.pause();
+        }
+      }
+    },
+
+    removeDefaultCamera: {
+      value: function () {
+        var cameraEl = this.camera && this.camera.el;
         if (!cameraEl) { return; }
-        // Removes default camera
-        defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        defaultCameraEl = defaultCamera && defaultCamera.querySelector('[camera]');
-        // Return if active camera is the default one
-        if (!defaultCamera || !defaultCameraEl ||
-             defaultCameraEl === cameraEl) { return; }
-        // User added a camera, remove default camera through DOM.
-        this.removeChild(defaultCamera);
+        // Removes default camera if any
+        var defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+        var defaultCameraEl = defaultCamera && defaultCamera.querySelector('[camera]');
+        // Remove default camera if any
+        if (defaultCameraEl && defaultCameraEl !== cameraEl) {
+          this.removeChild(defaultCamera);
+        }
       }
     },
 
@@ -350,7 +396,8 @@ var AScene = module.exports = registerElement('a-scene', {
         camera.updateProjectionMatrix();
         // Notify the renderer of the size change
         this.renderer.setSize(size.width, size.height, true);
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -411,7 +458,6 @@ var AScene = module.exports = registerElement('a-scene', {
           canvas = this.canvas = document.createElement('canvas');
           this.appendChild(canvas);
         }
-
         canvas.classList.add('a-canvas');
         // Prevents overscroll on mobile devices.
         canvas.addEventListener('touchmove', function (evt) {
@@ -419,6 +465,7 @@ var AScene = module.exports = registerElement('a-scene', {
         });
 
         window.addEventListener('resize', this.resizeCanvas.bind(this), false);
+        return canvas;
       }
     },
 
@@ -430,22 +477,21 @@ var AScene = module.exports = registerElement('a-scene', {
      * entities at the origin (0, 0, 0) are well-centered.
      */
     setupDefaultCamera: {
-      value: function (loaded) {
+      value: function () {
         var cameraWrapperEl;
         var defaultCamera;
-
-        if (this.camera) { return; }
+        var sceneCameras = this.querySelectorAll('[camera]');
+        if (sceneCameras.length !== 0) { return; }
 
         // DOM calls to create camera.
         cameraWrapperEl = document.createElement('a-entity');
         cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
         cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
         defaultCamera = document.createElement('a-entity');
-        defaultCamera.setAttribute('camera');
+        defaultCamera.setAttribute('camera', {'active': true});
         defaultCamera.setAttribute('wasd-controls');
         defaultCamera.setAttribute('look-controls');
         cameraWrapperEl.appendChild(defaultCamera);
-        cameraWrapperEl.addEventListener('loaded', loaded);
         this.appendChild(cameraWrapperEl);
       }
     },
@@ -545,8 +591,6 @@ var AScene = module.exports = registerElement('a-scene', {
         // at runttime we would have to recreate the whole context
         var antialias = this.getAttribute('antialias') === 'true';
         var renderer = this.renderer = this.monoRenderer =
-          (AScene && AScene.renderer) ||
-          // To prevent creating multiple rendering contexts.
           new THREE.WebGLRenderer({
             canvas: canvas,
             antialias: antialias,
@@ -602,31 +646,26 @@ var AScene = module.exports = registerElement('a-scene', {
      * Handler attached to elements to help scene know when to kick off.
      * Scene waits for all entities to load.
      */
-    start: {
+    play: {
       value: function () {
-        if (this.renderStarted) { return; }
+        if (this.renderStarted) {
+          AEntity.prototype.play.call(this);
+          return;
+        }
 
         this.addEventListener('loaded', function () {
           var self = this;
           if (this.renderStarted) { return; }
 
           this.setupLoader();
-          this.resizeCanvas();
-
-          if (!this.camera) {
-            this.setupDefaultCamera(startRender);
-            return;
-          }
-
-          startRender();
-
-          function startRender () {
-            // Kick off render loop.
-            self.render();
-            self.renderStarted = true;
-            self.emit('renderstart');
-            self.checkUrlParameters();
-          }
+          AEntity.prototype.play.call(self);
+          self.setupStats();
+          self.resizeCanvas();
+          // Kick off render loop.
+          self.render();
+          self.renderStarted = true;
+          self.emit('renderstart');
+          self.checkUrlParameters();
         });
 
         AEntity.prototype.load.call(this);
@@ -698,8 +737,29 @@ var AScene = module.exports = registerElement('a-scene', {
         if (stats) { stats().update(); }
         this.animationFrameID = window.requestAnimationFrame(
           this.render.bind(this));
+      },
+      writable: window.debug
+    },
+
+    /**
+     * Reloads the scene to the original DOM content
+     * @type {bool} - paused - It reloads the scene with all the
+     * dynamic behavior paused: dynamic components and animations
+     */
+    reload: {
+      value: function (paused) {
+        var self = this;
+        if (paused) { this.pause(); }
+        this.innerHTML = this.originalHTML;
+        this.init();
+        ANode.prototype.load.call(this, play);
+        function play () {
+          if (self.paused) { return; }
+          AEntity.prototype.play.call(self);
+        }
       }
     }
+
   })
 });
 

@@ -9,8 +9,10 @@ var AScene = require('core/a-scene');
 
 setup(function () {
   this.sinon = sinon.sandbox.create();
-  // Stub to not create a WebGL context since Travis CI runs headless.
-  this.sinon.stub(AScene.prototype, 'attachedCallback');
+  // Stubs to not create a WebGL context since Travis CI runs headless.
+  this.sinon.stub(AScene.prototype, 'setupRenderer');
+  this.sinon.stub(AScene.prototype, 'resizeCanvas');
+  this.sinon.stub(AScene.prototype, 'render');
 });
 
 teardown(function () {

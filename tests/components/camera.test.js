@@ -5,15 +5,9 @@ suite('camera', function () {
   'use strict';
 
   setup(function (done) {
-    var self = this;
     var el = this.el = entityFactory();
     el.setAttribute('camera', '');
-    if (el.hasLoaded) {
-      this.camera = el.components.camera.camera;
-      done();
-    }
-    el.addEventListener('loaded', function () {
-      self.camera = el.components.camera.camera;
+    process.nextTick(function () {
       done();
     });
   });
@@ -24,7 +18,9 @@ suite('camera', function () {
     });
 
     test('sets sceneEl.camera', function () {
-      assert.equal(this.el.sceneEl.camera, this.camera);
+      var el = this.el;
+      el.setAttribute('camera', 'active: true');
+      assert.equal(el.sceneEl.camera, el.components.camera.camera);
     });
   });
 

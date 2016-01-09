@@ -1,6 +1,8 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, process, sinon, setup, suite, teardown, test, THREE */
 'use strict';
 var helpers = require('../helpers');
+var AEntity = require('core/a-entity');
+var ANode = require('core/a-node');
 var AScene = require('core/a-scene');
 
 /**
@@ -13,19 +15,51 @@ var AScene = require('core/a-scene');
  */
 suite('a-scene (without renderer)', function () {
   setup(function () {
-    var el = this.el = document.createElement('a-scene');
+    var el;
+    el = this.el = document.createElement('a-scene');
     document.body.appendChild(el);
+  });
+
+  teardown(function () {
+    document.body.removeChild(this.el);
   });
 
   suite('createdCallback', function () {
     test('initializes scene object', function () {
       assert.equal(this.el.object3D.type, 'Scene');
     });
+  });
 
-    test('reuses scene object', function () {
-      var anotherEl = document.createElement('a-scene');
-      document.body.appendChild(anotherEl);
-      assert.equal(anotherEl.object3D.uuid, this.el.object3D.uuid);
+  suite('init', function () {
+    test('initializes scene object', function () {
+      var sceneEl = this.el;
+      sceneEl.behaviors = ['dummy'];
+      sceneEl.materials = {dummy: 1};
+      sceneEl.paused = false;
+      sceneEl.hasLoaded = true;
+      sceneEl.init();
+      assert.equal(sceneEl.behaviors.length, 0);
+      assert.equal(Object.keys(sceneEl.materials).length, 0);
+      assert.equal(sceneEl.paused, true);
+      assert.equal(sceneEl.hasLoaded, false);
+    });
+  });
+
+  suite('reload', function () {
+    test('reload scene innerHTML to original value', function () {
+      var sceneEl = this.el;
+      sceneEl.innerHTML = 'NEW';
+      sceneEl.reload();
+      assert.ok(sceneEl.innerHTML, '');
+    });
+
+    test('reloads the scene and pauses', function () {
+      var sceneEl = this.el;
+      this.sinon.spy(AEntity.prototype, 'pause');
+      this.sinon.spy(ANode.prototype, 'load');
+      sceneEl.reload(true);
+      sinon.assert.called(AEntity.prototype.pause);
+      sinon.assert.called(ANode.prototype.load);
     });
   });
 
@@ -49,17 +83,18 @@ suite('a-scene (without renderer)', function () {
 
   suite('setActiveCamera', function () {
     test('sets a new active THREE camera', function () {
+      var el = this.el;
       var camera = new THREE.PerspectiveCamera(45, 2, 1, 1000);
-      this.el.setActiveCamera(camera);
-      assert.equal(this.el.camera, camera);
+      el.setActiveCamera(camera);
+      assert.equal(el.camera, camera);
     });
 
-    test('sets a new active THREE camera', function (done) {
+    test('sets a new active entity camera', function (done) {
       var self = this;
       var cameraEl = document.createElement('a-entity');
       cameraEl.setAttribute('camera', '');
       this.el.appendChild(cameraEl);
-      cameraEl.addEventListener('loaded', function () {
+      process.nextTick(function () {
         self.el.setActiveCamera(cameraEl);
         assert.equal(self.el.camera, cameraEl.components.camera.camera);
         done();
@@ -67,24 +102,88 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('setupCanvas', function () {
-    test('adds canvas to a-scene element by default', function (done) {
-      assert.notOk(this.el.querySelector('canvas'));
-      this.el.setupCanvas();
+  suite('setActiveCamera', function () {
+    test('switches active camera', function (done) {
+      var sceneEl = this.el;
+      var camera1El = document.createElement('a-entity');
+      var camera2El = document.createElement('a-entity');
+      camera1El.setAttribute('camera', 'active: false');
+      sceneEl.appendChild(camera1El);
+      camera2El.setAttribute('camera', 'active: true');
+      sceneEl.appendChild(camera2El);
       process.nextTick(function () {
-        assert.ok(this.el.querySelector('canvas'));
+        assert.equal(camera1El.getAttribute('camera').active, 'false');
+        sceneEl.setActiveCamera(camera1El);
+        assert.equal(camera1El.getAttribute('camera').active, 'true');
+        assert.equal(camera2El.getAttribute('camera').active, 'false');
         done();
-      }.bind(this));
+      });
+    });
+  });
+
+  suite('removeDefaultCamera', function () {
+    test('removes the default camera', function () {
+      var sceneEl = this.el;
+      var defaultCamera;
+      sceneEl.setupDefaultCamera();
+      defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+      assert.notEqual(defaultCamera, null);
+      // Mocks camera initialization
+      sceneEl.camera = { el: true };
+      sceneEl.removeDefaultCamera();
+      defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+      assert.equal(defaultCamera, null);
+    });
+  });
+
+  suite('updateCameras', function () {
+    test('disable inactive cameras', function (done) {
+      var sceneEl = this.el;
+      var cameraEl = document.createElement('a-entity');
+      cameraEl.setAttribute('camera', 'active: false');
+      sceneEl.appendChild(cameraEl);
+
+      var camera2El = document.createElement('a-entity');
+      camera2El.setAttribute('camera', 'active: false');
+      sceneEl.appendChild(camera2El);
+
+      process.nextTick(function () {
+        cameraEl.setAttribute('camera', 'active: true');
+        camera2El.setAttribute('camera', 'active: true');
+        assert.equal(cameraEl.getAttribute('camera').active, 'false');
+        assert.equal(camera2El.getAttribute('camera').active, 'true');
+        assert.equal(camera2El.components.camera.camera, sceneEl.camera);
+        done();
+      });
+    });
+  });
+
+  suite('setupCanvas', function () {
+    setup(function () {
+      var el = this.el;
+      var canvas = el.querySelector('canvas');
+      el.removeChild(canvas);
+    });
+
+    test('adds canvas to a-scene element by default', function (done) {
+      var el = this.el;
+      assert.notOk(el.querySelector('canvas'));
+      el.setupCanvas();
+      process.nextTick(function () {
+        assert.ok(el.querySelector('canvas'));
+        done();
+      });
     });
 
     test('reuses existing canvas when selector is given', function (done) {
       var canvas = document.createElement('canvas');
+      var el = this.el;
       canvas.setAttribute('id', 'canvas');
       document.body.appendChild(canvas);
       assert.notOk(canvas.classList.contains('a-canvas'));
 
-      this.el.setAttribute('canvas', '#canvas');
-      this.el.setupCanvas();
+      el.setAttribute('canvas', '#canvas');
+      el.setupCanvas();
       process.nextTick(function () {
         assert.ok(canvas.classList.contains('a-canvas'));
         assert.notOk(this.el.querySelector('canvas'));
@@ -94,6 +193,15 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('setupDefaultLights', function () {
+    setup(function () {
+      var el = this.el;
+      var lights = el.querySelectorAll('[light]');
+      var i;
+      for (i = 0; i < lights.length; ++i) {
+        el.removeChild(lights[i]);
+      }
+    });
+
     test('adds lights to scene', function (done) {
       var el = this.el;
       assert.notOk(document.querySelectorAll('[light]').length);
@@ -129,7 +237,9 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
   setup(function (done) {
     var el;
     var self = this;
-    AScene.prototype.attachedCallback.restore();
+    AScene.prototype.setupRenderer.restore();
+    AScene.prototype.resizeCanvas.restore();
+    AScene.prototype.render.restore();
     process.nextTick(function () {
       el = self.el = document.createElement('a-scene');
       document.body.appendChild(el);

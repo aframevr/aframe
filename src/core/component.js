@@ -52,6 +52,18 @@ Component.prototype = {
   init: function () { /* no-op */ },
 
   /**
+   * Called to start any dynamic behavior
+   * like animations, AI, physics.
+   */
+  play: function () { /* no-op */ },
+
+  /**
+   * Called to stop any dynamic behavior
+   * like animations, AI, physics.
+   */
+  pause: function () { /* no-op */ },
+
+  /**
    * Update handler. Similar to attributeChangedCallback.
    * Called whenever component's data changes.
    * Also called on component initialization when the component receives initial data.
@@ -182,7 +194,7 @@ module.exports.registerComponent = function (name, definition) {
   Object.keys(definition).forEach(function (key) {
     proto[key] = {
       value: definition[key],
-      writable: window.debug
+      writable: true
     };
   });
 
