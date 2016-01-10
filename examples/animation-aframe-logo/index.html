@@ -116,4 +116,32 @@
 
     </a-scene>
   </body>
+  <script>
+  // Change camera setting entering/exiting VR mode.
+
+  // Camera entity
+  var cam = document.querySelector('a-camera');
+
+  function handleFsChange(e) {
+    if (document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen) {
+      // VR
+      cam.setAttribute('position', '4 2 -16');
+      cam.setAttribute('rotation', '0 180 0');
+      cam.setAttribute('near', 0.5);
+      cam.setAttribute('far', 10000);
+      cam.setAttribute('fov', 80);
+    } else {
+      // 2d mono mode
+      cam.setAttribute('position', '0 880 1290');
+      cam.setAttribute('rotation', '-34 0 0');
+      cam.setAttribute('near', 1000);
+      cam.setAttribute('far', 4000);
+      cam.setAttribute('fov', 2.2);
+    }
+  }
+
+  document.addEventListener('fullscreenchange', handleFsChange);
+  document.addEventListener('mozfullscreenchange', handleFsChange);
+  document.addEventListener('webkitfullscreenchange', handleFsChange);
+  </script>
 </html>
