@@ -3,7 +3,7 @@
   "version": "0.1.3",
   "homepage": "https://github.com/aframevr/aframe-core",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "dist/aframe-core.js",
   "dependencies": {
     "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "browserify": "^11.0.1",
+    "browserify-derequire": "^0.9.4",
     "budo": "^7.0.2",
     "chai-shallow-deep-equal": "^1.3.0",
     "copyfiles": "0.2.1",
@@ -47,7 +48,7 @@
   "scripts": {
     "start": "npm run dev",
     "dev": "npm run build && node ./scripts/budo",
-    "browserify": "browserify ./src/index.js -s aframe-core",
+    "browserify": "browserify ./src/index.js -s aframe-core -p browserify-derequire",
     "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe-core.js",
     "dist": "rimraf dist/ && mkdirp dist/ && npm run dist:js",
     "dist:js": "npm run browserify -s -- --debug | exorcist dist/aframe-core.js.map > dist/aframe-core.js && uglifyjs dist/aframe-core.js -c warnings=false -m -o dist/aframe-core.min.js",
