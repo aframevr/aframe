@@ -197,6 +197,55 @@ suite('a-entity', function () {
     });
   });
 
+  suite('getObject3D', function () {
+    test('returns requested object3D', function () {
+      var el = this.el;
+      el.setAttribute('geometry', 'primitive: box; width: 5');
+      assert.ok(el.getObject3D('mesh'));
+    });
+
+    test('it returns undefined for a non existing object3D', function () {
+      assert.notOk(this.el.getObject3D('dummy'));
+    });
+  });
+
+  suite('setObject3D', function () {
+    test('sets the object3D for the given type', function () {
+      var el = this.el;
+      var object3D = new THREE.Group();
+      el.setObject3D('mesh', object3D);
+      assert.equal(el.getObject3D('mesh'), object3D);
+      assert.equal(object3D.el, el);
+    });
+
+    test('resets the object3D for a given type', function () {
+      var el = this.el;
+      var nullObj = null;
+      el.setObject3D('mesh', nullObj);
+      assert.equal(el.getObject3D('mesh'), nullObj);
+    });
+  });
+
+  suite('getOrCreateObject3D', function () {
+    test('creates an object3D if the type does not exist', function () {
+      var el = this.el;
+      var Constructor = function () {};
+      el.getOrCreateObject3D('mesh', Constructor);
+      assert.ok(el.getObject3D('mesh'));
+      assert.equal(el.getObject3D('mesh').constructor, Constructor);
+    });
+
+    test('returns existing object3D if it exists', function () {
+      var el = this.el;
+      var Constructor = function () {};
+      var dummy = {};
+      el.object3DMap['dummy'] = dummy;
+      el.getOrCreateObject3D('dummy', Constructor);
+      assert.ok(el.getObject3D('dummy'));
+      assert.equal(el.getObject3D('dummy'), dummy);
+    });
+  });
+
   suite('getComputedAttribute', function () {
     test('returns full component data', function () {
       var componentData;
