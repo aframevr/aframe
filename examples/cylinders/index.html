@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cylinders</title>
+    <meta name="description" content="Cylinders - A-Frame Core">
+    <script src="../../dist/aframe-core.js"></script>
+  </head>
+  <body>
+    <a-assets>
+      <a-mixin id="cylinder" geometry="primitive: cylinder"></a-mixin>
+      <a-mixin id="open-ended" geometry="openEnded: true" material="side: double"></a-mixin>
+    </a-assets>
+    <a-scene stats="true">
+      <a-entity position="0 0 8">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+
+      <a-entity mixin="cylinder" position="-10 0 0" rotation="45 0 -45"
+                geometry="radius: 2; height: 5;"
+                material="color: aqua"></a-entity>
+      <a-entity mixin="open-ended cylinder" rotation="25 0 10"
+                geometry="radius: 4; height: 2"
+                material="color: crimson"></a-entity>
+      <a-entity mixin="cylinder" position="10 0 0" rotation="75 0 0"
+                geometry="radius: 2; height: 4; thetaLength: 270"
+                material="color: gold; side: double"></a-entity>
+      <a-entity mixin="open-ended cylinder" position="0 4 0"
+                geometry="radius: 4; height: 2; thetaLength: 160; thetaStart: 160"
+                material="color: orchid"></a-entity>
+
+      <a-entity mixin="cylinder" position="5 -5 0" rotation="-45 0 0"
+                geometry="radiusTop: 3; radiusBottom: 0.1; height: 2"
+                material="color: green"></a-entity>
+    </a-scene>
+  </body>
+</html>
