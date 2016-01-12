@@ -42,6 +42,7 @@ module.exports = {
   debug: debug,
   registerComponent: registerComponent,
   registerElement: registerElement,
+  registerPropertyType: require('./core/propertyTypes').registerPropertyType,
   THREE: THREE,
   utils: utils,
   version: pkg.version

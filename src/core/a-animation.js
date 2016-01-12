@@ -1,7 +1,7 @@
 var ANode = require('./a-node');
-var coerce = require('../utils/').coerce;
 var constants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
+var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
@@ -367,7 +367,7 @@ function cloneValue (val) {
  */
 function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var attributeSplit = attribute.split('.');
-  var coerceSchema;
+  var schema;
   var component;
   var componentPropName;
   var componentName;
@@ -401,14 +401,14 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
       el.setAttribute(componentName, '');
       component = el.components[componentName];
     }
-    coerceSchema = component.schema;
+    schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
       from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
     } else {
       from[attribute] = dataFrom;
     }
-    from[attribute] = coerce(from[attribute], coerceSchema, componentPropName);
-    to[attribute] = coerce(dataTo, coerceSchema, componentPropName);
+    from[attribute] = parseProperty(from[attribute], schema[componentPropName]);
+    to[attribute] = parseProperty(dataTo, schema[componentPropName]);
     partialSetAttribute = function (value) {
       el.setAttribute(componentName, componentPropName, value[attribute]);
     };

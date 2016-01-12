@@ -1,15 +1,12 @@
-var coordinatesMixin = require('../utils/coordinates').componentMixin;
 var registerComponent = require('../core/component').registerComponent;
-var utils = require('../utils/');
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
 var zeroScale = 0.00001;
 
-module.exports.Component = registerComponent('scale', utils.extend({
+module.exports.Component = registerComponent('scale', {
   schema: {
-    x: { default: 1 },
-    y: { default: 1 },
-    z: { default: 1 }
+    type: 'vec3',
+    default: { x: 1, y: 1, z: 1 }
   },
 
   update: function () {
@@ -20,4 +17,4 @@ module.exports.Component = registerComponent('scale', utils.extend({
     var z = data.z === 0 ? zeroScale : data.z;
     object3D.scale.set(x, y, z);
   }
-}, coordinatesMixin));
+});

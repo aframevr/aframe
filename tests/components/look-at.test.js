@@ -59,23 +59,6 @@ suite('look-at', function () {
       });
     });
 
-    test('can look at a nested entity', function (done) {
-      var el = this.el;
-      var spy = this.spy;
-      var anotherEl = squirrelFactory(el);
-      var nestedEl = document.createElement('a-entity');
-      nestedEl.setAttribute('position', '1 2 3');
-      nestedEl.setAttribute('id', 'squirrel-nest');
-      anotherEl.appendChild(nestedEl);
-      nestedEl.parentNode.addEventListener('loaded', function () {
-        el.setAttribute('look-at', '#squirrel-nest');
-        el.parentNode.object3D.updateMatrixWorld();
-        el.components['look-at'].update();
-        assert.ok(spy.calledWith({x: 2, y: 4, z: 6}));
-        done();
-      });
-    });
-
     test('can track an entity', function (done) {
       var el = this.el;
       var spy = this.spy;
@@ -143,43 +126,29 @@ suite('look-at', function () {
   });
 
   suite('parse', function () {
-    test('parses position vector', function (done) {
+    test('parses position vector', function () {
       var el = this.el;
       el.setAttribute('look-at', '1 2 3');
-      setTimeout(function () {
-        assert.shallowDeepEqual(el.components['look-at'].data.position, { x: 1, y: 2, z: 3 });
-        assert.notOk(el.components['look-at'].data.targetSelector);
-        done();
-      });
+      assert.shallowDeepEqual(el.components['look-at'].data, { x: 1, y: 2, z: 3 });
     });
 
-    test('parses position vector with whitespaces', function (done) {
+    test('parses position vector with whitespaces', function () {
       var el = this.el;
       el.setAttribute('look-at', ' 4   5 2   ');
-      setTimeout(function () {
-        assert.shallowDeepEqual(el.components['look-at'].data.position, { x: 4, y: 5, z: 2 });
-        done();
-      });
+      assert.shallowDeepEqual(el.components['look-at'].data, { x: 4, y: 5, z: 2 });
     });
 
-    test('parses target selector', function (done) {
+    test('parses target selector', function () {
       var el = this.el;
       el.setAttribute('look-at', '#the-sky');
-      setTimeout(function () {
-        assert.notOk(el.components['look-at'].data.position);
-        assert.equal(el.components['look-at'].data.targetSelector, '#the-sky');
-        done();
-      });
+      assert.equal(el.components['look-at'].data, '#the-sky');
     });
 
-    test('parses target selector with whitespaces', function (done) {
+    test('parses target selector with whitespaces', function () {
       var el = this.el;
       el.setAttribute('look-at', '#the-sky .its-a-bird [its-a-plane]');
-      setTimeout(function () {
-        assert.equal(el.components['look-at'].data.targetSelector,
-                     '#the-sky .its-a-bird [its-a-plane]');
-        done();
-      });
+      assert.equal(el.components['look-at'].data,
+                   '#the-sky .its-a-bird [its-a-plane]');
     });
   });
 });

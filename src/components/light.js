@@ -3,7 +3,7 @@ var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
-var rad = THREE.Math.degToRad;
+var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');
 
 /**
@@ -123,7 +123,7 @@ function getLight (data) {
       return new THREE.PointLight(color, intensity, distance, decay);
     }
     case 'spot': {
-      return new THREE.SpotLight(color, intensity, distance, rad(angle), data.exponent,
+      return new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.exponent,
                                  decay);
     }
     default: {

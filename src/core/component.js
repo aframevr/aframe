@@ -1,9 +1,17 @@
+/* global HTMLElement */
 var debug = require('../utils/debug');
+var propertyTypes = require('./propertyTypes').propertyTypes;
+var schema = require('./schema');
 var styleParser = require('style-attr');
 var utils = require('../utils/');
 
-var components = module.exports.components = {};  // Keep track of registered components.
+var parseProperties = schema.parseProperties;
+var parseProperty = schema.parseProperty;
+var isSingleProp = schema.isSingleProperty;
+var processSchema = schema.process;
 var error = debug('core:register-component:error');
+
+var components = module.exports.components = {};  // Keep track of registered components.
 
 /**
  * Component class definition.
@@ -29,10 +37,10 @@ var error = debug('core:register-component:error');
  * @member {function} stringify
  */
 var Component = module.exports.Component = function (el) {
-  var attrs = el.getAttribute(this.name);
+  var rawData = HTMLElement.prototype.getAttribute.call(el, this.name);
   this.el = el;
   this.data = {};
-  this.parseProperties(attrs);
+  this.buildData(this.parse(rawData));
   this.init();
   this.update();
 };
@@ -80,32 +88,45 @@ Component.prototype = {
   remove: function () { /* no-op */ },
 
   /**
-   * Describes how the component should deserialize HTML attribute into data.
-   * Can be overridden by the component.
+   * Parses each property based on property type.
+   * If component is single-property, then parses the single property value.
    *
-   * The default parsing is parsing style-like strings, camelCasing keys for
-   * error-tolerance (`max-value` ~= `maxValue`).
-   *
-   * @param {string} value - HTML attribute.
-   * @returns {object} Data.
+   * @param {string} value - HTML attribute value.
+   * @returns {object} Component data.
    */
   parse: function (value) {
-    if (typeof value !== 'string') { return value; }
-    return transformKeysToCamelCase(styleParser.parse(value));
+    var typeName;
+    var type;
+
+    if (isSingleProp(this.schema)) {
+      typeName = this.schema.type;
+      type = propertyTypes[typeName];
+      if (type) { return type.parse.call(this, value); }
+      return error(typeName + ' is not a valid type.');
+    }
+
+    return objectParse(value);
   },
 
   /**
-   * Describes how the component should serialize data to a string to update the DOM.
-   * Can be overridden by the component.
-   *
-   * The default stringify is to a style-like string.
+   * Stringifies each property based on property type.
+   * If component is single-property, then stringifies the single property value.
    *
    * @param {object} data
    * @returns {string}
    */
   stringify: function (data) {
-    if (typeof data !== 'object') { return data; }
-    return styleParser.stringify(data);
+    var typeName;
+    var type;
+
+    if (isSingleProp(this.schema)) {
+      typeName = this.schema.type;
+      type = propertyTypes[typeName];
+      if (type) { return type.stringify.call(this, data); }
+      return error(typeName + ' is not a valid type.');
+    }
+
+    return objectStringify(data);
   },
 
   /**
@@ -120,17 +141,23 @@ Component.prototype = {
   },
 
   /**
-   * Called when new data is coming from the entity (e.g., attributeChangedCb)
+   * Called when new value is coming from the entity (e.g., attributeChangedCb)
    * or from its mixins. Does some parsing and applying before updating the
    * component.
    * Does not update if data has not changed.
+   *
+   * @param {string} value - HTML attribute value.
    */
-  updateProperties: function (newData) {
-    var previousData = extendWithCheck({}, this.data);
-    this.parseProperties(newData);
+  updateProperties: function (value) {
+    var isSinglePropSchema = isSingleProp(this.schema);
+    var previousData = extendProperties({}, this.data, isSinglePropSchema);
+    this.buildData(this.parse(value));
+
     // Don't update if properties haven't changed
-    if (utils.deepEqual(previousData, this.data)) { return; }
+    if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
+
     this.update(previousData);
+
     this.el.emit('componentchanged', {
       name: this.name,
       newData: this.getData(),
@@ -148,34 +175,43 @@ Component.prototype = {
    * 1. Defaults data
    * 2. Mixin data.
    * 3. Attribute data.
+   *
    * Finally coerce the data to the types of the defaults.
    */
-  parseProperties: function (newData) {
+  buildData: function (newData) {
     var self = this;
     var data = {};
     var schema = self.schema;
+    var isSinglePropSchema = isSingleProp(schema);
     var el = self.el;
     var mixinEls = el.mixinEls;
     var name = self.name;
 
     // 1. Default values (lowest precendence).
-    Object.keys(schema).forEach(applyDefault);
-    function applyDefault (key) {
-      data[key] = schema[key].default;
+    if (isSinglePropSchema) {
+      data = schema.default;
+    } else {
+      Object.keys(schema).forEach(function applyDefault (key) {
+        data[key] = schema[key].default;
+      });
     }
 
     // 2. Mixin values.
     mixinEls.forEach(applyMixin);
     function applyMixin (mixinEl) {
       var mixinData = mixinEl.getAttribute(name);
-      data = extendWithCheck(data, mixinData);
+      extendProperties(data, mixinData, isSinglePropSchema);
     }
 
     // 3. Attribute values (highest precendence).
-    data = extendWithCheck(data, newData);
+    data = extendProperties(data, newData, isSinglePropSchema);
 
-    // Coerce to the type of the defaults.
-    this.data = utils.coerce(data, schema);
+    // Parse and coerce using the schema.
+    if (isSinglePropSchema) {
+      this.data = parseProperty(data, schema);
+    } else {
+      this.data = parseProperties(data, schema);
+    }
   }
 };
 
@@ -211,24 +247,47 @@ module.exports.registerComponent = function (name, definition) {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    schema: NewComponent.prototype.schema,
-    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype)
+    schema: processSchema(NewComponent.prototype.schema),
+    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
+    type: NewComponent.prototype.type
   };
   return NewComponent;
 };
 
 /**
-* Object extending, but checks if `source` is an object first.
-* If not, `source` is a primitive and we don't do any extending.
+ * Deserializes style-like string into an object of properties.
+ *
+ * @param {string} value - HTML attribute value.
+ * @returns {object} Property data.k
+ */
+function objectParse (value) {
+  var parsedData;
+  if (typeof value !== 'string') { return value; }
+  parsedData = styleParser.parse(value);
+  return transformKeysToCamelCase(parsedData);
+}
+
+/**
+ * Serialize an object of properties into a style-like string.
+ *
+ * @param {object} data - Property data.
+ * @returns {string}
+ */
+function objectStringify (data) {
+  if (typeof data === 'string') { return data; }
+  return styleParser.stringify(data);
+}
+
+/**
+* Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
 * @param source - Source object or value
+* @param {boolean} isSinglePropSchema - Whether or not schema is only a single property.
 * @returns Overridden object or value.
 */
-function extendWithCheck (dest, source) {
-  var isSourceObject = typeof source === 'object';
-  if (source === null) { return dest; }
-  if (!isSourceObject) {
+function extendProperties (dest, source, isSinglePropSchema) {
+  if (isSinglePropSchema) {
     if (source === undefined) { return dest; }
     return source;
   }

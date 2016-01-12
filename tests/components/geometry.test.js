@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var rad = require('index').THREE.Math.degToRad;
+var degToRad = require('index').THREE.Math.degToRad;
 
 suite('geometry', function () {
   'use strict';
@@ -61,7 +61,7 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radius, 5);
       assert.equal(geometry.parameters.segments, 4);
       assert.equal(geometry.parameters.thetaStart, 0);
-      assert.equal(geometry.parameters.thetaLength, rad(350));
+      assert.equal(geometry.parameters.thetaLength, degToRad(350));
     });
 
     test('creates cylinder geometry', function () {
@@ -79,8 +79,8 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.heightSegments, 4);
       assert.equal(geometry.parameters.openEnded, true);
-      assert.equal(geometry.parameters.thetaStart, rad(240));
-      assert.equal(geometry.parameters.thetaLength, rad(350));
+      assert.equal(geometry.parameters.thetaStart, degToRad(240));
+      assert.equal(geometry.parameters.thetaLength, degToRad(350));
     });
 
     test('creates cone geometry', function () {
@@ -97,8 +97,8 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.heightSegments, 4);
       assert.equal(geometry.parameters.openEnded, true);
-      assert.equal(geometry.parameters.thetaStart, rad(240));
-      assert.equal(geometry.parameters.thetaLength, rad(350));
+      assert.equal(geometry.parameters.thetaStart, degToRad(240));
+      assert.equal(geometry.parameters.thetaLength, degToRad(350));
     });
 
     test('creates plane geometry', function () {
@@ -135,10 +135,10 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radius, 1);
       assert.equal(geometry.parameters.widthSegments, 2);
       assert.equal(geometry.parameters.heightSegments, 3);
-      assert.equal(geometry.parameters.phiStart, rad(45));
-      assert.equal(geometry.parameters.phiLength, rad(90));
-      assert.equal(geometry.parameters.thetaStart, rad(45));
-      assert.equal(geometry.parameters.thetaLength, rad(180));
+      assert.equal(geometry.parameters.phiStart, degToRad(45));
+      assert.equal(geometry.parameters.phiLength, degToRad(90));
+      assert.equal(geometry.parameters.thetaStart, degToRad(45));
+      assert.equal(geometry.parameters.thetaLength, degToRad(180));
     });
 
     test('creates torus geometry', function () {
@@ -154,7 +154,7 @@ suite('geometry', function () {
       assert.equal(geometry.parameters.radialSegments, 3);
       assert.equal(geometry.parameters.tube, 4);
       assert.equal(geometry.parameters.tubularSegments, 4);
-      assert.equal(geometry.parameters.arc, rad(350));
+      assert.equal(geometry.parameters.arc, degToRad(350));
     });
 
     test('creates torus knot geometry', function () {

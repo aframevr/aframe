@@ -83,7 +83,7 @@ suite('a-entity', function () {
     test('does not remove mixed-in component', function () {
       var el = this.el;
       var mixinId = 'geometry';
-      mixinFactory(mixinId, {geometry: 'primitive: box'});
+      mixinFactory(mixinId, { geometry: 'primitive: box' });
       el.setAttribute('mixin', mixinId);
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok('geometry' in el.components);

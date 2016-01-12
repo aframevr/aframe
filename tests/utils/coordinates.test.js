@@ -24,7 +24,18 @@ suite('utils.coordinates', function () {
     });
 
     test('can return fallback values', function () {
-      assert.shallowDeepEqual(coordinates.parse('1 2', { z: { default: -3 } }), { x: 1, y: 2, z: -3 });
+      var defaultCoordinate = { z: -3 };
+      assert.shallowDeepEqual(coordinates.parse('1 2', defaultCoordinate),
+                              { x: 1, y: 2, z: -3 });
+    });
+
+    test('can return schema values', function () {
+      var obj = new Obj();
+      assert.shallowDeepEqual(coordinates.parse.call(obj, '1 2'),
+                              { x: 1, y: 2, z: -3 });
+      function Obj () {
+        this.schema = { z: -3 };
+      }
     });
 
     test('returns already-parsed object', function () {

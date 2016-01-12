@@ -5,7 +5,7 @@ var utils = require('../utils');
 
 var DEFAULT_RADIUS = 1;
 var helperMatrix = new THREE.Matrix4();
-var rad = THREE.Math.degToRad;
+var degToRad = THREE.Math.degToRad;
 var warn = debug('components:geometry:warn');
 
 /**
@@ -50,7 +50,6 @@ module.exports.Component = registerComponent('geometry', {
     height: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } },
     openEnded: { default: false, if: { primitive: ['cylinder'] } },
     p: { default: 2, if: { primitive: ['torusKnot'] }, type: 'int' },
-    translate: { default: { x: 0, y: 0, z: 0 } },
     primitive: {
       default: '',
       oneOf: ['', 'box', 'circle', 'cylinder', 'plane',
@@ -75,6 +74,7 @@ module.exports.Component = registerComponent('geometry', {
     thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring',
                                                            'sphere'] } },
     thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
+    translate: { type: 'vec3' },
     width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
@@ -125,19 +125,19 @@ function getGeometry (data, schema) {
     }
     case 'circle': {
       return new THREE.CircleGeometry(
-        data.radius, data.segments, rad(data.thetaStart), rad(data.thetaLength));
+        data.radius, data.segments, degToRad(data.thetaStart), degToRad(data.thetaLength));
     }
     case 'cone': {
       return new THREE.CylinderGeometry(
         data.radiusTop, data.radiusBottom, data.height,
         data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
+        data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
     }
     case 'cylinder': {
       return new THREE.CylinderGeometry(
         data.radius, data.radius, data.height,
         data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, rad(data.thetaStart), rad(data.thetaLength));
+        data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
     }
     case 'plane': {
       return new THREE.PlaneBufferGeometry(data.width, data.height);
@@ -145,20 +145,20 @@ function getGeometry (data, schema) {
     case 'ring': {
       return new THREE.RingGeometry(
         data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
-        rad(data.thetaStart), rad(data.thetaLength));
+        degToRad(data.thetaStart), degToRad(data.thetaLength));
     }
     case 'sphere': {
       // thetaLength's default for spheres is different from those of the other geometries.
       // For now, we detect if thetaLength is exactly 360 to switch to a different default.
       if (data.thetaLength === 360) { data.thetaLength = 180; }
       return new THREE.SphereBufferGeometry(
-        data.radius, data.segmentsWidth, data.segmentsHeight, rad(data.phiStart),
-        rad(data.phiLength), rad(data.thetaStart), rad(data.thetaLength));
+        data.radius, data.segmentsWidth, data.segmentsHeight, degToRad(data.phiStart),
+        degToRad(data.phiLength), degToRad(data.thetaStart), degToRad(data.thetaLength));
     }
     case 'torus': {
       return new THREE.TorusGeometry(
         data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        rad(data.arc));
+        degToRad(data.arc));
     }
     case 'torusKnot': {
       return new THREE.TorusKnotGeometry(
