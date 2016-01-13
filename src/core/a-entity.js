@@ -29,7 +29,7 @@ var AEntity;
  * @member {boolean} paused - true if dynamic behavior of the entity is paused
  */
 var proto = Object.create(ANode.prototype, {
-  defaults: {
+  defaultComponents: {
     value: {
       position: '',
       rotation: '',
@@ -248,54 +248,34 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Check if a component is defined for an entity, including defaults and mixins.
-   *
-   * @param {string} name - Component name.
+   * Initialize component.
    */
-  isComponentDefined: {
-    value: function (name) {
-      // If the defaults contain the component
-      var inDefaults = this.defaults[name];
-      // If the element contains the component
-      var inAttribute = this.hasAttribute(name);
-      if (inDefaults !== undefined || inAttribute) { return true; }
-      return this.isComponentMixedIn(name);
-    }
-  },
-
-  isComponentMixedIn: {
-    value: function (name) {
-      var i;
-      var inMixin = false;
-      var mixinEls = this.mixinEls;
-     // If any of the mixins contains the component
-      for (i = 0; i < mixinEls.length; ++i) {
-        inMixin = mixinEls[i].hasAttribute(name);
-        if (inMixin) { break; }
-      }
-      return inMixin;
-    }
-  },
-
   initComponent: {
     value: function (name, isDependency) {
       var isComponentDefined;
-      // If it's not a component name or
-      // If the component is already initialized
+
+      // Check if already initialized.
       if (!components[name] || this.components[name]) { return; }
-      isComponentDefined = this.isComponentDefined(name);
-      // If the component is not defined for the element
+
+      // Check if not defined for entity.
+      isComponentDefined = checkComponentDefined(this, name);
       if (!isComponentDefined && !isDependency) { return; }
+
+      // Initialize dependencies.
       this.initComponentDependencies(name);
-      // If a component it's a dependency of another but it's not defined
-      // on the attribute, mixins or entity defaults
-      // we have to add it.
+
       if (isDependency && !isComponentDefined) {
+        // Add component if it is a dependency and not yet defined.
         this.setAttribute(name, '');
       } else {
+        if (this.isScene && !this.hasAttribute(name) && name in this.defaultComponents) {
+          // For scene default components, expose them in the DOM.
+          this.setAttribute(name, this.defaultComponents[name]);
+        }
         this.components[name] = new components[name].Component(this);
         if (!this.paused) { this.components[name].play(); }
       }
+
       log('Component initialized: %s', name);
     }
   },
@@ -305,7 +285,6 @@ var proto = Object.create(ANode.prototype, {
       var self = this;
       var component = components[name];
       var dependencies;
-      // If the component doesn't exist
       if (!component) { return; }
       dependencies = components[name].dependencies;
       if (!dependencies) { return; }
@@ -337,9 +316,8 @@ var proto = Object.create(ANode.prototype, {
   updateComponents: {
     value: function () {
       var self = this;
-      var entityComponents = Object.keys(components);
-      // Updates components
-      entityComponents.forEach(updateComponent);
+      var allComponents = Object.keys(components);
+      allComponents.forEach(updateComponent);
       function updateComponent (name) {
         var elValue = self.getAttribute(name);
         self.updateComponent(name, elValue);
@@ -358,8 +336,8 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (name, newData) {
       var component = this.components[name];
-      var isDefault = name in this.defaults;
-      var isMixedIn = this.isComponentMixedIn(name);
+      var isDefault = name in this.defaultComponents;
+      var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       if (component) {
         // Attribute was removed. Remove component.
         // 1. If the component is not defined in the defaults,
@@ -367,7 +345,7 @@ var proto = Object.create(ANode.prototype, {
         // 2. If the new data is null, it's not a default
         // component and the component it's not defined via
         // mixins
-        if (!this.isComponentDefined(name) ||
+        if (!checkComponentDefined(this, name) ||
             newData === null && !isDefault && !isMixedIn) {
           this.removeComponent(name);
           return;
@@ -585,6 +563,38 @@ var proto = Object.create(ANode.prototype, {
     }
   }
 });
+
+/**
+ * Check if a component is defined for an entity, including defaults and mixins.
+ *
+ * @param {string} name - Component name.
+ * @returns {boolean}
+ */
+function checkComponentDefined (el, name) {
+  // Check if default components contain the component.
+  var inDefaults = el.defaultComponents[name];
+  // Check if element contains the component.
+  var inAttribute = el.hasAttribute(name);
+  if (inDefaults !== undefined || inAttribute) { return true; }
+  return isComponentMixedIn(name, el.mixinEls);
+}
+
+/**
+ * Check if any mixins contains a component.
+ *
+ * @param {string} name - Component name.
+ * @param {array} mixinEls - Array of <a-mixin>s.
+ */
+function isComponentMixedIn (name, mixinEls) {
+  var i;
+  var inMixin = false;
+
+  for (i = 0; i < mixinEls.length; ++i) {
+    inMixin = mixinEls[i].hasAttribute(name);
+    if (inMixin) { break; }
+  }
+  return inMixin;
+}
 
 AEntity = registerElement('a-entity', {
   prototype: proto
