@@ -37,6 +37,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   init: function () {
+    this.behavior = this.tick.bind(this);
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
@@ -47,17 +48,21 @@ module.exports.Component = registerComponent('wasd-controls', {
   play: function () {
     var scene = this.el.sceneEl;
     this.attachEventListeners();
-    scene.addBehavior(this);
+    scene.addBehavior(this.behavior);
   },
 
   pause: function () {
     var scene = this.el.sceneEl;
     this.removeEventListeners();
-    scene.removeBehavior(this);
+    scene.removeBehavior(this.behavior);
   },
 
   remove: function () {
     this.pause();
+  },
+
+  tick: function (t) {
+    this.update();
   },
 
   update: function (previousData) {
