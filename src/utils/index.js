@@ -179,5 +179,12 @@ module.exports.getUrlParameter = function (name) {
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
+/**
+ * Detects whether context is within iframe.
+ */
+module.exports.isIframed = function () {
+  return window.top !== window.self;
+};
+
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');

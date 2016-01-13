@@ -1,25 +1,18 @@
-/* global MessageChannel, Promise */
+/* global Promise */
 var re = require('./a-register-element');
-var RStats = require('../../vendor/rStats');
 var THREE = require('../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 var AEntity = require('./a-entity');
 var ANode = require('./a-node');
-var Wakelock = require('../../vendor/wakelock/wakelock');
 
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
+
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
-var HIDDEN_CLASS = 'a-hidden';
 var registerElement = re.registerElement;
-var ENTER_VR_CLASS = 'a-enter-vr';
-var ENTER_VR_NO_HEADSET = 'data-a-enter-vr-no-headset';
-var ENTER_VR_NO_WEBVR = 'data-a-enter-vr-no-webvr';
-var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
-var ENTER_VR_MODAL_CLASS = 'a-enter-vr-modal';
-var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
+var isIframe = utils.isIframed();
 var isMobile = utils.isMobile();
 
 /**
@@ -29,29 +22,34 @@ var isMobile = utils.isMobile();
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} canvas
- * @member {Element} enterVREl
  * @member {bool} insideIframe
- * @member {bool} insideLoader
- * @member {bool} isScene - Differentiates this as a scene entity as opposed
-           to other `AEntity`s.
+ * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
- * @member {object} object3D - The root three.js Scene object.
+ * @member {object} object3D - Root three.js Scene object.
  * @member {object} monoRenderer
  * @member {object} renderer
  * @member {bool} renderStarted
- * @member {object} stats
  * @member {object} stereoRenderer
  * @member {number} time
- * @member {object} wakelock
  */
 var AScene = module.exports = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
+    defaultComponents: {
+      value: {
+        'canvas': '',
+        'fullscreen': '',
+        'meta-tags': '',
+        'vr-mode': '',
+        'vr-mode-ui': '',
+        'wakelock': ''
+      }
+    },
+
     createdCallback: {
       value: function () {
         this.defaultLightsEnabled = true;
-        this.enterVREl = null;
-        this.insideIframe = window.top !== window.self;
-        this.insideLoader = false;
+        this.isIframe = isIframe;
+        this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         this.time = 0;
@@ -61,53 +59,33 @@ var AScene = module.exports = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.isMobile = isMobile;
         this.behaviors = [];
-        this.materials = {};
-        this.paused = true;
         this.hasLoaded = false;
+        this.materials = {};
         this.originalHTML = this.innerHTML;
-        this.setupCanvas();
-        this.setupRenderer();
-        this.resizeCanvas();
+        this.paused = true;
+
         this.setupDefaultLights();
         this.setupDefaultCamera();
+        this.addEventListener('render-target-loaded', function () {
+          this.setupRenderer();
+          this.resize();
+        });
       },
       writable: true
     },
 
     attachedCallback: {
       value: function () {
-        if (this.isMobile) {
-          injectMetaTags();
-          this.wakelock = new Wakelock();
-        }
-        this.attachEventListeners();
+        this.setupKeyboardShortcuts();
+
+        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
+        window.addEventListener('load', this.resize.bind(this));
+        window.addEventListener('resize', this.resize.bind(this), false);
+        this.addEventListener('fullscreen-exit', this.exitVR.bind(this));
         this.play();
       },
       writable: window.debug
-    },
-
-    attachEventListeners: {
-      value: function () {
-        var resizeCanvas = this.resizeCanvas.bind(this);
-        this.setupKeyboardShortcuts();
-        this.attachFullscreenListeners();
-        this.attachOrientationListeners();
-        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
-        window.addEventListener('load', resizeCanvas);
-      }
-    },
-
-    /**
-     * Handle stats.
-     * TODO: move stats to a component.
-     */
-    attributeChangedCallback: {
-      value: function (attr, oldVal, newVal) {
-        if (oldVal === newVal) { return; }
-        if (attr === 'stats') { this.setupStats(); }
-      }
     },
 
     /**
@@ -130,145 +108,27 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    attachOrientationListeners: {
-      value: function (e) {
-        window.addEventListener('orientationchange', this.showOrientationModal.bind(this));
-      }
-    },
-
-    showOrientationModal: {
-      value: function () {
-        if (!utils.isIOS()) { return; }
-        if (!utils.isLandscape() && this.renderer === this.stereoRenderer) {
-          this.orientationModal.classList.remove(HIDDEN_CLASS);
-        } else {
-          this.orientationModal.classList.add(HIDDEN_CLASS);
-        }
-      }
-    },
-
     /**
-     * Switch back to mono renderer if no longer in fullscreen VR.
-     * Lock to landscape orientation on mobile when fullscreen.
+     * Generally must be triggered on user action for requesting fullscreen.
      */
-    attachFullscreenListeners: {
-      value: function () {
-        function fullscreenChange (e) {
-          var fsElement = document.fullscreenElement ||
-                          document.mozFullScreenElement ||
-                          document.webkitFullscreenElement;
-          if (window.screen.orientation) {
-            // Lock to landscape orientation on mobile.
-            if (fsElement && this.isMobile) {
-              window.screen.orientation.lock('landscape');
-            } else {
-              window.screen.orientation.unlock();
-            }
-          }
-          if (!fsElement) {
-            this.showUI();
-            this.setMonoRenderer();
-            if (this.wakelock) { this.wakelock.release(); }
-          }
-        }
-        document.addEventListener('mozfullscreenchange',
-                                  fullscreenChange.bind(this));
-        document.addEventListener('webkitfullscreenchange',
-                                  fullscreenChange.bind(this));
-      }
-    },
-
-    /**
-     * Handles VR and fullscreen behavior for when we are inside an iframe.
-     */
-    attachMessageListeners: {
-      value: function () {
-        var self = this;
-        window.addEventListener('message', function (e) {
-          if (e.data) {
-            switch (e.data.type) {
-              case 'loaderReady': {
-                self.insideLoader = true;
-                self.removeEnterVRButton();
-                break;
-              }
-              case 'fullscreen': {
-                switch (e.data.data) {
-                  // Set renderer with fullscreen VR enter and exit.
-                  case 'enter':
-                    self.setStereoRenderer();
-                    break;
-                  case 'exit':
-                    self.setMonoRenderer();
-                    break;
-                }
-              }
-            }
-          }
-        });
-      }
-    },
-
-    /**
-     * Enters VR when ?mode=vr is specified in the querystring.
-     */
-    checkUrlParameters: {
-      value: function () {
-        var mode = utils.getUrlParameter('mode');
-        if (mode === 'vr') {
-          this.enterVR();
-        }
-
-        var ui = utils.getUrlParameter('ui');
-        if (ui === 'false') {
-          this.hideUI();
-        }
-      }
-    },
-
     enterVR: {
-      value: function () {
-        this.hideUI();
+      value: function (event) {
         this.setStereoRenderer();
-        this.setFullscreen();
-        this.showOrientationModal();
+        if (isMobile) {
+          setFullscreen(this.canvas);
+        } else {
+          this.stereoRenderer.setFullScreen(true);
+        }
+        this.addState('vr-mode');
+        this.emit('enter-vr', event);
       }
     },
 
     exitVR: {
       value: function () {
-        this.showUI();
         this.setMonoRenderer();
-        this.orientationModal.classList.add(HIDDEN_CLASS);
-      }
-    },
-
-    getCanvasSize: {
-      value: function () {
-        var canvas = this.canvas;
-        if (this.isMobile) {
-          return {
-            height: window.innerHeight,
-            width: window.innerWidth
-          };
-        }
-        canvas.style.width = '100%';
-        canvas.style.height = '100%';
-        return {
-          height: canvas.offsetHeight,
-          width: canvas.offsetWidth
-        };
-      }
-    },
-
-    hideUI: {
-      value: function () {
-        if (this.statsEl) {
-          this.statsEl.classList.add(HIDDEN_CLASS);
-        }
-        if (this.enterVREl) {
-          this.enterVREl.classList.add(HIDDEN_CLASS);
-        }
+        this.removeState('vr-mode');
+        this.emit('exit-vr', { target: this });
       }
     },
 
@@ -277,12 +137,13 @@ var AScene = module.exports = registerElement('a-scene', {
      * It alse removes the default one if any and disables any other camera
      * in the scene
      *
-     * @param {object} el - object holding an entity with a camera component or THREE camera.
+     * @param {object} el - Object holding an entity with a camera component or THREE camera.
      */
     setActiveCamera: {
       value: function (newCamera) {
         var defaultCameraWrapper = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        var defaultCameraEl = defaultCameraWrapper && defaultCameraWrapper.querySelector('[camera]');
+        var defaultCameraEl = defaultCameraWrapper &&
+                              defaultCameraWrapper.querySelector('[camera]');
         if (newCamera instanceof AEntity) {
           newCamera.setAttribute('camera', 'active', true);
           if (newCamera !== defaultCameraEl) { this.removeDefaultCamera(); }
@@ -379,95 +240,49 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    removeEnterVR: {
-      value: function () {
-        if (this.enterVREl) {
-          this.enterVREl.parentNode.removeChild(this.enterVREl);
-        }
-      }
-    },
-
-    resizeCanvas: {
+    resize: {
       value: function () {
         var camera = this.camera;
-        // It's possible that the camera is not injected yet.
+        var canvas = this.canvas;
+        var size;
+
+        // Possible camera not injected yet.
         if (!camera) { return; }
-        var size = this.getCanvasSize();
-        // Updates camera
+
+        // Update canvas.
+        if (!isMobile) {
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+        }
+
+        // Update camera.
+        size = getCanvasSize(canvas, isMobile);
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
-        // Notify the renderer of the size change
+
+        // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height, true);
       },
       writable: window.debug
     },
 
     /**
-     * Manually handles fullscreen for non-VR mobile where the renderer' VR
-     * display is not polyfilled. Also sets wakelock for mobile in the process.
-     *
-     * Desktop just works so use the renderer.setFullScreen in that case.
-     */
-    setFullscreen: {
-      value: function () {
-        var canvas = this.canvas;
-
-        if (!this.isMobile) {
-          this.stereoRenderer.setFullScreen(true);
-          return;
-        }
-
-        if (this.wakelock) { this.wakelock.request(); }
-
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if (canvas.mozRequestFullScreen) {
-          canvas.mozRequestFullScreen();
-        } else if (canvas.webkitRequestFullscreen) {
-          canvas.webkitRequestFullscreen();
-        }
-      }
-    },
-
-    /**
-     * Sets renderer to mono (one eye) and resizes canvas.
+     * Sets renderer to mono (one eye).
      */
     setMonoRenderer: {
       value: function () {
         this.renderer = this.monoRenderer;
-        this.resizeCanvas();
+        this.resize();
       }
     },
 
     /**
-     * Sets renderer to stereo (two eyes) and resizes canvas.
+     * Sets renderer to stereo (two eyes).
      */
     setStereoRenderer: {
       value: function () {
         this.renderer = this.stereoRenderer;
-        this.resizeCanvas();
-      }
-    },
-
-    setupCanvas: {
-      value: function () {
-        var canvasSelector = this.getAttribute('canvas');
-        var canvas;
-
-        if (canvasSelector) {
-          canvas = this.canvas = document.querySelector(canvasSelector);
-        } else {
-          canvas = this.canvas = document.createElement('canvas');
-          this.appendChild(canvas);
-        }
-        canvas.classList.add('a-canvas');
-        // Prevents overscroll on mobile devices.
-        canvas.addEventListener('touchmove', function (evt) {
-          evt.preventDefault();
-        });
-
-        window.addEventListener('resize', this.resizeCanvas.bind(this), false);
-        return canvas;
+        this.resize();
       }
     },
 
@@ -519,29 +334,6 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    setupEnterVR: {
-      value: function () {
-        if (this.enterVREl) { return; }
-        this.enterVREl = createEnterVR(this.enterVR.bind(this));
-        document.body.appendChild(this.enterVREl);
-      }
-    },
-
-    setupOrientationModal: {
-      value: function () {
-        var modal = this.orientationModal = document.createElement('div');
-        modal.className = ORIENTATION_MODAL_CLASS;
-        modal.classList.add(HIDDEN_CLASS);
-
-        var exit = document.createElement('button');
-        exit.innerHTML = 'Exit VR';
-        exit.addEventListener('click', this.exitVR.bind(this));
-        modal.appendChild(exit);
-
-        document.body.appendChild(modal);
-      }
-    },
-
     /**
      * Set up keyboard shortcuts to:
      *   - Enter VR when `f` is pressed.
@@ -549,40 +341,9 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     setupKeyboardShortcuts: {
       value: function () {
-        var self = this;
         window.addEventListener('keyup', function (event) {
-          if (event.keyCode === 70) {  // f.
-            self.enterVR();
-          }
-          if (event.keyCode === 90) {  // z.
-            controls.resetSensor();
-          }
+          if (event.keyCode === 90) { controls.resetSensor(); }  // z.
         }, false);
-      }
-    },
-
-    /**
-     * Checks for VR mode before kicking off render loop.
-     */
-    setupLoader: {
-      value: function () {
-        var self = this;
-
-        if (self.insideIframe) {
-          self.attachMessageListeners();
-          self.vrLoaderMode().then(function (isVr) {
-            if (isVr) {
-              self.setStereoRenderer();
-            } else {
-              self.setMonoRenderer();
-            }
-            window.top.postMessage({type: 'ready'}, '*');
-          });
-        }
-        if (!self.insideLoader) {
-          self.setupEnterVR();
-          self.setupOrientationModal();
-        }
       }
     },
 
@@ -607,44 +368,6 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * TODO: move stats to component.
-     */
-    setupStats: {
-      value: function () {
-        var statsEnabled = this.getAttribute('stats') === 'true';
-        var statsEl = this.statsEl = document.querySelector('.rs-base');
-        if (!statsEnabled) {
-          if (statsEl) { statsEl.classList.add(HIDDEN_CLASS); }
-          return;
-        }
-        if (statsEl) { statsEl.classList.remove(HIDDEN_CLASS); }
-        if (this.stats) { return; }
-        this.stats = new RStats({
-          CSSPath: '../style/',
-          values: {
-            fps: { caption: 'fps', below: 30 }
-          },
-          groups: [
-            { caption: 'Framerate', values: [ 'fps', 'raf' ] }
-          ]
-        });
-        this.statsEl = document.querySelector('.rs-base');
-      }
-    },
-
-    showUI: {
-      value: function () {
-        var statsEnabled = this.getAttribute('stats') === 'true';
-        if (statsEnabled) {
-          this.statsEl.classList.remove(HIDDEN_CLASS);
-        }
-        if (this.enterVREl) {
-          this.enterVREl.classList.remove(HIDDEN_CLASS);
-        }
-      }
-    },
-
-    /**
      * Handler attached to elements to help scene know when to kick off.
      * Scene waits for all entities to load.
      */
@@ -659,18 +382,35 @@ var AScene = module.exports = registerElement('a-scene', {
           var self = this;
           if (this.renderStarted) { return; }
 
-          this.setupLoader();
           AEntity.prototype.play.call(self);
-          self.setupStats();
-          self.resizeCanvas();
+          self.resize();
+
           // Kick off render loop.
           self.render();
           self.renderStarted = true;
           self.emit('renderstart');
-          self.checkUrlParameters();
         });
 
         AEntity.prototype.load.call(this);
+      }
+    },
+
+    /**
+     * Reloads the scene to the original DOM content
+     * @type {bool} - paused - It reloads the scene with all the
+     * dynamic behavior paused: dynamic components and animations
+     */
+    reload: {
+      value: function (paused) {
+        var self = this;
+        if (paused) { this.pause(); }
+        this.innerHTML = this.originalHTML;
+        this.init();
+        ANode.prototype.load.call(this, play);
+        function play () {
+          if (self.paused) { return; }
+          AEntity.prototype.play.call(self);
+        }
       }
     },
 
@@ -699,25 +439,8 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * @returns {object} Promise that resolves a bool whether loader is in VR
-     *          mode.
-     */
-    vrLoaderMode: {
-      value: function () {
-        return new Promise(function (resolve) {
-          var channel = new MessageChannel();
-          window.top.postMessage({type: 'checkVr'}, '*', [channel.port2]);
-          channel.port1.onmessage = function (message) {
-            resolve(!!message.data.data.isVr);
-          };
-        });
-      }
-    },
-
-    /**
      * The render loop.
      *
-     * Updates stats.
      * Updates animations.
      * Updates behaviors.
      * Renders with request animation frame.
@@ -725,13 +448,7 @@ var AScene = module.exports = registerElement('a-scene', {
     render: {
       value: function (time) {
         var camera = this.camera;
-        var stats = this.stats;
         var timeDelta = time - this.time;
-
-        if (stats) {
-          stats('rAF').tick();
-          stats('FPS').frame();
-        }
 
         if (!this.paused) {
           TWEEN.update(time);
@@ -743,141 +460,39 @@ var AScene = module.exports = registerElement('a-scene', {
 
         this.renderer.render(this.object3D, camera);
 
-        if (stats) { stats().update(); }
-
         this.time = time;
         this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
       },
       writable: window.debug
-    },
-
-    /**
-     * Reloads the scene to the original DOM content
-     * @type {bool} - paused - It reloads the scene with all the
-     * dynamic behavior paused: dynamic components and animations
-     */
-    reload: {
-      value: function (paused) {
-        var self = this;
-        if (paused) { this.pause(); }
-        this.innerHTML = this.originalHTML;
-        this.init();
-        ANode.prototype.load.call(this, play);
-        function play () {
-          if (self.paused) { return; }
-          AEntity.prototype.play.call(self);
-        }
-      }
     }
-
   })
 });
 
-/**
- * Creates Enter VR flow (button and compatibility modal).
- *
- * Creates a button that when clicked will enter into stereo-rendering mode for VR.
- *
- * For compatibility:
- *   - Mobile always has compatibility via polyfill.
- *   - If desktop browser does not have WebVR excluding polyfill, disable button, show modal.
- *   - If desktop browser has WebVR excluding polyfill but not headset connected,
- *     don't disable button, but show modal.
- *   - If desktop browser has WebVR excluding polyfill and has headset connected, then
- *     then no modal.
- *
- * Structure: <div><modal/><button></div>
- *
- * @returns {Element} Wrapper <div>.
- */
-function createEnterVR (enterVRHandler) {
-  var compatModal;
-  var compatModalLink;
-  var compatModalText;
-  // window.hasNativeVRSupport is set in src/index.js.
-  var hasWebVR = isMobile || window.hasNonPolyfillWebVRSupport;
-  var orientation;
-  var vrButton;
-  var wrapper;
-
-  // Create elements.
-  wrapper = document.createElement('div');
-  wrapper.classList.add(ENTER_VR_CLASS);
-  compatModal = document.createElement('div');
-  compatModal.className = ENTER_VR_MODAL_CLASS;
-  compatModalText = document.createElement('p');
-  compatModalLink = document.createElement('a');
-  compatModalLink.setAttribute('href', 'http://mozvr.com/#start');
-  compatModalLink.setAttribute('target', '_blank');
-  compatModalLink.innerHTML = 'Learn more.';
-  vrButton = document.createElement('button');
-  vrButton.className = ENTER_VR_BTN_CLASS;
-
-  // Insert elements.
-  wrapper.appendChild(vrButton);
-  if (compatModal) {
-    compatModal.appendChild(compatModalText);
-    compatModal.appendChild(compatModalLink);
-    wrapper.appendChild(compatModal);
+function getCanvasSize (canvas) {
+  if (isMobile) {
+    return {
+      height: window.innerHeight,
+      width: window.innerWidth
+    };
   }
-
-  if (!checkHeadsetConnected() && !isMobile) {
-    compatModalText.innerHTML = 'Your browser supports WebVR. To enter VR, connect a headset, or use a mobile phone.';
-    wrapper.setAttribute(ENTER_VR_NO_HEADSET, '');
-  }
-
-  // Handle enter VR flows.
-  if (!hasWebVR) {
-    compatModalText.innerHTML = 'Your browser does not support WebVR. To enter VR, use a VR-compatible browser or a mobile phone.';
-    wrapper.setAttribute(ENTER_VR_NO_WEBVR, '');
-  } else {
-    vrButton.addEventListener('click', enterVRHandler);
-  }
-  return wrapper;
-
-  /**
-   * Check for headset connection by looking at orientation {0 0 0}.
-   */
-  function checkHeadsetConnected () {
-    controls.update();
-    orientation = dummyDolly.quaternion;
-    if (orientation._x !== 0 || orientation._y !== 0 || orientation._z !== 0) {
-      return true;
-    }
-  }
+  return {
+    height: canvas.offsetHeight,
+    width: canvas.offsetWidth
+  };
 }
 
 /**
- * Injects the necessary metatags in the document for mobile support to:
- * 1. Prevent the user to zoom in the document
- * 2. Ensure that window.innerWidth and window.innerHeight have the correct
- *    values and the canvas is properly scaled
- * 3. To allow fullscreen mode when pinning a web app on the home screen on
- *    iOS.
- * Adapted from: https://www.reddit.com/r/web_design/comments/3la04p/
- *
- * @type {Object}
- */
-function injectMetaTags () {
-  var headEl;
-  var meta = document.querySelector('meta[name="viewport"]');
-  if (meta) { return; }  // Already exists.
-
-  headEl = document.getElementsByTagName('head')[0];
-  meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content =
-    'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no';
-  headEl.appendChild(meta);
-
-  // iOS-specific meta tags for fullscreen when pinning to homescreen.
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-capable';
-  meta.content = 'yes';
-  headEl.appendChild(meta);
-
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-status-bar-style';
-  meta.content = 'black';
-  headEl.appendChild(meta);
+  * Manually handles fullscreen for non-VR mobile where the renderer' VR
+  * display is not polyfilled.
+  *
+  * Desktop just works so use the renderer.setFullScreen in that case.
+  */
+function setFullscreen (canvas) {
+  if (canvas.requestFullscreen) {
+    canvas.requestFullscreen();
+  } else if (canvas.mozRequestFullScreen) {
+    canvas.mozRequestFullScreen();
+  } else if (canvas.webkitRequestFullscreen) {
+    canvas.webkitRequestFullscreen();
+  }
 }

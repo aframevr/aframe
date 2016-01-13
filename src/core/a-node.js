@@ -6,8 +6,7 @@ var utils = require('../utils/');
  * Base class for A-Frame that manages loading of objects.
  *
  * Nodes can be modified using mixins.
- * Nodes emit a `loaded` event when they and their children have initialized. Which children
- * to wait for can be customized using `loadChildrenFilter`.
+ * Nodes emit a `loaded` event when they and their children have initialized.
  */
 module.exports = registerElement('a-node', {
   prototype: Object.create(HTMLElement.prototype, {
@@ -37,10 +36,10 @@ module.exports = registerElement('a-node', {
     },
 
     /**
-     * returns the first element that matches a CSS
-     * selector by traversing up the DOM tree starting
-     * from (and including) the receiver element.
-     * @param {string} selector - CSS selector of the matcched element
+     * Returns first element matching a selector by traversing up the tree starting
+     * from and including receiver element.
+     *
+     * @param {string} selector - Selector of element to find.
      */
     closest: {
       value: function closest (selector) {

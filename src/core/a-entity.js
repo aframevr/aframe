@@ -31,10 +31,10 @@ var AEntity;
 var proto = Object.create(ANode.prototype, {
   defaultComponents: {
     value: {
-      position: '',
-      rotation: '',
-      scale: '',
-      visible: ''
+      position: '0 0 0',
+      rotation: '0 0 0',
+      scale: '1 1 1',
+      visible: 'true'
     }
   },
 
@@ -270,7 +270,7 @@ var proto = Object.create(ANode.prototype, {
       } else {
         if (this.isScene && !this.hasAttribute(name) && name in this.defaultComponents) {
           // For scene default components, expose them in the DOM.
-          this.setAttribute(name, this.defaultComponents[name]);
+          HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
         }
         this.components[name] = new components[name].Component(this);
         if (!this.paused) { this.components[name].play(); }
