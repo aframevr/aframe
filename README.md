@@ -1,8 +1,13 @@
 # A-Frame
 
-> For the core library, check out [A-Frame Core](https://github.com/aframevr/aframe-core/).
-
 __Building blocks for the VR Web.__
+
+[![build status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url]
+[![Downloads][downloads-image]][downloads-url]
+[![js-semistandard-style][semistandard-image]][semistandard-url]
+
+A-Frame is a library for creating virtual reality web experiences.
 
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
 - **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
@@ -54,18 +59,7 @@ To start the local development server:
 
     npm start
 
-And fire up __[http://localhost:9000](http://localhost:9000)__! Saving local JS and HTML files in `examples/`, `elements/` and so forth will rebuild the bundle and reload the page.
-
-## Browser console logging
-
-If you'd like to see helpful logs, warnings, and errors, you can enable logging from the console of your favourite developer tools:
-
-    localStorage.logs = 1
-
-And to disable:
-
-    localStorage.logs = 0
-
+And fire up __[http://localhost:9000](http://localhost:9000)__!
 
 ## Maintainers
 
@@ -101,3 +95,12 @@ To publish to __https://your_username.github.io/aframe/__:
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).
+
+[npm-image]: https://img.shields.io/npm/v/aframe-core.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/aframe-core
+[travis-image]: https://img.shields.io/travis/aframevr/aframe-core.svg?style=flat-square
+[travis-url]: http://travis-ci.org/aframevr/aframe-core
+[downloads-image]: http://img.shields.io/npm/dm/aframe-core.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/aframe-core
+[semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
+[semistandard-url]: https://github.com/Flet/semistandard

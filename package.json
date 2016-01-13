@@ -4,44 +4,72 @@
   "description": "Building blocks for the VR Web",
   "main": "src/index.js",
   "scripts": {
-    "start": "npm run dev",
-    "dev": "node ./scripts/budo",
-    "browserify": "browserify ./src/index.js -s 'AFRAME'",
-    "build": "mkdir -p build/ && npm run browserify -- --debug -o build/aframe.js",
-    "dist": "mkdir -p dist/ && npm run browserify -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
-    "preghpages": "npm run dist && rm -rf gh-pages && mkdir -p gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
-    "ghpages": "node ./scripts/gh-pages",
+    "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
+    "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
+    "dev": "npm run build && node ./scripts/budo",
+    "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "gh-pages": "npm run ghpages",
-    "version": "npm run dist",
-    "release:bump": "npm version patch --preminor && git commit -a -C HEAD --amend",
-    "release:push": "npm login && npm publish && git push --follow-tags",
+    "ghpages": "node ./scripts/gh-pages",
     "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
-    "precommit": "npm run lint"
+    "precommit": "npm run lint",
+    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
+    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
+    "release:push": "npm login && npm publish && git push --follow-tags",
+    "start": "npm run dev",
+    "test": "karma start ./tests/karma.conf.js",
+    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
+    "version": "npm run dist"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
+  "dependencies": {
+    "browserify-css": "^0.8.2",
+    "debug": "^2.2.0",
+    "document-register-element": "^0.5.2",
+    "es6-promise": "^3.0.2",
+    "object-assign": "^4.0.1",
+    "present": "0.0.6",
+    "request-interval": "^1.0.0",
+    "style-attr": "^1.0.1",
+    "three-dev": "^0.74.0-beta8",
+    "tween.js": "^15.0.0",
+    "webvr-polyfill": "borismus/webvr-polyfill#3f47796"
+  },
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-css": "^0.8.2",
-    "budo": "^7.1.0",
+    "browserify-derequire": "^0.9.4",
+    "budo": "^7.0.2",
+    "chai-shallow-deep-equal": "^1.3.0",
+    "copyfiles": "0.2.1",
     "exorcist": "^0.4.0",
-    "gh-pages": "^0.4.0",
+    "gh-pages": "^0.6.0",
     "html-minifier": "^0.8.0",
     "husky": "^0.10.1",
+    "karma": "^0.13.15",
+    "karma-browserify": "^4.4.0",
+    "karma-chai-shallow-deep-equal": "0.0.4",
+    "karma-env-preprocessor": "^0.1.1",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.0",
+    "karma-sinon-chai": "^1.1.0",
+    "mkdirp": "0.5.1",
+    "mocha": "^2.3.3",
+    "mozilla-download": "^1.0.5",
+    "ncp": "2.0.0",
+    "open": "0.0.5",
+    "polymerize": "^1.0.0",
     "replace": "^0.3.0",
+    "rimraf": "2.5.0",
     "semistandard": "^7.0.2",
     "standard-reporter": "^1.0.5",
     "uglifyjs": "^2.4.10"
   },
-  "dependencies": {
-    "aframe-core": "^0.1.1",
-    "browserify": "^11.0.1",
-    "browserify-css": "^0.8.2",
-    "polymerize": "^1.0.0"
-  },
   "link": true,
   "browserify": {
     "transform": [
+      "browserify-css",
       [
         "polymerize",
         {
@@ -54,13 +82,12 @@
     "ignore": [
       "build/**",
       "dist/**",
-      "lib/vendor/**",
-      "examples/_js/**"
+      "examples/_js/**",
+      "lib/vendor/**"
     ]
   },
   "keywords": [
     "aframe",
-    "aframe-core",
     "vr",
     "webvr",
     "3d",
@@ -68,6 +95,9 @@
     "components",
     "elements"
   ],
+  "browserify-css": {
+    "minify": true
+  },
   "engines": {
     "node": ">= 0.12.7",
     "npm": ">= 2.12.1"
