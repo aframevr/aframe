@@ -38,11 +38,19 @@ var components = module.exports.components = {};  // Keep track of registered co
  */
 var Component = module.exports.Component = function (el) {
   var rawData = HTMLElement.prototype.getAttribute.call(el, this.name);
+  var scene;
+
   this.el = el;
   this.data = {};
   this.buildData(this.parse(rawData));
   this.init();
   this.update();
+
+  // Set up tick behavior.
+  if (this.tick) {
+    scene = this.el.isScene ? this.el : this.el.sceneEl;
+    scene.addBehavior(this);
+  }
 };
 
 Component.prototype = {
@@ -50,7 +58,7 @@ Component.prototype = {
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: {},
+  schema: { },
 
   /**
    * Init handler. Similar to attachedCallback.
@@ -60,25 +68,32 @@ Component.prototype = {
   init: function () { /* no-op */ },
 
   /**
-   * Called to start any dynamic behavior
-   * like animations, AI, physics.
-   */
-  play: function () { /* no-op */ },
-
-  /**
-   * Called to stop any dynamic behavior
-   * like animations, AI, physics.
-   */
-  pause: function () { /* no-op */ },
-
-  /**
    * Update handler. Similar to attributeChangedCallback.
    * Called whenever component's data changes.
    * Also called on component initialization when the component receives initial data.
    *
-   * @param {object} previousData - Previous attributes of the component.
+   * @param {object} prevData - Previous attributes of the component.
    */
-  update: function (previousData) { /* no-op */ },
+  update: function (prevData) { /* no-op */ },
+
+  /**
+   * Tick handler.
+   * Called on each tick of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} t - Scene tick time.
+   */
+  tick: undefined,
+
+  /**
+   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  play: function () { /* no-op */ },
+
+  /**
+   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  pause: function () { /* no-op */ },
 
   /**
    * Remove handler. Similar to detachedCallback.

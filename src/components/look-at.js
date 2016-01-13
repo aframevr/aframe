@@ -41,18 +41,10 @@ module.exports.Component = registerComponent('look-at', {
     var self = this;
     var target = self.data;
     var object3D = self.el.object3D;
-    var target3D = self.target3D;
     var targetEl;
 
-    // Track target object position. Depends on parent object keeping global transforms up
-    // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
-    if (target3D) {
-      return object3D.lookAt(self.vector.setFromMatrixPosition(target3D.matrixWorld));
-    }
-
     // No longer looking at anything (i.e., look-at="").
-    if (!target ||
-        (typeof target === 'object' && !Object.keys(target).length)) {
+    if (!target || (typeof target === 'object' && !Object.keys(target).length)) {
       return self.remove();
     }
 
@@ -77,13 +69,12 @@ module.exports.Component = registerComponent('look-at', {
     return self.beginTracking(targetEl);
   },
 
-  /**
-   * Remove follow behavior on remove (callback).
-   */
-  remove: function () {
-    if (this.target3D) {
-      this.el.sceneEl.removeBehavior(this);
-      this.target3D = null;
+  tick: function (t) {
+    // Track target object position. Depends on parent object keeping global transforms up
+    // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
+    var target3D = this.target3D;
+    if (target3D) {
+      return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
     }
   },
 
@@ -100,6 +91,5 @@ module.exports.Component = registerComponent('look-at', {
 
   beginTracking: function (targetEl) {
     this.target3D = targetEl.object3D;
-    this.el.sceneEl.addBehavior(this);
   }
 });
