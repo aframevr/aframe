@@ -1,7 +1,7 @@
 var debug = require('../utils/debug');
 var coordinates = require('../utils/coordinates');
 var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 
 var warn = debug('components:look-at:warn');
 var isCoordinate = coordinates.isCoordinate;
