@@ -22,7 +22,7 @@ env:
     - CI_ACTION="npm run test:ci"
     - CI_ACTION="npm run lint"
     - CI_ACTION="npm run build"
-    - CI_ACTION="npm run dist:js"
+    - CI_ACTION="npm run dist"
 
 branches:
   only:
