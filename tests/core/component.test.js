@@ -15,7 +15,7 @@ var cloneComponent = {
 var entityFactory = helpers.entityFactory;
 
 suite('component', function () {
-  suite('core components', function () {
+  suite('standard components', function () {
     test('are registered', function () {
       assert.ok('geometry' in components);
       assert.ok('material' in components);
