@@ -19,6 +19,30 @@ module.exports.Component = registerComponent('look-controls', {
     this.bindMethods();
   },
 
+  update: function () {
+    if (!this.data.enabled) { return; }
+    this.controls.update();
+    this.updateOrientation();
+    this.updatePosition();
+  },
+
+  play: function () {
+    this.previousPosition.set(0, 0, 0);
+    this.addEventListeners();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
+  },
+
+  tick: function (t) {
+    this.update();
+  },
+
+  remove: function () {
+    this.pause();
+  },
+
   bindMethods: function () {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
@@ -26,23 +50,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
-  },
-
-  play: function () {
-    var scene = this.el.sceneEl;
-    this.previousPosition.set(0, 0, 0);
-    this.addEventListeners();
-    scene.addBehavior(this);
-  },
-
-  pause: function () {
-    var scene = this.el.sceneEl;
-    this.removeEventListeners();
-    scene.removeBehavior(this);
-  },
-
-  remove: function () {
-    this.pause();
   },
 
   setupMouseControls: function () {
@@ -91,13 +98,6 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.removeEventListener('touchstart', this.onTouchStart);
     canvasEl.removeEventListener('touchmove', this.onTouchMove);
     canvasEl.removeEventListener('touchend', this.onTouchEnd);
-  },
-
-  update: function () {
-    if (!this.data.enabled) { return; }
-    this.controls.update();
-    this.updateOrientation();
-    this.updatePosition();
   },
 
   updateOrientation: (function () {

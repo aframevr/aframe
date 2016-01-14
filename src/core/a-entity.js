@@ -271,15 +271,22 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  removeComponent: {
+    value: function (name) {
+      var component = this.components[name];
+      var scene;
+      if (component.tick) {
+        scene = this.isScene ? this.el : this.sceneEl;
+        scene.removeBehavior(component.tick);
+      }
+      component.remove();
+      delete this.components[name];
+    }
+  },
+
   removeComponents: {
     value: function () {
-      var self = this;
-      var entityComponents = Object.keys(this.components);
-      entityComponents.forEach(removeComponent);
-      function removeComponent (name) {
-        self.components[name].remove();
-        delete self.components[name];
-      }
+      Object.keys(this.components).forEach(this.removeComponent.bind(this));
     }
   },
 
@@ -318,8 +325,7 @@ var proto = Object.create(ANode.prototype, {
         // mixins
         if (!this.isComponentDefined(name) ||
             newData === null && !isDefault && !isMixedIn) {
-          component.remove();
-          delete this.components[name];
+          this.removeComponent(name);
           return;
         }
         // Component already initialized. Update component.
@@ -365,12 +371,12 @@ var proto = Object.create(ANode.prototype, {
       var componentKeys = Object.keys(components);
       if (!this.paused) { return; }
       this.paused = false;
-      componentKeys.forEach(playComponent);
-      this.getChildEntities().forEach(play);
-      function play (obj) { obj.play(); }
-      function playComponent (key) {
+      componentKeys.forEach(function playComponent (key) {
         components[key].play();
-      }
+      });
+      this.getChildEntities().forEach(function play (obj) {
+        obj.play();
+      });
       this.emit('play');
     },
     writable: true
@@ -386,10 +392,12 @@ var proto = Object.create(ANode.prototype, {
       var componentKeys = Object.keys(components);
       if (this.paused) { return; }
       this.paused = true;
-      componentKeys.forEach(pauseComponent);
-      this.getChildEntities().forEach(pause);
-      function pause (obj) { obj.pause(); }
-      function pauseComponent (key) { components[key].pause(); }
+      componentKeys.forEach(function pauseComponent (key) {
+        components[key].pause();
+      });
+      this.getChildEntities().forEach(function pause (obj) {
+        obj.pause();
+      });
       this.emit('pause');
     },
     writable: true

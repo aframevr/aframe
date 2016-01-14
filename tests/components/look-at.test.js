@@ -52,7 +52,7 @@ suite('look-at', function () {
         el.setAttribute('look-at', '#squirrel');
         el.parentNode.object3D.updateMatrixWorld();
         setTimeout(function () {
-          el.components['look-at'].update();
+          el.components['look-at'].tick();
           assert.ok(spy.calledWith({x: 1, y: 2, z: 3}));
           done();
         });
@@ -71,24 +71,10 @@ suite('look-at', function () {
           anotherEl.setAttribute('position', '10, 10, 10');
           setTimeout(function () {
             el.parentNode.object3D.updateMatrixWorld();
-            el.components['look-at'].update();
+            el.components['look-at'].tick();
             assert.ok(spy.calledWith({x: 10, y: 10, z: 10}));
             done();
           });
-        });
-      });
-    });
-
-    test('adds scene behavior if tracking an object', function (done) {
-      var el = this.el;
-      var anotherEl = squirrelFactory(el);
-      var behaviorCount;
-      anotherEl.addEventListener('loaded', function () {
-        behaviorCount = el.sceneEl.behaviors.length;
-        el.setAttribute('look-at', '#squirrel');
-        setTimeout(function () {
-          assert.equal(el.sceneEl.behaviors.length, behaviorCount + 1);
-          done();
         });
       });
     });
@@ -101,25 +87,6 @@ suite('look-at', function () {
         setTimeout(function () {
           assert.equal(el.components['look-at'].target3D, anotherEl.object3D);
           done();
-        });
-      });
-    });
-  });
-
-  suite('remove', function () {
-    test('removes behavior', function (done) {
-      var el = this.el;
-      var anotherEl = squirrelFactory(el);
-      var behaviorCount;
-      anotherEl.addEventListener('loaded', function () {
-        el.setAttribute('look-at', '#squirrel');
-        setTimeout(function () {
-          behaviorCount = el.sceneEl.behaviors.length;
-          el.removeAttribute('look-at');
-          setTimeout(function () {
-            assert.equal(el.sceneEl.behaviors.length, behaviorCount - 1);
-            done();
-          });
         });
       });
     });

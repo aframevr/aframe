@@ -44,22 +44,6 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.onKeyUp = this.onKeyUp.bind(this);
   },
 
-  play: function () {
-    var scene = this.el.sceneEl;
-    this.attachEventListeners();
-    scene.addBehavior(this);
-  },
-
-  pause: function () {
-    var scene = this.el.sceneEl;
-    this.removeEventListeners();
-    scene.removeBehavior(this);
-  },
-
-  remove: function () {
-    this.pause();
-  },
-
   update: function (previousData) {
     var data = this.data;
     var acceleration = data.acceleration;
@@ -77,8 +61,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     var el = this.el;
     this.prevTime = time;
 
-    // If data has changed or FPS is too low
-    // we reset the velocity
+    // If data changed or FPS too low, reset velocity.
     if (previousData || delta > MAX_DELTA) {
       velocity[adAxis] = 0;
       velocity[wsAxis] = 0;
@@ -111,6 +94,22 @@ module.exports.Component = registerComponent('wasd-controls', {
       y: position.y + movementVector.y,
       z: position.z + movementVector.z
     });
+  },
+
+  play: function () {
+    this.attachEventListeners();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
+  },
+
+  tick: function (t) {
+    this.update();
+  },
+
+  remove: function () {
+    this.pause();
   },
 
   attachEventListeners: function () {
