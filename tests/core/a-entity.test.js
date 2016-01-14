@@ -1,14 +1,26 @@
 /* global assert, process, sinon, setup, suite, test, HTMLElement */
+'use strict';
 var AEntity = require('core/a-entity');
+var extend = require('utils').extend;
+var registerComponent = require('core/component').registerComponent;
 var THREE = require('index').THREE;
 var helpers = require('../helpers');
 
 var entityFactory = helpers.entityFactory;
 var mixinFactory = helpers.mixinFactory;
+var TestComponent = {
+  schema: {
+    a: { default: 0 },
+    b: { default: 1 }
+  },
+  init: function () { },
+  update: function () { },
+  remove: function () { },
+  play: function () { },
+  pause: function () { }
+};
 
 suite('a-entity', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     el.addEventListener('loaded', function () {
@@ -324,5 +336,137 @@ suite('a-entity', function () {
       el.initComponent('material', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
     });
+  });
+});
+
+suite('a-entity component lifecycle management', function () {
+  setup(function (done) {
+    var el = this.el = entityFactory();
+    this.TestComponent = registerComponent('test', TestComponent);
+    el.addEventListener('loaded', function () {
+      done();
+    });
+  });
+
+  test('calls init on component attach', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'init');
+    sinon.assert.notCalled(TestComponent.init);
+    this.el.setAttribute('test', '');
+    sinon.assert.called(TestComponent.init);
+  });
+
+  test('calls init only once', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'init');
+    this.el.setAttribute('test', '');
+    sinon.assert.calledOnce(TestComponent.init);
+    this.el.setAttribute('test', 'a: 5');
+    sinon.assert.calledOnce(TestComponent.init);
+  });
+
+  test('calls update on component attach', function () {
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'update');
+    sinon.assert.notCalled(TestComponent.update);
+    this.el.setAttribute('test', '');
+    sinon.assert.called(TestComponent.update);
+  });
+
+  test('calls update on setAttribute', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'update');
+    el.setAttribute('test', '');
+    sinon.assert.calledOnce(TestComponent.update);
+    el.setAttribute('test', 'a: 5');
+    sinon.assert.calledTwice(TestComponent.update);
+  });
+
+  test('does not call update on setAttribute if no change', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'update');
+    el.setAttribute('test', 'a: 3');
+    sinon.assert.calledOnce(TestComponent.update);
+    el.setAttribute('test', 'a: 3');
+    sinon.assert.calledOnce(TestComponent.update);
+  });
+
+  test('calls remove on removeAttribute', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'remove');
+    el.setAttribute('test', '');
+    sinon.assert.notCalled(TestComponent.remove);
+    el.removeAttribute('test');
+    sinon.assert.called(TestComponent.remove);
+  });
+
+  test('calls remove on removeComponents', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'remove');
+    el.setAttribute('test', '');
+    sinon.assert.notCalled(TestComponent.remove);
+    el.removeComponents();
+    sinon.assert.called(TestComponent.remove);
+  });
+
+  test('calls pause on entity pause', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'pause');
+    el.setAttribute('test', '');
+    el.play();
+    sinon.assert.notCalled(TestComponent.pause);
+    el.pause();
+    sinon.assert.called(TestComponent.pause);
+  });
+
+  test('calls play on entity play', function () {
+    var el = this.el;
+    var TestComponent = this.TestComponent.prototype;
+
+    this.sinon.spy(TestComponent, 'play');
+    el.setAttribute('test', '');
+    sinon.assert.notCalled(TestComponent.play);
+    el.play();
+    sinon.assert.called(TestComponent.play);
+  });
+});
+
+suite('a-entity component dependency management', function () {
+  setup(function (done) {
+    var el = this.el = entityFactory();
+    this.TestComponent = registerComponent('test', extend({}, TestComponent, {
+      dependencies: ['dependency', 'codependency']
+    }));
+    this.DependencyComponent = registerComponent('dependency', extend({}, TestComponent, {
+      dependencies: ['nested-dependency']
+    }));
+    this.CoDependencyComponent = registerComponent('codependency', extend({}, TestComponent, {
+      dependencies: []
+    }));
+    this.NestedDependencyComponent = registerComponent('nested-dependency', TestComponent);
+    el.addEventListener('loaded', function () {
+      done();
+    });
+  });
+
+  test('initializes dependency components', function () {
+    var el = this.el;
+    el.setAttribute('test', '');
+    assert.ok('dependency' in el.components);
+    assert.ok('codependency' in el.components);
+    assert.ok('nested-dependency' in el.components);
   });
 });
