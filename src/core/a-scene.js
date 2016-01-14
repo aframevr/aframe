@@ -730,8 +730,8 @@ var AScene = module.exports = registerElement('a-scene', {
           stats('FPS').frame();
         }
         TWEEN.update(t);
-        this.behaviors.forEach(function (behavior) {
-          behavior.update();
+        this.behaviors.forEach(function (behaviorFn) {
+          behaviorFn(t);
         });
         this.renderer.render(this.object3D, camera);
         if (stats) { stats().update(); }

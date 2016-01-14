@@ -12,6 +12,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
+    this.behavior = this.tick.bind(this);
     this.previousPosition = new THREE.Vector3();
     this.deltaPosition = new THREE.Vector3();
     this.setupMouseControls();
@@ -32,17 +33,21 @@ module.exports.Component = registerComponent('look-controls', {
     var scene = this.el.sceneEl;
     this.previousPosition.set(0, 0, 0);
     this.addEventListeners();
-    scene.addBehavior(this);
+    scene.addBehavior(this.behavior);
   },
 
   pause: function () {
     var scene = this.el.sceneEl;
     this.removeEventListeners();
-    scene.removeBehavior(this);
+    scene.removeBehavior(this.behavior);
   },
 
   remove: function () {
     this.pause();
+  },
+
+  tick: function (t) {
+    this.update();
   },
 
   setupMouseControls: function () {
