@@ -18,6 +18,7 @@ var registerComponent = require('./core/component').registerComponent;
 var registerElement = require('./core/a-register-element');
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('../lib/three');
+var TWEEN = window.TWEEN = require('tween.js');
 
 var pkg = require('../package');
 var utils = require('./utils/');
