@@ -7,7 +7,7 @@ if (!('import' in document.createElement('link'))) {
   require('../vendor/HTMLImports');
 }
 
-require('./style/aframe-core.css');
+require('./style/aframe.css');
 require('./style/rStats.css');
 
 // Required before `AEntity` so that all components are registered.
