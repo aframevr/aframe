@@ -784,7 +784,7 @@ function createEnterVR (enterVRHandler) {
   var compatModal;
   var compatModalLink;
   var compatModalText;
-  // window.hasNativeVRSupport is set in src/aframe-core.js.
+  // window.hasNativeVRSupport is set in src/index.js.
   var hasWebVR = isMobile || window.hasNonPolyfillWebVRSupport;
   var orientation;
   var vrButton;
