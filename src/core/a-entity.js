@@ -3,7 +3,7 @@ var ANode = require('./a-node');
 var components = require('./component').components;
 var debug = require('../utils/debug');
 var re = require('./a-register-element');
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 
 var isNode = re.isNode;
 var log = debug('core:a-entity');

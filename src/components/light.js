@@ -1,7 +1,7 @@
 var diff = require('../utils').diff;
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 
 var degToRad = THREE.Math.degToRad;
 var warn = debug('components:light:warn');

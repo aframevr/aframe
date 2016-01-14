@@ -1,6 +1,6 @@
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 var utils = require('../utils');
 
 var DEFAULT_RADIUS = 1;
