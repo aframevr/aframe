@@ -81,7 +81,8 @@ Component.prototype = {
    * Called on each tick of the scene render loop.
    * Affected by play and pause.
    *
-   * @param {number} t - Scene tick time.
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick: undefined,
 

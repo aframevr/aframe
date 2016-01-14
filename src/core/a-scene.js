@@ -41,6 +41,7 @@ var isMobile = utils.isMobile();
  * @member {bool} renderStarted
  * @member {object} stats
  * @member {object} stereoRenderer
+ * @member {number} time
  * @member {object} wakelock
  */
 var AScene = module.exports = registerElement('a-scene', {
@@ -53,6 +54,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.insideLoader = false;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.time = 0;
         this.init();
       }
     },
@@ -721,27 +723,30 @@ var AScene = module.exports = registerElement('a-scene', {
      * Renders with request animation frame.
      */
     render: {
-      value: function (t) {
+      value: function (time) {
         var camera = this.camera;
         var stats = this.stats;
+        var timeDelta = time - this.time;
 
         if (stats) {
           stats('rAF').tick();
           stats('FPS').frame();
         }
-        TWEEN.update(t);
 
         if (!this.paused) {
+          TWEEN.update(time);
           this.behaviors.forEach(function (component) {
             if (component.el.paused) { return; }
-            component.tick(t);
+            component.tick(time, timeDelta);
           });
         }
 
         this.renderer.render(this.object3D, camera);
+
         if (stats) { stats().update(); }
-        this.animationFrameID = window.requestAnimationFrame(
-          this.render.bind(this));
+
+        this.time = time;
+        this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
       },
       writable: window.debug
     },
