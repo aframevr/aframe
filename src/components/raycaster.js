@@ -1,6 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var requestInterval = require('request-interval');
-var THREE = require('../lib/three');
+var THREE = require('../../lib/three');
 
 module.exports.Component = registerComponent('raycaster', {
   init: function () {

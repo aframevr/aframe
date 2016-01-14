@@ -83,7 +83,7 @@
       "build/**",
       "dist/**",
       "examples/_js/**",
-      "src/lib/vendor/**"
+      "lib/vendor/**"
     ]
   },
   "keywords": [

@@ -1,5 +1,5 @@
 var register = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
+var THREE = require('../../lib/three');
 var debug = require('../utils/debug');
 
 var warn = debug('components:fog:warn');
