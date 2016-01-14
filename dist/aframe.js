@@ -60485,7 +60485,7 @@ _dereq_('./core/a-scene');
 var coreElements = _dereq_('./elements/');
 var registerTemplate = _dereq_('./elements/lib/register-template');
 
-module.exports = {
+module.exports = window.AFRAME = {
   AEntity: AEntity,
   ANode: ANode,
   AScene: AScene,
