@@ -138,6 +138,19 @@ suite('schema', function () {
       var definition = processSchema({ type: 'faketype' });
       assert.equal(definition.default, 'FAKEDEFAULT');
     });
+
+    test('preserves custom parse/stringify', function () {
+      var parse = function (value) {
+        return value.split('');
+      };
+      var definition = processSchema({
+        default: 'abc',
+        parse: parse
+      });
+      assert.equal(definition.type, 'string');
+      assert.equal(definition.parse, parse);
+      assert.ok(typeof definition.stringify, 'function');
+    });
   });
 
   suite('processSchema', function () {

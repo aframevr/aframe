@@ -65,8 +65,12 @@ function processPropertyDefinition (propDefinition) {
     return propDefinition;
   }
 
-  propDefinition.parse = propType.parse;
-  propDefinition.stringify = propType.stringify;
+  if (!propDefinition.parse) {
+    propDefinition.parse = propType.parse;
+  }
+  if (!propDefinition.stringify) {
+    propDefinition.stringify = propType.stringify;
+  }
   propDefinition.type = typeName;
   if (!('default' in propDefinition)) {
     propDefinition.default = propType.default;
