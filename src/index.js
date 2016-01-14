@@ -54,6 +54,7 @@ module.exports = {
   registerComponent: registerComponent,
   registerElement: registerElement,
   THREE: THREE,
+  TWEEN: TWEEN,
   utils: utils,
   version: pkg.version,
 
