@@ -18,6 +18,7 @@ Find out more:
 - [Guide](https://aframe.io/docs/guide/)
 - [Docs](https://aframe.io/docs/core/)
 - [Examples](https://aframe.io/examples/)
+- [Ask us on Slack](https://aframevr-slack.herokuapp.com/)
 
 ## Usage
 
