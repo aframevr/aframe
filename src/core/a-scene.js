@@ -1,12 +1,12 @@
 /* global MessageChannel, Promise */
 var re = require('./a-register-element');
-var RStats = require('../../lib/vendor/rStats');
-var THREE = require('../../lib/three');
+var RStats = require('../lib/vendor/rStats');
+var THREE = require('../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
 var AEntity = require('./a-entity');
 var ANode = require('./a-node');
-var Wakelock = require('../../lib/vendor/wakelock/wakelock');
+var Wakelock = require('../lib/vendor/wakelock/wakelock');
 
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
@@ -618,7 +618,7 @@ var AScene = module.exports = registerElement('a-scene', {
         if (statsEl) { statsEl.classList.remove(HIDDEN_CLASS); }
         if (this.stats) { return; }
         this.stats = new RStats({
-          CSSPath: '../../style/',
+          CSSPath: '../style/',
           values: {
             fps: { caption: 'fps', below: 30 }
           },

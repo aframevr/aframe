@@ -1,7 +1,7 @@
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var parseUrl = require('../utils/src-loader').parseUrl;
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 
 var warn = debug('components:loader:warn');
 

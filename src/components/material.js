@@ -3,7 +3,7 @@ var debug = require('../utils/debug');
 var diff = require('../utils').diff;
 var registerComponent = require('../core/component').registerComponent;
 var srcLoader = require('../utils/src-loader');
-var THREE = require('../../lib/three');
+var THREE = require('../lib/three');
 
 var CubeLoader = new THREE.CubeTextureLoader();
 var error = debug('components:material:error');
