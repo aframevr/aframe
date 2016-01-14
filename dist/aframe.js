@@ -54577,7 +54577,7 @@ module.exports={
   "name": "aframe",
   "version": "0.1.1",
   "description": "Building blocks for the VR Web",
-  "main": "src/index.js",
+  "main": "dist/aframe.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
     "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
@@ -60485,7 +60485,7 @@ _dereq_('./core/a-scene');
 var coreElements = _dereq_('./elements/');
 var registerTemplate = _dereq_('./elements/lib/register-template');
 
-module.exports = {
+module.exports = window.AFRAME = {
   AEntity: AEntity,
   ANode: ANode,
   AScene: AScene,

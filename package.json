@@ -2,7 +2,7 @@
   "name": "aframe",
   "version": "0.1.1",
   "description": "Building blocks for the VR Web",
-  "main": "src/index.js",
+  "main": "dist/aframe.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
     "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",

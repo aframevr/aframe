@@ -45,7 +45,7 @@ require('./core/a-scene');
 var coreElements = require('./elements/');
 var registerTemplate = require('./elements/lib/register-template');
 
-module.exports = {
+module.exports = window.AFRAME = {
   AEntity: AEntity,
   ANode: ANode,
   AScene: AScene,
