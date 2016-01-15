@@ -176,6 +176,7 @@ var proto = Object.create(ANode.prototype, {
       if (!el.object3D) {
         error("Trying to add an object3D that doesn't exist");
       }
+      this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
     }
   },
