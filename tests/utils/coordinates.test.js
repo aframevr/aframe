@@ -42,6 +42,11 @@ suite('utils.coordinates', function () {
       assert.shallowDeepEqual(coordinates.parse({ x: 1, y: 2, z: -3 }),
                               { x: 1, y: 2, z: -3 });
     });
+
+    test('parses object with strings', function () {
+      assert.shallowDeepEqual(coordinates.parse({ x: '1', y: '2', z: -3 }),
+                              { x: 1, y: 2, z: -3 });
+    });
   });
 
   suite('stringify', function () {
