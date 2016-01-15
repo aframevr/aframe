@@ -283,4 +283,16 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
       });
     });
   });
+
+  test('calls behaviors', function (done) {
+    var scene = this.el;
+    var Component = { el: { paused: false }, tick: function () {} };
+    this.sinon.spy(Component, 'tick');
+    scene.addBehavior(Component);
+    process.nextTick(function () {
+      sinon.assert.called(Component.tick);
+      sinon.assert.calledWith(Component.tick, scene.time);
+      done();
+    });
+  });
 });
