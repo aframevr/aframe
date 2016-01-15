@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('sound', {
   },
 
   remove: function () {
-    this.el.setObject3D('sound', null);
+    this.el.removeObject3D('sound');
   },
 
   /**
@@ -85,7 +85,7 @@ module.exports.Component = registerComponent('sound', {
 
     if (sound) {
       this.stop();
-      el.setObject3D('sound', null);
+      el.removeObject3D('sound');
     }
 
     listener = this.listener = new THREE.AudioListener();

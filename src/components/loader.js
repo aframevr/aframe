@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('loader', {
     var url = parseUrl(data.src);
     var mtlUrl = parseUrl(data.mtl);
     var format = data.format;
-    if (model) { el.setObject3D('mesh', null); }
+    if (model) { el.removeObject3D('mesh'); }
     if (!url) {
       warn('Model URL not provided');
       return;
