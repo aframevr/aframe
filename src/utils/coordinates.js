@@ -13,7 +13,9 @@ module.exports.regex = regex;
 function parse (value, defaultCoordinate) {
   var coordinate;
 
-  if (value && typeof value === 'object') { return value; }
+  if (value && typeof value === 'object') {
+    return vec3ParseFloat(value);
+  }
 
   if (!defaultCoordinate && this.schema) {
     if ('default' in this.schema) {
@@ -28,11 +30,11 @@ function parse (value, defaultCoordinate) {
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
-  return {
-    x: parseFloat(coordinate[0] || defaultCoordinate.x),
-    y: parseFloat(coordinate[1] || defaultCoordinate.y),
-    z: parseFloat(coordinate[2] || defaultCoordinate.z)
-  };
+  return vec3ParseFloat({
+    x: coordinate[0] || defaultCoordinate.x,
+    y: coordinate[1] || defaultCoordinate.y,
+    z: coordinate[2] || defaultCoordinate.z
+  });
 }
 module.exports.parse = parse;
 
@@ -55,3 +57,11 @@ module.exports.stringify = stringify;
 module.exports.isCoordinate = function (value) {
   return regex.test(value);
 };
+
+function vec3ParseFloat (vec3) {
+  return {
+    x: parseFloat(vec3.x, 10),
+    y: parseFloat(vec3.y, 10),
+    z: parseFloat(vec3.z, 10)
+  };
+}
