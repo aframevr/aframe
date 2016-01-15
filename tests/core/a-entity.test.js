@@ -39,6 +39,17 @@ suite('a-entity', function () {
     });
   });
 
+  test('emits event when child attached', function (done) {
+    var el = document.createElement('a-entity');
+    var parentEl = this.el;
+    el.object3D = new THREE.Mesh();
+    parentEl.appendChild(el);
+    parentEl.addEventListener('child-attached', function (event) {
+      assert.equal(event.detail.el, el);
+      done();
+    });
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       var el = entityFactory();
