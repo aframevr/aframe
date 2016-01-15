@@ -37,18 +37,18 @@ var components = module.exports.components = {};  // Keep track of registered co
  * @member {function} stringify
  */
 var Component = module.exports.Component = function (el) {
-  var rawData = HTMLElement.prototype.getAttribute.call(el, this.name);
+  var name = this.name;
+  var rawData = HTMLElement.prototype.getAttribute.call(el, name);
   var scene;
 
   this.el = el;
-  this.data = {};
-  this.buildData(this.parse(rawData));
+  this.data = buildData(el, name, this.schema, this.parse(rawData));
   this.init();
   this.update();
 
   // Set up tick behavior.
   if (this.tick) {
-    scene = this.el.isScene ? this.el : this.el.sceneEl;
+    scene = el.isScene ? el : el.sceneEl;
     scene.addBehavior(this);
   }
 };
@@ -165,69 +165,23 @@ Component.prototype = {
    * @param {string} value - HTML attribute value.
    */
   updateProperties: function (value) {
-    var isSinglePropSchema = isSingleProp(this.schema);
+    var el = this.el;
+    var schema = this.schema;
+    var isSinglePropSchema = isSingleProp(schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
-    this.buildData(this.parse(value));
+
+    this.data = buildData(el, this.name, schema, this.parse(value));
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
 
     this.update(previousData);
 
-    this.el.emit('componentchanged', {
+    el.emit('componentchanged', {
       name: this.name,
       newData: this.getData(),
       oldData: previousData
     });
-  },
-
-  /**
-   * Builds component data from the current state of the entity, ultimately
-   * updating this.data.
-   *
-   * If the component was detached completely, set data to null.
-   *
-   * Precedence:
-   * 1. Defaults data
-   * 2. Mixin data.
-   * 3. Attribute data.
-   *
-   * Finally coerce the data to the types of the defaults.
-   */
-  buildData: function (newData) {
-    var self = this;
-    var data = {};
-    var schema = self.schema;
-    var isSinglePropSchema = isSingleProp(schema);
-    var el = self.el;
-    var mixinEls = el.mixinEls;
-    var name = self.name;
-
-    // 1. Default values (lowest precendence).
-    if (isSinglePropSchema) {
-      data = schema.default;
-    } else {
-      Object.keys(schema).forEach(function applyDefault (key) {
-        data[key] = schema[key].default;
-      });
-    }
-
-    // 2. Mixin values.
-    mixinEls.forEach(applyMixin);
-    function applyMixin (mixinEl) {
-      var mixinData = mixinEl.getAttribute(name);
-      extendProperties(data, mixinData, isSinglePropSchema);
-    }
-
-    // 3. Attribute values (highest precendence).
-    data = extendProperties(data, newData, isSinglePropSchema);
-
-    // Parse and coerce using the schema.
-    if (isSinglePropSchema) {
-      this.data = parseProperty(data, schema);
-    } else {
-      this.data = parseProperties(data, schema);
-    }
   }
 };
 
@@ -271,6 +225,53 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
+ * Builds component data from the current state of the entity, ultimately
+ * updating this.data.
+ *
+ * If the component was detached completely, set data to null.
+ *
+ * Precedence:
+ * 1. Defaults data
+ * 2. Mixin data.
+ * 3. Attribute data.
+ *
+ * Finally coerce the data to the types of the defaults.
+ */
+function buildData (el, name, schema, newData) {
+  var data = {};
+  var isSinglePropSchema = isSingleProp(schema);
+  var mixinEls = el.mixinEls;
+
+  // 1. Default values (lowest precendence).
+  if (isSinglePropSchema) {
+    data = schema.default;
+  } else {
+    Object.keys(schema).forEach(function applyDefault (key) {
+      data[key] = schema[key].default;
+    });
+  }
+
+  // 2. Mixin values.
+  mixinEls.forEach(applyMixin);
+  function applyMixin (mixinEl) {
+    var mixinData = mixinEl.getAttribute(name);
+    if (mixinData) {
+      data = extendProperties(data, mixinData, isSinglePropSchema);
+    }
+  }
+
+  // 3. Attribute values (highest precendence).
+  data = extendProperties(data, newData, isSinglePropSchema);
+
+  // Parse and coerce using the schema.
+  if (isSinglePropSchema) {
+    return parseProperty(data, schema);
+  }
+  return parseProperties(data, schema);
+}
+module.exports.buildData = buildData;
+
+/**
  * Deserializes style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
@@ -304,7 +305,10 @@ function objectStringify (data) {
 */
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema) {
-    if (source === undefined) { return dest; }
+    if (source === undefined ||
+        (typeof source === 'object' && Object.keys(source).length === 0)) {
+      return dest;
+    }
     return source;
   }
   return utils.extend(dest, source);
