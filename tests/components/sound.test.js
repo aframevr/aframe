@@ -18,7 +18,7 @@ suite('sound', function () {
 
   suite('update', function () {
     test('creates sound', function () {
-      var audio = this.el.object3D.children[0];
+      var audio = this.el.getObject3D('sound');
       assert.equal(audio.type, 'Audio');
       assert.ok(audio.autoplay);
       assert.ok(audio.getLoop());
@@ -26,9 +26,9 @@ suite('sound', function () {
 
     test('re-creates sound when changing src', function () {
       var el = this.el;
-      var oldAudio = el.object3D.children[0];
+      var oldAudio = el.getObject3D('sound');
       el.setAttribute('sound', 'src', 'anothersound.wav');
-      assert.notEqual(oldAudio.uuid, el.object3D.children[0].uuid);
+      assert.notEqual(oldAudio.uuid, el.getObject3D('sound').uuid);
     });
 
     test('can change src', function () {
@@ -36,7 +36,7 @@ suite('sound', function () {
       var el = this.el;
 
       el.setAttribute('sound', 'src', 'anothersound.wav');
-      audio = el.object3D.children[0];
+      audio = el.getObject3D('sound');
       assert.equal(audio.type, 'Audio');
       assert.ok(audio.autoplay);
       assert.ok(audio.getLoop());
@@ -44,7 +44,7 @@ suite('sound', function () {
 
     test('can change volume', function () {
       var el = this.el;
-      var audio = el.object3D.children[0];
+      var audio = el.getObject3D('sound');
       el.setAttribute('sound', 'volume', 0.75);
       assert.equal(audio.getVolume(), 0.75);
     });

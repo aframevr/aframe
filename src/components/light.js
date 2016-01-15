@@ -78,12 +78,12 @@ module.exports.Component = registerComponent('light', {
     var newLight = getLight(data);
     if (newLight) {
       if (this.light) {
-        el.object3D.remove(this.light);
+        el.setObject3D('light', null);
       }
 
       this.light = newLight;
       this.light.el = el;
-      el.object3D.add(this.light);
+      el.setObject3D('light', this.light);
     }
   },
 
@@ -91,7 +91,7 @@ module.exports.Component = registerComponent('light', {
    * Remove light on remove (callback).
    */
   remove: function () {
-    if (this.light) { this.el.object3D.remove(this.light); }
+    this.el.setObject3D('light', null);
   }
 });
 

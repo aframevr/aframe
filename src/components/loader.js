@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('loader', {
     var url = parseUrl(data.src);
     var mtlUrl = parseUrl(data.mtl);
     var format = data.format;
-    if (model) { el.object3D.remove(model); }
+    if (model) { el.setObject3D('mesh', null); }
     if (!url) {
       warn('Model URL not provided');
       return;
@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('loader', {
         objLoader.setMaterials(materials);
         objLoader.load(objUrl, function (object) {
           self.model = object;
-          el.object3D.add(object);
+          el.setObject3D('mesh', object);
         });
       });
     } else {
@@ -65,7 +65,7 @@ module.exports.Component = registerComponent('loader', {
       objLoader.load(objUrl, function (object) {
         self.model = object;
         self.applyMaterial();
-        el.object3D.add(object);
+        el.setObject3D('mesh', object);
       });
     }
   },
@@ -87,7 +87,7 @@ module.exports.Component = registerComponent('loader', {
     loader.options.convertUpAxis = true;
     loader.load(url, function (collada) {
       self.model = collada.scene;
-      el.object3D.add(collada.scene);
+      el.setObject3D('mesh', collada.scene);
     });
   }
 });

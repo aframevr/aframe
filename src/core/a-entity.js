@@ -44,7 +44,9 @@ var proto = Object.create(ANode.prototype, {
       this.states = [];
       this.components = {};
       this.paused = true;
-      this.object3D = new THREE.Mesh();
+      this.object3D = new THREE.Group();
+      this.object3D.el = this;
+      this.object3DMap = {};
     }
   },
 
@@ -127,6 +129,48 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  getObject3D: {
+    value: function (type) {
+      return this.object3DMap[type];
+    }
+  },
+
+  setObject3D: {
+    value: function (type, obj) {
+      var oldObj = this.object3DMap[type];
+      if (oldObj) { this.object3D.remove(oldObj); }
+      if (obj instanceof THREE.Object3D) {
+        obj.el = this;
+        this.object3D.add(obj);
+      }
+      this.object3DMap[type] = obj;
+    }
+  },
+
+  removeObject3D: {
+    value: function (type) {
+      this.setObject3D(type, null);
+    }
+  },
+
+  /**
+   * Returns an object3D of a given type or creates it if it doesn't exist and
+   * a Constructor is passed as an argument
+   * @param {string} type - Type of the object3D .
+   * @param {string} name - Component name.
+   * @type {Object}
+   */
+  getOrCreateObject3D: {
+    value: function (type, Constructor) {
+      var object3D = this.getObject3D(type);
+      if (!object3D && Constructor) {
+        object3D = new Constructor();
+        this.setObject3D(type, object3D);
+      }
+      return object3D;
+    }
+  },
+
   add: {
     value: function (el) {
       if (!el.object3D) {
@@ -163,7 +207,6 @@ var proto = Object.create(ANode.prototype, {
   load: {
     value: function () {
       if (this.hasLoaded) { return; }
-      this.object3D.el = this;
 
       // Attach to parent object3D.
       this.addToParent();

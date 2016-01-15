@@ -87,12 +87,13 @@ module.exports.Component = registerComponent('geometry', {
     var data = this.data;
     var currentTranslate = previousData.translate || this.schema.translate.default;
     var diff = utils.diff(previousData, data);
-    var geometry = this.el.object3D.geometry;
+    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var geometry = mesh.geometry;
     var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'translate' in diff);
     var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
 
     if (geometryNeedsUpdate) {
-      geometry = this.el.object3D.geometry = getGeometry(this.data, this.schema);
+      geometry = mesh.geometry = getGeometry(this.data, this.schema);
     }
     if (translateNeedsUpdate) {
       applyTranslate(geometry, data.translate, currentTranslate);
@@ -103,7 +104,7 @@ module.exports.Component = registerComponent('geometry', {
    * Removes geometry on remove (callback).
    */
   remove: function () {
-    this.el.object3D.geometry = new THREE.Geometry();
+    this.el.getObject3D('mesh').geometry = new THREE.Geometry();
   }
 });
 
