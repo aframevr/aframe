@@ -23,7 +23,7 @@ module.exports.Component = registerComponent('camera', {
    * Remove camera on remove (callback).
    */
   remove: function () {
-    this.el.setObject3D('camera', null);
+    this.el.removeObject3D('camera');
   },
 
   /**
