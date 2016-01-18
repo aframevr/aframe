@@ -3,6 +3,7 @@ var initFullscreen = require('./fullscreen');
 var initMetaTags = require('./metaTags');
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
+var systems = require('../system').systems;
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../../utils/');
@@ -47,6 +48,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.systems = {};
         this.time = 0;
         this.init();
       }
@@ -59,7 +61,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.isPlaying = true;
         this.materials = {};
         this.originalHTML = this.innerHTML;
-
+        this.setupSystems();
         this.setupDefaultLights();
         this.setupDefaultCamera();
         this.addEventListener('render-target-loaded', function () {
@@ -82,6 +84,21 @@ var AScene = module.exports = registerElement('a-scene', {
         this.play();
       },
       writable: window.debug
+    },
+
+    setupSystems: {
+      value: function () {
+        var systemsKeys = Object.keys(systems);
+        systemsKeys.forEach(this.initSystem.bind(this));
+      }
+    },
+
+    initSystem: {
+      value: function (name) {
+        if (this.systems[name]) { return; }
+        this.systems[name] = new systems[name]();
+        this.systems[name].init();
+      }
     },
 
     /**
@@ -416,30 +433,6 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Stops tracking material.
-     *
-     * @param {object} material
-     */
-    unregisterMaterial: {
-      value: function (material) {
-        delete this.materials[material.uuid];
-      }
-    },
-
-    /**
-     * Trigger update to all registered materials.
-     */
-    updateMaterials: {
-      value: function (material) {
-        var materials = this.materials;
-        Object.keys(materials).forEach(function (uuid) {
-          materials[uuid].needsUpdate = true;
-        });
-      },
-      writable: window.debug
-    },
-
-    /**
      * The render loop.
      *
      * Updates animations.
@@ -450,12 +443,17 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function (time) {
         var camera = this.camera;
         var timeDelta = time - this.time;
+        var systems = this.systems;
 
         if (this.isPlaying) {
           TWEEN.update(time);
           this.behaviors.forEach(function (component) {
             if (!component.el.isPlaying) { return; }
             component.tick(time, timeDelta);
+          });
+          Object.keys(systems).forEach(function (key) {
+            if (!systems[key].tick) { return; }
+            systems[key].tick(time, timeDelta);
           });
         }
 
