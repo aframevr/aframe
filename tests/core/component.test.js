@@ -1,4 +1,4 @@
-/* global assert, process, suite, test */
+/* global assert, process, suite, test, setup */
 'use strict';
 var buildData = require('core/component').buildData;
 var components = require('index').components;
@@ -29,6 +29,10 @@ suite('Component', function () {
   });
 
   suite('buildData', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
     test('uses default values', function () {
       var schema = processSchema({
         color: { default: 'blue' },
@@ -117,6 +121,10 @@ suite('Component', function () {
   });
 
   suite('third-party components', function () {
+    setup(function () {
+      delete components.clone;
+    });
+
     test('can be registered', function () {
       assert.notOk('clone' in components);
       registerComponent('clone', CloneComponent);
@@ -145,6 +153,10 @@ suite('Component', function () {
   });
 
   suite('parse', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
     test('parses single value component', function () {
       var TestComponent = registerComponent('dummy', {
         schema: { default: '0 0 1', type: 'vec3' }
@@ -169,6 +181,10 @@ suite('Component', function () {
   });
 
   suite('stringify', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
     test('stringifies single value component', function () {
       var TestComponent = registerComponent('dummy', {
         schema: { default: '0 0 1', type: 'vec3' }
@@ -190,6 +206,23 @@ suite('Component', function () {
       var componentObj = { position: { x: 1, y: 2, z: 3 } };
       var componentString = component.stringify(componentObj);
       assert.deepEqual(componentString, 'position:1 2 3');
+    });
+  });
+
+  suite('extendSchema', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
+    test('extends the schema', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: { color: { default: 'red' } }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.extendSchema({ size: { default: 5 } });
+      assert.ok(component.schema.size);
+      assert.ok(component.schema.color);
     });
   });
 });

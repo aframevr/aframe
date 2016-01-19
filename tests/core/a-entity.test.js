@@ -3,6 +3,7 @@
 var AEntity = require('core/a-entity');
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
+var components = require('core/component').components;
 var THREE = require('index').THREE;
 var helpers = require('../helpers');
 
@@ -428,6 +429,7 @@ suite('a-entity', function () {
 suite('a-entity component lifecycle management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    components.test = undefined;
     this.TestComponent = registerComponent('test', TestComponent);
     el.addEventListener('loaded', function () {
       done();
@@ -534,6 +536,7 @@ suite('a-entity component lifecycle management', function () {
 suite('a-entity component dependency management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    components.test = undefined;
     this.TestComponent = registerComponent('test', extend({}, TestComponent, {
       dependencies: ['dependency', 'codependency']
     }));
