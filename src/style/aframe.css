@@ -55,6 +55,8 @@ a-scene img {
   color: #FFF;
   cursor: pointer;
   height: 50px;
+  position: absolute;
+  right: 0;
   transition: background .05s ease;
   -webkit-transition: background .05s ease;
   width: 60px;
@@ -83,7 +85,7 @@ a-scene img {
   color: #FFF;
   height: 32px;
   opacity: 0;
-  margin-right: 10px;
+  margin-right: 70px;
   padding: 9px;
   width: 280px;
   position: relative;
@@ -118,8 +120,8 @@ a-scene img {
   display: inline;
 }
 
-[data-a-enter-vr-no-webvr]:hover .a-enter-vr-modal,
-[data-a-enter-vr-no-headset]:hover .a-enter-vr-modal {
+[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover + .a-enter-vr-modal,
+[data-a-enter-vr-no-headset] .a-enter-vr-button:hover + .a-enter-vr-modal {
   opacity: 1;
 }
 
