@@ -814,12 +814,12 @@ function createEnterVR (enterVRHandler) {
   vrButton.className = ENTER_VR_BTN_CLASS;
 
   // Insert elements.
+  wrapper.appendChild(vrButton);
   if (compatModal) {
     compatModal.appendChild(compatModalText);
     compatModal.appendChild(compatModalLink);
     wrapper.appendChild(compatModal);
   }
-  wrapper.appendChild(vrButton);
 
   if (!checkHeadsetConnected() && !isMobile) {
     compatModalText.innerHTML = 'Your browser supports WebVR. To enter VR, connect a headset, or use a mobile phone.';
