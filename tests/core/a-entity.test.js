@@ -115,6 +115,14 @@ suite('a-entity', function () {
       assert.ok('geometry' in el.components);
     });
 
+    test('applies default vec3 component from mixin', function () {
+      var el = this.el;
+      var mixinId = 'position';
+      mixinFactory(mixinId, { position: '1 2 3' });
+      el.setAttribute('mixin', mixinId);
+      assert.shallowDeepEqual(el.getComputedAttribute('position'), { x: 1, y: 2, z: 3 });
+    });
+
     test('can update component data', function () {
       var el = this.el;
       var position;

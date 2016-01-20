@@ -35,7 +35,7 @@ suite('Component', function () {
         size: { default: 5 }
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', schema, {});
+      var data = buildData(el, 'dummy', schema, {}, null);
       assert.equal(data.color, 'blue');
       assert.equal(data.size, 5);
     });
@@ -45,7 +45,7 @@ suite('Component', function () {
         default: 'blue'
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', schema, {});
+      var data = buildData(el, 'dummy', schema, {}, null);
       assert.equal(data, 'blue');
     });
 
@@ -62,7 +62,7 @@ suite('Component', function () {
 
       mixinEl.setAttribute('dummy', 'color: blue; size: 10');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', TestComponent.prototype.schema, {});
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, {}, null);
       assert.equal(data.color, 'blue');
       assert.equal(data.size, 10);
     });
@@ -78,7 +78,7 @@ suite('Component', function () {
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', TestComponent.prototype.schema, {});
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, {}, null);
       assert.equal(data, 'blue');
     });
 
@@ -97,7 +97,7 @@ suite('Component', function () {
       el.mixinEls = [mixinEl];
       data = buildData(el, 'dummy', TestComponent.prototype.schema, {
         color: 'green', size: 20
-      });
+      }, 'color: green; size: 20');
       assert.equal(data.color, 'green');
       assert.equal(data.size, 20);
     });
@@ -105,15 +105,13 @@ suite('Component', function () {
     test('uses defined values for single-property schema', function () {
       var data;
       var TestComponent = registerComponent('dummy', {
-        schema: {
-          default: 'red'
-        }
+        schema: { default: 'red' }
       });
       var el = document.createElement('a-entity');
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', TestComponent.prototype.schema, 'green');
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, 'green', 'green');
       assert.equal(data, 'green');
     });
   });
