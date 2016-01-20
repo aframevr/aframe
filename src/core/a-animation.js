@@ -285,7 +285,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         utils.splitString(evts).forEach(function (evt) {
           el.addEventListener(evt, self.start);
         });
-        el.addEventListener('play', this.start);
+        if (!evts) { el.addEventListener('play', this.start); }
         el.addEventListener('pause', this.stop);
         el.addEventListener('stateadded', this.onStateAdded);
         el.addEventListener('stateremoved', this.onStateRemoved);

@@ -282,13 +282,25 @@ suite('a-animation', function () {
 
     test('sets isRunning when begin event is triggered', function (done) {
       var animationEl = document.createElement('a-animation');
-      animationEl.setAttribute('begin', 'click');
       var el = helpers.entityFactory();
+      animationEl.setAttribute('begin', 'click');
       el.paused = false;
       el.appendChild(animationEl);
       animationEl.addEventListener('loaded', function () {
         el.emit('click');
         assert.ok(animationEl.isRunning);
+        done();
+      });
+    });
+
+    test('is not run when entity plays and begin is set', function (done) {
+      var animationEl = document.createElement('a-animation');
+      var el = helpers.entityFactory();
+      animationEl.setAttribute('begin', 'click');
+      el.appendChild(animationEl);
+      el.emit('play');
+      process.nextTick(function () {
+        assert.notOk(animationEl.isRunning);
         done();
       });
     });
