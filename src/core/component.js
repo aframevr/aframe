@@ -38,11 +38,11 @@ var components = module.exports.components = {};  // Keep track of registered co
  */
 var Component = module.exports.Component = function (el) {
   var name = this.name;
-  var rawData = HTMLElement.prototype.getAttribute.call(el, name);
+  var elData = HTMLElement.prototype.getAttribute.call(el, name);
   var scene;
 
   this.el = el;
-  this.data = buildData(el, name, this.schema, this.parse(rawData));
+  this.data = buildData(el, name, this.schema, this.parse(elData), elData);
   this.init();
   this.update();
 
@@ -170,7 +170,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.data = buildData(el, this.name, schema, this.parse(value));
+    this.data = buildData(el, this.name, schema, this.parse(value), value);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
@@ -237,7 +237,8 @@ module.exports.registerComponent = function (name, definition) {
  *
  * Finally coerce the data to the types of the defaults.
  */
-function buildData (el, name, schema, newData) {
+function buildData (el, name, schema, parsedElData, elData) {
+  var componentDefined = elData !== null;
   var data = {};
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
@@ -261,7 +262,9 @@ function buildData (el, name, schema, newData) {
   }
 
   // 3. Attribute values (highest precendence).
-  data = extendProperties(data, newData, isSinglePropSchema);
+  if (componentDefined) {
+    data = extendProperties(data, parsedElData, isSinglePropSchema);
+  }
 
   // Parse and coerce using the schema.
   if (isSinglePropSchema) {
