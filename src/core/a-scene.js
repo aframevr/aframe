@@ -168,8 +168,8 @@ var AScene = module.exports = registerElement('a-scene', {
           if (!fsElement) {
             this.showUI();
             this.setMonoRenderer();
+            if (this.wakelock) { this.wakelock.release(); }
           }
-          if (this.wakelock) { this.wakelock.release(); }
         }
         document.addEventListener('mozfullscreenchange',
                                   fullscreenChange.bind(this));
