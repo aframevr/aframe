@@ -25,6 +25,10 @@ Util.isMobile = function() {
   return check;
 };
 
+Util.isFirefox = function() {
+  return /firefox/i.test(navigator.userAgent);
+};
+
 Util.isIOS = function() {
   return /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
 };
