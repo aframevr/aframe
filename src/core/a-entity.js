@@ -557,7 +557,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       var is = false;
       this.states.forEach(function (elState, index) {
-        if (elState === state) { is = index; }
+        if (elState === state) { is = true; }
       });
       return is;
     }
