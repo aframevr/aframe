@@ -1,5 +1,11 @@
 ## dev
 
+### Breaking Changes
+
+* `loader` component renamed to `model`.
+
+### Changes
+
 * `aframe-core` merged with `aframe`. `window.AFRAME` exposes what `aframe-core` was exposing previously (e.g., `AFRAME.registerComponent` vs.  `AFRAME.aframeCore.registerComponent`). (#368)
 * npm points to pre-built bundle of `dist/aframe.js`.
 * Fixed Android shader bugs. (ceb5fa9)

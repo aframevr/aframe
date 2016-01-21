@@ -3,9 +3,9 @@ var registerComponent = require('../core/component').registerComponent;
 var parseUrl = require('../utils/src-loader').parseUrl;
 var THREE = require('../lib/three');
 
-var warn = debug('components:loader:warn');
+var warn = debug('components:model:warn');
 
-module.exports.Component = registerComponent('loader', {
+module.exports.Component = registerComponent('model', {
   dependencies: [ 'material' ],
 
   schema: {
@@ -24,11 +24,14 @@ module.exports.Component = registerComponent('loader', {
     var url = parseUrl(data.src);
     var mtlUrl = parseUrl(data.mtl);
     var format = data.format;
-    if (model) { el.removeObject3D('mesh'); }
+
+    if (model) { el.setObject3D('mesh', null); }
+
     if (!url) {
       warn('Model URL not provided');
       return;
     }
+
     switch (format) {
       case 'obj':
         this.loadObj(url, mtlUrl);
