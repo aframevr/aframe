@@ -1,7 +1,5 @@
 # A-Frame
 
-> For the core library, check out [A-Frame Core](https://github.com/aframevr/aframe-core/).
-
 __Building blocks for the VR Web.__
 
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
