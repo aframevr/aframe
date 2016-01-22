@@ -293,7 +293,7 @@ suite('a-animation', function () {
       });
     });
 
-    test('is not run when entity plays and begin is set', function (done) {
+    test('is not run when entity plays and begin is set to event name', function (done) {
       var animationEl = document.createElement('a-animation');
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', 'click');
@@ -301,6 +301,18 @@ suite('a-animation', function () {
       el.emit('play');
       process.nextTick(function () {
         assert.notOk(animationEl.isRunning);
+        done();
+      });
+    });
+
+    test('is run when entity plays and begin is set to a delay', function (done) {
+      var animationEl = document.createElement('a-animation');
+      var el = helpers.entityFactory();
+      animationEl.setAttribute('begin', '15');
+      el.appendChild(animationEl);
+      el.emit('play');
+      process.nextTick(function () {
+        assert.ok(animationEl.isRunning);
         done();
       });
     });

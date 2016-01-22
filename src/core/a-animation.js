@@ -285,7 +285,8 @@ module.exports.AAnimation = registerElement('a-animation', {
         utils.splitString(evts).forEach(function (evt) {
           el.addEventListener(evt, self.start);
         });
-        if (!evts) { el.addEventListener('play', this.start); }
+        // If "begin" is an event name, wait. If it is a delay or not defined, start.
+        if (!isNaN(evts)) { el.addEventListener('play', this.start); }
         el.addEventListener('pause', this.stop);
         el.addEventListener('stateadded', this.onStateAdded);
         el.addEventListener('stateremoved', this.onStateRemoved);
