@@ -1,48 +1,36 @@
-var registerPrimitive = require('../register-primitive');
+var meshMixin = require('../meshMixin');
+var registerPrimitive = require('../registerPrimitive');
+var utils = require('../../../utils/');
 
-registerPrimitive('a-curvedimage', {
-  defaults: {
-    value: {
-      geometry: {
-        primitive: 'cylinder',
-        radius: 2,
-        height: 1,
-        segmentsRadial: 48,
-        thetaStart: 0,
-        thetaLength: 6.3,
-        openEnded: true
-      },
-      material: {
-        opacity: 1,
-        shader: 'flat',
-        side: 'double',
-        transparent: true,
-        repeat: '-1 1'
-      }
+registerPrimitive('a-curvedimage', utils.extendDeep({}, meshMixin(), {
+  defaultAttributes: {
+    geometry: {
+      height: 1,
+      primitive: 'cylinder',
+      radius: 2,
+      segmentsRadial: 48,
+      thetaLength: 270,
+      openEnded: true,
+      thetaStart: 0
+    },
+    material: {
+      color: '#FFF',
+      shader: 'flat',
+      side: 'double',
+      transparent: true,
+      repeat: '-1 1'
     }
   },
 
   mappings: {
-    value: {
-      radius: 'geometry.radius',
-      height: 'geometry.height',
-      width: 'geometry.thetaLength',
-      segments: 'geometry.segmentsRadial',
-      openended: 'geometry.openEnded',
-      start: 'geometry.thetaStart',
-      color: 'material.color',
-      opacity: 'material.opacity',
-      shader: 'material.shader',
-      transparent: 'material.transparent',
-      src: 'material.src'
-    }
-  },
-
-  transforms: {
-    value: {
-      src: function (value) {
-        return 'url(' + value + ')';
-      }
-    }
+    height: 'geometry.height',
+    'open-ended': 'geometry.openEnded',
+    radius: 'geometry.radius',
+    segments: 'geometry.segmentsRadial',
+    start: 'geometry.thetaStart',
+    'theta-length': 'geometry.thetaLength',
+    'theta-start': 'geometry.thetaStart',
+    translate: 'geometry.translate',
+    'width': 'geometry.thetaLength'
   }
-});
+}));

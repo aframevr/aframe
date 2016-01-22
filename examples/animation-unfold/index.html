@@ -8,44 +8,37 @@
   </head>
   <body>
     <a-scene>
-
       <!-- A series of nested boards that unfold one by one -->
-
       <a-entity position="0 0 -4" scale="1 1 1">
 
-        <!-- Animations rotate and position the group for a bit of extra visual flair -->
+        <!-- Animations rotate and position the group for a bit of extra visual flair. -->
         <a-animation attribute="position" to="0 4.5 -4" dur="2000" fill="forwards"></a-animation>
         <a-animation attribute="rotation" from="0 60 0" to="0 30 0" dur="2500" fill="forwards"></a-animation>
 
-        <!-- Translate and position are used to set the "hinge" of each board to it's top edge  -->
-        <a-cube width="6" height="1" depth=".05" translate="0 -0.5 0" color="#F16745">
+        <!-- Translate and position are used to set the "hinge" of each board to it's top edge.  -->
+        <a-box width="6" height="1" depth=".05" translate="0 -0.5 0" color="#F16745">
           <a-animation attribute="rotation" from="-90 0 0" to="0 0 0" dur="1000" fill="forwards"></a-animation>
 
-          <a-cube position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#FFC65D">
+          <a-box position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#FFC65D">
             <a-animation attribute="rotation" from="-175 0 0" to="0 0 0" dur="1000" begin="250" fill="both"></a-animation>
 
-            <a-cube position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#7BC8A4">
+            <a-box position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#7BC8A4">
               <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="500" fill="both"></a-animation>
-
-                <a-cube position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#4CC3D9">
-                  <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="750" fill="both"></a-animation>
-
-                  <a-cube position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#93648D">
-                    <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="1000" fill="both"></a-animation>
-
-                  </a-cube>
-                </a-cube>
-            </a-cube>
-          </a-cube>
-        </a-cube>
-
+              <a-box position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#4CC3D9">
+                <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="750" fill="both"></a-animation>
+                <a-box position="0 -1 0" width="6" height="1" depth=".05" translate="0 -0.5 0" color="#93648D">
+                  <a-animation attribute="rotation" from="-180 0 0" to="0 0 0" dur="1000" begin="1000" fill="both"></a-animation>
+                </a-box>
+              </a-box>
+            </a-box>
+          </a-box>
+        </a-box>
       </a-entity>
 
       <a-image position="0 -1 0" src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="6 6 6"></a-image>
       <a-sky color="#ECECEC"></a-sky>
       <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
       <a-light type="ambient" color="#fff"></a-light>
-
     </a-scene>
   </body>
 </html>

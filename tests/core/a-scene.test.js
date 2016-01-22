@@ -105,17 +105,20 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('removeDefaultCamera', function () {
-    test('removes the default camera', function () {
+    test('removes the default camera', function (done) {
       var sceneEl = this.el;
       var defaultCamera;
       sceneEl.setupDefaultCamera();
-      defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
-      assert.notEqual(defaultCamera, null);
-      // Mocks camera initialization
-      sceneEl.camera = { el: true };
-      sceneEl.removeDefaultCamera();
-      defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
-      assert.equal(defaultCamera, null);
+      process.nextTick(function () {
+        defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+        assert.notEqual(defaultCamera, null);
+        // Mocks camera initialization
+        sceneEl.camera = { el: true };
+        sceneEl.removeDefaultCamera();
+        defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+        assert.equal(defaultCamera, null);
+        done();
+      });
     });
   });
 

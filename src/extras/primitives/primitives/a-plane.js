@@ -1,43 +1,17 @@
-var registerPrimitive = require('../register-primitive');
+var meshMixin = require('../meshMixin');
+var registerPrimitive = require('../registerPrimitive');
+var utils = require('../../../utils/');
 
-registerPrimitive('a-plane', {
-  defaults: {
-    value: {
-      geometry: {
-        primitive: 'plane',
-        width: 1,
-        height: 1
-      },
-      material: {
-        color: 'gray',
-        opacity: 1.0,
-        shader: 'standard',
-        transparent: true,
-        metalness: 0.0,
-        roughness: 0.5
-      }
+registerPrimitive('a-plane', utils.extendDeep({}, meshMixin(), {
+  defaultAttributes: {
+    geometry: {
+      primitive: 'plane'
     }
   },
 
   mappings: {
-    value: {
-      width: 'geometry.width',
-      height: 'geometry.height',
-      color: 'material.color',
-      opacity: 'material.opacity',
-      shader: 'material.shader',
-      transparent: 'material.transparent',
-      metalness: 'material.metalness',
-      roughness: 'material.roughness',
-      src: 'material.src'
-    }
-  },
-
-  transforms: {
-    value: {
-      src: function (value) {
-        return 'url(' + value + ')';
-      }
-    }
+    height: 'geometry.height',
+    translate: 'geometry.translate',
+    width: 'geometry.width'
   }
-});
+}));

@@ -95,7 +95,9 @@ module.exports.Component = registerComponent('sound', {
   },
 
   play: function () {
-    this.sound.play();
+    if (this.sound.source.buffer) {
+      this.sound.play();
+    }
   },
 
   stop: function () {

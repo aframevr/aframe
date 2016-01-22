@@ -8,16 +8,19 @@
   </head>
   <body>
     <a-scene>
-      <a-camera fov="80" position="0 1.8 0" near="0.2" cursor-color="#33CCFF"></a-camera>
+      <a-curvedimage src="../_images/ui/3.png" radius="5.7" theta-length="180" height="9"
+                     rotation="0 90 0" scale="1.2 1.2 1.2"></a-curvedimage>
+      <a-curvedimage src="../_images/mozvr.png" radius="5.7" theta-length="17" height=".36"
+                     opacity="0.2" rotation="0 250 0" position="0 2 0"></a-curvedimage>
+      <a-curvedimage src="../_images/ui/1.png" radius="5.7" theta-length="72" height="2.6"
+                     rotation="0 80 0" position="0 0.7 0" scale="0.6 0.6 0.6"></a-curvedimage>
+      <a-curvedimage src="../_images/ui/2.png" radius="5.7" theta-length="70" height="3.02"
+                     rotation="0 -130 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
-      <a-curvedimage src="../_images/ui/3.png" radius="5.7" width="3.15" height="9" rotation="0 90 0" scale="1.2 1.2 1.2"></a-curvedimage>
-      <a-curvedimage src="../_images/mozvr.png" radius="5.7" width=".31" height=".36" rotation="0 130 0" position="0 2 0"></a-curvedimage>
-      <a-curvedimage src="../_images/ui/1.png" radius="5.7" width="1.26" height="2.6" rotation="0 -30 0" position="0 0.7 0" scale="0.6 0.6 0.6"></a-curvedimage>
-      <a-curvedimage src="../_images/ui/2.png" radius="5.7" width="1.26" height="3.02" rotation="0 123 0" scale="0.8 0.8 0.8"></a-curvedimage>
-
-
-      <a-image position="0 -5 0" src="../_images/radial-shadow-2.png" rotation="-90 0 0" scale="6 6 6"></a-image>
+      <a-image position="0 -5 0" src="../_images/radial-shadow-2.png"
+               rotation="-90 0 0" scale="6 6 6"></a-image>
       <a-sky color="#fff"></a-sky>
+      <a-camera position="0 1.8 1.5"></a-camera>
     </a-scene>
   </body>
 </html>

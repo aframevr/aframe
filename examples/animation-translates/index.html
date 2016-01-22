@@ -8,13 +8,13 @@
   </head>
   <body>
     <a-scene>
-
-      <a-camera position="0 0 8" cursor-visible="false"></a-camera>
+      <a-entity position="0 0 8">
+        <a-camera></a-camera>
+      </a-entity>
 
       <!-- 1 -->
       <!-- Animate the cylinder scales on the Y-axes -->
       <a-entity position="-5 0 0">
-
         <a-cylinder position="0 2 0" radius="2" height="2" color="#4CC3D9" open-ended="true" side="double">
           <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" dur="2000" fill="forwards"></a-animation>
         </a-cylinder>

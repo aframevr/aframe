@@ -283,29 +283,33 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Creates a default camera if user has not added one during the initial.
-     * scene traversal.
+     * Creates a default camera if user has not added one during the initial scene traversal.
      *
      * Default camera height is at human level (~1.8m) and back such that
      * entities at the origin (0, 0, 0) are well-centered.
      */
     setupDefaultCamera: {
       value: function () {
+        var self = this;
         var cameraWrapperEl;
         var defaultCamera;
-        var sceneCameras = this.querySelectorAll('[camera]');
-        if (sceneCameras.length !== 0) { return; }
 
-        // DOM calls to create camera.
-        cameraWrapperEl = document.createElement('a-entity');
-        cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
-        cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-        defaultCamera = document.createElement('a-entity');
-        defaultCamera.setAttribute('camera', {'active': true});
-        defaultCamera.setAttribute('wasd-controls');
-        defaultCamera.setAttribute('look-controls');
-        cameraWrapperEl.appendChild(defaultCamera);
-        this.appendChild(cameraWrapperEl);
+        // setTimeout in case the camera is being set dynamically with a setAttribute.
+        setTimeout(function checkForCamera () {
+          var sceneCameras = self.querySelectorAll('[camera]');
+          if (sceneCameras.length !== 0) { return; }
+
+          // DOM calls to create camera.
+          cameraWrapperEl = document.createElement('a-entity');
+          cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
+          cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
+          defaultCamera = document.createElement('a-entity');
+          defaultCamera.setAttribute('camera', {'active': true});
+          defaultCamera.setAttribute('wasd-controls');
+          defaultCamera.setAttribute('look-controls');
+          cameraWrapperEl.appendChild(defaultCamera);
+          self.appendChild(cameraWrapperEl);
+        });
       }
     },
 

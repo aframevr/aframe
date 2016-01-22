@@ -1,51 +1,23 @@
-var registerPrimitive = require('../register-primitive');
+var meshMixin = require('../meshMixin');
+var registerPrimitive = require('../registerPrimitive');
+var utils = require('../../../utils/');
 
-registerPrimitive('a-cylinder', {
-  defaults: {
-    value: {
-      geometry: {
-        primitive: 'cylinder',
-        radius: 0.5,
-        height: 1,
-        openEnded: false
-      },
-      material: {
-        opacity: 1.0,
-        shader: 'standard',
-        transparent: false,
-        metalness: 0.0,
-        roughness: 0.5,
-        side: 'front'
-      }
+registerPrimitive('a-cylinder', utils.extendDeep({}, meshMixin(), {
+  defaultAttributes: {
+    geometry: {
+      primitive: 'cylinder'
     }
   },
 
   mappings: {
-    value: {
-      radius: 'geometry.radius',
-      'radius-top': 'geometry.radiusTop',
-      'radius-bottom': 'geometry.radiusBottom',
-      height: 'geometry.height',
-      'segments-radial': 'geometry.segmentsRadial',
-      'theta-start': 'geometry.thetaStart',
-      'theta-length': 'geometry.thetaLength',
-      'open-ended': 'geometry.openEnded',
-      color: 'material.color',
-      opacity: 'material.opacity',
-      shader: 'material.shader',
-      transparent: 'material.transparent',
-      metalness: 'material.metalness',
-      roughness: 'material.roughness',
-      src: 'material.src',
-      side: 'material.side'
-    }
-  },
-
-  transforms: {
-    value: {
-      src: function (value) {
-        return 'url(' + value + ')';
-      }
-    }
+    height: 'geometry.height',
+    'open-ended': 'geometry.openEnded',
+    radius: 'geometry.radius',
+    'radius-bottom': 'geometry.radiusBottom',
+    'radius-top': 'geometry.radiusTop',
+    'segments-radial': 'geometry.segmentsRadial',
+    'theta-length': 'geometry.thetaLength',
+    'theta-start': 'geometry.thetaStart',
+    translate: 'geometry.translate'
   }
-});
+}));

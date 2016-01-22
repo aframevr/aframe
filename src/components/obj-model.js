@@ -54,7 +54,7 @@ module.exports.Component = registerComponent('obj-model', {
     // .OBJ only.
     objLoader.load(objUrl, function (objModel) {
       // Apply material.
-      var material = this.el.components.material.material;
+      var material = el.components.material.material;
       objModel.traverse(function (child) {
         if (child instanceof THREE.Mesh) {
           child.material = material;
