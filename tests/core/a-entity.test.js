@@ -405,6 +405,20 @@ suite('a-entity', function () {
       assert.equal(el.getAttribute('material'), materialAttribute);
     });
   });
+
+  suite('removeComponent', function () {
+    test('removes a behavior', function () {
+      var el = this.el;
+      var sceneEl = el.sceneEl;
+      var component;
+      el.setAttribute('look-controls', '');
+      component = el.components['look-controls'];
+      assert.ok(el.getAttribute('look-controls'));
+      assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
+      el.removeAttribute('look-controls');
+      assert.equal(sceneEl.behaviors.indexOf(component), -1);
+    });
+  });
 });
 
 suite('a-entity component lifecycle management', function () {
