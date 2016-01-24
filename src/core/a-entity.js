@@ -321,7 +321,7 @@ var proto = Object.create(ANode.prototype, {
       var scene;
       if (component.tick) {
         scene = this.isScene ? this.el : this.sceneEl;
-        scene.removeBehavior(component.tick);
+        scene.removeBehavior(component);
       }
       component.remove();
       delete this.components[name];
