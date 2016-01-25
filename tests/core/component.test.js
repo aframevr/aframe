@@ -143,4 +143,53 @@ suite('Component', function () {
       assert.ok(components.position.schema);
     });
   });
+
+  suite('parse', function () {
+    test('parses single value component', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: { default: '0 0 1', type: 'vec3' }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = component.parse('1 2 3');
+      assert.deepEqual(componentObj, { x: 1, y: 2, z: 3 });
+    });
+
+    test('parses component properties vec3', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {
+          position: { type: 'vec3', default: '0 0 1' }
+        }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = component.parse({ position: '0 1 0' });
+      assert.deepEqual(componentObj.position, { x: 0, y: 1, z: 0 });
+    });
+  });
+
+  suite('stringify', function () {
+    test('stringifies single value component', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: { default: '0 0 1', type: 'vec3' }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentString = component.stringify({ x: 1, y: 2, z: 3 });
+      assert.deepEqual(componentString, '1 2 3');
+    });
+
+    test('stringifies component property vec3', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {
+          position: { type: 'vec3', default: '0 0 1' }
+        }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = { position: { x: 1, y: 2, z: 3 } };
+      var componentString = component.stringify(componentObj);
+      assert.deepEqual(componentString, 'position:1 2 3');
+    });
+  });
 });
