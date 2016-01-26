@@ -5,7 +5,7 @@
  */
 window.debug = true;
 
-var AScene = require('core/a-scene');
+var AScene = require('core/scene/a-scene');
 
 setup(function () {
   this.sinon = sinon.sandbox.create();

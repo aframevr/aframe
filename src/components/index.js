@@ -16,9 +16,6 @@ require('./wasd-controls');
 
 require('./scene/canvas');
 require('./scene/fog');
-require('./scene/fullscreen');
-require('./scene/meta-tags');
+require('./scene/keyboard-shortcuts');
 require('./scene/stats');
-require('./scene/vr-mode');
 require('./scene/vr-mode-ui');
-require('./scene/wakelock');

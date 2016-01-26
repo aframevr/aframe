@@ -3,7 +3,7 @@
 var helpers = require('../helpers');
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
-var AScene = require('core/a-scene');
+var AScene = require('core/scene/a-scene');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.

@@ -1,19 +1,7 @@
-var register = require('../../core/component').registerComponent;
-
-module.exports.Component = register('meta-tags', {
-  init: function () {
-    if (!this.el.isMobile) { return; }
-    this.metaTags = injectMetaTags();
-  },
-
-  remove: function () {
-    var metaTags = this.metaTags;
-    if (!metaTags) { return; }
-    metaTags.forEach(function (metaTag) {
-      metaTag.parentNode.removeChild(metaTag);
-    });
-  }
-});
+module.exports = function initMetaTags (scene) {
+  if (!scene.isMobile) { return; }
+  injectMetaTags();
+};
 
 /**
  * Injects the necessary metatags in the document for mobile support to:

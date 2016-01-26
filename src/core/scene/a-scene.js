@@ -1,13 +1,15 @@
 /* global Promise */
-var re = require('./a-register-element');
-var THREE = require('../lib/three');
+var initFullscreen = require('./fullscreen');
+var initIframe = require('./iframe');
+var initMetaTags = require('./metaTags');
+var initWakelock = require('./wakelock');
+var re = require('../a-register-element');
+var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
-var utils = require('../utils/');
-var AEntity = require('./a-entity');
-var ANode = require('./a-node');
-
-var dummyDolly = new THREE.Object3D();
-var controls = new THREE.VRControls(dummyDolly);
+var utils = require('../../utils/');
+// Require after.
+var AEntity = require('../a-entity');
+var ANode = require('../a-node');
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
@@ -37,11 +39,8 @@ var AScene = module.exports = registerElement('a-scene', {
     defaultComponents: {
       value: {
         'canvas': '',
-        'fullscreen': '',
-        'meta-tags': '',
-        'vr-mode': '',
-        'vr-mode-ui': '',
-        'wakelock': ''
+        'keyboard-shortcuts': '',
+        'vr-mode-ui': ''
       }
     },
 
@@ -77,7 +76,10 @@ var AScene = module.exports = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        this.setupKeyboardShortcuts();
+        initFullscreen(this);
+        initIframe(this);
+        initMetaTags(this);
+        initWakelock(this);
 
         // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', this.resize.bind(this));
@@ -331,19 +333,6 @@ var AScene = module.exports = registerElement('a-scene', {
         directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
         directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
         this.appendChild(directionalLight);
-      }
-    },
-
-    /**
-     * Set up keyboard shortcuts to:
-     *   - Enter VR when `f` is pressed.
-     *   - Reset sensor when `z` is pressed.
-     */
-    setupKeyboardShortcuts: {
-      value: function () {
-        window.addEventListener('keyup', function (event) {
-          if (event.keyCode === 90) { controls.resetSensor(); }  // z.
-        }, false);
       }
     },
 

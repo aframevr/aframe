@@ -11,7 +11,7 @@ require('./style/aframe.css');
 require('./style/rStats.css');
 
 // Required before `AEntity` so that all components are registered.
-var AScene = require('./core/a-scene');
+var AScene = require('./core/scene/a-scene');
 var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
@@ -39,7 +39,6 @@ require('./core/a-animation');
 require('./core/a-assets');
 require('./core/a-cubemap');
 require('./core/a-mixin');
-require('./core/a-scene');
 
 // TODO: Extract to aframe-primitives.
 var coreElements = require('./elements/');

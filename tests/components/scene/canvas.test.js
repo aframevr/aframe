@@ -1,7 +1,7 @@
  /* global assert, process, suite, test */
 'use strict';
 
-suite('cavnas', function () {
+suite('canvas', function () {
   test('adds canvas to a-scene element', function () {
     var el = document.createElement('a-scene');
     el.setAttribute('canvas', '');
