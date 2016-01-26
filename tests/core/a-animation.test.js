@@ -58,6 +58,19 @@ suite('a-animation', function () {
     });
   });
 
+  suite('detachedCallback', function () {
+    test('stops animation', function (done) {
+      setupAnimation({}, function (el, animationEl) {
+        assert.ok(animationEl.isRunning);
+        animationEl.parentNode.removeChild(animationEl);
+        animationEl.addEventListener('animationstop', function () {
+          assert.notOk(animationEl.isRunning);
+          done();
+        });
+      });
+    });
+  });
+
   suite('update', function () {
     test('called on initialization', function (done) {
       this.sinon.stub(AAnimation.prototype, 'update');
