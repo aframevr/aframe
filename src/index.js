@@ -16,6 +16,7 @@ var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
 var registerElement = require('./core/a-register-element');
+var PropertyTypes = require('./core/propertyTypes');
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
 var TWEEN = window.TWEEN = require('tween.js');
@@ -51,8 +52,10 @@ module.exports = window.AFRAME = {
   AScene: AScene,
   components: components,
   debug: debug,
+  propertyTypes: PropertyTypes.propertyTypes,
   registerComponent: registerComponent,
   registerElement: registerElement,
+  registerPropertyType: PropertyTypes.registerPropertyType,
   THREE: THREE,
   TWEEN: TWEEN,
   utils: utils,
