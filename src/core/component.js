@@ -113,6 +113,8 @@ Component.prototype = {
   parse: function (value) {
     var typeName;
     var type;
+    var schema = this.schema;
+    var properties;
 
     if (isSingleProp(this.schema)) {
       typeName = this.schema.type;
@@ -121,7 +123,17 @@ Component.prototype = {
       return error(typeName + ' is not a valid type.');
     }
 
-    return objectParse(value);
+    properties = objectParse(value);
+
+    if (properties === null || typeof properties !== 'object') { return properties; }
+
+    Object.keys(properties).forEach(parseProperty);
+    return properties;
+
+    function parseProperty (key) {
+      if (!schema[key]) { return; }
+      properties[key] = schema[key].parse(properties[key]);
+    }
   },
 
   /**
@@ -134,15 +146,28 @@ Component.prototype = {
   stringify: function (data) {
     var typeName;
     var type;
+    var processedData;
+    var schema = this.schema;
 
-    if (isSingleProp(this.schema)) {
-      typeName = this.schema.type;
+    if (isSingleProp(schema)) {
+      typeName = schema.type;
       type = propertyTypes[typeName];
       if (type) { return type.stringify.call(this, data); }
       return error(typeName + ' is not a valid type.');
     }
 
-    return objectStringify(data);
+    if (typeof data !== 'object') { return data; }
+
+    processedData = utils.extend({}, data);
+
+    Object.keys(processedData).forEach(stringifyProperty);
+
+    return objectStringify(processedData);
+
+    function stringifyProperty (key) {
+      if (!schema[key]) { return; }
+      processedData[key] = schema[key].stringify(processedData[key]);
+    }
   },
 
   /**

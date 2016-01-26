@@ -491,7 +491,7 @@ var proto = Object.create(ANode.prototype, {
   setAttribute: {
     value: function (attr, value, componentPropValue) {
       var self = this;
-      var component = components[attr];
+      var component = this.components[attr] || components[attr];
       var partialComponentData;
       value = value === undefined ? '' : value;
       var valueStr = value;
@@ -527,7 +527,7 @@ var proto = Object.create(ANode.prototype, {
    */
   getAttribute: {
     value: function (attr) {
-      var component = components[attr];
+      var component = this.components[attr] || components[attr];
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
       return component.parse(value);

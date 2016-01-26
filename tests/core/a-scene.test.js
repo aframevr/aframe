@@ -112,10 +112,10 @@ suite('a-scene (without renderer)', function () {
       camera2El.setAttribute('camera', 'active: true');
       sceneEl.appendChild(camera2El);
       process.nextTick(function () {
-        assert.equal(camera1El.getAttribute('camera').active, 'false');
+        assert.equal(camera1El.getAttribute('camera').active, false);
         sceneEl.setActiveCamera(camera1El);
-        assert.equal(camera1El.getAttribute('camera').active, 'true');
-        assert.equal(camera2El.getAttribute('camera').active, 'false');
+        assert.equal(camera1El.getAttribute('camera').active, true);
+        assert.equal(camera2El.getAttribute('camera').active, false);
         done();
       });
     });
@@ -150,8 +150,8 @@ suite('a-scene (without renderer)', function () {
       process.nextTick(function () {
         cameraEl.setAttribute('camera', 'active: true');
         camera2El.setAttribute('camera', 'active: true');
-        assert.equal(cameraEl.getAttribute('camera').active, 'false');
-        assert.equal(camera2El.getAttribute('camera').active, 'true');
+        assert.equal(cameraEl.getAttribute('camera').active, false);
+        assert.equal(camera2El.getAttribute('camera').active, true);
         assert.equal(camera2El.components.camera.camera, sceneEl.camera);
         done();
       });
