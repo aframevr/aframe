@@ -44,6 +44,10 @@ require('./core/a-mixin');
 var coreElements = require('./elements/');
 var registerTemplate = require('./elements/lib/register-template');
 
+console.log('A-Frame Version:', pkg.version);
+console.log('three-dev Version:', pkg.dependencies['three-dev']);
+console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
+
 module.exports = window.AFRAME = {
   AEntity: AEntity,
   ANode: ANode,
