@@ -100,6 +100,13 @@ module.exports.AAnimation = registerElement('a-animation', {
       }
     },
 
+    detachedCallback: {
+      value: function () {
+        if (!this.isRunning) { return; }
+        this.stop();
+      }
+    },
+
     /**
      * Builds a Tween object to handle animations.
      * Uses tween.js's from, to, delay, easing, repeat, onUpdate, and onComplete.
