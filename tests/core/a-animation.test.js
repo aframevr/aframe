@@ -311,7 +311,7 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', 'click');
       el.appendChild(animationEl);
-      el.emit('play');
+      el.play();
       process.nextTick(function () {
         assert.notOk(animationEl.isRunning);
         done();
@@ -321,9 +321,9 @@ suite('a-animation', function () {
     test('is run when entity plays and begin is set to a delay', function (done) {
       var animationEl = document.createElement('a-animation');
       var el = helpers.entityFactory();
-      animationEl.setAttribute('begin', '15');
+      animationEl.setAttribute('begin', '1');
       el.appendChild(animationEl);
-      el.emit('play');
+      el.play();
       process.nextTick(function () {
         assert.ok(animationEl.isRunning);
         done();
