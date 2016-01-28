@@ -8,7 +8,9 @@
  */
 module.exports.entityFactory = function () {
   var scene = document.createElement('a-scene');
+  var assets = document.createElement('a-assets');
   var entity = document.createElement('a-entity');
+  scene.appendChild(assets);
   scene.appendChild(entity);
   document.body.appendChild(scene);
   return entity;
@@ -19,20 +21,17 @@ module.exports.entityFactory = function () {
  *
  * @param {string} id - ID of mixin.
  * @param {object} obj - Map of component names to attribute values.
+ * @param {Element} scene - Indicate which scene to apply mixin to if necessary.
  * @returns {object} An attached `<a-mixin>` element.
  */
-module.exports.mixinFactory = function (id, obj) {
+module.exports.mixinFactory = function (id, obj, scene) {
   var mixinEl = document.createElement('a-mixin');
   mixinEl.setAttribute('id', id);
   Object.keys(obj).forEach(function (componentName) {
     mixinEl.setAttribute(componentName, obj[componentName]);
   });
 
-  var assetsEl = document.querySelector('a-assets');
-  if (!assetsEl) {
-    assetsEl = document.createElement('a-assets');
-    document.body.appendChild(assetsEl);
-  }
+  var assetsEl = scene ? scene.querySelector('a-assets') : document.querySelector('a-assets');
   assetsEl.appendChild(mixinEl);
 
   return mixinEl;

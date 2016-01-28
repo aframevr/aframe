@@ -7,15 +7,16 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1;
-                                   translate: -0.25 0 0; width: 0.5"
-                         material="color: red" rotation="0 0 0"
-                         scale="1 1.25 1"></a-mixin>
-      <a-mixin id="flap" attribute="rotation" direction="alternate" fill="forwards"
-                         repeat="indefinite"></a-mixin>
-    </a-assets>
     <a-scene stats="true">
+      <a-assets>
+        <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1;
+                                     translate: -0.25 0 0; width: 0.5"
+                           material="color: red" rotation="0 0 0"
+                           scale="1 1.25 1"></a-mixin>
+        <a-mixin id="flap" attribute="rotation" direction="alternate" fill="forwards"
+                           repeat="indefinite"></a-mixin>
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 1.8 0">
         <a-entity id="camera" camera="fov: 45" look-controls wasd-controls></a-entity>

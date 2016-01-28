@@ -7,11 +7,12 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <a-mixin id="cylinder" geometry="primitive: cylinder"></a-mixin>
-      <a-mixin id="open-ended" geometry="openEnded: true" material="side: double"></a-mixin>
-    </a-assets>
     <a-scene stats="true">
+      <a-assets>
+        <a-mixin id="cylinder" geometry="primitive: cylinder"></a-mixin>
+        <a-mixin id="open-ended" geometry="openEnded: true" material="side: double"></a-mixin>
+      </a-assets>
+
       <a-entity position="0 0 8">
         <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>

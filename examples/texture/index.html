@@ -7,13 +7,14 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <img class="louvre" src="../_images/pano/louvre.jpg">
-      <a-mixin id="pano" geometry="primitive: sphere; radius: 100;"
-               material="src: .louvre; shader: flat"
-               scale="1 1 -1" rotation="0 90 0"></a-mixin>
-    </a-assets>
     <a-scene stats="true">
+      <a-assets>
+        <img class="louvre" src="../_images/pano/louvre.jpg">
+        <a-mixin id="pano" geometry="primitive: sphere; radius: 100;"
+                 material="src: .louvre; shader: flat"
+                 scale="1 1 -1" rotation="0 90 0"></a-mixin>
+      </a-assets>
+
       <a-entity>
         <a-entity camera look-controls></a-entity>
       </a-entity>

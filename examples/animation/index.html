@@ -7,16 +7,16 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <a-mixin id="planet" geometry="primitive: sphere; radius: 0.5">
-      </a-mixin>
-      <a-mixin id="orbit" attribute="rotation" to="0 360 0"
-                repeat="indefinite" easing="linear" dur="3000"></a-mixin>
-      <a-mixin id="spin" attribute="rotation" to="0 360 0"
-                repeat="indefinite" easing="linear" dur="96000"></a-mixin>
-    </a-assets>
-
     <a-scene stats="true">
+      <a-assets>
+        <a-mixin id="planet" geometry="primitive: sphere; radius: 0.5">
+        </a-mixin>
+        <a-mixin id="orbit" attribute="rotation" to="0 360 0"
+                  repeat="indefinite" easing="linear" dur="3000"></a-mixin>
+        <a-mixin id="spin" attribute="rotation" to="0 360 0"
+                  repeat="indefinite" easing="linear" dur="96000"></a-mixin>
+      </a-assets>
+
       <a-entity position="0 0 6">
         <a-entity camera look-controls wasd-controls></a-entity>
       </a-entity>

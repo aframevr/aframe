@@ -6,27 +6,26 @@
     <meta name="description" content="Physically-Based Materials - A-Frame Core">
     <script src="../../dist/aframe.js"></script>
   </head>
-
   <body>
-    <a-assets>
-      <a-cubemap id="reflection">
-        <img src="../_images/textures/milkyway/px.jpg">
-        <img src="../_images/textures/milkyway/nx.jpg">
-        <img src="../_images/textures/milkyway/py.jpg">
-        <img src="../_images/textures/milkyway/ny.jpg">
-        <img src="../_images/textures/milkyway/pz.jpg">
-        <img src="../_images/textures/milkyway/nz.jpg">
-      </a-cubemap>
-      <a-mixin id="animation" easing="linear" dur="4096" repeat="indefinite">
-      </a-mixin>
-      <a-mixin id="light" geometry="primitive: sphere; radius: .25"
-               light="color: #FFF; intensity: .5; type: point"
-               material="shader: flat">
-      </a-mixin>
-      <a-mixin id="sphere" geometry="primitive: sphere; radius: 5"></a-mixin>
-    </a-assets>
-
     <a-scene stats="true">
+      <a-assets>
+        <a-cubemap id="reflection">
+          <img src="../_images/textures/milkyway/px.jpg">
+          <img src="../_images/textures/milkyway/nx.jpg">
+          <img src="../_images/textures/milkyway/py.jpg">
+          <img src="../_images/textures/milkyway/ny.jpg">
+          <img src="../_images/textures/milkyway/pz.jpg">
+          <img src="../_images/textures/milkyway/nz.jpg">
+        </a-cubemap>
+        <a-mixin id="animation" easing="linear" dur="4096" repeat="indefinite">
+        </a-mixin>
+        <a-mixin id="light" geometry="primitive: sphere; radius: .25"
+                 light="color: #FFF; intensity: .5; type: point"
+                 material="shader: flat">
+        </a-mixin>
+        <a-mixin id="sphere" geometry="primitive: sphere; radius: 5"></a-mixin>
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 1.8 0" rotation="0 0 0">
         <a-entity camera look-controls wasd-controls></a-entity>

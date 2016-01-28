@@ -48,6 +48,7 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
 suite('a-animation', function () {
   suite('attachedCallback', function () {
     test('applies mixin', function (done) {
+      helpers.entityFactory();
       helpers.mixinFactory('walt', { repeat: 'indefinite' });
       setupAnimation({
         mixin: 'walt'
