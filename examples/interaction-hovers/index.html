@@ -7,13 +7,12 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-
-    <a-assets>
-      <a-mixin id="link" scale="1 0.5 1"></a-mixin>
-      <a-mixin id="link-hovered" scale="2 2 1"></a-mixin>
-      <a-mixin id="link-selected" scale="2 4 1"></a-mixin>
-    </a-assets>
     <a-scene>
+      <a-assets>
+        <a-mixin id="link" scale="1 0.5 1"></a-mixin>
+        <a-mixin id="link-hovered" scale="2 2 1"></a-mixin>
+        <a-mixin id="link-selected" scale="2 4 1"></a-mixin>
+      </a-assets>
 
       <!-- Camera -->
       <a-camera position="0 1.8 4"></a-camera>
@@ -40,7 +39,6 @@
       </a-entity>
 
       <a-sky color="#ECECEC"></a-sky>
-
     </a-scene>
   </body>
 </html>

@@ -7,15 +7,15 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <img id="floor" src="../_images/textures/marble.jpg">
-      <img id="follower-img" src="../_images/pano/tintamarre.jpg">
-      <a-mixin id="follower" geometry="primitive: box; width: 3; height: 3; depth: .1;"
-               material="src: #follower-img">
-      </a-mixin>
-    </a-assets>
-
     <a-scene stats="true">
+      <a-assets>
+        <img id="floor" src="../_images/textures/marble.jpg">
+        <img id="follower-img" src="../_images/pano/tintamarre.jpg">
+        <a-mixin id="follower" geometry="primitive: box; width: 3; height: 3; depth: .1;"
+                 material="src: #follower-img">
+        </a-mixin>
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 1.8 4">
         <a-entity id="camera" camera look-controls wasd-controls></a-entity>

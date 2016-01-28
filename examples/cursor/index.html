@@ -7,18 +7,18 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <a-mixin id="cube" geometry="primitive: box"></a-mixin>
-      <a-mixin id="cube-hovered" material="color: magenta"></a-mixin>
-      <a-mixin id="cube-selected" material="color: cyan"></a-mixin>
-      <a-mixin id="red" material="color: red"></a-mixin>
-      <a-mixin id="green" material="color: green"></a-mixin>
-      <a-mixin id="blue" material="color: blue"></a-mixin>
-      <a-mixin id="yellow" material="color: yellow"></a-mixin>
-      <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
-    </a-assets>
-
     <a-scene stats="true">
+      <a-assets>
+        <a-mixin id="cube" geometry="primitive: box"></a-mixin>
+        <a-mixin id="cube-hovered" material="color: magenta"></a-mixin>
+        <a-mixin id="cube-selected" material="color: cyan"></a-mixin>
+        <a-mixin id="red" material="color: red"></a-mixin>
+        <a-mixin id="green" material="color: green"></a-mixin>
+        <a-mixin id="blue" material="color: blue"></a-mixin>
+        <a-mixin id="yellow" material="color: yellow"></a-mixin>
+        <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
+      </a-assets>
+
       <a-entity position="0 2.2 4">
         <a-entity camera look-controls wasd-controls>
           <a-entity position="0 0 -5"

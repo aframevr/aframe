@@ -6,19 +6,19 @@
     <meta name="description" content="Fog - A-Frame Core">
     <script src="../../dist/aframe.js"></script>
   </head>
-
   <body>
-    <a-assets>
-      <a-mixin id="move" attribute="position" direction="alternate" dur="4096"
-                         fill="forwards" easing="linear" repeat="indefinite">
-      </a-mixin>
-      <a-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; radiusTubular: .5;
-                                  radius: 10" material="color: #2F3C4F"></a-mixin>
-      <a-mixin id="spin" attribute="rotation" dur="4096" to="-360 0 0"
-                         easing="linear" repeat="indefinite"></a-mixin>
-    </a-assets>
     <a-scene fog="type: linear; color: #AAB; far: 150; near: 0"
              stats="true">
+      <a-assets>
+        <a-mixin id="move" attribute="position" direction="alternate" dur="4096"
+                           fill="forwards" easing="linear" repeat="indefinite">
+        </a-mixin>
+        <a-mixin id="box" geometry="primitive: torusKnot; p: 3; q: 11; radiusTubular: .5;
+                                    radius: 10" material="color: #2F3C4F"></a-mixin>
+        <a-mixin id="spin" attribute="rotation" dur="4096" to="-360 0 0"
+                           easing="linear" repeat="indefinite"></a-mixin>
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 1.8 0">
         <a-entity camera look-controls wasd-controls></a-entity>

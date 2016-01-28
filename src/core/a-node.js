@@ -143,7 +143,8 @@ module.exports = registerElement('a-node', {
 
     registerMixin: {
       value: function (mixinId) {
-        var mixinEl = document.querySelector('a-mixin#' + mixinId);
+        if (!this.sceneEl) { return; }
+        var mixinEl = this.sceneEl.querySelector('a-mixin#' + mixinId);
         if (!mixinEl) { return; }
         this.attachMixinListener(mixinEl);
         this.mixinEls.push(mixinEl);

@@ -7,63 +7,63 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <!-- Geometry mixins. -->
-      <a-mixin id="box"
-               geometry="primitive: box; depth: .125; height: .125;
-                         width: .125"></a-mixin>
-      <a-mixin id="circle"
-               geometry="primitive: circle; openEnded: true; radius: .2;
-                         segments: 100; thetaStart: 0; thetaLength: 350">
-      </a-mixin>
-      <a-mixin id="cylinder"
-               geometry="primitive: cylinder; radius: 0.2; height: .5;
-                         segmentsRadial: 50; segmentsHeight: 50:
-                         openEnded: true; thetaStart: 0; thetaLength: 350">
-      </a-mixin>
-      <a-mixin id="ring"
-                geometry="primitive: ring; radiusInner: .3; openEnded: true; radiusOuter: .5;
-                          segmentsTheta: 50"></a-mixin>
-      <a-mixin id="sphere"
-                geometry="primitive: sphere; radius: .1"></a-mixin>
-      <a-mixin id="torus"
-                geometry="primitive: torus; arc: 720; radius: .3; radiusTubular: .05;
-                          segments: 32; segmentsTubular: 10;"></a-mixin>
-      <a-mixin id="torus-knot"
-                geometry="primitive: torusKnot; p: 3; q: 7; radius: .25;
-                          segments: 32; radiusTubular: .07; segmentsTubular: 10">
-      </a-mixin>
-
-      <!-- Layout mixins. -->
-      <a-mixin id="column"
-                geometry="primitive: box; depth: .75; height: 1.2; width: .75"
-                material="color: #FFF" position="0 .6 0"></a-mixin>
-      <a-mixin id="column-bottom" geometry="primitive: box; depth: 1;
-                                            height: .1; width: 1;"
-               material="color: #FFF" position="0 .1 0">
-      </a-mixin>
-      <a-mixin id="column-light" light="type: point; intensity: 0.5;
-                                        distance: 5;"
-                position="0 1.5 0">
-      </a-mixin>
-      <a-mixin id="object-on-column" position="0 1.2 0"></a-mixin>
-
-      <!-- Animation mixins. -->
-      <a-mixin id="yoyo" direction="alternate" fill="forwards"
-                         repeat="indefinite"></a-mixin>
-      <a-mixin id="spin" attribute="rotation" to="0 360 0"
-               repeat="indefinite" easing="linear" dur="10000"></a-mixin>
-      <a-mixin id="spin-x" mixin="spin" attribute="rotation" to="360 0 0"
-               repeat="indefinite" easing="linear" dur="10000"></a-mixin>
-
-      <a-mixin id="color" material="color: #FFFFC3"></a-mixin>
-      <a-mixin id="doubleside" material="side: double"></a-mixin>
-
-      <img id="carpet" src="../_images/textures/carpet.jpg">
-      <img id="floor" src="../_images/textures/marble.jpg">
-    </a-assets>
-
     <a-scene stats="true">
+      <a-assets>
+        <!-- Geometry mixins. -->
+        <a-mixin id="box"
+                 geometry="primitive: box; depth: .125; height: .125;
+                           width: .125"></a-mixin>
+        <a-mixin id="circle"
+                 geometry="primitive: circle; openEnded: true; radius: .2;
+                           segments: 100; thetaStart: 0; thetaLength: 350">
+        </a-mixin>
+        <a-mixin id="cylinder"
+                 geometry="primitive: cylinder; radius: 0.2; height: .5;
+                           segmentsRadial: 50; segmentsHeight: 50:
+                           openEnded: true; thetaStart: 0; thetaLength: 350">
+        </a-mixin>
+        <a-mixin id="ring"
+                  geometry="primitive: ring; radiusInner: .3; openEnded: true; radiusOuter: .5;
+                            segmentsTheta: 50"></a-mixin>
+        <a-mixin id="sphere"
+                  geometry="primitive: sphere; radius: .1"></a-mixin>
+        <a-mixin id="torus"
+                  geometry="primitive: torus; arc: 720; radius: .3; radiusTubular: .05;
+                            segments: 32; segmentsTubular: 10;"></a-mixin>
+        <a-mixin id="torus-knot"
+                  geometry="primitive: torusKnot; p: 3; q: 7; radius: .25;
+                            segments: 32; radiusTubular: .07; segmentsTubular: 10">
+        </a-mixin>
+
+        <!-- Layout mixins. -->
+        <a-mixin id="column"
+                  geometry="primitive: box; depth: .75; height: 1.2; width: .75"
+                  material="color: #FFF" position="0 .6 0"></a-mixin>
+        <a-mixin id="column-bottom" geometry="primitive: box; depth: 1;
+                                              height: .1; width: 1;"
+                 material="color: #FFF" position="0 .1 0">
+        </a-mixin>
+        <a-mixin id="column-light" light="type: point; intensity: 0.5;
+                                          distance: 5;"
+                  position="0 1.5 0">
+        </a-mixin>
+        <a-mixin id="object-on-column" position="0 1.2 0"></a-mixin>
+
+        <!-- Animation mixins. -->
+        <a-mixin id="yoyo" direction="alternate" fill="forwards"
+                           repeat="indefinite"></a-mixin>
+        <a-mixin id="spin" attribute="rotation" to="0 360 0"
+                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
+        <a-mixin id="spin-x" mixin="spin" attribute="rotation" to="360 0 0"
+                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
+
+        <a-mixin id="color" material="color: #FFFFC3"></a-mixin>
+        <a-mixin id="doubleside" material="side: double"></a-mixin>
+
+        <img id="carpet" src="../_images/textures/carpet.jpg">
+        <img id="floor" src="../_images/textures/marble.jpg">
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 1.8 0">
         <a-entity camera look-controls wasd-controls>
