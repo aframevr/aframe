@@ -10,6 +10,7 @@ registerPropertyType('boolean', false, boolParse);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
+registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, coordinates.parse, coordinates.stringify);
 
@@ -63,8 +64,25 @@ function selectorParse (value) {
   return document.querySelector(value);
 }
 
-function selectorStringify (el) {
-  // Currently no way to infer the selector used for this component.
-  if (el) { return '#' + el.getAttribute('id'); }
+function selectorStringify (value) {
+  if (value.getAttribute) {
+    return '#' + value.getAttribute('id');
+  }
+  return defaultStringify(value);
+}
+
+/**
+ * `src` parser for assets.
+ *
+ * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
+ * @returns {string} Parsed value from `url(<value>)` or src from `<someasset src>`.
+ */
+function srcParse (value) {
+  var parsedUrl = value.match(/\url\((.+)\)/);
+  if (parsedUrl) { return parsedUrl[1]; }
+
+  var el = selectorParse(value);
+  if (el) { return el.getAttribute('src'); }
+
   return '';
 }
