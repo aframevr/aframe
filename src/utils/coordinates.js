@@ -10,30 +10,22 @@ module.exports.regex = regex;
  * @param {string} defaults - fallback value.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaultCoordinate) {
+function parse (value, defaultVec3) {
   var coordinate;
 
   if (value && typeof value === 'object') {
     return vec3ParseFloat(value);
   }
 
-  if (!defaultCoordinate && this.schema) {
-    if ('default' in this.schema) {
-      defaultCoordinate = this.schema.default;
-    } else {
-      defaultCoordinate = this.schema;
-    }
-  }
-
   if (typeof value !== 'string' || value === null) {
-    return defaultCoordinate;
+    return defaultVec3;
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
   return vec3ParseFloat({
-    x: coordinate[0] || defaultCoordinate.x,
-    y: coordinate[1] || defaultCoordinate.y,
-    z: coordinate[2] || defaultCoordinate.z
+    x: coordinate[0] || defaultVec3.x,
+    y: coordinate[1] || defaultVec3.y,
+    z: coordinate[2] || defaultVec3.z
   });
 }
 module.exports.parse = parse;

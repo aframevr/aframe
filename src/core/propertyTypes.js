@@ -11,7 +11,7 @@ registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('string', '', defaultParse, defaultStringify);
-registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, coordinates.parse, coordinates.stringify);
+registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -42,6 +42,7 @@ function defaultParse (value) {
 }
 
 function defaultStringify (value) {
+  if (value === null) { return 'null'; }
   return value.toString();
 }
 
@@ -67,4 +68,8 @@ function selectorStringify (el) {
   // Currently no way to infer the selector used for this component.
   if (el) { return '#' + el.getAttribute('id'); }
   return '';
+}
+
+function vec3Parse (value) {
+  return coordinates.parse(value, this.default);
 }

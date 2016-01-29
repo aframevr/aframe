@@ -1,14 +1,15 @@
 /* global HTMLElement */
 var debug = require('../utils/debug');
-var propertyTypes = require('./propertyTypes').propertyTypes;
 var schema = require('./schema');
 var styleParser = require('style-attr');
 var utils = require('../utils/');
 
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
-var isSingleProp = schema.isSingleProperty;
 var processSchema = schema.process;
+var isSingleProp = schema.isSingleProperty;
+var stringifyProperties = schema.stringifyProperties;
+var stringifyProperty = schema.stringifyProperty;
 var error = debug('core:register-component:error');
 
 var components = module.exports.components = {};  // Keep track of registered components.
@@ -42,7 +43,7 @@ var Component = module.exports.Component = function (el) {
   var scene;
 
   this.el = el;
-  this.data = buildData(el, name, this.schema, this.parse(elData), elData);
+  this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
 
@@ -111,63 +112,27 @@ Component.prototype = {
    * @returns {object} Component data.
    */
   parse: function (value) {
-    var typeName;
-    var type;
     var schema = this.schema;
-    var properties;
-
-    if (isSingleProp(this.schema)) {
-      typeName = this.schema.type;
-      type = propertyTypes[typeName];
-      if (type) { return type.parse.call(this, value); }
-      return error(typeName + ' is not a valid type.');
-    }
-
-    properties = objectParse(value);
-
-    if (properties === null || typeof properties !== 'object') { return properties; }
-
-    Object.keys(properties).forEach(parseProperty);
-    return properties;
-
-    function parseProperty (key) {
-      if (!schema[key]) { return; }
-      properties[key] = schema[key].parse(properties[key]);
-    }
+    if (isSingleProp(schema)) { return parseProperty(value, schema); }
+    return parseProperties(objectParse(value), schema, true);
   },
 
   /**
-   * Stringifies each property based on property type.
-   * If component is single-property, then stringifies the single property value.
+   * Stringify properties if necessary.
    *
-   * @param {object} data
+   * Only called from `entity.setAttribute` for properties that accept an object value such as
+   * vec3 {x, y, z}.
+   *
+   * @param {object} data - Complete component data.
    * @returns {string}
    */
   stringify: function (data) {
-    var typeName;
-    var type;
-    var processedData;
     var schema = this.schema;
+    if (typeof data === 'string') { return data; }
 
-    if (isSingleProp(schema)) {
-      typeName = schema.type;
-      type = propertyTypes[typeName];
-      if (type) { return type.stringify.call(this, data); }
-      return error(typeName + ' is not a valid type.');
-    }
-
-    if (typeof data !== 'object') { return data; }
-
-    processedData = utils.extend({}, data);
-
-    Object.keys(processedData).forEach(stringifyProperty);
-
-    return objectStringify(processedData);
-
-    function stringifyProperty (key) {
-      if (!schema[key]) { return; }
-      processedData[key] = schema[key].stringify(processedData[key]);
-    }
+    if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
+    data = stringifyProperties(data, schema);
+    return objectStringify(data);
   },
 
   /**
@@ -195,7 +160,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.data = buildData(el, this.name, schema, this.parse(value), value);
+    this.data = buildData(el, this.name, schema, value);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
@@ -262,11 +227,15 @@ module.exports.registerComponent = function (name, definition) {
  *
  * Finally coerce the data to the types of the defaults.
  */
-function buildData (el, name, schema, parsedElData, elData) {
+function buildData (el, name, schema, elData) {
   var componentDefined = elData !== null;
   var data = {};
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
+
+  if (!isSinglePropSchema && typeof elData === 'string') {
+    elData = objectParse(elData);
+  }
 
   // 1. Default values (lowest precendence).
   if (isSinglePropSchema) {
@@ -288,11 +257,11 @@ function buildData (el, name, schema, parsedElData, elData) {
 
   // 3. Attribute values (highest precendence).
   if (componentDefined) {
-    data = extendProperties(data, parsedElData, isSinglePropSchema);
+    data = extendProperties(data, elData, isSinglePropSchema);
   }
 
   // Parse and coerce using the schema.
-  if (isSinglePropSchema) {
+  if (isSingleProp(schema)) {
     return parseProperty(data, schema);
   }
   return parseProperties(data, schema);
@@ -303,7 +272,7 @@ module.exports.buildData = buildData;
  * Deserializes style-like string into an object of properties.
  *
  * @param {string} value - HTML attribute value.
- * @returns {object} Property data.k
+ * @returns {object} Property data.
  */
 function objectParse (value) {
   var parsedData;

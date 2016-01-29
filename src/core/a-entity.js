@@ -360,24 +360,16 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * If `attr` is a component name and `componentProp` is not defined, removeAttribute removes
-   * the entire component from the entity.
-   *
-   * If `attr` is a component name and `componentProp` is defined, removeAttribute removes a
-   * single property from the component.
+   * If `attr` is a component name, removeAttribute detaches the component from the
+   * entity.
    *
    * @param {string} attr - Attribute name, which could also be a component name.
-   * @param {string} componentProp - Component property name.
    */
   removeAttribute: {
-    value: function (attr, componentProp) {
+    value: function (attr) {
       var component = components[attr];
       if (component) {
-        if (componentProp) {
-          this.setAttribute(attr, componentProp, undefined);
-        } else {
-          this.setEntityAttribute(attr, undefined, null);
-        }
+        this.setEntityAttribute(attr, undefined, null);
       }
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }

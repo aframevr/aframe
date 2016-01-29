@@ -26,7 +26,23 @@ var isCoordinate = coordinates.isCoordinate;
  * @member {object} vector - Helper vector to do matrix transformations.
  */
 module.exports.Component = registerComponent('look-at', {
-  schema: { default: '' },
+  schema: {
+    default: '',
+
+    parse: function (value) {
+      if (isCoordinate(value) || typeof value === 'object') {
+        return coordinates.parse(value);
+      }
+      return value;
+    },
+
+    stringify: function (data) {
+      if (typeof data === 'object') {
+        return coordinates.stringify(data);
+      }
+      return data;
+    }
+  },
 
   init: function () {
     this.target3D = null;
@@ -76,17 +92,6 @@ module.exports.Component = registerComponent('look-at', {
     if (target3D) {
       return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
     }
-  },
-
-  parse: function (value) {
-    if (isCoordinate(value) || typeof value === 'object') {
-      return coordinates.parse(value);
-    }
-    return value;
-  },
-
-  stringify: function (data) {
-    return coordinates.stringify(data);
   },
 
   beginTracking: function (targetEl) {
