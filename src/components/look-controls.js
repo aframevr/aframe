@@ -69,7 +69,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   addEventListeners: function () {
-    var canvasEl = document.querySelector('a-scene').canvas;
+    var canvasEl = this.el.sceneEl.canvas;
 
     // Mouse Events
     canvasEl.addEventListener('mousedown', this.onMouseDown, false);
@@ -223,7 +223,8 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaY;
     var yawObject = this.yawObject;
     if (!this.touchStarted) { return; }
-    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) / this.canvasEl.clientWidth;
+    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
+            this.el.sceneEl.canvas.clientWidth;
     // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
     this.touchStart = {

@@ -3,7 +3,7 @@
 var helpers = require('../helpers');
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
-var AScene = require('core/a-scene');
+var AScene = require('core/scene/a-scene');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -17,6 +17,7 @@ suite('a-scene (without renderer)', function () {
   setup(function () {
     var el;
     el = this.el = document.createElement('a-scene');
+    el.setAttribute('canvas', '');
     document.body.appendChild(el);
   });
 
@@ -63,33 +64,15 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('attachFullscreenListeners', function (done) {
-    test('does not break', function (done) {
-      this.el.attachFullscreenListeners();
-      process.nextTick(function () {
-        done();
-      });
-    });
-  });
-
-  suite('attachMessageListeners', function () {
-    test('does not break', function (done) {
-      this.el.attachMessageListeners();
-      process.nextTick(function () {
-        done();
-      });
-    });
-  });
-
   suite('setActiveCamera', function () {
-    test('sets a new active THREE camera', function () {
+    test('sets new active camera in three.js graph', function () {
       var el = this.el;
       var camera = new THREE.PerspectiveCamera(45, 2, 1, 1000);
       el.setActiveCamera(camera);
       assert.equal(el.camera, camera);
     });
 
-    test('sets a new active entity camera', function (done) {
+    test('sets new active camera in entity graph', function (done) {
       var self = this;
       var cameraEl = document.createElement('a-entity');
       cameraEl.setAttribute('camera', '');
@@ -158,40 +141,6 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('setupCanvas', function () {
-    setup(function () {
-      var el = this.el;
-      var canvas = el.querySelector('canvas');
-      el.removeChild(canvas);
-    });
-
-    test('adds canvas to a-scene element by default', function (done) {
-      var el = this.el;
-      assert.notOk(el.querySelector('canvas'));
-      el.setupCanvas();
-      process.nextTick(function () {
-        assert.ok(el.querySelector('canvas'));
-        done();
-      });
-    });
-
-    test('reuses existing canvas when selector is given', function (done) {
-      var canvas = document.createElement('canvas');
-      var el = this.el;
-      canvas.setAttribute('id', 'canvas');
-      document.body.appendChild(canvas);
-      assert.notOk(canvas.classList.contains('a-canvas'));
-
-      el.setAttribute('canvas', '#canvas');
-      el.setupCanvas();
-      process.nextTick(function () {
-        assert.ok(canvas.classList.contains('a-canvas'));
-        assert.notOk(this.el.querySelector('canvas'));
-        done();
-      }.bind(this));
-    });
-  });
-
   suite('setupDefaultLights', function () {
     setup(function () {
       var el = this.el;
@@ -238,7 +187,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var el;
     var self = this;
     AScene.prototype.setupRenderer.restore();
-    AScene.prototype.resizeCanvas.restore();
+    AScene.prototype.resize.restore();
     AScene.prototype.render.restore();
     process.nextTick(function () {
       el = self.el = document.createElement('a-scene');
