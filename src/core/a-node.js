@@ -22,7 +22,6 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins = this.getAttribute('mixin');
-
         this.sceneEl = this.closest('a-scene');
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
@@ -68,7 +67,7 @@ module.exports = registerElement('a-node', {
         var childrenLoaded;
         var self = this;
 
-        if (self.hasLoaded) { return; }
+        if (this.hasLoaded) { return; }
 
         // Default to waiting for all nodes.
         childFilter = childFilter || function (el) { return el.isNode; };
@@ -77,6 +76,7 @@ module.exports = registerElement('a-node', {
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
           return new Promise(function waitForLoaded (resolve) {
+            if (child.hasLoaded) { return resolve(); }
             child.addEventListener('loaded', resolve);
           });
         });
