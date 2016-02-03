@@ -10,11 +10,14 @@ module.exports.Component = registerComponent('loader', {
 
   schema: {
     src: { default: '' },
-    mtl: { default: '' },
     format: {
       default: 'obj',
       oneOf: ['obj', 'collada']
     }
+  },
+
+  init: function () {
+    warn('loader component is deprecated. Use collada-model or obj-model component instead.');
   },
 
   update: function () {
@@ -22,7 +25,6 @@ module.exports.Component = registerComponent('loader', {
     var data = this.data;
     var model = this.model;
     var url = parseUrl(data.src);
-    var mtlUrl = parseUrl(data.mtl);
     var format = data.format;
     if (model) { el.removeObject3D('mesh'); }
     if (!url) {
@@ -31,7 +33,7 @@ module.exports.Component = registerComponent('loader', {
     }
     switch (format) {
       case 'obj':
-        this.loadObj(url, mtlUrl);
+        this.loadObj(url);
         break;
       case 'collada':
         this.loadCollada(url);
@@ -41,33 +43,14 @@ module.exports.Component = registerComponent('loader', {
     }
   },
 
-  loadObj: function (objUrl, mtlUrl) {
-    var self = this;
+  loadObj: function (objUrl) {
     var el = this.el;
     var objLoader = new THREE.OBJLoader();
-    if (mtlUrl) {
-      // .OBJ + .MTL assets.
-      if (el.components.material) {
-        warn('Material component is ignored when a .MTL is provided');
-      }
-      var mtlLoader = new THREE.MTLLoader(objLoader.manager);
-      mtlLoader.setBaseUrl(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
-      mtlLoader.load(mtlUrl, function (materials) {
-        materials.preload();
-        objLoader.setMaterials(materials);
-        objLoader.load(objUrl, function (object) {
-          self.model = object;
-          el.setObject3D('mesh', object);
-        });
-      });
-    } else {
-      // .OBJ asset only.
-      objLoader.load(objUrl, function (object) {
-        self.model = object;
-        self.applyMaterial();
-        el.setObject3D('mesh', object);
-      });
-    }
+    objLoader.load(objUrl, function (object) {
+      this.model = object;
+      this.applyMaterial();
+      el.setObject3D('mesh', object);
+    });
   },
 
   applyMaterial: function () {
