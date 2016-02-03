@@ -29,15 +29,6 @@ suite('utils.coordinates', function () {
                               { x: 1, y: 2, z: -3 });
     });
 
-    test('can return schema values', function () {
-      var obj = new Obj();
-      assert.shallowDeepEqual(coordinates.parse.call(obj, '1 2'),
-                              { x: 1, y: 2, z: -3 });
-      function Obj () {
-        this.schema = { z: -3 };
-      }
-    });
-
     test('returns already-parsed object', function () {
       assert.shallowDeepEqual(coordinates.parse({ x: 1, y: 2, z: -3 }),
                               { x: 1, y: 2, z: -3 });

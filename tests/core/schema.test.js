@@ -148,7 +148,7 @@ suite('schema', function () {
         parse: parse
       });
       assert.equal(definition.type, 'string');
-      assert.equal(definition.parse, parse);
+      assert.shallowDeepEqual(definition.parse('def'), parse('def'));
       assert.ok(typeof definition.stringify, 'function');
     });
   });

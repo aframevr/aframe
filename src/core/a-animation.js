@@ -418,6 +418,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     from[attribute] = parseProperty(from[attribute], schema[componentPropName]);
     to[attribute] = parseProperty(dataTo, schema[componentPropName]);
     partialSetAttribute = function (value) {
+      if (!(attribute in value)) { return; }
       el.setAttribute(componentName, componentPropName, value[attribute]);
     };
   }

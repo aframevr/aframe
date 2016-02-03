@@ -355,15 +355,6 @@ suite('a-entity', function () {
       el.removeAttribute('material');
       assert.notOk(el.components.material);
     });
-
-    test('can remove a component attribute', function () {
-      var el = this.el;
-      el.setAttribute('material', 'color: #F0F; transparent: true');
-      assert.ok(el.getAttribute('material', 'transparent'));
-      el.removeAttribute('material', 'transparent');
-      assert.notOk(el.getAttribute('material', 'transparent'));
-      assert.equal(el.getAttribute('material', 'color', '#F0F'));
-    });
   });
 
   suite('initComponent', function () {
