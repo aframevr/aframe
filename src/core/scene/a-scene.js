@@ -248,8 +248,8 @@ var AScene = module.exports = registerElement('a-scene', {
         var canvas = this.canvas;
         var size;
 
-        // Possible camera not injected yet.
-        if (!camera) { return; }
+        // Possible camera or canvas not injected yet.
+        if (!camera || !canvas) { return; }
 
         // Update canvas.
         if (!isMobile) {
@@ -362,25 +362,29 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     play: {
       value: function () {
+        var self = this;
+
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
           return;
         }
 
         this.addEventListener('loaded', function () {
-          var self = this;
           if (this.renderStarted) { return; }
 
-          AEntity.prototype.play.call(self);
-          self.resize();
+          AEntity.prototype.play.call(this);
+          this.resize();
 
           // Kick off render loop.
-          self.render();
-          self.renderStarted = true;
-          self.emit('renderstart');
+          this.render();
+          this.renderStarted = true;
+          this.emit('renderstart');
         });
 
-        AEntity.prototype.load.call(this);
+        // setTimeout to wait for all nodes to attach and run their callbacks.
+        setTimeout(function () {
+          AEntity.prototype.load.call(self);
+        });
       }
     },
 

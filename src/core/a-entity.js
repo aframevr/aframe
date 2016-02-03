@@ -191,9 +191,6 @@ var proto = Object.create(ANode.prototype, {
         attach();
         return;
       }
-      // If the parent isn't an `ANode` but eventually it will be
-      // when a templated element is created, we want to attach
-      // this element to the parent then.
       parent.addEventListener('nodeready', attach);
       function attach () {
         // To prevent an object to attach itself multiple times to the parent.
