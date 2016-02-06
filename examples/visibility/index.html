@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Visibility</title>
-    <meta name="description" content="Visibility - A-Frame Core">
+    <meta name="description" content="Visibility - A-Frame">
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
@@ -69,12 +69,12 @@
               break;
             case greenCylinder:
               var oldVisible = greenCylinder.getComputedAttribute('visible');
-              // See issue: https://github.com/aframevr/aframe-core/issues/349
+              // See issue: https://github.com/aframevr/aframe/issues/579
               if (oldVisible === null) { oldVisible = true; }
               greenCylinder.setAttribute('visible', !oldVisible);
               break;
             case pinkTorus:
-              // Yes, this is gross. See https://github.com/aframevr/aframe-core/issues/235
+              // Yes, this is gross. See https://github.com/aframevr/aframe/issues/531
               var oldMaterial = pinkTorus.getComputedAttribute('material');
               var oldOpacity = oldMaterial.opacity;
               var newOpacity = oldOpacity === 1 ? 0 : 1;

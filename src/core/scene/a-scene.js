@@ -81,7 +81,6 @@ var AScene = module.exports = registerElement('a-scene', {
         initMetaTags(this);
         initWakelock(this);
 
-        // For Chrome (https://github.com/aframevr/aframe-core/issues/321).
         window.addEventListener('load', this.resize.bind(this));
         window.addEventListener('resize', this.resize.bind(this), false);
         this.addEventListener('fullscreen-exit', this.exitVR.bind(this));
