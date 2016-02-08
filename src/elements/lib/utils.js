@@ -162,7 +162,6 @@ module.exports.wrapAEventElement = function (newTagName, eventName, data) {
   return wrapElement(newTagName, AEvent, data);
 };
 
-// Useful utils from aframe-core.
 module.exports.error = aframeCoreUtils.error;
 module.exports.extend = aframeCoreUtils.extend;
 module.exports.fireEvent = aframeCoreUtils.fireEvent;

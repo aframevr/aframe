@@ -228,7 +228,7 @@ var AEvent = registerElement(
             var targetEl;
             var listener;
 
-            // TODO: Land `on` PR in `aframe-core`: https://github.com/aframevr/aframe-core/pull/330
+            // TODO: Introduce `on` helper: https://github.com/aframevr/aframe/issues/705
 
             this.sceneEl = this.sceneEl || utils.$('a-scene');
 

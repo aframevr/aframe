@@ -47,7 +47,7 @@ module.exports = registerElement(
           value: function () {
             var self = this;
             self.placeholders = [];
-            // For Chrome: https://github.com/aframevr/aframe-core/issues/321
+            // For Chrome: https://github.com/aframevr/aframe/issues/579
             window.addEventListener('load', function () {
               appendElement();
               function appendElement () {

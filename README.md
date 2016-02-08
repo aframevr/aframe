@@ -97,11 +97,11 @@ To publish to __https://your_username.github.io/aframe/__:
 
 This program is free software and is distributed under an [MIT License](LICENSE).
 
-[npm-image]: https://img.shields.io/npm/v/aframe-core.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/aframe-core
-[travis-image]: https://img.shields.io/travis/aframevr/aframe-core.svg?style=flat-square
-[travis-url]: http://travis-ci.org/aframevr/aframe-core
-[downloads-image]: http://img.shields.io/npm/dm/aframe-core.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/aframe-core
+[npm-image]: https://img.shields.io/npm/v/aframe.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/aframe
+[travis-image]: https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square
+[travis-url]: http://travis-ci.org/aframevr/aframe
+[downloads-image]: http://img.shields.io/npm/dm/aframe.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/aframe
 [semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
 [semistandard-url]: https://github.com/Flet/semistandard
