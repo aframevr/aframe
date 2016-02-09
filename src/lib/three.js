@@ -13,6 +13,11 @@ if (THREE.ImageLoader) {
   THREE.ImageLoader.prototype.crossOrigin = '';
 }
 
+// In-memory caching for XHRs (for images, audio files, textures, etc.).
+if (THREE.Cache) {
+  THREE.Cache.enabled = true;
+}
+
 // TODO: Eventually include these only if they are needed by a component.
 require('../../node_modules/three-dev/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('../../node_modules/three-dev/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
