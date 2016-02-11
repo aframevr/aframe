@@ -1,13 +1,12 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
 var components = require('./component').components;
-var debug = require('../utils/debug');
+var Debug = require('../utils/debug');
 var re = require('./a-register-element');
 var THREE = require('../lib/three');
 
 var isNode = re.isNode;
-var log = debug('core:a-entity');
-var error = debug('core:a-entity:error');
+var debug = Debug('core:a-entity:debug');
 var registerElement = re.registerElement;
 
 var AEntity;
@@ -50,8 +49,14 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Handle changes coming from the browser DOM inspector.
+   */
   attributeChangedCallback: {
     value: function (attr, oldVal, newVal) {
+      // TODO: Remove this return once we bump DRE polyfill. The DRE polyfill is currently
+      // calling our wrapped AEntity.getAttribute which sometimes returns a parsed object.
+      if (typeof newVal === 'object') { return; }
       this.setEntityAttribute(attr, oldVal, newVal);
     }
   },
@@ -174,7 +179,7 @@ var proto = Object.create(ANode.prototype, {
   add: {
     value: function (el) {
       if (!el.object3D) {
-        error("Trying to add an object3D that doesn't exist");
+        throw Error("Trying to add an element that doesn't have an `object3D`");
       }
       this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
@@ -262,18 +267,17 @@ var proto = Object.create(ANode.prototype, {
       this.initComponentDependencies(name);
 
       if (isDependency && !isComponentDefined) {
-        // Add component if it is a dependency and not yet defined.
-        this.setAttribute(name, '');
-      } else {
-        if (this.isScene && !this.hasAttribute(name) && name in this.defaultComponents) {
-          // For scene default components, expose them in the DOM.
-          HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
-        }
-        this.components[name] = new components[name].Component(this);
-        if (!this.paused) { this.components[name].play(); }
+        // Expose dependency component in the DOM.
+        HTMLElement.prototype.setAttribute.call(this, name, '');
       }
+      if (this.isScene && !this.hasAttribute(name) && name in this.defaultComponents) {
+        // Expose scene default components in the DOM.
+        HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
+      }
+      this.components[name] = new components[name].Component(this);
+      if (!this.paused) { this.components[name].play(); }
 
-      log('Component initialized: %s', name);
+      debug('Component initialized: %s', name);
     }
   },
 
@@ -461,7 +465,8 @@ var proto = Object.create(ANode.prototype, {
       var component = this.components[attr] || components[attr];
       var partialComponentData;
       value = value === undefined ? '' : value;
-      var valueStr = value;
+      var componentObj = value;  // Deserialized value to send to the component.
+      var componentStr = value;  // Serialized value to send to the DOM.
       var oldValue;
 
       if (component) {
@@ -469,14 +474,13 @@ var proto = Object.create(ANode.prototype, {
           // Update currently-defined component data with the new property value.
           partialComponentData = self.getAttribute(attr) || {};
           partialComponentData[value] = componentPropValue;
-          value = partialComponentData;
+          componentObj = partialComponentData;
         }
-        valueStr = component.stringify(value);
+        componentStr = component.stringify(componentObj);
       }
-
       oldValue = this.getAttribute(attr);
-      ANode.prototype.setAttribute.call(self, attr, valueStr);
-      self.setEntityAttribute(attr, oldValue, value);
+      ANode.prototype.setAttribute.call(self, attr, componentStr);
+      self.setEntityAttribute(attr, oldValue, componentObj);
     },
     writable: window.debug
   },

@@ -46,6 +46,7 @@ module.exports.Component = registerComponent('obj-model', {
         objLoader.load(objUrl, function (object) {
           self.model = object;
           el.setObject3D('mesh', object);
+          el.emit('model-loaded', { format: 'obj', model: object });
         });
       });
       return;
@@ -62,7 +63,8 @@ module.exports.Component = registerComponent('obj-model', {
       });
 
       self.model = objModel;
-      el.setObject3D('mesh', self.model);
+      el.setObject3D('mesh', objModel);
+      el.emit('model-loaded', { format: 'obj', model: objModel });
     });
   }
 });
