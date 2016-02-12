@@ -3,10 +3,10 @@ var extend = require('object-assign');
 
 var settings = {
   colors: {
+    debug: 'gray',
     error: 'red',
     info: 'gray',
-    warn: 'orange',
-    warning: 'orange'
+    warn: 'orange'
   }
 };
 
@@ -84,16 +84,7 @@ var ls = storage();
 if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   debug.enable('*');
 } else {
-  // We do not call `debug.disable` because it requires two reloads to take.
-  // See https://github.com/visionmedia/debug/issues/238
-  // Instead, we call `debug.save` to remove the `debug` namespaces persisted
-  // in `localStorage`.
-  debug.save(null);
-  // And then we `noop` the function so nothing happens.
-  debug = function () {
-    /* noop */
-    return function () {};
-  };
+  debug.enable('*:error,*:warn');
 }
 
 if (process.browser) { window.logs = debug; }
