@@ -1,6 +1,5 @@
 /* global Promise */
 var initFullscreen = require('./fullscreen');
-var initIframe = require('./iframe');
 var initMetaTags = require('./metaTags');
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
@@ -14,7 +13,6 @@ var ANode = require('../a-node');
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
-var isIframe = utils.isIframed();
 var isMobile = utils.isMobile();
 
 /**
@@ -24,7 +22,6 @@ var isMobile = utils.isMobile();
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} canvas
- * @member {bool} insideIframe
  * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
@@ -47,7 +44,6 @@ var AScene = module.exports = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.defaultLightsEnabled = true;
-        this.isIframe = isIframe;
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
@@ -77,7 +73,6 @@ var AScene = module.exports = registerElement('a-scene', {
     attachedCallback: {
       value: function () {
         initFullscreen(this);
-        initIframe(this);
         initMetaTags(this);
         initWakelock(this);
 
