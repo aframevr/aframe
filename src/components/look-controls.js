@@ -69,7 +69,14 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   addEventListeners: function () {
-    var canvasEl = this.el.sceneEl.canvas;
+    var sceneEl = this.el.sceneEl;
+    var canvasEl = sceneEl.canvas;
+
+    // listen for canvas to load.
+    if (!canvasEl) {
+      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
+      return;
+    }
 
     // Mouse Events
     canvasEl.addEventListener('mousedown', this.onMouseDown, false);

@@ -375,9 +375,11 @@ var AScene = module.exports = registerElement('a-scene', {
           this.resize();
 
           // Kick off render loop.
-          this.render();
-          this.renderStarted = true;
-          this.emit('renderstart');
+          if (this.renderer) {
+            this.render();
+            this.renderStarted = true;
+            this.emit('renderstart');
+          }
         });
 
         // setTimeout to wait for all nodes to attach and run their callbacks.
