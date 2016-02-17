@@ -21,6 +21,12 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var canvas = el.sceneEl.canvas;
 
+    // listen for canvas to load.
+    if (!canvas) {
+      el.sceneEl.addEventListener('render-target-loaded', this.attachEventListeners.bind(this));
+      return;
+    }
+
     canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
     canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
 
