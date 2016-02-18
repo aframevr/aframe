@@ -52829,7 +52829,7 @@ module.exports={
     "polymerize": "^1.0.0",
     "present": "0.0.6",
     "request-interval": "^1.0.0",
-    "style-attr": "^1.0.1",
+    "style-attr": "^1.0.2",
     "three-dev": "^0.74.0-beta8",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "borismus/webvr-polyfill#3f47796"
@@ -52952,7 +52952,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92}],24:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91}],24:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -52989,7 +52989,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92}],25:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91}],25:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -53012,6 +53012,12 @@ module.exports.Component = registerComponent('cursor', {
   attachEventListeners: function () {
     var el = this.el;
     var canvas = el.sceneEl.canvas;
+
+    // listen for canvas to load.
+    if (!canvas) {
+      el.sceneEl.addEventListener('render-target-loaded', this.attachEventListeners.bind(this));
+      return;
+    }
 
     canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
     canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
@@ -53079,7 +53085,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":54,"../utils/":97}],26:[function(_dereq_,module,exports){
+},{"../core/component":54,"../utils/":96}],26:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -53272,7 +53278,7 @@ function applyTranslate (geometry, translate, currentTranslate) {
   geometry.verticesNeedsUpdate = true;
 }
 
-},{"../core/component":54,"../lib/three":92,"../utils":97,"../utils/debug":96}],27:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils":96,"../utils/debug":95}],27:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -53435,7 +53441,7 @@ function getLight (data) {
   }
 }
 
-},{"../core/component":54,"../lib/three":92,"../utils":97,"../utils/debug":96}],29:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils":96,"../utils/debug":95}],29:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var parseUrl = _dereq_('../utils/src-loader').parseUrl;
@@ -53513,7 +53519,7 @@ module.exports.Component = registerComponent('loader', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92,"../utils/debug":96,"../utils/src-loader":98}],30:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils/debug":95,"../utils/src-loader":97}],30:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var coordinates = _dereq_('../utils/coordinates');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -53615,7 +53621,7 @@ module.exports.Component = registerComponent('look-at', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92,"../utils/coordinates":95,"../utils/debug":96}],31:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils/coordinates":94,"../utils/debug":95}],31:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -53687,7 +53693,14 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   addEventListeners: function () {
-    var canvasEl = this.el.sceneEl.canvas;
+    var sceneEl = this.el.sceneEl;
+    var canvasEl = sceneEl.canvas;
+
+    // listen for canvas to load.
+    if (!canvasEl) {
+      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
+      return;
+    }
 
     // Mouse Events
     canvasEl.addEventListener('mousedown', this.onMouseDown, false);
@@ -53856,7 +53869,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92}],32:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91}],32:[function(_dereq_,module,exports){
 /* global Promise */
 var debug = _dereq_('../utils/debug');
 var diff = _dereq_('../utils').diff;
@@ -54232,7 +54245,7 @@ function getSide (side) {
   }
 }
 
-},{"../core/component":54,"../lib/three":92,"../utils":97,"../utils/debug":96,"../utils/src-loader":98}],33:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils":96,"../utils/debug":95,"../utils/src-loader":97}],33:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -54302,7 +54315,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92,"../utils/debug":96}],34:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils/debug":95}],34:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -54423,7 +54436,7 @@ module.exports.Component = registerComponent('raycaster', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92,"request-interval":10}],36:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"request-interval":10}],36:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -54441,7 +54454,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92}],37:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91}],37:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -54585,7 +54598,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":54,"../../lib/three":92,"../../utils/debug":96}],40:[function(_dereq_,module,exports){
+},{"../../core/component":54,"../../lib/three":91,"../../utils/debug":95}],40:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -54622,7 +54635,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":54,"../../lib/three":92}],41:[function(_dereq_,module,exports){
+},{"../../core/component":54,"../../lib/three":91}],41:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 
@@ -54679,7 +54692,7 @@ function createStats () {
   });
 }
 
-},{"../../../vendor/rStats":101,"../../core/component":54}],42:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":100,"../../core/component":54}],42:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var utils = _dereq_('../../utils/');
@@ -54869,7 +54882,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../core/component":54,"../../lib/three":92,"../../utils/":97}],43:[function(_dereq_,module,exports){
+},{"../../core/component":54,"../../lib/three":91,"../../utils/":96}],43:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var diff = _dereq_('../utils').diff;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -54979,7 +54992,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":54,"../lib/three":92,"../utils":97,"../utils/debug":96}],44:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91,"../utils":96,"../utils/debug":95}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -55149,7 +55162,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })()
 });
 
-},{"../core/component":54,"../lib/three":92}],46:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":91}],46:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -55744,7 +55757,7 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../constants/animation":46,"../utils/":97,"./a-node":52,"./a-register-element":53,"./schema":61,"tween.js":20}],48:[function(_dereq_,module,exports){
+},{"../constants/animation":46,"../utils/":96,"./a-node":52,"./a-register-element":53,"./schema":60,"tween.js":20}],48:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55872,7 +55885,7 @@ function mediaElementLoaded (el) {
   });
 }
 
-},{"../lib/three":92,"../utils/debug":96,"./a-node":52,"./a-register-element":53}],49:[function(_dereq_,module,exports){
+},{"../lib/three":91,"../utils/debug":95,"./a-node":52,"./a-register-element":53}],49:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55923,7 +55936,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":96,"./a-register-element":53}],50:[function(_dereq_,module,exports){
+},{"../utils/debug":95,"./a-register-element":53}],50:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var components = _dereq_('./component').components;
@@ -56516,7 +56529,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":92,"../utils/debug":96,"./a-node":52,"./a-register-element":53,"./component":54}],51:[function(_dereq_,module,exports){
+},{"../lib/three":91,"../utils/debug":95,"./a-node":52,"./a-register-element":53,"./component":54}],51:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var AComponents = _dereq_('./component').components;
 var ANode = _dereq_('./a-node');
@@ -56810,7 +56823,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":97,"./a-register-element":53}],53:[function(_dereq_,module,exports){
+},{"../utils/":96,"./a-register-element":53}],53:[function(_dereq_,module,exports){
 // Polyfill `document.registerElement`.
 _dereq_('document-register-element');
 
@@ -57322,7 +57335,7 @@ function transformKeysToCamelCase (obj) {
   return camelCaseObj;
 }
 
-},{"../utils/":97,"../utils/debug":96,"./schema":61,"style-attr":13}],55:[function(_dereq_,module,exports){
+},{"../utils/":96,"../utils/debug":95,"./schema":60,"style-attr":13}],55:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -57417,10 +57430,9 @@ function vec3Parse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":95,"debug":3}],56:[function(_dereq_,module,exports){
+},{"../utils/coordinates":94,"debug":3}],56:[function(_dereq_,module,exports){
 /* global Promise */
 var initFullscreen = _dereq_('./fullscreen');
-var initIframe = _dereq_('./iframe');
 var initMetaTags = _dereq_('./metaTags');
 var initWakelock = _dereq_('./wakelock');
 var re = _dereq_('../a-register-element');
@@ -57434,7 +57446,6 @@ var ANode = _dereq_('../a-node');
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
-var isIframe = utils.isIframed();
 var isMobile = utils.isMobile();
 
 /**
@@ -57444,7 +57455,6 @@ var isMobile = utils.isMobile();
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
  * @member {object} canvas
- * @member {bool} insideIframe
  * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
  * @member {object} object3D - Root three.js Scene object.
@@ -57467,7 +57477,6 @@ var AScene = module.exports = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.defaultLightsEnabled = true;
-        this.isIframe = isIframe;
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
@@ -57497,7 +57506,6 @@ var AScene = module.exports = registerElement('a-scene', {
     attachedCallback: {
       value: function () {
         initFullscreen(this);
-        initIframe(this);
         initMetaTags(this);
         initWakelock(this);
 
@@ -57795,9 +57803,11 @@ var AScene = module.exports = registerElement('a-scene', {
           this.resize();
 
           // Kick off render loop.
-          this.render();
-          this.renderStarted = true;
-          this.emit('renderstart');
+          if (this.renderer) {
+            this.render();
+            this.renderStarted = true;
+            this.emit('renderstart');
+          }
         });
 
         // setTimeout to wait for all nodes to attach and run their callbacks.
@@ -57909,7 +57919,7 @@ function setFullscreen (canvas) {
   }
 }
 
-},{"../../lib/three":92,"../../utils/":97,"../a-entity":50,"../a-node":52,"../a-register-element":53,"./fullscreen":57,"./iframe":58,"./metaTags":59,"./wakelock":60,"tween.js":20}],57:[function(_dereq_,module,exports){
+},{"../../lib/three":91,"../../utils/":96,"../a-entity":50,"../a-node":52,"../a-register-element":53,"./fullscreen":57,"./metaTags":58,"./wakelock":59,"tween.js":20}],57:[function(_dereq_,module,exports){
 var isIframed = _dereq_('../../utils/').isIframed;
 
 /**
@@ -57975,35 +57985,7 @@ function exitFullscreenHandler (scene) {
   scene.emit('fullscreen-exit');
 }
 
-},{"../../utils/":97}],58:[function(_dereq_,module,exports){
-/* global MessageChannel */
-module.exports = function initIframe (scene) {
-  if (window.top !== window.self) { return; }
-
-  vrLoaderMode().then(function (isVr) {
-    if (isVr) {
-      scene.enterVR();
-    } else {
-      scene.exitVR();
-    }
-    window.top.postMessage({type: 'ready'}, '*');
-  });
-};
-
-/**
- * @returns {object} Promise that resolves a boolean whether loader is in VR mode.
- */
-function vrLoaderMode () {
-  return new Promise(function (resolve) {
-    var channel = new MessageChannel();
-    window.top.postMessage({type: 'checkVr'}, '*', [channel.port2]);
-    channel.port1.onmessage = function (message) {
-      resolve(!!message.data.data.isVr);
-    };
-  });
-}
-
-},{}],59:[function(_dereq_,module,exports){
+},{"../../utils/":96}],58:[function(_dereq_,module,exports){
 module.exports = function initMetaTags (scene) {
   if (!scene.isMobile) { return; }
   injectMetaTags();
@@ -58051,7 +58033,7 @@ function injectMetaTags () {
   return metaTags;
 }
 
-},{}],60:[function(_dereq_,module,exports){
+},{}],59:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -58062,7 +58044,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":103}],61:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":102}],60:[function(_dereq_,module,exports){
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 
 /**
@@ -58204,12 +58186,12 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"./propertyTypes":55}],62:[function(_dereq_,module,exports){
+},{"./propertyTypes":55}],61:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-click', 'click');
 
-},{"../lib/utils":74}],63:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],62:[function(_dereq_,module,exports){
 /* global HTMLElement */
 
 var utils = _dereq_('../lib/utils');
@@ -58476,7 +58458,7 @@ var AEvent = registerElement(
 
 module.exports = AEvent;
 
-},{"../../core/a-register-element":53,"../lib/utils":74}],64:[function(_dereq_,module,exports){
+},{"../../core/a-register-element":53,"../lib/utils":73}],63:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 /**
@@ -58485,32 +58467,32 @@ var utils = _dereq_('../lib/utils');
  */
 module.exports = utils.wrapAEventElement('a-hover', 'mouseenter');
 
-},{"../lib/utils":74}],65:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],64:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-load', 'load');
 
-},{"../lib/utils":74}],66:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],65:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-mousedown', 'mousedown');
 
-},{"../lib/utils":74}],67:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],66:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-mouseenter', 'mouseenter');
 
-},{"../lib/utils":74}],68:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],67:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-mouseleave', 'mouseleave');
 
-},{"../lib/utils":74}],69:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],68:[function(_dereq_,module,exports){
 var utils = _dereq_('../lib/utils');
 
 module.exports = utils.wrapAEventElement('a-mouseup', 'mouseup');
 
-},{"../lib/utils":74}],70:[function(_dereq_,module,exports){
+},{"../lib/utils":73}],69:[function(_dereq_,module,exports){
 module.exports = {
   'a-click': _dereq_('./a-click'),
   'a-event': _dereq_('./a-event'),
@@ -58522,7 +58504,7 @@ module.exports = {
   'a-mouseup': _dereq_('./a-mouseup')
 };
 
-},{"./a-click":62,"./a-event":63,"./a-hover":64,"./a-load":65,"./a-mousedown":66,"./a-mouseenter":67,"./a-mouseleave":68,"./a-mouseup":69}],71:[function(_dereq_,module,exports){
+},{"./a-click":61,"./a-event":62,"./a-hover":63,"./a-load":64,"./a-mousedown":65,"./a-mouseenter":66,"./a-mouseleave":67,"./a-mouseup":68}],70:[function(_dereq_,module,exports){
 /* global HTMLTemplateElement, HTMLImports, MutationObserver */
 
 window.addEventListener('HTMLImportsLoaded', injectFromPolyfilledImports);
@@ -58672,7 +58654,7 @@ module.exports = registerElement(
   }
 );
 
-},{"../core/a-register-element":53,"./lib/register-template":73,"./lib/utils":74}],72:[function(_dereq_,module,exports){
+},{"../core/a-register-element":53,"./lib/register-template":72,"./lib/utils":73}],71:[function(_dereq_,module,exports){
 var modules = {
   'a-event': _dereq_('./a-event'),
   'a-template': _dereq_('./a-template')
@@ -58683,7 +58665,7 @@ _dereq_('./templates/index.html');
 
 module.exports = modules;
 
-},{"./a-event":70,"./a-template":71,"./templates/index.html":90}],73:[function(_dereq_,module,exports){
+},{"./a-event":69,"./a-template":70,"./templates/index.html":89}],72:[function(_dereq_,module,exports){
 // TODO: Extract to aframe-primitives.
 var utils = _dereq_('./utils');
 
@@ -58817,7 +58799,7 @@ module.exports = function (tagName) {
     });
 };
 
-},{"../../core/a-entity":50,"../../core/a-register-element":53,"../../core/component":54,"./utils":74}],74:[function(_dereq_,module,exports){
+},{"../../core/a-entity":50,"../../core/a-register-element":53,"../../core/component":54,"./utils":73}],73:[function(_dereq_,module,exports){
 // TODO: Extract to aframe-primiives.
 var AEvent = _dereq_('../a-event/a-event');
 
@@ -58989,97 +58971,97 @@ module.exports.log = aframeCoreUtils.log;
 module.exports.splitString = aframeCoreUtils.splitString;
 module.exports.warn = aframeCoreUtils.warn;
 
-},{"../../core/a-register-element":53,"../../utils":97,"../a-event/a-event":63}],75:[function(_dereq_,module,exports){
+},{"../../core/a-register-element":53,"../../utils":96,"../a-event/a-event":62}],74:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-camera\" fov=\"80\" near=\"0.5\" far=\"10000\" look-controls-enabled=\"true\" wasd-controls-enabled=\"true\" cursor-visible=\"true\" cursor-offset=\"1\" cursor-color=\"#FFF\" cursor-maxdistance=\"1000\" cursor-scale=\"1\" cursor-opacity=\"1\">\n  <a-entity camera=\"fov: ${fov}; near: ${near}; far: ${far}\" look-controls=\"enabled: ${look-controls-enabled}\" wasd-controls=\"enabled: ${wasd-controls-enabled}\">\n    <a-entity visible=\"${cursor-visible}\" position=\"0 0 -${cursor-offset}\" geometry=\"primitive: ring; radiusOuter: 0.016; radiusInner: 0.01\" material=\"color: ${cursor-color}; shader: flat; transparent: true; opacity: ${cursor-opacity}\" scale=\"${cursor-scale} ${cursor-scale} ${cursor-scale}\" cursor=\"maxDistance: ${cursor-maxdistance};\">\n    </a-entity>\n  </a-entity>\n</template>");
 
 })
-},{}],76:[function(_dereq_,module,exports){
+},{}],75:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cone\" radius-top=\"0.2\" radius-bottom=\"0.75\" height=\"1.5\" segments-radial=\"36\" segments-height=\"1\" theta-start=\"0\" theta-length=\"360\" open-ended=\"false\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" side=\"front\" src=\"\">\n  <a-entity geometry=\"primitive: cone;\n                      radiusTop: ${radius-top};\n                      radiusBottom: ${radius-bottom};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: ${segments-height};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: ${open-ended};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: ${side};\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],77:[function(_dereq_,module,exports){
+},{}],76:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cube\" width=\"1.5\" height=\"1.5\" depth=\"1.5\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: box;\n                      width: ${width};\n                      height: ${height};\n                      depth: ${depth};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],78:[function(_dereq_,module,exports){
+},{}],77:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-curvedimage\" radius=\"1\" height=\"1\" segments-radial=\"48\" theta-start=\"0\" theta-length=\"360\" opacity=\"1.0\" transparent=\"true\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: 1;\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: true\" scale=\"1 1 -1\" material=\"opacity: ${opacity};\n                      shader: flat;\n                      side: double;\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],79:[function(_dereq_,module,exports){
+},{}],78:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-cylinder\" radius=\"0.75\" radius-top=\"0.75\" radius-bottom=\"0.75\" height=\"1.5\" segments-radial=\"36\" segments-height=\"1\" theta-start=\"0\" theta-length=\"360\" open-ended=\"false\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" side=\"front\" src=\"\">\n  <a-entity geometry=\"primitive: cylinder;\n                      radius: ${radius};\n                      radiusTop: ${radius-top};\n                      radiusBottom: ${radius-bottom};\n                      height: ${height};\n                      segmentsRadial: ${segments-radial};\n                      segmentsHeight: ${segments-height};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      openEnded: ${open-ended};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: ${side};\n                      transparent: ${transparent};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],80:[function(_dereq_,module,exports){
+},{}],79:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-frame\" size=\"10\" thickness=\"0.1\" color=\"#404040\">\n  <a-cube position=\"5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 -5 0\" rotation=\"0 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"0 5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"0 -5 -5\" rotation=\"0 90 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n\n  <a-cube position=\"5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n  <a-cube position=\"-5 0 -5\" rotation=\"90 0 0\" width=\"${thickness}\" height=\"${thickness}\" depth=\"${size}\" color=\"${color}\"></a-cube>\n</template>");
 
 })
-},{}],81:[function(_dereq_,module,exports){
+},{}],80:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-image\" width=\"1.75\" height=\"1.75\" opacity=\"1.0\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      width: ${width};\n                      height: ${height}\" material=\"shader: flat;\n                      src: url(${src});\n                      opacity: ${opacity};\n                      side: double;\n                      transparent: true\">\n  </a-entity>\n</template>");
 
 })
-},{}],82:[function(_dereq_,module,exports){
+},{}],81:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-light\" angle=\"60\" color=\"#fff\" ground-color=\"#fff\" decay=\"1\" distance=\"0.0\" exponent=\"10.0\" intensity=\"1.0\" type=\"directional\">\n  <a-entity light=\"angle: ${angle};\n                   color: ${color};\n                   groundColor: ${ground-color};\n                   decay: ${decay};\n                   distance: ${distance};\n                   exponent: ${exponent};\n                   intensity: ${intensity};\n                   type: ${type}\">\n  </a-entity>\n</template>");
 
 })
-},{}],83:[function(_dereq_,module,exports){
+},{}],82:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-model\" opacity=\"1.0\" src=\"\" format=\"collada\">\n  <a-entity material=\"opacity: ${opacity}\" loader=\"src: url(${src}); format: ${format}\">\n  </a-entity>\n</template>");
 
 })
-},{}],84:[function(_dereq_,module,exports){
+},{}],83:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-plane\" width=\"1.75\" height=\"1.75\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      side: double;\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],85:[function(_dereq_,module,exports){
+},{}],84:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-ring\" radius-inner=\"1\" radius-outer=\"2\" segments-theta=\"20\" segments-phi=\"5\" theta-start=\"0\" theta-length=\"360\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: ring;\n                      radiusInner: ${radius-inner};\n                      radiusOuter: ${radius-outer};\n                      segmentsTheta: ${segments-theta};\n                      segmentsPhi: ${segments-phi};\n                      thetaStart: ${theta-start};\n                      thetaLength: ${theta-length};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],86:[function(_dereq_,module,exports){
+},{}],85:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sky\" src=\"\" color=\"#FFF\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; \n                      src: url(${src});\n                      color: ${color};\n                      fog: false\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
 
 })
-},{}],87:[function(_dereq_,module,exports){
+},{}],86:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-sphere\" radius=\"0.85\" segments-width=\"36\" segments-height=\"18\" translate=\"0 0 0\" color=\"gray\" opacity=\"1.0\" shader=\"standard\" transparent=\"true\" metalness=\"0.0\" roughness=\"0.5\" src=\"\">\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height};\n                      translate: ${translate}\" material=\"color: ${color};\n                      opacity: ${opacity};\n                      shader: ${shader};\n                      transparent: ${transparent};\n                      metalness: ${metalness};\n                      roughness: ${roughness};\n                      src: url(${src})\"></a-entity>\n</template>");
 
 })
-},{}],88:[function(_dereq_,module,exports){
+},{}],87:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-video\" src=\"\" width=\"3\" height=\"1.75\" translate=\"0 0 0\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"a-video-${__counter__}\" src=\"${src}\" width=\"${width}\" height=\"${height}\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: plane;\n                      height: ${height};\n                      width: ${width};\n                      translate: ${translate}\" material=\"shader: flat; src: #a-video_${__counter__}\">\n  </a-entity>\n</template>");
 
 })
-},{}],89:[function(_dereq_,module,exports){
+},{}],88:[function(_dereq_,module,exports){
 document.addEventListener("DOMContentLoaded",function() {
 var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<template is=\"a-template\" element=\"a-videosphere\" src=\"\" radius=\"5000\" segments-width=\"64\" segments-height=\"64\" autoplay=\"true\" loop=\"true\" crossorigin=\"anonymous\">\n  <video id=\"a-videosphere-${__counter__}\" src=\"${src}\" width=\"1000\" height=\"500\" autoplay=\"${autoplay}\" loop=\"${loop}\" crossorigin=\"${crossOrigin}\" style=\"display: none\">\n  </video>\n  <a-entity geometry=\"primitive: sphere;\n                      radius: ${radius};\n                      segmentsWidth: ${segments-width};\n                      segmentsHeight: ${segments-height}\" material=\"shader: flat; src: #a-videosphere-${__counter__}\" scale=\"-1 1 1\">\n  </a-entity>\n</template>");
 
 })
-},{}],90:[function(_dereq_,module,exports){
+},{}],89:[function(_dereq_,module,exports){
 _dereq_("./a-camera.html");
 _dereq_("./a-cone.html");
 _dereq_("./a-cube.html");
@@ -59100,7 +59082,7 @@ var head = document.getElementsByTagName("head")[0];
 head.insertAdjacentHTML("beforeend","<meta charset=\"utf-8\">");
 
 })
-},{"./a-camera.html":75,"./a-cone.html":76,"./a-cube.html":77,"./a-curvedimage.html":78,"./a-cylinder.html":79,"./a-frame.html":80,"./a-image.html":81,"./a-light.html":82,"./a-model.html":83,"./a-plane.html":84,"./a-ring.html":85,"./a-sky/index.html":86,"./a-sphere.html":87,"./a-video.html":88,"./a-videosphere.html":89}],91:[function(_dereq_,module,exports){
+},{"./a-camera.html":74,"./a-cone.html":75,"./a-cube.html":76,"./a-curvedimage.html":77,"./a-cylinder.html":78,"./a-frame.html":79,"./a-image.html":80,"./a-light.html":81,"./a-model.html":82,"./a-plane.html":83,"./a-ring.html":84,"./a-sky/index.html":85,"./a-sphere.html":86,"./a-video.html":87,"./a-videosphere.html":88}],90:[function(_dereq_,module,exports){
 _dereq_('es6-promise').polyfill();  // Polyfill `Promise`.
 _dereq_('present');  // Polyfill `performance.now()`.
 
@@ -59171,7 +59153,7 @@ module.exports = window.AFRAME = {
   registerTemplate: registerTemplate
 };
 
-},{"../package":22,"../vendor/HTMLImports":99,"./components/index":27,"./core/a-animation":47,"./core/a-assets":48,"./core/a-cubemap":49,"./core/a-entity":50,"./core/a-mixin":51,"./core/a-node":52,"./core/a-register-element":53,"./core/component":54,"./core/scene/a-scene":56,"./elements/":72,"./elements/lib/register-template":73,"./lib/three":92,"./style/aframe.css":93,"./style/rStats.css":94,"./utils/":97,"./utils/debug":96,"es6-promise":7,"present":9,"tween.js":20,"webvr-polyfill":21}],92:[function(_dereq_,module,exports){
+},{"../package":22,"../vendor/HTMLImports":98,"./components/index":27,"./core/a-animation":47,"./core/a-assets":48,"./core/a-cubemap":49,"./core/a-entity":50,"./core/a-mixin":51,"./core/a-node":52,"./core/a-register-element":53,"./core/component":54,"./core/scene/a-scene":56,"./elements/":71,"./elements/lib/register-template":72,"./lib/three":91,"./style/aframe.css":92,"./style/rStats.css":93,"./utils/":96,"./utils/debug":95,"es6-promise":7,"present":9,"tween.js":20,"webvr-polyfill":21}],91:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three-dev');
 
@@ -59205,11 +59187,11 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../node_modules/three-dev/examples/js/controls/VRControls":15,"../../node_modules/three-dev/examples/js/effects/VREffect":16,"../../node_modules/three-dev/examples/js/loaders/ColladaLoader":17,"../../node_modules/three-dev/examples/js/loaders/MTLLoader":18,"../../node_modules/three-dev/examples/js/loaders/OBJLoader":19,"../../vendor/Raycaster":100,"three-dev":14}],93:[function(_dereq_,module,exports){
+},{"../../node_modules/three-dev/examples/js/controls/VRControls":15,"../../node_modules/three-dev/examples/js/effects/VREffect":16,"../../node_modules/three-dev/examples/js/loaders/ColladaLoader":17,"../../node_modules/three-dev/examples/js/loaders/MTLLoader":18,"../../node_modules/three-dev/examples/js/loaders/OBJLoader":19,"../../vendor/Raycaster":99,"three-dev":14}],92:[function(_dereq_,module,exports){
 var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:70px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset] .a-enter-vr-button:hover+.a-enter-vr-modal,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover+.a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":1}],94:[function(_dereq_,module,exports){
+},{"browserify-css":1}],93:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":1}],95:[function(_dereq_,module,exports){
+},{"browserify-css":1}],94:[function(_dereq_,module,exports){
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -59270,7 +59252,7 @@ function vec3ParseFloat (vec3) {
   };
 }
 
-},{}],96:[function(_dereq_,module,exports){
+},{}],95:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -59367,7 +59349,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":2,"debug":3,"object-assign":8}],97:[function(_dereq_,module,exports){
+},{"_process":2,"debug":3,"object-assign":8}],96:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var objectAssign = _dereq_('object-assign');
@@ -59559,7 +59541,7 @@ module.exports.isIframed = function () {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./coordinates":95,"./src-loader":98,"object-assign":8}],98:[function(_dereq_,module,exports){
+},{"./coordinates":94,"./src-loader":97,"object-assign":8}],97:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -59704,7 +59686,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":96}],99:[function(_dereq_,module,exports){
+},{"./debug":95}],98:[function(_dereq_,module,exports){
 /**
  * @license
  * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
@@ -60795,7 +60777,7 @@ window.HTMLImports.addModule(function(scope) {
     document.addEventListener("DOMContentLoaded", bootstrap);
   }
 })(window.HTMLImports);
-},{}],100:[function(_dereq_,module,exports){
+},{}],99:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author bhouston / http://clara.io/
@@ -60932,7 +60914,7 @@ window.HTMLImports.addModule(function(scope) {
 
 }( THREE ) );
 
-},{}],101:[function(_dereq_,module,exports){
+},{}],100:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 
 (function(){
@@ -61360,7 +61342,7 @@ var rStats = function rStats( settings ) {
 };
 
 if (typeof module !== "undefined") { module.exports = rStats; }
-},{}],102:[function(_dereq_,module,exports){
+},{}],101:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61422,7 +61404,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],103:[function(_dereq_,module,exports){
+},{}],102:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61498,6 +61480,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":102}]},{},[91])(91)
+},{"./util.js":101}]},{},[90])(90)
 });
 //# sourceMappingURL=aframe.js.map
