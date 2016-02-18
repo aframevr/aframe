@@ -7,29 +7,33 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-asset>
-      <a-mixin id="link"
-               geometry="primitive: plane; width: 1.0; height: 1.0">
-      </a-mixin>
-      <a-mixin id="link-hovered" geometry="primitive: plane; width: 1.2;
-                                           height: 1.2">
-      </a-mixin>
-      <!-- Sound from http://www.freesound.org/people/NenadSimic/sounds/171697/ -->
-      <a-mixin id="link-selected" geometry="primitive: plane;
-                                            width: 1.4; height: 1.4"
-              sound="src: ../_sounds/click.ogg">
-      </a-mixin>
-      <a-mixin id="cursor" geometry="primitive: ring; radiusOuter: 0.20; radiusInner: 0.14"
-               material="color: gray" cursor></a-mixin>
-      <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
-      <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale"
-               fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
-      <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
-               fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
-    </a-asset>
     <a-scene stats="true">
+      <a-assets>
+        <img id="city" src="images/city.jpg">
+        <img id="city-thumb" src="images/thumb-city.png">
+        <img id="cubes" src="images/cubes.jpg">
+        <img id="cubes-thumb" src="images/thumb-cubes.png">
+        <img id="sechelt" src="images/sechelt.jpg">
+        <img id="sechelt-thumb" src="images/thumb-sechelt.png">
 
-      <!-- Controls -->
+        <a-mixin id="link" geometry="primitive: plane; width: 1.0; height: 1.0">
+        </a-mixin>
+        <a-mixin id="link-hovered" geometry="primitive: plane; width: 1.2; height: 1.2">
+        </a-mixin>
+        <!-- Sound from http://www.freesound.org/people/NenadSimic/sounds/171697/ -->
+        <a-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"
+                 sound="src: ../_sounds/click.ogg">
+        </a-mixin>
+        <a-mixin id="cursor" geometry="primitive: ring; radiusOuter: 0.20; radiusInner: 0.14"
+                 material="color: gray" cursor></a-mixin>
+        <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
+        <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale"
+                 fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+        <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
+                 fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
+      </a-assets>
+
+      <!-- Camera + Cursor. -->
       <a-entity camera look-controls>
         <a-entity mixin="cursor" position="0 0 -3">
           <a-animation mixin="click-animation"></a-animation>
@@ -37,11 +41,11 @@
         </a-entity>
       </a-entity>
 
-      <!-- Pano -->
+      <!-- Pano. -->
       <a-entity id="holder" geometry="primitive: sphere; radius: 10;"
                 material="shader: flat" scale="1 1 -1"></a-entity>
 
-      <!-- Links to panos -->
+      <!-- Pano links. -->
       <a-entity id="links" position="-1.5 -1 -4"></a-entity>
     </a-scene>
 
@@ -51,18 +55,18 @@
         var panos = [
           {
             'title': 'Cubes',
-            'thumb': 'images/thumb-cubes.png',
-            'url': 'images/cubes.jpg'
+            'thumb': '#cubes-thumb',
+            'url': '#cubes'
           },
           {
             'title': 'City',
-            'thumb': 'images/thumb-city.png',
-            'url': 'images/city.jpg'
+            'thumb': '#city-thumb',
+            'url': '#city'
           },
           {
             'title': 'Sechelt',
-            'thumb': 'images/thumb-sechelt.png',
-            'url': 'images/sechelt.jpg'
+            'thumb': '#sechelt-thumb',
+            'url': '#sechelt'
           }
         ];
 
@@ -82,7 +86,7 @@
           el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
           el.setAttribute('mixin', 'link');
-          el.setAttribute('material', {src: 'url(' + pano.thumb + ')'});
+          el.setAttribute('material', {src: pano.thumb});
           panos[idx].el = el;
 
           // When a link is clicked, change the displayed pano by changing the
@@ -112,7 +116,7 @@
           if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
           holder.setAttribute('material', {
             shader: 'flat',
-            src: 'url(' + pano.url  + ')'
+            src: pano.url
           });
           selectedLinkEl = linkEL;
           selectedLinkEl.addState('selected');
