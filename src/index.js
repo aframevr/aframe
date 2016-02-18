@@ -1,12 +1,7 @@
 require('es6-promise').polyfill();  // Polyfill `Promise`.
 require('present');  // Polyfill `performance.now()`.
 
-// TODO: Extract to aframe-primitives.
-// HTML Imports polyfill must come before everything else.
-if (!('import' in document.createElement('link'))) {
-  require('../vendor/HTMLImports');
-}
-
+// CSS.
 require('./style/aframe.css');
 require('./style/rStats.css');
 
@@ -40,9 +35,9 @@ require('./core/a-assets');
 require('./core/a-cubemap');
 require('./core/a-mixin');
 
-// TODO: Extract to aframe-primitives.
-var coreElements = require('./elements/');
-var registerTemplate = require('./elements/lib/register-template');
+// Extras.
+require('./extras/declarative-events/');
+require('./extras/primitives/');
 
 console.log('A-Frame Version:', pkg.version);
 console.log('three-dev Version:', pkg.dependencies['three-dev']);
@@ -59,11 +54,5 @@ module.exports = window.AFRAME = {
   THREE: THREE,
   TWEEN: TWEEN,
   utils: utils,
-  version: pkg.version,
-
-  // TODO: Extract to aframe-primitives.
-  elements: {
-    core: coreElements
-  },
-  registerTemplate: registerTemplate
+  version: pkg.version
 };

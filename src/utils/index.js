@@ -1,8 +1,11 @@
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
+
+var deepAssign = require('deep-assign');
 var objectAssign = require('object-assign');
 
 module.exports.coordinates = require('./coordinates');
+module.exports.debug = require('./debug');
 
 /**
  * Fires a custom DOM event.
@@ -51,6 +54,7 @@ module.exports.log = function () {
  * @param  {...object} source - The object(s) from which properties will be copied.
  */
 module.exports.extend = objectAssign;
+module.exports.extendDeep = deepAssign;
 
 /**
  * Checks if two objects have the same attributes and values, including nested objects.
