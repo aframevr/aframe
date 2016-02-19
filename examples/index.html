@@ -5,9 +5,7 @@
     <title>A-Frame Examples</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="https://cvan.io/Fira/fira.css">
     <style type="text/css">
-
       html {
         font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
       }
@@ -63,7 +61,7 @@
         color: white;
         border-bottom: 1px solid rgba(255,255,255,0.2);
         display: block;
-        font-family: 'Fira Sans';
+        font-family: 'Fira Sans', sans-serif;
         font-size: 1rem;
         font-weight: 300;
         letter-spacing: 0.01em;
@@ -189,5 +187,22 @@
 
     <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
 
+    <script>
+      (function () {
+        window.requestAnimationFrame(function () {
+          // Defer loading of web fonts.
+          var fonts = [
+            'https://code.cdn.mozilla.net/fonts/fira.css'
+          ];
+          var link;
+          fonts.forEach(function (url) {
+            link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = url;
+            document.head.appendChild(link);
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
