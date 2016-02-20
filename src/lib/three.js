@@ -1,4 +1,4 @@
-var THREE = global.THREE = require('three-dev');
+var THREE = global.THREE = require('three');
 
 // Allow cross-origin images to be loaded.
 
@@ -19,11 +19,11 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
-require('../../node_modules/three-dev/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
-require('../../node_modules/three-dev/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
-require('../../node_modules/three-dev/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
+require('../../node_modules/three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
+require('../../node_modules/three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
+require('../../node_modules/three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
 require('../../vendor/Raycaster');  // THREE.Raycaster
-require('../../node_modules/three-dev/examples/js/controls/VRControls');  // THREE.VRControls
-require('../../node_modules/three-dev/examples/js/effects/VREffect');  // THREE.VREffect
+require('../../node_modules/three/examples/js/controls/VRControls');  // THREE.VRControls
+require('../../node_modules/three/examples/js/effects/VREffect');  // THREE.VREffect
 
 module.exports = THREE;
