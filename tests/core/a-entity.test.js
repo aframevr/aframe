@@ -69,16 +69,29 @@ suite('a-entity', function () {
     });
 
     test('waits for children to load', function (done) {
+      var scene = document.createElement('a-scene');
       var entity = document.createElement('a-entity');
       var entityChild1 = document.createElement('a-entity');
       var entityChild2 = document.createElement('a-entity');
       entity.appendChild(entityChild1);
       entity.appendChild(entityChild2);
-      document.body.appendChild(entity);
+      scene.appendChild(entity);
+      document.body.appendChild(scene);
 
       entity.addEventListener('loaded', function () {
         assert.ok(entityChild1.hasLoaded);
         assert.ok(entityChild2.hasLoaded);
+        done();
+      });
+    });
+
+    test('plays when entity is attached after scene load', function (done) {
+      var el = document.createElement('a-entity');
+      this.sinon.spy(AEntity.prototype, 'play');
+
+      this.el.sceneEl.appendChild(el);
+      el.addEventListener('loaded', function () {
+        sinon.assert.called(AEntity.prototype.play);
         done();
       });
     });
@@ -508,6 +521,7 @@ suite('a-entity component lifecycle management', function () {
   test('calls play on entity play', function () {
     var el = this.el;
     var TestComponent = this.TestComponent.prototype;
+    this.el.pause();
 
     this.sinon.spy(TestComponent, 'play');
     el.setAttribute('test', '');

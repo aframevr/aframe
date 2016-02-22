@@ -61,6 +61,7 @@ var proto = Object.create(ANode.prototype, {
       this.addToParent();
       if (!this.isScene) {
         this.load();
+        if (!this.parentNode.paused) { this.play(); }
       }
     }
   },
