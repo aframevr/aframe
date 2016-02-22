@@ -1,33 +1,35 @@
 ---
-title: "Geometry"
+title: geometry
 type: components
 layout: docs
 parent_section: components
-order: 4
+order: 6
 ---
 
-The `geometry` component defines the shape and size of an entity. The general geometry is defined by the `primitive` property. "Geometric primitives", in computer graphics, simply means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A `material` component is usually defined alongside the `geometry` component.
+The `geometry` component provides a basic shape for an entity. The general geometry is defined by the `primitive` property. "Geometric primitives", in computer graphics, means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A `material` component is usually defined alongside to provide a appearance alongside the shape to create a complete mesh.
+
+## Properties
 
 We will go through the basic primitives and their respective properties one by one.
 
-| Property  | Description                                                                          | Default Value |
-|-----------|--------------------------------------------------------------------------------------|---------------|
-| primitive | One of `box`, `circle`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`. | None          |
-| translate | Translates the geometry relative to its pivot point.                                 | 0 0 0         |
+| Property  | Description                                                                                  | Default Value |
+|-----------+----------------------------------------------------------------------------------------------+---------------|
+| primitive | One of `box`, `circle`, `cone`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`. | None          |
+| translate | Translates the geometry relative to its pivot point.                                         | 0 0 0         |
 
 ### Box
 
-The box primitive defines boxes (square or rectangle).
+The box primitive defines boxes (i.e., any quadilateral, not just cubes).
 
 ```html
 <a-entity geometry="primitive: box; width: 1; height: 1; depth: 1"></a-entity>
 ```
 
-| Property  | Description                                    | Default Value |
-|-----------|------------------------------------------------|---------------|
-| width     | Width (in meters) of the sides on the X axis.  | 2             |
-| height    | Height (in meters) of the sides on the Y axis. | 2             |
-| depth     | Depth (in meters) of the sides on the Z axis.  | 2             |
+| Property | Description                                    | Default Value |
+|----------+------------------------------------------------+---------------|
+| width    | Width (in meters) of the sides on the X axis.  | 2             |
+| height   | Height (in meters) of the sides on the Y axis. | 2             |
+| depth    | Depth (in meters) of the sides on the Z axis.  | 2             |
 
 ### Circle
 
@@ -37,12 +39,31 @@ The circle primitive defines two-dimensional circles, which can be complete circ
 <a-entity geometry="primitive: circle; radius: 1" material="side: double"></a-entity>
 ```
 
-| Property    | Description                                                                                                                           | Default Value |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| radius      | Radius (in meters) of the circle.                                                                                                     | 1             |
+| Property    | Description                                                                                                                      | Default Value |
+|-------------+----------------------------------------------------------------------------------------------------------------------------------+---------------|
+| radius      | Radius (in meters) of the circle.                                                                                                | 1             |
 | segments    | Number of triangles to construct the circle, like pizza slices. A higher number of segments means the circle will be more round. | 8             |
-| thetaStart  | Start angle for first segment. Can be used to define a partial circle.                                                        | 0             |
-| thetaLength | The central angle (in degrees). Defaults to `360`, which makes for a complete circle.                                               | 360           |
+| thetaStart  | Start angle for first segment. Can be used to define a partial circle.                                                           | 0             |
+| thetaLength | The central angle (in degrees). Defaults to `360`, which makes for a complete circle.                                            | 360           |
+
+### Cone
+
+The cone primitive under the hood is a cylinder primitive with varying top and bottom radiuses.
+
+```html
+<a-entity geometry="primitive: cone; radiusBottom: 1; radiusTop: 0.1"></a-entity>
+```
+
+| Property       | Description                                                     | Default Value |
+|----------------+-----------------------------------------------------------------+---------------|
+| height         | Height of the cone.                                             | 2             |
+| openEnded      | Whether the ends of the cone are open (true) or capped (false). | false         |
+| radiusBottom   | Radius of the bottom end of the cone.                           | 1             |
+| radiusTop      | Radius of the top end of the cone.                              | 1             |
+| segmentsRadial | Number of segmented faces around the circumference of the cone. | 36            |
+| segmentsHeight | Number of rows of faces along the height of the cone.           | 18            |
+| thetaStart     | Starting angle in degrees.                                      | 0             |
+| thetaLength    | Central angle in degrees.                                       | 360           |
 
 ### Cylinder Primitive
 
@@ -76,7 +97,7 @@ Curved surfaces can be defined by specifying the angle via `thetaLength` such th
 ```
 
 | Property       | Description                                                         | Default Value |
-|----------------|---------------------------------------------------------------------|---------------|
+|----------------+---------------------------------------------------------------------+---------------|
 | radius         | Radius of the cylinder.                                             | 1             |
 | height         | Height of the cylinder.                                             | 2             |
 | segmentsRadial | Number of segmented faces around the circumference of the cylinder. | 36            |
@@ -85,24 +106,18 @@ Curved surfaces can be defined by specifying the angle via `thetaLength` such th
 | thetaStart     | Starting angle in degrees.                                          | 0             |
 | thetaLength    | Central angle in degrees.                                           | 360           |
 
-### Cone
+#### Prisms
 
-Cones are essentially cylinders that have a different bottom radius than the top radius:
+Other types [of prisms](https://en.wikipedia.org/wiki/Prism_%28geometry%29) can
+be defined by varying the number of radial segments (i.e., sides). For example, to make
+a hexagonal prism:
 
 ```html
-<a-entity geometry="primitive: cone; radiusBottom: 1; radiusTop: 0.1"></a-entity>
+<!-- Hexagonal prism -->
+<a-entity geometry="primitive: cylinder; segmentsRadial: 6"></a-entity>
 ```
 
-| Property       | Description                                                         | Default Value |
-|----------------|---------------------------------------------------------------------|---------------|
-| radiusTop      | Radius of the cone.                                                  | 1             |
-| radiusBottom   | Radius of the cone at the bottom.                                   | 1             |
-| height         | Height of the cone.                                                | 2             |
-| segmentsRadial | Number of segmented faces around the circumference of the cone.     | 36            |
-| segmentsHeight | Number of rows of faces along the height of the cone.               | 18            |
-| openEnded      | Whether the ends of the cone are open (true) or capped (false).     | false         |
-| thetaStart     | Starting angle in degrees.                                          | 0             |
-| thetaLength    | Central angle in degrees.                                           | 360           |
+To play with an example of prism geometry, check out the [Hexagon example on Codepen](http://codepen.io/team/mozvr/pen/jWzVXJ).
 
 ### Plane
 
@@ -113,10 +128,10 @@ The plane primitive defines a flat surface. Note that because it is flat, only a
           material="side: double"></a-entity>
 ```
 
-| Property  | Description              | Default Value |
-|-----------|--------------------------|---------------|
-| width     | Width along the X axis.  | 2             |
-| height    | Height along the Y axis. | 2             |
+| Property | Description              | Default Value |
+|----------+--------------------------+---------------|
+| width    | Width along the X axis.  | 2             |
+| height   | Height along the Y axis. | 2             |
 
 ### Ring
 
@@ -128,7 +143,7 @@ The ring geometry defines a flat ring, like a [CD](https://en.wikipedia.org/wiki
 ```
 
 | Property      | Description                                                            | Default Value |
-|---------------|------------------------------------------------------------------------|---------------|
+|---------------+------------------------------------------------------------------------+---------------|
 | radiusInner   | Radius of the inner hole of the ring.                                  | 1             |
 | radiusOuter   | Radius of the outer edge of the ring.                                  | 1             |
 | segmentsTheta | Number of segments. A higher number means the ring will be more round. | 2             |
@@ -147,7 +162,7 @@ Sticking with a basic sphere, the default number of segments is high enough to m
 ```
 
 | Property       | Description                    | Default Value |
-|----------------|--------------------------------|---------------|
+|----------------+--------------------------------+---------------|
 | radius         | Radius of the sphere.          | 1             |
 | segmentsWidth  | Number of horizontal segments. | 18            |
 | segmentsHeight | Number of vertical segments.   | 36            |
@@ -166,12 +181,12 @@ The torus primitive defines a donut shape.
 ```
 
 | Property        | Description                                                                                                     | Default Value |
-|-----------------|-----------------------------------------------------------------------------------------------------------------|---------------|
+|-----------------+-----------------------------------------------------------------------------------------------------------------+---------------|
 | radius          | Radius of the outer edge of the torus.                                                                          | 1             |
 | radiusTubular   | Radius of the tube.                                                                                             | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
 | segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 0             |
-| arc             | Central angle.                                                                                                   | 360           |
+| arc             | Central angle.                                                                                                  | 360           |
 
 ### Torus Knot
 
@@ -182,19 +197,47 @@ The torus knot primitive defines a pretzel shape, the particular shape of which 
 ```
 
 | Property        | Description                                                                                                     | Default Value |
-|-----------------|-----------------------------------------------------------------------------------------------------------------|---------------|
-| radius          | Radius that contains the torus knot.                                                                      | 1             |
-| radiusTubular   | Radius of the tubes of the torus knot.                                                                      | 0.2           |
+|-----------------+-----------------------------------------------------------------------------------------------------------------+---------------|
+| radius          | Radius that contains the torus knot.                                                                            | 1             |
+| radiusTubular   | Radius of the tubes of the torus knot.                                                                          | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
 | segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 8             |
 | p               | Number that helps define the pretzel shape.                                                                     | 2             |
 | q               | Number that helps define the pretzel shape.                                                                     | 3             |
 
-## Geometry Translate
+## Translate
 
-The `translate` property translates the geometry relative to its pivot point. It is defined as a coordinate.
+The `translate` property translates the geometry. It is provided as a vec3.  This is a useful short-hand for translating the geometry to effectively move its pivot point when running animations.
 
 ```html
-<!-- Translates the sphere such that the pivot point is at its bottom -->
+<!-- Translates the sphere such that its effective pivot point is at its bottom -->
 <a-entity geometry="primitive: sphere; radius: 1; translate: 0 1 0"></a-entity>
 ```
+
+## Defining Your Own Geometry
+
+If there is a geometry that you need that is not provided by the standard geometry component, you can register your own geometry component:
+
+```js
+AFRAME.registerComponent('my-geometry', {
+  /* Called on component attach and data update. */
+  update: function () {
+    // Grab the mesh.
+    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+
+    // Provide your own geometry.
+    var geometry = mesh.geometry = new THREE.Geometry();
+    geometry.vertices.push(
+      new THREE.Vector3(-10,  10, 0),
+      new THREE.Vector3(-10, -10, 0),
+      new THREE.Vector3( 10, -10, 0)
+    );
+    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    geometry.computeBoundingSphere();
+  },
+
+  /* Called on component detach. */
+  remove: function () {
+    this.el.getObject3D('mesh').geometry = new THREE.Geometry();
+  }
+});
