@@ -40,7 +40,7 @@ require('./extras/declarative-events/');
 require('./extras/primitives/');
 
 console.log('A-Frame Version:', pkg.version);
-console.log('three-dev Version:', pkg.dependencies['three-dev']);
+console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {

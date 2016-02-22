@@ -33,7 +33,7 @@
     "present": "0.0.6",
     "request-interval": "^1.0.0",
     "style-attr": "^1.0.2",
-    "three-dev": "^0.74.0-beta8",
+    "three": "^0.74.0",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "borismus/webvr-polyfill#3f47796"
   },
