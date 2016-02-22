@@ -71,6 +71,9 @@ module.exports.Component = registerComponent('sound', {
 
   remove: function () {
     this.el.removeObject3D('sound');
+    this.sound.remove();
+    this.listener.remove();
+    this.listener.context.close();
   },
 
   /**
