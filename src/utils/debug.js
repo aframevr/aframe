@@ -84,7 +84,7 @@ var ls = storage();
 if (ls && (parseInt(ls.logs, 10) || ls.logs === 'true')) {
   debug.enable('*');
 } else {
-  debug.enable('*:error,*:warn');
+  debug.enable('*:error,*:info,*:warn');
 }
 
 if (process.browser) { window.logs = debug; }
