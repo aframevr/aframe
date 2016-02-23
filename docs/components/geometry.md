@@ -205,7 +205,13 @@ The torus knot primitive defines a pretzel shape, the particular shape of which 
 | p               | Number that helps define the pretzel shape.                                                                     | 2             |
 | q               | Number that helps define the pretzel shape.                                                                     | 3             |
 
-## Translate
+## thetaLength and thetaStart
+
+In degrees, `thetaStart` defines where to start a circle and `thetaLength` defines where a circle ends. If we wanted to make a `(` shape, we would start the circle halfway through and define the length as half of a circle. We can do this with `thetaStart: 180; thetaLength: 180`. Or if we wanted to make a `)` shape. We can do do `thetaStart: 0; thetaLength: 180`.
+
+Useful cases might be to animating `thetaStart` to create a spinner effect or animating `thetaLength` on a fuse-based cursor for visual feedback.
+
+## translate
 
 The `translate` property translates the geometry. It is provided as a vec3.  This is a useful short-hand for translating the geometry to effectively move its pivot point when running animations.
 
@@ -216,7 +222,7 @@ The `translate` property translates the geometry. It is provided as a vec3.  Thi
 
 ## Defining Your Own Geometry
 
-If there is a geometry that you need that is not provided by the standard geometry component, you can register your own geometry component:
+If there is a geometry that you need that is not provided by the standard geometry component, you can register your own geometry component. Later, we may introduce an API to register geometries:
 
 ```js
 AFRAME.registerComponent('my-geometry', {
