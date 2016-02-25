@@ -6,42 +6,91 @@ parent_section: core
 order: 4
 ---
 
-Scenes, defined as `<a-scene>` set up what to render, where to render, and is where all of the entities live.
+A scene is represented by the `<a-scene>` element. The scene is the global root object, and all [entities][entity] are contained within the scene.
 
-## Initialization
+The scene inherits from the [`Entity`][entity] class so it inherits all of its properties, its methods, the ability to attach components, and the behavior to wait for all of its child nodes (e.g., `<a-assets>` and `<a-entity>`) to load before kicking off the render loop.
 
-In A-Frame, the scene handles most of the initialization including:
+## Example
 
-- Creating a canvas
-- Instantiating a renderer
-- Attaching event and full screen listeners
-- Setting up default lighting and camera
-- Injecting `<meta>` tags and button to Enter VR
-- Registering keyboard shortcuts
+```html
+<a-scene>
+  <a-assets>
+    <img id="texture" src="texture.png">
+  </a-assets>
 
-Notably, the scene waits for all declaratively defined entities to load (by waiting on their `loaded` events) before kicking off the render loop.
+  <a-box src="#texture"></a-box>
+</a-scene>
+```
 
-## Render Loop
+## Properties
 
-The scene handles the render loop under a `requestAnimationFrame`. On each tick the scene will render itself and all of its entities to the canvas. At this point animations and any other registered behaviors are ticked or updated.
+| Name           | Description                                                                  |
+|----------------+------------------------------------------------------------------------------|
+| behaviors      | Array of components with tick methods that will be run on every frame.       |
+| canvas         | Reference to the canvas element.                                             |
+| isMobile       | Whether or not environment is detected to be mobile.                         |
+| monoRenderer   | Instance of `THREE.WebGlRenderer`.                                           |
+| object3D       | [`THREE.Scene`][scene] object.                                               |
+| renderer       | Active renderer, one of `monoRenderer` or `stereoRenderer`.                  |
+| stereoRenderer | Renderer for VR created by passing the `monoRenderer` into `THREE.VREffect`. |
+| time           | Global uptime of scene in seconds.                                           |
+
+## Methods
+
+| Name    | Description                                                                                                            |
+|---------+------------------------------------------------------------------------------------------------------------------------|
+| enterVR | Switch to stereo renderer and enter fullscreen. Needs to be called within a user-generated event handler like `click`. |
+| exitVR  | Switch to mono renderer and exit fullscreen.                                                                           |
+| reload  | Revert the scene to its original state.                                                                                |
 
 ## Events
 
-| Name   | Description |
-| ----   | ----------- |
-| loaded | Emitted when all declaratively defined elements on the scene has loaded and when the scene has started rendering. |
+| Name         | Description                         |
+|--------------+-------------------------------------|
+| enter-vr     | User has entered VR and fullscreen. |
+| exit-vr      | User has exited VR and fullscreen.  |
+| loaded       | All nodes have loaded.              |
+| render-start | Render loop has started.            |
 
-## Keyboard Shortcuts
+## Scene Components
 
-The scene sets a couple of keyboard shortcuts:
-
-- `f` enters full-screen mode (and stereo-rendering [VR] mode if available).
-- `z` resets the headset sensors (if available).
-
-## Stats
-
-To view performance statistics, enable the `stats` component on `<a-scene>`:
+Components can be attached to the scene as well as entities:
 
 ```html
-<a-scene stats="true"></a-scene>
+<a-scene canvas="canvas: #my-canvas" fog stats>
 ```
+
+A-Frame ships with a few components to configure the scene:
+
+- [canvas][canvas] - Configure which canvas to render to, or the width/height of the injected canvas.
+- [fog][fog] - Scene fog.
+- [keyboard-shortcuts][keyboard-shortcuts] - Toggle keyboard shortcuts.
+- [stats][stats] - Toggle performance stats.
+- [vr-mode-ui][vr-mode-ui] - Toggle UI for entering and exiting VR.
+
+## Running Content Scripts on the Scene
+
+When running JavaScript on the scene, wait for it to finish loading first:
+
+```js
+var scene = document.querySelector('a-scene');
+
+if (scene.hasLoaded) {
+  run();
+} else {
+  scene.addEventListener('loaded', run);
+}
+
+function run () {
+  var entity = scene.querySelector('a-entity');
+  entity.setAttribute('material', 'color', 'red');
+}
+```
+
+[canvas]: ../components/canvas.html
+[entity]: ./entity.html
+[fog]: ../components/fog.html
+[keyboard-shortcuts]: ../components/keyboard-shortcuts.html
+[scene]: http://threejs.org/docs/#Reference/Scenes/Scene
+[stats]: ../components/stats.html
+[vr-mode-ui]: ../components/vr-mode-ui.html
