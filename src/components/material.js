@@ -200,7 +200,6 @@ module.exports.Component = registerComponent('material', {
     function loadVideo (src) {
       texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
       texturePromises[src].then(function (videoEl) {
-        console.log('promise');
         videoEl.addEventListener('loadeddata', function (e) {
           self.el.emit('material-texture-loaded', videoEl);
         });
