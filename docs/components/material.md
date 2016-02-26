@@ -111,3 +111,12 @@ Since materials default to physically based shading, materials will reflect ligh
 <a-entity geometry="primitive: plane" material="src: #cat-image; shader: flat">
 </a-entity>
 ```
+
+## Events
+
+You can attach following events to entities that use `material` with a texture `src` (image, video):
+
+| event name    | description     |
+| :------------- | :------------- |
+| `material-texture-loaded`       | Triggers once the image has been loaded. For videos this triggers once the first frames can be playe|
+| `material-video-ended`       | If you are using a video texture, this triggers when the video has reached its end (may not work with `loop`). |
