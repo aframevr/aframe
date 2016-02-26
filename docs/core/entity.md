@@ -120,7 +120,7 @@ entity.addState('selected');
 entity.is('selected');  // >> true
 ```
 
-### `emit (name, detail)`
+### `emit (name, detail, bubbles)`
 
 `emit` emits a custom DOM event on the entity. For example, we can emit an event to
 [trigger an animation][animation-begin]:
@@ -136,6 +136,12 @@ We can also pass event detail or data as the second argument:
 
 ```js
 entity.emit('collide', { target: collidingEntity });
+```
+
+The event will bubble by default. we can tell it not to bubble by passing `false` for `bubble`:
+
+```js
+entity.emit('sink', null, false);
 ```
 
 ### `getAttribute (attr)`
