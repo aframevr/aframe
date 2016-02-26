@@ -8,18 +8,36 @@
   </head>
   <body>
     <a-scene>
+      <a-assets>
+        <img id="glow1" src="images/glow1.png">
+        <img id="ring1" src="images/ring1.png">
+        <img id="ring2" src="images/ring2.png">
+        <img id="ring3" src="images/ring3.png">
+        <img id="ring4" src="images/ring4.png">
+        <img id="ring5" src="images/ring5.png">
+        <img id="schematic1" src="images/schematic1.png">
+        <img id="schematic2" src="images/schematic2.png">
+        <img id="schematic3" src="images/schematic3.png">
+        <img id="schematic4" src="images/schematic4.png">
+        <img id="schematic5" src="images/schematic5.png">
+        <img id="text1" src="images/text1.png">
+        <img id="text2" src="images/text2.png">
+        <img id="text3" src="images/text3.png">
+        <img id="text4" src="images/text4.png">
+        <a-asset-item id="engine" src="models/engine.dae"></a-asset-item>
+        <audio id="blip1" src="../_sounds/321103__nsstudios__blip1.wav">
+        <audio id="blip2" src="../_sounds/321104__nsstudios__blip2.wav">
+      </a-assets>
 
-      <a-camera position="1.75 0 1.2" near="0.1" rotation="0 28 0" cursor-visible="false"></a-camera>
-
-      <a-entity position="0 0 -3">
-        <a-model src="models/engine.dae" rotation="90 0 0" scale="18 18 18"></a-model>
+      <a-entity position="1.75 0 1.2" rotation="0 28 0">
+        <a-camera near="0.1"></a-camera>
       </a-entity>
 
+      <a-entity position="0 0 -3">
+        <a-collada-model src="#engine" rotation="90 0 0" scale="18 18 18"></a-collada-model>
+      </a-entity>
 
-      <!-- WALL LIGHTS -->
-
-      <a-entity position="-7.25 1.5 2.9" rotation="0 90 0" scale="1.25 1.25 1.25">
-
+      <a-entity id="wall-lights" position="-7.25 1.5 2.9" rotation="0 90 0" scale="1.25 1.25 1.25">
         <a-entity position="0 0 0" scale="0.05 0.05 0.05">
           <a-plane width="1" height="4" shader="flat" color="#B4E2F8">
             <a-animation attribute="visible" from="false" to="true" begin="350" dur="1" fill="both"></a-animation>
@@ -117,148 +135,100 @@
           </a-plane>
           <a-plane width="6" height="4" translate="-3 0 0" color="#586266" opacity="0.6" position="0 0 -.01"></a-plane>
         </a-entity>
-
       </a-entity>
 
-
-      <!-- SCHEMATIC 2 -->
-
-      <a-entity position="0 0 -6" scale="0.7 0.7 0.7">
-
-        <a-image src="images/glow1.png" scale="5 5 5" position="0 0 -2">
+      <a-entity id="schematic-2" position="0 0 -6" scale="0.7 0.7 0.7">
+        <a-image src="#glow1" scale="5 5 5" position="0 0 -2">
           <a-animation attribute="visible" from="false" to="true" begin="1500" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/ring2.png" scale="1.75 1.75 1.75" position="0 0 -1.2">
+        <a-image src="#ring2" scale="1.75 1.75 1.75" position="0 0 -1.2">
           <a-animation attribute="visible" from="false" to="true" begin="1400" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/ring5.png" scale="1.2 1.2 1.2" position="0 -1.5 -2.1">
+        <a-image src="#ring5" scale="1.2 1.2 1.2" position="0 -1.5 -2.1">
           <a-animation attribute="visible" from="false" to="true" begin="1550" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/schematic5.png" scale="2 2 2" position="2.5 0 -1.02" opacity="0.75">
+        <a-image src="#schematic5" scale="2 2 2" position="2.5 0 -1.02" opacity="0.75">
           <a-animation attribute="visible" from="false" to="true" begin="1500" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/schematic4.png" scale="1.5 1.5 1.5" position="0 -3 -1.01" rotation="0 0 90" opacity="0.75">
+        <a-image src="#schematic4" scale="1.5 1.5 1.5" position="0 -3 -1.01" rotation="0 0 90" opacity="0.75">
           <a-animation attribute="visible" from="false" to="true" begin="1500" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/schematic3.png" scale="1 1 1" position="0 2.7 -1" opacity="0.75">
+        <a-image src="#schematic3" scale="1 1 1" position="0 2.7 -1" opacity="0.75">
           <a-animation attribute="visible" from="false" to="true" begin="1450" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/schematic1.png" scale="2 2 2">
+        <a-image src="#schematic1" scale="2 2 2">
           <a-animation attribute="visible" from="false" to="true" begin="1400" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/text2.png" scale=".5 .5 .5" position="-1 3 .02">
+        <a-image src="#text2" scale=".5 .5 .5" position="-1 3 .02">
           <a-animation attribute="visible" from="false" to="true" begin="1350" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/text4.png" position="-2 -2 .03">
+        <a-image src="#text4" position="-2 -2 .03">
           <a-animation attribute="visible" from="false" to="true" begin="1300" dur="1" fill="both"></a-animation>
         </a-image>
-
       </a-entity>
 
-
-      <!-- SCHEMATIC 1 -->
-
-      <a-entity position="0 0 -3">
-
-        <a-image src="images/schematic2.png" scale="0.7 0.7 0.7">
+      <a-entity id="schematic-1" position="0 0 -3">
+        <a-image src="#schematic2" scale="0.7 0.7 0.7">
           <a-animation attribute="visible" from="false" to="true" begin="1200" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/text1.png" scale="0.2 0.2 0.2" position="2 0 .02">
+        <a-image src="#text1" scale="0.2 0.2 0.2" position="2 0 .02">
           <a-animation attribute="visible" from="false" to="true" begin="1200" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/text3.png" scale="0.4 0.4 0.4" position="-1 1 .01">
+        <a-image src="#text3" scale="0.4 0.4 0.4" position="-1 1 .01">
           <a-animation attribute="visible" from="false" to="true" begin="1200" dur="1" fill="both"></a-animation>
         </a-image>
-
       </a-entity>
 
-
-      <!-- RINGS GROUP 3 -->
-
-      <a-entity position="0 0 -2" scale="0.5 0.5 0.5">
-
-        <a-image src="images/ring3.png" scale=".8 .8 .8">
+      <a-entity id="rings-group-3" position="0 0 -2" scale="0.5 0.5 0.5">
+        <a-image src="#ring3" scale=".8 .8 .8">
           <a-animation attribute="visible" from="false" to="true" begin="1000" dur="1" fill="both"></a-animation>
           <!-- <a-animation attribute="scale" from="0.7 0.7 0.7" to="1 1 1" begin="1000" dur="250" fill="both" easing="ease-out"></a-animation> -->
         </a-image>
-
-        <a-image src="images/ring5.png" scale=".9 .9 .9" position="0 0 .01">
+        <a-image src="#ring5" scale=".9 .9 .9" position="0 0 .01">
           <a-animation attribute="visible" from="false" to="true" begin="1100" dur="1" fill="both"></a-animation>
           <!-- <a-animation attribute="scale" from="0.7 0.7 0.7" to="1 1 1" begin="1000" dur="250" fill="both" easing="ease-out"></a-animation> -->
         </a-image>
-
-        <a-image src="images/ring3.png" position="0 0 .02">
+        <a-image src="#ring3" position="0 0 .02">
           <a-animation attribute="visible" from="false" to="true" begin="1100" dur="1" fill="both"></a-animation>
           <a-animation attribute="scale" from="1 1 1" to="1.2 1.2 1.2" begin="1100" dur="250" fill="both" easing="ease-out"></a-animation>
         </a-image>
-
       </a-entity>
 
-
-      <!-- RINGS GROUP 2 -->
-
-      <a-entity position="0 0 -1" scale="0.5 0.5 0.5">
-
-        <a-image src="images/ring2.png" scale="1.2 1.2 1.2" position="0 0 .01">
+      <a-entity id="rings-group-2" position="0 0 -1" scale="0.5 0.5 0.5">
+        <a-image src="#ring2" scale="1.2 1.2 1.2" position="0 0 .01">
           <a-animation attribute="visible" from="false" to="true" begin="800" dur="1" fill="both"></a-animation>
           <!-- <a-animation attribute="scale" from="0.5 0.5 0.5" to="1 1 1" begin="750" dur="500" fill="both" easing="ease-out"></a-animation> -->
         </a-image>
-
-        <a-image src="images/text1.png" scale="0.3 0.3 0.3" position="1.4 0 .02">
+        <a-image src="#text1" scale="0.3 0.3 0.3" position="1.4 0 .02">
           <a-animation attribute="visible" from="false" to="true" begin="900" dur="1" fill="both"></a-animation>
         </a-image>
-
       </a-entity>
 
-
-      <!-- RINGS GROUP 1 -->
-
-      <a-entity scale="0.6 0.6 0.6">
-
-        <a-image src="images/ring5.png" scale="1.2 1.2 1.2" position="0 0 0">
+      <a-entity id="rings-group-1" scale="0.6 0.6 0.6">
+        <a-image src="#ring5" scale="1.2 1.2 1.2" position="0 0 0">
           <a-animation attribute="visible" from="false" to="true" begin="600" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/ring4.png" scale="1.2 1.2 1.2" position="0 0 .01">
+        <a-image src="#ring4" scale="1.2 1.2 1.2" position="0 0 .01">
           <a-animation attribute="visible" from="false" to="true" begin="600" dur="1" fill="both"></a-animation>
         </a-image>
-
-        <a-image src="images/ring3.png" position="0 0 .02">
+        <a-image src="#ring3" position="0 0 .02">
           <a-animation attribute="visible" from="false" to="true" begin="700" dur="1" fill="both"></a-animation>
           <a-animation attribute="scale" from="1 1 1" to="1.25 1.25 1.25" begin="700" dur="250" fill="both" easing="ease-out"></a-animation>
         </a-image>
-
       </a-entity>
 
-
-      <!-- LIGHTS -->
-
+      <!-- Lights. -->
       <a-light type="point" color="#94c6ff" distance="15" position="0 0 -12">
         <a-animation attribute="intensity" from="0" to="2" begin="750" dur="500" fill="both"></a-animation>
       </a-light>
-
       <a-light type="point" color="#94c6ff" distance="17" position="0 0 -6">
         <a-animation attribute="intensity" from="0" to="1" begin="500" dur="500" fill="both"></a-animation>
       </a-light>
-
       <a-light type="ambient" color="#4f6487" ></a-light>
 
-
-      <!-- SOUNDS -->
-
-      <a-entity sound="src: ../_sounds/321103__nsstudios__blip1.wav;"></a-entity>
-      <a-entity sound="src: ../_sounds/321104__nsstudios__blip2.wav;"></a-entity>
-
+      <!-- Sounds. -->
+      <a-entity sound="autoplay: true; src: ../_sounds/321103__nsstudios__blip1.wav;"></a-entity>
+      <a-entity sound="autoplay: true; src: ../_sounds/321104__nsstudios__blip2.wav;"></a-entity>
     </a-scene>
   </body>
 </html>

@@ -7,16 +7,16 @@
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-assets>
-      <a-mixin id="light" geometry="primitive: sphere; radius: 1.5"
-               material="color: #FFF; shader: flat"
-               light="color: #DDDDFF; distance: 120; intensity: 2; type: point">
-      </a-mixin>
-      <a-mixin id="torus-knot" geometry="primitive: torusKnot"
-               material="color: red"></a-mixin>
-    </a-assets>
-
     <a-scene>
+      <a-assets>
+        <a-mixin id="light" geometry="primitive: sphere; radius: 1.5"
+                 material="color: #FFF; shader: flat"
+                 light="color: #DDDDFF; distance: 120; intensity: 2; type: point">
+        </a-mixin>
+        <a-mixin id="torus-knot" geometry="primitive: torusKnot"
+                 material="color: red"></a-mixin>
+      </a-assets>
+
       <!-- Camera. -->
       <a-entity position="0 0 80" camera="fov: 45"
                 look-controls wasd-controls></a-entity>
