@@ -208,13 +208,13 @@ module.exports.Component = registerComponent('material', {
  * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
-  return new Promise(function (resolve, reject) {
+  texturePromises[src] = new Promise(function (resolve, reject) {
     var isEl = typeof src !== 'string';
     var onLoad = createTexture;
     var onProgress = function () {};
     var onError = function (xhr) {
       error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-       xhr.status, xhr.statusText);
+      xhr.status, xhr.statusText);
     };
 
     if (isEl) {
@@ -241,6 +241,7 @@ function loadImageTexture (material, src, repeat) {
       resolve(texture);
     }
   });
+  return texturePromises[src];
 }
 
 /**
