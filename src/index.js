@@ -1,9 +1,6 @@
 // Polyfill `Promise`.
-var promise = require('promise-polyfill');
-if (!global.Promise) {
-  global.Promise = promise;
-}
- 
+global.Promise = global.Promise || require('promise-polyfill');
+
 require('present');  // Polyfill `performance.now()`.
 
 // CSS.
