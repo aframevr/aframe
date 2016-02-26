@@ -162,7 +162,7 @@ module.exports.Component = registerComponent('material', {
             // Texture loaded.
             self.isLoadingEnvMap = false;
             material.envMap = cube;
-            self.el.emit('textureLoaded');
+            self.el.emit('material-texture-loaded');
             resolve(cube);
           });
         });
@@ -195,7 +195,7 @@ module.exports.Component = registerComponent('material', {
     function loadImage (src) {
       texturePromises[src] = loadImageTexture(material, src, data.repeat);
       texturePromises[src].then(function (texture) {
-        self.el.emit('textureLoaded');
+        self.el.emit('material-texture-loaded');
       }); }
     function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
   }
