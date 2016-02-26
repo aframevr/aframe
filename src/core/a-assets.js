@@ -26,6 +26,10 @@ module.exports = registerElement('a-assets', {
         var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         var videos = this.querySelectorAll('video');
 
+        if (this.parentNode.tagName !== 'A-SCENE') {
+          throw new Error('<a-assets> must be a child of a <a-scene>.');
+        }
+
         // Wait for <img>s.
         for (var i = 0; i < imgs.length; i++) {
           loaded.push(new Promise(function (resolve, reject) {

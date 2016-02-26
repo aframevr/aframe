@@ -84,3 +84,12 @@ suite('a-assets', function () {
     document.body.appendChild(scene);
   });
 });
+
+test('a-assets throws error if not in a-scene', function () {
+  var div = document.createElement('div');
+  var assets = document.createElement('a-assets');
+  div.appendChild(assets);
+  assert.throws(function () {
+    assets.attachedCallback();
+  }, Error);
+});
