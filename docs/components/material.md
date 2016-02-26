@@ -114,9 +114,9 @@ Since materials default to physically based shading, materials will reflect ligh
 
 ## Events
 
-You can attach following events to entities that use `material` with a texture `src` (image, video):
+You can attach following events to entities that use `material` with a image/video texture (via `src=""`) :
 
 | event name    | description     |
 | :------------- | :------------- |
-| `material-texture-loaded`       | Triggers once the image has been loaded. For videos this triggers once the first frames can be playe|
+| `material-texture-loaded`       | Triggers once the image has been loaded. For videos this triggers once the first frames can be played.|
 | `material-video-ended`       | If you are using a video texture, this triggers when the video has reached its end (may not work with `loop`). |
