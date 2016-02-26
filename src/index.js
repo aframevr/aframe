@@ -1,4 +1,6 @@
-require('es6-promise').polyfill();  // Polyfill `Promise`.
+// Polyfill `Promise`.
+window.Promise = window.Promise || require('promise-polyfill');
+
 require('present');  // Polyfill `performance.now()`.
 
 // CSS.
