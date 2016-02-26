@@ -162,6 +162,7 @@ module.exports.Component = registerComponent('material', {
             // Texture loaded.
             self.isLoadingEnvMap = false;
             material.envMap = cube;
+            self.el.emit('textureLoaded');
             resolve(cube);
           });
         });
@@ -176,19 +177,25 @@ module.exports.Component = registerComponent('material', {
    */
   updateTexture: function (src) {
     var data = this.data;
+    var self = this;
     var material = this.material;
     if (src) {
       if (src !== this.textureSrc) {
         // Texture added or changed.
         this.textureSrc = src;
         srcLoader.validateSrc(src, loadImage, loadVideo);
+        // Material is first to load this texture. Load and resolve texture.
       }
     } else {
       // Texture removed.
       material.map = null;
       material.needsUpdate = true;
     }
-    function loadImage (src) { loadImageTexture(material, src, data.repeat); }
+
+    function loadImage (src) {
+      return loadImageTexture(material, src, data.repeat).then(function (texture) {
+        self.el.emit('textureLoaded');
+      }); }
     function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
   }
 });
@@ -201,37 +208,39 @@ module.exports.Component = registerComponent('material', {
  * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
-  var isEl = typeof src !== 'string';
+  return new Promise(function (resolve, reject) {
+    var isEl = typeof src !== 'string';
+    var onLoad = createTexture;
+    var onProgress = function () {};
+    var onError = function (xhr) {
+      error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
+       xhr.status, xhr.statusText);
+    };
 
-  var onLoad = createTexture;
-  var onProgress = function () {};
-  var onError = function (xhr) {
-    error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-          xhr.status, xhr.statusText);
-  };
-
-  if (isEl) {
-    createTexture(src);
-  } else {
-    TextureLoader.load(src, onLoad, onProgress, onError);
-  }
-
-  function createTexture (texture) {
-    if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-    var repeatXY;
-    if (repeat) {
-      repeatXY = repeat.split(' ');
-      if (repeatXY.length === 2) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(parseInt(repeatXY[0], 10),
-                           parseInt(repeatXY[1], 10));
-      }
+    if (isEl) {
+      createTexture(src);
+    } else {
+      TextureLoader.load(src, onLoad, onProgress, onError);
     }
-    material.map = texture;
-    texture.needsUpdate = true;
-    material.needsUpdate = true;
-  }
+
+    function createTexture (texture) {
+      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+      var repeatXY;
+      if (repeat) {
+        repeatXY = repeat.split(' ');
+        if (repeatXY.length === 2) {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(parseInt(repeatXY[0], 10),
+          parseInt(repeatXY[1], 10));
+        }
+      }
+      material.map = texture;
+      texture.needsUpdate = true;
+      material.needsUpdate = true;
+      resolve(texture);
+    }
+  });
 }
 
 /**
