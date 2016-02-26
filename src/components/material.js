@@ -193,7 +193,8 @@ module.exports.Component = registerComponent('material', {
     }
 
     function loadImage (src) {
-      return loadImageTexture(material, src, data.repeat).then(function (texture) {
+      texturePromises[src] = loadImageTexture(material, src, data.repeat);
+      texturePromises[src].then(function (texture) {
         self.el.emit('textureLoaded');
       }); }
     function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
@@ -208,7 +209,7 @@ module.exports.Component = registerComponent('material', {
  * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
-  texturePromises[src] = new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var isEl = typeof src !== 'string';
     var onLoad = createTexture;
     var onProgress = function () {};
@@ -241,7 +242,6 @@ function loadImageTexture (material, src, repeat) {
       resolve(texture);
     }
   });
-  return texturePromises[src];
 }
 
 /**
