@@ -1,5 +1,5 @@
 // Polyfill `Promise`.
-global.Promise = global.Promise || require('promise-polyfill');
+window.Promise = window.Promise || require('promise-polyfill');
 
 require('present');  // Polyfill `performance.now()`.
 
