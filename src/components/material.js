@@ -197,7 +197,19 @@ module.exports.Component = registerComponent('material', {
       texturePromises[src].then(function (texture) {
         self.el.emit('material-texture-loaded');
       }); }
-    function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
+    function loadVideo (src) {
+      texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
+      texturePromises[src].then(function (videoEl) {
+        console.log('promise');
+        videoEl.addEventListener('loadeddata', function (e) {
+          self.el.emit('material-texture-loaded', videoEl);
+        });
+        videoEl.addEventListener('ended', function (e) {
+          // works only for non-loop videos
+          self.el.emit('video-ended');
+        });
+      });
+    }
   }
 });
 
@@ -288,6 +300,8 @@ function loadVideoTexture (material, src, height, width) {
   texture.needsUpdate = true;
   material.map = texture;
   material.needsUpdate = true;
+
+  return Promise.resolve(videoEl);
 }
 
 /**
