@@ -45,6 +45,7 @@ module.exports.Component = registerComponent('look-at', {
   },
 
   init: function () {
+    this.tickCount = 0;
     this.target3D = null;
     this.vector = new THREE.Vector3();
   },
@@ -66,7 +67,9 @@ module.exports.Component = registerComponent('look-at', {
 
     // Look at a position.
     if (typeof target === 'object') {
-      return object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+      object3D.lookAt(new THREE.Vector3(target.x, target.y, target.z));
+      console.log(object3D.rotation);
+      return;
     }
 
     // Assume target is a string.
@@ -86,11 +89,16 @@ module.exports.Component = registerComponent('look-at', {
   },
 
   tick: function (t) {
+    this.tickCount++;
     // Track target object position. Depends on parent object keeping global transforms up
     // to state with updateMatrixWorld(). In practice, this is handled by the renderer.
     var target3D = this.target3D;
     if (target3D) {
       return this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
+    } else if (this.tickCount === 1) {
+      console.log(this.el.object3D.rotation);
+      this.el.object3D.lookAt(new THREE.Vector3(this.data.x, this.data.y, this.data.z));
+      console.log(this.el.object3D.rotation);
     }
   },
 
