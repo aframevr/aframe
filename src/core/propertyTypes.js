@@ -6,6 +6,7 @@ var error = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 
 // Built-in property types.
+registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
@@ -13,7 +14,6 @@ registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.stringify);
-registerPropertyType('array', [], arrayParse, arrayStringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
