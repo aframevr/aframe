@@ -41,10 +41,9 @@ module.exports.registerPropertyType = registerPropertyType;
 
 function arrayParse (value) {
   if (Array.isArray(value)) { return value; }
-  if (value === null || value.length === 0) { return []; }
-  return value.split(',').map(function (str) {
-    return str.trim();
-  });
+  if (!value || typeof value !== 'string') { return []; }
+  return value.split(',').map(trim);
+  function trim (str) { return str.trim(); }
 }
 
 function arrayStringify (value) {
