@@ -34,7 +34,7 @@ suite('propertyTypes', function () {
       assert.equal(propertyTypes.mytype.default, 5);
     });
   });
-  
+
   suite('selector', function () {
     var parse = propertyTypes.selector.parse;
     var stringify = propertyTypes.selector.stringify;
@@ -62,16 +62,16 @@ suite('propertyTypes', function () {
       assert.equal(stringify(this.el), '#hello');
     });
   });
-  
+
   suite('array', function() {
     var parse = propertyTypes.array.parse;
     var stringify = propertyTypes.array.stringify;
-    
+
     test('parses array', function () {
       assert.deepEqual(parse(''), []);
       assert.deepEqual(parse('5 test'), ['5', 'test']);
     });
-    
+
     test('stringifies array', function () {
       assert.equal(stringify([]), '');
       assert.equal(stringify([5, 10]), '5 10');
