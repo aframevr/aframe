@@ -63,7 +63,7 @@ suite('propertyTypes', function () {
     });
   });
 
-  suite('array', function() {
+  suite('array', function () {
     var parse = propertyTypes.array.parse;
     var stringify = propertyTypes.array.stringify;
 
@@ -78,6 +78,6 @@ suite('propertyTypes', function () {
       assert.equal(stringify([]), '');
       assert.equal(stringify([5, 10]), '5 10');
       assert.equal(stringify([1, 'five', true]), '1 five true');
-    })
+    });
   });
 });
