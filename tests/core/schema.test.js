@@ -132,7 +132,14 @@ suite('schema', function () {
       assert.ok(typeof definition.parse, 'function');
       assert.ok(typeof definition.stringify, 'function');
     });
-
+    
+    test('adds array type if default value is array', function () {
+      var definition = processSchema({ default: [5, 10, 'fifty'] });
+      assert.equal(definition.type, 'array');
+      assert.ok(typeof definition.parse, 'function');
+      assert.ok(typeof definition.stringify, 'function');
+    });
+    
     test('sets default value if not defined', function () {
       registerPropertyType('faketype', 'FAKEDEFAULT');
       var definition = processSchema({ type: 'faketype' });

@@ -13,6 +13,7 @@ registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.stringify);
+registerPropertyType('array', [], arrayParse, arrayStringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -38,8 +39,18 @@ function registerPropertyType (type, defaultValue, parse, stringify) {
 }
 module.exports.registerPropertyType = registerPropertyType;
 
+function arrayParse (value) {
+  return value.length === 0 ?
+    [] :
+    value.split(' ');
+}
+
 function defaultParse (value) {
   return value;
+}
+
+function arrayStringify (value) {
+  return value.join(' ');
 }
 
 function defaultStringify (value) {
