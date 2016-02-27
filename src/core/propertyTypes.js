@@ -45,12 +45,12 @@ function arrayParse (value) {
     value.split(' ');
 }
 
-function defaultParse (value) {
-  return value;
-}
-
 function arrayStringify (value) {
   return value.join(' ');
+}
+
+function defaultParse (value) {
+  return value;
 }
 
 function defaultStringify (value) {
