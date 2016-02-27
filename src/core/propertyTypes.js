@@ -40,9 +40,8 @@ function registerPropertyType (type, defaultValue, parse, stringify) {
 module.exports.registerPropertyType = registerPropertyType;
 
 function arrayParse (value) {
-  return value.length === 0 ?
-    [] :
-    value.split(' ');
+  if (Array.isArray(value)) { return value; }
+  return value === null || value.length === 0 ? [] : value.split(' ');
 }
 
 function arrayStringify (value) {
