@@ -41,11 +41,15 @@ module.exports.registerPropertyType = registerPropertyType;
 
 function arrayParse (value) {
   if (Array.isArray(value)) { return value; }
-  return value === null || value.length === 0 ? [] : value.split(',');
+  return value === null || value.length === 0 ? 
+    [] : 
+    value.split(',').map(function(str) {
+      return str.trim();
+    });
 }
 
 function arrayStringify (value) {
-  return value.join(',');
+  return value.join(', ');
 }
 
 function defaultParse (value) {

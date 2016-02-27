@@ -69,15 +69,15 @@ suite('propertyTypes', function () {
 
     test('parses array', function () {
       assert.deepEqual(parse(''), []);
-      assert.deepEqual(parse('5,test,5 0 5'), ['5', 'test', '5 0 5']);
+      assert.deepEqual(parse('5,test, 5 0 5           '), ['5', 'test', '5 0 5']);
       assert.deepEqual(parse([]), []);
       assert.deepEqual(parse([1, 'five', null]), [1, 'five', null]);
     });
 
     test('stringifies array', function () {
       assert.equal(stringify([]), '');
-      assert.equal(stringify([5, 10]), '5,10');
-      assert.equal(stringify([1, 'five', true, '5 0 5']), '1,five,true,5 0 5');
+      assert.equal(stringify([5, 10]), '5, 10');
+      assert.equal(stringify([1, 'five', true, '5 0 5']), '1, five, true, 5 0 5');
     });
   });
 });
