@@ -302,8 +302,8 @@ function loadVideoTexture (material, src, height, width) {
   material.map = texture;
   material.needsUpdate = true;
 
-  // the promise is not necessary here, as the function is synchronous
-  // using a promise here for future consistency with texturePromises[]
+  // The promise is not necessary here, as the function is synchronous.
+  // Using a promise here for future consistency with texturePromises[]
   return Promise.resolve(videoEl);
 }
 
