@@ -195,7 +195,7 @@ module.exports.Component = registerComponent('material', {
     function loadImage (src) {
       texturePromises[src] = loadImageTexture(material, src, data.repeat);
       texturePromises[src].then(emitEvent);
-      function emitEvent () { self.el.emit('material-texture-loaded'); }
+      function emitEvent () { self.el.emit('material-texture-loaded', src); }
     }
 
     function loadVideo (src) {

@@ -72,7 +72,8 @@ suite('material', function () {
     test('texture emits an event on finished loading', function (done) {
       var el = this.el;
       el.setAttribute('material', 'src:"test.jpg"');
-      el.addEventListener('material-texture-loaded', function () {
+      el.addEventListener('material-texture-loaded', function (e) {
+        assert.equal(e.detail, 'test.jpg');
         done();
       });
     });
