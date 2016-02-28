@@ -194,14 +194,14 @@ module.exports.Component = registerComponent('material', {
 
     function loadImage (src) {
       texturePromises[src] = loadImageTexture(material, src, data.repeat);
-      texturePromises[src].then(function (texture) {
-        self.el.emit('material-texture-loaded');
-      });
+      texturePromises[src].then(emitEvent);
+      function emitEvent () { self.el.emit('material-texture-loaded'); }
     }
 
     function loadVideo (src) {
       texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
-      texturePromises[src].then(function (videoEl) {
+      texturePromises[src].then(emitEvent);
+      function emitEvent (videoEl) {
         videoEl.addEventListener('loadeddata', function (e) {
           self.el.emit('material-texture-loaded', videoEl);
         });
@@ -209,7 +209,7 @@ module.exports.Component = registerComponent('material', {
           // works only for non-loop videos
           self.el.emit('material-video-ended');
         });
-      });
+      }
     }
   }
 });
