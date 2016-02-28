@@ -195,7 +195,7 @@ module.exports.Component = registerComponent('material', {
     function loadImage (src) {
       texturePromises[src] = loadImageTexture(material, src, data.repeat);
       texturePromises[src].then(emitEvent);
-      function emitEvent () { self.el.emit('material-texture-loaded', src); }
+      function emitEvent () { self.el.emit('material-texture-loaded', {src: src}); }
     }
 
     function loadVideo (src) {
@@ -203,7 +203,7 @@ module.exports.Component = registerComponent('material', {
       texturePromises[src].then(emitEvent);
       function emitEvent (videoEl) {
         videoEl.addEventListener('loadeddata', function (e) {
-          self.el.emit('material-texture-loaded', videoEl);
+          self.el.emit('material-texture-loaded', {element: videoEl, src: src});
         });
         videoEl.addEventListener('ended', function (e) {
           // works only for non-loop videos

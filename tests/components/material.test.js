@@ -73,7 +73,7 @@ suite('material', function () {
       var el = this.el;
       el.setAttribute('material', 'src:"test.jpg"');
       el.addEventListener('material-texture-loaded', function (e) {
-        assert.equal(e.detail, 'test.jpg');
+        assert.equal(e.detail.src, 'test.jpg');
         done();
       });
     });
