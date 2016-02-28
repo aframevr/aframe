@@ -46,6 +46,8 @@ function processPropertyDefinition (propDefinition) {
     if (defaultVal !== undefined && ['boolean', 'number'].indexOf(typeof defaultVal) !== -1) {
       // Type inference.
       typeName = typeof defaultVal;
+    } else if (Array.isArray(defaultVal)) {
+      typeName = 'array';
     } else {
       // Fall back to string.
       typeName = 'string';
