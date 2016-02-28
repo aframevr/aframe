@@ -68,6 +68,14 @@ suite('material', function () {
       assert.notOk(el.sceneEl.materials[oldMaterial.uuid]);
       assert.equal(el.sceneEl.materials[newMaterial.uuid], newMaterial);
     });
+
+    test('texture emits an event on finished loading', function (done) {
+      var el = this.el;
+      el.setAttribute('material', 'src:"test.jpg"');
+      el.addEventListener('material-texture-loaded', function () {
+        done();
+      });
+    });
   });
 
   suite('remove', function () {
