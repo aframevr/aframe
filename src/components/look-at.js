@@ -98,4 +98,3 @@ module.exports.Component = registerComponent('look-at', {
     this.target3D = targetEl.object3D;
   }
 });
-
