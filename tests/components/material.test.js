@@ -69,7 +69,7 @@ suite('material', function () {
       assert.equal(el.sceneEl.materials[newMaterial.uuid], newMaterial);
     });
 
-    test('texture emits an event on finished loading', function (done) {
+    test('emits event when loading texture', function (done) {
       var el = this.el;
       el.setAttribute('material', 'src:"test.jpg"');
       el.addEventListener('material-texture-loaded', function (e) {
