@@ -118,6 +118,9 @@ module.exports.parseProperties = function (propData, schema, getPartialData) {
   return propData;
 };
 
+/**
+ * Deserialize a single property.
+ */
 function parseProperty (value, propDefinition) {
   if (typeof value !== 'string') { return value; }
   if (typeof value === 'undefined') { return value; }
@@ -125,6 +128,9 @@ function parseProperty (value, propDefinition) {
 }
 module.exports.parseProperty = parseProperty;
 
+/**
+ * Serialize a group of properties.
+ */
 module.exports.stringifyProperties = function (propData, schema) {
   var stringifiedData = {};
   Object.keys(propData).forEach(function (propName) {
@@ -135,6 +141,9 @@ module.exports.stringifyProperties = function (propData, schema) {
   return stringifiedData;
 };
 
+/**
+ * Serialize a single property.
+ */
 function stringifyProperty (value, propDefinition) {
   if (typeof value !== 'object') { return value; }
   return propDefinition.stringify(value);

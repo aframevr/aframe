@@ -520,16 +520,20 @@ suite('a-entity component lifecycle management', function () {
 suite('a-entity component dependency management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    this.TestComponent = registerComponent('test', extend({}, TestComponent, {
-      dependencies: ['dependency', 'codependency']
+    registerComponent('test', extend({}, TestComponent, {
+      dependencies: ['dependency', 'codependency'],
+
+      init: function () {
+        this.el.components.dependency.el;
+      }
     }));
-    this.DependencyComponent = registerComponent('dependency', extend({}, TestComponent, {
+    registerComponent('dependency', extend({}, TestComponent, {
       dependencies: ['nested-dependency']
     }));
-    this.CoDependencyComponent = registerComponent('codependency', extend({}, TestComponent, {
+    registerComponent('codependency', extend({}, TestComponent, {
       dependencies: []
     }));
-    this.NestedDependencyComponent = registerComponent('nested-dependency', TestComponent);
+    registerComponent('nested-dependency', TestComponent);
     el.addEventListener('loaded', function () {
       done();
     });
@@ -538,8 +542,21 @@ suite('a-entity component dependency management', function () {
   test('initializes dependency components', function () {
     var el = this.el;
     el.setAttribute('test', '');
+    assert.ok('test' in el.components);
     assert.ok('dependency' in el.components);
     assert.ok('codependency' in el.components);
     assert.ok('nested-dependency' in el.components);
+  });
+
+  test('initializes dependency components when not yet loaded', function (done) {
+    var el = entityFactory();
+    el.setAttribute('test', '');
+    el.addEventListener('loaded', function () {
+      assert.ok('test' in el.components);
+      assert.ok('dependency' in el.components);
+      assert.ok('codependency' in el.components);
+      assert.ok('nested-dependency' in el.components);
+      done();
+    });
   });
 });
