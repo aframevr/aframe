@@ -52,7 +52,7 @@ module.exports.Component = registerComponent('geometry', {
     p: { default: 2, if: { primitive: ['torusKnot'] }, type: 'int' },
     primitive: {
       default: '',
-      oneOf: ['', 'box', 'circle', 'cylinder', 'plane',
+      oneOf: ['', 'box', 'circle', 'cylinder', 'plane', 'polygon',
               'ring', 'sphere', 'torus', 'torusKnot'] },
     q: { default: 3, if: { primitive: ['torusKnot'] }, type: 'int' },
     phiLength: { default: 360, if: { primitive: ['sphere'] } },
@@ -75,6 +75,7 @@ module.exports.Component = registerComponent('geometry', {
                                                            'sphere'] } },
     thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
     translate: { type: 'vec3' },
+    vertices: { default: '', if: { primitive: ['polygon'] } },
     width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
@@ -142,6 +143,33 @@ function getGeometry (data, schema) {
     }
     case 'plane': {
       return new THREE.PlaneBufferGeometry(data.width, data.height);
+    }
+    case 'polygon': {
+      var verts = data.vertices.split(' ');
+
+      if(verts.length < 9) {
+        warn('Polygon needs at least 3 vertices')
+      }
+
+      if(verts.length % 3 !== 0) {
+        warn('Polygon needs vertices defined in sets of 3')
+      }
+
+      verts = verts.map(function(v) {return parseFloat(v);});
+
+      var geometry = new THREE.Geometry();
+
+      for (var i = 0; i < verts.length; i += 3) {
+        geometry.vertices.push(new THREE.Vector3(verts[i], verts[i + 1], verts[i + 2]));
+      }
+
+      for (var i = 0; i < geometry.vertices.length - 1; ++i) {
+        geometry.faces.push(new THREE.Face3(i, i + 1, geometry.vertices.length - 1));
+      }
+
+      geometry.computeFaceNormals();
+
+      return geometry;
     }
     case 'ring': {
       return new THREE.RingGeometry(
