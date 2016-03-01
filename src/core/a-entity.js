@@ -13,20 +13,16 @@ var registerElement = re.registerElement;
 var AEntity;
 
 /**
- * Entity element definition.
- * Entities represent all elements that are part of the scene, and always have
- * a position, rotation, and scale.
- * In the entity-component system, entities are just a container of components.
+ * Entity is a container object that components are plugged into to comprise everything in
+ * the scene. In A-Frame, they inherently have position, rotation, and scale.
  *
- * For convenience of inheriting components, the scene element inherits from
- * this prototype. When necessary, it differentiates itself by setting
- * `this.isScene`.
+ * To be able to take components, the scene element inherits from the entity definition.
  *
  * @namespace Entity
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
  * @member {array} states
- * @member {boolean} paused - true if dynamic behavior of the entity is paused
+ * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 var proto = Object.create(ANode.prototype, {
   defaultComponents: {
@@ -40,13 +36,13 @@ var proto = Object.create(ANode.prototype, {
 
   createdCallback: {
     value: function () {
-      this.isEntity = true;
-      this.states = [];
       this.components = {};
-      this.paused = true;
+      this.isEntity = true;
+      this.isPlaying = false;
       this.object3D = new THREE.Group();
       this.object3D.el = this;
       this.object3DMap = {};
+      this.states = [];
     }
   },
 
@@ -271,7 +267,7 @@ var proto = Object.create(ANode.prototype, {
           HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
         }
         this.components[name] = new components[name].Component(this);
-        if (!this.paused) { this.components[name].play(); }
+        if (this.isPlaying) { this.components[name].play(); }
       }
 
       log('Component initialized: %s', name);
@@ -381,8 +377,8 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      if (!this.paused) { return; }
-      this.paused = false;
+      if (this.isPlaying) { return; }
+      this.isPlaying = true;
       componentKeys.forEach(function playComponent (key) {
         components[key].play();
       });
@@ -402,8 +398,8 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      if (this.paused) { return; }
-      this.paused = true;
+      if (!this.isPlaying) { return; }
+      this.isPlaying = false;
       componentKeys.forEach(function pauseComponent (key) {
         components[key].pause();
       });
