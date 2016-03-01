@@ -5,7 +5,7 @@ type: components
 layout: docs
 parent_section: docs
 order: 1
-section_order: 4
+section_order: 3
 ---
 
 The `camera` component defines from which perspective the user views the scene. It is often paired with controls-related components that allow user input to move and rotate the camera.

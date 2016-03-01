@@ -5,7 +5,7 @@ type: core
 layout: docs
 parent_section: docs
 order: 1
-section_order: 3
+section_order: 2
 ---
 
 A-Frame is based on an __[entity-component-system pattern](https://en.wikipedia.org/wiki/Entity_component_system)__, a pattern common in game development that emphasizes composability over inheritance:

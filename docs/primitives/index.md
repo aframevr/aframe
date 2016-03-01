@@ -5,7 +5,7 @@ type: primitives
 layout: docs
 parent_section: docs
 order: 1
-section_order: 2
+section_order: 4
 ---
 
 Primitives alias A-Frame [entities](../core/entity.md) and map HTML attributes to [component](../core/component.md) properties. They are a convenience layer on top of the core API and are meant to:
