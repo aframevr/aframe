@@ -92,6 +92,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     listener = this.listener = new THREE.AudioListener();
+    el.sceneEl.camera.add(listener);
     sound = this.sound = new THREE.Audio(listener);
     el.setObject3D('sound', sound);
     return sound;
