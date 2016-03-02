@@ -1,4 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
+var shouldCaptureKeyEvent = require('../utils/').shouldCaptureKeyEvent;
 var THREE = require('../lib/three');
 
 var MAX_DELTA = 0.2;
@@ -24,8 +25,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
+    this.onBlur = this.onBlur.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.attachVisibilityEventListeners();
   },
 
   update: function (previousData) {
@@ -81,11 +86,12 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   play: function () {
-    this.attachEventListeners();
+    this.attachKeyEventListeners();
   },
 
   pause: function () {
-    this.removeEventListeners();
+    this.keys = {};
+    this.removeKeyEventListeners();
   },
 
   tick: function (t) {
@@ -94,25 +100,54 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   remove: function () {
     this.pause();
+    this.removeVisibilityEventListeners();
   },
 
-  attachEventListeners: function () {
-    // Keyboard events
-    window.addEventListener('keydown', this.onKeyDown, false);
-    window.addEventListener('keyup', this.onKeyUp, false);
+  attachVisibilityEventListeners: function () {
+    window.addEventListener('blur', this.onBlur);
+    window.addEventListener('focus', this.onFocus);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   },
 
-  removeEventListeners: function () {
-    // Keyboard events
+  removeVisibilityEventListeners: function () {
+    window.removeEventListener('blur', this.onBlur);
+    window.removeEventListener('focus', this.onFocus);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  },
+
+  attachKeyEventListeners: function () {
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
+  },
+
+  removeKeyEventListeners: function () {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
   },
 
+  onBlur: function () {
+    this.pause();
+  },
+
+  onFocus: function () {
+    this.play();
+  },
+
+  onVisibilityChange: function () {
+    if (document.hidden) {
+      this.onBlur();
+    } else {
+      this.onFocus();
+    }
+  },
+
   onKeyDown: function (event) {
+    if (!shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = true;
   },
 
   onKeyUp: function (event) {
+    if (!shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = false;
   },
 

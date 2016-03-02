@@ -1,4 +1,5 @@
 var registerComponent = require('../../core/component').registerComponent;
+var shouldCaptureKeyEvent = require('../../utils/').shouldCaptureKeyEvent;
 var THREE = require('../../lib/three');
 
 var controls = new THREE.VRControls(new THREE.Object3D());
@@ -14,6 +15,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     var scene = this.el;
 
     this.listener = window.addEventListener('keyup', function (event) {
+      if (!shouldCaptureKeyEvent(event)) { return; }
       if (self.enterVREnabled && event.keyCode === 70) {  // f.
         scene.enterVR();
       }
