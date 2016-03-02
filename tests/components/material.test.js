@@ -74,7 +74,7 @@ suite('material', function () {
       var imageUrl = 'base/examples/_images/mozvr.png';
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
       el.addEventListener('material-texture-loaded', function (evt) {
-        assert(evt.detail.src === imageUrl);
+        assert.equal(evt.detail.src, imageUrl);
         done();
       });
     });
