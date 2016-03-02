@@ -102,6 +102,7 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     detachedCallback: {
       value: function () {
+        this.removeEventListeners(this.evt);
         if (!this.isRunning) { return; }
         this.stop();
       }
