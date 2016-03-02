@@ -71,8 +71,9 @@ suite('material', function () {
 
     test('emits event when loading texture', function (done) {
       var el = this.el;
-      el.setAttribute('material', 'src: url(../../examples/_images/mozvr.png)');
+      el.setAttribute('material', 'src: url(http://localhost:9876/base/examples/_images/mozvr.png)');
       el.addEventListener('material-texture-loaded', function (evt) {
+        assert(evt.detail.src === 'http://localhost:9876/base/examples/_images/mozvr.png', 'src in event detail is the same as the url set to be the image texture src.');
         done();
       });
     });
