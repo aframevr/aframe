@@ -7,13 +7,14 @@ suite('sound', function () {
 
   setup(function (done) {
     var el = this.el = entityFactory();
+
+    this.sinon.stub(Sound.prototype, 'play');
+    this.sinon.stub(Sound.prototype, 'stop');
+
     el.setAttribute('sound', 'src: mysoundfile.mp3; autoplay: true; loop: true');
     el.addEventListener('loaded', function () {
       done();
     });
-
-    this.sinon.stub(Sound.prototype, 'play');
-    this.sinon.stub(Sound.prototype, 'stop');
   });
 
   suite('update', function () {
