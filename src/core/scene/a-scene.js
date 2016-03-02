@@ -296,8 +296,12 @@ var AScene = module.exports = registerElement('a-scene', {
 
         // setTimeout in case the camera is being set dynamically with a setAttribute.
         setTimeout(function checkForCamera () {
-          var sceneCameras = self.querySelectorAll('[camera]');
-          if (sceneCameras.length !== 0) { return; }
+          var camera = self.querySelector('[camera]');
+
+          if (camera && camera.isEntity) {
+            self.emit('camera-ready', { camera: camera });
+            return;
+          }
 
           // DOM calls to create camera.
           cameraWrapperEl = document.createElement('a-entity');
@@ -309,6 +313,7 @@ var AScene = module.exports = registerElement('a-scene', {
           defaultCamera.setAttribute('look-controls');
           cameraWrapperEl.appendChild(defaultCamera);
           self.appendChild(cameraWrapperEl);
+          self.emit('camera-ready', { camera: defaultCamera });
         });
       }
     },
