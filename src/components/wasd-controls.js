@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var utils = require('../utils/');
 
 var MAX_DELTA = 0.2;
 
@@ -24,6 +25,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
+    this.onBlur = this.onBlur.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
   },
@@ -98,21 +100,30 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   attachEventListeners: function () {
     // Keyboard events
-    window.addEventListener('keydown', this.onKeyDown, false);
-    window.addEventListener('keyup', this.onKeyUp, false);
+    window.addEventListener('blur', this.onBlur);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
   },
 
   removeEventListeners: function () {
     // Keyboard events
+    window.removeEventListener('blur', this.onBlur);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
   },
 
+  onBlur: function (event) {
+    this.pause();
+    // this.keys = {};
+  },
+
   onKeyDown: function (event) {
+    if (!utils.shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = true;
   },
 
   onKeyUp: function (event) {
+    if (!utils.shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = false;
   },
 
