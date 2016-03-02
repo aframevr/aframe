@@ -3,10 +3,26 @@ title: <a-light>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 7
+order: 11
 ---
 
-The light primitive wraps an entity that contains a light component. There are several types of lights available, each with unique properties. To dig into the options consult the documentation for the [light component](../components/light.html).
+The light primitive adjusts the lighting setup of the scene. It is an entity that maps attributes to properties of the [light component](../components/light.html).
+
+## Examples
+
+
+```html
+<!-- Red directional light shining from the top left. -->
+<a-light color="red" position="-1 1 0"></a-light>
+
+<!-- Blue point light, 5 meters in the air. -->
+<a-light type="point" color="blue" position="0 5 0"></a-light>
+
+<!-- Dim ambient lighting. -->
+<a-light type="ambient" color="#222"></a-light>
+```
+
+## Attributes
 
 | Attribute    | Default Value | Component Mapping |
 | ------------ | ------------- | ----------------- |
@@ -19,22 +35,6 @@ The light primitive wraps an entity that contains a light component. There are s
 | intensity    | 1.0           | light.intensity   |
 | type         | directional   | light.type        |
 
-[View source on GitHub](https://github.com/aframevr/aframe/blob/master/elements/templates/a-light.html)
+## Differences with the Default Lighting
 
-## Replacing the default scene lights
-
-When we manually add a light primitive to our scene, A-Frame does not create the [default scene lights](../guide/cameras-and-lights.html).
-
-## Examples
-
-Red directional light shining from the top left:
-
-```html
-<a-light color="red" position="-1 1 0"></a-light>
-```
-
-Blue point light, 5 meters in the air:
-
-```html
-<a-light color="blue" position="0 5 0" type="point"></a-light>
-```
+When we add a light, A-Frame will remove the default lighting setup (i.e., one directional light from the top-left, and one small ambient light).

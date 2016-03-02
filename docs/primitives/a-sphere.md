@@ -3,35 +3,23 @@ title: <a-sphere>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 11
+order: 16
 ---
 
-The sphere primitive wraps an entity that contains [`geometry`](../components/geometry.html) and [`material`](../components/material.html) components.
+The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.html) with its geometric primitive set to `sphere`.
 
-| Attribute       | Default Value | Component Mapping       |
-| --------------- | ------------- | -----------------       |
-| color           | gray          | material.color          |
-| metalness       | 0.0           | material.metalness      |
-| opacity         | 1.0           | material.opacity        |
-| radius          | 0.85          | geometry.radius         |
-| roughness       | 0.5           | material.roughness      |
-| segments-height | 18            | geometry.segmentsHeight |
-| segments-width  | 36            | geometry.segmentsWidth  |
-| shader          | standard      | material.shader         |
-| src             | None          | material.src            |
-| translate       | 0 0 0         | geometry.translate      |
-| transparent     | true          | material.transparent    |
-
-[View source on GitHub](https://github.com/aframevr/aframe/blob/master/elements/templates/a-sphere.html)
-
-## Image format
-
-To ensure a seamless texture on a sphere sphere, images must use an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection).
-
-## Examples
-
-Yellow sphere:
+## Example
 
 ```html
 <a-sphere color="yellow" radius="5"></a-sphere>
 ```
+
+## Attributes
+
+Note that the sphere primitive inherits common [mesh attributes](./mesh-attributes.html).
+
+| Attribute       | Component Mapping | Default Value           |
+|-----------------+-------------------+-------------------------|
+| radius          | 0.85              | geometry.radius         |
+| segments-height | 18                | geometry.segmentsHeight |
+| segments-width  | 36                | geometry.segmentsWidth  |
