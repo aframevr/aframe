@@ -30,13 +30,19 @@ require('./shaders/index');  // Register core shaders.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
 
-// Webvr polyfill configuration.
+// WebVR Polyfill configuration.
 window.hasNonPolyfillWebVRSupport = 'getVRDisplays' in navigator || 'getVRDevices' in navigator;
 window.WebVRConfig = {
   TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
+  DEFER_INITIALIZATION: true
 };
-require('../node_modules/webvr-libs/webvr-polyfill');
+var webvrPolyfill = require('../node_modules/webvr-libs/webvr-polyfill');
+if (webvrPolyfill && 'polyfill' in webvrPolyfill) {
+  webvrPolyfill.polyfill();
+} else if ('InitializeWebVRPolyfill' in window) {
+  window.InitializeWebVRPolyfill();
+}
 
 require('./core/a-animation');
 require('./core/a-assets');
