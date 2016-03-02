@@ -266,10 +266,6 @@ var proto = Object.create(ANode.prototype, {
         // Add component if it is a dependency and not yet defined.
         this.setAttribute(name, '');
       } else {
-        if (this.isScene && !this.hasAttribute(name) && name in this.defaultComponents) {
-          // For scene default components, expose them in the DOM.
-          HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
-        }
         this.components[name] = new components[name].Component(this);
         if (!this.paused) { this.components[name].play(); }
       }
