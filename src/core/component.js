@@ -9,6 +9,7 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
+
 var components = module.exports.components = {}; // Keep track of registered components.
 
 /**
@@ -212,7 +213,9 @@ module.exports.registerComponent = function (name, definition) {
   });
 
   if (components[name]) {
-    throw new Error('The component ' + name + ' has been already registered');
+    throw new Error('The component `' + name + '` has been already registered. ' +
+                    'Check that you are not loading two versions of the same component ' +
+                    'or two different components of the same name.');
   }
   NewComponent = function (el) {
     Component.call(this, el);

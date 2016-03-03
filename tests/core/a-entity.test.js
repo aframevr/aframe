@@ -536,7 +536,11 @@ suite('a-entity component lifecycle management', function () {
 suite('a-entity component dependency management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    components.test = undefined;
+    var componentNames = ['codependency', 'dependency', 'nested-dependency', 'test'];
+    componentNames.forEach(function clearComponent (componentName) {
+      components[componentName] = undefined;
+    });
+
     this.TestComponent = registerComponent('test', extend({}, TestComponent, {
       dependencies: ['dependency', 'codependency']
     }));
@@ -558,5 +562,11 @@ suite('a-entity component dependency management', function () {
     assert.ok('dependency' in el.components);
     assert.ok('codependency' in el.components);
     assert.ok('nested-dependency' in el.components);
+  });
+
+  test('only initializes each component once', function () {
+    var spy = this.sinon.spy(this.DependencyComponent.prototype, 'init');
+    this.el.setAttribute('test', '');
+    assert.equal(spy.callCount, 1);
   });
 });
