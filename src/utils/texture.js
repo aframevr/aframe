@@ -2,6 +2,7 @@ var debug = require('./debug');
 var error = debug('components:texture:error');
 var THREE = require('../lib/three');
 var TextureLoader = new THREE.TextureLoader();
+var texturePromises = {};
 var warn = debug('components:texture:warn');
 
 /**
@@ -12,36 +13,42 @@ var warn = debug('components:texture:warn');
  * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
  */
 function loadImageTexture (material, src, repeat) {
-  var isEl = typeof src !== 'string';
+  return new Promise(function (resolve, reject) {
+    console.log('loading image texture', src);
+    var isEl = typeof src !== 'string';
+    var onLoad = createTexture;
+    var onProgress = function () {};
+    var onError = function (xhr) {
+      console.log('ERROR');
+      error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
+      xhr.status, xhr.statusText);
+    };
 
-  var onLoad = createTexture;
-  var onProgress = function () {};
-  var onError = function (xhr) {
-    error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-          xhr.status, xhr.statusText);
-  };
-
-  if (isEl) {
-    createTexture(src);
-  } else {
-    TextureLoader.load(src, onLoad, onProgress, onError);
-  }
-
-  function createTexture (texture) {
-    if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-    var repeatXY;
-    if (repeat) {
-      repeatXY = repeat.split(' ');
-      if (repeatXY.length === 2) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(parseInt(repeatXY[0], 10),
-                           parseInt(repeatXY[1], 10));
-      }
+    if (isEl) {
+      createTexture(src);
+    } else {
+      TextureLoader.load(src, onLoad, onProgress, onError);
     }
-    texture.needsUpdate = true;
-    updateMaterial(material, texture);
-  }
+
+    function createTexture (texture) {
+      console.log('create texture');
+      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+      var repeatXY;
+      if (repeat) {
+        repeatXY = repeat.split(' ');
+        if (repeatXY.length === 2) {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(parseInt(repeatXY[0], 10),
+          parseInt(repeatXY[1], 10));
+        }
+      }
+      material.map = texture;
+      texture.needsUpdate = true;
+      material.needsUpdate = true;
+      resolve(texture);
+    }
+  });
 }
 
 /**
@@ -100,6 +107,10 @@ function loadVideoTexture (material, src, height, width) {
   texture.minFilter = THREE.LinearFilter;
   texture.needsUpdate = true;
   updateMaterial(material, texture);
+
+  // The promise is not necessary here, as the function is synchronous.
+  // Using a promise here for future consistency with texturePromises[]
+  return Promise.resolve(videoEl);
 }
 
 /**
@@ -123,10 +134,32 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
+function loadImage (material, data, src) {
+  var el = this.el;
+  texturePromises[src] = loadImageTexture(material, src, data.repeat);
+  texturePromises[src].then(emitEvent);
+  function emitEvent () { el.emit('material-texture-loaded', {src: src}); }
+}
+
+function loadVideo (material, data, src) {
+  var el = this.el;
+  texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
+  texturePromises[src].then(emitEvent);
+  function emitEvent (videoEl) {
+    videoEl.addEventListener('loadeddata', function (evt) {
+      el.emit('material-texture-loaded', {element: videoEl, src: src});
+    });
+    videoEl.addEventListener('ended', function (evt) {
+      // works only for non-loop videos
+      el.emit('material-video-ended');
+    });
+  }
+}
+
 module.exports = {
   createVideoEl: createVideoEl,
   fixVideoAttributes: fixVideoAttributes,
-  loadImageTexture: loadImageTexture,
-  loadVideoTexture: loadVideoTexture,
-  updateMaterial: updateMaterial
+  updateMaterial: updateMaterial,
+  loadImage: loadImage,
+  loadVideo: loadVideo
 };
