@@ -1,92 +1,105 @@
 /* global Promise */
 var debug = require('../utils/debug');
-var diff = require('../utils').diff;
-var registerComponent = require('../core/component').registerComponent;
-var srcLoader = require('../utils/src-loader');
+var utils = require('../utils');
+var component = require('../core/component');
 var THREE = require('../lib/three');
+var shader = require('../core/shader');
 
-var CubeLoader = new THREE.CubeTextureLoader();
 var error = debug('components:material:error');
-var TextureLoader = new THREE.TextureLoader();
-var texturePromises = {};
-var warn = debug('components:material:warn');
-
-var MATERIAL_TYPE_BASIC = 'MeshBasicMaterial';
-var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
+var diff = utils.diff;
+var registerComponent = component.registerComponent;
+var shaders = shader.shaders;
+var shaderNames = shader.shaderNames;
 
 /**
  * Material component.
  *
  * @namespace material
- * @param {string} color - Diffuse color.
- * @param {string} envMap - To load a environment cubemap. Takes a selector
- *         to an element containing six img elements, or a comma-separated
- *         string of direct url()s.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {number} metalness - Parameter for physical/standard material.
- * @param {number} opacity - [0-1].
- * @param {string} repeat - X and Y value for size of texture repeating
- *         (in UV units).
- * @param {number} roughness - Parameter for physical/standard material.
- * @param {string} [side=front] - Which side(s) to render (i.e., front, back,
- *         both).
  * @param {string} shader - Determines how material is shaded. Defaults to `standard`,
  *         three.js's implementation of PBR. Another option is `flat` where we use
  *         MeshBasicMaterial.
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {boolean} transparent - Whether to render transparent the alpha
- *         channel of a texture (e.g., .png).
- * @param {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    color: { default: '#FFF' },
-    envMap: { default: '' },
-    fog: { default: true },
-    height: { default: 360 },
-    metalness: { default: 0.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
-    opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    repeat: { default: '' },
-    roughness: { default: 0.5, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
-    shader: { default: 'standard', oneOf: ['flat', 'standard'] },
-    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-    src: { default: '' },
+    shader: { default: 'standard', oneOf: shaderNames },
     transparent: { default: false },
-    width: { default: 640 }
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] }
   },
 
   init: function () {
-    this.isLoadingEnvMap = false;
     this.material = null;
-    this.textureSrc = null;
   },
 
   /**
    * Update or create material.
    *
-   * Material type depends on shader:
-   *   shader=flat - MeshBasicMaterial.
-   *   shader=XXX - MeshStandardMaterial.
-   *
    * @param {object|null} oldData
    */
   update: function (oldData) {
     var data = this.data;
-    var material;
-    var materialType = getMaterialType(data);
-    var src = data.src;
+    var dataDiff = oldData ? diff(oldData, data) : data;
 
-    if (!oldData || getMaterialType(oldData) !== materialType) {
-      material = this.createMaterial(getMaterialData(data), materialType);
-    } else {
-      material = this.updateMaterial(processMaterialData(diff(oldData, data)));
+    if (!this.shader || dataDiff.shader) {
+      this.updateShader(data.shader);
     }
+    this.shader.update(this.data);
+    this.updateMaterial();
+  },
 
-    // Load textures and/or cubemaps.
-    if (material.type === MATERIAL_TYPE_STANDARD) { this.updateEnvMap(); }
-    this.updateTexture(src);
+  updateSchema: function (data) {
+    var newShader = data.shader;
+    var currentShader = this.data && this.data.shader;
+    var shader = newShader || currentShader;
+    var schema = shaders[shader] && shaders[shader].schema;
+    if (!schema) { error('Unknown shader schema ' + shader); }
+    if (currentShader && newShader === currentShader) { return; }
+    this.extendSchema(schema);
+    this.updateBehavior();
+  },
+
+  updateBehavior: function () {
+    var scene = this.el.sceneEl;
+    var schema = this.schema;
+    var self = this;
+    var tickProperties = {};
+    var tick = function (time, delta) {
+      var keys = Object.keys(tickProperties);
+      keys.forEach(update);
+      function update (key) { tickProperties[key] = time; }
+      self.shader.update(tickProperties);
+    };
+    var keys = Object.keys(schema);
+    keys.forEach(function (key) {
+      if (schema[key].type === 'time') {
+        self.tick = tick;
+        tickProperties[key] = true;
+        scene.addBehavior(self);
+      }
+    });
+    if (Object.keys(tickProperties).length === 0) {
+      scene.removeBehavior(this);
+    }
+  },
+
+  updateShader: function (shaderName) {
+    var data = this.data;
+    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
+    var material;
+    if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
+    this.shader = new Shader();
+    this.shader.el = this.el;
+    material = this.shader.init(data);
+    this.setMaterial(material);
+    this.updateSchema(data);
+  },
+
+  updateMaterial: function () {
+    var data = this.data;
+    var material = this.material;
+    material.side = parseSide(data.side);
+    material.opacity = data.opacity;
+    material.transparent = data.transparent !== false || data.opacity < 1.0;
   },
 
   /**
@@ -94,8 +107,7 @@ module.exports.Component = registerComponent('material', {
    */
   remove: function () {
     var el = this.el;
-    var defaultColor = this.schema.color.default;
-    var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
+    var defaultMaterial = new THREE.MeshBasicMaterial();
     var object3D = el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
     el.sceneEl.unregisterMaterial(this.material);
@@ -109,274 +121,14 @@ module.exports.Component = registerComponent('material', {
    * @param {object} type - Material type to create.
    * @returns {object} Material.
    */
-  createMaterial: function (data, type) {
-    var material;
+  setMaterial: function (material) {
     var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
     var sceneEl = this.el.sceneEl;
     if (this.material) { sceneEl.unregisterMaterial(this.material); }
-    material = this.material = mesh.material = new THREE[type](data);
+    this.material = mesh.material = material;
     sceneEl.registerMaterial(material);
-    return material;
-  },
-
-  /**
-   * Updating existing material.
-   *
-   * @param {object} data - Material component data.
-   * @returns {object} Material.
-   */
-  updateMaterial: function (data) {
-    var material = this.material;
-    Object.keys(data).forEach(function (key) {
-      material[key] = data[key];
-    });
-    return material;
-  },
-
-  /**
-   * Handle environment cubemap. Textures are cached in texturePromises.
-   */
-  updateEnvMap: function () {
-    var self = this;
-    var material = this.material;
-    var envMap = this.data.envMap;
-    // Environment cubemaps.
-    if (!envMap || this.isLoadingEnvMap) {
-      material.envMap = null;
-      material.needsUpdate = true;
-      return;
-    }
-    this.isLoadingEnvMap = true;
-    if (texturePromises[envMap]) {
-      // Another material is already loading this texture. Wait on promise.
-      texturePromises[envMap].then(function (cube) {
-        self.isLoadingEnvMap = false;
-        material.envMap = cube;
-        material.needsUpdate = true;
-      });
-    } else {
-      // Material is first to load this texture. Load and resolve texture.
-      texturePromises[envMap] = new Promise(function (resolve) {
-        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
-          CubeLoader.load(urls, function (cube) {
-            // Texture loaded.
-            self.isLoadingEnvMap = false;
-            material.envMap = cube;
-            self.el.emit('material-texture-loaded');
-            resolve(cube);
-          });
-        });
-      });
-    }
-  },
-
-  /*
-   * Updates material texture map.
-   *
-   * @param {string|object} src - An <img> / <video> element or url to an image/video file.
-   */
-  updateTexture: function (src) {
-    var data = this.data;
-    var self = this;
-    var material = this.material;
-    if (src) {
-      if (src !== this.textureSrc) {
-        // Texture added or changed.
-        this.textureSrc = src;
-        srcLoader.validateSrc(src, loadImage, loadVideo);
-        // Material is first to load this texture. Load and resolve texture.
-      }
-    } else {
-      // Texture removed.
-      material.map = null;
-      material.needsUpdate = true;
-    }
-
-    function loadImage (src) {
-      texturePromises[src] = loadImageTexture(material, src, data.repeat);
-      texturePromises[src].then(emitEvent);
-      function emitEvent () { self.el.emit('material-texture-loaded', {src: src}); }
-    }
-
-    function loadVideo (src) {
-      texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
-      texturePromises[src].then(emitEvent);
-      function emitEvent (videoEl) {
-        videoEl.addEventListener('loadeddata', function (evt) {
-          self.el.emit('material-texture-loaded', {element: videoEl, src: src});
-        });
-        videoEl.addEventListener('ended', function (evt) {
-          // works only for non-loop videos
-          self.el.emit('material-video-ended');
-        });
-      }
-    }
   }
 });
-
-/**
- * Sets image texture on material as `map`.
- *
- * @param {object} material - three.js material.
- * @param {string|object} src - An <img> element or url to an image file.
- * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
- */
-function loadImageTexture (material, src, repeat) {
-  return new Promise(function (resolve, reject) {
-    var isEl = typeof src !== 'string';
-    var onLoad = createTexture;
-    var onProgress = function () {};
-    var onError = function (xhr) {
-      error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-      xhr.status, xhr.statusText);
-    };
-
-    if (isEl) {
-      createTexture(src);
-    } else {
-      TextureLoader.load(src, onLoad, onProgress, onError);
-    }
-
-    function createTexture (texture) {
-      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-      var repeatXY;
-      if (repeat) {
-        repeatXY = repeat.split(' ');
-        if (repeatXY.length === 2) {
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(parseInt(repeatXY[0], 10),
-          parseInt(repeatXY[1], 10));
-        }
-      }
-      material.map = texture;
-      texture.needsUpdate = true;
-      material.needsUpdate = true;
-      resolve(texture);
-    }
-  });
-}
-
-/**
- * Creates a video element to be used as a texture.
- *
- * @param {object} material - three.js material.
- * @param {string} src - Url to a video file.
- * @param {number} width - Width of the video.
- * @param {number} height - Height of the video.
- * @returns {Element} Video element.
- */
-function createVideoEl (material, src, width, height) {
-  var el = material.videoEl || document.createElement('video');
-  function onError () {
-    warn('The URL "$s" is not a valid image or video', src);
-  }
-  el.width = width;
-  el.height = height;
-  // Attach event listeners if brand new video element.
-  if (el !== this.videoEl) {
-    el.autoplay = true;
-    el.loop = true;
-    el.crossOrigin = true;
-    el.addEventListener('error', onError, true);
-    material.videoEl = el;
-  }
-  el.src = src;
-  return el;
-}
-
-/**
- * Sets video texture on material as map.
- *
- * @param {object} material - three.js material.
- * @param {string} src - Url to a video file.
- * @param {number} width - Width of the video.
- * @param {number} height - Height of the video.
-*/
-function loadVideoTexture (material, src, height, width) {
-  // three.js video texture loader requires a <video>.
-  var videoEl = typeof src !== 'string' ? fixVideoAttributes(src) : createVideoEl(material, src, height, width);
-  var texture = new THREE.VideoTexture(videoEl);
-  texture.minFilter = THREE.LinearFilter;
-  texture.needsUpdate = true;
-  material.map = texture;
-  material.needsUpdate = true;
-
-  // The promise is not necessary here, as the function is synchronous.
-  // Using a promise here for future consistency with texturePromises[]
-  return Promise.resolve(videoEl);
-}
-
-/**
- * Fixes a video element's attributes to prevent developers from accidentally
- * passing the wrong attribute values to commonly misused video attributes.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#Attributes
- * @param {Element} videoEl - Video element.
- * @returns {Element} Video element with the correct properties updated.
- */
-function fixVideoAttributes (videoEl) {
-  // The `<video>` element treats `loop` and `muted` as boolean attributes, but
-  // of course does not with `autoplay`, `controls`, `preload` (and `crossorigin`).
-  // If we get passed a `<video autoplay="false">`, let's assume the dev wanted
-  // `autoplay` to be disabled.
-  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
-  videoEl.controls = videoEl.getAttribute('controls') !== 'false';
-  if (videoEl.getAttribute('preload') === 'false') {
-    videoEl.preload = 'none';
-  }
-  return videoEl;
-}
-
-/**
- * Builds and normalize material data, normalizing stuff along the way.
- *
- * @param {object} data - Material data.
- * @returns {object} data - Processed material data.
- */
-function getMaterialData (data) {
-  var materialData = {
-    color: data.color,
-    side: data.side,
-    opacity: data.opacity,
-    transparent: data.transparent !== false || data.opacity < 1.0
-  };
-  if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
-    // Attach standard material parameters.
-    materialData.metalness = data.metalness;
-    materialData.roughness = data.roughness;
-  }
-  return processMaterialData(materialData);
-}
-
-/**
- * Necessary transforms to material data before passing to three.js.
- *
- * @param {object} data - Material data.
- * @returns {object} Processed material data.
- */
-function processMaterialData (data) {
-  if ('color' in data) {
-    data.color = new THREE.Color(data.color);
-  }
-  if ('opacity' in data && data.opacity < 1) {
-    data.transparent = true;
-  }
-  if ('side' in data) {
-    data.side = getSide(data.side);
-  }
-  return data;
-}
-
-/**
- * Get material type based on shader.
- *
- * @param {object} Material component data.
- * @returns {string} Material type (as three.js constructor name)
- */
-function getMaterialType (data) {
-  return data.shader === 'flat' ? MATERIAL_TYPE_BASIC : MATERIAL_TYPE_STANDARD;
-}
 
 /**
  * Returns a three.js constant determining which material face sides to render
@@ -385,7 +137,7 @@ function getMaterialType (data) {
  * @param {string} [side=front] - `front`, `back`, or `double`.
  * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
  */
-function getSide (side) {
+function parseSide (side) {
   switch (side) {
     case 'back': {
       return THREE.BackSide;

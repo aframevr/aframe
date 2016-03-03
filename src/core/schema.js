@@ -1,4 +1,6 @@
+var debug = require('../utils/debug');
 var propertyTypes = require('./propertyTypes').propertyTypes;
+var warn = debug('core:schema:warn');
 
 /**
  * A schema is classified as a schema for a single property if:
@@ -46,6 +48,8 @@ function processPropertyDefinition (propDefinition) {
     if (defaultVal !== undefined && ['boolean', 'number'].indexOf(typeof defaultVal) !== -1) {
       // Type inference.
       typeName = typeof defaultVal;
+    } else if (Array.isArray(defaultVal)) {
+      typeName = 'array';
     } else {
       // Fall back to string.
       typeName = 'string';
@@ -58,7 +62,7 @@ function processPropertyDefinition (propDefinition) {
 
   propType = propertyTypes[typeName];
   if (!propType) {
-    throw new Error('Unknown property type: ' + typeName);
+    warn('Unknown property type: ' + typeName);
   }
 
   // Fill in parse and stringify using property types.
@@ -96,10 +100,10 @@ module.exports.parseProperties = function (propData, schema, getPartialData) {
 
   if (propData === null || typeof propData !== 'object') { return propData; }
 
-  // Validation warnings.
+  // Validation errors.
   Object.keys(propData).forEach(function (propName) {
     if (!schema[propName]) {
-      throw new Error('Unknown component property: ' + propName);
+      warn('Unknown component property: ' + propName);
     }
   });
 
@@ -128,13 +132,20 @@ module.exports.stringifyProperties = function (propData, schema) {
   Object.keys(propData).forEach(function (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
-    stringifiedData[propName] = stringifyProperty(propValue, propDefinition);
+    var value = propValue;
+    if (typeof value === 'object') {
+      value = stringifyProperty(propValue, propDefinition);
+      if (!propDefinition) { warn('Unknown component property: ' + propName); }
+    }
+    stringifiedData[propName] = value;
   });
   return stringifiedData;
 };
 
 function stringifyProperty (value, propDefinition) {
   if (typeof value !== 'object') { return value; }
+  // if there's no schema for the property we use standar JSON stringify
+  if (!propDefinition) { return JSON.stringify(value); }
   return propDefinition.stringify(value);
 }
 module.exports.stringifyProperty = stringifyProperty;

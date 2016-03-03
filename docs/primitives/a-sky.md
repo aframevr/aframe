@@ -3,29 +3,35 @@ title: <a-sky>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 10
+order: 15
 ---
 
-The sky primitive is a large textured sphere that makes it easy to add a background to a scene. It wraps an entity that contains [`geometry`](../components/geometry.html) and [`material`](../components/material.html) components.
+The sky primitive adds a background to a scene or display a 360-degree photo. It is an entity that prescribes a large sphere with the material mapped to the inside.
 
-| Attribute       | Default Value | Component Mapping       |
-| --------------- | ------------- | -----------------       |
-| color           | white         | material.color          |
-| radius          | 5000          | geometry.radius         |
-| segments-height | 64            | geometry.segmentsHeight |
-| segments-width  | 64            | geometry.segmentsWidth  |
-| src             | None          | material.src            |
+## Example
 
-[View source on GitHub](https://github.com/aframevr/aframe/blob/master/elements/templates/a-sky/index.html)
-
-## Image format
-
-To ensure a seamless background, images must use an [equirectangular projection](https://en.wikipedia.org/wiki/Equirectangular_projection). The [Flickr Equirectangular](https://www.flickr.com/groups/equirectangular/) is one source of compatible images, or you can [search for CC-licensed images](https://www.flickr.com/search/?text=equirectangular&license=4%2C5%2C9%2C10).
-
-## Examples
-
-A basic sky:
+An equirectangular image as a background:
 
 ```html
 <a-sky src="sky.png"></a-sky>
 ```
+
+A plain color as a background:
+
+```html
+<a-sky color="#6EBAA7"></a-sky>
+```
+
+## Attributes
+
+Note that the sky primitive inherits common [mesh attributes](./mesh-attributes.html).
+
+| Attribute       | Component Mapping       | Default Value |
+|-----------------+-------------------------+---------------|
+| radius          | geometry.radius         | 5000          |
+| segments-height | geometry.segmentsHeight | 64            |
+| segments-width  | geometry.segmentsWidth  | 64            |
+
+## Equirectangular Image
+
+In order to be seamless, images should be [equirectangular](https://en.wikipedia.org/wiki/Equirectangular_projection). We can find some sample equirectangular images on [Flickr](https://www.flickr.com/groups/equirectangular/). To take an equirectangular photo, check out this [360-degree photography guide](http://ngokevin.com/blog/360-photography/).

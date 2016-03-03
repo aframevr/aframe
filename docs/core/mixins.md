@@ -1,5 +1,5 @@
 ---
-title: Mixin
+title: Mixins
 type: core
 layout: docs
 parent_section: core

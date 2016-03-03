@@ -10,23 +10,24 @@ module.exports.regex = regex;
  * @param {string} defaults - fallback value.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaultVec3) {
+function parse (value, defaultVec) {
   var coordinate;
+  var vec = {};
 
   if (value && typeof value === 'object') {
-    return vec3ParseFloat(value);
+    return vecParseFloat(value);
   }
 
   if (typeof value !== 'string' || value === null) {
-    return defaultVec3;
+    return defaultVec;
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
-  return vec3ParseFloat({
-    x: coordinate[0] || defaultVec3.x,
-    y: coordinate[1] || defaultVec3.y,
-    z: coordinate[2] || defaultVec3.z
-  });
+  vec.x = coordinate[0] || defaultVec && defaultVec.x;
+  vec.y = coordinate[1] || defaultVec && defaultVec.y;
+  vec.z = coordinate[2] || defaultVec && defaultVec.z;
+  vec.w = coordinate[3] || defaultVec && defaultVec.w;
+  return vecParseFloat(vec);
 }
 module.exports.parse = parse;
 
@@ -50,10 +51,13 @@ module.exports.isCoordinate = function (value) {
   return regex.test(value);
 };
 
-function vec3ParseFloat (vec3) {
-  return {
-    x: parseFloat(vec3.x, 10),
-    y: parseFloat(vec3.y, 10),
-    z: parseFloat(vec3.z, 10)
-  };
+function vecParseFloat (vec) {
+  Object.keys(vec).forEach(function (key) {
+    if (vec[key] === undefined) {
+      delete vec[key];
+      return;
+    }
+    vec[key] = parseFloat(vec[key], 10);
+  });
+  return vec;
 }

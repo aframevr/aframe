@@ -20,6 +20,7 @@ suite('look-at', function () {
     this.spy = this.sinon.spy(el.object3D, 'lookAt');
 
     el.setAttribute('look-at', '');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });

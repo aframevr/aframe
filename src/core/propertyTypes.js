@@ -6,13 +6,18 @@ var error = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 
 // Built-in property types.
+registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
+registerPropertyType('color', '', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
-registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.stringify);
+registerPropertyType('time', 0, intParse);
+registerPropertyType('vec2', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec4', { x: 0, y: 0, z: 0, w: 0 }, vecParse, coordinates.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -26,7 +31,7 @@ registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.string
  */
 function registerPropertyType (type, defaultValue, parse, stringify) {
   if ('type' in propertyTypes) {
-    error('Property type "' + type + '" is already registered.');
+    error('Property type ' + type + ' is already registered.');
     return;
   }
 
@@ -37,6 +42,17 @@ function registerPropertyType (type, defaultValue, parse, stringify) {
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
+
+function arrayParse (value) {
+  if (Array.isArray(value)) { return value; }
+  if (!value || typeof value !== 'string') { return []; }
+  return value.split(',').map(trim);
+  function trim (str) { return str.trim(); }
+}
+
+function arrayStringify (value) {
+  return value.join(', ');
+}
 
 function defaultParse (value) {
   return value;
@@ -88,6 +104,6 @@ function srcParse (value) {
   return '';
 }
 
-function vec3Parse (value) {
+function vecParse (value) {
   return coordinates.parse(value, this.default);
 }

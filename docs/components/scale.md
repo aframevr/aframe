@@ -1,12 +1,16 @@
 ---
-title: "Scale"
+title: scale
 type: components
 layout: docs
 parent_section: components
-order: 13
+order: 16
 ---
 
-The scale component defines a shrinking or stretching transformation of an entity. It takes three scaling factors for the X, Y, and Z axes. All entities inherently have the scale component.
+The scale component defines a shrinking, stretching, or skewing transformation of an entity. It takes three scaling factors for the X, Y, and Z axes.
+
+All entities inherently have the scale component.
+
+## Example
 
 The example below shrinks the entity in half along the X direction, maintains the same scale factor along the Y direction, and stretches the entity by two-fold along the Z-direction:
 
@@ -14,13 +18,17 @@ The example below shrinks the entity in half along the X direction, maintains th
 <a-entity scale="0.5 1 2"></a-entity>
 ```
 
-Note that the scaling factors cannot be `0` or else the matrix transformations in WebGL will break.
+## Value
 
-| Value | Description                                                  | Default Value |
-|-------|--------------------------------------------------------------|----------------
-| x     | Scaling factor in the X direction.                           | 1             |
-| y     | Scaling factor in the Y direction.                           | 1             |
-| z     | Scaling factor in the Z direction.                           | 1             |
+A-Frame uses a right-handed coordinate system. When aligning our right hand's thumb with a positive axis, our hand will curl in the positive direction of rotation.
+
+If any of the scaling factors are set to 0, then A-Frame will assign instead an extremely small value such that things don't break.
+
+| Axis | Description                        | Default Value |
+|------+------------------------------------+---------------|
+| x    | Scaling factor in the X direction. | 1             |
+| y    | Scaling factor in the Y direction. | 1             |
+| z    | Scaling factor in the Z direction. | 1             |
 
 ## Reflection
 

@@ -56,9 +56,9 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.behaviors = [];
         this.hasLoaded = false;
+        this.isPlaying = true;
         this.materials = {};
         this.originalHTML = this.innerHTML;
-        this.paused = true;
 
         this.setupDefaultLights();
         this.setupDefaultCamera();
@@ -100,6 +100,9 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
+        var behaviors = this.behaviors;
+        var index = behaviors.indexOf(behavior);
+        if (index !== -1) { return; }
         this.behaviors.push(behavior);
       }
     },
@@ -171,7 +174,7 @@ var AScene = module.exports = registerElement('a-scene', {
           cameraEl = sceneCameras[i];
 
           if (activeCameraEl === cameraEl) {
-            if (!this.paused) { activeCameraEl.play(); }
+            if (this.isPlaying) { activeCameraEl.play(); }
             continue;
           }
           cameraEl.setAttribute('camera', 'active', false);
@@ -296,8 +299,12 @@ var AScene = module.exports = registerElement('a-scene', {
 
         // setTimeout in case the camera is being set dynamically with a setAttribute.
         setTimeout(function checkForCamera () {
-          var sceneCameras = self.querySelectorAll('[camera]');
-          if (sceneCameras.length !== 0) { return; }
+          var camera = self.querySelector('[camera]');
+
+          if (camera && camera.isEntity) {
+            self.emit('camera-ready', { camera: camera });
+            return;
+          }
 
           // DOM calls to create camera.
           cameraWrapperEl = document.createElement('a-entity');
@@ -309,6 +316,7 @@ var AScene = module.exports = registerElement('a-scene', {
           defaultCamera.setAttribute('look-controls');
           cameraWrapperEl.appendChild(defaultCamera);
           self.appendChild(cameraWrapperEl);
+          self.emit('camera-ready', { camera: defaultCamera });
         });
       }
     },
@@ -389,19 +397,19 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Reloads the scene to the original DOM content
-     * @type {bool} - paused - It reloads the scene with all the
-     * dynamic behavior paused: dynamic components and animations
+     * Reload the scene to the original DOM content.
+     *
+     * @param {bool} doPause - Whether to reload the scene with all dynamic behavior paused.
      */
     reload: {
-      value: function (paused) {
+      value: function (doPause) {
         var self = this;
-        if (paused) { this.pause(); }
+        if (doPause) { this.pause(); }
         this.innerHTML = this.originalHTML;
         this.init();
         ANode.prototype.load.call(this, play);
         function play () {
-          if (self.paused) { return; }
+          if (!self.isPlaying) { return; }
           AEntity.prototype.play.call(self);
         }
       }
@@ -443,10 +451,10 @@ var AScene = module.exports = registerElement('a-scene', {
         var camera = this.camera;
         var timeDelta = time - this.time;
 
-        if (!this.paused) {
+        if (this.isPlaying) {
           TWEEN.update(time);
           this.behaviors.forEach(function (component) {
-            if (component.el.paused) { return; }
+            if (!component.el.isPlaying) { return; }
             component.tick(time, timeDelta);
           });
         }

@@ -86,7 +86,7 @@
           el.dataset.id = idx;
           el.setAttribute('position', {x: xPos});
           el.setAttribute('mixin', 'link');
-          el.setAttribute('material', {src: pano.thumb});
+          el.setAttribute('material', {shader: 'flat', src: pano.thumb});
           panos[idx].el = el;
 
           // When a link is clicked, change the displayed pano by changing the

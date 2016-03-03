@@ -3,30 +3,32 @@ title: <a-plane>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 9
+order: 13
 ---
 
-The plane makes it easy to add flat surfaces to a scene. It wraps an entity that contains [`geometry`](../components/geometry.html) and [`material`](../components/material.html) components.
+The plane primitive creates flat surfaces. It is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `plane`.
 
-| Attribute   | Default Value | Component Mapping    |
-| ----------- | ------------- | -------------------- |
-| color       | gray          | material.color       |
-| height      | 1             | geometry.height      |
-| metalness   | 0.0           | material.metalness   |
-| opacity     | 1.0           | material.opacity     |
-| roughness   | 0.5           | material.roughness   |
-| shader      | standard      | material.shader      |
-| src         | None          | material.src         |
-| translate   | None          | geometry.translate   |
-| transparent | None          | geometry.transparent |
-| width       | 1             | material.width       |
-
-[View source on GitHub](https://github.com/aframevr/aframe/blob/master/elements/templates/a-plane.html)
-
-## Examples
-
-A green plane:
+## Example
 
 ```html
-<a-plane rotation="0 -45 10" height="10" color="green"></a-plane>
+<a-scene>
+  <a-assets>
+    <img id="ground" src="ground.jpg">
+  </a-assets>
+
+  <!-- Basic plane. -->
+  <a-plane color="#CCC" height="20" width="20"></a-plane>
+
+  <!-- Textured plane. -->
+  <a-plane src="#ground" height="100" width="100"></a-plane>
+</a-scene>
 ```
+
+## Attributes
+
+Note that the plane primitive inherits common [mesh attributes](./mesh-attributes.html).
+
+| Attribute | Component Mapping | Default Value |
+|-----------+-------------------+---------------|
+| height    | geometry.height   | 2             |
+| width     | geometry.width    | 2             |
