@@ -97,10 +97,10 @@ module.exports.Component = registerComponent('sound', {
     el.setObject3D('sound', sound);
 
     if (sceneEl.camera) {
-      sceneEl.camera.el.setObject3D('listener', listener);
+      sceneEl.camera.add(listener);
     } else {
       sceneEl.addEventListener('camera-ready', function addAudioListener (evt) {
-        evt.detail.cameraEl.setObject3D('listener', listener);
+        evt.detail.cameraEl.object3D.add(listener);
       });
     }
 
