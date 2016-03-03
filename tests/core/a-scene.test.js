@@ -36,12 +36,12 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.behaviors = ['dummy'];
       sceneEl.materials = {dummy: 1};
-      sceneEl.paused = false;
+      sceneEl.isPlaying = false;
       sceneEl.hasLoaded = true;
       sceneEl.init();
       assert.equal(sceneEl.behaviors.length, 0);
       assert.equal(Object.keys(sceneEl.materials).length, 0);
-      assert.equal(sceneEl.paused, true);
+      assert.equal(sceneEl.isPlaying, true);
       assert.equal(sceneEl.hasLoaded, false);
     });
   });
@@ -238,7 +238,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls behaviors', function () {
     var scene = this.el;
-    var Component = { el: { paused: false }, tick: function () {} };
+    var Component = { el: { isPlaying: true }, tick: function () {} };
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
     scene.render();
