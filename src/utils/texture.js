@@ -14,12 +14,10 @@ var warn = debug('components:texture:warn');
  */
 function loadImageTexture (material, src, repeat) {
   return new Promise(function (resolve, reject) {
-    console.log('loading image texture', src);
     var isEl = typeof src !== 'string';
     var onLoad = createTexture;
     var onProgress = function () {};
     var onError = function (xhr) {
-      console.log('ERROR');
       error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
       xhr.status, xhr.statusText);
     };
@@ -31,7 +29,6 @@ function loadImageTexture (material, src, repeat) {
     }
 
     function createTexture (texture) {
-      console.log('create texture');
       if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
       var repeatXY;
       if (repeat) {
