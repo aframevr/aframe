@@ -84,6 +84,7 @@ module.exports.Component = registerComponent('sound', {
   setupSound: function () {
     var el = this.el;
     var listener;
+    var sceneEl = el.sceneEl;
     var sound = this.sound;
 
     if (sound) {
@@ -95,11 +96,11 @@ module.exports.Component = registerComponent('sound', {
     sound = this.sound = new THREE.Audio(listener);
     el.setObject3D('sound', sound);
 
-    if (el.sceneEl.camera) {
-      el.sceneEl.camera.add(listener);
+    if (sceneEl.camera) {
+      sceneEl.camera.el.setObject3D('listener', listener);
     } else {
-      el.sceneEl.addEventListener('camera-ready', function addAudioListener (evt) {
-        evt.detail.camera.add(listener);
+      sceneEl.addEventListener('camera-ready', function addAudioListener (evt) {
+        evt.detail.cameraEl.setObject3D('listener', listener);
       });
     }
 
