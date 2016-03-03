@@ -116,6 +116,16 @@ Since materials default to physically based shading, materials will factor in li
 </a-entity>
 ```
 
+
+## Events
+
+You can attach following events to entities that use `material` with a image/video texture (via `src=""`) :
+
+| event name    | description     |
+| :------------- | :------------- |
+| `material-texture-loaded`       | Triggers once the image has been loaded. For videos this triggers once the first frames can be played.|
+| `material-video-ended`       | If you are using a video texture, this triggers when the video has reached its end (may not work with `loop`). |
+
 ## Setting the Material from Another Component
 
 A common operation is to set material properties from another component. To do so, we can specify the material as a dependency component, wait for the entity to load, then use `setAttribute`:

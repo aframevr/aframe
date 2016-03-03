@@ -54,13 +54,14 @@ module.exports.Component = registerShader('flat', {
       if (src === this.textureSrc) { return; }
       // Texture added or changed.
       this.textureSrc = src;
-      srcLoader.validateSrc(src, loadImage, loadVideo);
+      srcLoader.validateSrc(src,
+        utils.loadImage.bind(this, material, data),
+        utils.loadVideo.bind(this, material, data)
+      );
     } else {
       // Texture removed.
       utils.updateMaterial(material, null);
     }
-    function loadImage (src) { utils.loadImageTexture(material, src, data.repeat); }
-    function loadVideo (src) { utils.loadVideoTexture(material, src, data.width, data.height); }
   },
 
   /**
