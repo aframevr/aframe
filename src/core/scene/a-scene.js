@@ -295,14 +295,14 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         var self = this;
         var cameraWrapperEl;
-        var defaultCamera;
+        var defaultCameraEl;
 
         // setTimeout in case the camera is being set dynamically with a setAttribute.
         setTimeout(function checkForCamera () {
-          var camera = self.querySelector('[camera]');
+          var cameraEl = self.querySelector('[camera]');
 
-          if (camera && camera.isEntity) {
-            self.emit('camera-ready', { camera: camera });
+          if (cameraEl && cameraEl.isEntity) {
+            self.emit('camera-ready', { cameraEl: cameraEl });
             return;
           }
 
@@ -310,13 +310,13 @@ var AScene = module.exports = registerElement('a-scene', {
           cameraWrapperEl = document.createElement('a-entity');
           cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
           cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-          defaultCamera = document.createElement('a-entity');
-          defaultCamera.setAttribute('camera', {'active': true});
-          defaultCamera.setAttribute('wasd-controls');
-          defaultCamera.setAttribute('look-controls');
-          cameraWrapperEl.appendChild(defaultCamera);
+          defaultCameraEl = document.createElement('a-entity');
+          defaultCameraEl.setAttribute('camera', {'active': true});
+          defaultCameraEl.setAttribute('wasd-controls');
+          defaultCameraEl.setAttribute('look-controls');
+          cameraWrapperEl.appendChild(defaultCameraEl);
           self.appendChild(cameraWrapperEl);
-          self.emit('camera-ready', { camera: defaultCamera });
+          self.emit('camera-ready', { cameraEl: defaultCameraEl });
         });
       }
     },
