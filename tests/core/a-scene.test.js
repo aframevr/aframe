@@ -17,7 +17,6 @@ suite('a-scene (without renderer)', function () {
   setup(function () {
     var el;
     el = this.el = document.createElement('a-scene');
-    el.setAttribute('canvas', '');
     document.body.appendChild(el);
   });
 

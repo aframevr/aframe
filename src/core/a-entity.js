@@ -64,8 +64,7 @@ var proto = Object.create(ANode.prototype, {
 
   /**
    * Tell parent to remove this element's object3D from its object3D.
-   * Do not call on scene element because that will cause a call to
-   * document.body.remove().
+   * Do not call on scene element because that will cause a call to document.body.remove().
    */
   detachedCallback: {
     value: function () {
@@ -151,10 +150,10 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Returns an object3D of a given type or creates it if it doesn't exist and
-   * a Constructor is passed as an argument
-   * @param {string} type - Type of the object3D .
-   * @param {string} name - Component name.
+   * Gets or creates an object3D of a given type.
+
+   * @param {string} type - Type of the object3D.
+   * @param {string} Constructor - Constructor to use if need to create the object3D.
    * @type {Object}
    */
   getOrCreateObject3D: {
@@ -246,14 +245,12 @@ var proto = Object.create(ANode.prototype, {
    */
   initComponent: {
     value: function (name, isDependency) {
-      var isComponentDefined;
+      var isComponentDefined = checkComponentDefined(this, name);
 
-      // Check if already initialized.
-      if (!components[name] || this.components[name]) { return; }
-
-      // Check if not defined for entity.
-      isComponentDefined = checkComponentDefined(this, name);
-      if (!isComponentDefined && !isDependency) { return; }
+      // Check if component is registered and whether component should be iniitalized.
+      if (!components[name] || (!isComponentDefined && !isDependency)) {
+        return;
+      }
 
       // Initialize dependencies.
       this.initComponentDependencies(name);
@@ -266,12 +263,17 @@ var proto = Object.create(ANode.prototype, {
           // For scene default components, expose them in the DOM.
           HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
         }
+
+        // Check if component already initialized.
+        if (name in this.components) { return; }
+
         this.components[name] = new components[name].Component(this);
         if (this.isPlaying) { this.components[name].play(); }
       }
 
       log('Component initialized: %s', name);
-    }
+    },
+    writable: window.debug
   },
 
   initComponentDependencies: {
@@ -333,12 +335,10 @@ var proto = Object.create(ANode.prototype, {
       var isDefault = name in this.defaultComponents;
       var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       if (component) {
-        // Attribute was removed. Remove component.
-        // 1. If the component is not defined in the defaults,
-        // mixins or element attribute
-        // 2. If the new data is null, it's not a default
-        // component and the component it's not defined via
-        // mixins
+        // Attribute was removed, remove component if:
+        // 1. If component not defined in the defaults/mixins/attribute.
+        // 2. If new data is null, then not a default component and component is not defined
+        //    via mixins
         if (!checkComponentDefined(this, name) ||
             newData === null && !isDefault && !isMixedIn) {
           this.removeComponent(name);
@@ -551,17 +551,20 @@ var proto = Object.create(ANode.prototype, {
 });
 
 /**
- * Check if a component is defined for an entity, including defaults and mixins.
+ * Check if a component is *defined* for an entity, including defaults and mixins.
+ * Does not check whether the component has been *initialized* for an entity.
  *
+ * @param {string} el - Entity.
  * @param {string} name - Component name.
  * @returns {boolean}
  */
 function checkComponentDefined (el, name) {
   // Check if default components contain the component.
-  var inDefaults = el.defaultComponents[name];
+  if (el.defaultComponents[name] !== undefined) { return true; }
+
   // Check if element contains the component.
-  var inAttribute = el.hasAttribute(name);
-  if (inDefaults !== undefined || inAttribute) { return true; }
+  if (el.hasAttribute(name)) { return true; }
+
   return isComponentMixedIn(name, el.mixinEls);
 }
 
