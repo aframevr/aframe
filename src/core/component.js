@@ -1,5 +1,4 @@
 /* global HTMLElement */
-var debug = require('../utils/debug');
 var schema = require('./schema');
 var styleParser = require('style-attr');
 var utils = require('../utils/');
@@ -10,9 +9,7 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-var error = debug('core:register-component:error');
-
-var components = module.exports.components = {};  // Keep track of registered components.
+var components = module.exports.components = {}; // Keep track of registered components.
 
 /**
  * Component class definition.
@@ -43,6 +40,7 @@ var Component = module.exports.Component = function (el) {
   var scene;
 
   this.el = el;
+  this.updateSchema(buildData(el, name, this.schema, elData));
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
@@ -76,6 +74,8 @@ Component.prototype = {
    * @param {object} prevData - Previous attributes of the component.
    */
   update: function (prevData) { /* no-op */ },
+
+  updateSchema: function (prevData) { /* no-op */ },
 
   /**
    * Tick handler.
@@ -156,11 +156,11 @@ Component.prototype = {
    */
   updateProperties: function (value) {
     var el = this.el;
-    var schema = this.schema;
-    var isSinglePropSchema = isSingleProp(schema);
+    var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.data = buildData(el, this.name, schema, value);
+    this.updateSchema(objectParse(value));
+    this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
@@ -172,6 +172,23 @@ Component.prototype = {
       newData: this.getData(),
       oldData: previousData
     });
+  },
+
+  /**
+   * Extends the schema of the component with a given new schema
+   * Some components might want to mutate their schema based on
+   * certain conditions. e.g: The material component changes its
+   * squema based on the selected shader to account for the
+   * different uniforms
+   *  @param newSchema {object} - Schema that extends the original one.
+   */
+  extendSchema: function (newSchema) {
+    // Copies original schema
+    var extendedSchema = utils.extend({}, components[this.name].schema);
+    // Extends original schema with the new one
+    utils.extend(extendedSchema, newSchema);
+    this.schema = processSchema(extendedSchema);
+    this.el.emit('schemachanged', { component: this.name });
   }
 };
 
@@ -195,7 +212,7 @@ module.exports.registerComponent = function (name, definition) {
   });
 
   if (components[name]) {
-    error('The component "' + name + '" has been already registered');
+    throw new Error('The component ' + name + ' has been already registered');
   }
   NewComponent = function (el) {
     Component.call(this, el);
@@ -203,11 +220,12 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
+
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    schema: processSchema(NewComponent.prototype.schema),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
     stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
     type: NewComponent.prototype.type
   };
@@ -264,6 +282,7 @@ function buildData (el, name, schema, elData) {
   if (isSingleProp(schema)) {
     return parseProperty(data, schema);
   }
+
   return parseProperties(data, schema);
 }
 module.exports.buildData = buildData;
