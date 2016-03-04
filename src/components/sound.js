@@ -89,8 +89,7 @@ module.exports.Component = registerComponent('sound', {
       el.removeObject3D('sound');
     }
 
-    // we want to make sure we have exactly one AudioListener. Let's stick it somewhere
-    // that's available to the next sound component that might get initialized
+    // Only want one AudioListener. Cache it on the scene.
     var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
     sceneEl.audioListener = listener;
 
@@ -98,8 +97,8 @@ module.exports.Component = registerComponent('sound', {
       sceneEl.camera.add(listener);
     }
 
-    // if we don't have a camera yet or our active camera gets changed
-    sceneEl.addEventListener('active-camera-set', function (evt) {
+    // Wait for camera if necessary.
+    sceneEl.addEventListener('camera-set-active', function (evt) {
       evt.detail.camera.add(listener);
     });
 
