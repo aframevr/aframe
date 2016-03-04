@@ -71,9 +71,7 @@ module.exports.Component = registerComponent('sound', {
 
   remove: function () {
     this.el.removeObject3D('sound');
-    this.sound.remove();
-    this.listener.remove();
-    this.listener.context.close();
+    this.sound.disconnect();
   },
 
   /**
@@ -83,7 +81,6 @@ module.exports.Component = registerComponent('sound', {
    */
   setupSound: function () {
     var el = this.el;
-    var listener;
     var sceneEl = el.sceneEl;
     var sound = this.sound;
 
@@ -92,18 +89,21 @@ module.exports.Component = registerComponent('sound', {
       el.removeObject3D('sound');
     }
 
-    listener = this.listener = new THREE.AudioListener();
-    sound = this.sound = new THREE.Audio(listener);
-    el.setObject3D('sound', sound);
+    // Only want one AudioListener. Cache it on the scene.
+    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    sceneEl.audioListener = listener;
 
     if (sceneEl.camera) {
       sceneEl.camera.add(listener);
-    } else {
-      sceneEl.addEventListener('camera-ready', function addAudioListener (evt) {
-        evt.detail.cameraEl.object3D.add(listener);
-      });
     }
 
+    // Wait for camera if necessary.
+    sceneEl.addEventListener('camera-set-active', function (evt) {
+      evt.detail.cameraEl.getObject3D('camera').add(listener);
+    });
+
+    sound = this.sound = new THREE.PositionalAudio(listener);
+    el.setObject3D('sound', sound);
     return sound;
   },
 
