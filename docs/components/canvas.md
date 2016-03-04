@@ -19,7 +19,7 @@ The `canvas` component allows us to specify our own canvas or the size of the in
 Given the type of fog distribution, different properties will apply.
 
 | Property | Description                                           | Default Value |
-|----------+-------------------------------------------------------+---------------|
+|----------|-------------------------------------------------------|---------------|
 | canvas   | Selector to a canvas element that exists on the page. | null          |
 | height   | Height of the injected canvas, in percentage.         | 100           |
 | Width    | Width of the injected canvas, in percentage.          | 100           |

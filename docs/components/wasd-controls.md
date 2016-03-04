@@ -17,7 +17,7 @@ The `wasd-controls` component defines the behavior of an entity to be controlled
 ## Properties
 
 | Property     | Description                                                              | Default Value |
-|--------------+--------------------------------------------------------------------------+---------------|
+|--------------|--------------------------------------------------------------------------|---------------|
 | acceleration | How fast the entity accelerates when holding the keys.                   | 65            |
 | adAxis       | Axis that the `A` and `D` keys act upon.                                 | x             |
 | adInverted   | Whether the axis that the `A` and `D` keys act upon are inverted.        | false         |

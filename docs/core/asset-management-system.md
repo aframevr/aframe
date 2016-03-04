@@ -87,14 +87,14 @@ Since `<a-assets>` and `<a-asset-item>` are *nodes* in A-Frame, they will emit t
 ### <a-assets>
 
 | Event Name | Description                                  |
-|------------+----------------------------------------------|
+|------------|----------------------------------------------|
 | loaded     | All assets were loaded, or assets timed out. |
 | timeout    | Assets timed out.                            |
 
 ### <a-asset-item>
 
 | Event Name | Description                           |
-|------------+---------------------------------------|
+|------------|---------------------------------------|
 | loaded     | Asset pointed to by `src` was loaded. |
 
 ## HTMLMediaElement
@@ -102,7 +102,7 @@ Since `<a-assets>` and `<a-asset-item>` are *nodes* in A-Frame, they will emit t
 Audio and video assets are [HTMLMediaElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement)s. These events are provided by the browser, but noted here for convenience:
 
 | Event Name | Description                           |
-|------------+---------------------------------------|
+|------------|---------------------------------------|
 | error      | There was an error loading the asset. |
 | loadeddata | Progress.                             |
 | progress   | Progress.                             |

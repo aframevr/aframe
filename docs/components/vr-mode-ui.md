@@ -17,5 +17,5 @@ The `vr-mode-ui` component toggles UI such as an Enter VR button, compatibility 
 ## Properties
 
 | Property | Description                                          | Default Value |
-|----------+------------------------------------------------------+---------------|
+|----------|------------------------------------------------------|---------------|
 | enabled  | Whether or not to display UI related to entering VR. | true          |

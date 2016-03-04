@@ -18,7 +18,7 @@ The `sound` component defines the entity as a source of sound or audio. The `sou
 ## Properties
 
 | Property | Description                                                | Default Value |
-|----------+------------------------------------------------------------+---------------|
+|----------|------------------------------------------------------------|---------------|
 | autoplay | Whether to automatically play sound once set.              | false         |
 | on       | An event for the entity to listen to before playing sound. | click         |
 | loop     | Whether to loop the sound once the sound finishes playing. | false         |

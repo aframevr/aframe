@@ -21,7 +21,7 @@ All entities inherently have the `rotation` component.
 A-Frame uses a right-handed coordinate system. When aligning our right hand's thumb with a positive axis, our hand will curl in the positive direction of rotation.
 
 | Axis | Description                       | Default Value
-|------+-----------------------------------+---------------|
+|------|-----------------------------------|---------------|
 | x    | Roll, rotation about the X-axis.  | 0             |
 | y    | Pitch, rotation about the Y-axis. | 0             |
 | z    | Yaw, rotation about the Z-axis.   | 0             |

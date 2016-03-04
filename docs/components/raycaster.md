@@ -11,14 +11,14 @@ The `raycaster` component provides for an entity the ability to do intersection 
 ## Members
 
 | Member        | Description                                      |
-|---------------+--------------------------------------------------|
+|---------------|--------------------------------------------------|
 | intersectedEl | The entity currently intersecting the raycaster. |
 | raycaster     | three.js raycaster object.                       |
 
 ## Events
 
 | Event Name          | Description                                      |
-|---------------------+--------------------------------------------------|
+|---------------------|--------------------------------------------------|
 | intersection        | Raycaster intersecting with an entity.           |
 | intersectioncleared | Raycaster no longer intersecting with an entity. |
 

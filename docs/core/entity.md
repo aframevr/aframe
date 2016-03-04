@@ -337,7 +337,7 @@ entity.is('selected');  // >> false
 ## Events
 
 | Event Name       | Description                                                                                                 |
-|------------------+-------------------------------------------------------------------------------------------------------------|
+|------------------|-------------------------------------------------------------------------------------------------------------|
 | child-attached   | A child was attached to the entity. The event detail will provide the attached child.                       |
 | componentchanged | One of the entity's component's data was modified. The event detail will provide what data on what changed. |
 | loaded           | The entity has attached and initialized all of its components.                                              |
@@ -363,7 +363,7 @@ entity.addEventListener('componentchanged', function (evt) {
 Below is what the event detail will contain for `componentchanged`:
 
 | Property | Description                                        |
-|----------+----------------------------------------------------|
+|----------|----------------------------------------------------|
 | name     | Name of component that had its data modified.      |
 | newData  | Component's new data, after it was modified.       |
 | oldData  | Component's previous data, before it was modified. |

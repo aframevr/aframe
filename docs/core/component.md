@@ -101,7 +101,7 @@ The position component uses only a small subset of the component API. We'll go o
 ### Properties
 
 | Property | Description                                                                                                      |
-|----------+------------------------------------------------------------------------------------------------------------------|
+|----------|------------------------------------------------------------------------------------------------------------------|
 | data     | Parsed data object of the component derived from the schema default values, mixins, and the entity's attributes. |
 | el       | Reference to the [entity][entity] element.                                                                       |
 | schema   | Component property names, types, default values, parsers, and stringifiers.                                      |
@@ -109,7 +109,7 @@ The position component uses only a small subset of the component API. We'll go o
 ### Methods
 
 | Method | Description                                                                                                                                   |
-|--------+-----------------------------------------------------------------------------------------------------------------------------------------------|
+|--------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | init   | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                        |
 | update | Called both when the component is initialized and whenever the component's data changes (e.g, via *setAttribute*). Used to modify the entity. |
 | remove | Called when the component detaches from the element (e.g., via *removeAttribute*). Used to undo all previous modifications to the entity.     |
@@ -269,7 +269,7 @@ init: function () {
 Example uses of `init` by some A-Frame components:
 
 | Component     | Usage                                                             |
-|---------------+-------------------------------------------------------------------|
+|---------------|-------------------------------------------------------------------|
 | camera        | Create and set a THREE.PerspectiveCamera on the entity.           |
 | cursor        | Attach event listeners.                                           |
 | light         | Register light to the lighting system.                            |
@@ -292,7 +292,7 @@ update: function () {
 Example uses of `update` by some A-Frame components:
 
 | Component     | Usage                                                                                                                                       |
-|---------------+---------------------------------------------------------------------------------------------------------------------------------------------|
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | camera        | Set THREE.PerspectiveCamera object properties such as aspect ratio, fov, or near/far clipping planes.                                       |
 | look-at       | Set or update target entity to track the position of.
 | material      | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material.
@@ -313,7 +313,7 @@ remove: function () {
 Example uses of `remove` by some A-Frame components:
 
 | Component     | Usage                                                                                      |
-|---------------+--------------------------------------------------------------------------------------------|
+|---------------|--------------------------------------------------------------------------------------------|
 | camera        | Remove the THREE.PerspectiveCamera from the entity.                                        |
 | geometry      | Set a plain THREE.Geometry on the mesh.                                                    |
 | material      | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
@@ -337,7 +337,7 @@ tick: function (t) {
 Example uses of `tick` by some A-Frame components:
 
 | Component     | Usage                                                                                                |
-|---------------+------------------------------------------------------------------------------------------------------|
+|---------------|------------------------------------------------------------------------------------------------------|
 | look-at       | Update rotation of entity to face towards tracked target, in case the target is moving.              |
 | physics       | Update the physics world simulation.                                                                 |
 | wasd-controls | Use current velocity to move the entity (generally the camera), update velocity if keys are pressed. |
@@ -361,7 +361,7 @@ play: function () {
 Example uses of `pause` and `play` by some A-Frame components:
 
 | Component     | Usage                          |
-|---------------+--------------------------------|
+|---------------|--------------------------------|
 | sound         | Pause/play sound.              |
 | wasd-controls | Remove/attach event listeners. |
 

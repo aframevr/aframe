@@ -25,7 +25,7 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 ## Properties
 
 | Name           | Description                                                                  |
-|----------------+------------------------------------------------------------------------------|
+|----------------|------------------------------------------------------------------------------|
 | behaviors      | Array of components with tick methods that will be run on every frame.       |
 | canvas         | Reference to the canvas element.                                             |
 | isMobile       | Whether or not environment is detected to be mobile.                         |
@@ -38,7 +38,7 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 ## Methods
 
 | Name    | Description                                                                                                            |
-|---------+------------------------------------------------------------------------------------------------------------------------|
+|---------|------------------------------------------------------------------------------------------------------------------------|
 | enterVR | Switch to stereo renderer and enter fullscreen. Needs to be called within a user-generated event handler like `click`. |
 | exitVR  | Switch to mono renderer and exit fullscreen.                                                                           |
 | reload  | Revert the scene to its original state.                                                                                |
@@ -46,7 +46,7 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 ## Events
 
 | Name         | Description                         |
-|--------------+-------------------------------------|
+|--------------|-------------------------------------|
 | enter-vr     | User has entered VR and fullscreen. |
 | exit-vr      | User has exited VR and fullscreen.  |
 | loaded       | All nodes have loaded.              |

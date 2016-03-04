@@ -17,7 +17,7 @@ The `visible` component defines whether or not an entity is rendered.
 ## Value
 
 | Value | Description                                                                            |
-|-------+----------------------------------------------------------------------------------------|
+|-------|----------------------------------------------------------------------------------------|
 | true  | The entity will be rendered and visible; the default value.                            |
 | false | The entity will not be rendered nor visible. The entity will still exist in the scene. |
 

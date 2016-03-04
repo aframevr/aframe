@@ -34,7 +34,7 @@ document.querySelector('#cube').addEventListener('click', function () {
 ## Properties
 
 | Property    | Description                                                                | Default Value                    |
-|-------------+----------------------------------------------------------------------------+----------------------------------|
+|-------------|----------------------------------------------------------------------------|----------------------------------|
 | fuse        | Whether cursor should also be fuse-based.                                  | false on desktop, true on mobile |
 | maxDistance | Maximum distance to check for intersections on entities for clicks.        | 5                                |
 | timeout     | How long to wait (in milliseconds) to trigger a click event if fuse-based. | 1500                             |
@@ -44,20 +44,20 @@ document.querySelector('#cube').addEventListener('click', function () {
 The cursor will add states to the cursor entity on certain events.
 
 | State Name | Description                                            |
-|------------+--------------------------------------------------------|
+|------------|--------------------------------------------------------|
 | fusing     | Added when the cursor is fusing on another entity.     |
 | hovering   | Added when the cursor is hovering over another entity. |
 
 The cursor will add states to the **target** entity on certain events.
 
 | State Name | Description                                              |
-|------------+----------------------------------------------------------|
+|------------|----------------------------------------------------------|
 | hovered    | Added when target entity is being hovered by the cursor. |
 
 ## Events
 
 | Event Name | Description                           |
-|------------+---------------------------------------|
+|------------|---------------------------------------|
 | click      | Triggered when an entity is clicked.  |
 | mousedown  | Triggered on mousedown of the canvas. |
 | mouseup    | Triggered on mouseup of the canvas.   |

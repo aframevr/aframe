@@ -27,7 +27,7 @@ The cone primitive creates a cone shape. It is an entity that prescribes the [ge
 Note that the cone primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping       | Default Value |
-|-----------------+-------------------------+---------------|
+|-----------------|-------------------------|---------------|
 | height          | geometry.height         | 1.5           |
 | open-ended      | geometry.openEnded      | false         |
 | radius-bottom   | geometry.radiusBottom   | 0.75          |

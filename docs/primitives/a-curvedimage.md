@@ -31,7 +31,7 @@ The curved image primitive creates images that bend around the user. Curved imag
 Note that the curved image primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping | Default Value           |
-|-----------------+-------------------+-------------------------|
+|-----------------|-------------------|-------------------------|
 | height          | 1                 | geometry.height         |
 | radius          | 2                 | geometry.radius         |
 | segments-radial | 48                | geometry.segmentsRadial |

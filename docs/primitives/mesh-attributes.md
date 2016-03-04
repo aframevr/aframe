@@ -21,7 +21,7 @@ Many of the primitives are entities that compose a geometric mesh, meaning they 
 ## Attributes
 
 | Attribute   | Component Mapping    | Default Value |
-|-------------+----------------------+---------------|
+|-------------|----------------------|---------------|
 | color       | material.color       | gray          |
 | metalness   | material.metalness   | 0             |
 | opacity     | material.opacity     | 1             |

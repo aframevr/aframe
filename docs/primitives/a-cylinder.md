@@ -31,7 +31,7 @@ The cylinder primitive is versatile and can actually be used to create various s
 Note that the cylinder primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping       | Default Value |
-|-----------------+-------------------------+---------------|
+|-----------------|-------------------------|---------------|
 | height          | geometry.height         | 1.5           |
 | open-ended      | geometry.openEnded      | false         |
 | radius          | geometry.radius         | 0.75          |

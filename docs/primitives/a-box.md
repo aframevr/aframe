@@ -27,7 +27,7 @@ The box primitive, formerly called `<a-cube>`, creates shapes such as boxes, cub
 Note that the box primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute | Component Mapping | Default Value |
-|-----------+-------------------+---------------|
+|-----------|-------------------|---------------|
 | depth     | geometry.depth    | 2             |
 | height    | geometry.height   | 2             |
 | width     | geometry.width    | 2             |

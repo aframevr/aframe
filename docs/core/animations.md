@@ -24,7 +24,7 @@ As an introductory example, to define a 5-meter orbit on an entity about the Y-a
 Many attributes and values are used to define animations. We'll delve into more detail below:
 
 | Attribute | Description                                                                                                            | Default Value  |
-|-----------+------------------------------------------------------------------------------------------------------------------------+----------------|
+|-----------|------------------------------------------------------------------------------------------------------------------------|----------------|
 | attribute | Attribute to animate. To specify a component attribute, use `componentName.property` syntax (e.g., `light.intensity`). | rotation       |
 | begin     | Delay (in milliseconds) or event name to wait on before beginning animation.                                           | 0              |
 | direction | Direction of the animation (between `from` and `to`). One of `alternate`, `alternateReverse`, `normal`, `reverse`.     | normal         |
@@ -117,7 +117,7 @@ The `direction` attribute defines which way to animate between the starting valu
 When an alternating direction is defined, the animation will go back and forth between the `from` and `to` values like a yo-yo. Alternating directions only take affect when the animation is set to repeat.
 
 | Value             | Description                                                                                                 |
-|-------------------+-------------------------------------------------------------------------------------------------------------|
+|-------------------|-------------------------------------------------------------------------------------------------------------|
 | alternate         | On even-numbered cycles, animate from `from` to `to`. On odd-numbered cycles, animation from `to` to `from` |
 | alternate-reverse | On odd-numbered cycles, animate from `from` to `to`. On even-numbered cycles, animation from `to` to `from` |
 | normal            | Animate from `from` to `to`.                                                                                |
@@ -138,7 +138,7 @@ For example, the `cubic` group of easing functions would consist of `ease-cubic`
 The `fill` attribute defines the effect of animation when not actively in play. Think of `fill` as what values the animation sets on the entity *before* and/or *after* each animation cycle. Below are the possible values for `fill` and their effects.
 
 | Value     | Description                                                                                                                                   |
-|-----------+-----------------------------------------------------------------------------------------------------------------------------------------------|
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | backwards | Before the animation starts, set the starting value to the `from` value.                                                                      |
 | both      | Combine the effects of both backwards fill and forwards fill.                                                                                 |
 | forwards  | After the animation finishes, the final value will stay at the `to` value. The default fill.                                                  |
@@ -153,6 +153,6 @@ The `repeat` attribute defines how often the animation repeats. We call each rep
 The `<a-animation>` element emits a couple of events.
 
 | Event Name     | Description                                                                                                                             |
-|----------------+-----------------------------------------------------------------------------------------------------------------------------------------|
+|----------------|-----------------------------------------------------------------------------------------------------------------------------------------|
 | animationend   | Emitted when the animation finishes. In case of repeats, emitted when the repeat count reaches `0`. Not emitted for indefinite repeats. |
 | animationstart | Emitted immediately when the animation begins playing.                                                                                  |

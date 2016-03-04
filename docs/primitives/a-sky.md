@@ -27,7 +27,7 @@ A plain color as a background:
 Note that the sky primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping       | Default Value |
-|-----------------+-------------------------+---------------|
+|-----------------|-------------------------|---------------|
 | radius          | geometry.radius         | 5000          |
 | segments-height | geometry.segmentsHeight | 64            |
 | segments-width  | geometry.segmentsWidth  | 64            |

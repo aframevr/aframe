@@ -29,7 +29,7 @@ The video primitive displays a video on a flat plane as a texture. It is an enti
 Note that the video primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping     | Default Value |
-|-----------------+-----------------------+---------------|
+|-----------------|-----------------------|---------------|
 | height          | geometry.height       | 1.75          |
 | width           | geometry.width        | 3             |
 

@@ -25,7 +25,7 @@ A-Frame uses a right-handed coordinate system. When aligning our right hand's th
 If any of the scaling factors are set to 0, then A-Frame will assign instead an extremely small value such that things don't break.
 
 | Axis | Description                        | Default Value |
-|------+------------------------------------+---------------|
+|------|------------------------------------|---------------|
 | x    | Scaling factor in the X direction. | 1             |
 | y    | Scaling factor in the Y direction. | 1             |
 | z    | Scaling factor in the Z direction. | 1             |

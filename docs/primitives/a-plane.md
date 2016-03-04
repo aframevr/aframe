@@ -29,6 +29,6 @@ The plane primitive creates flat surfaces. It is an entity that prescribes the [
 Note that the plane primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute | Component Mapping | Default Value |
-|-----------+-------------------+---------------|
+|-----------|-------------------|---------------|
 | height    | geometry.height   | 2             |
 | width     | geometry.width    | 2             |

@@ -23,7 +23,7 @@ The camera primitive places the user somewhere within the scene. It is an entity
 ## Attributes
 
 | Attribute             | Component Mapping     | Default Value |
-|-----------------------+-----------------------+---------------|
+|-----------------------|-----------------------|---------------|
 | far                   | camera.far            | 10000         |
 | fov                   | camera.fov            | 80            |
 | look-controls-enabled | look-controls.enabled | true          |

@@ -19,7 +19,7 @@ The sphere primitive creates a spherical or polyhedron shapes. It wraps an entit
 Note that the sphere primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute       | Component Mapping | Default Value           |
-|-----------------+-------------------+-------------------------|
+|-----------------|-------------------|-------------------------|
 | radius          | 0.85              | geometry.radius         |
 | segments-height | 18                | geometry.segmentsHeight |
 | segments-width  | 36                | geometry.segmentsWidth  |

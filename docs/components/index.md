@@ -23,7 +23,7 @@ It is recommended to wrap entities with the `camera` component within another en
 ## Properties
 
 | Property | Description                                                                         | Default Value |
-|----------+-------------------------------------------------------------------------------------+---------------|
+|----------|-------------------------------------------------------------------------------------|---------------|
 | active   | Whether the camera is currently the active camera in a scene with multiple cameras. | true          |
 | far      | Camera frustum far clipping plane.                                                  | 10000         |
 | fov      | Field of view (in degrees).                                                         | 80            |

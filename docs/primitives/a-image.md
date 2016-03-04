@@ -29,7 +29,7 @@ The image primitive displays an image on a flat plane. It is an entity that pres
 Note that the image primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute | Component Mapping | Default Value |
-|-----------+-------------------+---------------|
+|-----------|-------------------|---------------|
 | height    | geometry.height   | 1.75          |
 | width     | geometry.width    | 1.75          |
 

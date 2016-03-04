@@ -25,7 +25,7 @@ We can load a COLLADA model by pointing to an asset that specifies the `src` to 
 ## Values
 
 | Type     | Description                             |
-|----------+-----------------------------------------|
+|----------|-----------------------------------------|
 | selector | Selector to an `<a-asset-item>`         |
 | string   | `url()`-enclosed path to a COLLADA file |
 

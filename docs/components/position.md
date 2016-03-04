@@ -21,7 +21,7 @@ All entities inherently have the `position` component.
 A-Frame uses a right-handed coordinate system where the negative Z axis extends into the screen. The table below assumes looking down the negative Z axis from the origin.
 
 | Axis | Description                                                  | Default Value |
-|------+--------------------------------------------------------------+---------------|
+|------|--------------------------------------------------------------|---------------|
 | x    | Negative X axis extends left. Positive X Axis extends right. | 0             |
 | y    | Negative Y axis extends up. Positive Y Axis extends down.    | 0             |
 | z    | Negative Z axis extends in. Positive Z Axis extends out.     | 0             |

@@ -31,6 +31,6 @@ Or maybe having a dog look at a running squirrel:
 ## Possible Values
 
 | Type     | Description                                                                                                                                   |
-|----------+-----------------------------------------------------------------------------------------------------------------------------------------------|
+|----------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 | selector | A query selector indicating another entity to track. If the other entity is moving then the `look-at` component will track the moving entity. |
 | vec3     | An XYZ coordinate. The entity will face towards a static position.                                                                            |

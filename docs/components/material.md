@@ -19,7 +19,7 @@ Here is an example defining a red material on a basic box geometry, creating a r
 ## Properties
 
 | Property     | Description                                                                                                                                                                        | Default Value |
-|--------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------|
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | color        | Base color of the geometry.                                                                                                                                                        | #fff          |
 | envMap       | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                                                   | None          |
 | height       | Height of video (in pixels), if defining a video texture.                                                                                                                          | 360           |
@@ -37,7 +37,7 @@ Here is an example defining a red material on a basic box geometry, creating a r
 ## Events
 
 | Event Name              | Description                                                                                |
-|-------------------------+--------------------------------------------------------------------------------------------|
+|-------------------------|--------------------------------------------------------------------------------------------|
 | material-texture-loaded | Texture loaded onto material. Or when the first frame is playing for video textures.       |
 | material-video-ended    | For video textures, emitted when the video has reached its end (may not work with `loop`). |
 

@@ -29,5 +29,5 @@ The COLLADA model primitive displays a 3D COLLADA model created from a 3D modeli
 Note that the COLLADA model primitive inherits common [mesh attributes](./mesh-attributes.html).
 
 | Attribute | Component Mapping | Default Value |
-|-----------+-------------------+---------------|
+|-----------|-------------------|---------------|
 | src       | collada-model.src | null          |

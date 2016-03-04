@@ -13,7 +13,7 @@ The `geometry` component provides a basic shape for an entity. The general geome
 We will go through the basic primitives and their respective properties one by one.
 
 | Property  | Description                                                                                  | Default Value |
-|-----------+----------------------------------------------------------------------------------------------+---------------|
+|-----------|----------------------------------------------------------------------------------------------|---------------|
 | primitive | One of `box`, `circle`, `cone`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`. | None          |
 | translate | Translates the geometry relative to its pivot point.                                         | 0 0 0         |
 
@@ -26,7 +26,7 @@ The box primitive defines boxes (i.e., any quadilateral, not just cubes).
 ```
 
 | Property | Description                                    | Default Value |
-|----------+------------------------------------------------+---------------|
+|----------|------------------------------------------------|---------------|
 | width    | Width (in meters) of the sides on the X axis.  | 2             |
 | height   | Height (in meters) of the sides on the Y axis. | 2             |
 | depth    | Depth (in meters) of the sides on the Z axis.  | 2             |
@@ -40,7 +40,7 @@ The circle primitive defines two-dimensional circles, which can be complete circ
 ```
 
 | Property    | Description                                                                                                                      | Default Value |
-|-------------+----------------------------------------------------------------------------------------------------------------------------------+---------------|
+|-------------|----------------------------------------------------------------------------------------------------------------------------------|---------------|
 | radius      | Radius (in meters) of the circle.                                                                                                | 1             |
 | segments    | Number of triangles to construct the circle, like pizza slices. A higher number of segments means the circle will be more round. | 8             |
 | thetaStart  | Start angle for first segment. Can be used to define a partial circle.                                                           | 0             |
@@ -55,7 +55,7 @@ The cone primitive under the hood is a cylinder primitive with varying top and b
 ```
 
 | Property       | Description                                                     | Default Value |
-|----------------+-----------------------------------------------------------------+---------------|
+|----------------|-----------------------------------------------------------------|---------------|
 | height         | Height of the cone.                                             | 2             |
 | openEnded      | Whether the ends of the cone are open (true) or capped (false). | false         |
 | radiusBottom   | Radius of the bottom end of the cone.                           | 1             |
@@ -97,7 +97,7 @@ Curved surfaces can be defined by specifying the angle via `thetaLength` such th
 ```
 
 | Property       | Description                                                         | Default Value |
-|----------------+---------------------------------------------------------------------+---------------|
+|----------------|---------------------------------------------------------------------|---------------|
 | radius         | Radius of the cylinder.                                             | 1             |
 | height         | Height of the cylinder.                                             | 2             |
 | segmentsRadial | Number of segmented faces around the circumference of the cylinder. | 36            |
@@ -129,7 +129,7 @@ The plane primitive defines a flat surface. Note that because it is flat, only a
 ```
 
 | Property | Description              | Default Value |
-|----------+--------------------------+---------------|
+|----------|--------------------------|---------------|
 | width    | Width along the X axis.  | 2             |
 | height   | Height along the Y axis. | 2             |
 
@@ -143,7 +143,7 @@ The ring geometry defines a flat ring, like a [CD](https://en.wikipedia.org/wiki
 ```
 
 | Property      | Description                                                            | Default Value |
-|---------------+------------------------------------------------------------------------+---------------|
+|---------------|------------------------------------------------------------------------|---------------|
 | radiusInner   | Radius of the inner hole of the ring.                                  | 1             |
 | radiusOuter   | Radius of the outer edge of the ring.                                  | 1             |
 | segmentsTheta | Number of segments. A higher number means the ring will be more round. | 2             |
@@ -162,7 +162,7 @@ Sticking with a basic sphere, the default number of segments is high enough to m
 ```
 
 | Property       | Description                    | Default Value |
-|----------------+--------------------------------+---------------|
+|----------------|--------------------------------|---------------|
 | radius         | Radius of the sphere.          | 1             |
 | segmentsWidth  | Number of horizontal segments. | 18            |
 | segmentsHeight | Number of vertical segments.   | 36            |
@@ -181,7 +181,7 @@ The torus primitive defines a donut shape.
 ```
 
 | Property        | Description                                                                                                     | Default Value |
-|-----------------+-----------------------------------------------------------------------------------------------------------------+---------------|
+|-----------------|-----------------------------------------------------------------------------------------------------------------|---------------|
 | radius          | Radius of the outer edge of the torus.                                                                          | 1             |
 | radiusTubular   | Radius of the tube.                                                                                             | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
@@ -197,7 +197,7 @@ The torus knot primitive defines a pretzel shape, the particular shape of which 
 ```
 
 | Property        | Description                                                                                                     | Default Value |
-|-----------------+-----------------------------------------------------------------------------------------------------------------+---------------|
+|-----------------|-----------------------------------------------------------------------------------------------------------------|---------------|
 | radius          | Radius that contains the torus knot.                                                                            | 1             |
 | radiusTubular   | Radius of the tubes of the torus knot.                                                                          | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
