@@ -2,44 +2,51 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Cube</title>
-    <meta name="description" content="Cube - A-Frame Core">
+    <title>Shaders</title>
+    <meta name="description" content="Shaders">
     <script src="../../dist/aframe.js"></script>
-    <script src="../_shaders/noise.js"></script>
-    <script src="../_shaders/sky.js"></script>
-    <style>
-      body { background-color: black; }
-    </style>
+    <script src="shaders/noise.js"></script>
+    <script src="shaders/sky.js"></script>
   </head>
   <body>
+    <script>
+      AFRAME.registerComponent('sun-position-setter', {
+        init: function () {
+          var skyEl = this.el;
+          var orbitEl = this.el.sceneEl.querySelector('#orbit');
+
+          orbitEl.addEventListener('componentchanged', function changeSun (evt) {
+            var sunPosition;
+            var phi;
+            var theta;
+
+            if (evt.detail.name !== 'rotation') { return; }
+
+            sunPosition = orbitEl.getComputedAttribute('rotation');
+            theta = Math.PI * (- 0.5);
+            phi = 2 * Math.PI * (sunPosition.y / 360 - 0.5);
+            skyEl.setAttribute('material', 'sunPosition', {
+              x: Math.cos(phi),
+              y: Math.sin(phi) * Math.sin(theta),
+              z: -1
+            });
+          });
+        }
+      });
+    </script>
+
     <a-scene stats="true">
-    <a-entity camera></a-entity>
       <a-entity id="sky" geometry="primitive: sphere; radius: 100;"
-                material="shader: sky; side: back">
+                material="shader: sky; side: back" sun-position-setter>
         <a-entity id="orbit">
           <a-animation attribute="rotation" from="0 0 0" to="0 360 0" dur="5000"
                        repeat="indefinite" easing="linear"></a-animation>
-          </a-entity>
-        </a-entity>
-        <a-entity geometry="primitive: sphere; radius: 3"
-                material="shader: noise" position="0 0 -10" rotation="45 45 0">
         </a-entity>
       </a-entity>
+
+      <a-entity geometry="primitive: sphere; radius: 3"
+                material="shader: noise" position="0 0 -10" rotation="45 45 0">
+      </a-entity>
     </a-scene>
-    <script>
-      var orbitEl = document.querySelector('#orbit');
-      var skyEl = document.querySelector('#sky');
-      orbitEl.addEventListener('componentchanged', changeSun);
-      function changeSun(details) {
-        var sunPosition;
-        if (details.component = 'rotation') {
-          sunPosition = orbitEl.getComputedAttribute('rotation');
-          var theta = Math.PI * (- 0.5);
-          var phi = 2 * Math.PI * ( sunPosition.y / 360 - 0.5);
-          sunPosition = { x: Math.cos(phi), y: Math.sin(phi) * Math.sin(theta), z: -1 };
-          skyEl.setAttribute('material', 'sunPosition', sunPosition);
-        }
-      }
-    </script>
   </body>
 </html>

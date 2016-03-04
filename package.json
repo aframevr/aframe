@@ -80,7 +80,7 @@
       "build/**",
       "dist/**",
       "examples/_js/**",
-      "examples/_shaders/**",
+      "examples/**/shaders/*.js",
       "vendor/**"
     ]
   },
