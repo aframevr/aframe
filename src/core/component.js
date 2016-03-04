@@ -1,6 +1,7 @@
 /* global HTMLElement */
 var schema = require('./schema');
 var styleParser = require('style-attr');
+var systems = require('./system');
 var utils = require('../utils/');
 
 var parseProperties = schema.parseProperties;
@@ -9,7 +10,6 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-
 var components = module.exports.components = {}; // Keep track of registered components.
 
 /**
@@ -223,6 +223,7 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
+  NewComponent.prototype.system = systems && systems.systems[name];
 
   components[name] = {
     Component: NewComponent,

@@ -1,5 +1,4 @@
 /* global assert, process, setup, suite, test */
-var AScene = require('index').AScene;
 var entityFactory = require('../../helpers').entityFactory;
 
 suite('fog', function () {
@@ -8,7 +7,7 @@ suite('fog', function () {
   setup(function () {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    this.updateMaterialsSpy = this.sinon.spy(AScene.prototype, 'updateMaterials');
+    this.updateMaterialsSpy = this.sinon.spy(el.systems.material, 'updateMaterials');
 
     // Stub scene load to avoid WebGL code.
     el.load();

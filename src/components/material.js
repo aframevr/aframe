@@ -106,11 +106,10 @@ module.exports.Component = registerComponent('material', {
    * Remove material on remove (callback).
    */
   remove: function () {
-    var el = this.el;
     var defaultMaterial = new THREE.MeshBasicMaterial();
-    var object3D = el.getObject3D('mesh');
+    var object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
-    el.sceneEl.unregisterMaterial(this.material);
+    this.system.unregisterMaterial(this.material);
   },
 
   /**
@@ -123,10 +122,10 @@ module.exports.Component = registerComponent('material', {
    */
   setMaterial: function (material) {
     var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    var sceneEl = this.el.sceneEl;
-    if (this.material) { sceneEl.unregisterMaterial(this.material); }
+    var system = this.system;
+    if (this.material) { system.unregisterMaterial(this.material); }
     this.material = mesh.material = material;
-    sceneEl.registerMaterial(material);
+    system.registerMaterial(material);
   }
 });
 

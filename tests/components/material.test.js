@@ -19,12 +19,6 @@ suite('material', function () {
       assert.ok(this.el.getObject3D('mesh').material);
     });
 
-    test('registers material to scene', function () {
-      var el = this.el;
-      var material = this.el.getObject3D('mesh').material;
-      assert.equal(el.sceneEl.materials[material.uuid], material);
-    });
-
     test('updates material', function () {
       var el = this.el;
       el.setAttribute('material', 'color: #F0F; side: double');
@@ -57,18 +51,6 @@ suite('material', function () {
       assert.ok(el.getObject3D('mesh').material.fog);
       el.setAttribute('material', 'fog', false);
       assert.notOk(el.getObject3D('mesh').material.fog);
-    });
-
-    test('re-registers material when toggling material to flat shading', function () {
-      var el = this.el;
-      var oldMaterial = el.getObject3D('mesh').material;
-      var newMaterial;
-      el.setAttribute('material', 'shader: flat');
-      el.setAttribute('material', 'shader: standard');
-
-      newMaterial = el.getObject3D('mesh').material;
-      assert.notOk(el.sceneEl.materials[oldMaterial.uuid]);
-      assert.equal(el.sceneEl.materials[newMaterial.uuid], newMaterial);
     });
 
     test('emits event when loading texture', function (done) {

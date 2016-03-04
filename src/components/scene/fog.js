@@ -30,7 +30,7 @@ module.exports.Component = register('fog', {
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {
       el.object3D.fog = getFog(data);
-      el.updateMaterials();
+      el.systems.material.updateMaterials();
       return;
     }
 
