@@ -99,7 +99,7 @@ module.exports.Component = registerComponent('sound', {
 
     // Wait for camera if necessary.
     sceneEl.addEventListener('camera-set-active', function (evt) {
-      evt.detail.camera.add(listener);
+      evt.detail.cameraEl.getObject3D('camera').add(listener);
     });
 
     sound = this.sound = new THREE.PositionalAudio(listener);

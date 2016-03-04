@@ -43,7 +43,7 @@ module.exports.Component = registerComponent('camera', {
     if (!oldData || oldData.active !== data.active) {
       if (data.active) {
         sceneEl.setActiveCamera(camera);
-        sceneEl.emit('camera-set-active', { camera: camera });
+        sceneEl.emit('camera-set-active', { cameraEl: camera.el });
       } else if (sceneEl.camera === camera) {
         // If the camera is disabled and is the current active one
         sceneEl.setActiveCamera();
