@@ -4,9 +4,7 @@
 module.exports = function getMeshMixin () {
   return {
     defaultAttributes: {
-      material: {
-        color: 'gray'
-      }
+      material: { }
     },
 
     mappings: {
