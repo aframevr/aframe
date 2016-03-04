@@ -83,27 +83,32 @@ module.exports.Component = registerComponent('sound', {
    */
   setupSound: function () {
     var el = this.el;
-    var listener;
     var sceneEl = el.sceneEl;
     var sound = this.sound;
+
+    // we want to make sure we have exactly one AudioListener. Let's stick it somewhere
+    // that's available to the next sound component that might get initialized
+    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    sceneEl.audioListener = listener;
 
     if (sound) {
       this.stop();
       el.removeObject3D('sound');
     }
 
-    listener = this.listener = new THREE.AudioListener();
-    sound = this.sound = new THREE.Audio(listener);
-    el.setObject3D('sound', sound);
-
-    if (sceneEl.camera) {
+    function addListenerToCamera() {
       sceneEl.camera.add(listener);
-    } else {
-      sceneEl.addEventListener('camera-ready', function addAudioListener (evt) {
-        evt.detail.cameraEl.object3D.add(listener);
-      });
     }
 
+    if (sceneEl.camera) {
+      addListenerToCamera();
+    } else {
+      // if this el precedes the camera in the DOM, we won't have a camera yet.
+      sceneEl.addEventListener('camera-ready', addListenerToCamera);
+    }
+
+    sound = this.sound = new THREE.PositionalAudio(listener);
+    el.setObject3D('sound', sound);
     return sound;
   },
 
