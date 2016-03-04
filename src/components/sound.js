@@ -84,17 +84,17 @@ module.exports.Component = registerComponent('sound', {
     var sceneEl = el.sceneEl;
     var sound = this.sound;
 
-    // we want to make sure we have exactly one AudioListener. Let's stick it somewhere
-    // that's available to the next sound component that might get initialized
-    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
-    sceneEl.audioListener = listener;
-
     if (sound) {
       this.stop();
       el.removeObject3D('sound');
     }
 
-    function addListenerToCamera() {
+    // we want to make sure we have exactly one AudioListener. Let's stick it somewhere
+    // that's available to the next sound component that might get initialized
+    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    sceneEl.audioListener = listener;
+
+    function addListenerToCamera () {
       sceneEl.camera.add(listener);
     }
 
