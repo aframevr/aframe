@@ -106,9 +106,8 @@ module.exports.Component = registerComponent('sound', {
     el.setObject3D('sound', sound);
 
     sound.source.onended = function () {
-      // we've "overridden" sound's onended binding so call it here
-      sound.onEnded.call(sound);
-      el.emit('onended');
+      sound.onEnded();
+      el.emit('sound-ended');
     };
 
     return sound;
