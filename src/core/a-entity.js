@@ -494,7 +494,7 @@ var proto = Object.create(ANode.prototype, {
       var component = this.components[attr] || components[attr];
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
-      return component.parse(value);
+      return component.parse(value, true);
     },
     writable: window.debug
   },
