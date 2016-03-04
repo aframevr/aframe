@@ -104,6 +104,13 @@ module.exports.Component = registerComponent('sound', {
 
     sound = this.sound = new THREE.PositionalAudio(listener);
     el.setObject3D('sound', sound);
+
+    sound.source.onended = function () {
+      // we've "overridden" sound's onended binding so call it here
+      sound.onEnded.call(sound);
+      el.emit('onended');
+    };
+
     return sound;
   },
 
