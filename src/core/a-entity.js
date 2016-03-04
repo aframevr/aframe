@@ -69,7 +69,8 @@ var proto = Object.create(ANode.prototype, {
   detachedCallback: {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
-      this.removeComponents();
+      // Remove components.
+      Object.keys(this.components).forEach(this.removeComponent.bind(this));
       this.parentEl.remove(this);
     }
   },
@@ -245,6 +246,7 @@ var proto = Object.create(ANode.prototype, {
    */
   initComponent: {
     value: function (name, isDependency) {
+      var component;
       var isComponentDefined = checkComponentDefined(this, name);
 
       // Check if component is registered and whether component should be iniitalized.
@@ -267,8 +269,8 @@ var proto = Object.create(ANode.prototype, {
         // Check if component already initialized.
         if (name in this.components) { return; }
 
-        this.components[name] = new components[name].Component(this);
-        if (this.isPlaying) { this.components[name].play(); }
+        component = this.components[name] = new components[name].Component(this);
+        if (this.isPlaying) { playComponent(component, this.sceneEl); }
       }
 
       log('Component initialized: %s', name);
@@ -293,19 +295,9 @@ var proto = Object.create(ANode.prototype, {
   removeComponent: {
     value: function (name) {
       var component = this.components[name];
-      var scene;
-      if (component.tick) {
-        scene = this.isScene ? this.el : this.sceneEl;
-        scene.removeBehavior(component);
-      }
+      pauseComponent(component, this.sceneEl);
       component.remove();
       delete this.components[name];
-    }
-  },
-
-  removeComponents: {
-    value: function () {
-      Object.keys(this.components).forEach(this.removeComponent.bind(this));
     }
   },
 
@@ -370,42 +362,57 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Starts any dynamic behavior associated to the entity
-   * this involves dynamic components and animations
+   * Start dynamic behavior associated with entity such as dynamic components and animations.
+   * Tell all children entities to also play.
    */
   play: {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
+      var sceneEl = this.sceneEl;
+
+      // Already playing.
       if (this.isPlaying) { return; }
       this.isPlaying = true;
-      componentKeys.forEach(function playComponent (key) {
-        components[key].play();
+
+      // Wake up all components.
+      componentKeys.forEach(function _playComponent (key) {
+        playComponent(components[key], sceneEl);
       });
+
+      // Tell all child entities to play.
       this.getChildEntities().forEach(function play (obj) {
         obj.play();
       });
+
       this.emit('play');
     },
     writable: true
   },
 
   /**
-   * Stops any dynamic behavior associated to the entity
-   * This involves dynamic components and animations
+   * Pause dynamic behavior associated with entity such as dynamic components and animations.
+   * Tell all children entities to also pause.
    */
   pause: {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
+      var sceneEl = this.sceneEl;
+
       if (!this.isPlaying) { return; }
       this.isPlaying = false;
-      componentKeys.forEach(function pauseComponent (key) {
-        components[key].pause();
+
+      // Sleep all components.
+      componentKeys.forEach(function _pauseComponent (key) {
+        pauseComponent(components[key], sceneEl);
       });
+
+      // Tell all child entities to pause.
       this.getChildEntities().forEach(function pause (obj) {
         obj.pause();
       });
+
       this.emit('pause');
     },
     writable: true
@@ -583,6 +590,32 @@ function isComponentMixedIn (name, mixinEls) {
     if (inMixin) { break; }
   }
   return inMixin;
+}
+
+/**
+ * Pause component by removing tick behavior and calling pause handler.
+ *
+ * @param component {object} - Component to pause.
+ * @param sceneEl {Element} - Scene, needed to remove the tick behavior.
+ */
+function pauseComponent (component, sceneEl) {
+  component.pause();
+  // Remove tick behavior.
+  if (!component.tick) { return; }
+  sceneEl.removeBehavior(component);
+}
+
+/**
+ * Play component by adding tick behavior and calling play handler.
+ *
+ * @param component {object} - Component to play.
+ * @param sceneEl {Element} - Scene, needed to add the tick behavior.
+ */
+function playComponent (component, sceneEl) {
+  component.play();
+  // Add tick behavior.
+  if (!component.tick) { return; }
+  sceneEl.addBehavior(component);
 }
 
 AEntity = registerElement('a-entity', {
