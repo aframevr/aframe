@@ -41,7 +41,10 @@ var Component = module.exports.Component = function (el) {
   var scene;
 
   this.el = el;
-  this.updateSchema(buildData(el, name, this.schema, elData));
+  // The last parameter of builData suppresses the warnings
+  // We don't want to display warning messages when parsing the data
+  // before updating the schema
+  this.updateSchema(buildData(el, name, this.schema, elData, true));
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
@@ -110,12 +113,13 @@ Component.prototype = {
    * If component is single-property, then parses the single property value.
    *
    * @param {string} value - HTML attribute value.
+   * @param {boolean} silent - Suppress warning messages.
    * @returns {object} Component data.
    */
-  parse: function (value) {
+  parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(objectParse(value), schema, true);
+    return parseProperties(objectParse(value), schema, true, silent);
   },
 
   /**
@@ -248,8 +252,15 @@ module.exports.registerComponent = function (name, definition) {
  * 3. Attribute data.
  *
  * Finally coerce the data to the types of the defaults.
+ *
+ * @param {object} el - Element to build data from.
+ * @param {object} name - Component name.
+ * @param {object} schema - Component schema.
+ * @param {object} elData - Element current data.
+ * @param {boolean} silent - Suppress warning messages.
+ * @return {object} The component data
  */
-function buildData (el, name, schema, elData) {
+function buildData (el, name, schema, elData, silent) {
   var componentDefined = elData !== null;
   var data = {};
   var isSinglePropSchema = isSingleProp(schema);
@@ -287,7 +298,7 @@ function buildData (el, name, schema, elData) {
     return parseProperty(data, schema);
   }
 
-  return parseProperties(data, schema);
+  return parseProperties(data, schema, undefined, silent);
 }
 module.exports.buildData = buildData;
 

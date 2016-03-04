@@ -92,17 +92,20 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
 /**
  * Parse propData using schema. Use default values if not existing in propData.
  *
+ * @param {object} propData - Unparsed properties.
+ * @param {object} schema - Property types definition.
  * @param {boolean} getPartialData - Whether to return full component data or just the data
  *        with keys in `propData`.
+ * @param {boolean} silent - Suppress warning messages.
  */
-module.exports.parseProperties = function (propData, schema, getPartialData) {
+module.exports.parseProperties = function (propData, schema, getPartialData, silent) {
   var propNames = Object.keys(getPartialData ? propData : schema);
 
   if (propData === null || typeof propData !== 'object') { return propData; }
 
   // Validation errors.
   Object.keys(propData).forEach(function (propName) {
-    if (!schema[propName]) {
+    if (!schema[propName] && !silent) {
       warn('Unknown component property: ' + propName);
     }
   });
