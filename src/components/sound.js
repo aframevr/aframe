@@ -94,16 +94,14 @@ module.exports.Component = registerComponent('sound', {
     var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
     sceneEl.audioListener = listener;
 
-    function addListenerToCamera () {
+    if (sceneEl.camera) {
       sceneEl.camera.add(listener);
     }
 
-    if (sceneEl.camera) {
-      addListenerToCamera();
-    } else {
-      // if this el precedes the camera in the DOM, we won't have a camera yet.
-      sceneEl.addEventListener('camera-ready', addListenerToCamera);
-    }
+    // if we don't have a camera yet or our active camera gets changed
+    sceneEl.addEventListener('active-camera-set', function (evt) {
+      evt.detail.camera.add(listener);
+    });
 
     sound = this.sound = new THREE.PositionalAudio(listener);
     el.setObject3D('sound', sound);
