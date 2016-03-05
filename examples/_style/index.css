@@ -1,0 +1,85 @@
+body {
+  background: rgb(239,45,94);
+  font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
+  color: white;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 3rem;
+  font-family: 'Fira Sans', sans-serif;
+  font-weight: 200;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 3rem;
+  margin: 0;
+}
+
+a {
+  color: white;
+  padding: 10px 4px;
+}
+
+ul {
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  line-height: 2.2rem;
+}
+
+a-example-link {
+  display: inline-block;
+  margin: 2px 0;
+}
+
+.note,
+.note a {
+  color: rgba(255,255,255,0.4);
+  font-family: 'Fira Mono', sans-serif;
+}
+
+.note a:hover {
+  color: white;
+}
+
+.view-source {
+  margin-left: 15px;
+  border: none;
+  font-size: 0.8em;
+  text-decoration: none;
+}
+
+.links {
+  padding-top: 20px;
+  border-top: 1px dashed rgba(255,255,255,0.4);
+  border-bottom: 1px dashed rgba(255,255,255,0.4);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.links a {
+  font-family: 'Fira Sans';
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+a-example-link a:hover {
+  background-color: rgba(0,0,0,0.1);
+  text-decoration: none;
+}
+
+footer {
+  display: flex;
+  display: -webkit-flex;
+  height: 30px;
+  justify-content: flex-end;
+  -webkit-justify-content: flex-end;
+}
+
+footer img {
+  width: 6rem;
+}

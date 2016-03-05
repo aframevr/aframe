@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var exec = require('child_process').exec;
-var path = require('path');
+var urlParse = require('url').parse;
 
 var budo = require('budo');
 
@@ -12,29 +12,38 @@ function execCmd (cmd) {
   return p;
 }
 
-var app = budo('./index.js:build/aframe.js', {
+var consts = {
+  NAME: 'AFRAME',
+  ENTRY: './src/index.js',
+  DIST: 'dist/aframe.js',
+  BUILD: 'build/aframe.js',
+  WATCH: 'examples/**/*',  // Additional files to watch for LiveReload
+  PORT: 9000
+};
+
+var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
-  stream: process.stdout,  // log to stdout
-  port: 9000,
-  browserifyArgs: '-s AFRAME'.split(' ')
-});
-
-app
-.watch('**/*.{css,js,html}')
-.live()
-.on('watch', function (eventType, fn) {
-  if (eventType !== 'change' && eventType !== 'add') { return; }
-
-  if (path.extname(fn) === '.css') {
-    // We want to trigger a reload of the entire document, since
-    // browserify-css injects CSS into the page.
-    app.reload();
-  } else if (path.extname(fn) === '.js') {
-    app.reload(fn);
-  } else if (fn.indexOf('elements/templates') === 0) {
-    app.reload();
+  live: true,
+  stream: process.stdout,
+  host: process.env.HOST,
+  port: process.env.PORT || consts.PORT,
+  watchGlob: consts.WATCH,
+  browserifyArgs: ['-s', consts.NAME],
+  middleware: function (req, res, next) {
+    // Route `dist/aframe.js` to `build/aframe.js` so we can
+    // dev against the examples :)
+    var path = urlParse(req.url).pathname;
+    if (path.indexOf('/' + consts.DIST) !== -1) {
+      req.url = req.url.replace('/dist/', '/build/');
+    }
+    // TODO: Consider adding middleware that targets specific directories
+    // (such that editing `examples/a.html` doesn't reload `examples/b.html`).
+    next();
   }
-}).on('update', function (ev) {
-  execCmd('semistandard -v $(git ls-files "*.js") | snazzy');
+};
+
+var app = budo(consts.ENTRY + ':' + consts.BUILD, opts);
+app.on('update', function () {
+  execCmd('semistandard -v $(git ls-files "*.js") | standard-reporter --stylish');
 });
