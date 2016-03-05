@@ -2,6 +2,13 @@
 
 __Building blocks for the VR Web.__
 
+[![build status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url]
+[![Downloads][downloads-image]][downloads-url]
+[![js-semistandard-style][semistandard-image]][semistandard-url]
+
+A-Frame is a library for creating virtual reality web experiences.
+
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
 - **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
 - **[Entity-Component System](https://aframe.io/docs/core/)**: Use the entity-component system for better composability and flexibility.
@@ -11,6 +18,7 @@ Find out more:
 - [Guide](https://aframe.io/docs/guide/)
 - [Docs](https://aframe.io/docs/core/)
 - [Examples](https://aframe.io/examples/)
+- [Ask us on Slack](https://aframevr-slack.herokuapp.com/)
 
 ## Usage
 
@@ -88,3 +96,12 @@ To publish to __https://your_username.github.io/aframe/__:
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).
+
+[npm-image]: https://img.shields.io/npm/v/aframe.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/aframe
+[travis-image]: https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square
+[travis-url]: http://travis-ci.org/aframevr/aframe
+[downloads-image]: http://img.shields.io/npm/dm/aframe.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/aframe
+[semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
+[semistandard-url]: https://github.com/Flet/semistandard

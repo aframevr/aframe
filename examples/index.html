@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<html>
   <head>
     <title>A-Frame Examples</title>
     <meta charset="utf-8">
@@ -87,16 +86,13 @@
         color: #333;
       }
 
-
       #logo-moz {
         padding-top: 6rem;
         width: 5rem;
       }
-
     </style>
   </head>
   <body>
-
     <h1>A-Frame Examples</h1>
     <div class="note">
       <a href="http://aframe.io">Aframe.io</a>
@@ -105,7 +101,6 @@
       <a href="http://twitter.com/aframevr">Twitter</a>
       <a href="_uploader">Upload Assets</a>
     </div>
-
     <hr>
 
     <h2>Showcase</h2>
@@ -115,14 +110,8 @@
       <li><a href="showcase-composite/">Composite</a></li>
       <li><a href="showcase-curved-mockups/">Curved Mockups</a></li>
       <li><a href="showcase-dynamic-lights/">Dynamic Lights</a></li>
-      <li><a href="showcase-flythrough/">Fly Through</a></li>
       <li><a href="showcase-shopping/">Shopping</a></li>
       <li><a href="showcase-spheres-and-fog/">Spheres and Fog</a></li>
-
-      <!-- <li><a href="showcase-legos/">Legos</a></li> -->
-      <!-- <li><a href="showcase-mario/">Mario</a></li> -->
-      <!-- <li><a href="showcase-panoexplorer_OLD/">Pano Explorer (Old)</a></li> -->
-
     </ul>
 
     <h2>Boilerplates</h2>
@@ -132,23 +121,6 @@
       <li><a href="boilerplate-360video/">360 Video</a></li>
       <li><a href="boilerplate-panorama/">Panorama</a></li>
       <li><a href="boilerplate-3Dmodel/">3D Model</a></li>
-      <!-- <li><a href="boilerplate-flythrough/">Fly Through</a></li> -->
-    </ul>
-
-    <h2>Primitives</h2>
-
-    <ul class="links">
-      <li><a href="template-cube/">Cube</a></li>
-      <li><a href="template-cubes/">Cubes</a></li>
-      <li><a href="template-cylinders/">Cylinders</a></li>
-      <li><a href="template-defaults/">Defaults</a></li>
-      <li><a href="template-frames/">Frames</a></li>
-      <li><a href="template-images/">Images</a></li>
-      <li><a href="template-models/">Models</a></li>
-      <li><a href="template-planes/">Planes</a></li>
-      <li><a href="template-sky/">Sky</a></li>
-      <li><a href="template-video/">Video</a></li>
-      <li><a href="template-videosphere/">Video Sphere</a></li>
     </ul>
 
     <h2>Animations</h2>
@@ -163,26 +135,53 @@
       <li><a href="animation-warps/">Warps</a></li>
     </ul>
 
-    <h2>Interactions</h2>
-
-    <ul class="links">
-      <!-- <li><a href="interaction-camera/">Camera</a></li> -->
-      <li><a href="interaction-cursor/">Cursor</a></li>
-      <li><a href="interaction-lookat/">Look At</a></li>
-      <li><a href="interaction-hovers/">Hovers</a></li>
-    </ul>
-
-    <h2>Components</h2>
-
-    <ul class="links">
-      <li><a href="entitycomponent-basics/">Basics</a></li>
-    </ul>
-
-
     <h2>Tests</h2>
 
     <ul class="links">
-      <li><a href="animation-template-test/">Animations + Templates</a></li>
+      <li><a href="test-animation/">Animation</a></li>
+      <li><a href="test-controls/">Controls</a></li>
+      <li><a href="test-cursor/">Cursor</a></li>
+      <li><a href="test-cube/">Cube</a></li>
+      <li><a href="test-cylinders/">Cylinders</a></li>
+      <li><a href="test-fog/">Fog</a></li>
+      <li><a href="test-geometries/">Geometries</a></li>
+      <li><a href="test-geometry-gallery/">Geometry Gallery</a></li>
+      <li><a href="test-geometry-translation/">Geometry Translation</a></li>
+      <li><a href="test-lights/">Lights</a></li>
+      <li><a href="test-look-at/">Look-At</a></li>
+      <li><a href="test-mixin/">Mixin</a></li>
+      <li><a href="test-model/">Model</a></li>
+      <li><a href="test-opacity/">Opacity</a></li>
+      <li><a href="test-panoexplorer/">Pano Explorer</a></li>
+      <li><a href="test-physical/">Physically-Based Materials</a></li>
+      <li><a href="test-shaders/">Shaders</a></li>
+      <li><a href="test-texture/">Texture</a></li>
+      <li><a href="test-towers/">Towers</a></li>
+      <li><a href="test-video/">Video</a></li>
+      <li><a href="test-videosphere/">Video 360&deg;</a></li>
+      <li><a href="test-visibility/">Visibility</a></li>
+    </ul>
+
+    <h2>Primitives</h2>
+
+    <ul class="links">
+      <li><a href="primitives-boxes/">Boxes</a></li>
+      <li><a href="primitives-cylinders/">Cylinders</a></li>
+      <li><a href="primitives-defaults/">Defaults</a></li>
+      <li><a href="primitives-images/">Images</a></li>
+      <li><a href="primitives-lookat/">Look At</a></li>
+      <li><a href="primitives-models/">Models</a></li>
+      <li><a href="primitives-planes/">Planes</a></li>
+      <li><a href="primitives-sky/">Sky</a></li>
+      <li><a href="primitives-video/">Video</a></li>
+      <li><a href="primitives-videosphere/">Video Sphere</a></li>
+    </ul>
+
+    <h2>Declarative Events</h2>
+
+    <ul class="links">
+      <li><a href="declarative-events-cursor/">Cursor</a></li>
+      <li><a href="declarative-events-hovers/">Hovers</a></li>
     </ul>
 
     <img src="_images/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
@@ -192,7 +191,7 @@
         window.requestAnimationFrame(function () {
           // Defer loading of web fonts.
           var fonts = [
-            'https://code.cdn.mozilla.net/fonts/fira.css'
+            'https://mozilla.github.io/Fira/fira.css'
           ];
           var link;
           fonts.forEach(function (url) {

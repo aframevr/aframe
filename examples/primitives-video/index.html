@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Video</title>
+    <meta name="description" content="Video — A-Frame">
+    <script src="../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!--
+        SOURCE
+        Title:  Paris Sunset - Timelapse (Public Domain)
+        Author: Mythomen <https://vimeo.com/mythomen>
+        URL:    https://vimeo.com/147309712
+        -->
+        <video src="https://ucarecdn.com/4130c599-445f-4e76-9052-49978e972641/">
+
+        <!--
+        SOURCE
+        Title:  Hypercube Study
+        Author: Dan Allison <https://vimeo.com/danallison>
+        URL:    https://vimeo.com/5081158
+        -->
+        <video src="https://ucarecdn.com/210dd043-dcd3-446d-9b36-ad19471f6273/">
+      </a-assets>
+
+      <a-video position="0 60 -150" src="https://ucarecdn.com/4130c599-445f-4e76-9052-49978e972641/"
+               width="160" height="90">
+        <a-animation begin="material-texture-loaded" attribute="rotation" from="180 0 0" to="0 0 0" dur="2000"> </a-animation>
+        <a-animation begin="video-ended" attribute="opacity" to="0.5" dur="2000"> </a-animation>
+      </a-video>
+      <a-video position="0 -60 -150" src="https://ucarecdn.com/210dd043-dcd3-446d-9b36-ad19471f6273/"
+               width="160" height="90"></a-video>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>
