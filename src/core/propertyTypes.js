@@ -12,6 +12,7 @@ registerPropertyType('color', '', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
+registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
@@ -81,9 +82,26 @@ function selectorParse (value) {
   return document.querySelector(value);
 }
 
+function selectorAllParse (value) {
+  if (!value) { return null; }
+  if (typeof value !== 'string') { return value; }
+  return document.querySelectorAll(value);
+}
+
 function selectorStringify (value) {
   if (value.getAttribute) {
     return '#' + value.getAttribute('id');
+  }
+  return defaultStringify(value);
+}
+
+function selectorAllStringify (value) {
+  if (value.item) {
+    var els = '';
+    for (var i = 0; i < value.length; ++i) {
+      els += (i === value.length - 1) ? '#' + value[i].getAttribute('id') : '#' + value[i].getAttribute('id') + ',';
+    }
+    return els;
   }
   return defaultStringify(value);
 }
