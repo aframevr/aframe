@@ -55412,7 +55412,7 @@ module.exports = WebVRPolyfill;
 },{}],24:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Building blocks for the VR Web",
   "main": "dist/aframe.js",
   "scripts": {
@@ -55438,7 +55438,7 @@ module.exports={
     "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
     "deep-assign": "^2.0.0",
-    "document-register-element": "^0.5.2",
+    "document-register-element": "dmarcos/document-register-element#cd66564",
     "promise-polyfill": "^3.1.0",
     "object-assign": "^4.0.1",
     "polymerize": "^1.0.0",
@@ -55492,6 +55492,7 @@ module.exports={
       "build/**",
       "dist/**",
       "examples/_js/**",
+      "examples/**/shaders/*.js",
       "vendor/**"
     ]
   },
@@ -55559,6 +55560,7 @@ module.exports.Component = registerComponent('camera', {
     if (!oldData || oldData.active !== data.active) {
       if (data.active) {
         sceneEl.setActiveCamera(camera);
+        sceneEl.emit('camera-set-active', { cameraEl: camera.el });
       } else if (sceneEl.camera === camera) {
         // If the camera is disabled and is the current active one
         sceneEl.setActiveCamera();
@@ -55567,7 +55569,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86}],26:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88}],26:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -55605,7 +55607,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86}],27:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88}],27:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -55658,7 +55660,7 @@ module.exports.Component = registerComponent('cursor', {
 
   emit: function (evt) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evt);
+    this.el.emit(evt, { target: this.intersectedEl });
     if (intersectedEl) { intersectedEl.emit(evt); }
   },
 
@@ -55692,16 +55694,16 @@ module.exports.Component = registerComponent('cursor', {
   onIntersectionCleared: function (evt) {
     var el = evt.detail.el;
     if (!el || !this.intersectedEl) { return; }
-    this.intersectedEl = null;
     el.removeState('hovered');
     el.emit('mouseleave');
     this.el.removeState('hovering');
     this.el.removeState('fusing');
+    this.intersectedEl = null;
     clearTimeout(this.fuseTimeout);
   }
 });
 
-},{"../core/component":56,"../utils/":91}],28:[function(_dereq_,module,exports){
+},{"../core/component":56,"../utils/":98}],28:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -55894,7 +55896,7 @@ function applyTranslate (geometry, translate, currentTranslate) {
   geometry.verticesNeedsUpdate = true;
 }
 
-},{"../core/component":56,"../lib/three":86,"../utils":91,"../utils/debug":90}],29:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],29:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -56057,7 +56059,7 @@ function getLight (data) {
   }
 }
 
-},{"../core/component":56,"../lib/three":86,"../utils":91,"../utils/debug":90}],31:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],31:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var parseUrl = _dereq_('../utils/src-loader').parseUrl;
@@ -56135,7 +56137,7 @@ module.exports.Component = registerComponent('loader', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86,"../utils/debug":90,"../utils/src-loader":92}],32:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils/debug":97,"../utils/src-loader":99}],32:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var coordinates = _dereq_('../utils/coordinates');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -56237,7 +56239,7 @@ module.exports.Component = registerComponent('look-at', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86,"../utils/coordinates":89,"../utils/debug":90}],33:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils/coordinates":96,"../utils/debug":97}],33:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -56485,108 +56487,119 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86}],34:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88}],34:[function(_dereq_,module,exports){
 /* global Promise */
 var debug = _dereq_('../utils/debug');
-var diff = _dereq_('../utils').diff;
-var registerComponent = _dereq_('../core/component').registerComponent;
-var srcLoader = _dereq_('../utils/src-loader');
+var utils = _dereq_('../utils');
+var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
+var shader = _dereq_('../core/shader');
 
-var CubeLoader = new THREE.CubeTextureLoader();
 var error = debug('components:material:error');
-var TextureLoader = new THREE.TextureLoader();
-var texturePromises = {};
-var warn = debug('components:material:warn');
-
-var MATERIAL_TYPE_BASIC = 'MeshBasicMaterial';
-var MATERIAL_TYPE_STANDARD = 'MeshStandardMaterial';
+var diff = utils.diff;
+var registerComponent = component.registerComponent;
+var shaders = shader.shaders;
+var shaderNames = shader.shaderNames;
 
 /**
  * Material component.
  *
  * @namespace material
- * @param {string} color - Diffuse color.
- * @param {string} envMap - To load a environment cubemap. Takes a selector
- *         to an element containing six img elements, or a comma-separated
- *         string of direct url()s.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {number} metalness - Parameter for physical/standard material.
- * @param {number} opacity - [0-1].
- * @param {string} repeat - X and Y value for size of texture repeating
- *         (in UV units).
- * @param {number} roughness - Parameter for physical/standard material.
- * @param {string} [side=front] - Which side(s) to render (i.e., front, back,
- *         both).
  * @param {string} shader - Determines how material is shaded. Defaults to `standard`,
  *         three.js's implementation of PBR. Another option is `flat` where we use
  *         MeshBasicMaterial.
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {boolean} transparent - Whether to render transparent the alpha
- *         channel of a texture (e.g., .png).
- * @param {number} width - Width to render texture.
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    color: { default: '#FFF' },
-    envMap: { default: '' },
-    fog: { default: true },
-    height: { default: 360 },
-    metalness: { default: 0.0, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
-    opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    repeat: { default: '' },
-    roughness: { default: 0.5, min: 0.0, max: 1.0, if: { shader: ['standard'] } },
-    shader: { default: 'standard', oneOf: ['flat', 'standard'] },
-    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-    src: { default: '' },
+    shader: { default: 'standard', oneOf: shaderNames },
     transparent: { default: false },
-    width: { default: 640 }
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] }
   },
 
   init: function () {
-    this.isLoadingEnvMap = false;
     this.material = null;
-    this.textureSrc = null;
   },
 
   /**
    * Update or create material.
    *
-   * Material type depends on shader:
-   *   shader=flat - MeshBasicMaterial.
-   *   shader=XXX - MeshStandardMaterial.
-   *
    * @param {object|null} oldData
    */
   update: function (oldData) {
     var data = this.data;
-    var material;
-    var materialType = getMaterialType(data);
-    var src = data.src;
+    var dataDiff = oldData ? diff(oldData, data) : data;
 
-    if (!oldData || getMaterialType(oldData) !== materialType) {
-      material = this.createMaterial(getMaterialData(data), materialType);
-    } else {
-      material = this.updateMaterial(processMaterialData(diff(oldData, data)));
+    if (!this.shader || dataDiff.shader) {
+      this.updateShader(data.shader);
     }
+    this.shader.update(this.data);
+    this.updateMaterial();
+  },
 
-    // Load textures and/or cubemaps.
-    if (material.type === MATERIAL_TYPE_STANDARD) { this.updateEnvMap(); }
-    this.updateTexture(src);
+  updateSchema: function (data) {
+    var newShader = data.shader;
+    var currentShader = this.data && this.data.shader;
+    var shader = newShader || currentShader;
+    var schema = shaders[shader] && shaders[shader].schema;
+    if (!schema) { error('Unknown shader schema ' + shader); }
+    if (currentShader && newShader === currentShader) { return; }
+    this.extendSchema(schema);
+    this.updateBehavior();
+  },
+
+  updateBehavior: function () {
+    var scene = this.el.sceneEl;
+    var schema = this.schema;
+    var self = this;
+    var tickProperties = {};
+    var tick = function (time, delta) {
+      var keys = Object.keys(tickProperties);
+      keys.forEach(update);
+      function update (key) { tickProperties[key] = time; }
+      self.shader.update(tickProperties);
+    };
+    var keys = Object.keys(schema);
+    keys.forEach(function (key) {
+      if (schema[key].type === 'time') {
+        self.tick = tick;
+        tickProperties[key] = true;
+        scene.addBehavior(self);
+      }
+    });
+    if (Object.keys(tickProperties).length === 0) {
+      scene.removeBehavior(this);
+    }
+  },
+
+  updateShader: function (shaderName) {
+    var data = this.data;
+    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
+    var material;
+    if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
+    this.shader = new Shader();
+    this.shader.el = this.el;
+    material = this.shader.init(data);
+    this.setMaterial(material);
+    this.updateSchema(data);
+  },
+
+  updateMaterial: function () {
+    var data = this.data;
+    var material = this.material;
+    material.side = parseSide(data.side);
+    material.opacity = data.opacity;
+    material.transparent = data.transparent !== false || data.opacity < 1.0;
   },
 
   /**
    * Remove material on remove (callback).
    */
   remove: function () {
-    var el = this.el;
-    var defaultColor = this.schema.color.default;
-    var defaultMaterial = new THREE.MeshBasicMaterial({ color: defaultColor });
-    var object3D = el.getObject3D('mesh');
+    var defaultMaterial = new THREE.MeshBasicMaterial();
+    var object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
-    el.sceneEl.unregisterMaterial(this.material);
+    this.system.unregisterMaterial(this.material);
   },
 
   /**
@@ -56597,247 +56610,14 @@ module.exports.Component = registerComponent('material', {
    * @param {object} type - Material type to create.
    * @returns {object} Material.
    */
-  createMaterial: function (data, type) {
-    var material;
+  setMaterial: function (material) {
     var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    var sceneEl = this.el.sceneEl;
-    if (this.material) { sceneEl.unregisterMaterial(this.material); }
-    material = this.material = mesh.material = new THREE[type](data);
-    sceneEl.registerMaterial(material);
-    return material;
-  },
-
-  /**
-   * Updating existing material.
-   *
-   * @param {object} data - Material component data.
-   * @returns {object} Material.
-   */
-  updateMaterial: function (data) {
-    var material = this.material;
-    Object.keys(data).forEach(function (key) {
-      material[key] = data[key];
-    });
-    return material;
-  },
-
-  /**
-   * Handle environment cubemap. Textures are cached in texturePromises.
-   */
-  updateEnvMap: function () {
-    var self = this;
-    var material = this.material;
-    var envMap = this.data.envMap;
-    // Environment cubemaps.
-    if (!envMap || this.isLoadingEnvMap) {
-      material.envMap = null;
-      material.needsUpdate = true;
-      return;
-    }
-    this.isLoadingEnvMap = true;
-    if (texturePromises[envMap]) {
-      // Another material is already loading this texture. Wait on promise.
-      texturePromises[envMap].then(function (cube) {
-        self.isLoadingEnvMap = false;
-        material.envMap = cube;
-        material.needsUpdate = true;
-      });
-    } else {
-      // Material is first to load this texture. Load and resolve texture.
-      texturePromises[envMap] = new Promise(function (resolve) {
-        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
-          CubeLoader.load(urls, function (cube) {
-            // Texture loaded.
-            self.isLoadingEnvMap = false;
-            material.envMap = cube;
-            resolve(cube);
-          });
-        });
-      });
-    }
-  },
-
-  /*
-   * Updates material texture map.
-   *
-   * @param {string|object} src - An <img> / <video> element or url to an image/video file.
-   */
-  updateTexture: function (src) {
-    var data = this.data;
-    var material = this.material;
-    if (src) {
-      if (src !== this.textureSrc) {
-        // Texture added or changed.
-        this.textureSrc = src;
-        srcLoader.validateSrc(src, loadImage, loadVideo);
-      }
-    } else {
-      // Texture removed.
-      material.map = null;
-      material.needsUpdate = true;
-    }
-    function loadImage (src) { loadImageTexture(material, src, data.repeat); }
-    function loadVideo (src) { loadVideoTexture(material, src, data.width, data.height); }
+    var system = this.system;
+    if (this.material) { system.unregisterMaterial(this.material); }
+    this.material = mesh.material = material;
+    system.registerMaterial(material);
   }
 });
-
-/**
- * Sets image texture on material as `map`.
- *
- * @param {object} material - three.js material.
- * @param {string|object} src - An <img> element or url to an image file.
- * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
- */
-function loadImageTexture (material, src, repeat) {
-  var isEl = typeof src !== 'string';
-
-  var onLoad = createTexture;
-  var onProgress = function () {};
-  var onError = function (xhr) {
-    error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-          xhr.status, xhr.statusText);
-  };
-
-  if (isEl) {
-    createTexture(src);
-  } else {
-    TextureLoader.load(src, onLoad, onProgress, onError);
-  }
-
-  function createTexture (texture) {
-    if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-    var repeatXY;
-    if (repeat) {
-      repeatXY = repeat.split(' ');
-      if (repeatXY.length === 2) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(parseInt(repeatXY[0], 10),
-                           parseInt(repeatXY[1], 10));
-      }
-    }
-    material.map = texture;
-    texture.needsUpdate = true;
-    material.needsUpdate = true;
-  }
-}
-
-/**
- * Creates a video element to be used as a texture.
- *
- * @param {object} material - three.js material.
- * @param {string} src - Url to a video file.
- * @param {number} width - Width of the video.
- * @param {number} height - Height of the video.
- * @returns {Element} Video element.
- */
-function createVideoEl (material, src, width, height) {
-  var el = material.videoEl || document.createElement('video');
-  function onError () {
-    warn('The URL "$s" is not a valid image or video', src);
-  }
-  el.width = width;
-  el.height = height;
-  // Attach event listeners if brand new video element.
-  if (el !== this.videoEl) {
-    el.autoplay = true;
-    el.loop = true;
-    el.crossOrigin = true;
-    el.addEventListener('error', onError, true);
-    material.videoEl = el;
-  }
-  el.src = src;
-  return el;
-}
-
-/**
- * Sets video texture on material as map.
- *
- * @param {object} material - three.js material.
- * @param {string} src - Url to a video file.
- * @param {number} width - Width of the video.
- * @param {number} height - Height of the video.
-*/
-function loadVideoTexture (material, src, height, width) {
-  // three.js video texture loader requires a <video>.
-  var videoEl = typeof src !== 'string' ? fixVideoAttributes(src) : createVideoEl(material, src, height, width);
-  var texture = new THREE.VideoTexture(videoEl);
-  texture.minFilter = THREE.LinearFilter;
-  texture.needsUpdate = true;
-  material.map = texture;
-  material.needsUpdate = true;
-}
-
-/**
- * Fixes a video element's attributes to prevent developers from accidentally
- * passing the wrong attribute values to commonly misused video attributes.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#Attributes
- * @param {Element} videoEl - Video element.
- * @returns {Element} Video element with the correct properties updated.
- */
-function fixVideoAttributes (videoEl) {
-  // The `<video>` element treats `loop` and `muted` as boolean attributes, but
-  // of course does not with `autoplay`, `controls`, `preload` (and `crossorigin`).
-  // If we get passed a `<video autoplay="false">`, let's assume the dev wanted
-  // `autoplay` to be disabled.
-  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
-  videoEl.controls = videoEl.getAttribute('controls') !== 'false';
-  if (videoEl.getAttribute('preload') === 'false') {
-    videoEl.preload = 'none';
-  }
-  return videoEl;
-}
-
-/**
- * Builds and normalize material data, normalizing stuff along the way.
- *
- * @param {object} data - Material data.
- * @returns {object} data - Processed material data.
- */
-function getMaterialData (data) {
-  var materialData = {
-    color: data.color,
-    side: data.side,
-    opacity: data.opacity,
-    transparent: data.transparent !== false || data.opacity < 1.0
-  };
-  if (getMaterialType(data) === MATERIAL_TYPE_STANDARD) {
-    // Attach standard material parameters.
-    materialData.metalness = data.metalness;
-    materialData.roughness = data.roughness;
-  }
-  return processMaterialData(materialData);
-}
-
-/**
- * Necessary transforms to material data before passing to three.js.
- *
- * @param {object} data - Material data.
- * @returns {object} Processed material data.
- */
-function processMaterialData (data) {
-  if ('color' in data) {
-    data.color = new THREE.Color(data.color);
-  }
-  if ('opacity' in data && data.opacity < 1) {
-    data.transparent = true;
-  }
-  if ('side' in data) {
-    data.side = getSide(data.side);
-  }
-  return data;
-}
-
-/**
- * Get material type based on shader.
- *
- * @param {object} Material component data.
- * @returns {string} Material type (as three.js constructor name)
- */
-function getMaterialType (data) {
-  return data.shader === 'flat' ? MATERIAL_TYPE_BASIC : MATERIAL_TYPE_STANDARD;
-}
 
 /**
  * Returns a three.js constant determining which material face sides to render
@@ -56846,7 +56626,7 @@ function getMaterialType (data) {
  * @param {string} [side=front] - `front`, `back`, or `double`.
  * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
  */
-function getSide (side) {
+function parseSide (side) {
   switch (side) {
     case 'back': {
       return THREE.BackSide;
@@ -56861,7 +56641,7 @@ function getSide (side) {
   }
 }
 
-},{"../core/component":56,"../lib/three":86,"../utils":91,"../utils/debug":90,"../utils/src-loader":92}],35:[function(_dereq_,module,exports){
+},{"../core/component":56,"../core/shader":63,"../lib/three":88,"../utils":98,"../utils/debug":97}],35:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -56931,7 +56711,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86,"../utils/debug":90}],36:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils/debug":97}],36:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -57052,7 +56832,7 @@ module.exports.Component = registerComponent('raycaster', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86,"request-interval":12}],38:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"request-interval":12}],38:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -57070,7 +56850,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86}],39:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88}],39:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -57172,7 +56952,7 @@ module.exports.Component = register('fog', {
     // (Re)create fog if fog doesn't exist or fog type changed.
     if (!fog || data.type !== fog.name) {
       el.object3D.fog = getFog(data);
-      el.updateMaterials();
+      el.systems.material.updateMaterials();
       return;
     }
 
@@ -57214,7 +56994,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":56,"../../lib/three":86,"../../utils/debug":90}],42:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":88,"../../utils/debug":97}],42:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -57251,7 +57031,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":56,"../../lib/three":86}],43:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":88}],43:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 
@@ -57308,7 +57088,7 @@ function createStats () {
   });
 }
 
-},{"../../../vendor/rStats":94,"../../core/component":56}],44:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":102,"../../core/component":56}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var utils = _dereq_('../../utils/');
@@ -57498,7 +57278,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../core/component":56,"../../lib/three":86,"../../utils/":91}],45:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":88,"../../utils/":98}],45:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var diff = _dereq_('../utils').diff;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -57572,9 +57352,7 @@ module.exports.Component = registerComponent('sound', {
 
   remove: function () {
     this.el.removeObject3D('sound');
-    this.sound.remove();
-    this.listener.remove();
-    this.listener.context.close();
+    this.sound.disconnect();
   },
 
   /**
@@ -57584,7 +57362,7 @@ module.exports.Component = registerComponent('sound', {
    */
   setupSound: function () {
     var el = this.el;
-    var listener;
+    var sceneEl = el.sceneEl;
     var sound = this.sound;
 
     if (sound) {
@@ -57592,8 +57370,20 @@ module.exports.Component = registerComponent('sound', {
       el.removeObject3D('sound');
     }
 
-    listener = this.listener = new THREE.AudioListener();
-    sound = this.sound = new THREE.Audio(listener);
+    // Only want one AudioListener. Cache it on the scene.
+    var listener = this.listener = sceneEl.audioListener || new THREE.AudioListener();
+    sceneEl.audioListener = listener;
+
+    if (sceneEl.camera) {
+      sceneEl.camera.add(listener);
+    }
+
+    // Wait for camera if necessary.
+    sceneEl.addEventListener('camera-set-active', function (evt) {
+      evt.detail.cameraEl.getObject3D('camera').add(listener);
+    });
+
+    sound = this.sound = new THREE.PositionalAudio(listener);
     el.setObject3D('sound', sound);
     return sound;
   },
@@ -57613,7 +57403,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":56,"../lib/three":86,"../utils":91,"../utils/debug":90}],46:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],46:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -57783,7 +57573,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })()
 });
 
-},{"../core/component":56,"../lib/three":86}],48:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":88}],48:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -58116,7 +57906,7 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     start: {
       value: function () {
-        if (this.isRunning || this.el.paused) { return; }
+        if (this.isRunning || !this.el.isPlaying) { return; }
         this.tween = this.getTween();
         this.isRunning = true;
         this.tween.start();
@@ -58378,7 +58168,7 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../constants/animation":48,"../utils/":91,"./a-node":54,"./a-register-element":55,"./schema":62,"tween.js":20}],50:[function(_dereq_,module,exports){
+},{"../constants/animation":48,"../utils/":98,"./a-node":54,"./a-register-element":55,"./schema":62,"tween.js":20}],50:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -58510,7 +58300,7 @@ function mediaElementLoaded (el) {
   });
 }
 
-},{"../lib/three":86,"../utils/debug":90,"./a-node":54,"./a-register-element":55}],51:[function(_dereq_,module,exports){
+},{"../lib/three":88,"../utils/debug":97,"./a-node":54,"./a-register-element":55}],51:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -58561,7 +58351,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":90,"./a-register-element":55}],52:[function(_dereq_,module,exports){
+},{"../utils/debug":97,"./a-register-element":55}],52:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var components = _dereq_('./component').components;
@@ -58577,20 +58367,16 @@ var registerElement = re.registerElement;
 var AEntity;
 
 /**
- * Entity element definition.
- * Entities represent all elements that are part of the scene, and always have
- * a position, rotation, and scale.
- * In the entity-component system, entities are just a container of components.
+ * Entity is a container object that components are plugged into to comprise everything in
+ * the scene. In A-Frame, they inherently have position, rotation, and scale.
  *
- * For convenience of inheriting components, the scene element inherits from
- * this prototype. When necessary, it differentiates itself by setting
- * `this.isScene`.
+ * To be able to take components, the scene element inherits from the entity definition.
  *
  * @namespace Entity
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
  * @member {array} states
- * @member {boolean} paused - true if dynamic behavior of the entity is paused
+ * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
  */
 var proto = Object.create(ANode.prototype, {
   defaultComponents: {
@@ -58604,13 +58390,13 @@ var proto = Object.create(ANode.prototype, {
 
   createdCallback: {
     value: function () {
-      this.isEntity = true;
-      this.states = [];
       this.components = {};
-      this.paused = true;
+      this.isEntity = true;
+      this.isPlaying = false;
       this.object3D = new THREE.Group();
       this.object3D.el = this;
       this.object3DMap = {};
+      this.states = [];
     }
   },
 
@@ -58632,8 +58418,7 @@ var proto = Object.create(ANode.prototype, {
 
   /**
    * Tell parent to remove this element's object3D from its object3D.
-   * Do not call on scene element because that will cause a call to
-   * document.body.remove().
+   * Do not call on scene element because that will cause a call to document.body.remove().
    */
   detachedCallback: {
     value: function () {
@@ -58719,10 +58504,10 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Returns an object3D of a given type or creates it if it doesn't exist and
-   * a Constructor is passed as an argument
-   * @param {string} type - Type of the object3D .
-   * @param {string} name - Component name.
+   * Gets or creates an object3D of a given type.
+
+   * @param {string} type - Type of the object3D.
+   * @param {string} Constructor - Constructor to use if need to create the object3D.
    * @type {Object}
    */
   getOrCreateObject3D: {
@@ -58814,14 +58599,12 @@ var proto = Object.create(ANode.prototype, {
    */
   initComponent: {
     value: function (name, isDependency) {
-      var isComponentDefined;
+      var isComponentDefined = checkComponentDefined(this, name);
 
-      // Check if already initialized.
-      if (!components[name] || this.components[name]) { return; }
-
-      // Check if not defined for entity.
-      isComponentDefined = checkComponentDefined(this, name);
-      if (!isComponentDefined && !isDependency) { return; }
+      // Check if component is registered and whether component should be iniitalized.
+      if (!components[name] || (!isComponentDefined && !isDependency)) {
+        return;
+      }
 
       // Initialize dependencies.
       this.initComponentDependencies(name);
@@ -58834,12 +58617,17 @@ var proto = Object.create(ANode.prototype, {
           // For scene default components, expose them in the DOM.
           HTMLElement.prototype.setAttribute.call(this, name, this.defaultComponents[name]);
         }
+
+        // Check if component already initialized.
+        if (name in this.components) { return; }
+
         this.components[name] = new components[name].Component(this);
-        if (!this.paused) { this.components[name].play(); }
+        if (this.isPlaying) { this.components[name].play(); }
       }
 
       log('Component initialized: %s', name);
-    }
+    },
+    writable: window.debug
   },
 
   initComponentDependencies: {
@@ -58901,12 +58689,10 @@ var proto = Object.create(ANode.prototype, {
       var isDefault = name in this.defaultComponents;
       var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       if (component) {
-        // Attribute was removed. Remove component.
-        // 1. If the component is not defined in the defaults,
-        // mixins or element attribute
-        // 2. If the new data is null, it's not a default
-        // component and the component it's not defined via
-        // mixins
+        // Attribute was removed, remove component if:
+        // 1. If component not defined in the defaults/mixins/attribute.
+        // 2. If new data is null, then not a default component and component is not defined
+        //    via mixins
         if (!checkComponentDefined(this, name) ||
             newData === null && !isDefault && !isMixedIn) {
           this.removeComponent(name);
@@ -58945,8 +58731,8 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      if (!this.paused) { return; }
-      this.paused = false;
+      if (this.isPlaying) { return; }
+      this.isPlaying = true;
       componentKeys.forEach(function playComponent (key) {
         components[key].play();
       });
@@ -58966,8 +58752,8 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      if (this.paused) { return; }
-      this.paused = true;
+      if (!this.isPlaying) { return; }
+      this.isPlaying = false;
       componentKeys.forEach(function pauseComponent (key) {
         components[key].pause();
       });
@@ -59062,7 +58848,7 @@ var proto = Object.create(ANode.prototype, {
       var component = this.components[attr] || components[attr];
       var value = HTMLElement.prototype.getAttribute.call(this, attr);
       if (!component || typeof value !== 'string') { return value; }
-      return component.parse(value);
+      return component.parse(value, true);
     },
     writable: window.debug
   },
@@ -59119,17 +58905,20 @@ var proto = Object.create(ANode.prototype, {
 });
 
 /**
- * Check if a component is defined for an entity, including defaults and mixins.
+ * Check if a component is *defined* for an entity, including defaults and mixins.
+ * Does not check whether the component has been *initialized* for an entity.
  *
+ * @param {string} el - Entity.
  * @param {string} name - Component name.
  * @returns {boolean}
  */
 function checkComponentDefined (el, name) {
   // Check if default components contain the component.
-  var inDefaults = el.defaultComponents[name];
+  if (el.defaultComponents[name] !== undefined) { return true; }
+
   // Check if element contains the component.
-  var inAttribute = el.hasAttribute(name);
-  if (inDefaults !== undefined || inAttribute) { return true; }
+  if (el.hasAttribute(name)) { return true; }
+
   return isComponentMixedIn(name, el.mixinEls);
 }
 
@@ -59155,7 +58944,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":86,"../utils/debug":90,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
+},{"../lib/three":88,"../utils/debug":97,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var AComponents = _dereq_('./component').components;
 var ANode = _dereq_('./a-node');
@@ -59449,7 +59238,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":91,"./a-register-element":55}],55:[function(_dereq_,module,exports){
+},{"../utils/":98,"./a-register-element":55}],55:[function(_dereq_,module,exports){
 // Polyfill `document.registerElement`.
 _dereq_('document-register-element');
 
@@ -59621,9 +59410,9 @@ var AEntity = _dereq_('./a-entity');
 
 },{"./a-entity":52,"./a-node":54,"document-register-element":8}],56:[function(_dereq_,module,exports){
 /* global HTMLElement */
-var debug = _dereq_('../utils/debug');
 var schema = _dereq_('./schema');
 var styleParser = _dereq_('style-attr');
+var systems = _dereq_('./system');
 var utils = _dereq_('../utils/');
 
 var parseProperties = schema.parseProperties;
@@ -59632,9 +59421,7 @@ var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-var error = debug('core:register-component:error');
-
-var components = module.exports.components = {};  // Keep track of registered components.
+var components = module.exports.components = {}; // Keep track of registered components.
 
 /**
  * Component class definition.
@@ -59665,6 +59452,10 @@ var Component = module.exports.Component = function (el) {
   var scene;
 
   this.el = el;
+  // The last parameter of builData suppresses the warnings
+  // We don't want to display warning messages when parsing the data
+  // before updating the schema
+  this.updateSchema(buildData(el, name, this.schema, elData, true));
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
@@ -59699,6 +59490,8 @@ Component.prototype = {
    */
   update: function (prevData) { /* no-op */ },
 
+  updateSchema: function (prevData) { /* no-op */ },
+
   /**
    * Tick handler.
    * Called on each tick of the scene render loop.
@@ -59731,12 +59524,13 @@ Component.prototype = {
    * If component is single-property, then parses the single property value.
    *
    * @param {string} value - HTML attribute value.
+   * @param {boolean} silent - Suppress warning messages.
    * @returns {object} Component data.
    */
-  parse: function (value) {
+  parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(objectParse(value), schema, true);
+    return parseProperties(objectParse(value), schema, true, silent);
   },
 
   /**
@@ -59778,11 +59572,11 @@ Component.prototype = {
    */
   updateProperties: function (value) {
     var el = this.el;
-    var schema = this.schema;
-    var isSinglePropSchema = isSingleProp(schema);
+    var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.data = buildData(el, this.name, schema, value);
+    this.updateSchema(objectParse(value));
+    this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
@@ -59794,6 +59588,23 @@ Component.prototype = {
       newData: this.getData(),
       oldData: previousData
     });
+  },
+
+  /**
+   * Extends the schema of the component with a given new schema
+   * Some components might want to mutate their schema based on
+   * certain conditions. e.g: The material component changes its
+   * squema based on the selected shader to account for the
+   * different uniforms
+   *  @param newSchema {object} - Schema that extends the original one.
+   */
+  extendSchema: function (newSchema) {
+    // Copies original schema
+    var extendedSchema = utils.extend({}, components[this.name].schema);
+    // Extends original schema with the new one
+    utils.extend(extendedSchema, newSchema);
+    this.schema = processSchema(extendedSchema);
+    this.el.emit('schemachanged', { component: this.name });
   }
 };
 
@@ -59817,7 +59628,9 @@ module.exports.registerComponent = function (name, definition) {
   });
 
   if (components[name]) {
-    error('The component "' + name + '" has been already registered');
+    throw new Error('The component `' + name + '` has been already registered. ' +
+                    'Check that you are not loading two versions of the same component ' +
+                    'or two different components of the same name.');
   }
   NewComponent = function (el) {
     Component.call(this, el);
@@ -59825,11 +59638,13 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
+  NewComponent.prototype.system = systems && systems.systems[name];
+
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    schema: processSchema(NewComponent.prototype.schema),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
     stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
     type: NewComponent.prototype.type
   };
@@ -59848,8 +59663,15 @@ module.exports.registerComponent = function (name, definition) {
  * 3. Attribute data.
  *
  * Finally coerce the data to the types of the defaults.
+ *
+ * @param {object} el - Element to build data from.
+ * @param {object} name - Component name.
+ * @param {object} schema - Component schema.
+ * @param {object} elData - Element current data.
+ * @param {boolean} silent - Suppress warning messages.
+ * @return {object} The component data
  */
-function buildData (el, name, schema, elData) {
+function buildData (el, name, schema, elData, silent) {
   var componentDefined = elData !== null;
   var data = {};
   var isSinglePropSchema = isSingleProp(schema);
@@ -59886,7 +59708,8 @@ function buildData (el, name, schema, elData) {
   if (isSingleProp(schema)) {
     return parseProperty(data, schema);
   }
-  return parseProperties(data, schema);
+
+  return parseProperties(data, schema, undefined, silent);
 }
 module.exports.buildData = buildData;
 
@@ -59961,7 +59784,7 @@ function transformKeysToCamelCase (obj) {
   return camelCaseObj;
 }
 
-},{"../utils/":91,"../utils/debug":90,"./schema":62,"style-attr":15}],57:[function(_dereq_,module,exports){
+},{"../utils/":98,"./schema":62,"./system":64,"style-attr":15}],57:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -59972,12 +59795,16 @@ var propertyTypes = module.exports.propertyTypes = {};
 // Built-in property types.
 registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
+registerPropertyType('color', '', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
-registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.stringify);
+registerPropertyType('time', 0, intParse);
+registerPropertyType('vec2', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec4', { x: 0, y: 0, z: 0, w: 0 }, vecParse, coordinates.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -59991,7 +59818,7 @@ registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vec3Parse, coordinates.string
  */
 function registerPropertyType (type, defaultValue, parse, stringify) {
   if ('type' in propertyTypes) {
-    error('Property type "' + type + '" is already registered.');
+    error('Property type ' + type + ' is already registered.');
     return;
   }
 
@@ -60064,16 +59891,17 @@ function srcParse (value) {
   return '';
 }
 
-function vec3Parse (value) {
+function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":89,"debug":3}],58:[function(_dereq_,module,exports){
+},{"../utils/coordinates":96,"debug":3}],58:[function(_dereq_,module,exports){
 /* global Promise */
 var initFullscreen = _dereq_('./fullscreen');
 var initMetaTags = _dereq_('./metaTags');
 var initWakelock = _dereq_('./wakelock');
 var re = _dereq_('../a-register-element');
+var systems = _dereq_('../system').systems;
 var THREE = _dereq_('../../lib/three');
 var TWEEN = _dereq_('tween.js');
 var utils = _dereq_('../../utils/');
@@ -60118,6 +59946,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.systems = {};
         this.time = 0;
         this.init();
       }
@@ -60127,10 +59956,10 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.behaviors = [];
         this.hasLoaded = false;
+        this.isPlaying = true;
         this.materials = {};
         this.originalHTML = this.innerHTML;
-        this.paused = true;
-
+        this.setupSystems();
         this.setupDefaultLights();
         this.setupDefaultCamera();
         this.addEventListener('render-target-loaded', function () {
@@ -60155,6 +59984,21 @@ var AScene = module.exports = registerElement('a-scene', {
       writable: window.debug
     },
 
+    setupSystems: {
+      value: function () {
+        var systemsKeys = Object.keys(systems);
+        systemsKeys.forEach(this.initSystem.bind(this));
+      }
+    },
+
+    initSystem: {
+      value: function (name) {
+        if (this.systems[name]) { return; }
+        this.systems[name] = new systems[name]();
+        this.systems[name].init();
+      }
+    },
+
     /**
      * Shuts down scene on detach.
      */
@@ -60171,6 +60015,9 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
+        var behaviors = this.behaviors;
+        var index = behaviors.indexOf(behavior);
+        if (index !== -1) { return; }
         this.behaviors.push(behavior);
       }
     },
@@ -60242,7 +60089,7 @@ var AScene = module.exports = registerElement('a-scene', {
           cameraEl = sceneCameras[i];
 
           if (activeCameraEl === cameraEl) {
-            if (!this.paused) { activeCameraEl.play(); }
+            if (this.isPlaying) { activeCameraEl.play(); }
             continue;
           }
           cameraEl.setAttribute('camera', 'active', false);
@@ -60363,23 +60210,28 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         var self = this;
         var cameraWrapperEl;
-        var defaultCamera;
+        var defaultCameraEl;
 
         // setTimeout in case the camera is being set dynamically with a setAttribute.
         setTimeout(function checkForCamera () {
-          var sceneCameras = self.querySelectorAll('[camera]');
-          if (sceneCameras.length !== 0) { return; }
+          var cameraEl = self.querySelector('[camera]');
+
+          if (cameraEl && cameraEl.isEntity) {
+            self.emit('camera-ready', { cameraEl: cameraEl });
+            return;
+          }
 
           // DOM calls to create camera.
           cameraWrapperEl = document.createElement('a-entity');
           cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
           cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-          defaultCamera = document.createElement('a-entity');
-          defaultCamera.setAttribute('camera', {'active': true});
-          defaultCamera.setAttribute('wasd-controls');
-          defaultCamera.setAttribute('look-controls');
-          cameraWrapperEl.appendChild(defaultCamera);
+          defaultCameraEl = document.createElement('a-entity');
+          defaultCameraEl.setAttribute('camera', {'active': true});
+          defaultCameraEl.setAttribute('wasd-controls');
+          defaultCameraEl.setAttribute('look-controls');
+          cameraWrapperEl.appendChild(defaultCameraEl);
           self.appendChild(cameraWrapperEl);
+          self.emit('camera-ready', { cameraEl: defaultCameraEl });
         });
       }
     },
@@ -60460,46 +60312,22 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Reloads the scene to the original DOM content
-     * @type {bool} - paused - It reloads the scene with all the
-     * dynamic behavior paused: dynamic components and animations
+     * Reload the scene to the original DOM content.
+     *
+     * @param {bool} doPause - Whether to reload the scene with all dynamic behavior paused.
      */
     reload: {
-      value: function (paused) {
+      value: function (doPause) {
         var self = this;
-        if (paused) { this.pause(); }
+        if (doPause) { this.pause(); }
         this.innerHTML = this.originalHTML;
         this.init();
         ANode.prototype.load.call(this, play);
         function play () {
-          if (self.paused) { return; }
+          if (!self.isPlaying) { return; }
           AEntity.prototype.play.call(self);
         }
       }
-    },
-
-    /**
-     * Stops tracking material.
-     *
-     * @param {object} material
-     */
-    unregisterMaterial: {
-      value: function (material) {
-        delete this.materials[material.uuid];
-      }
-    },
-
-    /**
-     * Trigger update to all registered materials.
-     */
-    updateMaterials: {
-      value: function (material) {
-        var materials = this.materials;
-        Object.keys(materials).forEach(function (uuid) {
-          materials[uuid].needsUpdate = true;
-        });
-      },
-      writable: window.debug
     },
 
     /**
@@ -60513,12 +60341,17 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function (time) {
         var camera = this.camera;
         var timeDelta = time - this.time;
+        var systems = this.systems;
 
-        if (!this.paused) {
+        if (this.isPlaying) {
           TWEEN.update(time);
           this.behaviors.forEach(function (component) {
-            if (component.el.paused) { return; }
+            if (!component.el.isPlaying) { return; }
             component.tick(time, timeDelta);
+          });
+          Object.keys(systems).forEach(function (key) {
+            if (!systems[key].tick) { return; }
+            systems[key].tick(time, timeDelta);
           });
         }
 
@@ -60561,7 +60394,7 @@ function setFullscreen (canvas) {
   }
 }
 
-},{"../../lib/three":86,"../../utils/":91,"../a-entity":52,"../a-node":54,"../a-register-element":55,"./fullscreen":59,"./metaTags":60,"./wakelock":61,"tween.js":20}],59:[function(_dereq_,module,exports){
+},{"../../lib/three":88,"../../utils/":98,"../a-entity":52,"../a-node":54,"../a-register-element":55,"../system":64,"./fullscreen":59,"./metaTags":60,"./wakelock":61,"tween.js":20}],59:[function(_dereq_,module,exports){
 var isIframed = _dereq_('../../utils/').isIframed;
 
 /**
@@ -60627,7 +60460,7 @@ function exitFullscreenHandler (scene) {
   scene.emit('fullscreen-exit');
 }
 
-},{"../../utils/":91}],60:[function(_dereq_,module,exports){
+},{"../../utils/":98}],60:[function(_dereq_,module,exports){
 module.exports = function initMetaTags (scene) {
   if (!scene.isMobile) { return; }
   injectMetaTags();
@@ -60686,8 +60519,10 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":96}],62:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":104}],62:[function(_dereq_,module,exports){
+var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
+var warn = debug('core:schema:warn');
 
 /**
  * A schema is classified as a schema for a single property if:
@@ -60749,7 +60584,7 @@ function processPropertyDefinition (propDefinition) {
 
   propType = propertyTypes[typeName];
   if (!propType) {
-    throw new Error('Unknown property type: ' + typeName);
+    warn('Unknown property type: ' + typeName);
   }
 
   // Fill in parse and stringify using property types.
@@ -60779,18 +60614,21 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
 /**
  * Parse propData using schema. Use default values if not existing in propData.
  *
+ * @param {object} propData - Unparsed properties.
+ * @param {object} schema - Property types definition.
  * @param {boolean} getPartialData - Whether to return full component data or just the data
  *        with keys in `propData`.
+ * @param {boolean} silent - Suppress warning messages.
  */
-module.exports.parseProperties = function (propData, schema, getPartialData) {
+module.exports.parseProperties = function (propData, schema, getPartialData, silent) {
   var propNames = Object.keys(getPartialData ? propData : schema);
 
   if (propData === null || typeof propData !== 'object') { return propData; }
 
-  // Validation warnings.
+  // Validation errors.
   Object.keys(propData).forEach(function (propName) {
-    if (!schema[propName]) {
-      throw new Error('Unknown component property: ' + propName);
+    if (!schema[propName] && !silent) {
+      warn('Unknown component property: ' + propName);
     }
   });
 
@@ -60819,18 +60657,275 @@ module.exports.stringifyProperties = function (propData, schema) {
   Object.keys(propData).forEach(function (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
-    stringifiedData[propName] = stringifyProperty(propValue, propDefinition);
+    var value = propValue;
+    if (typeof value === 'object') {
+      value = stringifyProperty(propValue, propDefinition);
+      if (!propDefinition) { warn('Unknown component property: ' + propName); }
+    }
+    stringifiedData[propName] = value;
   });
   return stringifiedData;
 };
 
 function stringifyProperty (value, propDefinition) {
   if (typeof value !== 'object') { return value; }
+  // if there's no schema for the property we use standar JSON stringify
+  if (!propDefinition) { return JSON.stringify(value); }
   return propDefinition.stringify(value);
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"./propertyTypes":57}],63:[function(_dereq_,module,exports){
+},{"../utils/debug":97,"./propertyTypes":57}],63:[function(_dereq_,module,exports){
+var schema = _dereq_('./schema');
+
+var processSchema = schema.process;
+var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
+var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
+var THREE = _dereq_('../lib/three');
+
+var propertyToThreeMapping = {
+  number: 'f',
+  time: 'f',
+  vec4: 'v4',
+  vec3: 'v3',
+  vec2: 'v2',
+  color: 'v3'
+};
+
+/**
+ * Shader class definition.
+ *
+ * Shaders extend the material component API so you can create your own library
+ * of customized materials
+ *
+ */
+var Shader = module.exports.Shader = function () {};
+
+Shader.prototype = {
+  /**
+   * Contains the type schema and defaults for the data values.
+   * Data is coerced into the types of the values of the defaults.
+   */
+  schema: { },
+
+  vertexShader:
+    'void main() {' +
+      'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);' +
+    '}',
+
+  fragmentShader:
+    'void main() {' +
+      'gl_FragColor = vec4(1.0,0.0,1.0,1.0);' +
+    '}',
+
+  /**
+   * Init handler. Similar to attachedCallback.
+   * Called during shader initialization and is only run once.
+   */
+  init: function (data) {
+    this.attributes = this.initVariables(data, 'attribute');
+    this.uniforms = this.initVariables(data, 'uniform');
+    this.material = new THREE.ShaderMaterial({
+      // attributes: this.attributes,
+      uniforms: this.uniforms,
+      vertexShader: this.vertexShader,
+      fragmentShader: this.fragmentShader
+    });
+    return this.material;
+  },
+
+  initVariables: function (data, type) {
+    var self = this;
+    var variables = {};
+    var schema = this.schema;
+    var squemaKeys = Object.keys(schema);
+    squemaKeys.forEach(processSquema);
+    function processSquema (key) {
+      if (schema[key].is !== type) { return; }
+      var varType = propertyToThreeMapping[schema[key].type];
+      var varValue = schema[key].parse(data[key] || schema[key].default);
+      variables[key] = {
+        type: varType,
+        value: self.parseValue(schema[key].type, varValue)
+      };
+    }
+    return variables;
+  },
+
+  /**
+   * Update handler. Similar to attributeChangedCallback.
+   * Called whenever the associated material data changes.
+   *
+   * @param {object} data - New material data.
+   */
+  update: function (data) {
+    this.updateVariables(data, 'attribute');
+    this.updateVariables(data, 'uniform');
+  },
+
+  updateVariables: function (data, type) {
+    var self = this;
+    var variables = type === 'uniform' ? this.uniforms : this.attributes;
+    var dataKeys = Object.keys(data);
+    var schema = this.schema;
+    dataKeys.forEach(processData);
+    function processData (key) {
+      if (!schema[key] || schema[key].is !== type) { return; }
+      if (variables[key].value === data[key]) { return; }
+      variables[key].value = self.parseValue(schema[key].type, data[key]);
+      variables[key].needsUpdate = true;
+    }
+  },
+
+  parseValue: function (type, value) {
+    var color;
+    switch (type) {
+      case 'vec2': {
+        return new THREE.Vector2(value.x, value.y);
+      }
+      case 'vec3': {
+        return new THREE.Vector3(value.x, value.y, value.z);
+      }
+      case 'vec4': {
+        return new THREE.Vector4(value.x, value.y, value.z, value.w);
+      }
+      case 'color': {
+        color = new THREE.Color(value);
+        return new THREE.Vector3(color.r, color.g, color.b);
+      }
+      default: {
+        return value;
+      }
+    }
+  }
+};
+
+/**
+ * Registers a shader to A-Frame.
+ *
+ * @param {string} name - shader name.
+ * @param {object} definition - shader property and methods.
+ * @returns {object} Shader.
+ */
+module.exports.registerShader = function (name, definition) {
+  var NewShader;
+  var proto = {};
+
+  // Format definition object to prototype object.
+  Object.keys(definition).forEach(function (key) {
+    proto[key] = {
+      value: definition[key],
+      writable: true
+    };
+  });
+
+  if (shaders[name]) {
+    throw Error('The shader ' + name + ' has been already registered');
+  }
+  NewShader = function () { Shader.call(this); };
+  NewShader.prototype = Object.create(Shader.prototype, proto);
+  NewShader.prototype.name = name;
+  NewShader.prototype.constructor = NewShader;
+  shaders[name] = {
+    Shader: NewShader,
+    schema: processSchema(NewShader.prototype.schema)
+  };
+  shaderNames.push(name);
+  return NewShader;
+};
+
+},{"../lib/three":88,"./schema":62}],64:[function(_dereq_,module,exports){
+var components = _dereq_('./component');
+var systems = module.exports.systems = {};  // Keep track of registered components.
+
+/**
+ * System class definition.
+ *
+ * Systems are pieces of data and logic that are associated to one particular
+ * component. They're global to all the instantiated components of that type
+ * and provide an API for them to use. An example would be a physics component
+ * that would contain a physics system that oversees all the entities and
+ * calculate the necessary updates based on the entities interactions.
+ *
+ * @namespace System
+ * @member {Element} sceneEl - Handle to the scene element where the system applies to.
+ */
+var System = module.exports.System = function () {
+  var component = components && components.components[this.name];
+  if (component) { component.Component.prototype.system = this; }
+};
+
+System.prototype = {
+
+  /**
+   * Init handler. Called during scene initialization and is only run once.
+   * Systems can use this to set initial state.
+   */
+  init: function () { /* no-op */ },
+
+  /**
+   * Tick handler.
+   * Called on each tick of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tick: undefined,
+
+  /**
+   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  play: function () { /* no-op */ },
+
+  /**
+   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
+   */
+  pause: function () { /* no-op */ },
+
+  /**
+   * Remove handler. Shuts down the system
+   */
+  remove: function () { /* no-op */ }
+};
+
+/**
+ * Registers a system to A-Frame.
+ *
+ * @param {string} name - Component name.
+ * @param {object} definition - Component property and methods.
+ * @returns {object} Component.
+ */
+module.exports.registerSystem = function (name, definition) {
+  var i;
+  var NewSystem;
+  var proto = {};
+  var scenes = document.querySelectorAll('a-scene');
+
+  // Format definition object to prototype object.
+  Object.keys(definition).forEach(function (key) {
+    proto[key] = {
+      value: definition[key],
+      writable: true
+    };
+  });
+
+  if (systems[name]) {
+    throw new Error('The system `' + name + '` has been already registered. ' +
+                    'Check that you are not loading two versions of the same system ' +
+                    'or two different systems of the same name.');
+  }
+  NewSystem = function () { System.call(this); };
+  NewSystem.prototype = Object.create(System.prototype, proto);
+  NewSystem.prototype.name = name;
+  NewSystem.prototype.constructor = NewSystem;
+  systems[name] = NewSystem;
+
+  // Initialize systems for existing scenes
+  for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
+};
+
+},{"./component":56}],65:[function(_dereq_,module,exports){
 var ANode = _dereq_('../../core/a-node');
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
 
@@ -60939,7 +61034,7 @@ module.exports = registerElement('a-event', {
   })
 });
 
-},{"../../core/a-node":54,"../../core/a-register-element":55}],64:[function(_dereq_,module,exports){
+},{"../../core/a-node":54,"../../core/a-register-element":55}],66:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-box');
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-circle');
@@ -60959,16 +61054,14 @@ _dereq_('./primitives/a-sphere');
 _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 
-},{"./primitives/a-box":66,"./primitives/a-camera":67,"./primitives/a-circle":68,"./primitives/a-collada-model":69,"./primitives/a-cone":70,"./primitives/a-cursor":71,"./primitives/a-curvedimage":72,"./primitives/a-cylinder":73,"./primitives/a-image":74,"./primitives/a-light":75,"./primitives/a-model":76,"./primitives/a-obj-model":77,"./primitives/a-plane":78,"./primitives/a-ring":79,"./primitives/a-sky":80,"./primitives/a-sphere":81,"./primitives/a-video":82,"./primitives/a-videosphere":83}],65:[function(_dereq_,module,exports){
+},{"./primitives/a-box":68,"./primitives/a-camera":69,"./primitives/a-circle":70,"./primitives/a-collada-model":71,"./primitives/a-cone":72,"./primitives/a-cursor":73,"./primitives/a-curvedimage":74,"./primitives/a-cylinder":75,"./primitives/a-image":76,"./primitives/a-light":77,"./primitives/a-model":78,"./primitives/a-obj-model":79,"./primitives/a-plane":80,"./primitives/a-ring":81,"./primitives/a-sky":82,"./primitives/a-sphere":83,"./primitives/a-video":84,"./primitives/a-videosphere":85}],67:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
 module.exports = function getMeshMixin () {
   return {
     defaultAttributes: {
-      material: {
-        color: 'gray'
-      }
+      material: { }
     },
 
     mappings: {
@@ -60995,7 +61088,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{}],66:[function(_dereq_,module,exports){
+},{}],68:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61020,7 +61113,7 @@ registerPrimitive('a-cube', utils.extendDeep({
   deprecated: '<a-cube> is deprecated. Use <a-box> instead.'
 }, boxDefinition));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],67:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],69:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-camera', {
@@ -61049,7 +61142,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../registerPrimitive":84}],68:[function(_dereq_,module,exports){
+},{"../registerPrimitive":86}],70:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61069,7 +61162,7 @@ registerPrimitive('a-circle', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],69:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],71:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61080,7 +61173,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],70:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],72:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61105,7 +61198,7 @@ registerPrimitive('a-cone', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],71:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],73:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61139,7 +61232,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],72:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],74:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61177,7 +61270,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],73:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],75:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61202,7 +61295,7 @@ registerPrimitive('a-cylinder', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],74:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],76:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61227,7 +61320,7 @@ registerPrimitive('a-image', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],75:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],77:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-light', {
@@ -61247,7 +61340,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../registerPrimitive":84}],76:[function(_dereq_,module,exports){
+},{"../registerPrimitive":86}],78:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61270,7 +61363,7 @@ registerPrimitive('a-model', utils.extend({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],77:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],79:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin')();
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61286,7 +61379,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],78:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],80:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61305,7 +61398,7 @@ registerPrimitive('a-plane', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],79:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],81:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61327,7 +61420,7 @@ registerPrimitive('a-ring', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],80:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],82:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61354,7 +61447,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],81:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],83:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61374,7 +61467,7 @@ registerPrimitive('a-sphere', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],82:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],84:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61399,7 +61492,7 @@ registerPrimitive('a-video', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],83:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],85:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../meshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -61426,7 +61519,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, meshMixin(), {
   }
 }));
 
-},{"../../../utils/":91,"../meshMixin":65,"../registerPrimitive":84}],84:[function(_dereq_,module,exports){
+},{"../../../utils/":98,"../meshMixin":67,"../registerPrimitive":86}],86:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -61581,7 +61674,7 @@ function cloneObject (obj) {
   return clone;
 }
 
-},{"../../core/a-entity":52,"../../core/a-register-element":55,"../../core/component":56,"../../utils/":91}],85:[function(_dereq_,module,exports){
+},{"../../core/a-entity":52,"../../core/a-register-element":55,"../../core/component":56,"../../utils/":98}],87:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
@@ -61597,6 +61690,9 @@ var components = _dereq_('./core/component').components;
 var debug = _dereq_('./utils/debug');
 var registerComponent = _dereq_('./core/component').registerComponent;
 var registerElement = _dereq_('./core/a-register-element');
+var registerShader = _dereq_('./core/shader').registerShader;
+var registerSystem = _dereq_('./core/system').registerSystem;
+var systems = _dereq_('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = _dereq_('./lib/three');
 var TWEEN = window.TWEEN = _dereq_('tween.js');
@@ -61604,7 +61700,9 @@ var TWEEN = window.TWEEN = _dereq_('tween.js');
 var pkg = _dereq_('../package');
 var utils = _dereq_('./utils/');
 
+_dereq_('./systems/index');  // Register core systems.
 _dereq_('./components/index');  // Register core components.
+_dereq_('./shaders/index');  // Register core shaders.
 var ANode = _dereq_('./core/a-node');
 var AEntity = _dereq_('./core/a-entity');  // Depends on ANode and core components.
 
@@ -61641,13 +61739,16 @@ module.exports = window.AFRAME = {
   debug: debug,
   registerComponent: registerComponent,
   registerElement: registerElement,
+  registerShader: registerShader,
+  registerSystem: registerSystem,
+  systems: systems,
   THREE: THREE,
   TWEEN: TWEEN,
   utils: utils,
   version: pkg.version
 };
 
-},{"../node_modules/webvr-libs/webvr-polyfill":23,"../package":24,"./components/index":29,"./core/a-animation":49,"./core/a-assets":50,"./core/a-cubemap":51,"./core/a-entity":52,"./core/a-mixin":53,"./core/a-node":54,"./core/a-register-element":55,"./core/component":56,"./core/scene/a-scene":58,"./extras/declarative-events/":63,"./extras/primitives/":64,"./lib/three":86,"./style/aframe.css":87,"./style/rStats.css":88,"./utils/":91,"./utils/debug":90,"present":10,"promise-polyfill":11,"tween.js":20}],86:[function(_dereq_,module,exports){
+},{"../node_modules/webvr-libs/webvr-polyfill":23,"../package":24,"./components/index":29,"./core/a-animation":49,"./core/a-assets":50,"./core/a-cubemap":51,"./core/a-entity":52,"./core/a-mixin":53,"./core/a-node":54,"./core/a-register-element":55,"./core/component":56,"./core/scene/a-scene":58,"./core/shader":63,"./core/system":64,"./extras/declarative-events/":65,"./extras/primitives/":66,"./lib/three":88,"./shaders/index":90,"./style/aframe.css":92,"./style/rStats.css":93,"./systems/index":94,"./utils/":98,"./utils/debug":97,"present":10,"promise-polyfill":11,"tween.js":20}],88:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -61681,11 +61782,296 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../node_modules/three/examples/js/loaders/ColladaLoader":16,"../../node_modules/three/examples/js/loaders/MTLLoader":17,"../../node_modules/three/examples/js/loaders/OBJLoader":18,"../../node_modules/webvr-libs/VRControls":21,"../../node_modules/webvr-libs/VREffect":22,"../../vendor/Raycaster":93,"three":19}],87:[function(_dereq_,module,exports){
+},{"../../node_modules/three/examples/js/loaders/ColladaLoader":16,"../../node_modules/three/examples/js/loaders/MTLLoader":17,"../../node_modules/three/examples/js/loaders/OBJLoader":18,"../../node_modules/webvr-libs/VRControls":21,"../../node_modules/webvr-libs/VREffect":22,"../../vendor/Raycaster":101,"three":19}],89:[function(_dereq_,module,exports){
+var registerShader = _dereq_('../core/shader').registerShader;
+var srcLoader = _dereq_('../utils/src-loader');
+var THREE = _dereq_('../lib/three');
+var utils = _dereq_('../utils/texture');
+
+/**
+ * Flat shader.
+ *
+ * @namespace flat
+ * @param {string} color - Diffuse color.
+ * @param {boolean} fog - Whether or not to be affected by fog.
+ * @param {number} height - Height to render texture.
+ * @param {string} repeat - X and Y value for size of texture repeating
+ * @param {string} src - To load a texture. takes a selector to an img/video
+ *         element or a direct url().
+ * @param {number} width - Width to render texture.
+ */
+module.exports.Component = registerShader('flat', {
+  schema: {
+    color: { default: '#FFF' },
+    fog: { default: true },
+    height: { default: 256 },
+    repeat: { default: '' },
+    src: { default: '' },
+    width: { default: 512 }
+  },
+
+  /**
+   * Initializes the shader.
+   * Adds a reference from the scene to this entity as the camera.
+   */
+  init: function (data) {
+    this.textureSrc = null;
+    this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
+    this.updateTexture(data);
+    return this.material;
+  },
+
+  update: function (data) {
+    this.updateMaterial(data);
+    this.updateTexture(data);
+    return this.material;
+  },
+
+  /**
+   * Update or create material.
+   *
+   * @param {object|null} oldData
+   */
+  updateTexture: function (data) {
+    var src = data.src;
+    var material = this.material;
+    if (src) {
+      if (src === this.textureSrc) { return; }
+      // Texture added or changed.
+      this.textureSrc = src;
+      srcLoader.validateSrc(src,
+        utils.loadImage.bind(this, material, data),
+        utils.loadVideo.bind(this, material, data)
+      );
+    } else {
+      // Texture removed.
+      utils.updateMaterial(material, null);
+    }
+  },
+
+  /**
+   * Updating existing material.
+   *
+   * @param {object} data - Material component data.
+   */
+  updateMaterial: function (data) {
+    var material = this.material;
+    data = getMaterialData(data);
+    Object.keys(data).forEach(function (key) {
+      material[key] = data[key];
+    });
+  }
+});
+
+/**
+ * Builds and normalize material data, normalizing stuff along the way.
+ *
+ * @param {object} data - Material data.
+ * @returns {object} data - Processed material data.
+ */
+function getMaterialData (data) {
+  var materialData = {
+    fog: data.fog,
+    color: new THREE.Color(data.color)
+  };
+  return materialData;
+}
+
+},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":100}],90:[function(_dereq_,module,exports){
+_dereq_('./flat');
+_dereq_('./standard');
+
+},{"./flat":89,"./standard":91}],91:[function(_dereq_,module,exports){
+var registerShader = _dereq_('../core/shader').registerShader;
+var srcLoader = _dereq_('../utils/src-loader');
+var THREE = _dereq_('../lib/three');
+var utils = _dereq_('../utils/texture');
+
+var CubeLoader = new THREE.CubeTextureLoader();
+var texturePromises = {};
+
+/**
+ * Standard shader.
+ *
+ * @namespace material
+ * @param {string} color - Diffuse color.
+ * @param {string} envMap - To load a environment cubemap. Takes a selector
+ *         to an element containing six img elements, or a comma-separated
+ *         string of direct url()s.
+ * @param {boolean} fog - Whether or not to be affected by fog.
+ * @param {number} height - Height to render texture.
+ * @param {number} metalness - Parameter for physical/standard material.
+ * @param {string} repeat - X and Y value for size of texture repeating
+ *         (in UV units).
+ * @param {string} src - To load a texture. takes a selector to an img/video
+ *         element or a direct url().
+ * @param {number} roughness - Parameter for physical/standard material.
+ * @param {number} width - Width to render texture.
+ */
+module.exports.Component = registerShader('standard', {
+  schema: {
+    color: { default: '#FFF' },
+    envMap: { default: '' },
+    fog: { default: true },
+    height: { default: 256 },
+    metalness: { default: 0.0, min: 0.0, max: 1.0 },
+    repeat: { default: '' },
+    src: { default: '' },
+    roughness: { default: 0.5, min: 0.0, max: 1.0 },
+    width: { default: 512 }
+  },
+  /**
+   * Initializes the shader.
+   * Adds a reference from the scene to this entity as the camera.
+   */
+  init: function (data) {
+    this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
+    this.updateTexture(data);
+    this.updateEnvMap(data);
+    return this.material;
+  },
+
+  update: function (data) {
+    this.updateMaterial(data);
+    this.updateTexture(data);
+    this.updateEnvMap(data);
+    return this.material;
+  },
+
+  /**
+   * Update or create material.
+   *
+   * @param {object|null} oldData
+   */
+  updateTexture: function (data) {
+    var src = data.src;
+    var material = this.material;
+    if (src) {
+      if (src === this.textureSrc) { return; }
+      // Texture added or changed.
+      this.textureSrc = src;
+      srcLoader.validateSrc(src,
+        utils.loadImage.bind(this, material, data),
+        utils.loadVideo.bind(this, material, data)
+      );
+    } else {
+      // Texture removed.
+      utils.updateMaterial(material, null);
+    }
+  },
+
+  /**
+   * Updating existing material.
+   *
+   * @param {object} data - Material component data.
+   * @returns {object} Material.
+   */
+  updateMaterial: function (data) {
+    var material = this.material;
+    data = getMaterialData(data);
+    Object.keys(data).forEach(function (key) {
+      material[key] = data[key];
+    });
+  },
+
+  /**
+   * Handle environment cubemap. Textures are cached in texturePromises.
+   */
+  updateEnvMap: function (data) {
+    var self = this;
+    var material = this.material;
+    var envMap = data.envMap;
+    // Environment cubemaps.
+    if (!envMap || this.isLoadingEnvMap) {
+      material.envMap = null;
+      material.needsUpdate = true;
+      return;
+    }
+    this.isLoadingEnvMap = true;
+    if (texturePromises[envMap]) {
+      // Another material is already loading this texture. Wait on promise.
+      texturePromises[envMap].then(function (cube) {
+        self.isLoadingEnvMap = false;
+        material.envMap = cube;
+        material.needsUpdate = true;
+      });
+    } else {
+      // Material is first to load this texture. Load and resolve texture.
+      texturePromises[envMap] = new Promise(function (resolve) {
+        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+          CubeLoader.load(urls, function (cube) {
+            // Texture loaded.
+            self.isLoadingEnvMap = false;
+            material.envMap = cube;
+            resolve(cube);
+          });
+        });
+      });
+    }
+  }
+});
+
+/**
+ * Builds and normalize material data, normalizing stuff along the way.
+ *
+ * @param {object} data - Material data.
+ * @returns {object} data - Processed material data.
+ */
+function getMaterialData (data) {
+  var materialData = {
+    color: new THREE.Color(data.color),
+    metalness: data.metalness,
+    roughness: data.roughness
+  };
+  return materialData;
+}
+
+},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":100}],92:[function(_dereq_,module,exports){
 var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;opacity:0;margin-right:70px;padding:9px;width:280px;position:relative;transition:opacity .05s ease;-webkit-transition:opacity .05s ease}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset] .a-enter-vr-button:hover+.a-enter-vr-modal,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover+.a-enter-vr-modal{opacity:1}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":1}],88:[function(_dereq_,module,exports){
+},{"browserify-css":1}],93:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":1}],89:[function(_dereq_,module,exports){
+},{"browserify-css":1}],94:[function(_dereq_,module,exports){
+_dereq_('../systems/material');
+
+},{"../systems/material":95}],95:[function(_dereq_,module,exports){
+var registerSystem = _dereq_('../core/system').registerSystem;
+
+module.exports.System = registerSystem('material', {
+  init: function () {
+    this.materials = {};
+  },
+
+  /**
+   * Keep track of material in case an update trigger is needed (e.g., fog).
+   *
+   * @param {object} material
+   */
+  registerMaterial: function (material) {
+    this.materials[material.uuid] = material;
+  },
+
+  /**
+   * Stops tracking material.
+   *
+   * @param {object} material
+   */
+  unregisterMaterial: function (material) {
+    delete this.materials[material.uuid];
+  },
+
+  /**
+   * Trigger update to all registered materials.
+   */
+  updateMaterials: function (material) {
+    var materials = this.materials;
+    Object.keys(materials).forEach(function (uuid) {
+      materials[uuid].needsUpdate = true;
+    });
+  }
+
+});
+
+},{"../core/system":64}],96:[function(_dereq_,module,exports){
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -61698,23 +62084,24 @@ module.exports.regex = regex;
  * @param {string} defaults - fallback value.
  * @returns {object} An object with keys [x, y, z].
  */
-function parse (value, defaultVec3) {
+function parse (value, defaultVec) {
   var coordinate;
+  var vec = {};
 
   if (value && typeof value === 'object') {
-    return vec3ParseFloat(value);
+    return vecParseFloat(value);
   }
 
   if (typeof value !== 'string' || value === null) {
-    return defaultVec3;
+    return defaultVec;
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
-  return vec3ParseFloat({
-    x: coordinate[0] || defaultVec3.x,
-    y: coordinate[1] || defaultVec3.y,
-    z: coordinate[2] || defaultVec3.z
-  });
+  vec.x = coordinate[0] || defaultVec && defaultVec.x;
+  vec.y = coordinate[1] || defaultVec && defaultVec.y;
+  vec.z = coordinate[2] || defaultVec && defaultVec.z;
+  vec.w = coordinate[3] || defaultVec && defaultVec.w;
+  return vecParseFloat(vec);
 }
 module.exports.parse = parse;
 
@@ -61738,15 +62125,18 @@ module.exports.isCoordinate = function (value) {
   return regex.test(value);
 };
 
-function vec3ParseFloat (vec3) {
-  return {
-    x: parseFloat(vec3.x, 10),
-    y: parseFloat(vec3.y, 10),
-    z: parseFloat(vec3.z, 10)
-  };
+function vecParseFloat (vec) {
+  Object.keys(vec).forEach(function (key) {
+    if (vec[key] === undefined) {
+      delete vec[key];
+      return;
+    }
+    vec[key] = parseFloat(vec[key], 10);
+  });
+  return vec;
 }
 
-},{}],90:[function(_dereq_,module,exports){
+},{}],97:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -61843,7 +62233,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":2,"debug":3,"object-assign":9}],91:[function(_dereq_,module,exports){
+},{"_process":2,"debug":3,"object-assign":9}],98:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 
@@ -62039,7 +62429,7 @@ module.exports.isIframed = function () {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./coordinates":89,"./debug":90,"./src-loader":92,"deep-assign":6,"object-assign":9}],92:[function(_dereq_,module,exports){
+},{"./coordinates":96,"./debug":97,"./src-loader":99,"deep-assign":6,"object-assign":9}],99:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -62184,7 +62574,171 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":90}],93:[function(_dereq_,module,exports){
+},{"./debug":97}],100:[function(_dereq_,module,exports){
+var debug = _dereq_('./debug');
+var error = debug('components:texture:error');
+var THREE = _dereq_('../lib/three');
+var TextureLoader = new THREE.TextureLoader();
+var texturePromises = {};
+var warn = debug('components:texture:warn');
+
+/**
+ * Sets image texture on material as `map`.
+ *
+ * @param {object} material - three.js material.
+ * @param {string|object} src - An <img> element or url to an image file.
+ * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
+ */
+function loadImageTexture (material, src, repeat) {
+  return new Promise(function (resolve, reject) {
+    var isEl = typeof src !== 'string';
+    var onLoad = createTexture;
+    var onProgress = function () {};
+    var onError = function (xhr) {
+      error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
+      xhr.status, xhr.statusText);
+    };
+
+    if (isEl) {
+      createTexture(src);
+    } else {
+      TextureLoader.load(src, onLoad, onProgress, onError);
+    }
+
+    function createTexture (texture) {
+      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+      var repeatXY;
+      if (repeat) {
+        repeatXY = repeat.split(' ');
+        if (repeatXY.length === 2) {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(parseInt(repeatXY[0], 10),
+          parseInt(repeatXY[1], 10));
+        }
+      }
+      material.map = texture;
+      texture.needsUpdate = true;
+      material.needsUpdate = true;
+      resolve(texture);
+    }
+  });
+}
+
+/**
+ * Updates material texture
+ * @param  {object} material [description]
+ * @param  {object} texture  [description]
+ */
+function updateMaterial (material, texture) {
+  if (material.map !== undefined) {
+    if (texture) { texture.needsUpdate = true; }
+    material.map = texture;
+    material.needsUpdate = true;
+  }
+}
+
+/**
+ * Creates a video element to be used as a texture.
+ *
+ * @param {object} material - three.js material.
+ * @param {string} src - Url to a video file.
+ * @param {number} width - Width of the video.
+ * @param {number} height - Height of the video.
+ * @returns {Element} Video element.
+ */
+function createVideoEl (material, src, width, height) {
+  var el = material.videoEl || document.createElement('video');
+  function onError () {
+    warn('The URL "$s" is not a valid image or video', src);
+  }
+  el.width = width;
+  el.height = height;
+  // Attach event listeners if brand new video element.
+  if (el !== this.videoEl) {
+    el.autoplay = true;
+    el.loop = true;
+    el.crossOrigin = true;
+    el.addEventListener('error', onError, true);
+    material.videoEl = el;
+  }
+  el.src = src;
+  return el;
+}
+
+/**
+ * Sets video texture on material as map.
+ *
+ * @param {object} material - three.js material.
+ * @param {string} src - Url to a video file.
+ * @param {number} width - Width of the video.
+ * @param {number} height - Height of the video.
+*/
+function loadVideoTexture (material, src, height, width) {
+  // three.js video texture loader requires a <video>.
+  var videoEl = typeof src !== 'string' ? fixVideoAttributes(src) : createVideoEl(material, src, height, width);
+  var texture = new THREE.VideoTexture(videoEl);
+  texture.minFilter = THREE.LinearFilter;
+  texture.needsUpdate = true;
+  updateMaterial(material, texture);
+
+  // The promise is not necessary here, as the function is synchronous.
+  // Using a promise here for future consistency with texturePromises[]
+  return Promise.resolve(videoEl);
+}
+
+/**
+ * Fixes a video element's attributes to prevent developers from accidentally
+ * passing the wrong attribute values to commonly misused video attributes.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#Attributes
+ * @param {Element} videoEl - Video element.
+ * @returns {Element} Video element with the correct properties updated.
+ */
+function fixVideoAttributes (videoEl) {
+  // The `<video>` element treats `loop` and `muted` as boolean attributes, but
+  // of course does not with `autoplay`, `controls`, `preload` (and `crossorigin`).
+  // If we get passed a `<video autoplay="false">`, let's assume the dev wanted
+  // `autoplay` to be disabled.
+  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
+  videoEl.controls = videoEl.getAttribute('controls') !== 'false';
+  if (videoEl.getAttribute('preload') === 'false') {
+    videoEl.preload = 'none';
+  }
+  return videoEl;
+}
+
+function loadImage (material, data, src) {
+  var el = this.el;
+  texturePromises[src] = loadImageTexture(material, src, data.repeat);
+  texturePromises[src].then(emitEvent);
+  function emitEvent () { el.emit('material-texture-loaded', {src: src}); }
+}
+
+function loadVideo (material, data, src) {
+  var el = this.el;
+  texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
+  texturePromises[src].then(emitEvent);
+  function emitEvent (videoEl) {
+    videoEl.addEventListener('loadeddata', function (evt) {
+      el.emit('material-texture-loaded', {element: videoEl, src: src});
+    });
+    videoEl.addEventListener('ended', function (evt) {
+      // works only for non-loop videos
+      el.emit('material-video-ended');
+    });
+  }
+}
+
+module.exports = {
+  createVideoEl: createVideoEl,
+  fixVideoAttributes: fixVideoAttributes,
+  updateMaterial: updateMaterial,
+  loadImage: loadImage,
+  loadVideo: loadVideo
+};
+
+},{"../lib/three":88,"./debug":97}],101:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author bhouston / http://clara.io/
@@ -62321,7 +62875,7 @@ module.exports = {
 
 }( THREE ) );
 
-},{}],94:[function(_dereq_,module,exports){
+},{}],102:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 
 (function(){
@@ -62749,7 +63303,7 @@ var rStats = function rStats( settings ) {
 };
 
 if (typeof module !== "undefined") { module.exports = rStats; }
-},{}],95:[function(_dereq_,module,exports){
+},{}],103:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62811,7 +63365,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],96:[function(_dereq_,module,exports){
+},{}],104:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62887,6 +63441,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":95}]},{},[85])(85)
+},{"./util.js":103}]},{},[87])(87)
 });
 //# sourceMappingURL=aframe.js.map

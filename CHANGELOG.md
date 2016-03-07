@@ -1,4 +1,4 @@
-## dev
+## 0.2.0
 
 0.2.0 strengthens the extensibility of A-Frame. The component API has been
 greatly enhanced with the introduction of single-property schemas, property
