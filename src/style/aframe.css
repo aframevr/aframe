@@ -84,13 +84,11 @@ a-scene img {
   border-radius: 0;
   color: #FFF;
   height: 32px;
-  opacity: 0;
   margin-right: 70px;
   padding: 9px;
   width: 280px;
   position: relative;
-  transition: opacity .05s ease;
-  -webkit-transition: opacity .05s ease;
+  display: none;
 }
 
 .a-enter-vr-modal:after {
@@ -120,9 +118,9 @@ a-scene img {
   display: inline;
 }
 
-[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover + .a-enter-vr-modal,
-[data-a-enter-vr-no-headset] .a-enter-vr-button:hover + .a-enter-vr-modal {
-  opacity: 1;
+[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal,
+[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal {
+  display: block;
 }
 
 .a-orientation-modal {
