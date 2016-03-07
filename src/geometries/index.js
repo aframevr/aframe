@@ -6,6 +6,7 @@ require('./dodecahedron.js');
 require('./icosahedron.js');
 require('./octahedron.js');
 require('./plane.js');
+require('./quad.js');
 require('./ring.js');
 require('./sphere.js');
 require('./tetrahedron.js');

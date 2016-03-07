@@ -63,19 +63,19 @@ module.exports.Component = registerComponent('material', {
     var tick = function (time, delta) {
       var keys = Object.keys(tickProperties);
       keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+      function update (key) {
+        var update = schema[key].tick;
+        tickProperties[key] = update(time, self);
+      }
       self.shader.update(tickProperties);
     };
     var keys = Object.keys(schema);
     keys.forEach(function (key) {
-      if (schema[key].type === 'time') {
-        self.tick = tick;
-        tickProperties[key] = true;
-        scene.addBehavior(self);
-      }
+      if (schema[key].tick) { tickProperties[key] = true; }
     });
-    if (Object.keys(tickProperties).length === 0) {
-      scene.removeBehavior(this);
+    if (Object.keys(tickProperties).length !== 0) {
+      this.tick = tick;
+      scene.addBehavior(this);
     }
   },
 

@@ -6,12 +6,14 @@ var shaderNames = module.exports.shaderNames = [];  // Keep track of the names o
 var THREE = require('../lib/three');
 
 var propertyToThreeMapping = {
+  camera: 'v3',
+  color: 'v3',
   number: 'f',
+  resolution: 'v2',
   time: 'f',
   vec4: 'v4',
   vec3: 'v3',
-  vec2: 'v2',
-  color: 'v3'
+  vec2: 'v2'
 };
 
 /**
@@ -102,10 +104,12 @@ Shader.prototype = {
   parseValue: function (type, value) {
     var color;
     switch (type) {
-      case 'vec2': {
+      case 'vec2':
+      case 'resolution': {
         return new THREE.Vector2(value.x, value.y);
       }
-      case 'vec3': {
+      case 'vec3':
+      case 'camera': {
         return new THREE.Vector3(value.x, value.y, value.z);
       }
       case 'vec4': {

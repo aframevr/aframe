@@ -80,7 +80,6 @@ module.exports.Component = registerComponent('geometry', {
            'set to false');
       return;
     }
-
     if (this.data.skipCache === false) {
       warn('Cached geometries are not allowed to merge. Set `skipCache` to true');
       return;

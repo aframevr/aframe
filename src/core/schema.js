@@ -61,13 +61,12 @@ function processPropertyDefinition (propDefinition) {
   }
 
   propType = propertyTypes[typeName];
-  if (!propType) {
-    warn('Unknown property type: ' + typeName);
-  }
+  if (!propType) { warn('Unknown property type: ' + typeName); }
 
   // Fill in parse and stringify using property types.
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
+  propDefinition.tick = propType.tick;
 
   // Fill in type name.
   propDefinition.type = typeName;
