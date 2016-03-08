@@ -136,6 +136,7 @@ a-scene img {
 }
 
 .a-orientation-modal:after {
+  display: block;
   content: "Insert phone into Cardboard holder.";
   color: #333;
   font-family: sans-serif, monospace;
