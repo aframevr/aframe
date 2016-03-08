@@ -114,16 +114,17 @@ module.exports.Component = registerComponent('sound', {
   },
 
   play: function () {
-    if (this.sound.source.buffer) {
-      this.sound.play();
-    }
+    if (!this.sound.source.buffer) { return; }
+    this.sound.play();
   },
 
   stop: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.stop();
   },
 
   pause: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.pause();
   }
 });
