@@ -1,46 +1,78 @@
-module.exports = function initMetaTags (scene) {
-  if (!scene.isMobile) { return; }
-  injectMetaTags();
-};
+var extend = require('../../utils').extend;
+
+var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
+  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no'}),
+
+  // W3C-standardised meta tags.
+  Meta({name: 'web-app-capable', content: 'yes'}),
+  Meta({name: 'theme-color', content: 'black'}),
+  Link({rel: 'icon', sizes: '192x192', href: 'https://aframe.io/images/aframe-logo-192.png'})
+];
+
+var MOBILE_IOS_HEAD_TAGS = [
+  // iOS-specific meta tags for fullscreen when pinning to homescreen.
+  Meta({name: 'apple-mobile-web-app-capable', content: 'yes'}),
+  Meta({name: 'apple-mobile-web-app-status-bar-style', content: 'black'}),
+  Link({rel: 'apple-touch-icon', href: 'https://aframe.io/images/aframe-logo-152.png'})
+];
+
+function Meta (attrs) {
+  return {
+    tagName: 'meta',
+    attributes: attrs,
+    exists: function () { return document.querySelector('meta[name="' + attrs.name + '"]'); }
+  };
+}
+
+function Link (attrs) {
+  return {
+    tagName: 'link',
+    attributes: attrs,
+    exists: function () { return document.querySelector('link[rel="' + attrs.rel + '"]'); }
+  };
+}
 
 /**
- * Injects the necessary metatags in the document for mobile support to:
- * 1. Prevent the user to zoom in the document
+ * Injects the necessary metatags in the document for mobile support:
+ * 1. Prevent the user to zoom in the document.
  * 2. Ensure that window.innerWidth and window.innerHeight have the correct
- *    values and the canvas is properly scaled
+ *    values and the canvas is properly scaled.
  * 3. To allow fullscreen mode when pinning a web app on the home screen on
  *    iOS.
- * Adapted from: https://www.reddit.com/r/web_design/comments/3la04p/
+ * Adapted from https://www.reddit.com/r/web_design/comments/3la04p/
  *
- * @type {Object}
+ * @param {object} scene - Scene element
+ * @returns {Array}
  */
-function injectMetaTags () {
-  var headEl;
-  var meta = document.querySelector('meta[name="viewport"]');
-  var metaTags = [];
+module.exports.inject = function injectHeadTags (scene) {
+  var headEl = document.head;
+  var headScriptEl = headEl.querySelector('script');
+  var tag;
+  var headTags = [];
+  MOBILE_HEAD_TAGS.forEach(createAndInjectTag);
+  if (scene.isIOS) {
+    MOBILE_IOS_HEAD_TAGS.forEach(createAndInjectTag);
+  }
+  return headTags;
 
-  if (meta) { return; }
+  function createAndInjectTag (tagObj) {
+    if (!tagObj || tagObj.exists()) { return; }
 
-  headEl = document.getElementsByTagName('head')[0];
-  meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content =
-    'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
+    tag = createTag(tagObj);
+    if (!tag) { return; }
 
-  // iOS-specific meta tags for fullscreen when pinning to homescreen.
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-capable';
-  meta.content = 'yes';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
+    if (headScriptEl) {
+      headScriptEl.parentNode.insertBefore(tag, headScriptEl);
+    } else {
+      headEl.appendChild(tag);
+    }
 
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-status-bar-style';
-  meta.content = 'black';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
+    headTags.push(tag);
+  }
+};
 
-  return metaTags;
+function createTag (tagObj) {
+  if (!tagObj || !tagObj.tagName) { return; }
+  var meta = document.createElement(tagObj.tagName);
+  return extend(meta, tagObj.attributes);
 }
