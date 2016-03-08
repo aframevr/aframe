@@ -12,7 +12,8 @@ registerPrimitive('a-image', utils.extendDeep({}, meshMixin(), {
       shader: 'flat',
       side: 'double',
       transparent: true
-    }
+    },
+    'fit-texture': true
   },
 
   mappings: {
