@@ -14,6 +14,7 @@ require('./scale');
 require('./sound');
 require('./visible');
 require('./wasd-controls');
+require('./fit-texture');
 
 require('./scene/canvas');
 require('./scene/fog');
