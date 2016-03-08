@@ -19,7 +19,7 @@ We can load an .OBJ model by pointing to assets that specify the path to an .OBJ
     <a-asset-item id="tree-mtl" src="/path/to/tree.mtl"></a-asset-item>
   </a-assets>
 
-  <a-entity obj-model="obj: #tree-mtl; mtl: #tree-mtl"></a-entity>
+  <a-entity obj-model="obj: #tree-obj; mtl: #tree-mtl"></a-entity>
 </a-scene>
 ```
 
