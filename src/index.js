@@ -13,6 +13,7 @@ var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
 var registerElement = require('./core/a-register-element');
+var registerPrimitive = require('./extras/primitives/registerPrimitive');
 var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
 var systems = require('./core/system').systems;
@@ -64,6 +65,7 @@ module.exports = window.AFRAME = {
   registerElement: registerElement,
   registerShader: registerShader,
   registerSystem: registerSystem,
+  registerPrimitive: registerPrimitive,
   systems: systems,
   THREE: THREE,
   TWEEN: TWEEN,

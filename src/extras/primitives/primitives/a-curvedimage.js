@@ -1,8 +1,8 @@
-var meshMixin = require('../meshMixin');
+var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
-registerPrimitive('a-curvedimage', utils.extendDeep({}, meshMixin(), {
+registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   defaultAttributes: {
     geometry: {
       height: 1,

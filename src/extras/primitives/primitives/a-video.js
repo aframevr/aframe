@@ -1,8 +1,8 @@
-var meshMixin = require('../meshMixin');
+var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
-registerPrimitive('a-video', utils.extendDeep({}, meshMixin(), {
+registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   defaultAttributes: {
     geometry: {
       primitive: 'plane'

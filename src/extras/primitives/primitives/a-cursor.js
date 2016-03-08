@@ -1,8 +1,8 @@
-var meshMixin = require('../meshMixin');
+var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
-registerPrimitive('a-cursor', utils.extendDeep({}, meshMixin(), {
+registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   defaultAttributes: {
     cursor: {
       maxDistance: 1000
