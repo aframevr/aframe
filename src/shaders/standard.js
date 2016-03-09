@@ -7,22 +7,7 @@ var CubeLoader = new THREE.CubeTextureLoader();
 var texturePromises = {};
 
 /**
- * Standard shader.
- *
- * @namespace material
- * @param {string} color - Diffuse color.
- * @param {string} envMap - To load a environment cubemap. Takes a selector
- *         to an element containing six img elements, or a comma-separated
- *         string of direct url()s.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {number} metalness - Parameter for physical/standard material.
- * @param {string} repeat - X and Y value for size of texture repeating
- *         (in UV units).
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {number} roughness - Parameter for physical/standard material.
- * @param {number} width - Width to render texture.
+ * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
 module.exports.Component = registerShader('standard', {
   schema: {

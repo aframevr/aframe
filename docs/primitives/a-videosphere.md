@@ -26,7 +26,7 @@ The videosphere primitive easily adds a 360-degree video background to a scene o
 
 ## Attributes
 
-Note that the videosphere primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the videosphere primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|

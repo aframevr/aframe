@@ -6,7 +6,7 @@ parent_section: components
 order: 12
 ---
 
-The `obj-model` component loads a 3D model and material using a [Wavefront](https://en.wikipedia.org/wiki/Wavefront) (.OBJ) file and a .MTL file.
+The obj-model component loads a 3D model and material using a [Wavefront][wavefront-wiki] (.OBJ) file and a .MTL file.
 
 ## Example
 
@@ -25,12 +25,18 @@ We can load an .OBJ model by pointing to assets that specify the path to an .OBJ
 
 ## Properties
 
-| Property | Description                                                                               |
-|----------|-------------------------------------------------------------------------------------------|
-| obj      | Selector to an `<a-asset-item>` pointing to a .OBJ file or an inline path to a .OBJ file. |
-| mtl      | Selector to an `<a-asset-item>` pointing to a .MTL file or an inline path to a .MTL file. |
+| Property   | Description                                                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------                                                                       |
+| obj        | Selector to an `<a-asset-item>` pointing to a .OBJ file or an inline path to a .OBJ file.                                                                         |
+| mtl        | Selector to an `<a-asset-item>` pointing to a .MTL file or an inline path to a .MTL file. Optional if you wish to use the [material component][material] instead. |
 
-### Loading Inline
+## Events
+
+| Event Name   | Description                                                                                 |
+| ----------   | ------------------------------------------------------------------------------------------- |
+| model-loaded | .OBJ model has been loaded into the scene.                                                  |
+
+## Loading Inline
 
 We can also load assets by specifying the path directly within `url()`. Note this is less performant than going through the asset management system.
 
@@ -38,24 +44,16 @@ We can also load assets by specifying the path directly within `url()`. Note thi
 <a-entity obj-model="obj: url(/path/to/tree.obj); mtl: url(/path/to/tree.mtl)"></a-entity>
 ```
 
-## Downloading Models
+## Additional Resources
 
 We can find and download models on the web to drop into our scenes:
 
-- [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
-- [Clara.io](https://clara.io)
+- [Sketchup's 3D Warehouse][sketchup] - Repository of models.
+- [Clara.io][clara] - Repository of models.
+- [Blender][blender] - A free open-source 3D modeling program with plenty of existing learning resources to create models.
 
-## Creating Models
-
-We can create models using [Blender](https://www.blender.org/), a free open-source 3D modeling program with plenty of existing learning resources.
-
-## Downloading Models
-
-We can find and download models on the web to drop into our scenes:
-
-- [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
-- [Clara.io](https://clara.io)
-
-## Creating Models
-
-We can create models using [Blender](https://www.blender.org/), a free open-source 3D modeling program with plenty of existing learning resources.
+[blender]: https://www.blender.org/
+[clara]: https://clara.io
+[material]: ./material.md
+[sketchup]: https://3dwarehouse.sketchup.com
+[wavefront-wiki]: https://en.wikipedia.org/wiki/Wavefront

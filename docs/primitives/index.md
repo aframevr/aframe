@@ -66,9 +66,9 @@ Under the hood, we see that primitives *extend* `<a-entity>` as a custom element
 Since primitives extends `<a-entity>`s, operations that can be done upon entities can be done upon primitives. These operations include:
 
 - Positioning, rotating, and scaling
-- Attaching additional [components](../core/component.html) to define additional appearance, behavior, or functionality
-- Applying [animations](../core/animation.html)
-- Specifying [mixins](../core/mixin.html)
+- Attaching additional [components](../core/component.md) to define additional appearance, behavior, or functionality
+- Applying [animations](../core/animation.md)
+- Specifying [mixins](../core/mixin.md)
 
 ## Primitives are Helpers
 
@@ -86,7 +86,7 @@ The following documentation pages for individual primitive elements will:
 
 - Describe what the primitive does in practice
 - Describe roughly how the primitive is composed
-- Describe which component properties the attributes proxy the value to (e.g., `color` maps to `material.color`, meaning the `color` property of the [material component](../components/material.html)).
+- Describe which component properties the attributes proxy the value to (e.g., `color` maps to `material.color`, meaning the `color` property of the [material component](../components/material.md)).
 - Describe any techniques or caveats
 
-A lot of the primitives represent geometric meshes (i.e., shapes with an apperance). Thus, many of them inherit the common [mesh attributes](./mesh-attributes.html). So while attributes such as `color` or `src` are not listed in the attributes table for primitives such as [`<a-box>`](./a-box.html) or [`<a-plane>`](./a-plane.html), they are there. Remember to refer to common mesh attributes table when noted.
+A lot of the primitives represent geometric meshes (i.e., shapes with an apperance). Thus, many of them inherit the common [mesh attributes](./mesh-attributes.md). So while attributes such as `color` or `src` are not listed in the attributes table for primitives such as [`<a-box>`](./a-box.md) or [`<a-plane>`](./a-plane.md), they are there. Remember to refer to common mesh attributes table when noted.

@@ -6,7 +6,7 @@ parent_section: primitives
 order: 6
 ---
 
-The cone primitive creates a cone shape. It is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `cone`.
+The cone primitive creates a cone shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cone`.
 
 ## Example
 
@@ -24,7 +24,7 @@ The cone primitive creates a cone shape. It is an entity that prescribes the [ge
 
 ## Attributes
 
-Note that the cone primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the cone primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|

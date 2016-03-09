@@ -7,101 +7,29 @@ order: 4
 show_guide: true
 ---
 
+<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+
 > Play with the [finished example on CodePen][http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000].
 
-We built a [basic scene][basic], but how can we do more? A-Frame is just an abstraction on top of [three.js][three], and with [components][components] (not to be confused with Web Components), we can do just about anything three.js can, which is a lot. We're not limited to just the standard components that A-Frame ships. We can use components other people have published or we can write our own. Let's use powerful components to build an advanced scene where we can fire lasers at multiple enemies surrounding us. Let's start off by adding an enemy target:
+We built a [basic scene][basic], but how can we do more? A-Frame is just an abstraction on top of [three.js][three], and with [A-Frame components][components] (not to be confused with Web Components), we can do just about anything three.js can, which is a lot. Let's go through an example building a scene where the workflow revolves around writing components. We'll build an interactive scene in which we fire lasers at enemies surrounding us. We can use the standard components that ship with A-Frame, or use components that A-Frame developers have published to the ecosystem. Better yet, we can write our own components to do whatever we want!
 
-```html
-<html>
-  <head>
-    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-assets>
-        <img id="enemy-sprite" src="img/enemy.png">
-      </a-assets>
+Let's start by adding an enemy target:
 
-      <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
+<p data-height="500" data-theme-id="0" data-slug-hash="wGBLeB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/wGBLeB/">Laser Shooter - Step 1</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-      <a-camera id="player" position="0 1.8 0"></a-camera>
-
-      <a-sky color="#252243"></a-sky>
-    </a-scene>
-  </body>
-<html>
-```
-
-This creates a basic static scene where the enemy just looks at you. Fairly boring. But we can use A-Frame components to enable us to add declaratively add appearance, behavior, or functionality, and add life and interactivity to the scene.
+This creates a basic static scene where the enemy stares at you even as you move around. We can use A-Frame components from the ecosystem to do some neat things.
 
 ## Using Components
 
-The [awesome A-Frame repository][awesome] is a great place to find components that the community has created to enable new features. Most components should provide builds in the `dist/` folders in their repositories. Take the [layout component][layout] for example. We can grab the build in `dist/` (view the raw GitHub URL and replace the domain with `rawgit.com`), drop it into our scene, and immediately be able to use a rudimentary 3D layout system to position our entities. Instead of having one enemy, let's have ten enemies that are positioned in a circle around the player:
+The [awesome-aframe repository][awesome] is a great place to find components that the community has created to enable new features. Many of these components are started from the [Component Boilerplate][boilerplate and should provide builds in the `dist/` folders in their repositories. Take the [layout component][layout] for example. We can grab the build, drop it into our scene, and immediately be able to use a 3D layout system to automatically position entities. Instead of having one enemy, let's have ten enemies positioned in a circle around the player:
 
-```html
-<html>
-  <head>
-    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
-    <!-- Drop in a component and use it from markup. -->
-    <script src="https://rawgit.com/ngokevin/aframe-layout-component/master/dist/aframe-layout-component.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-assets>
-        <img id="enemy-sprite" src="img/enemy.png">
-      </a-assets>
+<p data-height="500" data-theme-id="0" data-slug-hash="bpNPjp" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/bpNPjp/">Laser Shooter - Step 2</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-      <!-- The layout component will be positioned the enemies in a circle. -->
-      <a-entity layout="type: circle; radius: 5">
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-      </a-entity>
-    </a-scene>
-  </body>
-<html>
-```
+It is messy in markup to have the enemy entity duplicated ten times. We can drop in the [template component][template] to clean that up. We can also use the [animation system][animation] to have enemies march in a circle around us:
 
-It is a bit messy to have the enemy entity duplicated ten times. But with components, we can do some neat things. Let's drop in the [template component][template] to clean that up:
+<p data-height="500" data-theme-id="0" data-slug-hash="JXoQBm" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/JXoQBm/">Laser Shooter - Step 3</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-```html
-<html>
-  <head>
-    <script src="https://aframe.io/releases/latest/aframe.min.js"></script>
-    <script src="https://rawgit.com/ngokevin/aframe-layout-component/master/dist/aframe-layout-component.min.js"></script>
-    <!-- Drop in another component and use it from markup. -->
-    <script src="https://rawgit.com/ngokevin/aframe-template-component/master/dist/aframe-template-component.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-assets>
-        <img id="enemy-sprite" src="img/enemy.png">
-
-        <!-- Template component lets us use Handlebars, Jade, Mustache, Nunjucks. -->
-        <script id="enemies" type="text/x-nunjucks-template">
-          <a-entity layout="type: circle; radius: 5">
-            {% for x in range(num) %}
-              <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-            {% endfor %}
-          </a-entity>
-        </script>
-      </a-assets>
-
-      <!-- Behold, the power of components. -->
-      <a-entity template="src: #enemies" data-num="10"></a-entity>
-    </a-scene>
-  </body>
-<html>
-```
-
-By mixing and matching the layout and template components, we have ten enemies surrounding us. The static elements of the scene are in place. Let's enable gameplay by writing our own specific components.
+By mixing and matching the layout and template components, we now have ten enemies surrounding us in a circle. Let's enable gameplay by writing our own components.
 
 ## Writing Components
 
@@ -111,7 +39,7 @@ We want to be able to fire lasers at the enemies and have them disappear. We wil
 
 ### spawner Component
 
-Let's start with being to create lasers. We want to be able to spawn entities that start at the player's position. We'll call it the *spawner component*. This component will listen to an event on the entity, and when that event is emitted, spawn an entity with a predefined [mixin][mixin] of components:
+Let's start by being able to create lasers. We want to be able to spawn a laser entity that starts at the player's current position. We'll create a spawner component that listens to an event on the entity, and when that event is emitted, we'll spawn an entity with a predefined [mixin][mixin] of components:
 
 ```js
 AFRAME.registerComponent('spawner', {
@@ -159,37 +87,9 @@ AFRAME.registerComponent('spawner', {
 });
 ```
 
-From HTML, let's create the laser mixin and attach the spawner component to the player. Now when the player emits a `click` event, the spawner component will generate a laser in its position.
-
-```html
-<a-scene>
-  <a-assets>
-    <img id="enemy-sprite" src="img/enemy.png">
-
-    <script id="enemies" type="text/x-nunjucks-template">
-      <a-entity layout="type: circle; radius: 5">
-        {% for x in range(num) %}
-          <a-image look-at="#player" src="#enemy-sprite" transparent="true"></a-image>
-        {% endfor %}
-      </a-entity>
-    </script>
-
-    <!-- Laser. -->
-    <a-mixin id="laser" geometry="primitive: cylinder; radius: 0.05; translate: 0 -2 0"
-                        material="color: green; metalness: 0.2; opacity: 0.4; roughness: 0.3"
-                        rotation="90 0 0"></a-mixin>
-  </a-assets>
-
-  <a-entity template="src: #enemies" data-num="10"></a-entity>
-
-  <!-- Add spawner to a defined camera. -->
-  <a-camera id="player" spawner="mixin: laser; on: click"></a-camera>
-</a-scene>
-```
-
 ### click-listener Component
 
-Now we need to a way to generate that click event on the player entity. While we could just write a vanilla JavaScript event handler in a content script, it is more appropriate and reusable to write a component that can allow any entity to listen for clicks:
+Now we need to a way to generate a click event on the player entity in order to spawn the laser. We could just write a vanilla JavaScript event handler in a content script, but it is more reusable to write a component that can allow any entity to listen for clicks:
 
 ```js
 AFRAME.registerComponent('click-listener', {
@@ -202,15 +102,13 @@ AFRAME.registerComponent('click-listener', {
 });
 ```
 
-Then we attach the click-listener component to the player entity:
+From HTML, we define the laser mixin and attach the spawner and click-listener components to the player. When we click, the spawner component will generate a laser starting in front of the camera:
 
-```html
-<a-camera id="player" spawner="mixin: laser; on: click" click-listener></a-camera>
-```
+<p data-height="500" data-theme-id="0" data-slug-hash="jqEjvB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqEjvB/">Laser Shooter - Step 4</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ### projectile Component
 
-Lasers will now spawn in front of us when we click, but we need them to fire. In the spawner component, we had the laser face in the rotation of the camera, and we rotated it 90-degrees around the X-axis to align it correctly. We can add a projectile component to add the behavior for the laser to travel straight:
+Now lasers will spawn in front of us when we click, but we need them to fire and travel. In the spawner component, we had the laser point in the rotation of the camera, and we rotated it 90-degrees around the X-axis to align it correctly. We can add a projectile component to have the laser travel straight in the direction it's already facing (its local Y-axis in this case):
 
 ```js
 AFRAME.registerComponent('projectile', {
@@ -224,7 +122,7 @@ AFRAME.registerComponent('projectile', {
 });
 ```
 
-Then attach the projectile component to the laser mixin. Fire the laser:
+Then attach the projectile component to the laser mixin:
 
 ```html
 <a-assets>
@@ -235,9 +133,13 @@ Then attach the projectile component to the laser mixin. Fire the laser:
 </a-assets>
 ```
 
+The laser will now fire like a projectile on click:
+
+<p data-height="500" data-theme-id="0" data-slug-hash="YqPmzK" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/YqPmzK/">Laser Shooter - Step 5</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+
 ### collider Component
 
-Last step is to add a collider component so we can detect when the laser hits an entity. We can do this using `THREE.Raycaster`, drawing a ray from one end of the laser, defined as a cylinder, to the other, then continuously checking if one of the targets is intersecting the ray. If a target is intersecting our ray, we tell it with an event that a collision occurred:
+The last step is to add a collider component so we can detect when the laser hits an entity. We can do this using the [three.js Raycaster][raycaster], drawing a ray (line) from one end of the laser to the other, then continuously checking if one of the enemies are intersecting the ray. If an enemy is intersecting our ray, then it is touching the laser, and we use an event to tell the enemy that it got hit:
 
 ```html
 AFRAME.registerComponent('collider', {
@@ -292,13 +194,14 @@ AFRAME.registerComponent('collider', {
 
 Then attach a class to the enemies to designate them as targets, attach animations to listen for collisions to make them disappear, and attach the collider component to the laser that targets enemies. For good measure, let's make it a challenge and have the enemies march around you as well:
 
+Then we attach a class to the enemies to designate them as targets, attach animations that trigger on collision to make them disappear, and finally attach the collider component to the laser that targets enemies:
+
 ```html
 <a-assets>
   <img id="enemy-sprite" src="img/enemy.png">
 
   <script id="enemies" type="text/x-nunjucks-template">
     <a-entity layout="type: circle; radius: 5">
-      <!-- March enemies in a circle. -->
       <a-animation attribute="rotation" dur="8000" easing="linear" repeat="indefinite" to="0 360 0"></a-animation>
 
       {% for x in range(num) %}
@@ -321,15 +224,20 @@ Then attach a class to the enemies to designate them as targets, attach animatio
 </a-assets>
 ```
 
-And there we have a complete basic interactive scene where we can fire lasers at enemies. We package power into components that allows us to declaratively build scenes without losing control or flexibility. Components don't have to be published, shared, and documented; they can simply be part of the development workflow. The code in this example is [published on Github](https://github.com/ngokevin/aframe-fps-example).
+And there we have a complete basic interactive scene in A-Frame that can be viewed in VR. We package power into components that allow us to declaratively build scenes without losing control or flexibility. The result is a rudimentary FPS game that supports VR in ultimately **just 30 lines of HTML**:
 
+<p data-height="500" data-theme-id="0" data-slug-hash="reaXNr" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/reaXNr/">Laser Shooter - Final</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+
+[animation]: ../core/animation.md
 [awesome]: https://github.com/aframevr/awesome-aframe#components
-[basic]: ./building-a-basic-scene.html
+[basic]: ./building-a-basic-scene.md
+[boilerplate]: https://github.com/ngokevin/aframe-component-boilerplate
 [codepen]: http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000
-[components]: ../core/component.html
-[ecs]: ../core/index.html
+[components]: ../core/component.md
+[ecs]: ../core/index.md
 [github]: https://github.com/ngokevin/aframe-fps-example
 [layout]: https://github.com/ngokevin/aframe-layout-component
-[mixin]: ../core/mixins.html
+[mixin]: ../core/mixins.md
+[raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
 [template]: https://github.com/ngokevin/aframe-template-component
 [three]: http://threejs.org

@@ -64,6 +64,10 @@ Or if a component exposes an API, we can call its methods:
 document.querySelector('a-entity[sound]').components.sound.pause();
 ```
 
+### `isPlaying`
+
+Whether or not the entity is active and playing. If the entity is paused, then `isPlaying` will be false.
+
 ### `object3D`
 
 `<a-entity>.object3D` is a reference to the entity's [three.js `Object3D`][object3D] representation. More specifically, `object3D` will be a `THREE.Group` object that may contain different types of `THREE.Object3D`s such as cameras, meshes, lights, or sounds:
@@ -227,7 +231,7 @@ AFRAME.registerComponent('example-geometry', {
 entity.pause();
 ```
 
-For example, the [look-controls component](../components/look-controls.html) on pause will remove event handlers that listen for input.
+For example, the [look-controls component](../components/look-controls.md) on pause will remove event handlers that listen for input.
 
 ### `play ()`
 
@@ -368,13 +372,13 @@ Below is what the event detail will contain for `componentchanged`:
 | newData  | Component's new data, after it was modified.       |
 | oldData  | Component's previous data, before it was modified. |
 
-[animation-begin]: ../core/animation.html#Begin
+[animation-begin]: ../core/animation.md#Begin
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [ecs]: ../core/
-[geometry]: ../components/geometry.html
-[light]: ../components/light.html
-[material]: ../components/material.html
-[position]: ../components/position.html
-[rotation]: ../components/rotation.html
-[scale]: ../components/scale.html
-[sound]: ../components/sound.html
+[geometry]: ../components/geometry.md
+[light]: ../components/light.md
+[material]: ../components/material.md
+[position]: ../components/position.md
+[rotation]: ../components/rotation.md
+[scale]: ../components/scale.md
+[sound]: ../components/sound.md

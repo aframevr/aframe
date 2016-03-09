@@ -6,7 +6,7 @@ parent_section: components
 order: 8
 ---
 
-The `light` component defines the entity as a source of light. Light affects all materials that have not specified a flat shading model with `shader: flat`. Note that lights are computationally expensive and the number of lights in a scene should be limited.
+The light component defines the entity as a source of light. Light affects all materials that have not specified a flat shading model with `shader: flat`. Note that lights are computationally expensive and the number of lights in a scene should be limited.
 
 ```html
 <a-entity light="color: #AFA; intensity: 1.5" position="-1 1 0"></a-entity>

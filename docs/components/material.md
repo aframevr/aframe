@@ -6,33 +6,40 @@ parent_section: components
 order: 11
 ---
 
-The `material` component defines the appearance of an entity. The basic shaders allow us to define properties such as color, opacity, or textures. Different shaders can be registered and applied to the material allow for a wide range of visual effects. The basic [`geometry` component](geometry.html) can be defined alongside to provide a shape alongside the appearance to create a complete mesh.
+The material component defines the appearance of an entity. The built-in shaders allow us to define properties such as color, opacity, or textures. [Custom shaders][shaders] can be registered to extend the material component to allow for a wide range of visual effects. The [geometry component][geometry] can be defined alongside to provide a shape alongside the appearance to create a complete mesh.
+
+The material component is coupled to [shaders][shaders]. Some of the built-in shading models will provide properties like color or texture to the material component.
 
 ## Example
 
-Here is an example defining a red material on a basic box geometry, creating a red box mesh.
+Here is an example defining a red material using the default standard shading model:
 
 ```html
 <a-entity geometry="primitive: box" material="color: red"></a-entity>
 ```
 
+Here is an example of using a different built-in shading model:
+
+```html
+<a-entity geometry="primitive: box" material="shader: flat; color: red"></a-entity>
+```
+
+Here is an example of using perhaps a custom shader:
+
+```html
+<a-entity geometry="primitive: plane" material="shader: ocean; color: blue; wave-height: 10"></a-entity>
+```
+
 ## Properties
 
-| Property     | Description                                                                                                                                                                        | Default Value |
-|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| color        | Base color of the geometry.                                                                                                                                                        | #fff          |
-| envMap       | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                                                   | None          |
-| height       | Height of video (in pixels), if defining a video texture.                                                                                                                          | 360           |
-| metalness    | How metallic the material is from `0` to `1`. Does not apply if `shader` is set to `flat`.                                                                                         | 0.5           |
-| opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.                                    | 1.0           |
-| reflectivity | How reflective the material is from `0` to `1` if the `envMap` property is set.                                                                                                    | 1.0           |
-| repeat       | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                                                                      | 1 1           |
-| roughness    | How rough the material is from `0` to `1`. A rougher material will scatter reflected light in more directions than a smooth material. Does not apply if `shader` is set to `flat`. | 0.5           |
-| transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                                                 | false         |
-| shader       | Shading model. Defaults to physically based shading but can also be set to `flat` shading.                                                                                         | standard      |
-| side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                                                     | front         |
-| src          | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                                                                 | None          |
-| width        | Width of video (in pixels), if defining a video texture.                                                                                                                           | 640           |
+The material component has only a few base properties, but more properties will be available to set uniforms and attributes depending on the schema of the shader applied:
+
+| Property    | Description                                                                                                                                     | Default Value |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| opacity     | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color. | 1.0           |
+| transparent | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                              | false         |
+| shader      | Which shader or shading model to use. Defaults to the [built-in standard shading model][standard]. Can be set to the [built-in flat shading model][flat] or to a [registered custom shader][customshader] | standard      |
+| side        | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                  | front         |
 
 ## Events
 
@@ -41,9 +48,9 @@ Here is an example defining a red material on a basic box geometry, creating a r
 | material-texture-loaded | Texture loaded onto material. Or when the first frame is playing for video textures.       |
 | material-video-ended    | For video textures, emitted when the video has reached its end (may not work with `loop`). |
 
-## Defining Textures
+## Textures
 
-To set a texture on the material, specify the `src` property. `src` can either be a selector to an `<img>` or `<video>` element:
+To set a texture using one of the built-in shading models, specify the `src` property. `src` can be a selector to either an `<img>` or `<video>` element:
 
 ```html
 <a-scene>
@@ -65,63 +72,47 @@ To set a texture on the material, specify the `src` property. `src` can either b
 
 Most of the other properties works together with textures. For example, the `color` property will act as the base color and be multiplied per-pixel with the texture. Set it to `#fff` to maintain the original colors of the texture.
 
+Video and image textures are cached on the A-Frame layer in order not to push redundant textures to the GPU.
+
+### Video Textures
+
+Whether the video texture loops or autoplays depends on the video element used to create the texture. If we simply pass a URL instead of creating and passing a video element, then the texture will loop and autoplay by default. To specify otherwise, create a video element in the asset management system and pass the ID:
+
+```html
+<a-scene>
+  <a-assets>
+    <!-- No loop. -->
+    <video id="my-video" src="video.mp4" autoplay="true">
+  </a-assets>
+
+  <a-entity geometry="primitive: box" material="src: #my-video"></a-entity>
+</a-scene>
+```
+
 ### Repeating Textures
 
-We might want to tile textures rather than having them stretch. The `repeat` property can be used to repeat textures.
+We might want to tile textures rather than having them stretch. The `repeat` property can be used to repeat textures in one of the built-in shading models.
 
 ```html
 <a-entity geometry="primitive: plane; width: 100"
           material="src: carpet.png; repeat: 100 20"></a-entity>
 ```
 
-### Environment Maps
+### Cross-Origin
 
-The `envMap` property defines what environment the material reflects. This also works together with plain textures. Though unlike regular texture maps, the `envMap` property takes a cubemap, six images put together to form a cube. The cubemap is wrapped around the entity and applied as a texture. Note that cubemaps can not yet be defined for regular textures.
-
-If shader is set to `standard`, which it is by default, the clarity of the reflection depends on the `metalness`, `roughness`, and `reflectivity` properties.
+If fetching a texture from a different origin or domain such as from an image hosting service or a CDN, then you should specify the `crossorigin` attribute on the `<img>`, `<video>`, or `<canvas>` element used to create a texture. [CORS][corsimage] security mechanisms in the browser generally disallow reading raw data from media elements from other domains if not explicitly allowed:
 
 ```html
 <a-scene>
   <a-assets>
-    <a-cubemap id="sky">
-      <img src="right.png">
-      <img src="left.png">
-      <img src="top.png">
-      <img src="bottom.png">
-      <img src="front.png">
-      <img src="back.png">
-    </a-cubemap>
+    <video id="cdn-video" src="http://somecdn/somevideo.mp4" crossorigin="anonymous">
   </a-assets>
 
-  <a-entity geometry="primitive: box" material="envMap: #sky; roughness: 0"></a-entity>
+  <a-entity geometry="primitive: box" material="src: #cdn-video"></a-entity>
 </a-scene>
 ```
 
-## Physically Based Shading
-
-By default, A-Frame materials default to a physically based shading model, where the `shader` property is `standard`. Physically based shading is a recent trend in rendering systems where materials behave realistically to lighting conditions. Appearance is a result of the interaction between the incoming light and the properties of the material.
-
-To achieve realism, the diffuse `color`, `metalness`, `reflectivity`, and `roughness` properties of the material must accurately be controlled, often based on real-world material studies. Some people have compiled charts of realistic
-values for different kinds of materials that can be used as a starting point.
-
-For example, for a tree bark material, as an estimation, we might set:
-
-```html
-<a-entity geometry="primitive: cylinder"
-          material="src: treebark.png; color: #696969; roughness: 1; metalness: 0">
-</a-entity>
-```
-
-For basic scenes, physically based materials are generally not needed. In that case, we want to specify flat shading for better performance.
-
-## Specifying Flat Shading
-
-Since materials default to physically based shading, materials will factor in light when we might not want them to. To specify flat shading, such as in the case for displaying plain images or videos, we can define the `shader` property to be `flat`.
-
-```html
-<a-entity geometry="primitive: plane" material="src: #cat-image; shader: flat">
-</a-entity>
-```
+Caveat is that currently, Safari and Chromium do not seem to respect the `crossorigin` attribute or property, whereas Firefox and Chrome do.
 
 ## Setting the Material from Another Component
 
@@ -146,8 +137,16 @@ AFRAME.registerComponent('my-component', {
 });
 ```
 
-To play with an example of communicating with the material component, check out the [Cross-Component Changes example on Codepen](http://codepen.io/team/mozvr/pen/NxEpJe).
+To play with an example of communicating with the material component, check out the [Cross-Component Changes example on Codepen][cross-component-changes].
 
 ## Caveats
 
 Transparency and alpha channels are tricky in 3D graphics. If you are having issues where transparent materials in the foreground do not composite correctly over materials in the background, it is probably due to underlying design of the OpenGL compositor (which WebGL is an API for). In an ideal scenario, transparency in A-Frame would "just work", regardless of where the developer places an image in 3D space, or what order they define the elements in markup. In the current version of A-Frame, however, it is easy to create scenarios where foreground images occlude background images. This creates confusion and unwanted visual defects. To workaround, try changing the order of the entities.
+
+[corsimage]: https://developer.mozilla.org/docs/Web/HTML/CORS_enabled_image
+[cross-component-changes]: http://codepen.io/team/mozvr/pen/NxEpJe
+[customshader]: ../core/shaders.md#registering_a_custom_shader
+[flat]: ../core/shaders.md#flat_shading_model
+[geometry]: ./geometry.md
+[shaders]: ../core/shaders.md
+[standard]: ../core/shaders.md#standard_shading_model

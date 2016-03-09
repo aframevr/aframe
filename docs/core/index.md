@@ -50,8 +50,8 @@ From there, we can attach more and more components to add whatever appearance, b
 We can even attach third-party components that other people have created. If someone writes a component that enables a mesh to explode, or a component that enables the mesh to use a canvas as its material texture, we could just drop the component into our A-Frame experience and use it immediately in HTML. The entity-component-system pattern enables great flexibility and extensibility.
 
 [composegif]: http://i.imgur.com/0UIZFgs.gifv
-[geometry]: ../components/geometry.html
-[light]: ../components/light.html
-[material]: ../components/material.html
+[geometry]: ../components/geometry.md
+[light]: ../components/light.md
+[material]: ../components/material.md
 [physics]: https://github.com/ngokevin/aframe-physics-components]
 [sound]: ../components/sound.html
