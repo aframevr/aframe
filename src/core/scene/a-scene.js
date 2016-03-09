@@ -131,12 +131,20 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     enterVR: {
       value: function (event) {
+        // this.setStereoRenderer();
+        // if (window.hasNonPolyfillWebVRSupport) {
+        //   this.stereoRenderer.requestPresent();
+        // } else {
+        //   setFullscreen(this.canvas);
+        // }
+
         this.setStereoRenderer();
-        if (window.hasNonPolyfillWebVRSupport) {
-          this.stereoRenderer.requestPresent();
-        } else {
+        if (isMobile) {
           setFullscreen(this.canvas);
+        } else {
+          this.stereoRenderer.setFullScreen(true);
         }
+
         this.addState('vr-mode');
         this.emit('enter-vr', event);
       }
