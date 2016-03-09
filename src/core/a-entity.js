@@ -527,8 +527,8 @@ var proto = Object.create(ANode.prototype, {
 
   removeState: {
     value: function (state) {
-      var stateIndex = this.is(state);
-      if (stateIndex === false) { return; }
+      var stateIndex = this.states.indexOf(state);
+      if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
       this.mapStateMixins(state, this.unregisterMixin.bind(this));
       this.emit('stateremoved', {state: state});
@@ -541,11 +541,7 @@ var proto = Object.create(ANode.prototype, {
    */
   is: {
     value: function (state) {
-      var is = false;
-      this.states.forEach(function (elState, index) {
-        if (elState === state) { is = true; }
-      });
-      return is;
+      return this.states.indexOf(state) !== -1;
     }
   }
 });

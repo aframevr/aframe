@@ -98,6 +98,62 @@ suite('a-entity', function () {
     });
   });
 
+  suite('addState', function () {
+    test('adds state', function () {
+      var el = this.el;
+      el.states = [];
+      el.addState('happy');
+      assert.ok(el.states[0] === 'happy');
+    });
+
+    test('it does not add an existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.addState('happy');
+      assert.ok(el.states.length === 1);
+    });
+  });
+
+  suite('removeState', function () {
+    test('removes existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.removeState('happy');
+      assert.ok(el.states.length === 0);
+    });
+
+    test('removes non existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.removeState('sad');
+      assert.ok(el.states.length === 1);
+    });
+
+    test('removes existing state among multiple states', function () {
+      var el = this.el;
+      el.states = ['happy', 'excited'];
+      el.removeState('excited');
+      assert.equal(el.states.length, 1);
+      assert.ok(el.states[0] === 'happy');
+    });
+  });
+
+  suite('is', function () {
+    test('returns true if entity is in the given state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.is('happy');
+      assert.ok(el.is('happy'));
+    });
+
+    test('returns false if entity is not in the given state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.is('happy');
+      assert.ok(el.is('happy'));
+    });
+  });
+
   /**
    * Tests full component set + get flow on one of the most basic components.
    */
