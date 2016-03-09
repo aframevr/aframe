@@ -25,6 +25,12 @@ The `sound` component defines the entity as a source of sound or audio. The `sou
 | src      | Path to sound file.                                        | null          |
 | volume   | How loud to play the sound.                                | 1             |
 
+## Events
+
+| Event Name  | Description                           |
+|-------------+---------------------------------------|
+| sound-ended | triggered when sound finishes playing |
+
 ## Playing on an Event
 
 The `sound` component can also listen to an event before playing as well. For example, we might have a laughing sound play every time a monster is clicked:

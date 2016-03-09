@@ -135,7 +135,7 @@ function loadImage (material, data, src) {
   var el = this.el;
   texturePromises[src] = loadImageTexture(material, src, data.repeat);
   texturePromises[src].then(emitEvent);
-  function emitEvent () { el.emit('material-texture-loaded', {src: src}); }
+  function emitEvent (texture) { el.emit('material-texture-loaded', {src: src, texture: texture}); }
 }
 
 function loadVideo (material, data, src) {

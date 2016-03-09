@@ -104,20 +104,27 @@ module.exports.Component = registerComponent('sound', {
 
     sound = this.sound = new THREE.PositionalAudio(listener);
     el.setObject3D('sound', sound);
+
+    sound.source.onended = function () {
+      sound.onEnded();
+      el.emit('sound-ended');
+    };
+
     return sound;
   },
 
   play: function () {
-    if (this.sound.source.buffer) {
-      this.sound.play();
-    }
+    if (!this.sound.source.buffer) { return; }
+    this.sound.play();
   },
 
   stop: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.stop();
   },
 
   pause: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.pause();
   }
 });

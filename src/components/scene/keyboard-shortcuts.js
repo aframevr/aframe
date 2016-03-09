@@ -12,10 +12,16 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   init: function () {
     var self = this;
     var scene = this.el;
-
     this.listener = window.addEventListener('keyup', function (event) {
-      if (self.enterVREnabled && event.keyCode === 70) {  // f.
-        scene.enterVR();
+      if (self.enterVREnabled) {
+        if (event.keyCode === 70) {  // f.
+          scene.enterVR();
+        } else if (event.keyCode === 27) {  // Escape.
+          // The new WebVR API doesn't use Fullscreen, so let's
+          // still exit VR when the Escape key is pressed. This also works
+          // fine in older builds using the old WebVR API.
+          scene.exitVR();
+        }
       }
       if (self.resetSensorEnabled && event.keyCode === 90) {  // z.
         controls.resetSensor();

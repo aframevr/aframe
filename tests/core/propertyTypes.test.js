@@ -63,6 +63,46 @@ suite('propertyTypes', function () {
     });
   });
 
+  suite('selectorAll', function () {
+    var parse = propertyTypes.selectorAll.parse;
+    var stringify = propertyTypes.selectorAll.stringify;
+
+    setup(function () {
+      var el = this.el = document.createElement('div');
+
+      var el1 = this.el1 = document.createElement('div');
+      el1.setAttribute('id', 'hello');
+      el1.setAttribute('class', 'itsme');
+
+      var el2 = this.el2 = document.createElement('div');
+      el2.setAttribute('id', 'cool');
+      el2.setAttribute('class', 'itworks');
+
+      el.appendChild(el1);
+      el.appendChild(el2);
+
+      document.body.appendChild(el);
+    });
+
+    teardown(function () {
+      this.el1.parentNode.removeChild(this.el1);
+      this.el2.parentNode.removeChild(this.el2);
+      this.el.parentNode.removeChild(this.el);
+    });
+
+    test('parses a set of valid selectors', function () {
+      assert.deepEqual(parse('#hello.itsme, #cool.itworks'), this.el.childNodes);
+    });
+
+    test('parses null selector', function () {
+      assert.deepEqual(parse('#goodbye'), this.el1.childNodes);
+    });
+
+    test('stringifies valid selector', function () {
+      assert.equal(stringify(this.el.childNodes), '#hello, #cool');
+    });
+  });
+
   suite('array', function () {
     var parse = propertyTypes.array.parse;
     var stringify = propertyTypes.array.stringify;

@@ -79,7 +79,10 @@ var AScene = module.exports = registerElement('a-scene', {
         initWakelock(this);
 
         window.addEventListener('load', this.resize.bind(this));
-        window.addEventListener('resize', this.resize.bind(this), false);
+        window.addEventListener('resize', this.resize.bind(this));
+        // We can't use `fullscreen-exit` when the page unloads
+        // because it fires too late.
+        window.addEventListener('beforeunload', this.exitVR.bind(this));
         this.addEventListener('fullscreen-exit', this.exitVR.bind(this));
         this.play();
       },
@@ -118,9 +121,8 @@ var AScene = module.exports = registerElement('a-scene', {
     addBehavior: {
       value: function (behavior) {
         var behaviors = this.behaviors;
-        var index = behaviors.indexOf(behavior);
-        if (index !== -1) { return; }
-        this.behaviors.push(behavior);
+        if (behaviors.indexOf(behavior) !== -1) { return; }
+        behaviors.push(behavior);
       }
     },
 
@@ -129,12 +131,20 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     enterVR: {
       value: function (event) {
+        // this.setStereoRenderer();
+        // if (window.hasNonPolyfillWebVRSupport) {
+        //   this.stereoRenderer.requestPresent();
+        // } else {
+        //   setFullscreen(this.canvas);
+        // }
+
         this.setStereoRenderer();
         if (isMobile) {
           setFullscreen(this.canvas);
         } else {
           this.stereoRenderer.setFullScreen(true);
         }
+
         this.addState('vr-mode');
         this.emit('enter-vr', event);
       }
@@ -142,6 +152,7 @@ var AScene = module.exports = registerElement('a-scene', {
 
     exitVR: {
       value: function () {
+        this.stereoRenderer.exitPresent();
         this.setMonoRenderer();
         this.removeState('vr-mode');
         this.emit('exit-vr', { target: this });
@@ -481,10 +492,10 @@ function getCanvasSize (canvas) {
 }
 
 /**
-  * Manually handles fullscreen for non-VR mobile where the renderer' VR
-  * display is not polyfilled.
+  * Manually handles fullscreen for mobile devices without native WebVR support
+  * (i.e., where the renderer's VR display is not polyfilled).
   *
-  * Desktop just works so use the renderer.setFullScreen in that case.
+  * With native WebVR support, we call `renderer.requestPresent` instead.
   */
 function setFullscreen (canvas) {
   if (canvas.requestFullscreen) {

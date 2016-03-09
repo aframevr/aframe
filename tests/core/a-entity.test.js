@@ -18,7 +18,8 @@ var TestComponent = {
   update: function () { },
   remove: function () { },
   play: function () { },
-  pause: function () { }
+  pause: function () { },
+  tick: function () { }
 };
 
 suite('a-entity', function () {
@@ -98,6 +99,62 @@ suite('a-entity', function () {
     });
   });
 
+  suite('addState', function () {
+    test('adds state', function () {
+      var el = this.el;
+      el.states = [];
+      el.addState('happy');
+      assert.ok(el.states[0] === 'happy');
+    });
+
+    test('it does not add an existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.addState('happy');
+      assert.ok(el.states.length === 1);
+    });
+  });
+
+  suite('removeState', function () {
+    test('removes existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.removeState('happy');
+      assert.ok(el.states.length === 0);
+    });
+
+    test('removes non existing state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.removeState('sad');
+      assert.ok(el.states.length === 1);
+    });
+
+    test('removes existing state among multiple states', function () {
+      var el = this.el;
+      el.states = ['happy', 'excited'];
+      el.removeState('excited');
+      assert.equal(el.states.length, 1);
+      assert.ok(el.states[0] === 'happy');
+    });
+  });
+
+  suite('is', function () {
+    test('returns true if entity is in the given state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.is('happy');
+      assert.ok(el.is('happy'));
+    });
+
+    test('returns false if entity is not in the given state', function () {
+      var el = this.el;
+      el.states = ['happy'];
+      el.is('happy');
+      assert.ok(el.is('happy'));
+    });
+  });
+
   /**
    * Tests full component set + get flow on one of the most basic components.
    */
@@ -173,6 +230,21 @@ suite('a-entity', function () {
       parentEl.removeChild(el);
       process.nextTick(function () {
         assert.equal(parentEl.object3D.children.length, 3);
+        done();
+      });
+    });
+
+    test('properly detaches components', function (done) {
+      var el = this.el;
+      var parentEl = el.parentNode;
+      components.test = undefined;
+      registerComponent('test', TestComponent);
+      el.setAttribute('test', '');
+      assert.notEqual(el.sceneEl.behaviors.indexOf(el.components.test), -1);
+      parentEl.removeChild(el);
+      process.nextTick(function () {
+        assert.notOk('test' in el.components);
+        assert.equal(el.sceneEl.behaviors.indexOf(el.components.test), -1);
         done();
       });
     });
@@ -416,9 +488,9 @@ suite('a-entity', function () {
       var el = this.el;
       var sceneEl = el.sceneEl;
       var component;
+      el.play();
       el.setAttribute('look-controls', '');
       component = el.components['look-controls'];
-      assert.ok(el.getAttribute('look-controls'));
       assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
       el.removeAttribute('look-controls');
       assert.equal(sceneEl.behaviors.indexOf(component), -1);
@@ -497,24 +569,13 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.called(TestComponent.remove);
   });
 
-  test('calls remove on removeComponents', function () {
-    var el = this.el;
-    var TestComponent = this.TestComponent.prototype;
-
-    this.sinon.spy(TestComponent, 'remove');
-    el.setAttribute('test', '');
-    sinon.assert.notCalled(TestComponent.remove);
-    el.removeComponents();
-    sinon.assert.called(TestComponent.remove);
-  });
-
   test('calls pause on entity pause', function () {
     var el = this.el;
     var TestComponent = this.TestComponent.prototype;
 
     this.sinon.spy(TestComponent, 'pause');
-    el.setAttribute('test', '');
     el.play();
+    el.setAttribute('test', '');
     sinon.assert.notCalled(TestComponent.pause);
     el.pause();
     sinon.assert.called(TestComponent.pause);
@@ -530,6 +591,29 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.notCalled(TestComponent.play);
     el.play();
     sinon.assert.called(TestComponent.play);
+  });
+
+  test('removes tick from scene behaviors on entity pause', function () {
+    var el = this.el;
+    var testComponentInstance;
+    el.setAttribute('test', '');
+    testComponentInstance = el.components.test;
+
+    assert.notEqual(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+    el.pause();
+    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+  });
+
+  test('adds tick to scene behaviors on entity play', function () {
+    var el = this.el;
+    var testComponentInstance;
+    el.setAttribute('test', '');
+    testComponentInstance = el.components.test;
+    el.sceneEl.behaviors = [];
+
+    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+    el.play();
+    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
   });
 });
 
