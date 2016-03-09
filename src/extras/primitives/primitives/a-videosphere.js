@@ -1,8 +1,8 @@
-var meshMixin = require('../meshMixin');
+var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
-registerPrimitive('a-videosphere', utils.extendDeep({}, meshMixin(), {
+registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   defaultAttributes: {
     geometry: {
       primitive: 'sphere',

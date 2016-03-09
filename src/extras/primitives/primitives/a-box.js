@@ -1,8 +1,8 @@
-var meshMixin = require('../meshMixin');
+var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
-var boxDefinition = utils.extendDeep({}, meshMixin(), {
+var boxDefinition = utils.extendDeep({}, getMeshMixin(), {
   defaultAttributes: {
     geometry: {
       primitive: 'box'

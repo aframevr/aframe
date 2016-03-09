@@ -1,4 +1,4 @@
-var meshMixin = require('../meshMixin')();
+var meshMixin = require('../getMeshMixin')();
 var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 

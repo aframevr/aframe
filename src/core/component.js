@@ -38,7 +38,6 @@ var components = module.exports.components = {}; // Keep track of registered com
 var Component = module.exports.Component = function (el) {
   var name = this.name;
   var elData = HTMLElement.prototype.getAttribute.call(el, name);
-  var scene;
 
   this.el = el;
   // The last parameter of builData suppresses the warnings
@@ -48,12 +47,6 @@ var Component = module.exports.Component = function (el) {
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
-
-  // Set up tick behavior.
-  if (this.tick) {
-    scene = el.isScene ? el : el.sceneEl;
-    scene.addBehavior(this);
-  }
 };
 
 Component.prototype = {
