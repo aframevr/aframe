@@ -22,8 +22,7 @@ module.exports = function (config) {
     ],
     files: [
       'tests/**/*.test.js',
-      { pattern: 'examples/_sounds/click.ogg', included: false, served: true },
-      { pattern: 'examples/_images/mozvr.png', included: false, served: true }
+      { pattern: 'tests/assets/*', included: false, served: true }
     ],
     frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
                  'browserify'],

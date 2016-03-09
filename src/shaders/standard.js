@@ -1,7 +1,7 @@
 var registerShader = require('../core/shader').registerShader;
 var srcLoader = require('../utils/src-loader');
 var THREE = require('../lib/three');
-var utils = require('../utils/texture');
+var utils = require('../utils/');
 
 var CubeLoader = new THREE.CubeTextureLoader();
 var texturePromises = {};
@@ -67,12 +67,12 @@ module.exports.Component = registerShader('standard', {
       // Texture added or changed.
       this.textureSrc = src;
       srcLoader.validateSrc(src,
-        utils.loadImage.bind(this, material, data),
-        utils.loadVideo.bind(this, material, data)
+        utils.texture.loadImage.bind(this, material, data),
+        utils.texture.loadVideo.bind(this, material, data)
       );
     } else {
       // Texture removed.
-      utils.updateMaterial(material, null);
+      utils.texture.updateMaterial(material, null);
     }
   },
 
@@ -97,33 +97,36 @@ module.exports.Component = registerShader('standard', {
     var self = this;
     var material = this.material;
     var envMap = data.envMap;
-    // Environment cubemaps.
+
+    // No envMap defined or already loading.
     if (!envMap || this.isLoadingEnvMap) {
       material.envMap = null;
       material.needsUpdate = true;
       return;
     }
     this.isLoadingEnvMap = true;
+
+    // Another material is already loading this texture. Wait on promise.
     if (texturePromises[envMap]) {
-      // Another material is already loading this texture. Wait on promise.
       texturePromises[envMap].then(function (cube) {
         self.isLoadingEnvMap = false;
         material.envMap = cube;
         material.needsUpdate = true;
       });
-    } else {
-      // Material is first to load this texture. Load and resolve texture.
-      texturePromises[envMap] = new Promise(function (resolve) {
-        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
-          CubeLoader.load(urls, function (cube) {
-            // Texture loaded.
-            self.isLoadingEnvMap = false;
-            material.envMap = cube;
-            resolve(cube);
-          });
+      return;
+    }
+
+    // Material is first to load this texture. Load and resolve texture.
+    texturePromises[envMap] = new Promise(function (resolve) {
+      srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+        CubeLoader.load(urls, function (cube) {
+          // Texture loaded.
+          self.isLoadingEnvMap = false;
+          material.envMap = cube;
+          resolve(cube);
         });
       });
-    }
+    });
   }
 });
 
