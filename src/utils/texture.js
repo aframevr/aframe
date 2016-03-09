@@ -223,6 +223,7 @@ function createVideoEl (material, src, width, height) {
   el.width = width;
   el.height = height;
   if (el !== this.videoEl) {
+    el.setAttribute('webkit-playsinline', '');  // To support inline videos in iOS webviews.
     el.autoplay = true;
     el.loop = true;
     el.crossOrigin = true;
@@ -256,6 +257,12 @@ function fixVideoAttributes (videoEl) {
   }
   if (videoEl.getAttribute('preload') === 'false') {
     videoEl.preload = 'none';
+  }
+  if (!videoEl.hasAttribute('crossorigin')) {
+    videoEl.crossOrigin = true;
+  }
+  if (!videoEl.hasAttribute('webkit-playsinline')) {
+    videoEl.setAttribute('webkit-playsinline', '');  // To support inline videos in iOS webviews.
   }
   return videoEl;
 }
