@@ -1,5 +1,7 @@
 # A-Frame
 
+> NOTE: the `dev` branch has been deprecated. All work has moved to the `master` branch.
+
 __Building blocks for the VR Web.__
 
 [![build status][travis-image]][travis-url]
