@@ -1,3 +1,4 @@
+/* global HTMLElement */
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -36,16 +37,17 @@ module.exports.Component = registerComponent('obj-model', {
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
-      if (el.hasAttribute('material')) {
+      if (HTMLElement.prototype.getAttribute.call(el, 'material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
       mtlLoader.setBaseUrl(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);
-        objLoader.load(objUrl, function (object) {
-          self.model = object;
-          el.setObject3D('mesh', object);
+        objLoader.load(objUrl, function (objModel) {
+          self.model = objModel;
+          el.setObject3D('mesh', objModel);
+          el.emit('model-loaded', { format: 'obj', model: objModel });
         });
       });
       return;
@@ -62,7 +64,8 @@ module.exports.Component = registerComponent('obj-model', {
       });
 
       self.model = objModel;
-      el.setObject3D('mesh', self.model);
+      el.setObject3D('mesh', objModel);
+      el.emit('model-loaded', { format: 'obj', model: objModel });
     });
   }
 });

@@ -21,8 +21,10 @@ module.exports = function (config) {
       'TEST_ENV'
     ],
     files: [
+      // Define test files.
       'tests/**/*.test.js',
-      { pattern: 'tests/assets/*', included: false, served: true }
+      // Serve test assets.
+      { pattern: 'tests/assets/**/*', included: false, served: true }
     ],
     frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
                  'browserify'],
