@@ -44,7 +44,7 @@ module.exports.Component = registerComponent('stats', {
 
 function createStats () {
   return new RStats({
-    CSSPath: '../../style/',
+    css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {
       fps: { caption: 'fps', below: 30 }
     },

@@ -1,61 +1,82 @@
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
+'use strict';
 
-(function(){
+( function () {
 
-  // prepare base perf object
-  if (typeof window.performance === 'undefined') {
-      window.performance = {};
-  }
-
-  if (!window.performance.now){
-
-    var nowOffset = Date.now();
-
-    if (performance.timing && performance.timing.navigationStart){
-      nowOffset = performance.timing.navigationStart
+    // prepare base perf object
+    if ( typeof window.performance === 'undefined' ) {
+        window.performance = {};
     }
 
+    if ( !window.performance.now ) {
 
-    window.performance.now = function now(){
-      return Date.now() - nowOffset;
+        var nowOffset = Date.now();
+
+        if ( performance.timing && performance.timing.navigationStart ) {
+            nowOffset = performance.timing.navigationStart;
+        }
+
+        window.performance.now = function now () {
+            return Date.now() - nowOffset;
+        };
+
     }
 
-  }
+    if( !window.performance.mark ) {
+        window.performance.mark = function(){}
+    }
 
-})();
+    if( !window.performance.measure ) {
+        window.performance.measure = function(){}
+    }
 
-var rStats = function rStats( settings ) {
+} )();
 
-    'use strict';
+window.rStats = function rStats ( settings ) {
 
-    function importCSS( url ){
+    function iterateKeys ( array, callback ) {
+        var keys = Object.keys( array );
+        for ( var j = 0, l = keys.length; j < l; j++ ) {
+            callback( keys[ j ] );
+        }
+    }
 
-        var element = document.createElement('link');
+    function importCSS ( url ) {
+
+        var element = document.createElement( 'link' );
         element.href = url;
         element.rel = 'stylesheet';
         element.type = 'text/css';
-        document.getElementsByTagName('head')[0].appendChild(element)
+        document.getElementsByTagName( 'head' )[ 0 ].appendChild( element );
 
     }
 
-    var _settings = settings || {},
-        _colours = [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
+    var _settings = settings || {};
+    var _colours = _settings.colours || [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
 
-    importCSS( 'http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' );
-    importCSS( ( _settings.CSSPath?_settings.CSSPath:'' ) + 'rStats.css' );
+    var _cssFont = '//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
+    var _cssRStats = ( _settings.CSSPath ? _settings.CSSPath : '' ) + 'rStats.css';
 
-    if( !_settings.values ) _settings.values = {};
+    var _css = _settings.css || [ _cssFont, _cssRStats ];
+    _css.forEach(function (uri) {
+        importCSS( uri );
+    });
 
-    function Graph( _dom, _id, _def ) {
+    if ( !_settings.values ) _settings.values = {};
 
-        var _def = _def || {};
+    var _base, _div, _elHeight = 10, _elWidth = 200;
+    var _perfCounters = {};
+
+
+    function Graph ( _dom, _id, _defArg ) {
+
+        var _def = _defArg || {};
         var _canvas = document.createElement( 'canvas' ),
             _ctx = _canvas.getContext( '2d' ),
             _max = 0,
             _current = 0;
 
-        var c = _def.color?_def.color:'#666666';
-        var wc = _def.warningColor?_def.warningColor:'#b70000';
+        var c = _def.color ? _def.color : '#666666';
 
         var _dotCanvas = document.createElement( 'canvas' ),
             _dotCtx = _dotCanvas.getContext( '2d' );
@@ -66,7 +87,7 @@ var rStats = function rStats( settings ) {
         _dotCtx.fillStyle = c;
         _dotCtx.fillRect( 0, _elHeight, 1, _elHeight );
         _dotCtx.fillStyle = '#ffffff';
-        _dotCtx.globalAlpha = .5;
+        _dotCtx.globalAlpha = 0.5;
         _dotCtx.fillRect( 0, _elHeight, 1, 1 );
         _dotCtx.globalAlpha = 1;
 
@@ -78,12 +99,12 @@ var rStats = function rStats( settings ) {
         _alarmCtx.fillRect( 0, 0, 1, 2 * _elHeight );
         _alarmCtx.fillStyle = '#b70000';
         _alarmCtx.fillRect( 0, _elHeight, 1, _elHeight );
-        _alarmCtx.globalAlpha = .5;
+        _alarmCtx.globalAlpha = 0.5;
         _alarmCtx.fillStyle = '#ffffff';
         _alarmCtx.fillRect( 0, _elHeight, 1, 1 );
         _alarmCtx.globalAlpha = 1;
 
-        function _init() {
+        function _init () {
 
             _canvas.width = _elWidth;
             _canvas.height = _elHeight;
@@ -97,12 +118,12 @@ var rStats = function rStats( settings ) {
 
         }
 
-        function _draw( v, alarm ) {
-            _current += ( v - _current ) * .1;
-            _max *= .99;
-            if( _current > _max ) _max = _current;
+        function _draw ( v, alarm ) {
+            _current += ( v - _current ) * 0.1;
+            _max *= 0.99;
+            if ( _current > _max ) _max = _current;
             _ctx.drawImage( _canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height );
-            if( alarm ) {
+            if ( alarm ) {
                 _ctx.drawImage( _alarmCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight );
             } else {
                 _ctx.drawImage( _dotCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight );
@@ -113,18 +134,16 @@ var rStats = function rStats( settings ) {
 
         return {
             draw: _draw
-        }
+        };
 
     }
 
-    function StackGraph( _dom, _num ) {
+    function StackGraph ( _dom, _num ) {
 
         var _canvas = document.createElement( 'canvas' ),
-            _ctx = _canvas.getContext( '2d' ),
-            _max = 0,
-            _current = 0;
+            _ctx = _canvas.getContext( '2d' );
 
-        function _init() {
+        function _init () {
 
             _canvas.width = _elWidth;
             _canvas.height = _elHeight * _num;
@@ -138,26 +157,26 @@ var rStats = function rStats( settings ) {
 
         }
 
-        function _draw( v ) {
+        function _draw ( v ) {
             _ctx.drawImage( _canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height );
             var th = 0;
-            for( var j in v ) {
+            iterateKeys( v, function ( j ) {
                 var h = v[ j ] * _canvas.height;
                 _ctx.fillStyle = _colours[ j ];
                 _ctx.fillRect( _canvas.width - 1, th, 1, h );
                 th += h;
-            }
+            } );
         }
 
         _init();
 
         return {
             draw: _draw
-        }
+        };
 
     }
 
-    function PerfCounter( id, group ) {
+    function PerfCounter ( id, group ) {
 
         var _id = id,
             _time,
@@ -165,36 +184,37 @@ var rStats = function rStats( settings ) {
             _total = 0,
             _averageValue = 0,
             _accumValue = 0,
-            _accumStart = Date.now(),
+            _accumStart = performance.now(),
             _accumSamples = 0,
             _dom = document.createElement( 'div' ),
             _spanId = document.createElement( 'span' ),
             _spanValue = document.createElement( 'div' ),
             _spanValueText = document.createTextNode( '' ),
-            _def = _settings?_settings.values[ _id.toLowerCase() ]:null,
-            _graph = new Graph( _dom, _id, _def );
+            _def = _settings ? _settings.values[ _id.toLowerCase() ] : null,
+            _graph = new Graph( _dom, _id, _def ),
+            _started = false;
 
         _dom.className = 'rs-counter-base';
 
-        _spanId.className = 'rs-counter-id'
-        _spanId.textContent = ( _def && _def.caption )?_def.caption:_id;
+        _spanId.className = 'rs-counter-id';
+        _spanId.textContent = ( _def && _def.caption ) ? _def.caption : _id;
 
         _spanValue.className = 'rs-counter-value';
         _spanValue.appendChild( _spanValueText );
 
         _dom.appendChild( _spanId );
         _dom.appendChild( _spanValue );
-        if( group ) group.div.appendChild( _dom );
+        if ( group ) group.div.appendChild( _dom );
         else _div.appendChild( _dom );
 
         _time = performance.now();
 
-        function _average( v ) {
-            if( _def && _def.average ) {
+        function _average ( v ) {
+            if ( _def && _def.average ) {
                 _accumValue += v;
                 _accumSamples++;
-                var t = Date.now();
-                if( t - _accumStart >= ( _def.avgMs || 1000 ) ) {
+                var t = performance.now();
+                if ( t - _accumStart >= ( _def.avgMs || 1000 ) ) {
                     _averageValue = _accumValue / _accumSamples;
                     _accumValue = 0;
                     _accumStart = t;
@@ -203,41 +223,53 @@ var rStats = function rStats( settings ) {
             }
         }
 
-        function _start(){
+        function _start () {
             _time = performance.now();
+            if( _settings.userTimingAPI ) performance.mark( _id + '-start' );
+            _started = true;
         }
 
-        function _end() {
+        function _end () {
             _value = performance.now() - _time;
+            if( _settings.userTimingAPI ) {
+                performance.mark( _id + '-end' );
+                if( _started ) {
+                    performance.measure( _id, _id + '-start', _id + '-end' );
+                }
+            }
             _average( _value );
         }
 
-        function _tick() {
+        function _tick () {
             _end();
             _start();
         }
 
-        function _draw() {
-            var v = ( _def && _def.average )?_averageValue:_value
+        function _draw () {
+            var v = ( _def && _def.average ) ? _averageValue : _value;
             _spanValueText.nodeValue = Math.round( v * 100 ) / 100;
             var a = ( _def && ( ( _def.below && _value < _def.below ) || ( _def.over && _value > _def.over ) ) );
             _graph.draw( _value, a );
-            _dom.style.color = a?'#b70000':'#ffffff';
+            _dom.style.color = a ? '#b70000' : '#ffffff';
         }
 
-        function _frame() {
+        function _frame () {
             var t = performance.now();
             var e = t - _time;
             _total++;
-            if( e > 1000 ) {
-                _value = _total * 1000 / e;
+            if ( e > 1000 ) {
+                if ( _def && _def.interpolate === false ) {
+                    _value = _total;
+                } else {
+                    _value = _total * 1000 / e;
+                }
                 _total = 0;
                 _time = t;
                 _average( _value );
-           }
+            }
         }
 
-        function _set( v ) {
+        function _set ( v ) {
             _value = v;
             _average( _value );
         }
@@ -248,51 +280,45 @@ var rStats = function rStats( settings ) {
             tick: _tick,
             end: _end,
             frame: _frame,
-            value: function(){ return _value; },
+            value: function () {
+                return _value;
+            },
             draw: _draw
-        }
+        };
 
     }
 
-    function sample() {
+    function sample () {
 
         var _value = 0;
 
-        function _set( v ) {
+        function _set ( v ) {
             _value = v;
         }
 
         return {
             set: _set,
-            value: function(){ return _value; }
-        }
+            value: function () {
+                return _value;
+            }
+        };
 
     }
 
-    var _base,
-        _div,
-        _height = null,
-        _elHeight = 10,
-        _elWidth = 200;
+    function _perf ( idArg ) {
 
-    var _perfCounters = {},
-        _samples = {};
-
-    function _perf( id ) {
-
-        id = id.toLowerCase();
-        if( id === undefined ) id = 'default';
-        if( _perfCounters[ id ] ) return _perfCounters[ id ];
+        var id = idArg.toLowerCase();
+        if ( id === undefined ) id = 'default';
+        if ( _perfCounters[ id ] ) return _perfCounters[ id ];
 
         var group = null;
-        if( _settings && _settings.groups ) {
-            for( var j in _settings.groups ) {
+        if ( _settings && _settings.groups ) {
+            iterateKeys( _settings.groups, function ( j ) {
                 var g = _settings.groups[ parseInt( j, 10 ) ];
-                if( g.values.indexOf( id.toLowerCase() ) != -1 ) {
+                if ( !group && g.values.indexOf( id.toLowerCase() ) !== -1 ) {
                     group = g;
-                    continue;
                 }
-            }
+            } );
         }
 
         var p = new PerfCounter( id, group );
@@ -301,17 +327,17 @@ var rStats = function rStats( settings ) {
 
     }
 
-    function _init() {
+    function _init () {
 
-        if( _settings.plugins ) {
-            if( !_settings.values ) _settings.values = {};
-            if( !_settings.groups ) _settings.groups = [];
-            if( !_settings.fractions ) _settings.fractions = [];
-            for( var j = 0; j < _settings.plugins.length; j++ ) {
+        if ( _settings.plugins ) {
+            if ( !_settings.values ) _settings.values = {};
+            if ( !_settings.groups ) _settings.groups = [];
+            if ( !_settings.fractions ) _settings.fractions = [];
+            for ( var j = 0; j < _settings.plugins.length; j++ ) {
                 _settings.plugins[ j ].attach( _perf );
-                for( var k in _settings.plugins[ j ].values ) {
-                    _settings.values[ k ] = _settings.plugins[ j ].values [ k ];
-                }
+                iterateKeys( _settings.plugins[ j ].values, function ( k ) {
+                    _settings.values[ k ] = _settings.plugins[ j ].values[ k ];
+                } );
                 _settings.groups = _settings.groups.concat( _settings.plugins[ j ].groups );
                 _settings.fractions = _settings.fractions.concat( _settings.plugins[ j ].fractions );
             }
@@ -327,30 +353,27 @@ var rStats = function rStats( settings ) {
         _base.appendChild( _div );
         document.body.appendChild( _base );
 
-        var style = window.getComputedStyle( _base, null ).getPropertyValue( 'font-size' );
-        //_elHeight = parseFloat( style );
+        if ( !_settings ) return;
 
-        if( !_settings ) return;
-
-        if( _settings.groups ) {
-            for( var j in _settings.groups ) {
+        if ( _settings.groups ) {
+            iterateKeys( _settings.groups, function ( j ) {
                 var g = _settings.groups[ parseInt( j, 10 ) ];
                 var div = document.createElement( 'div' );
                 div.className = 'rs-group';
                 g.div = div;
                 var h1 = document.createElement( 'h1' );
                 h1.textContent = g.caption;
-                h1.addEventListener( 'click', function( e ) {
+                h1.addEventListener( 'click', function ( e ) {
                     this.classList.toggle( 'hidden' );
                     e.preventDefault();
                 }.bind( div ) );
                 _div.appendChild( h1 );
                 _div.appendChild( div );
-            }
+            } );
         }
 
-        if( _settings.fractions ) {
-            for( var j in _settings.fractions ) {
+        if ( _settings.fractions ) {
+            iterateKeys( _settings.fractions, function ( j ) {
                 var f = _settings.fractions[ parseInt( j, 10 ) ];
                 var div = document.createElement( 'div' );
                 div.className = 'rs-fraction';
@@ -358,51 +381,51 @@ var rStats = function rStats( settings ) {
                 legend.className = 'rs-legend';
 
                 var h = 0;
-                for( var k in _settings.fractions[ j ].steps ) {
+                iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
                     var p = document.createElement( 'p' );
                     p.textContent = _settings.fractions[ j ].steps[ k ];
                     p.style.color = _colours[ h ];
                     legend.appendChild( p );
                     h++;
-                }
+                } );
                 div.appendChild( legend );
                 div.style.height = h * _elHeight + 'px';
                 f.div = div;
                 var graph = new StackGraph( div, h );
                 f.graph = graph;
                 _div.appendChild( div );
-            }
+            } );
         }
 
     }
 
-    function _update() {
+    function _update () {
 
-        for( var j in _settings.plugins ) {
+        iterateKeys( _settings.plugins, function ( j ) {
             _settings.plugins[ j ].update();
-        }
+        } );
 
-        for( var j in _perfCounters ) {
+        iterateKeys( _perfCounters, function ( j ) {
             _perfCounters[ j ].draw();
-        }
+        } );
 
-        if( _settings && _settings.fractions ) {
-            for( var j in _settings.fractions ) {
+        if ( _settings && _settings.fractions ) {
+            iterateKeys( _settings.fractions, function ( j ) {
                 var f = _settings.fractions[ parseInt( j, 10 ) ];
                 var v = [];
                 var base = _perfCounters[ f.base.toLowerCase() ];
-                if( base ) {
+                if ( base ) {
                     base = base.value();
-                    for( var k in _settings.fractions[ j ].steps ) {
+                    iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
                         var s = _settings.fractions[ j ].steps[ parseInt( k, 10 ) ].toLowerCase();
                         var val = _perfCounters[ s ];
-                        if( val ) {
+                        if ( val ) {
                             v.push( val.value() / base );
                         }
-                    }
+                    } );
                 }
                 f.graph.draw( v );
-            }
+            } );
         }
 
         /*if( _height != _div.clientHeight ) {
@@ -415,13 +438,16 @@ var rStats = function rStats( settings ) {
 
     _init();
 
-    return function( id ) {
-        if( id ) return _perf( id );
+    return function ( id ) {
+        if ( id ) return _perf( id );
         return {
+            element: _base,
             update: _update
-        }
-    }
+        };
+    };
 
-};
+}
 
-if (typeof module !== "undefined") { module.exports = rStats; }
+if (typeof module === 'object') {
+  module.exports = window.rStats;
+}
