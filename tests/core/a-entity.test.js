@@ -155,35 +155,59 @@ suite('a-entity', function () {
     });
   });
 
-  /**
-   * Tests full component set + get flow on one of the most basic components.
-   */
-  suite('attributeChangedCallback', function () {
-    test('can remove component', function () {
+  suite('setAttribute', function () {
+    test('can set a component with a string', function () {
       var el = this.el;
-      el.setAttribute('geometry', 'primitive: box');
-      assert.ok('geometry' in el.components);
-      el.removeAttribute('geometry');
-      assert.notOk('geometry' in el.components);
+      var material;
+      el.setAttribute('material', 'color: #F0F; metalness: 0.75');
+      material = el.getAttribute('material');
+      assert.equal(material.color, '#F0F');
+      assert.equal(material.metalness, 0.75);
     });
 
-    test('does not remove default component', function () {
+    test('can set a component with an object', function () {
       var el = this.el;
-      assert.ok('position' in el.components);
-      el.removeAttribute('position');
-      assert.ok('position' in el.components);
+      var material;
+      var value = { color: '#F0F', metalness: 0.75 };
+      el.setAttribute('material', value);
+      material = el.getAttribute('material');
+      assert.equal(material.color, '#F0F');
+      assert.equal(material.metalness, 0.75);
     });
 
-    test('does not remove mixed-in component', function () {
+    test('can replace component attributes with an object', function () {
       var el = this.el;
-      var mixinId = 'geometry';
-      mixinFactory(mixinId, { geometry: 'primitive: box' });
-      el.setAttribute('mixin', mixinId);
-      el.setAttribute('geometry', 'primitive: sphere');
-      assert.ok('geometry' in el.components);
-      el.removeAttribute('geometry');
-      // Geometry still exists since it is mixed in.
-      assert.ok('geometry' in el.components);
+      var material;
+      var value = { color: '#000' };
+      el.setAttribute('material', 'color: #F0F; roughness: 0.25');
+      el.setAttribute('material', value);
+      material = el.getAttribute('material');
+      assert.equal(material.color, '#000');
+      assert.equal(material.roughness, undefined);
+    });
+
+    test('can set a single component via a single attribute', function () {
+      var el = this.el;
+      el.setAttribute('material', 'color', '#F0F');
+      assert.equal(el.getAttribute('material').color, '#F0F');
+    });
+
+    test('can update a single component attribute', function () {
+      var el = this.el;
+      var material;
+      el.setAttribute('material', 'color: #F0F; roughness: 0.25');
+      assert.equal(el.getAttribute('material').roughness, 0.25);
+      el.setAttribute('material', 'roughness', 0.75);
+      material = el.getAttribute('material');
+      assert.equal(material.color, '#F0F');
+      assert.equal(material.roughness, 0.75);
+    });
+
+    test('transforms object to string before setting on DOM', function () {
+      var el = this.el;
+      var positionObj = { x: 10, y: 20, z: 30 };
+      el.setAttribute('position', positionObj);
+      assert.ok(el.outerHTML.indexOf('position="10 20 30"') !== -1);
     });
 
     test('applies default vec3 component from mixin', function () {
@@ -205,6 +229,27 @@ suite('a-entity', function () {
       el.setAttribute('position', {x: 30, y: 20, z: 10});
       position = el.getAttribute('position');
       assert.deepEqual(position, {x: 30, y: 20, z: 10});
+    });
+
+    test('can update component property with asymmetrical property type', function () {
+      var el = this.el;
+      registerComponent('test', {
+        schema: {
+          asym: {
+            default: 1,
+            parse: function (value) {
+              // When setAttribute re-gathers the component data, it should not double-parse.
+              if (value === 2) { throw new Error('This should be 1'); }
+              return value + 1;
+            }
+          },
+          other: {
+            default: 5
+          }
+        }
+      });
+      el.setAttribute('test', 'asym', 1);
+      el.setAttribute('test', 'other', 2);
     });
   });
 
@@ -369,62 +414,6 @@ suite('a-entity', function () {
     });
   });
 
-  suite('setAttribute', function () {
-    test('can set a component with a string', function () {
-      var el = this.el;
-      var material;
-      el.setAttribute('material', 'color: #F0F; metalness: 0.75');
-      material = el.getAttribute('material');
-      assert.equal(material.color, '#F0F');
-      assert.equal(material.metalness, 0.75);
-    });
-
-    test('can set a component with an object', function () {
-      var el = this.el;
-      var material;
-      var value = { color: '#F0F', metalness: 0.75 };
-      el.setAttribute('material', value);
-      material = el.getAttribute('material');
-      assert.equal(material.color, '#F0F');
-      assert.equal(material.metalness, 0.75);
-    });
-
-    test('can replace component attributes with an object', function () {
-      var el = this.el;
-      var material;
-      var value = { color: '#000' };
-      el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      el.setAttribute('material', value);
-      material = el.getAttribute('material');
-      assert.equal(material.color, '#000');
-      assert.equal(material.roughness, undefined);
-    });
-
-    test('can set a single component via a single attribute', function () {
-      var el = this.el;
-      el.setAttribute('material', 'color', '#F0F');
-      assert.equal(el.getAttribute('material').color, '#F0F');
-    });
-
-    test('can update a single component attribute', function () {
-      var el = this.el;
-      var material;
-      el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      assert.equal(el.getAttribute('material').roughness, 0.25);
-      el.setAttribute('material', 'roughness', 0.75);
-      material = el.getAttribute('material');
-      assert.equal(material.color, '#F0F');
-      assert.equal(material.roughness, 0.75);
-    });
-
-    test('transforms object to string before setting on DOM', function () {
-      var el = this.el;
-      var positionObj = { x: 10, y: 20, z: 30 };
-      el.setAttribute('position', positionObj);
-      assert.ok(el.outerHTML.indexOf('position="10 20 30"') !== -1);
-    });
-  });
-
   suite('removeAttribute', function () {
     test('can remove a normal attribute', function () {
       var el = this.el;
@@ -440,6 +429,25 @@ suite('a-entity', function () {
       assert.ok(el.components.material);
       el.removeAttribute('material');
       assert.notOk(el.components.material);
+    });
+
+    test('does not remove default component', function () {
+      var el = this.el;
+      assert.ok('position' in el.components);
+      el.removeAttribute('position');
+      assert.ok('position' in el.components);
+    });
+
+    test('does not remove mixed-in component', function () {
+      var el = this.el;
+      var mixinId = 'geometry';
+      mixinFactory(mixinId, { geometry: 'primitive: box' });
+      el.setAttribute('mixin', mixinId);
+      el.setAttribute('geometry', 'primitive: sphere');
+      assert.ok('geometry' in el.components);
+      el.removeAttribute('geometry');
+      // Geometry still exists since it is mixed in.
+      assert.ok('geometry' in el.components);
     });
   });
 
@@ -625,16 +633,20 @@ suite('a-entity component dependency management', function () {
       components[componentName] = undefined;
     });
 
-    this.TestComponent = registerComponent('test', extend({}, TestComponent, {
-      dependencies: ['dependency', 'codependency']
+    registerComponent('test', extend({}, TestComponent, {
+      dependencies: ['dependency', 'codependency'],
+
+      init: function () {
+        this.el.components.dependency.el;
+      }
     }));
     this.DependencyComponent = registerComponent('dependency', extend({}, TestComponent, {
       dependencies: ['nested-dependency']
     }));
-    this.CoDependencyComponent = registerComponent('codependency', extend({}, TestComponent, {
+    registerComponent('codependency', extend({}, TestComponent, {
       dependencies: []
     }));
-    this.NestedDependencyComponent = registerComponent('nested-dependency', TestComponent);
+    registerComponent('nested-dependency', TestComponent);
     el.addEventListener('loaded', function () {
       done();
     });
@@ -643,6 +655,7 @@ suite('a-entity component dependency management', function () {
   test('initializes dependency components', function () {
     var el = this.el;
     el.setAttribute('test', '');
+    assert.ok('test' in el.components);
     assert.ok('dependency' in el.components);
     assert.ok('codependency' in el.components);
     assert.ok('nested-dependency' in el.components);
@@ -652,5 +665,18 @@ suite('a-entity component dependency management', function () {
     var spy = this.sinon.spy(this.DependencyComponent.prototype, 'init');
     this.el.setAttribute('test', '');
     assert.equal(spy.callCount, 1);
+  });
+
+  test('initializes dependency components when not yet loaded', function (done) {
+    var el = entityFactory();
+    el.setAttribute('test', '');
+    el.load();
+    el.addEventListener('loaded', function () {
+      assert.ok('test' in el.components);
+      assert.ok('dependency' in el.components);
+      assert.ok('codependency' in el.components);
+      assert.ok('nested-dependency' in el.components);
+      done();
+    });
   });
 });

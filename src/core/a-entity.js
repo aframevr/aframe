@@ -1,16 +1,15 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
 var components = require('./component').components;
-var debug = require('../utils/debug');
 var re = require('./a-register-element');
 var THREE = require('../lib/three');
-
-var isNode = re.isNode;
-var log = debug('core:a-entity');
-var error = debug('core:a-entity:error');
-var registerElement = re.registerElement;
+var utils = require('../utils/');
 
 var AEntity;
+var isNode = re.isNode;
+var debug = utils.debug('core:a-entity:debug');
+var registerElement = re.registerElement;
+var styleParser = utils.styleParser;
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -46,6 +45,9 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Handle changes coming from the browser DOM inspector.
+   */
   attributeChangedCallback: {
     value: function (attr, oldVal, newVal) {
       this.setEntityAttribute(attr, oldVal, newVal);
@@ -171,7 +173,7 @@ var proto = Object.create(ANode.prototype, {
   add: {
     value: function (el) {
       if (!el.object3D) {
-        error("Trying to add an object3D that doesn't exist");
+        throw new Error("Trying to add an element that doesn't have an `object3D`");
       }
       this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
@@ -272,8 +274,7 @@ var proto = Object.create(ANode.prototype, {
         component = this.components[name] = new components[name].Component(this);
         if (this.isPlaying) { playComponent(component, this.sceneEl); }
       }
-
-      log('Component initialized: %s', name);
+      debug('Component initialized: %s', name);
     },
     writable: window.debug
   },
@@ -465,22 +466,24 @@ var proto = Object.create(ANode.prototype, {
       var component = this.components[attr] || components[attr];
       var partialComponentData;
       value = value === undefined ? '' : value;
-      var valueStr = value;
+      var componentObj = value;  // Deserialized value to send to the component.
+      var componentStr = value;  // Serialized value to send to the DOM.
       var oldValue;
 
       if (component) {
         if (typeof value === 'string' && componentPropValue !== undefined) {
           // Update currently-defined component data with the new property value.
-          partialComponentData = self.getAttribute(attr) || {};
+          // Use native setAttribute in order not to double-parse properties.
+          partialComponentData = styleParser.parse(
+            HTMLElement.prototype.getAttribute.call(this, attr)) || {};
           partialComponentData[value] = componentPropValue;
-          value = partialComponentData;
+          componentObj = partialComponentData;
         }
-        valueStr = component.stringify(value);
+        componentStr = component.stringify(componentObj);
       }
-
       oldValue = this.getAttribute(attr);
-      ANode.prototype.setAttribute.call(self, attr, valueStr);
-      self.setEntityAttribute(attr, oldValue, value);
+      ANode.prototype.setAttribute.call(self, attr, componentStr);
+      self.setEntityAttribute(attr, oldValue, componentObj);
     },
     writable: window.debug
   },

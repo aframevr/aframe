@@ -1,16 +1,16 @@
 /* global HTMLElement */
 var schema = require('./schema');
-var styleParser = require('style-attr');
 var systems = require('./system');
 var utils = require('../utils/');
 
+var components = module.exports.components = {}; // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-var components = module.exports.components = {}; // Keep track of registered components.
+var styleParser = utils.styleParser;
 
 /**
  * Component class definition.
@@ -102,7 +102,7 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(objectParse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, silent);
   },
 
   /**
@@ -120,7 +120,7 @@ Component.prototype = {
 
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
-    return objectStringify(data);
+    return styleParser.stringify(data);
   },
 
   /**
@@ -144,7 +144,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(objectParse(value));
+    this.updateSchema(styleParser.parse(value));
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
@@ -248,7 +248,7 @@ function buildData (el, name, schema, elData, silent) {
   var mixinEls = el.mixinEls;
 
   if (!isSinglePropSchema && typeof elData === 'string') {
-    elData = objectParse(elData);
+    elData = styleParser.parse(elData);
   }
 
   // 1. Default values (lowest precendence).
@@ -284,30 +284,6 @@ function buildData (el, name, schema, elData, silent) {
 module.exports.buildData = buildData;
 
 /**
- * Deserializes style-like string into an object of properties.
- *
- * @param {string} value - HTML attribute value.
- * @returns {object} Property data.
- */
-function objectParse (value) {
-  var parsedData;
-  if (typeof value !== 'string') { return value; }
-  parsedData = styleParser.parse(value);
-  return transformKeysToCamelCase(parsedData);
-}
-
-/**
- * Serialize an object of properties into a style-like string.
- *
- * @param {object} data - Property data.
- * @returns {string}
- */
-function objectStringify (data) {
-  if (typeof data === 'string') { return data; }
-  return styleParser.stringify(data);
-}
-
-/**
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
@@ -324,32 +300,4 @@ function extendProperties (dest, source, isSinglePropSchema) {
     return source;
   }
   return utils.extend(dest, source);
-}
-
-/**
- * Converts string from hyphen to camelCase.
- *
- * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
- */
-function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, camelCase);
-  function camelCase (g) { return g[1].toUpperCase(); }
-}
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase (obj) {
-  var keys = Object.keys(obj);
-  var camelCaseObj = {};
-  keys.forEach(function (key) {
-    var camelCaseKey = toCamelCase(key);
-    camelCaseObj[camelCaseKey] = obj[key];
-  });
-  return camelCaseObj;
 }
