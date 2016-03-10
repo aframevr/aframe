@@ -1,0 +1,3 @@
+- A-Frame Version:
+- Platform/Device:
+- [ ] I checked the list of issues for duplicates. I have asked on [Slack](https://aframevr-slack.herokuapp.com/) if this is a question.
