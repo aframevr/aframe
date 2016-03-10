@@ -77,14 +77,19 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Implement <a-node>'s applyMixin method.
+   * Set component properties if component not yet attached.
+   * Merge component properties if attached.
+   */
   applyMixin: {
     value: function (attr) {
       var attrValue = this.getAttribute(attr);
       if (!attr) {
-        this.updateComponents();
+        this.updateComponents(true);
         return;
       }
-      this.updateComponent(attr, attrValue);
+      this.updateComponent(attr, attrValue, true);
     }
   },
 
@@ -302,15 +307,17 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Update all components given current values.
+   *
+   * @param {object} doMerge - Whether to merge new values with current data, or replace it.
+   */
   updateComponents: {
-    value: function () {
+    value: function (doMerge) {
       var self = this;
-      var allComponents = Object.keys(components);
-      allComponents.forEach(updateComponent);
-      function updateComponent (name) {
-        var elValue = self.getAttribute(name);
-        self.updateComponent(name, elValue);
-      }
+      Object.keys(components).forEach(function updateComponent (name) {
+        self.updateComponent(name, self.getAttribute(name), doMerge);
+      });
     }
   },
 
@@ -320,25 +327,28 @@ var proto = Object.create(ANode.prototype, {
    * When initializing, we set the component on `this.components`.
    *
    * @param {string} name - Component name.
-   * @param {object} newData - The new properties assigned to the component
+   * @param {object} newData - New values.
+   * @param {object} doMerge - Whether to merge new values with current data, or replace it.
    */
   updateComponent: {
-    value: function (name, newData) {
+    value: function (name, newData, doMerge) {
       var component = this.components[name];
       var isDefault = name in this.defaultComponents;
       var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       if (component) {
-        // Attribute was removed, remove component if:
-        // 1. If component not defined in the defaults/mixins/attribute.
-        // 2. If new data is null, then not a default component and component is not defined
-        //    via mixins
+        /*
+          Attribute was removed. Remove component if:
+          1. Component not defined in the defaults, mixins, or attribute.
+          2. New data is null. Then not a default component and component is not defined
+             via mixins.
+        */
         if (!checkComponentDefined(this, name) ||
             newData === null && !isDefault && !isMixedIn) {
           this.removeComponent(name);
           return;
         }
         // Component already initialized. Update component.
-        component.updateProperties(newData);
+        component.updateProperties(newData, doMerge);
         return;
       }
       // Component not yet initialized. Initialize component.
