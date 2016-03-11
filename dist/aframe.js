@@ -718,7 +718,7 @@ module.exports = function (x) {
 
 },{}],8:[function(_dereq_,module,exports){
 /*! (C) WebReflection Mit Style License */
-(function(e,t,n,r){"use strict";function rt(e,t){for(var n=0,r=e.length;n<r;n++)vt(e[n],t)}function it(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],nt(r,b[ot(r)])}function st(e){return function(t){j(t)&&(vt(t,e),rt(t.querySelectorAll(w),e))}}function ot(e){var t=e.getAttribute("is"),n=e.nodeName.toUpperCase(),r=S.call(y,t?v+t.toUpperCase():d+n);return t&&-1<r&&!ut(n,t)?-1:r}function ut(e,t){return-1<w.indexOf(e+'[is="'+t+'"]')}function at(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Q&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[a]?null:e.prevValue,n===e[l]?null:e.newValue)}function ft(e){var t=st(e);return function(e){X.push(t,e.target)}}function lt(e){K&&(K=!1,e.currentTarget.removeEventListener(h,lt)),rt((e.target||t).querySelectorAll(w),e.detail===o?o:s),B&&pt()}function ct(e,t){var n=this;q.call(n,e,t),G.call(n,{target:n})}function ht(e,t){D(e,t),et?et.observe(e,z):(J&&(e.setAttribute=ct,e[i]=Z(e),e.addEventListener(p,G)),e.addEventListener(c,at)),e.createdCallback&&Q&&(e.created=!0,e.createdCallback(),e.created=!1)}function pt(){for(var e,t=0,n=F.length;t<n;t++)e=F[t],E.contains(e)||(n--,F.splice(t--,1),vt(e,o))}function dt(e){throw new Error("A "+e+" type is already registered")}function vt(e,t){var n,r=ot(e);-1<r&&(tt(e,b[r]),r=0,t===s&&!e[s]?(e[o]=!1,e[s]=!0,r=1,B&&S.call(F,e)<0&&F.push(e)):t===o&&!e[o]&&(e[s]=!1,e[o]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(r in t)return;var i="__"+r+(Math.random()*1e5>>0),s="attached",o="detached",u="extends",a="ADDITION",f="MODIFICATION",l="REMOVAL",c="DOMAttrModified",h="DOMContentLoaded",p="DOMSubtreeModified",d="<",v="=",m=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,g=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],y=[],b=[],w="",E=t.documentElement,S=y.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},x=n.prototype,T=x.hasOwnProperty,N=x.isPrototypeOf,C=n.defineProperty,k=n.getOwnPropertyDescriptor,L=n.getOwnPropertyNames,A=n.getPrototypeOf,O=n.setPrototypeOf,M=!!n.__proto__,_=n.create||function mt(e){return e?(mt.prototype=e,new mt):this},D=O||(M?function(e,t){return e.__proto__=t,e}:L&&k?function(){function e(e,t){for(var n,r=L(t),i=0,s=r.length;i<s;i++)n=r[i],T.call(e,n)||C(e,n,k(t,n))}return function(t,n){do e(t,n);while((n=A(n))&&!N.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),P=e.MutationObserver||e.WebKitMutationObserver,H=(e.HTMLElement||e.Element||e.Node).prototype,B=!N.call(H,E),j=B?function(e){return e.nodeType===1}:function(e){return N.call(H,e)},F=B&&[],I=H.cloneNode,q=H.setAttribute,R=H.removeAttribute,U=t.createElement,z=P&&{attributes:!0,characterData:!0,attributeOldValue:!0},W=P||function(e){J=!1,E.removeEventListener(c,W)},X,V=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.msRequestAnimationFrame||function(e){setTimeout(e,10)},$=!1,J=!0,K=!0,Q=!0,G,Y,Z,et,tt,nt;O||M?(tt=function(e,t){N.call(t,e)||ht(e,t)},nt=ht):(tt=function(e,t){e[i]||(e[i]=n(!0),ht(e,t))},nt=tt),B?(J=!1,function(){var e=k(H,"addEventListener"),t=e.value,n=function(e){var t=new CustomEvent(c,{bubbles:!0});t.attrName=e,t.prevValue=this.getAttribute(e),t.newValue=null,t[l]=t.attrChange=2,R.call(this,e),this.dispatchEvent(t)},r=function(e,t){var n=this.hasAttribute(e),r=n&&this.getAttribute(e),i=new CustomEvent(c,{bubbles:!0});q.call(this,e,t),i.attrName=e,i.prevValue=n?r:null,i.newValue=t,n?i[f]=i.attrChange=1:i[a]=i.attrChange=0,this.dispatchEvent(i)},s=function(e){var t=e.currentTarget,n=t[i],r=e.propertyName,s;n.hasOwnProperty(r)&&(n=n[r],s=new CustomEvent(c,{bubbles:!0}),s.attrName=n.name,s.prevValue=n.value||null,s.newValue=n.value=t[r]||null,s.prevValue==null?s[a]=s.attrChange=0:s[f]=s.attrChange=1,t.dispatchEvent(s))};e.value=function(e,o,u){e===c&&this.attributeChangedCallback&&this.setAttribute!==r&&(this[i]={className:{name:"class",value:this.className}},this.setAttribute=r,this.removeAttribute=n,t.call(this,"propertychange",s)),t.call(this,e,o,u)},C(H,"addEventListener",e)}()):P||(E.addEventListener(c,W),E.setAttribute(i,1),E.removeAttribute(i),J&&(G=function(e){var t=this,n,r,s;if(t===e.target){n=t[i],t[i]=r=Z(t);for(s in r){if(!(s in n))return Y(0,t,s,n[s],r[s],a);if(r[s]!==n[s])return Y(1,t,s,n[s],r[s],f)}for(s in n)if(!(s in r))return Y(2,t,s,n[s],r[s],l)}},Y=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,at(o)},Z=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),t[r]=function(n,r){c=n.toUpperCase(),$||($=!0,P?(et=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new P(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Q&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=s.getAttribute(i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(st(s),st(o)),et.observe(t,{childList:!0,subtree:!0})):(X=[],V(function E(){while(X.length)X.shift().call(null,X.shift());V(E)}),t.addEventListener("DOMNodeInserted",ft(s)),t.addEventListener("DOMNodeRemoved",ft(o))),t.addEventListener(h,lt),t.addEventListener("readystatechange",lt),t.createElement=function(e,n){var r=U.apply(t,arguments),i=""+e,s=S.call(y,(n?v:d)+(n||i).toUpperCase()),o=-1<s;return n&&(r.setAttribute("is",n=n.toLowerCase()),o&&(o=ut(i.toUpperCase(),n))),Q=!t.createElement.innerHTMLHelper,o&&nt(r,b[s]),r},H.cloneNode=function(e){var t=I.call(this,!!e),n=ot(t);return-1<n&&nt(t,b[n]),e&&it(t.querySelectorAll(w)),t}),-2<S.call(y,v+c)+S.call(y,d+c)&&dt(n);if(!m.test(c)||-1<S.call(g,c))throw new Error("The type "+n+" is invalid");var i=function(){return f?t.createElement(l,c):t.createElement(l)},a=r||x,f=T.call(a,u),l=f?r[u].toUpperCase():c,c,p;return f&&-1<S.call(y,d+l)&&dt(l),p=y.push((f?v:d)+c)-1,w=w.concat(w.length?",":"",f?l+'[is="'+n.toLowerCase()+'"]':l),i.prototype=b[p]=T.call(a,"prototype")?a.prototype:_(H),rt(t.querySelectorAll(w),s),i}})(window,document,Object,"registerElement");
+(function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
 },{}],9:[function(_dereq_,module,exports){
 /* eslint-disable no-unused-vars */
 'use strict';
@@ -1070,8 +1070,6 @@ module.exports = (function() {
 }());
 
 },{}],15:[function(_dereq_,module,exports){
-
-
 /*
 
 style-attr
@@ -1084,21 +1082,25 @@ Very simple parsing and stringifying of style attributes.
 
 Convert a style attribute string to an object.
 
+- input: string (eg. anything you might see in a style attribute)
+- return: object
+
 */
-function parse(raw) {
-  var trim = function (s) {
-    return s.trim();
-  };
+function parse (raw) {
+  var trim = function (s) { return s.trim(); };
   var obj = {};
 
-  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
-    // split with `.indexOf` rather than `.split` because the value may also contain colons.
-    var pos = item.indexOf(':');
-    var key = item.substr(0, pos).trim();
-    var val = item.substr(pos + 1).trim();
+  getKeyValueChunks(raw)
+    .map(trim)
+    .filter(Boolean)
+    .forEach(function (item) {
+      // split with `.indexOf` rather than `.split` because the value may also contain colons.
+      var pos = item.indexOf(':');
+      var key = item.substr(0, pos).trim();
+      var val = item.substr(pos + 1).trim();
 
-    obj[key] = val;
-  });
+      obj[key] = val;
+    });
 
   return obj;
 }
@@ -1110,8 +1112,11 @@ function parse(raw) {
 
 Split a string into chunks matching `<key>: <value>`
 
+- input: string
+- return: Array<string>
+
 */
-function getKeyValueChunks(raw) {
+function getKeyValueChunks (raw) {
   var chunks = [];
   var offset = 0;
   var sep = ';';
@@ -1120,9 +1125,7 @@ function getKeyValueChunks(raw) {
   var nextSplit;
   while (offset < raw.length) {
     nextSplit = raw.indexOf(sep, offset);
-    if (nextSplit === -1) {
-      nextSplit = raw.length;
-    }
+    if (nextSplit === -1) { nextSplit = raw.length; }
 
     chunk += raw.substring(offset, nextSplit);
 
@@ -1148,11 +1151,16 @@ function getKeyValueChunks(raw) {
 
 Convert an object into an attribute string
 
+- input: object
+- return: string
+
 */
-function stringify(obj) {
-  return Object.keys(obj).map(function (key) {
-    return key + ':' + obj[key];
-  }).join(';');
+function stringify (obj) {
+  return Object.keys(obj)
+    .map(function (key) {
+      return key + ':' + obj[key];
+    })
+    .join(';');
 }
 
 /*
@@ -1162,14 +1170,18 @@ function stringify(obj) {
 
 Normalize an attribute string (eg. collapse duplicates)
 
+- input: string
+- return: string
+
 */
-function normalize(str) {
+function normalize (str) {
   return stringify(parse(str));
 }
 
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
+
 },{}],16:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
@@ -52472,7 +52484,7 @@ module.exports={
     "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
     "deep-assign": "^2.0.0",
-    "document-register-element": "dmarcos/document-register-element#cd66564",
+    "document-register-element": "dmarcos/document-register-element#8ccc532b7",
     "promise-polyfill": "^3.1.0",
     "object-assign": "^4.0.1",
     "polymerize": "^1.0.0",
@@ -52486,7 +52498,7 @@ module.exports={
   "devDependencies": {
     "browserify": "^11.0.1",
     "browserify-derequire": "^0.9.4",
-    "budo": "^7.1.0",
+    "budo": "^8.1.0",
     "chai": "^3.5.0",
     "chai-shallow-deep-equal": "^1.3.0",
     "exorcist": "^0.4.0",
@@ -53680,6 +53692,7 @@ function parseSide (side) {
 }
 
 },{"../core/component":56,"../core/shader":63,"../lib/three":88,"../utils":98,"../utils/debug":97}],35:[function(_dereq_,module,exports){
+/* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -53718,16 +53731,17 @@ module.exports.Component = registerComponent('obj-model', {
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
-      if (el.hasAttribute('material')) {
+      if (HTMLElement.prototype.getAttribute.call(el, 'material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
       mtlLoader.setBaseUrl(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);
-        objLoader.load(objUrl, function (object) {
-          self.model = object;
-          el.setObject3D('mesh', object);
+        objLoader.load(objUrl, function (objModel) {
+          self.model = objModel;
+          el.setObject3D('mesh', objModel);
+          el.emit('model-loaded', { format: 'obj', model: objModel });
         });
       });
       return;
@@ -53744,7 +53758,8 @@ module.exports.Component = registerComponent('obj-model', {
       });
 
       self.model = objModel;
-      el.setObject3D('mesh', self.model);
+      el.setObject3D('mesh', objModel);
+      el.emit('model-loaded', { format: 'obj', model: objModel });
     });
   }
 });
@@ -54126,7 +54141,7 @@ function createStats () {
   });
 }
 
-},{"../../../vendor/rStats":102,"../../core/component":56}],44:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":103,"../../core/component":56}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var utils = _dereq_('../../utils/');
@@ -55400,16 +55415,15 @@ module.exports = registerElement('a-cubemap', {
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var components = _dereq_('./component').components;
-var debug = _dereq_('../utils/debug');
 var re = _dereq_('./a-register-element');
 var THREE = _dereq_('../lib/three');
-
-var isNode = re.isNode;
-var log = debug('core:a-entity');
-var error = debug('core:a-entity:error');
-var registerElement = re.registerElement;
+var utils = _dereq_('../utils/');
 
 var AEntity;
+var isNode = re.isNode;
+var debug = utils.debug('core:a-entity:debug');
+var registerElement = re.registerElement;
+var styleParser = utils.styleParser;
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -55445,6 +55459,9 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Handle changes coming from the browser DOM inspector.
+   */
   attributeChangedCallback: {
     value: function (attr, oldVal, newVal) {
       this.setEntityAttribute(attr, oldVal, newVal);
@@ -55570,7 +55587,7 @@ var proto = Object.create(ANode.prototype, {
   add: {
     value: function (el) {
       if (!el.object3D) {
-        error("Trying to add an object3D that doesn't exist");
+        throw new Error("Trying to add an element that doesn't have an `object3D`");
       }
       this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
@@ -55671,8 +55688,7 @@ var proto = Object.create(ANode.prototype, {
         component = this.components[name] = new components[name].Component(this);
         if (this.isPlaying) { playComponent(component, this.sceneEl); }
       }
-
-      log('Component initialized: %s', name);
+      debug('Component initialized: %s', name);
     },
     writable: window.debug
   },
@@ -55864,22 +55880,24 @@ var proto = Object.create(ANode.prototype, {
       var component = this.components[attr] || components[attr];
       var partialComponentData;
       value = value === undefined ? '' : value;
-      var valueStr = value;
+      var componentObj = value;  // Deserialized value to send to the component.
+      var componentStr = value;  // Serialized value to send to the DOM.
       var oldValue;
 
       if (component) {
         if (typeof value === 'string' && componentPropValue !== undefined) {
           // Update currently-defined component data with the new property value.
-          partialComponentData = self.getAttribute(attr) || {};
+          // Use native setAttribute in order not to double-parse properties.
+          partialComponentData = styleParser.parse(
+            HTMLElement.prototype.getAttribute.call(this, attr)) || {};
           partialComponentData[value] = componentPropValue;
-          value = partialComponentData;
+          componentObj = partialComponentData;
         }
-        valueStr = component.stringify(value);
+        componentStr = component.stringify(componentObj);
       }
-
       oldValue = this.getAttribute(attr);
-      ANode.prototype.setAttribute.call(self, attr, valueStr);
-      self.setEntityAttribute(attr, oldValue, value);
+      ANode.prototype.setAttribute.call(self, attr, componentStr);
+      self.setEntityAttribute(attr, oldValue, componentObj);
     },
     writable: window.debug
   },
@@ -56018,7 +56036,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":88,"../utils/debug":97,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
+},{"../lib/three":88,"../utils/":98,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var AComponents = _dereq_('./component').components;
 var ANode = _dereq_('./a-node');
@@ -56485,17 +56503,17 @@ var AEntity = _dereq_('./a-entity');
 },{"./a-entity":52,"./a-node":54,"document-register-element":8}],56:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
-var styleParser = _dereq_('style-attr');
 var systems = _dereq_('./system');
 var utils = _dereq_('../utils/');
 
+var components = module.exports.components = {}; // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-var components = module.exports.components = {}; // Keep track of registered components.
+var styleParser = utils.styleParser;
 
 /**
  * Component class definition.
@@ -56505,29 +56523,19 @@ var components = module.exports.components = {}; // Keep track of registered com
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
- * @namespace Component
- * @property {object} data - Stores component data, populated by parsing the
- *           attribute name of the component plus applying defaults and mixins.
- * @property {object} el - Reference to the entity element.
- * @property {string} name - Name of the attribute the component is connected
- *           to.
- * @member {Element} el
- * @member {object} data
- * @member {function} getData
- * @member {function} init
- * @member {function} update
- * @member {function} remove
- * @member {function} parse
- * @member {function} stringify
+ * @member {object} data - Component data populated by parsing the
+ *         mapped attribute of the component plus applying defaults and mixins.
+ * @member {object} el - Reference to the entity element.
+ * @member {string} name - Component name exposed as an HTML attribute.
  */
 var Component = module.exports.Component = function (el) {
   var name = this.name;
   var elData = HTMLElement.prototype.getAttribute.call(el, name);
 
   this.el = el;
-  // The last parameter of builData suppresses the warnings
-  // We don't want to display warning messages when parsing the data
-  // before updating the schema
+  // Check whether we need to rebuild the schema depending on the data.
+  // Call buildData with silent flag to suppress warnings when parsing data before updating
+  // the schema.
   this.updateSchema(buildData(el, name, this.schema, elData, true));
   this.data = buildData(el, name, this.schema, elData);
   this.init();
@@ -56597,14 +56605,14 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(objectParse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, silent);
   },
 
   /**
    * Stringify properties if necessary.
    *
-   * Only called from `entity.setAttribute` for properties that accept an object value such as
-   * vec3 {x, y, z}.
+   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
+   * value (e.g., selector, vec3 property types).
    *
    * @param {object} data - Complete component data.
    * @returns {string}
@@ -56615,7 +56623,7 @@ Component.prototype = {
 
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
-    return objectStringify(data);
+    return styleParser.stringify(data);
   },
 
   /**
@@ -56630,10 +56638,7 @@ Component.prototype = {
   },
 
   /**
-   * Called when new value is coming from the entity (e.g., attributeChangedCb)
-   * or from its mixins. Does some parsing and applying before updating the
-   * component.
-   * Does not update if data has not changed.
+   * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
    */
@@ -56642,7 +56647,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(objectParse(value));
+    this.updateSchema(styleParser.parse(value));
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
@@ -56658,18 +56663,19 @@ Component.prototype = {
   },
 
   /**
-   * Extends the schema of the component with a given new schema
-   * Some components might want to mutate their schema based on
-   * certain conditions. e.g: The material component changes its
-   * squema based on the selected shader to account for the
-   * different uniforms
-   *  @param newSchema {object} - Schema that extends the original one.
+   * Extend schema of component given a partial schema.
+   *
+   * Some components might want to mutate their schema based on certain properties.
+   * e.g., Material component changes its schema based on `shader` to account for different
+   * uniforms
+   *
+   * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
-  extendSchema: function (newSchema) {
-    // Copies original schema
+  extendSchema: function (schemaAddon) {
+    // Clone base schema.
     var extendedSchema = utils.extend({}, components[this.name].schema);
-    // Extends original schema with the new one
-    utils.extend(extendedSchema, newSchema);
+    // Extend base schema with new schema chunk.
+    utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
     this.el.emit('schemachanged', { component: this.name });
   }
@@ -56679,7 +56685,7 @@ Component.prototype = {
  * Registers a component to A-Frame.
  *
  * @param {string} name - Component name.
- * @param {object} definition - Component property and methods.
+ * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
 module.exports.registerComponent = function (name, definition) {
@@ -56745,7 +56751,7 @@ function buildData (el, name, schema, elData, silent) {
   var mixinEls = el.mixinEls;
 
   if (!isSinglePropSchema && typeof elData === 'string') {
-    elData = objectParse(elData);
+    elData = styleParser.parse(elData);
   }
 
   // 1. Default values (lowest precendence).
@@ -56781,30 +56787,6 @@ function buildData (el, name, schema, elData, silent) {
 module.exports.buildData = buildData;
 
 /**
- * Deserializes style-like string into an object of properties.
- *
- * @param {string} value - HTML attribute value.
- * @returns {object} Property data.
- */
-function objectParse (value) {
-  var parsedData;
-  if (typeof value !== 'string') { return value; }
-  parsedData = styleParser.parse(value);
-  return transformKeysToCamelCase(parsedData);
-}
-
-/**
- * Serialize an object of properties into a style-like string.
- *
- * @param {object} data - Property data.
- * @returns {string}
- */
-function objectStringify (data) {
-  if (typeof data === 'string') { return data; }
-  return styleParser.stringify(data);
-}
-
-/**
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
@@ -56823,35 +56805,7 @@ function extendProperties (dest, source, isSinglePropSchema) {
   return utils.extend(dest, source);
 }
 
-/**
- * Converts string from hyphen to camelCase.
- *
- * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
- */
-function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, camelCase);
-  function camelCase (g) { return g[1].toUpperCase(); }
-}
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase (obj) {
-  var keys = Object.keys(obj);
-  var camelCaseObj = {};
-  keys.forEach(function (key) {
-    var camelCaseKey = toCamelCase(key);
-    camelCaseObj[camelCaseKey] = obj[key];
-  });
-  return camelCaseObj;
-}
-
-},{"../utils/":98,"./schema":62,"./system":64,"style-attr":15}],57:[function(_dereq_,module,exports){
+},{"../utils/":98,"./schema":62,"./system":64}],57:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -56870,7 +56824,7 @@ registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
-registerPropertyType('vec2', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec2', { x: 0, y: 0 }, vecParse, coordinates.stringify);
 registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
 registerPropertyType('vec4', { x: 0, y: 0, z: 0, w: 0 }, vecParse, coordinates.stringify);
 
@@ -57605,7 +57559,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":104}],62:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":105}],62:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -57731,6 +57685,9 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
   return propData;
 };
 
+/**
+ * Deserialize a single property.
+ */
 function parseProperty (value, propDefinition) {
   if (typeof value !== 'string') { return value; }
   if (typeof value === 'undefined') { return value; }
@@ -57738,6 +57695,9 @@ function parseProperty (value, propDefinition) {
 }
 module.exports.parseProperty = parseProperty;
 
+/**
+ * Serialize a group of properties.
+ */
 module.exports.stringifyProperties = function (propData, schema) {
   var stringifiedData = {};
   Object.keys(propData).forEach(function (propName) {
@@ -57753,6 +57713,9 @@ module.exports.stringifyProperties = function (propData, schema) {
   return stringifiedData;
 };
 
+/**
+ * Serialize a single property.
+ */
 function stringifyProperty (value, propDefinition) {
   if (typeof value !== 'object') { return value; }
   // if there's no schema for the property we use standar JSON stringify
@@ -58866,23 +58829,14 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../node_modules/three/examples/js/controls/VRControls":16,"../../node_modules/three/examples/js/effects/VREffect":17,"../../node_modules/three/examples/js/loaders/ColladaLoader":18,"../../node_modules/three/examples/js/loaders/MTLLoader":19,"../../node_modules/three/examples/js/loaders/OBJLoader":20,"../../vendor/Raycaster":101,"three":21}],89:[function(_dereq_,module,exports){
+},{"../../node_modules/three/examples/js/controls/VRControls":16,"../../node_modules/three/examples/js/effects/VREffect":17,"../../node_modules/three/examples/js/loaders/ColladaLoader":18,"../../node_modules/three/examples/js/loaders/MTLLoader":19,"../../node_modules/three/examples/js/loaders/OBJLoader":20,"../../vendor/Raycaster":102,"three":21}],89:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var srcLoader = _dereq_('../utils/src-loader');
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/texture');
 
 /**
- * Flat shader.
- *
- * @namespace flat
- * @param {string} color - Diffuse color.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {string} repeat - X and Y value for size of texture repeating
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {number} width - Width to render texture.
+ * Flat shader using THREE.MeshBasicMaterial.
  */
 module.exports.Component = registerShader('flat', {
   schema: {
@@ -58961,7 +58915,7 @@ function getMaterialData (data) {
   return materialData;
 }
 
-},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":100}],90:[function(_dereq_,module,exports){
+},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":101}],90:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 
@@ -58969,28 +58923,13 @@ _dereq_('./standard');
 var registerShader = _dereq_('../core/shader').registerShader;
 var srcLoader = _dereq_('../utils/src-loader');
 var THREE = _dereq_('../lib/three');
-var utils = _dereq_('../utils/texture');
+var utils = _dereq_('../utils/');
 
 var CubeLoader = new THREE.CubeTextureLoader();
 var texturePromises = {};
 
 /**
- * Standard shader.
- *
- * @namespace material
- * @param {string} color - Diffuse color.
- * @param {string} envMap - To load a environment cubemap. Takes a selector
- *         to an element containing six img elements, or a comma-separated
- *         string of direct url()s.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {number} metalness - Parameter for physical/standard material.
- * @param {string} repeat - X and Y value for size of texture repeating
- *         (in UV units).
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {number} roughness - Parameter for physical/standard material.
- * @param {number} width - Width to render texture.
+ * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
 module.exports.Component = registerShader('standard', {
   schema: {
@@ -59035,12 +58974,12 @@ module.exports.Component = registerShader('standard', {
       // Texture added or changed.
       this.textureSrc = src;
       srcLoader.validateSrc(src,
-        utils.loadImage.bind(this, material, data),
-        utils.loadVideo.bind(this, material, data)
+        utils.texture.loadImage.bind(this, material, data),
+        utils.texture.loadVideo.bind(this, material, data)
       );
     } else {
       // Texture removed.
-      utils.updateMaterial(material, null);
+      utils.texture.updateMaterial(material, null);
     }
   },
 
@@ -59065,33 +59004,36 @@ module.exports.Component = registerShader('standard', {
     var self = this;
     var material = this.material;
     var envMap = data.envMap;
-    // Environment cubemaps.
+
+    // No envMap defined or already loading.
     if (!envMap || this.isLoadingEnvMap) {
       material.envMap = null;
       material.needsUpdate = true;
       return;
     }
     this.isLoadingEnvMap = true;
+
+    // Another material is already loading this texture. Wait on promise.
     if (texturePromises[envMap]) {
-      // Another material is already loading this texture. Wait on promise.
       texturePromises[envMap].then(function (cube) {
         self.isLoadingEnvMap = false;
         material.envMap = cube;
         material.needsUpdate = true;
       });
-    } else {
-      // Material is first to load this texture. Load and resolve texture.
-      texturePromises[envMap] = new Promise(function (resolve) {
-        srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
-          CubeLoader.load(urls, function (cube) {
-            // Texture loaded.
-            self.isLoadingEnvMap = false;
-            material.envMap = cube;
-            resolve(cube);
-          });
+      return;
+    }
+
+    // Material is first to load this texture. Load and resolve texture.
+    texturePromises[envMap] = new Promise(function (resolve) {
+      srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+        CubeLoader.load(urls, function (cube) {
+          // Texture loaded.
+          self.isLoadingEnvMap = false;
+          material.envMap = cube;
+          resolve(cube);
         });
       });
-    }
+    });
   }
 });
 
@@ -59110,10 +59052,10 @@ function getMaterialData (data) {
   return materialData;
 }
 
-},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":100}],92:[function(_dereq_,module,exports){
-var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;margin-right:70px;padding:9px;width:280px;position:relative;display:none}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{display:block;content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src\\style\\aframe.css"})); module.exports = css;
+},{"../core/shader":63,"../lib/three":88,"../utils/":98,"../utils/src-loader":99}],92:[function(_dereq_,module,exports){
+var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;margin-right:70px;padding:9px;width:280px;position:relative;display:none}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{display:block;content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
 },{"browserify-css":1}],93:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src\\style\\rStats.css"})); module.exports = css;
+var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":1}],94:[function(_dereq_,module,exports){
 _dereq_('../systems/material');
 
@@ -59326,6 +59268,8 @@ var objectAssign = _dereq_('object-assign');
 
 module.exports.coordinates = _dereq_('./coordinates');
 module.exports.debug = _dereq_('./debug');
+module.exports.styleParser = _dereq_('./styleParser');
+module.exports.texture = _dereq_('./texture');
 
 /**
  * Fires a custom DOM event.
@@ -59513,7 +59457,7 @@ module.exports.isIframed = function () {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./coordinates":96,"./debug":97,"./src-loader":99,"deep-assign":6,"object-assign":9}],99:[function(_dereq_,module,exports){
+},{"./coordinates":96,"./debug":97,"./src-loader":99,"./styleParser":100,"./texture":101,"deep-assign":6,"object-assign":9}],99:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -59659,71 +59603,277 @@ module.exports = {
 };
 
 },{"./debug":97}],100:[function(_dereq_,module,exports){
+/* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
+var styleParser = _dereq_('style-attr');
+
+/**
+ * Deserializes style-like string into an object of properties.
+ *
+ * @param {string} value - HTML attribute value.
+ * @returns {object} Property data.
+ */
+module.exports.parse = function (value) {
+  var parsedData;
+  if (typeof value !== 'string') { return value; }
+  parsedData = styleParser.parse(value);
+  return transformKeysToCamelCase(parsedData);
+};
+
+/**
+ * Serialize an object of properties into a style-like string.
+ *
+ * @param {object} data - Property data.
+ * @returns {string}
+ */
+module.exports.stringify = function (data) {
+  if (typeof data === 'string') { return data; }
+  return styleParser.stringify(data);
+};
+
+/**
+ * Converts string from hyphen to camelCase.
+ *
+ * @param {string} str - String to camelCase.
+ * @return {string} CamelCased string.
+ */
+function toCamelCase (str) {
+  return str.replace(/-([a-z])/g, camelCase);
+  function camelCase (g) { return g[1].toUpperCase(); }
+}
+module.exports.toCamelCase = toCamelCase;
+
+/**
+ * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
+ * `maxValue`).
+ *
+ * @param {object} obj - The object to camelCase keys.
+ * @return {object} The object with keys camelCased.
+ */
+function transformKeysToCamelCase (obj) {
+  var keys = Object.keys(obj);
+  var camelCaseObj = {};
+  keys.forEach(function (key) {
+    var camelCaseKey = toCamelCase(key);
+    camelCaseObj[camelCaseKey] = obj[key];
+  });
+  return camelCaseObj;
+}
+module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
+
+},{"style-attr":15}],101:[function(_dereq_,module,exports){
+/**
+ * Texture helpers for standard material component.
+ *
+ * @member textureCache {object} - Texture cache for:
+ *   - Images: textureCache has mapping of src -> repeat -> cached three.js texture.
+ *   - Videos: textureCache has mapping of videoElement -> cached three.js texture.
+ * @member videoCache {object} - Cache of video elements.
+ */
 var debug = _dereq_('./debug');
-var error = debug('components:texture:error');
 var THREE = _dereq_('../lib/three');
+
+var EVENTS = {
+  TEXTURE_LOADED: 'material-texture-loaded'
+};
+var error = debug('components:texture:error');
+var textureCache = {};
 var TextureLoader = new THREE.TextureLoader();
-var texturePromises = {};
 var warn = debug('components:texture:warn');
 
 /**
- * Sets image texture on material as `map`.
+ * High-level function for loading image textures. Meat of logic is in `loadImageTexture`.
+ * Bound to material component instance and three.js material.
  *
- * @param {object} material - three.js material.
- * @param {string|object} src - An <img> element or url to an image file.
- * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
+ * @param material {object} - three.js material, bound by the A-Frame shader.
+ * @param data {object} - Shader data, bound by the A-Frame shader.
+ * @param src {Element|string} - Texture source, bound by `src-loader` utils.
  */
-function loadImageTexture (material, src, repeat) {
-  return new Promise(function (resolve, reject) {
-    var isEl = typeof src !== 'string';
-    var onLoad = createTexture;
-    var onProgress = function () {};
-    var onError = function (xhr) {
-      error('The URL "$s" could not be fetched (Error code: %s; Response: %s)',
-      xhr.status, xhr.statusText);
-    };
+function loadImage (material, data, src) {
+  var el = this.el;
+  var repeat = data.repeat || '1 1';
+  var srcString = src;
 
-    if (isEl) {
-      createTexture(src);
-    } else {
-      TextureLoader.load(src, onLoad, onProgress, onError);
-    }
+  if (typeof src !== 'string') { srcString = src.getAttribute('src'); }
 
-    function createTexture (texture) {
-      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-      var repeatXY;
-      if (repeat) {
-        repeatXY = repeat.split(' ');
-        if (repeatXY.length === 2) {
-          texture.wrapS = THREE.RepeatWrapping;
-          texture.wrapT = THREE.RepeatWrapping;
-          texture.repeat.set(parseInt(repeatXY[0], 10),
-          parseInt(repeatXY[1], 10));
-        }
-      }
-      material.map = texture;
-      texture.needsUpdate = true;
-      material.needsUpdate = true;
-      resolve(texture);
-    }
-  });
+  // Another material is already loading this texture. Wait on promise.
+  if (textureCache[src] && textureCache[src][repeat]) {
+    textureCache[src][repeat].then(handleImageTextureLoaded);
+    return;
+  }
+
+  // Material instance is first to try to load this texture. Load it.
+  textureCache[srcString] = textureCache[srcString] || {};
+  textureCache[srcString][repeat] = textureCache[srcString][repeat] || {};
+  textureCache[srcString][repeat] = loadImageTexture(material, src, repeat);
+  textureCache[srcString][repeat].then(handleImageTextureLoaded);
+
+  function handleImageTextureLoaded (texture) {
+    updateMaterial(material, texture);
+    el.emit(EVENTS.TEXTURE_LOADED, { src: src, texture: texture });
+  }
 }
 
 /**
- * Updates material texture
- * @param  {object} material [description]
- * @param  {object} texture  [description]
+ * Load video texture.
+ * Bound to material component instance and three.js material.
+ * Note that creating a video texture is more synchronous than creating an image texture.
+ *
+ * @param material {object} - three.js material, bound by the A-Frame shader.
+ * @param data {object} - Shader data, bound by the A-Frame shader.
+ * @param src {Element|string} - Texture source, bound by `src-loader` utils.
+ */
+function loadVideo (material, data, src) {
+  var el = this.el;
+  var hash;
+  var texture;
+  var videoEl;
+
+  if (typeof src !== 'string') {
+    // Check cache before creating texture.
+    videoEl = src;
+    hash = calculateVideoCacheHash(videoEl);
+    if (textureCache[hash]) {
+      textureCache[hash].then(handleVideoTextureLoaded);
+      return;
+    }
+
+    // If not in cache, fix up the attributes then start to create the texture.
+    fixVideoAttributes(videoEl);
+  }
+
+  // Use video element to create texture.
+  videoEl = videoEl || createVideoEl(material, src, data.width, data.height);
+
+  // Generated video element already cached. Use that.
+  hash = calculateVideoCacheHash(videoEl);
+  if (textureCache[hash]) {
+    textureCache[hash].then(handleVideoTextureLoaded);
+    return;
+  }
+
+  // Create new video texture.
+  texture = new THREE.VideoTexture(videoEl);
+  texture.minFilter = THREE.LinearFilter;
+
+  // Cache as promise to be consistent with image texture caching.
+  textureCache[calculateVideoCacheHash(videoEl)] = Promise.resolve(texture, videoEl);
+  handleVideoTextureLoaded(texture, videoEl);
+
+  function handleVideoTextureLoaded (texture, videoEl) {
+    updateMaterial(material, texture);
+    el.emit(EVENTS.TEXTURE_LOADED, { element: videoEl, src: src });
+    videoEl.addEventListener('loadeddata', function () {
+      el.emit('material-video-loadeddata', { element: videoEl, src: src });
+    });
+    videoEl.addEventListener('ended', function () {
+      // Works for non-looping videos only.
+      el.emit('material-video-ended', { element: videoEl, src: src });
+    });
+  }
+}
+
+/**
+ * Calculates consistent hash from a video element using its attributes.
+ * If the video element has an ID, use that.
+ * Else build a hash that looks like `src:myvideo.mp4;height:200;width:400;`.
+ *
+ * @param videoEl {Element} - Video element.
+ * @returns {string}
+ */
+function calculateVideoCacheHash (videoEl) {
+  var i;
+  var id = videoEl.getAttribute('id');
+  var hash;
+  var videoAttributes;
+
+  if (id) { return id; }
+
+  // Calculate hash using sorted video attributes.
+  hash = '';
+  videoAttributes = {};
+  for (i = 0; i < videoEl.attributes.length; i++) {
+    videoAttributes[videoEl.attributes[i].name] = videoEl.attributes[i].value;
+  }
+  Object.keys(videoAttributes).sort().forEach(function (name) {
+    hash += name + ':' + videoAttributes[name] + ';';
+  });
+
+  return hash;
+}
+
+/**
+ * Set material texture and update if necessary.
+ *
+ * @param {object} material
+ * @param {object} texture
  */
 function updateMaterial (material, texture) {
-  if (material.map !== undefined) {
-    if (texture) { texture.needsUpdate = true; }
-    material.map = texture;
+  var oldMap = material.map;
+  if (texture) { texture.needsUpdate = true; }
+  material.map = texture;
+
+  // Only need to update three.js material if presence or not of texture has changed.
+  if (oldMap === null && material.map || material.map === null && oldMap) {
     material.needsUpdate = true;
   }
 }
 
 /**
- * Creates a video element to be used as a texture.
+ * Set image texture on material as `map`.
+ *
+ * @private
+ * @param {object} el - Entity element.
+ * @param {object} material - three.js material.
+ * @param {string|object} src - An <img> element or url to an image file.
+ * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
+ * @returns {Promise} Resolves once texture is loaded.
+ */
+function loadImageTexture (material, src, repeat) {
+  return new Promise(doLoadImageTexture);
+
+  function doLoadImageTexture (resolve, reject) {
+    var isEl = typeof src !== 'string';
+
+    // Create texture from an element.
+    if (isEl) {
+      createTexture(src);
+      return;
+    }
+
+    // Load texture from src string. THREE will create underlying element.
+    // Use THREE.TextureLoader (src, onLoad, onProgress, onError) to load texture.
+    TextureLoader.load(
+      src,
+      createTexture,
+      function () { /* no-op */ },
+      function (xhr) {
+        error('`$s` could not be fetched (Error code: %s; Response: %s)', xhr.status,
+              xhr.statusText);
+      }
+    );
+
+    /**
+     * Texture loaded. Set it.
+     */
+    function createTexture (texture) {
+      var repeatXY;
+      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+
+      // Handle UV repeat.
+      repeatXY = repeat.split(' ');
+      if (repeatXY.length === 2) {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
+      }
+
+      resolve(texture);
+    }
+  }
+}
+
+/**
+ * Create video element to be used as a texture.
  *
  * @param {object} material - three.js material.
  * @param {string} src - Url to a video file.
@@ -59733,17 +59883,15 @@ function updateMaterial (material, texture) {
  */
 function createVideoEl (material, src, width, height) {
   var el = material.videoEl || document.createElement('video');
-  function onError () {
-    warn('The URL "$s" is not a valid image or video', src);
-  }
   el.width = width;
   el.height = height;
-  // Attach event listeners if brand new video element.
   if (el !== this.videoEl) {
     el.autoplay = true;
     el.loop = true;
     el.crossOrigin = true;
-    el.addEventListener('error', onError, true);
+    el.addEventListener('error', function () {
+      warn('`$s` is not a valid video', src);
+    }, true);
     material.videoEl = el;
   }
   el.src = src;
@@ -59751,78 +59899,45 @@ function createVideoEl (material, src, width, height) {
 }
 
 /**
- * Sets video texture on material as map.
+ * Fixes a video element's attributes to prevent developers from accidentally passing the
+ * wrong attribute values to commonly misused video attributes.
  *
- * @param {object} material - three.js material.
- * @param {string} src - Url to a video file.
- * @param {number} width - Width of the video.
- * @param {number} height - Height of the video.
-*/
-function loadVideoTexture (material, src, height, width) {
-  // three.js video texture loader requires a <video>.
-  var videoEl = typeof src !== 'string' ? fixVideoAttributes(src) : createVideoEl(material, src, height, width);
-  var texture = new THREE.VideoTexture(videoEl);
-  texture.minFilter = THREE.LinearFilter;
-  texture.needsUpdate = true;
-  updateMaterial(material, texture);
-
-  // The promise is not necessary here, as the function is synchronous.
-  // Using a promise here for future consistency with texturePromises[]
-  return Promise.resolve(videoEl);
-}
-
-/**
- * Fixes a video element's attributes to prevent developers from accidentally
- * passing the wrong attribute values to commonly misused video attributes.
+ * <video> does not treat `autoplay`, `controls`, `crossorigin`, `loop`, and `preload` as
+ * as booleans. Existence of those attributes will mean truthy.
  *
- * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video#Attributes
+ * For example, translates <video loop="false"> to <video>.
+ *
+ * @see https://developer.mozilla.org/docs/Web/HTML/Element/video#Attributes
  * @param {Element} videoEl - Video element.
  * @returns {Element} Video element with the correct properties updated.
  */
 function fixVideoAttributes (videoEl) {
-  // The `<video>` element treats `loop` and `muted` as boolean attributes, but
-  // of course does not with `autoplay`, `controls`, `preload` (and `crossorigin`).
-  // If we get passed a `<video autoplay="false">`, let's assume the dev wanted
-  // `autoplay` to be disabled.
   videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
   videoEl.controls = videoEl.getAttribute('controls') !== 'false';
+  if (videoEl.getAttribute('loop') === 'false') {
+    videoEl.removeAttribute('loop');
+  }
   if (videoEl.getAttribute('preload') === 'false') {
     videoEl.preload = 'none';
   }
   return videoEl;
 }
 
-function loadImage (material, data, src) {
-  var el = this.el;
-  texturePromises[src] = loadImageTexture(material, src, data.repeat);
-  texturePromises[src].then(emitEvent);
-  function emitEvent (texture) { el.emit('material-texture-loaded', {src: src, texture: texture}); }
-}
-
-function loadVideo (material, data, src) {
-  var el = this.el;
-  texturePromises[src] = loadVideoTexture(material, src, data.width, data.height);
-  texturePromises[src].then(emitEvent);
-  function emitEvent (videoEl) {
-    videoEl.addEventListener('loadeddata', function (evt) {
-      el.emit('material-texture-loaded', {element: videoEl, src: src});
-    });
-    videoEl.addEventListener('ended', function (evt) {
-      // works only for non-loop videos
-      el.emit('material-video-ended');
-    });
-  }
+function clearTextureCache () {
+  textureCache = {};
 }
 
 module.exports = {
+  clearTextureCache: clearTextureCache,
   createVideoEl: createVideoEl,
   fixVideoAttributes: fixVideoAttributes,
-  updateMaterial: updateMaterial,
   loadImage: loadImage,
-  loadVideo: loadVideo
+  loadVideo: loadVideo,
+  textureCache: textureCache,
+  updateMaterial: updateMaterial
 };
 
-},{"../lib/three":88,"./debug":97}],101:[function(_dereq_,module,exports){
+},{"../lib/three":88,"./debug":97}],102:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author bhouston / http://clara.io/
@@ -59959,7 +60074,7 @@ module.exports = {
 
 }( THREE ) );
 
-},{}],102:[function(_dereq_,module,exports){
+},{}],103:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 
 (function(){
@@ -60387,7 +60502,7 @@ var rStats = function rStats( settings ) {
 };
 
 if (typeof module !== "undefined") { module.exports = rStats; }
-},{}],103:[function(_dereq_,module,exports){
+},{}],104:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60449,7 +60564,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],104:[function(_dereq_,module,exports){
+},{}],105:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60525,6 +60640,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":103}]},{},[87])(87)
+},{"./util.js":104}]},{},[87])(87)
 });
 //# sourceMappingURL=aframe.js.map
