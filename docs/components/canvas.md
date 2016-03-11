@@ -10,13 +10,19 @@ The `canvas` component allows us to specify our own canvas or the size of the in
 
 ## Example
 
+We can specify our own canvas.
+
 ```html
 <a-scene canvas="canvas: #mycanvas"></a-scene>
 ```
 
-## Properties
+Or specify the width and height in percent of the injected canvas.
 
-Given the type of fog distribution, different properties will apply.
+```html
+<a-scene canvas="height: 50; width: 50"></a-scene>
+```
+
+## Properties
 
 | Property | Description                                           | Default Value |
 |----------|-------------------------------------------------------|---------------|
