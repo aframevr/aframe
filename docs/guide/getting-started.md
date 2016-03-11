@@ -59,10 +59,10 @@ If we want to serve it locally, we can download the JS build:
 For more advanced users who want to use their own build steps, we can install through npm:
 
 ```bash
-# Latest stable version
+# Latest stable version (https://www.npmjs.com/package/aframe)
 $ npm install aframe
 
-# Bleeding-edge version (https://github.com/aframevr/aframe/tree/dev)
+# Bleeding-edge version (https://github.com/aframevr/aframe)
 $ npm install aframevr/aframe
 ```
 
