@@ -11,14 +11,15 @@ A-Frame is a library for creating virtual reality web experiences.
 
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
 - **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
-- **[Entity-Component System](https://aframe.io/docs/core/)**: Use the entity-component system for better composability and flexibility.
+- **[Entity-Component-System](https://aframe.io/docs/core/)**: Based on an entity-component-system pattern for better composability and flexibility.
 
 Find out more:
 
 - [Guide](https://aframe.io/docs/guide/)
 - [Docs](https://aframe.io/docs/core/)
 - [Examples](https://aframe.io/examples/)
-- [Ask us on Slack](https://aframevr-slack.herokuapp.com/)
+- [awesome-aframe](https://github.com/aframevr/awesome-aframe)
+- [Ask us on Slack!](https://aframevr-slack.herokuapp.com/)
 
 ## Usage
 
