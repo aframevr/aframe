@@ -8,7 +8,9 @@ module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true }
+    enabled: { default: true },
+    reverseMouseMovement: { default: false },
+    mouseMovementSpeed: { default: 0.002 }
   },
 
   init: function () {
@@ -203,8 +205,13 @@ module.exports.Component = registerComponent('look-controls', {
     }
     this.previousMouseEvent = event;
 
-    yawObject.rotation.y -= movementX * 0.002;
-    pitchObject.rotation.x -= movementY * 0.002;
+    if (this.data.reverseMouseMovement) {
+      movementX *= -1;
+      movementY *= -1;
+    }
+
+    yawObject.rotation.y -= movementX * this.data.mouseMovementSpeed;
+    pitchObject.rotation.x -= movementY * this.data.mouseMovementSpeed;
     pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
   },
 
