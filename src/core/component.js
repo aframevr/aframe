@@ -138,13 +138,20 @@ Component.prototype = {
    * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
+   * @param {boolean} doMerge - If true, will merge `value` with existing component data
+   *        rather than setting/overwriting existing component data. Used for mixins.
    */
-  updateProperties: function (value) {
+  updateProperties: function (value, doMerge) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
+    var newData = styleParser.parse(value);
 
-    this.updateSchema(styleParser.parse(value));
+    if (doMerge && !isSinglePropSchema) {
+      newData = utils.extend({}, this.data, newData);
+    }
+
+    this.updateSchema(newData);
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
