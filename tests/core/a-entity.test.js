@@ -210,14 +210,6 @@ suite('a-entity', function () {
       assert.ok(el.outerHTML.indexOf('position="10 20 30"') !== -1);
     });
 
-    test('applies default vec3 component from mixin', function () {
-      var el = this.el;
-      var mixinId = 'position';
-      mixinFactory(mixinId, { position: '1 2 3' });
-      el.setAttribute('mixin', mixinId);
-      assert.shallowDeepEqual(el.getComputedAttribute('position'), { x: 1, y: 2, z: 3 });
-    });
-
     test('can update component data', function () {
       var el = this.el;
       var position;
@@ -502,6 +494,46 @@ suite('a-entity', function () {
       assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
       el.removeAttribute('look-controls');
       assert.equal(sceneEl.behaviors.indexOf(component), -1);
+    });
+  });
+
+  suite('applyMixin', function () {
+    test('combines mixin and element components with a dynamic schema', function () {
+      var el = this.el;
+      var mixinId = 'material';
+      mixinFactory(mixinId, { material: 'shader: flat' });
+      el.setAttribute('mixin', mixinId);
+      el.setAttribute('material', 'color: red');
+      assert.shallowDeepEqual(el.getComputedAttribute('material'), { shader: 'flat', color: 'red' });
+    });
+
+    test('merges component properties from mixin', function () {
+      var el = this.el;
+      el.setAttribute('geometry', { depth: 5, height: 5, width: 5 });
+      mixinFactory('box', { geometry: 'primitive: box' });
+      el.setAttribute('mixin', 'box');
+      assert.shallowDeepEqual(el.getComputedAttribute('geometry'), {
+        depth: 5,
+        height: 5,
+        primitive: 'box',
+        width: 5
+      });
+    });
+
+    test('applies default vec3 component from mixin', function () {
+      var el = this.el;
+      var mixinId = 'position';
+      mixinFactory(mixinId, { position: '1 2 3' });
+      el.setAttribute('mixin', mixinId);
+      assert.shallowDeepEqual(el.getComputedAttribute('position'), { x: 1, y: 2, z: 3 });
+    });
+
+    test('does not override defined property', function () {
+      var el = this.el;
+      el.setAttribute('material', { color: 'red' });
+      mixinFactory('blue', { material: 'color: blue' });
+      el.setAttribute('mixin', 'blue');
+      assert.shallowDeepEqual(el.getComputedAttribute('material').color, 'red');
     });
   });
 });
