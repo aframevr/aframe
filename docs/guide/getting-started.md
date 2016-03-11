@@ -43,16 +43,16 @@ If we want to just include the JS build from the CDN, we can drop a script tag s
 
 ```html
 <!-- Production Version, Minified -->
-<script src="https://aframe.io/releases/{{ aframe_version }}/aframe.min.js></script>
+<script src="https://aframe.io/releases/{{ version }}/aframe.min.js"></script>
 
 <!-- Development Version, Uncompressed with Source Maps -->
-<script src="https://aframe.io/releases/{{ aframe_version }}/aframe.js></script>
+<script src="https://aframe.io/releases/{{ version }}/aframe.js"></script>
 ```
 
 If we want to serve it locally, we can download the JS build:
 
-<a class="btn btn-download" href="https://aframe.io/releases/{{ aframe_version }}/aframe.min.js" download>Production Version <span>{{ aframe_version }}</span></a> <em class="install-note">Minified</em>
-<a class="btn btn-download" href="https://aframe.io/releases/{{ aframe_version }}/aframe.js" download>Development Version <span>{{ aframe_version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.min.js" download>Production Version <span>{{ aframe_version }}</span></a> <em class="install-note">Minified</em>
+<a class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.js" download>Development Version <span>{{ aframe_version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ## npm
 
