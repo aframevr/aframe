@@ -20,7 +20,7 @@ There are several ways to get started with A-Frame:
 
 ## CodePen
 
-[Codepen][codepen] is a playground for front-end web. We can edit HTML and JavaScript directly in the browser with their text editor, see changes live, and share code snippets. This is a fast way to dive in without having to download or install anything. Check out the [official MozVR CodePens](http://codepen.io/team/mozvr/) and the [A-Frame Hello World CodePen][codepen]:
+[CodePen][codepen] is a playground for front-end web development. We can edit HTML and JavaScript directly in the browser with their text editor, see changes live, and share code snippets. This is a fast way to dive in without having to download or install anything. Check out the [official MozVR CodePens](http://codepen.io/team/mozvr/) and the [A-Frame Hello World CodePen][codepen]:
 
 <p data-height="500" data-theme-id="0" data-slug-hash="jqERjQ" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqERjQ/">Hello A-Frame - 2</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
@@ -39,7 +39,7 @@ We can grab the boilerplate in one of two ways:
 
 ## Builds
 
-If we want to just include the JS build from the CDN, we can drop a script tag straight into our HTML:
+If we want to just include the JS build from the CDN, we can drop a `<script>` tag straight into our HTML:
 
 ```html
 <!-- Production Version, Minified -->
@@ -56,17 +56,17 @@ If we want to serve it locally, we can download the JS build:
 
 ## npm
 
-For more advanced users that want to use their own build steps, we can install through npm:
+For more advanced users who want to use their own build steps, we can install through npm:
 
 ```bash
-# Latest stable version.
+# Latest stable version
 $ npm install aframe
 
 # Bleeding-edge version (https://github.com/aframevr/aframe/tree/dev)
-$ npm install aframevr/aframe#dev
+$ npm install aframevr/aframe
 ```
 
-Then we can just require A-Frame into our app, perhaps built with Browserify or Webpack:
+Then we can just require A-Frame from our app, perhaps built with Browserify or Webpack:
 
 ```js
 require('aframe');
