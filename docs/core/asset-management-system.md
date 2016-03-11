@@ -47,6 +47,26 @@ We can define all of our assets in `<a-assets>` and point to those assets from o
 
 Then the scene will wait for all of the assets for rendering.
 
+## Cross-Origin
+
+Loading assets from a different domain requires [cross-origin resource sharing (CORS) headers][cors]. Else we have to serve the asset ourselves.
+
+For some options, all resources hosted on [GitHub Pages][ghpages] are served with CORS headers. We highly recommend GitHub Pages as a simple deployment platform. Alternatively, we could also upload assets using the [A-Frame + Uploadcare Uploader][uploader], a service that will help serve our assets CORS'd.
+
+Given that CORS headers are set, if fetching a texture from a different origin or domain such as from an image hosting service or a CDN, then we should specify the `crossorigin` attribute on the `<img>`, `<video>`, or `<canvas>` element used to create a texture. [CORS][corsimage] security mechanisms in the browser generally disallow reading raw data from media elements from other domains if not explicitly allowed:
+
+```html
+<a-scene>
+  <a-assets>
+    <video id="cdn-video" src="http://somecdn/somevideo.mp4" crossorigin="anonymous">
+  </a-assets>
+
+  <a-entity geometry="primitive: box" material="src: #cdn-video"></a-entity>
+</a-scene>
+```
+
+Caveat is that currently, Safari and Chromium do not seem to respect the `crossorigin` attribute or property, whereas Firefox and Chrome do.
+
 ## Preloading Audio and Video
 
 Audio and video assets will only block the scene if `autoplay` is set or if `preload="auto"`:
@@ -99,7 +119,7 @@ Since `<a-assets>` and `<a-asset-item>` are *nodes* in A-Frame, they will emit t
 
 ## HTMLMediaElement
 
-Audio and video assets are [HTMLMediaElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement)s. These events are provided by the browser, but noted here for convenience:
+Audio and video assets are [HTMLMediaElement][mediael]s. These events are provided by the browser, but noted here for convenience:
 
 | Event Name | Description                           |
 |------------|---------------------------------------|
@@ -109,4 +129,8 @@ Audio and video assets are [HTMLMediaElement](https://developer.mozilla.org/en-U
 
 A-Frame uses the progress events, comparing how much time was buffered with the duration of the asset, in order to detect when the asset has been loaded.
 
+[cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
+[ghpages]: https://pages.github.com/
+[mediael]: https://developer.mozilla.org/docs/Web/API/HTMLMediaElement
 [mixins]: ./mixins.md
+[uploader]: https://aframe.io/aframe/examples/_uploader/

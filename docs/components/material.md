@@ -98,22 +98,6 @@ We might want to tile textures rather than having them stretch. The `repeat` pro
           material="src: carpet.png; repeat: 100 20"></a-entity>
 ```
 
-### Cross-Origin
-
-If fetching a texture from a different origin or domain such as from an image hosting service or a CDN, then you should specify the `crossorigin` attribute on the `<img>`, `<video>`, or `<canvas>` element used to create a texture. [CORS][corsimage] security mechanisms in the browser generally disallow reading raw data from media elements from other domains if not explicitly allowed:
-
-```html
-<a-scene>
-  <a-assets>
-    <video id="cdn-video" src="http://somecdn/somevideo.mp4" crossorigin="anonymous">
-  </a-assets>
-
-  <a-entity geometry="primitive: box" material="src: #cdn-video"></a-entity>
-</a-scene>
-```
-
-Caveat is that currently, Safari and Chromium do not seem to respect the `crossorigin` attribute or property, whereas Firefox and Chrome do.
-
 ## Setting the Material from Another Component
 
 A common operation is to set material properties from another component. To do so, we can specify the material as a dependency component, wait for the entity to load, then use `setAttribute`:
