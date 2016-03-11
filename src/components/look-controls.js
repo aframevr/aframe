@@ -8,7 +8,8 @@ module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true }
+    enabled: { default: true },
+    allowVerticalTouchMovement: { default: false }
   },
 
   init: function () {
@@ -227,13 +228,22 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onTouchMove: function (e) {
+    if (!this.touchStarted) { return; }
+
+    if (this.data.allowVerticalTouchMovement) {
+      var deltaX;
+      var pitchObject = this.pitchObject;
+      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
+              this.el.sceneEl.canvas.clientHeight;
+      pitchObject.rotation.x -= deltaX * 0.5;
+    }
+
     var deltaY;
     var yawObject = this.yawObject;
-    if (!this.touchStarted) { return; }
     deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
             this.el.sceneEl.canvas.clientWidth;
-    // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
+
     this.touchStart = {
       x: e.touches[0].pageX,
       y: e.touches[0].pageY
