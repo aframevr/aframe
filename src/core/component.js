@@ -263,8 +263,10 @@ function buildData (el, name, schema, elData, silent) {
   // 2. Mixin values.
   mixinEls.forEach(applyMixin);
   function applyMixin (mixinEl) {
-    var mixinData = mixinEl.getAttribute(name);
+    var mixinData = HTMLElement.prototype.getAttribute.call(mixinEl, name);
     if (mixinData) {
+      mixinData = isSinglePropSchema
+        ? mixinData : styleParser.parse(mixinData);
       data = extendProperties(data, mixinData, isSinglePropSchema);
     }
   }
