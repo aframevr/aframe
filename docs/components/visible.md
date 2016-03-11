@@ -6,7 +6,7 @@ parent_section: components
 order: 19
 ---
 
-The `visible` component defines whether or not an entity is rendered.
+The visible component defines whether or not an entity is rendered.
 
 ## Example
 

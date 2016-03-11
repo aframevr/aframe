@@ -6,7 +6,7 @@ parent_section: primitives
 order: 12
 ---
 
-The .OBJ model primitive displays a 3D Wavefront model. It is an entity that maps the `src` and `mtl` attributes to the [obj-model component's](../components/obj-model.html) `obj` and `mtl` properties respectively.
+The .OBJ model primitive displays a 3D Wavefront model. It is an entity that maps the `src` and `mtl` attributes to the [obj-model component's][objcomponent] `obj` and `mtl` properties respectively.
 
 ## Example
 
@@ -27,9 +27,12 @@ The .OBJ model primitive displays a 3D Wavefront model. It is an entity that map
 
 ## Attribute
 
-Note that the .OBJ model primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the .OBJ model primitive inherits common [mesh attributes][mesh]:
 
 | Attribute | Component Mapping | Default Value |
 |-----------|-------------------|---------------|
 | mtl       | obj-model.mtl     | null          |
 | src       | obj-model.obj     | null          |
+
+[mesh]: ./mesh-attributes.md
+[objcomponent]: ../components/obj-model.md

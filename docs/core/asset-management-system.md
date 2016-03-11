@@ -11,7 +11,7 @@ Games and rich 3D experiences traditionally preload many of their assets, such a
 Assets are placed within `<a-assets>`, and `<a-assets>` is placed within `<a-scene>`. Assets include:
 
 - `<a-asset-item>` - Miscellaneous assets such as 3D models
-- `<a-mixin>` - Reusable [mixins](./mixins.html)
+- `<a-mixin>` - Reusable [mixins][mixins]
 - `<audio>` - Sound files
 - `<img>` - Image textures
 - `<video>` - Video textures
@@ -108,3 +108,5 @@ Audio and video assets are [HTMLMediaElement](https://developer.mozilla.org/en-U
 | progress   | Progress.                             |
 
 A-Frame uses the progress events, comparing how much time was buffered with the duration of the asset, in order to detect when the asset has been loaded.
+
+[mixins]: ./mixins.md

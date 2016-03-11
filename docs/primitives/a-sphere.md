@@ -6,7 +6,7 @@ parent_section: primitives
 order: 16
 ---
 
-The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.html) with its geometric primitive set to `sphere`.
+The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.md) with its geometric primitive set to `sphere`.
 
 ## Example
 
@@ -16,7 +16,7 @@ The sphere primitive creates a spherical or polyhedron shapes. It wraps an entit
 
 ## Attributes
 
-Note that the sphere primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the sphere primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping | Default Value           |
 |-----------------|-------------------|-------------------------|
