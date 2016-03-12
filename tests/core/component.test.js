@@ -216,13 +216,54 @@ suite('Component', function () {
 
     test('extends the schema', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: { color: { default: 'red' } }
+        schema: {color: { default: 'red' }}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
       component.extendSchema({ size: { default: 5 } });
       assert.ok(component.schema.size);
       assert.ok(component.schema.color);
+    });
+  });
+
+  suite('updateProperties', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
+    test('updates the schema of a component', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {color: { default: 'red' }},
+        updateSchema: function (data) {
+          this.extendSchema({ energy: { default: 100 } });
+        }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.updateProperties(null);
+      assert.equal(component.schema.color.default, 'red');
+      assert.equal(component.schema.energy.default, 100);
+      assert.equal(component.data.color, 'red');
+    });
+
+    test('updates the properties with the new value', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {color: { default: 'red' }}
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.updateProperties(null);
+      assert.equal(component.data.color, 'red');
+    });
+
+    test('updates the properties with a null value', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {color: { default: 'red' }}
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.updateProperties({ color: 'blue' });
+      assert.equal(component.data.color, 'blue');
     });
   });
 });

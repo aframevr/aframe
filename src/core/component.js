@@ -144,7 +144,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(styleParser.parse(value));
+    this.updateSchema(buildData(el, this.name, this.schema, value, true));
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
