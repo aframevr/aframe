@@ -136,23 +136,16 @@ module.exports.Component = registerComponent('look-controls', {
     };
   })(),
 
-  updatePosition: (function () {
-    var position = new THREE.Vector3();
-    var quaternion = new THREE.Quaternion();
-    var scale = new THREE.Vector3();
-    return function () {
-      var el = this.el;
-      var deltaPosition = this.calculateDeltaPosition();
-      var currentPosition = el.getComputedAttribute('position');
-      this.el.object3D.matrixWorld.decompose(position, quaternion, scale);
-      deltaPosition.applyQuaternion(quaternion);
-      el.setAttribute('position', {
-        x: currentPosition.x + deltaPosition.x,
-        y: currentPosition.y + deltaPosition.y,
-        z: currentPosition.z + deltaPosition.z
-      });
-    };
-  })(),
+  updatePosition: function () {
+    var el = this.el;
+    var deltaPosition = this.calculateDeltaPosition();
+    var currentPosition = el.getComputedAttribute('position');
+    el.setAttribute('position', {
+      x: currentPosition.x + deltaPosition.x,
+      y: currentPosition.y + deltaPosition.y,
+      z: currentPosition.z + deltaPosition.z
+    });
+  },
 
   calculateDeltaPosition: function () {
     var dolly = this.dolly;
