@@ -28,7 +28,7 @@ There are several ways to get started with A-Frame:
 
 The boilerplate contains:
 
-- A simple HTML file that links to the [current version of A-Frame][current] of A-Frame
+- A simple HTML file that links to the [current version of A-Frame](#builds-prod) of A-Frame
 - An optional local development server
 - An easy deployment workflow for [GitHub Pages][ghpages] to share with the world
 
@@ -49,10 +49,18 @@ If we want to just include the JS build from the CDN, we can drop a `<script>` t
 <script src="https://aframe.io/releases/{{ version }}/aframe.js"></script>
 ```
 
+<script>
+  // NOTE: Hack because variables doesn't get interpolated correctly in Markdown code blocks.
+  var versionEls = document.querySelectorAll('.highlight .value');
+  for (var i = 0; i < versionEls.length; ++i) {
+    versionEls[i].textContent = versionEls[i].textContent.replace('\{\{ version \}\}', '{{ version }}');
+  }
+</script>
+
 If we want to serve it locally, we can download the JS build:
 
-<a class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.min.js" download>Production Version <span>{{ aframe_version }}</span></a> <em class="install-note">Minified</em>
-<a class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.js" download>Development Version <span>{{ aframe_version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.min.js" download>Production Version <span>{{ version }}</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.js" download>Development Version <span>{{ version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ## npm
 
@@ -73,5 +81,4 @@ require('aframe');
 ```
 
 [codepen]: http://codepen.io/team/mozvr/pen/BjygdO?editors=100
-[current]: https://aframe.io/releases/0.2.0/aframe.min.js
 [ghpages]: https://pages.github.com/
