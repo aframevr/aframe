@@ -16,6 +16,7 @@ var registerElement = require('./core/a-register-element');
 var registerPrimitive = require('./extras/primitives/registerPrimitive');
 var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
+var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
@@ -62,6 +63,7 @@ module.exports = window.AFRAME = {
   registerShader: registerShader,
   registerSystem: registerSystem,
   registerPrimitive: registerPrimitive,
+  shaders: shaders,
   systems: systems,
   THREE: THREE,
   TWEEN: TWEEN,
