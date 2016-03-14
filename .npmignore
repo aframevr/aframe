@@ -1,2 +1,5 @@
-tests
+.DS_Store
+.npmignore
 examples
+node_modules
+test
