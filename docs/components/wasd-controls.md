@@ -1,17 +1,20 @@
-title: "WASD Controls"
+---
+title: wasd-controls
 type: components
 layout: docs
 parent_section: components
-order: 16
+order: 21
 ---
 
-The `wasd-controls` component defines the behavior of entities to be controlled by the WASD keyboard keys, which are a common way to control the camera in first-person experiences.
+The `wasd-controls` component defines the behavior of an entity to be controlled by the WASD keyboard keys. It is usually used alongside the [`camera` component](../components/).
 
-The `wasd-controls` component is generally meant to be registered alongside the [`camera` component](../components/).
+## Example
 
 ```html
 <a-entity camera look-controls wasd-controls></a-entity>
 ```
+
+## Properties
 
 | Property     | Description                                                              | Default Value |
 |--------------|--------------------------------------------------------------------------|---------------|

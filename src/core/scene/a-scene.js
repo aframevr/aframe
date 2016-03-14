@@ -3,6 +3,7 @@ var initFullscreen = require('./fullscreen');
 var initMetaTags = require('./metaTags');
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
+var systems = require('../system').systems;
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../../utils/');
@@ -47,6 +48,7 @@ var AScene = module.exports = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.systems = {};
         this.time = 0;
         this.init();
       }
@@ -56,10 +58,10 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.behaviors = [];
         this.hasLoaded = false;
+        this.isPlaying = true;
         this.materials = {};
         this.originalHTML = this.innerHTML;
-        this.paused = true;
-
+        this.setupSystems();
         this.setupDefaultLights();
         this.setupDefaultCamera();
         this.addEventListener('render-target-loaded', function () {
@@ -84,6 +86,21 @@ var AScene = module.exports = registerElement('a-scene', {
       writable: window.debug
     },
 
+    setupSystems: {
+      value: function () {
+        var systemsKeys = Object.keys(systems);
+        systemsKeys.forEach(this.initSystem.bind(this));
+      }
+    },
+
+    initSystem: {
+      value: function (name) {
+        if (this.systems[name]) { return; }
+        this.systems[name] = new systems[name]();
+        this.systems[name].init();
+      }
+    },
+
     /**
      * Shuts down scene on detach.
      */
@@ -100,6 +117,9 @@ var AScene = module.exports = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
+        var behaviors = this.behaviors;
+        var index = behaviors.indexOf(behavior);
+        if (index !== -1) { return; }
         this.behaviors.push(behavior);
       }
     },
@@ -171,7 +191,7 @@ var AScene = module.exports = registerElement('a-scene', {
           cameraEl = sceneCameras[i];
 
           if (activeCameraEl === cameraEl) {
-            if (!this.paused) { activeCameraEl.play(); }
+            if (this.isPlaying) { activeCameraEl.play(); }
             continue;
           }
           cameraEl.setAttribute('camera', 'active', false);
@@ -292,23 +312,28 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         var self = this;
         var cameraWrapperEl;
-        var defaultCamera;
+        var defaultCameraEl;
 
         // setTimeout in case the camera is being set dynamically with a setAttribute.
         setTimeout(function checkForCamera () {
-          var sceneCameras = self.querySelectorAll('[camera]');
-          if (sceneCameras.length !== 0) { return; }
+          var cameraEl = self.querySelector('[camera]');
+
+          if (cameraEl && cameraEl.isEntity) {
+            self.emit('camera-ready', { cameraEl: cameraEl });
+            return;
+          }
 
           // DOM calls to create camera.
           cameraWrapperEl = document.createElement('a-entity');
           cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
           cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-          defaultCamera = document.createElement('a-entity');
-          defaultCamera.setAttribute('camera', {'active': true});
-          defaultCamera.setAttribute('wasd-controls');
-          defaultCamera.setAttribute('look-controls');
-          cameraWrapperEl.appendChild(defaultCamera);
+          defaultCameraEl = document.createElement('a-entity');
+          defaultCameraEl.setAttribute('camera', {'active': true});
+          defaultCameraEl.setAttribute('wasd-controls');
+          defaultCameraEl.setAttribute('look-controls');
+          cameraWrapperEl.appendChild(defaultCameraEl);
           self.appendChild(cameraWrapperEl);
+          self.emit('camera-ready', { cameraEl: defaultCameraEl });
         });
       }
     },
@@ -389,46 +414,22 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Reloads the scene to the original DOM content
-     * @type {bool} - paused - It reloads the scene with all the
-     * dynamic behavior paused: dynamic components and animations
+     * Reload the scene to the original DOM content.
+     *
+     * @param {bool} doPause - Whether to reload the scene with all dynamic behavior paused.
      */
     reload: {
-      value: function (paused) {
+      value: function (doPause) {
         var self = this;
-        if (paused) { this.pause(); }
+        if (doPause) { this.pause(); }
         this.innerHTML = this.originalHTML;
         this.init();
         ANode.prototype.load.call(this, play);
         function play () {
-          if (self.paused) { return; }
+          if (!self.isPlaying) { return; }
           AEntity.prototype.play.call(self);
         }
       }
-    },
-
-    /**
-     * Stops tracking material.
-     *
-     * @param {object} material
-     */
-    unregisterMaterial: {
-      value: function (material) {
-        delete this.materials[material.uuid];
-      }
-    },
-
-    /**
-     * Trigger update to all registered materials.
-     */
-    updateMaterials: {
-      value: function (material) {
-        var materials = this.materials;
-        Object.keys(materials).forEach(function (uuid) {
-          materials[uuid].needsUpdate = true;
-        });
-      },
-      writable: window.debug
     },
 
     /**
@@ -442,12 +443,17 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function (time) {
         var camera = this.camera;
         var timeDelta = time - this.time;
+        var systems = this.systems;
 
-        if (!this.paused) {
+        if (this.isPlaying) {
           TWEEN.update(time);
           this.behaviors.forEach(function (component) {
-            if (component.el.paused) { return; }
+            if (!component.el.isPlaying) { return; }
             component.tick(time, timeDelta);
+          });
+          Object.keys(systems).forEach(function (key) {
+            if (!systems[key].tick) { return; }
+            systems[key].tick(time, timeDelta);
           });
         }
 

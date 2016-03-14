@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, AFRAME */
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
@@ -7,7 +7,8 @@ suite('material', function () {
 
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('material', '');
+    el.setAttribute('material', 'shader: flat');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });
@@ -16,12 +17,6 @@ suite('material', function () {
   suite('update', function () {
     test('creates material', function () {
       assert.ok(this.el.getObject3D('mesh').material);
-    });
-
-    test('registers material to scene', function () {
-      var el = this.el;
-      var material = this.el.getObject3D('mesh').material;
-      assert.equal(el.sceneEl.materials[material.uuid], material);
     });
 
     test('updates material', function () {
@@ -33,13 +28,14 @@ suite('material', function () {
     });
 
     test('defaults to standard material', function () {
+      this.el.setAttribute('material', '');
       assert.equal(this.el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
     test('does not recreate material for basic updates', function () {
       var el = this.el;
       var uuid = el.getObject3D('mesh').material.uuid;
-      el.setAttribute('material', 'color: #F0F');
+      el.setAttribute('material', 'color', '#F0F');
       assert.equal(el.getObject3D('mesh').material.uuid, uuid);
     });
 
@@ -53,20 +49,68 @@ suite('material', function () {
     test('can unset fog', function () {
       var el = this.el;
       assert.ok(el.getObject3D('mesh').material.fog);
-      el.setAttribute('material', 'fog: false');
+      el.setAttribute('material', 'fog', false);
       assert.notOk(el.getObject3D('mesh').material.fog);
     });
 
-    test('re-registers material when toggling material to flat shading', function () {
+    test('emits event when loading texture', function (done) {
       var el = this.el;
-      var oldMaterial = el.getObject3D('mesh').material;
-      var newMaterial;
-      el.setAttribute('material', 'shader: flat');
-      el.setAttribute('material', 'shader: standard');
+      var imageUrl = 'base/examples/_images/mozvr.png';
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('material-texture-loaded', function (evt) {
+        assert.equal(evt.detail.src, imageUrl);
+        done();
+      });
+    });
+  });
 
-      newMaterial = el.getObject3D('mesh').material;
-      assert.notOk(el.sceneEl.materials[oldMaterial.uuid]);
-      assert.equal(el.sceneEl.materials[newMaterial.uuid], newMaterial);
+  suite('updateSchema', function () {
+    test('Updates the schema', function () {
+      var el = this.el;
+      el.components.material.updateSchema({shader: 'flat'});
+      assert.ok(el.components.material.schema.color);
+      assert.ok(el.components.material.schema.fog);
+      assert.ok(el.components.material.schema.height);
+      assert.ok(el.components.material.schema.repeat);
+      assert.ok(el.components.material.schema.src);
+      assert.ok(el.components.material.schema.width);
+      assert.notOk(el.components.material.schema.metalness);
+      assert.notOk(el.components.material.schema.roughness);
+      assert.notOk(el.components.material.schema.envMap);
+    });
+  });
+
+  suite('updateShader', function () {
+    test('the material is updated', function () {
+      var el = this.el;
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
+      el.components.material.updateShader('standard');
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
+    });
+
+    test('the material is set to MeshShaderMaterial for custom shaders', function () {
+      var el = this.el;
+      AFRAME.registerShader('test', {
+        schema: {
+          'luminance': { default: 1 }
+        },
+
+        vertexShader: [
+          'varying vec3 vWorldPosition;',
+          'void main() {',
+          'vec4 worldPosition = modelMatrix * vec4( position, 1.0 );',
+          'vWorldPosition = worldPosition.xyz;',
+          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+          '}'
+        ].join('\n'),
+
+        fragmentShader: [
+          'void main() { gl_FragColor = vec4(1.0,0.0,1.0,1.0); }'
+        ].join('\n')
+      });
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
+      el.components.material.updateShader('test');
+      assert.equal(el.getObject3D('mesh').material.type, 'ShaderMaterial');
     });
   });
 

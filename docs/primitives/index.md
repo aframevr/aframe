@@ -5,44 +5,88 @@ type: primitives
 layout: docs
 parent_section: docs
 order: 1
-section_order: 2
+section_order: 4
 ---
 
-Primitives are concise, semantic building blocks blocks that wrap A-Frame's underlying [entity-component](../core/) system. A-Frame ships with a handful of built-in primitives for common use cases such as `<a-cube>`, `<a-model>`, and `<a-sky>`. These primitives are to help people get started with using A-Frame. To uncover the full composability and extensibility of A-Frame, dive down into the underlying [entity-component system](../core/).
+Primitives alias A-Frame [entities](../core/entity.md) and map HTML attributes to [component](../core/component.md) properties. They are a convenience layer on top of the core API and are meant to:
 
-Using primitives, to create a red cube that's 3 meters wide, we can write:
+- Ease us into the concept of the [entity-component-system](../core/) pattern.
+- Provide a more familiar interface with HTML attributes mapping to only a single value.
+- Pre-compose useful components together with prescribed defaults to create semantic building blocks out-of-the-box.
+
+A-Frame ships with a handful of primitives for common use cases such as displaying basic geometric primitives, 3D models, or media assets.
+
+## Example
+
+Here is an assortment of various primitives in use:
 
 ```html
-<a-cube width="3" color="red"></a-cube>
+<a-scene>
+  <!-- Using the asset management system for better performance. -->
+  <a-assets>
+    <a-asset-item id="fox-obj" src="fox.obj"></a-asset-item>
+    <a-asset-item id="fox-mtl" src="fox.mtl"></a-asset-item>
+    <img id="texture" src="texture.png">
+    <video id="video" src="video.mp4">
+  </a-assets>
+
+  <a-camera fov="80"><a-cursor></a-cursor></a-camera>
+  <a-box src="#texture" depth="2" height="5" width="1"></a-sky>
+  <a-image src="fireball.jpg"></a-image>
+  <a-video src="#video">
+  <a-obj-model src="#fox-obj" mtl="#fox-mtl"></a-obj-model>
+  <a-sky color="#432FA0"></a-sky>
+</a-scene>
 ```
 
-... instead of the more verbose entity-component equivalent:
+## How They Work
+
+To create a wide red box using the primitives API, we could write:
+
+```html
+<a-box color="red" width="3"></a-box>
+```
+
+Once attached, this will expand to:
+
+```html
+<a-box color="red" width="3" geometry="primitive: box; width: 3" material="color: red"></a-box>
+```
+
+Thus, it is equivalent to:
 
 ```html
 <a-entity geometry="primitive: box; width: 3" material="color: red"></a-entity>
 ```
 
-Under the hood, `<a-cube>` is wrapping `<a-entity>` in a custom element, and mapping the HTML `width` attribute to the underlying `geometry` component's width property.
+Under the hood, we see that primitives *extend* `<a-entity>` as a custom element while providing some defaults. It defaults the `geometry.primitive` property to `box`. And it *maps* (i.e., proxies) the HTML `width` attribute to the underlying `geometry.width` property and the HTML `color` attribute to the underlying `material.color` property.
 
-Primitives are designed to enable developers to start building A-Frame scenes without having to learn A-Frame's full entity-component system. By being semantic and concise, they also improve the readability of our markup.
+## Primitives are Entities
 
-Primitives and entity-component instances can be freely mixed within an A-Frame scene. Entities with components are useful when developers need to go beyond primitives and tap into the deeper power and flexibility of A-Frame's built-in components, which include [material](../components/material.html), [geometry](../components/geometry.html), [light](../components/light.html), and [more](../components/material.html).
+Since primitives extends `<a-entity>`s, operations that can be done upon entities can be done upon primitives. These operations include:
 
-Entities can also be very useful for __grouping elements__ (primitives or otherwise):
+- Positioning, rotating, and scaling
+- Attaching additional [components](../core/component.html) to define additional appearance, behavior, or functionality
+- Applying [animations](../core/animation.html)
+- Specifying [mixins](../core/mixin.html)
 
-```html
-<a-entity id="tree" position="30 12 86">
-  <a-sphere color="green" radius="0.5" position="0 1.5 0"></a-sphere>
-  <a-cylinder color="brown" radius="0.2" height="1" position="0 0.5 0"></a-cylinder>
-</a-entity>
-```
+## Primitives are Helpers
 
-Primitives work with animations also. To create a cube that spins endlessly, we can write:
+Note that primitives are a helper layer on top of A-Frame's core API. Thus it is still extremely valuable to know things like:
 
-```html
-<a-cube color="yellow">
-  <a-animation attribute="rotation" from="0 0 0" to="0 360 0" repeat="indefinite" easing="linear"></a-animation>
-</a-cube>
-```
+- How the rest of the system works under the hood
+- How to compose and configure components onto entities
+- How to use the asset management system
 
-Adding components directly to primitives to extend their behavior is currently not supported, however, and will lead to unpredictable results.
+If you haven't already, we heavily recommend skimming through the rest of the documentation.
+
+## Reading the Documentation for Individual Primitives
+
+The following documentation pages for individual primitive elements will:
+
+- Describe what the primitive does in practice
+- Describe roughly how the primitive is composed
+- Describe which component properties the attributes proxy the value to (e.g., `color` maps to `material.color`, meaning the `color` property of the [material component](../components/material.html)).
+- Describe any techniques or caveats
+
+A lot of the primitives represent geometric meshes (i.e., shapes with an apperance). Thus, many of them inherit the common [mesh attributes](./mesh-attributes.html). So while attributes such as `color` or `src` are not listed in the attributes table for primitives such as [`<a-box>`](./a-box.html) or [`<a-plane>`](./a-plane.html), they are there. Remember to refer to common mesh attributes table when noted.

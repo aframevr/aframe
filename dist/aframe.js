@@ -58625,6 +58625,7 @@ var proto = Object.create(ANode.prototype, {
       this.addToParent();
       if (!this.isScene) {
         this.load();
+        if (!this.parentNode.paused) { this.play(); }
       }
     }
   },
@@ -59969,6 +59970,7 @@ var error = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 
 // Built-in property types.
+registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
@@ -60000,6 +60002,17 @@ function registerPropertyType (type, defaultValue, parse, stringify) {
   };
 }
 module.exports.registerPropertyType = registerPropertyType;
+
+function arrayParse (value) {
+  if (Array.isArray(value)) { return value; }
+  if (!value || typeof value !== 'string') { return []; }
+  return value.split(',').map(trim);
+  function trim (str) { return str.trim(); }
+}
+
+function arrayStringify (value) {
+  return value.join(', ');
+}
 
 function defaultParse (value) {
   return value;
@@ -60722,6 +60735,8 @@ function processPropertyDefinition (propDefinition) {
     if (defaultVal !== undefined && ['boolean', 'number'].indexOf(typeof defaultVal) !== -1) {
       // Type inference.
       typeName = typeof defaultVal;
+    } else if (Array.isArray(defaultVal)) {
+      typeName = 'array';
     } else {
       // Fall back to string.
       typeName = 'string';

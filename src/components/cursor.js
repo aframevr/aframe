@@ -50,7 +50,7 @@ module.exports.Component = registerComponent('cursor', {
 
   emit: function (evt) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evt);
+    this.el.emit(evt, { target: this.intersectedEl });
     if (intersectedEl) { intersectedEl.emit(evt); }
   },
 
@@ -84,11 +84,11 @@ module.exports.Component = registerComponent('cursor', {
   onIntersectionCleared: function (evt) {
     var el = evt.detail.el;
     if (!el || !this.intersectedEl) { return; }
-    this.intersectedEl = null;
     el.removeState('hovered');
     el.emit('mouseleave');
     this.el.removeState('hovering');
     this.el.removeState('fusing');
+    this.intersectedEl = null;
     clearTimeout(this.fuseTimeout);
   }
 });

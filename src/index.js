@@ -13,6 +13,9 @@ var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
 var registerElement = require('./core/a-register-element');
+var registerShader = require('./core/shader').registerShader;
+var registerSystem = require('./core/system').registerSystem;
+var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
 var TWEEN = window.TWEEN = require('tween.js');
@@ -20,7 +23,9 @@ var TWEEN = window.TWEEN = require('tween.js');
 var pkg = require('../package');
 var utils = require('./utils/');
 
+require('./systems/index');  // Register core systems.
 require('./components/index');  // Register core components.
+require('./shaders/index');  // Register core shaders.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
 
@@ -57,6 +62,9 @@ module.exports = window.AFRAME = {
   debug: debug,
   registerComponent: registerComponent,
   registerElement: registerElement,
+  registerShader: registerShader,
+  registerSystem: registerSystem,
+  systems: systems,
   THREE: THREE,
   TWEEN: TWEEN,
   utils: utils,
