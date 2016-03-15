@@ -8,11 +8,7 @@
 
 ## Short-Term
 
-- WebVR 1.0 support
-- Better mobile video support
-- Performance (geometry merging, asset management)
-- Standard physics, template, text components
-- Custom geometries
+Check the A-Frame milestones (https://github.com/aframevr/aframe/milestones) to see what work is specifically queued for upcoming releases.
 
 ## Long-Term
 
