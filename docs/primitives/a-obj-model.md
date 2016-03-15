@@ -34,5 +34,9 @@ Note that the .OBJ model primitive inherits common [mesh attributes][mesh]:
 | mtl       | obj-model.mtl     | null          |
 | src       | obj-model.obj     | null          |
 
+## Troubleshooting
+
+If you don't see your model, try scaling it down. OBJ models generally have extremely large scales in comparison to A-Frame's scale.
+
 [mesh]: ./mesh-attributes.md
 [objcomponent]: ../components/obj-model.md

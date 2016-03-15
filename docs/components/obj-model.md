@@ -44,6 +44,10 @@ We can also load assets by specifying the path directly within `url()`. Note thi
 <a-entity obj-model="obj: url(/path/to/tree.obj); mtl: url(/path/to/tree.mtl)"></a-entity>
 ```
 
+## Troubleshooting
+
+If you don't see your model, try scaling it down. OBJ models generally have extremely large scales in comparison to A-Frame's scale.
+
 ## Additional Resources
 
 We can find and download models on the web to drop into our scenes:
