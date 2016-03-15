@@ -11,7 +11,7 @@ var processSchema = Schema.process;
 suite('schema', function () {
   suite('isSingleProperty', function () {
     test('for empty object', function () {
-      assert.ok(isSingleProperty({ }));
+      assert.notOk(isSingleProperty({ }));
     });
 
     test('for type defined', function () {
@@ -114,7 +114,6 @@ suite('schema', function () {
   suite('processPropertyDefinition', function () {
     test('adds string type if not specified', function () {
       var definition = processSchema({});
-      assert.equal(definition.type, 'string');
       assert.ok(typeof definition.parse, 'function');
       assert.ok(typeof definition.stringify, 'function');
     });

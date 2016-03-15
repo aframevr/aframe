@@ -12,7 +12,7 @@ function isSingleProperty (schema) {
   if ('type' in schema) {
     return typeof schema.type === 'string';
   }
-  return 'default' in schema || Object.keys(schema).length === 0;
+  return 'default' in schema;
 }
 module.exports.isSingleProperty = isSingleProperty;
 
