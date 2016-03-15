@@ -111,6 +111,9 @@ module.exports.Component = registerComponent('look-controls', {
     var hmdEuler = new THREE.Euler();
     hmdEuler.order = 'YXZ';
     return function () {
+      if (!this.mouseDown && this.dolly.quaternion.equals(this.zeroQuaternion)) {
+        return;
+      }
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var hmdQuaternion = this.calculateHMDQuaternion();
