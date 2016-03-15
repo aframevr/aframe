@@ -7,7 +7,7 @@ order: 8
 ---
 
 
-The curved image primitive creates images that bend around the user. Curved images arranged around the camera can be pleasing for legibility since each pixel sits at the same distance from the user. They can be a better choice than angled flat planes for complex layouts because they ensure a smooth surface rather than a series of awkward seams between planes. It is an entity that prescribes a double-sided open-ended cylinder with the [geometry component](../components/geometry.html) and rendering textures on the inside of the cylinder with the [material component](../components/material.html).
+The curved image primitive creates images that bend around the user. Curved images arranged around the camera can be pleasing for legibility since each pixel sits at the same distance from the user. They can be a better choice than angled flat planes for complex layouts because they ensure a smooth surface rather than a series of awkward seams between planes. It is an entity that prescribes a double-sided open-ended cylinder with the [geometry component](../components/geometry.md) and rendering textures on the inside of the cylinder with the [material component](../components/material.md).
 
 ## Example
 
@@ -28,7 +28,7 @@ The curved image primitive creates images that bend around the user. Curved imag
 
 ## Attributes
 
-Note that the curved image primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the curved image primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping | Default Value           |
 |-----------------|-------------------|-------------------------|

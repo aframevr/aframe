@@ -6,7 +6,7 @@ parent_section: primitives
 order: 14
 ---
 
-The ring primitive creates a ring or disc shape. It is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `ring`.
+The ring primitive creates a ring or disc shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `ring`.
 
 ## Example
 
@@ -24,7 +24,7 @@ The ring primitive creates a ring or disc shape. It is an entity that prescribes
 
 ## Attributes
 
-Note that the ring primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the ring primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute      | Component Mapping      |
 |----------------|------------------------+

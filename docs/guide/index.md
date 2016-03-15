@@ -84,10 +84,10 @@ Read through the documentation front-to-back for more details, and if you have a
 > Check out [awesome things][awesome] that people have done with A-Frame.
 
 [awesome]: https://github.com/aframevr/awesome-aframe
-[component]: ../core/component.html
+[component]: ../core/component.md
 [custom]: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements
-[ecs]: ../core/index.html
-[entity]: ../core/entity.html
+[ecs]: ../core/index.md
+[entity]: ../core/entity.md
 [mozvr]: https://mozvr.com
 [slack]: https://aframevr-slack.herokuapp.com/
 [three]: http://three.js.org/

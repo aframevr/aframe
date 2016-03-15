@@ -4,16 +4,7 @@ var THREE = require('../lib/three');
 var utils = require('../utils/texture');
 
 /**
- * Flat shader.
- *
- * @namespace flat
- * @param {string} color - Diffuse color.
- * @param {boolean} fog - Whether or not to be affected by fog.
- * @param {number} height - Height to render texture.
- * @param {string} repeat - X and Y value for size of texture repeating
- * @param {string} src - To load a texture. takes a selector to an img/video
- *         element or a direct url().
- * @param {number} width - Width to render texture.
+ * Flat shader using THREE.MeshBasicMaterial.
  */
 module.exports.Component = registerShader('flat', {
   schema: {

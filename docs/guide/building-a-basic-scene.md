@@ -19,7 +19,7 @@ The simplest scene would be a scene containing a box primitive:
 </a-scene>
 ```
 
-Just like with regular HTML elements, each attribute of the entity maps to one value. We can define a color, width, height, and depth of `<a-box>`. To see more attributes that `<a-box>` and other geometric primitives can accept, check out the [common mesh attributes][../primitives/mesh-attributes.html].
+Just like with regular HTML elements, each attribute of the entity maps to one value. We can define a color, width, height, and depth of `<a-box>`. To see more attributes that `<a-box>` and other geometric primitives can accept, check out the [common mesh attributes][mesh].
 
 Once we open up our scene, the default control setup allows us to look and walk around. To look around, we can drag the mouse or just look around with a mobile device or a Rift. To walk around, we can use the WASD keys. Then to [enter VR][mozvr], click on the Enter VR button.
 
@@ -206,17 +206,18 @@ Finally, we can add a background to the scene using the [sky primitive][sky], `<
 
 And that wraps up our basic scene. Once we get past the novelty of placing static objects in a 3D space in HTML, we want to be able to add complex appearance, behavior, and functionality. We can do so by [using and writing components][next].
 
-[animation]: ../core/animation.html
-[asset]: ../core/asset-management-system.html
-[component]: ../core/component.html
-[entity]: ../core/entity.html
-[events]: ../extras/declarative-events.html
-[light]: ../primitives/light.html
+[animation]: ../core/animation.md
+[asset]: ../core/asset-management-system.md
+[component]: ../core/component.md
+[entity]: ../core/entity.md
+[events]: ../extras/declarative-events.md
+[light]: ../primitives/light.md
+[mesh]: ../primitives/mesh-attributes.md
 [mozvr]: https://mozvr.com#start
-[next]: ./using-and-writing-components.html
-[position]: ../components/position.html
+[next]: ./using-and-writing-components.md
+[position]: ../components/position.md
 [primitives]: ../primitives/
-[rotation]: ../components/rotation.html
-[scale]: ../components/scale.html
-[sky]: ../primitives/sky.html
+[rotation]: ../components/rotation.md
+[scale]: ../components/scale.md
+[sky]: ../primitives/sky.md
 [threejs]: http://threejs.org

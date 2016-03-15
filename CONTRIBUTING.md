@@ -1,23 +1,32 @@
-# How to report a bug
-1. Search the [issue tracker](https://github.com/aframevr/aframe/issues) for similar issues. 
+# Join the Community on Slack
+
+1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to the A-Frame Slack channel.
+2. [Join the discussion](https://aframevr.slack.com)!
+
+# Filing an Issue
+
+1. Search the [issue tracker](https://github.com/aframevr/aframe/issues) for similar issues.
 2. Specify the version of A-Frame where the bug occurred.
 3. Specify information about your browser and system (e.g., "Firefox Nightly on OS X")
 4. Describe the problem in detail (i.e., what happened and what you expected would happen).
-5. If possible, provide a small test case with [Codepen](http://codepen.io), a link to your application, and/or a screenshot. [Here](http://codepen.io/anon/pen/KVWpbb) is a sample pen you can fork.
+5. If possible, provide a small test case with [Codepen](http://codepen.io), a link to your application, and/or a screenshot. You can fork this [sample pen](http://codepen.io/anon/pen/KVWpbb).
 
-# How to join us on Slack
-1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to our Slack channel.
-2. [Join](https://aframevr.slack.com) the discussion.
+# Contributing Code to A-Frame
 
-# How to contribute to A-Frame
-1. Make sure you have a [GitHub account](https://github.com/join).
+1. Have a [GitHub account](https://github.com/join).
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
-3. Check out the [dev branch](https://github.com/aframevr/aframe/tree/dev).
+3. Run `npm install` and `npm run dev` to serve the test examples.
 4. Make changes to your fork of the repository.
-5. Submit a pull request to the dev branch.
+5. If possible, write a unit test and run with `npm test`.
+6. Submit a pull request to the master branch.
 
-### Before contributing code, please note:
+Please note you would agree to license your contributions under the [license](LICENSE).
 
-* You agree to license your contributions under the [license](LICENSE).
+## Sharing your Work
 
-Thank you for contributing code. 
+1. Create something awesome like a scene, a component, or a shader.
+2. Publish your work to Github so everyone can learn from your work.
+3. Share it on [Slack](https://aframevr-slack.herokuapp.com) and the [awesome-aframe repository](https://github.com/aframevr/awesome-aframe).
+4. Rack up the Github stars!
+
+Thanks for contributing!

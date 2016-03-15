@@ -6,7 +6,7 @@ parent_section: primitives
 order: 9
 ---
 
-The cylinder primitive is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `cylinder`. It can be used to create tubes and curved surfaces.
+The cylinder primitive is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cylinder`. It can be used to create tubes and curved surfaces.
 
 ## Examples
 
@@ -28,7 +28,7 @@ The cylinder primitive is versatile and can actually be used to create various s
 
 ## Attributes
 
-Note that the cylinder primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the cylinder primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|
