@@ -14,10 +14,9 @@ var shaderNames = shader.shaderNames;
 /**
  * Material component.
  *
- * @namespace material
- * @param {string} shader - Determines how material is shaded. Defaults to `standard`,
- *         three.js's implementation of PBR. Another option is `flat` where we use
- *         MeshBasicMaterial.
+ * @member {object} shader - Determines how material is shaded. Defaults to `standard`,
+ *         three.js's implementation of PBR. Another standard shading model is `flat` which
+ *         uses MeshBasicMaterial.
  */
 module.exports.Component = registerComponent('material', {
   schema: {

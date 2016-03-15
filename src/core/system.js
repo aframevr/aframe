@@ -4,14 +4,12 @@ var systems = module.exports.systems = {};  // Keep track of registered componen
 /**
  * System class definition.
  *
- * Systems are pieces of data and logic that are associated to one particular
- * component. They're global to all the instantiated components of that type
- * and provide an API for them to use. An example would be a physics component
- * that would contain a physics system that oversees all the entities and
- * calculate the necessary updates based on the entities interactions.
+ * Systems provide global scope and services to a group of instantiated components of the.
+ * same class. For example, a physics component that creates a physics world that oversees
+ * all entities with a physics or rigid body component.
  *
- * @namespace System
- * @member {Element} sceneEl - Handle to the scene element where the system applies to.
+ * @member {string} name - Name that system is registered under.
+ * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
 var System = module.exports.System = function () {
   var component = components && components.components[this.name];
@@ -47,7 +45,7 @@ System.prototype = {
   pause: function () { /* no-op */ },
 
   /**
-   * Remove handler. Shuts down the system
+   * Remove handler. Shuts down the system.
    */
   remove: function () { /* no-op */ }
 };
