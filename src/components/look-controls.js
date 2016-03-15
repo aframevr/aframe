@@ -230,6 +230,10 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onMouseDown: function (event) {
+    if (event.button !== 0) {
+      return;
+    }
+
     this.mouseDown = true;
     this.previousMouseEvent = event;
 
