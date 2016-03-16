@@ -42,12 +42,7 @@ System.prototype = {
   /**
    * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
    */
-  pause: function () { /* no-op */ },
-
-  /**
-   * Remove handler. Shuts down the system.
-   */
-  remove: function () { /* no-op */ }
+  pause: function () { /* no-op */ }
 };
 
 /**
