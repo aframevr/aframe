@@ -30,6 +30,7 @@ var isMobile = utils.isMobile();
  * @member {object} renderer
  * @member {bool} renderStarted
  * @member {object} stereoRenderer
+ * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
 var AScene = module.exports = registerElement('a-scene', {
