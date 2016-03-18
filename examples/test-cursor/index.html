@@ -61,7 +61,8 @@
         var clickedEl = null;
         var els = document.querySelectorAll('a-entity');
         Array.prototype.forEach.call(els, function (el) {
-          el.addEventListener('click', function () {
+          el.addEventListener('click', function (e) {
+            console.log('uv', e.detail.uv);
             if (clickedEl && clickedEl !== el) {
               clickedEl.removeState('selected');
             }

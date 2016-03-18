@@ -50,7 +50,9 @@ module.exports.Component = registerComponent('cursor', {
 
   emit: function (evt) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evt, { target: this.intersectedEl });
+    this.el.emit(evt, Object.assign({}, this.intersectionEvent, {
+      target: this.intersectedEl
+    }));
     if (intersectedEl) { intersectedEl.emit(evt); }
   },
 
@@ -68,6 +70,9 @@ module.exports.Component = registerComponent('cursor', {
     if (this.intersectedEl === el) { return; }
     if (distance >= this.data.maxDistance) { return; }
     this.intersectedEl = el;
+    this.intersectionEvent = {
+      uv: evt.detail.uv
+    };
     el.addState('hovered');
     el.emit('mouseenter');
     this.el.addState('hovering');
