@@ -46,7 +46,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.innerHTML = 'NEW';
       sceneEl.reload();
-      assert.ok(sceneEl.innerHTML, '');
+      assert.equal(sceneEl.innerHTML, '');
     });
 
     test('reloads the scene and pauses', function () {
@@ -56,43 +56,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.reload(true);
       sinon.assert.called(AEntity.prototype.pause);
       sinon.assert.called(ANode.prototype.load);
-    });
-  });
-
-  suite('setupDefaultLights', function () {
-    setup(function () {
-      var el = this.el;
-      var lights = el.querySelectorAll('[light]');
-      var i;
-      for (i = 0; i < lights.length; ++i) {
-        el.removeChild(lights[i]);
-      }
-    });
-
-    test('adds lights to scene', function (done) {
-      var el = this.el;
-      assert.notOk(document.querySelectorAll('[light]').length);
-      el.setupDefaultLights();
-      process.nextTick(function () {
-        assert.ok(document.querySelectorAll('[light]').length);
-        done();
-      });
-    });
-
-    test('removes default lights when more lights are added', function (done) {
-      var el = this.el;
-      var light = document.createElement('a-entity');
-      light.setAttribute('light', '');
-
-      el.setupDefaultLights();
-      process.nextTick(function () {
-        el.appendChild(light);
-        setTimeout(function () {
-          assert.notOk(
-            document.querySelectorAll('[data-aframe-default-light]').length);
-          done();
-        });
-      });
     });
   });
 });

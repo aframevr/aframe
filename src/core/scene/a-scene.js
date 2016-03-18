@@ -11,7 +11,6 @@ var utils = require('../../utils/');
 var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 
-var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
 var isMobile = utils.isMobile();
 
@@ -45,7 +44,6 @@ var AScene = module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.defaultLightsEnabled = true;
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
@@ -62,7 +60,6 @@ var AScene = module.exports = registerElement('a-scene', {
         this.isPlaying = true;
         this.originalHTML = this.innerHTML;
         this.setupSystems();
-        this.setupDefaultLights();
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -149,25 +146,6 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Notify scene that light has been added and to remove the default.
-     *
-     * @param {object} el - element holding the light component.
-     */
-    registerLight: {
-      value: function (el) {
-        var defaultLights;
-        if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
-          // User added a light, remove default lights through DOM.
-          defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-          for (var i = 0; i < defaultLights.length; i++) {
-            this.removeChild(defaultLights[i]);
-          }
-          this.defaultLightsEnabled = false;
-        }
-      }
-    },
-
-    /**
      * @param {object} behavior - Generally a component. Has registered itself to behaviors.
      */
     removeBehavior: {
@@ -222,27 +200,6 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.renderer = this.stereoRenderer;
         this.resize();
-      }
-    },
-
-    /**
-     * Prescibe default lights to the scene.
-     * Does so by injecting markup such that this state is not invisible.
-     * These lights are removed if the user adds any lights.
-     */
-    setupDefaultLights: {
-      value: function () {
-        var ambientLight = document.createElement('a-entity');
-        ambientLight.setAttribute('light',
-                                  {color: '#fff', type: 'ambient'});
-        ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(ambientLight);
-
-        var directionalLight = document.createElement('a-entity');
-        directionalLight.setAttribute('light', { color: '#fff', intensity: 0.2 });
-        directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
-        directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(directionalLight);
       }
     },
 
@@ -368,11 +325,11 @@ function getCanvasSize (canvas) {
 }
 
 /**
-  * Manually handles fullscreen for non-VR mobile where the renderer' VR
-  * display is not polyfilled.
-  *
-  * Desktop just works so use the renderer.setFullScreen in that case.
-  */
+ * Manually handles fullscreen for non-VR mobile where the renderer' VR
+ * display is not polyfilled.
+ *
+ * Desktop just works so use the renderer.setFullScreen in that case.
+ */
 function setFullscreen (canvas) {
   if (canvas.requestFullscreen) {
     canvas.requestFullscreen();
