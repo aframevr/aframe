@@ -118,9 +118,8 @@ var AScene = module.exports = registerElement('a-scene', {
     addBehavior: {
       value: function (behavior) {
         var behaviors = this.behaviors;
-        var index = behaviors.indexOf(behavior);
-        if (index !== -1) { return; }
-        this.behaviors.push(behavior);
+        if (behaviors.indexOf(behavior) !== -1) { return; }
+        behaviors.push(behavior);
       }
     },
 

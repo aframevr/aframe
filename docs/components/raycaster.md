@@ -6,7 +6,7 @@ parent_section: components
 order: 14
 ---
 
-The `raycaster` component provides for an entity the ability to do intersection testing with a [raycaster](https://en.wikipedia.org/wiki/Ray_casting). The raycaster component is a helper component. By itself, it does not do anything, but it can be and is used by components such as the [cursor](cursor.html) component. The raycaster component will poll for intersections with other entities and set `this.intersectedEl` to the closest intersected entity.
+The raycaster component provides for an entity the ability to do intersection testing with a [raycaster][wiki-raycasting]. The raycaster component is a helper component. By itself, it does not do anything, but it can be and is used by components such as the [cursor component][components-cursor]. The raycaster component will poll for intersections with other entities and set `this.intersectedEl` to the closest intersected entity.
 
 ## Members
 
@@ -35,3 +35,6 @@ AFRAME.registerComponent('my-component', {
   }
 });
 ```
+
+[components-cursor]: ./cursor.md
+[wiki-raycasting]: https://en.wikipedia.org/wiki/Ray_casting

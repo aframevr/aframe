@@ -6,7 +6,7 @@ parent_section: components
 order: 4
 ---
 
-The `cursor` component defines interaction with other entities through clicking and gazing, by using the [raycaster](raycaster.html) component to determine which object has been clicked. When the mouse is clicked, the closest visible entity intersecting the cursor will have a DOM `click` event triggered. Note the `cursor` component only defines the behavior. To define the appearance, you might apply the geometry component.
+The cursor component defines interaction with other entities through clicking and gazing, by using the [raycaster][raycaster] component to determine which object has been clicked. When the mouse is clicked, the closest visible entity intersecting the cursor will have a DOM `click` event triggered. Note the cursor component only defines the behavior. To define the appearance, you might apply the geometry component.
 
 ## Example
 
@@ -84,8 +84,11 @@ To add visual feedback to the cursor in order to display indication when the cur
 </a-entity>
 ```
 
-To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on Codepen](http://codepen.io/team/mozvr/pen/RrxgwE).
+To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on Codepen][cursor-codepen].
 
 ## Caveats
 
 The raycaster currently picks up non-visible entities. This issue will be addressed in a later release.
+
+[cursor-codepen]: http://codepen.io/team/mozvr/pen/RrxgwE
+[raycaster]: ./raycaster.md

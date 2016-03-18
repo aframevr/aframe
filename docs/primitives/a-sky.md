@@ -24,7 +24,7 @@ A plain color as a background:
 
 ## Attributes
 
-Note that the sky primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the sky primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|
