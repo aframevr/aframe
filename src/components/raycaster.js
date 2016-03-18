@@ -87,7 +87,7 @@ module.exports.Component = registerComponent('raycaster', {
    */
   setExistingIntersection: function (el, distance, uv) {
     this.intersectedEl = el;
-    this.el.emit('intersection', { el: el, distance: distance, uv: uv, boop: 'beep' });
+    this.el.emit('intersection', { el: el, distance: distance, uv: uv });
   },
 
   /**
