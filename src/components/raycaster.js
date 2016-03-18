@@ -66,11 +66,26 @@ module.exports.Component = registerComponent('raycaster', {
     var intersectedObjs = this.intersect(scene.children);
     for (var i = 0; i < intersectedObjs.length; ++i) {
       intersectedObj = intersectedObjs[i];
+
+      while (
+        (intersectedObj.object.parent) &&
+        (intersectedObj.object.el === undefined)
+      ) {
+        intersectedObj.object = intersectedObj.object.parent;
+      }
+
       // If the intersected object is the cursor itself
       // or the object is further than the max distance
-      if (intersectedObj.object.el === undefined) { continue; }
-      if (intersectedObj.object.el === cursorEl) { continue; }
-      if (!intersectedObj.object.visible) { continue; }
+
+      if (intersectedObj.object.el === undefined) {
+        continue;
+      }
+      if (intersectedObj.object.el === cursorEl) {
+        continue;
+      }
+      if (!intersectedObj.object.visible) {
+        continue;
+      }
       return intersectedObj;
     }
     return null;
@@ -79,9 +94,9 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Remembers the last intersected element
    */
-  setExistingIntersection: function (el, distance) {
+  setExistingIntersection: function (el, distance, uv) {
     this.intersectedEl = el;
-    this.el.emit('intersection', { el: el, distance: distance });
+    this.el.emit('intersection', { el: el, distance: distance, uv: uv, boop: 'beep' });
   },
 
   /**
@@ -101,6 +116,6 @@ module.exports.Component = registerComponent('raycaster', {
     if (this.intersectedEl !== el) {
       this.clearExistingIntersection();
     }
-    this.setExistingIntersection(el, obj.distance);
+    this.setExistingIntersection(el, obj.distance, obj.uv);
   }
 });
