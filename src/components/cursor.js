@@ -50,10 +50,13 @@ module.exports.Component = registerComponent('cursor', {
 
   emit: function (evt) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evt, Object.assign({}, this.intersectionEvent, {
+    var dispatchEvent = Object.assign({}, this.intersectionEvent, {
       target: this.intersectedEl
-    }));
-    if (intersectedEl) { intersectedEl.emit(evt); }
+    });
+    this.el.emit(evt, dispatchEvent);
+    if (intersectedEl) {
+      intersectedEl.emit(evt, dispatchEvent);
+    }
   },
 
   emitter: function (evt) {
