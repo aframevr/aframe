@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, teardown, test, THREE */
+/* global assert, process, sinon, setup, suite, teardown, test */
 'use strict';
 var helpers = require('../helpers');
 var AEntity = require('core/a-entity');
@@ -60,86 +60,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.reload(true);
       sinon.assert.called(AEntity.prototype.pause);
       sinon.assert.called(ANode.prototype.load);
-    });
-  });
-
-  suite('setActiveCamera', function () {
-    test('sets new active camera in three.js graph', function () {
-      var el = this.el;
-      var camera = new THREE.PerspectiveCamera(45, 2, 1, 1000);
-      el.setActiveCamera(camera);
-      assert.equal(el.camera, camera);
-    });
-
-    test('sets new active camera in entity graph', function (done) {
-      var self = this;
-      var cameraEl = document.createElement('a-entity');
-      cameraEl.setAttribute('camera', '');
-      this.el.appendChild(cameraEl);
-      process.nextTick(function () {
-        self.el.setActiveCamera(cameraEl);
-        assert.equal(self.el.camera, cameraEl.components.camera.camera);
-        done();
-      });
-    });
-  });
-
-  suite('setActiveCamera', function () {
-    test('switches active camera', function (done) {
-      var sceneEl = this.el;
-      var camera1El = document.createElement('a-entity');
-      var camera2El = document.createElement('a-entity');
-      camera1El.setAttribute('camera', 'active: false');
-      sceneEl.appendChild(camera1El);
-      camera2El.setAttribute('camera', 'active: true');
-      sceneEl.appendChild(camera2El);
-      process.nextTick(function () {
-        assert.equal(camera1El.getAttribute('camera').active, false);
-        sceneEl.setActiveCamera(camera1El);
-        assert.equal(camera1El.getAttribute('camera').active, true);
-        assert.equal(camera2El.getAttribute('camera').active, false);
-        done();
-      });
-    });
-  });
-
-  suite('removeDefaultCamera', function () {
-    test('removes the default camera', function (done) {
-      var sceneEl = this.el;
-      var defaultCamera;
-      sceneEl.setupDefaultCamera();
-      process.nextTick(function () {
-        defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
-        assert.notEqual(defaultCamera, null);
-        // Mocks camera initialization
-        sceneEl.camera = { el: true };
-        sceneEl.removeDefaultCamera();
-        defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
-        assert.equal(defaultCamera, null);
-        done();
-      });
-    });
-  });
-
-  suite('updateCameras', function () {
-    test('disable inactive cameras', function (done) {
-      var sceneEl = this.el;
-      var cameraEl = document.createElement('a-entity');
-      cameraEl.setAttribute('camera', 'active: false');
-      sceneEl.appendChild(cameraEl);
-
-      var camera2El = document.createElement('a-entity');
-      camera2El.setAttribute('camera', 'active: false');
-      sceneEl.appendChild(camera2El);
-
-      process.nextTick(function () {
-        cameraEl.setAttribute('camera', 'active: true');
-        camera2El.setAttribute('camera', 'active: true');
-        assert.equal(cameraEl.getAttribute('camera').active, false);
-        assert.equal(camera2El.getAttribute('camera').active, true);
-        assert.equal(camera2El.components.camera.camera, sceneEl.camera);
-        done();
-      });
     });
   });
 

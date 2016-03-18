@@ -1,12 +1,12 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('material', function () {
+suite('material system', function () {
   'use strict';
 
   setup(function (done) {
-    this.el = entityFactory();
-    process.nextTick(function () {
+    var el = this.el = entityFactory();
+    el.addEventListener('loaded', function () {
       done();
     });
   });
