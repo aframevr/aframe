@@ -6,20 +6,28 @@ parent_section: components
 order: 2
 ---
 
-The `canvas` component allows us to specify our own canvas or the size of the injected canvas. The canvas component applies only to the [`<a-scene>` element](../core/scene.html).
+The canvas component allows us to specify our own canvas or the size of the injected canvas. The canvas component applies only to the [`<a-scene>` element][scene].
 
 ## Example
+
+We can specify our own canvas.
 
 ```html
 <a-scene canvas="canvas: #mycanvas"></a-scene>
 ```
 
-## Properties
+Or specify the width and height in percent of the injected canvas.
 
-Given the type of fog distribution, different properties will apply.
+```html
+<a-scene canvas="height: 50; width: 50"></a-scene>
+```
+
+## Properties
 
 | Property | Description                                           | Default Value |
 |----------|-------------------------------------------------------|---------------|
 | canvas   | Selector to a canvas element that exists on the page. | null          |
 | height   | Height of the injected canvas, in percentage.         | 100           |
 | Width    | Width of the injected canvas, in percentage.          | 100           |
+
+[scene]: ../core/scene.md

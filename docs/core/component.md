@@ -6,7 +6,7 @@ parent_section: core
 order: 3
 ---
 
-In the [entity-component-system pattern](./index.html), components are reusable and modular chunks of data that plugged into an entity to add appearance, behavior, and/or functionality. As an abstract analogy, if a smartphone were defined as an entity, we might use components to give it appearance (color, shape), to define its behavior (vibrate when called, shut down on low battery), or to add functionality (camera, screen). In A-Frame, components modify entities which are 3D objects in the scene.
+In the [entity-component-system pattern](./index.md), a component is a reusable and modular chunks of data that plugged into an entity to add appearance, behavior, and/or functionality. As an abstract analogy, if a smartphone were defined as an entity, we might use components to give it appearance (color, shape), to define its behavior (vibrate when called, shut down on low battery), or to add functionality (camera, screen). In A-Frame, a component modifies entities which are 3D objects in the scene.
 
 > Try to contain most logic within components in A-Frame experiences, even if the logic is one-off or ad-hoc. This encourages reusability, modularity, and sharing of code.
 
@@ -19,11 +19,11 @@ Components provide all of the features and extensibility of A-Frame. There is a 
 - [What a Component Looks Like](#what-a-component-looks-like)
     - [From the DOM](#from-the-dom)
     - [Under the Hood](#under-the-hood)
-- [Defining the Schema](#defining-the-schema)
+- [Schema](#schema)
     - [Property Types](#property-types)
     - [Single-Property Schemas](#single-property-schemas)
     - [Multi-Property Schemas](#multi-property-schemas)
-- [Defining the Lifecycle Methods](#defining-the-lifecycle-methods)
+- [Lifecycle Methods](#lifecycle-methods)
     - [Component.init()](#component-init-set-up)
     - [Component.update(oldData)](#component-update-olddata-modify-the-entity)
     - [Component.remove()](#component-remove-tear-down)
@@ -117,7 +117,7 @@ The position component uses only a small subset of the component API. We'll go o
 | play   | Called whenever the scene or entity plays to add any background or dynamic behavior. Used to start or resume behavior.                        |
 | pause  | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Used to pause behavior.                              |
 
-## Defining the Schema
+## Schema
 
 A component's schema defines and describes the property or properties it takes. A component can either a single-property component (one flat value) or a multi-property component (multiple named values).
 
@@ -245,17 +245,17 @@ AFRAME.registerComponent('physics-body', {
 }
 ```
 
-## Defining the Lifecycle Methods
+## Lifecycle Methods
 
 With the schema being the anatomy, the lifecycle methods are the physiology; the schema defines the data, the lifecycle methods *use* the data. A component has access to `this.data` which in a single-property schema is a value and in a multi-property schema is an object.
 
-The handlers will almost always interact with the entity. We recommend checking out the [Entity documentation](./entity.html).
+The handlers will almost always interact with the entity. We recommend checking out the [Entity documentation](./entity.md).
 
 ### Component.init()
 
 `init` is called once in a component's lifecycle when it is attached to the entity. The init handler is generally used to set up state and instantiate variables that may used throughout a component. Not every component will need to define `init`. It is similar to `createdCallback` or `React.ComponentDidMount`.
 
-For example, the [look-at component](../components/look-at.html)'s init handler sets the state of the target to `null` and instantiates a Vector object:
+For example, the [look-at component](../components/look-at.md)'s init handler sets the state of the target to `null` and instantiates a Vector object:
 
 ```js
 init: function () {
@@ -281,7 +281,7 @@ Example uses of `init` by some A-Frame components:
 
 `update` is called both at the beginning of a component's lifecycle and every time a component's data changes (e.g., as a result of `setAttribute`). The update handler often uses `this.data` to modify the entity. The update handler has access to the previous state of a component's data via its first argument. The previous state of a component can be used to tell exactly which properties changed in order to do granular updates.
 
-For example, the [visible][visible] component's update handler toggles the visibility of the [entity](./entity.html):
+For example, the [visible][visible] component's update handler toggles the visibility of the [entity](./entity.md):
 
 ```js
 update: function () {
@@ -495,21 +495,21 @@ And voila!
 </span></div>
 
 [collide]: https://github.com/dmarcos/a-invaders/tree/master/js/components
-[docs]: ./index.html
-[entity]: ./entity.html
+[docs]: ./index.md
+[entity]: ./entity.md
 [follow]: https://jsbin.com/dasefeh/edit?html,output
-[geometry]: ../components/geometry.html
+[geometry]: ../components/geometry.md
 [layout]: https://github.com/ngokevin/aframe-layout-component
-[light]: ../components/light.html
+[light]: ../components/light.md
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
-[look-at]: ../components/look-at.html
-[look-controls]: ../components/look-controls.html
+[look-at]: ../components/look-at.md
+[look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [physics]: https://github.com/ngokevin/aframe-physics-components
-[position]: ../components/position.html
-[removeObject3d]: ./entity.html#remove-object3d
-[rotation]: ../components/rotation.html
+[position]: ../components/position.md
+[removeObject3d]: ./entity.md#remove-object3d
+[rotation]: ../components/rotation.md
 [text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
-[visible]: ../components/visible.html
+[visible]: ../components/visible.md
 [vrjump]: http://thevrjump.com

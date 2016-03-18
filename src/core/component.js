@@ -1,16 +1,16 @@
 /* global HTMLElement */
 var schema = require('./schema');
-var styleParser = require('style-attr');
 var systems = require('./system');
 var utils = require('../utils/');
 
+var components = module.exports.components = {}; // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
 var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
-var components = module.exports.components = {}; // Keep track of registered components.
+var styleParser = utils.styleParser;
 
 /**
  * Component class definition.
@@ -20,40 +20,23 @@ var components = module.exports.components = {}; // Keep track of registered com
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
- * @namespace Component
- * @property {object} data - Stores component data, populated by parsing the
- *           attribute name of the component plus applying defaults and mixins.
- * @property {object} el - Reference to the entity element.
- * @property {string} name - Name of the attribute the component is connected
- *           to.
- * @member {Element} el
- * @member {object} data
- * @member {function} getData
- * @member {function} init
- * @member {function} update
- * @member {function} remove
- * @member {function} parse
- * @member {function} stringify
+ * @member {object} data - Component data populated by parsing the
+ *         mapped attribute of the component plus applying defaults and mixins.
+ * @member {object} el - Reference to the entity element.
+ * @member {string} name - Component name exposed as an HTML attribute.
  */
 var Component = module.exports.Component = function (el) {
   var name = this.name;
   var elData = HTMLElement.prototype.getAttribute.call(el, name);
-  var scene;
 
   this.el = el;
-  // The last parameter of builData suppresses the warnings
-  // We don't want to display warning messages when parsing the data
-  // before updating the schema
+  // Check whether we need to rebuild the schema depending on the data.
+  // Call buildData with silent flag to suppress warnings when parsing data before updating
+  // the schema.
   this.updateSchema(buildData(el, name, this.schema, elData, true));
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
-
-  // Set up tick behavior.
-  if (this.tick) {
-    scene = el.isScene ? el : el.sceneEl;
-    scene.addBehavior(this);
-  }
 };
 
 Component.prototype = {
@@ -119,14 +102,14 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(objectParse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, silent);
   },
 
   /**
    * Stringify properties if necessary.
    *
-   * Only called from `entity.setAttribute` for properties that accept an object value such as
-   * vec3 {x, y, z}.
+   * Only called from `Entity.setAttribute` for properties whose parsers accept a non-string
+   * value (e.g., selector, vec3 property types).
    *
    * @param {object} data - Complete component data.
    * @returns {string}
@@ -137,7 +120,7 @@ Component.prototype = {
 
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
-    return objectStringify(data);
+    return styleParser.stringify(data);
   },
 
   /**
@@ -152,10 +135,7 @@ Component.prototype = {
   },
 
   /**
-   * Called when new value is coming from the entity (e.g., attributeChangedCb)
-   * or from its mixins. Does some parsing and applying before updating the
-   * component.
-   * Does not update if data has not changed.
+   * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
    */
@@ -164,7 +144,7 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(objectParse(value));
+    this.updateSchema(buildData(el, this.name, this.schema, value, true));
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
@@ -180,18 +160,19 @@ Component.prototype = {
   },
 
   /**
-   * Extends the schema of the component with a given new schema
-   * Some components might want to mutate their schema based on
-   * certain conditions. e.g: The material component changes its
-   * squema based on the selected shader to account for the
-   * different uniforms
-   *  @param newSchema {object} - Schema that extends the original one.
+   * Extend schema of component given a partial schema.
+   *
+   * Some components might want to mutate their schema based on certain properties.
+   * e.g., Material component changes its schema based on `shader` to account for different
+   * uniforms
+   *
+   * @param {object} schemaAddon - Schema chunk that extend base schema.
    */
-  extendSchema: function (newSchema) {
-    // Copies original schema
+  extendSchema: function (schemaAddon) {
+    // Clone base schema.
     var extendedSchema = utils.extend({}, components[this.name].schema);
-    // Extends original schema with the new one
-    utils.extend(extendedSchema, newSchema);
+    // Extend base schema with new schema chunk.
+    utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
     this.el.emit('schemachanged', { component: this.name });
   }
@@ -201,7 +182,7 @@ Component.prototype = {
  * Registers a component to A-Frame.
  *
  * @param {string} name - Component name.
- * @param {object} definition - Component property and methods.
+ * @param {object} definition - Component schema and lifecycle method handlers.
  * @returns {object} Component.
  */
 module.exports.registerComponent = function (name, definition) {
@@ -267,7 +248,7 @@ function buildData (el, name, schema, elData, silent) {
   var mixinEls = el.mixinEls;
 
   if (!isSinglePropSchema && typeof elData === 'string') {
-    elData = objectParse(elData);
+    elData = styleParser.parse(elData);
   }
 
   // 1. Default values (lowest precendence).
@@ -282,8 +263,10 @@ function buildData (el, name, schema, elData, silent) {
   // 2. Mixin values.
   mixinEls.forEach(applyMixin);
   function applyMixin (mixinEl) {
-    var mixinData = mixinEl.getAttribute(name);
+    var mixinData = HTMLElement.prototype.getAttribute.call(mixinEl, name);
     if (mixinData) {
+      mixinData = isSinglePropSchema
+        ? mixinData : styleParser.parse(mixinData);
       data = extendProperties(data, mixinData, isSinglePropSchema);
     }
   }
@@ -303,30 +286,6 @@ function buildData (el, name, schema, elData, silent) {
 module.exports.buildData = buildData;
 
 /**
- * Deserializes style-like string into an object of properties.
- *
- * @param {string} value - HTML attribute value.
- * @returns {object} Property data.
- */
-function objectParse (value) {
-  var parsedData;
-  if (typeof value !== 'string') { return value; }
-  parsedData = styleParser.parse(value);
-  return transformKeysToCamelCase(parsedData);
-}
-
-/**
- * Serialize an object of properties into a style-like string.
- *
- * @param {object} data - Property data.
- * @returns {string}
- */
-function objectStringify (data) {
-  if (typeof data === 'string') { return data; }
-  return styleParser.stringify(data);
-}
-
-/**
 * Object extending with checking for single-property schema.
 *
 * @param dest - Destination object or value.
@@ -343,32 +302,4 @@ function extendProperties (dest, source, isSinglePropSchema) {
     return source;
   }
   return utils.extend(dest, source);
-}
-
-/**
- * Converts string from hyphen to camelCase.
- *
- * @param {string} str - String to camelCase.
- * @return {string} CamelCased string.
- */
-function toCamelCase (str) {
-  return str.replace(/-([a-z])/g, camelCase);
-  function camelCase (g) { return g[1].toUpperCase(); }
-}
-
-/**
- * Converts object's keys from hyphens to camelCase (e.g., `max-value` to
- * `maxValue`).
- *
- * @param {object} obj - The object to camelCase keys.
- * @return {object} The object with keys camelCased.
- */
-function transformKeysToCamelCase (obj) {
-  var keys = Object.keys(obj);
-  var camelCaseObj = {};
-  keys.forEach(function (key) {
-    var camelCaseKey = toCamelCase(key);
-    camelCaseObj[camelCaseKey] = obj[key];
-  });
-  return camelCaseObj;
 }

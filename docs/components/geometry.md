@@ -6,7 +6,7 @@ parent_section: components
 order: 6
 ---
 
-The `geometry` component provides a basic shape for an entity. The general geometry is defined by the `primitive` property. "Geometric primitives", in computer graphics, means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A `material` component is usually defined alongside to provide a appearance alongside the shape to create a complete mesh.
+The geometry component provides a basic shape for an entity. The general geometry is defined by the `primitive` property. Geometric primitives, in computer graphics, means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A material component is usually defined alongside to provide a appearance alongside the shape to create a complete mesh.
 
 ## Properties
 
@@ -108,7 +108,7 @@ Curved surfaces can be defined by specifying the angle via `thetaLength` such th
 
 #### Prisms
 
-Other types [of prisms](https://en.wikipedia.org/wiki/Prism_%28geometry%29) can
+Other types [of prisms][prisms-wiki] can
 be defined by varying the number of radial segments (i.e., sides). For example, to make
 a hexagonal prism:
 
@@ -117,7 +117,7 @@ a hexagonal prism:
 <a-entity geometry="primitive: cylinder; segmentsRadial: 6"></a-entity>
 ```
 
-To play with an example of prism geometry, check out the [Hexagon example on Codepen](http://codepen.io/team/mozvr/pen/jWzVXJ).
+To play with an example of prism geometry, check out the [Hexagon example on Codepen][hexagon-codepen].
 
 ### Plane
 
@@ -135,7 +135,7 @@ The plane primitive defines a flat surface. Note that because it is flat, only a
 
 ### Ring
 
-The ring geometry defines a flat ring, like a [CD](https://en.wikipedia.org/wiki/Compact_disc). Note that because it is flat, only a single side of the ring will be rendered if `side: double` is not specified on the `material` component.
+The ring geometry defines a flat ring, like a [CD][cd]. Note that because it is flat, only a single side of the ring will be rendered if `side: double` is not specified on the `material` component.
 
 ```html
 <a-entity geometry="primitive: ring; radiusInner: 0.5; radiusOuter: 1"
@@ -247,3 +247,7 @@ AFRAME.registerComponent('my-geometry', {
     this.el.getObject3D('mesh').geometry = new THREE.Geometry();
   }
 });
+
+[cd]: https://en.wikipedia.org/wiki/Compact_disc
+[hexagon-codepen]: http://codepen.io/team/mozvr/pen/jWzVXJ
+[prisms-wiki]: https://en.wikipedia.org/wiki/Prism_%28geometry%29

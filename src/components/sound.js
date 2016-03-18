@@ -7,11 +7,6 @@ var warn = debug('components:sound:warn');
 
 /**
  * Sound component.
- *
- * @param {bool} [autoplay=false]
- * @param {string} on
- * @param {bool} [loop=false]
- * @param {number} [volume=1]
  */
 module.exports.Component = registerComponent('sound', {
   schema: {
@@ -104,20 +99,27 @@ module.exports.Component = registerComponent('sound', {
 
     sound = this.sound = new THREE.PositionalAudio(listener);
     el.setObject3D('sound', sound);
+
+    sound.source.onended = function () {
+      sound.onEnded();
+      el.emit('sound-ended');
+    };
+
     return sound;
   },
 
   play: function () {
-    if (this.sound.source.buffer) {
-      this.sound.play();
-    }
+    if (!this.sound.source.buffer) { return; }
+    this.sound.play();
   },
 
   stop: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.stop();
   },
 
   pause: function () {
+    if (!this.sound.source.buffer) { return; }
     this.sound.pause();
   }
 });

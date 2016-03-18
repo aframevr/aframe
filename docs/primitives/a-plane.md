@@ -6,7 +6,7 @@ parent_section: primitives
 order: 13
 ---
 
-The plane primitive creates flat surfaces. It is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `plane`.
+The plane primitive creates flat surfaces. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.
 
 ## Example
 
@@ -26,7 +26,7 @@ The plane primitive creates flat surfaces. It is an entity that prescribes the [
 
 ## Attributes
 
-Note that the plane primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the plane primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute | Component Mapping | Default Value |
 |-----------|-------------------|---------------|

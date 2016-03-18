@@ -6,7 +6,7 @@ parent_section: primitives
 order: 17
 ---
 
-The video primitive displays a video on a flat plane as a texture. It is an entity that prescribes the [geometry](../components/geometry.html) with its geometric primitive set to `plane`.
+The video primitive displays a video on a flat plane as a texture. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.
 
 ## Example
 
@@ -26,7 +26,7 @@ The video primitive displays a video on a flat plane as a texture. It is an enti
 
 ## Attributes
 
-Note that the video primitive inherits common [mesh attributes](./mesh-attributes.html).
+Note that the video primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute       | Component Mapping     | Default Value |
 |-----------------|-----------------------|---------------|

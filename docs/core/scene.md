@@ -27,12 +27,14 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 | Name           | Description                                                                  |
 |----------------|------------------------------------------------------------------------------|
 | behaviors      | Array of components with tick methods that will be run on every frame.       |
+| camera         | Active three.js camera.                                                      |
 | canvas         | Reference to the canvas element.                                             |
 | isMobile       | Whether or not environment is detected to be mobile.                         |
 | monoRenderer   | Instance of `THREE.WebGlRenderer`.                                           |
 | object3D       | [`THREE.Scene`][scene] object.                                               |
 | renderer       | Active renderer, one of `monoRenderer` or `stereoRenderer`.                  |
 | stereoRenderer | Renderer for VR created by passing the `monoRenderer` into `THREE.VREffect`. |
+| systems        | Instantiated [systems][systems].                                             |
 | time           | Global uptime of scene in seconds.                                           |
 
 ## Methods
@@ -87,10 +89,11 @@ function run () {
 }
 ```
 
-[canvas]: ../components/canvas.html
-[entity]: ./entity.html
-[fog]: ../components/fog.html
-[keyboard-shortcuts]: ../components/keyboard-shortcuts.html
+[canvas]: ../components/canvas.md
+[entity]: ./entity.md
+[fog]: ../components/fog.md
+[keyboard-shortcuts]: ../components/keyboard-shortcuts.md
 [scene]: http://threejs.org/docs/#Reference/Scenes/Scene
-[stats]: ../components/stats.html
-[vr-mode-ui]: ../components/vr-mode-ui.html
+[stats]: ../components/stats.md
+[systems]: ../core/systems.md
+[vr-mode-ui]: ../components/vr-mode-ui.md
