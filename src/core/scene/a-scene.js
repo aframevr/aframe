@@ -60,7 +60,6 @@ var AScene = module.exports = registerElement('a-scene', {
         this.behaviors = [];
         this.hasLoaded = false;
         this.isPlaying = true;
-        this.materials = {};
         this.originalHTML = this.innerHTML;
         this.setupSystems();
         this.setupDefaultLights();
@@ -165,17 +164,6 @@ var AScene = module.exports = registerElement('a-scene', {
           }
           this.defaultLightsEnabled = false;
         }
-      }
-    },
-
-    /**
-     * Keep track of material in case an update trigger is needed (e.g., fog).
-     *
-     * @param {object} material
-     */
-    registerMaterial: {
-      value: function (material) {
-        this.materials[material.uuid] = material;
       }
     },
 
