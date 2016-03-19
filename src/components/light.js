@@ -29,7 +29,7 @@ module.exports.Component = registerComponent('light', {
   init: function () {
     var el = this.el;
     this.light = null;
-    el.sceneEl.registerLight(el);
+    this.system.registerLight(el);
   },
 
   /**
