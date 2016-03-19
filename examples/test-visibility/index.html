@@ -21,10 +21,7 @@
 
       <a-entity position="0 1.8 4">
         <a-entity camera look-controls wasd-controls>
-          <a-entity position="0 0 -2"
-                    geometry="primitive: ring; radiusOuter: 0.10; radiusInner: 0.06"
-                    material="color: red; shader: flat"
-                    cursor="maxDistance: 100"></a-entity>
+          <a-cursor></a-cursor>
         </a-entity>
       </a-entity>
 
@@ -59,7 +56,7 @@
         var blueCube = document.querySelector('#blueCube');
         var redSphere = document.querySelector('#redSphere');
         var greenCylinder = document.querySelector('#greenCylinder');
-        document.addEventListener('click', function (e) {
+        document.addEventListener('cursor-click', function (e) {
           switch (e.target) {
             case blueCube:
               redSphere.setAttribute('visible', true);

@@ -24,21 +24,19 @@
         <a-mixin id="link-selected" geometry="primitive: plane; width: 1.4; height: 1.4"
                  sound="src: ../_sounds/click.ogg">
         </a-mixin>
-        <a-mixin id="cursor" geometry="primitive: ring; radiusOuter: 0.20; radiusInner: 0.14"
-                 material="color: gray" cursor></a-mixin>
         <a-mixin id="cursor-hovering" material="color: springgreen"></a-mixin>
-        <a-mixin id="click-animation" begin="click" easing="ease-in" attribute="scale"
+        <a-mixin id="click-animation" begin="cursor-click" easing="ease-in" attribute="scale"
                  fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
-        <a-mixin id="fuse-animation" begin="fusing" easing="ease-in" attribute="scale"
-                 fill="backwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
+        <a-mixin id="fuse-animation" begin="cursor-fusing" easing="ease-in" attribute="scale"
+                 fill="forwards" from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-mixin>
       </a-assets>
 
       <!-- Camera + Cursor. -->
       <a-entity camera look-controls>
-        <a-entity mixin="cursor" position="0 0 -3">
+        <a-cursor>
           <a-animation mixin="click-animation"></a-animation>
           <a-animation mixin="fuse-animation"></a-animation>
-        </a-entity>
+        </a-cursor>
       </a-entity>
 
       <!-- Pano. -->
@@ -91,7 +89,7 @@
 
           // When a link is clicked, change the displayed pano by changing the
           // material attribute of the holder element
-          el.addEventListener('click', handleClick);
+          el.addEventListener('cursor-click', handleClick);
 
           // Add the link to the links element
           links.appendChild(el);
@@ -113,13 +111,13 @@
           var pano = panos[index];
           var linkEL = pano.el;
           if (selectedLinkEl === pano.el) { return; }
-          if (selectedLinkEl) { selectedLinkEl.removeState('selected'); }
+          if (selectedLinkEl) { selectedLinkEl.removeState('link-selected'); }
           holder.setAttribute('material', {
             shader: 'flat',
             src: pano.url
           });
           selectedLinkEl = linkEL;
-          selectedLinkEl.addState('selected');
+          selectedLinkEl.addState('link-selected');
         }
       })();
     </script>

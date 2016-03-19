@@ -30,16 +30,16 @@
       <a-entity mixin="short orange cube" position="-1 2 0" rotation="30 30 0"></a-entity>
 
       <a-entity mixin="short yellow cube" position="1 2 0" rotation="30 30 0">
-        <a-event name="click" target="#target" scale="1.5 1.5 1.5"></a-event>
-        <a-event name="click" scale="1.5 1.5 1.5"></a-event>
+        <a-event name="cursor-click" target="#target" scale="1.5 1.5 1.5"></a-event>
+        <a-event name="cursor-click" scale="1.5 1.5 1.5"></a-event>
       </a-entity>
 
       <a-entity mixin="green cube" position="-1 0 0" rotation="30 30 0"></a-entity>
 
       <a-entity mixin="blue cube" position="1 0 0" rotation="30 30 0">
-        <a-event name="click" material.color="#FFC65D"></a-event>
-        <a-event name="mouseenter" scale="1.5 1.5 1.5"></a-event>
-        <a-event name="mouseleave" scale="1 1 1"></a-event>
+        <a-event name="cursor-click" material.color="#FFC65D"></a-event>
+        <a-event name="cursor-mouseenter" scale="1.5 1.5 1.5"></a-event>
+        <a-event name="cursor-mouseleave" scale="1 1 1"></a-event>
       </a-entity>
 
       <a-sky color="#ECECEC"></a-sky>
