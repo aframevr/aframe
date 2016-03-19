@@ -33,13 +33,9 @@ suite('a-scene (without renderer)', function () {
   suite('init', function () {
     test('initializes scene object', function () {
       var sceneEl = this.el;
-      sceneEl.behaviors = ['dummy'];
-      sceneEl.materials = {dummy: 1};
       sceneEl.isPlaying = false;
       sceneEl.hasLoaded = true;
       sceneEl.init();
-      assert.equal(sceneEl.behaviors.length, 0);
-      assert.equal(Object.keys(sceneEl.materials).length, 0);
       assert.equal(sceneEl.isPlaying, true);
       assert.equal(sceneEl.hasLoaded, false);
     });
