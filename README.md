@@ -7,7 +7,7 @@ __Building blocks for the VR Web.__
 [![Downloads][downloads-image]][downloads-url]
 [![js-semistandard-style][semistandard-image]][semistandard-url]
 
-A-Frame is a library for creating virtual reality web experiences.
+A-Frame is a framework for creating virtual reality web experiences.
 
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
 - **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
@@ -25,17 +25,17 @@ Find out more:
 
 ### CodePen
 
-If you want to get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/BjygdO?editors=100)!
+To get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/BjygdO?editors=100)!
 
 ### Downloads
 
-If you would like to embed this library in your project, simply include this file:
+To embed this library in your project, include this file:
 
-* [`aframe.min.js`](https://aframe.io/releases/latest/aframe.min.js)
+* [`aframe.min.js`](https://aframe.io/releases/0.1.3/aframe.min.js)
 
-Or if you'd prefer the unminified version for local development (with source maps):
+For the unminified version for local development (with source maps), include this file:
 
-* [`aframe.js`](https://aframe.io/releases/latest/aframe.js)
+* [`aframe.js`](https://aframe.io/releases/0.1.3/aframe.js)
 
 __Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
@@ -82,7 +82,6 @@ Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1
 ## Updating `dist` Files
 
     npm run dist
-    git commit -am 'Bump dist'
 
 ## Publishing to GitHub Pages
 
