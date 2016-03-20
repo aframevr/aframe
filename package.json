@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.2.0",
+  "version": "0.2.0-rc1",
   "description": "Building blocks for the VR Web",
   "main": "dist/aframe.js",
   "scripts": {

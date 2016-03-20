@@ -50,11 +50,14 @@ module.exports.Component = registerComponent('look-controls', {
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onPointerLockChange = this.onPointerLockChange.bind(this);
+    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
 
   setupMouseControls: function () {
     // The canvas where the scene is painted
     this.mouseDown = false;
+    this.pointerLocked = false;
     this.pitchObject = new THREE.Object3D();
     this.yawObject = new THREE.Object3D();
     this.yawObject.position.y = 10;
@@ -88,6 +91,12 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.addEventListener('touchstart', this.onTouchStart);
     canvasEl.addEventListener('touchmove', this.onTouchMove);
     canvasEl.addEventListener('touchend', this.onTouchEnd);
+
+    // Pointer lock
+    document.addEventListener('pointerlockchange', this.onPointerLockChange, false);
+    document.addEventListener('pointerlockerror', this.onPointerLockError, false);
+    document.addEventListener('mozpointerlockchange', this.onPointerLockChange, false);
+    document.addEventListener('mozpointerlockerror', this.onPointerLockError, false);
   },
 
   removeEventListeners: function () {
@@ -105,6 +114,12 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.removeEventListener('touchstart', this.onTouchStart);
     canvasEl.removeEventListener('touchmove', this.onTouchMove);
     canvasEl.removeEventListener('touchend', this.onTouchEnd);
+
+    // Pointer lock
+    document.removeEventListener('pointerlockchange', this.onPointerLockChange);
+    document.removeEventListener('pointerlockerror', this.onPointerLockError);
+    document.removeEventListener('mozpointerlockchange', this.onPointerLockChange);
+    document.removeEventListener('mozpointerlockerror', this.onPointerLockError);
   },
 
   updateOrientation: (function () {
@@ -185,12 +200,18 @@ module.exports.Component = registerComponent('look-controls', {
     var yawObject = this.yawObject;
     var previousMouseEvent = this.previousMouseEvent;
 
-    if (!this.mouseDown || !this.data.enabled) { return; }
+    if (!this.data.enabled) {
+      return;
+    }
 
-    var movementX = event.movementX || event.mozMovementX;
-    var movementY = event.movementY || event.mozMovementY;
+    if (!this.pointerLocked && !this.mouseDown) {
+      return;
+    }
 
-    if (movementX === undefined || movementY === undefined) {
+    var movementX = event.movementX || event.mozMovementX || 0;
+    var movementY = event.movementY || event.mozMovementY || 0;
+
+    if (!this.pointerLocked) {
       movementX = event.screenX - previousMouseEvent.screenX;
       movementY = event.screenY - previousMouseEvent.screenY;
     }
@@ -202,8 +223,23 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onMouseDown: function (event) {
+    if (event.button !== 0) {
+      return;
+    }
+
     this.mouseDown = true;
     this.previousMouseEvent = event;
+
+    var sceneEl = this.el.sceneEl;
+    var canvasEl = sceneEl.canvas;
+
+    if (!this.pointerLocked) {
+      if (canvasEl.requestPointerLock) {
+        canvasEl.requestPointerLock();
+      } else if (canvasEl.mozRequestPointerLock) {
+        canvasEl.mozRequestPointerLock();
+      }
+    }
   },
 
   releaseMouse: function () {
@@ -235,5 +271,13 @@ module.exports.Component = registerComponent('look-controls', {
 
   onTouchEnd: function () {
     this.touchStarted = false;
+  },
+
+  onPointerLockChange: function () {
+    this.pointerLocked = !!(document.pointerLockElement || document.mozPointerLockElement);
+  },
+
+  onPointerLockError: function () {
+    this.pointerLocked = false;
   }
 });

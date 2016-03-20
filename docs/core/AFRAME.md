@@ -3,7 +3,7 @@ title: AFRAME
 type: core
 layout: docs
 parent_section: core
-order: 9
+order: 10
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser global. This same interface is exposed if requiring with NPM (`require('aframe');`). `AFRAME` can be used to register new things and extend AFRAME's capabilities.
@@ -15,7 +15,9 @@ A-Frame exposes its public interface through the `window.AFRAME` browser global.
 | AScene            | [Scene][scene] prototype.                               |
 | components        | Object of registered components.                        |
 | registerComponent | Function to register a [component][component].          |
+| registerPrimitive | Function to register a [primitive][primitive].          |
 | registerShader    | Function to register a [shader][shader].                |
+| shaders           | Object of registered shaders.                           |
 | systems           | Object of registered systems.                           |
 | THREE             | Global [three.js][three.js] object.                     |
 | TWEEN             | Global [tween.js][tween.js] object.                     |
@@ -24,6 +26,7 @@ A-Frame exposes its public interface through the `window.AFRAME` browser global.
 
 [component]: ./component.md
 [entity]: ./entity.md
+[primitive]: ../primitives/index.md
 [scene]: ./scene.md
 [shader]: ./shaders.md
 [three.js]: http://threejs.org

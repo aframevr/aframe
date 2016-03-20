@@ -17,37 +17,9 @@ var isCoordinate = coordinates.isCoordinate;
  * Animation element that applies Tween animation to parent element (entity).
  * Takes after the Web Animations spec.
  *
- * @namespace <a-animation>
- * @param {string} attribute -
- *   Entity attribute to animate. Can be a component name (e.g., `position`) if the component
- *   is set via a single value. Or can be a dot-separated componentName.componentProp to
- *   animate a single component property (e.g., `light.intensity`, `material.opacity`).
- * @param {number|string} begin -
- *   Either milliseconds to delay or an event name to wait upon before starting animation.
- * @param {string} direction -
- *   Direction of the animation between from and to.
- *     - alternate: Even iterations played as specified, odd iterations played in reverse
- *                direction from way specified.
- *     - alternate-reverse: Even iterations are played in the reverse direction from way
- *                        specified, odd iterations played as specified.
- *     - normal: All iterations are played as specified.
- *     - reverse: All iterations are played in reverse direction from way specified.
- * @param {number} dur - How long to run the animation in milliseconds.
- * @param {string} easing -
- *   Easing function of animation (e.g., ease, ease-in, ease-in-out, ease-out, linear).
- * @param {string} [fill=forwards] -
- *   Determines effect of animation when not in play.
- *     - backwards: Before animation, set initial value to `from`.
- *     - both: Before animation, backwards fill. After animation, forwards fill.
- *     - forwards: After animation, value will stay at `to`.
- *     - none: Animation has no effect when not in play.
- * @param {number} from - Start value. Defaults to the entity's current value for that attr.
- * @param {number|string} repeat -
- *   How the animation should repeat (e.g., a number or `indefinite`).
- * @param {number} to - End value.
- * @member {number} count -
- *   Decrementing counter for how many cycles of animations left to run.
- * @member {Element} el - Entity which the animation is modifying to.
+ * @member {number} count - Decrementing counter for how many cycles of animations left to
+ *         run.
+ * @member {Element} el - Entity which the animation is modifying.
  * @member initialValue - Value before animation started. Used to restore state.
  * @member {bool} isRunning - Whether animation is currently running.
  * @member {function} partialSetAttribute -

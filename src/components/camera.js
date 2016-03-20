@@ -1,6 +1,10 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
+/**
+ * Camera component.
+ * Pairs along with camera system to handle tracking the active camera.
+ */
 module.exports.Component = registerComponent('camera', {
   schema: {
     active: { default: true },
@@ -10,13 +14,12 @@ module.exports.Component = registerComponent('camera', {
   },
 
   /**
-   * Initializes three.js camera, adding it to the entity.
-   * Adds a reference from the scene to this entity as the camera.
+   * Initialize three.js camera and add it to the entity.
+   * Add reference from scene to this entity as the camera.
    */
   init: function () {
     var camera = this.camera = new THREE.PerspectiveCamera();
-    var el = this.el;
-    el.setObject3D('camera', camera);
+    this.el.setObject3D('camera', camera);
   },
 
   /**
@@ -27,27 +30,31 @@ module.exports.Component = registerComponent('camera', {
   },
 
   /**
-   * Updates three.js camera.
+   * Update three.js camera.
    */
   update: function (oldData) {
     var el = this.el;
-    var sceneEl = el.sceneEl;
     var data = this.data;
     var camera = this.camera;
+    var system = this.system;
+
+    // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
     camera.far = data.far;
     camera.fov = data.fov;
     camera.near = data.near;
     camera.updateProjectionMatrix();
-    // If the active property has changes or on first update call
-    if (!oldData || oldData.active !== data.active) {
-      if (data.active) {
-        sceneEl.setActiveCamera(camera);
-        sceneEl.emit('camera-set-active', { cameraEl: camera.el });
-      } else if (sceneEl.camera === camera) {
-        // If the camera is disabled and is the current active one
-        sceneEl.setActiveCamera();
-      }
+
+    // Active property did not change.
+    if (oldData && oldData.active === data.active) { return; }
+
+    // If `active` property changes, or first update, handle active camera with system.
+    if (data.active && system.activeCameraEl !== this.el) {
+      // Camera enabled. Set camera to this camera.
+      system.setActiveCamera(el, camera);
+    } else if (!data.active && system.activeCameraEl === this.el) {
+      // Camera disabled. Set camera to another camera.
+      system.disableActiveCamera();
     }
   }
 });
