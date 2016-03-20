@@ -10,9 +10,9 @@ section_order: 2
 
 A-Frame is based on an __[entity-component-system pattern](https://en.wikipedia.org/wiki/Entity_component_system)__, a pattern common in game development that emphasizes composability over inheritance:
 
-- An **entity** is a general-purpose object in the scene that, by itself, does nothing.
-- A **component** is a reusable module that is attached to an entity to provide appearance, behavior, and/or functionality.
-- A **system** manages components of its type.
+- An [entity][entity] is a general-purpose object in the scene that, by itself, does nothing.
+- A [component][component] is a reusable module that is attached to an entity to provide appearance, behavior, and/or functionality.
+- A [system][system] provide global scope, services, and management to classes of components.
 
 Components are plug-and-play for objects. They let us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want extend an object, we would have to manually create a new class to do so.
 
@@ -49,9 +49,12 @@ From there, we can attach more and more components to add whatever appearance, b
 
 We can even attach third-party components that other people have created. If someone writes a component that enables a mesh to explode, or a component that enables the mesh to use a canvas as its material texture, we could just drop the component into our A-Frame experience and use it immediately in HTML. The entity-component-system pattern enables great flexibility and extensibility.
 
+[component]: ./component.md
 [composegif]: http://i.imgur.com/0UIZFgs.gifv
+[entity]: ./entity.md
 [geometry]: ../components/geometry.md
 [light]: ../components/light.md
 [material]: ../components/material.md
 [physics]: https://github.com/ngokevin/aframe-physics-components]
 [sound]: ../components/sound.html
+[system]: ./systems.md

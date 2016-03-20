@@ -8,21 +8,6 @@ var warn = debug('components:light:warn');
 
 /**
  * Light component.
- *
- * @namespace light
- * @param {number} [angle=60] - maximum extent of light from its direction,
-          in degrees. For spot lights.
- * @param {string} [color=#FFF] - light color. For every light.
- * @param {number} [decay=1] - amount the light dims along the distance of the
-          light. For point and spot lights.
- * @param {number} [exponent=10.0] - rapidity of falloff of light from its
-          target direction. For spot lights.
- * @param {string} [groundColor=#FFF] - ground light color. For hemisphere
-          lights.
- * @param {number} [intensity=1.0] - light strength. For every light except
-          ambient.
- * @param {string} [type=directional] - light type (ambient, directional,
-          hemisphere, point, spot).
  */
 module.exports.Component = registerComponent('light', {
   schema: {
