@@ -6,7 +6,7 @@ parent_section: components
 order: 5
 ---
 
-The `fog` component obscures entities in fog given distance from the camera. The fog component applies only to the [`<a-scene>` element](../core/scene.html).
+The fog component obscures entities in fog given distance from the camera. The fog component applies only to the [`<a-scene>` element][scene].
 
 ## Example
 
@@ -47,3 +47,5 @@ To not apply fog to certain entities, we can disable fog for certain materials.
 ```html
 <a-entity material="fog: false"></a-entity>
 ```
+
+[scene]: ../core/scene.md

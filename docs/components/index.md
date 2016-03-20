@@ -8,9 +8,9 @@ order: 1
 section_order: 3
 ---
 
-The `camera` component defines from which perspective the user views the scene. It is often paired with controls-related components that allow user input to move and rotate the camera.
+The camera component defines from which perspective the user views the scene. It is often paired with controls-related components that allow user input to move and rotate the camera.
 
-It is recommended to wrap entities with the `camera` component within another entity. This allows us to change the position of the camera without colliding with controls.
+It is recommended to wrap entities with the camera component within another entity. This allows us to change the position of the camera without colliding with controls.
 
 ## Example
 

@@ -6,7 +6,7 @@ parent_section: components
 order: 17
 ---
 
-The `sound` component defines the entity as a source of sound or audio. The `sound` component is positional and is therefore affected by the [`position` component](position.html).
+The sound component defines the entity as a source of sound or audio. The sound component is positional and is therefore affected by the [components-position](position.md).
 
 ## Example
 
@@ -24,6 +24,12 @@ The `sound` component defines the entity as a source of sound or audio. The `sou
 | loop     | Whether to loop the sound once the sound finishes playing. | false         |
 | src      | Path to sound file.                                        | null          |
 | volume   | How loud to play the sound.                                | 1             |
+
+## Events
+
+| Event Name  | Description                           |
+|-------------+---------------------------------------|
+| sound-ended | triggered when sound finishes playing |
 
 ## Playing on an Event
 
@@ -66,3 +72,5 @@ entity.components.sound.pause();
 ```
 
 Then call `.play()` on either the entity or the sound component to resume.
+
+[components-position]: ./position.md

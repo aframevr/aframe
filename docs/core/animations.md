@@ -101,7 +101,7 @@ Or we can define an animation that waits for the parent element to trigger an ev
 
 ```html
 <a-entity id="fading-cube" geometry="primitive: box" material="opacity: 1">
-  <a-animation attribute="material.opacity" begin="fade" to="2 2 2"></a-animation>
+  <a-animation attribute="material.opacity" begin="fade" to="0"></a-animation>
 </a-entity>
 ```
 

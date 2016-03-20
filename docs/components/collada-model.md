@@ -6,7 +6,7 @@ parent_section: components
 order: 3
 ---
 
-The `collada-model` component loads a 3D model using a [COLLADA](https://en.wikipedia.org/wiki/COLLADA) (.DAE) file.
+The collada-model component loads a 3D model using a [COLLADA][wiki-collada] (.DAE) file.
 
 ## Example
 
@@ -29,7 +29,13 @@ We can load a COLLADA model by pointing to an asset that specifies the `src` to 
 | selector | Selector to an `<a-asset-item>`         |
 | string   | `url()`-enclosed path to a COLLADA file |
 
-### Loading Inline
+## Events
+
+| Event Name   | Description                                                                                 |
+| ----------   | ------------------------------------------------------------------------------------------- |
+| model-loaded | COLLADA model has been loaded into the scene.                                               |
+
+## Loading Inline
 
 We can also load a COLLADA model by specifying the path directly within `url()`. Note this is less performant than going through the asset management system.
 
@@ -37,17 +43,16 @@ We can also load a COLLADA model by specifying the path directly within `url()`.
 <a-entity collada-model="url(/path/to/tree.dae)"></a-entity>
 ```
 
-## Downloading Models
+## Additional Resources
 
 We can find and download models on the web to drop into our scenes:
 
-- [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
-- [Clara.io](https://clara.io)
+- [Sketchup's 3D Warehouse][sketchup] - Repository of models.
+- [Clara.io][clara] - Repository of models.
+- [Blender][blender] - A free open-source 3D modeling program with plenty of existing learning resources to create models.
 
-## Creating Models
-
-We can create models using [Blender](https://www.blender.org/), a free open-source 3D modeling program with plenty of existing learning resources.
-
-## Caveats
-
-The three.js COLLADA loader is not very performant. If possible, use a .OBJ file with the [obj-model](obj-model.html) component. A-Frame is looking to support the [GLTF format](https://github.com/aframevr/aframe/issues/819) in the future.
+[blender]: https://www.blender.org/
+[clara]: https://clara.io
+[obj-model]: ./obj-model.md
+[sketchup]: https://3dwarehouse.sketchup.com
+[wiki-collada]: https://en.wikipedia.org/wiki/COLLADA

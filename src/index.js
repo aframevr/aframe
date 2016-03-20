@@ -13,6 +13,7 @@ var components = require('./core/component').components;
 var debug = require('./utils/debug');
 var registerComponent = require('./core/component').registerComponent;
 var registerElement = require('./core/a-register-element');
+var registerPrimitive = require('./extras/primitives/registerPrimitive');
 var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
 var systems = require('./core/system').systems;
@@ -30,12 +31,12 @@ var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity');  // Depends on ANode and core components.
 
 // Webvr polyfill configuration.
-window.hasNonPolyfillWebVRSupport = 'getVRDisplays' in navigator || 'getVRDevices' in navigator;
+window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
 window.WebVRConfig = {
   TOUCH_PANNER_DISABLED: true,
   MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
-require('../node_modules/webvr-libs/webvr-polyfill');
+require('webvr-polyfill');
 
 require('./core/a-animation');
 require('./core/a-assets');
@@ -48,11 +49,7 @@ require('./extras/primitives/');
 
 console.log('A-Frame Version:', pkg.version);
 console.log('three Version:', pkg.dependencies['three']);
-if ('webvr-libs' in pkg.dependencies) {
-  console.log('webvr-libs Version:', pkg.dependencies['webvr-libs']);
-} else {
-  console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
-}
+console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {
   AEntity: AEntity,
@@ -64,6 +61,7 @@ module.exports = window.AFRAME = {
   registerElement: registerElement,
   registerShader: registerShader,
   registerSystem: registerSystem,
+  registerPrimitive: registerPrimitive,
   systems: systems,
   THREE: THREE,
   TWEEN: TWEEN,

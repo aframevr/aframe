@@ -67,25 +67,16 @@ module.exports.Component = registerComponent('raycaster', {
     for (var i = 0; i < intersectedObjs.length; ++i) {
       intersectedObj = intersectedObjs[i];
 
-      while (
-        (intersectedObj.object.parent) &&
-        (intersectedObj.object.el === undefined)
-      ) {
+      while (intersectedObj.object.parent && intersectedObj.object.el === undefined) {
         intersectedObj.object = intersectedObj.object.parent;
       }
 
       // If the intersected object is the cursor itself
       // or the object is further than the max distance
 
-      if (intersectedObj.object.el === undefined) {
-        continue;
-      }
-      if (intersectedObj.object.el === cursorEl) {
-        continue;
-      }
-      if (!intersectedObj.object.visible) {
-        continue;
-      }
+      if (intersectedObj.object.el === undefined) { continue; }
+      if (intersectedObj.object.el === cursorEl) { continue; }
+      if (!intersectedObj.object.visible) { continue; }
       return intersectedObj;
     }
     return null;

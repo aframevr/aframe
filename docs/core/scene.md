@@ -87,10 +87,10 @@ function run () {
 }
 ```
 
-[canvas]: ../components/canvas.html
-[entity]: ./entity.html
-[fog]: ../components/fog.html
-[keyboard-shortcuts]: ../components/keyboard-shortcuts.html
+[canvas]: ../components/canvas.md
+[entity]: ./entity.md
+[fog]: ../components/fog.md
+[keyboard-shortcuts]: ../components/keyboard-shortcuts.md
 [scene]: http://threejs.org/docs/#Reference/Scenes/Scene
-[stats]: ../components/stats.html
-[vr-mode-ui]: ../components/vr-mode-ui.html
+[stats]: ../components/stats.md
+[vr-mode-ui]: ../components/vr-mode-ui.md
