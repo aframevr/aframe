@@ -10,7 +10,7 @@
     "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
-    "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
+    "lint": "semistandard -v | snazzy",
     "precommit": "npm run lint",
     "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
@@ -64,7 +64,7 @@
     "semistandard": "^7.0.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
-    "standard-reporter": "^1.0.5",
+    "snazzy" : "^3.0.0",
     "uglifyjs": "^2.4.10"
   },
   "link": true,
