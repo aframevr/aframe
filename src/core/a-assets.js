@@ -7,7 +7,7 @@ var xhrLoader = new THREE.XHRLoader();
 var warn = debug('core:a-assets:warn');
 
 /**
- * Asset manager.
+ * Asset management system. Handles blocking on asset loading.
  */
 module.exports = registerElement('a-assets', {
   prototype: Object.create(ANode.prototype, {

@@ -131,11 +131,22 @@ var isIOS = module.exports.isIOS = function () {
 };
 
 /**
- * Checks mobile device orientation
- * @return {Boolean} True if landscape orientation
+ * Checks mobile device orientation.
+ * @return {Boolean} True if landscape orientation.
  */
 module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
+};
+
+/**
+ * Returns whether we can safely listen to this keyboard event.
+ * @returns {Boolean} True if we can.
+ */
+module.exports.shouldCaptureKeyEvent = function (event) {
+  if (event.shiftKey || event.metaKey || event.altKey || event.ctrlKey) {
+    return false;
+  }
+  return document.activeElement === document.body;
 };
 
 /**

@@ -25,7 +25,7 @@ function injectMetaTags () {
   meta = document.createElement('meta');
   meta.name = 'viewport';
   meta.content =
-    'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no';
+    'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1';
   headEl.appendChild(meta);
   metaTags.push(meta);
 

@@ -73,7 +73,7 @@
 
         // If you want to respond to mouse events, this is how. Otherwise,
         // if you just want a working cursor, you don't need any of this.
-        var cubes = document.querySelectorAll('a-entity[mixin=cube]');
+        var cubes = document.querySelectorAll('a-entity[mixin*=cube]');
         var i;
         for (i = 0; i < cubes.length; ++i) {
           cubes[i].addEventListener('click', function () {

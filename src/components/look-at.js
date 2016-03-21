@@ -8,31 +8,23 @@ var isCoordinate = coordinates.isCoordinate;
 
 /**
  * Look-at component.
+ *
  * Modifies rotation to either track another entity OR do a one-time turn towards a position
  * vector.
  *
  * If tracking an object via setting the component value via a selector, look-at will register
  * a behavior to the scene to update rotation on every tick.
- *
- * Examples:
- *
- * look-at="#the-mirror"
- * look-at="0 5 -2"
- *
- * @param Look-at either takes a target selector pointing to another object or a
- *        position.
- * @member {object} target3D - object3D of targeted element that look-at is currently
-           tracking.
- * @member {object} vector - Helper vector to do matrix transformations.
  */
 module.exports.Component = registerComponent('look-at', {
   schema: {
     default: '',
 
     parse: function (value) {
+      // A static position to look at.
       if (isCoordinate(value) || typeof value === 'object') {
         return coordinates.parse(value);
       }
+      // A selector to a target entity.
       return value;
     },
 

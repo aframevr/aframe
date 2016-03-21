@@ -7,11 +7,6 @@ var warn = debug('components:sound:warn');
 
 /**
  * Sound component.
- *
- * @param {bool} [autoplay=false]
- * @param {string} on
- * @param {bool} [loop=false]
- * @param {number} [volume=1]
  */
 module.exports.Component = registerComponent('sound', {
   schema: {

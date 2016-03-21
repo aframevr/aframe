@@ -11,8 +11,6 @@ var utils = require('../../utils/');
 var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 
-var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
-var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
 var isMobile = utils.isMobile();
 
@@ -22,6 +20,7 @@ var isMobile = utils.isMobile();
  * @member {number} animationFrameID
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
+ * @member {object} camera - three.js Camera object.
  * @member {object} canvas
  * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
@@ -30,6 +29,7 @@ var isMobile = utils.isMobile();
  * @member {object} renderer
  * @member {bool} renderStarted
  * @member {object} stereoRenderer
+ * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
 var AScene = module.exports = registerElement('a-scene', {
@@ -44,7 +44,6 @@ var AScene = module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.defaultLightsEnabled = true;
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
@@ -59,11 +58,8 @@ var AScene = module.exports = registerElement('a-scene', {
         this.behaviors = [];
         this.hasLoaded = false;
         this.isPlaying = true;
-        this.materials = {};
         this.originalHTML = this.innerHTML;
         this.setupSystems();
-        this.setupDefaultLights();
-        this.setupDefaultCamera();
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -95,9 +91,11 @@ var AScene = module.exports = registerElement('a-scene', {
 
     initSystem: {
       value: function (name) {
+        var system;
         if (this.systems[name]) { return; }
-        this.systems[name] = new systems[name]();
-        this.systems[name].init();
+        system = this.systems[name] = new systems[name]();
+        system.sceneEl = this;
+        system.init();
       }
     },
 
@@ -144,102 +142,6 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setMonoRenderer();
         this.removeState('vr-mode');
         this.emit('exit-vr', { target: this });
-      }
-    },
-
-    /**
-     * Sets a camera to be used by the renderer
-     * It alse removes the default one if any and disables any other camera
-     * in the scene
-     *
-     * @param {object} el - Object holding an entity with a camera component or THREE camera.
-     */
-    setActiveCamera: {
-      value: function (newCamera) {
-        var defaultCameraWrapper = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        var defaultCameraEl = defaultCameraWrapper &&
-                              defaultCameraWrapper.querySelector('[camera]');
-        if (newCamera instanceof AEntity) {
-          newCamera.setAttribute('camera', 'active', true);
-          if (newCamera !== defaultCameraEl) { this.removeDefaultCamera(); }
-          return;
-        }
-        this.camera = newCamera;
-        this.updateCameras();
-      }
-    },
-
-    /**
-     * Enables active camera and disables the rest
-     * @type object - activeCamera - The camera used by the renderer
-     */
-    updateCameras: {
-      value: function () {
-        var activeCamera = this.camera;
-        var activeCameraEl = activeCamera && activeCamera.el;
-        var cameraEl;
-        var sceneCameras = this.querySelectorAll('[camera]');
-        var i;
-        if (!activeCamera) {
-          activeCameraEl = sceneCameras[sceneCameras.length - 1];
-          activeCameraEl.setAttribute('camera', 'active', true);
-          return;
-        }
-
-        for (i = 0; i < sceneCameras.length; ++i) {
-          cameraEl = sceneCameras[i];
-
-          if (activeCameraEl === cameraEl) {
-            if (this.isPlaying) { activeCameraEl.play(); }
-            continue;
-          }
-          cameraEl.setAttribute('camera', 'active', false);
-          cameraEl.pause();
-        }
-      }
-    },
-
-    removeDefaultCamera: {
-      value: function () {
-        var cameraEl = this.camera && this.camera.el;
-        if (!cameraEl) { return; }
-        // Removes default camera if any
-        var defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        var defaultCameraEl = defaultCamera && defaultCamera.querySelector('[camera]');
-        // Remove default camera if any
-        if (defaultCameraEl && defaultCameraEl !== cameraEl) {
-          this.removeChild(defaultCamera);
-        }
-      }
-    },
-
-    /**
-     * Notify scene that light has been added and to remove the default.
-     *
-     * @param {object} el - element holding the light component.
-     */
-    registerLight: {
-      value: function (el) {
-        var defaultLights;
-        if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
-          // User added a light, remove default lights through DOM.
-          defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-          for (var i = 0; i < defaultLights.length; i++) {
-            this.removeChild(defaultLights[i]);
-          }
-          this.defaultLightsEnabled = false;
-        }
-      }
-    },
-
-    /**
-     * Keep track of material in case an update trigger is needed (e.g., fog).
-     *
-     * @param {object} material
-     */
-    registerMaterial: {
-      value: function (material) {
-        this.materials[material.uuid] = material;
       }
     },
 
@@ -298,63 +200,6 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.renderer = this.stereoRenderer;
         this.resize();
-      }
-    },
-
-    /**
-     * Creates a default camera if user has not added one during the initial scene traversal.
-     *
-     * Default camera height is at human level (~1.8m) and back such that
-     * entities at the origin (0, 0, 0) are well-centered.
-     */
-    setupDefaultCamera: {
-      value: function () {
-        var self = this;
-        var cameraWrapperEl;
-        var defaultCameraEl;
-
-        // setTimeout in case the camera is being set dynamically with a setAttribute.
-        setTimeout(function checkForCamera () {
-          var cameraEl = self.querySelector('[camera]');
-
-          if (cameraEl && cameraEl.isEntity) {
-            self.emit('camera-ready', { cameraEl: cameraEl });
-            return;
-          }
-
-          // DOM calls to create camera.
-          cameraWrapperEl = document.createElement('a-entity');
-          cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
-          cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-          defaultCameraEl = document.createElement('a-entity');
-          defaultCameraEl.setAttribute('camera', {'active': true});
-          defaultCameraEl.setAttribute('wasd-controls');
-          defaultCameraEl.setAttribute('look-controls');
-          cameraWrapperEl.appendChild(defaultCameraEl);
-          self.appendChild(cameraWrapperEl);
-          self.emit('camera-ready', { cameraEl: defaultCameraEl });
-        });
-      }
-    },
-
-    /**
-     * Prescibe default lights to the scene.
-     * Does so by injecting markup such that this state is not invisible.
-     * These lights are removed if the user adds any lights.
-     */
-    setupDefaultLights: {
-      value: function () {
-        var ambientLight = document.createElement('a-entity');
-        ambientLight.setAttribute('light',
-                                  {color: '#fff', type: 'ambient'});
-        ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(ambientLight);
-
-        var directionalLight = document.createElement('a-entity');
-        directionalLight.setAttribute('light', { color: '#fff', intensity: 0.2 });
-        directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
-        directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(directionalLight);
       }
     },
 
@@ -480,11 +325,11 @@ function getCanvasSize (canvas) {
 }
 
 /**
-  * Manually handles fullscreen for non-VR mobile where the renderer' VR
-  * display is not polyfilled.
-  *
-  * Desktop just works so use the renderer.setFullScreen in that case.
-  */
+ * Manually handles fullscreen for non-VR mobile where the renderer' VR
+ * display is not polyfilled.
+ *
+ * Desktop just works so use the renderer.setFullScreen in that case.
+ */
 function setFullscreen (canvas) {
   if (canvas.requestFullscreen) {
     canvas.requestFullscreen();

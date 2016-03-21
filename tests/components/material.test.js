@@ -272,4 +272,13 @@ suite('material', function () {
       assert.ok(el.getObject3D('mesh').material.transparent);
     });
   });
+
+  suite('depthTest', function () {
+    test('can be set to false', function () {
+      var el = this.el;
+      assert.ok(el.getObject3D('mesh').material.depthTest);
+      el.setAttribute('material', 'depthTest: false');
+      assert.equal(el.getObject3D('mesh').material.depthTest, 0);
+    });
+  });
 });

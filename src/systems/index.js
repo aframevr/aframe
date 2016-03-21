@@ -1,1 +1,3 @@
-require('../systems/material');
+require('./camera');
+require('./material');
+require('./light');

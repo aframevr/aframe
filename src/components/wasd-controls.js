@@ -1,26 +1,11 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var utils = require('../utils/');
 
 var MAX_DELTA = 0.2;
 
 /**
- * WASD component.
- *
- * Control your entities with the WASD keys.
- *
- * @namespace wasd-controls
- * @param {number} [easing=20] - How fast the movement decelerates. If you hold the
- * keys the entity moves and if you release it will stop. Easing simulates friction.
- * @param {number} [acceleration=65] - Determines the acceleration given
- * to the entity when pressing the keys.
- * @param {bool} [enabled=true] - To completely enable or disable the controls
- * @param {bool} [fly=false] - Determines if the direction of the movement sticks
- * to the plane where the entity started off or if there are 6 degrees of
- * freedom as a diver underwater or a plane flying.
- * @param {string} [wsAxis='z'] - The axis that the W and S keys operate on
- * @param {string} [adAxis='x'] - The axis that the A and D keys operate on
- * @param {bool} [wsInverted=false] - WS Axis is inverted
- * @param {bool} [adInverted=false] - AD Axis is inverted
+ * WASD component to control entities using WASD keys.
  */
 module.exports.Component = registerComponent('wasd-controls', {
   schema: {
@@ -40,6 +25,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
+    this.onBlur = this.onBlur.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
   },
@@ -114,21 +100,30 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   attachEventListeners: function () {
     // Keyboard events
-    window.addEventListener('keydown', this.onKeyDown, false);
-    window.addEventListener('keyup', this.onKeyUp, false);
+    window.addEventListener('blur', this.onBlur);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
   },
 
   removeEventListeners: function () {
     // Keyboard events
+    window.removeEventListener('blur', this.onBlur);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
   },
 
+  onBlur: function (event) {
+    this.pause();
+    // this.keys = {};
+  },
+
   onKeyDown: function (event) {
+    if (!utils.shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = true;
   },
 
   onKeyUp: function (event) {
+    if (!utils.shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = false;
   },
 

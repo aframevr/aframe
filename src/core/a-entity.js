@@ -17,7 +17,6 @@ var styleParser = utils.styleParser;
  *
  * To be able to take components, the scene element inherits from the entity definition.
  *
- * @namespace Entity
  * @member {object} components - entity's currently initialized components.
  * @member {object} object3D - three.js object.
  * @member {array} states
