@@ -12,8 +12,8 @@ var warn = debug('components:light:warn');
 module.exports.Component = registerComponent('light', {
   schema: {
     angle: { default: 60, if: { type: ['spot'] } },
-    color: { default: '#FFF' },
-    groundColor: { default: '#FFF', if: { type: ['hemisphere'] } },
+    color: { default: '#FFF', type: 'color' },
+    groundColor: { default: '#FFF', type: 'color', if: { type: ['hemisphere'] } },
     decay: { default: 1, if: { type: ['point', 'spot'] } },
     distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
     exponent: { default: 10.0, if: { type: ['spot'] } },
