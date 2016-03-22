@@ -1,5 +1,5 @@
 /* global assert, suite, test */
-var helpers = require('../helpers');
+var helpers = require('../../helpers');
 var registerPrimitive = require('extras/primitives/registerPrimitive');
 
 var primitiveId = 0;

@@ -11,7 +11,8 @@ The torus primitive creates a donut or circular tube shape. It is an entity that
 ## Example
 
 ```html
-<a-torus color="blue" position="0 0 0" segments-radial="50" segments-tubular="200" radius="5" tube="0.1"></a-torus>
+<a-torus color="blue" position="0 0 0" segments-radial="50" segments-tubular="200" radius="5"
+         radius-tubular="0.1"></a-torus>
 ```
 
 ## Attributes
@@ -22,7 +23,6 @@ Note that the torus primitive inherits common [mesh attributes](./mesh-attribute
 |-------------------|--------------------------|---------------|
 | arc               | geometry.arc             | 360           |
 | radius            | geometry.radius          | 1             |
-| radius-tubular    | geometry.radius-tubular  | 0.2           |
+| radius-tubular    | geometry.radiusTubular   | 0.2           |
 | segments-radial   | geometry.segmentsRadial  | 36            |
 | segments-tubular  | geometry.segmentsTubular | 8             |
-

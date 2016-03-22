@@ -3,6 +3,7 @@ suite('a-torus', function () {
   var scene;
   var torus;
   var torus2;
+
   setup(function (done) {
     scene = document.createElement('a-scene');
     torus = document.createElement('a-torus');

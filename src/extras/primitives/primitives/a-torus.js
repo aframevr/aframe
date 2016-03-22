@@ -10,10 +10,10 @@ registerPrimitive('a-torus', utils.extendDeep({}, getMeshMixin(), {
   },
 
   mappings: {
+    'arc': 'geometry.arc',
     'radius': 'geometry.radius',
     'radius-tubular': 'geometry.radiusTubular',
     'segments-radial': 'geometry.segmentsRadial',
-    'segments-tubular': 'geometry.segmentsTubular',
-    'arc': 'geometry.arc'
+    'segments-tubular': 'geometry.segmentsTubular'
   }
 }));
