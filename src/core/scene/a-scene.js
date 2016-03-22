@@ -1,6 +1,6 @@
 /* global Promise */
 var initFullscreen = require('./fullscreen');
-var initMetaTags = require('./metaTags');
+var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
 var systems = require('../system').systems;
@@ -12,6 +12,7 @@ var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 
 var registerElement = re.registerElement;
+var isIOS = utils.isIOS();
 var isMobile = utils.isMobile();
 
 /**
@@ -45,6 +46,7 @@ var AScene = module.exports = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.isMobile = isMobile;
+        this.isIOS = isIOS;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         this.systems = {};

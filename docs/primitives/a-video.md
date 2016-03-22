@@ -37,6 +37,6 @@ Note that the video primitive inherits common [mesh attributes](./mesh-attribute
 
 iOS has a lot of restrictions on playing videos in the browser. To play an inline video texture, we must:
 
-- Set the `<meta name="apple-mobile-web-app-capable" content="yes"` metatag.
+- Set the `<meta name="apple-mobile-web-app-capable" content="yes">` meta tag (will be injected if missing).
 - Set the `webkit-playsinline` attribute to the video element.
 - Pin the webpage to the iOS homescreen.
