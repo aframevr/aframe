@@ -3,12 +3,10 @@ var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
-var objLoader = new THREE.OBJLoader();
-var mtlLoader = new THREE.MTLLoader(objLoader.manager);
 var warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
-  dependencies: [ 'material' ],
+  dependencies: ['material'],
 
   schema: {
     mtl: { type: 'src' },
@@ -17,6 +15,8 @@ module.exports.Component = registerComponent('obj-model', {
 
   init: function () {
     this.model = null;
+    this.objLoader = new THREE.OBJLoader();
+    this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
   },
 
   update: function () {
@@ -34,6 +34,8 @@ module.exports.Component = registerComponent('obj-model', {
   loadObj: function (objUrl, mtlUrl) {
     var self = this;
     var el = this.el;
+    var mtlLoader = this.mtlLoader;
+    var objLoader = this.objLoader;
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
@@ -47,7 +49,7 @@ module.exports.Component = registerComponent('obj-model', {
         objLoader.load(objUrl, function (objModel) {
           self.model = objModel;
           el.setObject3D('mesh', objModel);
-          el.emit('model-loaded', { format: 'obj', model: objModel });
+          el.emit('model-loaded', {format: 'obj', model: objModel});
         });
       });
       return;
@@ -65,7 +67,7 @@ module.exports.Component = registerComponent('obj-model', {
 
       self.model = objModel;
       el.setObject3D('mesh', objModel);
-      el.emit('model-loaded', { format: 'obj', model: objModel });
+      el.emit('model-loaded', {format: 'obj', model: objModel});
     });
   }
 });
