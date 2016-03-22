@@ -1,72 +1,80 @@
 .rs-base {
-  background-color: #EF2D5E;
-  border-radius: 0;
-  font: 10px monospace;
-  left: 5px;
-  line-height: 1.2em;
-  opacity: 0.75;
-  overflow: hidden;
-  padding: 10px;
-  position: fixed;
-  top: 5px;
-  width: 300px;
+  position: absolute;
   z-index: 10000;
-}
-
-.rs-base.hidden {
-  display: none;
+  padding: 10px;
+  background-color: #ed134a;
+  width: 300px;
+  font: 300 10px monospace;
+  left: 5px;
+  top: 5px;
+  overflow: hidden;
+  opacity: 0.85;
 }
 
 .rs-base h1 {
-  color: #fff;
-  cursor: pointer;
+  margin: 0;
+  padding: 0;
   font-size: 1.4em;
   font-weight: 300;
-  margin: 0 0 5px;
-  padding: 0;
+  margin-bottom: 5px;
+  color: #111;
+  cursor: pointer;
 }
 
-.rs-group {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column-reverse;
-  flex-direction: column-reverse;
+.rs-base div.rs-group {
+  margin-bottom: 10px;
+}
+
+.rs-base div.rs-group:last-child {
+  margin-bottom: 0;
+}
+
+.rs-base div.rs-group.hidden {
+  display: none;
+}
+
+.rs-base div.rs-fraction {
+  position: relative;
   margin-bottom: 5px;
 }
 
-.rs-counter-base {
-  align-items: center;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  height: 10px;
-  -webkit-justify-content: space-between;
-  justify-content: space-between;
-  margin: 2px 0;
-}
-
-.rs-counter-id {
-  font-weight: 300;
-  -webkit-box-ordinal-group: 0;
-  -webkit-order: 0;
-  order: 0;
-  width: 50px;
-}
-
-.rs-counter-value {
-  font-weight: 300;
-  -webkit-box-ordinal-group: 1;
-  -webkit-order: 1;
-  order: 1;
+.rs-base div.rs-fraction p {
+  width: 70px;
   text-align: right;
-  width: 25px;
+  margin: 0;
+  padding: 0;
 }
 
-.rs-canvas {
-  -webkit-box-ordinal-group: 2;
-  -webkit-order: 2;
-  order: 2;
+.rs-base div.rs-legend {
+  position: absolute;
+  line-height: 1em;
+}
+
+.rs-base div.rs-counter-base {
+  position: relative;
+  margin: 4px 0;
+  height: 1em;
+}
+
+.rs-base span.rs-counter-id {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.rs-base div.rs-counter-value {
+  position: absolute;
+  left: 40px;
+  width: 30px;
+  height: 1em;
+  top: 0;
+  text-align: right;
+}
+
+.rs-base canvas.rs-canvas {
+  position: absolute;
+  right: 0;
+  top: 2px;
 }
 
 @media (min-width: 480px) {
