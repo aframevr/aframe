@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite.only('obj-model', function () {
+suite('obj-model', function () {
   setup(function (done) {
     var el;
     var objAsset = document.createElement('a-asset-item');
