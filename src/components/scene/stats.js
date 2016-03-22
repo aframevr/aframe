@@ -1,7 +1,9 @@
 var registerComponent = require('../../core/component').registerComponent;
 var RStats = require('../../../vendor/rStats');
+require('../../../vendor/rStats.extras');
 
 var HIDDEN_CLASS = 'a-hidden';
+var ThreeStats = window.threeStats;
 
 /**
  * Stats appended to document.body by RStats.
@@ -9,8 +11,9 @@ var HIDDEN_CLASS = 'a-hidden';
 module.exports.Component = registerComponent('stats', {
   init: function () {
     var scene = this.el;
+    var threeStats = new ThreeStats(scene.renderer);
 
-    this.stats = createStats();
+    this.stats = createStats(threeStats);
     this.statsEl = document.querySelector('.rs-base');
 
     this.hideBound = this.hide.bind(this);
@@ -42,14 +45,17 @@ module.exports.Component = registerComponent('stats', {
   }
 });
 
-function createStats () {
+function createStats (threeStats) {
   return new RStats({
     css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {
-      fps: { caption: 'fps', below: 30 }
+      fps: {caption: 'fps', below: 30}
     },
     groups: [
-      { caption: 'Framerate', values: [ 'fps', 'raf' ] }
+      {caption: 'Framerate', values: ['fps', 'raf']}
+    ],
+    plugins: [
+      threeStats
     ]
   });
 }
