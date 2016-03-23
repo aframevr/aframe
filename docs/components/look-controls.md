@@ -22,9 +22,10 @@ The look-controls component is usually used alongside the [camera component][com
 
 ## Properties
 
-| Property  | Description                        | Default Value |
-|-----------|-----------------------------------------------------
-| enabled   | Whether look controls are enabled. | true          |
+| Property                    | Description                                 | Default Value |
+|-----------------------------|--------------------------------------------------------------
+| enabled                     | Whether look controls are enabled.          | true          |
+| allowVerticalTouchMovement  | Whether vertical touch movement is allowed. | false         |
 
 ## Caveats
 
