@@ -50,8 +50,13 @@ module.exports.Component = registerComponent('cursor', {
 
   emit: function (evt) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evt, { target: this.intersectedEl });
-    if (intersectedEl) { intersectedEl.emit(evt); }
+    var dispatchEvent = Object.assign({}, this.intersectionEvent, {
+      target: this.intersectedEl
+    });
+    this.el.emit(evt, dispatchEvent);
+    if (intersectedEl) {
+      intersectedEl.emit(evt, dispatchEvent);
+    }
   },
 
   emitter: function (evt) {
@@ -65,6 +70,9 @@ module.exports.Component = registerComponent('cursor', {
     var data = this.data;
     var el = evt.detail.el;
     var distance = evt.detail.distance;
+    this.intersectionEvent = {
+      uv: evt.detail.uv
+    };
     if (this.intersectedEl === el) { return; }
     if (distance >= this.data.maxDistance) { return; }
     this.intersectedEl = el;
