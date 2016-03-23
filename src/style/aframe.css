@@ -57,8 +57,8 @@ a-scene img {
   height: 50px;
   position: absolute;
   right: 0;
-  transition: background .05s ease;
-  -webkit-transition: background .05s ease;
+  transition: background-color .05s ease;
+  -webkit-transition: background-color .05s ease;
   width: 60px;
   z-index: 999999;
 }
