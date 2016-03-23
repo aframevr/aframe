@@ -32,7 +32,7 @@ module.exports.Component = registerComponent('geometry', {
     radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder'] } },
     radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus'] } },
     scaleHeight: { default: 1, min: 0, if: { primitive: ['torusKnot'] } },
-    segments: { default: 8, min: 0, if: { primitive: ['circle'] }, type: 'int' },
+    segments: { default: 32, min: 0, if: { primitive: ['circle'] }, type: 'int' },
     segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere'] }, type: 'int' },
     segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] }, type: 'int' },
     segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder'] }, type: 'int' },
