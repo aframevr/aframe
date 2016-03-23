@@ -8,7 +8,7 @@ var propertyTypes = module.exports.propertyTypes = {};
 // Built-in property types.
 registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
-registerPropertyType('color', '', defaultParse, defaultStringify);
+registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);

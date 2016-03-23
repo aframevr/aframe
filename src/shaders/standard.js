@@ -11,7 +11,7 @@ var texturePromises = {};
  */
 module.exports.Component = registerShader('standard', {
   schema: {
-    color: { default: '#FFF', type: 'color' },
+    color: { type: 'color' },
     envMap: { default: '' },
     fog: { default: true },
     height: { default: 256 },
