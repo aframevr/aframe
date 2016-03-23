@@ -130,8 +130,8 @@ The plane primitive defines a flat surface. Note that because it is flat, only a
 
 | Property | Description              | Default Value |
 |----------|--------------------------|---------------|
-| width    | Width along the X axis.  | 2             |
-| height   | Height along the Y axis. | 2             |
+| width    | Width along the X axis.  | 1             |
+| height   | Height along the Y axis. | 1             |
 
 ### Ring
 
