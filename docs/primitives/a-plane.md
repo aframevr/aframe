@@ -30,5 +30,5 @@ Note that the plane primitive inherits common [mesh attributes](./mesh-attribute
 
 | Attribute | Component Mapping | Default Value |
 |-----------|-------------------|---------------|
-| height    | geometry.height   | 2             |
-| width     | geometry.width    | 2             |
+| height    | geometry.height   | 1             |
+| width     | geometry.width    | 1             |
