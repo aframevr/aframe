@@ -4,7 +4,7 @@ var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
   Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui'}),
 
   // W3C-standardised meta tags.
-  Meta({name: 'web-app-capable', content: 'yes'}),
+  Meta({name: 'mobile-web-app-capable', content: 'yes'}),
   Meta({name: 'theme-color', content: 'black'}),
   Link({rel: 'icon', sizes: '192x192', href: 'https://aframe.io/images/aframe-logo-192.png'})
 ];

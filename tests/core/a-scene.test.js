@@ -148,7 +148,7 @@ helpers.getSkipCISuite()('a-scene (for iOS)', function () {
     test('sets up meta tags', function () {
       assert.equal(document.querySelector('meta[name="viewport"]').content,
         metaTags.MOBILE_HEAD_TAGS[0].attributes.content);
-      var webAppCapableMetaTag = document.querySelector('meta[name="web-app-capable"]');
+      var webAppCapableMetaTag = document.querySelector('meta[name="mobile-web-app-capable"]');
       assert.ok(webAppCapableMetaTag);
       assert.equal(webAppCapableMetaTag.content, 'yes');
       var appleMobileWebAppCapableMetaTag = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
@@ -184,7 +184,7 @@ helpers.getSkipCISuite()('a-scene (for non-iOS)', function () {
     test('sets up meta tags', function () {
       assert.equal(document.querySelector('meta[name="viewport"]').content,
         metaTags.MOBILE_HEAD_TAGS[0].attributes.content);
-      var webAppCapableMetaTag = document.querySelector('meta[name="web-app-capable"]');
+      var webAppCapableMetaTag = document.querySelector('meta[name="mobile-web-app-capable"]');
       assert.ok(webAppCapableMetaTag);
       var appleMobileWebAppCapableMetaTag = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
       assert.notOk(appleMobileWebAppCapableMetaTag);
