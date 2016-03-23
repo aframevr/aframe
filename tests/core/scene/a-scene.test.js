@@ -1,10 +1,8 @@
 /* global assert, process, sinon, setup, suite, teardown, test */
-'use strict';
-var helpers = require('../helpers');
+var helpers = require('../../helpers');
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene');
-var metaTags = require('core/scene/metaTags');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -119,75 +117,5 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
-  });
-});
-
-helpers.getSkipCISuite()('a-scene (for iOS)', function () {
-  setup(function (done) {
-    var el;
-    var self = this;
-    // Remove all previous meta tags injected.
-    var metaTags = document.querySelectorAll('meta');
-    for (var i = 0, len = metaTags.length; i < len; i++) {
-      metaTags[i].parentNode.removeChild(metaTags[i]);
-    }
-    AScene.prototype.setupRenderer.restore();
-    AScene.prototype.resize.restore();
-    AScene.prototype.render.restore();
-    process.nextTick(function () {
-      el = self.el = document.createElement('a-scene');
-      el.isIOS = true;
-      document.body.appendChild(el);
-      el.addEventListener('renderstart', function () {
-        done();
-      });
-    });
-  });
-
-  suite('attachedCallback', function () {
-    test('sets up meta tags', function () {
-      assert.equal(document.querySelector('meta[name="viewport"]').content,
-        metaTags.MOBILE_HEAD_TAGS[0].attributes.content);
-      var webAppCapableMetaTag = document.querySelector('meta[name="mobile-web-app-capable"]');
-      assert.ok(webAppCapableMetaTag);
-      assert.equal(webAppCapableMetaTag.content, 'yes');
-      var appleMobileWebAppCapableMetaTag = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
-      assert.ok(appleMobileWebAppCapableMetaTag);
-      assert.equal(appleMobileWebAppCapableMetaTag.content, 'yes');
-    });
-  });
-});
-
-helpers.getSkipCISuite()('a-scene (for non-iOS)', function () {
-  setup(function (done) {
-    var el;
-    var self = this;
-    // Remove all previous meta tags injected.
-    var metaTags = document.querySelectorAll('meta');
-    for (var i = 0, len = metaTags.length; i < len; i++) {
-      metaTags[i].parentNode.removeChild(metaTags[i]);
-    }
-    AScene.prototype.setupRenderer.restore();
-    AScene.prototype.resize.restore();
-    AScene.prototype.render.restore();
-    process.nextTick(function () {
-      el = self.el = document.createElement('a-scene');
-      el.isIOS = false;
-      document.body.appendChild(el);
-      el.addEventListener('renderstart', function () {
-        done();
-      });
-    });
-  });
-
-  suite('attachedCallback', function () {
-    test('sets up meta tags', function () {
-      assert.equal(document.querySelector('meta[name="viewport"]').content,
-        metaTags.MOBILE_HEAD_TAGS[0].attributes.content);
-      var webAppCapableMetaTag = document.querySelector('meta[name="mobile-web-app-capable"]');
-      assert.ok(webAppCapableMetaTag);
-      var appleMobileWebAppCapableMetaTag = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
-      assert.notOk(appleMobileWebAppCapableMetaTag);
-    });
   });
 });
