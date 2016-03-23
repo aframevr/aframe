@@ -42,7 +42,7 @@ The circle primitive defines two-dimensional circles, which can be complete circ
 | Property    | Description                                                                                                                      | Default Value |
 |-------------|----------------------------------------------------------------------------------------------------------------------------------|---------------|
 | radius      | Radius (in meters) of the circle.                                                                                                | 1             |
-| segments    | Number of triangles to construct the circle, like pizza slices. A higher number of segments means the circle will be more round. | 8             |
+| segments    | Number of triangles to construct the circle, like pizza slices. A higher number of segments means the circle will be more round. | 32            |
 | thetaStart  | Start angle for first segment. Can be used to define a partial circle.                                                           | 0             |
 | thetaLength | The central angle (in degrees). Defaults to `360`, which makes for a complete circle.                                            | 360           |
 
