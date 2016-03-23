@@ -8,7 +8,7 @@ var utils = require('../utils/texture');
  */
 module.exports.Component = registerShader('flat', {
   schema: {
-    color: { default: '#FFF' },
+    color: { type: 'color' },
     fog: { default: true },
     height: { default: 256 },
     repeat: { default: '' },
