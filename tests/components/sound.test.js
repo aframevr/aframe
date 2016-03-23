@@ -3,8 +3,6 @@ var entityFactory = require('../helpers').entityFactory;
 var Sound = require('components/sound').Component;
 
 suite('sound', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
 
@@ -48,6 +46,34 @@ suite('sound', function () {
       var audio = el.getObject3D('sound');
       el.setAttribute('sound', 'volume', 0.75);
       assert.equal(audio.getVolume(), 0.75);
+    });
+  });
+
+  suite('pause', function () {
+    test('does not call sound pause if not playing', function () {
+      var el = this.el;
+      var pauseStub = this.sinon.stub(el.components.sound.sound, 'pause');
+      el.components.sound.sound = {
+        disconnect: pauseStub,
+        pause: pauseStub,
+        isPlaying: false,
+        source: {buffer: true}
+      };
+      el.pause();
+      assert.notOk(pauseStub.called);
+    });
+
+    test('calls sound pause if playing', function () {
+      var el = this.el;
+      var pauseStub = this.sinon.stub(el.components.sound.sound, 'pause');
+      el.components.sound.sound = {
+        disconnect: pauseStub,
+        pause: pauseStub,
+        isPlaying: true,
+        source: {buffer: true}
+      };
+      el.pause();
+      assert.ok(pauseStub.called);
     });
   });
 });
