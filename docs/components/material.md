@@ -89,6 +89,18 @@ Whether the video texture loops or autoplays depends on the video element used t
 </a-scene>
 ```
 
+#### Controlling the Video
+
+To control the video playback such as pausing or seeking, we can use the video element to [control media playback][mediaplayback]. For example:
+
+```js
+var videoEl = document.querySelector('#my-video')
+videoEl.currentTime = 122;  // Seek to 122 seconds.
+videoEl.pause();
+```
+
+This doesn't work as well if you are passing an inline URL, in which case a video element will be created internally. To get a handle on the video element, we should define one in `<a-assets>`.
+
 ### Repeating Textures
 
 We might want to tile textures rather than having them stretch. The `repeat` property can be used to repeat textures in one of the built-in shading models.
@@ -132,5 +144,6 @@ Transparency and alpha channels are tricky in 3D graphics. If you are having iss
 [customshader]: ../core/shaders.md#registering_a_custom_shader
 [flat]: ../core/shaders.md#flat_shading_model
 [geometry]: ./geometry.md
+[mediaplayback]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_HTML5_audio_and_video#Controlling_media_playback
 [shaders]: ../core/shaders.md
 [standard]: ../core/shaders.md#standard_shading_model
