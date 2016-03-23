@@ -28,6 +28,6 @@ Note that the box primitive inherits common [mesh attributes](./mesh-attributes.
 
 | Attribute | Component Mapping | Default Value |
 |-----------|-------------------|---------------|
-| depth     | geometry.depth    | 2             |
-| height    | geometry.height   | 2             |
-| width     | geometry.width    | 2             |
+| depth     | geometry.depth    | 1             |
+| height    | geometry.height   | 1             |
+| width     | geometry.width    | 1             |
