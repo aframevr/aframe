@@ -119,7 +119,7 @@ module.exports.Component = registerComponent('sound', {
   },
 
   pause: function () {
-    if (!this.sound.source.buffer) { return; }
+    if (!this.sound.source.buffer || !this.sound.isPlaying) { return; }
     this.sound.pause();
   }
 });
