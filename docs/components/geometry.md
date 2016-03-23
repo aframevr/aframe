@@ -27,9 +27,9 @@ The box primitive defines boxes (i.e., any quadilateral, not just cubes).
 
 | Property | Description                                    | Default Value |
 |----------|------------------------------------------------|---------------|
-| width    | Width (in meters) of the sides on the X axis.  | 2             |
-| height   | Height (in meters) of the sides on the Y axis. | 2             |
-| depth    | Depth (in meters) of the sides on the Z axis.  | 2             |
+| width    | Width (in meters) of the sides on the X axis.  | 1             |
+| height   | Height (in meters) of the sides on the Y axis. | 1             |
+| depth    | Depth (in meters) of the sides on the Z axis.  | 1             |
 
 ### Circle
 

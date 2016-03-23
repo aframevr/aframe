@@ -14,8 +14,8 @@ var warn = debug('components:geometry:warn');
 module.exports.Component = registerComponent('geometry', {
   schema: {
     arc: { default: 360, if: { primitive: ['torus'] } },
-    depth: { default: 2, min: 0, if: { primitive: ['box'] } },
-    height: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } },
+    depth: { default: 1, min: 0, if: { primitive: ['box'] } },
+    height: { default: 1, min: 0, if: { primitive: ['box', 'plane'] } },
     openEnded: { default: false, if: { primitive: ['cylinder'] } },
     p: { default: 2, if: { primitive: ['torusKnot'] }, type: 'int' },
     primitive: {
@@ -43,7 +43,7 @@ module.exports.Component = registerComponent('geometry', {
                                                            'sphere'] } },
     thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
     translate: { type: 'vec3' },
-    width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
+    width: { default: 1, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
   /**
