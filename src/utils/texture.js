@@ -93,10 +93,12 @@ function loadVideo (material, data, src) {
   texture.minFilter = THREE.LinearFilter;
 
   // Cache as promise to be consistent with image texture caching.
-  textureCache[calculateVideoCacheHash(videoEl)] = Promise.resolve(texture, videoEl);
-  handleVideoTextureLoaded(texture, videoEl);
+  textureCache[hash] = Promise.resolve([texture, videoEl]);
+  handleVideoTextureLoaded([texture, videoEl]);
 
-  function handleVideoTextureLoaded (texture, videoEl) {
+  function handleVideoTextureLoaded (item) {
+    texture = item[0];
+    videoEl = item[1];
     updateMaterial(material, texture);
     el.emit(EVENTS.TEXTURE_LOADED, { element: videoEl, src: src });
     videoEl.addEventListener('loadeddata', function () {
