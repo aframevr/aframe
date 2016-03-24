@@ -33,7 +33,9 @@ var Component = module.exports.Component = function (el) {
   // Check whether we need to rebuild the schema depending on the data.
   // Call buildData with silent flag to suppress warnings when parsing data before updating
   // the schema.
-  this.updateSchema(buildData(el, name, this.schema, elData, true));
+  if (this.updateSchema) {
+    this.updateSchema(buildData(el, name, this.schema, elData, true));
+  }
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
@@ -62,7 +64,7 @@ Component.prototype = {
    */
   update: function (prevData) { /* no-op */ },
 
-  updateSchema: function (prevData) { /* no-op */ },
+  updateSchema: undefined,
 
   /**
    * Tick handler.
@@ -144,7 +146,9 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(buildData(el, this.name, this.schema, value, true));
+    if (this.updateSchema) {
+      this.updateSchema(buildData(el, this.name, this.schema, value, true));
+    }
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
