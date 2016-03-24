@@ -4,7 +4,6 @@ require('./cursor');
 require('./geometry');
 require('./light');
 require('./look-at');
-require('./look-controls');
 require('./material');
 require('./obj-model');
 require('./position');
@@ -12,8 +11,15 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
+require('./velocity');
 require('./visible');
-require('./wasd-controls');
+
+require('./controls/gamepad-controls');
+require('./controls/hmd-controls');
+require('./controls/mouse-controls');
+require('./controls/touch-controls');
+require('./controls/universal-controls');
+require('./controls/wasd-controls');
 
 require('./scene/canvas');
 require('./scene/debug');
