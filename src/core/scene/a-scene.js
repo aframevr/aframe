@@ -246,6 +246,9 @@ var AScene = module.exports = registerElement('a-scene', {
 
           // Kick off render loop.
           if (this.renderer) {
+            if (window.performance) {
+              window.performance.mark('render-started');
+            }
             this.render();
             this.renderStarted = true;
             this.emit('renderstart');

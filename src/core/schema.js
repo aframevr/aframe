@@ -39,8 +39,8 @@ module.exports.process = function (schema) {
  * Inject default value, parser, stringifier for single property.
  */
 function processPropertyDefinition (propDefinition) {
-  var propType;
   var defaultVal = propDefinition.default;
+  var propType;
   var typeName = propDefinition.type;
 
   // Type inference.
@@ -66,12 +66,8 @@ function processPropertyDefinition (propDefinition) {
   }
 
   // Fill in parse and stringify using property types.
-  if (!propDefinition.parse) {
-    propDefinition.parse = propType.parse;
-  }
-  if (!propDefinition.stringify) {
-    propDefinition.stringify = propType.stringify;
-  }
+  propDefinition.parse = propDefinition.parse || propType.parse;
+  propDefinition.stringify = propDefinition.stringify || propType.stringify;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -80,10 +76,6 @@ function processPropertyDefinition (propDefinition) {
   if (!('default' in propDefinition)) {
     propDefinition.default = propType.default;
   }
-
-  // Bind parse and stringify to the property definition.
-  propDefinition.parse = propDefinition.parse.bind(propDefinition);
-  propDefinition.stringify = propDefinition.stringify.bind(propDefinition);
 
   return propDefinition;
 }
@@ -110,7 +102,7 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
     }
   });
 
-  propNames.forEach(function (propName) {
+  propNames.forEach(function parse (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
 
