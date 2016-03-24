@@ -20,7 +20,7 @@ The .OBJ model primitive displays a 3D Wavefront model. It is an entity that map
   <!-- Using the asset management system. -->
   <a-obj-model src="#crate-obj" mtl="#crate-mtl"></a-obj-model>
 
-  <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
+  <!-- Defining the URL inline. Not recommended but may be more comfortable. -->
   <a-obj-model src="crate.obj" mtl="crate.mtl"></a-obj-model>
 </a-scene>
 ```

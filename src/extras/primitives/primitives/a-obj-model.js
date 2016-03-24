@@ -9,6 +9,6 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   },
 
   transforms: {
-    mtl: meshMixin.src
+    mtl: meshMixin.transforms.src
   }
 }));
