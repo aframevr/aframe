@@ -13,7 +13,7 @@
   z-index: 10000;
 }
 
-.rs-base.hidden {
+.rs-base div.hidden {
   display: none;
 }
 
