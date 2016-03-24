@@ -22,7 +22,7 @@ There are several ways to get started with A-Frame:
 
 [CodePen][codepen] is a playground for front-end web development. We can edit HTML and JavaScript directly in the browser with their text editor, see changes live, and share code snippets. This is a fast way to dive in without having to download or install anything. Check out the [official MozVR CodePens](http://codepen.io/team/mozvr/) and the [A-Frame Hello World CodePen][codepen]:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="jqERjQ" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqERjQ/">Hello A-Frame - 2</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ## Boilerplate
 
@@ -80,5 +80,5 @@ Then we can just require A-Frame from our app, perhaps built with Browserify or 
 require('aframe');
 ```
 
-[codepen]: http://codepen.io/team/mozvr/pen/BjygdO?editors=100
+[codepen]: http://codepen.io/team/mozvr/pen/BjygdO
 [ghpages]: https://pages.github.com/
