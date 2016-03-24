@@ -7,26 +7,9 @@
     <script src="../../dist/aframe.js"></script>
     <style>
       body { background-color: black; }
-      .stats {
-        position: fixed;
-        text-align: center;
-        top: 200px;
-        right: calc(50% - 225px);
-        left: calc(50% - 225px);
-        width: 450px;
-        height: 75px;
-        color: white;
-        padding: 20px;
-        font-size: 20pt;
-        font-family: Helvetica;
-        font-weight: medium;
-        line-height: 1.6em;
-        background-color: #EF2D5E;
-      }
     </style>
   </head>
   <body>
-    <div class="stats"></div>
     <a-scene stats="true">
       <a-assets>
         <a-mixin id="cube" geometry="primitive: box; height: 16; width: 16; depth: 16;"
@@ -39,14 +22,8 @@
     <script>
       var cubeEl;
       var sceneEl = document.querySelector('a-scene');
-      sceneEl.addEventListener('renderstart', function() { 
-        var statsEl = document.querySelector('.stats');
-        statsEl.innerHTML = cubesNum + " entities rendered</br> The scene took " + window.performance.getEntriesByName('render-started')[0].startTime.toFixed(2) + " ms to load";
-      });
       var x = -90;
       var z = -10;
-      var cubesNum = 0;
-      var innerHTML = '';
       var parentEl = document.createElement('a-entity');
       for (var i = 0; i < 400; i+=1) {
         for (var j = 0; j < 10; j+=1) {
@@ -54,7 +31,6 @@
           cubeEl.setAttribute('mixin', 'cube');
           cubeEl.setAttribute('position', { x: x, y: 0, z: z});
           x += 20;
-          cubesNum += 1;
           sceneEl.appendChild(cubeEl);
         }
         x = -90;
