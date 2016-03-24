@@ -215,7 +215,9 @@ module.exports.AAnimation = registerElement('a-animation', {
         if (!tween) { return; }
         tween.stop();
         this.isRunning = false;
-        this.partialSetAttribute(this.initialValue);
+        if ([FILLS.backwards, FILLS.none].indexOf(this.data.fill) !== -1) {
+          this.partialSetAttribute(this.initialValue);
+        }
         this.emit('animationstop');
       },
       writable: true
