@@ -28,7 +28,29 @@ The entity with `red cube` will take the properties from the `red` mixin and the
 <a-entity material="color: blue" geometry="primitive: box"></a-entity>
 ```
 
-## Overriding Component Properties
+## Merging Component Properties
+
+Properties of a multi-property component will merge if defined by multiple mixins and/or the entity. For example:
+
+```
+<a-scene>
+  <a-assets>
+    <a-mixin id="box" geometry="primitive: box"></a-mixin>
+    <a-mixin id="tall" geometry="height: 10"></a-mixin>
+    <a-mixin id="wide" geometry="width: 10"></a-mixin>
+  </a-assets>
+
+  <a-entity mixin="wide tall box" geometry="depth: 2"></a-entity>
+</a-scene>
+```
+
+All of the geometry component properties will merge since they are included as mixins and defined on the entity. The entity would then be equivalent to:
+
+```
+<a-entity geometry="primitive: box; height: 10; depth: 2; width: 10"></a-entity>
+```
+
+## Order and Precedence
 
 When an entity includes multiple mixins that define the same component
 properties, the right-most mixin takes precedence. In the example below, the
