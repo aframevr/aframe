@@ -213,7 +213,7 @@ And that wraps up our basic scene. Once we get past the novelty of placing stati
 [events]: ../extras/declarative-events.md
 [light]: ../primitives/light.md
 [mesh]: ../primitives/mesh-attributes.md
-[mozvr]: https://mozvr.com#start
+[mozvr]: http://mozvr.com/#start
 [next]: ./using-and-writing-components.md
 [position]: ../components/position.md
 [primitives]: ../primitives/
