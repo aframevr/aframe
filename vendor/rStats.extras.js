@@ -129,10 +129,10 @@ window.threeStats = function ( renderer ) {
     };
 
     var _groups = [ {
-        caption: 'three.js - Memory',
+        caption: 'Three.js - memory',
         values: [ 'renderer.info.memory.geometries', 'renderer.info.memory.programs', 'renderer.info.memory.textures' ]
     }, {
-        caption: 'three.js - Render',
+        caption: 'Three.js - render',
         values: [ 'renderer.info.render.calls', 'renderer.info.render.faces', 'renderer.info.render.points', 'renderer.info.render.vertices' ]
     } ];
 
@@ -256,6 +256,7 @@ window.BrowserStats = function () {
 
 if (typeof module === 'object') {
   module.exports = {
+    aframeStats: window.aframeStats,
     glStats: window.glStats,
     threeStats: window.threeStats,
     BrowserStats: window.BrowserStats
