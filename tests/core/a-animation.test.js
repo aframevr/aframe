@@ -362,8 +362,7 @@ suite('a-animation', function () {
     });
 
     test('gets correct values coordinate component with no `from`', function () {
-      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6',
-                                      { x: 0, y: 0, z: 0 });
+      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6', { x: 0, y: 0, z: 0 });
       assert.shallowDeepEqual(values.from, { x: 0, y: 0, z: 0 });
       assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
     });
@@ -397,6 +396,100 @@ suite('a-animation', function () {
         animationEl.stop();
         assert.notOk(animationEl.isRunning);
         done();
+      });
+    });
+
+    suite('considers fill value', function () {
+      test('default', function (done) {
+        setupAnimation({
+          attribute: 'position',
+          dur: 5000,
+          from: '0 0 0',
+          to: '10 10 10'
+        }, function (el, animationEl, startTime) {
+          animationEl.tween.update(startTime + 500);
+          animationEl.stop();
+          var position = el.getAttribute('position');
+          ['x', 'y', 'z'].forEach(function (axis) {
+            assert.isAbove(position[axis], 0);
+            assert.isBelow(position[axis], 10);
+          });
+          done();
+        });
+      });
+
+      test('backwards', function (done) {
+        setupAnimation({
+          attribute: 'position',
+          dur: 5000,
+          from: '0 0 0',
+          to: '10 10 10',
+          fill: 'backwards'
+        }, function (el, animationEl, startTime) {
+          animationEl.tween.update(startTime + 500);
+          animationEl.stop();
+          var position = el.getAttribute('position');
+          ['x', 'y', 'z'].forEach(function (axis) {
+            assert.equal(position[axis], 0);
+          });
+          done();
+        });
+      });
+
+      test('both', function (done) {
+        setupAnimation({
+          attribute: 'position',
+          dur: 5000,
+          from: '0 0 0',
+          to: '10 10 10',
+          fill: 'both'
+        }, function (el, animationEl, startTime) {
+          animationEl.tween.update(startTime + 500);
+          animationEl.stop();
+          var position = el.getAttribute('position');
+          ['x', 'y', 'z'].forEach(function (axis) {
+            assert.isAbove(position[axis], 0);
+            assert.isBelow(position[axis], 10);
+          });
+          done();
+        });
+      });
+
+      test('forwards', function (done) {
+        setupAnimation({
+          attribute: 'position',
+          dur: 5000,
+          from: '0 0 0',
+          to: '10 10 10',
+          fill: 'forwards'
+        }, function (el, animationEl, startTime) {
+          animationEl.tween.update(startTime + 500);
+          animationEl.stop();
+          var position = el.getAttribute('position');
+          ['x', 'y', 'z'].forEach(function (axis) {
+            assert.isAbove(position[axis], 0);
+            assert.isBelow(position[axis], 10);
+          });
+          done();
+        });
+      });
+
+      test('none', function (done) {
+        setupAnimation({
+          attribute: 'position',
+          dur: 5000,
+          from: '0 0 0',
+          to: '10 10 10',
+          fill: 'none'
+        }, function (el, animationEl, startTime) {
+          animationEl.tween.update(startTime + 500);
+          animationEl.stop();
+          var position = el.getAttribute('position');
+          ['x', 'y', 'z'].forEach(function (axis) {
+            assert.equal(position[axis], 0);
+          });
+          done();
+        });
       });
     });
   });
