@@ -14,10 +14,6 @@ module.exports = registerComponent('velocity', {
     var data = this.data;
     var position = this.el.getAttribute('position');
 
-    // Don't allow velocity to skip multiple frames ahead.
-    // TODO: This should be handled be automatically pausing the scene, if physics are added.
-    dt = Math.max(dt, 1 / 60);
-
     this.el.setAttribute('position', {
       x: position.x + data.x * dt / 1000,
       y: position.y + data.y * dt / 1000,
