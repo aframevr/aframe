@@ -64,6 +64,7 @@ function loadVideo (material, data, src) {
   var hash;
   var texture;
   var videoEl;
+  var videoTextureResult;
 
   if (typeof src !== 'string') {
     // Check cache before creating texture.
@@ -92,11 +93,18 @@ function loadVideo (material, data, src) {
   texture = new THREE.VideoTexture(videoEl);
   texture.minFilter = THREE.LinearFilter;
 
-  // Cache as promise to be consistent with image texture caching.
-  textureCache[calculateVideoCacheHash(videoEl)] = Promise.resolve(texture, videoEl);
-  handleVideoTextureLoaded(texture, videoEl);
+  videoTextureResult = {
+    texture: texture,
+    videoEl: videoEl
+  };
 
-  function handleVideoTextureLoaded (texture, videoEl) {
+  // Cache as promise to be consistent with image texture caching.
+  textureCache[hash] = Promise.resolve(videoTextureResult);
+  handleVideoTextureLoaded(videoTextureResult);
+
+  function handleVideoTextureLoaded (res) {
+    texture = res.texture;
+    videoEl = res.videoEl;
     updateMaterial(material, texture);
     el.emit(EVENTS.TEXTURE_LOADED, { element: videoEl, src: src });
     videoEl.addEventListener('loadeddata', function () {
