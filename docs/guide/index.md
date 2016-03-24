@@ -88,7 +88,7 @@ Read through the documentation front-to-back for more details, and if you have a
 [custom]: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements
 [ecs]: ../core/index.md
 [entity]: ../core/entity.md
-[mozvr]: https://mozvr.com
+[mozvr]: http://mozvr.com
 [slack]: https://aframevr-slack.herokuapp.com/
 [three]: http://three.js.org/
 [webvr]: http://mozvr.com/#start
