@@ -146,7 +146,7 @@ The ring geometry defines a flat ring, like a [CD][cd]. Note that because it is 
 |---------------|------------------------------------------------------------------------|---------------|
 | radiusInner   | Radius of the inner hole of the ring.                                  | 1             |
 | radiusOuter   | Radius of the outer edge of the ring.                                  | 1             |
-| segmentsTheta | Number of segments. A higher number means the ring will be more round. | 2             |
+| segmentsTheta | Number of segments. A higher number means the ring will be more round. | 32            |
 | segmentsPhi   | Number of triangles within each face defined by segmentsTheta.         | 8             |
 | thetaStart    | Starting angle in degrees.                                             | 0             |
 | thetaLength   | Central angle in degrees.                                              | 360           |
@@ -185,7 +185,7 @@ The torus primitive defines a donut shape.
 | radius          | Radius of the outer edge of the torus.                                                                          | 1             |
 | radiusTubular   | Radius of the tube.                                                                                             | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
-| segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 0             |
+| segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 32            |
 | arc             | Central angle.                                                                                                  | 360           |
 
 ### Torus Knot
@@ -201,7 +201,7 @@ The torus knot primitive defines a pretzel shape, the particular shape of which 
 | radius          | Radius that contains the torus knot.                                                                            | 1             |
 | radiusTubular   | Radius of the tubes of the torus knot.                                                                          | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
-| segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 8             |
+| segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 32            |
 | p               | Number that helps define the pretzel shape.                                                                     | 2             |
 | q               | Number that helps define the pretzel shape.                                                                     | 3             |
 
