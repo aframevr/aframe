@@ -36,6 +36,12 @@ suite('light', function () {
       el.setAttribute('light', 'type: ambient');
       assert.equal(el.object3D.children[0].type, 'AmbientLight');
     });
+
+    test('can update parameters on updated light', function () {
+      var el = this.el;
+      el.setAttribute('light', 'intensity: 5');
+      assert.equal(el.object3D.children[0].intensity, 5);
+    });
   });
 
   suite('getLight', function () {

@@ -17,7 +17,7 @@ module.exports.Component = registerComponent('light', {
     decay: { default: 1, if: { type: ['point', 'spot'] } },
     distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
     exponent: { default: 10.0, if: { type: ['spot'] } },
-    intensity: { default: 1.0, min: 0, if: { type: ['directional', 'hemisphere', 'point', 'spot'] } },
+    intensity: { default: 1.0, min: 0, if: { type: ['ambient', 'directional', 'hemisphere', 'point', 'spot'] } },
     type: { default: 'directional',
             oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
     }
@@ -96,7 +96,7 @@ function getLight (data) {
 
   switch (type.toLowerCase()) {
     case 'ambient': {
-      return new THREE.AmbientLight(color);
+      return new THREE.AmbientLight(color, intensity);
     }
     case 'directional': {
       return new THREE.DirectionalLight(color, intensity);
