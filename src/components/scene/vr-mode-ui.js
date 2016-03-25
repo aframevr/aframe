@@ -88,8 +88,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleOrientationModalIfNeeded: function () {
-    if (!this.orientationModalEl || !this.isMobile) { return; }
     var scene = this.el;
+    if (!this.orientationModalEl || !scene.isMobile) { return; }
     if (!utils.isLandscape() && scene.is('vr-mode')) {
       // Show if in VR mode on portrait.
       this.orientationModalEl.classList.remove(HIDDEN_CLASS);
