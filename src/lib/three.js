@@ -22,7 +22,7 @@ if (THREE.Cache) {
 require('../../node_modules/three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('../../node_modules/three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 require('../../node_modules/three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
-require('../../node_modules/three/examples/js/controls/VRControls');  // THREE.VRControls
-require('../../node_modules/three/examples/js/effects/VREffect');  // THREE.VREffect
+require('../../vendor/VRControls');  // THREE.VRControls
+require('../../vendor/VREffect');  // THREE.VREffect
 
 module.exports = THREE;

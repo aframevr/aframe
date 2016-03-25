@@ -30,11 +30,12 @@ require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
-// WebVR polyfill configuration.
-window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices || !!navigator.getVRDisplays;
+window.hasNativeWebVRSupport = !!navigator.getVRDevices || !!navigator.getVRDisplays;
 window.WebVRConfig = window.WebVRConfig || {
   TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
+  ENABLE_DEPRECATED_API: true,
+  BUFFER_SCALE: 0.5
 };
 require('webvr-polyfill');
 
