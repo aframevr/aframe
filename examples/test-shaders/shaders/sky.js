@@ -73,7 +73,7 @@ AFRAME.registerShader('sky', {
     '}',
 
     // see http://blenderartists.org/forum/showthread.php?321110-Shaders-and-Skybox-madness
-    '// A simplied version of the total Reayleigh scattering to works on browsers that use ANGLE',
+    '// A simplied version of the total Rayleigh scattering to works on browsers that use ANGLE',
     'vec3 simplifiedRayleigh()',
     '{',
       'return 0.0005 / vec3(94, 40, 18);',
