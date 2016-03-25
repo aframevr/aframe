@@ -21,6 +21,7 @@ Check out the [issues labeled *easy*](https://github.com/aframevr/aframe/issues?
 4. Make changes to your fork of the repository.
 5. If possible, write a unit test and run with `npm test`.
 6. Submit a pull request to the master branch.
+7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) and [squash your commits](https://davidwalsh.name/squash-commits-git) once ready.
 
 Please note you would agree to license your contributions under the [license](LICENSE).
 
