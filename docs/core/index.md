@@ -1,5 +1,5 @@
 ---
-title: Entity-Component-System Pattern
+title: Entity-Component-System
 section_title: Core
 type: core
 layout: docs
@@ -8,15 +8,15 @@ order: 1
 section_order: 2
 ---
 
-A-Frame is based on an __[entity-component-system pattern](https://en.wikipedia.org/wiki/Entity_component_system)__, a pattern common in game development that emphasizes composability over inheritance:
+A-Frame is based on an **[entity-component-system pattern][ecs]** (ECS), a pattern common in game development that emphasizes composability over inheritance:
 
-- An [entity][entity] is a general-purpose object in the scene that, by itself, does nothing.
-- A [component][component] is a reusable module that is attached to an entity to provide appearance, behavior, and/or functionality.
-- A [system][system] provide global scope, services, and management to classes of components.
+- An [entity][entity] is a general-purpose object that inherently does and renders nothing.
+- A [component][component] is a reusable module that is plugged into entities in order to provide appearance, behavior, and/or functionality. They are plug-and-play for objects.
+- A [system][system] provides global scope, services, and management to classes of components.
 
-Components are plug-and-play for objects. They let us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want extend an object, we would have to manually create a new class to do so.
+ECS lets us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want extend an object, we would have to manually create a new class to do so.
 
-If we are to bring virtual reality to the web, we should adopt established patterns from 3D and game development. The entity-component-system pattern is A-Frame's key differentiator from previous 3D markup specifications.
+ECS grants developers the key to permissionless innovation. Developers can write, share, and plug in components that extend new features or iterate upon existing features.
 
 ## Concept
 
@@ -51,10 +51,11 @@ We can even attach third-party components that other people have created. If som
 
 [component]: ./component.md
 [composegif]: http://i.imgur.com/0UIZFgs.gif
+[ecs]: https://wikipedia.org/wiki/Entity_component_system
 [entity]: ./entity.md
 [geometry]: ../components/geometry.md
 [light]: ../components/light.md
 [material]: ../components/material.md
-[physics]: https://github.com/ngokevin/aframe-physics-components]
-[sound]: ../components/sound.html
-[system]: ./systems.md
+[physics]: https://github.com/ngokevin/aframe-physics-components
+[sound]: ../components/sound.md
+[system]: ./system.md

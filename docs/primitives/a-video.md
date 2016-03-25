@@ -3,7 +3,7 @@ title: <a-video>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 17
+order: 18
 ---
 
 The video primitive displays a video on a flat plane as a texture. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.

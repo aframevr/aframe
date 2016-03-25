@@ -3,7 +3,7 @@ title: Asset Management System
 type: core
 layout: docs
 parent_section: core
-order: 8
+order: 9
 ---
 
 Games and rich 3D experiences traditionally preload many of their assets, such as models or textures, before rendering their scenes. This makes sure that assets aren't missing visually, and this is benenficial for performance to ensure scenes don't try to fetch assets while rendering. A-Frame has an asset management system that allows us to place all of our assets in one place and to preload and cache assets for better performance.

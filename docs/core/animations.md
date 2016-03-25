@@ -3,7 +3,7 @@ title: Animations
 type: core
 layout: docs
 parent_section: core
-order: 5
+order: 6
 ---
 
 Animations in A-Frame are defined by attaching an `<a-animation>` element as a child of the entity to animate. The API is roughly based after the [Web Animations](http://www.w3.org/TR/web-animations/) specification.

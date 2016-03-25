@@ -3,7 +3,7 @@ title: <a-torus>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 19
+order: 17
 ---
 
 The torus primitive creates a donut or circular tube shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `torus`.

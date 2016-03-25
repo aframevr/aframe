@@ -3,7 +3,7 @@ title: Scene
 type: core
 layout: docs
 parent_section: core
-order: 4
+order: 5
 ---
 
 A scene is represented by the `<a-scene>` element. The scene is the global root object, and all [entities][entity] are contained within the scene.

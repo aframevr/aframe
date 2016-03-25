@@ -3,7 +3,7 @@ title: <a-videosphere>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 18
+order: 19
 ---
 
 The videosphere primitive easily adds a 360-degree video background to a scene or display a 360-degree video. It is an entity that prescribes a large sphere with the video texture mapped to the inside.
