@@ -52468,7 +52468,7 @@ module.exports={
     "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
-    "lint": "semistandard -v $(git ls-files '*.js') | standard-reporter --stylish",
+    "lint": "semistandard -v | snazzy",
     "precommit": "npm run lint",
     "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
     "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
@@ -52522,7 +52522,7 @@ module.exports={
     "semistandard": "^7.0.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
-    "standard-reporter": "^1.0.5",
+    "snazzy" : "^3.0.0",
     "uglifyjs": "^2.4.10"
   },
   "link": true,
@@ -52568,6 +52568,10 @@ module.exports={
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
+/**
+ * Camera component.
+ * Pairs along with camera system to handle tracking the active camera.
+ */
 module.exports.Component = registerComponent('camera', {
   schema: {
     active: { default: true },
@@ -52577,13 +52581,12 @@ module.exports.Component = registerComponent('camera', {
   },
 
   /**
-   * Initializes three.js camera, adding it to the entity.
-   * Adds a reference from the scene to this entity as the camera.
+   * Initialize three.js camera and add it to the entity.
+   * Add reference from scene to this entity as the camera.
    */
   init: function () {
     var camera = this.camera = new THREE.PerspectiveCamera();
-    var el = this.el;
-    el.setObject3D('camera', camera);
+    this.el.setObject3D('camera', camera);
   },
 
   /**
@@ -52594,32 +52597,36 @@ module.exports.Component = registerComponent('camera', {
   },
 
   /**
-   * Updates three.js camera.
+   * Update three.js camera.
    */
   update: function (oldData) {
     var el = this.el;
-    var sceneEl = el.sceneEl;
     var data = this.data;
     var camera = this.camera;
+    var system = this.system;
+
+    // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
     camera.far = data.far;
     camera.fov = data.fov;
     camera.near = data.near;
     camera.updateProjectionMatrix();
-    // If the active property has changes or on first update call
-    if (!oldData || oldData.active !== data.active) {
-      if (data.active) {
-        sceneEl.setActiveCamera(camera);
-        sceneEl.emit('camera-set-active', { cameraEl: camera.el });
-      } else if (sceneEl.camera === camera) {
-        // If the camera is disabled and is the current active one
-        sceneEl.setActiveCamera();
-      }
+
+    // Active property did not change.
+    if (oldData && oldData.active === data.active) { return; }
+
+    // If `active` property changes, or first update, handle active camera with system.
+    if (data.active && system.activeCameraEl !== this.el) {
+      // Camera enabled. Set camera to this camera.
+      system.setActiveCamera(el, camera);
+    } else if (!data.active && system.activeCameraEl === this.el) {
+      // Camera disabled. Set camera to another camera.
+      system.disableActiveCamera();
     }
   }
 });
 
-},{"../core/component":56,"../lib/three":88}],26:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90}],26:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -52657,7 +52664,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88}],27:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90}],27:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -52753,7 +52760,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":56,"../utils/":98}],28:[function(_dereq_,module,exports){
+},{"../core/component":56,"../utils/":102}],28:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -52770,8 +52777,8 @@ var warn = debug('components:geometry:warn');
 module.exports.Component = registerComponent('geometry', {
   schema: {
     arc: { default: 360, if: { primitive: ['torus'] } },
-    depth: { default: 2, min: 0, if: { primitive: ['box'] } },
-    height: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } },
+    depth: { default: 1, min: 0, if: { primitive: ['box'] } },
+    height: { default: 1, min: 0, if: { primitive: ['box', 'plane'] } },
     openEnded: { default: false, if: { primitive: ['cylinder'] } },
     p: { default: 2, if: { primitive: ['torusKnot'] }, type: 'int' },
     primitive: {
@@ -52788,18 +52795,18 @@ module.exports.Component = registerComponent('geometry', {
     radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder'] } },
     radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus'] } },
     scaleHeight: { default: 1, min: 0, if: { primitive: ['torusKnot'] } },
-    segments: { default: 8, min: 0, if: { primitive: ['circle'] }, type: 'int' },
+    segments: { default: 32, min: 0, if: { primitive: ['circle'] }, type: 'int' },
     segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere'] }, type: 'int' },
     segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] }, type: 'int' },
     segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder'] }, type: 'int' },
-    segmentsTheta: { default: 8, min: 0, if: { primitive: ['ring'] }, type: 'int' },
-    segmentsTubular: { default: 8, min: 0, if: { primitive: ['torus', 'torusKnot'] }, type: 'int' },
+    segmentsTheta: { default: 32, min: 0, if: { primitive: ['ring'] }, type: 'int' },
+    segmentsTubular: { default: 32, min: 0, if: { primitive: ['torus', 'torusKnot'] }, type: 'int' },
     segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] }, type: 'int' },
     thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring',
                                                            'sphere'] } },
     thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere'] } },
     translate: { type: 'vec3' },
-    width: { default: 2, min: 0, if: { primitive: ['box', 'plane'] } }
+    width: { default: 1, min: 0, if: { primitive: ['box', 'plane'] } }
   },
 
   /**
@@ -52914,7 +52921,7 @@ function applyTranslate (geometry, translate, currentTranslate) {
   geometry.verticesNeedsUpdate = true;
 }
 
-},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],29:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils":102,"../utils/debug":101}],29:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -52956,8 +52963,8 @@ var warn = debug('components:light:warn');
 module.exports.Component = registerComponent('light', {
   schema: {
     angle: { default: 60, if: { type: ['spot'] } },
-    color: { default: '#FFF' },
-    groundColor: { default: '#FFF', if: { type: ['hemisphere'] } },
+    color: { type: 'color' },
+    groundColor: { type: 'color', if: { type: ['hemisphere'] } },
     decay: { default: 1, if: { type: ['point', 'spot'] } },
     distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
     exponent: { default: 10.0, if: { type: ['spot'] } },
@@ -52973,7 +52980,7 @@ module.exports.Component = registerComponent('light', {
   init: function () {
     var el = this.el;
     this.light = null;
-    el.sceneEl.registerLight(el);
+    this.system.registerLight(el);
   },
 
   /**
@@ -53062,7 +53069,7 @@ function getLight (data) {
   }
 }
 
-},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],31:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils":102,"../utils/debug":101}],31:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var parseUrl = _dereq_('../utils/src-loader').parseUrl;
@@ -53140,7 +53147,7 @@ module.exports.Component = registerComponent('loader', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88,"../utils/debug":97,"../utils/src-loader":99}],32:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils/debug":101,"../utils/src-loader":103}],32:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var coordinates = _dereq_('../utils/coordinates');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -53234,7 +53241,7 @@ module.exports.Component = registerComponent('look-at', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88,"../utils/coordinates":96,"../utils/debug":97}],33:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils/coordinates":100,"../utils/debug":101}],33:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -53475,7 +53482,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88}],34:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90}],34:[function(_dereq_,module,exports){
 /* global Promise */
 var debug = _dereq_('../utils/debug');
 var utils = _dereq_('../utils');
@@ -53501,7 +53508,8 @@ module.exports.Component = registerComponent('material', {
     shader: { default: 'standard', oneOf: shaderNames },
     transparent: { default: false },
     opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    side: { default: 'front', oneOf: ['front', 'back', 'double'] }
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    depthTest: { default: true }
   },
 
   init: function () {
@@ -53577,6 +53585,7 @@ module.exports.Component = registerComponent('material', {
     material.side = parseSide(data.side);
     material.opacity = data.opacity;
     material.transparent = data.transparent !== false || data.opacity < 1.0;
+    material.depthTest = data.depthTest !== false;
   },
 
   /**
@@ -53628,18 +53637,16 @@ function parseSide (side) {
   }
 }
 
-},{"../core/component":56,"../core/shader":63,"../lib/three":88,"../utils":98,"../utils/debug":97}],35:[function(_dereq_,module,exports){
+},{"../core/component":56,"../core/shader":63,"../lib/three":90,"../utils":102,"../utils/debug":101}],35:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
-var objLoader = new THREE.OBJLoader();
-var mtlLoader = new THREE.MTLLoader(objLoader.manager);
 var warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
-  dependencies: [ 'material' ],
+  dependencies: ['material'],
 
   schema: {
     mtl: { type: 'src' },
@@ -53648,6 +53655,8 @@ module.exports.Component = registerComponent('obj-model', {
 
   init: function () {
     this.model = null;
+    this.objLoader = new THREE.OBJLoader();
+    this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
   },
 
   update: function () {
@@ -53665,6 +53674,8 @@ module.exports.Component = registerComponent('obj-model', {
   loadObj: function (objUrl, mtlUrl) {
     var self = this;
     var el = this.el;
+    var mtlLoader = this.mtlLoader;
+    var objLoader = this.objLoader;
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
@@ -53678,7 +53689,7 @@ module.exports.Component = registerComponent('obj-model', {
         objLoader.load(objUrl, function (objModel) {
           self.model = objModel;
           el.setObject3D('mesh', objModel);
-          el.emit('model-loaded', { format: 'obj', model: objModel });
+          el.emit('model-loaded', {format: 'obj', model: objModel});
         });
       });
       return;
@@ -53696,12 +53707,12 @@ module.exports.Component = registerComponent('obj-model', {
 
       self.model = objModel;
       el.setObject3D('mesh', objModel);
-      el.emit('model-loaded', { format: 'obj', model: objModel });
+      el.emit('model-loaded', {format: 'obj', model: objModel});
     });
   }
 });
 
-},{"../core/component":56,"../lib/three":88,"../utils/debug":97}],36:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils/debug":101}],36:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -53783,8 +53794,14 @@ module.exports.Component = registerComponent('raycaster', {
     var intersectedObjs = this.intersect(scene.children);
     for (var i = 0; i < intersectedObjs.length; ++i) {
       intersectedObj = intersectedObjs[i];
+
+      while (intersectedObj.object.parent && intersectedObj.object.el === undefined) {
+        intersectedObj.object = intersectedObj.object.parent;
+      }
+
       // If the intersected object is the cursor itself
       // or the object is further than the max distance
+
       if (intersectedObj.object.el === undefined) { continue; }
       if (intersectedObj.object.el === cursorEl) { continue; }
       if (!intersectedObj.object.visible) { continue; }
@@ -53822,7 +53839,7 @@ module.exports.Component = registerComponent('raycaster', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88,"request-interval":12}],38:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"request-interval":12}],38:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -53840,7 +53857,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":56,"../lib/three":88}],39:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90}],39:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -53984,8 +54001,9 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":56,"../../lib/three":88,"../../utils/debug":97}],42:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":90,"../../utils/debug":101}],42:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
+var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
 
 var controls = new THREE.VRControls(new THREE.Object3D());
@@ -54001,6 +54019,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
     var scene = this.el;
 
     this.listener = window.addEventListener('keyup', function (event) {
+      if (!shouldCaptureKeyEvent(event)) { return; }
       if (self.enterVREnabled && event.keyCode === 70) {  // f.
         scene.enterVR();
       }
@@ -54021,11 +54040,15 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":56,"../../lib/three":88}],43:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":90,"../../utils/":102}],43:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
+_dereq_('../../../vendor/rStats.extras');
+_dereq_('../../lib/rStatsAframe');
 
 var HIDDEN_CLASS = 'a-hidden';
+var ThreeStats = window.threeStats;
+var AFrameStats = window.aframeStats;
 
 /**
  * Stats appended to document.body by RStats.
@@ -54033,8 +54056,7 @@ var HIDDEN_CLASS = 'a-hidden';
 module.exports.Component = registerComponent('stats', {
   init: function () {
     var scene = this.el;
-
-    this.stats = createStats();
+    this.stats = createStats(scene);
     this.statsEl = document.querySelector('.rs-base');
 
     this.hideBound = this.hide.bind(this);
@@ -54066,19 +54088,23 @@ module.exports.Component = registerComponent('stats', {
   }
 });
 
-function createStats () {
+function createStats (scene) {
+  var threeStats = new ThreeStats(scene.renderer);
+  var aframeStats = new AFrameStats(scene);
+  var plugins = scene.isMobile ? [] : [threeStats, aframeStats];
   return new RStats({
-    CSSPath: '../../style/',
+    css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {
-      fps: { caption: 'fps', below: 30 }
+      fps: {caption: 'fps', below: 30}
     },
     groups: [
-      { caption: 'Framerate', values: [ 'fps', 'raf' ] }
-    ]
+      {caption: 'Framerate', values: ['fps', 'raf']}
+    ],
+    plugins: plugins
   });
 }
 
-},{"../../../vendor/rStats":103,"../../core/component":56}],44:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":107,"../../../vendor/rStats.extras":106,"../../core/component":56,"../../lib/rStatsAframe":89}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var utils = _dereq_('../../utils/');
@@ -54105,7 +54131,6 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   init: function () {
-    var isIOS = utils.isIOS();
     var self = this;
     var scene = this.el;
 
@@ -54116,8 +54141,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     this.orientationModalEl = null;
 
     // Hide/show VR UI when entering/exiting VR mode.
-    scene.addEventListener('enter-vr', this.hide.bind(this));
-    scene.addEventListener('exit-vr', this.show.bind(this));
+    scene.addEventListener('enter-vr', this.updateEnterVRInterface.bind(this));
+    scene.addEventListener('exit-vr', this.updateEnterVRInterface.bind(this));
 
     window.addEventListener('message', function (event) {
       if (event.data.type === 'loaderReady') {
@@ -54126,18 +54151,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
       }
     });
 
-    // Orientational modal toggling on iOS.
-    window.addEventListener('orientationchange', function () {
-      if (!isIOS) { return; }
-      if (!self.orientationModalEl) { return; }
-
-      if (!utils.isLandscape() && scene.is('vr-mode')) {
-        // Show if in VR-mode on portrait.
-        self.orientationModalEl.classList.remove(HIDDEN_CLASS);
-      } else {
-        self.orientationModalEl.classList.add(HIDDEN_CLASS);
-      }
-    });
+    // Modal that tells the user to change orientation if in portrait.
+    window.addEventListener('orientationchange', this.toggleOrientationModalIfNeeded.bind(this));
   },
 
   update: function () {
@@ -54152,6 +54167,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 
     this.orientationModalEl = createOrientationModal(this.exitVR);
     this.el.appendChild(this.orientationModalEl);
+
+    this.updateEnterVRInterface();
   },
 
   remove: function () {
@@ -54162,12 +54179,30 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     });
   },
 
-  hide: function () {
-    this.enterVREl.classList.add(HIDDEN_CLASS);
+  updateEnterVRInterface: function () {
+    this.toggleEnterVRButtonIfNeeded();
+    this.toggleOrientationModalIfNeeded();
   },
 
-  show: function () {
-    this.enterVREl.classList.remove(HIDDEN_CLASS);
+  toggleEnterVRButtonIfNeeded: function () {
+    if (!this.enterVREl) { return; }
+    var scene = this.el;
+    if (scene.is('vr-mode')) {
+      this.enterVREl.classList.add(HIDDEN_CLASS);
+    } else {
+      this.enterVREl.classList.remove(HIDDEN_CLASS);
+    }
+  },
+
+  toggleOrientationModalIfNeeded: function () {
+    var scene = this.el;
+    if (!this.orientationModalEl || !scene.isMobile) { return; }
+    if (!utils.isLandscape() && scene.is('vr-mode')) {
+      // Show if in VR mode on portrait.
+      this.orientationModalEl.classList.remove(HIDDEN_CLASS);
+    } else {
+      this.orientationModalEl.classList.add(HIDDEN_CLASS);
+    }
   }
 });
 
@@ -54257,18 +54292,15 @@ function createOrientationModal (exitVRHandler) {
   var exit = document.createElement('button');
   exit.innerHTML = 'Exit VR';
 
-  // Hide modal and exit VR on close.
-  exit.addEventListener('click', function () {
-    exitVRHandler();
-    modal.classList.add(HIDDEN_CLASS);
-  });
+  // Exit VR on close.
+  exit.addEventListener('click', exitVRHandler);
 
   modal.appendChild(exit);
 
   return modal;
 }
 
-},{"../../core/component":56,"../../lib/three":88,"../../utils/":98}],45:[function(_dereq_,module,exports){
+},{"../../core/component":56,"../../lib/three":90,"../../utils/":102}],45:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var diff = _dereq_('../utils').diff;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -54390,12 +54422,12 @@ module.exports.Component = registerComponent('sound', {
   },
 
   pause: function () {
-    if (!this.sound.source.buffer) { return; }
+    if (!this.sound.source.buffer || !this.sound.isPlaying) { return; }
     this.sound.pause();
   }
 });
 
-},{"../core/component":56,"../lib/three":88,"../utils":98,"../utils/debug":97}],46:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils":102,"../utils/debug":101}],46:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -54414,6 +54446,7 @@ module.exports.Component = registerComponent('visible', {
 
 },{"../core/component":56}],47:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
+var shouldCaptureKeyEvent = _dereq_('../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../lib/three');
 
 var MAX_DELTA = 0.2;
@@ -54439,8 +54472,12 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
+    this.onBlur = this.onBlur.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+    this.onVisibilityChange = this.onVisibilityChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.attachVisibilityEventListeners();
   },
 
   update: function (previousData) {
@@ -54496,11 +54533,12 @@ module.exports.Component = registerComponent('wasd-controls', {
   },
 
   play: function () {
-    this.attachEventListeners();
+    this.attachKeyEventListeners();
   },
 
   pause: function () {
-    this.removeEventListeners();
+    this.keys = {};
+    this.removeKeyEventListeners();
   },
 
   tick: function (t) {
@@ -54509,25 +54547,54 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   remove: function () {
     this.pause();
+    this.removeVisibilityEventListeners();
   },
 
-  attachEventListeners: function () {
-    // Keyboard events
-    window.addEventListener('keydown', this.onKeyDown, false);
-    window.addEventListener('keyup', this.onKeyUp, false);
+  attachVisibilityEventListeners: function () {
+    window.addEventListener('blur', this.onBlur);
+    window.addEventListener('focus', this.onFocus);
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
   },
 
-  removeEventListeners: function () {
-    // Keyboard events
+  removeVisibilityEventListeners: function () {
+    window.removeEventListener('blur', this.onBlur);
+    window.removeEventListener('focus', this.onFocus);
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  },
+
+  attachKeyEventListeners: function () {
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
+  },
+
+  removeKeyEventListeners: function () {
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
   },
 
+  onBlur: function () {
+    this.pause();
+  },
+
+  onFocus: function () {
+    this.play();
+  },
+
+  onVisibilityChange: function () {
+    if (document.hidden) {
+      this.onBlur();
+    } else {
+      this.onFocus();
+    }
+  },
+
   onKeyDown: function (event) {
+    if (!shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = true;
   },
 
   onKeyUp: function (event) {
+    if (!shouldCaptureKeyEvent(event)) { return; }
     this.keys[event.keyCode] = false;
   },
 
@@ -54549,7 +54616,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })()
 });
 
-},{"../core/component":56,"../lib/three":88}],48:[function(_dereq_,module,exports){
+},{"../core/component":56,"../lib/three":90,"../utils/":102}],48:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -54869,7 +54936,9 @@ module.exports.AAnimation = registerElement('a-animation', {
         if (!tween) { return; }
         tween.stop();
         this.isRunning = false;
-        this.partialSetAttribute(this.initialValue);
+        if ([FILLS.backwards, FILLS.none].indexOf(this.data.fill) !== -1) {
+          this.partialSetAttribute(this.initialValue);
+        }
         this.emit('animationstop');
       },
       writable: true
@@ -55116,7 +55185,7 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../constants/animation":48,"../utils/":98,"./a-node":54,"./a-register-element":55,"./schema":62,"tween.js":22}],50:[function(_dereq_,module,exports){
+},{"../constants/animation":48,"../utils/":102,"./a-node":54,"./a-register-element":55,"./schema":62,"tween.js":22}],50:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55248,7 +55317,7 @@ function mediaElementLoaded (el) {
   });
 }
 
-},{"../lib/three":88,"../utils/debug":97,"./a-node":54,"./a-register-element":55}],51:[function(_dereq_,module,exports){
+},{"../lib/three":90,"../utils/debug":101,"./a-node":54,"./a-register-element":55}],51:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55299,7 +55368,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":97,"./a-register-element":55}],52:[function(_dereq_,module,exports){
+},{"../utils/debug":101,"./a-register-element":55}],52:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var components = _dereq_('./component').components;
@@ -55923,7 +55992,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":88,"../utils/":98,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
+},{"../lib/three":90,"../utils/":102,"./a-node":54,"./a-register-element":55,"./component":56}],53:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var AComponents = _dereq_('./component').components;
 var ANode = _dereq_('./a-node');
@@ -56214,7 +56283,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":98,"./a-register-element":55}],55:[function(_dereq_,module,exports){
+},{"../utils/":102,"./a-register-element":55}],55:[function(_dereq_,module,exports){
 // Polyfill `document.registerElement`.
 _dereq_('document-register-element');
 
@@ -56420,7 +56489,9 @@ var Component = module.exports.Component = function (el) {
   // Check whether we need to rebuild the schema depending on the data.
   // Call buildData with silent flag to suppress warnings when parsing data before updating
   // the schema.
-  this.updateSchema(buildData(el, name, this.schema, elData, true));
+  if (this.updateSchema) {
+    this.updateSchema(buildData(el, name, this.schema, elData, true));
+  }
   this.data = buildData(el, name, this.schema, elData);
   this.init();
   this.update();
@@ -56449,7 +56520,7 @@ Component.prototype = {
    */
   update: function (prevData) { /* no-op */ },
 
-  updateSchema: function (prevData) { /* no-op */ },
+  updateSchema: undefined,
 
   /**
    * Tick handler.
@@ -56531,7 +56602,9 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateSchema(buildData(el, this.name, this.schema, value, true));
+    if (this.updateSchema) {
+      this.updateSchema(buildData(el, this.name, this.schema, value, true));
+    }
     this.data = buildData(el, this.name, this.schema, value);
 
     // Don't update if properties haven't changed
@@ -56691,7 +56764,7 @@ function extendProperties (dest, source, isSinglePropSchema) {
   return utils.extend(dest, source);
 }
 
-},{"../utils/":98,"./schema":62,"./system":64}],57:[function(_dereq_,module,exports){
+},{"../utils/":102,"./schema":62,"./system":64}],57:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -56702,7 +56775,7 @@ var propertyTypes = module.exports.propertyTypes = {};
 // Built-in property types.
 registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('boolean', false, boolParse);
-registerPropertyType('color', '', defaultParse, defaultStringify);
+registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
@@ -56822,10 +56895,10 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":96,"debug":3}],58:[function(_dereq_,module,exports){
+},{"../utils/coordinates":100,"debug":3}],58:[function(_dereq_,module,exports){
 /* global Promise */
 var initFullscreen = _dereq_('./fullscreen');
-var initMetaTags = _dereq_('./metaTags');
+var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
 var re = _dereq_('../a-register-element');
 var systems = _dereq_('../system').systems;
@@ -56836,9 +56909,8 @@ var utils = _dereq_('../../utils/');
 var AEntity = _dereq_('../a-entity');
 var ANode = _dereq_('../a-node');
 
-var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
-var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 var registerElement = re.registerElement;
+var isIOS = utils.isIOS();
 var isMobile = utils.isMobile();
 
 /**
@@ -56847,6 +56919,7 @@ var isMobile = utils.isMobile();
  * @member {number} animationFrameID
  * @member {array} behaviors - Component instances that have registered themselves to be
            updated on every tick.
+ * @member {object} camera - three.js Camera object.
  * @member {object} canvas
  * @member {bool} isScene - Differentiates as scene entity as opposed to other entites.
  * @member {bool} isMobile - Whether browser is mobile (via UA detection).
@@ -56855,6 +56928,7 @@ var isMobile = utils.isMobile();
  * @member {object} renderer
  * @member {bool} renderStarted
  * @member {object} stereoRenderer
+ * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
 var AScene = module.exports = registerElement('a-scene', {
@@ -56869,8 +56943,8 @@ var AScene = module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.defaultLightsEnabled = true;
         this.isMobile = isMobile;
+        this.isIOS = isIOS;
         this.isScene = true;
         this.object3D = new THREE.Scene();
         this.systems = {};
@@ -56884,11 +56958,8 @@ var AScene = module.exports = registerElement('a-scene', {
         this.behaviors = [];
         this.hasLoaded = false;
         this.isPlaying = true;
-        this.materials = {};
         this.originalHTML = this.innerHTML;
         this.setupSystems();
-        this.setupDefaultLights();
-        this.setupDefaultCamera();
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -56920,9 +56991,11 @@ var AScene = module.exports = registerElement('a-scene', {
 
     initSystem: {
       value: function (name) {
+        var system;
         if (this.systems[name]) { return; }
-        this.systems[name] = new systems[name]();
-        this.systems[name].init();
+        system = this.systems[name] = new systems[name]();
+        system.sceneEl = this;
+        system.init();
       }
     },
 
@@ -56969,102 +57042,6 @@ var AScene = module.exports = registerElement('a-scene', {
         this.setMonoRenderer();
         this.removeState('vr-mode');
         this.emit('exit-vr', { target: this });
-      }
-    },
-
-    /**
-     * Sets a camera to be used by the renderer
-     * It alse removes the default one if any and disables any other camera
-     * in the scene
-     *
-     * @param {object} el - Object holding an entity with a camera component or THREE camera.
-     */
-    setActiveCamera: {
-      value: function (newCamera) {
-        var defaultCameraWrapper = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        var defaultCameraEl = defaultCameraWrapper &&
-                              defaultCameraWrapper.querySelector('[camera]');
-        if (newCamera instanceof AEntity) {
-          newCamera.setAttribute('camera', 'active', true);
-          if (newCamera !== defaultCameraEl) { this.removeDefaultCamera(); }
-          return;
-        }
-        this.camera = newCamera;
-        this.updateCameras();
-      }
-    },
-
-    /**
-     * Enables active camera and disables the rest
-     * @type object - activeCamera - The camera used by the renderer
-     */
-    updateCameras: {
-      value: function () {
-        var activeCamera = this.camera;
-        var activeCameraEl = activeCamera && activeCamera.el;
-        var cameraEl;
-        var sceneCameras = this.querySelectorAll('[camera]');
-        var i;
-        if (!activeCamera) {
-          activeCameraEl = sceneCameras[sceneCameras.length - 1];
-          activeCameraEl.setAttribute('camera', 'active', true);
-          return;
-        }
-
-        for (i = 0; i < sceneCameras.length; ++i) {
-          cameraEl = sceneCameras[i];
-
-          if (activeCameraEl === cameraEl) {
-            if (this.isPlaying) { activeCameraEl.play(); }
-            continue;
-          }
-          cameraEl.setAttribute('camera', 'active', false);
-          cameraEl.pause();
-        }
-      }
-    },
-
-    removeDefaultCamera: {
-      value: function () {
-        var cameraEl = this.camera && this.camera.el;
-        if (!cameraEl) { return; }
-        // Removes default camera if any
-        var defaultCamera = document.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-        var defaultCameraEl = defaultCamera && defaultCamera.querySelector('[camera]');
-        // Remove default camera if any
-        if (defaultCameraEl && defaultCameraEl !== cameraEl) {
-          this.removeChild(defaultCamera);
-        }
-      }
-    },
-
-    /**
-     * Notify scene that light has been added and to remove the default.
-     *
-     * @param {object} el - element holding the light component.
-     */
-    registerLight: {
-      value: function (el) {
-        var defaultLights;
-        if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
-          // User added a light, remove default lights through DOM.
-          defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-          for (var i = 0; i < defaultLights.length; i++) {
-            this.removeChild(defaultLights[i]);
-          }
-          this.defaultLightsEnabled = false;
-        }
-      }
-    },
-
-    /**
-     * Keep track of material in case an update trigger is needed (e.g., fog).
-     *
-     * @param {object} material
-     */
-    registerMaterial: {
-      value: function (material) {
-        this.materials[material.uuid] = material;
       }
     },
 
@@ -57126,63 +57103,6 @@ var AScene = module.exports = registerElement('a-scene', {
       }
     },
 
-    /**
-     * Creates a default camera if user has not added one during the initial scene traversal.
-     *
-     * Default camera height is at human level (~1.8m) and back such that
-     * entities at the origin (0, 0, 0) are well-centered.
-     */
-    setupDefaultCamera: {
-      value: function () {
-        var self = this;
-        var cameraWrapperEl;
-        var defaultCameraEl;
-
-        // setTimeout in case the camera is being set dynamically with a setAttribute.
-        setTimeout(function checkForCamera () {
-          var cameraEl = self.querySelector('[camera]');
-
-          if (cameraEl && cameraEl.isEntity) {
-            self.emit('camera-ready', { cameraEl: cameraEl });
-            return;
-          }
-
-          // DOM calls to create camera.
-          cameraWrapperEl = document.createElement('a-entity');
-          cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
-          cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-          defaultCameraEl = document.createElement('a-entity');
-          defaultCameraEl.setAttribute('camera', {'active': true});
-          defaultCameraEl.setAttribute('wasd-controls');
-          defaultCameraEl.setAttribute('look-controls');
-          cameraWrapperEl.appendChild(defaultCameraEl);
-          self.appendChild(cameraWrapperEl);
-          self.emit('camera-ready', { cameraEl: defaultCameraEl });
-        });
-      }
-    },
-
-    /**
-     * Prescibe default lights to the scene.
-     * Does so by injecting markup such that this state is not invisible.
-     * These lights are removed if the user adds any lights.
-     */
-    setupDefaultLights: {
-      value: function () {
-        var ambientLight = document.createElement('a-entity');
-        ambientLight.setAttribute('light',
-                                  {color: '#fff', type: 'ambient'});
-        ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(ambientLight);
-
-        var directionalLight = document.createElement('a-entity');
-        directionalLight.setAttribute('light', { color: '#fff', intensity: 0.2 });
-        directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
-        directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
-        this.appendChild(directionalLight);
-      }
-    },
-
     setupRenderer: {
       value: function () {
         var canvas = this.canvas;
@@ -57224,6 +57144,9 @@ var AScene = module.exports = registerElement('a-scene', {
 
           // Kick off render loop.
           if (this.renderer) {
+            if (window.performance) {
+              window.performance.mark('render-started');
+            }
             this.render();
             this.renderStarted = true;
             this.emit('renderstart');
@@ -57305,11 +57228,11 @@ function getCanvasSize (canvas) {
 }
 
 /**
-  * Manually handles fullscreen for non-VR mobile where the renderer' VR
-  * display is not polyfilled.
-  *
-  * Desktop just works so use the renderer.setFullScreen in that case.
-  */
+ * Manually handles fullscreen for non-VR mobile where the renderer' VR
+ * display is not polyfilled.
+ *
+ * Desktop just works so use the renderer.setFullScreen in that case.
+ */
 function setFullscreen (canvas) {
   if (canvas.requestFullscreen) {
     canvas.requestFullscreen();
@@ -57320,7 +57243,7 @@ function setFullscreen (canvas) {
   }
 }
 
-},{"../../lib/three":88,"../../utils/":98,"../a-entity":52,"../a-node":54,"../a-register-element":55,"../system":64,"./fullscreen":59,"./metaTags":60,"./wakelock":61,"tween.js":22}],59:[function(_dereq_,module,exports){
+},{"../../lib/three":90,"../../utils/":102,"../a-entity":52,"../a-node":54,"../a-register-element":55,"../system":64,"./fullscreen":59,"./metaTags":60,"./wakelock":61,"tween.js":22}],59:[function(_dereq_,module,exports){
 var isIframed = _dereq_('../../utils/').isIframed;
 
 /**
@@ -57386,55 +57309,87 @@ function exitFullscreenHandler (scene) {
   scene.emit('fullscreen-exit');
 }
 
-},{"../../utils/":98}],60:[function(_dereq_,module,exports){
-module.exports = function initMetaTags (scene) {
-  if (!scene.isMobile) { return; }
-  injectMetaTags();
-};
+},{"../../utils/":102}],60:[function(_dereq_,module,exports){
+var extend = _dereq_('../../utils').extend;
 
-/**
- * Injects the necessary metatags in the document for mobile support to:
- * 1. Prevent the user to zoom in the document
- * 2. Ensure that window.innerWidth and window.innerHeight have the correct
- *    values and the canvas is properly scaled
- * 3. To allow fullscreen mode when pinning a web app on the home screen on
- *    iOS.
- * Adapted from: https://www.reddit.com/r/web_design/comments/3la04p/
- *
- * @type {Object}
- */
-function injectMetaTags () {
-  var headEl;
-  var meta = document.querySelector('meta[name="viewport"]');
-  var metaTags = [];
+var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
+  Meta({name: 'viewport', content: 'width=device-width,initial-scale=1,maximum-scale=1,shrink-to-fit=no,user-scalable=no,minimal-ui'}),
 
-  if (meta) { return; }
+  // W3C-standardised meta tags.
+  Meta({name: 'mobile-web-app-capable', content: 'yes'}),
+  Meta({name: 'theme-color', content: 'black'}),
+  Link({rel: 'icon', sizes: '192x192', href: 'https://aframe.io/images/aframe-logo-192.png'})
+];
 
-  headEl = document.getElementsByTagName('head')[0];
-  meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content =
-    'width=device-width,initial-scale=1,shrink-to-fit=no,user-scalable=no,maximum-scale=1';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
-
+var MOBILE_IOS_HEAD_TAGS = [
   // iOS-specific meta tags for fullscreen when pinning to homescreen.
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-capable';
-  meta.content = 'yes';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
+  Meta({name: 'apple-mobile-web-app-capable', content: 'yes'}),
+  Meta({name: 'apple-mobile-web-app-status-bar-style', content: 'black'}),
+  Link({rel: 'apple-touch-icon', href: 'https://aframe.io/images/aframe-logo-152.png'})
+];
 
-  meta = document.createElement('meta');
-  meta.name = 'apple-mobile-web-app-status-bar-style';
-  meta.content = 'black';
-  headEl.appendChild(meta);
-  metaTags.push(meta);
-
-  return metaTags;
+function Meta (attrs) {
+  return {
+    tagName: 'meta',
+    attributes: attrs,
+    exists: function () { return document.querySelector('meta[name="' + attrs.name + '"]'); }
+  };
 }
 
-},{}],61:[function(_dereq_,module,exports){
+function Link (attrs) {
+  return {
+    tagName: 'link',
+    attributes: attrs,
+    exists: function () { return document.querySelector('link[rel="' + attrs.rel + '"]'); }
+  };
+}
+
+/**
+ * Injects the necessary metatags in the document for mobile support:
+ * 1. Prevent the user to zoom in the document.
+ * 2. Ensure that window.innerWidth and window.innerHeight have the correct
+ *    values and the canvas is properly scaled.
+ * 3. To allow fullscreen mode when pinning a web app on the home screen on
+ *    iOS.
+ * Adapted from https://www.reddit.com/r/web_design/comments/3la04p/
+ *
+ * @param {object} scene - Scene element
+ * @returns {Array}
+ */
+module.exports.inject = function injectHeadTags (scene) {
+  var headEl = document.head;
+  var headScriptEl = headEl.querySelector('script');
+  var tag;
+  var headTags = [];
+  MOBILE_HEAD_TAGS.forEach(createAndInjectTag);
+  if (scene.isIOS) {
+    MOBILE_IOS_HEAD_TAGS.forEach(createAndInjectTag);
+  }
+  return headTags;
+
+  function createAndInjectTag (tagObj) {
+    if (!tagObj || tagObj.exists()) { return; }
+
+    tag = createTag(tagObj);
+    if (!tag) { return; }
+
+    if (headScriptEl) {
+      headScriptEl.parentNode.insertBefore(tag, headScriptEl);
+    } else {
+      headEl.appendChild(tag);
+    }
+
+    headTags.push(tag);
+  }
+};
+
+function createTag (tagObj) {
+  if (!tagObj || !tagObj.tagName) { return; }
+  var meta = document.createElement(tagObj.tagName);
+  return extend(meta, tagObj.attributes);
+}
+
+},{"../../utils":102}],61:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -57445,7 +57400,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":105}],62:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":109}],62:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -57487,8 +57442,8 @@ module.exports.process = function (schema) {
  * Inject default value, parser, stringifier for single property.
  */
 function processPropertyDefinition (propDefinition) {
-  var propType;
   var defaultVal = propDefinition.default;
+  var propType;
   var typeName = propDefinition.type;
 
   // Type inference.
@@ -57514,12 +57469,8 @@ function processPropertyDefinition (propDefinition) {
   }
 
   // Fill in parse and stringify using property types.
-  if (!propDefinition.parse) {
-    propDefinition.parse = propType.parse;
-  }
-  if (!propDefinition.stringify) {
-    propDefinition.stringify = propType.stringify;
-  }
+  propDefinition.parse = propDefinition.parse || propType.parse;
+  propDefinition.stringify = propDefinition.stringify || propType.stringify;
 
   // Fill in type name.
   propDefinition.type = typeName;
@@ -57528,10 +57479,6 @@ function processPropertyDefinition (propDefinition) {
   if (!('default' in propDefinition)) {
     propDefinition.default = propType.default;
   }
-
-  // Bind parse and stringify to the property definition.
-  propDefinition.parse = propDefinition.parse.bind(propDefinition);
-  propDefinition.stringify = propDefinition.stringify.bind(propDefinition);
 
   return propDefinition;
 }
@@ -57558,7 +57505,7 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
     }
   });
 
-  propNames.forEach(function (propName) {
+  propNames.forEach(function parse (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
 
@@ -57610,7 +57557,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":97,"./propertyTypes":57}],63:[function(_dereq_,module,exports){
+},{"../utils/debug":101,"./propertyTypes":57}],63:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -57769,7 +57716,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":88,"./schema":62}],64:[function(_dereq_,module,exports){
+},{"../lib/three":90,"./schema":62}],64:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var systems = module.exports.systems = {};  // Keep track of registered components.
 
@@ -57814,12 +57761,7 @@ System.prototype = {
   /**
    * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
    */
-  pause: function () { /* no-op */ },
-
-  /**
-   * Remove handler. Shuts down the system.
-   */
-  remove: function () { /* no-op */ }
+  pause: function () { /* no-op */ }
 };
 
 /**
@@ -58018,10 +57960,11 @@ _dereq_('./primitives/a-plane');
 _dereq_('./primitives/a-ring');
 _dereq_('./primitives/a-sky');
 _dereq_('./primitives/a-sphere');
+_dereq_('./primitives/a-torus');
 _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 
-},{"./primitives/a-box":68,"./primitives/a-camera":69,"./primitives/a-circle":70,"./primitives/a-collada-model":71,"./primitives/a-cone":72,"./primitives/a-cursor":73,"./primitives/a-curvedimage":74,"./primitives/a-cylinder":75,"./primitives/a-image":76,"./primitives/a-light":77,"./primitives/a-model":78,"./primitives/a-obj-model":79,"./primitives/a-plane":80,"./primitives/a-ring":81,"./primitives/a-sky":82,"./primitives/a-sphere":83,"./primitives/a-video":84,"./primitives/a-videosphere":85}],68:[function(_dereq_,module,exports){
+},{"./primitives/a-box":68,"./primitives/a-camera":69,"./primitives/a-circle":70,"./primitives/a-collada-model":71,"./primitives/a-cone":72,"./primitives/a-cursor":73,"./primitives/a-curvedimage":74,"./primitives/a-cylinder":75,"./primitives/a-image":76,"./primitives/a-light":77,"./primitives/a-model":78,"./primitives/a-obj-model":79,"./primitives/a-plane":80,"./primitives/a-ring":81,"./primitives/a-sky":82,"./primitives/a-sphere":83,"./primitives/a-torus":84,"./primitives/a-video":85,"./primitives/a-videosphere":86}],68:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58046,7 +57989,7 @@ registerPrimitive('a-cube', utils.extendDeep({
   deprecated: '<a-cube> is deprecated. Use <a-box> instead.'
 }, boxDefinition));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],69:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],69:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-camera', {
@@ -58075,7 +58018,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../registerPrimitive":86}],70:[function(_dereq_,module,exports){
+},{"../registerPrimitive":87}],70:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58095,7 +58038,7 @@ registerPrimitive('a-circle', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],71:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],71:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58106,7 +58049,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],72:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],72:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58131,7 +58074,7 @@ registerPrimitive('a-cone', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],73:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],73:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58165,7 +58108,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],74:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],74:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58203,7 +58146,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],75:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],75:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58228,7 +58171,7 @@ registerPrimitive('a-cylinder', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],76:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],76:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58253,7 +58196,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],77:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],77:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-light', {
@@ -58273,7 +58216,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../registerPrimitive":86}],78:[function(_dereq_,module,exports){
+},{"../registerPrimitive":87}],78:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58296,7 +58239,7 @@ registerPrimitive('a-model', utils.extend({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],79:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],79:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58308,11 +58251,11 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   },
 
   transforms: {
-    mtl: meshMixin.src
+    mtl: meshMixin.transforms.src
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],80:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],80:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58331,7 +58274,7 @@ registerPrimitive('a-plane', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],81:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],81:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58353,7 +58296,7 @@ registerPrimitive('a-ring', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],82:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],82:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58380,7 +58323,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],83:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],83:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58400,7 +58343,28 @@ registerPrimitive('a-sphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],84:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],84:[function(_dereq_,module,exports){
+var getMeshMixin = _dereq_('../getMeshMixin');
+var registerPrimitive = _dereq_('../registerPrimitive');
+var utils = _dereq_('../../../utils/');
+
+registerPrimitive('a-torus', utils.extendDeep({}, getMeshMixin(), {
+  defaultAttributes: {
+    geometry: {
+      primitive: 'torus'
+    }
+  },
+
+  mappings: {
+    'arc': 'geometry.arc',
+    'radius': 'geometry.radius',
+    'radius-tubular': 'geometry.radiusTubular',
+    'segments-radial': 'geometry.segmentsRadial',
+    'segments-tubular': 'geometry.segmentsTubular'
+  }
+}));
+
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],85:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58425,7 +58389,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],85:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],86:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58452,7 +58416,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":98,"../getMeshMixin":66,"../registerPrimitive":86}],86:[function(_dereq_,module,exports){
+},{"../../../utils/":102,"../getMeshMixin":66,"../registerPrimitive":87}],87:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -58607,12 +58571,11 @@ function cloneObject (obj) {
   return clone;
 }
 
-},{"../../core/a-entity":52,"../../core/a-register-element":55,"../../core/component":56,"../../utils/":98}],87:[function(_dereq_,module,exports){
+},{"../../core/a-entity":52,"../../core/a-register-element":55,"../../core/component":56,"../../utils/":102}],88:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
-_dereq_('present');  // Polyfill `performance.now()`.
-
+_dereq_('present'); // Polyfill `performance.now()`.
 // CSS.
 _dereq_('./style/aframe.css');
 _dereq_('./style/rStats.css');
@@ -58620,9 +58583,7 @@ _dereq_('./style/rStats.css');
 // Required before `AEntity` so that all components are registered.
 var AScene = _dereq_('./core/scene/a-scene');
 var components = _dereq_('./core/component').components;
-var debug = _dereq_('./utils/debug');
 var registerComponent = _dereq_('./core/component').registerComponent;
-var registerElement = _dereq_('./core/a-register-element');
 var registerPrimitive = _dereq_('./extras/primitives/registerPrimitive');
 var registerShader = _dereq_('./core/shader').registerShader;
 var registerSystem = _dereq_('./core/system').registerSystem;
@@ -58635,11 +58596,11 @@ var TWEEN = window.TWEEN = _dereq_('tween.js');
 var pkg = _dereq_('../package');
 var utils = _dereq_('./utils/');
 
-_dereq_('./systems/index');  // Register core systems.
-_dereq_('./components/index');  // Register core components.
-_dereq_('./shaders/index');  // Register core shaders.
+_dereq_('./systems/index'); // Register core systems.
+_dereq_('./components/index'); // Register core components.
+_dereq_('./shaders/index'); // Register core shaders.
 var ANode = _dereq_('./core/a-node');
-var AEntity = _dereq_('./core/a-entity');  // Depends on ANode and core components.
+var AEntity = _dereq_('./core/a-entity'); // Depends on ANode and core components.
 
 // Webvr polyfill configuration.
 window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
@@ -58667,9 +58628,7 @@ module.exports = window.AFRAME = {
   ANode: ANode,
   AScene: AScene,
   components: components,
-  debug: debug,
   registerComponent: registerComponent,
-  registerElement: registerElement,
   registerShader: registerShader,
   registerSystem: registerSystem,
   registerPrimitive: registerPrimitive,
@@ -58681,7 +58640,54 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":24,"./components/index":29,"./core/a-animation":49,"./core/a-assets":50,"./core/a-cubemap":51,"./core/a-entity":52,"./core/a-mixin":53,"./core/a-node":54,"./core/a-register-element":55,"./core/component":56,"./core/scene/a-scene":58,"./core/shader":63,"./core/system":64,"./extras/declarative-events/":65,"./extras/primitives/":67,"./extras/primitives/registerPrimitive":86,"./lib/three":88,"./shaders/index":90,"./style/aframe.css":92,"./style/rStats.css":93,"./systems/index":94,"./utils/":98,"./utils/debug":97,"present":10,"promise-polyfill":11,"tween.js":22,"webvr-polyfill":23}],88:[function(_dereq_,module,exports){
+},{"../package":24,"./components/index":29,"./core/a-animation":49,"./core/a-assets":50,"./core/a-cubemap":51,"./core/a-entity":52,"./core/a-mixin":53,"./core/a-node":54,"./core/component":56,"./core/scene/a-scene":58,"./core/shader":63,"./core/system":64,"./extras/declarative-events/":65,"./extras/primitives/":67,"./extras/primitives/registerPrimitive":87,"./lib/three":90,"./shaders/index":92,"./style/aframe.css":94,"./style/rStats.css":95,"./systems/index":97,"./utils/":102,"present":10,"promise-polyfill":11,"tween.js":22,"webvr-polyfill":23}],89:[function(_dereq_,module,exports){
+window.aframeStats = function (scene) {
+  var _rS = null;
+  var _scene = scene;
+  var _values = {
+    te: {
+      caption: 'Entities'
+    },
+    lt: {
+      caption: 'Load Time'
+    }
+  };
+  var _groups = [ {
+    caption: 'A-Frame',
+    values: [ 'te', 'lt' ]
+  } ];
+
+  function _update () {
+    _rS('te').set(_scene.querySelectorAll('a-entity').length);
+    _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
+  }
+
+  function _start () {}
+
+  function _end () {}
+
+  function _attach (r) {
+    _rS = r;
+  }
+
+  return {
+    update: _update,
+    start: _start,
+    end: _end,
+    attach: _attach,
+    values: _values,
+    groups: _groups,
+    fractions: []
+  };
+};
+
+if (typeof module === 'object') {
+  module.exports = {
+    aframeStats: window.aframeStats
+  };
+}
+
+},{}],90:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -58707,7 +58713,6 @@ if (THREE.Cache) {
 _dereq_('../../node_modules/three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 _dereq_('../../node_modules/three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 _dereq_('../../node_modules/three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
-_dereq_('../../vendor/Raycaster');  // THREE.Raycaster
 _dereq_('../../node_modules/three/examples/js/controls/VRControls');  // THREE.VRControls
 _dereq_('../../node_modules/three/examples/js/effects/VREffect');  // THREE.VREffect
 
@@ -58715,7 +58720,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../node_modules/three/examples/js/controls/VRControls":16,"../../node_modules/three/examples/js/effects/VREffect":17,"../../node_modules/three/examples/js/loaders/ColladaLoader":18,"../../node_modules/three/examples/js/loaders/MTLLoader":19,"../../node_modules/three/examples/js/loaders/OBJLoader":20,"../../vendor/Raycaster":102,"three":21}],89:[function(_dereq_,module,exports){
+},{"../../node_modules/three/examples/js/controls/VRControls":16,"../../node_modules/three/examples/js/effects/VREffect":17,"../../node_modules/three/examples/js/loaders/ColladaLoader":18,"../../node_modules/three/examples/js/loaders/MTLLoader":19,"../../node_modules/three/examples/js/loaders/OBJLoader":20,"three":21}],91:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var srcLoader = _dereq_('../utils/src-loader');
 var THREE = _dereq_('../lib/three');
@@ -58726,7 +58731,7 @@ var utils = _dereq_('../utils/texture');
  */
 module.exports.Component = registerShader('flat', {
   schema: {
-    color: { default: '#FFF' },
+    color: { type: 'color' },
     fog: { default: true },
     height: { default: 256 },
     repeat: { default: '' },
@@ -58801,11 +58806,11 @@ function getMaterialData (data) {
   return materialData;
 }
 
-},{"../core/shader":63,"../lib/three":88,"../utils/src-loader":99,"../utils/texture":101}],90:[function(_dereq_,module,exports){
+},{"../core/shader":63,"../lib/three":90,"../utils/src-loader":103,"../utils/texture":105}],92:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 
-},{"./flat":89,"./standard":91}],91:[function(_dereq_,module,exports){
+},{"./flat":91,"./standard":93}],93:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var srcLoader = _dereq_('../utils/src-loader');
 var THREE = _dereq_('../lib/three');
@@ -58819,7 +58824,7 @@ var texturePromises = {};
  */
 module.exports.Component = registerShader('standard', {
   schema: {
-    color: { default: '#FFF' },
+    color: { type: 'color' },
     envMap: { default: '' },
     fog: { default: true },
     height: { default: 256 },
@@ -58938,14 +58943,195 @@ function getMaterialData (data) {
   return materialData;
 }
 
-},{"../core/shader":63,"../lib/three":88,"../utils/":98,"../utils/src-loader":99}],92:[function(_dereq_,module,exports){
-var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background .05s ease;-webkit-transition:background .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;margin-right:70px;padding:9px;width:280px;position:relative;display:none}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{display:block;content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":1}],93:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font-family:'Roboto Condensed',tahoma,sans-serif;font-size:10px;line-height:1.2em;opacity:.75;overflow:hidden;padding:10px;position:fixed;left:5px;top:5px;width:270px;z-index:10000}.rs-base.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:25px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":1}],94:[function(_dereq_,module,exports){
-_dereq_('../systems/material');
+},{"../core/shader":63,"../lib/three":90,"../utils/":102,"../utils/src-loader":103}],94:[function(_dereq_,module,exports){
+var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene img,a-scene video{display:none}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;color:#FFF;cursor:pointer;height:50px;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;color:#FFF;height:32px;margin-right:70px;padding:9px;width:280px;position:relative;display:none}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal p{margin:0;display:inline}.a-enter-vr-modal p:after{content:' '}.a-enter-vr-modal a{color:#FFF;display:inline}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{position:absolute;width:100%;height:100%;top:0;left:0;background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center center/50% 50% no-repeat rgba(244,244,244,1)}.a-orientation-modal:after{display:block;content:\"Insert phone into Cardboard holder.\";color:#333;font-family:sans-serif,monospace;font-size:13px;text-align:center;position:absolute;width:100%;top:70%;transform:translateY(-70%)}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E);width:50px;height:50px;border:none;text-indent:-9999px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
+},{"browserify-css":1}],95:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.75;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:50px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":1}],96:[function(_dereq_,module,exports){
+var registerSystem = _dereq_('../core/system').registerSystem;
 
-},{"../systems/material":95}],95:[function(_dereq_,module,exports){
+var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
+
+/**
+ * Camera system. Manages which camera is active among multiple cameras in scene.
+ *
+ * @member {object} activeCameraEl - Active camera entity.
+ */
+module.exports.System = registerSystem('camera', {
+  init: function () {
+    this.activeCameraEl = null;
+    this.setupDefaultCamera();
+  },
+
+  /**
+   * Creates a default camera if user has not added one during the initial scene traversal.
+   *
+   * Default camera height is at human level (~1.8m) and back such that
+   * entities at the origin (0, 0, 0) are well-centered.
+   */
+  setupDefaultCamera: function () {
+    var sceneEl = this.sceneEl;
+    var cameraWrapperEl;
+    var defaultCameraEl;
+
+    // setTimeout in case the camera is being set dynamically with a setAttribute.
+    setTimeout(function checkForCamera () {
+      var cameraEl = sceneEl.querySelector('[camera]');
+
+      if (cameraEl && cameraEl.isEntity) {
+        sceneEl.emit('camera-ready', {cameraEl: cameraEl});
+        return;
+      }
+
+      // DOM calls to create camera.
+      cameraWrapperEl = document.createElement('a-entity');
+      cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
+      cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
+      defaultCameraEl = document.createElement('a-entity');
+      defaultCameraEl.setAttribute('camera', {'active': true});
+      defaultCameraEl.setAttribute('wasd-controls');
+      defaultCameraEl.setAttribute('look-controls');
+      cameraWrapperEl.appendChild(defaultCameraEl);
+      sceneEl.appendChild(cameraWrapperEl);
+      sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
+    });
+  },
+
+  /**
+   * Set a different active camera.
+   * When we choose a (sort of) random scene camera as the replacement, set its `active` to
+   * true. The camera component will call `setActiveCamera` and handle passing the torch to
+   * the new camera.
+   */
+  disableActiveCamera: function () {
+    var sceneEl = this.sceneEl;
+    var sceneCameras = sceneEl.querySelectorAll('[camera]');
+    var newActiveCameraEl = sceneCameras[sceneCameras.length - 1];
+    newActiveCameraEl.setAttribute('camera', 'active', true);
+  },
+
+  /**
+   * Set active camera to be used by renderer.
+   * Removes the default camera (if present).
+   * Disables all other cameras in the scene.
+   *
+   * @param {Element} newCameraEl - Entity with camera component.
+   * @param {object} newCamera - three.js Camera object.
+   */
+  setActiveCamera: function (newCameraEl, newCamera) {
+    var cameraEl;
+    var i;
+    var sceneEl = this.sceneEl;
+    var sceneCameraEls = sceneEl.querySelectorAll('[camera]');
+
+    // Grab the default camera.
+    var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+    var defaultCameraEl = defaultCameraWrapper &&
+                          defaultCameraWrapper.querySelector('[camera]');
+    // Remove default camera if new camera is not the default camera.
+    if (newCameraEl !== defaultCameraEl) { removeDefaultCamera(sceneEl); }
+
+    // Make new camera active.
+    this.activeCameraEl = newCameraEl;
+    if (sceneEl.isPlaying) { newCameraEl.play(); }
+    newCameraEl.setAttribute('camera', 'active', true);
+    sceneEl.camera = newCamera;
+    sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+
+    // Disable other cameras.
+    for (i = 0; i < sceneCameraEls.length; i++) {
+      cameraEl = sceneCameraEls[i];
+      if (newCameraEl === cameraEl) { continue; }
+      cameraEl.setAttribute('camera', 'active', false);
+      cameraEl.pause();
+    }
+  }
+});
+
+/**
+ * Remove injected default camera from scene, if present.
+ *
+ * @param {Element} sceneEl
+ */
+function removeDefaultCamera (sceneEl) {
+  var defaultCameraWrapper;
+  var camera = sceneEl.camera;
+  if (!camera) { return; }
+
+  // Remove default camera if present.
+  defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
+  if (!defaultCameraWrapper) { return; }
+  sceneEl.removeChild(defaultCameraWrapper);
+}
+
+},{"../core/system":64}],97:[function(_dereq_,module,exports){
+_dereq_('./camera');
+_dereq_('./material');
+_dereq_('./light');
+
+},{"./camera":96,"./light":98,"./material":99}],98:[function(_dereq_,module,exports){
+var registerSystem = _dereq_('../core/system').registerSystem;
+
+var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
+
+/**
+ * Light system.
+ *
+ * Prescribes default lighting if not specified (one ambient, one directional).
+ * Removes default lighting from the scene when a new light is added.
+ *
+ * @param {bool} defaultLightsEnabled - Whether default lighting is active.
+ */
+module.exports.System = registerSystem('light', {
+  init: function () {
+    this.defaultLightsEnabled = null;
+    this.setupDefaultLights();
+  },
+
+  /**
+   * Notify scene that light has been added and to remove the default.
+   *
+   * @param {object} el - element holding the light component.
+   */
+  registerLight: function (el) {
+    var defaultLights;
+    var sceneEl = this.sceneEl;
+
+    if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
+      // User added a light, remove default lights through DOM.
+      defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
+      for (var i = 0; i < defaultLights.length; i++) {
+        sceneEl.removeChild(defaultLights[i]);
+      }
+      this.defaultLightsEnabled = false;
+    }
+  },
+
+  /**
+   * Prescibe default lights to the scene.
+   * Does so by injecting markup such that this state is not invisible.
+   * These lights are removed if the user adds any lights.
+   */
+  setupDefaultLights: function () {
+    var sceneEl = this.sceneEl;
+    var ambientLight = document.createElement('a-entity');
+    var directionalLight = document.createElement('a-entity');
+
+    ambientLight.setAttribute('light',
+                              {color: '#fff', type: 'ambient'});
+    ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+    sceneEl.appendChild(ambientLight);
+
+    directionalLight.setAttribute('light', { color: '#fff', intensity: 0.2 });
+    directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
+    directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+    sceneEl.appendChild(directionalLight);
+
+    this.defaultLightsEnabled = true;
+  }
+});
+
+},{"../core/system":64}],99:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 
 module.exports.System = registerSystem('material', {
@@ -58983,7 +59169,7 @@ module.exports.System = registerSystem('material', {
 
 });
 
-},{"../core/system":64}],96:[function(_dereq_,module,exports){
+},{"../core/system":64}],100:[function(_dereq_,module,exports){
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -59048,7 +59234,7 @@ function vecParseFloat (vec) {
   return vec;
 }
 
-},{}],97:[function(_dereq_,module,exports){
+},{}],101:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -59145,7 +59331,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":2,"debug":3,"object-assign":9}],98:[function(_dereq_,module,exports){
+},{"_process":2,"debug":3,"object-assign":9}],102:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 
@@ -59279,11 +59465,23 @@ var isIOS = module.exports.isIOS = function () {
 };
 
 /**
- * Checks mobile device orientation
- * @return {Boolean} True if landscape orientation
+ * Checks mobile device orientation.
+ * @return {Boolean} True if landscape orientation.
  */
 module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
+};
+
+/**
+ * Returns whether we should capture this keyboard event for keyboard shortcuts.
+ * @param {Event} event Event object.
+ * @returns {Boolean} Whether the key event should be captured.
+ */
+module.exports.shouldCaptureKeyEvent = function (event) {
+  if (event.shiftKey || event.metaKey || event.altKey || event.ctrlKey) {
+    return false;
+  }
+  return document.activeElement === document.body;
 };
 
 /**
@@ -59343,7 +59541,7 @@ module.exports.isIframed = function () {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./coordinates":96,"./debug":97,"./src-loader":99,"./styleParser":100,"./texture":101,"deep-assign":6,"object-assign":9}],99:[function(_dereq_,module,exports){
+},{"./coordinates":100,"./debug":101,"./src-loader":103,"./styleParser":104,"./texture":105,"deep-assign":6,"object-assign":9}],103:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -59488,7 +59686,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":97}],100:[function(_dereq_,module,exports){
+},{"./debug":101}],104:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -59546,7 +59744,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":15}],101:[function(_dereq_,module,exports){
+},{"style-attr":15}],105:[function(_dereq_,module,exports){
 /**
  * Texture helpers for standard material component.
  *
@@ -59613,6 +59811,7 @@ function loadVideo (material, data, src) {
   var hash;
   var texture;
   var videoEl;
+  var videoTextureResult;
 
   if (typeof src !== 'string') {
     // Check cache before creating texture.
@@ -59641,11 +59840,18 @@ function loadVideo (material, data, src) {
   texture = new THREE.VideoTexture(videoEl);
   texture.minFilter = THREE.LinearFilter;
 
-  // Cache as promise to be consistent with image texture caching.
-  textureCache[calculateVideoCacheHash(videoEl)] = Promise.resolve(texture, videoEl);
-  handleVideoTextureLoaded(texture, videoEl);
+  videoTextureResult = {
+    texture: texture,
+    videoEl: videoEl
+  };
 
-  function handleVideoTextureLoaded (texture, videoEl) {
+  // Cache as promise to be consistent with image texture caching.
+  textureCache[hash] = Promise.resolve(videoTextureResult);
+  handleVideoTextureLoaded(videoTextureResult);
+
+  function handleVideoTextureLoaded (res) {
+    texture = res.texture;
+    videoEl = res.videoEl;
     updateMaterial(material, texture);
     el.emit(EVENTS.TEXTURE_LOADED, { element: videoEl, src: src });
     videoEl.addEventListener('loadeddata', function () {
@@ -59772,6 +59978,7 @@ function createVideoEl (material, src, width, height) {
   el.width = width;
   el.height = height;
   if (el !== this.videoEl) {
+    el.setAttribute('webkit-playsinline', '');  // To support inline videos in iOS webviews.
     el.autoplay = true;
     el.loop = true;
     el.crossOrigin = true;
@@ -59806,6 +60013,12 @@ function fixVideoAttributes (videoEl) {
   if (videoEl.getAttribute('preload') === 'false') {
     videoEl.preload = 'none';
   }
+  if (!videoEl.hasAttribute('crossorigin')) {
+    videoEl.crossOrigin = true;
+  }
+  if (!videoEl.hasAttribute('webkit-playsinline')) {
+    videoEl.setAttribute('webkit-playsinline', '');  // To support inline videos in iOS webviews.
+  }
   return videoEl;
 }
 
@@ -59823,202 +60036,352 @@ module.exports = {
   updateMaterial: updateMaterial
 };
 
-},{"../lib/three":88,"./debug":97}],102:[function(_dereq_,module,exports){
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author bhouston / http://clara.io/
- * @author stephomi / http://stephaneginier.com/
+},{"../lib/three":90,"./debug":101}],106:[function(_dereq_,module,exports){
+window.glStats = function () {
+
+    var _rS = null;
+
+    var _totalDrawArraysCalls = 0,
+        _totalDrawElementsCalls = 0,
+        _totalUseProgramCalls = 0,
+        _totalFaces = 0,
+        _totalVertices = 0,
+        _totalPoints = 0,
+        _totalBindTexures = 0;
+
+    function _h ( f, c ) {
+        return function () {
+            c.apply( this, arguments );
+            f.apply( this, arguments );
+        };
+    }
+
+    WebGLRenderingContext.prototype.drawArrays = _h( WebGLRenderingContext.prototype.drawArrays, function () {
+        _totalDrawArraysCalls++;
+        if ( arguments[ 0 ] == this.POINTS ) _totalPoints += arguments[ 2 ];
+        else _totalVertices += arguments[ 2 ];
+    } );
+
+    WebGLRenderingContext.prototype.drawElements = _h( WebGLRenderingContext.prototype.drawElements, function () {
+        _totalDrawElementsCalls++;
+        _totalFaces += arguments[ 1 ] / 3;
+        _totalVertices += arguments[ 1 ];
+    } );
+
+    WebGLRenderingContext.prototype.useProgram = _h( WebGLRenderingContext.prototype.useProgram, function () {
+        _totalUseProgramCalls++;
+    } );
+
+    WebGLRenderingContext.prototype.bindTexture = _h( WebGLRenderingContext.prototype.bindTexture, function () {
+        _totalBindTexures++;
+    } );
+
+    var _values = {
+        allcalls: {
+            over: 3000,
+            caption: 'Calls (hook)'
+        },
+        drawelements: {
+            caption: 'drawElements (hook)'
+        },
+        drawarrays: {
+            caption: 'drawArrays (hook)'
+        }
+    };
+
+    var _groups = [ {
+        caption: 'WebGL',
+        values: [ 'allcalls', 'drawelements', 'drawarrays', 'useprogram', 'bindtexture', 'glfaces', 'glvertices', 'glpoints' ]
+    } ];
+
+    var _fractions = [ {
+        base: 'allcalls',
+        steps: [ 'drawelements', 'drawarrays' ]
+    } ];
+
+    function _update () {
+        _rS( 'allcalls' ).set( _totalDrawArraysCalls + _totalDrawElementsCalls );
+        _rS( 'drawElements' ).set( _totalDrawElementsCalls );
+        _rS( 'drawArrays' ).set( _totalDrawArraysCalls );
+        _rS( 'bindTexture' ).set( _totalBindTexures );
+        _rS( 'useProgram' ).set( _totalUseProgramCalls );
+        _rS( 'glfaces' ).set( _totalFaces );
+        _rS( 'glvertices' ).set( _totalVertices );
+        _rS( 'glpoints' ).set( _totalPoints );
+    }
+
+    function _start () {
+        _totalDrawArraysCalls = 0;
+        _totalDrawElementsCalls = 0;
+        _totalUseProgramCalls = 0;
+        _totalFaces = 0;
+        _totalVertices = 0;
+        _totalPoints = 0;
+        _totalBindTexures = 0;
+    }
+
+    function _end () {}
+
+    function _attach ( r ) {
+        _rS = r;
+    }
+
+    return {
+        update: _update,
+        start: _start,
+        end: _end,
+        attach: _attach,
+        values: _values,
+        groups: _groups,
+        fractions: _fractions
+    };
+
+};
+
+window.threeStats = function ( renderer ) {
+
+    var _rS = null;
+
+    var _values = {
+        'renderer.info.memory.geometries': {
+            caption: 'Geometries'
+        },
+        'renderer.info.memory.textures': {
+            caption: 'Textures'
+        },
+        'renderer.info.memory.programs': {
+            caption: 'Programs'
+        },
+        'renderer.info.render.calls': {
+            caption: 'Calls'
+        },
+        'renderer.info.render.faces': {
+            caption: 'Faces',
+            over: 1000
+        },
+        'renderer.info.render.points': {
+            caption: 'Points'
+        },
+        'renderer.info.render.vertices': {
+            caption: 'Vertices'
+        }
+    };
+
+    var _groups = [ {
+        caption: 'Three.js - memory',
+        values: [ 'renderer.info.memory.geometries', 'renderer.info.memory.programs', 'renderer.info.memory.textures' ]
+    }, {
+        caption: 'Three.js - render',
+        values: [ 'renderer.info.render.calls', 'renderer.info.render.faces', 'renderer.info.render.points', 'renderer.info.render.vertices' ]
+    } ];
+
+    var _fractions = [];
+
+    function _update () {
+
+        _rS( 'renderer.info.memory.geometries' ).set( renderer.info.memory.geometries );
+        _rS( 'renderer.info.memory.programs' ).set( renderer.info.memory.programs );
+        _rS( 'renderer.info.memory.textures' ).set( renderer.info.memory.textures );
+        _rS( 'renderer.info.render.calls' ).set( renderer.info.render.calls );
+        _rS( 'renderer.info.render.faces' ).set( renderer.info.render.faces );
+        _rS( 'renderer.info.render.points' ).set( renderer.info.render.points );
+        _rS( 'renderer.info.render.vertices' ).set( renderer.info.render.vertices );
+
+    }
+
+    function _start () {}
+
+    function _end () {}
+
+    function _attach ( r ) {
+        _rS = r;
+    }
+
+    return {
+        update: _update,
+        start: _start,
+        end: _end,
+        attach: _attach,
+        values: _values,
+        groups: _groups,
+        fractions: _fractions
+    };
+
+};
+
+/*
+ *   From https://github.com/paulirish/memory-stats.js
  */
 
-( function ( THREE ) {
+window.BrowserStats = function () {
 
-	THREE.Raycaster = function ( origin, direction, near, far ) {
+    var _rS = null;
 
-		this.ray = new THREE.Ray( origin, direction );
-		// direction is assumed to be normalized (for accurate distance calculations)
+    var _usedJSHeapSize = 0,
+        _totalJSHeapSize = 0;
 
-		this.near = near || 0;
-		this.far = far || Infinity;
+    if ( window.performance && !performance.memory ) {
+        performance.memory = {
+            usedJSHeapSize: 0,
+            totalJSHeapSize: 0
+        };
+    }
 
-		this.params = {
-			Mesh: {},
-			Line: {},
-			LOD: {},
-			Points: { threshold: 1 },
-			Sprite: {}
-		};
+    if ( performance.memory.totalJSHeapSize === 0 ) {
+        console.warn( 'totalJSHeapSize === 0... performance.memory is only available in Chrome .' );
+    }
 
-		Object.defineProperties( this.params, {
-			PointCloud: {
-				get: function () {
-					console.warn( 'THREE.Raycaster: params.PointCloud has been renamed to params.Points.' );
-					return this.Points;
-				}
-			}
-		} );
+    var _values = {
+        memory: {
+            caption: 'Used Memory',
+            average: true,
+            avgMs: 1000,
+            over: 22
+        },
+        total: {
+            caption: 'Total Memory'
+        }
+    };
 
-	};
+    var _groups = [ {
+        caption: 'Browser',
+        values: [ 'memory', 'total' ]
+    } ];
 
-	function ascSort( a, b ) {
+    var _fractions = [ {
+        base: 'total',
+        steps: [ 'memory' ]
+    } ];
 
-		return a.distance - b.distance;
+    var log1024 = Math.log( 1024 );
 
-	}
+    function _size ( v ) {
 
-	function intersectObject( object, raycaster, intersects, recursive ) {
+        var precision = 100; //Math.pow(10, 2);
+        var i = Math.floor( Math.log( v ) / log1024 );
+        return Math.round( v * precision / Math.pow( 1024, i ) ) / precision; // + ' ' + sizes[i];
 
-		if ( object.visible === false ) return;
+    }
 
-		object.raycast( raycaster, intersects );
+    function _update () {
+        _usedJSHeapSize = _size( performance.memory.usedJSHeapSize );
+        _totalJSHeapSize = _size( performance.memory.totalJSHeapSize );
 
-		if ( recursive === true ) {
+        _rS( 'memory' ).set( _usedJSHeapSize );
+        _rS( 'total' ).set( _totalJSHeapSize );
+    }
 
-			var children = object.children;
+    function _start () {
+        _usedJSHeapSize = 0;
+    }
 
-			for ( var i = 0, l = children.length; i < l; i ++ ) {
+    function _end () {}
 
-				intersectObject( children[ i ], raycaster, intersects, true );
+    function _attach ( r ) {
+        _rS = r;
+    }
 
-			}
+    return {
+        update: _update,
+        start: _start,
+        end: _end,
+        attach: _attach,
+        values: _values,
+        groups: _groups,
+        fractions: _fractions
+    };
 
-		}
+};
 
-	}
+if (typeof module === 'object') {
+  module.exports = {
+    aframeStats: window.aframeStats,
+    glStats: window.glStats,
+    threeStats: window.threeStats,
+    BrowserStats: window.BrowserStats
+  };
+}
 
-	//
-
-	THREE.Raycaster.prototype = {
-
-		constructor: THREE.Raycaster,
-
-		linePrecision: 1,
-
-		set: function ( origin, direction ) {
-
-			// direction is assumed to be normalized (for accurate distance calculations)
-
-			this.ray.set( origin, direction );
-
-		},
-
-		setFromCamera: function ( coords, camera ) {
-
-			if ( camera instanceof THREE.PerspectiveCamera ) {
-
-				this.ray.origin.setFromMatrixPosition( camera.matrixWorld );
-				this.ray.direction.set( coords.x, coords.y, 0.5 ).unproject( camera ).sub( this.ray.origin ).normalize();
-
-			} else if ( camera instanceof THREE.OrthographicCamera ) {
-
-				this.ray.origin.set( coords.x, coords.y, - 1 ).unproject( camera );
-				this.ray.direction.set( 0, 0, - 1 ).transformDirection( camera.matrixWorld );
-
-			} else {
-
-				console.error( 'THREE.Raycaster: Unsupported camera type.' );
-
-			}
-
-		},
-
-		intersectObject: function ( object, recursive ) {
-
-			var intersects = [];
-
-			intersectObject( object, this, intersects, recursive );
-
-			intersects.sort( ascSort );
-
-			return intersects;
-
-		},
-
-		intersectObjects: function ( objects, recursive ) {
-
-			var intersects = [];
-
-			if ( Array.isArray( objects ) === false ) {
-
-				console.warn( 'THREE.Raycaster.intersectObjects: objects is not an Array.' );
-				return intersects;
-
-			}
-
-			for ( var i = 0, l = objects.length; i < l; i ++ ) {
-
-				intersectObject( objects[ i ], this, intersects, recursive );
-
-			}
-
-			intersects.sort( ascSort );
-
-			return intersects;
-
-		}
-
-	};
-
-}( THREE ) );
-
-},{}],103:[function(_dereq_,module,exports){
+},{}],107:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
+'use strict';
 
-(function(){
+( function () {
 
-  // prepare base perf object
-  if (typeof window.performance === 'undefined') {
-      window.performance = {};
-  }
-
-  if (!window.performance.now){
-
-    var nowOffset = Date.now();
-
-    if (performance.timing && performance.timing.navigationStart){
-      nowOffset = performance.timing.navigationStart
+    // prepare base perf object
+    if ( typeof window.performance === 'undefined' ) {
+        window.performance = {};
     }
 
+    if ( !window.performance.now ) {
 
-    window.performance.now = function now(){
-      return Date.now() - nowOffset;
+        var nowOffset = Date.now();
+
+        if ( performance.timing && performance.timing.navigationStart ) {
+            nowOffset = performance.timing.navigationStart;
+        }
+
+        window.performance.now = function now () {
+            return Date.now() - nowOffset;
+        };
+
     }
 
-  }
+    if( !window.performance.mark ) {
+        window.performance.mark = function(){}
+    }
 
-})();
+    if( !window.performance.measure ) {
+        window.performance.measure = function(){}
+    }
 
-var rStats = function rStats( settings ) {
+} )();
 
-    'use strict';
+window.rStats = function rStats ( settings ) {
 
-    function importCSS( url ){
+    function iterateKeys ( array, callback ) {
+        var keys = Object.keys( array );
+        for ( var j = 0, l = keys.length; j < l; j++ ) {
+            callback( keys[ j ] );
+        }
+    }
 
-        var element = document.createElement('link');
+    function importCSS ( url ) {
+
+        var element = document.createElement( 'link' );
         element.href = url;
         element.rel = 'stylesheet';
         element.type = 'text/css';
-        document.getElementsByTagName('head')[0].appendChild(element)
+        document.getElementsByTagName( 'head' )[ 0 ].appendChild( element );
 
     }
 
-    var _settings = settings || {},
-        _colours = [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
+    var _settings = settings || {};
+    var _colours = _settings.colours || [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
 
-    importCSS( 'http://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300' );
-    importCSS( ( _settings.CSSPath?_settings.CSSPath:'' ) + 'rStats.css' );
+    var _cssFont = '//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
+    var _cssRStats = ( _settings.CSSPath ? _settings.CSSPath : '' ) + 'rStats.css';
 
-    if( !_settings.values ) _settings.values = {};
+    var _css = _settings.css || [ _cssFont, _cssRStats ];
+    _css.forEach(function (uri) {
+        importCSS( uri );
+    });
 
-    function Graph( _dom, _id, _def ) {
+    if ( !_settings.values ) _settings.values = {};
 
-        var _def = _def || {};
+    var _base, _div, _elHeight = 10, _elWidth = 200;
+    var _perfCounters = {};
+
+
+    function Graph ( _dom, _id, _defArg ) {
+
+        var _def = _defArg || {};
         var _canvas = document.createElement( 'canvas' ),
             _ctx = _canvas.getContext( '2d' ),
             _max = 0,
             _current = 0;
 
-        var c = _def.color?_def.color:'#666666';
-        var wc = _def.warningColor?_def.warningColor:'#b70000';
+        var c = _def.color ? _def.color : '#666666';
 
         var _dotCanvas = document.createElement( 'canvas' ),
             _dotCtx = _dotCanvas.getContext( '2d' );
@@ -60029,7 +60392,7 @@ var rStats = function rStats( settings ) {
         _dotCtx.fillStyle = c;
         _dotCtx.fillRect( 0, _elHeight, 1, _elHeight );
         _dotCtx.fillStyle = '#ffffff';
-        _dotCtx.globalAlpha = .5;
+        _dotCtx.globalAlpha = 0.5;
         _dotCtx.fillRect( 0, _elHeight, 1, 1 );
         _dotCtx.globalAlpha = 1;
 
@@ -60041,12 +60404,12 @@ var rStats = function rStats( settings ) {
         _alarmCtx.fillRect( 0, 0, 1, 2 * _elHeight );
         _alarmCtx.fillStyle = '#b70000';
         _alarmCtx.fillRect( 0, _elHeight, 1, _elHeight );
-        _alarmCtx.globalAlpha = .5;
+        _alarmCtx.globalAlpha = 0.5;
         _alarmCtx.fillStyle = '#ffffff';
         _alarmCtx.fillRect( 0, _elHeight, 1, 1 );
         _alarmCtx.globalAlpha = 1;
 
-        function _init() {
+        function _init () {
 
             _canvas.width = _elWidth;
             _canvas.height = _elHeight;
@@ -60060,12 +60423,12 @@ var rStats = function rStats( settings ) {
 
         }
 
-        function _draw( v, alarm ) {
-            _current += ( v - _current ) * .1;
-            _max *= .99;
-            if( _current > _max ) _max = _current;
+        function _draw ( v, alarm ) {
+            _current += ( v - _current ) * 0.1;
+            _max *= 0.99;
+            if ( _current > _max ) _max = _current;
             _ctx.drawImage( _canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height );
-            if( alarm ) {
+            if ( alarm ) {
                 _ctx.drawImage( _alarmCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight );
             } else {
                 _ctx.drawImage( _dotCanvas, _canvas.width - 1, _canvas.height - _current * _canvas.height / _max - _elHeight );
@@ -60076,18 +60439,16 @@ var rStats = function rStats( settings ) {
 
         return {
             draw: _draw
-        }
+        };
 
     }
 
-    function StackGraph( _dom, _num ) {
+    function StackGraph ( _dom, _num ) {
 
         var _canvas = document.createElement( 'canvas' ),
-            _ctx = _canvas.getContext( '2d' ),
-            _max = 0,
-            _current = 0;
+            _ctx = _canvas.getContext( '2d' );
 
-        function _init() {
+        function _init () {
 
             _canvas.width = _elWidth;
             _canvas.height = _elHeight * _num;
@@ -60101,26 +60462,26 @@ var rStats = function rStats( settings ) {
 
         }
 
-        function _draw( v ) {
+        function _draw ( v ) {
             _ctx.drawImage( _canvas, 1, 0, _canvas.width - 1, _canvas.height, 0, 0, _canvas.width - 1, _canvas.height );
             var th = 0;
-            for( var j in v ) {
+            iterateKeys( v, function ( j ) {
                 var h = v[ j ] * _canvas.height;
                 _ctx.fillStyle = _colours[ j ];
                 _ctx.fillRect( _canvas.width - 1, th, 1, h );
                 th += h;
-            }
+            } );
         }
 
         _init();
 
         return {
             draw: _draw
-        }
+        };
 
     }
 
-    function PerfCounter( id, group ) {
+    function PerfCounter ( id, group ) {
 
         var _id = id,
             _time,
@@ -60128,36 +60489,37 @@ var rStats = function rStats( settings ) {
             _total = 0,
             _averageValue = 0,
             _accumValue = 0,
-            _accumStart = Date.now(),
+            _accumStart = performance.now(),
             _accumSamples = 0,
             _dom = document.createElement( 'div' ),
             _spanId = document.createElement( 'span' ),
             _spanValue = document.createElement( 'div' ),
             _spanValueText = document.createTextNode( '' ),
-            _def = _settings?_settings.values[ _id.toLowerCase() ]:null,
-            _graph = new Graph( _dom, _id, _def );
+            _def = _settings ? _settings.values[ _id.toLowerCase() ] : null,
+            _graph = new Graph( _dom, _id, _def ),
+            _started = false;
 
         _dom.className = 'rs-counter-base';
 
-        _spanId.className = 'rs-counter-id'
-        _spanId.textContent = ( _def && _def.caption )?_def.caption:_id;
+        _spanId.className = 'rs-counter-id';
+        _spanId.textContent = ( _def && _def.caption ) ? _def.caption : _id;
 
         _spanValue.className = 'rs-counter-value';
         _spanValue.appendChild( _spanValueText );
 
         _dom.appendChild( _spanId );
         _dom.appendChild( _spanValue );
-        if( group ) group.div.appendChild( _dom );
+        if ( group ) group.div.appendChild( _dom );
         else _div.appendChild( _dom );
 
         _time = performance.now();
 
-        function _average( v ) {
-            if( _def && _def.average ) {
+        function _average ( v ) {
+            if ( _def && _def.average ) {
                 _accumValue += v;
                 _accumSamples++;
-                var t = Date.now();
-                if( t - _accumStart >= ( _def.avgMs || 1000 ) ) {
+                var t = performance.now();
+                if ( t - _accumStart >= ( _def.avgMs || 1000 ) ) {
                     _averageValue = _accumValue / _accumSamples;
                     _accumValue = 0;
                     _accumStart = t;
@@ -60166,41 +60528,53 @@ var rStats = function rStats( settings ) {
             }
         }
 
-        function _start(){
+        function _start () {
             _time = performance.now();
+            if( _settings.userTimingAPI ) performance.mark( _id + '-start' );
+            _started = true;
         }
 
-        function _end() {
+        function _end () {
             _value = performance.now() - _time;
+            if( _settings.userTimingAPI ) {
+                performance.mark( _id + '-end' );
+                if( _started ) {
+                    performance.measure( _id, _id + '-start', _id + '-end' );
+                }
+            }
             _average( _value );
         }
 
-        function _tick() {
+        function _tick () {
             _end();
             _start();
         }
 
-        function _draw() {
-            var v = ( _def && _def.average )?_averageValue:_value
+        function _draw () {
+            var v = ( _def && _def.average ) ? _averageValue : _value;
             _spanValueText.nodeValue = Math.round( v * 100 ) / 100;
             var a = ( _def && ( ( _def.below && _value < _def.below ) || ( _def.over && _value > _def.over ) ) );
             _graph.draw( _value, a );
-            _dom.style.color = a?'#b70000':'#ffffff';
+            _dom.style.color = a ? '#b70000' : '#ffffff';
         }
 
-        function _frame() {
+        function _frame () {
             var t = performance.now();
             var e = t - _time;
             _total++;
-            if( e > 1000 ) {
-                _value = _total * 1000 / e;
+            if ( e > 1000 ) {
+                if ( _def && _def.interpolate === false ) {
+                    _value = _total;
+                } else {
+                    _value = _total * 1000 / e;
+                }
                 _total = 0;
                 _time = t;
                 _average( _value );
-           }
+            }
         }
 
-        function _set( v ) {
+        function _set ( v ) {
             _value = v;
             _average( _value );
         }
@@ -60211,51 +60585,45 @@ var rStats = function rStats( settings ) {
             tick: _tick,
             end: _end,
             frame: _frame,
-            value: function(){ return _value; },
+            value: function () {
+                return _value;
+            },
             draw: _draw
-        }
+        };
 
     }
 
-    function sample() {
+    function sample () {
 
         var _value = 0;
 
-        function _set( v ) {
+        function _set ( v ) {
             _value = v;
         }
 
         return {
             set: _set,
-            value: function(){ return _value; }
-        }
+            value: function () {
+                return _value;
+            }
+        };
 
     }
 
-    var _base,
-        _div,
-        _height = null,
-        _elHeight = 10,
-        _elWidth = 200;
+    function _perf ( idArg ) {
 
-    var _perfCounters = {},
-        _samples = {};
-
-    function _perf( id ) {
-
-        id = id.toLowerCase();
-        if( id === undefined ) id = 'default';
-        if( _perfCounters[ id ] ) return _perfCounters[ id ];
+        var id = idArg.toLowerCase();
+        if ( id === undefined ) id = 'default';
+        if ( _perfCounters[ id ] ) return _perfCounters[ id ];
 
         var group = null;
-        if( _settings && _settings.groups ) {
-            for( var j in _settings.groups ) {
+        if ( _settings && _settings.groups ) {
+            iterateKeys( _settings.groups, function ( j ) {
                 var g = _settings.groups[ parseInt( j, 10 ) ];
-                if( g.values.indexOf( id.toLowerCase() ) != -1 ) {
+                if ( !group && g.values.indexOf( id.toLowerCase() ) !== -1 ) {
                     group = g;
-                    continue;
                 }
-            }
+            } );
         }
 
         var p = new PerfCounter( id, group );
@@ -60264,17 +60632,17 @@ var rStats = function rStats( settings ) {
 
     }
 
-    function _init() {
+    function _init () {
 
-        if( _settings.plugins ) {
-            if( !_settings.values ) _settings.values = {};
-            if( !_settings.groups ) _settings.groups = [];
-            if( !_settings.fractions ) _settings.fractions = [];
-            for( var j = 0; j < _settings.plugins.length; j++ ) {
+        if ( _settings.plugins ) {
+            if ( !_settings.values ) _settings.values = {};
+            if ( !_settings.groups ) _settings.groups = [];
+            if ( !_settings.fractions ) _settings.fractions = [];
+            for ( var j = 0; j < _settings.plugins.length; j++ ) {
                 _settings.plugins[ j ].attach( _perf );
-                for( var k in _settings.plugins[ j ].values ) {
-                    _settings.values[ k ] = _settings.plugins[ j ].values [ k ];
-                }
+                iterateKeys( _settings.plugins[ j ].values, function ( k ) {
+                    _settings.values[ k ] = _settings.plugins[ j ].values[ k ];
+                } );
                 _settings.groups = _settings.groups.concat( _settings.plugins[ j ].groups );
                 _settings.fractions = _settings.fractions.concat( _settings.plugins[ j ].fractions );
             }
@@ -60290,30 +60658,27 @@ var rStats = function rStats( settings ) {
         _base.appendChild( _div );
         document.body.appendChild( _base );
 
-        var style = window.getComputedStyle( _base, null ).getPropertyValue( 'font-size' );
-        //_elHeight = parseFloat( style );
+        if ( !_settings ) return;
 
-        if( !_settings ) return;
-
-        if( _settings.groups ) {
-            for( var j in _settings.groups ) {
+        if ( _settings.groups ) {
+            iterateKeys( _settings.groups, function ( j ) {
                 var g = _settings.groups[ parseInt( j, 10 ) ];
                 var div = document.createElement( 'div' );
                 div.className = 'rs-group';
                 g.div = div;
                 var h1 = document.createElement( 'h1' );
                 h1.textContent = g.caption;
-                h1.addEventListener( 'click', function( e ) {
+                h1.addEventListener( 'click', function ( e ) {
                     this.classList.toggle( 'hidden' );
                     e.preventDefault();
                 }.bind( div ) );
                 _div.appendChild( h1 );
                 _div.appendChild( div );
-            }
+            } );
         }
 
-        if( _settings.fractions ) {
-            for( var j in _settings.fractions ) {
+        if ( _settings.fractions ) {
+            iterateKeys( _settings.fractions, function ( j ) {
                 var f = _settings.fractions[ parseInt( j, 10 ) ];
                 var div = document.createElement( 'div' );
                 div.className = 'rs-fraction';
@@ -60321,51 +60686,51 @@ var rStats = function rStats( settings ) {
                 legend.className = 'rs-legend';
 
                 var h = 0;
-                for( var k in _settings.fractions[ j ].steps ) {
+                iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
                     var p = document.createElement( 'p' );
                     p.textContent = _settings.fractions[ j ].steps[ k ];
                     p.style.color = _colours[ h ];
                     legend.appendChild( p );
                     h++;
-                }
+                } );
                 div.appendChild( legend );
                 div.style.height = h * _elHeight + 'px';
                 f.div = div;
                 var graph = new StackGraph( div, h );
                 f.graph = graph;
                 _div.appendChild( div );
-            }
+            } );
         }
 
     }
 
-    function _update() {
+    function _update () {
 
-        for( var j in _settings.plugins ) {
+        iterateKeys( _settings.plugins, function ( j ) {
             _settings.plugins[ j ].update();
-        }
+        } );
 
-        for( var j in _perfCounters ) {
+        iterateKeys( _perfCounters, function ( j ) {
             _perfCounters[ j ].draw();
-        }
+        } );
 
-        if( _settings && _settings.fractions ) {
-            for( var j in _settings.fractions ) {
+        if ( _settings && _settings.fractions ) {
+            iterateKeys( _settings.fractions, function ( j ) {
                 var f = _settings.fractions[ parseInt( j, 10 ) ];
                 var v = [];
                 var base = _perfCounters[ f.base.toLowerCase() ];
-                if( base ) {
+                if ( base ) {
                     base = base.value();
-                    for( var k in _settings.fractions[ j ].steps ) {
+                    iterateKeys( _settings.fractions[ j ].steps, function ( k ) {
                         var s = _settings.fractions[ j ].steps[ parseInt( k, 10 ) ].toLowerCase();
                         var val = _perfCounters[ s ];
-                        if( val ) {
+                        if ( val ) {
                             v.push( val.value() / base );
                         }
-                    }
+                    } );
                 }
                 f.graph.draw( v );
-            }
+            } );
         }
 
         /*if( _height != _div.clientHeight ) {
@@ -60378,17 +60743,21 @@ var rStats = function rStats( settings ) {
 
     _init();
 
-    return function( id ) {
-        if( id ) return _perf( id );
+    return function ( id ) {
+        if ( id ) return _perf( id );
         return {
+            element: _base,
             update: _update
-        }
-    }
+        };
+    };
 
-};
+}
 
-if (typeof module !== "undefined") { module.exports = rStats; }
-},{}],104:[function(_dereq_,module,exports){
+if (typeof module === 'object') {
+  module.exports = window.rStats;
+}
+
+},{}],108:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60450,7 +60819,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],105:[function(_dereq_,module,exports){
+},{}],109:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60526,6 +60895,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":104}]},{},[87])(87)
+},{"./util.js":108}]},{},[88])(88)
 });
 //# sourceMappingURL=aframe.js.map
