@@ -48,6 +48,7 @@ module.exports.Component = registerComponent('stats', {
 function createStats (scene) {
   var threeStats = new ThreeStats(scene.renderer);
   var aframeStats = new AFrameStats(scene);
+  var plugins = scene.isMobile ? [] : [threeStats, aframeStats];
   return new RStats({
     css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {
@@ -56,8 +57,6 @@ function createStats (scene) {
     groups: [
       {caption: 'Framerate', values: ['fps', 'raf']}
     ],
-    plugins: [
-      threeStats, aframeStats
-    ]
+    plugins: plugins
   });
 }
