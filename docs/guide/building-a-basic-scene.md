@@ -29,7 +29,7 @@ A-Frame uses a right-handed coordinate system which can be roughly thought of:
 
 - Positive X-axis as "right"
 - Positive Y-axis as "up"
-- Positive Z-axis as going out of the screen towards us.
+- Positive Z-axis as going out of the screen towards us
 
 The basic distance unit in is defined in meters. When designing a scene for virtual reality, it is important to consider the real world scale of the objects we create. A box with `height="100"` may look ordinary on our computer screens, but in virtual reality it will look like a massive 100-meter tall monolith.
 
