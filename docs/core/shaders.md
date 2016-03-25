@@ -3,7 +3,7 @@ title: Shaders
 type: core
 layout: docs
 parent_section: core
-order: 8
+order: 7
 ---
 
 Shaders (in A-Frame) are responsible for creating the material for the base [material component][material]. A-Frame ships with a couple of built-in shading models: `standard` and `flat`.
