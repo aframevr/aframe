@@ -27,7 +27,7 @@ The ring primitive creates a ring or disc shape. It is an entity that prescribes
 Note that the ring primitive inherits common [mesh attributes](./mesh-attributes.md).
 
 | Attribute      | Component Mapping      |
-|----------------|------------------------+
+|----------------|------------------------|
 | radius-inner   | geometry.radiusInner   |
 | radius-outer   | geometry.radiusOuter   |
 | segments-phi   | geometry.segmentsPhi   |
