@@ -36,6 +36,7 @@ The material component has only a few base properties, but more properties will 
 
 | Property    | Description                                                                                                                                     | Default Value |
 |-------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| depthTest   | Whether depth testing is enabled when rendering the material.                                                                                   | true          |
 | opacity     | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color. | 1.0           |
 | transparent | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                              | false         |
 | shader      | Which shader or shading model to use. Defaults to the [built-in standard shading model][standard]. Can be set to the [built-in flat shading model][flat] or to a [registered custom shader][customshader] | standard      |
