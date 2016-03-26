@@ -25,7 +25,7 @@ We will go through the different types of lights and their respective properties
 
 ### Ambient
 
-Ambient lights are applied to all entities in the scene globally. They are defined only by the `color` property. And, `position`, `rotation`, and `scale` have no effect on ambient lights.
+Ambient lights are applied to all entities in the scene globally. They are defined by the `color` and `intensity` properties. Additionally, `position`, `rotation`, and `scale` have no effect on ambient lights.
 
 It is recommended to have some form of ambient light such that shadowed areas
 are not completely black and to mimic indirect lighting.
