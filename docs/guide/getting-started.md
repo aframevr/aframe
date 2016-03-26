@@ -51,7 +51,7 @@ If we want to just include the JS build from the CDN, we can drop a `<script>` t
 
 <script>
   // NOTE: Hack because variables doesn't get interpolated correctly in Markdown code blocks.
-  var versionEls = document.querySelectorAll('.highlight .value');
+  var versionEls = document.querySelectorAll('.highlight .code .string');
   for (var i = 0; i < versionEls.length; ++i) {
     versionEls[i].textContent = versionEls[i].textContent.replace('\{\{ version \}\}', '{{ version }}');
   }
