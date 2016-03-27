@@ -30,12 +30,11 @@ module.exports.Component = registerComponent('geometry', {
     radiusInner: { default: 0.8, min: 0, if: { primitive: ['ring'] } },
     radiusOuter: { default: 1.2, min: 0, if: { primitive: ['ring'] } },
     radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder'] } },
-    radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus'] } },
-    scaleHeight: { default: 1, min: 0, if: { primitive: ['torusKnot'] } },
+    radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus', 'torusKnot'] } },
     segments: { default: 32, min: 0, if: { primitive: ['circle'] }, type: 'int' },
     segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere'] }, type: 'int' },
     segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] }, type: 'int' },
-    segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder'] }, type: 'int' },
+    segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder', 'torusKnot'] }, type: 'int' },
     segmentsTheta: { default: 32, min: 0, if: { primitive: ['ring'] }, type: 'int' },
     segmentsTubular: { default: 32, min: 0, if: { primitive: ['torus', 'torusKnot'] }, type: 'int' },
     segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] }, type: 'int' },
@@ -131,8 +130,8 @@ function getGeometry (data, schema) {
     }
     case 'torusKnot': {
       return new THREE.TorusKnotGeometry(
-        data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        data.p, data.q, data.scaleHeight);
+        data.radius, data.radiusTubular * 2, data.segmentsTubular, data.segmentsRadial,
+        data.p, data.q);
     }
     default: {
       warn('Primitive type not supported: ' + data.primitive);
