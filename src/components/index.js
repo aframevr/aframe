@@ -14,11 +14,11 @@ require('./sound');
 require('./velocity');
 require('./visible');
 
+require('./controls/controls');
 require('./controls/gamepad-controls');
 require('./controls/hmd-controls');
 require('./controls/mouse-controls');
 require('./controls/touch-controls');
-require('./controls/universal-controls');
 require('./controls/wasd-controls');
 
 require('./scene/canvas');

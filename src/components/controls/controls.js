@@ -6,12 +6,12 @@ var MAX_DELTA = 0.2; // ms
 var PI_2 = Math.PI / 2;
 
 /**
- * Universal-controls component.
+ * Controls component.
  *
  * Receives input events from device-specific control components, and applies movement and rotation
  * to the element accordingly.
  */
-module.exports.Component = registerComponent('universal-controls', {
+module.exports.Component = registerComponent('controls', {
 
   dependencies: ['velocity'],
 
