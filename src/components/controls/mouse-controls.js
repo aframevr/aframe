@@ -9,7 +9,7 @@ var THREE = require('../../lib/three');
 module.exports.Component = registerComponent('mouse-controls', {
   schema: {
     enabled: { default: true },
-    pointerlockEnabled: { default: true },
+    pointerlockEnabled: { default: false },
     sensitivity: { default: 1 / 25 }
   },
 
