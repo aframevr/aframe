@@ -90,5 +90,5 @@ Read through the documentation front-to-back for more details, and if you have a
 [entity]: ../core/entity.md
 [mozvr]: http://mozvr.com
 [slack]: https://aframevr-slack.herokuapp.com/
-[three]: http://three.js.org/
+[three]: http://threejs.org/
 [webvr]: http://mozvr.com/#start
