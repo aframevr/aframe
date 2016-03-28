@@ -110,14 +110,15 @@ AFRAME.registerShader('hello-world-shader', {
 
 #### Shader Uniform and Attribute Types
 
-| Type     | Description                                                                                                                                                              |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| color    | Built-in convenience (vec3) uniform type. Will take colors in multiple formats and automatically convert them to vec3 format (e.g., 'red' -> `THREE.Vector3(1, 0, 0)`)   |
-| number   | Maps to GLSL `float`.                                                                                                                                                    |
-| time     | Built-in convenience (float) uniform type. If specified, the material component will continuously update the shader with the global scene time.                          |
-| vec2     | Maps to GLSL `vec2`.                                                                                                                                                     |
-| vec3     | Maps to GLSL `vec3`.                                                                                                                                                     |
-| vec4     | Maps to GLSL `vec4`.                                                                                                                                                     |
+| Type      | Description                                                                                                                                                              |
+| --------  | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| color     | Takes colors in multiple formats and automatically convert them to a `vec3` (e.g., 'red' -> `THREE.Vector3(1, 0, 0)`).                                                   |
+| number    | Maps to GLSL `float`.                                                                                                                                                    |
+| time      | Built-in `int` uniform type. If specified, the material component will continuously update the shader with the global scene time.                                        |
+| timeDelta | Built-in `int` uniform type. If specified, the material component will continuously update the shader with the global scene time delta.                                  |
+| vec2      | Maps to GLSL `vec2`.                                                                                                                                                     |
+| vec3      | Maps to GLSL `vec3`.                                                                                                                                                     |
+| vec4      | Maps to GLSL `vec4`.                                                                                                                                                     |
 
 #### Standard Component Properties
 

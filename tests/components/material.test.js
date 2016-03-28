@@ -1,4 +1,5 @@
 /* global assert, process, setup, suite, test, AFRAME */
+var shaders = require('core/shader').shaders;
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 var texture = require('utils/texture');
@@ -80,18 +81,18 @@ suite('material', function () {
   });
 
   suite('updateShader', function () {
-    test('the material is updated', function () {
+    test('updates material', function () {
       var el = this.el;
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
       el.components.material.updateShader('standard');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
-    test('the material is set to MeshShaderMaterial for custom shaders', function () {
+    test('sets material to MeshShaderMaterial for custom shaders', function () {
       var el = this.el;
       AFRAME.registerShader('test', {
         schema: {
-          'luminance': { default: 1 }
+          luminance: { default: 1 }
         },
 
         vertexShader: [
@@ -103,13 +104,67 @@ suite('material', function () {
           '}'
         ].join('\n'),
 
-        fragmentShader: [
-          'void main() { gl_FragColor = vec4(1.0,0.0,1.0,1.0); }'
-        ].join('\n')
+        fragmentShader: 'void main() { gl_FragColor = vec4(1.0,0.0,1.0,1.0); }'
       });
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
       el.components.material.updateShader('test');
       assert.equal(el.getObject3D('mesh').material.type, 'ShaderMaterial');
+    });
+  });
+
+  suite('updateTick', function () {
+    setup(function () {
+      delete shaders.test;
+    });
+
+    test('does not set tick function if no tick uniforms', function () {
+      var el = this.el;
+      var sceneBehaviors = el.sceneEl.behaviors.length;
+      AFRAME.registerShader('test', { schema: { } });
+      el.setAttribute('material', 'shader', 'test');
+      assert.equal(el.sceneEl.behaviors.length, sceneBehaviors);
+    });
+
+    test('sets tick function to update time type uniform', function () {
+      var el = this.el;
+      var sceneBehaviors = el.sceneEl.behaviors.length;
+      AFRAME.registerShader('test', {
+        schema: {
+          hora: { type: 'time', is: 'uniform' }
+        }
+      });
+      el.setAttribute('material', 'shader', 'test');
+      assert.equal(el.sceneEl.behaviors.length, sceneBehaviors + 1);
+      el.sceneEl.behaviors[el.sceneEl.behaviors.length - 1].tick(1500, 2);
+      assert.equal(el.components.material.shader.uniforms.hora.value, 1500);
+    });
+
+    test('sets tick function to update timeDelta type uniform', function () {
+      var el = this.el;
+      var sceneBehaviors = el.sceneEl.behaviors.length;
+      AFRAME.registerShader('test', {
+        schema: {
+          horaChange: { type: 'timeDelta', is: 'uniform' }
+        }
+      });
+      el.setAttribute('material', 'shader', 'test');
+      assert.equal(el.sceneEl.behaviors.length, sceneBehaviors + 1);
+      el.sceneEl.behaviors[el.sceneEl.behaviors.length - 1].tick(1500, 50);
+      assert.equal(el.components.material.shader.uniforms.horaChange.value, 50);
+    });
+
+    test('removes tick function when switching to material with no tick uni.', function () {
+      var el = this.el;
+      var sceneBehaviors = el.sceneEl.behaviors.length;
+      AFRAME.registerShader('test', {
+        schema: {
+          horaChange: { type: 'timeDelta', is: 'uniform' }
+        }
+      });
+      el.setAttribute('material', 'shader', 'test');
+      assert.equal(el.sceneEl.behaviors.length, sceneBehaviors + 1);
+      el.setAttribute('material', 'shader', 'flat');
+      assert.equal(el.sceneEl.behaviors.length, sceneBehaviors);
     });
   });
 

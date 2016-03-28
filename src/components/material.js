@@ -10,6 +10,9 @@ var diff = utils.diff;
 var registerComponent = component.registerComponent;
 var shaders = shader.shaders;
 var shaderNames = shader.shaderNames;
+var TYPE_TIME = 'time';
+var TYPE_TIME_DELTA = 'timeDelta';
+var TICK_TYPES = [TYPE_TIME, TYPE_TIME_DELTA];
 
 /**
  * Material component.
@@ -27,6 +30,9 @@ module.exports.Component = registerComponent('material', {
     depthTest: { default: true }
   },
 
+  /**
+   * Init handler that can be overridden to provide a custom three.js material.
+   */
   init: function () {
     this.material = null;
   },
@@ -43,10 +49,13 @@ module.exports.Component = registerComponent('material', {
     if (!this.shader || dataDiff.shader) {
       this.updateShader(data.shader);
     }
-    this.shader.update(this.data);
-    this.updateMaterial();
+    this.shader.update(data);
+    updateBaseMaterial(this.material, data);
   },
 
+  /**
+   * Update schema (handler) based on `shader` property, if necessary.
+   */
   updateSchema: function (data) {
     var newShader = data.shader;
     var currentShader = this.data && this.data.shader;
@@ -55,31 +64,50 @@ module.exports.Component = registerComponent('material', {
     if (!schema) { error('Unknown shader schema ' + shader); }
     if (currentShader && newShader === currentShader) { return; }
     this.extendSchema(schema);
-    this.updateBehavior();
+    this.updateTick();
   },
 
-  updateBehavior: function () {
+  /**
+   * Update tick handler that continuously updates certain shader uniforms if the shader
+   * specifies certain uniform types like `time`.
+   */
+  updateTick: function () {
+    var needsTick = false;
     var scene = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
-    var tickProperties = {};
-    var tick = function (time, delta) {
-      var keys = Object.keys(tickProperties);
-      keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+    var tickProperties = {}; // Map of property name to property value.
+    var tickPropertiesTypes = {}; // Map of property name to property type.
+
+    // Tick function that updates shader uniforms.
+    function tick (time, timeDelta) {
+      Object.keys(tickPropertiesTypes).forEach(function updateShader (key) {
+        if (tickPropertiesTypes[key] === TYPE_TIME) {
+          tickProperties[key] = time;
+        }
+        if (tickPropertiesTypes[key] === TYPE_TIME_DELTA) {
+          tickProperties[key] = timeDelta;
+        }
+      });
       self.shader.update(tickProperties);
-    };
-    var keys = Object.keys(schema);
-    keys.forEach(function (key) {
-      if (schema[key].type === 'time') {
-        self.tick = tick;
-        tickProperties[key] = true;
-        scene.addBehavior(self);
-      }
-    });
-    if (Object.keys(tickProperties).length === 0) {
-      scene.removeBehavior(this);
     }
+
+    // Determine whether tick is needed.
+    Object.keys(schema).forEach(function markTickProperties (key) {
+      if (TICK_TYPES.indexOf(schema[key].type) === -1) { return; }
+      tickPropertiesTypes[key] = schema[key].type; // Mark as needing to pass into shader.
+      needsTick = true;
+    });
+
+    // Add tick if needed.
+    if (needsTick) {
+      self.tick = tick;
+      scene.addBehavior(this);
+      return;
+    }
+    // Remove tick if no longer needed.
+    self.tick = null;
+    scene.removeBehavior(this);
   },
 
   updateShader: function (shaderName) {
@@ -92,15 +120,6 @@ module.exports.Component = registerComponent('material', {
     material = this.shader.init(data);
     this.setMaterial(material);
     this.updateSchema(data);
-  },
-
-  updateMaterial: function () {
-    var data = this.data;
-    var material = this.material;
-    material.side = parseSide(data.side);
-    material.opacity = data.opacity;
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.depthTest = data.depthTest !== false;
   },
 
   /**
@@ -129,6 +148,19 @@ module.exports.Component = registerComponent('material', {
     system.registerMaterial(material);
   }
 });
+
+/**
+ * Update material base properties.
+ *
+ * @param material {object} - three.js material.
+ * @param data {object} - Component data.
+ */
+function updateBaseMaterial (material, data) {
+  material.depthTest = data.depthTest;
+  material.side = parseSide(data.side);
+  material.opacity = data.opacity;
+  material.transparent = data.transparent !== false || data.opacity < 1.0;
+}
 
 /**
  * Returns a three.js constant determining which material face sides to render

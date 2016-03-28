@@ -60,9 +60,7 @@ Shader.prototype = {
     var self = this;
     var variables = {};
     var schema = this.schema;
-    var squemaKeys = Object.keys(schema);
-    squemaKeys.forEach(processSquema);
-    function processSquema (key) {
+    Object.keys(schema).forEach(function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
       var varValue = schema[key].parse(data[key] || schema[key].default);
@@ -70,7 +68,7 @@ Shader.prototype = {
         type: varType,
         value: self.parseValue(schema[key].type, varValue)
       };
-    }
+    });
     return variables;
   },
 
@@ -88,15 +86,13 @@ Shader.prototype = {
   updateVariables: function (data, type) {
     var self = this;
     var variables = type === 'uniform' ? this.uniforms : this.attributes;
-    var dataKeys = Object.keys(data);
     var schema = this.schema;
-    dataKeys.forEach(processData);
-    function processData (key) {
+    Object.keys(data).forEach(function processData (key) {
       if (!schema[key] || schema[key].is !== type) { return; }
       if (variables[key].value === data[key]) { return; }
       variables[key].value = self.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
-    }
+    });
   },
 
   parseValue: function (type, value) {
