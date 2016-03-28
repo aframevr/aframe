@@ -13,7 +13,7 @@ The image primitive displays an image on a flat plane. It is an entity that pres
 ```html
 <a-scene>
   <a-assets>
-    <img id="my-image src="image.png">
+    <img id="my-image" src="image.png">
   </a-assets>
 
   <!-- Using the asset management system. -->
