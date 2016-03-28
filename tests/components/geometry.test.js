@@ -1,12 +1,10 @@
 /* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+var helpers = require('../helpers');
 var degToRad = require('index').THREE.Math.degToRad;
 
 suite('geometry', function () {
-  'use strict';
-
   setup(function (done) {
-    var el = this.el = entityFactory();
+    var el = this.el = helpers.entityFactory();
     el.setAttribute('geometry', 'primitive: box');
     el.addEventListener('loaded', function () {
       done();
@@ -43,12 +41,28 @@ suite('geometry', function () {
       assert.equal(mesh.geometry.type, 'BoxGeometry');
     });
 
-    suite('remove', function () {
-      test('removes geometry', function () {
-        var mesh = this.el.getObject3D('mesh');
-        this.el.removeAttribute('geometry');
-        assert.equal(mesh.geometry.type, 'Geometry');
-      });
+    test('disposes geometry', function () {
+      var el = this.el;
+      var geometry = el.getObject3D('mesh').geometry;
+      var disposeSpy = this.sinon.spy(geometry, 'dispose');
+      assert.notOk(disposeSpy.called);
+      el.setAttribute('geometry', 'primitive: sphere');
+      assert.ok(disposeSpy.called);
+    });
+  });
+
+  suite('remove', function () {
+    test('removes geometry', function () {
+      var mesh = this.el.getObject3D('mesh');
+      this.el.removeAttribute('geometry');
+      assert.equal(mesh.geometry.type, 'Geometry');
+    });
+
+    test('disposes geometry', function () {
+      var geometry = this.el.getObject3D('mesh').geometry;
+      var disposeSpy = this.sinon.spy(geometry, 'dispose');
+      this.el.removeAttribute('geometry');
+      assert.ok(disposeSpy.called);
     });
   });
 

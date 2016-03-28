@@ -105,12 +105,14 @@ module.exports.Component = registerComponent('material', {
 
   /**
    * Remove material on remove (callback).
+   * Dispose of it from memory and unsubscribe from scene updates.
    */
   remove: function () {
     var defaultMaterial = new THREE.MeshBasicMaterial();
+    var material = this.material;
     var object3D = this.el.getObject3D('mesh');
     if (object3D) { object3D.material = defaultMaterial; }
-    this.system.unregisterMaterial(this.material);
+    disposeMaterial(material, this.system);
   },
 
   /**
@@ -124,7 +126,7 @@ module.exports.Component = registerComponent('material', {
   setMaterial: function (material) {
     var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
     var system = this.system;
-    if (this.material) { system.unregisterMaterial(this.material); }
+    if (this.material) { disposeMaterial(this.material, system); }
     this.material = mesh.material = material;
     system.registerMaterial(material);
   }
@@ -150,4 +152,12 @@ function parseSide (side) {
       return THREE.FrontSide;
     }
   }
+}
+
+/**
+ * Dispose of material from memory and unsubscribe material from scene updates like fog.
+ */
+function disposeMaterial (material, system) {
+  material.dispose();
+  system.unregisterMaterial(material);
 }

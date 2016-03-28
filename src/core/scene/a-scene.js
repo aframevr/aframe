@@ -211,12 +211,11 @@ var AScene = module.exports = registerElement('a-scene', {
         // Set at startup. To enable/disable antialias
         // at runttime we would have to recreate the whole context
         var antialias = this.getAttribute('antialias') === 'true';
-        var renderer = this.renderer = this.monoRenderer =
-          new THREE.WebGLRenderer({
-            canvas: canvas,
-            antialias: antialias,
-            alpha: true
-          });
+        var renderer = this.renderer = this.monoRenderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: antialias,
+          alpha: true
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         AScene.renderer = renderer;

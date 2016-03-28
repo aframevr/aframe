@@ -61,6 +61,7 @@ module.exports.Component = registerComponent('geometry', {
     var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
 
     if (geometryNeedsUpdate) {
+      mesh.geometry.dispose();
       geometry = mesh.geometry = getGeometry(this.data, this.schema);
     }
     if (translateNeedsUpdate) {
@@ -72,6 +73,7 @@ module.exports.Component = registerComponent('geometry', {
    * Removes geometry on remove (callback).
    */
   remove: function () {
+    this.el.getObject3D('mesh').geometry.dispose();
     this.el.getObject3D('mesh').geometry = new THREE.Geometry();
   }
 });
