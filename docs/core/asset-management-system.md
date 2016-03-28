@@ -26,8 +26,8 @@ We can define all of our assets in `<a-assets>` and point to those assets from o
 <a-scene>
   <!-- Asset management system. -->
   <a-assets>
-    <a-asset-item id="horse-obj" src="horse.obj></a-asset-item>
-    <a-asset-item id="horse-mtl" src="horse.mtl></a-asset-item>
+    <a-asset-item id="horse-obj" src="horse.obj"></a-asset-item>
+    <a-asset-item id="horse-mtl" src="horse.mtl"></a-asset-item>
 
     <a-mixin id="giant" scale="5 5 5"></a-mixin>
 
