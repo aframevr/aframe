@@ -166,7 +166,6 @@ AFRAME.registerComponent('collider', {
     var collisionResults;
     var directionVector;
     var el = this.el;
-    var sceneEl = el.sceneEl;
     var mesh = el.getObject3D('mesh');
     var object3D = el.object3D;
     var raycaster;
