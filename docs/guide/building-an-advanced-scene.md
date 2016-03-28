@@ -141,7 +141,7 @@ The laser will now fire like a projectile on click:
 
 The last step is to add a collider component so we can detect when the laser hits an entity. We can do this using the [three.js Raycaster][raycaster], drawing a ray (line) from one end of the laser to the other, then continuously checking if one of the enemies are intersecting the ray. If an enemy is intersecting our ray, then it is touching the laser, and we use an event to tell the enemy that it got hit:
 
-```html
+```js
 AFRAME.registerComponent('collider', {
   schema: {
     target: { default: '' }
