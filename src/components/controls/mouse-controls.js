@@ -1,4 +1,4 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
 /**
@@ -6,7 +6,7 @@ var THREE = require('../../lib/three');
  *
  * Updates rotation with mousedrag or pointerlock input.
  */
-module.exports.Component = registerComponent('mouse-controls', {
+module.exports.Component = registerControls('mouse-controls', {
   schema: {
     enabled: { default: true },
     pointerlockEnabled: { default: false },

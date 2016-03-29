@@ -1,4 +1,4 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
 // TODO: Polyfill KeyboardEvent.code, or replace usage with keyCode.
@@ -8,7 +8,7 @@ var THREE = require('../../lib/three');
  *
  * Supports movement with WASD or arrow keys.
  */
-module.exports.Component = registerComponent('wasd-controls', {
+module.exports.Component = registerControls('wasd-controls', {
   schema: {
     enabled: { default: true },
     debug: { default: false }

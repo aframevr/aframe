@@ -1,4 +1,4 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
 /**
@@ -6,7 +6,7 @@ var THREE = require('../../lib/three');
  *
  * Moves forward in the scene when canvas (or Cardboard button) is touched.
  */
-module.exports.Component = registerComponent('touch-controls', {
+module.exports.Component = registerControls('touch-controls', {
   schema: {
     enabled: { default: true }
   },

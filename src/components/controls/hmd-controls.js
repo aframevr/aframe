@@ -1,4 +1,4 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
 var TICK_DEBOUNCE = 4; // ms
@@ -8,7 +8,7 @@ var TICK_DEBOUNCE = 4; // ms
  *
  * Updates rotation based on HMD orientation.
  */
-module.exports.Component = registerComponent('hmd-controls', {
+module.exports.Component = registerControls('hmd-controls', {
   schema: {
     enabled: { default: true }
   },

@@ -24,6 +24,7 @@ require('./style/rStats.css');
 var AScene = require('./core/scene/a-scene');
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
+var registerControls = require('./core/controls').registerControls;
 var registerGeometry = require('./core/geometry').registerGeometry;
 var registerPrimitive = require('./extras/primitives/registerPrimitive');
 var registerShader = require('./core/shader').registerShader;
@@ -64,6 +65,7 @@ module.exports = window.AFRAME = {
   AScene: AScene,
   components: components,
   registerComponent: registerComponent,
+  registerControls: registerControls,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,

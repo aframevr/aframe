@@ -1,7 +1,6 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
-var COMPONENT_SUFFIX = '-controls';
 var MAX_DELTA = 0.2; // ms
 var PI_2 = Math.PI / 2;
 
@@ -11,22 +10,22 @@ var PI_2 = Math.PI / 2;
  * Receives input events from device-specific control components, and applies movement and rotation
  * to the element accordingly.
  */
-module.exports.Component = registerComponent('controls', {
+module.exports.Component = registerControls('controls', {
 
-  dependencies: ['velocity'],
+  dependencies: ['velocity', 'rotation'],
 
   schema: {
     enabled: { default: true },
 
     flyingEnabled: { default: false },
 
+    movement: { default: ['gamepad-controls', 'wasd-controls', 'touch-controls'] },
     movementEnabled: { default: true },
-    movementControls: { default: ['gamepad', 'wasd', 'touch'] },
     movementEasing: { default: 15 }, // m/s2
     movementAcceleration: { default: 65 }, // m/s2
 
+    rotation: { default: ['hmd-controls', 'gamepad-controls', 'mouse-controls'] },
     rotationEnabled: { default: true },
-    rotationControls: { default: ['hmd', 'gamepad', 'mouse'] },
     rotationSensitivity: { default: 0.05 } // radians/frame, ish
   },
 
@@ -63,8 +62,12 @@ module.exports.Component = registerComponent('controls', {
     var control, dRotation;
     var data = this.data;
 
-    for (var i = 0, l = data.rotationControls.length; i < l; i++) {
-      control = this.el.components[data.rotationControls[i] + COMPONENT_SUFFIX];
+    for (var i = 0, l = data.rotation.length; i < l; i++) {
+      if (!this.system.rotationControls[data.rotation[i]]) {
+        throw new Error('Unregistered rotation controls: `' + data.rotation[i] + '`.');
+      }
+
+      control = this.el.components[data.rotation[i]];
       if (control && control.isRotationActive()) {
         if (control.getRotationDelta) {
           dRotation = control.getRotationDelta(dt);
@@ -80,7 +83,7 @@ module.exports.Component = registerComponent('controls', {
         } else if (control.getRotation) {
           this.el.setAttribute('rotation', control.getRotation());
         } else {
-          throw new Error('Incompatible rotation controls: %s', data.rotationControls[i]);
+          throw new Error('Incompatible rotation controls: %s', data.rotation[i]);
         }
         break;
       }
@@ -88,53 +91,58 @@ module.exports.Component = registerComponent('controls', {
   },
 
   updateVelocity: function (dt) {
-    var control, dVelocity;
+    var control;
     var data = this.data;
-    var rotation = this.el.getAttribute('rotation');
-    var velocity = this.velocity;
 
     if (this.el.hasAttribute('velocity')) {
-      velocity.copy(this.el.getAttribute('velocity'));
+      this.velocity.copy(this.el.getAttribute('velocity'));
     }
 
-    for (var i = 0, l = data.movementControls.length; i < l; i++) {
-      control = this.el.components[data.movementControls[i] + COMPONENT_SUFFIX];
+    this.velocity.x -= this.velocity.x * data.movementEasing * dt / 1000;
+    this.velocity.z -= this.velocity.z * data.movementEasing * dt / 1000;
+
+    for (var i = 0, l = data.movement.length; i < l; i++) {
+      if (!this.system.movementControls[data.movement[i]]) {
+        throw new Error('Unregistered movement controls: `' + data.movement[i] + '`.');
+      }
+
+      control = this.el.components[data.movement[i]];
       if (control && control.isVelocityActive()) {
         if (control.getVelocityDelta) {
-          dVelocity = control.getVelocityDelta(dt);
+          this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
         } else if (control.getVelocity) {
-          throw new Error('getVelocity() not currently supported, use getVelocityDelta()');
+          throw new Error('getVelocity() not currently supported, use getVelocityDelta().');
         } else {
-          throw new Error('Incompatible movement controls: ', data.movementControls[i]);
+          throw new Error('Incompatible movement controls: `' + data.movement[i] + '`.');
         }
         break;
       }
     }
 
-    velocity.x -= velocity.x * data.movementEasing * dt / 1000;
-    velocity.z -= velocity.z * data.movementEasing * dt / 1000;
+    this.el.setAttribute('velocity', {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z});
+  },
 
-    if (dVelocity) {
-      // Set acceleration
-      if (dVelocity.length() > 1) {
-        dVelocity.setLength(this.data.movementAcceleration * dt / 1000);
-      } else {
-        dVelocity.multiplyScalar(this.data.movementAcceleration * dt / 1000);
-      }
+  applyVelocityDelta: function (dt, dVelocity) {
+    var data = this.data;
+    var rotation = this.el.getAttribute('rotation');
 
-      // Rotate to heading
-      if (rotation) {
-        this.heading.set(
-          data.flyingEnabled ? THREE.Math.degToRad(rotation.x) : 0,
-          THREE.Math.degToRad(rotation.y),
-          0
-        );
-        dVelocity.applyEuler(this.heading);
-      }
-
-      velocity.add(dVelocity);
+    // Set acceleration
+    if (dVelocity.length() > 1) {
+      dVelocity.setLength(this.data.movementAcceleration * dt / 1000);
+    } else {
+      dVelocity.multiplyScalar(this.data.movementAcceleration * dt / 1000);
     }
 
-    this.el.setAttribute('velocity', {x: velocity.x, y: velocity.y, z: velocity.z});
+    // Rotate to heading
+    if (rotation) {
+      this.heading.set(
+        data.flyingEnabled ? THREE.Math.degToRad(rotation.x) : 0,
+        THREE.Math.degToRad(rotation.y),
+        0
+      );
+      dVelocity.applyEuler(this.heading);
+    }
+
+    this.velocity.add(dVelocity);
   }
 });

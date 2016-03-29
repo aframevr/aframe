@@ -1,4 +1,4 @@
-var registerComponent = require('../../core/component').registerComponent;
+var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 var Gamepad = require('../../constants').gamepad;
 
@@ -12,7 +12,7 @@ var JOYSTICK_EPS = 0.2;
  * For more information about the Gamepad API, see:
  * https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
  */
-module.exports.Component = registerComponent('gamepad-controls', {
+module.exports.Component = registerControls('gamepad-controls', {
 
   schema: {
     enabled: { default: true },
