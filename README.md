@@ -31,11 +31,11 @@ To get started immediately, just fire up [__this CodePen example scene__](http:/
 
 To embed this library in your project, include this file:
 
-* [`aframe.min.js`](https://aframe.io/releases/0.1.3/aframe.min.js)
+* [`aframe.min.js`](https://aframe.io/releases/0.2.0/aframe.min.js)
 
 For the unminified version for local development (with source maps), include this file:
 
-* [`aframe.js`](https://aframe.io/releases/0.1.3/aframe.js)
+* [`aframe.js`](https://aframe.io/releases/0.2.0/aframe.js)
 
 __Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
