@@ -30,6 +30,8 @@ module.exports.Component = registerControls('controls', {
   },
 
   init: function () {
+    var data = this.data;
+
     // Movement
     this.velocity = new THREE.Vector3();
 
@@ -39,6 +41,10 @@ module.exports.Component = registerControls('controls', {
     this.yaw.position.y = 10;
     this.yaw.add(this.pitch);
     this.heading = new THREE.Euler(0, 0, 0, 'YXZ');
+
+    // Initialize system with enabled controls and precedence.
+    this.system.enableMovementControls(data.movement);
+    this.system.enableRotationControls(data.rotation);
   },
 
   tick: function (t, dt) {
@@ -62,31 +68,20 @@ module.exports.Component = registerControls('controls', {
     var control, dRotation;
     var data = this.data;
 
-    for (var i = 0, l = data.rotation.length; i < l; i++) {
-      if (!this.system.rotationControls[data.rotation[i]]) {
-        throw new Error('Unregistered rotation controls: `' + data.rotation[i] + '`.');
-      }
-
-      control = this.el.components[data.rotation[i]];
-      if (control && control.isRotationActive()) {
-        if (control.getRotationDelta) {
-          dRotation = control.getRotationDelta(dt);
-          dRotation.multiplyScalar(data.rotationSensitivity);
-          this.yaw.rotation.y -= dRotation.x;
-          this.pitch.rotation.x -= dRotation.y;
-          this.pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, this.pitch.rotation.x));
-          this.el.setAttribute('rotation', {
-            x: THREE.Math.radToDeg(this.pitch.rotation.x),
-            y: THREE.Math.radToDeg(this.yaw.rotation.y),
-            z: 0
-          });
-        } else if (control.getRotation) {
-          this.el.setAttribute('rotation', control.getRotation());
-        } else {
-          throw new Error('Incompatible rotation controls: %s', data.rotation[i]);
-        }
-        break;
-      }
+    control = this.system.getActiveRotationControls(this.el);
+    if (control && control.getRotationDelta) {
+      dRotation = control.getRotationDelta(dt);
+      dRotation.multiplyScalar(data.rotationSensitivity);
+      this.yaw.rotation.y -= dRotation.x;
+      this.pitch.rotation.x -= dRotation.y;
+      this.pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, this.pitch.rotation.x));
+      this.el.setAttribute('rotation', {
+        x: THREE.Math.radToDeg(this.pitch.rotation.x),
+        y: THREE.Math.radToDeg(this.yaw.rotation.y),
+        z: 0
+      });
+    } else if (control) {
+      this.el.setAttribute('rotation', control.getRotation());
     }
   },
 
@@ -101,22 +96,11 @@ module.exports.Component = registerControls('controls', {
     this.velocity.x -= this.velocity.x * data.movementEasing * dt / 1000;
     this.velocity.z -= this.velocity.z * data.movementEasing * dt / 1000;
 
-    for (var i = 0, l = data.movement.length; i < l; i++) {
-      if (!this.system.movementControls[data.movement[i]]) {
-        throw new Error('Unregistered movement controls: `' + data.movement[i] + '`.');
-      }
-
-      control = this.el.components[data.movement[i]];
-      if (control && control.isVelocityActive()) {
-        if (control.getVelocityDelta) {
-          this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
-        } else if (control.getVelocity) {
-          throw new Error('getVelocity() not currently supported, use getVelocityDelta().');
-        } else {
-          throw new Error('Incompatible movement controls: `' + data.movement[i] + '`.');
-        }
-        break;
-      }
+    control = this.system.getActiveMovementControls(this.el);
+    if (control && control.getVelocityDelta) {
+      this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
+    } else if (control) {
+      throw new Error('getVelocity() not currently supported, use getVelocityDelta().');
     }
 
     this.el.setAttribute('velocity', {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z});
