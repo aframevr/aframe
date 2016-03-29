@@ -26,6 +26,14 @@ suite('material', function () {
       assert.shallowDeepEqual(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
 
+    test('disposes material when changing to new material', function () {
+      var el = this.el;
+      var material = el.getObject3D('mesh').material;
+      var disposeSpy = this.sinon.spy(material, 'dispose');
+      el.setAttribute('material', 'shader', 'standard');
+      assert.ok(disposeSpy.called);
+    });
+
     test('defaults to standard material', function () {
       this.el.setAttribute('material', '');
       assert.equal(this.el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
@@ -64,7 +72,7 @@ suite('material', function () {
   });
 
   suite('updateSchema', function () {
-    test('Updates the schema', function () {
+    test('updates schema', function () {
       var el = this.el;
       el.components.material.updateSchema({shader: 'flat'});
       assert.ok(el.components.material.schema.color);
@@ -80,14 +88,14 @@ suite('material', function () {
   });
 
   suite('updateShader', function () {
-    test('the material is updated', function () {
+    test('updates material shader', function () {
       var el = this.el;
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
       el.components.material.updateShader('standard');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
-    test('the material is set to MeshShaderMaterial for custom shaders', function () {
+    test('sets material to MeshShaderMaterial for custom shaders', function () {
       var el = this.el;
       AFRAME.registerShader('test', {
         schema: {
@@ -119,6 +127,14 @@ suite('material', function () {
       assert.ok(el.getObject3D('mesh').material);
       el.removeAttribute('material');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
+    });
+
+    test('disposes material', function () {
+      var el = this.el;
+      var material = el.getObject3D('mesh').material;
+      var disposeSpy = this.sinon.spy(material, 'dispose');
+      el.removeAttribute('material');
+      assert.ok(disposeSpy.called);
     });
   });
 
