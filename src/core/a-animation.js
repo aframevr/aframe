@@ -5,6 +5,7 @@ var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
+var THREE = require('three');
 
 var DEFAULTS = constants.defaults;
 var DIRECTIONS = constants.directions;
@@ -363,6 +364,8 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
+  } else if (dataTo && dataTo[0] === '#') {
+    getForColorComponent();
   } else {
     getForNumber();
   }
@@ -427,6 +430,19 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 
   /**
+   * Animating a color component
+   *   Will convert a hex value to a THREE.Color
+   *   Then converts to hex for the setAttribute
+   */
+  function getForColorComponent () {
+    from = new THREE.Color(dataFrom);
+    to = new THREE.Color(dataTo);
+    partialSetAttribute = function (value) {
+      el.setAttribute(attribute, rgbToHex(value));
+    };
+  }
+
+  /**
    * Animating a numbered attribute (e.g., opacity).
    */
   function getForNumber () {
@@ -462,4 +478,36 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
+}
+
+/**
+ * Converts a number 0-255 to hex
+ * @param {color}
+ * @returns {string}
+ */
+function componentToHex (color) {
+  var hex = color.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+/**
+ * Converts a number 0-1 to 0-255
+ * @param {color}
+ * @returns {number}
+ */
+function convertToIntegerColor (color) {
+  return Math.floor(color * 255);
+}
+
+/**
+ * Converts a rgb object into a hex string
+ * @param {color} object { r: 1, g: 1, b: 1 }
+ * @returns {string} hex value #ffffff
+ */
+function rgbToHex (color) {
+  return (
+    '#' + componentToHex(convertToIntegerColor(color.r)) +
+    componentToHex(convertToIntegerColor(color.g)) +
+    componentToHex(convertToIntegerColor(color.b))
+  );
 }

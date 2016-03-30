@@ -48,7 +48,7 @@ module.exports.stringify = stringify;
  * @returns {bool}
  */
 module.exports.isCoordinate = function (value) {
-  return regex.test(value);
+  return value[0] !== '#' && regex.test(value);
 };
 
 function vecParseFloat (vec) {

@@ -118,6 +118,34 @@ suite('a-animation', function () {
     });
   });
 
+  suite('component color animation', function () {
+    setup(function (done) {
+      var self = this;
+      setupAnimation({
+        attribute: 'color',
+        dur: 1000,
+        fill: 'both',
+        from: '#ffffff',
+        to: '#000000',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, { color: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute('color'), '#ffffff');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute('color'), '#000000');
+    });
+  });
+
   suite('direction', function () {
     test('if set to reverse, starts from `to` and goes to `from`', function (done) {
       setupAnimation({
