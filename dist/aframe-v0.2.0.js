@@ -52458,14 +52458,14 @@ module.exports = WebVRPolyfill;
 },{}],24:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.2.0-rc1",
+  "version": "0.2.0",
   "description": "Building blocks for the VR Web",
   "main": "dist/aframe.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
     "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
     "dev": "npm run build && node ./scripts/budo",
-    "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
+    "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe-v0.2.0.js.map > dist/aframe-v0.2.0.js && uglifyjs dist/aframe-v0.2.0.js -c warnings=false -m -o dist/aframe-v0.2.0.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
     "lint": "semistandard -v | snazzy",
@@ -60897,4 +60897,4 @@ module.exports = getWakeLock();
 
 },{"./util.js":108}]},{},[88])(88)
 });
-//# sourceMappingURL=aframe.js.map
+//# sourceMappingURL=aframe-v0.2.0.js.map
