@@ -144,8 +144,8 @@ suite('a-animation', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
       color = this.el.getComputedAttribute('color');
-      assert.isAbove(color, "#000000");
-      assert.isBelow(color, "#ffffff");
+      assert.isAbove(color, '#000000');
+      assert.isBelow(color, '#ffffff');
     });
 
     test('finish value', function () {
@@ -180,8 +180,8 @@ suite('a-animation', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
       color = this.el.getComputedAttribute('color');
-      assert.isAbove(color, "#111");
-      assert.isBelow(color, "#FFF");
+      assert.isAbove(color, '#111');
+      assert.isBelow(color, '#FFF');
     });
 
     test('finish value', function () {

@@ -1,5 +1,5 @@
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
+var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
 
 /**
@@ -48,7 +48,7 @@ module.exports.stringify = stringify;
  * @returns {bool}
  */
 module.exports.isCoordinate = function (value) {
-  return value[0] !== '#' && regex.test(value);
+  return regex.test(value);
 };
 
 function vecParseFloat (vec) {
