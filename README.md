@@ -1,6 +1,6 @@
 # A-Frame
 
-__Building blocks for the VR Web.__
+**Building Blocks for the VR Web**
 
 [![build status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
@@ -9,14 +9,15 @@ __Building blocks for the VR Web.__
 
 A-Frame is a framework for creating virtual reality web experiences.
 
+![<a-montage>](https://cloud.githubusercontent.com/assets/674727/14156618/3258460c-f67c-11e5-8176-5b66c3169a1c.gif)
+
 - **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
 - **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
-- **[Entity-Component-System](https://aframe.io/docs/core/)**: Based on an entity-component-system pattern for better composability and flexibility.
+- **[Entity-Component-System](https://aframe.io/docs/core/)**: Based on an entity-component-system pattern for better composability and extensibility.
 
 Find out more:
 
 - [Guide](https://aframe.io/docs/guide/)
-- [Docs](https://aframe.io/docs/core/)
 - [Examples](https://aframe.io/examples/)
 - [awesome-aframe](https://github.com/aframevr/awesome-aframe)
 - [Ask us on Slack!](https://aframevr-slack.herokuapp.com/)
