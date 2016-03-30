@@ -105,3 +105,7 @@ This program is free software and is distributed under an [MIT License](LICENSE)
 [downloads-url]: https://npmjs.org/package/aframe
 [semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
 [semistandard-url]: https://github.com/Flet/semistandard
+
+## Mobile Support
+
+A-Frame smartphone support is limited and not the core focus of the project. We have some compatibility (thanks to webvr-polyfill) for testing purposes and as a convenient way to quickly check scenes without having a headset at hand. We're a small team and we don't have the resources to support all the permutations of browsers and hardware. We test on iPhone6 and Samsung Galaxy S6 which are the phones we personally own. If you have a problem specific to your device we won't be able to investigate it but we're glad to review patches that fix those particular problems. Thanks for the understanding.
