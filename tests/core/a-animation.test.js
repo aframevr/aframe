@@ -190,6 +190,78 @@ suite('a-animation', function () {
     });
   });
 
+  suite('color animation supports rgb and color nouns', function () {
+    setup(function (done) {
+      var self = this;
+      setupAnimation({
+        attribute: 'color',
+        dur: 1000,
+        fill: 'both',
+        from: 'rgb(255, 255, 255)',
+        to: 'black',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, { color: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute('color'), '#ffffff');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute('color');
+      assert.isAbove(color, '#000000');
+      assert.isBelow(color, '#ffffff');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute('color'), '#000000');
+    });
+  });
+
+  suite('color animation supports rgb and color nouns', function () {
+    setup(function (done) {
+      var self = this;
+      setupAnimation({
+        attribute: 'color',
+        dur: 1000,
+        fill: 'both',
+        from: 'hsl(1, 100%, 100%)',
+        to: 'hsl(0, 0%, 0%)',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, { color: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute('color'), '#ffffff');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute('color');
+      assert.isAbove(color, '#000000');
+      assert.isBelow(color, '#ffffff');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute('color'), '#000000');
+    });
+  });
+
   suite('direction', function () {
     test('if set to reverse, starts from `to` and goes to `from`', function (done) {
       setupAnimation({

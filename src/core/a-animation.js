@@ -364,7 +364,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
-  } else if (dataTo && dataTo[0] === '#') {
+  } else if (isNaN(dataTo)) {
     getForColorComponent();
   } else {
     getForNumber();
