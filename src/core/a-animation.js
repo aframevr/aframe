@@ -5,7 +5,7 @@ var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
-var THREE = require('three');
+var THREE = require('../lib/three');
 
 var DEFAULTS = constants.defaults;
 var DIRECTIONS = constants.directions;
@@ -496,7 +496,7 @@ function componentToHex (color) {
  * @returns {number}
  */
 function convertToIntegerColor (color) {
-  return Math.floor(color * 255);
+  return Math.floor(Math.min(Math.abs(color), 255) * 255);
 }
 
 /**
