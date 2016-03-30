@@ -140,9 +140,53 @@ suite('a-animation', function () {
       assert.equal(this.el.getComputedAttribute('color'), '#ffffff');
     });
 
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute('color');
+      assert.isAbove(color, "#000000");
+      assert.isBelow(color, "#ffffff");
+    });
+
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
       assert.equal(this.el.getComputedAttribute('color'), '#000000');
+    });
+  });
+
+  suite('hex shorthand and capitals for color animation', function () {
+    setup(function (done) {
+      var self = this;
+      setupAnimation({
+        attribute: 'color',
+        dur: 1000,
+        fill: 'both',
+        from: '#FFF',
+        to: '#111',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, { color: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute('color'), '#ffffff');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute('color');
+      assert.isAbove(color, "#111");
+      assert.isBelow(color, "#FFF");
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute('color'), '#101010');
     });
   });
 
