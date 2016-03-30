@@ -10,6 +10,10 @@
 
 Check the A-Frame milestones (https://github.com/aframevr/aframe/milestones) to see what work is specifically queued for upcoming releases.
 
+- Performance: solve low-hanging performance issues
+- Controls: make controls easier to configure
+- Interactivity: improve raycaster, cursor, and add desktop cursor mode
+
 ## Long-Term
 
 - Scene editor and inspector
