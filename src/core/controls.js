@@ -4,7 +4,7 @@ var utils = require('../utils/');
 
 // Keep track of registered controls.
 var controls = module.exports.controls = {
-  movementControls: {},
+  positionControls: {},
   rotationControls: {}
 };
 
@@ -14,7 +14,7 @@ var controls = module.exports.controls = {
 systems.registerSystem('controls', {
   init: function () {
     // Controls components registered to update object position/rotation.
-    this.movementControls = controls.movementControls;
+    this.positionControls = controls.positionControls;
     this.rotationControls = controls.rotationControls;
   }
 });
@@ -103,7 +103,7 @@ ControlsComponent.prototype = {
 module.exports.registerControls = function (name, definition) {
   var NewControlsComponent;
 
-  if (controls.movementControls[name] || controls.rotationControls[name]) {
+  if (controls.positionControls[name] || controls.rotationControls[name]) {
     throw new Error('The control `' + name + '` has been already registered. ' +
                     'Check that you are not loading two versions of the same controls ' +
                     'or two different controls of the same name.');
@@ -115,7 +115,7 @@ module.exports.registerControls = function (name, definition) {
   NewControlsComponent.prototype.system = systems.systems.controls;
 
   if (NewControlsComponent.prototype.isVelocityActive) {
-    controls.movementControls[name] = {
+    controls.positionControls[name] = {
       Component: NewControlsComponent
     };
   }
@@ -127,9 +127,9 @@ module.exports.registerControls = function (name, definition) {
   }
 
   if (name !== 'controls' &&
-      !controls.movementControls[name] &&
+      !controls.positionControls[name] &&
       !controls.rotationControls[name]) {
-    throw new Error('Control must implement either rotation or movement interface.');
+    throw new Error('Control must implement either rotation or position interface.');
   }
 
   return NewControlsComponent;

@@ -19,10 +19,10 @@ module.exports.Component = registerControls('controls', {
 
     flyingEnabled: { default: false },
 
-    movement: { default: ['gamepad-controls', 'wasd-controls', 'touch-controls'] },
-    movementEnabled: { default: true },
-    movementEasing: { default: 15 }, // m/s2
-    movementAcceleration: { default: 65 }, // m/s2
+    position: { default: ['gamepad-controls', 'wasd-controls', 'touch-controls'] },
+    positionEnabled: { default: true },
+    positionEasing: { default: 15 }, // m/s2
+    positionAcceleration: { default: 65 }, // m/s2
 
     rotation: { default: ['hmd-controls', 'gamepad-controls', 'mouse-controls'] },
     rotationEnabled: { default: true },
@@ -63,10 +63,10 @@ module.exports.Component = registerControls('controls', {
     }
 
     // Update velocity. If FPS is too low, reset.
-    if (this.data.movementEnabled && dt / 1000 > MAX_DELTA) {
+    if (this.data.positionEnabled && dt / 1000 > MAX_DELTA) {
       this.velocity.set(0, 0, 0);
       this.el.setAttribute('velocity', this.velocity);
-    } else if (this.data.movementEnabled) {
+    } else if (this.data.positionEnabled) {
       this.updateVelocity(dt);
     }
   },
@@ -97,7 +97,7 @@ module.exports.Component = registerControls('controls', {
   },
 
   /**
-   * Updates velocity based on input from the active movement component, if any.
+   * Updates velocity based on input from the active position component, if any.
    * @param {number} dt
    */
   updateVelocity: function (dt) {
@@ -108,8 +108,8 @@ module.exports.Component = registerControls('controls', {
       this.velocity.copy(this.el.getAttribute('velocity'));
     }
 
-    this.velocity.x -= this.velocity.x * data.movementEasing * dt / 1000;
-    this.velocity.z -= this.velocity.z * data.movementEasing * dt / 1000;
+    this.velocity.x -= this.velocity.x * data.positionEasing * dt / 1000;
+    this.velocity.z -= this.velocity.z * data.positionEasing * dt / 1000;
 
     control = this.getActiveMovementControls();
     if (control && control.getVelocityDelta) {
@@ -133,9 +133,9 @@ module.exports.Component = registerControls('controls', {
 
     // Set acceleration
     if (dVelocity.length() > 1) {
-      dVelocity.setLength(this.data.movementAcceleration * dt / 1000);
+      dVelocity.setLength(this.data.positionAcceleration * dt / 1000);
     } else {
-      dVelocity.multiplyScalar(this.data.movementAcceleration * dt / 1000);
+      dVelocity.multiplyScalar(this.data.positionAcceleration * dt / 1000);
     }
 
     // Rotate to heading
@@ -152,7 +152,7 @@ module.exports.Component = registerControls('controls', {
   },
 
   /**
-   * Validates movement and rotation controls, asserting that each was registered with
+   * Validates position and rotation controls, asserting that each was registered with
    * AFRAME.registerControls.
    * @return {[type]} [description]
    */
@@ -162,9 +162,9 @@ module.exports.Component = registerControls('controls', {
     var system = this.system;
     var missingControls = [];
 
-    for (i = 0; i < data.movement.length; i++) {
-      name = data.movement[i];
-      if (!system.movementControls[name]) {
+    for (i = 0; i < data.position.length; i++) {
+      name = data.position[i];
+      if (!system.positionControls[name]) {
         throw new Error('Component `' + name + '` must be ' +
                         'registered with AFRAME.registerControls().');
       } else if (!this.el.components[name]) {
@@ -189,12 +189,12 @@ module.exports.Component = registerControls('controls', {
   },
 
   /**
-   * Returns the first active movement controls component, if any.
+   * Returns the first active position controls component, if any.
    * @return {ControlsComponent}
    */
   getActiveMovementControls: function () {
     var control;
-    var names = this.data.movement;
+    var names = this.data.position;
     for (var i = 0; i < names.length; i++) {
       control = this.el.components[names[i]];
       if (control && control.isVelocityActive()) {
