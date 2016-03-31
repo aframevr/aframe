@@ -507,16 +507,19 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getComputedAttribute('material'), { shader: 'flat', color: 'red' });
     });
 
-    test('merges component properties from mixin', function () {
+    test('merges component properties from mixin', function (done) {
       var el = this.el;
-      el.setAttribute('geometry', { depth: 5, height: 5, width: 5 });
-      mixinFactory('box', { geometry: 'primitive: box' });
-      el.setAttribute('mixin', 'box');
-      assert.shallowDeepEqual(el.getComputedAttribute('geometry'), {
-        depth: 5,
-        height: 5,
-        primitive: 'box',
-        width: 5
+      mixinFactory('box', {geometry: 'primitive: box'});
+      process.nextTick(function () {
+        el.setAttribute('mixin', 'box');
+        el.setAttribute('geometry', {depth: 5, height: 5, width: 5});
+        assert.shallowDeepEqual(el.getComputedAttribute('geometry'), {
+          depth: 5,
+          height: 5,
+          primitive: 'box',
+          width: 5
+        });
+        done();
       });
     });
 

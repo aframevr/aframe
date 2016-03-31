@@ -142,7 +142,7 @@ module.exports.registerShader = function (name, definition) {
   });
 
   if (shaders[name]) {
-    throw Error('The shader ' + name + ' has been already registered');
+    throw new Error('The shader ' + name + ' has been already registered');
   }
   NewShader = function () { Shader.call(this); };
   NewShader.prototype = Object.create(Shader.prototype, proto);

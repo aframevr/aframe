@@ -1,48 +1,19 @@
-var debug = require('../utils/debug');
+var geometries = require('../core/geometry').geometries;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils');
 
-var DEFAULT_RADIUS = 1;
 var helperMatrix = new THREE.Matrix4();
-var degToRad = THREE.Math.degToRad;
-var warn = debug('components:geometry:warn');
+var error = utils.debug('components:geometry:error');
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
+ * Extended with registered geometries.
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    arc: { default: 360, if: { primitive: ['torus'] } },
-    depth: { default: 1, min: 0, if: { primitive: ['box'] } },
-    height: { default: 1, min: 0, if: { primitive: ['box', 'plane', 'cone'] } },
-    openEnded: { default: false, if: { primitive: ['cylinder', 'cone'] } },
-    p: { default: 2, if: { primitive: ['torusKnot'] }, type: 'int' },
-    primitive: {
-      default: '',
-      oneOf: ['', 'box', 'circle', 'cone', 'cylinder', 'plane',
-              'ring', 'sphere', 'torus', 'torusKnot'] },
-    q: { default: 3, if: { primitive: ['torusKnot'] }, type: 'int' },
-    phiLength: { default: 360, if: { primitive: ['sphere'] } },
-    phiStart: { default: 0, min: 0, if: { primitive: ['sphere'] } },
-    radius: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['circle', 'cylinder', 'sphere', 'torus', 'torusKnot'] } },
-    radiusBottom: { default: DEFAULT_RADIUS, min: 0, if: { primitive: ['cylinder', 'cone'] } },
-    radiusInner: { default: 0.8, min: 0, if: { primitive: ['ring'] } },
-    radiusOuter: { default: 1.2, min: 0, if: { primitive: ['ring'] } },
-    radiusTop: { default: DEFAULT_RADIUS, if: { primitive: ['cylinder', 'cone'] } },
-    radiusTubular: { default: 0.2, min: 0, if: { primitive: ['torus', 'torusKnot'] } },
-    segments: { default: 32, min: 0, if: { primitive: ['circle'] }, type: 'int' },
-    segmentsHeight: { default: 18, min: 0, if: { primitive: ['cylinder', 'sphere', 'cone'] }, type: 'int' },
-    segmentsPhi: { default: 8, min: 0, if: { primitive: ['ring'] }, type: 'int' },
-    segmentsRadial: { default: 36, min: 0, if: { primitive: ['cylinder', 'torusKnot', 'cone'] }, type: 'int' },
-    segmentsTheta: { default: 32, min: 0, if: { primitive: ['ring'] }, type: 'int' },
-    segmentsTubular: { default: 32, min: 0, if: { primitive: ['torus', 'torusKnot'] }, type: 'int' },
-    segmentsWidth: { default: 36, min: 0, if: { primitive: ['sphere'] }, type: 'int' },
-    thetaLength: { default: 360, min: 0, if: { primitive: ['circle', 'cylinder', 'ring',
-                                                           'sphere', 'cone'] } },
-    thetaStart: { default: 0, if: { primitive: ['circle', 'cylinder', 'ring', 'sphere', 'cone'] } },
-    translate: { type: 'vec3' },
-    width: { default: 1, min: 0, if: { primitive: ['box', 'plane'] } }
+    primitive: {default: ''},
+    translate: {type: 'vec3'}
   },
 
   /**
@@ -54,17 +25,12 @@ module.exports.Component = registerComponent('geometry', {
     var data = this.data;
     var currentTranslate = previousData.translate || this.schema.translate.default;
     var diff = utils.diff(previousData, data);
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    var geometry = mesh.geometry;
     var geometryNeedsUpdate = !(Object.keys(diff).length === 1 && 'translate' in diff);
     var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
 
-    if (geometryNeedsUpdate) {
-      mesh.geometry.dispose();
-      geometry = mesh.geometry = getGeometry(this.data, this.schema);
-    }
+    if (geometryNeedsUpdate) { this.setGeometry(); }
     if (translateNeedsUpdate) {
-      applyTranslate(geometry, data.translate, currentTranslate);
+      applyTranslate(this.el.getObject3D('mesh').geometry, data.translate, currentTranslate);
     }
   },
 
@@ -74,73 +40,49 @@ module.exports.Component = registerComponent('geometry', {
   remove: function () {
     this.el.getObject3D('mesh').geometry.dispose();
     this.el.getObject3D('mesh').geometry = new THREE.Geometry();
+  },
+
+  /**
+   * Create geometry and set on mesh.
+   */
+  setGeometry: function () {
+    var data = this.data;
+    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var geometryInstance;
+    var geometryType = data.primitive;
+    var GeometryClass = geometries[geometryType] && geometries[geometryType].Geometry;
+
+    if (!GeometryClass) { throw new Error('Unknown geometry `' + geometryType + '`'); }
+
+    // Create geometry instance. Set it up. Have it create the geometry.
+    geometryInstance = new GeometryClass();
+    geometryInstance.el = this.el;
+    geometryInstance.init(data);
+    this.geometry = geometryInstance.geometry;
+
+    // Dispose and set.
+    if (mesh.geometry) { mesh.geometry.dispose(); }
+    mesh.geometry = this.geometry;
+  },
+
+  /**
+   * Update geometry component schema based on geometry type.
+   *
+   * @param {object} data - New data passed by Component.
+   */
+  updateSchema: function (data) {
+    var newGeometryType = data.primitive;
+    var currentGeometryType = this.data && this.data.primitive;
+    var schema = geometries[newGeometryType] && geometries[newGeometryType].schema;
+
+    // Geometry has no schema.
+    if (!schema) { error('Unknown geometry schema `' + newGeometryType + '`'); }
+    // Nothing has changed.
+    if (currentGeometryType && currentGeometryType === newGeometryType) { return; }
+
+    this.extendSchema(schema);
   }
 });
-
-/**
- * Creates a three.js geometry.
- *
- * @param {object} data
- * @param {object} schema
- * @returns {object} geometry
- */
-function getGeometry (data, schema) {
-  if (data.primitive === 'cube') {
-    warn('geometry.primitive="cube" should be "box"');
-  }
-
-  switch (data.primitive) {
-    case 'box': {
-      return new THREE.BoxGeometry(data.width, data.height, data.depth);
-    }
-    case 'circle': {
-      return new THREE.CircleGeometry(
-        data.radius, data.segments, degToRad(data.thetaStart), degToRad(data.thetaLength));
-    }
-    case 'cone': {
-      return new THREE.CylinderGeometry(
-        data.radiusTop, data.radiusBottom, data.height,
-        data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
-    }
-    case 'cylinder': {
-      return new THREE.CylinderGeometry(
-        data.radius, data.radius, data.height,
-        data.segmentsRadial, data.segmentsHeight,
-        data.openEnded, degToRad(data.thetaStart), degToRad(data.thetaLength));
-    }
-    case 'plane': {
-      return new THREE.PlaneBufferGeometry(data.width, data.height);
-    }
-    case 'ring': {
-      return new THREE.RingGeometry(
-        data.radiusInner, data.radiusOuter, data.segmentsTheta, data.segmentsPhi,
-        degToRad(data.thetaStart), degToRad(data.thetaLength));
-    }
-    case 'sphere': {
-      // thetaLength's default for spheres is different from those of the other geometries.
-      // For now, we detect if thetaLength is exactly 360 to switch to a different default.
-      if (data.thetaLength === 360) { data.thetaLength = 180; }
-      return new THREE.SphereBufferGeometry(
-        data.radius, data.segmentsWidth, data.segmentsHeight, degToRad(data.phiStart),
-        degToRad(data.phiLength), degToRad(data.thetaStart), degToRad(data.thetaLength));
-    }
-    case 'torus': {
-      return new THREE.TorusGeometry(
-        data.radius, data.radiusTubular * 2, data.segmentsRadial, data.segmentsTubular,
-        degToRad(data.arc));
-    }
-    case 'torusKnot': {
-      return new THREE.TorusKnotGeometry(
-        data.radius, data.radiusTubular * 2, data.segmentsTubular, data.segmentsRadial,
-        data.p, data.q);
-    }
-    default: {
-      warn('Primitive type not supported: ' + data.primitive);
-      return new THREE.Geometry();
-    }
-  }
-}
 
 /**
  * Translates geometry vertices.
