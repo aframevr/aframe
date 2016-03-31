@@ -19,7 +19,7 @@ require('./controls/gamepad-controls');
 require('./controls/hmd-controls');
 require('./controls/mouse-controls');
 require('./controls/touch-controls');
-require('./controls/wasd-controls');
+require('./controls/keyboard-controls');
 
 require('./scene/canvas');
 require('./scene/debug');
@@ -27,3 +27,7 @@ require('./scene/fog');
 require('./scene/keyboard-shortcuts');
 require('./scene/stats');
 require('./scene/vr-mode-ui');
+
+// Deprecated.
+require('./controls/deprecated/look-controls');
+require('./controls/deprecated/wasd-controls');

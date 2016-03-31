@@ -4,11 +4,11 @@ var THREE = require('../../lib/three');
 // TODO: Polyfill KeyboardEvent.code, or replace usage with keyCode.
 
 /**
- * WASD-controls component.
+ * Keyboard-controls component.
  *
  * Supports movement with WASD or arrow keys.
  */
-module.exports.Component = registerControls('wasd-controls', {
+module.exports.Component = registerControls('keyboard-controls', {
   schema: {
     enabled: { default: true },
     debug: { default: false }
