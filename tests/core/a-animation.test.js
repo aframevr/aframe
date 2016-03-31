@@ -163,11 +163,6 @@ suite('a-animation', function () {
     });
   });
 
-  generateColorAnimationTest('default test', '#ffffff', '#000000');
-  generateColorAnimationTest('accepts hex shorthand', '#fff', '#000');
-  generateColorAnimationTest('accepts nouns and rgb', 'rgb(255, 255, 255)', 'black');
-  generateColorAnimationTest('accepts hsl', 'hsl(1, 100%, 100%)', 'hsl(0, 0%, 0%)');
-
   suite('direction', function () {
     test('if set to reverse, starts from `to` and goes to `from`', function (done) {
       setupAnimation({
@@ -600,4 +595,9 @@ suite('a-animation', function () {
       });
     });
   });
+
+  generateColorAnimationTest('default test', '#ffffff', '#000000');
+  generateColorAnimationTest('accepts hex shorthand', '#fff', '#000');
+  generateColorAnimationTest('accepts nouns and rgb', 'rgb(255, 255, 255)', 'black');
+  generateColorAnimationTest('accepts hsl', 'hsl(1, 100%, 100%)', 'hsl(0, 0%, 0%)');
 });

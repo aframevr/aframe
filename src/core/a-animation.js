@@ -438,7 +438,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     from = new THREE.Color(dataFrom);
     to = new THREE.Color(dataTo);
     partialSetAttribute = function (value) {
-      el.setAttribute(attribute, rgbToHex(value));
+      el.setAttribute(attribute, rgbVectorToHex(value));
     };
   }
 
@@ -491,12 +491,13 @@ function componentToHex (color) {
 }
 
 /**
- * Converts a number 0-1 to 0-255
+ * Clamps a number to 0-1
+ * Then converts that number to 0-255
  * @param {color}
  * @returns {number}
  */
 function convertToIntegerColor (color) {
-  return Math.floor(Math.min(Math.abs(color), 255) * 255);
+  return Math.floor(Math.min(Math.abs(color), 1) * 255);
 }
 
 /**
@@ -504,10 +505,8 @@ function convertToIntegerColor (color) {
  * @param {color} object { r: 1, g: 1, b: 1 }
  * @returns {string} hex value #ffffff
  */
-function rgbToHex (color) {
-  return (
-    '#' + componentToHex(convertToIntegerColor(color.r)) +
-    componentToHex(convertToIntegerColor(color.g)) +
-    componentToHex(convertToIntegerColor(color.b))
-  );
+function rgbVectorToHex (color) {
+  return '#' + ['r', 'g', 'b'].map(function (prop) {
+    return componentToHex(convertToIntegerColor(color[prop]));
+  }).join('');
 }
