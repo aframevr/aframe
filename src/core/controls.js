@@ -33,6 +33,13 @@ ControlsComponent.prototype = {
   init: function () { /* no-op */ },
 
   /**
+   * Update handler.
+   * Called whenever component's data changes.
+   * Also called on component initialization when the component receives initial data.
+   */
+  update: function () { /* no-op */ },
+
+  /**
    * Tick handler.
    * Called on each tick of the scene render loop.
    * Affected by play and pause.
