@@ -1,7 +1,6 @@
 var registerShader = require('../core/shader').registerShader;
-var srcLoader = require('../utils/src-loader');
 var THREE = require('../lib/three');
-var utils = require('../utils/texture');
+var utils = require('../utils/');
 
 /**
  * Flat shader using THREE.MeshBasicMaterial.
@@ -39,20 +38,25 @@ module.exports.Component = registerShader('flat', {
    * @param {object|null} oldData
    */
   updateTexture: function (data) {
+    var el = this.el;
     var src = data.src;
     var material = this.material;
+    var materialSystem = el.sceneEl.systems.material;
+
     if (src) {
       if (src === this.textureSrc) { return; }
       // Texture added or changed.
       this.textureSrc = src;
-      srcLoader.validateSrc(src,
-        utils.loadImage.bind(this, material, data),
-        utils.loadVideo.bind(this, material, data)
+      utils.srcLoader.validateSrc(
+        src,
+        function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
+        function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
       );
-    } else {
-      // Texture removed.
-      utils.updateMaterial(material, null);
+      return;
     }
+
+    // Texture removed.
+    utils.material.updateMaterialTexture(material, null);
   },
 
   /**
