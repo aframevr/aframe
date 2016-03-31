@@ -13,63 +13,9 @@ var controls = module.exports.controls = {
  */
 systems.registerSystem('controls', {
   init: function () {
-    // Names of enabled movement/rotation controls, in order of precedence.
-    this.enabledMovementControls = [];
-    this.enabledRotationControls = [];
-
     // Controls components registered to update object position/rotation.
     this.movementControls = controls.movementControls;
     this.rotationControls = controls.rotationControls;
-  },
-
-  /**
-   * Enables the given component names, and sets the given order as their precedence.
-   * @param {Array<string>} controls
-   */
-  enableMovementControls: function (controls) {
-    this.enabledMovementControls = controls;
-  },
-
-  /**
-   * Enables the given component names, and sets the given order as their precedence.
-   * @param {Array<string>} controls
-   */
-  enableRotationControls: function (controls) {
-    this.enabledRotationControls = controls;
-  },
-
-  /**
-   * Returns the first active movement controls component, if any.
-   * @param {Element} el
-   * @return {ControlsComponent}
-   */
-  getActiveMovementControls: function (el) {
-    var control;
-    var names = this.enabledMovementControls;
-    for (var i = 0, l = names.length; i < l; i++) {
-      control = el.components[names[i]];
-      if (control && control.isVelocityActive()) {
-        return control;
-      }
-    }
-    return null;
-  },
-
-  /**
-   * Returns the first active rotation controls component, if any.
-   * @param {Element} el
-   * @return {ControlsComponent}
-   */
-  getActiveRotationControls: function (el) {
-    var control;
-    var names = this.enabledRotationControls;
-    for (var i = 0, l = names.length; i < l; i++) {
-      control = el.components[names[i]];
-      if (control && control.isRotationActive()) {
-        return control;
-      }
-    }
-    return null;
   }
 });
 
@@ -171,6 +117,12 @@ module.exports.registerControls = function (name, definition) {
     controls.rotationControls[name] = {
       Component: NewControlsComponent
     };
+  }
+
+  if (name !== 'controls' &&
+      !controls.movementControls[name] &&
+      !controls.rotationControls[name]) {
+    throw new Error('Control must implement either rotation or movement interface.');
   }
 
   return NewControlsComponent;

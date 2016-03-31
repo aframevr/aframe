@@ -30,8 +30,6 @@ module.exports.Component = registerControls('controls', {
   },
 
   init: function () {
-    var data = this.data;
-
     // Movement
     this.velocity = new THREE.Vector3();
 
@@ -42,9 +40,18 @@ module.exports.Component = registerControls('controls', {
     this.yaw.add(this.pitch);
     this.heading = new THREE.Euler(0, 0, 0, 'YXZ');
 
-    // Initialize system with enabled controls and precedence.
-    this.system.enableMovementControls(data.movement);
-    this.system.enableRotationControls(data.rotation);
+    if (this.el.sceneEl.hasLoaded) {
+      this.validateControls();
+    } else {
+      this.el.sceneEl.addEventListener('loaded', this.validateControls.bind(this));
+    }
+  },
+
+  update: function () {
+    // Re-validate if scene has loaded. If not, listener was already bound in init().
+    if (this.el.sceneEl.hasLoaded) {
+      this.validateControls();
+    }
   },
 
   tick: function (t, dt) {
@@ -64,11 +71,15 @@ module.exports.Component = registerControls('controls', {
     }
   },
 
+  /**
+   * Updates rotation based on input from the active rotation component, if any.
+   * @param  {number} dt
+   */
   updateRotation: function (dt) {
     var control, dRotation;
     var data = this.data;
 
-    control = this.system.getActiveRotationControls(this.el);
+    control = this.getActiveRotationControls();
     if (control && control.getRotationDelta) {
       dRotation = control.getRotationDelta(dt);
       dRotation.multiplyScalar(data.rotationSensitivity);
@@ -85,6 +96,10 @@ module.exports.Component = registerControls('controls', {
     }
   },
 
+  /**
+   * Updates velocity based on input from the active movement component, if any.
+   * @param {number} dt
+   */
   updateVelocity: function (dt) {
     var control;
     var data = this.data;
@@ -96,7 +111,7 @@ module.exports.Component = registerControls('controls', {
     this.velocity.x -= this.velocity.x * data.movementEasing * dt / 1000;
     this.velocity.z -= this.velocity.z * data.movementEasing * dt / 1000;
 
-    control = this.system.getActiveMovementControls(this.el);
+    control = this.getActiveMovementControls();
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
@@ -106,6 +121,12 @@ module.exports.Component = registerControls('controls', {
     this.el.setAttribute('velocity', {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z});
   },
 
+  /**
+   * Updates internal velocity. Takes a velocity delta (relative to current heading), rotates it
+   * to the heading, and calculates velocity in world space.
+   * @param {number} dt
+   * @param {THREE.Vector3} dVelocity
+   */
   applyVelocityDelta: function (dt, dVelocity) {
     var data = this.data;
     var rotation = this.el.getAttribute('rotation');
@@ -128,5 +149,74 @@ module.exports.Component = registerControls('controls', {
     }
 
     this.velocity.add(dVelocity);
+  },
+
+  /**
+   * Validates movement and rotation controls, asserting that each was registered with
+   * AFRAME.registerControls.
+   * @return {[type]} [description]
+   */
+  validateControls: function () {
+    var i, name;
+    var data = this.data;
+    var system = this.system;
+    var missingControls = [];
+
+    for (i = 0; i < data.movement.length; i++) {
+      name = data.movement[i];
+      if (!system.movementControls[name]) {
+        throw new Error('Component `' + name + '` must be ' +
+                        'registered with AFRAME.registerControls().');
+      } else if (!this.el.components[name]) {
+        missingControls.push(name);
+      }
+    }
+
+    for (i = 0; i < data.rotation.length; i++) {
+      name = data.rotation[i];
+      if (!system.rotationControls[name]) {
+        throw new Error('Component `' + name + '` must be ' +
+                        'registered with AFRAME.registerControls().');
+      } else if (!this.el.components[name]) {
+        missingControls.push(name);
+      }
+    }
+
+    // Inject any missing controls components.
+    for (i = 0; i < missingControls.length; i++) {
+      this.el.setAttribute(missingControls[i], '');
+    }
+  },
+
+  /**
+   * Returns the first active movement controls component, if any.
+   * @return {ControlsComponent}
+   */
+  getActiveMovementControls: function () {
+    var control;
+    var names = this.data.movement;
+    for (var i = 0; i < names.length; i++) {
+      control = this.el.components[names[i]];
+      if (control && control.isVelocityActive()) {
+        return control;
+      }
+    }
+    return null;
+  },
+
+  /**
+   * Returns the first active rotation controls component, if any.
+   * @return {ControlsComponent}
+   */
+  getActiveRotationControls: function () {
+    var control;
+    var names = this.data.rotation;
+    for (var i = 0; i < names.length; i++) {
+      control = this.el.components[names[i]];
+      if (control && control.isRotationActive()) {
+        return control;
+      }
+    }
+    return null;
   }
 });
