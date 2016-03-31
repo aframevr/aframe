@@ -150,7 +150,7 @@ entity.emit('sink', null, false);
 
 ### `getAttribute (attr)`
 
-`getAttribute` can be used to retrieve parsed component data. If `attr` is the name of a registered component. `getAttribute` will return only the component data defined in the HTML as a parsed object. `getAttribute` for components is the partial form of `getComputedAttribute` since the returned component data does not include applied mixins or default values:
+`getAttribute` can be used to retrieve parsed component data. If `attr` is the name of a registered component, `getAttribute` will return only the component data defined in the HTML as a parsed object. `getAttribute` for components is the partial form of `getComputedAttribute` since the returned component data does not include applied mixins or default values:
 
 ```js
 // <a-entity geometry="primitive: box; width: 3">
