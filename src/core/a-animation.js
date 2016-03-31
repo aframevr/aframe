@@ -139,7 +139,11 @@ module.exports.AAnimation = registerElement('a-animation', {
         }
 
         // Create Tween.
-        return new TWEEN.Tween(cloneValue(from))
+        if (from['material.color']) {
+          from = from['material.color'];
+          to = to['material.color'];
+        }
+        return new TWEEN.Tween(from)
           .to(to, data.dur)
           .delay(begin)
           .easing(easing)
@@ -394,7 +398,14 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     from[attribute] = parseProperty(from[attribute], schema[componentPropName]);
     to[attribute] = parseProperty(dataTo, schema[componentPropName]);
+    if (componentPropName === 'color') {
+      from[attribute] = new THREE.Color(from[attribute]);
+      to[attribute] = new THREE.Color(to[attribute]);
+    }
     partialSetAttribute = function (value) {
+      if (attribute.indexOf('color') !== -1) {
+        el.setAttribute(componentName, componentPropName, rgbVectorToHex(value));
+      }
       if (!(attribute in value)) { return; }
       el.setAttribute(componentName, componentPropName, value[attribute]);
     };
