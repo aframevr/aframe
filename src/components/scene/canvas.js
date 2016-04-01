@@ -28,9 +28,8 @@ module.exports.Component = register('canvas', {
       canvas.classList.add('a-canvas');
       canvas.style.height = data.height + '%';
       canvas.style.width = data.width + '%';
-      scene.appendChild(canvas);
-    } else {
       canvas.dataset.aframeProvided = true;
+      scene.appendChild(canvas);
     }
 
     // Prevent overscroll on mobile.
