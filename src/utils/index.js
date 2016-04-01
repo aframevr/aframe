@@ -6,8 +6,8 @@ var objectAssign = require('object-assign');
 
 module.exports.coordinates = require('./coordinates');
 module.exports.debug = require('./debug');
+module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
-module.exports.texture = require('./texture');
 
 /**
  * Fires a custom DOM event.
