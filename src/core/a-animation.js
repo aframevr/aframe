@@ -357,14 +357,14 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var from = {};
   var partialSetAttribute;
   var to = {};
-  if (attributeSplit.length === 2 && attributeSplit.indexOf('color') === -1) {
+  if (isColor()) {
+    getForColorComponent();
+  } else if (attributeSplit.length === 2) {
     getForComponentAttribute();
   } else if (dataTo && isCoordinate(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
-  } else if (isNaN(dataTo)) {
-    getForColorComponent();
   } else {
     getForNumber();
   }
@@ -373,6 +373,19 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     partialSetAttribute: partialSetAttribute,
     to: to
   };
+
+  /**
+   * Uses the element and attributes to determine if this is a color or not
+   * @return {bool} true or false
+   */
+  function isColor () {
+    if (el.mappings && attributeSplit.length === 1 && !el.components[attribute]) {
+      return el.components[el.mappings[attribute].split('.')[0]].schema[attribute].type === 'color';
+    } else if (attributeSplit.length > 1 && el.components[attributeSplit[0]]) {
+      return el.components[attributeSplit[0]].schema[attributeSplit[1]].type === 'color';
+    }
+    return false;
+  }
 
   /**
    * Animating a component that has multiple attributes (e.g., geometry.width).
