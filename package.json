@@ -2,6 +2,7 @@
   "name": "aframe",
   "version": "0.2.0",
   "description": "Building blocks for the VR Web",
+  "homepage" : "https://aframe.io/",
   "main": "dist/aframe.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
