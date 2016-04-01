@@ -30,7 +30,7 @@ module.exports.Component = register('canvas', {
       canvas.style.width = data.width + '%';
       scene.appendChild(canvas);
     } else {
-      canvas.provided = true;
+      canvas.dataset.aframeProvided = true;
     }
 
     // Prevent overscroll on mobile.
