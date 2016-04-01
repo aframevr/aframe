@@ -169,7 +169,7 @@ var AScene = module.exports = registerElement('a-scene', {
         if (!camera || !canvas) { return; }
 
         // Update canvas.
-        if (!isMobile) {
+        if (!isMobile && !canvas.provided) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
         }
