@@ -357,8 +357,12 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var from = {};
   var partialSetAttribute;
   var to = {};
-  if (attributeSplit.length === 2 && !isColor()) {
-    getForComponentAttribute();
+  if (attributeSplit.length === 2) {
+    if (isColor()) {
+      getForColorComponent();
+    } else {
+      getForComponentAttribute();
+    }
   } else if (dataTo && isCoordinate(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
@@ -375,14 +379,16 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   };
 
   /**
-   * Match the sceme type to color
+   * Match the scema type to color
    * @return {bool} if the schema is of type color
    */
   function isColor () {
-    if (el.components[attributeSplit[0]] && el.components[attributeSplit[0]].schema) {
-      return el.components[attributeSplit[0]].schema[attributeSplit[1]].type === 'color';
-    }
-    return true;
+    var componentName = attributeSplit[0];
+    var propertyName = attributeSplit[1];
+    var component = el.components[componentName];
+    var schema = component && component.schema;
+    if (schema) { return schema[propertyName].type === 'color'; }
+    return false;
   }
 
   /**
