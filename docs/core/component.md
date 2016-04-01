@@ -119,7 +119,7 @@ The position component uses only a small subset of the component API. We'll go o
 
 ## Schema
 
-A component's schema defines and describes the property or properties it takes. A component can either a single-property component (one flat value) or a multi-property component (multiple named values).
+A component's schema defines and describes the property or properties it takes. A component can either be a single-property component (one flat value) or a multi-property component (multiple named values).
 
 A single-property schema might look like:
 

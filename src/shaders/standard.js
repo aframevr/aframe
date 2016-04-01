@@ -1,5 +1,4 @@
 var registerShader = require('../core/shader').registerShader;
-var srcLoader = require('../utils/src-loader');
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
@@ -45,19 +44,23 @@ module.exports.Component = registerShader('standard', {
    * @param {object|null} oldData
    */
   updateTexture: function (data) {
+    var el = this.el;
     var src = data.src;
     var material = this.material;
+    var materialSystem = el.sceneEl.systems.material;
+
     if (src) {
       if (src === this.textureSrc) { return; }
       // Texture added or changed.
       this.textureSrc = src;
-      srcLoader.validateSrc(src,
-        utils.texture.loadImage.bind(this, material, data),
-        utils.texture.loadVideo.bind(this, material, data)
+      utils.srcLoader.validateSrc(
+        src,
+        function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
+        function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
       );
     } else {
       // Texture removed.
-      utils.texture.updateMaterial(material, null);
+      utils.material.updateMaterialTexture(material, null);
     }
   },
 
@@ -103,7 +106,7 @@ module.exports.Component = registerShader('standard', {
 
     // Material is first to load this texture. Load and resolve texture.
     texturePromises[envMap] = new Promise(function (resolve) {
-      srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
+      utils.srcLoader.validateCubemapSrc(envMap, function loadEnvMap (urls) {
         CubeLoader.load(urls, function (cube) {
           // Texture loaded.
           self.isLoadingEnvMap = false;

@@ -22,9 +22,9 @@ module.exports = function (config) {
     ],
     files: [
       // Define test files.
-      'tests/**/*.test.js',
+      {pattern: 'tests/**/*.test.js'},
       // Serve test assets.
-      { pattern: 'tests/assets/**/*', included: false, served: true }
+      {pattern: 'tests/assets/**/*', included: false, served: true}
     ],
     frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
                  'browserify'],
