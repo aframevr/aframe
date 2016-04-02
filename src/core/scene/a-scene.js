@@ -168,7 +168,7 @@ var AScene = module.exports = registerElement('a-scene', {
         // Possible camera or canvas not injected yet.
         if (!camera || !canvas) { return; }
 
-        // Update canvas if canvas was provided by A-Frame
+        // Update canvas if canvas was provided by A-Frame.
         if (!isMobile && canvas.dataset.aframeProvided) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
