@@ -25,20 +25,11 @@ var styleParser = utils.styleParser;
  * @member {object} el - Reference to the entity element.
  * @member {string} name - Component name exposed as an HTML attribute.
  */
-var Component = module.exports.Component = function (el) {
-  var name = this.name;
-  var elData = HTMLElement.prototype.getAttribute.call(el, name);
-
+var Component = module.exports.Component = function (el, attr) {
   this.el = el;
-  // Check whether we need to rebuild the schema depending on the data.
-  // Call buildData with silent flag to suppress warnings when parsing data before updating
-  // the schema.
-  if (this.updateSchema) {
-    this.updateSchema(buildData(el, name, this.schema, elData, true));
-  }
-  this.data = buildData(el, name, this.schema, elData);
-  this.init();
-  this.update();
+  this.updateCachedAttrValue(attr);
+  if (!el.hasLoaded) { return; }
+  this.updateProperties();
 };
 
 Component.prototype = {
@@ -119,7 +110,6 @@ Component.prototype = {
   stringify: function (data) {
     var schema = this.schema;
     if (typeof data === 'string') { return data; }
-
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
@@ -137,6 +127,61 @@ Component.prototype = {
   },
 
   /**
+   * Update the cache of the preparsed attribute value
+   *
+   * @param {string} value - HTML attribute value.
+   */
+  updateCachedAttrValue: function (value) {
+    var isSinglePropSchema = isSingleProp(this.schema);
+    if (value === '') {
+      this.attrValue = undefined;
+      return;
+    }
+    if (typeof value === 'string') {
+      this.attrValue = this.parseAttrValueForCache(value);
+      return;
+    }
+    this.attrValue = value !== undefined ? extendProperties({}, value, isSinglePropSchema) : this.attrValue;
+  },
+
+  /**
+   * Given an HTML attribute value parses the string
+   * based on the component schema. To avoid double parsings of
+   * strings into strings we store the original instead
+   * of the parsed one
+   *
+   * @param {string} value - HTML attribute value
+   */
+  parseAttrValueForCache: function (value) {
+    var parsedValue;
+    if (typeof value !== 'string') { return value; }
+    if (isSingleProp(this.schema)) {
+      parsedValue = this.schema.parse(value);
+      // To avoid bogus double parsings. The cached values will
+      // be parsed when building the component data.
+      // For instance when parsing a src id to it's url.
+      // We want to cache the original string and not the parsed
+      // one (#monster -> models/monster.dae) so when building
+      // data we parse the expected value.
+      if (typeof parsedValue === 'string') { parsedValue = value; }
+    } else {
+      // We just parse using the style parser to avoid double parsing
+      // of individual properties.
+      parsedValue = styleParser.parse(value);
+    }
+    return parsedValue;
+  },
+
+  /**
+   * Writes cached attribute data to the entity DOM element.
+   */
+  flushToDOM: function () {
+    var attrValue = this.attrValue;
+    if (!attrValue) { return; }
+    HTMLElement.prototype.setAttribute.call(this.el, this.name, this.stringify(attrValue));
+  },
+
+  /**
    * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
@@ -145,15 +190,19 @@ Component.prototype = {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var previousData = extendProperties({}, this.data, isSinglePropSchema);
-
+    this.updateCachedAttrValue(value);
     if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.schema, value, true));
+      this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
     }
-    this.data = buildData(el, this.name, this.schema, value);
+    this.data = buildData(el, this.name, this.schema, this.attrValue);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
 
+    if (!this.initialized) {
+      this.init();
+      this.initialized = true;
+    }
     this.update(previousData);
 
     el.emit('componentchanged', {
@@ -206,8 +255,8 @@ module.exports.registerComponent = function (name, definition) {
                     'Check that you are not loading two versions of the same component ' +
                     'or two different components of the same name.');
   }
-  NewComponent = function (el) {
-    Component.call(this, el);
+  NewComponent = function (el, attr) {
+    Component.call(this, el, attr);
   };
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
@@ -218,6 +267,7 @@ module.exports.registerComponent = function (name, definition) {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
+    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache.bind(NewComponent.prototype),
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
     stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
     type: NewComponent.prototype.type
@@ -246,19 +296,16 @@ module.exports.registerComponent = function (name, definition) {
  * @return {object} The component data
  */
 function buildData (el, name, schema, elData, silent) {
-  var componentDefined = elData !== null;
-  var data = {};
+  var componentDefined = !!elData;
+  var data;
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
-
-  if (!isSinglePropSchema && typeof elData === 'string') {
-    elData = styleParser.parse(elData);
-  }
 
   // 1. Default values (lowest precendence).
   if (isSinglePropSchema) {
     data = schema.default;
   } else {
+    data = {};
     Object.keys(schema).forEach(function applyDefault (key) {
       data[key] = schema[key].default;
     });
@@ -267,25 +314,22 @@ function buildData (el, name, schema, elData, silent) {
   // 2. Mixin values.
   mixinEls.forEach(applyMixin);
   function applyMixin (mixinEl) {
-    var mixinData = HTMLElement.prototype.getAttribute.call(mixinEl, name);
+    var mixinData = mixinEl.getAttribute(name);
     if (mixinData) {
-      mixinData = isSinglePropSchema
-        ? mixinData : styleParser.parse(mixinData);
       data = extendProperties(data, mixinData, isSinglePropSchema);
     }
   }
 
   // 3. Attribute values (highest precendence).
   if (componentDefined) {
+    if (isSinglePropSchema) { return parseProperty(elData, schema); }
     data = extendProperties(data, elData, isSinglePropSchema);
+    return parseProperties(data, schema, undefined, silent);
+  } else {
+     // Parse and coerce using the schema.
+    if (isSinglePropSchema) { return parseProperty(elData !== undefined ? elData : data, schema); }
+    return parseProperties(data, schema, undefined, silent);
   }
-
-  // Parse and coerce using the schema.
-  if (isSingleProp(schema)) {
-    return parseProperty(data, schema);
-  }
-
-  return parseProperties(data, schema, undefined, silent);
 }
 module.exports.buildData = buildData;
 
@@ -299,7 +343,7 @@ module.exports.buildData = buildData;
 */
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema) {
-    if (source === undefined ||
+    if (source === undefined || source === null ||
         (typeof source === 'object' && Object.keys(source).length === 0)) {
       return dest;
     }

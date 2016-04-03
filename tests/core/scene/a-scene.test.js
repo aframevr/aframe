@@ -14,8 +14,7 @@ var AScene = require('core/scene/a-scene');
  */
 suite('a-scene (without renderer)', function () {
   setup(function () {
-    var el;
-    el = this.el = document.createElement('a-scene');
+    var el = this.el = document.createElement('a-scene');
     document.body.appendChild(el);
   });
 
@@ -35,7 +34,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.isPlaying = false;
       sceneEl.hasLoaded = true;
       sceneEl.init();
-      assert.equal(sceneEl.isPlaying, true);
+      assert.equal(sceneEl.isPlaying, false);
       assert.equal(sceneEl.hasLoaded, false);
     });
   });

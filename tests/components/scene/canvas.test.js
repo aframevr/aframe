@@ -2,11 +2,14 @@
 'use strict';
 
 suite('canvas', function () {
-  test('adds canvas to a-scene element', function () {
+  test('adds canvas to a-scene element', function (done) {
     var el = document.createElement('a-scene');
-    el.setAttribute('canvas', '');
     document.body.appendChild(el);
-    assert.ok(el.querySelector('canvas'));
+    el.addEventListener('loaded', function () {
+      el.setAttribute('canvas', '');
+      assert.ok(el.querySelector('canvas'));
+      done();
+    });
   });
 
   test('can take a selector to existing canvas', function (done) {
@@ -15,9 +18,8 @@ suite('canvas', function () {
 
     canvas.setAttribute('id', 'canvas');
     document.body.appendChild(canvas);
-
-    el.setAttribute('canvas', 'canvas: #canvas');
     document.body.appendChild(el);
+    el.setAttribute('canvas', 'canvas: #canvas');
 
     el.addEventListener('loaded', function () {
       assert.equal(el.canvas, canvas);

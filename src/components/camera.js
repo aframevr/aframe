@@ -51,7 +51,7 @@ module.exports.Component = registerComponent('camera', {
     // If `active` property changes, or first update, handle active camera with system.
     if (data.active && system.activeCameraEl !== this.el) {
       // Camera enabled. Set camera to this camera.
-      system.setActiveCamera(el, camera);
+      system.setActiveCamera(el);
     } else if (!data.active && system.activeCameraEl === this.el) {
       // Camera disabled. Set camera to another camera.
       system.disableActiveCamera();

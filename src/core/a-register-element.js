@@ -77,7 +77,7 @@ function wrapANodeMethods (obj) {
     'attributeChangedCallback',
     'createdCallback'
   ];
-  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
+  wrapMethods(newObj, ANodeMethods, ANode.prototype, obj);
   copyProperties(obj, newObj);
   return newObj;
 }

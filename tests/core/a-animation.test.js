@@ -324,8 +324,8 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', '1');
       el.appendChild(animationEl);
-      el.play();
-      process.nextTick(function () {
+      animationEl.addEventListener('loaded', function () {
+        el.play();
         assert.ok(animationEl.isRunning);
         done();
       });

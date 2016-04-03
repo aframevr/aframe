@@ -6,14 +6,12 @@ suite('obj-model', function () {
     var el;
     var objAsset = document.createElement('a-asset-item');
     var mtlAsset = document.createElement('a-asset-item');
-
     mtlAsset.setAttribute('id', 'mtl');
     mtlAsset.setAttribute('src', '/base/tests/assets/crate/crate.mtl');
     objAsset.setAttribute('id', 'obj');
     objAsset.setAttribute('src', '/base/tests/assets/crate/crate.obj');
-
     el = this.el = entityFactory({assets: [mtlAsset, objAsset]});
-    el.setAttribute('obj-model', 'obj: #obj');
+    if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
     });
@@ -57,8 +55,10 @@ suite('obj-model', function () {
       done();
     });
 
+    el2.addEventListener('loaded', function () {
+      el.setAttribute('obj-model', {obj: '#obj'});
+      el2.setAttribute('obj-model', {obj: '#obj'});
+    });
     el.sceneEl.appendChild(el2);
-    el.setAttribute('obj-model', {obj: '#obj'});
-    el2.setAttribute('obj-model', {obj: '#obj'});
   });
 });
