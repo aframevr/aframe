@@ -4,7 +4,7 @@ var registerElement = require('../../core/a-register-element').registerElement;
 var utils = require('../../utils/');
 
 var debug = utils.debug;
-var log = debug('extras:primitives');
+var log = debug('extras:primitives:debug');
 
 module.exports = function registerPrimitive (name, definition) {
   name = name.toLowerCase();
@@ -46,16 +46,10 @@ module.exports = function registerPrimitive (name, definition) {
           var self = this;
           var attributes = this.attributes;
 
-          // Apply default components.
-          this.componentData = cloneObject(this.defaultAttributes);
-          Object.keys(this.componentData).forEach(function (componentName) {
-            if (!self.hasAttribute(componentName)) {
-              self.setAttribute(componentName, self.componentData[componentName]);
-            }
-          });
+          this.applyDefaultComponents();
 
           // Apply initial attributes.
-          Object.keys(attributes).forEach(function (attributeName) {
+          Object.keys(attributes).forEach(function applyInitial (attributeName) {
             var attr = attributes[attributeName];
             self.syncAttributeToComponent(attr.name, attr.value);
           });
@@ -72,6 +66,33 @@ module.exports = function registerPrimitive (name, definition) {
             return;
           }
           this.syncAttributeToComponent(attr, newVal);
+        }
+      },
+
+      applyDefaultComponents: {
+        value: function () {
+          var self = this;
+          var defaultData = this.defaultAttributes;
+
+          // Apply default components.
+          Object.keys(defaultData).forEach(function applyDefault (componentName) {
+            var componentData = defaultData[componentName];
+
+            // Set component properties individually to not overwrite user-defined components.
+            if (componentData instanceof Object && Object.keys(componentData).length) {
+              Object.keys(componentData).forEach(function setProperty (propName) {
+                // Check if component property already defined.
+                var definedData = self.getAttribute(componentName);
+                if (definedData && definedData[propName] !== undefined) { return; }
+
+                self.setAttribute(componentName, propName, componentData[propName]);
+              });
+              return;
+            }
+
+            // Component is single-property schema, just set the attribute.
+            self.setAttribute(componentName, componentData);
+          });
         }
       },
 
@@ -104,20 +125,14 @@ module.exports = function registerPrimitive (name, definition) {
           // Run transform.
           value = this.getTransformedValue(attr, value);
 
-          // Initialize internal component data if necessary.
-          if (!this.componentData[componentName]) {
-            this.componentData[componentName] = this.defaultAttributes[componentName] || {};
-          }
-
-          // Update internal component data.
+          // If multi-property schema, set as update to component to not overwrite.
           if (propertyName) {
-            this.componentData[componentName][propertyName] = value;
-          } else {
-            this.componentData[componentName] = value;
+            this.setAttribute(componentName, propertyName, value);
+            return;
           }
 
-          // Put component data.
-          this.setAttribute(componentName, this.componentData[componentName]);
+          // Single-property schema, just set the value.
+          this.setAttribute(componentName, value);
         }
       },
 
@@ -133,21 +148,3 @@ module.exports = function registerPrimitive (name, definition) {
     })
   });
 };
-
-/**
- * Clone an object, including inner objects one-level deep.
- * Used for copying defaultAttributes to componentData so primitives of the same type don't
- * affect each others' defaultAttributes object.
- */
-function cloneObject (obj) {
-  var clone = {};
-  Object.keys(obj).forEach(function (key) {
-    var value = obj[key];
-    if (typeof value === 'object') {
-      clone[key] = utils.extend({}, value);
-    } else {
-      clone[key] = value;
-    }
-  });
-  return clone;
-}
