@@ -16,7 +16,7 @@ registerGeometry('sphere', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.SphereBufferGeometry(
+    this.geometry = new THREE.SphereGeometry(
       data.radius, data.segmentsWidth, data.segmentsHeight, degToRad(data.phiStart),
       degToRad(data.phiLength), degToRad(data.thetaStart), degToRad(data.thetaLength));
   }

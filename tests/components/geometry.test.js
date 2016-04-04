@@ -2,10 +2,14 @@
 var helpers = require('../helpers');
 var degToRad = require('index').THREE.Math.degToRad;
 
+/**
+ * Most geometry tests will disable BufferGeometries in order to assert on geometry types and
+ * parameters. That info is mostly lost when converting a Geometry to a BufferGeometry.
+ */
 suite('geometry', function () {
   setup(function (done) {
     var el = this.el = helpers.entityFactory();
-    el.setAttribute('geometry', 'primitive: box');
+    el.setAttribute('geometry', 'buffer: false; primitive: box');
     el.addEventListener('loaded', function () {
       done();
     });
@@ -20,24 +24,24 @@ suite('geometry', function () {
 
     test('updates geometry', function () {
       var mesh = this.el.getObject3D('mesh');
-      this.el.setAttribute('geometry', 'primitive: box; width: 5');
+      this.el.setAttribute('geometry', 'buffer: false; primitive: box; width: 5');
       assert.equal(mesh.geometry.parameters.width, 5);
     });
 
     test('updates geometry for segment-related attribute', function () {
       var el = this.el;
       var mesh = el.getObject3D('mesh');
-      el.setAttribute('geometry', 'primitive: sphere');
-      el.setAttribute('geometry', 'primitive: sphere; segmentsWidth: 8');
+      el.setAttribute('geometry', 'buffer: false; primitive: sphere');
+      el.setAttribute('geometry', 'buffer: false; primitive: sphere; segmentsWidth: 8');
       assert.equal(mesh.geometry.parameters.widthSegments, 8);
     });
 
     test('can change type of geometry', function () {
       var el = this.el;
       var mesh = el.getObject3D('mesh');
-      el.setAttribute('geometry', 'primitive: sphere');
-      assert.equal(mesh.geometry.type, 'SphereBufferGeometry');
-      el.setAttribute('geometry', 'primitive: box');
+      el.setAttribute('geometry', 'buffer: false; primitive: sphere');
+      assert.equal(mesh.geometry.type, 'SphereGeometry');
+      el.setAttribute('geometry', 'buffer: false; primitive: box');
       assert.equal(mesh.geometry.type, 'BoxGeometry');
     });
 
@@ -75,6 +79,7 @@ suite('geometry', function () {
 
     setup(function () {
       this.el.setAttribute('geometry', {
+        buffer: false,
         primitive: 'box',
         depth: 1,
         height: 1,
@@ -109,6 +114,7 @@ suite('geometry', function () {
       var el = this.el;
       el.setAttribute('geometry', 'translate', '-2 4 2');
       this.el.setAttribute('geometry', {
+        buffer: false,
         primitive: 'box',
         depth: 1,
         height: 1,
@@ -122,6 +128,15 @@ suite('geometry', function () {
       var uuid = el.getObject3D('mesh').geometry.uuid;
       el.setAttribute('geometry', 'translate', '-2 4 2');
       assert.equal(el.getObject3D('mesh').geometry.uuid, uuid);
+    });
+  });
+
+  suite('buffer', function () {
+    test('uses BufferGeometry', function () {
+      var el = this.el;
+      assert.notEqual(el.getObject3D('mesh').geometry.type, 'BufferGeometry');
+      el.setAttribute('geometry', 'buffer', true);
+      assert.equal(el.getObject3D('mesh').geometry.type, 'BufferGeometry');
     });
   });
 });
@@ -139,7 +154,8 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'circle', radius: 5, segments: 4, thetaStart: 0, thetaLength: 350
+      buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0,
+      thetaLength: 350
     });
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'CircleGeometry');
@@ -153,7 +169,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
+      buffer: false, primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
       segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
     });
     geometry = el.getObject3D('mesh').geometry;
@@ -172,8 +188,8 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2, segmentsRadial: 3,
-      segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      buffer: false, primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2,
+      segmentsRadial: 3, segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
     });
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'CylinderGeometry');
@@ -189,9 +205,9 @@ suite('standard geometries', function () {
   test('plane', function () {
     var el = this.el;
     var geometry;
-    el.setAttribute('geometry', { primitive: 'plane', width: 1, height: 2 });
+    el.setAttribute('geometry', {buffer: false, primitive: 'plane', width: 1, height: 2});
     geometry = el.getObject3D('mesh').geometry;
-    assert.equal(geometry.type, 'PlaneBufferGeometry');
+    assert.equal(geometry.type, 'PlaneGeometry');
     assert.equal(geometry.parameters.width, 1);
     assert.equal(geometry.parameters.height, 2);
   });
@@ -200,7 +216,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
+      buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'RingGeometry');
     assert.equal(geometry.parameters.innerRadius, 1);
@@ -212,11 +228,11 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
+      buffer: false, primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
       phiStart: 45, phiLength: 90, thetaStart: 45
     });
     geometry = el.getObject3D('mesh').geometry;
-    assert.equal(geometry.type, 'SphereBufferGeometry');
+    assert.equal(geometry.type, 'SphereGeometry');
     assert.equal(geometry.parameters.radius, 1);
     assert.equal(geometry.parameters.widthSegments, 2);
     assert.equal(geometry.parameters.heightSegments, 3);
@@ -230,8 +246,8 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3, segmentsTubular: 4,
-      arc: 350
+      buffer: false, primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3,
+      segmentsTubular: 4, arc: 350
     });
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'TorusGeometry');
@@ -246,7 +262,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
+      buffer: false, primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
       segmentsTubular: 4, p: 5, q: 6
     });
     geometry = el.getObject3D('mesh').geometry;

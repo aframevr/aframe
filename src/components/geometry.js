@@ -12,6 +12,7 @@ var error = utils.debug('components:geometry:error');
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
+    buffer: {default: true},
     primitive: {default: ''},
     translate: {type: 'vec3'}
   },
@@ -29,7 +30,7 @@ module.exports.Component = registerComponent('geometry', {
     var translateNeedsUpdate = !utils.deepEqual(data.translate, currentTranslate);
 
     if (geometryNeedsUpdate) { this.setGeometry(); }
-    if (translateNeedsUpdate) {
+    if (translateNeedsUpdate && !data.buffer) {
       applyTranslate(this.el.getObject3D('mesh').geometry, data.translate, currentTranslate);
     }
   },
@@ -46,6 +47,7 @@ module.exports.Component = registerComponent('geometry', {
    * Create geometry and set on mesh.
    */
   setGeometry: function () {
+    var bufferGeometry;
     var data = this.data;
     var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
     var geometryInstance;
@@ -59,6 +61,13 @@ module.exports.Component = registerComponent('geometry', {
     geometryInstance.el = this.el;
     geometryInstance.init(data);
     this.geometry = geometryInstance.geometry;
+
+    // Transform to BufferGeometry if specified.
+    if (data.buffer) {
+      bufferGeometry = new THREE.BufferGeometry().fromGeometry(this.geometry);
+      this.geometry.dispose();
+      this.geometry = bufferGeometry;
+    }
 
     // Dispose and set.
     if (mesh.geometry) { mesh.geometry.dispose(); }

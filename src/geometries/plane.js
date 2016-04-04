@@ -8,6 +8,6 @@ registerGeometry('plane', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.PlaneBufferGeometry(data.width, data.height);
+    this.geometry = new THREE.PlaneGeometry(data.width, data.height);
   }
 });
