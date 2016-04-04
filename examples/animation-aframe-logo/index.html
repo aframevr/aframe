@@ -45,9 +45,9 @@
           <a-animation attribute="scale" to="1 1 1" begin="800" dur="600"
                        easing="ease-out"></a-animation>
           <a-box width="12.45" depth=".1" height="14" color="#F2E646"
-                 translate="0 7 .52" shader="flat"></a-box>
+                 position="0 7 .52" shader="flat"></a-box>
           <a-box width="12.5" depth="1" height="14" color="#EF2D5E"
-                 translate="0 7 0"></a-box>
+                 position="0 7 0"></a-box>
         </a-entity>
 
         <!-- Clouds -->
@@ -93,11 +93,13 @@
         </a-entity>
 
         <!-- Shadow -->
-        <a-plane width="12.5" height="20" position="0 .01 10" translate="0 10 0"
-                 color="#21897C" rotation="-90 0 0">
-          <a-animation attribute="scale" from="1 0 1" to="1 1 1" easing="ease-out" begin="600"
-                       dur="1000" fill="backwards"></a-animation>
-        </a-plane>
+        <a-entity rotation="-90 0 0">
+          <a-plane width="12.5" height="20" position="0 0 0.1" pivot="0 -10 0"
+                   color="#21897C">
+            <a-animation attribute="scale" from="1 0 1" to="1 1 1" easing="ease-out"
+                         begin="600" dur="1000" fill="both"></a-animation>
+          </a-plane>
+        </a-entity>
 
         <!-- Base -->
         <a-entity>
