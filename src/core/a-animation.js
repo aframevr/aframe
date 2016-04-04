@@ -387,8 +387,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     var propertyName = attributeSplit[1];
     var component = el.components[componentName];
     var schema = component && component.schema;
-    if (schema) { return schema[propertyName].type === 'color'; }
-    return false;
+    return schema && schema[propertyName] && schema[propertyName].type === 'color';
   }
 
   /**
