@@ -379,7 +379,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   };
 
   /**
-   * Match the scema type to color
+   * Match the schema type to color
    * @return {bool} if the schema is of type color
    */
   function isColor () {
@@ -501,8 +501,8 @@ function boolToNum (bool) {
 
 /**
  * Converts a number 0-255 to hex
- * @param {color}
- * @returns {string}
+ * @param {number} color number 0 - 255
+ * @returns {string} hex value of number bassed
  */
 function componentToHex (color) {
   var hex = color.toString(16);
@@ -512,8 +512,8 @@ function componentToHex (color) {
 /**
  * Clamps a number to 0-1
  * Then converts that number to 0-255
- * @param {color}
- * @returns {number}
+ * @param {number} color number 0 - 1
+ * @returns {number} color number 0 - 255
  */
 function convertToIntegerColor (color) {
   return Math.floor(Math.min(Math.abs(color), 1) * 255);
@@ -521,7 +521,7 @@ function convertToIntegerColor (color) {
 
 /**
  * Converts a rgb object into a hex string
- * @param {color} object { r: 1, g: 1, b: 1 }
+ * @param {object} color { r: 1, g: 1, b: 1 }
  * @returns {string} hex value #ffffff
  */
 function rgbVectorToHex (color) {
