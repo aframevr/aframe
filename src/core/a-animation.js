@@ -94,7 +94,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var begin = parseInt(data.begin, 10);
-        var currentValue = el.getComputedAttributeFor(attribute);
+        var currentValue = getComputedAttributeFor(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -385,7 +385,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttributeFor(attribute);
+      from[attribute] = getComputedAttributeFor(el, attribute);
     } else {
       from[attribute] = dataFrom;
     }
@@ -462,4 +462,22 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
+}
+
+/**
+ * A mapping of attribute to handle component attributes and singular attributes
+ *
+ * @param {object} element to look up attribute on
+ * @param {string} attr dot notation or singular 'color' or 'material.color'
+ * @returns {object|string|number} Value of type of component property.
+ */
+function getComputedAttributeFor (el, attribute) {
+  var attributeSplit = attribute.split('.');
+  if (attributeSplit.length === 1) {
+    return el.getComputedAttribute(attribute);
+  } else if (el.getComputedAttribute(attributeSplit[0])) {
+    return el.getComputedAttribute(attributeSplit[0])[attributeSplit[1]];
+  } else if (el.getComputedAttribute(attributeSplit[1])) {
+    return el.getComputedAttribute(attributeSplit[1]);
+  }
 }
