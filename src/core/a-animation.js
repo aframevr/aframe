@@ -468,17 +468,24 @@ function boolToNum (bool) {
 /**
  * A mapping of attribute to handle component attributes and singular attributes
  *
- * @param {object} element to look up attribute on
- * @param {string} attr dot notation or singular 'color' or 'material.color'
- * @returns {object|string|number} resulting value of type of component property.
+ * @param {Element} el - To look up attribute on.
+ * @param {string} attr - dot notation or singular 'color' or 'material.color'
+ * @returns Resulting value of component property.
  */
 function getComputedAttributeFor (el, attribute) {
   var attributeSplit = attribute.split('.');
+  var componentName = attributeSplit[0];
+  var componentPropName = attributeSplit[1];
+  // If the attribute is singular call normal getComputedAttribute function
   if (attributeSplit.length === 1) {
-    return el.getComputedAttribute(attribute);
-  } else if (el.getComputedAttribute(attributeSplit[0])) {
-    return el.getComputedAttribute(attributeSplit[0])[attributeSplit[1]];
-  } else if (el.getComputedAttribute(attributeSplit[1])) {
-    return el.getComputedAttribute(attributeSplit[1]);
+    return el.getComputedAttribute(componentName);
+  }
+  // If the component exists as an attribute return the property on it
+  if (el.getComputedAttribute(componentName)) {
+    return el.getComputedAttribute(componentName)[componentPropName];
+  }
+  // Otherwise fall back to the default property on the element
+  if (el.getComputedAttribute(componentPropName)) {
+    return el.getComputedAttribute(componentPropName);
   }
 }
