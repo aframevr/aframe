@@ -1,7 +1,17 @@
 var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
 
-// TODO: Polyfill KeyboardEvent.code, or replace usage with keyCode.
+// Tiny KeyboardEvent.code polyfill.
+var KEYCODE_TO_CODE = {
+  '38': 'ArrowUp',
+  '37': 'ArrowLeft',
+  '40': 'ArrowDown',
+  '39': 'ArrowRight',
+  '87': 'KeyW',
+  '65': 'KeyA',
+  '83': 'KeyS',
+  '68': 'KeyD'
+};
 
 /**
  * Keyboard-controls component.
@@ -70,11 +80,13 @@ module.exports.Component = registerControls('keyboard-controls', {
   },
 
   onKeyDown: function (event) {
-    this.keys[event.code] = true;
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    this.keys[code] = true;
   },
 
   onKeyUp: function (event) {
-    delete this.keys[event.code];
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    delete this.keys[code];
   },
 
   onBlur: function () {
