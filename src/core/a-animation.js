@@ -94,7 +94,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var begin = parseInt(data.begin, 10);
-        var currentValue = el.getComputedAttribute(attribute);
+        var currentValue = el.getComputedAttributeFor(attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -385,7 +385,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
+      from[attribute] = el.getComputedAttributeFor(attribute);
     } else {
       from[attribute] = dataFrom;
     }
