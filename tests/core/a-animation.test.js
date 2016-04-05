@@ -3,6 +3,7 @@
 var helpers = require('../helpers.js');
 var AAnimation = require('core/a-animation').AAnimation;
 var getAnimationValues = require('core/a-animation').getAnimationValues;
+var getComputedAttributeFor = require('core/a-animation').getComputedAttributeFor;
 
 /**
  * Helpers to start initialize an animation.
@@ -548,6 +549,21 @@ suite('a-animation', function () {
         });
         done();
       });
+    });
+  });
+
+  suite('getComputedAttributeFor:', function () {
+    var el = helpers.entityFactory();
+    test('can get value of single attribute color', function (done) {
+      el.setAttribute('color', '#ffffff');
+      assert.equal(getComputedAttributeFor(el, 'color'), '#ffffff');
+      done();
+    });
+
+    test('cant get value of dot attribute material.color', function (done) {
+      el.setAttribute('material', 'color', '#ffffff');
+      assert.equal(getComputedAttributeFor(el, 'material.color'), '#ffffff');
+      done();
     });
   });
 });

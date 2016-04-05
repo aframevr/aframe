@@ -442,6 +442,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 }
 module.exports.getAnimationValues = getAnimationValues;
+module.exports.getComputedAttributeFor = getComputedAttributeFor;
 
 /**
  * Converts string to bool.
