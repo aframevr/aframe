@@ -34,8 +34,7 @@ module.exports.System = registerSystem('camera', {
       defaultCameraEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
       defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
       defaultCameraEl.setAttribute('camera', {'active': true});
-      defaultCameraEl.setAttribute('wasd-controls', '');
-      defaultCameraEl.setAttribute('look-controls', '');
+      defaultCameraEl.setAttribute('controls', '');
       sceneEl.appendChild(defaultCameraEl);
       sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
     });
