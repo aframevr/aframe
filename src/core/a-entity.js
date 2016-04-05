@@ -525,6 +525,25 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * A mapping of attribute to handle component attributes and singular attributes
+   *
+   * @param {string} attr dot notation or singular 'color' or 'material.color'
+   * @returns {object|string|number} Value of type of component property.
+   */
+  getComputedAttributeFor: {
+    value: function (attribute) {
+      var attributeSplit = attribute.split('.');
+      if (attributeSplit.length === 1) {
+        return this.getComputedAttribute(attribute);
+      } else if (this.getComputedAttribute(attributeSplit[0])) {
+        return this.getComputedAttribute(attributeSplit[0])[attributeSplit[1]];
+      } else if (this.getComputedAttribute(attributeSplit[1])) {
+        return this.getComputedAttribute(attributeSplit[1]);
+      }
+    }
+  },
+
   addState: {
     value: function (state) {
       if (this.is(state)) { return; }
