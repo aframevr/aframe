@@ -466,7 +466,7 @@ function boolToNum (bool) {
 }
 
 /**
- * A mapping of attribute to handle component attributes and singular attributes
+ * A getComputedAttribute that supports dot notation to look up a component property.
  *
  * @param {Element} el - To look up attribute on.
  * @param {string} attr - dot notation or singular 'color' or 'material.color'
