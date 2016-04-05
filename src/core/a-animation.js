@@ -469,7 +469,7 @@ function boolToNum (bool) {
  *
  * @param {object} element to look up attribute on
  * @param {string} attr dot notation or singular 'color' or 'material.color'
- * @returns {object|string|number} Value of type of component property.
+ * @returns {object|string|number} resulting value of type of component property.
  */
 function getComputedAttributeFor (el, attribute) {
   var attributeSplit = attribute.split('.');
