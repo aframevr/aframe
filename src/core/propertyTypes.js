@@ -15,6 +15,7 @@ registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
+registerPropertyType('texture', '', srcParse);
 registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', { x: 0, y: 0 }, vecParse, coordinates.stringify);
 registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);

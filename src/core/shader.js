@@ -5,13 +5,15 @@ var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
 var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
 var THREE = require('../lib/three');
 
+// Map A-Frame property types to three.js uniform abbreviations.
 var propertyToThreeMapping = {
+  color: 'v3',
   number: 'f',
+  texture: 't',
   time: 'f',
-  vec4: 'v4',
-  vec3: 'v3',
   vec2: 'v2',
-  color: 'v3'
+  vec3: 'v3',
+  vec4: 'v4'
 };
 
 /**
@@ -28,7 +30,7 @@ Shader.prototype = {
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: { },
+  schema: {},
 
   vertexShader:
     'void main() {' +
@@ -37,8 +39,11 @@ Shader.prototype = {
 
   fragmentShader:
     'void main() {' +
-      'gl_FragColor = vec4(1.0,0.0,1.0,1.0);' +
+      'gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);' +
     '}',
+
+  // Include three.js lights uniforms to be used with THREE.ShaderChunk.lights_pars.
+  lights: false,
 
   /**
    * Init handler. Similar to attachedCallback.
@@ -48,11 +53,12 @@ Shader.prototype = {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
     this.material = new THREE.ShaderMaterial({
-      // attributes: this.attributes,
+      lights: this.lights,
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
       fragmentShader: this.fragmentShader
     });
+    this.material.extensions.derivatives = true;
     return this.material;
   },
 
@@ -60,9 +66,8 @@ Shader.prototype = {
     var self = this;
     var variables = {};
     var schema = this.schema;
-    var squemaKeys = Object.keys(schema);
-    squemaKeys.forEach(processSquema);
-    function processSquema (key) {
+    var schemaKeys = Object.keys(schema);
+    schemaKeys.forEach(function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
       var varValue = schema[key].parse(data[key] || schema[key].default);
@@ -70,7 +75,7 @@ Shader.prototype = {
         type: varType,
         value: self.parseValue(schema[key].type, varValue)
       };
-    }
+    });
     return variables;
   },
 
@@ -90,13 +95,12 @@ Shader.prototype = {
     var variables = type === 'uniform' ? this.uniforms : this.attributes;
     var dataKeys = Object.keys(data);
     var schema = this.schema;
-    dataKeys.forEach(processData);
-    function processData (key) {
+    dataKeys.forEach(function processData (key) {
       if (!schema[key] || schema[key].is !== type) { return; }
       if (variables[key].value === data[key]) { return; }
       variables[key].value = self.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
-    }
+    });
   },
 
   parseValue: function (type, value) {
@@ -134,7 +138,7 @@ module.exports.registerShader = function (name, definition) {
   var proto = {};
 
   // Format definition object to prototype object.
-  Object.keys(definition).forEach(function (key) {
+  Object.keys(definition).forEach(function expandDefinition (key) {
     proto[key] = {
       value: definition[key],
       writable: true
