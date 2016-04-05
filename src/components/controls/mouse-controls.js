@@ -1,5 +1,8 @@
 var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
+var debug = require('../../utils/debug');
+
+var warn = debug('components:mouse-controls:warn');
 
 /**
  * Mouse-controls component.
@@ -48,6 +51,12 @@ module.exports.Component = registerControls('mouse-controls', {
     var canvasEl = sceneEl.canvas;
     var data = this.data;
 
+    if (!sceneEl) {
+      // TODO: Mock the scene, or stub this component in unrelated tests.
+      warn('Scene not defined during component initialization');
+      return;
+    }
+
     // listen for canvas to load.
     if (!canvasEl) {
       sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
@@ -67,7 +76,7 @@ module.exports.Component = registerControls('mouse-controls', {
   },
 
   removeEventListeners: function () {
-    var canvasEl = this.el.sceneEl && this.sceneEl.canvas;
+    var canvasEl = this.el.sceneEl && this.el.sceneEl.canvas;
     if (canvasEl) {
       canvasEl.removeEventListener('mousedown', this.onMouseDown, false);
       canvasEl.removeEventListener('mousemove', this.onMouseMove, false);

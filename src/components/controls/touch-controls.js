@@ -1,5 +1,8 @@
 var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
+var debug = require('../../utils/debug');
+
+var warn = debug('components:touch-controls:warn');
 
 /**
  * Touch-controls component.
@@ -33,6 +36,12 @@ module.exports.Component = registerControls('touch-controls', {
     var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl.canvas;
 
+    if (!sceneEl) {
+      // TODO: Mock the scene, or stub this component in unrelated tests.
+      warn('Scene not defined during component initialization');
+      return;
+    }
+
     // listen for canvas to load.
     if (!canvasEl) {
       sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
@@ -44,7 +53,7 @@ module.exports.Component = registerControls('touch-controls', {
   },
 
   removeEventListeners: function () {
-    var canvasEl = this.el.sceneEl && this.sceneEl.canvas;
+    var canvasEl = this.el.sceneEl && this.el.sceneEl.canvas;
     if (!canvasEl) { return; }
 
     canvasEl.removeEventListener('touchstart', this.onTouchStart);
