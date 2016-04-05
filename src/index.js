@@ -10,6 +10,7 @@ require('./style/rStats.css');
 var AScene = require('./core/scene/a-scene');
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
+var registerGeometry = require('./core/geometry').registerGeometry;
 var registerPrimitive = require('./extras/primitives/registerPrimitive');
 var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
@@ -22,9 +23,10 @@ var TWEEN = window.TWEEN = require('tween.js');
 var pkg = require('../package');
 var utils = require('./utils/');
 
-require('./systems/index'); // Register core systems.
-require('./components/index'); // Register core components.
-require('./shaders/index'); // Register core shaders.
+require('./components/index'); // Register standard components.
+require('./geometries/index'); // Register standard geometries.
+require('./shaders/index'); // Register standard shaders.
+require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
@@ -55,9 +57,10 @@ module.exports = window.AFRAME = {
   AScene: AScene,
   components: components,
   registerComponent: registerComponent,
+  registerGeometry: registerGeometry,
+  registerPrimitive: registerPrimitive,
   registerShader: registerShader,
   registerSystem: registerSystem,
-  registerPrimitive: registerPrimitive,
   shaders: shaders,
   systems: systems,
   THREE: THREE,

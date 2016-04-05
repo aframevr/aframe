@@ -1,0 +1,9 @@
+require('./box.js');
+require('./circle.js');
+require('./cone.js');
+require('./cylinder.js');
+require('./plane.js');
+require('./ring.js');
+require('./sphere.js');
+require('./torus.js');
+require('./torusKnot.js');
