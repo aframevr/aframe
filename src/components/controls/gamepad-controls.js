@@ -16,7 +16,7 @@ module.exports.Component = registerControls('gamepad-controls', {
   schema: {
     enabled: { default: true },
     controller: { default: 1, oneOf: [1, 2, 3, 4] },
-    debug: { default: false }
+    sensitivity: { default: 0.05 }
   },
 
   isVelocityActive: function () {
@@ -52,10 +52,11 @@ module.exports.Component = registerControls('gamepad-controls', {
   },
 
   getRotationDelta: function () {
+    var data = this.data;
     var lookVector = this.getJoystick(1);
     if (Math.abs(lookVector.x) <= JOYSTICK_EPS) { lookVector.x = 0; }
     if (Math.abs(lookVector.y) <= JOYSTICK_EPS) { lookVector.y = 0; }
-    return lookVector;
+    return lookVector.multiplyScalar(data.sensitivity);
   },
 
   /**

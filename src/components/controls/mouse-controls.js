@@ -13,7 +13,7 @@ module.exports.Component = registerControls('mouse-controls', {
   schema: {
     enabled: { default: true },
     pointerlockEnabled: { default: false },
-    sensitivity: { default: 1 / 25 }
+    sensitivity: { default: 0.002 }
   },
 
   init: function () {

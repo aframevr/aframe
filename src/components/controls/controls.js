@@ -24,8 +24,7 @@ module.exports.Component = registerControls('controls', {
     positionAcceleration: { default: 65 }, // m/s2
 
     rotation: { default: ['hmd-controls', 'gamepad-controls', 'mouse-controls'] },
-    rotationEnabled: { default: true },
-    rotationSensitivity: { default: 0.05 } // radians/frame, ish
+    rotationEnabled: { default: true }
   },
 
   init: function () {
@@ -76,12 +75,10 @@ module.exports.Component = registerControls('controls', {
    */
   updateRotation: function (dt) {
     var control, dRotation;
-    var data = this.data;
 
     control = this.getActiveRotationControls();
     if (control && control.getRotationDelta) {
       dRotation = control.getRotationDelta(dt);
-      dRotation.multiplyScalar(data.rotationSensitivity);
       this.yaw.rotation.y -= dRotation.x;
       this.pitch.rotation.x -= dRotation.y;
       this.pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, this.pitch.rotation.x));
