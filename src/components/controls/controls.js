@@ -11,8 +11,7 @@ var PI_2 = Math.PI / 2;
  * to the element accordingly.
  */
 module.exports.Component = registerControls('controls', {
-
-  dependencies: ['velocity', 'rotation'],
+  dependencies: ['velocity'],
 
   schema: {
     enabled: { default: true },

@@ -13,7 +13,6 @@ var JOYSTICK_EPS = 0.2;
  * https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
  */
 module.exports.Component = registerControls('gamepad-controls', {
-
   schema: {
     enabled: { default: true },
     controller: { default: 1, oneOf: [1, 2, 3, 4] },

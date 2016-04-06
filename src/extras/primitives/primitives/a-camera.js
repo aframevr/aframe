@@ -12,8 +12,8 @@ registerPrimitive('a-camera', {
     fov: 'camera.fov',
     near: 'camera.near',
     zoom: 'camera.zoom',
-    'position-controls-enabled': 'controls.positionEnabled',
-    'rotation-controls': 'controls.rotationEnabled'
+    'position-enabled': 'controls.positionEnabled',
+    'rotation-enabled': 'controls.rotationEnabled'
   },
 
   deprecatedMappings: {

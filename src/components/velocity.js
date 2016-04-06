@@ -6,8 +6,6 @@ var registerComponent = require('../core/component').registerComponent;
  * Updates object's position at each tick.
  */
 module.exports = registerComponent('velocity', {
-  dependencies: ['position'],
-
   schema: { type: 'vec3' },
 
   tick: function (t, dt) {
