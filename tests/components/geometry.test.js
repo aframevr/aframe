@@ -70,67 +70,6 @@ suite('geometry', function () {
     });
   });
 
-  suite('translate', function () {
-    var DEFAULT_VERTICES = [
-      {x: 0.5, y: 0.5, z: 0.5}, {x: 0.5, y: 0.5, z: -0.5}, {x: 0.5, y: -0.5, z: 0.5},
-      {x: 0.5, y: -0.5, z: -0.5}, {x: -0.5, y: 0.5, z: -0.5}, {x: -0.5, y: 0.5, z: 0.5},
-      {x: -0.5, y: -0.5, z: -0.5}, {x: -0.5, y: -0.5, z: 0.5}
-    ];
-
-    setup(function () {
-      this.el.setAttribute('geometry', {
-        buffer: false,
-        primitive: 'box',
-        depth: 1,
-        height: 1,
-        width: 1
-      });
-    });
-
-    test('defaults translate to center', function () {
-      assert.shallowDeepEqual(this.el.getObject3D('mesh').geometry.vertices, DEFAULT_VERTICES);
-    });
-
-    test('can set translate', function () {
-      var el = this.el;
-      el.setAttribute('geometry', 'translate', '-2 4 2');
-      assert.shallowDeepEqual(el.getObject3D('mesh').geometry.vertices, [
-        {x: -1.5, y: 4.5, z: 2.5}, {x: -1.5, y: 4.5, z: 1.5}, {x: -1.5, y: 3.5, z: 2.5},
-        {x: -1.5, y: 3.5, z: 1.5}, {x: -2.5, y: 4.5, z: 1.5}, {x: -2.5, y: 4.5, z: 2.5},
-        {x: -2.5, y: 3.5, z: 1.5}, {x: -2.5, y: 3.5, z: 2.5}]);
-    });
-
-    test('can update translate', function (done) {
-      var el = this.el;
-      el.setAttribute('geometry', 'translate', '-2 4 2');
-      el.setAttribute('geometry', 'translate', '0 0 0');
-      setTimeout(function () {
-        assert.shallowDeepEqual(el.getObject3D('mesh').geometry.vertices, DEFAULT_VERTICES);
-        done();
-      });
-    });
-
-    test('can remove translate', function () {
-      var el = this.el;
-      el.setAttribute('geometry', 'translate', '-2 4 2');
-      this.el.setAttribute('geometry', {
-        buffer: false,
-        primitive: 'box',
-        depth: 1,
-        height: 1,
-        width: 1
-      });
-      assert.shallowDeepEqual(el.getObject3D('mesh').geometry.vertices, DEFAULT_VERTICES);
-    });
-
-    test('does not recreate geometry when just translating', function () {
-      var el = this.el;
-      var uuid = el.getObject3D('mesh').geometry.uuid;
-      el.setAttribute('geometry', 'translate', '-2 4 2');
-      assert.equal(el.getObject3D('mesh').geometry.uuid, uuid);
-    });
-  });
-
   suite('buffer', function () {
     test('uses BufferGeometry', function () {
       var el = this.el;
@@ -157,6 +96,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0,
       thetaLength: 350
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'CircleGeometry');
     assert.equal(geometry.parameters.radius, 5);
@@ -172,6 +112,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
       segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'CylinderGeometry');
     assert.equal(geometry.parameters.radiusTop, 1);
@@ -191,6 +132,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2,
       segmentsRadial: 3, segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'CylinderGeometry');
     assert.equal(geometry.parameters.radiusTop, 1);
@@ -206,6 +148,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {buffer: false, primitive: 'plane', width: 1, height: 2});
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'PlaneGeometry');
     assert.equal(geometry.parameters.width, 1);
@@ -217,6 +160,7 @@ suite('standard geometries', function () {
     var geometry;
     el.setAttribute('geometry', {
       buffer: false, primitive: 'ring', radiusInner: 1, radiusOuter: 2, segmentsTheta: 3});
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'RingGeometry');
     assert.equal(geometry.parameters.innerRadius, 1);
@@ -231,6 +175,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
       phiStart: 45, phiLength: 90, thetaStart: 45
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'SphereGeometry');
     assert.equal(geometry.parameters.radius, 1);
@@ -249,6 +194,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3,
       segmentsTubular: 4, arc: 350
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'TorusGeometry');
     assert.equal(geometry.parameters.radius, 1);
@@ -265,6 +211,7 @@ suite('standard geometries', function () {
       buffer: false, primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
       segmentsTubular: 4, p: 5, q: 6
     });
+
     geometry = el.getObject3D('mesh').geometry;
     assert.equal(geometry.type, 'TorusKnotGeometry');
     assert.equal(geometry.parameters.radius, 1);
