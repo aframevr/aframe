@@ -280,8 +280,10 @@ function createVideoEl (material, src, width, height) {
  * @returns {Element} Video element with the correct properties updated.
  */
 function fixVideoAttributes (videoEl) {
-  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
   videoEl.controls = videoEl.getAttribute('controls') !== 'false';
+  if (videoEl.getAttribute('autoplay') === 'false') {
+    videoEl.removeAttribute('autoplay');
+  }
   if (videoEl.getAttribute('loop') === 'false') {
     videoEl.removeAttribute('loop');
   }
