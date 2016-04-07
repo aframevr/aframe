@@ -3,7 +3,7 @@ title: fog
 type: components
 layout: docs
 parent_section: components
-order: 5
+order: 6
 ---
 
 The fog component obscures entities in fog given distance from the camera. The fog component applies only to the [`<a-scene>` element][scene].

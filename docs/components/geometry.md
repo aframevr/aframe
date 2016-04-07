@@ -3,7 +3,7 @@ title: geometry
 type: components
 layout: docs
 parent_section: components
-order: 6
+order: 7
 ---
 
 The geometry component provides a basic shape for an entity. The general geometry is defined by the `primitive` property. Geometric primitives, in computer graphics, means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A material component is usually defined alongside to provide a appearance alongside the shape to create a complete mesh.

@@ -20,8 +20,7 @@ var KEYCODE_TO_CODE = {
  */
 module.exports.Component = registerControls('keyboard-controls', {
   schema: {
-    enabled: { default: true },
-    debug: { default: false }
+    enabled: { default: true }
   },
 
   init: function () {
