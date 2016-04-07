@@ -1,4 +1,4 @@
-Unit tests use karma + Mocha (in TDD mode) + and Firefox Nightly.
+Unit tests use karma + Mocha (in TDD mode) + Firefox Nightly.
 
 ## Testing Tips
 

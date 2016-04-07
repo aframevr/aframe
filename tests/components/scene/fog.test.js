@@ -2,12 +2,10 @@
 var entityFactory = require('../../helpers').entityFactory;
 
 suite('fog', function () {
-  'use strict';
-
   setup(function () {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    this.updateMaterialsSpy = this.sinon.spy(el.systems.material, 'updateMaterials');
+    this.needsUpdateSpy = this.sinon.spy(el.systems.material, 'needsUpdate');
 
     // Stub scene load to avoid WebGL code.
     el.hasLoaded = true;
@@ -26,7 +24,7 @@ suite('fog', function () {
     });
 
     test('triggers material update when adding fog', function () {
-      assert.ok(this.updateMaterialsSpy.called);
+      assert.ok(this.needsUpdateSpy.called);
     });
 
     test('updates fog', function () {

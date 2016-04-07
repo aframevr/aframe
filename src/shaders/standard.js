@@ -7,6 +7,8 @@ var texturePromises = {};
 
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
+ *
+ * @member {string} mapSrc - Current texture src. Used to determine whether texture changed.
  */
 module.exports.Component = registerShader('standard', {
   schema: {
@@ -20,48 +22,22 @@ module.exports.Component = registerShader('standard', {
     roughness: { default: 0.5, min: 0.0, max: 1.0 },
     width: { default: 512 }
   },
+
   /**
    * Initializes the shader.
    * Adds a reference from the scene to this entity as the camera.
    */
   init: function (data) {
     this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
-    this.updateTexture(data);
+    this.textureSrc = undefined;
+    utils.material.updateMap(this, data);
     this.updateEnvMap(data);
-    return this.material;
   },
 
   update: function (data) {
     this.updateMaterial(data);
-    this.updateTexture(data);
+    utils.material.updateMap(this, data);
     this.updateEnvMap(data);
-    return this.material;
-  },
-
-  /**
-   * Update or create material.
-   *
-   * @param {object|null} oldData
-   */
-  updateTexture: function (data) {
-    var el = this.el;
-    var src = data.src;
-    var material = this.material;
-    var materialSystem = el.sceneEl.systems.material;
-
-    if (src) {
-      if (src === this.textureSrc) { return; }
-      // Texture added or changed.
-      this.textureSrc = src;
-      utils.srcLoader.validateSrc(
-        src,
-        function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-        function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
-      );
-    } else {
-      // Texture removed.
-      utils.material.updateMaterialTexture(material, null);
-    }
   },
 
   /**
@@ -125,10 +101,9 @@ module.exports.Component = registerShader('standard', {
  * @returns {object} data - Processed material data.
  */
 function getMaterialData (data) {
-  var materialData = {
+  return {
     color: new THREE.Color(data.color),
     metalness: data.metalness,
     roughness: data.roughness
   };
-  return materialData;
 }

@@ -30,7 +30,7 @@ suite('geometry system', function () {
       var data = {primitive: 'box', skipCache: true};
       var system = this.system;
       var hash = system.hash(data);
-      system.getOrCreateGeometry({primitive: 'box'});
+      system.getOrCreateGeometry(data);
       assert.notOk(system.cache[hash]);
     });
 
