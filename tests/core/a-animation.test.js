@@ -551,19 +551,27 @@ suite('a-animation', function () {
       });
     });
   });
+});
 
-  suite('getComputedAttributeFor:', function () {
-    var el = helpers.entityFactory();
-    test('can get value of single attribute color', function (done) {
-      el.setAttribute('color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'color'), '#ffffff');
+suite('getComputedAttributeFor', function () {
+  setup(function (done) {
+    var el = this.el = helpers.entityFactory();
+    el.addEventListener('loaded', function () {
       done();
     });
+  });
 
-    test('cant get value of dot attribute material.color', function (done) {
-      el.setAttribute('material', 'color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'material.color'), '#ffffff');
-      done();
-    });
+  test('can get value of normal attribute', function (done) {
+    var el = this.el;
+    el.setAttribute('color', '#ffffff');
+    assert.equal(getComputedAttributeFor(el, 'color'), '#ffffff');
+    done();
+  });
+
+  test('can get value of attribute using dot notation', function (done) {
+    var el = this.el;
+    el.setAttribute('material', 'color', '#ffffff');
+    assert.equal(getComputedAttributeFor(el, 'material.color'), '#ffffff');
+    done();
   });
 });
