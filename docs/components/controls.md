@@ -11,12 +11,10 @@ The controls component defines the position and rotation of an entity, based on 
 The following input components are provided by A-Frame, in addition to any custom controls created by the user:
 
 * [gamepad-controls](#gamepad-controls) *(position + rotation)*
-* [hmd-controls](#head-mounted-display-controls) *(position + rotation)*
+* [hmd-controls](#hmd-controls) *(position + rotation)*
 * [keyboard-controls](#keyboard-controls) *(position)*
 * [mouse-controls](#mouse-controls) *(rotation)*
 * [touch-controls ](#touch-controls) *(position)*
-
-[//]: # (HMD-controls link is spelled out, to prevent Hexo from replacing "md" with ".html".)
 
 ## Example
 
@@ -62,7 +60,7 @@ Rotate entity with right joystick, and move the entity with the left joystick or
 | controller  | Which connected controller (1-4) should be used, if multiple are available.            | 1              |
 | sensitivity | How quickly the gamepad's right joystick (if applicable) rotates the entity or camera. | 0.05           |
 
-<h3 id="head-mounted-display-controls">hmd-controls</h3>
+### hmd-controls
 
 Rotate and move entity when the head-mounted display (HMD) is rotated and moved.
 
