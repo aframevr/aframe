@@ -12,10 +12,11 @@ The geometry component provides a basic shape for an entity. The general geometr
 
 We will go through the basic primitives and their respective properties one by one.
 
-| Property  | Description                                                                                  | Default Value |
-|-----------|----------------------------------------------------------------------------------------------|---------------|
-| primitive | One of `box`, `circle`, `cone`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`. | None          |
-| translate | Translates the geometry relative to its pivot point.                                         | 0 0 0         |
+| Property  | Description                                                                                                      | Default Value |
+|-----------|------------------------------------------------------------------------------------------------------------------|---------------|
+| buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.       | true          |
+| primitive | One of `box`, `circle`, `cone`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`.                     | None          |
+| skipCache | Disable retrieving the shared geometry object from the cache.                                                    | false         |
 
 ### Box
 
