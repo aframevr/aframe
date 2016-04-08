@@ -65,11 +65,11 @@ a-scene img {
 
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
-  background-color: #666666;
+  background-color: #666;
 }
 
 [data-a-enter-vr-no-webvr] .a-enter-vr-button {
-  border-color: #666666;
+  border-color: #666;
   opacity: 0.65;
 }
 
@@ -80,20 +80,20 @@ a-scene img {
 }
 
 .a-enter-vr-modal {
-  background-color: #666666;
+  background-color: #666;
   border-radius: 0;
   color: #FFF;
-  height: 32px;
+  display: none;
+  min-height: 32px;
   margin-right: 70px;
   padding: 9px;
   width: 280px;
   position: relative;
-  display: none;
 }
 
 .a-enter-vr-modal:after {
   border-bottom: 10px solid transparent;
-  border-left: 10px solid #666666;
+  border-left: 10px solid #666;
   border-top: 10px solid transparent;
   display: inline-block;
   content: '';
@@ -105,8 +105,8 @@ a-scene img {
 }
 
 .a-enter-vr-modal p {
-  margin: 0;
   display: inline;
+  margin: 0;
 }
 
 .a-enter-vr-modal p:after {
