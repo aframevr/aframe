@@ -9,25 +9,25 @@ show_guide: true
 
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-> Play with the [finished example on CodePen][http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000].
+> Play with the [finished example on CodePen](http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000).
 
-We built a [basic scene][basic], but how can we do more? A-Frame is just an abstraction on top of [three.js][three], and with [A-Frame components][components] (not to be confused with Web Components), we can do just about anything three.js can, which is a lot. Let's go through an example building a scene where the workflow revolves around writing components. We'll build an interactive scene in which we fire lasers at enemies surrounding us. We can use the standard components that ship with A-Frame, or use components that A-Frame developers have published to the ecosystem. Better yet, we can write our own components to do whatever we want!
+We built a [basic scene][basic], but how can we do more? A-Frame is just an abstraction on top of [three.js][three], and with [A-Frame components][components] (not to be confused with [Web Components][webcomponents]), we can do just about anything three.js can, which is a lot. Let's go through an example building a scene where the workflow revolves around writing components. We'll build an interactive scene in which we fire lasers at enemies surrounding us. We can use the standard components that ship with A-Frame, or use components that A-Frame developers have published to the ecosystem. Better yet, we can write our own components to do whatever we want!
 
 Let's start by adding an enemy target:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="wGBLeB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/wGBLeB/">Laser Shooter - Step 1</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="wGBLeB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/wGBLeB/">Laser Shooter - Step 1</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 This creates a basic static scene where the enemy stares at you even as you move around. We can use A-Frame components from the ecosystem to do some neat things.
 
 ## Using Components
 
-The [awesome-aframe repository][awesome] is a great place to find components that the community has created to enable new features. Many of these components are started from the [Component Boilerplate][boilerplate and should provide builds in the `dist/` folders in their repositories. Take the [layout component][layout] for example. We can grab the build, drop it into our scene, and immediately be able to use a 3D layout system to automatically position entities. Instead of having one enemy, let's have ten enemies positioned in a circle around the player:
+The [awesome-aframe repository][awesome] is a great place to find components that the community has created to enable new features. Many of these components are started from the [Component Boilerplate][boilerplate] and should provide builds in the `dist/` folders in their repositories. Take the [layout component][layout] for example. We can grab the build, drop it into our scene, and immediately be able to use a 3D layout system to automatically position entities. Instead of having one enemy, let's have ten enemies positioned in a circle around the player:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="bpNPjp" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/bpNPjp/">Laser Shooter - Step 2</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="bpNPjp" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/bpNPjp/">Laser Shooter - Step 2</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 It is messy in markup to have the enemy entity duplicated ten times. We can drop in the [template component][template] to clean that up. We can also use the [animation system][animation] to have enemies march in a circle around us:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="JXoQBm" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/JXoQBm/">Laser Shooter - Step 3</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="JXoQBm" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/JXoQBm/">Laser Shooter - Step 3</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 By mixing and matching the layout and template components, we now have ten enemies surrounding us in a circle. Let's enable gameplay by writing our own components.
 
@@ -104,7 +104,7 @@ AFRAME.registerComponent('click-listener', {
 
 From HTML, we define the laser mixin and attach the spawner and click-listener components to the player. When we click, the spawner component will generate a laser starting in front of the camera:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="jqEjvB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqEjvB/">Laser Shooter - Step 4</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="jqEjvB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqEjvB/">Laser Shooter - Step 4</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ### projectile Component
 
@@ -135,7 +135,7 @@ Then attach the projectile component to the laser mixin:
 
 The laser will now fire like a projectile on click:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="YqPmzK" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/YqPmzK/">Laser Shooter - Step 5</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="YqPmzK" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/YqPmzK/">Laser Shooter - Step 5</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ### collider Component
 
@@ -225,7 +225,7 @@ Then we attach a class to the enemies to designate them as targets, attach anima
 
 And there we have a complete basic interactive scene in A-Frame that can be viewed in VR. We package power into components that allow us to declaratively build scenes without losing control or flexibility. The result is a rudimentary FPS game that supports VR in ultimately **just 30 lines of HTML**:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="reaXNr" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/reaXNr/">Laser Shooter - Final</a> by MozVR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="500" data-theme-id="0" data-slug-hash="reaXNr" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/reaXNr/">Laser Shooter - Final</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 [animation]: ../core/animation.md
 [awesome]: https://github.com/aframevr/awesome-aframe#components
@@ -240,3 +240,4 @@ And there we have a complete basic interactive scene in A-Frame that can be view
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
 [template]: https://github.com/ngokevin/aframe-template-component
 [three]: http://threejs.org
+[webcomponents]: http://webcomponents.org/
