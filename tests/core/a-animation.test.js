@@ -63,11 +63,11 @@ suite('a-animation', function () {
     test('stops animation', function (done) {
       setupAnimation({}, function (el, animationEl) {
         assert.ok(animationEl.isRunning);
-        animationEl.parentNode.removeChild(animationEl);
         animationEl.addEventListener('animationstop', function () {
           assert.notOk(animationEl.isRunning);
           done();
         });
+        animationEl.parentNode.removeChild(animationEl);
       });
     });
   });
