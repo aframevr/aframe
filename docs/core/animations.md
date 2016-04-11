@@ -75,7 +75,7 @@ We can animate numeric attributes as well. For example, we can animate the inten
 
 ### Color Attributes
 
-We can animate color attributes as well. For example, we can animate a box from blue to red.
+We can animate color attributes as well. For example, we can animate a box from white to red.
 
 ```html
 <a-entity id="blushing-cube" geometry="primitive: box">
