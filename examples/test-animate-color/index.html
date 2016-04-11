@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animate Color</title>
+    <meta name="description" content="Animate Color - A-Frame">
+    <script src="../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene stats="true">
+      <a-sky color="#afafaf"></a-sky>
+      <a-box color="white" position="2 1 -10">
+        <a-animation attribute="color" from="white" to="red" dur="1000" repeat="indefinite"></a-animation>
+      </a-box>
+      <a-box color="white" position="0 1 -10">
+        <a-animation attribute="color" from="green" to="blue" dur="1000" begin="200" repeat="indefinite"></a-animation>
+      </a-box>
+      <a-box color="white" position="-2 1 -10">
+        <a-animation attribute="color" from="#fafb94" to="#345334" dur="1000" begin="400" repeat="indefinite"></a-animation>
+      </a-box>
+      <a-plane rotation="-90 0 0" width="40" height="40" color="#7BC8A4"></a-plane>
+    </a-scene>
+  </body>
+</html>
+
