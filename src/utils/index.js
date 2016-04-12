@@ -123,11 +123,18 @@ module.exports.isMobile = function () {
       check = true;
     }
   })(navigator.userAgent || navigator.vendor || window.opera);
+  if (isGearVR()) {
+    check = false;
+  }
   return check;
 };
 
 var isIOS = module.exports.isIOS = function () {
   return /iPad|iPhone|iPod/.test(navigator.platform);
+};
+
+var isGearVR = module.exports.isGearVR = function () {
+  return /SamsungBrowser.+Mobile VR/i.test(navigator.userAgent);
 };
 
 /**
