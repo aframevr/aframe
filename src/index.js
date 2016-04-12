@@ -44,6 +44,7 @@ require('./core/a-cubemap');
 require('./core/a-mixin');
 
 // Extras.
+require('./extras/components/');
 require('./extras/declarative-events/');
 require('./extras/primitives/');
 

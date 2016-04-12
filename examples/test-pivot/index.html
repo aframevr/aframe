@@ -2,19 +2,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Geometry Translation</title>
-    <meta name="description" content="Geometry Translation - A-Frame">
+    <title>Pivot Component</title>
+    <meta name="description" content="Pivot Component- A-Frame">
     <script src="../../dist/aframe.js"></script>
   </head>
   <body>
-    <a-scene stats="true">
+    <a-scene>
       <a-assets>
-        <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1;
-                                     translate: -0.25 0 0; width: 0.5"
-                           material="color: red" rotation="0 0 0"
-                           scale="1 1.25 1"></a-mixin>
-        <a-mixin id="flap" attribute="rotation" direction="alternate" fill="forwards"
-                           repeat="indefinite"></a-mixin>
+        <a-mixin id="flap" attribute="rotation" direction="alternate"
+                 repeat="indefinite"></a-mixin>
+        <a-mixin id="rotate" attribute="rotation" repeat="indefinite"></a-mixin>
+        <a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1; width: 0.5"
+                           material="color: #9D0B28" rotation="0 0 0"
+                           pivot="0.25 0 0" scale="1 1.25 1"></a-mixin>
       </a-assets>
 
       <!-- Camera. -->
@@ -27,10 +27,9 @@
                 material="color: #335; shader: flat" scale="1 1 -1">
       </a-entity>
 
-      <!-- Butterfly with pivoting wings via translation. -->
+      <!-- Butterfly with pivoting wings. -->
       <a-entity position="0 2.5 -5">
-        <a-animation attribute="rotation" to="0 360 0" fill="forwards" dur="3000"
-                     easing="linear" repeat="indefinite"></a-animation>
+        <a-animation mixin="rotate" to="0 360 0" dur="3000" easing="linear"></a-animation>
         <a-entity rotation="0 90 0" position="2.5 0 0">
           <a-entity rotation="-45 0 90">
             <a-entity mixin="wing">
