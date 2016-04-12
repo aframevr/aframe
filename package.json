@@ -20,7 +20,7 @@
     "test": "karma start ./tests/karma.conf.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers firefox_latest",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run",
+    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers firefox_latest",
     "version": "npm run dist"
   },
   "repository": "aframevr/aframe",
