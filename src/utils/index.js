@@ -122,10 +122,10 @@ module.exports.isMobile = function () {
     if (isIOS()) {
       check = true;
     }
+    if (isGearVR()) {
+      check = false;
+    }
   })(navigator.userAgent || navigator.vendor || window.opera);
-  if (isGearVR()) {
-    check = false;
-  }
   return check;
 };
 
