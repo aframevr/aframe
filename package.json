@@ -33,7 +33,6 @@
     "promise-polyfill": "^3.1.0",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
-    "request-interval": "^1.0.0",
     "style-attr": "^1.0.2",
     "three": "^0.75.0",
     "tween.js": "^15.0.0",

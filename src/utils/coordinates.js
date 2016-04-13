@@ -1,3 +1,5 @@
+/* global THREE */
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -61,3 +63,10 @@ function vecParseFloat (vec) {
   });
   return vec;
 }
+
+/**
+ * Converts {x, y, z} object to three.js Vector3.
+ */
+module.exports.toVector3 = function (vec3) {
+  return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
+};

@@ -1,24 +1,241 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('camera', function () {
-  'use strict';
-
+suite('cursor', function () {
+  /**
+   * Create camera with a cursor inside.
+   */
   setup(function (done) {
-    var el = this.el = entityFactory();
-    var sceneEl = document.querySelector('a-scene');
-    // Mocks canvas
-    sceneEl.canvas = document.createElement('div');
-    el.setAttribute('cursor', '');
-    if (el.hasLoaded) { done(); }
-    el.addEventListener('loaded', function () {
+    var cameraEl = this.cameraEl = entityFactory();
+    var cursorEl = this.cursorEl = document.createElement('a-entity');
+    this.intersectedEl = document.createElement('a-entity');
+    cameraEl.setAttribute('camera', 'active: true');
+    cursorEl.setAttribute('cursor', '');
+
+    // Wait for elements to load.
+    cursorEl.addEventListener('loaded', function () {
       done();
     });
+    cameraEl.appendChild(cursorEl);
   });
 
   suite('init', function () {
-    test('the raycaster component is initalized', function () {
-      assert.isOk(this.el.components.raycaster);
+    test('initializes raycasters as dependency', function () {
+      assert.ok(this.cursorEl.components.raycaster);
+    });
+  });
+
+  suite('onMouseDown', function () {
+    test('emits mousedown event on cursorEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.addEventListener('cursor-mousedown', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseDown();
+    });
+
+    test('emits mousedown event on intersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      intersectedEl.addEventListener('cursor-mousedown', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseDown();
+    });
+
+    test('sets mouseDownEl', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      assert.notOk(cursorEl.components.cursor.mouseDownEl);
+      cursorEl.components.cursor.onMouseDown();
+      assert.equal(cursorEl.components.cursor.mouseDownEl, intersectedEl);
+    });
+  });
+
+  suite('onMouseUp', function () {
+    test('emits mouseup event on cursorEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.addEventListener('cursor-mouseup', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseUp();
+    });
+
+    test('emits mouseup event on intersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.components.cursor.mouseDownEl = document.createElement('a-entity');
+      intersectedEl.addEventListener('cursor-mouseup', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseUp();
+    });
+
+    test('emits click event on cursorEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.components.cursor.mouseDownEl = intersectedEl;
+      cursorEl.addEventListener('cursor-click', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseUp();
+    });
+
+    test('emits click event on intersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.components.cursor.mouseDownEl = intersectedEl;
+      intersectedEl.addEventListener('cursor-click', function () {
+        done();
+      });
+      cursorEl.components.cursor.onMouseUp();
+    });
+  });
+
+  suite('onIntersection', function () {
+    test('does not do anything if already intersecting', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      assert.notOk(intersectedEl.is('cursor-hovered'));
+    });
+
+    test('sets hovered state on intersectedEl', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      assert.ok(intersectedEl.is('cursor-hovered'));
+    });
+
+    test('emits mouseenter event on cursorEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.addEventListener('cursor-mouseenter', function (evt) {
+        assert.equal(evt.detail.intersectedEl, intersectedEl);
+        done();
+      });
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+    });
+
+    test('emits mouseenter event on intersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      intersectedEl.addEventListener('cursor-mouseenter', function (evt) {
+        assert.equal(evt.detail.cursorEl, cursorEl);
+        done();
+      });
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+    });
+
+    test('sets hovering state on cursor', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      assert.ok(cursorEl.is('cursor-hovering'));
+    });
+
+    test('does not set fusing state on cursor if not fuse', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      assert.notOk(cursorEl.is('cursor-fusing'));
+    });
+
+    test('sets fusing state on cursor if fuse', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.setAttribute('cursor', 'fuse', true);
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      assert.ok(cursorEl.is('cursor-fusing'));
+    });
+
+    test('removes fuse state and emits event on fuse click', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      cursorEl.addEventListener('cursor-click', function () {
+        assert.notOk(cursorEl.is('cursor-fusing'));
+        done();
+      });
+    });
+
+    test('emits event on intersectedEl on fuse click', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
+      cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
+      intersectedEl.addEventListener('cursor-click', function () {
+        done();
+      });
+    });
+  });
+
+  suite('onIntersectionCleared', function () {
+    test('does not do anything if not intersecting', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+    });
+
+    test('unsets intersectedEl', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      assert.notOk(cursorEl.components.cursor.intersectedEl);
+    });
+
+    test('removes hovered state on intersectedEl', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      intersectedEl.addState('cursor-hovered');
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      assert.notOk(intersectedEl.is('cursor-hovered'));
+    });
+
+    test('emits mouseleave event on cursorEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.addEventListener('cursor-mouseleave', function (evt) {
+        assert.equal(evt.detail.intersectedEl, intersectedEl);
+        done();
+      });
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+    });
+
+    test('emits mouseleave event on intersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      intersectedEl.addEventListener('cursor-mouseleave', function (evt) {
+        assert.equal(evt.detail.cursorEl, cursorEl);
+        done();
+      });
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+    });
+
+    test('removes hovering and fusing states on cursor', function () {
+      var cursorEl = this.cursorEl;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.components.cursor.intersectedEl = intersectedEl;
+      cursorEl.addState('cursor-fusing');
+      cursorEl.addState('cursor-hovering');
+      cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      assert.notOk(cursorEl.is('cursor-fusing'));
+      assert.notOk(cursorEl.is('cursor-hovering'));
     });
   });
 });

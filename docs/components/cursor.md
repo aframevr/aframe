@@ -6,89 +6,115 @@ parent_section: components
 order: 4
 ---
 
-The cursor component defines interaction with other entities through clicking and gazing, by using the [raycaster][raycaster] component to determine which object has been clicked. When the mouse is clicked, the closest visible entity intersecting the cursor will have a DOM `click` event triggered. Note the cursor component only defines the behavior. To define the appearance, you might apply the geometry component.
+The cursor component lets us interact with entities through clicking and gazing. It is a specific application of the [raycaster][raycaster] component in that it:
+
+- Listens for mouse clicks and gaze-based fuses.
+- Captures only the first intersected entity.
+- Emits special mouse and hover events (e.g., relating to mouse down/up/enter/leave).
+- Has additional states for hovering.
+
+When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `cursor-click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
 
 ## Example
 
-For example, we define a cursor in the shape of a ring positioned on the center of the screen. To have the cursor fixed on the screen, we place it as a child of a camera entity. Whenever the cursor clicks on the cube, we can listen the the click event. This might feel familiar to web developers.
+For example, we can create a ring-shaped cursor that is fixed to the center of the screen. To fix it to the screen such that it is always present no matter where we look, we place it as a child of the active [camera][camera] entity. We pull it in front of the camera by placing it on the negative Z axis. When the cursor clicks on the box, we can listen to the click event.
 
 ```html
 <a-entity camera>
-  <a-entity cursor="fuse: true; maxDistance: 30; timeout: 500"
-            position="0 0 -5"
+  <a-entity cursor="fuse: true; timeout: 500"
+            position="0 0 -1"
             geometry="primitive: ring"
-            material="color: white; shader: flat">
+            material="color: black; shader: flat">
   </a-entity>
 </a-entity>
 
-<a-entity id="cube" geometry="primitive: box" material="color: blue"></a-entity>
+<a-entity id="box" cursor-listener geometry="primitive: box" material="color: blue"></a-entity>
 ```
 
 ```js
-document.querySelector('#cube').addEventListener('click', function () {
-  this.setAttribute('material', 'color', 'red');
-  console.log('I was clicked!');
+// Component to change to random color on click.
+AFRAME.registerComponent('click-color-change', {
+  init: function () {
+    var COLORS = ['red', 'green', 'blue'];
+    this.el.addEventListener('cursor-click', function () {
+      var randomIndex = Math.floor(Math.random() * COLORS.length);
+      this.setAttribute('material', 'color', COLORS[randomIndex]);
+      console.log('I was clicked!');
+    });
+  }
 });
 ```
 
 ## Properties
 
-| Property    | Description                                                                | Default Value                    |
-|-------------|----------------------------------------------------------------------------|----------------------------------|
-| fuse        | Whether cursor should also be fuse-based.                                  | false on desktop, true on mobile |
-| maxDistance | Maximum distance to check for intersections on entities for clicks.        | 5                                |
-| timeout     | How long to wait (in milliseconds) to trigger a click event if fuse-based. | 1500                             |
+Note, to further customize the cursor component, we can set the properties of the raycaster component.
 
-## States
-
-The cursor will add states to the cursor entity on certain events.
-
-| State Name | Description                                            |
-|------------|--------------------------------------------------------|
-| fusing     | Added when the cursor is fusing on another entity.     |
-| hovering   | Added when the cursor is hovering over another entity. |
-
-The cursor will add states to the **target** entity on certain events.
-
-| State Name | Description                                              |
-|------------|----------------------------------------------------------|
-| hovered    | Added when target entity is being hovered by the cursor. |
+| Property    | Description                                                                    | Default Value                    |
+|-------------|--------------------------------------------------------------------------------|----------------------------------|
+| fuse        | Whether cursor is fuse-based.                                                  | false on desktop, true on mobile |
+| fuseTimeout | How long to wait (in milliseconds) before triggering a fuse-based click event. | 1500                             |
 
 ## Events
 
-| Event Name | Description                           |
-|------------|---------------------------------------|
-| click      | Triggered when an entity is clicked.  |
-| mousedown  | Triggered on mousedown of the canvas. |
-| mouseup    | Triggered on mouseup of the canvas.   |
+| Event             | Description                                                                                                                 |
+|-------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| cursor-click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
+| cursor-mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
+| cursor-mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
+| cursor-mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
+| cursor-mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
+
+## States
+
+The cursor will add states to the cursor entity on certain events:
+
+| State           | Description                                                          |
+|-----------------|----------------------------------------------------------------------|
+| cursor-fusing   | Added to the cursor entity when it is fusing on another entity.      |
+| cursor-hovering | Added to the cursor entity when it is hovering over another entity.  |
+
+The cursor will add states to intersected entities on certain events:
+
+| State          | Description                                                          |
+|----------------|----------------------------------------------------------------------|
+| cursor-hovered | Added to the intersected entity when the cursor is hovering over it. |
+
+## Configuring the Cursor through the Raycaster Component
+
+The cursor is built on top of and depends on the raycaster component. If we want to customize the raycasting pieces of the cursor, we can do by changing the [raycaster component properties][raycasterprops]. Say we want set a max distance, check for intersections less frequently, and set which objects are clickable:
+
+```html
+<a-entity cursor raycaster="far: 20; interval: 1000; objects: .clickable"></a-entity>
+```
 
 ## Fuse-Based Cursor
 
-If the cursor is set to be fuse-based, the cursor will trigger a click if the user gazes at one entity for a set amount of time. Imagine a laser strapped to the user's head, and the laser extends out into the scene. After the timeout, whatever entity the laser intersects first will be clicked.
+Also known as gaze-based cursor. If the cursor is set to be fuse-based, the cursor will trigger a click if the user gazes at an entity for a set amount of time. Imagine a laser strapped to the user's head, and the laser extends out into the scene. If the user stares at an entity long enough (i.e., the `fuseTimeout`), then the cursor will trigger a click.
 
-Fuse-based interactions can feel natural for VR and do not require any additional input devices other than the headset.
+The advantage of fuse-based interactions for VR is that it does not require additional input devices other than the headset. It is primarily intended for Google Cardboard applications. The disadvantage of fuse-based interactions is that it requires the user to turn their head a lot.
 
 ## Adding Visual Feedback
 
-To add visual feedback to the cursor in order to display indication when the cursor is clicking or fusing, we can use the animation system. When the cursor adds a state to the entity, the animation system will pick up added state with the `begin` attribute and play.
+To add visual feedback to the cursor in order to display indication when the cursor is clicking or fusing, we can use the [animation system][animation]. When the cursor intersects the entity, it will emit an event, and the animation system will pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true; maxDistance: 30; timeout: 500"
-          position="0 0 -5"
+<a-entity cursor="fuse: true; timeout: 500"
+          position="0 0 -1"
           geometry="primitive: ring"
-          material="color: white; shader: flat">
-  <a-animation begin="click" easing="ease-in" attribute="scale"
+          material="color: black; shader: flat">
+  <a-animation begin="cursor-click" easing="ease-in" attribute="scale"
                fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
-  <a-animation begin="fusing" easing="ease-in" attribute="scale"
+  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
                fill="forwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
 </a-entity>
 ```
 
 To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on Codepen][cursor-codepen].
 
-## Caveats
-
-The raycaster currently picks up non-visible entities. This issue will be addressed in a later release.
-
+[animation]: ../core/animations.md
+[camera]: ./camera.md
 [cursor-codepen]: http://codepen.io/team/mozvr/pen/RrxgwE
+[geometry]: ./geometry.md
+[material]: ./material.md
 [raycaster]: ./raycaster.md
+[raycasterprops]: ./raycaster.md#Properties
