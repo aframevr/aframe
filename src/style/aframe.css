@@ -35,12 +35,12 @@ a-scene audio {
 
 .a-enter-vr-modal,
 .a-orientation-modal {
-  font-family: Andale Mono, Courier New, monospace;
+  font-family: Consolas, Andale Mono, Courier New, monospace;
 }
 
 .a-enter-vr-modal {
   font-size: 11px;
-  line-height: 17px;
+  line-height: 15px;
   min-height: 32px;
 }
 
