@@ -58,12 +58,14 @@ module.exports.Component = registerComponent('obj-model', {
     // .OBJ only.
     objLoader.load(objUrl, function (objModel) {
       // Apply material.
-      var material = el.components.material.material;
-      objModel.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-          child.material = material;
-        }
-      });
+      var material = el.components.material;
+      if (material) {
+        objModel.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = material.material;
+          }
+        });
+      }
 
       self.model = objModel;
       el.setObject3D('mesh', objModel);

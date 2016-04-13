@@ -45,11 +45,11 @@ suite('a-entity', function () {
     var el = document.createElement('a-entity');
     var parentEl = this.el;
     el.object3D = new THREE.Mesh();
-    parentEl.appendChild(el);
     parentEl.addEventListener('child-attached', function (event) {
       assert.equal(event.detail.el, el);
       done();
     });
+    parentEl.appendChild(el);
   });
 
   suite('attachedCallback', function () {
@@ -65,8 +65,10 @@ suite('a-entity', function () {
       var el = entityFactory();
       this.sinon.spy(AEntity.prototype, 'load');
       el.addEventListener('loaded', function () {
-        sinon.assert.called(AEntity.prototype.load);
-        done();
+        process.nextTick(function () {
+          sinon.assert.called(AEntity.prototype.load);
+          done();
+        });
       });
     });
 

@@ -66,7 +66,12 @@ module.exports.Component = registerComponent('sound', {
 
   remove: function () {
     this.el.removeObject3D('sound');
-    this.sound.disconnect();
+    try {
+      this.sound.disconnect();
+    } catch (e) {
+      // disconnect() will throw if it was never connected initially.
+      warn('Audio source not properly disconnected');
+    }
   },
 
   /**
