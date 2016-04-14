@@ -107,7 +107,7 @@ module.exports.Component = registerControls('controls', {
     this.velocity.x -= this.velocity.x * data.positionEasing * dt / 1000;
     this.velocity.z -= this.velocity.z * data.positionEasing * dt / 1000;
 
-    control = this.getActiveMovementControls();
+    control = this.getActivePositionControls();
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
@@ -188,7 +188,7 @@ module.exports.Component = registerControls('controls', {
    * Returns the first active position controls component, if any.
    * @return {ControlsComponent}
    */
-  getActiveMovementControls: function () {
+  getActivePositionControls: function () {
     var control;
     var names = this.data.position;
     for (var i = 0; i < names.length; i++) {
