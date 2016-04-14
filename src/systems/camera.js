@@ -23,13 +23,11 @@ module.exports.System = registerSystem('camera', {
     var sceneEl = this.sceneEl;
     var cameraWrapperEl;
     var defaultCameraEl;
-
     // setTimeout in case the camera is being set dynamically with a setAttribute.
     setTimeout(function checkForCamera () {
-      var cameraEl = sceneEl.querySelector('[camera]');
-
-      if (cameraEl && cameraEl.isEntity) {
-        sceneEl.emit('camera-ready', {cameraEl: cameraEl});
+      var currentCamera = sceneEl.camera;
+      if (currentCamera) {
+        sceneEl.emit('camera-ready', { cameraEl: currentCamera.el });
         return;
       }
 
@@ -39,8 +37,8 @@ module.exports.System = registerSystem('camera', {
       cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
       defaultCameraEl = document.createElement('a-entity');
       defaultCameraEl.setAttribute('camera', {'active': true});
-      defaultCameraEl.setAttribute('wasd-controls');
-      defaultCameraEl.setAttribute('look-controls');
+      defaultCameraEl.setAttribute('wasd-controls', '');
+      defaultCameraEl.setAttribute('look-controls', '');
       cameraWrapperEl.appendChild(defaultCameraEl);
       sceneEl.appendChild(cameraWrapperEl);
       sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
@@ -54,9 +52,8 @@ module.exports.System = registerSystem('camera', {
    * the new camera.
    */
   disableActiveCamera: function () {
-    var sceneEl = this.sceneEl;
-    var sceneCameras = sceneEl.querySelectorAll('[camera]');
-    var newActiveCameraEl = sceneCameras[sceneCameras.length - 1];
+    var cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    var newActiveCameraEl = cameraEls[cameraEls.length - 1];
     newActiveCameraEl.setAttribute('camera', 'active', true);
   },
 
@@ -66,14 +63,15 @@ module.exports.System = registerSystem('camera', {
    * Disables all other cameras in the scene.
    *
    * @param {Element} newCameraEl - Entity with camera component.
-   * @param {object} newCamera - three.js Camera object.
    */
-  setActiveCamera: function (newCameraEl, newCamera) {
+  setActiveCamera: function (newCameraEl) {
     var cameraEl;
+    var cameraEls = this.sceneEl.querySelectorAll('[camera]');
     var i;
     var sceneEl = this.sceneEl;
-    var sceneCameraEls = sceneEl.querySelectorAll('[camera]');
-
+    var newCamera = newCameraEl.getObject3D('camera');
+    var previousCamera = this.activeCameraEl;
+    if (!newCamera || newCameraEl === this.activeCameraEl) { return; }
     // Grab the default camera.
     var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
     var defaultCameraEl = defaultCameraWrapper &&
@@ -83,14 +81,16 @@ module.exports.System = registerSystem('camera', {
 
     // Make new camera active.
     this.activeCameraEl = newCameraEl;
-    if (sceneEl.isPlaying) { newCameraEl.play(); }
-    newCameraEl.setAttribute('camera', 'active', true);
     sceneEl.camera = newCamera;
     sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
 
-    // Disable other cameras.
-    for (i = 0; i < sceneCameraEls.length; i++) {
-      cameraEl = sceneCameraEls[i];
+    // Disable current camera
+    if (previousCamera) {
+      previousCamera.setAttribute('camera', 'active', false);
+    }
+    // Disable other cameras in the scene
+    for (i = 0; i < cameraEls.length; i++) {
+      cameraEl = cameraEls[i];
       if (newCameraEl === cameraEl) { continue; }
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();

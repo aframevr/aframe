@@ -82,7 +82,7 @@
 
           var el = document.createElement('a-entity');
           el.dataset.id = idx;
-          el.setAttribute('position', {x: xPos});
+          el.setAttribute('position', {x: xPos, y: 0, z: 0});
           el.setAttribute('mixin', 'link');
           el.setAttribute('material', {shader: 'flat', src: pano.thumb});
           panos[idx].el = el;

@@ -6,10 +6,10 @@ suite('raycaster', function () {
     var parentEl = this.parentEl = entityFactory();
     var el = this.el = document.createElement('a-entity');
     el.setAttribute('raycaster', '');
-    parentEl.appendChild(el);
     parentEl.addEventListener('loaded', function () {
       done();
     });
+    parentEl.appendChild(el);
   });
 
   suite('init', function () {

@@ -10,7 +10,7 @@ suite('fog', function () {
     this.updateMaterialsSpy = this.sinon.spy(el.systems.material, 'updateMaterials');
 
     // Stub scene load to avoid WebGL code.
-    el.load();
+    el.hasLoaded = true;
     el.setAttribute('fog', '');
   });
 
@@ -53,7 +53,7 @@ suite('fog', function () {
     test('can remove and add linear fog', function () {
       var el = this.el;
       el.removeAttribute('fog');
-      el.setAttribute('fog');
+      el.setAttribute('fog', '');
     });
   });
 

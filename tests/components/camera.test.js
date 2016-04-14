@@ -6,8 +6,9 @@ suite('camera', function () {
 
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('camera', '');
-    process.nextTick(function () {
+    el.setAttribute('camera', 'active: false');
+    if (el.hasLoaded) { done(); }
+    el.addEventListener('loaded', function () {
       done();
     });
   });

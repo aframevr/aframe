@@ -59,7 +59,7 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.behaviors = [];
         this.hasLoaded = false;
-        this.isPlaying = true;
+        this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         this.setupSystems();
         this.addEventListener('render-target-loaded', function () {
@@ -231,7 +231,6 @@ var AScene = module.exports = registerElement('a-scene', {
     play: {
       value: function () {
         var self = this;
-
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
           return;

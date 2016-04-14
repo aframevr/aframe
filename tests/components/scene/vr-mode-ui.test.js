@@ -6,12 +6,12 @@ var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button', '.a-enter-vr-mod
 suite('vr-mode-ui', function () {
   'use strict';
 
-  setup(function () {
+  setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
     el.setAttribute('vr-mode-ui', '');
     el.stereoRenderer = { setFullScreen: function () {} };
-    el.load();
+    el.addEventListener('loaded', function () { done(); });
   });
 
   test('appends UI', function () {

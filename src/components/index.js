@@ -16,6 +16,7 @@ require('./visible');
 require('./wasd-controls');
 
 require('./scene/canvas');
+require('./scene/debug');
 require('./scene/fog');
 require('./scene/keyboard-shortcuts');
 require('./scene/stats');

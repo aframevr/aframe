@@ -82,8 +82,8 @@ module.exports = registerElement('a-node', {
         });
 
         Promise.all(childrenLoaded).then(function emitLoaded () {
-          if (cb) { cb(); }
           self.hasLoaded = true;
+          if (cb) { cb(); }
           self.emit('loaded', {}, false);
         });
       },

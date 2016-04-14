@@ -1,4 +1,4 @@
-/* global assert, process, suite, test, setup */
+/* global assert, process, suite, test, setup, sinon, HTMLElement */
 'use strict';
 var buildData = require('core/component').buildData;
 var components = require('index').components;
@@ -49,7 +49,7 @@ suite('Component', function () {
         default: 'blue'
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', schema, {}, null);
+      var data = buildData(el, 'dummy', schema, undefined, null);
       assert.equal(data, 'blue');
     });
 
@@ -82,7 +82,7 @@ suite('Component', function () {
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', TestComponent.prototype.schema, {}, null);
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, undefined, null);
       assert.equal(data, 'blue');
     });
 
@@ -180,6 +180,47 @@ suite('Component', function () {
     });
   });
 
+  suite('parseAttrValueForCache', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
+    test('parses single value component', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: { default: '0 0 1', type: 'vec3' }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = component.parseAttrValueForCache('1 2 3');
+      assert.deepEqual(componentObj, { x: 1, y: 2, z: 3 });
+    });
+
+    test('parses component using the style parser for a complex schema', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {
+          position: { type: 'vec3', default: '0 0 1' },
+          color: { default: 'red' }
+        }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = component.parseAttrValueForCache({ position: '0 1 0', color: 'red' });
+      assert.deepEqual(componentObj, { position: '0 1 0', color: 'red' });
+    });
+
+    test('does not parse properties that parse to another string', function () {
+      var TestComponent = registerComponent('dummy', {
+        schema: {
+          url: { type: 'src', default: '' }
+        }
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      var componentObj = component.parseAttrValueForCache({ url: 'url(www.mozilla.com)' });
+      assert.equal(componentObj.url, 'url(www.mozilla.com)');
+    });
+  });
+
   suite('stringify', function () {
     setup(function () {
       components.dummy = undefined;
@@ -264,6 +305,42 @@ suite('Component', function () {
       var component = new TestComponent(el);
       component.updateProperties({ color: 'blue' });
       assert.equal(component.data.color, 'blue');
+    });
+  });
+
+  suite('update', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
+    test('not called if component data does not change', function () {
+      var updateStub = sinon.stub();
+      var TestComponent = registerComponent('dummy', {
+        schema: {color: { default: 'red' }},
+        update: updateStub
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.updateProperties({ color: 'blue' });
+      component.updateProperties({ color: 'blue' });
+      assert.ok(updateStub.calledOnce);
+    });
+  });
+
+  suite('flushToDOM', function () {
+    setup(function () {
+      components.dummy = undefined;
+    });
+
+    test('updates component DOM attribute', function () {
+      registerComponent('dummy', {
+        schema: {color: { default: 'red' }}
+      });
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', { color: 'blue' });
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
+      el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
     });
   });
 });

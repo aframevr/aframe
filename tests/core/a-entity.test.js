@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, test, HTMLElement */
+/* global assert, process, sinon, setup, suite, teardown, test, HTMLElement */
 'use strict';
 var AEntity = require('core/a-entity');
 var extend = require('utils').extend;
@@ -28,6 +28,10 @@ suite('a-entity', function () {
     el.addEventListener('loaded', function () {
       done();
     });
+  });
+
+  teardown(function () {
+    components.test = undefined;
   });
 
   test('adds itself to parent when attached', function (done) {
@@ -209,7 +213,7 @@ suite('a-entity', function () {
       var el = this.el;
       var positionObj = { x: 10, y: 20, z: 30 };
       el.setAttribute('position', positionObj);
-      assert.ok(el.outerHTML.indexOf('position="10 20 30"') !== -1);
+      assert.ok(el.outerHTML.indexOf('position=""') !== -1);
     });
 
     test('can update component data', function () {
@@ -244,6 +248,43 @@ suite('a-entity', function () {
       });
       el.setAttribute('test', 'asym', 1);
       el.setAttribute('test', 'other', 2);
+    });
+  });
+
+  suite('flushToDOM', function () {
+    test('updates DOM attributes', function () {
+      var el = this.el;
+      var materialStr = 'color:#F0F;metalness:0.75';
+      var material;
+      el.setAttribute('material', materialStr);
+      material = HTMLElement.prototype.getAttribute.call(el, 'material');
+      assert.equal(material, '');
+      el.flushToDOM();
+      material = HTMLElement.prototype.getAttribute.call(el, 'material');
+      assert.equal(material, materialStr);
+    });
+
+    test('updates DOM attributes recursively', function (done) {
+      var el = this.el;
+      var childEl = document.createElement('a-entity');
+      var childMaterialStr = 'color:pink';
+      var materialAttr;
+      var materialStr = 'color:#F0F;metalness:0.75';
+      childEl.addEventListener('loaded', function () {
+        materialAttr = HTMLElement.prototype.getAttribute.call(el, 'material');
+        assert.equal(materialAttr, null);
+        materialAttr = HTMLElement.prototype.getAttribute.call(childEl, 'material');
+        assert.equal(materialAttr, null);
+        el.setAttribute('material', materialStr);
+        childEl.setAttribute('material', childMaterialStr);
+        el.flushToDOM(true);
+        materialAttr = HTMLElement.prototype.getAttribute.call(el, 'material');
+        assert.equal(materialAttr, 'color:#F0F;metalness:0.75');
+        materialAttr = HTMLElement.prototype.getAttribute.call(childEl, 'material');
+        assert.equal(childMaterialStr, 'color:pink');
+        done();
+      });
+      el.appendChild(childEl);
     });
   });
 
@@ -448,10 +489,7 @@ suite('a-entity', function () {
   suite('initComponent', function () {
     test('initializes component', function () {
       var el = this.el;
-      var nativeSetAttribute = HTMLElement.prototype.setAttribute;
-      this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
-      el.setAttribute('material', 'color: #F0F; transparent: true');
-      el.initComponent('material');
+      el.initComponent('material', false, 'color: #F0F; transparent: true');
       assert.ok(el.components.material);
     });
 
@@ -466,9 +504,7 @@ suite('a-entity', function () {
 
     test('initializes dependency component and can set attribute', function () {
       var el = this.el;
-      var nativeGetAttribute = HTMLElement.prototype.getAttribute;
-      this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
-      el.initComponent('material', true);
+      el.initComponent('material', undefined, true);
       assert.equal(el.getAttribute('material'), '');
     });
 
@@ -496,6 +532,52 @@ suite('a-entity', function () {
       assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
       el.removeAttribute('look-controls');
       assert.equal(sceneEl.behaviors.indexOf(component), -1);
+    });
+  });
+
+  suite('updateComponent', function () {
+    test('initialize a component', function () {
+      var el = this.el;
+      assert.equal(el.components.material, undefined);
+      el.updateComponent('material', { color: 'blue' });
+      assert.equal(el.getAttribute('material').color, 'blue');
+    });
+
+    test('update an existing component', function () {
+      var el = this.el;
+      var component = new components.material.Component(el, { color: 'red' });
+      el.components.material = component;
+      assert.equal(el.getAttribute('material').color, 'red');
+      el.updateComponent('material', { color: 'blue' });
+      assert.equal(component, el.components.material);
+      assert.equal(el.getAttribute('material').color, 'blue');
+    });
+
+    test('remove a component', function () {
+      var el = this.el;
+      el.components.material = new components.material.Component(el, { color: 'red' });
+      assert.equal(el.getAttribute('material').color, 'red');
+      el.updateComponent('material', null);
+      assert.equal(el.components.material, undefined);
+    });
+  });
+
+  suite('updateComponentAttribute', function () {
+    test('initialize a component', function () {
+      var el = this.el;
+      assert.equal(el.components.material, undefined);
+      el.updateComponentProperty('material', 'color', 'blue');
+      assert.equal(el.getAttribute('material').color, 'blue');
+    });
+
+    test('update a property of an existing component', function () {
+      var el = this.el;
+      var component = new components.material.Component(el, { color: 'red' });
+      el.components.material = component;
+      assert.equal(el.getAttribute('material').color, 'red');
+      el.updateComponentProperty('material', 'color', 'blue');
+      assert.equal(component, el.components.material);
+      assert.equal(el.getAttribute('material').color, 'blue');
     });
   });
 
@@ -551,6 +633,10 @@ suite('a-entity component lifecycle management', function () {
     el.addEventListener('loaded', function () {
       done();
     });
+  });
+
+  teardown(function () {
+    components.test = undefined;
   });
 
   test('calls init on component attach', function () {
@@ -638,27 +724,30 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.called(TestComponent.play);
   });
 
-  test('removes tick from scene behaviors on entity pause', function () {
+  test('removes tick from scene behaviors on entity pause', function (done) {
     var el = this.el;
     var testComponentInstance;
-    el.setAttribute('test', '');
-    testComponentInstance = el.components.test;
-
-    assert.notEqual(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
-    el.pause();
-    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+    el.sceneEl.addEventListener('loaded', function () {
+      el.setAttribute('test', '');
+      testComponentInstance = el.components.test;
+      assert.notEqual(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      el.pause();
+      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      done();
+    });
   });
 
   test('adds tick to scene behaviors on entity play', function () {
     var el = this.el;
     var testComponentInstance;
-    el.setAttribute('test', '');
-    testComponentInstance = el.components.test;
-    el.sceneEl.behaviors = [];
-
-    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
-    el.play();
-    assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+    el.sceneEl.addEventListener('loaded', function () {
+      el.setAttribute('test', '');
+      testComponentInstance = el.components.test;
+      el.sceneEl.behaviors = [];
+      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      el.play();
+      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+    });
   });
 });
 
@@ -689,6 +778,13 @@ suite('a-entity component dependency management', function () {
     });
   });
 
+  teardown(function () {
+    components.test = undefined;
+    components.codependency = undefined;
+    components.dependency = undefined;
+    components['nested-dependency'] = undefined;
+  });
+
   test('initializes dependency components', function () {
     var el = this.el;
     el.setAttribute('test', '');
@@ -704,16 +800,12 @@ suite('a-entity component dependency management', function () {
     assert.equal(spy.callCount, 1);
   });
 
-  test('initializes dependency components when not yet loaded', function (done) {
-    var el = entityFactory();
+  test('initializes dependency components when not yet loaded', function () {
+    var el = document.createElement('a-entity');
     el.setAttribute('test', '');
-    el.load();
-    el.addEventListener('loaded', function () {
-      assert.ok('test' in el.components);
-      assert.ok('dependency' in el.components);
-      assert.ok('codependency' in el.components);
-      assert.ok('nested-dependency' in el.components);
-      done();
-    });
+    assert.ok('test' in el.components);
+    assert.ok('dependency' in el.components);
+    assert.ok('codependency' in el.components);
+    assert.ok('nested-dependency' in el.components);
   });
 });
