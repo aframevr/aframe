@@ -169,7 +169,7 @@ var AScene = module.exports = registerElement('a-scene', {
         if (!camera || !canvas) { return; }
 
         // Update canvas if canvas was provided by A-Frame.
-        if (!isMobile && canvas.dataset.aframeProvided) {
+        if (!isMobile && canvas.dataset.aframeDefault) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
         }

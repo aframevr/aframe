@@ -29,7 +29,7 @@ module.exports.Component = register('canvas', {
       canvas.style.height = data.height + '%';
       canvas.style.width = data.width + '%';
       // Mark canvas as provided/injected by A-Frame.
-      canvas.dataset.aframeProvided = true;
+      canvas.dataset.aframeDefault = true;
       scene.appendChild(canvas);
     }
 
