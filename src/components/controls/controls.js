@@ -101,7 +101,7 @@ module.exports.Component = registerControls('controls', {
     var data = this.data;
 
     if (this.el.hasAttribute('velocity')) {
-      this.velocity.copy(this.el.getAttribute('velocity'));
+      this.velocity.copy(this.el.getComputedAttribute('velocity'));
     }
 
     this.velocity.x -= this.velocity.x * data.positionEasing * dt / 1000;
