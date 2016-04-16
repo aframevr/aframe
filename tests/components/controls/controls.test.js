@@ -5,10 +5,13 @@ var registerControls = require('core/controls').registerControls;
 var THREE = require('index').THREE;
 
 suite('controls', function () {
+  var controls;
+
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('controls', '');
     el.addEventListener('loaded', function () {
+      controls = el.components.controls;
       done();
     });
   });
@@ -38,7 +41,7 @@ suite('controls', function () {
       registerControls('pos-controls-1', {isVelocityActive: this.sinon.stub().returns(false)});
       registerControls('pos-controls-2', {isVelocityActive: this.sinon.stub().returns(true)});
       el.setAttribute('controls', {position: ['pos-controls-1', 'pos-controls-2']});
-      activeControls = el.components.controls.getActivePositionControls();
+      activeControls = controls.getActivePositionControls();
       assert.equal(activeControls.name, 'pos-controls-2');
     });
 
@@ -59,14 +62,14 @@ suite('controls', function () {
         positionEasing: 25
       });
       velocityDelta.set(1, 0, 0);
-      el.components.controls.tick(0, 1);
+      controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.025, y: 0, z: 0});
       // Acceleration == easing.
-      el.components.controls.tick(0, 1);
+      controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.025, y: 0, z: 0});
       // Acceleration > easing.
       el.setAttribute('controls', 'positionEasing', 20);
-      el.components.controls.tick(0, 1);
+      controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.024515625, y: 0, z: 0});
     });
   });
@@ -81,7 +84,7 @@ suite('controls', function () {
       el.setAttribute('controls', {
         rotation: ['rot-controls-1', 'rot-controls-2', 'rot-controls-3']
       });
-      activeControls = el.components.controls.getActiveRotationControls();
+      activeControls = controls.getActiveRotationControls();
       assert.equal(activeControls.name, 'rot-controls-2');
     });
 
@@ -100,7 +103,7 @@ suite('controls', function () {
         rotation: ['rot-controls-4', 'rot-controls-5']
       });
       rotation.set(45, 180, 0);
-      el.components.controls.tick(0, 1);
+      controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 45, y: 180, z: 0});
     });
 
@@ -119,7 +122,7 @@ suite('controls', function () {
         rotation: ['rot-controls-6', 'rot-controls-7']
       });
       rotationDelta.set(Math.PI / 4, -1 * Math.PI / 8);
-      el.components.controls.tick(0, 1);
+      controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 22.5, y: -45, z: 0});
     });
   });

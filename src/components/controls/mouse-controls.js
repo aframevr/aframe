@@ -23,6 +23,14 @@ module.exports.Component = registerControls('mouse-controls', {
     this.bindMethods();
   },
 
+  update: function (previousData) {
+    var data = this.data;
+    if (data.pointerlockEnabled !== previousData.pointerlockEnabled) {
+      this.removeEventListeners();
+      this.addEventListeners();
+    }
+  },
+
   play: function () {
     this.addEventListeners();
   },
@@ -40,10 +48,8 @@ module.exports.Component = registerControls('mouse-controls', {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.onMouseUp = this.onMouseUp.bind(this);
     this.onPointerLockChange = this.onPointerLockChange.bind(this);
-    this.onPointerLockChange = this.onPointerLockChange.bind(this);
-    this.onPointerLockChange = this.onPointerLockChange.bind(this);
+    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
 
   addEventListeners: function () {
