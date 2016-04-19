@@ -15,6 +15,7 @@ module.exports.Component = registerControls('touch-controls', {
   },
 
   init: function () {
+    this.isMoving = false;
     this.dVelocity = new THREE.Vector3();
     this.bindMethods();
   },
