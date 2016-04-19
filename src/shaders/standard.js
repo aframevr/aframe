@@ -12,7 +12,6 @@ module.exports.Component = registerShader('standard', {
   schema: {
     color: { type: 'color' },
     envMap: { default: '' },
-    fog: { default: true },
     height: { default: 256 },
     metalness: { default: 0.0, min: 0.0, max: 1.0 },
     repeat: { default: '' },
