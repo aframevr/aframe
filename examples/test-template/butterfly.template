@@ -1,0 +1,23 @@
+<a-mixin id="wing" geometry="primitive: box; depth: .005; height: 1; width: 0.5"
+                   pivot="0.25 0 0"
+                   material="color: red" rotation="0 0 0"
+                   scale="0.5 0.625 0.5"></a-mixin>
+<a-mixin id="flap" attribute="rotation" direction="alternate" fill="forwards"
+                   repeat="indefinite"></a-mixin>
+
+<a-entity position="{{ position }}">
+  <a-animation attribute="rotation" to="0 360 0" fill="forwards" dur="3000"
+               easing="linear" repeat="indefinite"></a-animation>
+  <a-entity rotation="0 90 0" position="2.5 0 0">
+    <a-entity rotation="-45 0 90">
+      <a-entity mixin="wing">
+        <a-animation mixin="flap" to="0 120 10"></a-animation>
+      </a-entity>
+    </a-entity>
+    <a-entity rotation="-45 0 90">
+      <a-entity mixin="wing">
+        <a-animation mixin="flap" to="0 -120 10"></a-animation>
+      </a-entity>
+    </a-entity>
+  </a-entity>
+</a-entity>

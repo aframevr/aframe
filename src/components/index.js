@@ -12,6 +12,7 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
+require('./template');
 require('./visible');
 require('./wasd-controls');
 

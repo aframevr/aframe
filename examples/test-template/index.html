@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Template Component</title>
+    <meta name="description" content="Template Component- A-Frame">
+    <script src="../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="leaf-block"
+                 geometry="primitive: box; depth: 2.5; height: 2.5; width: 2.5"
+                 material="color: #69C181; side: double"></a-mixin>
+
+        <script id="butterflies" type="text/x-nunjucks-template">
+          {% for x in range(0, 10) %}
+            {% for z in range(0, 10) %}
+              <a-entity template="src: butterfly.template; type: handlebars"
+                        data-position="{{ x * 10 }} 2 {{ z * 10 }}"></a-entity>
+            {% endfor %}
+          {% endfor %}
+        </script>
+
+        <script id="forest" type="text/x-nunjucks-template">
+          {% for x in range(0, 10) %}
+            {% for z in range(0, 10) %}
+              <a-entity template="src: tree.template; type: handlebars"
+                        data-position="{{ x * 10 }} 2 {{ z * 10 }}"
+                        data-trunkcolor="#623B1C"></a-entity>
+            {% endfor %}
+          {% endfor %}
+        </script>
+
+        <script id="clouds" type="text/x-jade-template">
+          - for (var x = 0; x < 5; x++) {
+            - for (var z = 0; z < 5; z++) {
+              a-entity(geometry="primitive: box; depth: 8; height: 1; width: 6", material="opacity: 0.2", position="#{x * 20} 15 #{z * 20}")
+            - }
+          - }
+        </script>
+      </a-assets>
+
+      <a-entity template="src: #forest"></a-entity>
+      <a-entity template="src: #butterflies"></a-entity>
+      <a-entity template="src: #clouds"></a-entity>
+
+      <a-camera position="25 1.8 25"></a-camera>
+      <a-plane color="#CAAD8C" height="1000" width="1000" shader="flat"
+               position="0 0 0" rotation="-90 0 0"></a-plane>
+      <a-sky color="#3EC1D3"></a-sky>
+    </a-scene>
+  </body>
+</html>
