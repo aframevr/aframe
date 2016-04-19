@@ -10,7 +10,7 @@ module.exports.updateMap = function (shader, data) {
   var el = shader.el;
   var src = data.src;
   var material = shader.material;
-  var materialSystem = el.sceneEl.systems.material;
+  var textureSystem = el.sceneEl.systems.texture;
 
   if (src) {
     if (src === shader.mapSrc) { return; }
@@ -18,8 +18,8 @@ module.exports.updateMap = function (shader, data) {
     shader.mapSrc = src;
     srcLoader.validateSrc(
       src,
-      function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-      function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
+      function loadImageCb (src) { textureSystem.loadImage(el, material, data, src); },
+      function loadVideoCb (src) { textureSystem.loadVideo(el, material, data, src); }
     );
     return;
   }
