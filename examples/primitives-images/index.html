@@ -14,19 +14,27 @@
         <img id="office3" src="mozvr-office-3.jpg">
       </a-assets>
 
-      <a-image position="-4 -7 -20" width="16" height="4.5" src="#office1"></a-image>
-      <a-image position="10 10 -20" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
-      <a-image position="-6 6 -4" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
-      <a-image position="-2 -5 -10" width="14" height="9" scale="0.4 0.4 0.4" src="#office2"></a-image>
-      <a-image position="-15 -1 -1" width="12" height="8" scale="0.5 0.5 0.5" src="#office3"></a-image>
-      <a-image position="5 -2 -3" width="12" height="8" scale="0.3 0.3 0.3" src="#office3"></a-image>
+      <!--You can define the width (in meters). The height will be set automatically to fit the image properly.  -->
+      <a-image position="-4 -7 -20" width="16" src="#office1"></a-image>
+
+      <!-- Same applies to height: -->
+      <a-image position="10 10 -20" height="6" src="#office2"></a-image>
+
+      <!-- You don't have to use width/height, the image will use default dimensions, you can later scale it via `scale` if you like: -->
+      <a-image position="-6 6 -4" src="#office2"></a-image>
+      <a-image position="-2 -5 -10" src="#office2" scale="8 8 8"></a-image>
+      <a-image position="-15 -1 -1" src="#office3" scale="8 8 8"></a-image>
+
+
+      <!-- If you want to have complete control over the a-image's dimensions you can set `fit-texture="false", like so:` -->
+      <a-image position="5 -2 -3" width="0.5" height="5" fit-texture="false" src="#office3"></a-image>
 
       <!-- hide a-image element until the texture has actually been loaded, then transition inside the camera view -->
-      <a-image id="eventImage" opacity="0.0" position="0 1 -50" width="16" height="4.5" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Big_Wood,_N2.JPG">
+      <a-image id="eventImage" opacity="0.0" width="5" position="0 5 -50" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Big_Wood,_N2.JPG">
 
         <a-animation begin="material-texture-loaded" attribute="opacity" to="1.0" dur="2000"> </a-animation>
         <a-animation begin="material-texture-loaded" attribute="rotation" from="180 0 0" to="0 0 0" dur="2500"> </a-animation>
-        <a-animation begin="material-texture-loaded" attribute="position" to="0 1 -8" dur="3000"> </a-animation>
+        <a-animation begin="material-texture-loaded" attribute="position" to="0 5 -8" dur="3000"> </a-animation>
 
       </a-image>
 
