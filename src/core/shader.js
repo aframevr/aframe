@@ -2,7 +2,7 @@ var schema = require('./schema');
 
 var processSchema = schema.process;
 var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
-var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
+var shaderNames = module.exports.shaderNames = [];  // Names of registered shaders.
 var THREE = require('../lib/three');
 
 var propertyToThreeMapping = {
@@ -17,18 +17,21 @@ var propertyToThreeMapping = {
 /**
  * Shader class definition.
  *
- * Shaders extend the material component API so you can create your own library
- * of customized materials
+ * Shaders extend the material component API for custom three.js materials. The default
+ * custom materials revolve around ShaderMaterial to enable custom shaders.
  *
+ * @param {Element} el - Entity.
  */
-var Shader = module.exports.Shader = function () {};
+var Shader = module.exports.Shader = function (el) {
+  this.el = el;
+};
 
 Shader.prototype = {
   /**
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: { },
+  schema: {},
 
   vertexShader:
     'void main() {' +
@@ -60,9 +63,8 @@ Shader.prototype = {
     var self = this;
     var variables = {};
     var schema = this.schema;
-    var squemaKeys = Object.keys(schema);
-    squemaKeys.forEach(processSquema);
-    function processSquema (key) {
+    var schemaKeys = Object.keys(schema);
+    schemaKeys.forEach(function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
       var varValue = schema[key].parse(data[key] || schema[key].default);
@@ -70,7 +72,7 @@ Shader.prototype = {
         type: varType,
         value: self.parseValue(schema[key].type, varValue)
       };
-    }
+    });
     return variables;
   },
 
@@ -144,7 +146,7 @@ module.exports.registerShader = function (name, definition) {
   if (shaders[name]) {
     throw new Error('The shader ' + name + ' has been already registered');
   }
-  NewShader = function () { Shader.call(this); };
+  NewShader = function (el) { Shader.call(this, el); };
   NewShader.prototype = Object.create(Shader.prototype, proto);
   NewShader.prototype.name = name;
   NewShader.prototype.constructor = NewShader;

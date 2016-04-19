@@ -1,12 +1,9 @@
 /* global Promise */
-var debug = require('../utils/debug');
-var utils = require('../utils');
 var component = require('../core/component');
 var THREE = require('../lib/three');
 var shader = require('../core/shader');
 
-var error = debug('components:material:error');
-var diff = utils.diff;
+var dummyMaterial = new THREE.MeshBasicMaterial();
 var registerComponent = component.registerComponent;
 var shaders = shader.shaders;
 var shaderNames = shader.shaderNames;
@@ -29,6 +26,7 @@ module.exports.Component = registerComponent('material', {
 
   init: function () {
     this.material = null;
+    this.shader = null;
   },
 
   /**
@@ -38,22 +36,48 @@ module.exports.Component = registerComponent('material', {
    */
   update: function (oldData) {
     var data = this.data;
-    var dataDiff = oldData ? diff(oldData, data) : data;
+    var el = this.el;
+    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var system = this.system;
 
-    if (!this.shader || dataDiff.shader) {
-      this.updateShader(data.shader);
+    // If shader has changed, ask material system for new material.
+    if (!this.material || oldData.shader !== data.shader) {
+      if (this.shader) { system.unuseShader(this.shader); }
+      this.shader = system.createShader(el, data);
+      // Set material on mesh.
+      mesh.material = this.material = this.shader.material;
     }
-    this.shader.update(this.data);
-    this.updateMaterial();
+
+    // If shader has not changed, ask material system to update the material.
+    system.updateShader(this.shader, data);
   },
 
+  /**
+   * Remove material on remove (callback).
+   * Dispose of it from memory and unsubscribe from scene updates.
+   */
+  remove: function () {
+    var mesh = this.el.getObject3D('mesh');
+    if (!mesh) { return; }
+    this.system.unuseShader(this.shader);
+    mesh.material = dummyMaterial;
+  },
+
+  /**
+   * Update material component schema based on material/shader type.
+   *
+   * @param {object} data - New data passed by Component.
+   */
   updateSchema: function (data) {
     var newShader = data.shader;
     var currentShader = this.data && this.data.shader;
-    var shader = newShader || currentShader;
-    var schema = shaders[shader] && shaders[shader].schema;
-    if (!schema) { error('Unknown shader schema ' + shader); }
+    var schema = shaders[newShader] && shaders[newShader].schema;
+
+    // Material has no schema.
+    if (!schema) { throw new Error('Unknown shader schema `' + newShader + '`'); }
+    // Nothing has changed.
     if (currentShader && newShader === currentShader) { return; }
+
     this.extendSchema(schema);
     this.updateBehavior();
   },
@@ -80,84 +104,5 @@ module.exports.Component = registerComponent('material', {
     if (Object.keys(tickProperties).length === 0) {
       scene.removeBehavior(this);
     }
-  },
-
-  updateShader: function (shaderName) {
-    var data = this.data;
-    var Shader = shaders[shaderName] && shaders[shaderName].Shader;
-    var material;
-    if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
-    this.shader = new Shader();
-    this.shader.el = this.el;
-    material = this.shader.init(data);
-    this.setMaterial(material);
-    this.updateSchema(data);
-  },
-
-  updateMaterial: function () {
-    var data = this.data;
-    var material = this.material;
-    material.side = parseSide(data.side);
-    material.opacity = data.opacity;
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
-    material.depthTest = data.depthTest !== false;
-  },
-
-  /**
-   * Remove material on remove (callback).
-   * Dispose of it from memory and unsubscribe from scene updates.
-   */
-  remove: function () {
-    var defaultMaterial = new THREE.MeshBasicMaterial();
-    var material = this.material;
-    var object3D = this.el.getObject3D('mesh');
-    if (object3D) { object3D.material = defaultMaterial; }
-    disposeMaterial(material, this.system);
-  },
-
-  /**
-   * (Re)create new material. Has side-effects of setting `this.material` and updating
-   * material registration in scene.
-   *
-   * @param {object} data - Material component data.
-   * @param {object} type - Material type to create.
-   * @returns {object} Material.
-   */
-  setMaterial: function (material) {
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    var system = this.system;
-    if (this.material) { disposeMaterial(this.material, system); }
-    this.material = mesh.material = material;
-    system.registerMaterial(material);
   }
 });
-
-/**
- * Returns a three.js constant determining which material face sides to render
- * based on the side parameter (passed as a component property).
- *
- * @param {string} [side=front] - `front`, `back`, or `double`.
- * @returns {number} THREE.FrontSide, THREE.BackSide, or THREE.DoubleSide.
- */
-function parseSide (side) {
-  switch (side) {
-    case 'back': {
-      return THREE.BackSide;
-    }
-    case 'double': {
-      return THREE.DoubleSide;
-    }
-    default: {
-      // Including case `front`.
-      return THREE.FrontSide;
-    }
-  }
-}
-
-/**
- * Dispose of material from memory and unsubscribe material from scene updates like fog.
- */
-function disposeMaterial (material, system) {
-  material.dispose();
-  system.unregisterMaterial(material);
-}

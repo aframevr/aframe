@@ -110,7 +110,7 @@ window.threeStats = function ( renderer ) {
         'renderer.info.memory.textures': {
             caption: 'Textures'
         },
-        'renderer.info.memory.programs': {
+        'renderer.info.programs': {
             caption: 'Programs'
         },
         'renderer.info.render.calls': {
@@ -129,10 +129,10 @@ window.threeStats = function ( renderer ) {
     };
 
     var _groups = [ {
-        caption: 'Three.js - memory',
-        values: [ 'renderer.info.memory.geometries', 'renderer.info.memory.programs', 'renderer.info.memory.textures' ]
+        caption: 'Three.js - Memory',
+        values: [ 'renderer.info.memory.geometries', 'renderer.info.programs', 'renderer.info.memory.textures' ]
     }, {
-        caption: 'Three.js - render',
+        caption: 'Three.js - Render',
         values: [ 'renderer.info.render.calls', 'renderer.info.render.faces', 'renderer.info.render.points', 'renderer.info.render.vertices' ]
     } ];
 
@@ -141,7 +141,7 @@ window.threeStats = function ( renderer ) {
     function _update () {
 
         _rS( 'renderer.info.memory.geometries' ).set( renderer.info.memory.geometries );
-        _rS( 'renderer.info.memory.programs' ).set( renderer.info.memory.programs );
+        _rS( 'renderer.info.programs' ).set( renderer.info.programs.length );
         _rS( 'renderer.info.memory.textures' ).set( renderer.info.memory.textures );
         _rS( 'renderer.info.render.calls' ).set( renderer.info.render.calls );
         _rS( 'renderer.info.render.faces' ).set( renderer.info.render.faces );
@@ -256,7 +256,6 @@ window.BrowserStats = function () {
 
 if (typeof module === 'object') {
   module.exports = {
-    aframeStats: window.aframeStats,
     glStats: window.glStats,
     threeStats: window.threeStats,
     BrowserStats: window.BrowserStats
