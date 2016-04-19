@@ -1,0 +1,8 @@
+<!-- Tree template. -->
+<a-entity class="tree" position="{{ position }}">
+  <a-entity id="tree-trunk" geometry="primitive: cylinder; height: 4; radius: 0.75"
+            material="color: {{ trunkcolor }}; shader: flat; side: double"></a-entity>
+  <a-entity mixin="leaf-block" position="-1 3 0" rotation="-45 0 10"></a-entity>
+  <a-entity mixin="leaf-block" position="0 4 0"></a-entity>
+  <a-entity mixin="leaf-block" position="1 3 0" rotation="45 0 10"></a-entity>
+</a-entity>
