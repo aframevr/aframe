@@ -22,9 +22,11 @@ The look-controls component is usually used alongside the [camera component][com
 
 ## Properties
 
-| Property  | Description                        | Default Value |
-|-----------|-----------------------------------------------------
-| enabled   | Whether look controls are enabled. | true          |
+| Property              | Description                                 | Default Value |
+|-----------------------|--------------------------------------------------------------
+| enabled               | Whether look controls are enabled.          | true          |
+| reverseMouseMovement  | Enable for a "drag feel" to mouse movement. | false         |
+| mouseMovementSpeed    | Speed when looking with mouse (careful!)    | 0.002         |
 
 ## Caveats
 
