@@ -111,7 +111,7 @@ module.exports.Component = registerControls('controls', {
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
-      throw new Error('getVelocity() not currently supported, use getVelocityDelta().');
+      this.velocity.copy(control.getVelocity());
     }
 
     this.el.setAttribute('velocity', {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z});

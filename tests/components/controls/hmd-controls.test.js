@@ -30,7 +30,7 @@ suite('hmd-controls', function () {
       assert.isFalse(hmdControls.isRotationActive());
     });
 
-    test('active when HMD has moved', function () {
+    test('active when HMD has rotated', function () {
       hmd.dolly.quaternion.set(Math.PI / 4, 0, 0, 1);
       assert.isTrue(hmdControls.isRotationActive());
     });
@@ -49,6 +49,31 @@ suite('hmd-controls', function () {
       assert.approximately(rotation.x, 60, EPS);
       assert.equal(rotation.y, 0);
       assert.equal(rotation.z, 0);
+    });
+  });
+
+  suite('isVelocityActive', function () {
+    test('not active by default', function () {
+      assert.isFalse(hmdControls.isVelocityActive());
+    });
+
+    test('active when HMD has moved', function () {
+      hmd.dolly.position.set(0, 0, 1);
+      assert.isTrue(hmdControls.isVelocityActive());
+    });
+
+    test('inactive when disabled', function () {
+      hmd.dolly.position.set(0, 0, 1);
+      this.el.setAttribute('hmd-controls', {enabled: false});
+      assert.isFalse(hmdControls.isVelocityActive());
+    });
+  });
+
+  suite('getVelocity', function () {
+    test('returns HMD velocity', function () {
+      hmd.dolly.position.set(0, 0, 0);
+      hmd.dolly.position.set(5, 0, 1);
+      assert.shallowDeepEqual(hmdControls.getVelocity(), {x: 5, y: 0, z: 1});
     });
   });
 });
