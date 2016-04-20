@@ -617,14 +617,8 @@ suite('a-animation', function () {
     var attribute = 'material.color';
     setup(function (done) {
       var self = this;
-      var elAttrs;
-      var attributeSplit = attribute.split('.');
-      elAttrs = {};
-      elAttrs[attribute] = '';
-      elAttrs[attributeSplit[0]] = {
-        shader: 'flat'
-      };
-      elAttrs[attributeSplit[0]][attributeSplit[1]] = '#FF0000';
+      var elAttrs = { color: '', material: { shader: 'flat', color: '#FF0000' } };
+
       setupAnimation({
         attribute: 'material.color',
         dur: 1000,

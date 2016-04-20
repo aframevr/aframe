@@ -15,9 +15,12 @@
       <a-box color="white" position="0 1 -10">
         <a-animation attribute="color" from="green" to="blue" dur="1000" begin="200" repeat="indefinite"></a-animation>
       </a-box>
-      <a-box color="white" position="-2 1 -10">
-        <a-animation attribute="color" from="#fafb94" to="#345334" dur="1000" begin="400" repeat="indefinite"></a-animation>
-      </a-box>
+      <a-entity position="-2 1 -10" geometry="primitive: box; depth: 1; height: 1; width: 1" material="color: #404040">
+        <a-animation attribute="material.color" from="#fafb94" to="#345334" dur="1000" begin="400" repeat="indefinite"></a-animation>
+      </a-entity>
+      <a-entity position="-4 1 -10" geometry="primitive: box; depth: 1; height: 1; width: 1" material="color: #404040">
+        <a-animation attribute="material.color" from="#404040" to="purple" dur="1000" begin="400" repeat="indefinite"></a-animation>
+      </a-entity>
       <a-plane rotation="-90 0 0" width="40" height="40" color="#7BC8A4"></a-plane>
     </a-scene>
   </body>
