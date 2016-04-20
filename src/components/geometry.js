@@ -1,8 +1,10 @@
+var debug = require('../utils/debug');
 var geometries = require('../core/geometry').geometries;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 var dummyGeometry = new THREE.Geometry();
+var warn = debug('components:geometry:warn');
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
@@ -10,9 +12,10 @@ var dummyGeometry = new THREE.Geometry();
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    buffer: {default: true},
-    primitive: {default: ''},
-    skipCache: {default: false}
+    buffer: { default: true },
+    mergeTo: { type: 'selector' },
+    primitive: { default: '' },
+    skipCache: { default: false }
   },
 
   init: function () {
@@ -35,6 +38,52 @@ module.exports.Component = registerComponent('geometry', {
 
     // Create new geometry.
     this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
+    if (data.mergeTo) {
+      this.mergeTo(data.mergeTo);
+    }
+  },
+
+  /**
+   * It merges the geometry into another entity's geometry. The original
+   * entity is removed from the scene. This is a not reversible operation
+   *
+   * @param {object} toEl - The entity where the geometry will be merged to
+   */
+  mergeTo: function (toEl) {
+    var el = this.el;
+    var mesh = el.getObject3D('mesh');
+    var toMesh;
+    if (!toEl) {
+      warn('There is not a valid entity to merge the geometry to');
+      return;
+    }
+    if (toEl === el) {
+      warn('Source and target geometries cannot be the same for merge.');
+      return;
+    }
+    toMesh = toEl.getObject3D('mesh');
+    // If the to entity does not have a mesh we create one
+    if (!toMesh) {
+      toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
+      toEl.setAttribute('material', el.getComputedAttribute('material'));
+      return;
+    }
+
+    if (toMesh.geometry instanceof THREE.Geometry === false ||
+        mesh.geometry instanceof THREE.Geometry === false) {
+      warn('Geometry merge is only available for `THREE.Geometry` types');
+      return;
+    }
+
+    if (this.data.skipCache === false) {
+      warn('Cached geometries are not allowed to merge. Set `skipCache` to true');
+      return;
+    }
+
+    mesh.parent.updateMatrixWorld();
+    toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
+    el.emit('geometry-merged', { mergeTarget: toEl });
+    el.sceneEl.removeChild(el);
   },
 
   /**

@@ -267,10 +267,10 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache.bind(NewComponent.prototype),
+    parse: NewComponent.prototype.parse,
+    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
-    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
+    stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
   return NewComponent;
