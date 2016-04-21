@@ -44,7 +44,7 @@ To configure one of the input methods, include its component and set the propert
 |----------------------|---------------------------------------------------------------------------------------|----------------------------------------------------
 | enabled              | Whether all controls are enabled.                                                     | true                                              |
 | flyingEnabled        | Whether or not movement is restricted to the entity's initial plane.                  | false                                             |
-| position             | List of input components used to track the entity's position, in order of precedence. | gamepad-controls keyboard-controls touch-controls |
+| position             | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls keyboard-controls touch-controls |
 | positionEnabled      | Whether positional tracking is enabled.                                               | true                                              |
 | positionEasing       | How quickly the entity slows down without input. Like friction.                       | 15                                                |
 | positionAcceleration | How quickly the entity accelerates with input.                                        | 65                                                |
