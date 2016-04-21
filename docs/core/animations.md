@@ -79,7 +79,7 @@ We can animate color attributes as well. For example, we can animate a box from 
 
 ```html
 <a-entity id="blushing-cube" geometry="primitive: box">
-  <a-animation attribute="color" begin="white" to="red" dur="1000"></a-animation>
+  <a-animation attribute="material.color" from="white" to="red" dur="1000"></a-animation>
 </a-entity>
 ```
 
