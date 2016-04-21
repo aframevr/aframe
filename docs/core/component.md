@@ -158,7 +158,7 @@ Given a default value, the schema will infer a property type and inject a parser
 
 ```js
 schema: {
-  default: false
+  default: 32
 }
 
 // Will process to:
@@ -167,7 +167,7 @@ schema: {
   default: 32,
   type: 'number',
   parse: function numberParse (value) {
-    return parseFloat(value, 10);
+    return parseFloat(value);
   },
   stringify: function defaultStringify (value) {
     return value.toString();
