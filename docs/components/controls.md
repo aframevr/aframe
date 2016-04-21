@@ -100,7 +100,7 @@ To create your own component for position or rotation controls, use the `AFRAME.
 
 Example:
 
-```html
+```js
 AFRAME.registerControls('random-controls', {
   schema: {enabled: {default: true}},
 
