@@ -158,7 +158,7 @@ Given a default value, the schema will infer a property type and inject a parser
 
 ```js
 schema: {
-  default: false
+  default: 32
 }
 
 // Will process to:
