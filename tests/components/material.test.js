@@ -1,5 +1,6 @@
 /* global assert, process, setup, suite, test, AFRAME */
 var entityFactory = require('../helpers').entityFactory;
+var shaders = require('core/shader').shaders;
 var THREE = require('index').THREE;
 
 suite('material', function () {
@@ -23,6 +24,13 @@ suite('material', function () {
       assert.shallowDeepEqual(el.getObject3D('mesh').material.color,
                              {r: 1, g: 0, b: 1});
       assert.shallowDeepEqual(el.getObject3D('mesh').material.side, THREE.DoubleSide);
+    });
+
+    test('updates material shader', function () {
+      var el = this.el;
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
+      el.setAttribute('material', 'shader', 'standard');
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
     test('disposes material when changing to new material', function () {
@@ -63,15 +71,24 @@ suite('material', function () {
       var el = this.el;
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
-      el.addEventListener('material-texture-loaded', function (evt) {
-        assert.equal(evt.detail.src, imageUrl);
+      el.addEventListener('materialtextureloaded', function (evt) {
+        assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
         done();
       });
+    });
+
+    test('sets material to MeshShaderMaterial for custom shaders', function () {
+      var el = this.el;
+      delete shaders.test;
+      AFRAME.registerShader('test', {});
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
+      el.setAttribute('material', 'shader', 'test');
+      assert.equal(el.getObject3D('mesh').material.type, 'ShaderMaterial');
     });
   });
 
   suite('updateSchema', function () {
-    test('updates schema', function () {
+    test('updates schema for flat shader', function () {
       var el = this.el;
       el.components.material.updateSchema({shader: 'flat'});
       assert.ok(el.components.material.schema.color);
@@ -84,39 +101,21 @@ suite('material', function () {
       assert.notOk(el.components.material.schema.roughness);
       assert.notOk(el.components.material.schema.envMap);
     });
-  });
 
-  suite('updateShader', function () {
-    test('updates material shader', function () {
+    test('updates schema for custom shader', function () {
       var el = this.el;
-      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
-      el.components.material.updateShader('standard');
-      assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
-    });
-
-    test('sets material to MeshShaderMaterial for custom shaders', function () {
-      var el = this.el;
+      delete shaders.test;
       AFRAME.registerShader('test', {
         schema: {
-          'luminance': { default: 1 }
-        },
-
-        vertexShader: [
-          'varying vec3 vWorldPosition;',
-          'void main() {',
-          'vec4 worldPosition = modelMatrix * vec4( position, 1.0 );',
-          'vWorldPosition = worldPosition.xyz;',
-          'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-          '}'
-        ].join('\n'),
-
-        fragmentShader: [
-          'void main() { gl_FragColor = vec4(1.0,0.0,1.0,1.0); }'
-        ].join('\n')
+          color: {type: 'color'},
+          luminance: {default: 1}
+        }
       });
-      assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
-      el.components.material.updateShader('test');
-      assert.equal(el.getObject3D('mesh').material.type, 'ShaderMaterial');
+      el.setAttribute('material', 'shader', 'test');
+      assert.ok(el.components.material.schema.opacity);
+      assert.ok(el.components.material.schema.color);
+      assert.ok(el.components.material.schema.luminance);
+      assert.notOk(el.components.material.schema.src);
     });
   });
 

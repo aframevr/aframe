@@ -1,47 +1,52 @@
-var srcLoader = require('./src-loader');
-
 /**
- * Update shader instance's `material.map` given `data.src`.
+ * Update `material.map` given `data.src`. For standard and flat shaders.
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
 module.exports.updateMap = function (shader, data) {
   var el = shader.el;
-  var src = data.src;
   var material = shader.material;
-  var materialSystem = el.sceneEl.systems.material;
+  var src = data.src;
 
   if (src) {
-    if (src === shader.mapSrc) { return; }
+    if (src === shader.textureSrc) { return; }
     // Texture added or changed.
-    shader.mapSrc = src;
-    srcLoader.validateSrc(
-      src,
-      function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-      function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
-    );
+    shader.textureSrc = src;
+    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat}, setMap);
     return;
   }
 
   // Texture removed.
-  updateMaterialTexture(material, null);
+  if (!material.map) { return; }
+  setMap(null);
+
+  function setMap (texture) {
+    material.map = texture;
+    material.needsUpdate = true;
+    handleTextureEvents(el, texture);
+  }
 };
 
 /**
- * Set material texture and update if necessary.
+ * Emit event on entities on texture-related events.
  *
- * @param {object} material
- * @param {object} texture
+ * @param {Element} el - Entity.
+ * @param {object} texture - three.js Texture.
  */
-function updateMaterialTexture (material, texture) {
-  var oldMap = material.map;
-  if (texture) { texture.needsUpdate = true; }
-  material.map = texture;
+function handleTextureEvents (el, texture) {
+  if (!texture) { return; }
 
-  // Only need to update three.js material if presence or not of texture has changed.
-  if (oldMap === null && material.map || material.map === null && oldMap) {
-    material.needsUpdate = true;
-  }
+  el.emit('materialtextureloaded', {src: texture.image, texture: texture});
+
+  // Video events.
+  if (texture.image.tagName !== 'VIDEO') { return; }
+  texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
+    el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
+  });
+  texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
+    // Works for non-looping videos only.
+    el.emit('materialvideoended', {src: texture.image, texture: texture});
+  });
 }
-module.exports.updateMaterialTexture = updateMaterialTexture;
+module.exports.handleTextureEvents = handleTextureEvents;
