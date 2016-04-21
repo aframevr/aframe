@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Towers</title>
+    <meta name="description" content="Towers - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <style>
+      html, body { background: #fff; }
+      .dark { background: rgb(12,12,12); }
+    </style>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-mixin id="layer-1--light" material="color: rgb(255,255,255)"></a-mixin>
+        <a-mixin id="layer-2--light" material="color: rgb(252,252,252)"></a-mixin>
+        <a-mixin id="layer-3--light" material="color: rgb(248,248,248)"></a-mixin>
+        <a-mixin id="layer-4--light" material="color: rgb(245,245,245)"></a-mixin>
+        <a-mixin id="layer-5--light" material="color: rgb(235,235,235)"></a-mixin>
+        <a-mixin id="layer-6--light" material="color: rgb(225,225,225)"></a-mixin>
+        <a-mixin id="layer-7--light" material="color: rgb(215,215,215)"></a-mixin>
+        <a-mixin id="layer-8--light" material="color: rgb(185,185,185)"></a-mixin>
+        <a-mixin id="layer-9--light" material="color: rgb(166,166,166)"></a-mixin>
+
+        <a-mixin id="layer-1--dark" material="color: rgb(12,12,12)"></a-mixin>
+        <a-mixin id="layer-2--dark" material="color: rgb(36,36,36)"></a-mixin>
+        <a-mixin id="layer-3--dark" material="color: rgb(46,46,46)"></a-mixin>
+        <a-mixin id="layer-4--dark" material="color: rgb(57,57,57)"></a-mixin>
+        <a-mixin id="layer-5--dark" material="color: rgb(92,92,92)"></a-mixin>
+        <a-mixin id="layer-6--dark" material="color: rgb(112,112,112)"></a-mixin>
+        <a-mixin id="layer-7--dark" material="color: rgb(142,142,142)"></a-mixin>
+        <a-mixin id="layer-8--dark" material="color: rgb(179,179,179)"></a-mixin>
+        <a-mixin id="layer-9--dark" material="color: rgb(219,219,219)"></a-mixin>
+      </a-assets>
+
+      <a-entity id="world" rotation="0 0 0" position="0 -3 0"></a-entity>
+
+      <a-entity class="light--light" light="type: directional; color: #fff; intensity: 0.2"
+                position="-1 2 1"></a-entity>
+      <a-entity class="light--light" light="type: ambient; color: #eee;"></a-entity>
+
+      <a-entity class="light--dark"
+                light="type: directional; color: rgb(12,12,12); intensity: 0.2"
+                position="-1 2 1" visible="false"></a-entity>
+      <a-entity class="light--dark" light="type: ambient; color: #999"
+                visible="false"></a-entity>
+    </a-scene>
+
+    <script>
+      (function () {
+        var html = document.documentElement;
+        var body = document.body;
+
+        window.addEventListener('devicelight', changeColor);
+
+        function changeColor (e) {
+          var active;
+          var inactive;
+          var els;
+
+          if (e.value < 40) {
+            html.classList.add('dark');
+            body.classList.add('dark');
+            active = 'dark';
+            inactive = 'light';
+          } else {
+            html.classList.remove('dark');
+            body.classList.remove('dark');
+            active = 'light';
+            inactive = 'dark';
+          }
+
+          els = document.querySelectorAll('[mixin$="--' + inactive + '"]');
+          for (var i = 0; i < els.length; i++) {
+            els[i].setAttribute(
+              'mixin',
+              els[i].getAttribute('mixin').replace('--' + inactive, '--' + active));
+          }
+
+          els = document.querySelectorAll('.light--' + inactive);
+          for (var i = 0; i < els.length; i++) {
+            els[i].setAttribute('visible', false);
+          }
+
+          els = document.querySelectorAll('.light--' + active);
+          for (var i = 0; i < els.length; i++) {
+            els[i].setAttribute('visible', true);
+          }
+        }
+
+        var num = 18;
+        var gap = 3;
+        for (var x = -num; x < num; x += gap) {
+          for (var z = -num; z < num; z += gap) {
+            addTower({position: {x: x, y: 0, z: z}}, 9);
+          }
+        }
+
+        function createCube (opts) {
+          opts = opts || {};
+          var cube = document.createElement('a-entity');
+
+          opts.geometry = {
+            primitive: 'box',
+            height: opts.height,
+            width: opts.width,
+            depth: opts.depth
+          };
+
+          delete opts.height;
+          delete opts.width;
+          delete opts.depth;
+          delete opts.idx;
+
+          Object.keys(opts).forEach(function (key) {
+            cube.setAttribute(key, opts[key]);
+          });
+
+          return cube;
+        }
+
+        function addTower (opts, numCubes) {
+          opts = opts || {};
+          if (!('width' in opts)) {
+            opts.width = 1.5;
+          }
+          if (!('height' in opts)) {
+            opts.height = 0.25;
+          }
+          if (!('depth' in opts)) {
+            opts.depth = 1.5;
+          }
+
+          var firstCubeOpts = Object.assign({rotation: {x: 0, y: 45, z: 0}}, opts);
+          firstCubeOpts.mixin = 'layer-1--light';
+
+          var parentCube = createCube(firstCubeOpts);
+          var firstCube = parentCube;
+
+          var offsetX = 0;
+          var offsetY = parseFloat((opts.position && opts.position.y) || 0) +
+                        parseFloat(opts.height);
+          var offsetZ = 0;
+
+          var position = {
+            x: offsetX,
+            y: offsetY,
+            z: offsetZ
+          };
+
+          for (var i = 1; i < numCubes; i++) {
+            var newCubeOpts = Object.assign({}, opts);
+            newCubeOpts.position = position;
+            newCubeOpts.mixin = 'layer-' + (i + 1) + '--light';
+
+            var newCube = createCube(newCubeOpts);
+            parentCube.appendChild(newCube);
+            parentCube = newCube;
+          }
+
+          world.appendChild(firstCube);
+        }
+      })();
+    </script>
+  </body>
+</html>
