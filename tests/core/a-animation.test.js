@@ -119,11 +119,11 @@ suite('a-animation', function () {
     test('stops animation', function (done) {
       setupAnimation({}, function (el, animationEl) {
         assert.ok(animationEl.isRunning);
-        animationEl.parentNode.removeChild(animationEl);
         animationEl.addEventListener('animationstop', function () {
           assert.notOk(animationEl.isRunning);
           done();
         });
+        animationEl.parentNode.removeChild(animationEl);
       });
     });
   });
@@ -380,8 +380,8 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', '1');
       el.appendChild(animationEl);
-      el.play();
-      process.nextTick(function () {
+      animationEl.addEventListener('loaded', function () {
+        el.play();
         assert.ok(animationEl.isRunning);
         done();
       });

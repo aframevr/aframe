@@ -6,7 +6,7 @@ suite('a-camera', function () {
     scene.appendChild(camera);
     document.body.appendChild(scene);
 
-    process.nextTick(function () {
+    camera.addEventListener('loaded', function () {
       assert.ok(camera.getComputedAttribute('camera').active);
       done();
     });

@@ -31,18 +31,13 @@ suite('look-at', function () {
       assert.ok(this.spy.notCalled);
     });
 
-    test('can look at a position', function (done) {
+    test('can look at a position', function () {
       var el = this.el;
       var spy = this.spy;
       el.setAttribute('look-at', '10 20 30');
-      setTimeout(function () {
-        assert.ok(spy.calledWith({x: 10, y: 20, z: 30}));
-        el.setAttribute('look-at', '30 15 0');
-        setTimeout(function () {
-          assert.ok(spy.calledWith({x: 30, y: 15, z: 0}));
-          done();
-        });
-      });
+      assert.ok(spy.calledWith({x: 10, y: 20, z: 30}));
+      el.setAttribute('look-at', '30 15 0');
+      assert.ok(spy.calledWith({x: 30, y: 15, z: 0}));
     });
 
     test('can look at an object', function (done) {

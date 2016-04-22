@@ -6,7 +6,7 @@ module.exports = function (config) {
       debug: true,
       paths: ['src']
     },
-    browsers: ['firefox_latest'],
+    browsers: ['firefox_latest', 'Chrome'],
     customLaunchers: {
       firefox_latest: {
         base: 'FirefoxNightly',

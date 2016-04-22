@@ -16,7 +16,6 @@ module.exports = function getMeshMixin () {
       shader: 'material.shader',
       side: 'material.side',
       src: 'material.src',
-      translate: 'geometry.translate',
       transparent: 'material.transparent'
     },
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Models</title>
+    <meta name="description" content="Models — A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-asset-item id="tree1" src="../../assets/models/tree1/tree1.dae"></a-asset-item>
+        <a-asset-item id="tree2" src="../../assets/models/tree2/tree2.dae"></a-asset-item>
+        <a-asset-item id="crate-mtl" src="../../assets/models/crate/crate.mtl"></a-asset-item>
+        <a-asset-item id="crate-obj" src="../../assets/models/crate/crate.obj"></a-asset-item>
+        <img id="sky" src="peach-gradient.jpg">
+      </a-assets>
+
+      <a-obj-model src="#crate-obj" mtl="#crate-mtl"><a-obj-model>
+
+      <a-collada-model src="#tree1" position="1 0 -1" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-collada-model src="#tree2" position="2.5 0 1.5" rotation="0 25 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+
+      <a-collada-model src="#tree2" position="-2 0 -4" rotation="0 60 0"
+                       scale="1.5 1.5 1.5"></a-collada-model>
+      <a-collada-model src="#tree1" position="-8 0 -9" rotation="0 60 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+
+      <a-collada-model src="#tree2" position="-12 0 3" rotation="0 60 0"
+                       scale="1.5 1.5 1.5"></a-collada-model>
+      <a-collada-model src="#tree1" position="-7 0 -3" rotation="0 60 0"
+                       scale="1.3 1.3 1.3"></a-collada-model>
+
+      <a-collada-model src="#tree2" position="-4 0 1" rotation="0 10 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-collada-model src="#tree1" position="-5 0 5" rotation="0 45 0"
+                       scale="1.5 1.5 1.5"></a-collada-model>
+
+      <a-collada-model src="#tree2" position="0 0 9" rotation="0 220 0"
+                       scale="1.6 1.6 1.6"></a-collada-model>
+      <a-collada-model src="#tree2" position="-2 0 12" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+      <a-collada-model src="#tree1" position="-7 0 10" rotation="0 30 0"
+                       scale="1.4 1.4 1.4"></a-collada-model>
+
+      <a-sky src="#sky"></a-sky>
+
+      <a-light type="ambient" color="#ccc"></a-light>
+      <a-light color="#ddf" distance="100" intensity="0.4" type="point"></a-light>
+    </a-scene>
+  </body>
+</html>

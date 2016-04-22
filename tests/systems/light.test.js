@@ -9,11 +9,12 @@ suite('light system', function () {
     });
   });
 
-  test('adds default lights to scene', function (done) {
+  test('adds default lights to scene', function () {
     var el = this.el;
     var sceneEl = el.sceneEl;
     var i;
     var lights = sceneEl.querySelectorAll('[light]');
+    var lightsNum = 0;
 
     // Remove lights to re-test.
     for (i = 0; i < lights.length; ++i) {
@@ -22,10 +23,13 @@ suite('light system', function () {
     assert.notOk(document.querySelectorAll('[light]').length);
 
     sceneEl.systems.light.setupDefaultLights();
-    process.nextTick(function () {
-      assert.ok(document.querySelectorAll('[light]').length);
-      done();
-    });
+    lights = sceneEl.querySelectorAll('a-entity');
+    // Remove lights to re-test.
+    for (i = 0; i < lights.length; ++i) {
+      if (!lights[i].components.light) { continue; }
+      lightsNum += 1;
+    }
+    assert.equal(lightsNum, 2);
   });
 
   test('removes default lights when more lights are added', function (done) {

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>performance/entity-count</title>
+    <meta name="description" content="performance/entity-count | A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <style>
+      body { background-color: black; }
+    </style>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-mixin id="cube" geometry="primitive: box; height: 16; width: 16; depth: 16;"
+                 material="color: #167341; roughness: 1.0; metalness: 0.2;"></a-mixin>
+      </a-assets>
+      <a-entity position="0 20 0">
+        <a-entity camera="active:true" rotation="0 0 0" position="0 0 0"></a-entity>
+      </a-entity>
+    </a-scene>
+    <script>
+      var cubeEl;
+      var sceneEl = document.querySelector('a-scene');
+      var x = -90;
+      var z = -10;
+      var parentEl = document.createElement('a-entity');
+      for (var i = 0; i < 400; i+=1) {
+        for (var j = 0; j < 10; j+=1) {
+          cubeEl = document.createElement('a-entity');
+          cubeEl.setAttribute('mixin', 'cube');
+          cubeEl.setAttribute('position', { x: x, y: 0, z: z});
+          x += 20;
+          sceneEl.appendChild(cubeEl);
+        }
+        x = -90;
+        z -= 20;
+      }
+    </script>
+  </body>
+</html>
