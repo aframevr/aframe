@@ -9,7 +9,7 @@
   <body>
     <a-scene stats>
       <a-assets>
-        <a-mixin id="box" class="pulse" geometry="primitive: box; depth: 0.5; height: 1; width: 0.5" material="color: #5698Af">
+        <a-mixin id="box" geometry="primitive: box; depth: 0.5; height: 1; width: 0.5" material="color: #5698Af">
         <a-mixin id="pulse" attribute="material.color" from="#fff" to="#5698Af" dur="1000" begin="pulse"></a-mixin>
       </a-assets>
 
@@ -63,7 +63,7 @@
   <script>
     window.onload = function() {
       var interval = setInterval(function() {
-        var pulses = document.querySelectorAll('.pulse');
+        var pulses = document.querySelectorAll('[mixin="box"]');
         var index = 0;
 
         var loop = setInterval(function() {
