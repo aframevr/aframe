@@ -248,6 +248,7 @@ AFRAME.registerComponent('my-geometry', {
     this.el.getObject3D('mesh').geometry = new THREE.Geometry();
   }
 });
+```
 
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
 [hexagon-codepen]: http://codepen.io/team/mozvr/pen/jWzVXJ
