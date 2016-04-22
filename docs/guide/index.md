@@ -52,7 +52,7 @@ A-Frame allows us to create VR scenes that works across desktop, the Oculus Rift
 </html>
 ```
 
-Under the hood, A-Frame is built on top of [Custom Elements][custom] and is powered by [three.js][three]. Although A-Frame at first looks like only a handful of custom HTML elements like `<a-cube>`, A-Frame at its heart is a **entity-component-system-based three.js framework with a DOM interface**. Everything in an A-Frame scene is an [entity][entity] which we plug [components][component] into in order to compose appearance, behavior, and functionality. This allows experienced developers share reusable components that other developers can drop into their scene and use immediately. The scene above looks needlessly verbose, but we see its true power when we're able to attach and compose appearance and behavior at whim:
+Under the hood, A-Frame is built on top of [Custom Elements][custom] and is powered by [three.js][three]. Although A-Frame at first looks like only a handful of custom HTML elements like `<a-box>`, A-Frame at its heart is a **entity-component-system-based three.js framework with a DOM interface**. Everything in an A-Frame scene is an [entity][entity] which we plug [components][component] into in order to compose appearance, behavior, and functionality. This allows experienced developers to share reusable components that other developers can drop into their scene and use immediately. The scene above looks needlessly verbose, but we see its true power when we're able to attach and compose appearance and behavior at whim:
 
 ```html
 <html>
