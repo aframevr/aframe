@@ -2,7 +2,6 @@
 'use strict';
 var entityFactory = require('../../helpers').entityFactory;
 var MouseEvent = window.MouseEvent;
-var Event = window.Event;
 
 suite('mouse-controls', function () {
   var mouseControls, canvasEl;
@@ -14,8 +13,6 @@ suite('mouse-controls', function () {
     this._setup = function () {
       mouseControls = el.components['mouse-controls'];
       canvasEl = el.sceneEl.canvas;
-      canvasEl.requestPointerLock = canvasEl.requestPointerLock || function () {};
-      this.sinon.stub(canvasEl, 'requestPointerLock');
       done();
     };
 
@@ -46,15 +43,6 @@ suite('mouse-controls', function () {
       canvasEl.dispatchEvent(new MouseEvent('mousedown'));
       assert.isFalse(mouseControls.isRotationActive());
     });
-
-    test('active when pointer is locked', function () {
-      mouseControls.pointerLocked = true;
-      canvasEl.dispatchEvent(new MouseEvent('mousedown'));
-      canvasEl.dispatchEvent(new MouseEvent('mouseup'));
-      assert.isTrue(mouseControls.isRotationActive());
-      mouseControls.pointerLocked = false;
-      assert.isFalse(mouseControls.isRotationActive());
-    });
   });
 
   suite('getRotationDelta', function () {
@@ -68,36 +56,6 @@ suite('mouse-controls', function () {
       canvasEl.dispatchEvent(new MouseEvent('mousemove', {screenX: 200, screenY: 75}));
       assert.shallowDeepEqual(mouseControls.getRotationDelta(), {x: 1, y: 0.75});
       assert.shallowDeepEqual(mouseControls.getRotationDelta(), {x: 0, y: 0});
-    });
-
-    test('updates rotation on pointerlock + mouse move', function () {
-      var el = this.el;
-      el.setAttribute('mouse-controls', {sensitivity: 0.01, pointerlockEnabled: true});
-      mouseControls.pointerLocked = true;
-      canvasEl.dispatchEvent(new MouseEvent('mousemove', {movementX: 100, movementY: 0}));
-      assert.shallowDeepEqual(mouseControls.getRotationDelta(), {x: 1, y: 0});
-      canvasEl.dispatchEvent(new MouseEvent('mousemove', {movementX: 100, movementY: 100}));
-      assert.shallowDeepEqual(mouseControls.getRotationDelta(), {x: 1, y: 1});
-      assert.shallowDeepEqual(mouseControls.getRotationDelta(), {x: 0, y: 0});
-    });
-  });
-
-  suite('pointer lock', function () {
-    test('enters pointer lock', function () {
-      var el = this.el;
-      el.setAttribute('mouse-controls', {pointerlockEnabled: true});
-      canvasEl.dispatchEvent(new MouseEvent('mousedown'));
-      assert(canvasEl.requestPointerLock.called);
-      // Can't directly check that onPointerLockChange() works, because
-      // document.pointerLockElement is readonly.
-    });
-
-    test('exits pointer lock', function () {
-      var el = this.el;
-      el.setAttribute('mouse-controls', {pointerlockEnabled: true});
-      mouseControls.pointerLocked = true;
-      document.dispatchEvent(new Event('pointerlockerror'));
-      assert.isFalse(mouseControls.pointerLocked);
     });
   });
 });

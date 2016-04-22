@@ -7,28 +7,18 @@ var warn = debug('components:mouse-controls:warn');
 /**
  * Mouse-controls component.
  *
- * Updates rotation with mousedrag or pointerlock input.
+ * Updates rotation when dragging the mouse.
  */
 module.exports.Component = registerControls('mouse-controls', {
   schema: {
     enabled: { default: true },
-    pointerlockEnabled: { default: false },
     sensitivity: { default: 0.002 }
   },
 
   init: function () {
     this.mouseDown = false;
-    this.pointerLocked = false;
     this.lookVector = new THREE.Vector2();
     this.bindMethods();
-  },
-
-  update: function (previousData) {
-    var data = this.data;
-    if (data.pointerlockEnabled !== previousData.pointerlockEnabled) {
-      this.removeEventListeners();
-      this.addEventListeners();
-    }
   },
 
   play: function () {
@@ -48,14 +38,11 @@ module.exports.Component = registerControls('mouse-controls', {
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
-    this.onPointerLockChange = this.onPointerLockChange.bind(this);
-    this.onPointerLockError = this.onPointerLockError.bind(this);
   },
 
   addEventListeners: function () {
     var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl.canvas;
-    var data = this.data;
 
     if (!sceneEl) {
       // TODO: Mock the scene, or stub this component in unrelated tests.
@@ -73,12 +60,6 @@ module.exports.Component = registerControls('mouse-controls', {
     canvasEl.addEventListener('mousemove', this.onMouseMove, false);
     canvasEl.addEventListener('mouseup', this.onMouseUp, false);
     canvasEl.addEventListener('mouseout', this.onMouseUp, false);
-
-    if (data.pointerlockEnabled) {
-      document.addEventListener('pointerlockchange', this.onPointerLockChange, false);
-      document.addEventListener('mozpointerlockchange', this.onPointerLockChange, false);
-      document.addEventListener('pointerlockerror', this.onPointerLockError, false);
-    }
   },
 
   removeEventListeners: function () {
@@ -89,13 +70,10 @@ module.exports.Component = registerControls('mouse-controls', {
       canvasEl.removeEventListener('mouseup', this.onMouseUp, false);
       canvasEl.removeEventListener('mouseout', this.onMouseUp, false);
     }
-    document.removeEventListener('pointerlockchange', this.onPointerLockChange, false);
-    document.removeEventListener('mozpointerlockchange', this.onPointerLockChange, false);
-    document.removeEventListener('pointerlockerror', this.onPointerLockError, false);
   },
 
   isRotationActive: function () {
-    return this.data.enabled && (this.mouseDown || this.pointerLocked);
+    return this.data.enabled && this.mouseDown;
   },
 
   /**
@@ -111,48 +89,19 @@ module.exports.Component = registerControls('mouse-controls', {
     var lookVector = this.lookVector;
     var previousMouseEvent = this.previousMouseEvent;
 
-    if (!this.data.enabled || !(this.mouseDown || this.pointerLocked)) {
-      return;
-    }
+    if (!this.data.enabled || !this.mouseDown) { return; }
 
-    var movementX = event.movementX || event.mozMovementX || 0;
-    var movementY = event.movementY || event.mozMovementY || 0;
-
-    if (!this.pointerLocked) {
-      movementX = event.screenX - previousMouseEvent.screenX;
-      movementY = event.screenY - previousMouseEvent.screenY;
-    }
-
-    lookVector.x += movementX;
-    lookVector.y += movementY;
-
+    lookVector.x += event.screenX - previousMouseEvent.screenX;
+    lookVector.y += event.screenY - previousMouseEvent.screenY;
     this.previousMouseEvent = event;
   },
 
   onMouseDown: function (event) {
-    var canvasEl = this.el.sceneEl.canvas;
-
     this.mouseDown = true;
     this.previousMouseEvent = event;
-
-    if (this.data.pointerlockEnabled && !this.pointerLocked) {
-      if (canvasEl.requestPointerLock) {
-        canvasEl.requestPointerLock();
-      } else if (canvasEl.mozRequestPointerLock) {
-        canvasEl.mozRequestPointerLock();
-      }
-    }
   },
 
   onMouseUp: function () {
     this.mouseDown = false;
-  },
-
-  onPointerLockChange: function () {
-    this.pointerLocked = !!(document.pointerLockElement || document.mozPointerLockElement);
-  },
-
-  onPointerLockError: function () {
-    this.pointerLocked = false;
   }
 });
