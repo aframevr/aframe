@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cursor</title>
+    <meta name="description" content="Cursor - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-mixin id="cube" geometry="primitive: box"></a-mixin>
+        <a-mixin id="cube-hovered" material="color: #CC435F"></a-mixin>
+        <a-mixin id="cube-selected" material="color: #876A96"></a-mixin>
+        <a-mixin id="red" material="color: #F35F5F"></a-mixin>
+        <a-mixin id="green" material="color: #9DE0AD"></a-mixin>
+        <a-mixin id="blue" material="color: #36A3EB"></a-mixin>
+        <a-mixin id="yellow" material="color: #F1EA65"></a-mixin>
+        <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
+      </a-assets>
+
+      <a-sky color="#FBE0D8"></a-sky>
+
+      <a-entity position="0 2.2 4">
+        <a-entity camera look-controls wasd-controls>
+          <a-entity cursor
+                    geometry="primitive: ring; radiusOuter: 0.015;
+                              radiusInner: 0.01; segmentsTheta: 32"
+                    material="color: #283644; shader: flat"
+                    raycaster="far: 30"
+                    position="0 0 -0.75"></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="-3.5 1 0">
+        <a-entity mixin="red cube">
+          <a-animation begin="cursor-click" attribute="position" from="0 0 0"
+                       to="0 0 -10" dur="2000" fill="both"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="0 1 0">
+        <a-entity mixin="green cube">
+          <a-animation begin="cursor-click" attribute="rotation" to="0 360 0"
+                       easing="linear" dur="2000" fill="backwards"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="3.5 1 0" rotation="0 45 0">
+        <a-entity mixin="blue cube">
+          <a-animation begin="cursor-click" fill="forwards" repeat="1"
+                       direction="alternate" attribute="position" from="0 0 0"
+                       to="15 0 0" dur="2000"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <a-entity mixin="yellow cube" position="0 3 0" class="clickable"
+                rotation="0 45 0" scale=".5 .5 .5"></a-entity>
+    </a-scene>
+
+    <script>
+      (function () {
+        // Custom states.
+        var clickedEl = null;
+        var els = document.querySelectorAll('a-entity');
+        Array.prototype.forEach.call(els, function (el) {
+          el.addEventListener('cursor-click', function () {
+            if (clickedEl && clickedEl !== el) {
+              clickedEl.removeState('selected');
+            }
+            if (!el.classList.contains('clickable')) { return; }
+            clickedEl = el;
+            clickedEl.addState('selected');
+          });
+        });
+
+        // Responding to mouse events.
+        var cubes = document.querySelectorAll('a-entity[mixin*=cube]');
+        var i;
+        for (i = 0; i < cubes.length; ++i) {
+          cubes[i].addEventListener('cursor-click', function () {
+            var href = this.getAttribute('href');
+            if (!href) { return; }
+            window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
+          })
+        }
+      })();
+    </script>
+  </body>
+</html>

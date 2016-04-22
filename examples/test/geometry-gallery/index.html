@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Geometries</title>
+    <meta name="description" content="Geometries - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <!-- Geometry mixins. -->
+        <a-mixin id="box"
+                 geometry="primitive: box; depth: .125; height: .125;
+                           width: .125"></a-mixin>
+        <a-mixin id="circle"
+                 geometry="primitive: circle; radius: .2;
+                           segments: 100; thetaStart: 0; thetaLength: 350">
+        </a-mixin>
+        <a-mixin id="cylinder"
+                 geometry="primitive: cylinder; radius: 0.2; height: .5;
+                           segmentsRadial: 50; segmentsHeight: 50:
+                           openEnded: true; thetaStart: 0; thetaLength: 350">
+        </a-mixin>
+        <a-mixin id="ring"
+                  geometry="primitive: ring; radiusInner: .3; radiusOuter: .5;
+                            segmentsTheta: 50"></a-mixin>
+        <a-mixin id="sphere"
+                  geometry="primitive: sphere; radius: .1"></a-mixin>
+        <a-mixin id="torus"
+                  geometry="primitive: torus; arc: 720; radius: .3; radiusTubular: .05;
+                            segmentsTubular: 10;"></a-mixin>
+        <a-mixin id="torus-knot"
+                  geometry="primitive: torusKnot; p: 3; q: 7; radius: .25;
+                            segmentsRadial: 10; radiusTubular: .07; segmentsTubular: 32">
+        </a-mixin>
+
+        <!-- Layout mixins. -->
+        <a-mixin id="column"
+                  geometry="primitive: box; depth: .75; height: 1.2; width: .75"
+                  material="color: #FFF" position="0 .6 0"></a-mixin>
+        <a-mixin id="column-bottom" geometry="primitive: box; depth: 1;
+                                              height: .1; width: 1;"
+                 material="color: #FFF" position="0 .1 0">
+        </a-mixin>
+        <a-mixin id="column-light" light="type: point; intensity: 0.5;
+                                          distance: 5;"
+                  position="0 1.5 0">
+        </a-mixin>
+        <a-mixin id="object-on-column" position="0 1.2 0"></a-mixin>
+
+        <!-- Animation mixins. -->
+        <a-mixin id="yoyo" direction="alternate" fill="forwards"
+                           repeat="indefinite"></a-mixin>
+        <a-mixin id="spin" attribute="rotation" to="0 360 0"
+                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
+        <a-mixin id="spin-x" mixin="spin" attribute="rotation" to="360 0 0"
+                 repeat="indefinite" easing="linear" dur="10000"></a-mixin>
+
+        <a-mixin id="color" material="color: #FFFFC3"></a-mixin>
+        <a-mixin id="doubleside" material="side: double"></a-mixin>
+
+        <img id="carpet" src="carpet.jpg">
+        <img id="floor" src="marble.jpg">
+      </a-assets>
+
+      <!-- Camera. -->
+      <a-entity position="0 1.8 0">
+        <a-entity camera look-controls wasd-controls>
+        </a-entity>
+      </a-entity>
+
+      <!-- Lights. -->
+      <a-entity light="type: ambient; color: #444"></a-entity>
+      <a-entity light="type: directional; color: #EEE"
+                position="0 1 1">
+      </a-entity>
+
+      <!-- Skysphere. -->
+      <a-entity geometry="primitive: sphere; radius: 80"
+                material="color: #112; shader: flat" scale="1 1 -1">
+      </a-entity>
+
+      <!-- Floor. -->
+      <a-entity geometry="primitive: cylinder; height: .2; radius: 12;"
+                material="color: #BABABA; src: #floor;
+                          metalness: .2; repeat: 50 20; roughness: .1"
+                position="0 0 0"></a-entity>
+
+      <!-- Carpet. -->
+      <a-entity geometry="primitive: box; depth: 20; height: 0.025; width: 2"
+                material="color: #440000; metalness: 0; src: #carpet;
+                          repeat: 3 40; roughness: 1"
+                position="0 .2 0">
+      </a-entity>
+
+      <!-- Boxes. -->
+      <a-entity position="-2.5 0 1">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color box">
+            <a-animation mixin="spin" to="360 360 0"></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color box" position=".18 1.2 .1">
+            <a-animation mixin="spin" to="360 360 0"></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color box"
+                    position="-.18 1.2 -.2">
+            <a-animation mixin="spin" to="360 360 0"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Circles. -->
+      <a-entity position="-2.5 0 -2">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color doubleside circle">
+            <a-animation mixin="spin"></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color doubleside circle">
+            <a-animation mixin="spin-x"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Cylinders. -->
+      <a-entity position="-2.5 0 -5">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color cylinder">
+            <a-animation mixin="spin-x"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Rings. -->
+      <a-entity position="2.5 0 1">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color doubleside ring">
+            <a-animation mixin="spin" dur="6000"></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color doubleside ring">
+            <a-animation mixin="spin" to="360 0 0" dur="6000"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Spheres. -->
+      <a-entity position="2.5 0 -2">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color sphere"
+                    position="-.2 1.2 0">
+            <a-animation mixin="yoyo" attribute="position" from="-.2 1 0"
+                         to="-.2 1.8 0"></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color sphere">
+            <a-animation mixin="yoyo" attribute="position" from="0 1.8 0"
+                         to="0 1 0" ></a-animation>
+          </a-entity>
+          <a-entity mixin="object-on-column color sphere" position=".2 1 0">
+            <a-animation mixin="yoyo" attribute="position" from=".2 1 0"
+                         to=".2 1.8 0"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Torus. -->
+      <a-entity position="2.5 0 -5">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color torus">
+            <a-animation mixin="spin"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+
+      <!-- Torus Knot. -->
+      <a-entity position="2.5 0 -8">
+        <a-entity mixin="column">
+          <a-entity mixin="column-light"></a-entity>
+          <a-entity mixin="object-on-column color torus-knot">
+            <a-animation mixin="spin"></a-animation>
+          </a-entity>
+        </a-entity>
+        <a-entity mixin="column-bottom"></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

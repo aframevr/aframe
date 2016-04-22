@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Interactions</title>
+    <meta name="description" content="Interactions - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="blue" material="color: #4CC3D9"></a-mixin>
+        <a-mixin id="cube" geometry="primitive: box; depth: 1; height: 1; width: 1"></a-mixin>
+        <a-mixin id="cylinder" geometry="primitive: cylinder; height: 0.3; radius: 0.75; segmentsRadial: 6"></a-mixin>
+        <a-mixin id="green" material="color: #7BC8A4"></a-mixin>
+        <a-mixin id="orange" material="color: #F16745"></a-mixin>
+        <a-mixin id="purple" material="color: #93648D"></a-mixin>
+        <a-mixin id="short" scale="1 0.5 1"></a-mixin>
+        <a-mixin id="yellow" material="color: #FFC65D"></a-mixin>
+      </a-assets>
+
+      <a-entity id="camera" position="0 1.8 4">
+        <a-camera id="camera">
+          <a-cursor color="#4CC3D9"></a-cursor>
+        </a-camera>
+      </a-entity>
+
+      <a-entity id="target" mixin="purple cylinder" position="0 3.5 0"></a-entity>
+
+      <a-entity mixin="short orange cube" position="-1 2 0" rotation="30 30 0"></a-entity>
+
+      <a-entity mixin="short yellow cube" position="1 2 0" rotation="30 30 0">
+        <a-event name="cursor-click" target="#target" scale="1.5 1.5 1.5"></a-event>
+        <a-event name="cursor-click" scale="1.5 1.5 1.5"></a-event>
+      </a-entity>
+
+      <a-entity mixin="green cube" position="-1 0 0" rotation="30 30 0"></a-entity>
+
+      <a-entity mixin="blue cube" position="1 0 0" rotation="30 30 0">
+        <a-event name="cursor-click" material.color="#FFC65D"></a-event>
+        <a-event name="cursor-mouseenter" scale="1.5 1.5 1.5"></a-event>
+        <a-event name="cursor-mouseleave" scale="1 1 1"></a-event>
+      </a-entity>
+
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>

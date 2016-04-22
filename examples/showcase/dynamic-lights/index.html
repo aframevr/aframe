@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lights</title>
+    <meta name="description" content="Lights – A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="light" geometry="primitive: sphere; radius: 1.5"
+                 material="color: #FFF; shader: flat"
+                 light="color: #DDDDFF; distance: 120; intensity: 2; type: point">
+        </a-mixin>
+        <a-mixin id="torus-knot" geometry="primitive: torusKnot"
+                 material="color: red"></a-mixin>
+      </a-assets>
+
+      <!-- Camera. -->
+      <a-entity position="0 0 80" camera="fov: 45"
+                look-controls wasd-controls></a-entity>
+
+      <!-- Skysphere. -->
+      <a-entity geometry="primitive: sphere; radius: 300"
+                material="color: #111; shader: flat"
+                scale="-1 -1 -1"></a-entity>
+
+      <!-- Lights. -->
+      <a-entity position="0 0 0">
+        <a-animation attribute="rotation" to="0 0 360"
+                     repeat="indefinite" easing="linear" dur="4096">
+        </a-animation>
+        <a-entity mixin="light" position="30 0 0"></a-entity>
+      </a-entity>
+
+      <a-entity position="0 0 0">
+        <a-animation attribute="rotation" to="360 0 0"
+                     repeat="indefinite" easing="linear" dur="4096">
+        </a-animation>
+        <a-entity mixin="light" position="0 0 40"></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      var scene = document.querySelector('a-scene');
+
+      for (var i = 0; i < 120; i++) {
+        var obj = document.createElement('a-entity');
+        obj.setAttribute('geometry', {
+          primitive: 'torusKnot',
+          radius: Math.random() * 10,
+          radiusTubular: Math.random() * .75,
+          p: Math.round(Math.random() * 10),
+          q: Math.round(Math.random() * 10)
+        });
+        obj.setAttribute('material', {
+          color: getRandColor(),
+          metalness: Math.random(),
+          roughness: Math.random()
+        });
+        obj.setAttribute('position', {
+          x: getRandCoord(),
+          y: getRandCoord(),
+          z: getRandCoord()
+        });
+        scene.appendChild(obj);
+      }
+
+      function getRandColor () {
+          var letters = '0123456789ABCDEF'.split('');
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+      }
+
+      function getRandCoord () {
+        var coord = Math.random() * 60;
+        return Math.random() < .5 ? coord + 5 : coord * -1 - 5;
+      }
+    </script>
+  </body>
+</html>
