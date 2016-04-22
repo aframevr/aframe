@@ -108,6 +108,7 @@ module.exports.Component = registerControls('mouse-controls', {
   },
 
   onMouseMove: function (event) {
+    var lookVector = this.lookVector;
     var previousMouseEvent = this.previousMouseEvent;
 
     if (!this.data.enabled || !(this.mouseDown || this.pointerLocked)) {
@@ -122,8 +123,8 @@ module.exports.Component = registerControls('mouse-controls', {
       movementY = event.screenY - previousMouseEvent.screenY;
     }
 
-    this.lookVector.x += movementX;
-    this.lookVector.y += movementY;
+    lookVector.x += movementX;
+    lookVector.y += movementY;
 
     this.previousMouseEvent = event;
   },

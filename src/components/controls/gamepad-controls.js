@@ -19,6 +19,12 @@ module.exports.Component = registerControls('gamepad-controls', {
     sensitivity: { default: 0.05 }
   },
 
+  update: function () {
+    if (navigator.getGamepads) {
+      this.gamepad = navigator.getGamepads()[this.data.controller - 1];
+    }
+  },
+
   isVelocityActive: function () {
     if (!this.data.enabled || !this.isConnected()) { return false; }
 
@@ -35,12 +41,8 @@ module.exports.Component = registerControls('gamepad-controls', {
     var inputX = dpad.x || joystick0.x;
     var inputY = dpad.y || joystick0.y;
     var dVelocity = new THREE.Vector3();
-    if (Math.abs(inputX) > JOYSTICK_EPS) {
-      dVelocity.x += inputX;
-    }
-    if (Math.abs(inputY) > JOYSTICK_EPS) {
-      dVelocity.z += inputY;
-    }
+    if (Math.abs(inputX) > JOYSTICK_EPS) { dVelocity.x += inputX; }
+    if (Math.abs(inputY) > JOYSTICK_EPS) { dVelocity.z += inputY; }
     return dVelocity;
   },
 
@@ -60,20 +62,12 @@ module.exports.Component = registerControls('gamepad-controls', {
   },
 
   /**
-   * Returns the Gamepad instance attached to the component.
-   * @return {Gamepad}
-   */
-  getGamepad: function () {
-    return navigator.getGamepads && navigator.getGamepads()[this.data.controller - 1];
-  },
-
-  /**
    * Returns the state of the given joystick (0|1) as a THREE.Vector2.
    * @param  {number} id The joystick (0|1) for which to find state.
    * @return {THREE.Vector2}
    */
   getJoystick: function (index) {
-    var gamepad = this.getGamepad();
+    var gamepad = this.gamepad;
     switch (index) {
       case 0: return new THREE.Vector2(gamepad.axes[0], gamepad.axes[1]);
       case 1: return new THREE.Vector2(gamepad.axes[2], gamepad.axes[3]);
@@ -86,7 +80,7 @@ module.exports.Component = registerControls('gamepad-controls', {
    * @return {THREE.Vector2}
    */
   getDpad: function () {
-    var gamepad = this.getGamepad();
+    var gamepad = this.gamepad;
     // Return zero vector if no dpad is present.
     if (!gamepad.buttons[Gamepad.DPAD_RIGHT]) {
       return new THREE.Vector2();
@@ -104,7 +98,7 @@ module.exports.Component = registerControls('gamepad-controls', {
    * @return {boolean}
    */
   isConnected: function () {
-    var gamepad = this.getGamepad();
+    var gamepad = this.gamepad;
     return !!(gamepad && gamepad.connected);
   }
 });

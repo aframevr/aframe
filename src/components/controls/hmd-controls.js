@@ -16,19 +16,19 @@ module.exports.Component = registerControls('hmd-controls', {
     this.hmdEuler = new THREE.Euler();
     this.hmdEuler.order = 'YXZ';
     this.hmdQuaternion = new THREE.Quaternion();
-    this.controls = new THREE.VRControls(this.dolly);
     this.zeroQuaternion = new THREE.Quaternion();
+    this.vrControls = new THREE.VRControls(this.dolly);
     this.rotation = new THREE.Vector3();
     this.velocity = new THREE.Vector3();
     this.position = new THREE.Vector3();
   },
 
   tick: function (t, dt) {
-    this.controls.update();
+    this.vrControls.update();
   },
 
   remove: function () {
-    this.controls.dispose();
+    this.vrControls.dispose();
   },
 
   isRotationActive: function () {
@@ -47,12 +47,14 @@ module.exports.Component = registerControls('hmd-controls', {
 
   calculateHMDEuler: function () {
     var dolly = this.dolly;
-    if (!this.zeroed && !dolly.quaternion.equals(this.zeroQuaternion)) {
+    var hmdQuaternion = this.hmdQuaternion;
+    var zeroQuaternion = this.zeroQuaternion;
+    if (!this.zeroed && !dolly.quaternion.equals(zeroQuaternion)) {
       this.zeroOrientation();
       this.zeroed = true;
     }
-    this.hmdQuaternion.copy(this.zeroQuaternion).multiply(dolly.quaternion);
-    this.hmdEuler.setFromQuaternion(this.hmdQuaternion);
+    hmdQuaternion.copy(zeroQuaternion).multiply(dolly.quaternion);
+    this.hmdEuler.setFromQuaternion(hmdQuaternion);
   },
 
   zeroOrientation: function () {
@@ -70,8 +72,10 @@ module.exports.Component = registerControls('hmd-controls', {
 
   getVelocity: function () {
     var dolly = this.dolly;
-    this.velocity.copy(dolly.position).sub(this.position);
-    this.position.copy(dolly.position);
-    return this.velocity;
+    var position = this.position;
+    var velocity = this.velocity;
+    velocity.copy(dolly.position).sub(position);
+    position.copy(dolly.position);
+    return velocity;
   }
 });

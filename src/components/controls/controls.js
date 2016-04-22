@@ -47,11 +47,10 @@ module.exports.Component = registerControls('controls', {
     }
   },
 
-  update: function () {
+  update: function (previousData) {
     // Re-validate if scene has loaded. If not, listener was already bound in init().
-    if (this.el.sceneEl.hasLoaded) {
-      this.validateControls();
-    }
+    if (!this.el.sceneEl.hasLoaded) { return; }
+    this.validateControls();
   },
 
   tick: function (t, dt) {
@@ -76,21 +75,23 @@ module.exports.Component = registerControls('controls', {
    * @param  {number} dt
    */
   updateRotation: function (dt) {
-    var control, dRotation;
-
-    control = this.getActiveRotationControls();
+    var dRotation;
+    var el = this.el;
+    var yaw = this.yaw;
+    var pitch = this.pitch;
+    var control = this.getActiveRotationControls();
     if (control && control.getRotationDelta) {
       dRotation = control.getRotationDelta(dt);
-      this.yaw.rotation.y -= dRotation.x;
-      this.pitch.rotation.x -= dRotation.y;
-      this.pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, this.pitch.rotation.x));
-      this.el.setAttribute('rotation', {
-        x: THREE.Math.radToDeg(this.pitch.rotation.x),
-        y: THREE.Math.radToDeg(this.yaw.rotation.y),
+      yaw.rotation.y -= dRotation.x;
+      pitch.rotation.x -= dRotation.y;
+      pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitch.rotation.x));
+      el.setAttribute('rotation', {
+        x: THREE.Math.radToDeg(pitch.rotation.x),
+        y: THREE.Math.radToDeg(yaw.rotation.y),
         z: 0
       });
     } else if (control) {
-      this.el.setAttribute('rotation', control.getRotation());
+      el.setAttribute('rotation', control.getRotation());
     }
   },
 
@@ -100,23 +101,25 @@ module.exports.Component = registerControls('controls', {
    */
   updateVelocity: function (dt) {
     var control;
+    var el = this.el;
     var data = this.data;
+    var velocity = this.velocity;
 
-    if (this.el.hasAttribute('velocity')) {
-      this.velocity.copy(this.el.getComputedAttribute('velocity'));
+    if (el.hasAttribute('velocity')) {
+      velocity.copy(el.getComputedAttribute('velocity'));
     }
 
-    this.velocity.x -= this.velocity.x * data.positionEasing * dt / 1000;
-    this.velocity.z -= this.velocity.z * data.positionEasing * dt / 1000;
+    velocity.x -= velocity.x * data.positionEasing * dt / 1000;
+    velocity.z -= velocity.z * data.positionEasing * dt / 1000;
 
     control = this.getActivePositionControls();
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
-      this.velocity.copy(control.getVelocity());
+      velocity.copy(control.getVelocity());
     }
 
-    this.el.setAttribute('velocity', {x: this.velocity.x, y: this.velocity.y, z: this.velocity.z});
+    el.setAttribute('velocity', {x: velocity.x, y: velocity.y, z: velocity.z});
   },
 
   /**
@@ -155,7 +158,9 @@ module.exports.Component = registerControls('controls', {
    * @return {[type]} [description]
    */
   validateControls: function () {
-    var i, name;
+    var i;
+    var name;
+    var el = this.el;
     var data = this.data;
     var system = this.system;
     var missingControls = [];
@@ -165,7 +170,7 @@ module.exports.Component = registerControls('controls', {
       if (!system.positionControls[name]) {
         throw new Error('Component `' + name + '` must be ' +
                         'registered with AFRAME.registerControls().');
-      } else if (!this.el.components[name]) {
+      } else if (!el.components[name]) {
         missingControls.push(name);
       }
     }
@@ -175,14 +180,14 @@ module.exports.Component = registerControls('controls', {
       if (!system.rotationControls[name]) {
         throw new Error('Component `' + name + '` must be ' +
                         'registered with AFRAME.registerControls().');
-      } else if (!this.el.components[name]) {
+      } else if (!el.components[name]) {
         missingControls.push(name);
       }
     }
 
     // Inject any missing controls components.
     for (i = 0; i < missingControls.length; i++) {
-      this.el.setAttribute(missingControls[i], '');
+      el.setAttribute(missingControls[i], '');
     }
   },
 

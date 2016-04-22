@@ -66,8 +66,9 @@ module.exports.Component = registerControls('touch-controls', {
   },
 
   getVelocityDelta: function () {
-    this.dVelocity.z = this.isMoving ? -1 : 0;
-    return this.dVelocity.clone();
+    var dVelocity = this.dVelocity;
+    dVelocity.z = this.isMoving ? -1 : 0;
+    return dVelocity.clone();
   },
 
   bindMethods: function () {
