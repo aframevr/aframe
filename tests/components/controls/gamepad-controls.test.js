@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test */
 'use strict';
 var entityFactory = require('../../helpers').entityFactory;
-var Gamepad = require('../../../src/constants').gamepad;
+var GAMEPAD = require('../../../src/constants').gamepad;
 
 suite('gamepad-controls', function () {
   var gamepad, gamepads, gamepadControls;
@@ -10,10 +10,10 @@ suite('gamepad-controls', function () {
     var el = this.el = entityFactory();
 
     gamepad = {connected: true, axes: [0, 0, 0, 0], buttons: {}};
-    gamepad.buttons[Gamepad.DPAD_UP] = {pressed: false};
-    gamepad.buttons[Gamepad.DPAD_LEFT] = {pressed: false};
-    gamepad.buttons[Gamepad.DPAD_DOWN] = {pressed: false};
-    gamepad.buttons[Gamepad.DPAD_RIGHT] = {pressed: false};
+    gamepad.buttons[GAMEPAD.DPAD_UP] = {pressed: false};
+    gamepad.buttons[GAMEPAD.DPAD_LEFT] = {pressed: false};
+    gamepad.buttons[GAMEPAD.DPAD_DOWN] = {pressed: false};
+    gamepad.buttons[GAMEPAD.DPAD_RIGHT] = {pressed: false};
     gamepads = [gamepad];
     this.sinon.stub(navigator, 'getGamepads').returns(gamepads);
 
@@ -37,22 +37,22 @@ suite('gamepad-controls', function () {
     });
 
     test('active when dpad is pressed', function () {
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = true;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = true;
       assert.isTrue(gamepadControls.isVelocityActive());
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = false;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = false;
       assert.isFalse(gamepadControls.isVelocityActive());
     });
 
     test('inactive when disabled', function () {
       var el = this.el;
       el.setAttribute('gamepad-controls', {enabled: false});
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = true;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = true;
       gamepad.axes[0] = 0.5;
       assert.isFalse(gamepadControls.isVelocityActive());
     });
 
     test('inactive when disconnected', function () {
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = true;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = true;
       gamepad.connected = false;
       assert.isFalse(gamepadControls.isVelocityActive());
       gamepads.pop();
@@ -100,12 +100,12 @@ suite('gamepad-controls', function () {
     });
 
     test('updates position with dpad', function () {
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = true;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = true;
       assert.shallowDeepEqual(gamepadControls.getVelocityDelta(), {x: 0, y: 0, z: -1});
-      gamepad.buttons[Gamepad.DPAD_LEFT].pressed = true;
+      gamepad.buttons[GAMEPAD.DPAD_LEFT].pressed = true;
       assert.shallowDeepEqual(gamepadControls.getVelocityDelta(), {x: -1, y: 0, z: -1});
-      gamepad.buttons[Gamepad.DPAD_UP].pressed = false;
-      gamepad.buttons[Gamepad.DPAD_LEFT].pressed = false;
+      gamepad.buttons[GAMEPAD.DPAD_UP].pressed = false;
+      gamepad.buttons[GAMEPAD.DPAD_LEFT].pressed = false;
       assert.shallowDeepEqual(gamepadControls.getVelocityDelta(), {x: 0, y: 0, z: 0});
     });
   });

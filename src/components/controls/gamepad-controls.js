@@ -1,6 +1,6 @@
 var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
-var Gamepad = require('../../constants').gamepad;
+var GAMEPAD = require('../../constants').gamepad;
 
 var JOYSTICK_EPS = 0.2;
 
@@ -10,7 +10,7 @@ var JOYSTICK_EPS = 0.2;
  * Supports movement with the left joystick or dpad, and rotation with the right joystick.
  *
  * For more information about the Gamepad API, see:
- * https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
+ * https://developer.mozilla.org/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
  */
 module.exports.Component = registerControls('gamepad-controls', {
   schema: {
@@ -82,14 +82,14 @@ module.exports.Component = registerControls('gamepad-controls', {
   getDpad: function () {
     var gamepad = this.gamepad;
     // Return zero vector if no dpad is present.
-    if (!gamepad.buttons[Gamepad.DPAD_RIGHT]) {
+    if (!gamepad.buttons[GAMEPAD.DPAD_RIGHT]) {
       return new THREE.Vector2();
     }
     return new THREE.Vector2(
-      (gamepad.buttons[Gamepad.DPAD_RIGHT].pressed ? 1 : 0) +
-        (gamepad.buttons[Gamepad.DPAD_LEFT].pressed ? -1 : 0),
-      (gamepad.buttons[Gamepad.DPAD_UP].pressed ? -1 : 0) +
-        (gamepad.buttons[Gamepad.DPAD_DOWN].pressed ? 1 : 0)
+      (gamepad.buttons[GAMEPAD.DPAD_RIGHT].pressed ? 1 : 0) +
+        (gamepad.buttons[GAMEPAD.DPAD_LEFT].pressed ? -1 : 0),
+      (gamepad.buttons[GAMEPAD.DPAD_UP].pressed ? -1 : 0) +
+        (gamepad.buttons[GAMEPAD.DPAD_DOWN].pressed ? 1 : 0)
     );
   },
 

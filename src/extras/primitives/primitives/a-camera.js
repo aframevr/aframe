@@ -12,7 +12,7 @@ registerPrimitive('a-camera', {
     fov: 'camera.fov',
     near: 'camera.near',
     zoom: 'camera.zoom',
-    'position-enabled': 'controls.positionEnabled',
+    'position-controls-enabled': 'controls.positionControlsEnabled',
     'rotation-enabled': 'controls.rotationEnabled'
   },
 

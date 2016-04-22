@@ -21,7 +21,7 @@ module.exports.Component = registerControls('controls', {
     position: {
       default: ['hmd-controls', 'gamepad-controls', 'keyboard-controls', 'touch-controls']
     },
-    positionEnabled: { default: true },
+    positionControlsEnabled: { default: true },
     positionEasing: { default: 15 }, // m/s2
     positionAcceleration: { default: 65 }, // m/s2
 
@@ -62,10 +62,10 @@ module.exports.Component = registerControls('controls', {
     }
 
     // Update velocity. If FPS is too low, reset.
-    if (this.data.positionEnabled && dt / 1000 > MAX_DELTA) {
+    if (this.data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
       this.velocity.set(0, 0, 0);
       this.el.setAttribute('velocity', this.velocity);
-    } else if (this.data.positionEnabled) {
+    } else if (this.data.positionControlsEnabled) {
       this.updateVelocity(dt);
     }
   },

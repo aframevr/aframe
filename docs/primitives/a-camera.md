@@ -28,7 +28,7 @@ The camera primitive places the user somewhere within the scene. It is an entity
 | fov              | camera.fov               | 80            |
 | rotation-enabled | controls.rotationEnabled | true          |
 | near             | camera.near              | 0.5           |
-| position-enabled | controls.movementEnabled | true          |
+| position-controls-enabled | controls.movementEnabled | true          |
 
 ## Manually Positioning the Camera
 

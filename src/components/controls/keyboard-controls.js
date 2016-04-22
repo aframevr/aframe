@@ -1,5 +1,5 @@
 var registerControls = require('../../core/controls').registerControls;
-var KEYCODE_TO_CODE = require('../../constants/keyboardevent').KEYCODE_TO_CODE;
+var KEYCODE_TO_CODE = require('../../constants').keyboardevent.KEYCODE_TO_CODE;
 var THREE = require('../../lib/three');
 
 /**

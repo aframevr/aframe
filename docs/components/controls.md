@@ -33,22 +33,22 @@ To customize which input methods are enabled, specify the `position` or `rotatio
 To configure one of the input methods, include its component and set the properties you want to change:
 
 ```html
-<a-entity camera controls mouse-controls="pointerlockEnabled: true"></a-entity>
+<a-entity camera controls mouse-controls="sensitivity: 0.005"></a-entity>
 ```
 
 ## Properties
 
 ### controls
 
-| Property             | Description                                                                           | Default Value                                     |
-|----------------------|---------------------------------------------------------------------------------------|----------------------------------------------------
-| enabled              | Whether all controls are enabled.                                                     | true                                              |
-| flyingEnabled        | Whether or not movement is restricted to the entity's initial plane.                  | false                                             |
-| position             | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls keyboard-controls touch-controls |
-| positionEnabled      | Whether positional tracking is enabled.                                               | true                                              |
-| positionEasing       | How quickly the entity slows down without input. Like friction.                       | 15                                                |
-| positionAcceleration | How quickly the entity accelerates with input.                                        | 65                                                |
-| rotation             | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls gamepad-controls mouse-controls      |
+| Property                | Description                                                                           | Default Value                                                  |
+|-------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| enabled                 | Whether all controls are enabled.                                                     | true                                                           |
+| flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                                                          |
+| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls keyboard-controls touch-controls |
+| positionControlsEnabled | Whether positional tracking is enabled.                                               | true                                                           |
+| positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                                                             |
+| positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                                                             |
+| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls gamepad-controls mouse-controls                   |
 
 ### gamepad-controls
 
@@ -78,12 +78,11 @@ Moves the entity using the WASD or ↑←↓→ keys.
 
 ### mouse-controls
 
-By default, rotates the entity when the mouse is clicked and dragged. With `pointerlockEnabled: true`, uses the [Pointerlock API](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_Lock_API) to eliminate limits on how far mouse movement can go in a single direction and remove the cursor from view. The `pointerlockEnabled` option is ideal for first person 3D games.
+Rotates the entity when the mouse is clicked and dragged.
 
 | Property | Description                                                 | Default Value |
 |----------|-------------------------------------------------------------|---------------|
 | enabled  | Whether mouse input is enabled.                             | true          |
-| pointerlockEnabled | Whether the mouse is locked within the canvas.    | false         |
 | sensitivity | How quickly mouse movement rotates the entity or camera. | false         |
 
 ### touch-controls
