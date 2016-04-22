@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animate Color</title>
+    <meta name="description" content="Animate Color - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-mixin id="box" geometry="primitive: box; depth: 0.5; height: 1; width: 0.5" material="color: #5698Af">
+        <a-mixin id="pulse" attribute="material.color" from="#fff" to="#5698Af" dur="1000" begin="pulse"></a-mixin>
+      </a-assets>
+
+      <a-sky color="#000000">
+        <a-animation attribute="color" dur="10000" from="#afafaf" to="#000000" repeat="indefinite">
+      </a-sky>
+
+      <a-entity position="4.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="4 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="3.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="3 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="2.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="2 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="1.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="1 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="0.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="0 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-0.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-1 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-1.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-2 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-2.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-3 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-3.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-4 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-4.5 1 -3"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="4.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="4 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="3.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="3 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="2.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="2 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="1.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="1 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="0.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="0 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-0.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-1 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-1.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-2 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-2.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-3 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-3.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-4 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+      <a-entity position="-4.5 1 -3.5"  mixin="box"><a-animation mixin="pulse"></a-animation></a-entity>
+
+      <a-plane rotation="-90 0 0" width="40" height="40" color="#7BC8A4"></a-plane>
+    </a-scene>
+  </body>
+
+  <script>
+    window.onload = function() {
+      var interval = setInterval(function() {
+        var pulses = document.querySelectorAll('[mixin="box"]');
+        var index = 0;
+
+        var loop = setInterval(function() {
+          pulses[index].emit('pulse')
+          pulses[pulses.length - 1 - index].emit('pulse')
+          index++;
+          if (index >= pulses.length/2) { clearInterval(loop); }
+        }, 100)
+      }, 1000);
+    }
+  </script>
+</html>
+

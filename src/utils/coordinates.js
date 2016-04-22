@@ -1,7 +1,7 @@
 /* global THREE */
 
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
+var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
 
 /**
