@@ -18,6 +18,3 @@ var boxDefinition = utils.extendDeep({}, getMeshMixin(), {
 });
 
 registerPrimitive('a-box', boxDefinition);
-registerPrimitive('a-cube', utils.extendDeep({
-  deprecated: '<a-cube> is deprecated. Use <a-box> instead.'
-}, boxDefinition));
