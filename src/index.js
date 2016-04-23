@@ -38,10 +38,10 @@ var TWEEN = window.TWEEN = require('tween.js');
 var pkg = require('../package');
 var utils = require('./utils/');
 
+require('./systems/index'); // Register standard systems. Required before components.
 require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
 require('./shaders/index'); // Register standard shaders.
-require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 

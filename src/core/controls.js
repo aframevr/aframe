@@ -9,17 +9,6 @@ var controls = module.exports.controls = {
 };
 
 /**
- * Initializes the A-Frame controls system.
- */
-systems.registerSystem('controls', {
-  init: function () {
-    // Controls components registered to update object position/rotation.
-    this.positionControls = controls.positionControls;
-    this.rotationControls = controls.rotationControls;
-  }
-});
-
-/**
  * Prototype for controls components.
  */
 var ControlsComponent = module.exports.ControlsComponent = function () {};

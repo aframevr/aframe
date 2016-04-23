@@ -167,7 +167,7 @@ module.exports.Component = registerControls('controls', {
 
     for (i = 0; i < data.position.length; i++) {
       name = data.position[i];
-      if (!system.positionControls[name]) {
+      if (!system.hasPositionControls(name)) {
         throw new Error('Component `' + name + '` must be ' +
                         'registered with AFRAME.registerControls().');
       } else if (!el.components[name]) {
@@ -177,7 +177,7 @@ module.exports.Component = registerControls('controls', {
 
     for (i = 0; i < data.rotation.length; i++) {
       name = data.rotation[i];
-      if (!system.rotationControls[name]) {
+      if (!system.hasRotationControls(name)) {
         throw new Error('Component `' + name + '` must be ' +
                         'registered with AFRAME.registerControls().');
       } else if (!el.components[name]) {
