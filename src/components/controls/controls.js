@@ -19,7 +19,7 @@ module.exports.Component = registerControls('controls', {
     flyingEnabled: { default: false },
 
     position: {
-      default: ['hmd-controls', 'gamepad-controls', 'keyboard-controls', 'touch-controls']
+      default: ['hmd-controls', 'gamepad-controls', 'touch-controls']
     },
     positionControlsEnabled: { default: true },
     positionEasing: { default: 15 }, // m/s2
@@ -130,7 +130,7 @@ module.exports.Component = registerControls('controls', {
    */
   applyVelocityDelta: function (dt, dVelocity) {
     var data = this.data;
-    var rotation = this.el.getAttribute('rotation');
+    var rotation = this.el.getComputedAttribute('rotation');
 
     // Set acceleration
     if (dVelocity.length() > 1) {

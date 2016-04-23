@@ -19,7 +19,6 @@ require('./controls/gamepad-controls');
 require('./controls/hmd-controls');
 require('./controls/mouse-controls');
 require('./controls/touch-controls');
-require('./controls/keyboard-controls');
 
 require('./scene/canvas');
 require('./scene/debug');

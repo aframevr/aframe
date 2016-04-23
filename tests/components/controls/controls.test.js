@@ -17,12 +17,8 @@ suite('controls', function () {
   });
 
   suite('init', function () {
-    var defaultPositionControls = [
-      'hmd-controls', 'gamepad-controls', 'keyboard-controls', 'touch-controls'
-    ];
-    var defaultRotationControls = [
-      'hmd-controls', 'gamepad-controls', 'mouse-controls'
-    ];
+    var defaultPositionControls = ['hmd-controls', 'gamepad-controls', 'touch-controls'];
+    var defaultRotationControls = ['hmd-controls', 'gamepad-controls', 'mouse-controls'];
 
     test('defaults to include position and rotation controls', function () {
       var data = this.el.getComputedAttribute('controls');
