@@ -27,7 +27,7 @@ The controls component is generally used alongside the [camera component][compon
 To customize which input methods are enabled, specify the `position` or `rotation` properties:
 
 ```html
-<a-entity camera controls="position: custom-controls gamepad-controls; rotation: hmd-controls;"></a-entity>
+<a-entity camera controls="position: custom-controls, gamepad-controls; rotation: hmd-controls;"></a-entity>
 ```
 
 To configure one of the input methods, include its component and set the properties you want to change:
