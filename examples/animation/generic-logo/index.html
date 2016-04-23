@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Animations: Generic Logo</title>
+    <meta name="description" content="Animations: Generic Logo - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="frame-edge" geometry="primitive: box; depth: 10; height: 0.1; width: 0.1"
+                                 material="color: #404040"></a-mixin>
+      </a-assets>
+
+      <a-camera fov="80" near="0.1" wasd-controls-enabled="false"></a-camera>
+
+      <!-- A generic logo made of animated elements -->
+      <a-entity id="logo" position="0 0.15 -1" scale=".5 .5 .5">
+        <a-entity id="box">
+          <a-animation attribute="scale" from="0 0 0" to="1 1 1" begin="500" dur="500"
+                       fill="both" easing="ease-out"></a-animation>
+          <a-animation attribute="position" from="0 -0.5 0" to="0 0 0" begin="500" dur="500"
+                       fill="both" easing="ease-out"></a-animation>
+          <a-animation attribute="rotation" from="0 -300 0" to="30 54 36" begin="500" dur="1200"
+                       fill="both" easing="ease-out"></a-animation>
+          <a-box width="0.25" depth="0.25" height="0.25" color="#EF2D5E"></a-box>
+
+          <a-entity scale="0.04 0.04 0.04">
+            <a-entity mixin="frame-edge" position="5 5 0" rotation="0 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="5 -5 0" rotation="0 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="-5 5 0" rotation="0 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="-5 -5 0" rotation="0 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="0 5 5" rotation="0 90 0"></a-entity>
+            <a-entity mixin="frame-edge" position="0 5 -5" rotation="0 90 0"></a-entity>
+            <a-entity mixin="frame-edge" position="0 -5 5" rotation="0 90 0"></a-entity>
+            <a-entity mixin="frame-edge" position="0 -5 -5" rotation="0 90 0"></a-entity>
+            <a-entity mixin="frame-edge" position="5 0 5" rotation="90 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="5 0 -5" rotation="90 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="-5 0 5" rotation="90 0 0"></a-entity>
+            <a-entity mixin="frame-edge" position="-5 0 -5" rotation="90 0 0"></a-entity>
+          </a-entity>
+        </a-entity>
+
+        <a-entity id="dots1" rotation="0 0 45">
+          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" begin="800" dur="750"
+                       fill="both" easing="ease-out"></a-animation>
+          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E"
+                      open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750"
+                         fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E"
+                      open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750"
+                         fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+        </a-entity>
+
+        <a-entity id="dots1" rotation="0 0 -45">
+          <a-animation attribute="scale" from="1 0 1" to="1 0.6 1" begin="800" dur="750"
+                       fill="both" easing="ease-out"></a-animation>
+          <a-cylinder position="0 2 0" radius="0.04" height="2" color="#EF2D5E"
+                      open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750"
+                         fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+          <a-cylinder position="0 -2 0" radius="0.04" height="2" color="#EF2D5E"
+                      open-ended="true" side="double">
+            <a-animation attribute="scale" from="1 1.25 1" to="1 0 1" begin="800" dur="750"
+                         fill="both" easing="ease-out"></a-animation>
+          </a-cylinder>
+        </a-entity>
+
+        <a-image id="webvr" src="webvr.png" width="1" height="0.25" opacity="0.75">
+          <a-animation attribute="scale" from="1 0 1" to="0.75 0.75 0.75" begin="1500"
+                       dur="200" fill="both" easing="ease-out"></a-animation>
+          <a-animation attribute="position" from="0 -3 0" to="0 -0.7 0" begin="1000"
+                       dur="1000" fill="both" easing="ease-out"></a-animation>
+        </a-image>
+      </a-entity>
+
+      <a-sky color="#ECECEC"></a-sky>
+      <a-light type="directional" color="#fff" intensity="0.2" position="-1 2 1"></a-light>
+      <a-light type="ambient" color="#fff"></a-light>
+    </a-scene>
+  </body>
+</html>

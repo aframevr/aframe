@@ -21,6 +21,3 @@ require('./scene/fog');
 require('./scene/keyboard-shortcuts');
 require('./scene/stats');
 require('./scene/vr-mode-ui');
-
-// Deprecated.
-require('./loader');

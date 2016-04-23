@@ -14,7 +14,7 @@ A-Frame is based on an **[entity-component-system pattern][ecs]** (ECS), a patte
 - A [component][component] is a reusable module that is plugged into entities in order to provide appearance, behavior, and/or functionality. They are plug-and-play for objects.
 - A [system][system] provides global scope, services, and management to classes of components.
 
-ECS lets us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want extend an object, we would have to manually create a new class to do so.
+ECS lets us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want to extend an object, we would have to manually create a new class to do so.
 
 ECS grants developers the key to permissionless innovation. Developers can write, share, and plug in components that extend new features or iterate upon existing features.
 
@@ -26,7 +26,7 @@ As an abstract example, imagine a car is an entity:
 - We can add an `engine` component which has properties such as "horsepower" or "weight" which affect the speed of the car.
 - We might add a `tire` component which has properties such as "grip" which affects the traction of the car.
 
-These components would be able to be mixed and matched and even be used with other vehicles such as airplanes, motorcycles, or boats (where we wouldn't specify a `tire` component).
+These components could be mixed and matched and even used with other vehicles such as airplanes, motorcycles, or boats (where we wouldn't specify a `tire` component).
 
 ## Composition
 

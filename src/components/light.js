@@ -37,7 +37,7 @@ module.exports.Component = registerComponent('light', {
    */
   update: function (oldData) {
     var data = this.data;
-    var diffData = diff(data, oldData || {});
+    var diffData = diff(data, oldData);
     var light = this.light;
 
     // Existing light.

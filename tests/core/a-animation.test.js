@@ -40,6 +40,62 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
 }
 
 /**
+ * This will generate a color animation test using passed format
+ *   of to and from in order to test rgb, hsl, and nouns.
+ *  @param {description} description of the test
+ *  @param {from} expects a color format of white
+ *  @param {to} expects a color format of black
+ */
+function generateColorAnimationTest (description, from, to, attribute) {
+  suite('component color animation:' + description, function () {
+    setup(function (done) {
+      var self = this;
+      var elAttrs;
+      var attributeSplit;
+      if (attribute) {
+        attributeSplit = attribute.split('.');
+        elAttrs = {};
+        elAttrs[attribute] = '';
+        elAttrs[attributeSplit[0]] = {
+          shader: 'flat'
+        };
+        elAttrs[attributeSplit[0]][attributeSplit[1]] = '#FFF';
+      }
+      setupAnimation({
+        attribute: attribute || 'color',
+        dur: 1000,
+        fill: 'both',
+        from: from,
+        to: to,
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, elAttrs || { color: '' });
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#ffffff');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute(attribute || 'color');
+      assert.isAbove(color, '#000000');
+      assert.isBelow(color, '#ffffff');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#000000');
+    });
+  });
+}
+
+/**
  * Uses tween.update(t) to simulate animations.
  * t is the absolute time. To advance the animation to the point
  * you want to test you need to do: animationStartTime + timeElapsed.
@@ -548,6 +604,51 @@ suite('a-animation', function () {
         });
         done();
       });
+    });
+  });
+
+  generateColorAnimationTest('default test', '#ffffff', '#000000');
+  generateColorAnimationTest('accepts hex shorthand', '#fff', '#000');
+  generateColorAnimationTest('accepts nouns and rgb', 'rgb(255, 255, 255)', 'black');
+  generateColorAnimationTest('accepts hsl', 'hsl(1, 100%, 100%)', 'hsl(0, 0%, 0%)');
+  generateColorAnimationTest('accepts dot notation', 'white', 'black', 'material.color');
+
+  suite('component color animation: accepts dot notation', function () {
+    var attribute = 'material.color';
+    setup(function (done) {
+      var self = this;
+      var elAttrs = { color: '', material: { shader: 'flat', color: '#FF0000' } };
+
+      setupAnimation({
+        attribute: 'material.color',
+        dur: 1000,
+        fill: 'both',
+        from: 'red',
+        to: 'blue',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, elAttrs);
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getComputedAttribute(attribute), '#ff0000');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getComputedAttribute(attribute);
+      assert.isAbove(color, '#0000ff');
+      assert.isBelow(color, '#ff0000');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getComputedAttribute(attribute), '#0000ff');
     });
   });
 });

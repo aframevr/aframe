@@ -1,5 +1,4 @@
 var debug = require('../utils/debug');
-var diff = require('../utils').diff;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -24,44 +23,30 @@ module.exports.Component = registerComponent('sound', {
 
   update: function (oldData) {
     var data = this.data;
-    var diffData = diff(oldData || {}, data);
     var el = this.el;
     var sound = this.sound;
-    var src = data.src;
-    var srcChanged = 'src' in diffData;
+    var srcChanged = data.src !== oldData.src;
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
-      if (!src) {
+      if (!data.src) {
         warn('Audio source was not specified with `src`');
         return;
       }
       sound = this.setupSound();
     }
 
-    if (srcChanged || 'autoplay' in diffData) {
-      sound.autoplay = data.autoplay;
-    }
+    sound.autoplay = data.autoplay;
+    sound.setLoop(data.loop);
+    sound.setVolume(data.volume);
 
-    if (srcChanged || 'loop' in diffData) {
-      sound.setLoop(data.loop);
-    }
-
-    if (srcChanged || 'volume' in diffData) {
-      sound.setVolume(data.volume);
-    }
-
-    if ('on' in diffData) {
-      if (oldData && oldData.on) {
-        el.removeEventListener(oldData.on);
-      }
+    if (data.on !== oldData.on) {
+      if (oldData.on) { el.removeEventListener(oldData.on); }
       el.addEventListener(data.on, this.play.bind(this));
     }
 
-    // All sound values set. Load in `src.
-    if (srcChanged) {
-      sound.load(src);
-    }
+    // All sound values set. Load in `src`.
+    if (srcChanged) { sound.load(data.src); }
   },
 
   remove: function () {

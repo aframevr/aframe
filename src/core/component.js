@@ -189,7 +189,8 @@ Component.prototype = {
   updateProperties: function (value) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
-    var previousData = extendProperties({}, this.data, isSinglePropSchema);
+    var oldData = extendProperties({}, this.data, isSinglePropSchema);
+
     this.updateCachedAttrValue(value);
     if (this.updateSchema) {
       this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
@@ -197,18 +198,18 @@ Component.prototype = {
     this.data = buildData(el, this.name, this.schema, this.attrValue);
 
     // Don't update if properties haven't changed
-    if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
+    if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
 
     if (!this.initialized) {
       this.init();
       this.initialized = true;
     }
-    this.update(previousData);
+    this.update(oldData);
 
     el.emit('componentchanged', {
       name: this.name,
       newData: this.getData(),
-      oldData: previousData
+      oldData: oldData
     });
   },
 
@@ -266,10 +267,10 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache.bind(NewComponent.prototype),
+    parse: NewComponent.prototype.parse,
+    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
-    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
+    stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
   return NewComponent;
@@ -342,12 +343,6 @@ module.exports.buildData = buildData;
 * @returns Overridden object or value.
 */
 function extendProperties (dest, source, isSinglePropSchema) {
-  if (isSinglePropSchema) {
-    if (source === undefined || source === null ||
-        (typeof source === 'object' && Object.keys(source).length === 0)) {
-      return dest;
-    }
-    return source;
-  }
+  if (isSinglePropSchema) { return source; }
   return utils.extend(dest, source);
 }

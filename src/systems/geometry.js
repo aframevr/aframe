@@ -59,9 +59,13 @@ module.exports.System = registerSystem('geometry', {
     var cache = this.cache;
     var cacheCount = this.cacheCount;
     var geometry;
-    var hash = this.hash(data);
+    var hash;
 
-    if (!cache[hash] || data.skipCache) { return; }
+    if (data.skipCache) { return; }
+
+    hash = this.hash(data);
+
+    if (!cache[hash]) { return; }
 
     decrementCacheCount(cacheCount, hash);
 
