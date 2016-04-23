@@ -274,8 +274,7 @@ Example uses of `init` by some A-Frame components:
 | cursor        | Attach event listeners.                                           |
 | light         | Register light to the lighting system.                            |
 | look-at       | Create a helper vector.                                           |
-| material      | Set up variables, mainly to visualize the state of a component. |
-| wasd-controls | Set up an object to keep track of pressed keys. Bind methods.     |
+| material      | Set up variables, mainly to visualize the state of a component.   |
 
 ### Component.update(oldData)
 
@@ -296,7 +295,6 @@ Example uses of `update` by some A-Frame components:
 | camera        | Set THREE.PerspectiveCamera object properties such as aspect ratio, fov, or near/far clipping planes.                                       |
 | look-at       | Set or update target entity to track the position of.
 | material      | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material.
-| wasd-controls | Update the position based on the current velocity. Update the velocity based on the keys pressed.
 
 ### Component.remove()
 
@@ -312,12 +310,12 @@ remove: function () {
 
 Example uses of `remove` by some A-Frame components:
 
-| Component     | Usage                                                                                      |
-|---------------|--------------------------------------------------------------------------------------------|
-| camera        | Remove the THREE.PerspectiveCamera from the entity.                                        |
-| geometry      | Set a plain THREE.Geometry on the mesh.                                                    |
-| material      | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
-| wasd-controls | Remove keydown and keyup listeners.                                                        |
+| Component      | Usage                                                                                      |
+|----------------|--------------------------------------------------------------------------------------------|
+| camera         | Remove the THREE.PerspectiveCamera from the entity.                                        |
+| geometry       | Set a plain THREE.Geometry on the mesh.                                                    |
+| material       | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
+| touch-controls | Remove touch event listeners.                                                              |
 
 ### Component.tick(time)
 
@@ -340,13 +338,13 @@ Example uses of `tick` by some A-Frame components:
 |---------------|------------------------------------------------------------------------------------------------------|
 | look-at       | Update rotation of entity to face towards tracked target, in case the target is moving.              |
 | physics       | Update the physics world simulation.                                                                 |
-| wasd-controls | Use current velocity to move the entity (generally the camera), update velocity if keys are pressed. |
+| velocity      | Update target entity's position, based on the current velocity.
 
 ### Component.pause(), Component.play()
 
 To support pause and play, just as with a video game or to toggle entities for performance, a component can implement the `play` and `pause` handlers. These are invoked when a component's entity calls its `play` or `pause` method. When an entity plays or pauses, all of its child entities are also played or paused. A component should implement a play and pause handler if it registers dynamic, asynchronous, or background behaviors such as animations or event listeners.
 
-For example, the [look-controls component]'s play and pause handlers toggles its event listeners for listening to input:
+For example, the [touch-controls component](../components/controls.md#touch-controls)'s play and pause handlers toggles its event listeners for listening to input:
 
 ```js
 pause: function () {
@@ -360,10 +358,10 @@ play: function () {
 
 Example uses of `pause` and `play` by some A-Frame components:
 
-| Component     | Usage                          |
-|---------------|--------------------------------|
-| sound         | Pause/play sound.              |
-| wasd-controls | Remove/attach event listeners. |
+| Component      | Usage                          |
+|----------------|--------------------------------|
+| sound          | Pause/play sound.              |
+| touch-controls | Remove/attach event listeners. |
 
 ## Writing a Component
 
@@ -503,7 +501,6 @@ And voila!
 [light]: ../components/light.md
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
 [look-at]: ../components/look-at.md
-[look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [physics]: https://github.com/ngokevin/aframe-physics-components
 [position]: ../components/position.md
@@ -511,5 +508,6 @@ And voila!
 [rotation]: ../components/rotation.md
 [text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
+[touch-controls]: ../components/controls.md#touch-controls
 [visible]: ../components/visible.md
 [vrjump]: http://thevrjump.com

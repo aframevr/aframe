@@ -16,7 +16,7 @@ It is recommended to wrap entities with the camera component within another enti
 
 ```html
 <a-entity position="0 1.8 5">
-  <a-entity camera look-controls></a-entity>
+  <a-entity camera controls></a-entity>
 </a-entity>
 ```
 
