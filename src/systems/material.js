@@ -39,6 +39,9 @@ module.exports.System = registerSystem('material', {
    */
   loadImage: function (el, material, data, src) {
     var repeat = data.repeat || '1 1';
+    var offset = data.offset || '0 0';
+    var wrap = data.wrap;
+
     var srcString = src;
     var textureCache = this.textureCache;
 
@@ -53,7 +56,7 @@ module.exports.System = registerSystem('material', {
     // Material instance is first to try to load this texture. Load it.
     textureCache[srcString] = textureCache[srcString] || {};
     textureCache[srcString][repeat] = textureCache[srcString][repeat] || {};
-    textureCache[srcString][repeat] = loadImageTexture(material, src, repeat);
+    textureCache[srcString][repeat] = loadImageTexture(material, src, repeat, offset, wrap);
     textureCache[srcString][repeat].then(handleImageTextureLoaded);
 
     function handleImageTextureLoaded (texture) {
@@ -193,9 +196,11 @@ function calculateVideoCacheHash (videoEl) {
  * @param {object} material - three.js material.
  * @param {string|object} src - An <img> element or url to an image file.
  * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
+ * @param {string} offset - X and Y value for offset of texture
+ * @param {string} wrap - S and T values for wrapping
  * @returns {Promise} Resolves once texture is loaded.
  */
-function loadImageTexture (material, src, repeat) {
+function loadImageTexture (material, src, repeat, offset, wrap) {
   return new Promise(doLoadImageTexture);
 
   function doLoadImageTexture (resolve, reject) {
@@ -223,15 +228,30 @@ function loadImageTexture (material, src, repeat) {
      * Texture loaded. Set it.
      */
     function createTexture (texture) {
-      var repeatXY;
+      var repeatXY, offsetXY, wrapST;
       if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
+
+      // handle offset
+      offsetXY = offset.split(' ');
+      if (offsetXY.length === 2) {
+        texture.offset.set(offsetXY[0], offsetXY[1]);
+      }
 
       // Handle UV repeat.
       repeatXY = repeat.split(' ');
       if (repeatXY.length === 2) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
+        if (!wrap) {
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.wrapT = THREE.RepeatWrapping;
+        }
         texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
+      }
+
+      // Handle wrap.
+      if (wrap) {
+        wrapST = wrap.split(' ');
+        texture.wrapS = THREE[wrapST[0] + 'Wrapping'];
+        texture.wrapT = THREE[wrapST[1] + 'Wrapping'];
       }
 
       resolve(texture);
