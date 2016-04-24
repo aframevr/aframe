@@ -1,8 +1,8 @@
 var registerControls = require('../../core/controls').registerControls;
 var THREE = require('../../lib/three');
-var debug = require('../../utils/debug');
+var utils = require('../../utils');
 
-var warn = debug('components:mouse-controls:warn');
+var warn = utils.debug('components:mouse-controls:warn');
 
 /**
  * Mouse-controls component.

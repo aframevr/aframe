@@ -1,11 +1,11 @@
 var registerComponent = require('../../../core/component').registerComponent;
 var shouldCaptureKeyEvent = require('../../../utils/').shouldCaptureKeyEvent;
 var THREE = require('../../../lib/three');
-var debug = require('../../../utils/debug');
+var utils = require('../../../utils');
 
 var MAX_DELTA = 0.2;
 
-var warn = debug('components:wasd-controls:warn');
+var warn = utils.debug('components:wasd-controls:warn');
 
 /**
  * WASD component to control entities using WASD keys.

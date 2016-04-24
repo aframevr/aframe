@@ -1,11 +1,11 @@
 var registerComponent = require('../../../core/component').registerComponent;
 var THREE = require('../../../lib/three');
-var debug = require('../../../utils/debug');
+var utils = require('../../../utils');
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 
-var warn = debug('components:look-controls:warn');
+var warn = utils.debug('components:look-controls:warn');
 
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
