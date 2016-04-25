@@ -52970,11 +52970,13 @@ module.exports.Component = registerComponent('cursor', {
 });
 
 },{"../core/component":54,"../utils/":114}],25:[function(_dereq_,module,exports){
+var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
 var dummyGeometry = new THREE.Geometry();
+var warn = debug('components:geometry:warn');
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
@@ -52982,9 +52984,10 @@ var dummyGeometry = new THREE.Geometry();
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    buffer: {default: true},
-    primitive: {default: ''},
-    skipCache: {default: false}
+    buffer: { default: true },
+    mergeTo: { type: 'selector' },
+    primitive: { default: '' },
+    skipCache: { default: false }
   },
 
   init: function () {
@@ -53007,6 +53010,52 @@ module.exports.Component = registerComponent('geometry', {
 
     // Create new geometry.
     this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
+    if (data.mergeTo) {
+      this.mergeTo(data.mergeTo);
+    }
+  },
+
+  /**
+   * It merges the geometry into another entity's geometry. The original
+   * entity is removed from the scene. This is a not reversible operation
+   *
+   * @param {object} toEl - The entity where the geometry will be merged to
+   */
+  mergeTo: function (toEl) {
+    var el = this.el;
+    var mesh = el.getObject3D('mesh');
+    var toMesh;
+    if (!toEl) {
+      warn('There is not a valid entity to merge the geometry to');
+      return;
+    }
+    if (toEl === el) {
+      warn('Source and target geometries cannot be the same for merge.');
+      return;
+    }
+    toMesh = toEl.getObject3D('mesh');
+    // If the to entity does not have a mesh we create one
+    if (!toMesh) {
+      toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
+      toEl.setAttribute('material', el.getComputedAttribute('material'));
+      return;
+    }
+
+    if (toMesh.geometry instanceof THREE.Geometry === false ||
+        mesh.geometry instanceof THREE.Geometry === false) {
+      warn('Geometry merge is only available for `THREE.Geometry` types');
+      return;
+    }
+
+    if (this.data.skipCache === false) {
+      warn('Cached geometries are not allowed to merge. Set `skipCache` to true');
+      return;
+    }
+
+    mesh.parent.updateMatrixWorld();
+    toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
+    el.emit('geometry-merged', { mergeTarget: toEl });
+    el.sceneEl.removeChild(el);
   },
 
   /**
@@ -53038,7 +53087,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":54,"../core/geometry":55,"../lib/three":101}],26:[function(_dereq_,module,exports){
+},{"../core/component":54,"../core/geometry":55,"../lib/three":101,"../utils/debug":113}],26:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -53106,7 +53155,7 @@ module.exports.Component = registerComponent('light', {
    */
   update: function (oldData) {
     var data = this.data;
-    var diffData = diff(data, oldData || {});
+    var diffData = diff(data, oldData);
     var light = this.light;
 
     // Existing light.
@@ -53602,14 +53651,12 @@ module.exports.Component = registerComponent('look-controls', {
 
 },{"../core/component":54,"../lib/three":101}],31:[function(_dereq_,module,exports){
 /* global Promise */
-var debug = _dereq_('../utils/debug');
-var utils = _dereq_('../utils');
+var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var shader = _dereq_('../core/shader');
 
-var error = debug('components:material:error');
-var diff = utils.diff;
+var error = utils.debug('components:material:error');
 var registerComponent = component.registerComponent;
 var shaders = shader.shaders;
 var shaderNames = shader.shaderNames;
@@ -53641,9 +53688,7 @@ module.exports.Component = registerComponent('material', {
    */
   update: function (oldData) {
     var data = this.data;
-    var dataDiff = oldData ? diff(oldData, data) : data;
-
-    if (!this.shader || dataDiff.shader) {
+    if (!this.shader || data.shader !== oldData.shader) {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);
@@ -53765,7 +53810,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":54,"../core/shader":62,"../lib/three":101,"../utils":114,"../utils/debug":113}],32:[function(_dereq_,module,exports){
+},{"../core/component":54,"../core/shader":62,"../lib/three":101,"../utils/":114}],32:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -54069,6 +54114,8 @@ module.exports.Component = register('canvas', {
       canvas.classList.add('a-canvas');
       canvas.style.height = data.height + '%';
       canvas.style.width = data.width + '%';
+      // Mark canvas as provided/injected by A-Frame.
+      canvas.dataset.aframeDefault = true;
       scene.appendChild(canvas);
     }
 
@@ -54089,7 +54136,7 @@ module.exports.Component = register('canvas', {
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
-  schema: { default: false }
+  schema: { default: true }
 });
 
 },{"../../core/component":54}],39:[function(_dereq_,module,exports){
@@ -54468,7 +54515,6 @@ function createOrientationModal (exitVRHandler) {
 
 },{"../../core/component":54,"../../lib/three":101,"../../utils/":114}],43:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
-var diff = _dereq_('../utils').diff;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -54493,44 +54539,30 @@ module.exports.Component = registerComponent('sound', {
 
   update: function (oldData) {
     var data = this.data;
-    var diffData = diff(oldData || {}, data);
     var el = this.el;
     var sound = this.sound;
-    var src = data.src;
-    var srcChanged = 'src' in diffData;
+    var srcChanged = data.src !== oldData.src;
 
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
-      if (!src) {
+      if (!data.src) {
         warn('Audio source was not specified with `src`');
         return;
       }
       sound = this.setupSound();
     }
 
-    if (srcChanged || 'autoplay' in diffData) {
-      sound.autoplay = data.autoplay;
-    }
+    sound.autoplay = data.autoplay;
+    sound.setLoop(data.loop);
+    sound.setVolume(data.volume);
 
-    if (srcChanged || 'loop' in diffData) {
-      sound.setLoop(data.loop);
-    }
-
-    if (srcChanged || 'volume' in diffData) {
-      sound.setVolume(data.volume);
-    }
-
-    if ('on' in diffData) {
-      if (oldData && oldData.on) {
-        el.removeEventListener(oldData.on);
-      }
+    if (data.on !== oldData.on) {
+      if (oldData.on) { el.removeEventListener(oldData.on); }
       el.addEventListener(data.on, this.play.bind(this));
     }
 
-    // All sound values set. Load in `src.
-    if (srcChanged) {
-      sound.load(src);
-    }
+    // All sound values set. Load in `src`.
+    if (srcChanged) { sound.load(data.src); }
   },
 
   remove: function () {
@@ -54598,7 +54630,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101,"../utils":114,"../utils/debug":113}],44:[function(_dereq_,module,exports){
+},{"../core/component":54,"../lib/three":101,"../utils/debug":113}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -54897,6 +54929,7 @@ var parseProperty = _dereq_('./schema').parseProperty;
 var registerElement = _dereq_('./a-register-element').registerElement;
 var TWEEN = _dereq_('tween.js');
 var utils = _dereq_('../utils/');
+var THREE = _dereq_('../lib/three');
 
 var DEFAULTS = constants.defaults;
 var DIRECTIONS = constants.directions;
@@ -55248,13 +55281,18 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var from = {};
   var partialSetAttribute;
   var to = {};
-
   if (attributeSplit.length === 2) {
-    getForComponentAttribute();
+    if (isColor()) {
+      getForColorComponent();
+    } else {
+      getForComponentAttribute();
+    }
   } else if (dataTo && isCoordinate(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
+  } else if (isNaN(dataTo)) {
+    getForColorComponent();
   } else {
     getForNumber();
   }
@@ -55263,6 +55301,18 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     partialSetAttribute: partialSetAttribute,
     to: to
   };
+
+  /**
+   * Match the schema type to color
+   * @return {bool} if the schema is of type color
+   */
+  function isColor () {
+    var componentName = attributeSplit[0];
+    var propertyName = attributeSplit[1];
+    var component = el.components[componentName];
+    var schema = component && component.schema;
+    return schema && schema[propertyName] && schema[propertyName].type === 'color';
+  }
 
   /**
    * Animating a component that has multiple attributes (e.g., geometry.width).
@@ -55319,6 +55369,22 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 
   /**
+   * Animating a color component
+   *   Will convert a hex value to a THREE.Color
+   *   Then converts to hex for the setAttribute
+   */
+  function getForColorComponent () {
+    from = new THREE.Color(dataFrom);
+    to = new THREE.Color(dataTo);
+    partialSetAttribute = function (value) {
+      if (attributeSplit.length > 1) {
+        el.setAttribute(attributeSplit[0], attributeSplit[1], rgbVectorToHex(value));
+      }
+      el.setAttribute(attribute, rgbVectorToHex(value));
+    };
+  }
+
+  /**
    * Animating a numbered attribute (e.g., opacity).
    */
   function getForNumber () {
@@ -55356,7 +55422,38 @@ function boolToNum (bool) {
   return bool ? 1 : 0;
 }
 
-},{"../constants/animation":46,"../utils/":114,"./a-node":52,"./a-register-element":53,"./schema":61,"tween.js":19}],48:[function(_dereq_,module,exports){
+/**
+ * Converts a number 0-255 to hex
+ * @param {number} color number 0 - 255
+ * @returns {string} hex value of number bassed
+ */
+function componentToHex (color) {
+  var hex = color.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+/**
+ * Clamps a number to 0-1
+ * Then converts that number to 0-255
+ * @param {number} color number 0 - 1
+ * @returns {number} color number 0 - 255
+ */
+function convertToIntegerColor (color) {
+  return Math.floor(Math.min(Math.abs(color), 1) * 255);
+}
+
+/**
+ * Converts a rgb object into a hex string
+ * @param {object} color { r: 1, g: 1, b: 1 }
+ * @returns {string} hex value #ffffff
+ */
+function rgbVectorToHex (color) {
+  return '#' + ['r', 'g', 'b'].map(function (prop) {
+    return componentToHex(convertToIntegerColor(color[prop]));
+  }).join('');
+}
+
+},{"../constants/animation":46,"../lib/three":101,"../utils/":114,"./a-node":52,"./a-register-element":53,"./schema":61,"tween.js":19}],48:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -56934,7 +57031,8 @@ Component.prototype = {
   updateProperties: function (value) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
-    var previousData = extendProperties({}, this.data, isSinglePropSchema);
+    var oldData = extendProperties({}, this.data, isSinglePropSchema);
+
     this.updateCachedAttrValue(value);
     if (this.updateSchema) {
       this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
@@ -56942,18 +57040,18 @@ Component.prototype = {
     this.data = buildData(el, this.name, this.schema, this.attrValue);
 
     // Don't update if properties haven't changed
-    if (!isSinglePropSchema && utils.deepEqual(previousData, this.data)) { return; }
+    if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
 
     if (!this.initialized) {
       this.init();
       this.initialized = true;
     }
-    this.update(previousData);
+    this.update(oldData);
 
     el.emit('componentchanged', {
       name: this.name,
       newData: this.getData(),
-      oldData: previousData
+      oldData: oldData
     });
   },
 
@@ -57011,10 +57109,10 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
-    parse: NewComponent.prototype.parse.bind(NewComponent.prototype),
-    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache.bind(NewComponent.prototype),
+    parse: NewComponent.prototype.parse,
+    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
-    stringify: NewComponent.prototype.stringify.bind(NewComponent.prototype),
+    stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
   return NewComponent;
@@ -57087,13 +57185,7 @@ module.exports.buildData = buildData;
 * @returns Overridden object or value.
 */
 function extendProperties (dest, source, isSinglePropSchema) {
-  if (isSinglePropSchema) {
-    if (source === undefined || source === null ||
-        (typeof source === 'object' && Object.keys(source).length === 0)) {
-      return dest;
-    }
-    return source;
-  }
+  if (isSinglePropSchema) { return source; }
   return utils.extend(dest, source);
 }
 
@@ -57473,8 +57565,8 @@ var AScene = module.exports = registerElement('a-scene', {
         // Possible camera or canvas not injected yet.
         if (!camera || !canvas) { return; }
 
-        // Update canvas.
-        if (!isMobile) {
+        // Update canvas if canvas was provided by A-Frame.
+        if (!isMobile && canvas.dataset.aframeDefault) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
         }
@@ -59415,41 +59507,14 @@ module.exports.Component = registerShader('flat', {
   init: function (data) {
     this.textureSrc = null;
     this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
-    this.updateTexture(data);
+    utils.material.updateMap(this, data);
     return this.material;
   },
 
   update: function (data) {
     this.updateMaterial(data);
-    this.updateTexture(data);
+    utils.material.updateMap(this, data);
     return this.material;
-  },
-
-  /**
-   * Update or create material.
-   *
-   * @param {object|null} oldData
-   */
-  updateTexture: function (data) {
-    var el = this.el;
-    var src = data.src;
-    var material = this.material;
-    var materialSystem = el.sceneEl.systems.material;
-
-    if (src) {
-      if (src === this.textureSrc) { return; }
-      // Texture added or changed.
-      this.textureSrc = src;
-      utils.srcLoader.validateSrc(
-        src,
-        function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-        function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
-      );
-      return;
-    }
-
-    // Texture removed.
-    utils.material.updateMaterialTexture(material, null);
   },
 
   /**
@@ -59473,11 +59538,10 @@ module.exports.Component = registerShader('flat', {
  * @returns {object} data - Processed material data.
  */
 function getMaterialData (data) {
-  var materialData = {
+  return {
     fog: data.fog,
     color: new THREE.Color(data.color)
   };
-  return materialData;
 }
 
 },{"../core/shader":62,"../lib/three":101,"../utils/":114}],103:[function(_dereq_,module,exports){
@@ -59513,42 +59577,16 @@ module.exports.Component = registerShader('standard', {
    */
   init: function (data) {
     this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
-    this.updateTexture(data);
+    utils.material.updateMap(this, data);
     this.updateEnvMap(data);
     return this.material;
   },
 
   update: function (data) {
     this.updateMaterial(data);
-    this.updateTexture(data);
+    utils.material.updateMap(this, data);
     this.updateEnvMap(data);
     return this.material;
-  },
-
-  /**
-   * Update or create material.
-   *
-   * @param {object|null} oldData
-   */
-  updateTexture: function (data) {
-    var el = this.el;
-    var src = data.src;
-    var material = this.material;
-    var materialSystem = el.sceneEl.systems.material;
-
-    if (src) {
-      if (src === this.textureSrc) { return; }
-      // Texture added or changed.
-      this.textureSrc = src;
-      utils.srcLoader.validateSrc(
-        src,
-        function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-        function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
-      );
-    } else {
-      // Texture removed.
-      utils.material.updateMaterialTexture(material, null);
-    }
   },
 
   /**
@@ -59612,12 +59650,11 @@ module.exports.Component = registerShader('standard', {
  * @returns {object} data - Processed material data.
  */
 function getMaterialData (data) {
-  var materialData = {
+  return {
     color: new THREE.Color(data.color),
     metalness: data.metalness,
     roughness: data.roughness
   };
-  return materialData;
 }
 
 },{"../core/shader":62,"../lib/three":101,"../utils/":114}],105:[function(_dereq_,module,exports){
@@ -59803,9 +59840,13 @@ module.exports.System = registerSystem('geometry', {
     var cache = this.cache;
     var cacheCount = this.cacheCount;
     var geometry;
-    var hash = this.hash(data);
+    var hash;
 
-    if (!cache[hash] || data.skipCache) { return; }
+    if (data.skipCache) { return; }
+
+    hash = this.hash(data);
+
+    if (!cache[hash]) { return; }
 
     decrementCacheCount(cacheCount, hash);
 
@@ -60247,7 +60288,7 @@ function fixVideoAttributes (videoEl) {
 /* global THREE */
 
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*(-?\d*\.{0,1}\d+)\s*/;
+var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
 
 /**
@@ -60632,13 +60673,43 @@ module.exports.isIframed = function () {
 module.exports.srcLoader = _dereq_('./src-loader');
 
 },{"./coordinates":112,"./debug":113,"./material":115,"./src-loader":116,"./styleParser":117,"deep-assign":6,"object-assign":9}],115:[function(_dereq_,module,exports){
+var srcLoader = _dereq_('./src-loader');
+
+/**
+ * Update shader instance's `material.map` given `data.src`.
+ *
+ * @param {object} shader - A-Frame shader instance.
+ * @param {object} data
+ */
+module.exports.updateMap = function (shader, data) {
+  var el = shader.el;
+  var src = data.src;
+  var material = shader.material;
+  var materialSystem = el.sceneEl.systems.material;
+
+  if (src) {
+    if (src === shader.mapSrc) { return; }
+    // Texture added or changed.
+    shader.mapSrc = src;
+    srcLoader.validateSrc(
+      src,
+      function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
+      function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
+    );
+    return;
+  }
+
+  // Texture removed.
+  updateMaterialTexture(material, null);
+};
+
 /**
  * Set material texture and update if necessary.
  *
  * @param {object} material
  * @param {object} texture
  */
-module.exports.updateMaterialTexture = function (material, texture) {
+function updateMaterialTexture (material, texture) {
   var oldMap = material.map;
   if (texture) { texture.needsUpdate = true; }
   material.map = texture;
@@ -60647,9 +60718,10 @@ module.exports.updateMaterialTexture = function (material, texture) {
   if (oldMap === null && material.map || material.map === null && oldMap) {
     material.needsUpdate = true;
   }
-};
+}
+module.exports.updateMaterialTexture = updateMaterialTexture;
 
-},{}],116:[function(_dereq_,module,exports){
+},{"./src-loader":116}],116:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -60967,7 +61039,7 @@ window.threeStats = function ( renderer ) {
         'renderer.info.memory.textures': {
             caption: 'Textures'
         },
-        'renderer.info.memory.programs': {
+        'renderer.info.programs': {
             caption: 'Programs'
         },
         'renderer.info.render.calls': {
@@ -60986,10 +61058,10 @@ window.threeStats = function ( renderer ) {
     };
 
     var _groups = [ {
-        caption: 'Three.js - memory',
-        values: [ 'renderer.info.memory.geometries', 'renderer.info.memory.programs', 'renderer.info.memory.textures' ]
+        caption: 'Three.js - Memory',
+        values: [ 'renderer.info.memory.geometries', 'renderer.info.programs', 'renderer.info.memory.textures' ]
     }, {
-        caption: 'Three.js - render',
+        caption: 'Three.js - Render',
         values: [ 'renderer.info.render.calls', 'renderer.info.render.faces', 'renderer.info.render.points', 'renderer.info.render.vertices' ]
     } ];
 
@@ -60998,7 +61070,7 @@ window.threeStats = function ( renderer ) {
     function _update () {
 
         _rS( 'renderer.info.memory.geometries' ).set( renderer.info.memory.geometries );
-        _rS( 'renderer.info.memory.programs' ).set( renderer.info.memory.programs );
+        _rS( 'renderer.info.programs' ).set( renderer.info.programs.length );
         _rS( 'renderer.info.memory.textures' ).set( renderer.info.memory.textures );
         _rS( 'renderer.info.render.calls' ).set( renderer.info.render.calls );
         _rS( 'renderer.info.render.faces' ).set( renderer.info.render.faces );
@@ -61113,7 +61185,6 @@ window.BrowserStats = function () {
 
 if (typeof module === 'object') {
   module.exports = {
-    aframeStats: window.aframeStats,
     glStats: window.glStats,
     threeStats: window.threeStats,
     BrowserStats: window.BrowserStats
@@ -61177,7 +61248,7 @@ window.rStats = function rStats ( settings ) {
     var _settings = settings || {};
     var _colours = _settings.colours || [ '#850700', '#c74900', '#fcb300', '#284280', '#4c7c0c' ];
 
-    var _cssFont = '//fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
+    var _cssFont = 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700,300';
     var _cssRStats = ( _settings.CSSPath ? _settings.CSSPath : '' ) + 'rStats.css';
 
     var _css = _settings.css || [ _cssFont, _cssRStats ];
