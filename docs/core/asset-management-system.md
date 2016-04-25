@@ -35,7 +35,7 @@ We can define all of our assets in `<a-assets>` and point to those assets from o
 
     <img id="advertisement" src="ad.png">
 
-    <video id="kentucky-derby" src="derby.mp4>
+    <video id="kentucky-derby" src="derby.mp4">
   </a-assets>
 
   <!-- Scene. -->
