@@ -191,8 +191,6 @@ AFRAME.registerComponent('collider', {
 });
 ```
 
-Then attach a class to the enemies to designate them as targets, attach animations to listen for collisions to make them disappear, and attach the collider component to the laser that targets enemies. For good measure, let's make it a challenge and have the enemies march around you as well:
-
 Then we attach a class to the enemies to designate them as targets, attach animations that trigger on collision to make them disappear, and finally attach the collider component to the laser that targets enemies:
 
 ```html
