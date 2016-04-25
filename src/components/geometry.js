@@ -44,25 +44,28 @@ module.exports.Component = registerComponent('geometry', {
   },
 
   /**
-   * It merges the geometry into another entity's geometry. The original
-   * entity is removed from the scene. This is a not reversible operation
+   * Merge geometry to another entity's geometry.
+   * Remove the entity from the scene. Not a reversible operation.
    *
-   * @param {object} toEl - The entity where the geometry will be merged to
+   * @param {Element} toEl - Entity where the geometry will be merged to.
    */
   mergeTo: function (toEl) {
     var el = this.el;
     var mesh = el.getObject3D('mesh');
     var toMesh;
+
     if (!toEl) {
       warn('There is not a valid entity to merge the geometry to');
       return;
     }
+
     if (toEl === el) {
-      warn('Source and target geometries cannot be the same for merge.');
+      warn('Source and target geometries cannot be the same for merge');
       return;
     }
+
+    // Create mesh if entity does not have one.
     toMesh = toEl.getObject3D('mesh');
-    // If the to entity does not have a mesh we create one
     if (!toMesh) {
       toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
       toEl.setAttribute('material', el.getComputedAttribute('material'));
@@ -71,7 +74,9 @@ module.exports.Component = registerComponent('geometry', {
 
     if (toMesh.geometry instanceof THREE.Geometry === false ||
         mesh.geometry instanceof THREE.Geometry === false) {
-      warn('Geometry merge is only available for `THREE.Geometry` types');
+      warn('Geometry merge is only available for `THREE.Geometry` types. ' +
+           'Check that both of the merging geometry and the target geometry have `buffer` ' +
+           'set to false');
       return;
     }
 
@@ -82,8 +87,8 @@ module.exports.Component = registerComponent('geometry', {
 
     mesh.parent.updateMatrixWorld();
     toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
-    el.emit('geometry-merged', { mergeTarget: toEl });
-    el.sceneEl.removeChild(el);
+    el.emit('geometry-merged', {mergeTarget: toEl});
+    el.parentNode.removeChild(el);
   },
 
   /**
