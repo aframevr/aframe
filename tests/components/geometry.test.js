@@ -173,6 +173,18 @@ suite('standard geometries', function () {
     assert.equal(geometry.parameters.thetaLength, degToRad(350));
   });
 
+  test('icosahedron', function () {
+    var el = this.el;
+    var geometry;
+    el.setAttribute('geometry', {
+      buffer: false, primitive: 'icosahedron', detail: 0, radius: 5});
+
+    geometry = el.getObject3D('mesh').geometry;
+    assert.equal(geometry.type, 'IcosahedronGeometry');
+    assert.equal(geometry.parameters.radius, 5);
+    assert.equal(geometry.parameters.detail, 0);
+  });
+
   test('plane', function () {
     var el = this.el;
     var geometry;
