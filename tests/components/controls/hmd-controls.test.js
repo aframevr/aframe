@@ -72,8 +72,8 @@ suite('hmd-controls', function () {
   suite('getVelocity', function () {
     test('returns HMD velocity', function () {
       hmd.dolly.position.set(0, 0, 0);
-      hmd.dolly.position.set(5, 0, 1);
-      assert.shallowDeepEqual(hmdControls.getVelocity(), {x: 5, y: 0, z: 1});
+      hmd.dolly.position.set(0.5, 0, 0.1);
+      assert.shallowDeepEqual(hmdControls.getVelocity(10), {x: 50, y: 0, z: 10});
     });
   });
 });

@@ -70,12 +70,12 @@ module.exports.Component = registerControls('hmd-controls', {
     return this.data.enabled && !this.position.equals(this.dolly.position);
   },
 
-  getVelocity: function () {
+  getVelocity: function (dt) {
     var dolly = this.dolly;
     var position = this.position;
     var velocity = this.velocity;
     velocity.copy(dolly.position).sub(position);
     position.copy(dolly.position);
-    return velocity;
+    return velocity.multiplyScalar(1000 / dt);
   }
 });
