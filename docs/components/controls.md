@@ -12,6 +12,7 @@ The following input components are provided by A-Frame, in addition to any custo
 
 * [gamepad-controls](#gamepad-controls) *(position + rotation)*
 * [hmd-controls](#hmd-controls) *(position + rotation)*
+* [keyboard-controls](#keyboard-controls) *(position)*
 * [mouse-controls](#mouse-controls) *(rotation)*
 * [touch-controls ](#touch-controls) *(position)*
 
@@ -39,15 +40,15 @@ To configure one of the input methods, include its component and set the propert
 
 ### controls
 
-| Property                | Description                                                                           | Default Value                                |
-|-------------------------|---------------------------------------------------------------------------------------|----------------------------------------------|
-| enabled                 | Whether all controls are enabled.                                                     | true                                         |
-| flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                                        |
-| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls touch-controls |
-| positionControlsEnabled | Whether positional tracking is enabled.                                               | true                                         |
-| positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                                           |
-| positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                                           |
-| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls gamepad-controls mouse-controls |
+| Property                | Description                                                                           | Default Value                                                  |
+|-------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| enabled                 | Whether all controls are enabled.                                                     | true                                                           |
+| flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                                                          |
+| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls keyboard-controls touch-controls |
+| positionControlsEnabled | Whether positional tracking is enabled.                                               | true                                                           |
+| positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                                                             |
+| positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                                                             |
+| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls gamepad-controls mouse-controls                   |
 
 ### gamepad-controls
 
@@ -66,6 +67,14 @@ Rotate and move entity when the head-mounted display (HMD) is rotated and moved.
 | Property | Description                   | Default Value |
 |-------------|----------------------------|---------------|
 | enabled  | Whether HMD input is enabled. | true          |
+
+### keyboard-controls
+
+Moves the entity using the WASD or ↑←↓→ keys.
+
+| Property | Description                        | Default Value |
+|----------|------------------------------------|---------------|
+| enabled  | Whether keyboard input is enabled. | true          |
 
 ### mouse-controls
 
