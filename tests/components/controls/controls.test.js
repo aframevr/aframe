@@ -18,7 +18,7 @@ suite('controls', function () {
 
   suite('init', function () {
     var defaultPositionControls = [
-      'hmd-controls', 'gamepad-controls', 'keyboard-controls', 'touch-controls'
+      'hmd-controls', 'gamepad-controls', 'touch-controls'
     ];
     var defaultRotationControls = [
       'hmd-controls', 'gamepad-controls', 'mouse-controls'
