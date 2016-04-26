@@ -54,18 +54,21 @@ module.exports.Component = registerControls('controls', {
   },
 
   tick: function (t, dt) {
+    var data = this.data;
+    var velocity = this.velocity;
+
     if (isNaN(dt)) { return; }
 
     // Update rotation.
-    if (this.data.rotationEnabled) {
+    if (data.rotationEnabled) {
       this.updateRotation(dt);
     }
 
     // Update velocity. If FPS is too low, reset.
-    if (this.data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
-      this.velocity.set(0, 0, 0);
-      this.el.setAttribute('velocity', this.velocity);
-    } else if (this.data.positionControlsEnabled) {
+    if (data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
+      velocity.set(0, 0, 0);
+      this.el.setAttribute('velocity', velocity);
+    } else {
       this.updateVelocity(dt);
     }
   },
@@ -117,7 +120,7 @@ module.exports.Component = registerControls('controls', {
     velocity.x -= velocity.x * data.positionEasing * dt / 1000;
     velocity.z -= velocity.z * data.positionEasing * dt / 1000;
 
-    control = this.getActivePositionControls();
+    control = data.positionControlsEnabled ? this.getActivePositionControls() : null;
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {

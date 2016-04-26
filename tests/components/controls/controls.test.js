@@ -76,6 +76,32 @@ suite('controls', function () {
       controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.024515625, y: 0, z: 0});
     });
+
+    test('decelerates after movement is disabled', function () {
+      var el = this.el;
+      var velocity = new THREE.Vector3();
+      registerControls('pos-controls-5', {
+        isVelocityActive: this.sinon.stub().returns(true),
+        getVelocity: this.sinon.stub().returns(velocity)
+      });
+      el.setAttribute('controls', {
+        position: ['pos-controls-5'],
+        positionAcceleration: 25,
+        positionEasing: 25
+      });
+
+      // Set an initial velocity.
+      velocity.set(1, 0, 0);
+      controls.tick(0, 1);
+      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 1, y: 0, z: 0});
+
+      // Disable controls and verify that entity decelerates.
+      el.setAttribute('controls', 'positionControlsEnabled', false);
+      controls.tick(0, 10);
+      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.75, y: 0, z: 0});
+      controls.tick(0, 10);
+      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.5625, y: 0, z: 0});
+    });
   });
 
   suite('rotation', function () {
