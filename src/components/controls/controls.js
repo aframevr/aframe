@@ -75,6 +75,7 @@ module.exports.Component = registerControls('controls', {
    * @param  {number} dt
    */
   updateRotation: function (dt) {
+    var rotation;
     var dRotation;
     var el = this.el;
     var yaw = this.yaw;
@@ -91,7 +92,11 @@ module.exports.Component = registerControls('controls', {
         z: 0
       });
     } else if (control) {
-      el.setAttribute('rotation', control.getRotation());
+      rotation = control.getRotation();
+      el.setAttribute('rotation', rotation);
+      yaw.rotation.y = THREE.Math.degToRad(rotation.y);
+      pitch.rotation.x = THREE.Math.degToRad(rotation.x);
+      pitch.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitch.rotation.x));
     }
   },
 
