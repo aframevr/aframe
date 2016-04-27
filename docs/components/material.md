@@ -46,8 +46,8 @@ The material component has only a few base properties, but more properties will 
 
 | Event Name              | Description                                                                                |
 |-------------------------|--------------------------------------------------------------------------------------------|
-| material-texture-loaded | Texture loaded onto material. Or when the first frame is playing for video textures.       |
-| material-video-ended    | For video textures, emitted when the video has reached its end (may not work with `loop`). |
+| materialtextureloaded | Texture loaded onto material. Or when the first frame is playing for video textures.       |
+| materialvideoended    | For video textures, emitted when the video has reached its end (may not work with `loop`). |
 
 ## Textures
 
