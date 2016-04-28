@@ -28,8 +28,8 @@ Note that the sky primitive inherits common [mesh attributes](./mesh-attributes.
 
 | Attribute       | Component Mapping       | Default Value |
 |-----------------|-------------------------|---------------|
-| radius          | geometry.radius         | 5000          |
-| segments-height | geometry.segmentsHeight | 64            |
+| radius          | geometry.radius         | 100           |
+| segments-height | geometry.segmentsHeight | 20            |
 | segments-width  | geometry.segmentsWidth  | 64            |
 
 ## Equirectangular Image
