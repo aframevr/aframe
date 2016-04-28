@@ -97,7 +97,8 @@ module.exports.AAnimation = registerElement('a-animation', {
         var begin = parseInt(data.begin, 10);
         var currentValue = el.getComputedAttribute(attribute);
         var direction = self.getDirection(data.direction);
-        var easing = EASING_FUNCTIONS[data.easing];
+        var animationType = data.easing | 'linear';
+        var easing = EASING_FUNCTIONS[animationType];
         var fill = data.fill;
         var from;
         var repeat = data.repeat === REPEATS.indefinite ? Infinity : 0;
