@@ -6,6 +6,11 @@ html {
   top: 0;
 }
 
+/* In chrome mobile the user agent stylesheet set it to white  */
+:-webkit-full-screen {
+  background-color: transparent;
+}
+
 body {
   height: 100%;
   margin: 0;
@@ -67,6 +72,7 @@ a-scene audio {
   display: -webkit-flex;
   font-family: sans-serif, monospace;
   font-size: 13px;
+
   font-weight: 200;
   line-height: 16px;
   height: 72px;

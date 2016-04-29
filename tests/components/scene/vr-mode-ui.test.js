@@ -9,8 +9,12 @@ suite('vr-mode-ui', function () {
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
+    var resolvePromise = function () { return Promise.resolve(); };
     el.setAttribute('vr-mode-ui', '');
-    el.stereoRenderer = { setFullScreen: function () {} };
+    el.effect = {
+      requestPresent: resolvePromise,
+      exitPresent: resolvePromise
+    };
     el.addEventListener('loaded', function () { done(); });
   });
 
@@ -31,6 +35,7 @@ suite('vr-mode-ui', function () {
 
   test('hides on enter VR', function () {
     var scene = this.el;
+    scene.renderer = {};
     scene.enterVR();
     UI_CLASSES.forEach(function (uiClass) {
       assert.ok(scene.querySelector(uiClass).className.indexOf('a-hidden'));
@@ -39,7 +44,7 @@ suite('vr-mode-ui', function () {
 
   test('shows on exit VR', function (done) {
     var scene = this.el;
-
+    scene.renderer = {};
     scene.enterVR();
     scene.exitVR();
 

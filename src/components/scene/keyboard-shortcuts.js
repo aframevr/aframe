@@ -7,6 +7,7 @@ var controls = new THREE.VRControls(new THREE.Object3D());
 module.exports.Component = registerComponent('keyboard-shortcuts', {
   schema: {
     enterVR: { default: true },
+    exitVR: { default: true },
     resetSensor: { default: true }
   },
 
@@ -18,6 +19,9 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
       if (!shouldCaptureKeyEvent(event)) { return; }
       if (self.enterVREnabled && event.keyCode === 70) {  // f.
         scene.enterVR();
+      }
+      if (self.enterVREnabled && event.keyCode === 27) {  // escape.
+        scene.exitVR();
       }
       if (self.resetSensorEnabled && event.keyCode === 90) {  // z.
         controls.resetSensor();

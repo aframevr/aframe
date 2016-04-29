@@ -1,33 +1,42 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var isMobile = require('../utils/').isMobile();
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
+var radToDeg = THREE.Math.radToDeg;
 
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true }
+    enabled: { default: true },
+    hmdEnabled: { default: true },
+    standing: { default: true }
   },
 
   init: function () {
-    this.previousPosition = new THREE.Vector3();
-    this.deltaPosition = new THREE.Vector3();
+    this.previousHMDPosition = new THREE.Vector3();
     this.setupMouseControls();
     this.setupHMDControls();
     this.bindMethods();
   },
 
-  update: function () {
-    if (!this.data.enabled) { return; }
+  update: function (oldData) {
+    var data = this.data;
+    var hmdEnabled = data.hmdEnabled;
+    if (!data.enabled) { return; }
+    if (!hmdEnabled && oldData && hmdEnabled !== oldData.hmdEnabled) {
+      this.pitchObject.rotation.set(0, 0, 0);
+      this.yawObject.rotation.set(0, 0, 0);
+    }
+    this.controls.standing = data.standing;
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
   },
 
   play: function () {
-    this.previousPosition.set(0, 0, 0);
     this.addEventListeners();
   },
 
@@ -65,7 +74,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
     this.controls = new THREE.VRControls(this.dolly);
-    this.zeroQuaternion = new THREE.Quaternion();
   },
 
   addEventListeners: function () {
@@ -109,75 +117,78 @@ module.exports.Component = registerComponent('look-controls', {
 
   updateOrientation: (function () {
     var hmdEuler = new THREE.Euler();
-    hmdEuler.order = 'YXZ';
     return function () {
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var hmdQuaternion = this.calculateHMDQuaternion();
-      hmdEuler.setFromQuaternion(hmdQuaternion);
-      this.el.setAttribute('rotation', {
-        x: THREE.Math.radToDeg(hmdEuler.x) + THREE.Math.radToDeg(pitchObject.rotation.x),
-        y: THREE.Math.radToDeg(hmdEuler.y) + THREE.Math.radToDeg(yawObject.rotation.y),
-        z: THREE.Math.radToDeg(hmdEuler.z)
-      });
+      var sceneEl = this.el.sceneEl;
+      var rotation;
+      hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
+      if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+        // Mouse look only if HMD disabled or no info coming from the sensors
+        rotation = {
+          x: radToDeg(pitchObject.rotation.x),
+          y: radToDeg(yawObject.rotation.y),
+          z: 0
+        };
+      } else {
+        if (isMobile) {
+          // In mobile we allow camera rotation with touch events and sensors
+          rotation = {
+            x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
+            y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
+            z: radToDeg(hmdEuler.z)
+          };
+        } else {
+          // Mouse rotation ignored with an active headset.
+          // The user head rotation takes priority
+          rotation = {
+            x: radToDeg(hmdEuler.x),
+            y: radToDeg(hmdEuler.y),
+            z: radToDeg(hmdEuler.z)
+          };
+        }
+      }
+      this.el.setAttribute('rotation', rotation);
     };
   })(),
 
   calculateHMDQuaternion: (function () {
     var hmdQuaternion = new THREE.Quaternion();
     return function () {
-      var dolly = this.dolly;
-      if (!this.zeroed && !dolly.quaternion.equals(this.zeroQuaternion)) {
-        this.zeroOrientation();
-        this.zeroed = true;
-      }
-      hmdQuaternion.copy(this.zeroQuaternion).multiply(dolly.quaternion);
+      hmdQuaternion.copy(this.dolly.quaternion);
       return hmdQuaternion;
     };
   })(),
 
-  updatePosition: function () {
-    var el = this.el;
-    var deltaPosition = this.calculateDeltaPosition();
-    var currentPosition = el.getComputedAttribute('position');
-    el.setAttribute('position', {
-      x: currentPosition.x + deltaPosition.x,
-      y: currentPosition.y + deltaPosition.y,
-      z: currentPosition.z + deltaPosition.z
-    });
-  },
-
-  calculateDeltaPosition: function () {
-    var dolly = this.dolly;
-    var deltaPosition = this.deltaPosition;
-    var previousPosition = this.previousPosition;
-    deltaPosition.copy(dolly.position);
-    deltaPosition.sub(previousPosition);
-    previousPosition.copy(dolly.position);
-    return deltaPosition;
-  },
-
-  updateHMDQuaternion: (function () {
-    var hmdQuaternion = new THREE.Quaternion();
+  updatePosition: (function () {
+    var deltaHMDPosition = new THREE.Vector3();
     return function () {
-      var dolly = this.dolly;
-      this.controls.update();
-      if (!this.zeroed && !dolly.quaternion.equals(this.zeroQuaternion)) {
-        this.zeroOrientation();
-        this.zeroed = true;
-      }
-      hmdQuaternion.copy(this.zeroQuaternion).multiply(dolly.quaternion);
-      return hmdQuaternion;
+      var el = this.el;
+      var currentPosition = el.getComputedAttribute('position');
+      var currentHMDPosition;
+      var previousHMDPosition = this.previousHMDPosition;
+      var sceneEl = this.el.sceneEl;
+      currentHMDPosition = this.calculateHMDPosition();
+      deltaHMDPosition.copy(currentHMDPosition).sub(previousHMDPosition);
+      if (!sceneEl.is('vr-mode') || isNullVector(deltaHMDPosition)) { return; }
+      previousHMDPosition.copy(currentHMDPosition);
+      // Do nothing if we have not moved.
+      if (!sceneEl.is('vr-mode')) { return; }
+      el.setAttribute('position', {
+        x: currentPosition.x + deltaHMDPosition.x,
+        y: currentPosition.y + deltaHMDPosition.y,
+        z: currentPosition.z + deltaHMDPosition.z
+      });
     };
   })(),
 
-  zeroOrientation: function () {
-    var euler = new THREE.Euler();
-    euler.setFromQuaternion(this.dolly.quaternion.clone().inverse());
-    // Cancel out roll and pitch. We want to only reset yaw
-    euler.z = 0;
-    euler.x = 0;
-    this.zeroQuaternion.setFromEuler(euler);
+  calculateHMDPosition: function () {
+    var dolly = this.dolly;
+    var position = new THREE.Vector3();
+    dolly.updateMatrix();
+    position.setFromMatrixPosition(dolly.matrix);
+    return position;
   },
 
   onMouseMove: function (event) {
@@ -237,3 +248,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.touchStarted = false;
   }
 });
+
+function isNullVector (vector) {
+  return vector.x === 0 && vector.y === 0 && vector.z === 0;
+}

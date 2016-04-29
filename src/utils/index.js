@@ -8,6 +8,7 @@ module.exports.coordinates = require('./coordinates');
 module.exports.debug = require('./debug');
 module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
+module.exports.queryParams = require('./queryParams');
 
 /**
  * Fires a custom DOM event.
