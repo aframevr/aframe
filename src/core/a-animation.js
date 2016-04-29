@@ -512,9 +512,7 @@ function getComputedAttributeFor (el, attribute) {
   var componentPropName = attributeSplit[1];
   var attributeValue = el.getComputedAttribute(componentName);
   // If the attribute is singular call normal getComputedAttribute function
-  if (attributeSplit.length === 1) {
-    return el.getComputedAttribute(componentName);
-  }
+  if (attributeSplit.length === 1) { return attributeValue; }
   // If the component exists as an attribute return the property on it
   if (attributeValue) { return attributeValue[componentPropName]; }
   // Otherwise Fall back to native get attribute with the component prop name
