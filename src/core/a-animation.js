@@ -95,7 +95,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var begin = parseInt(data.begin, 10);
-        var currentValue = el.getComputedAttribute(attribute);
+        var currentValue = getComputedAttributeFor(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -403,7 +403,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
+      from[attribute] = getComputedAttributeFor(el, attribute);
     } else {
       from[attribute] = dataFrom;
     }
@@ -476,6 +476,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 }
 module.exports.getAnimationValues = getAnimationValues;
+module.exports.getComputedAttributeFor = getComputedAttributeFor;
 
 /**
  * Converts string to bool.
@@ -496,6 +497,26 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
+}
+
+/**
+ * A getComputedAttribute that supports dot notation to look up a component property.
+ *
+ * @param {Element} el - To look up attribute on.
+ * @param {string} attr - dot notation or singular 'color' or 'material.color'
+ * @returns Resulting value of component property.
+ */
+function getComputedAttributeFor (el, attribute) {
+  var attributeSplit = attribute.split('.');
+  var componentName = attributeSplit[0];
+  var componentPropName = attributeSplit[1];
+  var attributeValue = el.getComputedAttribute(componentName);
+  // If the attribute is singular call normal getComputedAttribute function
+  if (attributeSplit.length === 1) { return attributeValue; }
+  // If the component exists as an attribute return the property on it
+  if (attributeValue) { return attributeValue[componentPropName]; }
+  // Otherwise Fall back to native get attribute with the component prop name
+  return el.getComputedAttribute(componentPropName);
 }
 
 /**
