@@ -510,18 +510,15 @@ function getComputedAttributeFor (el, attribute) {
   var attributeSplit = attribute.split('.');
   var componentName = attributeSplit[0];
   var componentPropName = attributeSplit[1];
+  var attributeValue = el.getComputedAttribute(componentName);
   // If the attribute is singular call normal getComputedAttribute function
   if (attributeSplit.length === 1) {
     return el.getComputedAttribute(componentName);
   }
   // If the component exists as an attribute return the property on it
-  if (el.getComputedAttribute(componentName)) {
-    return el.getComputedAttribute(componentName)[componentPropName];
-  }
-  // Otherwise fall back to the default property on the element
-  if (el.getComputedAttribute(componentPropName)) {
-    return el.getComputedAttribute(componentPropName);
-  }
+  if (attributeValue) { return attributeValue[componentPropName]; }
+  // Otherwise Fall back to native get attribute with the component prop name
+  return el.getComputedAttribute(componentPropName);
 }
 
 /**
