@@ -1,4 +1,3 @@
-/* global HTMLElement */
 var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -39,7 +38,7 @@ module.exports.Component = registerComponent('obj-model', {
 
     if (mtlUrl) {
       // .OBJ with an .MTL.
-      if (HTMLElement.prototype.getAttribute.call(el, 'material')) {
+      if (el.hasAttribute('material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
       mtlLoader.setBaseUrl(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
@@ -58,12 +57,14 @@ module.exports.Component = registerComponent('obj-model', {
     // .OBJ only.
     objLoader.load(objUrl, function (objModel) {
       // Apply material.
-      var material = el.components.material.material;
-      objModel.traverse(function (child) {
-        if (child instanceof THREE.Mesh) {
-          child.material = material;
-        }
-      });
+      var material = el.components.material;
+      if (material) {
+        objModel.traverse(function (child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = material.material;
+          }
+        });
+      }
 
       self.model = objModel;
       el.setObject3D('mesh', objModel);

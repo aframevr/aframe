@@ -1,6 +1,9 @@
 /* global assert, setup, suite, test */
 
 suite('a-assets', function () {
+  // Empty src will not trigger load events in Chrome. Use data URI where a load event is needed.
+  var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
   setup(function () {
     var el = this.el = document.createElement('a-assets');
     var scene = this.scene = document.createElement('a-scene');
@@ -21,7 +24,7 @@ suite('a-assets', function () {
 
     // Create image.
     var img = document.createElement('img');
-    img.setAttribute('src', '');
+    img.setAttribute('src', IMG_SRC);
     el.appendChild(img);
 
     scene.addEventListener('loaded', function () {

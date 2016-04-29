@@ -11,6 +11,8 @@ module.exports.parse = function (value) {
   var parsedData;
   if (typeof value !== 'string') { return value; }
   parsedData = styleParser.parse(value);
+  // The style parser returns an object { "" : "test"} when fed a string
+  if (parsedData['']) { return value; }
   return transformKeysToCamelCase(parsedData);
 };
 

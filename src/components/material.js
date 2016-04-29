@@ -1,12 +1,10 @@
 /* global Promise */
-var debug = require('../utils/debug');
-var utils = require('../utils');
+var utils = require('../utils/');
 var component = require('../core/component');
 var THREE = require('../lib/three');
 var shader = require('../core/shader');
 
-var error = debug('components:material:error');
-var diff = utils.diff;
+var error = utils.debug('components:material:error');
 var registerComponent = component.registerComponent;
 var shaders = shader.shaders;
 var shaderNames = shader.shaderNames;
@@ -38,9 +36,7 @@ module.exports.Component = registerComponent('material', {
    */
   update: function (oldData) {
     var data = this.data;
-    var dataDiff = oldData ? diff(oldData, data) : data;
-
-    if (!this.shader || dataDiff.shader) {
+    if (!this.shader || data.shader !== oldData.shader) {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);

@@ -23,7 +23,5 @@ teardown(function () {
       els[i].parentNode.removeChild(els[i]);
     }
   });
-  AScene.scene = null;
-
   this.sinon.restore();
 });

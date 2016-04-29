@@ -30,9 +30,9 @@ require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
 
-// Webvr polyfill configuration.
-window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices;
-window.WebVRConfig = {
+// WebVR polyfill configuration.
+window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices || !!navigator.getVRDisplays;
+window.WebVRConfig = window.WebVRConfig || {
   TOUCH_PANNER_DISABLED: true,
   MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
@@ -44,6 +44,7 @@ require('./core/a-cubemap');
 require('./core/a-mixin');
 
 // Extras.
+require('./extras/components/');
 require('./extras/declarative-events/');
 require('./extras/primitives/');
 

@@ -5,6 +5,7 @@ var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var utils = require('../utils/');
+var THREE = require('../lib/three');
 
 var DEFAULTS = constants.defaults;
 var DIRECTIONS = constants.directions;
@@ -356,13 +357,18 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   var from = {};
   var partialSetAttribute;
   var to = {};
-
   if (attributeSplit.length === 2) {
-    getForComponentAttribute();
+    if (isColor()) {
+      getForColorComponent();
+    } else {
+      getForComponentAttribute();
+    }
   } else if (dataTo && isCoordinate(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
+  } else if (isNaN(dataTo)) {
+    getForColorComponent();
   } else {
     getForNumber();
   }
@@ -371,6 +377,18 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     partialSetAttribute: partialSetAttribute,
     to: to
   };
+
+  /**
+   * Match the schema type to color
+   * @return {bool} if the schema is of type color
+   */
+  function isColor () {
+    var componentName = attributeSplit[0];
+    var propertyName = attributeSplit[1];
+    var component = el.components[componentName];
+    var schema = component && component.schema;
+    return schema && schema[propertyName] && schema[propertyName].type === 'color';
+  }
 
   /**
    * Animating a component that has multiple attributes (e.g., geometry.width).
@@ -423,6 +441,22 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     to[attribute] = boolToNum(strToBool(dataTo));
     partialSetAttribute = function (value) {
       el.setAttribute(attribute, !!value[attribute]);
+    };
+  }
+
+  /**
+   * Animating a color component
+   *   Will convert a hex value to a THREE.Color
+   *   Then converts to hex for the setAttribute
+   */
+  function getForColorComponent () {
+    from = new THREE.Color(dataFrom);
+    to = new THREE.Color(dataTo);
+    partialSetAttribute = function (value) {
+      if (attributeSplit.length > 1) {
+        el.setAttribute(attributeSplit[0], attributeSplit[1], rgbVectorToHex(value));
+      }
+      el.setAttribute(attribute, rgbVectorToHex(value));
     };
   }
 
@@ -488,4 +522,35 @@ function getComputedAttributeFor (el, attribute) {
   if (el.getComputedAttribute(componentPropName)) {
     return el.getComputedAttribute(componentPropName);
   }
+}
+
+/**
+ * Converts a number 0-255 to hex
+ * @param {number} color number 0 - 255
+ * @returns {string} hex value of number bassed
+ */
+function componentToHex (color) {
+  var hex = color.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+/**
+ * Clamps a number to 0-1
+ * Then converts that number to 0-255
+ * @param {number} color number 0 - 1
+ * @returns {number} color number 0 - 255
+ */
+function convertToIntegerColor (color) {
+  return Math.floor(Math.min(Math.abs(color), 1) * 255);
+}
+
+/**
+ * Converts a rgb object into a hex string
+ * @param {object} color { r: 1, g: 1, b: 1 }
+ * @returns {string} hex value #ffffff
+ */
+function rgbVectorToHex (color) {
+  return '#' + ['r', 'g', 'b'].map(function (prop) {
+    return componentToHex(convertToIntegerColor(color[prop]));
+  }).join('');
 }

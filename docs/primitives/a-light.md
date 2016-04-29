@@ -24,16 +24,16 @@ The light primitive adjusts the lighting setup of the scene. It is an entity tha
 
 ## Attributes
 
-| Attribute    | Default Value | Component Mapping |
-| ------------ | ------------- | ----------------- |
-| angle        | 60            | light.angle       |
-| color        | #fff          | light.color       |
-| decay        | 1             | light.decay       |
-| distance     | 0.0           | light.distance    |
-| exponent     | 10.0          | light.exponent    |
-| ground-color | #fff          | light.groundColor |
-| intensity    | 1.0           | light.intensity   |
-| type         | directional   | light.type        |
+| Attribute    | Component Mapping | Default Value |
+| ------------ | ----------------- | ------------- |
+| angle        | light.angle       | 60            |
+| color        | light.color       | #fff          |
+| decay        | light.decay       | 1             |
+| distance     | light.distance    | 0.0           |
+| exponent     | light.exponent    | 10.0          |
+| ground-color | light.groundColor | #fff          |
+| intensity    | light.intensity   | 1.0           |
+| type         | light.type        | directional   |
 
 ## Differences with the Default Lighting
 

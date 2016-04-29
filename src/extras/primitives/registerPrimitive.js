@@ -45,9 +45,7 @@ module.exports = function registerPrimitive (name, definition) {
         value: function () {
           var self = this;
           var attributes = this.attributes;
-
           this.applyDefaultComponents();
-
           // Apply initial attributes.
           Object.keys(attributes).forEach(function applyInitial (attributeName) {
             var attr = attributes[attributeName];
@@ -61,10 +59,6 @@ module.exports = function registerPrimitive (name, definition) {
        */
       attributeChangedCallback: {
         value: function (attr, oldVal, newVal) {
-          if (!this.mappings[attr]) {
-            AEntity.prototype.attributeChangedCallback.call(this, attr, oldVal, newVal);
-            return;
-          }
           this.syncAttributeToComponent(attr, newVal);
         }
       },
@@ -73,20 +67,20 @@ module.exports = function registerPrimitive (name, definition) {
         value: function () {
           var self = this;
           var defaultData = this.defaultAttributes;
-
           // Apply default components.
           Object.keys(defaultData).forEach(function applyDefault (componentName) {
             var componentData = defaultData[componentName];
-
             // Set component properties individually to not overwrite user-defined components.
             if (componentData instanceof Object && Object.keys(componentData).length) {
+              var component = components[componentName];
+              var attrValues = self.getAttribute(componentName) || {};
+              var data = component.parse(attrValues);
               Object.keys(componentData).forEach(function setProperty (propName) {
                 // Check if component property already defined.
-                var definedData = self.getAttribute(componentName);
-                if (definedData && definedData[propName] !== undefined) { return; }
-
-                self.setAttribute(componentName, propName, componentData[propName]);
+                if (data[propName]) { return; }
+                data[propName] = componentData[propName];
               });
+              self.setAttribute(componentName, data);
               return;
             }
 

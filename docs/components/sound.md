@@ -28,7 +28,7 @@ The sound component defines the entity as a source of sound or audio. The sound 
 ## Events
 
 | Event Name  | Description                           |
-|-------------+---------------------------------------|
+|-------------|---------------------------------------|
 | sound-ended | triggered when sound finishes playing |
 
 ## Playing on an Event

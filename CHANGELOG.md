@@ -1,3 +1,19 @@
+## 0.3.0
+
+0.3.0 improves performance and interactivity.
+
+### Major Changes
+
+- Geometries default to be [BufferGeometry](http://threejs.org/docs/#Reference/Core/BufferGeometry)s, saving memory at the cost of being more difficult to manually manipulate. Use `geometry="buffer: false"` to disable. (#633)
+
+### Enhancements
+
+- `AFRAME.registerGeometry` API such that each geometry type has its own distinct schema. (#1162)
+
+## Fixes
+
+- Fixed primitives not correctly merging properties with defined components. (#1324)
+
 ## 0.2.0
 
 0.2.0 improves extensibility:

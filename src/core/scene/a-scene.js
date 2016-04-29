@@ -59,7 +59,7 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function () {
         this.behaviors = [];
         this.hasLoaded = false;
-        this.isPlaying = true;
+        this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         this.setupSystems();
         this.addEventListener('render-target-loaded', function () {
@@ -168,8 +168,8 @@ var AScene = module.exports = registerElement('a-scene', {
         // Possible camera or canvas not injected yet.
         if (!camera || !canvas) { return; }
 
-        // Update canvas.
-        if (!isMobile) {
+        // Update canvas if canvas was provided by A-Frame.
+        if (!isMobile && canvas.dataset.aframeDefault) {
           canvas.style.width = '100%';
           canvas.style.height = '100%';
         }
@@ -231,7 +231,6 @@ var AScene = module.exports = registerElement('a-scene', {
     play: {
       value: function () {
         var self = this;
-
         if (this.renderStarted) {
           AEntity.prototype.play.call(this);
           return;
@@ -281,6 +280,30 @@ var AScene = module.exports = registerElement('a-scene', {
     },
 
     /**
+     * Behavior-updater meant to be called from scene render.
+     * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
+     * needing to render.
+     */
+    tick: {
+      value: function (time, timeDelta) {
+        var systems = this.systems;
+
+        // Animations.
+        TWEEN.update(time);
+        // Components.
+        this.behaviors.forEach(function (component) {
+          if (!component.el.isPlaying) { return; }
+          component.tick(time, timeDelta);
+        });
+        // Systems.
+        Object.keys(systems).forEach(function (key) {
+          if (!systems[key].tick) { return; }
+          systems[key].tick(time, timeDelta);
+        });
+      }
+    },
+
+    /**
      * The render loop.
      *
      * Updates animations.
@@ -291,20 +314,10 @@ var AScene = module.exports = registerElement('a-scene', {
       value: function (time) {
         var camera = this.camera;
         var timeDelta = time - this.time;
-        var systems = this.systems;
 
         if (this.isPlaying) {
-          TWEEN.update(time);
-          this.behaviors.forEach(function (component) {
-            if (!component.el.isPlaying) { return; }
-            component.tick(time, timeDelta);
-          });
-          Object.keys(systems).forEach(function (key) {
-            if (!systems[key].tick) { return; }
-            systems[key].tick(time, timeDelta);
-          });
+          this.tick(time, timeDelta);
         }
-
         this.renderer.render(this.object3D, camera);
 
         this.time = time;

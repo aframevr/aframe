@@ -73,6 +73,16 @@ We can animate numeric attributes as well. For example, we can animate the inten
 </a-light>
 ```
 
+### Color Attributes
+
+We can animate any component property that has a color type. For example, we can animate a box from white to red.
+
+```html
+<a-entity id="blushing-cube" geometry="primitive: box">
+  <a-animation attribute="material.color" from="white" to="red" dur="1000"></a-animation>
+</a-entity>
+```
+
 ### Component Properties
 
 We can animate a certain property of a multi-property component. To do so, we select the component property using the dot syntax: `componentName.propertyName`.
