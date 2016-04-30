@@ -93,7 +93,7 @@ module.exports = registerElement('a-node', {
     getChildren: {
       value: function () {
         var children = [];
-        for (var i = 0; i < this.children.length; i++) {
+        for (var i = 0, len = this.children.length; i < len; i++) {
           children.push(this.children[i]);
         }
         return children;
@@ -116,8 +116,7 @@ module.exports = registerElement('a-node', {
       value: function (mixinId) {
         var mixins = this.getAttribute('mixin');
         var mixinIds = mixins.split(' ');
-        var i;
-        for (i = 0; i < mixinIds.length; ++i) {
+        for (var i = 0, len = mixinIds.length; i < len; ++i) {
           if (mixinIds[i] === mixinId) { return; }
         }
         mixinIds.push(mixinId);
@@ -129,8 +128,7 @@ module.exports = registerElement('a-node', {
       value: function (mixinId) {
         var mixins = this.getAttribute('mixin');
         var mixinIds = mixins.split(' ');
-        var i;
-        for (i = 0; i < mixinIds.length; ++i) {
+        for (var i = 0, len = mixinIds.length; i < len; ++i) {
           if (mixinIds[i] === mixinId) {
             mixinIds.splice(i, 1);
             this.setAttribute('mixin', mixinIds.join(' '));
@@ -161,8 +159,7 @@ module.exports = registerElement('a-node', {
       value: function (mixinId) {
         var mixinEls = this.mixinEls;
         var mixinEl;
-        var i;
-        for (i = 0; i < mixinEls.length; ++i) {
+        for (var i = 0, len = mixinEls.length; i < len; ++i) {
           mixinEl = mixinEls[i];
           if (mixinId === mixinEl.id) {
             mixinEls.splice(i, 1);

@@ -67,7 +67,6 @@ module.exports.System = registerSystem('camera', {
   setActiveCamera: function (newCameraEl) {
     var cameraEl;
     var cameraEls = this.sceneEl.querySelectorAll('[camera]');
-    var i;
     var sceneEl = this.sceneEl;
     var newCamera = newCameraEl.getObject3D('camera');
     var previousCamera = this.activeCameraEl;
@@ -89,7 +88,7 @@ module.exports.System = registerSystem('camera', {
       previousCamera.setAttribute('camera', 'active', false);
     }
     // Disable other cameras in the scene
-    for (i = 0; i < cameraEls.length; i++) {
+    for (var i = 0, len = cameraEls.length; i < len; i++) {
       cameraEl = cameraEls[i];
       if (newCameraEl === cameraEl) { continue; }
       cameraEl.setAttribute('camera', 'active', false);

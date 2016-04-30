@@ -25,13 +25,14 @@ module.exports = registerElement('a-assets', {
         var imgs = this.querySelectorAll('img');
         var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         var videos = this.querySelectorAll('video');
+        var i, len;
 
         if (this.parentNode.tagName !== 'A-SCENE') {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 
         // Wait for <img>s.
-        for (var i = 0; i < imgs.length; i++) {
+        for (i = 0, len = imgs.length; i < len; i++) {
           loaded.push(new Promise(function (resolve, reject) {
             var img = imgs[i];
             img.onload = resolve;
@@ -40,12 +41,12 @@ module.exports = registerElement('a-assets', {
         }
 
         // Wait for <audio>s.
-        for (i = 0; i < audios.length; i++) {
+        for (i = 0, len = audios.length; i < len; i++) {
           loaded.push(mediaElementLoaded(audios[i]));
         }
 
         // Wait for <video>s.
-        for (i = 0; i < videos.length; i++) {
+        for (i = 0, len = videos.length; i < len; i++) {
           loaded.push(mediaElementLoaded(videos[i]));
         }
 
@@ -117,7 +118,7 @@ function mediaElementLoaded (el) {
     function checkProgress () {
       // Add up the seconds buffered.
       var secondsBuffered = 0;
-      for (var i = 0; i < el.buffered.length; i++) {
+      for (var i = 0, len = el.buffered.length; i < len; i++) {
         secondsBuffered += el.buffered.end(i) - el.buffered.start(i);
       }
 

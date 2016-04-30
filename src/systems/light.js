@@ -28,7 +28,7 @@ module.exports.System = registerSystem('light', {
     if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
       // User added a light, remove default lights through DOM.
       defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-      for (var i = 0; i < defaultLights.length; i++) {
+      for (var i = 0, len = defaultLights.length; i < len; i++) {
         sceneEl.removeChild(defaultLights[i]);
       }
       this.defaultLightsEnabled = false;

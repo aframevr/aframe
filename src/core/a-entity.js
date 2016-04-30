@@ -548,10 +548,9 @@ var proto = Object.create(ANode.prototype, {
       var components = this.components;
       var children = this.children;
       var child;
-      var i;
       Object.keys(components).forEach(updateDOMAtrribute);
       if (!recursive) { return; }
-      for (i = 0; i < children.length; ++i) {
+      for (var i = 0, len = children.length; i < len; ++i) {
         child = children[i];
         if (!child.flushToDOM) { continue; }
         child.flushToDOM(recursive);
@@ -665,9 +664,8 @@ function getMixedInComponents (entityEl) {
  * @param {array} mixinEls - Array of <a-mixin>s.
  */
 function isComponentMixedIn (name, mixinEls) {
-  var i;
   var inMixin = false;
-  for (i = 0; i < mixinEls.length; ++i) {
+  for (var i = 0, len = mixinEls.length; i < len; ++i) {
     inMixin = mixinEls[i].hasAttribute(name);
     if (inMixin) { break; }
   }
