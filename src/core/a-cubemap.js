@@ -30,10 +30,9 @@ module.exports = registerElement('a-cubemap', {
     validate: {
       value: function () {
         var elements = this.querySelectorAll('[src]');
-        var i;
         var srcs = [];
         if (elements.length === 6) {
-          for (i = 0; i < elements.length; i++) {
+          for (var i = 0, len = elements.length; i < len; i++) {
             srcs.push(elements[i].getAttribute('src'));
           }
           return srcs;

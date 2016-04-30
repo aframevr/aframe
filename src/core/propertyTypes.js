@@ -98,10 +98,9 @@ function selectorStringify (value) {
 function selectorAllStringify (value) {
   if (value.item) {
     var els = '';
-    var i;
-    for (i = 0; i < value.length; ++i) {
+    for (var i = 0, len = value.length; i < len; ++i) {
       els += '#' + value[i].getAttribute('id');
-      if (i !== value.length - 1) { els += ', '; }
+      if (i !== len - 1) { els += ', '; }
     }
     return els;
   }

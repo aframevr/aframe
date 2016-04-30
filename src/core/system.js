@@ -53,7 +53,6 @@ System.prototype = {
  * @returns {object} Component.
  */
 module.exports.registerSystem = function (name, definition) {
-  var i;
   var NewSystem;
   var proto = {};
   var scenes = document.querySelectorAll('a-scene');
@@ -78,5 +77,5 @@ module.exports.registerSystem = function (name, definition) {
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes
-  for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
+  for (var i = 0, len = scenes.length; i < len; i++) { scenes[i].initSystem(name); }
 };

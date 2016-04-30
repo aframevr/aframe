@@ -166,7 +166,6 @@ module.exports.System = registerSystem('material', {
  * @returns {string}
  */
 function calculateVideoCacheHash (data, videoEl) {
-  var i;
   var id = videoEl.getAttribute('id');
   var hash;
   var videoAttributes;
@@ -176,7 +175,7 @@ function calculateVideoCacheHash (data, videoEl) {
   // Calculate hash using sorted video attributes.
   hash = '';
   videoAttributes = data || {};
-  for (i = 0; i < videoEl.attributes.length; i++) {
+  for (var i = 0, len = videoEl.attributes.length; i < len; i++) {
     videoAttributes[videoEl.attributes[i].name] = videoEl.attributes[i].value;
   }
   Object.keys(videoAttributes).sort().forEach(function (name) {

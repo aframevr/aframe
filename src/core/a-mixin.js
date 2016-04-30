@@ -61,8 +61,7 @@ module.exports = registerElement('a-mixin', {
         value: function () {
           var attributes = this.attributes;
           var attrName;
-          var i;
-          for (i = 0; i < attributes.length; ++i) {
+          for (var i = 0, len = attributes.length; i < len; ++i) {
             attrName = attributes[i].name;
             this.cacheAttribute(attrName);
           }
