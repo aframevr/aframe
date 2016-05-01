@@ -49,8 +49,8 @@ ControlsComponent.prototype = {
   pause: function () { /* no-op */ },
 
   /**
-   * Returns true if this control is actively in use for movement. For example, a connected gamepad
-   * should return false unless the left joystick is tilted.
+   * Returns true if this control is actively in use for movement. For example, a keyboard should
+   * return false unless a WASD or arrow key is pressed.
    * @returns {boolean}
    */
   isVelocityActive: undefined,

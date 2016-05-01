@@ -10,7 +10,6 @@ The controls component defines the position and rotation of an entity, based on 
 
 The following input components are provided by A-Frame, in addition to any custom controls created by the user:
 
-* [gamepad-controls](#gamepad-controls) *(position + rotation)*
 * [hmd-controls](#hmd-controls) *(position + rotation)*
 * [keyboard-controls](#keyboard-controls) *(position)*
 * [mouse-controls](#mouse-controls) *(rotation)*
@@ -27,7 +26,7 @@ The controls component is generally used alongside the [camera component][compon
 To customize which input methods are enabled, specify the `position` or `rotation` properties:
 
 ```html
-<a-entity camera controls="position: custom-controls, gamepad-controls; rotation: hmd-controls;"></a-entity>
+<a-entity camera controls="position: custom-controls, keyboard-controls; rotation: hmd-controls;"></a-entity>
 ```
 
 To configure one of the input methods, include its component and set the properties you want to change:
@@ -44,21 +43,11 @@ To configure one of the input methods, include its component and set the propert
 |-------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
 | enabled                 | Whether all controls are enabled.                                                     | true                                                           |
 | flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                                                          |
-| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls gamepad-controls keyboard-controls touch-controls |
+| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls keyboard-controls touch-controls                  |
 | positionControlsEnabled | Whether positional tracking is enabled.                                               | true                                                           |
 | positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                                                             |
 | positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                                                             |
-| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls gamepad-controls mouse-controls                   |
-
-### gamepad-controls
-
-Rotate entity with right joystick, and move the entity with the left joystick or D-pad.
-
-| Property    | Description                                                                            | Default Value  |
-|-------------|----------------------------------------------------------------------------------------|----------------|
-| enabled     | Whether gamepad input is enabled.                                                      | true           |
-| controller  | Which connected controller (1-4) should be used, if multiple are available.            | 1              |
-| sensitivity | How quickly the gamepad's right joystick (if applicable) rotates the entity or camera. | 0.05           |
+| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls mouse-controls                                    |
 
 ### hmd-controls
 
