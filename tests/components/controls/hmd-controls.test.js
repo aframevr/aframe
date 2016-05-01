@@ -69,11 +69,12 @@ suite('hmd-controls', function () {
     });
   });
 
-  suite('getVelocity', function () {
-    test('returns HMD velocity', function () {
+  suite('getPosition', function () {
+    test('returns HMD position', function () {
       hmd.dolly.position.set(0, 0, 0);
-      hmd.dolly.position.set(0.5, 0, 0.1);
-      assert.shallowDeepEqual(hmdControls.getVelocity(10), {x: 50, y: 0, z: 10});
+      assert.shallowDeepEqual(hmdControls.getPosition(), {x: 0, y: 0, z: 0});
+      hmd.dolly.position.set(1, 2, 3);
+      assert.shallowDeepEqual(hmdControls.getPosition(), {x: 1, y: 2, z: 3});
     });
   });
 });

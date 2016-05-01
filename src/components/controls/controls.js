@@ -31,6 +31,7 @@ module.exports.Component = registerControls('controls', {
 
   init: function () {
     // Movement
+    this.position = new THREE.Vector3();
     this.velocity = new THREE.Vector3();
 
     // Rotation
@@ -112,7 +113,9 @@ module.exports.Component = registerControls('controls', {
     var el = this.el;
     var data = this.data;
     var velocity = this.velocity;
+    var position = this.position;
 
+    position.copy(el.getComputedAttribute('position'));
     if (el.hasAttribute('velocity')) {
       velocity.copy(el.getComputedAttribute('velocity'));
     }
@@ -123,8 +126,10 @@ module.exports.Component = registerControls('controls', {
     control = data.positionControlsEnabled ? this.getActivePositionControls() : null;
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
-    } else if (control) {
+    } else if (control && control.getVelocity) {
       velocity.copy(control.getVelocity(dt));
+    } else if (control) {
+      velocity.copy(control.getPosition(dt)).sub(position).multiplyScalar(1000 / dt);
     }
 
     el.setAttribute('velocity', {x: velocity.x, y: velocity.y, z: velocity.z});

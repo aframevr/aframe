@@ -56,6 +56,12 @@ ControlsComponent.prototype = {
   isVelocityActive: undefined,
 
   /**
+   * Returns a THREE.Vector3 position.
+   * @returns {THREE.Vector3}
+   */
+  getPosition: undefined,
+
+  /**
    * Returns a final THREE.Vector3 velocity.
    * @returns {THREE.Vector3}
    */

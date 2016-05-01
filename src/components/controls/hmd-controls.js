@@ -19,8 +19,6 @@ module.exports.Component = registerControls('hmd-controls', {
     this.zeroQuaternion = new THREE.Quaternion();
     this.vrControls = new THREE.VRControls(this.dolly);
     this.rotation = new THREE.Vector3();
-    this.velocity = new THREE.Vector3();
-    this.position = new THREE.Vector3();
   },
 
   tick: function (t, dt) {
@@ -67,15 +65,11 @@ module.exports.Component = registerControls('hmd-controls', {
   },
 
   isVelocityActive: function () {
-    return this.data.enabled && !this.position.equals(this.dolly.position);
+    var position = this.dolly.position;
+    return this.data.enabled && !!(position.x || position.y || position.z);
   },
 
-  getVelocity: function (dt) {
-    var dolly = this.dolly;
-    var position = this.position;
-    var velocity = this.velocity;
-    velocity.copy(dolly.position).sub(position);
-    position.copy(dolly.position);
-    return velocity.multiplyScalar(1000 / dt);
+  getPosition: function () {
+    return this.dolly.position;
   }
 });
