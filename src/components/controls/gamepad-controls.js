@@ -19,12 +19,6 @@ module.exports.Component = registerControls('gamepad-controls', {
     sensitivity: { default: 0.05 }
   },
 
-  update: function () {
-    if (navigator.getGamepads) {
-      this.gamepad = navigator.getGamepads()[this.data.controller - 1];
-    }
-  },
-
   isVelocityActive: function () {
     if (!this.data.enabled || !this.isConnected()) { return false; }
 
@@ -67,7 +61,7 @@ module.exports.Component = registerControls('gamepad-controls', {
    * @return {THREE.Vector2}
    */
   getJoystick: function (index) {
-    var gamepad = this.gamepad;
+    var gamepad = this.getGamepad();
     switch (index) {
       case 0: return new THREE.Vector2(gamepad.axes[0], gamepad.axes[1]);
       case 1: return new THREE.Vector2(gamepad.axes[2], gamepad.axes[3]);
@@ -80,7 +74,7 @@ module.exports.Component = registerControls('gamepad-controls', {
    * @return {THREE.Vector2}
    */
   getDpad: function () {
-    var gamepad = this.gamepad;
+    var gamepad = this.getGamepad();
     // Return zero vector if no dpad is present.
     if (!gamepad.buttons[GAMEPAD.DPAD_RIGHT]) {
       return new THREE.Vector2();
@@ -93,12 +87,17 @@ module.exports.Component = registerControls('gamepad-controls', {
     );
   },
 
+  getGamepad: function () {
+    if (!navigator.getGamepads) { return null; }
+    return navigator.getGamepads()[this.data.controller - 1];
+  },
+
   /**
    * Returns true if the gamepad is currently connected.
    * @return {boolean}
    */
   isConnected: function () {
-    var gamepad = this.gamepad;
+    var gamepad = this.getGamepad();
     return !!(gamepad && gamepad.connected);
   }
 });
