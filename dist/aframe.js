@@ -990,6 +990,8 @@ module.exports = present;
 })(this);
 
 },{}],12:[function(_dereq_,module,exports){
+
+
 /*
 
 style-attr
@@ -1002,25 +1004,21 @@ Very simple parsing and stringifying of style attributes.
 
 Convert a style attribute string to an object.
 
-- input: string (eg. anything you might see in a style attribute)
-- return: object
-
 */
-function parse (raw) {
-  var trim = function (s) { return s.trim(); };
+function parse(raw) {
+  var trim = function (s) {
+    return s.trim();
+  };
   var obj = {};
 
-  getKeyValueChunks(raw)
-    .map(trim)
-    .filter(Boolean)
-    .forEach(function (item) {
-      // split with `.indexOf` rather than `.split` because the value may also contain colons.
-      var pos = item.indexOf(':');
-      var key = item.substr(0, pos).trim();
-      var val = item.substr(pos + 1).trim();
+  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
+    // split with `.indexOf` rather than `.split` because the value may also contain colons.
+    var pos = item.indexOf(':');
+    var key = item.substr(0, pos).trim();
+    var val = item.substr(pos + 1).trim();
 
-      obj[key] = val;
-    });
+    obj[key] = val;
+  });
 
   return obj;
 }
@@ -1032,11 +1030,8 @@ function parse (raw) {
 
 Split a string into chunks matching `<key>: <value>`
 
-- input: string
-- return: Array<string>
-
 */
-function getKeyValueChunks (raw) {
+function getKeyValueChunks(raw) {
   var chunks = [];
   var offset = 0;
   var sep = ';';
@@ -1045,7 +1040,9 @@ function getKeyValueChunks (raw) {
   var nextSplit;
   while (offset < raw.length) {
     nextSplit = raw.indexOf(sep, offset);
-    if (nextSplit === -1) { nextSplit = raw.length; }
+    if (nextSplit === -1) {
+      nextSplit = raw.length;
+    }
 
     chunk += raw.substring(offset, nextSplit);
 
@@ -1071,16 +1068,11 @@ function getKeyValueChunks (raw) {
 
 Convert an object into an attribute string
 
-- input: object
-- return: string
-
 */
-function stringify (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      return key + ':' + obj[key];
-    })
-    .join(';');
+function stringify(obj) {
+  return Object.keys(obj).map(function (key) {
+    return key + ':' + obj[key];
+  }).join(';');
 }
 
 /*
@@ -1090,18 +1082,14 @@ function stringify (obj) {
 
 Normalize an attribute string (eg. collapse duplicates)
 
-- input: string
-- return: string
-
 */
-function normalize (str) {
+function normalize(str) {
   return stringify(parse(str));
 }
 
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-
 },{}],13:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
@@ -52791,7 +52779,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101}],23:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101}],23:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -52829,7 +52817,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101}],24:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101}],24:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -52969,7 +52957,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":54,"../utils/":114}],25:[function(_dereq_,module,exports){
+},{"../core/component":53,"../utils/":114}],25:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -53016,25 +53004,28 @@ module.exports.Component = registerComponent('geometry', {
   },
 
   /**
-   * It merges the geometry into another entity's geometry. The original
-   * entity is removed from the scene. This is a not reversible operation
+   * Merge geometry to another entity's geometry.
+   * Remove the entity from the scene. Not a reversible operation.
    *
-   * @param {object} toEl - The entity where the geometry will be merged to
+   * @param {Element} toEl - Entity where the geometry will be merged to.
    */
   mergeTo: function (toEl) {
     var el = this.el;
     var mesh = el.getObject3D('mesh');
     var toMesh;
+
     if (!toEl) {
       warn('There is not a valid entity to merge the geometry to');
       return;
     }
+
     if (toEl === el) {
-      warn('Source and target geometries cannot be the same for merge.');
+      warn('Source and target geometries cannot be the same for merge');
       return;
     }
+
+    // Create mesh if entity does not have one.
     toMesh = toEl.getObject3D('mesh');
-    // If the to entity does not have a mesh we create one
     if (!toMesh) {
       toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
       toEl.setAttribute('material', el.getComputedAttribute('material'));
@@ -53043,7 +53034,9 @@ module.exports.Component = registerComponent('geometry', {
 
     if (toMesh.geometry instanceof THREE.Geometry === false ||
         mesh.geometry instanceof THREE.Geometry === false) {
-      warn('Geometry merge is only available for `THREE.Geometry` types');
+      warn('Geometry merge is only available for `THREE.Geometry` types. ' +
+           'Check that both of the merging geometry and the target geometry have `buffer` ' +
+           'set to false');
       return;
     }
 
@@ -53054,8 +53047,8 @@ module.exports.Component = registerComponent('geometry', {
 
     mesh.parent.updateMatrixWorld();
     toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
-    el.emit('geometry-merged', { mergeTarget: toEl });
-    el.sceneEl.removeChild(el);
+    el.emit('geometry-merged', {mergeTarget: toEl});
+    el.parentNode.removeChild(el);
   },
 
   /**
@@ -53087,7 +53080,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":54,"../core/geometry":55,"../lib/three":101,"../utils/debug":113}],26:[function(_dereq_,module,exports){
+},{"../core/component":53,"../core/geometry":54,"../lib/three":101,"../utils/debug":113}],26:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -53112,10 +53105,7 @@ _dereq_('./scene/keyboard-shortcuts');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-// Deprecated.
-_dereq_('./loader');
-
-},{"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./light":27,"./loader":28,"./look-at":29,"./look-controls":30,"./material":31,"./obj-model":32,"./position":33,"./raycaster":34,"./rotation":35,"./scale":36,"./scene/canvas":37,"./scene/debug":38,"./scene/fog":39,"./scene/keyboard-shortcuts":40,"./scene/stats":41,"./scene/vr-mode-ui":42,"./sound":43,"./visible":44,"./wasd-controls":45}],27:[function(_dereq_,module,exports){
+},{"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./light":27,"./look-at":28,"./look-controls":29,"./material":30,"./obj-model":31,"./position":32,"./raycaster":33,"./rotation":34,"./scale":35,"./scene/canvas":36,"./scene/debug":37,"./scene/fog":38,"./scene/keyboard-shortcuts":39,"./scene/stats":40,"./scene/vr-mode-ui":41,"./sound":42,"./visible":43,"./wasd-controls":44}],27:[function(_dereq_,module,exports){
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -53236,85 +53226,7 @@ function getLight (data) {
   }
 }
 
-},{"../core/component":54,"../lib/three":101,"../utils":114,"../utils/debug":113}],28:[function(_dereq_,module,exports){
-var debug = _dereq_('../utils/debug');
-var registerComponent = _dereq_('../core/component').registerComponent;
-var parseUrl = _dereq_('../utils/src-loader').parseUrl;
-var THREE = _dereq_('../lib/three');
-
-var warn = debug('components:loader:warn');
-
-module.exports.Component = registerComponent('loader', {
-  dependencies: [ 'material' ],
-
-  schema: {
-    src: { default: '' },
-    format: {
-      default: 'obj',
-      oneOf: ['obj', 'collada']
-    }
-  },
-
-  init: function () {
-    warn('loader component is deprecated. Use collada-model or obj-model component instead.');
-  },
-
-  update: function () {
-    var el = this.el;
-    var data = this.data;
-    var model = this.model;
-    var url = parseUrl(data.src);
-    var format = data.format;
-    if (model) { el.removeObject3D('mesh'); }
-    if (!url) {
-      warn('Model URL not provided');
-      return;
-    }
-    switch (format) {
-      case 'obj':
-        this.loadObj(url);
-        break;
-      case 'collada':
-        this.loadCollada(url);
-        break;
-      default:
-        warn('Model format not supported');
-    }
-  },
-
-  loadObj: function (objUrl) {
-    var el = this.el;
-    var objLoader = new THREE.OBJLoader();
-    objLoader.load(objUrl, function (object) {
-      this.model = object;
-      this.applyMaterial();
-      el.setObject3D('mesh', object);
-    });
-  },
-
-  applyMaterial: function () {
-    var material = this.el.components.material.material;
-    if (!this.model) { return; }
-    this.model.traverse(function (child) {
-      if (child instanceof THREE.Mesh) {
-        child.material = material;
-      }
-    });
-  },
-
-  loadCollada: function (url) {
-    var self = this;
-    var el = this.el;
-    var loader = new THREE.ColladaLoader();
-    loader.options.convertUpAxis = true;
-    loader.load(url, function (collada) {
-      self.model = collada.scene;
-      el.setObject3D('mesh', collada.scene);
-    });
-  }
-});
-
-},{"../core/component":54,"../lib/three":101,"../utils/debug":113,"../utils/src-loader":116}],29:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101,"../utils":114,"../utils/debug":113}],28:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var coordinates = _dereq_('../utils/coordinates');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -53408,7 +53320,7 @@ module.exports.Component = registerComponent('look-at', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101,"../utils/coordinates":112,"../utils/debug":113}],30:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101,"../utils/coordinates":112,"../utils/debug":113}],29:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -53649,7 +53561,7 @@ module.exports.Component = registerComponent('look-controls', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101}],31:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101}],30:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -53810,7 +53722,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":54,"../core/shader":62,"../lib/three":101,"../utils/":114}],32:[function(_dereq_,module,exports){
+},{"../core/component":53,"../core/shader":61,"../lib/three":101,"../utils/":114}],31:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -53886,7 +53798,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101,"../utils/debug":113}],33:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101,"../utils/debug":113}],32:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -53899,7 +53811,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":54}],34:[function(_dereq_,module,exports){
+},{"../core/component":53}],33:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -54043,7 +53955,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":54,"../lib/three":101}],35:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101}],34:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -54061,7 +53973,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101}],36:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101}],35:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -54083,7 +53995,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":54}],37:[function(_dereq_,module,exports){
+},{"../core/component":53}],36:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('canvas', {
@@ -54132,14 +54044,14 @@ module.exports.Component = register('canvas', {
   }
 });
 
-},{"../../core/component":54}],38:[function(_dereq_,module,exports){
+},{"../../core/component":53}],37:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: { default: true }
 });
 
-},{"../../core/component":54}],39:[function(_dereq_,module,exports){
+},{"../../core/component":53}],38:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -54214,7 +54126,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":54,"../../lib/three":101,"../../utils/debug":113}],40:[function(_dereq_,module,exports){
+},{"../../core/component":53,"../../lib/three":101,"../../utils/debug":113}],39:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -54253,7 +54165,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":54,"../../lib/three":101,"../../utils/":114}],41:[function(_dereq_,module,exports){
+},{"../../core/component":53,"../../lib/three":101,"../../utils/":114}],40:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 _dereq_('../../../vendor/rStats.extras');
@@ -54317,7 +54229,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":119,"../../../vendor/rStats.extras":118,"../../core/component":54,"../../lib/rStatsAframe":100}],42:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":119,"../../../vendor/rStats.extras":118,"../../core/component":53,"../../lib/rStatsAframe":100}],41:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var utils = _dereq_('../../utils/');
@@ -54513,7 +54425,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../core/component":54,"../../lib/three":101,"../../utils/":114}],43:[function(_dereq_,module,exports){
+},{"../../core/component":53,"../../lib/three":101,"../../utils/":114}],42:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -54630,7 +54542,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":54,"../lib/three":101,"../utils/debug":113}],44:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101,"../utils/debug":113}],43:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -54647,7 +54559,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":54}],45:[function(_dereq_,module,exports){
+},{"../core/component":53}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../lib/three');
@@ -54819,7 +54731,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   })()
 });
 
-},{"../core/component":54,"../lib/three":101,"../utils/":114}],46:[function(_dereq_,module,exports){
+},{"../core/component":53,"../lib/three":101,"../utils/":114}],45:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -54921,7 +54833,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":19}],47:[function(_dereq_,module,exports){
+},{"tween.js":19}],46:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var constants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -55019,7 +54931,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var begin = parseInt(data.begin, 10);
-        var currentValue = el.getComputedAttribute(attribute);
+        var currentValue = getComputedAttributeFor(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -55327,7 +55239,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = el.getComputedAttribute(componentName)[componentPropName];
+      from[attribute] = getComputedAttributeFor(el, attribute);
     } else {
       from[attribute] = dataFrom;
     }
@@ -55400,6 +55312,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 }
 module.exports.getAnimationValues = getAnimationValues;
+module.exports.getComputedAttributeFor = getComputedAttributeFor;
 
 /**
  * Converts string to bool.
@@ -55420,6 +55333,26 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
+}
+
+/**
+ * A getComputedAttribute that supports dot notation to look up a component property.
+ *
+ * @param {Element} el - To look up attribute on.
+ * @param {string} attr - dot notation or singular 'color' or 'material.color'
+ * @returns Resulting value of component property.
+ */
+function getComputedAttributeFor (el, attribute) {
+  var attributeSplit = attribute.split('.');
+  var componentName = attributeSplit[0];
+  var componentPropName = attributeSplit[1];
+  var attributeValue = el.getComputedAttribute(componentName);
+  // If the attribute is singular call normal getComputedAttribute function
+  if (attributeSplit.length === 1) { return attributeValue; }
+  // If the component exists as an attribute return the property on it
+  if (attributeValue) { return attributeValue[componentPropName]; }
+  // Otherwise Fall back to native get attribute with the component prop name
+  return el.getComputedAttribute(componentPropName);
 }
 
 /**
@@ -55453,7 +55386,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":46,"../lib/three":101,"../utils/":114,"./a-node":52,"./a-register-element":53,"./schema":61,"tween.js":19}],48:[function(_dereq_,module,exports){
+},{"../constants/animation":45,"../lib/three":101,"../utils/":114,"./a-node":51,"./a-register-element":52,"./schema":60,"tween.js":19}],47:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55585,7 +55518,7 @@ function mediaElementLoaded (el) {
   });
 }
 
-},{"../lib/three":101,"../utils/debug":113,"./a-node":52,"./a-register-element":53}],49:[function(_dereq_,module,exports){
+},{"../lib/three":101,"../utils/debug":113,"./a-node":51,"./a-register-element":52}],48:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -55636,7 +55569,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":113,"./a-register-element":53}],50:[function(_dereq_,module,exports){
+},{"../utils/debug":113,"./a-register-element":52}],49:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var components = _dereq_('./component').components;
@@ -55951,6 +55884,7 @@ var proto = Object.create(ANode.prototype, {
       pauseComponent(component, this.sceneEl);
       component.remove();
       delete this.components[name];
+      this.emit('componentremoved');
     }
   },
 
@@ -56344,7 +56278,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":101,"../utils/":114,"./a-node":52,"./a-register-element":53,"./component":54}],51:[function(_dereq_,module,exports){
+},{"../lib/three":101,"../utils/":114,"./a-node":51,"./a-register-element":52,"./component":53}],50:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -56419,7 +56353,7 @@ module.exports = registerElement('a-mixin', {
   )
 });
 
-},{"./a-node":52,"./a-register-element":53,"./component":54}],52:[function(_dereq_,module,exports){
+},{"./a-node":51,"./a-register-element":52,"./component":53}],51:[function(_dereq_,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
@@ -56669,7 +56603,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":114,"./a-register-element":53}],53:[function(_dereq_,module,exports){
+},{"../utils/":114,"./a-register-element":52}],52:[function(_dereq_,module,exports){
 // Polyfill `document.registerElement`.
 _dereq_('document-register-element');
 
@@ -56839,7 +56773,7 @@ function copyProperties (source, destination) {
 var ANode = _dereq_('./a-node');
 var AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":50,"./a-node":52,"document-register-element":8}],54:[function(_dereq_,module,exports){
+},{"./a-entity":49,"./a-node":51,"document-register-element":8}],53:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
 var systems = _dereq_('./system');
@@ -57189,7 +57123,7 @@ function extendProperties (dest, source, isSinglePropSchema) {
   return utils.extend(dest, source);
 }
 
-},{"../utils/":114,"./schema":61,"./system":63}],55:[function(_dereq_,module,exports){
+},{"../utils/":114,"./schema":60,"./system":62}],54:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -57263,7 +57197,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":101,"./schema":61}],56:[function(_dereq_,module,exports){
+},{"../lib/three":101,"./schema":60}],55:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -57394,7 +57328,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":112,"debug":3}],57:[function(_dereq_,module,exports){
+},{"../utils/coordinates":112,"debug":3}],56:[function(_dereq_,module,exports){
 /* global Promise */
 var initFullscreen = _dereq_('./fullscreen');
 var initMetaTags = _dereq_('./metaTags').inject;
@@ -57754,7 +57688,7 @@ function setFullscreen (canvas) {
   }
 }
 
-},{"../../lib/three":101,"../../utils/":114,"../a-entity":50,"../a-node":52,"../a-register-element":53,"../system":63,"./fullscreen":58,"./metaTags":59,"./wakelock":60,"tween.js":19}],58:[function(_dereq_,module,exports){
+},{"../../lib/three":101,"../../utils/":114,"../a-entity":49,"../a-node":51,"../a-register-element":52,"../system":62,"./fullscreen":57,"./metaTags":58,"./wakelock":59,"tween.js":19}],57:[function(_dereq_,module,exports){
 var isIframed = _dereq_('../../utils/').isIframed;
 
 /**
@@ -57820,7 +57754,7 @@ function exitFullscreenHandler (scene) {
   scene.emit('fullscreen-exit');
 }
 
-},{"../../utils/":114}],59:[function(_dereq_,module,exports){
+},{"../../utils/":114}],58:[function(_dereq_,module,exports){
 var extend = _dereq_('../../utils').extend;
 
 var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
@@ -57900,7 +57834,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../utils":114}],60:[function(_dereq_,module,exports){
+},{"../../utils":114}],59:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -57911,7 +57845,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":121}],61:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":121}],60:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -58068,7 +58002,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":113,"./propertyTypes":56}],62:[function(_dereq_,module,exports){
+},{"../utils/debug":113,"./propertyTypes":55}],61:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -58227,7 +58161,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":101,"./schema":61}],63:[function(_dereq_,module,exports){
+},{"../lib/three":101,"./schema":60}],62:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var systems = module.exports.systems = {};  // Keep track of registered components.
 
@@ -58311,10 +58245,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"./component":54}],64:[function(_dereq_,module,exports){
+},{"./component":53}],63:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":65}],65:[function(_dereq_,module,exports){
+},{"./pivot":64}],64:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -58363,7 +58297,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":54,"../../lib/three":101}],66:[function(_dereq_,module,exports){
+},{"../../core/component":53,"../../lib/three":101}],65:[function(_dereq_,module,exports){
 var ANode = _dereq_('../../core/a-node');
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
 
@@ -58472,7 +58406,7 @@ module.exports = registerElement('a-event', {
   })
 });
 
-},{"../../core/a-node":52,"../../core/a-register-element":53}],67:[function(_dereq_,module,exports){
+},{"../../core/a-node":51,"../../core/a-register-element":52}],66:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -58505,7 +58439,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{}],68:[function(_dereq_,module,exports){
+},{}],67:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-box');
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-circle');
@@ -58526,7 +58460,7 @@ _dereq_('./primitives/a-torus');
 _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 
-},{"./primitives/a-box":69,"./primitives/a-camera":70,"./primitives/a-circle":71,"./primitives/a-collada-model":72,"./primitives/a-cone":73,"./primitives/a-cursor":74,"./primitives/a-curvedimage":75,"./primitives/a-cylinder":76,"./primitives/a-image":77,"./primitives/a-light":78,"./primitives/a-model":79,"./primitives/a-obj-model":80,"./primitives/a-plane":81,"./primitives/a-ring":82,"./primitives/a-sky":83,"./primitives/a-sphere":84,"./primitives/a-torus":85,"./primitives/a-video":86,"./primitives/a-videosphere":87}],69:[function(_dereq_,module,exports){
+},{"./primitives/a-box":68,"./primitives/a-camera":69,"./primitives/a-circle":70,"./primitives/a-collada-model":71,"./primitives/a-cone":72,"./primitives/a-cursor":73,"./primitives/a-curvedimage":74,"./primitives/a-cylinder":75,"./primitives/a-image":76,"./primitives/a-light":77,"./primitives/a-model":78,"./primitives/a-obj-model":79,"./primitives/a-plane":80,"./primitives/a-ring":81,"./primitives/a-sky":82,"./primitives/a-sphere":83,"./primitives/a-torus":84,"./primitives/a-video":85,"./primitives/a-videosphere":86}],68:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58547,11 +58481,8 @@ var boxDefinition = utils.extendDeep({}, getMeshMixin(), {
 });
 
 registerPrimitive('a-box', boxDefinition);
-registerPrimitive('a-cube', utils.extendDeep({
-  deprecated: '<a-cube> is deprecated. Use <a-box> instead.'
-}, boxDefinition));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],70:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],69:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-camera', {
@@ -58580,7 +58511,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../registerPrimitive":88}],71:[function(_dereq_,module,exports){
+},{"../registerPrimitive":87}],70:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58600,7 +58531,7 @@ registerPrimitive('a-circle', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],72:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],71:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58611,7 +58542,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],73:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],72:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58636,7 +58567,7 @@ registerPrimitive('a-cone', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],74:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],73:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58672,7 +58603,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],75:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],74:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58710,7 +58641,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],76:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],75:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58735,7 +58666,7 @@ registerPrimitive('a-cylinder', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],77:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],76:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58760,7 +58691,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],78:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],77:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../registerPrimitive');
 
 registerPrimitive('a-light', {
@@ -58780,7 +58711,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../registerPrimitive":88}],79:[function(_dereq_,module,exports){
+},{"../registerPrimitive":87}],78:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58803,7 +58734,7 @@ registerPrimitive('a-model', utils.extend({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],80:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],79:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58819,7 +58750,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],81:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],80:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58838,7 +58769,7 @@ registerPrimitive('a-plane', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],82:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],81:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58860,7 +58791,7 @@ registerPrimitive('a-ring', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],83:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],82:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58887,7 +58818,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],84:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],83:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58907,7 +58838,7 @@ registerPrimitive('a-sphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],85:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],84:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58928,7 +58859,7 @@ registerPrimitive('a-torus', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],86:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],85:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58953,7 +58884,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],87:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],86:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../registerPrimitive');
 var utils = _dereq_('../../../utils/');
@@ -58980,7 +58911,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":114,"../getMeshMixin":67,"../registerPrimitive":88}],88:[function(_dereq_,module,exports){
+},{"../../../utils/":114,"../getMeshMixin":66,"../registerPrimitive":87}],87:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -59126,7 +59057,7 @@ module.exports = function registerPrimitive (name, definition) {
   });
 };
 
-},{"../../core/a-entity":50,"../../core/a-register-element":53,"../../core/component":54,"../../utils/":114}],89:[function(_dereq_,module,exports){
+},{"../../core/a-entity":49,"../../core/a-register-element":52,"../../core/component":53,"../../utils/":114}],88:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59142,7 +59073,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],90:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],89:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59162,7 +59093,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],91:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],90:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59188,7 +59119,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],92:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],91:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59212,18 +59143,34 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],93:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],92:[function(_dereq_,module,exports){
+var registerGeometry = _dereq_('../core/geometry').registerGeometry;
+var THREE = _dereq_('../lib/three');
+
+registerGeometry('icosahedron', {
+  schema: {
+    detail: {default: 0, min: 0, max: 1},
+    radius: {default: 1, min: 0}
+  },
+
+  init: function (data) {
+    this.geometry = new THREE.IcosahedronGeometry(data.radius, data.detail);
+  }
+});
+
+},{"../core/geometry":54,"../lib/three":101}],93:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
 _dereq_('./cylinder.js');
+_dereq_('./icosahedron.js');
 _dereq_('./plane.js');
 _dereq_('./ring.js');
 _dereq_('./sphere.js');
 _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 
-},{"./box.js":89,"./circle.js":90,"./cone.js":91,"./cylinder.js":92,"./plane.js":94,"./ring.js":95,"./sphere.js":96,"./torus.js":97,"./torusKnot.js":98}],94:[function(_dereq_,module,exports){
+},{"./box.js":88,"./circle.js":89,"./cone.js":90,"./cylinder.js":91,"./icosahedron.js":92,"./plane.js":94,"./ring.js":95,"./sphere.js":96,"./torus.js":97,"./torusKnot.js":98}],94:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59238,7 +59185,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],95:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],95:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59261,7 +59208,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],96:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],96:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59286,7 +59233,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],97:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],97:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59308,7 +59255,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],98:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],98:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -59329,7 +59276,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":55,"../lib/three":101}],99:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../lib/three":101}],99:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
@@ -59402,7 +59349,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":21,"./components/index":26,"./core/a-animation":47,"./core/a-assets":48,"./core/a-cubemap":49,"./core/a-entity":50,"./core/a-mixin":51,"./core/a-node":52,"./core/component":54,"./core/geometry":55,"./core/scene/a-scene":57,"./core/shader":62,"./core/system":63,"./extras/components/":64,"./extras/declarative-events/":66,"./extras/primitives/":68,"./extras/primitives/registerPrimitive":88,"./geometries/index":93,"./lib/three":101,"./shaders/index":103,"./style/aframe.css":105,"./style/rStats.css":106,"./systems/index":109,"./utils/":114,"present":10,"promise-polyfill":11,"tween.js":19,"webvr-polyfill":20}],100:[function(_dereq_,module,exports){
+},{"../package":21,"./components/index":26,"./core/a-animation":46,"./core/a-assets":47,"./core/a-cubemap":48,"./core/a-entity":49,"./core/a-mixin":50,"./core/a-node":51,"./core/component":53,"./core/geometry":54,"./core/scene/a-scene":56,"./core/shader":61,"./core/system":62,"./extras/components/":63,"./extras/declarative-events/":65,"./extras/primitives/":67,"./extras/primitives/registerPrimitive":87,"./geometries/index":93,"./lib/three":101,"./shaders/index":103,"./style/aframe.css":105,"./style/rStats.css":106,"./systems/index":109,"./utils/":114,"present":10,"promise-polyfill":11,"tween.js":19,"webvr-polyfill":20}],100:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -59544,7 +59491,7 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":62,"../lib/three":101,"../utils/":114}],103:[function(_dereq_,module,exports){
+},{"../core/shader":61,"../lib/three":101,"../utils/":114}],103:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 
@@ -59657,7 +59604,7 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":62,"../lib/three":101,"../utils/":114}],105:[function(_dereq_,module,exports){
+},{"../core/shader":61,"../lib/three":101,"../utils/":114}],105:[function(_dereq_,module,exports){
 var css = "html{bottom:0;left:0;position:fixed;right:0;top:0}body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal{font-size:11px;line-height:15px}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{align-items:flex-end;-webkit-align-items:flex-end;bottom:5px;display:flex;display:-webkit-flex;font-family:sans-serif,monospace;font-size:13px;font-weight:200;line-height:16px;height:72px;position:fixed;right:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;height:50px;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;width:60px;z-index:999999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;position:relative}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);font-size:14px;font-weight:600;height:100%;left:0;line-height:20px;position:absolute;top:0;width:100%}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}@media (min-width:480px){.a-enter-vr{bottom:20px;right:20px}.a-enter-vr-modal{width:400px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
 },{"browserify-css":1}],106:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#EF2D5E;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.75;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:50px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
@@ -59778,7 +59725,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCameraWrapper);
 }
 
-},{"../core/system":63}],108:[function(_dereq_,module,exports){
+},{"../core/system":62}],108:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -59917,7 +59864,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":55,"../core/system":63,"../lib/three":101}],109:[function(_dereq_,module,exports){
+},{"../core/geometry":54,"../core/system":62,"../lib/three":101}],109:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./material');
@@ -59985,14 +59932,11 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../core/system":63}],111:[function(_dereq_,module,exports){
+},{"../core/system":62}],111:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 
-var EVENTS = {
-  TEXTURE_LOADED: 'material-texture-loaded'
-};
 var debug = utils.debug;
 var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
@@ -60018,58 +59962,69 @@ module.exports.System = registerSystem('material', {
   },
 
   /**
-   * High-level function for loading image textures. Meat of logic is in `loadImageTexture`.
+   * Determine whether `src` is a image or video. Then try to load the asset, then call back.
    *
-   * @param {Element} el - Entity, used to emit event.
-   * @param {object} material - three.js material, bound by the A-Frame shader.
-   * @param {object} data - Shader data, bound by the A-Frame shader.
-   * @param {Element|string} src - Texture source, bound by `src-loader` utils.
+   * @param {string} src - Texture URL.
+   * @param {string} data - Relevant texture data used for caching.
+   * @param {function} cb - Callback to pass texture to.
    */
-  loadImage: function (el, material, data, src) {
-    var repeat = data.repeat || '1 1';
-    var srcString = src;
-    var textureCache = this.textureCache;
-
-    if (typeof src !== 'string') { srcString = src.getAttribute('src'); }
-
-    // Another material is already loading this texture. Wait on promise.
-    if (textureCache[src] && textureCache[src][repeat]) {
-      textureCache[src][repeat].then(handleImageTextureLoaded);
-      return;
-    }
-
-    // Material instance is first to try to load this texture. Load it.
-    textureCache[srcString] = textureCache[srcString] || {};
-    textureCache[srcString][repeat] = textureCache[srcString][repeat] || {};
-    textureCache[srcString][repeat] = loadImageTexture(material, src, repeat);
-    textureCache[srcString][repeat].then(handleImageTextureLoaded);
-
-    function handleImageTextureLoaded (texture) {
-      utils.material.updateMaterialTexture(material, texture);
-      el.emit(EVENTS.TEXTURE_LOADED, { src: src, texture: texture });
-    }
+  loadTexture: function (src, data, cb) {
+    var self = this;
+    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
+    function loadImageCb (src) { self.loadImage(src, data, cb); }
+    function loadVideoCb (src) { self.loadVideo(src, data, cb); }
   },
 
   /**
-   * Load video texture.
-   * Note that creating a video texture is more synchronous than creating an image texture.
+   * High-level function for loading image textures (THREE.Texture).
    *
-   * @param {Element} el - Entity, used to emit event.
-   * @param {object} material - three.js material.
-   * @param data {object} - Shader data, bound by the A-Frame shader.
-   * @param src {Element|string} - Texture source, bound by `src-loader` utils.
+   * @param {Element|string} src - Texture source.
+   * @param {object} data - Texture data.
+   * @param {function} cb - Callback to pass texture to.
    */
-  loadVideo: function (el, material, data, src) {
+  loadImage: function (src, data, cb) {
+    var hash = this.hash(data);
+    var handleImageTextureLoaded = cb;
+    var textureCache = this.textureCache;
+
+    // Texture already being loaded or already loaded. Wait on promise.
+    if (textureCache[hash]) {
+      textureCache[hash].then(handleImageTextureLoaded);
+      return;
+    }
+
+    // Texture not yet being loaded. Start loading it.
+    textureCache[hash] = loadImageTexture(src, data);
+    textureCache[hash].then(handleImageTextureLoaded);
+  },
+
+    /**
+   * Load video texture (THREE.VideoTexture).
+   * Which is just an image texture that RAFs + needsUpdate.
+   * Note that creating a video texture is synchronous unlike loading an image texture.
+   * Made asynchronous to be consistent with image textures.
+   *
+   * @param {Element|string} src - Texture source.
+   * @param {object} data - Texture data.
+   * @param {function} cb - Callback to pass texture to.
+   */
+  loadVideo: function (src, data, cb) {
     var hash;
     var texture;
     var textureCache = this.textureCache;
     var videoEl;
     var videoTextureResult;
 
+    function handleVideoTextureLoaded (result) {
+      result.texture.needsUpdate = true;
+      cb(result.texture, result.videoEl);
+    }
+
+    // Video element provided.
     if (typeof src !== 'string') {
       // Check cache before creating texture.
       videoEl = src;
-      hash = calculateVideoCacheHash(videoEl);
+      hash = this.hashVideo(data, videoEl);
       if (textureCache[hash]) {
         textureCache[hash].then(handleVideoTextureLoaded);
         return;
@@ -60078,11 +60033,11 @@ module.exports.System = registerSystem('material', {
       fixVideoAttributes(videoEl);
     }
 
-    // Use video element to create texture.
-    videoEl = videoEl || createVideoEl(material, src, data.width, data.height);
+    // Only URL provided. Use video element to create texture.
+    videoEl = videoEl || createVideoEl(src, data.width, data.height);
 
     // Generated video element already cached. Use that.
-    hash = calculateVideoCacheHash(videoEl);
+    hash = this.hashVideo(data, videoEl);
     if (textureCache[hash]) {
       textureCache[hash].then(handleVideoTextureLoaded);
       return;
@@ -60091,28 +60046,20 @@ module.exports.System = registerSystem('material', {
     // Create new video texture.
     texture = new THREE.VideoTexture(videoEl);
     texture.minFilter = THREE.LinearFilter;
+    setTextureProperties(texture, data);
 
     // Cache as promise to be consistent with image texture caching.
-    videoTextureResult = {
-      texture: texture,
-      videoEl: videoEl
-    };
+    videoTextureResult = {texture: texture, videoEl: videoEl};
     textureCache[hash] = Promise.resolve(videoTextureResult);
     handleVideoTextureLoaded(videoTextureResult);
+  },
 
-    function handleVideoTextureLoaded (res) {
-      texture = res.texture;
-      videoEl = res.videoEl;
-      utils.material.updateMaterialTexture(material, texture);
-      el.emit(EVENTS.TEXTURE_LOADED, { element: videoEl, src: src });
-      videoEl.addEventListener('loadeddata', function () {
-        el.emit('material-video-loadeddata', { element: videoEl, src: src });
-      });
-      videoEl.addEventListener('ended', function () {
-        // Works for non-looping videos only.
-        el.emit('material-video-ended', { element: videoEl, src: src });
-      });
-    }
+  hash: function (data) {
+    return JSON.stringify(data);
+  },
+
+  hashVideo: function (data, videoEl) {
+    return calculateVideoCacheHash(data, videoEl);
   },
 
   /**
@@ -60149,10 +60096,11 @@ module.exports.System = registerSystem('material', {
  * If the video element has an ID, use that.
  * Else build a hash that looks like `src:myvideo.mp4;height:200;width:400;`.
  *
+ * @param data {object} - Texture data such as repeat.
  * @param videoEl {Element} - Video element.
  * @returns {string}
  */
-function calculateVideoCacheHash (videoEl) {
+function calculateVideoCacheHash (data, videoEl) {
   var i;
   var id = videoEl.getAttribute('id');
   var hash;
@@ -60162,7 +60110,7 @@ function calculateVideoCacheHash (videoEl) {
 
   // Calculate hash using sorted video attributes.
   hash = '';
-  videoAttributes = {};
+  videoAttributes = data || {};
   for (i = 0; i < videoEl.attributes.length; i++) {
     videoAttributes[videoEl.attributes[i].name] = videoEl.attributes[i].value;
   }
@@ -60174,24 +60122,28 @@ function calculateVideoCacheHash (videoEl) {
 }
 
 /**
- * Set image texture on material as `map`.
+ * Load image texture.
  *
  * @private
- * @param {object} el - Entity element.
- * @param {object} material - three.js material.
  * @param {string|object} src - An <img> element or url to an image file.
- * @param {string} repeat - X and Y value for size of texture repeating (in UV units).
+ * @param {object} data - Data to set texture properties like `repeat`.
  * @returns {Promise} Resolves once texture is loaded.
  */
-function loadImageTexture (material, src, repeat) {
+function loadImageTexture (src, data) {
   return new Promise(doLoadImageTexture);
 
   function doLoadImageTexture (resolve, reject) {
     var isEl = typeof src !== 'string';
 
+    function resolveTexture (texture) {
+      setTextureProperties(texture, data);
+      texture.needsUpdate = true;
+      resolve(texture);
+    }
+
     // Create texture from an element.
     if (isEl) {
-      createTexture(src);
+      resolveTexture(new THREE.Texture(src));
       return;
     }
 
@@ -60199,59 +60151,55 @@ function loadImageTexture (material, src, repeat) {
     // Use THREE.TextureLoader (src, onLoad, onProgress, onError) to load texture.
     TextureLoader.load(
       src,
-      createTexture,
+      resolveTexture,
       function () { /* no-op */ },
       function (xhr) {
         error('`$s` could not be fetched (Error code: %s; Response: %s)', xhr.status,
               xhr.statusText);
       }
     );
-
-    /**
-     * Texture loaded. Set it.
-     */
-    function createTexture (texture) {
-      var repeatXY;
-      if (!(texture instanceof THREE.Texture)) { texture = new THREE.Texture(texture); }
-
-      // Handle UV repeat.
-      repeatXY = repeat.split(' ');
-      if (repeatXY.length === 2) {
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
-      }
-
-      resolve(texture);
-    }
   }
+}
+
+/**
+ * Set texture properties such as repeat.
+ *
+ * @param {object} data - With keys like `repeat`.
+ */
+function setTextureProperties (texture, data) {
+  // Handle UV repeat.
+  var repeat = data.repeat || '1 1';
+  var repeatXY = repeat.split(' ');
+
+  // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
+  if (repeat === '1 1' || repeatXY.length !== 2) { return; }
+
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
 }
 
 /**
  * Create video element to be used as a texture.
  *
- * @param {object} material - three.js material.
  * @param {string} src - Url to a video file.
  * @param {number} width - Width of the video.
  * @param {number} height - Height of the video.
  * @returns {Element} Video element.
  */
-function createVideoEl (material, src, width, height) {
-  var el = material.videoEl || document.createElement('video');
-  el.width = width;
-  el.height = height;
-  if (el !== this.videoEl) {
-    el.setAttribute('webkit-playsinline', '');  // To support inline videos in iOS webviews.
-    el.autoplay = true;
-    el.loop = true;
-    el.crossOrigin = true;
-    el.addEventListener('error', function () {
-      warn('`$s` is not a valid video', src);
-    }, true);
-    material.videoEl = el;
-  }
-  el.src = src;
-  return el;
+function createVideoEl (src, width, height) {
+  var videoEl = document.createElement('video');
+  videoEl.width = width;
+  videoEl.height = height;
+  videoEl.setAttribute('webkit-playsinline', '');  // Support inline videos for iOS webviews.
+  videoEl.autoplay = true;
+  videoEl.loop = true;
+  videoEl.crossOrigin = true;
+  videoEl.addEventListener('error', function () {
+    warn('`$s` is not a valid video', src);
+  }, true);
+  videoEl.src = src;
+  return videoEl;
 }
 
 /**
@@ -60268,10 +60216,8 @@ function createVideoEl (material, src, width, height) {
  * @returns {Element} Video element with the correct properties updated.
  */
 function fixVideoAttributes (videoEl) {
+  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
   videoEl.controls = videoEl.getAttribute('controls') !== 'false';
-  if (videoEl.getAttribute('autoplay') === 'false') {
-    videoEl.removeAttribute('autoplay');
-  }
   if (videoEl.getAttribute('loop') === 'false') {
     videoEl.removeAttribute('loop');
   }
@@ -60284,7 +60230,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":63,"../lib/three":101,"../utils/":114}],112:[function(_dereq_,module,exports){
+},{"../core/system":62,"../lib/three":101,"../utils/":114}],112:[function(_dereq_,module,exports){
 /* global THREE */
 
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -60673,55 +60619,60 @@ module.exports.isIframed = function () {
 module.exports.srcLoader = _dereq_('./src-loader');
 
 },{"./coordinates":112,"./debug":113,"./material":115,"./src-loader":116,"./styleParser":117,"deep-assign":6,"object-assign":9}],115:[function(_dereq_,module,exports){
-var srcLoader = _dereq_('./src-loader');
-
 /**
- * Update shader instance's `material.map` given `data.src`.
+ * Update `material.map` given `data.src`. For standard and flat shaders.
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
 module.exports.updateMap = function (shader, data) {
   var el = shader.el;
-  var src = data.src;
   var material = shader.material;
-  var materialSystem = el.sceneEl.systems.material;
+  var src = data.src;
 
   if (src) {
-    if (src === shader.mapSrc) { return; }
+    if (src === shader.textureSrc) { return; }
     // Texture added or changed.
-    shader.mapSrc = src;
-    srcLoader.validateSrc(
-      src,
-      function loadImageCb (src) { materialSystem.loadImage(el, material, data, src); },
-      function loadVideoCb (src) { materialSystem.loadVideo(el, material, data, src); }
-    );
+    shader.textureSrc = src;
+    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat}, setMap);
     return;
   }
 
   // Texture removed.
-  updateMaterialTexture(material, null);
+  if (!material.map) { return; }
+  setMap(null);
+
+  function setMap (texture) {
+    material.map = texture;
+    material.needsUpdate = true;
+    handleTextureEvents(el, texture);
+  }
 };
 
 /**
- * Set material texture and update if necessary.
+ * Emit event on entities on texture-related events.
  *
- * @param {object} material
- * @param {object} texture
+ * @param {Element} el - Entity.
+ * @param {object} texture - three.js Texture.
  */
-function updateMaterialTexture (material, texture) {
-  var oldMap = material.map;
-  if (texture) { texture.needsUpdate = true; }
-  material.map = texture;
+function handleTextureEvents (el, texture) {
+  if (!texture) { return; }
 
-  // Only need to update three.js material if presence or not of texture has changed.
-  if (oldMap === null && material.map || material.map === null && oldMap) {
-    material.needsUpdate = true;
-  }
+  el.emit('materialtextureloaded', {src: texture.image, texture: texture});
+
+  // Video events.
+  if (texture.image.tagName !== 'VIDEO') { return; }
+  texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
+    el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
+  });
+  texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
+    // Works for non-looping videos only.
+    el.emit('materialvideoended', {src: texture.image, texture: texture});
+  });
 }
-module.exports.updateMaterialTexture = updateMaterialTexture;
+module.exports.handleTextureEvents = handleTextureEvents;
 
-},{"./src-loader":116}],116:[function(_dereq_,module,exports){
+},{}],116:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
