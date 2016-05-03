@@ -19,10 +19,10 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
-require('../../node_modules/three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
-require('../../node_modules/three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
-require('../../node_modules/three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
-require('../../node_modules/three/examples/js/controls/VRControls');  // THREE.VRControls
-require('../../node_modules/three/examples/js/effects/VREffect');  // THREE.VREffect
+require('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
+require('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
+require('three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
+require('three/examples/js/controls/VRControls');  // THREE.VRControls
+require('three/examples/js/effects/VREffect');  // THREE.VREffect
 
 module.exports = THREE;
