@@ -56,6 +56,16 @@ suite('a-entity', function () {
     parentEl.appendChild(el);
   });
 
+  test('emits `componentremoved` event when element itself has been removed', function (done) {
+    var el = this.el;
+    el.setAttribute('geometry', 'primitive:plane');
+    el.addEventListener('componentremoved', function (event) {
+      assert.equal(event.detail.name, 'geometry');
+      done();
+    });
+    el.removeAttribute('geometry');
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       var el = entityFactory();
