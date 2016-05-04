@@ -312,7 +312,7 @@ var proto = Object.create(ANode.prototype, {
       pauseComponent(component, this.sceneEl);
       component.remove();
       delete this.components[name];
-      this.emit('componentremoved');
+      this.emit('componentremoved', { name: name });
     }
   },
 
