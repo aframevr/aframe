@@ -68,6 +68,15 @@ Component.prototype = {
   tick: undefined,
 
   /**
+   * Tock handler.
+   * Called after the base scene renders. Used for post processing purposes.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
+  /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
   play: function () { /* no-op */ },
@@ -267,12 +276,19 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    precedents: NewComponent.prototype.precedents,
+    following: NewComponent.prototype.following,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
+
+  // Force a resorting on the next .getOrder('component:execution') call.
+  utils.precedence.setGraph('component:execution');
+  // The graph for dependencies will get sorted when getOrder(...) is called.
+  utils.precedence.setGraph('component:dependency');
   return NewComponent;
 };
 
@@ -346,3 +362,23 @@ function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema) { return source; }
   return utils.extend(dest, source);
 }
+
+// Setup a graph for the order of component execution. Only tick/tock components are taken into account.
+utils.precedence.setGraph('component:execution', {
+  map: components,
+  collect: function (self, name) {
+    var item = self.map[name];
+    if (!item) { return {name: ' '}; }
+    if (item.Component.prototype.tick || item.Component.prototype.tock) {
+      return { incoming: item.precedents, outgoing: item.following };
+    }
+  }
+});
+
+// Setup a graph for calculating the dependency order. To be sorted. What can we use this order for?
+utils.precedence.setGraph('component:dependency', {
+  map: components,
+  collect: function (self, name) {
+    return { incoming: self.map[name].dependencies };
+  }
+});

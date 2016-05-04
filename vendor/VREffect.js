@@ -232,7 +232,7 @@ THREE.VREffect = function ( renderer, onError ) {
 	var cameraR = new THREE.PerspectiveCamera();
 	cameraR.layers.enable( 2 );
 
-	this.render = function ( scene, camera ) {
+	this.render = function ( scene, camera, renderTarget, forceClear ) {
 
 		if ( vrHMD && isPresenting ) {
 
@@ -296,12 +296,12 @@ THREE.VREffect = function ( renderer, onError ) {
 			// render left eye
 			renderer.setViewport( renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height );
 			renderer.setScissor( renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height );
-			renderer.render( scene, cameraL );
+			renderer.render( scene, cameraL, renderTarget, forceClear );
 
 			// render right eye
 			renderer.setViewport( renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height );
 			renderer.setScissor( renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height );
-			renderer.render( scene, cameraR );
+			renderer.render( scene, cameraR, renderTarget, forceClear );
 
 			renderer.setScissorTest( false );
 
@@ -323,7 +323,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 		// Regular render mode if not HMD
 
-		renderer.render( scene, camera );
+		renderer.render( scene, camera, renderTarget, forceClear );
 
 	};
 

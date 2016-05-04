@@ -31,7 +31,7 @@ suite('a-entity', function () {
   });
 
   teardown(function () {
-    components.test = undefined;
+    delete components.test;
   });
 
   test('adds itself to parent when attached', function (done) {
@@ -338,14 +338,14 @@ suite('a-entity', function () {
     test('properly detaches components', function (done) {
       var el = this.el;
       var parentEl = el.parentNode;
-      components.test = undefined;
+      delete components.test;
       registerComponent('test', TestComponent);
       el.setAttribute('test', '');
-      assert.notEqual(el.sceneEl.behaviors.indexOf(el.components.test), -1);
+      assert.notEqual(el.sceneEl.behaviors.tick('test').indexOf(el.components.test), -1);
       parentEl.removeChild(el);
       process.nextTick(function () {
         assert.notOk('test' in el.components);
-        assert.equal(el.sceneEl.behaviors.indexOf(el.components.test), -1);
+        assert.equal(el.sceneEl.behaviors.tick('test').indexOf(el.components.test), -1);
         done();
       });
     });
@@ -559,9 +559,9 @@ suite('a-entity', function () {
       el.play();
       el.setAttribute('look-controls', '');
       component = el.components['look-controls'];
-      assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
+      assert.notEqual(sceneEl.behaviors.tick('look-controls').indexOf(component), -1);
       el.removeAttribute('look-controls');
-      assert.equal(sceneEl.behaviors.indexOf(component), -1);
+      assert.equal(sceneEl.behaviors.tick('look-controls').indexOf(component), -1);
     });
   });
 
@@ -658,7 +658,7 @@ suite('a-entity', function () {
 suite('a-entity component lifecycle management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    components.test = undefined;
+    delete components.test;
     this.TestComponent = registerComponent('test', TestComponent);
     el.addEventListener('loaded', function () {
       done();
@@ -666,7 +666,7 @@ suite('a-entity component lifecycle management', function () {
   });
 
   teardown(function () {
-    components.test = undefined;
+    delete components.test;
   });
 
   test('calls init on component attach', function () {
@@ -760,9 +760,9 @@ suite('a-entity component lifecycle management', function () {
     el.sceneEl.addEventListener('loaded', function () {
       el.setAttribute('test', '');
       testComponentInstance = el.components.test;
-      assert.notEqual(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.notEqual(el.sceneEl.behaviors.tick('test').indexOf(testComponentInstance), -1);
       el.pause();
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.equal(el.sceneEl.behaviors.tick('test').indexOf(testComponentInstance), -1);
       done();
     });
   });
@@ -773,10 +773,10 @@ suite('a-entity component lifecycle management', function () {
     el.sceneEl.addEventListener('loaded', function () {
       el.setAttribute('test', '');
       testComponentInstance = el.components.test;
-      el.sceneEl.behaviors = [];
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      el.sceneEl.behaviors.tick('test', []);
+      assert.equal(el.sceneEl.behaviors.tick('test').indexOf(testComponentInstance), -1);
       el.play();
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.equal(el.sceneEl.behaviors.tick('test').indexOf(testComponentInstance), -1);
     });
   });
 });
@@ -809,7 +809,7 @@ suite('a-entity component dependency management', function () {
   });
 
   teardown(function () {
-    components.test = undefined;
+    delete components.test;
     components.codependency = undefined;
     components.dependency = undefined;
     components['nested-dependency'] = undefined;

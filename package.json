@@ -36,7 +36,8 @@
     "style-attr": "^1.0.2",
     "three": "^0.76.1",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "borismus/webvr-polyfill#f45f87a"
+    "webvr-polyfill": "borismus/webvr-polyfill#f45f87a",
+    "precedence-maps": "^0.1.1"
   },
   "devDependencies": {
     "browserify": "^11.0.1",
@@ -46,7 +47,6 @@
     "chai-shallow-deep-equal": "^1.3.0",
     "exorcist": "^0.4.0",
     "gh-pages": "^0.6.0",
-    "husky": "^0.10.1",
     "karma": "^0.13.15",
     "karma-browserify": "^4.4.0",
     "karma-chai-shallow-deep-equal": "0.0.4",

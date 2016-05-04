@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Post-processing</title>
+    <meta name="description" content="Post-processing — A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <script src="components/pulse.js"></script>
+    <script src="components/envmap.js"></script>
+    <script src="components/bloom.js"></script>
+    <script src="components/compositor.js"></script>   
+    <script src="components/bloom-toggler.js"></script>
+  </head>
+  <body>
+    <a-scene title="right click to toggle bloom" stats bloom="" bloom-toggler="">
+      <a-assets>
+        <video id="video" src="https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/"
+               autoplay loop></video>
+      </a-assets>
+      <a-entity position="0 1.8 5">
+        <a-entity camera="far:10000; near:10;" look-controls></a-entity>
+      </a-entity>
+      <a-sphere envmap="" pulse="phase:1.58" rotation="0 180 0" color="white" position="0 -50 -160" radius="40"></a-sphere>
+      <a-videosphere pulse="phase:0; exponent:5;" src="#video" rotation="0 180 0"></a-videosphere>
+    </a-scene>
+  </body>
+</html>
