@@ -1,18 +1,36 @@
 ## 0.3.0
 
-0.3.0 improves performance and interactivity.
+0.3.0 improves performance and adds support for the WebVR 1.0 API.
 
 ### Major Changes
 
+- Components no longer serialize stringified data to the DOM for performance. Introduced debug mode and flush-to-DOM methods. (#1323)
 - Geometries default to be [BufferGeometry](http://threejs.org/docs/#Reference/Core/BufferGeometry)s, saving memory at the cost of being more difficult to manually manipulate. Use `geometry="buffer: false"` to disable. (#633)
+- Removed geometry component's `translate` property, added a `pivot` component in `extras/`. (#1339)
+- Removed deprecated declarative events, `loader` component, and `<a-cube>`. (29446e0)
+- Have shaders handle applying texture objects to material objects rather than material system. (2cee9eb)
 
 ### Enhancements
 
-- `AFRAME.registerGeometry` API such that each geometry type has its own distinct schema. (#1162)
+- Added `AFRAME.registerGeometry` API such that each geometry type has its own distinct schema. (#1162)
+- Added `intensity` property for ambient type for light component. (#1270)
+- Dispose `THREE.Geometry` and `THREE.Material` objects when no longer in use to save memory. (#1287)
+- Moved texture caching to material system. (#1315)
+- Reduced default `<a-sky>` radius. (#1319)
+- Added geometry caching system to save memory. (#1347)
+- Improved GearVR support. (#1336)
+- Removed unnecessary object diffing calls. (1c924b6)
+- Added geometry merging API to reduce number of draw calls for geometries that share the same material. (bd0dbcb)
+- Added support for animation of color property types. (29446e0)
+- Added icosahedron geometry. (#1413)
+- Better NPM v3 support. (#1430)
 
 ## Fixes
 
 - Fixed primitives not correctly merging properties with defined components. (#1324)
+- Fixed being able to provide size to custom canvas. (#1322)
+- Fixed merging of mapped properties and component properties for primitives. (#1332)
+- Fixed not being able to disable video autoplay. (#1353)
 
 ## 0.2.0
 
