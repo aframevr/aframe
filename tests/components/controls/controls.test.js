@@ -17,7 +17,7 @@ suite('controls', function () {
   });
 
   suite('init', function () {
-    var defaultPositionControls = ['hmd-controls', 'touch-controls'];
+    var defaultPositionControls = ['hmd-controls'];
     var defaultRotationControls = ['hmd-controls', 'mouse-controls'];
 
     test('defaults to include position and rotation controls', function () {

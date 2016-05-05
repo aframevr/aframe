@@ -231,7 +231,7 @@ AFRAME.registerComponent('example-geometry', {
 entity.pause();
 ```
 
-For example, the [touch-controls component](../components/controls.md#touch-controls) on pause will remove event handlers that listen for input.
+For example, the [keyboard-controls component](../components/controls.md#keyboard-controls) on pause will remove event handlers that listen for input.
 
 ### `play ()`
 

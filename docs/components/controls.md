@@ -13,7 +13,6 @@ The following input components are provided by A-Frame, in addition to any custo
 * [hmd-controls](#hmd-controls) *(position + rotation)*
 * [keyboard-controls](#keyboard-controls) *(position)*
 * [mouse-controls](#mouse-controls) *(rotation)*
-* [touch-controls ](#touch-controls) *(position)*
 
 ## Example
 
@@ -39,15 +38,15 @@ To configure one of the input methods, include its component and set the propert
 
 ### controls
 
-| Property                | Description                                                                           | Default Value                                                  |
-|-------------------------|---------------------------------------------------------------------------------------|----------------------------------------------------------------|
-| enabled                 | Whether all controls are enabled.                                                     | true                                                           |
-| flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                                                          |
-| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls keyboard-controls touch-controls                  |
-| positionControlsEnabled | Whether positional tracking is enabled.                                               | true                                                           |
-| positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                                                             |
-| positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                                                             |
-| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls mouse-controls                                    |
+| Property                | Description                                                                           | Default Value               |
+|-------------------------|---------------------------------------------------------------------------------------|-----------------------------|
+| enabled                 | Whether all controls are enabled.                                                     | true                        |
+| flyingEnabled           | Whether or not movement is restricted to the entity's initial plane.                  | false                       |
+| position                | List of input components used to track the entity's position, in order of precedence. | hmd-controls                |
+| positionControlsEnabled | Whether positional tracking is enabled.                                               | true                        |
+| positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                          |
+| positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                          |
+| rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls mouse-controls |
 
 ### hmd-controls
 
@@ -73,14 +72,6 @@ Rotates the entity when the mouse is clicked and dragged.
 |----------|-------------------------------------------------------------|---------------|
 | enabled  | Whether mouse input is enabled.                             | true          |
 | sensitivity | How quickly mouse movement rotates the entity or camera. | false         |
-
-### touch-controls
-
-Moves the entity forward when the canvas is touched. Useful for mobile devices and viewers with a single button.
-
-| Property | Description                     | Default Value |
-|----------|---------------------------------|---------------|
-| enabled  | Whether touch input is enabled. | true          |
 
 ## Custom Controls
 

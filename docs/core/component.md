@@ -315,7 +315,7 @@ Example uses of `remove` by some A-Frame components:
 | camera         | Remove the THREE.PerspectiveCamera from the entity.                                        |
 | geometry       | Set a plain THREE.Geometry on the mesh.                                                    |
 | material       | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
-| touch-controls | Remove touch event listeners.                                                              |
+| keyboard-controls | Remove keyboard event listeners.                                                        |
 
 ### Component.tick(time)
 
@@ -344,7 +344,7 @@ Example uses of `tick` by some A-Frame components:
 
 To support pause and play, just as with a video game or to toggle entities for performance, a component can implement the `play` and `pause` handlers. These are invoked when a component's entity calls its `play` or `pause` method. When an entity plays or pauses, all of its child entities are also played or paused. A component should implement a play and pause handler if it registers dynamic, asynchronous, or background behaviors such as animations or event listeners.
 
-For example, the [touch-controls component](../components/controls.md#touch-controls)'s play and pause handlers toggles its event listeners for listening to input:
+For example, the [keyboard-controls component](../components/controls.md#keyboard-controls)'s play and pause handlers toggles its event listeners for listening to input:
 
 ```js
 pause: function () {
@@ -358,10 +358,10 @@ play: function () {
 
 Example uses of `pause` and `play` by some A-Frame components:
 
-| Component      | Usage                          |
-|----------------|--------------------------------|
-| sound          | Pause/play sound.              |
-| touch-controls | Remove/attach event listeners. |
+| Component         | Usage                          |
+|-------------------|--------------------------------|
+| sound             | Pause/play sound.              |
+| keyboard-controls | Remove/attach event listeners. |
 
 ## Writing a Component
 
@@ -508,6 +508,6 @@ And voila!
 [rotation]: ../components/rotation.md
 [text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
-[touch-controls]: ../components/controls.md#touch-controls
+[keyboard-controls]: ../components/controls.md#keyboard-controls
 [visible]: ../components/visible.md
 [vrjump]: http://thevrjump.com

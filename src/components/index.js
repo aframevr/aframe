@@ -17,7 +17,6 @@ require('./visible');
 require('./controls/controls');
 require('./controls/hmd-controls');
 require('./controls/mouse-controls');
-require('./controls/touch-controls');
 require('./controls/keyboard-controls');
 
 require('./scene/canvas');

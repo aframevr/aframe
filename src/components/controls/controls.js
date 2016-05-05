@@ -19,7 +19,7 @@ module.exports.Component = registerControls('controls', {
     flyingEnabled: { default: false },
 
     position: {
-      default: ['hmd-controls', 'touch-controls']
+      default: ['hmd-controls']
     },
     positionControlsEnabled: { default: true },
     positionEasing: { default: 15 }, // m/s2
