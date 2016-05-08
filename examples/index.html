@@ -3,91 +3,174 @@
   <head>
     <title>A-Frame Examples</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <style type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
       html {
-        font: normal 500 1.2em/1em 'Fira Mono', sans-serif;
+        font-size: 14px;
       }
+
       body {
         background: rgb(239,45,94);
-        color: white;
-        padding: 2rem;
+        color: #fff;
+        font: normal 500 1.2rem/1.2 Inconsolata, Andale Mono, Courier New, monospace;
+        padding: 1rem 2rem;
       }
-      .note, .note a {
-        color: rgba(0,0,0,0.25);
-        font: 0.85rem/1.5em 'Fira Mono', sans-serif;
-        margin-right: 0.8em;
-        padding: 0;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        text-decoration: none;
-      }
-      .note a:hover {
-        text-decoration: underline;
-      }
-      h1 {
-        font: 100 3rem/1em 'Fira Sans', sans-serif;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-      h2 {
-        color: rgba(0,0,0,0.5);
-        font: 300 1rem 'Fira Mono', sans-serif;
-        margin-top: 2rem;
-        padding: 0;
-      }
-      hr {
-        background: none;
-        border: 0;
-        border-bottom: 1px dashed rgba(255,255,255,1);
-        margin: 2rem 0;
-      }
+
       ul {
         list-style: none;
         margin: 0;
         padding: 0;
-        white-space: nowrap;
       }
-      li a {
-        color: white;
-        border-bottom: 1px solid rgba(255,255,255,0.2);
-        display: block;
-        font-family: 'Fira Sans', sans-serif;
-        font-size: 1rem;
-        font-weight: 300;
-        letter-spacing: 0.01em;
-        line-height: 2em;
+
+      .header {
+        position: relative;
+      }
+
+      .resources {
+        font-size: 0;  /* Collapse whitespace. */
+        text-transform: uppercase;
+      }
+
+      .resources li + li {
+        margin-top: 0.5rem;
+      }
+
+      .resources a {
+        color: rgba(0,0,0,0.5);
+        display: inline-block;
+        font-size: 1.2rem;
+        margin: -0.25rem -0.5rem;
+        padding: 0.25rem 0.5rem;
         text-decoration: none;
+        transition: all 0.075s ease-in-out;
       }
-      li a:hover {
-        background-color: rgba(0,0,0,0.05);
+
+      .resources a:hover {
+        background-color: rgba(0,0,0,0.25);
+        color: #fff;
       }
-      .link--upload {
-        background-color: rgba(255,255,255,0.4);
+
+      h1, h2 {
+        line-height: 100%;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+        font-weight: 100;
+        letter-spacing: 0.04rem;
+        margin-bottom: 1.25rem;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        color: rgba(0,0,0,0.5);
+        font-size: 0.9rem;
+        font-weight: 300;
+        margin: 2rem 0 0.5rem;
+        padding: 0;
+        text-transform: uppercase;
+      }
+
+      hr {
+        background: none;
         border: 0;
-        color: rgba(255,255,255,0.8);
-        font-size: 0.8rem;
-        padding: 0.5rem 1rem;
+        border-bottom: 1px dashed rgba(255,255,255,0.25);
+        margin: 2rem 0;
       }
-      .link--upload:hover {
-        background-color: rgba(255,255,255,0.8);
-        color: #333;
+
+      .links li + li {
+        box-shadow: inset 0 0.15rem 0.1rem -0.15rem rgba(0,0,0,0.5);
       }
-      #logo-moz {
-        padding-top: 6rem;
-        width: 5rem;
+
+      .links a {
+        color: #fff;
+        display: block;
+        font-size: 1.5rem;
+        letter-spacing: 0.01em;
+        padding: 0.75rem 0;
+        text-decoration: none;
+        transition: opacity 0.075s ease-in-out;
+      }
+
+      .links a:hover {
+        background-color: rgba(0,0,0,0.15);
+        box-shadow: inset 0 0 0 0.15rem rgba(0,0,0,0.15);
+      }
+
+      .links a:active {
+        background-color: rgba(0,0,0,0.25);
+        opacity: 0.75;
+      }
+
+      .links li:hover,
+      .links li:hover + li {
+        margin: 0 -0.75rem;
+      }
+
+      .links li:hover a,
+      .links li:hover + li a {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      .moz-link {
+        display: block;
+        margin: -2rem;
+        padding: 2rem;
+        opacity: 0.5;
+        position: absolute;
+        top: 0;
+        right: 0;
+        text-align: right;
+        transition: 0.075s opacity ease-in-out;
+      }
+
+      .moz-link:hover {
+        opacity: 1;
+      }
+
+      .moz-logo {
+        display: block;
+        height: 1.4rem;
+      }
+
+      @media only screen and (min-width: 1000px) {
+        h1 {
+          font-size: 3rem;
+        }
+
+        .resources {
+          font-size: 1.2;
+        }
+
+        .resources li {
+          display: inline-block;
+        }
+
+        .resources li + li {
+          margin-left: 2.5rem;
+        }
+
+        .moz-link {
+          top: 1.1rem;
+          height: 1.5rem;
+        }
       }
     </style>
   </head>
   <body>
-    <h1>A-Frame Examples</h1>
-    <div class="note">
-      <a href="http://aframe.io">Aframe.io</a>
-      <a href="http://github.com/aframevr">Github</a>
-      <a href="http://aframevr.slack.com">Slack</a>
-      <a href="http://twitter.com/aframevr">Twitter</a>
-      <a href="uploader">Upload Assets</a>
-    </div>
+    <header class="header">
+      <h1>A-Frame Examples</h1>
+      <a href="https://mozilla.org/" class="moz-link"><img src="assets/img/logo-mozilla-white.svg" class="moz-logo" alt="Mozilla" title="Mozilla"></a>
+      <ul id="resources" class="resources">
+        <li><a href="https://aframe.io">aframe.io</a></li>
+        <li><a href="https://github.com/aframevr">GitHub</a></li>
+        <li><a href="https://aframevr-slack.herokuapp.com/">Slack</a></li>
+        <li><a href="https://twitter.com/aframevr">Twitter</a></li>
+        <li><a href="uploader/">Upload Assets</a></li>
+      </ul>
+    </header>
+
     <hr>
 
     <h2>Showcase</h2>
@@ -169,25 +252,5 @@
       <li><a href="declarative-events/cursor/">Cursor</a></li>
       <li><a href="declarative-events/hovers/">Hovers</a></li>
     </ul>
-
-    <img src="assets/img/logo-mozilla-white.svg" id="logo-moz" alt="Mozilla">
-
-    <script>
-      (function () {
-        window.requestAnimationFrame(function () {
-          // Defer loading of web fonts.
-          var fonts = [
-            'https://mozilla.github.io/Fira/fira.css'
-          ];
-          var link;
-          fonts.forEach(function (url) {
-            link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = url;
-            document.head.appendChild(link);
-          });
-        });
-      })();
-    </script>
   </body>
 </html>
