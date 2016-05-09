@@ -28,5 +28,4 @@ Many of the primitives are entities that compose a geometric mesh, meaning they 
 | roughness   | material.roughness   | 0.5           |
 | shader      | material.shader      | standard      |
 | src         | material.src         | None          |
-| translate   | geometry.translate   | 0 0 0         |
 | transparent | material.transparent | true          |
