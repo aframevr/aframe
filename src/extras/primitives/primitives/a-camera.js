@@ -13,7 +13,8 @@ registerPrimitive('a-camera', {
     fov: 'camera.fov',
     'look-controls-enabled': 'look-controls.enabled',
     near: 'camera.near',
-    'wasd-controls-enabled': 'wasd-controls.enabled'
+    'wasd-controls-enabled': 'wasd-controls.enabled',
+    zoom: 'camera.zoom'
   },
 
   deprecatedMappings: {
