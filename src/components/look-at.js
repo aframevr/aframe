@@ -39,6 +39,8 @@ module.exports.Component = registerComponent('look-at', {
   init: function () {
     this.target3D = null;
     this.vector = new THREE.Vector3();
+    warn('The `look-at` component is deprecated - ' +
+         'use https://github.com/ngokevin/aframe-look-at-component instead.');
   },
 
   /**
