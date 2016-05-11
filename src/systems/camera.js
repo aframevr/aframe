@@ -21,7 +21,6 @@ module.exports.System = registerSystem('camera', {
    */
   setupDefaultCamera: function () {
     var sceneEl = this.sceneEl;
-    var cameraWrapperEl;
     var defaultCameraEl;
     // setTimeout in case the camera is being set dynamically with a setAttribute.
     setTimeout(function checkForCamera () {
@@ -31,16 +30,13 @@ module.exports.System = registerSystem('camera', {
         return;
       }
 
-      // DOM calls to create camera.
-      cameraWrapperEl = document.createElement('a-entity');
-      cameraWrapperEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
-      cameraWrapperEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
       defaultCameraEl = document.createElement('a-entity');
+      defaultCameraEl.setAttribute('position', {x: 0, y: 1.8, z: 4});
+      defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
       defaultCameraEl.setAttribute('camera', {'active': true});
       defaultCameraEl.setAttribute('wasd-controls', '');
       defaultCameraEl.setAttribute('look-controls', '');
-      cameraWrapperEl.appendChild(defaultCameraEl);
-      sceneEl.appendChild(cameraWrapperEl);
+      sceneEl.appendChild(defaultCameraEl);
       sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
     });
   },

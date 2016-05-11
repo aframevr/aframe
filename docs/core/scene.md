@@ -41,17 +41,17 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 
 | Name    | Description                                                                                                            |
 |---------|------------------------------------------------------------------------------------------------------------------------|
-| enterVR | Switch to stereo renderer and enter fullscreen. Needs to be called within a user-generated event handler like `click`. |
-| exitVR  | Switch to mono renderer and exit fullscreen.                                                                           |
+| enterVR | Switch to stereo render and push content to the headset. Needs to be called within a user-generated event handler like `click`. the first time a page enters VR. |
+| exitVR  | Switch to mono renderer and stops presenting content on the headset.                                                                           |
 | reload  | Revert the scene to its original state.                                                                                |
 
 ## Events
 
 | Name         | Description                         |
 |--------------|-------------------------------------|
-| enter-vr     | User has entered VR and fullscreen. |
-| exit-vr      | User has exited VR and fullscreen.  |
-| loaded       | All nodes have loaded.              |
+| enter-vr     | User has entered VR and headset started presenting content. |
+| exit-vr      | User has exited VR and headset stopped presenting content.  |
+| loaded       | All nodes have loaded.                             |
 | render-start | Render loop has started.            |
 
 ## Scene Components

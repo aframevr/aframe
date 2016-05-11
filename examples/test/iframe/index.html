@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>IFRAME</title>
+    <meta name="description" content="Scene contained in an iframe - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <style>
+      body {
+        background-color: black;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        width: 100%;
+      }
+      iframe {
+        width: 100%;
+        height: 100%;
+      }
+
+      .enter-vr {
+        background-size: 70% 70%;
+        border: 0;
+        right: 50px;
+        bottom: 50px;
+        cursor: pointer;
+        height: 50px;
+        position: absolute;
+        border-radius: 6px;
+        transition: background-color .05s ease;
+        -webkit-transition: background-color .05s ease;
+        width: 100px;
+        z-index: 999999;
+      }
+
+      .enter-vr:hover {
+        background-color: #249889;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe id="aframe" src="/examples/animation/aframe-logo/?ui=false"></iframe>
+    <button class="enter-vr">ENTER VR</button>
+  </body>
+  <script>
+    var buttonEl = document.querySelector('.enter-vr');
+    var iframeWindow = document.querySelector('#aframe').contentWindow;
+    buttonEl.addEventListener('click', handleClick);
+    function handleClick() {
+      iframeWindow.postMessage({
+        type: 'vr',
+        data: 'enter'
+      }, '*');
+    }
+  </script>
+</html>

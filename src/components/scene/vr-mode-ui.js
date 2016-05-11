@@ -1,6 +1,7 @@
 var registerComponent = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
+var queryParams = utils.queryParams;
 
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
@@ -27,6 +28,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     var self = this;
     var scene = this.el;
 
+    if (queryParams.ui === 'false') { return; }
+
     this.enterVR = scene.enterVR.bind(scene);
     this.exitVR = scene.exitVR.bind(scene);
     this.insideLoader = false;
@@ -51,7 +54,9 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   update: function () {
     var scene = this.el;
 
-    if (!this.data.enabled || this.insideLoader) { return this.remove(); }
+    if (!this.data.enabled || this.insideLoader || queryParams.ui === 'false') {
+      return this.remove();
+    }
     if (this.enterVREl || this.orientationModalEl) { return; }
 
     // Add UI if enabled and not already present.
@@ -120,8 +125,7 @@ function createEnterVR (enterVRHandler, isMobile) {
   var compatModal;
   var compatModalLink;
   var compatModalText;
-  // window.hasNonPolyfillWebVRSupport is set in src/index.js.
-  var hasWebVR = isMobile || window.hasNonPolyfillWebVRSupport;
+  var hasWebVR = isMobile || window.hasNativeWebVRImplementation;
   var orientation;
   var vrButton;
   var wrapper;

@@ -1,6 +1,20 @@
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
+// Check before the polyfill runs
+window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
+
+window.WebVRConfig = window.WebVRConfig || {
+  CARDBOARD_UI_DISABLED: true,
+  ROTATE_INSTRUCTIONS_DISABLED: true,
+  TOUCH_PANNER_DISABLED: true,
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
+  BUFFER_SCALE: 1 / window.devicePixelRatio
+};
+
+// WebVR polyfill
+require('webvr-polyfill');
+
 require('present'); // Polyfill `performance.now()`.
 // CSS.
 require('./style/aframe.css');
@@ -29,14 +43,6 @@ require('./shaders/index'); // Register standard shaders.
 require('./systems/index'); // Register standard systems.
 var ANode = require('./core/a-node');
 var AEntity = require('./core/a-entity'); // Depends on ANode and core components.
-
-// WebVR polyfill configuration.
-window.hasNonPolyfillWebVRSupport = !!navigator.getVRDevices || !!navigator.getVRDisplays;
-window.WebVRConfig = window.WebVRConfig || {
-  TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
-};
-require('webvr-polyfill');
 
 require('./core/a-animation');
 require('./core/a-assets');
