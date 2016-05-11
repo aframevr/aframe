@@ -78,7 +78,7 @@ module.exports = function registerPrimitive (name, definition) {
             var componentData = defaultData[componentName];
 
             // Set component properties individually to not overwrite user-defined components.
-            if (componentData instanceof Object && Object.keys(componentData).length) {
+            if (componentData instanceof Object) {
               var component = components[componentName];
               var attrValues = self.getAttribute(componentName) || {};
               var data = component.parse(attrValues);
@@ -88,7 +88,6 @@ module.exports = function registerPrimitive (name, definition) {
                 if (data[propName]) { return; }
                 data[propName] = componentData[propName];
               });
-              console.log(self, data);
               self.setAttribute(componentName, data);
               return;
             }
