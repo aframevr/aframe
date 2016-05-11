@@ -17,7 +17,6 @@ registerPrimitive('a-cylinder', utils.extendDeep({}, getMeshMixin(), {
     'radius-top': 'geometry.radiusTop',
     'segments-radial': 'geometry.segmentsRadial',
     'theta-length': 'geometry.thetaLength',
-    'theta-start': 'geometry.thetaStart',
-    translate: 'geometry.translate'
+    'theta-start': 'geometry.thetaStart'
   }
 }));

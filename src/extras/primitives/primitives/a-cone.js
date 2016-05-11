@@ -17,7 +17,6 @@ registerPrimitive('a-cone', utils.extendDeep({}, getMeshMixin(), {
     'segments-height': 'geometry.segmentsHeight',
     'segments-radial': 'geometry.segmentsRadial',
     'theta-length': 'geometry.thetaLength',
-    'theta-start': 'geometry.thetaStart',
-    translate: 'geometry.translate'
+    'theta-start': 'geometry.thetaStart'
   }
 }));

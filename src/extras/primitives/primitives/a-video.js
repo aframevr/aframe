@@ -17,7 +17,6 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
 
   mappings: {
     height: 'geometry.height',
-    translate: 'geometry.translate',
     width: 'geometry.width'
   }
 }));

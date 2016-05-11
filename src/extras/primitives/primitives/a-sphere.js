@@ -17,7 +17,6 @@ registerPrimitive('a-sphere', utils.extendDeep({}, getMeshMixin(), {
     'phi-length': 'geometry.phiLength',
     'phi-start': 'geometry.phiStart',
     'theta-length': 'geometry.thetaLength',
-    'theta-start': 'geometry.thetaStart',
-    translate: 'geometry.translate'
+    'theta-start': 'geometry.thetaStart'
   }
 }));

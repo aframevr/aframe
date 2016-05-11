@@ -11,7 +11,6 @@ registerPrimitive('a-plane', utils.extendDeep({}, getMeshMixin(), {
 
   mappings: {
     height: 'geometry.height',
-    translate: 'geometry.translate',
     width: 'geometry.width'
   }
 }));
