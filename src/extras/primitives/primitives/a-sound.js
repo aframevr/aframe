@@ -1,7 +1,7 @@
 var registerPrimitive = require('../registerPrimitive');
 
 registerPrimitive('a-sound', {
-  defaultAttributes: {
+  defaultComponents: {
     sound: {}
   },
 

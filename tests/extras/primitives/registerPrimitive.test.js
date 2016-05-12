@@ -20,7 +20,7 @@ function primitiveFactory (definition, cb) {
 suite('registerPrimitive', function () {
   test('initializes default attributes', function (done) {
     primitiveFactory({
-      defaultAttributes: {
+      defaultComponents: {
         geometry: {primitive: 'box'},
         material: {},
         position: '1 2 3'
@@ -35,7 +35,7 @@ suite('registerPrimitive', function () {
 
   test('merges defined components with default components', function (done) {
     primitiveFactory({
-      defaultAttributes: {
+      defaultComponents: {
         material: {color: '#FFF', metalness: 0.63}
       }
     }, function (el) {
@@ -51,7 +51,7 @@ suite('registerPrimitive', function () {
     var entity = helpers.entityFactory();
     var tag = 'a-test-' + primitiveId++;
     registerPrimitive(tag, {
-      defaultAttributes: {
+      defaultComponents: {
         material: {color: '#FFF'}
       },
 
