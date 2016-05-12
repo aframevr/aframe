@@ -16,5 +16,6 @@ require('./primitives/a-sound');
 require('./primitives/a-sky');
 require('./primitives/a-sphere');
 require('./primitives/a-torus');
+require('./primitives/a-torus-knot');
 require('./primitives/a-video');
 require('./primitives/a-videosphere');
