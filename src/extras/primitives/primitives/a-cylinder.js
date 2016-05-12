@@ -3,7 +3,7 @@ var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
 registerPrimitive('a-cylinder', utils.extendDeep({}, getMeshMixin(), {
-  defaultAttributes: {
+  defaultComponents: {
     geometry: {
       primitive: 'cylinder'
     }

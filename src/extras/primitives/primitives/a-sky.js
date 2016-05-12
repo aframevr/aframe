@@ -3,7 +3,7 @@ var registerPrimitive = require('../registerPrimitive');
 var utils = require('../../../utils/');
 
 registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
-  defaultAttributes: {
+  defaultComponents: {
     geometry: {
       primitive: 'sphere',
       radius: 100,

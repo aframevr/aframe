@@ -3,7 +3,7 @@
  */
 module.exports = function getMeshMixin () {
   return {
-    defaultAttributes: {
+    defaultComponents: {
       material: { }
     },
 

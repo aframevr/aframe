@@ -5,7 +5,7 @@ var utils = require('../../../utils/');
 registerPrimitive('a-model', utils.extend({}, getMeshMixin(), {
   deprecated: '<a-model> is deprecated. Use <a-obj-model> or <a-collada-model> instead.',
 
-  defaultAttributes: {
+  defaultComponents: {
     loader: {
       format: 'collada'
     },

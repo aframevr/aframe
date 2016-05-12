@@ -1,7 +1,7 @@
 var registerPrimitive = require('../registerPrimitive');
 
 registerPrimitive('a-camera', {
-  defaultAttributes: {
+  defaultComponents: {
     camera: {},
     'look-controls': {},
     'wasd-controls': {}
