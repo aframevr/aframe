@@ -10,7 +10,8 @@ module.exports.Component = registerComponent('camera', {
     active: { default: true },
     far: { default: 10000 },
     fov: { default: 80, min: 0 },
-    near: { default: 0.5, min: 0 }
+    near: { default: 0.5, min: 0 },
+    zoom: { default: 1, min: 0 }
   },
 
   /**
@@ -43,6 +44,7 @@ module.exports.Component = registerComponent('camera', {
     camera.far = data.far;
     camera.fov = data.fov;
     camera.near = data.near;
+    camera.zoom = data.zoom;
     camera.updateProjectionMatrix();
 
     // Active property did not change.
