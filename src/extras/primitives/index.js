@@ -12,6 +12,7 @@ require('./primitives/a-model');
 require('./primitives/a-obj-model');
 require('./primitives/a-plane');
 require('./primitives/a-ring');
+require('./primitives/a-sound');
 require('./primitives/a-sky');
 require('./primitives/a-sphere');
 require('./primitives/a-torus');
