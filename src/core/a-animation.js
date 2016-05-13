@@ -43,20 +43,20 @@ module.exports.AAnimation = registerElement('a-animation', {
     attachedCallback: {
       value: function () {
         var self = this;
-        var el = self.el = self.parentNode;
+        var el = this.el = this.parentNode;
 
-        if (el.isNode) {
-          if (el.hasLoaded) {
-            init();
-          } else {
-            el.addEventListener('loaded', init.bind(self));
-          }
-        } else {
-          // To handle elements that are not yet `<a-entity>`s (e.g., templates).
-          el.addEventListener('nodeready', init.bind(self));
-        }
+        init();
 
         function init () {
+          if (!el.isPlaying) {
+            el.addEventListener('play', init);
+            return;
+          }
+          if (!el.hasLoaded) {
+            el.addEventListener('loaded', init);
+            return;
+          }
+
           self.applyMixin();
           self.update();
           self.load();

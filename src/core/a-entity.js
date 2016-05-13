@@ -59,13 +59,14 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Add to parent, load, play.
+   */
   attachedCallback: {
     value: function () {
       this.addToParent();
-      if (!this.isScene) {
-        this.load();
-        if (this.parentEl.isPlaying) { this.play(); }
-      }
+      if (this.isScene) { return; }
+      this.load();
     }
   },
 
@@ -211,15 +212,26 @@ var proto = Object.create(ANode.prototype, {
 
   load: {
     value: function () {
+      var self = this;
+
       if (this.hasLoaded) { return; }
+
       // Attach to parent object3D.
       this.addToParent();
+
+      // Scene load.
+      function sceneLoadCallback () { self.updateComponents(); }
       if (this.isScene) {
-        ANode.prototype.load.call(this, this.updateComponents.bind(this));
-      } else {
-        ANode.prototype.load.call(this, this.updateComponents.bind(this),
-                                  function (el) { return el.isEntity; });
+        ANode.prototype.load.call(this, sceneLoadCallback);
+        return;
       }
+
+      // Entity load.
+      function entityLoadCallback () {
+        self.updateComponents();
+        if (self.parentNode.isPlaying) { self.play(); }
+      }
+      ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
     writable: window.debug
   },
@@ -436,8 +448,8 @@ var proto = Object.create(ANode.prototype, {
       });
 
       // Tell all child entities to play.
-      this.getChildEntities().forEach(function play (obj) {
-        obj.play();
+      this.getChildEntities().forEach(function play (entity) {
+        entity.play();
       });
 
       this.emit('play');
@@ -699,6 +711,10 @@ function playComponent (component, sceneEl) {
   // Add tick behavior.
   if (!component.tick) { return; }
   sceneEl.addBehavior(component);
+}
+
+function isEntity (el) {
+  return el.isEntity;
 }
 
 AEntity = registerElement('a-entity', {
