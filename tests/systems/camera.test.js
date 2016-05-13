@@ -67,5 +67,22 @@ suite('camera system', function () {
         });
       });
     });
+
+    test('removes the default offset when entering VR', function () {
+      var sceneEl = this.el.sceneEl;
+      var defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+      assert.shallowDeepEqual(defaultCamera.getAttribute('position'), {x: 0, y: 1.8, z: 4});
+      sceneEl.emit('enter-vr');
+      assert.shallowDeepEqual(defaultCamera.getAttribute('position'), {x: 0, y: 0, z: 0});
+    });
+
+    test('restores the default offset when exiting VR', function () {
+      var sceneEl = this.el.sceneEl;
+      var defaultCamera = sceneEl.querySelector('[data-aframe-default-camera]');
+      sceneEl.emit('enter-vr');
+      assert.shallowDeepEqual(defaultCamera.getAttribute('position'), {x: 0, y: 0, z: 0});
+      sceneEl.emit('exit-vr');
+      assert.shallowDeepEqual(defaultCamera.getAttribute('position'), {x: 0, y: 1.8, z: 4});
+    });
   });
 });

@@ -79,9 +79,8 @@
     "ignore": [
       "build/**",
       "dist/**",
-      "examples/_js/**",
       "examples/**/shaders/*.js",
-      "vendor/**"
+      "**/vendor/**"
     ]
   },
   "keywords": [
