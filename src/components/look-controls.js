@@ -124,7 +124,14 @@ module.exports.Component = registerComponent('look-controls', {
       var sceneEl = this.el.sceneEl;
       var rotation;
       hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
-      if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+      if (isMobile) {
+        // In mobile we allow camera rotation with touch events and sensors
+        rotation = {
+          x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
+          y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
+          z: radToDeg(hmdEuler.z)
+        };
+      } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
         // Mouse look only if HMD disabled or no info coming from the sensors
         rotation = {
           x: radToDeg(pitchObject.rotation.x),
@@ -132,22 +139,13 @@ module.exports.Component = registerComponent('look-controls', {
           z: 0
         };
       } else {
-        if (isMobile) {
-          // In mobile we allow camera rotation with touch events and sensors
-          rotation = {
-            x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
-            y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
-            z: radToDeg(hmdEuler.z)
-          };
-        } else {
-          // Mouse rotation ignored with an active headset.
-          // The user head rotation takes priority
-          rotation = {
-            x: radToDeg(hmdEuler.x),
-            y: radToDeg(hmdEuler.y),
-            z: radToDeg(hmdEuler.z)
-          };
-        }
+        // Mouse rotation ignored with an active headset.
+        // The user head rotation takes priority
+        rotation = {
+          x: radToDeg(hmdEuler.x),
+          y: radToDeg(hmdEuler.y),
+          z: radToDeg(hmdEuler.z)
+        };
       }
       this.el.setAttribute('rotation', rotation);
     };
