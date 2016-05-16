@@ -47,6 +47,7 @@ To configure one of the input methods, include its component and set the propert
 | positionEasing          | How quickly the entity slows down without input. Like friction.                       | 15                          |
 | positionAcceleration    | How quickly the entity accelerates with input.                                        | 65                          |
 | rotation                | List of input components used to track the entity's rotation, in order of precedence. | hmd-controls mouse-controls |
+| rotationControlsEnabled | Whether rotational tracking is enabled.                                               | true                        |
 
 ### hmd-controls
 

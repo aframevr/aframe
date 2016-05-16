@@ -26,7 +26,7 @@ module.exports.Component = registerControls('controls', {
     positionAcceleration: { default: 65 }, // m/s2
 
     rotation: { default: ['hmd-controls', 'mouse-controls'] },
-    rotationEnabled: { default: true }
+    rotationControlsEnabled: { default: true }
   },
 
   init: function () {
@@ -61,7 +61,7 @@ module.exports.Component = registerControls('controls', {
     if (isNaN(dt)) { return; }
 
     // Update rotation.
-    if (data.rotationEnabled) {
+    if (data.rotationControlsEnabled) {
       this.updateRotation(dt);
     }
 

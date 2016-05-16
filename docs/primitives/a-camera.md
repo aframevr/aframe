@@ -22,13 +22,13 @@ The camera primitive places the user somewhere within the scene. It is an entity
 
 ## Attributes
 
-| Attribute        | Component Mapping        | Default Value |
-|------------------|--------------------------|---------------|
-| far              | camera.far               | 10000         |
-| fov              | camera.fov               | 80            |
-| rotation-enabled | controls.rotationEnabled | true          |
-| near             | camera.near              | 0.5           |
-| position-controls-enabled | controls.movementEnabled | true          |
+| Attribute                 | Component Mapping                | Default Value |
+|---------------------------|----------------------------------|---------------|
+| far                       | camera.far                       | 10000         |
+| fov                       | camera.fov                       | 80            |
+| near                      | camera.near                      | 0.5           |
+| position-controls-enabled | controls.positionControlsEnabled | true          |
+| rotation-controls-enabled | controls.rotationControlsEnabled | true          |
 
 ## Manually Positioning the Camera
 

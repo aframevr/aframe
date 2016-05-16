@@ -13,7 +13,7 @@ registerPrimitive('a-camera', {
     near: 'camera.near',
     zoom: 'camera.zoom',
     'position-controls-enabled': 'controls.positionControlsEnabled',
-    'rotation-enabled': 'controls.rotationEnabled'
+    'rotation-controls-enabled': 'controls.rotationControlsEnabled'
   },
 
   deprecatedMappings: {
