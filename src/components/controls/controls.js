@@ -127,7 +127,7 @@ module.exports.Component = registerControls('controls', {
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
-      velocity.copy(control.getVelocity(dt).multiplyScalar(1000 / dt));
+      velocity.copy(control.getPositionDelta(dt).multiplyScalar(1000 / dt));
     }
 
     el.setAttribute('velocity', {x: velocity.x, y: velocity.y, z: velocity.z});

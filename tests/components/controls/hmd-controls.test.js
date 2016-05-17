@@ -14,13 +14,13 @@ suite('hmd-controls', function () {
       update: this.sinon.spy(),
       dispose: this.sinon.spy()
     };
-    el.sceneEl.addState('vr-mode');
     this.sinon.stub(THREE, 'VRControls', function (dolly) {
       hmd.dolly = hmd.dolly || dolly;
       return hmd;
     });
     el.setAttribute('hmd-controls', '');
     el.addEventListener('loaded', function () {
+      el.sceneEl.addState('vr-mode');
       hmdControls = el.components['hmd-controls'];
       done();
     });
@@ -76,13 +76,13 @@ suite('hmd-controls', function () {
     });
   });
 
-  suite('getVelocity', function () {
+  suite('getPositionDelta', function () {
     test('returns HMD velocity', function () {
       hmd.dolly.position.set(0, 0, 0);
       assert.isFalse(hmdControls.isVelocityActive());
       hmd.dolly.position.set(1, 2, 3);
       assert.isTrue(hmdControls.isVelocityActive());
-      assert.shallowDeepEqual(hmdControls.getVelocity(), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(hmdControls.getPositionDelta(), {x: 1, y: 2, z: 3});
     });
   });
 });

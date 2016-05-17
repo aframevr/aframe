@@ -71,7 +71,7 @@ module.exports.Component = registerControls('hmd-controls', {
     return !isNullVector(deltaHMDPosition);
   },
 
-  getVelocity: function () {
+  getPositionDelta: function () {
     return this.deltaHMDPosition;
   },
 

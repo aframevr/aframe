@@ -49,7 +49,7 @@ suite('controls', function () {
       var el = this.el;
       registerControls('pos-controls-3', {
         isVelocityActive: this.sinon.stub().returns(true),
-        getVelocity: this.sinon.stub().returns(new THREE.Vector3(1 / 1000, 0, 0))
+        getPositionDelta: this.sinon.stub().returns(new THREE.Vector3(1 / 1000, 0, 0))
       });
       el.setAttribute('controls', {position: ['pos-controls-3']});
       controls.tick(0, 1);
@@ -89,7 +89,7 @@ suite('controls', function () {
       var velocity = new THREE.Vector3();
       registerControls('pos-controls-7', {
         isVelocityActive: this.sinon.stub().returns(true),
-        getVelocity: this.sinon.stub().returns(velocity)
+        getPositionDelta: this.sinon.stub().returns(velocity)
       });
       el.setAttribute('controls', {
         position: ['pos-controls-7'],

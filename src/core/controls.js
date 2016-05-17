@@ -62,10 +62,11 @@ ControlsComponent.prototype = {
   getPosition: undefined,
 
   /**
-   * Returns a final THREE.Vector3 velocity.
+   * Returns a THREE.Vector3 offset from the previous location, reflecting exactly how far the
+   * entity should move on this tick.
    * @returns {THREE.Vector3}
    */
-  getVelocity: undefined,
+  getPositionDelta: undefined,
 
   /**
    * Returns an incremental THREE.Vector3 velocity change, with values on interval [-1,1]. In
@@ -76,7 +77,8 @@ ControlsComponent.prototype = {
 
   /**
    * Returns true if the control is actively in use. For example, mouse controls would only return
-   * true if the mouse is currently moving. HMD controls return true any time an HMD is detected.
+   * true if the mouse is currently moving. HMD controls may return true any time an HMD is
+   * detected and enabled.
    * @type {boolean}
    */
   isRotationActive: undefined,
