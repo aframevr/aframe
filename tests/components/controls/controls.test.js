@@ -49,7 +49,7 @@ suite('controls', function () {
       var el = this.el;
       registerControls('pos-controls-3', {
         isVelocityActive: this.sinon.stub().returns(true),
-        getVelocity: this.sinon.stub().returns(new THREE.Vector3(1, 0, 0))
+        getVelocity: this.sinon.stub().returns(new THREE.Vector3(1 / 1000, 0, 0))
       });
       el.setAttribute('controls', {position: ['pos-controls-3']});
       controls.tick(0, 1);
@@ -84,20 +84,6 @@ suite('controls', function () {
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.024515625, y: 0, z: 0});
     });
 
-    test('updates by position', function () {
-      var el = this.el;
-      var position = new THREE.Vector3();
-      registerControls('pos-controls-6', {
-        isVelocityActive: this.sinon.stub().returns(true),
-        getPosition: this.sinon.stub().returns(position)
-      });
-      el.setAttribute('controls', {position: ['pos-controls-6']});
-      controls.tick(0, 1);
-      position.set(1 / 1000, 0, 0);
-      controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 1, y: 0, z: 0});
-    });
-
     test('decelerates after movement is disabled', function () {
       var el = this.el;
       var velocity = new THREE.Vector3();
@@ -112,7 +98,7 @@ suite('controls', function () {
       });
 
       // Set an initial velocity.
-      velocity.set(1, 0, 0);
+      velocity.set(1 / 1000, 0, 0);
       controls.tick(0, 1);
       assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 1, y: 0, z: 0});
 

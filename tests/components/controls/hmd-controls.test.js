@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, teardown, test */
 'use strict';
 var entityFactory = require('../../helpers').entityFactory;
 var THREE = require('index').THREE;
@@ -14,6 +14,7 @@ suite('hmd-controls', function () {
       update: this.sinon.spy(),
       dispose: this.sinon.spy()
     };
+    el.sceneEl.addState('vr-mode');
     this.sinon.stub(THREE, 'VRControls', function (dolly) {
       hmd.dolly = hmd.dolly || dolly;
       return hmd;
@@ -23,6 +24,11 @@ suite('hmd-controls', function () {
       hmdControls = el.components['hmd-controls'];
       done();
     });
+  });
+
+  teardown(function () {
+    var sceneEl = this.el.sceneEl;
+    if (sceneEl) { sceneEl.removeState('vr-mode'); }
   });
 
   suite('isRotationActive', function () {
@@ -45,6 +51,7 @@ suite('hmd-controls', function () {
   suite('getRotation', function () {
     test('returns HMD rotation', function () {
       hmd.dolly.quaternion.set(0.5, 0, 0, 0.8660254);
+      assert.isTrue(hmdControls.isRotationActive());
       var rotation = hmdControls.getRotation();
       assert.approximately(rotation.x, 60, EPS);
       assert.equal(rotation.y, 0);
@@ -69,12 +76,13 @@ suite('hmd-controls', function () {
     });
   });
 
-  suite('getPosition', function () {
-    test('returns HMD position', function () {
+  suite('getVelocity', function () {
+    test('returns HMD velocity', function () {
       hmd.dolly.position.set(0, 0, 0);
-      assert.shallowDeepEqual(hmdControls.getPosition(), {x: 0, y: 0, z: 0});
+      assert.isFalse(hmdControls.isVelocityActive());
       hmd.dolly.position.set(1, 2, 3);
-      assert.shallowDeepEqual(hmdControls.getPosition(), {x: 1, y: 2, z: 3});
+      assert.isTrue(hmdControls.isVelocityActive());
+      assert.shallowDeepEqual(hmdControls.getVelocity(), {x: 1, y: 2, z: 3});
     });
   });
 });
