@@ -65,6 +65,8 @@ suite('hmd-controls', function () {
     });
 
     test('active when HMD has moved', function () {
+      hmd.dolly.position.set(EPS, EPS, EPS);
+      assert.isFalse(hmdControls.isVelocityActive());
       hmd.dolly.position.set(0, 0, 1);
       assert.isTrue(hmdControls.isVelocityActive());
     });
@@ -78,11 +80,11 @@ suite('hmd-controls', function () {
 
   suite('getPositionDelta', function () {
     test('returns HMD velocity', function () {
-      hmd.dolly.position.set(0, 0, 0);
+      hmd.dolly.position.set(1, 0, 0);
       assert.isFalse(hmdControls.isVelocityActive());
       hmd.dolly.position.set(1, 2, 3);
       assert.isTrue(hmdControls.isVelocityActive());
-      assert.shallowDeepEqual(hmdControls.getPositionDelta(), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(hmdControls.getPositionDelta(), {x: 0, y: 2, z: 3});
     });
   });
 });
