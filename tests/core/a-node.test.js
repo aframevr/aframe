@@ -50,6 +50,33 @@ suite('a-node', function () {
         done();
       }, 50);
     });
+
+    test('can postMessage', function (done) {
+      var el = this.el;
+      var child = document.createElement('a-node');
+      el.appendChild(child);
+      window.top.addEventListener('message', function (event) {
+        assert.equal(event.detail.type, 'event');
+        assert.equal(event.detail.data.type, 'hadouken');
+        done();
+      });
+      child.emit('hadouken', {}, undefined, true);
+      setTimeout(function () { done(); }, 50);
+    });
+
+    test('defaults to not postMessage', function (done) {
+      var el = this.el;
+      var child = document.createElement('a-node');
+      el.appendChild(child);
+      window.top.addEventListener('message', function (event) {
+        // Failure case.
+        assert.notEqual(event.detail.type, 'event');
+        assert.notEqual(event.detail.data.type, 'hadouken');
+        done();
+      });
+      child.emit('hadouken');
+      setTimeout(function () { done(); }, 50);
+    });
   });
 
   suite('getChildren', function () {

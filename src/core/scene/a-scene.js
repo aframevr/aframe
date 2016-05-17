@@ -64,8 +64,8 @@ module.exports = registerElement('a-scene', {
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
+          initPostMessageAPI(this);
         });
-        initPostMessageAPI(this);
       },
       writable: true
     },
@@ -139,7 +139,10 @@ module.exports = registerElement('a-scene', {
           }
         }
         function enterVRFailure () {
-          throw new Error('enter VR mode error. requestPresent failed');
+          var msg = 'enter VR mode error. requestPresent failed';
+          var event = {error: msg};
+          self.emit('enter-vr-error', event);
+          throw new Error(msg);
         }
       }
     },
@@ -147,6 +150,7 @@ module.exports = registerElement('a-scene', {
     exitVR: {
       value: function () {
         var self = this;
+        var event = {target: self};
         return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         function exitVRSuccess () {
           self.removeState('vr-mode');
@@ -155,10 +159,13 @@ module.exports = registerElement('a-scene', {
             window.screen.orientation.unlock();
           }
           self.resize();
-          self.emit('exit-vr', {target: self});
+          self.emit('exit-vr', event);
         }
         function exitVRFailure () {
-          throw new Error('exit VR mode error. exitPresent failed');
+          var msg = 'exit VR mode error. exitPresent failed';
+          var event = {error: msg};
+          self.emit('exit-vr-error', event);
+          throw new Error(msg);
         }
       }
     },
