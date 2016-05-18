@@ -5,6 +5,7 @@ var deepAssign = require('deep-assign');
 var objectAssign = require('object-assign');
 
 module.exports.coordinates = require('./coordinates');
+module.exports.checkHeadsetConnected = require('./checkHeadsetConnected');
 module.exports.debug = require('./debug');
 module.exports.entity = require('./entity');
 module.exports.material = require('./material');

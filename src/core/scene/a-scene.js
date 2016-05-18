@@ -11,6 +11,7 @@ var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
+var checkHeadsetConnected = utils.checkHeadsetConnected;
 var registerElement = re.registerElement;
 var isIOS = utils.isIOS();
 var isMobile = utils.isMobile();
@@ -65,9 +66,28 @@ module.exports = registerElement('a-scene', {
           this.setupRenderer();
           this.resize();
         });
+        this.addFullScreenStyles();
         initPostMessageAPI(this);
       },
       writable: true
+    },
+
+    addFullScreenStyles: {
+      value: function () {
+        var htmlEl = document.documentElement;
+        htmlEl.classList.add('a-html');
+        document.body.classList.add('a-body');
+        this.classList.add('fullscreen');
+      }
+    },
+
+    removeFullScreenStyles: {
+      value: function () {
+        var htmlEl = document.documentElement;
+        htmlEl.classList.remove('a-html');
+        document.body.classList.remove('a-body');
+        this.classList.remove('fullscreen');
+      }
     },
 
     attachedCallback: {
@@ -121,13 +141,14 @@ module.exports = registerElement('a-scene', {
       }
     },
 
-    /**
-     * Generally must be triggered on user action for requesting fullscreen.
-     */
     enterVR: {
       value: function (event) {
         var self = this;
-        return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+        if (this.is('vr-mode')) { return; }
+        if (checkHeadsetConnected() || this.isMobile) {
+          return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+        }
+        enterVRSuccess();
         function enterVRSuccess () {
           self.addState('vr-mode');
           self.emit('enter-vr', event);
@@ -135,6 +156,10 @@ module.exports = registerElement('a-scene', {
           if (self.isMobile && window.screen.orientation) {
             window.screen.orientation.lock('landscape');
           }
+          self.addFullScreenStyles();
+          // On mobile the polyfill handles fullscreen
+          if (!self.isMobile) { self.requestFullscreen(); }
+          self.resize();
         }
         function enterVRFailure (err) {
           if (err && err.message) {
@@ -146,17 +171,34 @@ module.exports = registerElement('a-scene', {
       }
     },
 
+    requestFullscreen: {
+      value: function () {
+        var canvas = this.canvas;
+        var requestFullscreen =
+          canvas.requestFullScreen ||
+          canvas.webkitRequestFullScreen ||
+          canvas.mozRequestFullScreen;
+        requestFullscreen.apply(canvas);
+      }
+    },
+
     exitVR: {
       value: function () {
         var self = this;
         if (!this.is('vr-mode')) { return Promise.resolve(); }
-        return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
+        if (checkHeadsetConnected() || this.isMobile) {
+          return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
+        }
+        exitVRSuccess();
         function exitVRSuccess () {
+          var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
           if (self.isMobile && window.screen.orientation) {
             window.screen.orientation.unlock();
           }
+          // Exiting VR in embedded mode, no longer need fullscreen styles.
+          if (embedded) { self.removeFullScreenStyles(); }
           self.resize();
           self.emit('exit-vr', {target: self});
         }
@@ -226,24 +268,16 @@ module.exports = registerElement('a-scene', {
       value: function () {
         var camera = this.camera;
         var canvas = this.canvas;
+        var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
-
         // Possible camera or canvas not injected yet.
         if (!camera || !canvas) { return; }
-
-        // Update canvas if canvas was provided by A-Frame.
-        if (!isMobile && canvas.dataset.aframeDefault) {
-          canvas.style.width = '100%';
-          canvas.style.height = '100%';
-        }
-
         // Update camera.
-        size = getCanvasSize(canvas, isMobile);
+        size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
-
         // Notify renderer of size change.
-        this.renderer.setSize(size.width, size.height, true);
+        this.renderer.setSize(size.width, size.height);
       },
       writable: window.debug
     },
@@ -357,9 +391,7 @@ module.exports = registerElement('a-scene', {
         var camera = this.camera;
         var timeDelta = time - this.time;
 
-        if (this.isPlaying) {
-          this.tick(time, timeDelta);
-        }
+        if (this.isPlaying) { this.tick(time, timeDelta); }
         this.effect.render(this.object3D, camera);
 
         this.time = time;
@@ -370,15 +402,23 @@ module.exports = registerElement('a-scene', {
   })
 });
 
-function getCanvasSize (canvas) {
-  if (isMobile) {
+/**
+ * Return the canvas size where the scene will be rendered
+ * It will be always the window size except when the scene
+ * is embedded. The parent size will be returned in that case
+ *
+ * @param {object} canvasEl - the canvas element
+ * @param {boolean} embedded - Is the scene embedded?
+ */
+function getCanvasSize (canvasEl, embedded) {
+  if (embedded) {
     return {
-      height: window.innerHeight,
-      width: window.innerWidth
+      height: canvasEl.parentElement.offsetHeight,
+      width: canvasEl.parentElement.offsetWidth
     };
   }
   return {
-    height: canvas.offsetHeight,
-    width: canvas.offsetWidth
+    height: window.innerHeight,
+    width: window.innerWidth
   };
 }

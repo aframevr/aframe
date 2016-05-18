@@ -1,7 +1,7 @@
 var registerSystem = require('../core/system').registerSystem;
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
-var DEFAULT_CAMERA_POSITION = {x: 0, y: 1.8, z: 4};
+var DEFAULT_USER_HEIGHT = 1.8;
 
 /**
  * Camera system. Manages which camera is active among multiple cameras in scene.
@@ -12,12 +12,6 @@ module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
     this.setupDefaultCamera();
-    this.bindMethods();
-  },
-
-  bindMethods: function () {
-    this.addDefaultOffset = this.addDefaultOffset.bind(this);
-    this.removeDefaultOffset = this.removeDefaultOffset.bind(this);
   },
 
   /**
@@ -39,9 +33,10 @@ module.exports.System = registerSystem('camera', {
         return;
       }
       defaultCameraEl = document.createElement('a-entity');
-      defaultCameraEl.setAttribute('position', DEFAULT_CAMERA_POSITION);
+      defaultCameraEl.setAttribute('position', '0 0 0');
       defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-      defaultCameraEl.setAttribute('camera', {'active': true});
+      defaultCameraEl.setAttribute('camera',
+        {active: true, userHeight: DEFAULT_USER_HEIGHT});
       defaultCameraEl.setAttribute('wasd-controls', '');
       defaultCameraEl.setAttribute('look-controls', '');
       sceneEl.appendChild(defaultCameraEl);
@@ -49,36 +44,6 @@ module.exports.System = registerSystem('camera', {
       sceneEl.addEventListener('exit-vr', self.addDefaultOffset);
       sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
     }
-  },
-
-  /**
-   * Offsets the position of the camera to set a human scale perspective
-   * This offset is not necessary when using a headset because the SDK
-   * will return the real user's head height and position.
-   */
-  addDefaultOffset: function () {
-    var defaultCamera = this.sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-    var currentPosition;
-    if (!defaultCamera) { return; }
-    currentPosition = defaultCamera.getAttribute('position');
-    defaultCamera.setAttribute('position', {
-      x: currentPosition.x + DEFAULT_CAMERA_POSITION.x,
-      y: currentPosition.y + DEFAULT_CAMERA_POSITION.y,
-      z: currentPosition.z + DEFAULT_CAMERA_POSITION.z
-    });
-  },
-
-  removeDefaultOffset: function () {
-    // Remove default camera if present.
-    var defaultCamera = this.sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
-    var currentPosition;
-    if (!defaultCamera) { return; }
-    currentPosition = defaultCamera.getAttribute('position');
-    defaultCamera.setAttribute('position', {
-      x: currentPosition.x - DEFAULT_CAMERA_POSITION.x,
-      y: currentPosition.y - DEFAULT_CAMERA_POSITION.y,
-      z: currentPosition.z - DEFAULT_CAMERA_POSITION.z
-    });
   },
 
   /**
@@ -149,6 +114,4 @@ function removeDefaultCamera (sceneEl) {
   defaultCamera = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
   if (!defaultCamera) { return; }
   sceneEl.removeChild(defaultCamera);
-  sceneEl.removeEventListener('enter-vr', this.removeDefaultOffset);
-  sceneEl.removeEventListener('exit-vr', this.addDefaultOffset);
 }

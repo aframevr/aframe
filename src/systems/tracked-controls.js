@@ -17,10 +17,11 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   tick: function () {
-    var gamepads = navigator.getGamepads();
+    var gamepads = navigator.getGamepads && navigator.getGamepads();
     var gamepad;
     var controllers = this.controllers = [];
     var i;
+    if (!gamepads) { return; }
     for (i = 0; i < gamepads.length; ++i) {
       gamepad = gamepads[i];
       if (gamepad && gamepad.pose) { controllers.push(gamepad); }
