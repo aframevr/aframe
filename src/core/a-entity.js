@@ -229,7 +229,7 @@ var proto = Object.create(ANode.prototype, {
       // Entity load.
       function entityLoadCallback () {
         self.updateComponents();
-        if (self.parentNode.isPlaying) { self.play(); }
+        if (self.El.isPlaying) { self.play(); }
       }
       ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
