@@ -72,16 +72,19 @@ module.exports = function registerPrimitive (name, definition) {
         value: function () {
           var self = this;
           var defaultData = this.defaultComponentsFromPrimitive;
+
           // Apply default components.
           Object.keys(defaultData).forEach(function applyDefault (componentName) {
             var componentData = defaultData[componentName];
+
             // Set component properties individually to not overwrite user-defined components.
-            if (componentData instanceof Object && Object.keys(componentData).length) {
+            if (componentData instanceof Object) {
               var component = components[componentName];
               var attrValues = self.getAttribute(componentName) || {};
               var data = component.parse(attrValues);
+
+              // Check if component property already defined.
               Object.keys(componentData).forEach(function setProperty (propName) {
-                // Check if component property already defined.
                 if (data[propName]) { return; }
                 data[propName] = componentData[propName];
               });
