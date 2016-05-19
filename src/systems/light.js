@@ -45,13 +45,12 @@ module.exports.System = registerSystem('light', {
     var ambientLight = document.createElement('a-entity');
     var directionalLight = document.createElement('a-entity');
 
-    ambientLight.setAttribute('light',
-                              {color: '#fff', type: 'ambient'});
+    ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     sceneEl.appendChild(ambientLight);
 
-    directionalLight.setAttribute('light', { color: '#fff', intensity: 0.2 });
-    directionalLight.setAttribute('position', { x: -1, y: 2, z: 1 });
+    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6});
+    directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     sceneEl.appendChild(directionalLight);
 
