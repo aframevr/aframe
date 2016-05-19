@@ -229,7 +229,8 @@ var proto = Object.create(ANode.prototype, {
       // Entity load.
       function entityLoadCallback () {
         self.updateComponents();
-        if (self.parentNode.isPlaying) { self.play(); }
+        // self.parentNode should work but that is null during this cb for unknown (#1483).
+        if (self.parentEl.isPlaying) { self.play(); }
       }
       ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
