@@ -1,5 +1,6 @@
 require('./camera');
 require('./collada-model');
+require('./gltf-model');
 require('./cursor');
 require('./geometry');
 require('./light');

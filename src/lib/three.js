@@ -1,4 +1,5 @@
 var THREE = global.THREE = require('three');
+global.glTFParser = require('three/examples/js/loaders/gltf/glTF-parser').glTFParser;
 
 // Allow cross-origin images to be loaded.
 
@@ -22,6 +23,10 @@ if (THREE.Cache) {
 require('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 require('three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
+require('three/examples/js/loaders/gltf/glTFLoaderUtils.js'); // THREE.glTFLoaderUtils
+require('three/examples/js/loaders/gltf/glTFLoader.js'); // THREE.glTFLoader
+require('three/examples/js/loaders/gltf/glTFAnimation.js'); // THREE.glTFAnimator
+require('three/examples/js/loaders/gltf/glTFShaders.js'); // THREE.glTFShaders
 require('../../vendor/VRControls');  // THREE.VRControls
 require('../../vendor/VREffect');  // THREE.VREffect
 
