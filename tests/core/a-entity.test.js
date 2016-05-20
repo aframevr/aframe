@@ -103,15 +103,26 @@ suite('a-entity', function () {
       });
     });
 
+    test('is playing when loaded', function (done) {
+      var el = document.createElement('a-entity');
+
+      el.addEventListener('loaded', function () {
+        assert.ok(el.isPlaying);
+        done();
+      });
+      this.el.sceneEl.appendChild(el);
+    });
+
     test('plays when entity is attached after scene load', function (done) {
       var el = document.createElement('a-entity');
       this.sinon.spy(AEntity.prototype, 'play');
 
-      this.el.sceneEl.appendChild(el);
-      el.addEventListener('loaded', function () {
+      el.addEventListener('play', function () {
+        assert.ok(el.hasLoaded);
         sinon.assert.called(AEntity.prototype.play);
         done();
       });
+      this.el.sceneEl.appendChild(el);
     });
   });
 

@@ -242,7 +242,7 @@ module.exports = registerElement('a-scene', {
             if (window.performance) {
               window.performance.mark('render-started');
             }
-            this.render();
+            this.render(0);
             this.renderStarted = true;
             this.emit('renderstart');
           }
