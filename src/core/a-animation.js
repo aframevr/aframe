@@ -159,11 +159,13 @@ module.exports.AAnimation = registerElement('a-animation', {
       value: function () {
         var data = this.data;
         var begin = data.begin;
+        var end = data.end;
         // Cancel previous event listeners
-        this.removeEventListeners(this.evt);
-        this.addEventListeners(begin);
+        if (this.evt) this.removeEventListeners(this.evt);
         // Store new event name.
-        this.evt = begin;
+        this.evt = { begin: begin, end: end };
+        // Add new event listeners
+        this.addEventListeners(this.evt);
         // If `begin` is a number, start the animation right away.
         if (!isNaN(begin)) {
           this.stop();
@@ -264,11 +266,14 @@ module.exports.AAnimation = registerElement('a-animation', {
       value: function (evts) {
         var el = this.el;
         var self = this;
-        utils.splitString(evts).forEach(function (evt) {
+        utils.splitString(evts.begin).forEach(function (evt) {
           el.addEventListener(evt, self.start);
         });
+        utils.splitString(evts.end).forEach(function (evt) {
+          el.addEventListener(evt, self.stop);
+        });
         // If "begin" is an event name, wait. If it is a delay or not defined, start.
-        if (!isNaN(evts)) { el.addEventListener('play', this.start); }
+        if (!isNaN(evts.begin)) { el.addEventListener('play', this.start); }
         el.addEventListener('pause', this.stop);
         el.addEventListener('stateadded', this.onStateAdded);
         el.addEventListener('stateremoved', this.onStateRemoved);
@@ -279,8 +284,12 @@ module.exports.AAnimation = registerElement('a-animation', {
       value: function (evts) {
         var el = this.el;
         var start = this.start;
-        utils.splitString(evts).forEach(function (evt) {
+        var stop = this.stop;
+        utils.splitString(evts.begin).forEach(function (evt) {
           el.removeEventListener(evt, start);
+        });
+        utils.splitString(evts.end).forEach(function (evt) {
+          el.removeEventListener(evt, stop);
         });
         el.removeEventListener('stateadded', this.onStateAdded);
         el.removeEventListener('stateremoved', this.onStateRemoved);
