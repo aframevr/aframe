@@ -675,4 +675,19 @@ suite('a-animation', function () {
       done();
     });
   });
+
+  suite('end', function () {
+    test('stops animation when event is triggered', function (done) {
+      var animationEl = document.createElement('a-animation');
+      var el = helpers.entityFactory();
+      animationEl.setAttribute('end', 'end-event');
+      el.isPlaying = true;
+      el.appendChild(animationEl);
+      animationEl.addEventListener('loaded', function () {
+        el.emit('end-event');
+        assert.ok(!animationEl.isRunning);
+        done();
+      });
+    });
+  });
 });
