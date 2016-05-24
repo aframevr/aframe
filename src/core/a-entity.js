@@ -153,7 +153,7 @@ var proto = Object.create(ANode.prototype, {
         this.object3D.add(obj);
       }
       if (obj instanceof THREE.Group && obj.children.length) {
-        obj.traverse(function (child) {
+        obj.traverse(function bindEl (child) {
           child.el = self;
         });
       }
