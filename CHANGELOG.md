@@ -1,4 +1,4 @@
-## 0.3.0
+## 0.3.0 Milestone
 
 0.3.0 improves performance and adds support for the WebVR 1.0 API.
 
