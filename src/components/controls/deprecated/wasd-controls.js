@@ -161,7 +161,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     var rotation = new THREE.Euler(0, 0, 0, 'YXZ');
     return function (delta) {
       var velocity = this.velocity;
-      var elRotation = this.el.getAttribute('rotation');
+      var elRotation = this.el.getComputedAttribute('rotation');
       direction.copy(velocity);
       direction.multiplyScalar(delta);
       if (!elRotation) { return direction; }
