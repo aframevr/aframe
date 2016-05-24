@@ -45,7 +45,7 @@ suite('controls', function () {
       assert.equal(activeControls.name, 'pos-controls-2');
     });
 
-    test('updates by velocity', function () {
+    test('updates by position delta', function () {
       var el = this.el;
       registerControls('pos-controls-3', {
         isVelocityActive: this.sinon.stub().returns(true),
@@ -53,7 +53,7 @@ suite('controls', function () {
       });
       el.setAttribute('controls', {position: ['pos-controls-3']});
       controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 1, y: 0, z: 0});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1 / 1000, y: 0, z: 0});
     });
 
     test('updates by velocity delta', function () {
@@ -69,45 +69,11 @@ suite('controls', function () {
       });
       el.setAttribute('controls', {
         position: ['pos-controls-4', 'pos-controls-5'],
-        positionAcceleration: 25,
-        positionEasing: 25
+        positionAcceleration: 25
       });
       velocityDelta.set(1, 0, 0);
       controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.025, y: 0, z: 0});
-      // Acceleration == easing.
-      controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.025, y: 0, z: 0});
-      // Acceleration > easing.
-      el.setAttribute('controls', 'positionEasing', 20);
-      controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.024515625, y: 0, z: 0});
-    });
-
-    test('decelerates after movement is disabled', function () {
-      var el = this.el;
-      var velocity = new THREE.Vector3();
-      registerControls('pos-controls-7', {
-        isVelocityActive: this.sinon.stub().returns(true),
-        getPositionDelta: this.sinon.stub().returns(velocity)
-      });
-      el.setAttribute('controls', {
-        position: ['pos-controls-7'],
-        positionAcceleration: 25,
-        positionEasing: 25
-      });
-
-      // Set an initial velocity.
-      velocity.set(1 / 1000, 0, 0);
-      controls.tick(0, 1);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 1, y: 0, z: 0});
-
-      // Disable controls and verify that entity decelerates.
-      el.setAttribute('controls', 'positionControlsEnabled', false);
-      controls.tick(0, 10);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.75, y: 0, z: 0});
-      controls.tick(0, 10);
-      assert.shallowDeepEqual(el.getAttribute('velocity'), {x: 0.5625, y: 0, z: 0});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0.000025, y: 0, z: 0});
     });
   });
 

@@ -11,8 +11,6 @@ var PI_2 = Math.PI / 2;
  * to the element accordingly.
  */
 module.exports.Component = registerControls('controls', {
-  dependencies: ['velocity'],
-
   schema: {
     enabled: { default: true },
 
@@ -22,19 +20,15 @@ module.exports.Component = registerControls('controls', {
       default: ['hmd-controls']
     },
     positionControlsEnabled: { default: true },
-    positionEasing: { default: 15 }, // m/s2
-    positionAcceleration: { default: 65 }, // m/s2
+    positionEasing: { default: 0 }, // m/s2
+    positionAcceleration: { default: 260 }, // m/s2
 
     rotation: { default: ['hmd-controls', 'mouse-controls'] },
     rotationControlsEnabled: { default: true }
   },
 
   init: function () {
-    // Movement
-    this.position = new THREE.Vector3();
     this.velocity = new THREE.Vector3();
-
-    // Rotation
     this.pitch = new THREE.Object3D();
     this.yaw = new THREE.Object3D();
     this.yaw.position.y = 10;
@@ -55,8 +49,10 @@ module.exports.Component = registerControls('controls', {
   },
 
   tick: function (t, dt) {
+    var el = this.el;
     var data = this.data;
     var velocity = this.velocity;
+    var position = el.getComputedAttribute('position');
 
     if (isNaN(dt)) { return; }
 
@@ -68,10 +64,17 @@ module.exports.Component = registerControls('controls', {
     // Update velocity. If FPS is too low, reset.
     if (data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
       velocity.set(0, 0, 0);
-      this.el.setAttribute('velocity', velocity);
+      el.setAttribute('velocity', velocity);
     } else {
       this.updateVelocity(dt);
     }
+
+    // Update position.
+    el.setAttribute('position', {
+      x: position.x + velocity.x * dt / 1000,
+      y: position.y + velocity.y * dt / 1000,
+      z: position.z + velocity.z * dt / 1000
+    });
   },
 
   /**
@@ -113,15 +116,17 @@ module.exports.Component = registerControls('controls', {
     var el = this.el;
     var data = this.data;
     var velocity = this.velocity;
-    var position = this.position;
 
-    position.copy(el.getComputedAttribute('position'));
     if (el.hasAttribute('velocity')) {
       velocity.copy(el.getComputedAttribute('velocity'));
     }
 
-    velocity.x -= velocity.x * data.positionEasing * dt / 1000;
-    velocity.z -= velocity.z * data.positionEasing * dt / 1000;
+    if (data.positionEasing) {
+      velocity.x -= velocity.x * data.positionEasing * dt / 1000;
+      velocity.z -= velocity.z * data.positionEasing * dt / 1000;
+    } else {
+      velocity.set(0, 0, 0);
+    }
 
     control = data.positionControlsEnabled ? this.getActivePositionControls() : null;
     if (control && control.getVelocityDelta) {
@@ -129,8 +134,6 @@ module.exports.Component = registerControls('controls', {
     } else if (control) {
       velocity.copy(control.getPositionDelta(dt).multiplyScalar(1000 / dt));
     }
-
-    el.setAttribute('velocity', {x: velocity.x, y: velocity.y, z: velocity.z});
   },
 
   /**

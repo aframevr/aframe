@@ -11,7 +11,6 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
-require('./velocity');
 require('./visible');
 
 require('./controls/controls');
