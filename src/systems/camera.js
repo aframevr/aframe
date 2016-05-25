@@ -77,8 +77,8 @@ module.exports.System = registerSystem('camera', {
 
     // Make new camera active.
     this.activeCameraEl = newCameraEl;
+    this.activeCameraEl.play();
     sceneEl.camera = newCamera;
-    sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
 
     // Disable current camera
     if (previousCamera) {
@@ -91,6 +91,7 @@ module.exports.System = registerSystem('camera', {
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
+    sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
   }
 });
 

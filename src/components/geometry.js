@@ -1,5 +1,6 @@
 var debug = require('../utils/debug');
 var geometries = require('../core/geometry').geometries;
+var geometryNames = require('../core/geometry').geometryNames;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -14,7 +15,7 @@ module.exports.Component = registerComponent('geometry', {
   schema: {
     buffer: { default: true },
     mergeTo: { type: 'selector' },
-    primitive: { default: '' },
+    primitive: { default: '', oneOf: geometryNames },
     skipCache: { default: false }
   },
 
