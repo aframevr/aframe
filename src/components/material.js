@@ -22,7 +22,8 @@ module.exports.Component = registerComponent('material', {
     transparent: { default: false },
     opacity: { default: 1.0, min: 0.0, max: 1.0 },
     side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-    depthTest: { default: true }
+    depthTest: { default: true },
+    flatShading: { default: false }
   },
 
   init: function () {
@@ -97,6 +98,7 @@ module.exports.Component = registerComponent('material', {
     material.opacity = data.opacity;
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
+    material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
   },
 
   /**
