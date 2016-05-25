@@ -1,5 +1,5 @@
 // Polyfill `document.registerElement`.
-require('document-register-element');
+require('webcomponents.js/CustomElements.js');
 
 /*
  ------------------------------------------------------------
