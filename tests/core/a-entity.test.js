@@ -430,6 +430,15 @@ suite('a-entity', function () {
       el.setObject3D('mesh', nullObj);
       assert.equal(el.getObject3D('mesh'), nullObj);
     });
+
+    test('binds el to object3D.children', function () {
+      var el = this.el;
+      var parentObject = new THREE.Object3D();
+      var childObject = new THREE.Object3D();
+      parentObject.add(childObject);
+      el.setObject3D('mesh', parentObject);
+      assert.equal(el.getObject3D('mesh').children[0].el, el);
+    });
   });
 
   suite('getOrCreateObject3D', function () {

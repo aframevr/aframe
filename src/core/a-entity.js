@@ -145,11 +145,17 @@ var proto = Object.create(ANode.prototype, {
 
   setObject3D: {
     value: function (type, obj) {
+      var self = this;
       var oldObj = this.object3DMap[type];
       if (oldObj) { this.object3D.remove(oldObj); }
       if (obj instanceof THREE.Object3D) {
-        obj.el = this;
+        obj.el = self;
         this.object3D.add(obj);
+        if (obj.children.length) {
+          obj.traverse(function bindEl (child) {
+            child.el = self;
+          });
+        }
       }
       this.object3DMap[type] = obj;
     }
