@@ -6,6 +6,8 @@ parent_section: primitives
 order: 5
 ---
 
+> COLLADA is not recommended for distributing over the web in production due to its large size. Check out using the [glTF component](https://github.com/xirvr/aframe-gltf) instead. You can convert from COLLADA to glTF using [the converter](https://cesiumjs.org/convertmodel.html).
+
 The COLLADA model primitive displays a 3D COLLADA model created from a 3D modeling program or downloaded from the web. It is an entity that maps the `src` attribute to the [collada-model component](../components/collada-model.md).
 
 ## Example
