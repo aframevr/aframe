@@ -3,7 +3,6 @@ title: <a-sky>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 15
 ---
 
 The sky primitive adds a background to a scene or display a 360-degree photo. It is an entity that prescribes a large sphere with the material mapped to the inside.

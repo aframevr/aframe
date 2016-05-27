@@ -3,7 +3,6 @@ title: <a-sphere>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 16
 ---
 
 The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.md) with its geometric primitive set to `sphere`.

@@ -3,7 +3,6 @@ title: <a-curvedimage>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 8
 ---
 
 

@@ -3,7 +3,6 @@ title: scale
 type: components
 layout: docs
 parent_section: components
-order: 16
 ---
 
 The scale component defines a shrinking, stretching, or skewing transformation of an entity. It takes three scaling factors for the X, Y, and Z axes.

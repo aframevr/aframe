@@ -3,7 +3,6 @@ title: <a-cursor>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 7
 ---
 
 The cursor primitive places a reticle or crosshair to add clicking and interactivity with the scene. It is an entity that prescribes the [cursor component](../components/cursor.md) and a default ring-shaped geometry. The cursor is usually placed as a child of the camera.

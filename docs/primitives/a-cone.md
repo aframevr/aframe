@@ -3,7 +3,6 @@ title: <a-cone>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 6
 ---
 
 The cone primitive creates a cone shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cone`.

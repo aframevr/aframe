@@ -3,7 +3,6 @@ title: obj-model
 type: components
 layout: docs
 parent_section: components
-order: 12
 ---
 
 > glTF is recommended for distributing assets in production over the web. Check out using the [glTF component](https://github.com/xirvr/aframe-gltf). You can either instead export to COLLADA and use [the converter](https://cesiumjs.org/convertmodel.html) or try out the [OBJ converter](https://github.com/AnalyticalGraphicsInc/OBJ2GLTF).

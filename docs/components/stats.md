@@ -3,7 +3,6 @@ title: stats
 type: components
 layout: docs
 parent_section: components
-order: 18
 ---
 
 The stats component displays a UI with performance-related metrics. The stats component applies only to the [`<a-scene>` element][scene].

@@ -3,7 +3,6 @@ title: <a-box>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 3
 ---
 
 The box primitive, formerly called `<a-cube>`, creates shapes such as boxes, cubes, or walls. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `box`.

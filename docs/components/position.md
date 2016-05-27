@@ -3,7 +3,6 @@ title: position
 type: components
 layout: docs
 parent_section: components
-order: 13
 ---
 
 The position component defines where an entity is placed in the scene's world space. It takes a coordinate value as three space-delimited numbers.

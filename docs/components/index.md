@@ -4,7 +4,6 @@ section_title: Components
 type: components
 layout: docs
 parent_section: docs
-order: 1
 section_order: 3
 ---
 

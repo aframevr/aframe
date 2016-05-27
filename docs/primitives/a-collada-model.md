@@ -3,7 +3,6 @@ title: <a-collada-model>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 5
 ---
 
 > COLLADA is not recommended for distributing over the web in production due to its large size. Check out using the [glTF component](https://github.com/xirvr/aframe-gltf) instead. You can convert from COLLADA to glTF using [the converter](https://cesiumjs.org/convertmodel.html).

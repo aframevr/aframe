@@ -3,7 +3,6 @@ title: material
 type: components
 layout: docs
 parent_section: components
-order: 11
 ---
 
 The material component defines the appearance of an entity. The built-in shaders allow us to define properties such as color, opacity, or textures. [Custom shaders][shaders] can be registered to extend the material component to allow for a wide range of visual effects. The [geometry component][geometry] can be defined alongside to provide a shape alongside the appearance to create a complete mesh.

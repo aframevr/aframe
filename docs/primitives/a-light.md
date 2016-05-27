@@ -3,7 +3,6 @@ title: <a-light>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 11
 ---
 
 The light primitive adjusts the lighting setup of the scene. It is an entity that maps attributes to properties of the [light component](../components/light.md).

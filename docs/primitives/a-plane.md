@@ -3,7 +3,6 @@ title: <a-plane>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 13
 ---
 
 The plane primitive creates flat surfaces. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.

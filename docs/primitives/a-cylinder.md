@@ -3,7 +3,6 @@ title: <a-cylinder>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 9
 ---
 
 The cylinder primitive is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cylinder`. It can be used to create tubes and curved surfaces.
