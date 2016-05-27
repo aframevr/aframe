@@ -3,12 +3,12 @@ var THREE = require('../lib/three');
 
 registerGeometry('torusKnot', {
   schema: {
-    p: {default: 2, type: 'int'},
-    q: {default: 3, type: 'int'},
+    p: {default: 2, min: 1, type: 'int'},
+    q: {default: 3, min: 1, type: 'int'},
     radius: {default: 1, min: 0},
     radiusTubular: {default: 0.2, min: 0},
-    segmentsRadial: {efault: 36, min: 0, type: 'int'},
-    segmentsTubular: {default: 32, min: 0, type: 'int'}
+    segmentsRadial: {efault: 36, min: 3, type: 'int'},
+    segmentsTubular: {default: 100, min: 3, type: 'int'}
   },
 
   init: function (data) {

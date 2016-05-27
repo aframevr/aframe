@@ -6,7 +6,7 @@ var degToRad = THREE.Math.degToRad;
 registerGeometry('circle', {
   schema: {
     radius: {default: 1, min: 0},
-    segments: {default: 32, min: 0, type: 'int'},
+    segments: {default: 32, min: 3, type: 'int'},
     thetaLength: {default: 360, min: 0},
     thetaStart: {default: 0}
   },

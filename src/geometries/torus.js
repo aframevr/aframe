@@ -8,8 +8,8 @@ registerGeometry('torus', {
     arc: {default: 360},
     radius: {default: 1, min: 0},
     radiusTubular: {default: 0.2, min: 0},
-    segmentsRadial: {efault: 36, min: 0, type: 'int'},
-    segmentsTubular: {default: 32, min: 0, type: 'int'}
+    segmentsRadial: {efault: 36, min: 2, type: 'int'},
+    segmentsTubular: {default: 32, min: 3, type: 'int'}
   },
 
   init: function (data) {
