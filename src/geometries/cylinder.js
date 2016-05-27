@@ -8,8 +8,8 @@ registerGeometry('cylinder', {
     height: {default: 1, min: 0},
     openEnded: {default: false},
     radius: {default: 1, min: 0},
-    segmentsHeight: {default: 18, min: 0, type: 'int'},
-    segmentsRadial: {default: 36, min: 0, type: 'int'},
+    segmentsHeight: {default: 18, min: 1, type: 'int'},
+    segmentsRadial: {default: 36, min: 3, type: 'int'},
     thetaLength: {default: 360, min: 0},
     thetaStart: {default: 0}
   },
