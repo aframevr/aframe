@@ -21,7 +21,7 @@ For example, we can create a ring-shaped cursor that is fixed to the center of t
 
 ```html
 <a-entity camera>
-  <a-entity cursor="fuse: true; timeout: 500"
+  <a-entity cursor="fuse: true; fuseTimeout: 500"
             position="0 0 -1"
             geometry="primitive: ring"
             material="color: black; shader: flat">
