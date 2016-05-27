@@ -387,6 +387,18 @@ suite('a-animation', function () {
         done();
       });
     });
+
+    test('is run when entity plays and delay is set', function (done) {
+      var animationEl = document.createElement('a-animation');
+      var el = helpers.entityFactory();
+      animationEl.setAttribute('delay', '1');
+      el.appendChild(animationEl);
+      animationEl.addEventListener('loaded', function () {
+        el.play();
+        assert.ok(animationEl.isRunning);
+        done();
+      });
+    });
   });
 
   suite('getAnimationValues', function () {

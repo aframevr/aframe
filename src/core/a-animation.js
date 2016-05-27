@@ -94,7 +94,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var el = self.el;
         var animationValues;
         var attribute = data.attribute;
-        var begin = parseInt(data.begin, 10);
+        var delay = parseInt(data.delay, 10);
         var currentValue = getComputedAttributeFor(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
@@ -114,7 +114,7 @@ module.exports.AAnimation = registerElement('a-animation', {
           self.count = repeat === Infinity ? 0 : parseInt(data.repeat, 10);
         }
 
-        if (isNaN(begin)) { begin = 0; }
+        if (isNaN(delay)) { delay = 0; }
 
         // Store initial state.
         self.initialValue = self.initialValue || cloneValue(currentValue);
@@ -141,7 +141,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         // Create Tween.
         return new TWEEN.Tween(cloneValue(from))
           .to(to, data.dur)
-          .delay(begin)
+          .delay(delay)
           .easing(easing)
           .repeat(repeat)
           .yoyo(yoyo)
@@ -158,6 +158,12 @@ module.exports.AAnimation = registerElement('a-animation', {
     update: {
       value: function () {
         var data = this.data;
+        // Deprecation warning for begin when used as a delay.
+        if (data.begin !== '' && !isNaN(data.begin)) {
+          console.warn("Using 'begin' to specify a delay is deprecated. Use 'delay' instead.");
+          data.delay = data.begin;
+          data.begin = '';
+        }
         var begin = data.begin;
         var end = data.end;
         // Cancel previous event listeners
@@ -166,8 +172,8 @@ module.exports.AAnimation = registerElement('a-animation', {
         this.evt = { begin: begin, end: end };
         // Add new event listeners
         this.addEventListeners(this.evt);
-        // If `begin` is a number, start the animation right away.
-        if (!isNaN(begin)) {
+        // If `begin` is not defined, start the animation right away.
+        if (begin === '') {
           this.stop();
           this.start();
         }
@@ -272,8 +278,8 @@ module.exports.AAnimation = registerElement('a-animation', {
         utils.splitString(evts.end).forEach(function (evt) {
           el.addEventListener(evt, self.stop);
         });
-        // If "begin" is an event name, wait. If it is a delay or not defined, start.
-        if (!isNaN(evts.begin)) { el.addEventListener('play', this.start); }
+        // If "begin" is an event name, wait. If it is not defined, start.
+        if (evts.begin === '') { el.addEventListener('play', this.start); }
         el.addEventListener('pause', this.stop);
         el.addEventListener('stateadded', this.onStateAdded);
         el.addEventListener('stateremoved', this.onStateRemoved);

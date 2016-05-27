@@ -83,8 +83,9 @@ var REPEATS = {
 
 var DEFAULTS = {
   attribute: 'rotation',
-  begin: '0',
+  begin: '',
   end: '',
+  delay: 0,
   dur: 1000,
   easing: 'ease',
   direction: DIRECTIONS.normal,
