@@ -161,7 +161,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         // Deprecation warning for begin when used as a delay.
         if (data.begin !== '' && !isNaN(data.begin)) {
           console.warn("Using 'begin' to specify a delay is deprecated. Use 'delay' instead.");
-          data.delay = cloneValue(data.begin);
+          data.delay = data.begin;
           data.begin = '';
         }
         var begin = data.begin;
