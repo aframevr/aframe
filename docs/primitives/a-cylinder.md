@@ -27,14 +27,21 @@ The cylinder primitive is versatile and can actually be used to create various s
 
 ## Attributes
 
-Note that the cylinder primitive inherits common [mesh attributes](./mesh-attributes.md).
-
 | Attribute       | Component Mapping       | Default Value |
-|-----------------|-------------------------|---------------|
-| height          | geometry.height         | 1.5           |
+| --------        | -----------------       | ------------- |
+| color           | material.color          | #FFF          |
+| height          | geometry.height         | 1             |
+| metalness       | material.metalness      | 0             |
+| opacity         | material.opacity        | 1             |
 | open-ended      | geometry.openEnded      | false         |
-| radius          | geometry.radius         | 0.75          |
-| segments-height | geometry.segmentsHeight | 1             |
+| radius          | geometry.radius         | 1             |
+| repeat          | material.repeat         | None          |
+| roughness       | material.roughness      | 0.5           |
+| segments-height | geometry.segmentsHeight | 18            |
 | segments-radial | geometry.segmentsRadial | 36            |
+| shader          | material.shader         | standard      |
+| side            | material.side           | front         |
+| src             | material.src            | None          |
 | theta-length    | geometry.thetaLength    | 360           |
 | theta-start     | geometry.thetaStart     | 0             |
+| transparent     | material.transparent    | false         |

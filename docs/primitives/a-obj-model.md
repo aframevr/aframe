@@ -28,8 +28,6 @@ The .OBJ model primitive displays a 3D Wavefront model. It is an entity that map
 
 ## Attribute
 
-Note that the .OBJ model primitive inherits common [mesh attributes][mesh]:
-
 | Attribute | Component Mapping | Default Value |
 |-----------|-------------------|---------------|
 | mtl       | obj-model.mtl     | null          |
