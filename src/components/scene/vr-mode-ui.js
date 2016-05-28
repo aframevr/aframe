@@ -1,7 +1,6 @@
 var registerComponent = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 var utils = require('../../utils/');
-var queryParams = utils.queryParams;
 
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
@@ -18,17 +17,17 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
  * UI for entering VR mode.
  */
 module.exports.Component = registerComponent('vr-mode-ui', {
-  dependencies: [ 'canvas' ],
+  dependencies: ['canvas'],
 
   schema: {
-    enabled: { default: true }
+    enabled: {default: true}
   },
 
   init: function () {
     var self = this;
     var scene = this.el;
 
-    if (queryParams.ui === 'false') { return; }
+    if (utils.getUrlParameter('ui') === 'false') { return; }
 
     this.enterVR = scene.enterVR.bind(scene);
     this.exitVR = scene.exitVR.bind(scene);
@@ -54,7 +53,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   update: function () {
     var scene = this.el;
 
-    if (!this.data.enabled || this.insideLoader || queryParams.ui === 'false') {
+    if (!this.data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
       return this.remove();
     }
     if (this.enterVREl || this.orientationModalEl) { return; }
