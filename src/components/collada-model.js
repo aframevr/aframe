@@ -1,9 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
-var loader = new THREE.ColladaLoader();
-loader.options.convertUpAxis = true;
-
 module.exports.Component = registerComponent('collada-model', {
   schema: {
     type: 'src'
@@ -11,6 +8,8 @@ module.exports.Component = registerComponent('collada-model', {
 
   init: function () {
     this.model = null;
+    this.loader = new THREE.ColladaLoader();
+    this.loader.options.convertUpAxis = true;
   },
 
   update: function () {
@@ -22,7 +21,7 @@ module.exports.Component = registerComponent('collada-model', {
 
     this.remove();
 
-    loader.load(src, function (colladaModel) {
+    this.loader.load(src, function (colladaModel) {
       self.model = colladaModel.scene;
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'collada', model: self.model});
