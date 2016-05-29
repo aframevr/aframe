@@ -14,6 +14,7 @@ require('./primitives/a-plane');
 require('./primitives/a-ring');
 require('./primitives/a-sound');
 require('./primitives/a-sky');
+require('./primitives/a-skybox');
 require('./primitives/a-sphere');
 require('./primitives/a-torus');
 require('./primitives/a-torus-knot');
