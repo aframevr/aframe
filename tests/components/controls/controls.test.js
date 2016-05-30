@@ -52,7 +52,7 @@ suite('controls', function () {
         getPositionDelta: this.sinon.stub().returns(new THREE.Vector3(1 / 1000, 0, 0))
       });
       el.setAttribute('controls', {position: ['pos-controls-3']});
-      controls.tick(0, 1);
+      controls.updateControls(0, 1);
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 1 / 1000, y: 0, z: 0});
     });
 
@@ -72,7 +72,7 @@ suite('controls', function () {
         positionAcceleration: 25
       });
       velocityDelta.set(1, 0, 0);
-      controls.tick(0, 1);
+      controls.updateControls(0, 1);
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 0.000025, y: 0, z: 0});
     });
   });
@@ -106,7 +106,7 @@ suite('controls', function () {
         rotation: ['rot-controls-4', 'rot-controls-5']
       });
       rotation.set(45, 180, 0);
-      controls.tick(0, 1);
+      controls.updateControls(0, 1);
       assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 45, y: 180, z: 0});
     });
 
@@ -125,7 +125,7 @@ suite('controls', function () {
         rotation: ['rot-controls-6', 'rot-controls-7']
       });
       rotationDelta.set(Math.PI / 4, -1 * Math.PI / 8);
-      controls.tick(0, 1);
+      controls.updateControls(0, 1);
       assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 22.5, y: -45, z: 0});
     });
   });

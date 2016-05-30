@@ -40,6 +40,8 @@ module.exports.Component = registerControls('controls', {
     } else {
       this.el.sceneEl.addEventListener('loaded', this.validateControls.bind(this));
     }
+
+    this.system.addControls(this);
   },
 
   update: function (previousData) {
@@ -48,7 +50,11 @@ module.exports.Component = registerControls('controls', {
     this.validateControls();
   },
 
-  tick: function (t, dt) {
+  remove: function () {
+    this.system.removeControls(this);
+  },
+
+  updateControls: function (t, dt) {
     var el = this.el;
     var data = this.data;
     var velocity = this.velocity;
@@ -64,7 +70,6 @@ module.exports.Component = registerControls('controls', {
     // Update velocity. If FPS is too low, reset.
     if (data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
       velocity.set(0, 0, 0);
-      el.setAttribute('velocity', velocity);
     } else {
       this.updateVelocity(dt);
     }
@@ -113,13 +118,8 @@ module.exports.Component = registerControls('controls', {
    */
   updateVelocity: function (dt) {
     var control;
-    var el = this.el;
     var data = this.data;
     var velocity = this.velocity;
-
-    if (el.hasAttribute('velocity')) {
-      velocity.copy(el.getComputedAttribute('velocity'));
-    }
 
     if (data.positionEasing) {
       velocity.x -= velocity.x * data.positionEasing * dt / 1000;

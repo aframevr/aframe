@@ -19,7 +19,6 @@ module.exports.Component = registerControls('hmd-controls', {
     this.isPositionCalibrated = false;
     this.dolly = new THREE.Object3D();
     this.hmdEuler = new THREE.Euler();
-    this.hmdQuaternion = new THREE.Quaternion();
     this.previousHMDPosition = new THREE.Vector3();
     this.deltaHMDPosition = new THREE.Vector3();
     this.vrControls = new THREE.VRControls(this.dolly);
@@ -43,12 +42,10 @@ module.exports.Component = registerControls('hmd-controls', {
 
   isRotationActive: function () {
     var hmdEuler = this.hmdEuler;
-    var hmdQuaternion = this.hmdQuaternion;
     if (!this.data.enabled || !(this.el.sceneEl.is('vr-mode') || isMobile)) {
       return false;
     }
-    hmdQuaternion.copy(this.dolly.quaternion);
-    hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
+    hmdEuler.setFromQuaternion(this.dolly.quaternion, 'YXZ');
     return !isNullVector(hmdEuler);
   },
 
