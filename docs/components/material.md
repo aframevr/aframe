@@ -71,13 +71,13 @@ To set a texture using one of the built-in shading models, specify the `src` pro
 </a-scene>
 ```
 
-Most of the other properties works together with textures. For example, the `color` property will act as the base color and be multiplied per-pixel with the texture. Set it to `#fff` to maintain the original colors of the texture.
+Most of the other properties works together with textures. For example, the `color` property will act as the base color and be multiplied per pixel with the texture. Set it to `#fff` to maintain the original colors of the texture.
 
 Video and image textures are cached on the A-Frame layer in order not to push redundant textures to the GPU.
 
 ### Video Textures
 
-Whether the video texture loops or autoplays depends on the video element used to create the texture. If we simply pass a URL instead of creating and passing a video element, then the texture will loop and autoplay by default. To specify otherwise, create a video element in the asset management system and pass the ID:
+Whether the video texture loops or autoplays depends on the video element used to create the texture. If we simply pass a URL instead of creating and passing a video element, then the texture will loop and autoplay by default. To specify otherwise, create a video element in the asset management system, and pass a selector for the `id` attribute (e.g., `#my-video`):
 
 ```html
 <a-scene>
@@ -95,7 +95,7 @@ Whether the video texture loops or autoplays depends on the video element used t
 To control the video playback such as pausing or seeking, we can use the video element to [control media playback][mediaplayback]. For example:
 
 ```js
-var videoEl = document.querySelector('#my-video')
+var videoEl = document.querySelector('#my-video');
 videoEl.currentTime = 122;  // Seek to 122 seconds.
 videoEl.pause();
 ```
@@ -134,11 +134,11 @@ AFRAME.registerComponent('my-component', {
 });
 ```
 
-To play with an example of communicating with the material component, check out the [Cross-Component Changes example on Codepen][cross-component-changes].
+To play with an example of communicating with the material component, check out the [Cross-Component Changes example on CodePen][cross-component-changes].
 
 ## Caveats
 
-Transparency and alpha channels are tricky in 3D graphics. If you are having issues where transparent materials in the foreground do not composite correctly over materials in the background, it is probably due to underlying design of the OpenGL compositor (which WebGL is an API for). In an ideal scenario, transparency in A-Frame would "just work", regardless of where the developer places an image in 3D space, or what order they define the elements in markup. In the current version of A-Frame, however, it is easy to create scenarios where foreground images occlude background images. This creates confusion and unwanted visual defects. To workaround, try changing the order of the entities.
+Transparency and alpha channels are tricky in 3D graphics. If you are having issues where transparent materials in the foreground do not composite correctly over materials in the background, it is probably due to underlying design of the OpenGL compositor (which WebGL is an API for). In an ideal scenario, transparency in A-Frame would "just work", regardless of where the developer places an image in 3D space, or in which order they define the elements in markup. In the current version of A-Frame, however, it is easy to create scenarios where foreground images occlude background images. This creates confusion and unwanted visual defects. To work around, try changing the order of the entities.
 
 [corsimage]: https://developer.mozilla.org/docs/Web/HTML/CORS_enabled_image
 [cross-component-changes]: http://codepen.io/team/mozvr/pen/NxEpJe
