@@ -9,7 +9,7 @@ section_order: 1
 show_guide: true
 ---
 
-A-Frame is a open-source framework for creating 3D and virtual reality experiences on the web. It was built by the [MozVR team][mozvr] to more quickly prototype [WebVR][webvr] experiences as we asked ourselves "what would the virtual reality on the web look like?". Just as today on the web, we click on links to jump from page to page, one day we will walk through portals to jump from world to world. And to have worlds to jump between, we need WebVR content. Unfortunately, there are only a handful of WebGL developers in the world, but there are *millions* of web developers, web designers, and 3D artists. A-Frame puts VR content creation into hands of everyone. A "Hello World" A-Frame scene might look like:
+A-Frame is an open-source framework for creating 3D and virtual reality experiences on the web. It was built by the [MozVR team][mozvr] to more quickly prototype [WebVR][webvr] experiences as we asked ourselves "what would the virtual reality on the web look like?". Just as today on the web, we click on links to jump from page to page, one day we will walk through portals to jump from world to world. And to have worlds to jump between, we need WebVR content. Unfortunately, there are only a handful of WebGL developers in the world, but there are *millions* of web developers, web designers, and 3D artists. A-Frame puts VR content creation into hands of everyone. A "Hello World" A-Frame scene might look like:
 
 ```html
 <html>
