@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-ring', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-ring', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'ring'
-    }
+    geometry: {primitive: 'ring'}
   },
 
   mappings: {
@@ -17,4 +15,4 @@ registerPrimitive('a-ring', utils.extendDeep({}, getMeshMixin(), {
     'theta-length': 'geometry.theta-length',
     'theta-start': 'geometry.theta-start'
   }
-}));
+});

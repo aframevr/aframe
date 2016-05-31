@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-torus', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-torus', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'torus'
-    }
+    geometry: {primitive: 'torus'}
   },
 
   mappings: {
@@ -16,4 +14,4 @@ registerPrimitive('a-torus', utils.extendDeep({}, getMeshMixin(), {
     'segments-radial': 'geometry.segmentsRadial',
     'segments-tubular': 'geometry.segmentsTubular'
   }
-}));
+});

@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-box', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-box', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'box'
-    }
+    geometry: {primitive: 'box'}
   },
 
   mappings: {
@@ -14,4 +12,4 @@ registerPrimitive('a-box', utils.extendDeep({}, getMeshMixin(), {
     height: 'geometry.height',
     width: 'geometry.width'
   }
-}));
+});

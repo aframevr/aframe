@@ -1,8 +1,8 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-cursor', {
+  includeMeshProperties: true,
+
   defaultComponents: {
     cursor: {},
     geometry: {
@@ -31,4 +31,4 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
     objects: 'raycaster.objects',
     timeout: 'cursor.timeout'
   }
-}));
+});

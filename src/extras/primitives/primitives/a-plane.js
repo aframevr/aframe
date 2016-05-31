@@ -1,8 +1,8 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-plane', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-plane', {
+  includeMeshProperties: true,
+
   defaultComponents: {
     geometry: {
       primitive: 'plane'
@@ -13,4 +13,4 @@ registerPrimitive('a-plane', utils.extendDeep({}, getMeshMixin(), {
     height: 'geometry.height',
     width: 'geometry.width'
   }
-}));
+});

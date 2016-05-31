@@ -69,7 +69,7 @@ suite('registerPrimitive', function () {
     });
   });
 
-  test('proxies attributes to components', function (done) {
+  test('maps attributes to components', function (done) {
     primitiveFactory({
       mappings: {
         color: 'material.color',
@@ -81,6 +81,21 @@ suite('registerPrimitive', function () {
       process.nextTick(function () {
         assert.equal(el.getAttribute('material').color, 'tomato');
         assert.equal(el.getAttribute('position').x, 1);
+        done();
+      });
+    });
+  });
+
+  test('can mix in common mesh properties', function (done) {
+    primitiveFactory({
+      includeMeshProperties: true,
+      defaultComponents: {
+        geometry: {primitive: 'box'}
+      }
+    }, function (el) {
+      el.setAttribute('color', 'tomato');
+      process.nextTick(function () {
+        assert.equal(el.getAttribute('material').color, 'tomato');
         done();
       });
     });
