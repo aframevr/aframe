@@ -15,7 +15,7 @@ module.exports.Component = registerComponent('geometry', {
   schema: {
     buffer: { default: true },
     mergeTo: { type: 'selector' },
-    primitive: { default: '', oneOf: geometryNames },
+    primitive: { default: 'box', oneOf: geometryNames },
     skipCache: { default: false }
   },
 
