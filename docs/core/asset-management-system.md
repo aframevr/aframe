@@ -47,7 +47,7 @@ We can define all of our assets in `<a-assets>` and point to those assets from o
 
 Then the scene will wait for all of the assets for rendering.
 
-## Cross-Origin
+## Cross-Origin Resources
 
 Loading assets from a different domain requires [cross-origin resource sharing (CORS) headers][cors]. Else we have to serve the asset ourselves.
 
