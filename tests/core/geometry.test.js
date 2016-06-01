@@ -1,4 +1,4 @@
-/* global assert, process, suite, test, setup */
+/* global assert, process, suite, test, teardown */
 var registerGeometry = require('core/geometry').registerGeometry;
 var geometries = require('core/geometry').geometries;
 var geometryNames = require('core/geometry').geometryNames;
@@ -12,11 +12,13 @@ suite('core/geometry', function () {
   });
 
   suite('registerGeometry', function () {
-    setup(function () {
+    teardown(function () {
       delete geometries.test;
+      var i = geometryNames.indexOf('test');
+      geometryNames.splice(i, 1);
     });
 
-    test('can register shaders', function () {
+    test('can register geometries', function () {
       registerGeometry('test', {});
       assert.ok('test' in geometries);
       assert.notEqual(geometryNames.indexOf('test'), -1);
