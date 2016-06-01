@@ -1,8 +1,8 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-videosphere', {
+  includeMeshProperties: true,
+
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
@@ -22,4 +22,4 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
     'segments-height': 'geometry.segmentsHeight',
     'segments-width': 'geometry.segmentsWidth'
   }
-}));
+});

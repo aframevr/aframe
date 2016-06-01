@@ -1,8 +1,8 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-curvedimage', {
+  includeMeshProperties: true,
+
   defaultComponents: {
     geometry: {
       height: 1,
@@ -33,4 +33,4 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
     translate: 'geometry.translate',
     'width': 'geometry.thetaLength'
   }
-}));
+});

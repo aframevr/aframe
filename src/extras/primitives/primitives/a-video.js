@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-video', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'plane'
-    },
+    geometry: {primitive: 'plane'},
     material: {
       color: '#FFF',
       shader: 'flat',
@@ -19,4 +17,4 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
     height: 'geometry.height',
     width: 'geometry.width'
   }
-}));
+});

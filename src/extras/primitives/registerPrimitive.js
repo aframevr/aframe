@@ -1,5 +1,6 @@
 var AEntity = require('../../core/a-entity');
 var components = require('../../core/component').components;
+var getMeshProperties = require('./getMeshProperties');
 var registerElement = require('../../core/a-register-element').registerElement;
 var utils = require('../../utils/');
 
@@ -13,6 +14,11 @@ module.exports = function registerPrimitive (name, definition) {
   // Deprecation warning for defaultAttributes usage.
   if (definition.defaultAttributes) {
     console.warn("The 'defaultAttributes' object is deprecated. Use 'defaultComponents' instead.");
+  }
+
+  // Material properties.
+  if (definition.includeMeshProperties) {
+    definition = utils.extendDeep({}, getMeshProperties(), definition);
   }
 
   return registerElement(name, {

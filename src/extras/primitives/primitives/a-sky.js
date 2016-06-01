@@ -1,8 +1,8 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-sky', {
+  includeMeshProperties: true,
+
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
@@ -22,4 +22,4 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
     'segments-width': 'geometry.segmentsWidth',
     'segments-height': 'geometry.segmentsHeight'
   }
-}));
+});

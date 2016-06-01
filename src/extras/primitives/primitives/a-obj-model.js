@@ -1,14 +1,17 @@
-var meshMixin = require('../getMeshMixin')();
+var getMeshProperties = require('../getMeshProperties');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
+var meshProperties = getMeshProperties();
+
+registerPrimitive('a-obj-model', {
+  includeMeshProperties: true,
+
   mappings: {
     src: 'obj-model.obj',
     mtl: 'obj-model.mtl'
   },
 
   transforms: {
-    mtl: meshMixin.transforms.src
+    mtl: meshProperties.transforms.src
   }
-}));
+});

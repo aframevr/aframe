@@ -1,7 +1,7 @@
 /**
- * Common mesh defaults, mappings, and transforms.
+ * Common material properties.
  */
-module.exports = function getMeshMixin () {
+module.exports = function getMaterialProperties () {
   return {
     defaultComponents: {
       material: { }

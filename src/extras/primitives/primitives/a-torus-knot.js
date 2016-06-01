@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-torus-knot', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-torus-knot', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'torusKnot'
-    }
+    geometry: {primitive: 'torusKnot'}
   },
 
   mappings: {
@@ -17,4 +15,4 @@ registerPrimitive('a-torus-knot', utils.extendDeep({}, getMeshMixin(), {
     'segments-radial': 'geometry.segmentsRadial',
     'segments-tubular': 'geometry.segmentsTubular'
   }
-}));
+});

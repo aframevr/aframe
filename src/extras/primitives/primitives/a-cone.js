@@ -1,12 +1,10 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../registerPrimitive');
-var utils = require('../../../utils/');
 
-registerPrimitive('a-cone', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-cone', {
+  includeMeshProperties: true,
+
   defaultComponents: {
-    geometry: {
-      primitive: 'cone'
-    }
+    geometry: {primitive: 'cone'}
   },
 
   mappings: {
@@ -19,4 +17,4 @@ registerPrimitive('a-cone', utils.extendDeep({}, getMeshMixin(), {
     'theta-length': 'geometry.thetaLength',
     'theta-start': 'geometry.thetaStart'
   }
-}));
+});
