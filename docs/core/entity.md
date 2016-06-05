@@ -209,7 +209,7 @@ AFRAME.registerComponent('example-mesh', {
 });
 ```
 
-### `getOrCreateObject3D (type, Constructor)
+### `getOrCreateObject3D (type, Constructor)`
 
 If the entity does not have a `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the passed `Constructor`. If the entity does have an `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will act as `getObject3D`:
 
