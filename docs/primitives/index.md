@@ -31,9 +31,9 @@ Here is an assortment of various primitives in use:
   </a-assets>
 
   <a-camera fov="80"><a-cursor></a-cursor></a-camera>
-  <a-box src="#texture" depth="2" height="5" width="1"></a-sky>
+  <a-box src="#texture" depth="2" height="5" width="1"></a-box>
   <a-image src="fireball.jpg"></a-image>
-  <a-video src="#video">
+  <a-video src="#video"></a-video>
   <a-obj-model src="#fox-obj" mtl="#fox-mtl"></a-obj-model>
   <a-sky color="#432FA0"></a-sky>
 </a-scene>
