@@ -282,7 +282,7 @@ entity.setAttribute('material', 'color', 'crimson');
 
 ### `setObject3D (type, obj)`
 
-`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistered the `THREE.Object3D` previously registered under `type`.
+`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistering the `THREE.Object3D` previously registered under `type`.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
