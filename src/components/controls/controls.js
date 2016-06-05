@@ -19,12 +19,12 @@ module.exports.Component = registerControls('controls', {
     position: {
       default: ['hmd-controls']
     },
-    positionControlsEnabled: { default: true },
+    positionEnabled: { default: true },
     positionEasing: { default: 0 }, // m/s2
     positionAcceleration: { default: 260 }, // m/s2
 
     rotation: { default: ['hmd-controls', 'mouse-controls'] },
-    rotationControlsEnabled: { default: true }
+    rotationEnabled: { default: true }
   },
 
   init: function () {
@@ -63,12 +63,12 @@ module.exports.Component = registerControls('controls', {
     if (isNaN(dt)) { return; }
 
     // Update rotation.
-    if (data.rotationControlsEnabled) {
+    if (data.rotationEnabled) {
       this.updateRotation(dt);
     }
 
     // Update velocity. If FPS is too low, reset.
-    if (data.positionControlsEnabled && dt / 1000 > MAX_DELTA) {
+    if (data.positionEnabled && dt / 1000 > MAX_DELTA) {
       velocity.set(0, 0, 0);
     } else {
       this.updateVelocity(dt);
@@ -128,7 +128,7 @@ module.exports.Component = registerControls('controls', {
       velocity.set(0, 0, 0);
     }
 
-    control = data.positionControlsEnabled ? this.getActivePositionControls() : null;
+    control = data.positionEnabled ? this.getActivePositionControls() : null;
     if (control && control.getVelocityDelta) {
       this.applyVelocityDelta(dt, control.getVelocityDelta(dt));
     } else if (control) {
