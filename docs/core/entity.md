@@ -209,7 +209,7 @@ AFRAME.registerComponent('example-mesh', {
 });
 ```
 
-### `getOrCreateObject3D (type, Constructor)
+### `getOrCreateObject3D (type, Constructor)`
 
 If the entity does not have a `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the passed `Constructor`. If the entity does have an `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will act as `getObject3D`:
 
@@ -282,7 +282,7 @@ entity.setAttribute('material', 'color', 'crimson');
 
 ### `setObject3D (type, obj)`
 
-`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistered the `THREE.Object3D` previously registered under `type`.
+`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistering the `THREE.Object3D` previously registered under `type`.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
