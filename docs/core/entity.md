@@ -183,13 +183,13 @@ Compare the output of the above example of [`getAttribute`](#getAttribute):
 ```js
 // <a-entity geometry="primitive: box; width: 3">
 
-entity.getAttribute('geometry');
+entity.getComputedAttribute('geometry');
 // >> { primitive: "box", depth: 2, height: 2, translate: "0 0 0", width: 3, ... }
 
-entity.getAttribute('geometry').primitive;
+entity.getComputedAttribute('geometry').primitive;
 // >> "box"
 
-entity.getAttribute('geometry').height;
+entity.getComputedAttribute('geometry').height;
 // >> 2
 ```
 
