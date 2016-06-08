@@ -4,7 +4,7 @@ type: guide
 layout: docs
 parent_section: guide
 order: 3
-show_guide: true
+table_of_contents: true
 ---
 
 Let's first start building a scene using the basic [primitive][primitives]
