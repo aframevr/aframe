@@ -115,7 +115,7 @@ Developers can bundle three.js and JavaScript code within A-Frame components.
 These components can be reused and composed. If published and shared, these
 components can be used by other developers via the HTML abstraction layer.
 
-## Have Fun
+## Have Fun!
 
 Many believe WebVR will become the platform for the open Metaverse. Though
 these are the early days, and it will be a long journey to get there. There is

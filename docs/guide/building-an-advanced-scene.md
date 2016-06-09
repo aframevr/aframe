@@ -59,7 +59,8 @@ We have predefined:
 
 - Several images to choose from in the [Asset Management System][ams] within `a-assets`.
 - Our 360&deg; image placeholder with [`a-sky`][a-sky].
-- A [cursor][cursor] with visual feedback using evented [animations][animation], fixed to the [camera][camera].
+- A [cursor][cursor] with visual feedback using evented
+[animations][animation-begin], fixed to the [camera][camera].
 
 ## 1. Using Standard Components
 
@@ -67,7 +68,7 @@ Standard components are components that ship with A-Frame, like a standard
 library. What we want to do is add an image texture to the link using the
 `material` component.
 
-The `material` component is a [multi-property]
+The `material` component is a [multi-property component][multi-property]
 
 ## Writing Components
 
@@ -86,7 +87,8 @@ like and how to write one.
 
 [a-sky]: ../primitives/a-sky.md
 [ams]: ../core/asset-management-system.md
-[animation]: ../core/animation.md
+[animation]: ../core/animations.md
+[animation-begin]: ../core/animations.md#begin
 [awesome]: https://github.com/aframevr/awesome-aframe#components
 [basic]: ./building-a-basic-scene.md
 [boilerplate]: https://github.com/ngokevin/aframe-component-boilerplate
@@ -98,7 +100,7 @@ like and how to write one.
 [github]: https://github.com/ngokevin/aframe-fps-example
 [layout]: https://github.com/ngokevin/aframe-layout-component
 [mixin]: ../core/mixins.md
-[multiproperty]: ../core/component.md#multi-property
+[multi-property]: ../core/component.md#multi-property-component
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
 [template]: https://github.com/ngokevin/aframe-template-component
 [three]: http://threejs.org

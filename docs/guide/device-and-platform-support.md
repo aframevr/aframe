@@ -1,5 +1,5 @@
 ---
-title: "Device &amp; Platform Support"
+title: "Device & Platform Support"
 type: guide
 layout: docs
 parent_section: guide

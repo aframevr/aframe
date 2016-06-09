@@ -26,30 +26,50 @@ and functionality of entities.
 
 ## What a Component Looks Like
 
-A component holds a bucket of data in the form of one or more component properties. This data is used to modify the entity. Consider an *engine* component, we might define properties such as *horsepower* or *cylinders*.
+A component holds a bucket of data in the form of one or more component
+properties. This data is used to modify the entity. Consider an *engine*
+component, we might define properties such as *horsepower* or *cylinders*.
 
 ![](http://thevrjump.com/assets/img/articles/aframe-system/aframe-system.jpg)
 <div class="page-caption"><span>
 Abstract representation of a component by @rubenmueller of [The VR Jump][vrjump].
 </span></div>
 
-### From the DOM
+### From HTML
 
-In A-Frame, we attach and configure a component to an entity using an HTML attribute for a component name and a inline-style-like syntax for the properties:
+HTML attributes represent component names and the value of those attributes
+represent component data.
+
+#### Single-Property Component
+
+If a component is a *single-property* component, meaning its data is
+represented by a single value, then in HTML, the component value looks like a normal
+HTML attribute:
 
 ```html
-<a-entity light="type: point; color: crimson; intensity: 2.5"></a-entity>
+<!-- `position` is the name of the position component. -->
+<!-- `1 2 3` is the data of the position component. -->
+<a-entity position="1 2 3"></a-entity>
 ```
 
-For a component that takes a single flat property value, it looks like a normal HTML attribute:
+#### Multi-Property Component
+
+If a component is a *multi-property* component, meaning its data is represented
+by several properties and values, then in HTML, the component value looks like
+inline CSS styles:
 
 ```html
-<a-entity position="0 1 4"></a-entity>
+<!-- `light` is the name of the light component. -->
+<!-- The `type` property of the light is set to `point`. -->
+<!-- The `color` property of the light is set to `crimson`. -->
+<a-entity light="type: point; color: crimson"></a-entity>
 ```
 
 ## Under the Hood
 
-A component is registered using `AFRAME.registerComponent`, which we pass a component name to register a component under and a component definition. Below is the outer skeleton for the [position component][position]:
+A component is registered using `AFRAME.registerComponent`, which we pass a
+component name to register a component under and a component definition. Below
+is the outer skeleton for the [position component][position]:
 
 ```js
 AFRAME.registerComponent('position', {
@@ -57,7 +77,9 @@ AFRAME.registerComponent('position', {
 });
 ```
 
-A component defines a **schema** that defines its properties, giving *anatomy* to the component. The position component takes a flat `vec3`, or an `{x, y, z}` object.
+A component defines a **schema** that defines its properties, giving *anatomy*
+to the component. The position component takes a flat `vec3`, or an `{x, y, z}`
+object.
 
 ```js
 AFRAME.registerComponent('position', {
@@ -67,7 +89,10 @@ AFRAME.registerComponent('position', {
 });
 ```
 
-Then a component defines lifecycle methods that handles what it does with its data, giving *physiology* to the component. During initialization and on attribute updates, the position component takes its `vec3` value and applies it to its [three.js Object3D][object3d]:
+Then a component defines lifecycle methods that handles what it does with its
+data, giving *physiology* to the component. During initialization and on
+attribute updates, the position component takes its `vec3` value and applies it
+to its [three.js Object3D][object3d]:
 
 > Components will often be talking to the three.js API.
 
@@ -83,7 +108,8 @@ AFRAME.registerComponent('position', {
 });
 ```
 
-The position component uses only a small subset of the component API. We'll go over everything the component API has to offer.
+The position component uses only a small subset of the component API. We'll go
+over everything the component API has to offer.
 
 ### Properties
 
@@ -106,7 +132,9 @@ The position component uses only a small subset of the component API. We'll go o
 
 ## Schema
 
-A component's schema defines and describes the property or properties it takes. A component can either be a single-property component (one flat value) or a multi-property component (multiple named values).
+A component's schema defines and describes the property or properties it takes.
+A component can either be a single-property component (one flat value) or a
+multi-property component (multiple named values).
 
 A single-property schema might look like:
 
