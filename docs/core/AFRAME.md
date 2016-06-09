@@ -6,11 +6,15 @@ parent_section: core
 order: 10
 ---
 
-A-Frame exposes its public interface through the `window.AFRAME` browser global. This same interface is exposed if requiring with NPM (`require('aframe');`). `AFRAME` can be used to register new things and extend AFRAME's capabilities.
+A-Frame exposes its public interface through the `window.AFRAME` browser
+global. This same interface is exposed if requiring with NPM
+(`require('aframe');`). `AFRAME` can be used to register new things and extend
+AFRAME's capabilities.
 
 ## AFRAME Properties
 
-The A-Frame object is available on `window.AFRAME`. This will also be the object if required from NPM.
+The A-Frame object is available on `window.AFRAME`. This will also be the
+object if required from NPM.
 
 | Property          | Description                                             |
 | ----------        | -------------                                           |

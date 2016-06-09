@@ -6,9 +6,20 @@ parent_section: core
 order: 8
 ---
 
-Shaders (in A-Frame) are responsible for creating the material for the base [material component][material]. A-Frame ships with a couple of built-in shading models: `standard` and `flat`.
+Shaders (in A-Frame) are responsible for creating the material for the base
+[material component][material]. A-Frame ships with a couple of built-in shading
+models: `standard` and `flat`.
 
-We can register custom shaders to implement different visual effects and materials. We have available the materials provided by three.js, including [THREE.ShaderMaterial][shader-material]. With THREE.ShaderMaterial, we can provide our own [GLSL][glsl] vertex and fragment shaders (small programs that run on the GPU), and we can define a schema for their uniforms and attributes just as we would with [component schemas][component-schema]. The shader's schema will extend the base material component's schema, and as a result we can pass values from markup directly to the shader.
+We can register custom shaders to implement different visual effects and
+materials. We have available the materials provided by three.js, including
+[THREE.ShaderMaterial][shader-material]. With THREE.ShaderMaterial, we can
+provide our own [GLSL][glsl] vertex and fragment shaders (small programs that
+run on the GPU), and we can define a schema for their uniforms and attributes
+just as we would with [component schemas][component-schema]. The shader's
+schema will extend the base material component's schema, and as a result we can
+pass values from markup directly to the shader.
+
+<!--toc-->
 
 ## Built-in Shading Models
 

@@ -25,6 +25,8 @@ They are a convenience layer on top of the core API and are meant to:
 They are sort of like [Prefabs in Unity][prefab]. Some literature on the
 entity-component-system pattern refer to these as *assemblages*.
 
+<!--toc-->
+
 ## Example
 
 Here is an assortment of various primitives in use:

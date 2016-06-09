@@ -8,11 +8,7 @@ order: 10
 
 Most of A-Frame's utility modules are public through `AFRAME.utils`.
 
-## Table of Contents
-
-- [AFRAME.utils.coordinates](#aframe-utils-coordinates)
-- [AFRAME.utils.styleParser](#aframe-utils-styleParser)
-- [Object Utils](#object-utils)
+<!--toc-->
 
 ## AFRAME.utils.coordinates
 

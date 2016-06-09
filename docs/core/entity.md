@@ -6,9 +6,15 @@ parent_section: core
 order: 2
 ---
 
-An entity is represented by the `<a-entity>` element. As defined in the [entity-component-system pattern][ecs], entities are placeholder objects to which we plug in components to in order to provide them apperance, behavior, and functionality.
+An entity is represented by the `<a-entity>` element. As defined in the
+[entity-component-system pattern][ecs], entities are placeholder objects to
+which we plug in components to in order to provide them apperance, behavior,
+and functionality.
 
-In A-Frame, entities have inherently have attached the [position][position], [rotation][rotation], and [scale][scale] components.
+In A-Frame, entities have inherently have attached the [position][position],
+[rotation][rotation], and [scale][scale] components.
+
+<!--toc-->
 
 ## Example
 

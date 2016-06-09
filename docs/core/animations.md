@@ -6,9 +6,16 @@ parent_section: core
 order: 6
 ---
 
-Animations in A-Frame are defined by attaching an `<a-animation>` element as a child of the entity to animate. The API is roughly based after the [Web Animations](http://www.w3.org/TR/web-animations/) specification.
+Animations in A-Frame are defined by attaching an `<a-animation>` element as a
+child of the entity to animate. The API is roughly based after the [Web
+Animations](http://www.w3.org/TR/web-animations/) specification.
 
-As an introductory example, to define a 5-meter orbit on an entity about the Y-axis that takes 10 seconds, we can offset its position and animate the rotation of a parent entity. This animation starts with the initial rotation about the Y-axis of 0 degrees and goes around to 360 degrees. It's defined with a duration of 10000 milliseconds, maintains the final value on each cycle of the animation, and loops indefinitely.
+As an introductory example, to define a 5-meter orbit on an entity about the
+Y-axis that takes 10 seconds, we can offset its position and animate the
+rotation of a parent entity. This animation starts with the initial rotation
+about the Y-axis of 0 degrees and goes around to 360 degrees. It's defined with
+a duration of 10000 milliseconds, maintains the final value on each cycle of
+the animation, and loops indefinitely.
 
 ```html
 <a-entity>
@@ -21,7 +28,11 @@ As an introductory example, to define a 5-meter orbit on an entity about the Y-a
 </a-entity>
 ```
 
-Many attributes and values are used to define animations. We'll delve into more detail below:
+<!--toc-->
+
+## Attributes
+
+Here is an overview of animation attributes. We'll go into more detail below.
 
 | Attribute | Description                                                                                                            | Default Value  |
 |-----------|------------------------------------------------------------------------------------------------------------------------|----------------|

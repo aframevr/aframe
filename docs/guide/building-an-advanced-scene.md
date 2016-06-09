@@ -19,6 +19,8 @@ The scene we will build is a **360&deg; image viewer**. There will be three
 panels which the user can click on. Once clicked, the background will fade and
 swap the 360&deg; images.
 
+<!--toc-->
+
 ## Skeleton
 
 Here will be the starting point for our scene:

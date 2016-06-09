@@ -10,14 +10,17 @@ installation: true
 
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-There are several ways to get started with A-Frame:
+Welcome! Make sure to read the [introduction][introduction]. If you're ready to
+go, we have several ways of getting started.
+
+<!--toc-->
 
 * [Play with CodePen](#CodePen)
 * [Grab the Boilerplate](#Boilerplate)
 * [Include the JS Build](#Builds)
 * [Install from npm](#npm)
 
-## CodePen
+## Play with CodePen
 
 [CodePen][codepen] is a playground for front-end web development. We can edit
 HTML and JavaScript directly in the browser with their text editor, see changes
@@ -28,7 +31,7 @@ CodePen][codepen]:
 
 <p data-height="300" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-## Boilerplate
+## Grab the Boilerplate
 
 The boilerplate contains:
 
@@ -42,7 +45,7 @@ We can grab the boilerplate in one of two ways:
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
-## Builds
+## Include the JS Build
 
 If we want to just include the JS build from the CDN, we can drop a `<script>` tag straight into our HTML:
 
@@ -59,7 +62,7 @@ If we want to serve it locally, we can download the JS build:
 <a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.min.js" download>Production Version <span>{{ version }}</span></a> <em class="install-note">Minified</em>
 <a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.js" download>Development Version <span>{{ version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
-## npm
+## Install from npm
 
 For more advanced users who want to use their own build steps, we can install through npm:
 

@@ -4,12 +4,13 @@ type: guide
 layout: docs
 parent_section: guide
 order: 3
-table_of_contents: true
 ---
 
 Let's first start building a scene using the basic [primitive][primitives]
 building blocks. Primitives are the appetizer of A-Frame that ease newcomers
 into the underlying entity-component-system.
+
+<!--toc-->
 
 ## Adding a Box
 

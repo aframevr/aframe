@@ -13,25 +13,7 @@ additional properties are used to further define the geometry. A material
 component is usually defined alongside to provide a appearance alongside the
 shape to create a complete mesh.
 
-## Table of Contents
-
-- [Base Properties](#base-properties)
-    - [mergeTo](#mergeto)
-- [Built-in Geometries](#built-in-geometries)
-    - [box](#box)
-    - [circle](#circle)
-        - [thetaLength and thetaStart](#thetalength-and-thetastart)
-    - [cone](#cone)
-    - [cylinder](#cylinder)
-    - [dodecahedron](#dodecahedron)
-    - [isocahedron](#isocahedron)
-    - [plane](#plane)
-    - [ring](#ring)
-    - [sphere](#sphere)
-    - [tetrahedron](#tetrahedron)
-    - [torus](#torus)
-    - [torusKnot](#torusknot)
-- [Registering a Custom Geometry](#registering-a-custom-geometry)
+<!--toc-->
 
 ## Base Properties
 

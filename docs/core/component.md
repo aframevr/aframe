@@ -6,36 +6,23 @@ parent_section: core
 order: 3
 ---
 
-In the [entity-component-system pattern](./index.md), a component is a reusable and modular chunks of data that plugged into an entity to add appearance, behavior, and/or functionality. As an abstract analogy, if a smartphone were defined as an entity, we might use components to give it appearance (color, shape), to define its behavior (vibrate when called, shut down on low battery), or to add functionality (camera, screen). In A-Frame, a component modifies entities which are 3D objects in the scene.
+In the [entity-component-system pattern](./index.md), a component is a reusable
+and modular chunks of data that plugged into an entity to add appearance,
+behavior, and/or functionality. As an abstract analogy, if a smartphone were
+defined as an entity, we might use components to give it appearance (color,
+shape), to define its behavior (vibrate when called, shut down on low battery),
+or to add functionality (camera, screen). In A-Frame, a component modifies
+entities which are 3D objects in the scene.
 
-> Try to contain most logic within components in A-Frame experiences, even if the logic is one-off or ad-hoc. This encourages reusability, modularity, and sharing of code.
+> Try to contain most logic within components in A-Frame experiences, even if
+> the logic is one-off or ad-hoc. This encourages reusability, modularity, and
+> sharing of code.
 
-Components are roughly analoguous to CSS. Like how CSS rules modify the appearance of elements, component properties modify the appearance, behavior, and functionality of entities.
+Components are roughly analoguous to CSS. Like how CSS rules modify the
+appearance of elements, component properties modify the appearance, behavior,
+and functionality of entities.
 
-## Table of Contents
-
-Components provide all of the features and extensibility of A-Frame. There is a lot to cover:
-
-- [What a Component Looks Like](#what-a-component-looks-like)
-    - [From the DOM](#from-the-dom)
-    - [Under the Hood](#under-the-hood)
-- [Schema](#schema)
-    - [Property Types](#property-types)
-    - [Single-Property Schemas](#single-property-schemas)
-    - [Multi-Property Schemas](#multi-property-schemas)
-- [Lifecycle Methods](#lifecycle-methods)
-    - [Component.init()](#component-init)
-    - [Component.update(oldData)](#component-update-olddata)
-    - [Component.remove()](#component-remove)
-    - [Component.tick(time)](#component-tick-time)
-    - [Component.pause()](#component-pause-component-play)
-    - [Component.play()](#component-pause-component-play)
-- [Writing a Component](#writing-a-component)
-    - [Line Component](#line-component)
-    - [Skeleton](#skeleton)
-    - [Schema](#schema)
-    - [Update](#update)
-    - [Usage](#usage)
+<!--toc-->
 
 ## What a Component Looks Like
 

@@ -11,6 +11,8 @@ devices and APIs. A-Frame supports both flat (3D on a normal screen) and WebVR
 experiences.  Though its focus is heavily VR. We will break up support into two
 categories: flat and VR.
 
+<!--toc-->
+
 ## Support for Flat Experiences
 
 Support for flat experiences primarily depends on the browsers' WebGL support.
