@@ -4,26 +4,24 @@ type: guide
 layout: docs
 parent_section: guide
 order: 4
-table_of_contents: true
 ---
 
-> Fork this [360&deg; Image Viewer Example on GitHub](https://github.com/aframevr/360-image-browser-example).
+> Fork the [360&deg; Image Viewer Boilerplate on GitHub](https://github.com/aframevr/360-image-browser-boilerplate).
 
 Let's go through an example building a scene using an
-[entity-component-system][ecs] workflow. This guide will have main lessons, in
-order of difficulty:
+[entity-component-system][ecs] workflow. This guide will introduce three concepts:
 
-- Using the standard [components][components] that ship with A-Frame
-- Using third-party components from the ecosystem
-- Writing custom components to accomplish whatever we want
+1. Using the standard [components][components] that ship with A-Frame
+2. Using third-party components from the ecosystem
+3. Writing custom components to accomplish whatever we want
 
 The scene we will build is a **360&deg; image viewer**. There will be three
 panels which the user can click on. Once clicked, the background will fade and
 swap the 360&deg; images.
 
-## Standard A-Frame Components
+## Skeleton
 
-Let's start with a skeleton of our scene.
+Here will be the starting point for our scene:
 
 ```html
 <a-scene>
@@ -41,16 +39,7 @@ Let's start with a skeleton of our scene.
   <a-sky id="image-360" radius="10" src="#city"></a-sky>
 
   <!-- Link. -->
-  <a-plane class="link" height="1" width="1"
-           material="shader: flat; src: "
-               event-set="_event: cursor-mousedown; height: 1.0; width: 1.0,
-                          _event: cursor-mouseup; height: 1.2; width: 1.2,
-                          _event: cursor-mouseenter; height: 1.2; width: 1.2,
-                          _event: cursor-mouseleave; height: 1; width: 1"
-               set-image="on: cursor-click; target: #image-360; src: {{ src }}"
-               sound="on: cursor-click; src: audio/click.ogg"
-               update-raycaster="#cursor">
-      </a-plane>
+  <a-plane class="link" height="1" width="1"></a-plane>
 
   <!-- Camera + Cursor. -->
   <a-camera>
@@ -66,14 +55,17 @@ Let's start with a skeleton of our scene.
 
 We have predefined:
 
-- Several images in the [Asset Management System][ams] within `a-assets`.
-- Our 360&deg; image holder with [`a-sky`][a-sky].
+- Several images to choose from in the [Asset Management System][ams] within `a-assets`.
+- Our 360&deg; image placeholder with [`a-sky`][a-sky].
 - A [cursor][cursor] with visual feedback using evented [animations][animation], fixed to the [camera][camera].
 
-## Using Components
+## 1. Using Standard Components
 
-The [awesome-aframe repository][awesome] is a great place to find components
-that the community has created to enable new features.
+Standard components are components that ship with A-Frame, like a standard
+library. What we want to do is add an image texture to the link using the
+`material` component.
+
+The `material` component is a [multi-property]
 
 ## Writing Components
 
@@ -91,8 +83,8 @@ documentation][components] goes into much more detail on what a component looks
 like and how to write one.
 
 [a-sky]: ../primitives/a-sky.md
-[animation]: ../core/animation.md
 [ams]: ../core/asset-management-system.md
+[animation]: ../core/animation.md
 [awesome]: https://github.com/aframevr/awesome-aframe#components
 [basic]: ./building-a-basic-scene.md
 [boilerplate]: https://github.com/ngokevin/aframe-component-boilerplate
@@ -104,6 +96,7 @@ like and how to write one.
 [github]: https://github.com/ngokevin/aframe-fps-example
 [layout]: https://github.com/ngokevin/aframe-layout-component
 [mixin]: ../core/mixins.md
+[multiproperty]: ../core/component.md#multi-property
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
 [template]: https://github.com/ngokevin/aframe-template-component
 [three]: http://threejs.org
