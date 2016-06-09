@@ -15,11 +15,6 @@ go, we have several ways of getting started.
 
 <!--toc-->
 
-* [Play with CodePen](#CodePen)
-* [Grab the Boilerplate](#Boilerplate)
-* [Include the JS Build](#Builds)
-* [Install from npm](#npm)
-
 ## Play with CodePen
 
 [CodePen][codepen] is a playground for front-end web development. We can edit
@@ -81,4 +76,5 @@ require('aframe');
 ```
 
 [codepen]: http://codepen.io/team/mozvr/pen/BjygdO
+[introduction]: ./index.md
 [ghpages]: https://pages.github.com/
