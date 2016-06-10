@@ -9,12 +9,11 @@
   <body>
     <a-scene stats>
       <a-assets>
-        <a-mixin id="ball" geometry="primitive: sphere; radius:1"  material="shader: flat; color: red">
-        </a-mixin>
+        <a-mixin id="ball" geometry="primitive: sphere; radius:1"  material="shader: flat; color: red"></a-mixin>
         <a-mixin id="opacity" attribute="material.opacity" dur="2000" direction="alternate" fill="forwards"
-                  ease="linear" repeat="indefinite" from="0.3" to="1.0"><a-mixin>
+                  ease="linear" repeat="indefinite" from="0.3" to="1.0"></a-mixin>
         <a-mixin id="spin" attribute="rotation" dur="4000"
-                 repeat="indefinite" easing="linear" dur="3000" to="0 0 360"><a-mixin>
+                 repeat="indefinite" easing="linear" dur="3000" to="0 0 360"></a-mixin>
       </a-assets>
 
       <a-entity position="0 0 80">
@@ -22,7 +21,7 @@
       </a-entity>
 
       <a-entity id="fans"></a-entity>
-      
+
     </a-scene>
   </body>
   <script>
