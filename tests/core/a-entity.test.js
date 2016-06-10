@@ -660,11 +660,13 @@ suite('a-entity', function () {
       el.setAttribute('debug', true);
       el.addEventListener('loaded', function () {
         var child = document.createElement('a-entity');
+        child.addEventListener('loaded', function () {
+          child.setAttribute('position', '1 2 3');
+          assert.equal(child.attributes[0].value, '1 2 3');
+          done();
+        });
         el.appendChild(child);
         document.body.appendChild(el);
-        child.setAttribute('position', '1 2 3');
-        assert.equal(child.attributes[0].value, '1 2 3');
-        done();
       });
       document.body.appendChild(el);
     });
@@ -674,11 +676,13 @@ suite('a-entity', function () {
       el.attributes.setNamedItem(document.createAttribute('debug'));
       el.addEventListener('loaded', function () {
         var child = document.createElement('a-entity');
+        child.addEventListener('loaded', function () {
+          child.setAttribute('position', '1 2 3');
+          assert.equal(child.attributes[0].value, '1 2 3');
+          done();
+        });
         el.appendChild(child);
         document.body.appendChild(el);
-        child.setAttribute('position', '1 2 3');
-        assert.equal(child.attributes[0].value, '1 2 3');
-        done();
       });
       document.body.appendChild(el);
     });
