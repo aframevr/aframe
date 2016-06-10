@@ -9,9 +9,9 @@
   <body>
     <a-scene stats>
       <a-assets>
-        <a-mixin id="ball" geometry="primitive: sphere; radius:1"  material="shader: flat; color: red"></a-mixin>
+        <a-mixin id="ball" geometry="primitive: sphere; radius:1" material="shader: flat; color: red"></a-mixin>
         <a-mixin id="opacity" attribute="material.opacity" dur="2000" direction="alternate" fill="forwards"
-                  ease="linear" repeat="indefinite" from="0.3" to="1.0"></a-mixin>
+                 ease="linear" repeat="indefinite" from="0.3" to="1.0"></a-mixin>
         <a-mixin id="spin" attribute="rotation" dur="4000"
                  repeat="indefinite" easing="linear" dur="3000" to="0 0 360"></a-mixin>
       </a-assets>
@@ -27,7 +27,7 @@
       var i;
       var fansEl = document.querySelector('#fans');
       var numRows = 4;
-      var numFans = 3
+      var numFans = 3;
       var numFanRows = 3;
       var numBalls = 11;
       var ball =
@@ -63,7 +63,7 @@
               ballEl.innerHTML = ball;
               animationEl = ballEl.querySelector('a-animation');
               animationEl.setAttribute('begin', Math.random() * 2000);
-              rowEl.appendChild(ballEl)
+              rowEl.appendChild(ballEl);
             }
             fanEl.appendChild(rowEl);
           }
