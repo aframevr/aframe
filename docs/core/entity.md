@@ -83,7 +83,7 @@ The different types `Object3D`s can be accessed through `object3DMap`.
 
 ### `object3DMap`
 
-An entity's `object3DMap` is an JavaScript object that gives access to the different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that may have been registered by components.
+An entity's `object3DMap` is a JavaScript object that gives access to the different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that may have been registered by components.
 
 For an entity with a [geometry][geometry] and [light][light] components attached, `object3DMap` might look like:
 
