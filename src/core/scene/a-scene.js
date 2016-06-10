@@ -77,7 +77,6 @@ module.exports = registerElement('a-scene', {
         initWakelock(this);
 
         window.addEventListener('load', resize);
-        window.addEventListener('beforeunload', this.exitVR.bind(this));
         window.addEventListener('resize', resize);
         this.play();
       },
