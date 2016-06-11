@@ -28,14 +28,12 @@ module.exports.Component = registerShader('standard', {
     this.material = new THREE.MeshStandardMaterial(getMaterialData(data));
     utils.material.updateMap(this, data);
     this.updateEnvMap(data);
-    return this.material;
   },
 
   update: function (data) {
     this.updateMaterial(data);
     utils.material.updateMap(this, data);
     this.updateEnvMap(data);
-    return this.material;
   },
 
   /**

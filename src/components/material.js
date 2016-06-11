@@ -82,12 +82,15 @@ module.exports.Component = registerComponent('material', {
   updateShader: function (shaderName) {
     var data = this.data;
     var Shader = shaders[shaderName] && shaders[shaderName].Shader;
-    var material;
+    var shaderInstance;
+
     if (!Shader) { throw new Error('Unknown shader ' + shaderName); }
-    this.shader = new Shader();
-    this.shader.el = this.el;
-    material = this.shader.init(data);
-    this.setMaterial(material);
+
+    // Get material from A-Frame shader.
+    shaderInstance = this.shader = new Shader();
+    shaderInstance.el = this.el;
+    shaderInstance.init(data);
+    this.setMaterial(shaderInstance.material);
     this.updateSchema(data);
   },
 

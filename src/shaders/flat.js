@@ -23,13 +23,11 @@ module.exports.Component = registerShader('flat', {
     this.textureSrc = null;
     this.material = new THREE.MeshBasicMaterial(getMaterialData(data));
     utils.material.updateMap(this, data);
-    return this.material;
   },
 
   update: function (data) {
     this.updateMaterial(data);
     utils.material.updateMap(this, data);
-    return this.material;
   },
 
   /**
