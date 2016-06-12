@@ -6,7 +6,7 @@ parent_section: primitives
 order: 2
 ---
 
-Many of the primitives are entities that compose a geometric mesh, meaning they primarily prescribe the [geometry](../components/geometry.md) and [material](../components.material.md) components. Most of the mesh primitives share common attributes, especially for mapping to the material component. These common attributes won't be described in individual documentation pages for each primitive so they will be listed here.
+Many of the primitives are entities that compose a geometric mesh, meaning they primarily prescribe the [geometry](../components/geometry.md) and [material](../components/material.md) components. Most of the mesh primitives share common attributes, especially for mapping to the material component. These common attributes won't be described in individual documentation pages for each primitive so they will be listed here.
 
 ## Example
 
