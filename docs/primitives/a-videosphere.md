@@ -33,7 +33,7 @@ Note that the videosphere primitive inherits common [mesh attributes](./mesh-att
 | autoplay        | `<video>`.autoplay      | true          |
 | crossOrigin     | `<video>`.crossOrigin   | anonymous     |
 | loop            | `<video>`.loop          | true          |
-| radius          | geometry.radius         | 5000          |
+| radius          | geometry.radius         | 100           |
 | segments-height | geometry.segmentsHeight | 64            |
 | segments-width  | geometry.segmentsWidth  | 64            |
 
