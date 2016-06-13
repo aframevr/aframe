@@ -58,4 +58,4 @@ We can even attach third-party components that other people have created. If som
 [material]: ../components/material.md
 [physics]: https://github.com/ngokevin/aframe-physics-components
 [sound]: ../components/sound.md
-[system]: ./system.md
+[system]: ./systems.md
