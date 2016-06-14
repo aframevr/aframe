@@ -132,7 +132,7 @@ function toBufferGeometry (geometry, doBuffer) {
   if (!doBuffer) { return geometry; }
 
   bufferGeometry = new THREE.BufferGeometry().fromGeometry(geometry);
-  bufferGeometry.oldMetadata = {type: geometry.type, parameters: geometry.parameters || {}};
+  bufferGeometry.metadata = {type: geometry.type, parameters: geometry.parameters || {}};
   geometry.dispose();  // Dispose no longer needed non-buffer geometry.
   return bufferGeometry;
 }
