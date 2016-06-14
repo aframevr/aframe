@@ -1,10 +1,8 @@
 ---
 title: camera
-section_title: Components
 type: components
 layout: docs
-parent_section: docs
-section_order: 3
+parent_section: components
 ---
 
 The camera component defines from which perspective the user views the scene. It is often paired with controls components that allow input devices to move and rotate the camera.

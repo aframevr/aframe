@@ -2,8 +2,11 @@
 title: geometry
 type: components
 layout: docs
-parent_section: components
-order: 6
+order: 1
+
+parent_section: docs
+section_title: Components
+section_order: 3
 ---
 
 The geometry component provides a basic shape for an entity. The general

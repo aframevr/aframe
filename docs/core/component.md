@@ -6,19 +6,21 @@ parent_section: core
 order: 3
 ---
 
-In the [entity-component-system pattern](./index.md), a component is a reusable
-and modular chunks of data that plugged into an entity to add appearance,
-behavior, and/or functionality. As an abstract analogy, if a smartphone were
-defined as an entity, we might use components to give it appearance (color,
-shape), to define its behavior (vibrate when called, shut down on low battery),
-or to add functionality (camera, screen). In A-Frame, a component modifies
-entities which are 3D objects in the scene.
+In the [entity-component-system pattern][ecs], a component is a reusable and
+modular chunk of data that plugged into an entity to add appearance, behavior,
+and/or functionality.
 
-> Try to contain most logic within components in A-Frame experiences, even if
-> the logic is one-off or ad-hoc. This encourages reusability, modularity, and
-> sharing of code.
+In A-Frame, components modify entities which are 3D objects in the scene. We
+mix and compose components together to build complex objects. They let us
+encapsulate [three.js][three] and JavaScript code into modules that can be used
+declaratively from HTML.
 
-Components are roughly analoguous to CSS. Like how CSS rules modify the
+As an abstract analogy, if a smartphone were defined as an entity, we might use
+components to give it appearance (color, shape), to define its behavior
+(vibrate when called, shut down on low battery), or to add functionality
+(camera, screen).
+
+Components are roughly analogous to CSS. Like how CSS rules modify the
 appearance of elements, component properties modify the appearance, behavior,
 and functionality of entities.
 
@@ -94,7 +96,7 @@ data, giving *physiology* to the component. During initialization and on
 attribute updates, the position component takes its `vec3` value and applies it
 to its [three.js Object3D][object3d]:
 
-> Components will often be talking to the three.js API.
+Components will often be talking to the three.js API.
 
 ```js
 AFRAME.registerComponent('position', {
@@ -121,14 +123,15 @@ over everything the component API has to offer.
 
 ### Methods
 
-| Method | Description                                                                                                                                   |
-|--------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| init   | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                        |
-| update | Called both when the component is initialized and whenever the component's data changes (e.g, via *setAttribute*). Used to modify the entity. |
-| remove | Called when the component detaches from the element (e.g., via *removeAttribute*). Used to undo all previous modifications to the entity.     |
-| tick   | Called on each render loop or tick of the scene. Used for continuous changes.                                                                 |
-| play   | Called whenever the scene or entity plays to add any background or dynamic behavior. Used to start or resume behavior.                        |
-| pause  | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Used to pause behavior.                              |
+| Method       | Description                                                                                                                                   |
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| init         | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                        |
+| update       | Called both when the component is initialized and whenever the component's data changes (e.g, via *setAttribute*). Used to modify the entity. |
+| remove       | Called when the component detaches from the element (e.g., via *removeAttribute*). Used to undo all previous modifications to the entity.     |
+| tick         | Called on each render loop or tick of the scene. Used for continuous changes.                                                                 |
+| play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Used to start or resume behavior.                        |
+| pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Used to pause behavior.                              |
+| updateSchema | Called on every update. Can be used to dynamically modify the schema.                                                                         |
 
 ## Schema
 
@@ -161,15 +164,25 @@ schema: {
 
 ### Property Types
 
-All properties have **property types**. Property types define how the component parses incoming data from the DOM, and they prescribe a default value if one is not defined in the property definition. A-Frame comes with several built-in property types such as `boolean`, `int`, `number`, `selector`, `src`, `string`, and `vec3`.
+All properties have **property types**. Property types define how the component
+parses incoming data from the DOM, and they prescribe a default value if one is
+not defined in the property definition. A-Frame comes with several built-in
+property types such as `array`, `boolean`, `int`, `number`, `selector`, `src`, `string`,
+and `vec3`.
 
-Each type assigns a `parse` and a `stringify` function. Parsers deserialize the incoming string value from the DOM to be put into the component's data object. Stringifiers serialize values back to the DOM when calling `setAttribute` with a non-string value. Alternatively, we can define our own property types by providing our own `parse` and/or `stringify` functions.
+Each type assigns a `parse` and a `stringify` function. Parsers deserialize the
+incoming string value from the DOM to be put into the component's data object.
+Stringifiers serialize values back to the DOM when calling `setAttribute` with
+a non-string value. Alternatively, we can define our own property types by
+providing our own `parse` and/or `stringify` functions.
 
 ### Schema Inference
 
-Property types can either be assigned explicitly, or the schema will infer one given the default value.
+Property types can either be assigned explicitly, or the schema will infer one
+given the default value.
 
-Given a default value, the schema will infer a property type and inject a parser and stringifer into the property definition:
+Given a default value, the schema will infer a property type and inject a
+parser and stringifer into the property definition:
 
 ```js
 schema: {
@@ -209,7 +222,9 @@ schema: {
 
 ### Single-Property Schemas
 
-Single-property schemas define only a single anonymous flat property. They must define either a `type` or a `default` value to be able to infer an appropriate parser and stringifier.
+Single-property schemas define only a single anonymous flat property. They must
+define either a `type` or a `default` value to be able to infer an appropriate
+parser and stringifier.
 
 For example, the [rotation component][rotation] takes a `vec3`:
 
@@ -239,7 +254,10 @@ AFRAME.registerComponent('visible', {
 
 ### Multi-Property Schemas
 
-Multi-property schemas it consists of one or more named property definitions. Unlike single-property schemas, each property has a name. When a component has properties then the HTML usage syntax will look like `physics="mass: 2; velocity: 1 1 1"`.
+Multi-property schemas it consists of one or more named property definitions.
+Unlike single-property schemas, each property has a name. When a component has
+properties then the HTML usage syntax will look like `physics="mass: 2;
+velocity: 1 1 1"`.
 
 For example, a physics component might look like:
 
@@ -262,20 +280,29 @@ AFRAME.registerComponent('physics-body', {
 
 ## Lifecycle Methods
 
-With the schema being the anatomy, the lifecycle methods are the physiology; the schema defines the data, the lifecycle methods *use* the data. A component has access to `this.data` which in a single-property schema is a value and in a multi-property schema is an object.
+With the schema being the anatomy, the lifecycle methods are the physiology;
+the schema defines the data, the lifecycle methods *use* the data. A component
+has access to `this.data` which in a single-property schema is a value and in a
+multi-property schema is an object.
 
-The handlers will almost always interact with the entity. We recommend checking out the [Entity documentation](./entity.md).
+The handlers will almost always interact with the entity. Read about the
+[entity API](./entity.md) if you have not already.
 
-### Component.init()
+### `.init()`
 
-`init` is called once in a component's lifecycle when it is attached to the entity. The init handler is generally used to set up state and instantiate variables that may used throughout a component. Not every component will need to define `init`. It is similar to `createdCallback` or `React.ComponentDidMount`.
+`.init` is called once in a component's lifecycle when it is attached to the
+entity. The init handler is generally used to set up state and instantiate
+variables that may used throughout a component. Not every component will need
+to define `.init`. It is similar to `createdCallback` or
+`React.ComponentDidMount`.
 
-For example, the [look-at component](../components/look-at.md)'s init handler sets the state of the target to `null` and instantiates a Vector object:
+For example, the [camera component][camera]'s `init` creates
+and sets the camera.
 
 ```js
 init: function () {
-  this.target3D = null;
-  this.vector = new THREE.Vector3();
+  var camera = this.camera = new THREE.PerspectiveCamera();
+  this.el.setObject3D('camera', camera);
 },
 
 // ...
@@ -288,15 +315,19 @@ Example uses of `init` by some A-Frame components:
 | camera        | Create and set a THREE.PerspectiveCamera on the entity.           |
 | cursor        | Attach event listeners.                                           |
 | light         | Register light to the lighting system.                            |
-| look-at       | Create a helper vector.                                           |
-| material      | Set up variables, mainly to visualize the state of a component. |
-| wasd-controls | Set up an object to keep track of pressed keys. Bind methods.     |
+| material      | Set up variables, mainly to visualize the state of a component.   |
 
-### Component.update(oldData)
+### `.update(oldData)`
 
-`update` is called both at the beginning of a component's lifecycle and every time a component's data changes (e.g., as a result of `setAttribute`). The update handler often uses `this.data` to modify the entity. The update handler has access to the previous state of a component's data via its first argument. The previous state of a component can be used to tell exactly which properties changed in order to do granular updates.
+`.update` is called both at the beginning of a component's lifecycle and every
+time a component's data changes (e.g., as a result of `setAttribute`). The
+update handler often uses `this.data` to modify the entity. The update handler
+has access to the previous state of a component's data via its first argument.
+The previous state of a component can be used to tell exactly which properties
+changed in order to do granular updates.
 
-For example, the [visible][visible] component's update handler toggles the visibility of the [entity](./entity.md):
+For example, the [visible][visible] component's update handler toggles the
+visibility of the [entity][entity].
 
 ```js
 update: function () {
@@ -306,18 +337,20 @@ update: function () {
 
 Example uses of `update` by some A-Frame components:
 
-| Component     | Usage                                                                                                                                       |
-|---------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| camera        | Set THREE.PerspectiveCamera object properties such as aspect ratio, fov, or near/far clipping planes.                                       |
-| look-at       | Set or update target entity to track the position of.
-| material      | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material.
-| wasd-controls | Update the position based on the current velocity. Update the velocity based on the keys pressed.
+| Component | Usage                                                                                                                                       |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| camera    | Set THREE.PerspectiveCamera object properties such as aspect ratio, fov, or near/far clipping planes.                                       |
+| geometry  | Create new geometry given new data.                                                                                                         |
+| material  | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material. |
 
-### Component.remove()
+### `.remove()`
 
-`remove` is called when a component detaches from the entity (e.g., as a result of `removeAttribute`). This is used to remove all modifications, listeners, and behaviors to the entity that a component has added in its lifetime.
+`.remove` is called when a component detaches from the entity (e.g., as a result
+of `removeAttribute`). This is used to remove all modifications, listeners, and
+behaviors to the entity that a component has added in its lifetime.
 
-For example, when the [light component][light] detaches, it removes the light it previously attached to the entity:
+For example, when the [light component][light] detaches, it removes the light
+it previously attached to the entity:
 
 ```js
 remove: function () {
@@ -332,59 +365,46 @@ Example uses of `remove` by some A-Frame components:
 | camera        | Remove the THREE.PerspectiveCamera from the entity.                                        |
 | geometry      | Set a plain THREE.Geometry on the mesh.                                                    |
 | material      | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
-| wasd-controls | Remove keydown and keyup listeners.                                                        |
 
-### Component.tick(time)
+### `.tick(time, timeDelta)`
 
-`tick` is called on every single tick or render loop of the scene. Expect it to run on the order of 60-90 times per second. The global uptime of the scene in seconds is passed into the tick handler, which is used to calculate time deltas.
+`.tick` is called on every single tick or render loop of the scene. Expect it
+to run on the order of 60 to 120 times per second. The global uptime of the
+scene in milliseconds and the time difference from the last frame is passed
+into the tick handler.
 
-For example, the [look-at][look-at] component's tick handler updates the entity's rotation to face towards a potentially moving target entity:
+This is useful for things that need to update constantly such as controls or
+physics.
 
-```js
-tick: function (t) {
-  // target3D and vector are set from the update handler.
-  if (this.target3D) {
-    this.el.object3D.lookAt(this.vector.setFromMatrixPosition(target3D.matrixWorld));
-  }
-}
-```
+### `.pause() and `.play()`
 
-Example uses of `tick` by some A-Frame components:
+The `.pause` and `.play` methods are invoked when the entity calls its own
+`.pause` or `.play` methods. Components should use this to stop or resume any
+dynamic behavior such as event listeners.
 
-| Component     | Usage                                                                                                |
-|---------------|------------------------------------------------------------------------------------------------------|
-| look-at       | Update rotation of entity to face towards tracked target, in case the target is moving.              |
-| physics       | Update the physics world simulation.                                                                 |
-| wasd-controls | Use current velocity to move the entity (generally the camera), update velocity if keys are pressed. |
-
-### Component.pause(), Component.play()
-
-To support pause and play, just as with a video game or to toggle entities for performance, a component can implement the `play` and `pause` handlers. These are invoked when a component's entity calls its `play` or `pause` method. When an entity plays or pauses, all of its child entities are also played or paused. A component should implement a play and pause handler if it registers dynamic, asynchronous, or background behaviors such as animations or event listeners.
-
-For example, the [look-controls component]'s play and pause handlers toggles its event listeners for listening to input:
-
-```js
-pause: function () {
-  this.removeEventListeners()
-},
-
-play: function () {
-  this.addEventListeners()
-}
-```
-
-Example uses of `pause` and `play` by some A-Frame components:
+Example uses of `.pause` and `.play` by some A-Frame components:
 
 | Component     | Usage                          |
 |---------------|--------------------------------|
 | sound         | Pause/play sound.              |
-| wasd-controls | Remove/attach event listeners. |
+
+### `.updateSchema()`
+
+`.updateSchema` is optionally used to dynamically modify the schema.
+
+Example uses of `.updateSchema` by some A-Frame components:
+
+| Component | Usage                                                                                                 |
+|-----------|-------------------------------------------------------------------------------------------------------|
+| geometry  | Check if `primitive` has changed in order to change the schema to be respective to the geometry type. |
+| material  | Check if `shader` has changed in order to change tge schema to be respective to the material type.    |
 
 ## Writing a Component
 
 ### Line Component
 
-Let's build a basic line component that renders a line. We want to make the property API flexible enough to be able to specify the color and vertices:
+Let's build an example line component that renders a line. We want to make the
+property API flexible enough to be able to specify the color and vertices:
 
 ```html
 <a-entity line="color: red; path: -1 1 0, -1 0.5 0, -1 0 0"></a-entity>
@@ -392,7 +412,8 @@ Let's build a basic line component that renders a line. We want to make the prop
 
 #### Skeleton
 
-Here is a skeleton of the component. We'll just need a schema, a update handler, and a remove handler:
+Here is a skeleton of the component. We'll just need a schema, a update
+handler, and a remove handler:
 
 ```js
 var coordinates = AFRAME.utils.coordinates;
@@ -411,7 +432,10 @@ AFRAME.registerComponent('line', {
 
 #### Schema
 
-We have two properties we want to accept: `color` and `path`. Thus we will need a multi-property schema. The `color` property will be a simple string that will be fed to `THREE.Color`. The `path` property will need a custom parser and stringifier to handle an array of `vec3`s for the vertices.
+We have two properties we want to accept: `color` and `path`. Thus we will need
+a multi-property schema. The `color` property will be a simple string that will
+be fed to `THREE.Color`. The `path` property will need a custom parser and
+stringifier to handle an array of `vec3`s for the vertices.
 
 ```js
   // Allow line component to accept vertices and color.
@@ -440,11 +464,18 @@ We have two properties we want to accept: `color` and `path`. Thus we will need 
   //...
 ```
 
-The component API is entirely up to us. If we wanted the path to take a different syntax or abstract it further such that it maybe only accepts a starting point and a length and handle the math for the developer, we could do so.
+The component API is entirely up to us. If we wanted the path to take a
+different syntax or abstract it further such that it maybe only accepts a
+starting point and a length and handle the math for the developer, we could do
+so.
 
 #### Update
 
-The schema will hand the data to the update handler all parsed and ready to go. Here, we want to create a line geometry if it doesn't exist yet and update it if it does. We can create a line in three.js by combining a `THREE.LineBasicMaterial` and `THREE.Geometry` and then manually pushing vertices.
+The schema will hand the data to the update handler all parsed and ready to go.
+Here, we want to create a line geometry if it doesn't exist yet and update it
+if it does. We can create a line in three.js by combining a
+`THREE.LineBasicMaterial` and `THREE.Geometry` and then manually pushing
+vertices.
 
 ```js
 update: function (oldData) {
@@ -468,7 +499,8 @@ update: function (oldData) {
 // ...
 ```
 
-Here, we update the line by completely replacing it. Though sometimes, we might want to more granularly update objects for better performance.
+Here, we update the line by completely replacing it. Though sometimes, we might
+want to more granularly update objects for better performance.
 
 #### Remove
 
@@ -509,15 +541,16 @@ And voila!
   Happy face with the line component! Play with it on [Codepen][line-codepen].
 </span></div>
 
+[camera]: ../components/camera.md
 [collide]: https://github.com/dmarcos/a-invaders/tree/master/js/components
 [docs]: ./index.md
+[ecs]: ./index.md
 [entity]: ./entity.md
 [follow]: https://jsbin.com/dasefeh/edit?html,output
 [geometry]: ../components/geometry.md
 [layout]: https://github.com/ngokevin/aframe-layout-component
 [light]: ../components/light.md
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
-[look-at]: ../components/look-at.md
 [look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [physics]: https://github.com/ngokevin/aframe-physics-components
