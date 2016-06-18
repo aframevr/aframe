@@ -19,7 +19,8 @@ var TestComponent = {
   remove: function () { },
   play: function () { },
   pause: function () { },
-  tick: function () { }
+  tick: function () { },
+  tock: function () { }
 };
 
 suite('a-entity', function () {
@@ -434,11 +435,13 @@ suite('a-entity', function () {
       components.test = undefined;
       registerComponent('test', TestComponent);
       el.setAttribute('test', '');
-      assert.notEqual(el.sceneEl.behaviors.indexOf(el.components.test), -1);
+      assert.notEqual(el.sceneEl.behaviors.tick.indexOf(el.components.test), -1);
+      assert.notEqual(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
       parentEl.removeChild(el);
       process.nextTick(function () {
         assert.notOk('test' in el.components);
-        assert.equal(el.sceneEl.behaviors.indexOf(el.components.test), -1);
+        assert.equal(el.sceneEl.behaviors.tick.indexOf(el.components.test), -1);
+        assert.equal(el.sceneEl.behaviors.tock.indexOf(el.components.test), -1);
         done();
       });
     });
@@ -727,9 +730,9 @@ suite('a-entity', function () {
       el.play();
       el.setAttribute('look-controls', '');
       component = el.components['look-controls'];
-      assert.notEqual(sceneEl.behaviors.indexOf(component), -1);
+      assert.notEqual(sceneEl.behaviors.tick.indexOf(component), -1);
       el.removeAttribute('look-controls');
-      assert.equal(sceneEl.behaviors.indexOf(component), -1);
+      assert.equal(sceneEl.behaviors.tick.indexOf(component), -1);
     });
   });
 
@@ -928,9 +931,9 @@ suite('a-entity component lifecycle management', function () {
     el.sceneEl.addEventListener('loaded', function () {
       el.setAttribute('test', '');
       testComponentInstance = el.components.test;
-      assert.notEqual(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.notEqual(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
       el.pause();
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
       done();
     });
   });
@@ -942,9 +945,35 @@ suite('a-entity component lifecycle management', function () {
       el.setAttribute('test', '');
       testComponentInstance = el.components.test;
       el.sceneEl.behaviors = [];
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
       el.play();
-      assert.equal(el.sceneEl.behaviors.indexOf(testComponentInstance), -1);
+      assert.equal(el.sceneEl.behaviors.tick.indexOf(testComponentInstance), -1);
+    });
+  });
+
+  test('removes tock from scene behaviors on entity pause', function (done) {
+    var el = this.el;
+    var testComponentInstance;
+    el.sceneEl.addEventListener('loaded', function () {
+      el.setAttribute('test', '');
+      testComponentInstance = el.components.test;
+      assert.notEqual(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+      el.pause();
+      assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+      done();
+    });
+  });
+
+  test('adds tock to scene behaviors on entity play', function () {
+    var el = this.el;
+    var testComponentInstance;
+    el.sceneEl.addEventListener('loaded', function () {
+      el.setAttribute('test', '');
+      testComponentInstance = el.components.test;
+      el.sceneEl.behaviors = [];
+      assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
+      el.play();
+      assert.equal(el.sceneEl.behaviors.tock.indexOf(testComponentInstance), -1);
     });
   });
 });

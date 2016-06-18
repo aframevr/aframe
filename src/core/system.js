@@ -25,8 +25,6 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  */
 var System = module.exports.System = function (sceneEl) {
   var component = components && components.components[this.name];
-  var schema = this.schema;
-  var rawData;
 
   // Set reference to scene.
   this.sceneEl = sceneEl;
@@ -34,14 +32,7 @@ var System = module.exports.System = function (sceneEl) {
   // Set reference to matching component (if exists).
   if (component) { component.Component.prototype.system = this; }
 
-  // Process system configuration.
-  if (!Object.keys(schema).length) { return; }
-  rawData = HTMLElement.prototype.getAttribute.call(sceneEl, this.name);
-  if (isSingleProp(schema)) {
-    this.data = parseProperty(rawData, schema);
-    return;
-  }
-  this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
+  this.updateProperties();
 };
 
 System.prototype = {
@@ -57,6 +48,27 @@ System.prototype = {
   init: function () { /* no-op */ },
 
   /**
+   * Update handler. Called during scene attribute updates.
+   * Systems can use this to dynamically update their state.
+   */
+  update: function (oldData) { /* no-op */ },
+
+  updateProperties: function (rawData) {
+    // Process system configuration.
+    var schema = this.schema;
+    var oldData = this.data;
+
+    if (!Object.keys(schema).length) { return; }
+    rawData = rawData || HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
+    if (isSingleProp(schema)) {
+      this.data = parseProperty(rawData, schema);
+    } else {
+      this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+    }
+    return oldData;
+  },
+
+  /**
    * Tick handler.
    * Called on each tick of the scene render loop.
    * Affected by play and pause.
@@ -65,6 +77,16 @@ System.prototype = {
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick: undefined,
+
+  /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
 
   /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).

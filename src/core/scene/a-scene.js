@@ -62,7 +62,7 @@ module.exports = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.behaviors = [];
+        this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
@@ -120,6 +120,7 @@ module.exports = registerElement('a-scene', {
         if (this.systems[name]) { return; }
         system = this.systems[name] = new systems[name](this);
         system.init();
+        system.update();
       }
     },
 
@@ -128,7 +129,11 @@ module.exports = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
-        window.cancelAnimationFrame(this.animationFrameID);
+        if (this.effect && this.effect.cancelAnimationFrame) {
+          this.effect.cancelAnimationFrame(this.animationFrameID);
+        } else {
+          window.cancelAnimationFrame(this.animationFrameID);
+        }
         this.animationFrameID = null;
       }
     },
@@ -139,9 +144,16 @@ module.exports = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        if (behaviors.indexOf(behavior) !== -1) { return; }
-        behaviors.push(behavior);
+        // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          if (!behavior[behaviorType]) { return; }
+          var behaviorArr = self.behaviors[behaviorType];
+          if (behaviorArr.indexOf(behavior) === -1) {
+            behaviorArr.push(behavior);
+          }
+        });
       }
     },
 
@@ -258,9 +270,21 @@ module.exports = registerElement('a-scene', {
         var system = this.systems[attr];
         if (system) {
           ANode.prototype.setAttribute.call(this, attr, value);
+          system.update(system.updateProperties(value));
           return;
         }
         AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
+      }
+    },
+
+    /**
+     * Wraps Entity.setEntityAttribute to take into account for systems.
+     */
+    setEntityAttribute: {
+      value: function (attr, oldVal, newVal) {
+        var system = this.systems[attr];
+        if (system) { system.update(system.updateProperties(newVal)); }
+        AEntity.prototype.setEntityAttribute.call(this, attr, oldVal, newVal);
       }
     },
 
@@ -269,10 +293,17 @@ module.exports = registerElement('a-scene', {
      */
     removeBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        var index = behaviors.indexOf(behavior);
-        if (index === -1) { return; }
-        behaviors.splice(index, 1);
+        // Check if behavior has tick and/or tock and remove the behavior from the appropriate array.
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          if (!behavior[behaviorType]) { return; }
+          var behaviorArr = self.behaviors[behaviorType];
+          var index = behaviorArr.indexOf(behavior);
+          if (index !== -1) {
+            behaviorArr.splice(index, 1);
+          }
+        });
       }
     },
 
@@ -312,6 +343,11 @@ module.exports = registerElement('a-scene', {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
+        this.effect.autoSubmitFrame = false;
+
+        // Create a render target for post processing.
+        this.renderTarget = new THREE.WebGLRenderTarget(1, 1, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
+        this.renderTarget.texture.generateMipmaps = false;
       },
       writable: window.debug
     },
@@ -348,9 +384,9 @@ module.exports = registerElement('a-scene', {
               if (window.performance) {
                 window.performance.mark('render-started');
               }
-              sceneEl.render(0);
               sceneEl.renderStarted = true;
               sceneEl.emit('renderstart');
+              sceneEl.render(0);
             }
           }
         });
@@ -382,7 +418,7 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Behavior-updater meant to be called from scene render.
+     * Behavior-updater meant to be called before scene render.
      * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
      * needing to render.
      */
@@ -393,7 +429,7 @@ module.exports = registerElement('a-scene', {
         // Animations.
         TWEEN.update(time);
         // Components.
-        this.behaviors.forEach(function (component) {
+        this.behaviors.tick.forEach(function (component) {
           if (!component.el.isPlaying) { return; }
           component.tick(time, timeDelta);
         });
@@ -401,6 +437,28 @@ module.exports = registerElement('a-scene', {
         Object.keys(systems).forEach(function (key) {
           if (!systems[key].tick) { return; }
           systems[key].tick(time, timeDelta);
+        });
+      }
+    },
+
+    /**
+     * Behavior-updater meant to be called after scene render for post processing purposes.
+     * Abstracted to a different function to facilitate unit testing (`scene.tock()`) without
+     * needing to render.
+     */
+    tock: {
+      value: function (time, timeDelta) {
+        var systems = this.systems;
+
+        // Components.
+        this.behaviors.tock.forEach(function (component) {
+          if (!component.el.isPlaying) { return; }
+          component.tock(time, timeDelta);
+        });
+        // Systems.
+        Object.keys(systems).forEach(function (key) {
+          if (!systems[key].tock) { return; }
+          systems[key].tock(time, timeDelta);
         });
       }
     },
@@ -415,13 +473,28 @@ module.exports = registerElement('a-scene', {
     render: {
       value: function (time) {
         var effect = this.effect;
+        var camera = this.camera;
         var timeDelta = time - this.time;
 
         if (this.isPlaying) { this.tick(time, timeDelta); }
 
-        this.animationFrameID = effect.requestAnimationFrame(this.render);
-        effect.render(this.object3D, this.camera);
-        this.time = time;
+        window.performance.mark('render-iteration-started');
+        if (this.getAttribute('postprocessing')) {
+          var size = this.renderer.getSize();
+          var renderTarget = this.renderTarget;
+          if (size.width !== renderTarget.width || size.height !== renderTarget.height) {
+            renderTarget.setSize(size.width, size.height);
+          }
+          effect.render(this.object3D, camera, renderTarget);
+          window.performance.mark('post-processing-started');
+          this.tock(time, timeDelta);
+        } else {
+          effect.render(this.object3D, camera, null);
+        }
+        this.effect.submitFrame();
+        window.performance.mark('render-iteration-finished');
+
+        this.animationFrameID = effect.requestAnimationFrame(this.render.bind(this));
       },
       writable: true
     }

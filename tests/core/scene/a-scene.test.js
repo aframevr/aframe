@@ -161,7 +161,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     });
   });
 
-  test('calls behaviors', function () {
+  test('calls tick behaviors', function () {
     var scene = this.el;
     var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
@@ -169,5 +169,19 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
+  });
+
+  test('calls tock behaviors', function () {
+    var scene = this.el;
+    scene.setAttribute('postprocessing', null);
+    var Component = {el: {isPlaying: true}, tock: function () {}};
+    this.sinon.spy(Component, 'tock');
+    scene.addBehavior(Component);
+    scene.render();
+    sinon.assert.notCalled(Component.tock);
+    scene.setAttribute('postprocessing', 'true');
+    scene.render();
+    sinon.assert.called(Component.tock);
+    sinon.assert.calledWith(Component.tock, scene.time);
   });
 });
