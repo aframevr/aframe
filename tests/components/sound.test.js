@@ -70,6 +70,7 @@ suite('sound', function () {
         isPlaying: true,
         source: {buffer: true}
       };
+      el.components.sound.isPlaying = true;
       el.pause();
       assert.ok(sound.pause.called);
     });
