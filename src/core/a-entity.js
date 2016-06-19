@@ -278,7 +278,11 @@ var proto = Object.create(ANode.prototype, {
   initComponent: {
     value: function (name, data, isDependency) {
       var component;
+      var componentInfo = name.split('__');
+      var id = componentInfo[1];
       var isComponentDefined = checkComponentDefined(this, name) || data !== undefined;
+      var attrName = name;
+      name = componentInfo[0];
 
       // Check if component is registered and whether component should be initialized.
       if (!components[name] || (!isComponentDefined && !isDependency)) {
@@ -290,19 +294,23 @@ var proto = Object.create(ANode.prototype, {
 
       // Check if component already initialized.
       if (name in this.components) { return; }
-      component = this.components[name] = new components[name].Component(this, data);
+      if (id && !components[name].multiple) {
+        throw new Error('Trying to initialize multiple components of type ' + name +
+        ' This type only accepts one component per entity.');
+      }
+      component = this.components[attrName] = new components[name].Component(this, data, id);
       if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
       // hence we set the attribute to empty string.
       // The flag justInitialized is for attributeChangedCallback to not overwrite
       // the component with the empty string.
-      if (!this.hasAttribute(name)) {
+      if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, name, '');
+        HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
-      debug('Component initialized: %s', name);
+      debug('Component initialized: %s', attrName);
     },
     writable: window.debug
   },
@@ -359,7 +367,8 @@ var proto = Object.create(ANode.prototype, {
 
       // add component to the list
       function addComponent (key) {
-        if (!components[key]) { return; }
+        var name = key.split('_')[0];
+        if (!components[name]) { return; }
         elComponents[key] = true;
       }
       // updates a component with a given name
@@ -395,7 +404,7 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
       // Component not yet initialized. Initialize component.
-      this.initComponent(attr, attrValue);
+      this.initComponent(attr, attrValue, false);
     }
   },
 
@@ -538,7 +547,8 @@ var proto = Object.create(ANode.prototype, {
   setAttribute: {
     value: function (attr, value, componentPropValue) {
       var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      if (components[attr]) {
+      var componentName = attr.split('__')[0];
+      if (components[componentName]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);

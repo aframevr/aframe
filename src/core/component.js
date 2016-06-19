@@ -25,8 +25,9 @@ var styleParser = utils.styleParser;
  * @member {object} el - Reference to the entity element.
  * @member {string} name - Component name exposed as an HTML attribute.
  */
-var Component = module.exports.Component = function (el, attr) {
+var Component = module.exports.Component = function (el, attr, id) {
   this.el = el;
+  this.id = id;
   this.updateCachedAttrValue(attr);
   if (!el.hasLoaded) { return; }
   this.updateProperties();
@@ -177,8 +178,10 @@ Component.prototype = {
    */
   flushToDOM: function () {
     var attrValue = this.attrValue;
+    var attrName;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.name, this.stringify(attrValue));
+    attrName = this.name + (this.id ? '__' + this.id : '');
+    HTMLElement.prototype.setAttribute.call(this.el, attrName, this.stringify(attrValue));
   },
 
   /**
@@ -204,11 +207,14 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       // Play the component if the entity is playing.
+      this.update(oldData);
       if (el.isPlaying) { this.play(); }
+    } else {
+      this.update(oldData);
     }
-    this.update(oldData);
 
     el.emit('componentchanged', {
+      id: this.id,
       name: this.name,
       newData: this.getData(),
       oldData: oldData
@@ -245,6 +251,12 @@ module.exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
 
+  if (name.indexOf('__') !== -1) {
+    throw new Error('The component name `' + name + '` is not allowed. ' +
+                    'The sequence __ (double underscore) is reserved and cannot be used ' +
+                    'in the name of a component');
+  }
+
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {
     proto[key] = {
@@ -258,8 +270,8 @@ module.exports.registerComponent = function (name, definition) {
                     'Check that you are not loading two versions of the same component ' +
                     'or two different components of the same name.');
   }
-  NewComponent = function (el, attr) {
-    Component.call(this, el, attr);
+  NewComponent = function (el, attr, id) {
+    Component.call(this, el, attr, id);
   };
 
   NewComponent.prototype = Object.create(Component.prototype, proto);
@@ -272,6 +284,7 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
