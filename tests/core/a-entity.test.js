@@ -285,6 +285,18 @@ suite('a-entity', function () {
       assert.equal(material, materialStr);
     });
 
+    test('updates DOM attributes of a multiple component', function () {
+      var el = this.el;
+      var soundStr = 'src:mysoundfile.mp3;autoplay:true';
+      var soundAttrValue;
+      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3', autoplay: true});
+      soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
+      assert.equal(soundAttrValue, '');
+      el.flushToDOM();
+      soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
+      assert.equal(soundAttrValue, soundStr);
+    });
+
     test('updates DOM attributes recursively', function (done) {
       var el = this.el;
       var childEl = document.createElement('a-entity');
@@ -381,6 +393,16 @@ suite('a-entity', function () {
       el.setAttribute('class', 'pied piper');
       assert.equal(el.getAttribute('class'), 'pied piper');
     });
+
+    test('retrieves data from a multiple component', function () {
+      var el = this.el;
+      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3', autoplay: true});
+      el.setAttribute('sound__2', {'src': 'mysoundfile.mp3', autoplay: false});
+      assert.ok(el.getAttribute('sound__1'));
+      assert.ok(el.getAttribute('sound__2'));
+      assert.notOk(el.getAttribute('sound'));
+      assert.equal(el.getAttribute('sound__1').autoplay, true);
+    });
   });
 
   suite('getChildEntities', function () {
@@ -472,6 +494,16 @@ suite('a-entity', function () {
       assert.ok('height' in componentData);
     });
 
+    test('returns full data of a multiple component', function () {
+      var componentData;
+      var el = this.el;
+      el.setAttribute('sound__test', 'src: mysoundfile.mp3');
+      componentData = el.getComputedAttribute('sound__test');
+      assert.equal(componentData.src, 'mysoundfile.mp3');
+      assert.equal(componentData.autoplay, false);
+      assert.ok('loop' in componentData);
+    });
+
     test('falls back to HTML getAttribute if not a component', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
@@ -493,13 +525,24 @@ suite('a-entity', function () {
       el.setAttribute('material', 'color: #F0F');
       assert.ok(el.components.material);
       el.removeAttribute('material');
+      assert.equal(el.getAttribute('material'), null);
       assert.notOk(el.components.material);
+    });
+
+    test('can remove a multiple component', function () {
+      var el = this.el;
+      el.setAttribute('sound__test', 'src: mysoundfile.mp3');
+      assert.ok(el.components.sound__test);
+      el.removeAttribute('sound__test');
+      assert.equal(el.getAttribute('sound__test'), null);
+      assert.notOk(el.components.sound__test);
     });
 
     test('does not remove default component', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
+      assert.notEqual(el.getAttribute('position'), null);
       assert.ok('position' in el.components);
     });
 
@@ -511,6 +554,7 @@ suite('a-entity', function () {
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok('geometry' in el.components);
       el.removeAttribute('geometry');
+      assert.notEqual(el.getAttribute('geometry'), null);
       // Geometry still exists since it is mixed in.
       assert.ok('geometry' in el.components);
     });
@@ -548,6 +592,24 @@ suite('a-entity', function () {
       el.setAttribute('material', materialAttribute);
       el.initComponent('material', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
+    });
+
+    test('does not initialize with id if the component is not multiple', function () {
+      var el = this.el;
+      assert.throws(function setAttribute () {
+        el.setAttribute('geometry__1', {primitive: 'box'});
+      }, Error);
+      assert.notOk(el.components.geometry__1);
+    });
+
+    test('initializes components with id if the component opts into multiple', function () {
+      var el = this.el;
+      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3'});
+      el.setAttribute('sound__2', {'src': 'mysoundfile.mp3'});
+      assert.ok(el.components.sound__1);
+      assert.ok(el.components.sound__2);
+      assert.ok(el.components.sound__1 instanceof components.sound.Component);
+      assert.ok(el.components.sound__2 instanceof components.sound.Component);
     });
   });
 

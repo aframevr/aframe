@@ -1,13 +1,9 @@
 /* global assert, process, sinon, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var Sound = require('components/sound').Component;
 
 suite('sound', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-
-    this.sinon.stub(Sound.prototype, 'play');
-    this.sinon.stub(Sound.prototype, 'stop');
 
     el.setAttribute('sound', 'src: mysoundfile.mp3; autoplay: true; loop: true');
     el.addEventListener('loaded', function () {
@@ -17,7 +13,7 @@ suite('sound', function () {
 
   suite('update', function () {
     test('creates sound', function () {
-      var audio = this.el.getObject3D('sound');
+      var audio = this.el.getObject3D(this.el.components.sound.attrName);
       assert.equal(audio.type, 'Audio');
       assert.ok(audio.autoplay);
       assert.ok(audio.getLoop());
@@ -73,6 +69,21 @@ suite('sound', function () {
       el.components.sound.isPlaying = true;
       el.pause();
       assert.ok(sound.pause.called);
+    });
+  });
+
+  suite('play', function () {
+    test('does not call sound pause if not playing', function () {
+      var el = this.el;
+      var sound = el.components.sound.sound = {
+        disconnect: sinon.stub(),
+        play: sinon.stub(),
+        isPlaying: false,
+        source: {buffer: true}
+      };
+      el.components.sound.autoplay = true;
+      el.play();
+      assert.notOk(sound.play.called);
     });
   });
 });

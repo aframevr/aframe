@@ -16,17 +16,18 @@ module.exports.Component = registerComponent('sound', {
     volume: { default: 1 }
   },
 
+  multiple: true,
+
   init: function () {
     this.listener = null;
     this.sound = null;
+    this.playSound = this.playSound.bind(this);
   },
 
   update: function (oldData) {
     var data = this.data;
-    var el = this.el;
     var sound = this.sound;
     var srcChanged = data.src !== oldData.src;
-
     // Create new sound if not yet created or changing `src`.
     if (srcChanged) {
       if (!data.src) {
@@ -41,22 +42,51 @@ module.exports.Component = registerComponent('sound', {
     sound.setVolume(data.volume);
 
     if (data.on !== oldData.on) {
-      if (oldData.on) { el.removeEventListener(oldData.on); }
-      el.addEventListener(data.on, this.play.bind(this));
+      this.updateEventListener(oldData.on);
     }
 
     // All sound values set. Load in `src`.
     if (srcChanged) { sound.load(data.src); }
   },
 
+  /**
+  *  Update listener attached to the user defined on event.
+  */
+  updateEventListener: function (oldEvt) {
+    var el = this.el;
+    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
+    el.addEventListener(this.data.on, this.playSound);
+  },
+
+  removeEventListener: function () {
+    this.el.removeEventListener(this.data.on, this.playSound);
+  },
+
   remove: function () {
-    this.el.removeObject3D('sound');
+    this.removeEventListener();
+    this.el.removeObject3D(this.attrName);
     try {
       this.sound.disconnect();
     } catch (e) {
       // disconnect() will throw if it was never connected initially.
       warn('Audio source not properly disconnected');
     }
+  },
+
+  play: function () {
+    if (!this.sound) { return; }
+    if (this.sound.source.buffer && this.data.autoplay) {
+      this.sound.play();
+    }
+    this.updateEventListener();
+  },
+
+  pause: function () {
+    if (!this.sound) { return; }
+    if (this.sound.source.buffer && this.sound.isPlaying) {
+      this.sound.pause();
+    }
+    this.removeEventListener();
   },
 
   /**
@@ -70,7 +100,7 @@ module.exports.Component = registerComponent('sound', {
     var sound = this.sound;
 
     if (sound) {
-      this.stop();
+      this.stopSound();
       el.removeObject3D('sound');
     }
 
@@ -88,7 +118,7 @@ module.exports.Component = registerComponent('sound', {
     });
 
     sound = this.sound = new THREE.PositionalAudio(listener);
-    el.setObject3D('sound', sound);
+    el.setObject3D(this.attrName, sound);
 
     sound.source.onended = function () {
       sound.onEnded();
@@ -98,18 +128,13 @@ module.exports.Component = registerComponent('sound', {
     return sound;
   },
 
-  play: function () {
+  playSound: function () {
     if (!this.sound.source.buffer) { return; }
     this.sound.play();
   },
 
-  stop: function () {
+  stopSound: function () {
     if (!this.sound.source.buffer) { return; }
     this.sound.stop();
-  },
-
-  pause: function () {
-    if (!this.sound.source.buffer || !this.sound.isPlaying) { return; }
-    this.sound.pause();
   }
 });
