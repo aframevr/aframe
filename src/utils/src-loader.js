@@ -44,7 +44,7 @@ function validateSrc (src, isImageCb, isVideoCb, isCanvasCb) {
   if (isVideo) { return isVideoCb(textureEl); }
   if (isCanvas) { return isCanvasCb(textureEl); }
 
-  // src is a valid selector but doesn't match with a <img>, <video>, or <cavnas> element.
+  // src is a valid selector but doesn't match with a <img>, <video>, or <canvas> element.
   warn('"%s" does not point to a valid <img>, <video>, or <canvas> element', src);
 }
 
