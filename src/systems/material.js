@@ -241,7 +241,7 @@ function setTextureProperties (texture, data) {
 
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
+  texture.repeat.set(parseFloat(repeatXY[0]), parseFloat(repeatXY[1]));
 }
 
 /**
