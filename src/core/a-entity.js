@@ -441,8 +441,8 @@ var proto = Object.create(ANode.prototype, {
    */
   play: {
     value: function () {
-      var components = this.components;
-      var componentKeys = Object.keys(components);
+      var entityComponents = this.components;
+      var componentKeys = Object.keys(entityComponents);
       var sceneEl = this.sceneEl;
 
       // Already playing.
@@ -451,7 +451,7 @@ var proto = Object.create(ANode.prototype, {
 
       // Wake up all components.
       componentKeys.forEach(function _playComponent (key) {
-        playComponent(components[key], sceneEl);
+        playComponent(entityComponents[key], sceneEl);
       });
 
       // Tell all child entities to play.
@@ -695,6 +695,13 @@ function isComponentMixedIn (name, mixinEls) {
 }
 
 /**
+ * Checks if a component has defined a method that needs to run every frame.
+ */
+function hasBehavior (component) {
+  return component.tick || component.tock;
+}
+
+/**
  * Pause component by removing tick behavior and calling pause handler.
  *
  * @param component {object} - Component to pause.
@@ -703,7 +710,9 @@ function isComponentMixedIn (name, mixinEls) {
 function pauseComponent (component, sceneEl) {
   component.pause();
   // Remove tick behavior.
-  if (!component.tick) { return; }
+  if (!hasBehavior(component)) {
+    return;
+  }
   sceneEl.removeBehavior(component);
 }
 
@@ -716,7 +725,9 @@ function pauseComponent (component, sceneEl) {
 function playComponent (component, sceneEl) {
   component.play();
   // Add tick behavior.
-  if (!component.tick) { return; }
+  if (!hasBehavior(component)) {
+    return;
+  }
   sceneEl.addBehavior(component);
 }
 

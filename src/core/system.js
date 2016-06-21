@@ -34,6 +34,16 @@ System.prototype = {
    */
   tick: undefined,
 
+ /**
+   * Tock handler.
+   * Called on each tock of the scene render loop. Ticks on all components will have run before this.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
   /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
@@ -75,6 +85,7 @@ module.exports.registerSystem = function (name, definition) {
   NewSystem.prototype = Object.create(System.prototype, proto);
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
+
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes

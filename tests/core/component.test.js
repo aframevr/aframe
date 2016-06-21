@@ -30,7 +30,7 @@ suite('Component', function () {
 
   suite('buildData', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('uses default values', function () {
@@ -154,7 +154,7 @@ suite('Component', function () {
 
   suite('parse', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('parses single value component', function () {
@@ -182,7 +182,7 @@ suite('Component', function () {
 
   suite('parseAttrValueForCache', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('parses single value component', function () {
@@ -223,7 +223,7 @@ suite('Component', function () {
 
   suite('stringify', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('stringifies single value component', function () {
@@ -252,7 +252,7 @@ suite('Component', function () {
 
   suite('extendSchema', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('extends the schema', function () {
@@ -269,7 +269,7 @@ suite('Component', function () {
 
   suite('updateProperties', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('updates the schema of a component', function () {
@@ -310,7 +310,7 @@ suite('Component', function () {
 
   suite('update', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('not called if component data does not change', function () {
@@ -329,7 +329,7 @@ suite('Component', function () {
 
   suite('flushToDOM', function () {
     setup(function () {
-      components.dummy = undefined;
+      delete components.dummy;
     });
 
     test('updates component DOM attribute', function () {

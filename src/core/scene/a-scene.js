@@ -56,7 +56,11 @@ module.exports = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.behaviors = [];
+        this.behaviors = {
+          tick: utils.precedence.newStore('component:execution', Array),
+          tock: utils.precedence.newStore('component:execution', Array)
+        };
+        this.precedence = utils.precedence; // Expose getOrder() to components, useful for post proc.
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
@@ -110,15 +114,24 @@ module.exports = registerElement('a-scene', {
       }
     },
 
-    /**
+     /**
      * @param {object} behavior - Generally a component. Must implement a .update() method to
      *        be called on every tick.
      */
     addBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        if (behaviors.indexOf(behavior) !== -1) { return; }
-        behaviors.push(behavior);
+        var name = Object.getPrototypeOf(behavior).name || ' '; // unnamed components are used in tests.
+
+        // Check if behavior has tick and/or tock and add to the appropriate structure.
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          if (!behavior[behaviorType]) { return; }
+          var behaviorArr = self.behaviors[behaviorType](name); // eg. behaviors.tick("material")
+          if (behaviorArr.indexOf(behavior) === -1) {
+            behaviorArr.push(behavior);
+          }
+        });
       }
     },
 
@@ -175,10 +188,17 @@ module.exports = registerElement('a-scene', {
      */
     removeBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        var index = behaviors.indexOf(behavior);
-        if (index === -1) { return; }
-        behaviors.splice(index, 1);
+        var name = Object.getPrototypeOf(behavior).name || ' ';
+
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          var behaviorArr = self.behaviors[behaviorType](name);
+          var index = behaviorArr.indexOf(behavior);
+          if (index !== -1) {
+            behaviorArr.splice(index, 1);
+          }
+        });
       }
     },
 
@@ -204,6 +224,10 @@ module.exports = registerElement('a-scene', {
 
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height, true);
+
+        // Resize render target to match renderer
+        var dpr = this.renderer.getPixelRatio();
+        this.renderTarget.setSize(size.width * dpr, size.height * dpr);
       },
       writable: window.debug
     },
@@ -219,6 +243,10 @@ module.exports = registerElement('a-scene', {
           antialias: antialias || window.hasNativeWebVRImplementation,
           alpha: true
         });
+
+        this.renderTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
+        this.renderTarget.texture.generateMipmaps = false;
+
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
@@ -282,7 +310,7 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Behavior-updater meant to be called from scene render.
+     * Behavior-updater meant to be called before scene render.
      * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
      * needing to render.
      */
@@ -293,14 +321,40 @@ module.exports = registerElement('a-scene', {
         // Animations.
         TWEEN.update(time);
         // Components.
-        this.behaviors.forEach(function (component) {
-          if (!component.el.isPlaying) { return; }
-          component.tick(time, timeDelta);
+        this.behaviors.tick().forEach(function (behaviorList) {
+          behaviorList.forEach(function (component) {
+            if (!component.el.isPlaying) { return; }
+            component.tick(time, timeDelta);
+          });
         });
         // Systems.
         Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tick) { return; }
-          systems[key].tick(time, timeDelta);
+          var system = systems[key];
+          if (!system.tick) { return; }
+          system.tick(time, timeDelta);
+        });
+      }
+    },
+
+    /**
+     * Behavior-updater meant to be called after scene render for post processing.
+     * Abstracted to a different function to facilitate unit testing (`scene.tock()`) without
+     * needing to render.
+     */
+    tock: {
+      value: function (time, timeDelta) {
+        // Components.
+        this.behaviors.tock().forEach(function (behaviorList) {
+          behaviorList.forEach(function (component) {
+            if (!component.el.isPlaying) { return; }
+            component.tock(time, timeDelta);
+          });
+        });
+        // Systems.
+        Object.keys(systems).forEach(function (key) {
+          var system = systems[key];
+          if (!system.tock) { return; }
+          system.tock(time, timeDelta);
         });
       }
     },
@@ -320,9 +374,24 @@ module.exports = registerElement('a-scene', {
         if (this.isPlaying) {
           this.tick(time, timeDelta);
         }
-        this.effect.render(this.object3D, camera);
+
+        window.performance.mark('render-iteration-started');
+
+        // Postproc must be explicitly enabled by a component or system.
+        if (this.enablePostProcessing) {
+          this.effect.render(this.object3D, camera, this.renderTarget);
+
+          window.performance.mark('post-processing-started');
+
+          this.tock(time, timeDelta);
+        } else {
+          this.effect.render(this.object3D, camera, null);
+        }
+
+        window.performance.mark('render-iteration-finished');
 
         this.time = time;
+
         this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
       },
       writable: window.debug
