@@ -26,8 +26,8 @@ Just like with regular HTML elements, we can configure the element by setting
 HTML attributes. Here, we define the color, width, height, depth of `<a-box>`.
 See the [`<a-box>`][box] documentation to see the available attributes.
 
-For flat displays, the default control scheme lets us to look around by
-click-dragging the mouse and move around by using the `WASD` keys. Upon
+For flat displays, the default control scheme lets us look around by
+click-dragging the mouse and move with the `WASD` keys. Upon
 [entering VR][mozvr], the default control scheme lets us look around with a VR
 headset and, if room scale is possible, literally *walk* around.
 
@@ -238,7 +238,7 @@ created by creating a sphere that wraps the scene:
 </a-scene>
 ```
 
-And that is very basic scene that places static objects in a 3D space using
+And that is a very basic scene that places static objects in a 3D space using
 HTML. A good VR experience requires rich interaction and dynamic behavior. With
 the help of using and writing A-Frame components, we can [build a more advanced
 scene][next].

@@ -13,7 +13,7 @@ The geometry component provides a basic shape for an entity. The general
 geometry is defined by the `primitive` property. Geometric primitives, in
 computer graphics, means an extremely basic shape. With the primitive defined,
 additional properties are used to further define the geometry. A material
-component is usually defined alongside to provide a appearance alongside the
+component is usually defined to provide a appearance alongside the
 shape to create a complete mesh.
 
 <!--toc-->
@@ -96,7 +96,7 @@ animating `thetaLength` on a fuse-based cursor for visual feedback.
 
 ### `cone`
 
-The cone geometry is a cylinder geometry that can varying top and bottom radiuses.
+The cone geometry is a cylinder geometry that have different top and bottom radii.
 
 ```html
 <a-entity geometry="primitive: cone; radiusBottom: 1; radiusTop: 0.1"></a-entity>

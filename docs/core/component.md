@@ -7,7 +7,7 @@ order: 3
 ---
 
 In the [entity-component-system pattern][ecs], a component is a reusable and
-modular chunk of data that plugged into an entity to add appearance, behavior,
+modular chunk of data that is plugged into an entity to add appearance, behavior,
 and/or functionality.
 
 In A-Frame, components modify entities which are 3D objects in the scene. We
@@ -397,7 +397,7 @@ Example uses of `.updateSchema` by some A-Frame components:
 | Component | Usage                                                                                                 |
 |-----------|-------------------------------------------------------------------------------------------------------|
 | geometry  | Check if `primitive` has changed in order to change the schema to be respective to the geometry type. |
-| material  | Check if `shader` has changed in order to change tge schema to be respective to the material type.    |
+| material  | Check if `shader` has changed in order to change the schema to be respective to the material type.    |
 
 ## Writing a Component
 

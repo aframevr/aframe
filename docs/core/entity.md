@@ -11,7 +11,7 @@ An entity is represented by the `<a-entity>` element. As defined in the
 which we plug in components to in order to provide them apperance, behavior,
 and functionality.
 
-In A-Frame, entities have inherently have attached the [position][position],
+In A-Frame, entities are inherently attached with the [position][position],
 [rotation][rotation], and [scale][scale] components.
 
 <!--toc-->

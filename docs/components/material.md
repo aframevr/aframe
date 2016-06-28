@@ -90,7 +90,7 @@ between the incoming light and the properties of the material.
 
 To achieve realism, the diffuse `color` (can be supplied through the base
 material component), `metalness`, `roughness` properties of the material must
-accurately be controlled, often based on real-world material studies. Some
+be accurately controlled, often based on real-world material studies. Some
 people have compiled charts of realistic values for different kinds of
 materials that can be used as a starting point.
 

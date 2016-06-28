@@ -6,7 +6,7 @@ parent_section: guide
 order: 5
 ---
 
-Support of devices and platforms depends how well the browsers support certain
+Devices and platform support depends on how well the browsers support certain
 devices and APIs. A-Frame supports both flat (3D on a normal screen) and WebVR
 experiences.  Though its focus is heavily VR. We will break up support into two
 categories: flat and VR.
