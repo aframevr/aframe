@@ -6,7 +6,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {
     geometry: {
       primitive: 'sphere',
-      radius: 100,
+      radius: 5000,
       segmentsWidth: 64,
       segmentsHeight: 20
     },
