@@ -1,0 +1,16 @@
+# Directories to ignore from release archives
+docs export-ignore
+examples export-ignore
+scripts export-ignore
+src export-ignore
+tests export-ignore
+vendor export-ignore
+
+# Files to ignore from release archives
+.* export-ignore
+*.html export-ignore
+CHANGELOG.md export-ignore
+CONTRIBUTING.md export-ignore
+ORGANIZATION.md export-ignore
+package.json export-ignore
+ROADMAP.md export-ignore
