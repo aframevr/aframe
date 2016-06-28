@@ -8,7 +8,6 @@ var utils = require('../utils/');
 module.exports.Component = registerShader('flat', {
   schema: {
     color: { type: 'color' },
-    fog: { default: true },
     height: { default: 256 },
     repeat: { default: '' },
     src: { default: '' },
@@ -52,7 +51,6 @@ module.exports.Component = registerShader('flat', {
  */
 function getMaterialData (data) {
   return {
-    fog: data.fog,
     color: new THREE.Color(data.color)
   };
 }
