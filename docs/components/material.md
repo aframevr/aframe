@@ -202,7 +202,7 @@ selector for the `id` attribute (e.g., `#my-video`):
 </a-scene>
 ```
 
-### Controlling Video Textures
+#### Controlling Video Textures
 
 To control the video playback such as pausing or seeking, we can use the video
 element to [control media playback][mediaplayback]. For example:
@@ -216,6 +216,33 @@ videoEl.pause();
 This doesn't work as well if you are passing an inline URL, in which case a
 video element will be created internally. To get a handle on the video element,
 we should define one in `<a-assets>`.
+
+## Canvas Textures
+
+We can use a `<canvas>` as a texture source. The texture will automatically
+refresh itself as the canvas changes.
+
+```html
+<script>
+  AFRAME.registerComponent('draw-canvas', {
+    schema: {default: ''},
+
+    init: function () {
+      this.canvas = document.getElementById(this.data);
+      this.ctx = this.canvas.getContext('2d');
+
+      // Draw on canvas...
+    }
+  });
+</script>
+
+<a-assets>
+  <canvas id="my-canvas" crossOrigin="anonymous"></canvas>
+</a-assets>
+
+<a-entity geometry="primitive: plane" material="src: #my-canvas"
+          draw-canvas="my-canvas"></a-entity>
+```
 
 ### Repeating Textures
 
@@ -235,9 +262,9 @@ over materials in the background, it is probably due to underlying design of
 the OpenGL compositor (which WebGL is an API for).
 
 In an ideal scenario, transparency in A-Frame would "just work", regardless of
-where the developer places an image in 3D space, or in which order they define
+where the developer places an entity in 3D space, or in which order they define
 the elements in markup. In the current version of A-Frame, however, it is easy
-to create scenarios where foreground images occlude background images. This
+to create scenarios where foreground entities occlude background entities. This
 creates confusion and unwanted visual defects.
 
 To work around, try changing the order of the entities.
