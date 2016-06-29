@@ -5,7 +5,7 @@ var warn = debug('utils:src-loader:warn');
 
 /**
  * Validates a texture, either as a selector or as a URL.
- * Detects whether `src` is pointing to an image or to a video, and invokes the
+ * Detects whether `src` is pointing to an image, video, or canvas, and invokes the
  * appropriate callback.
  *
  * If `src` is selector, check if it's valid, return the el in the callback.
@@ -16,11 +16,13 @@ var warn = debug('utils:src-loader:warn');
  * @params {string} src - A selector or a URL. URLs must be wrapped by `url()`.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
+ * @params {function} isCanvasCb - callback if texture is a canvas.
  */
-function validateSrc (src, isImageCb, isVideoCb) {
+function validateSrc (src, isImageCb, isVideoCb, isCanvasCb) {
   var textureEl;
   var isImage;
   var isVideo;
+  var isCanvas;
   var url = parseUrl(src);
 
   // src is a url.
@@ -37,11 +39,13 @@ function validateSrc (src, isImageCb, isVideoCb) {
   if (!textureEl) { return; }
   isImage = textureEl && textureEl.tagName === 'IMG';
   isVideo = textureEl && textureEl.tagName === 'VIDEO';
+  isCanvas = textureEl && textureEl.tagName === 'CANVAS';
   if (isImage) { return isImageCb(textureEl); }
   if (isVideo) { return isVideoCb(textureEl); }
+  if (isCanvas) { return isCanvasCb(textureEl); }
 
-  // src is a valid selector but doesn't match with a <img> or <video> element.
-  warn('"%s" does not point to a valid <img> or <video> element', src);
+  // src is a valid selector but doesn't match with a <img>, <video>, or <canvas> element.
+  warn('"%s" does not point to a valid <img>, <video>, or <canvas> element', src);
 }
 
 /**

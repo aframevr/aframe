@@ -35,9 +35,10 @@ module.exports.System = registerSystem('material', {
    */
   loadTexture: function (src, data, cb) {
     var self = this;
-    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
+    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb, loadCanvasCb);
     function loadImageCb (src) { self.loadImage(src, data, cb); }
     function loadVideoCb (src) { self.loadVideo(src, data, cb); }
+    function loadCanvasCb (src) { self.loadCanvas(src, data, cb); }
   },
 
   /**
@@ -61,6 +62,20 @@ module.exports.System = registerSystem('material', {
     // Texture not yet being loaded. Start loading it.
     textureCache[hash] = loadImageTexture(src, data);
     textureCache[hash].then(handleImageTextureLoaded);
+  },
+
+  /**
+   * High-level function for loading canvas textures (THREE.Texture).
+   *
+   * @param {Element|string} src - Texture source.
+   * @param {object} data - Texture data.
+   * @param {function} cb - Callback to pass texture to.
+   */
+  loadCanvas: function (src, data, cb) {
+    // Hack readyState and HAVE_CURRENT_DATA on canvas to work with THREE.VideoTexture
+    src.readyState = 2;
+    src.HAVE_CURRENT_DATA = 2;
+    this.loadVideo(src, data, cb);
   },
 
     /**
