@@ -291,7 +291,7 @@ var proto = Object.create(ANode.prototype, {
       // Check if component already initialized.
       if (name in this.components) { return; }
       component = this.components[name] = new components[name].Component(this, data);
-      if (this.isPlaying) { playComponent(component, this.sceneEl); }
+      if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
       // hence we set the attribute to empty string.
@@ -328,7 +328,7 @@ var proto = Object.create(ANode.prototype, {
       var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       // Don't remove default or mixed in components
       if (isDefault || isMixedIn) { return; }
-      pauseComponent(component, this.sceneEl);
+      component.pause();
       component.remove();
       delete this.components[name];
       this.emit('componentremoved', { name: name });
@@ -443,15 +443,14 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      var sceneEl = this.sceneEl;
 
       // Already playing.
       if (this.isPlaying || !this.hasLoaded) { return; }
       this.isPlaying = true;
 
       // Wake up all components.
-      componentKeys.forEach(function _playComponent (key) {
-        playComponent(components[key], sceneEl);
+      componentKeys.forEach(function playComponent (key) {
+        components[key].play();
       });
 
       // Tell all child entities to play.
@@ -472,14 +471,13 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      var sceneEl = this.sceneEl;
 
       if (!this.isPlaying) { return; }
       this.isPlaying = false;
 
       // Sleep all components.
-      componentKeys.forEach(function _pauseComponent (key) {
-        pauseComponent(components[key], sceneEl);
+      componentKeys.forEach(function pauseComponent (key) {
+        components[key].pause();
       });
 
       // Tell all child entities to pause.
@@ -692,32 +690,6 @@ function isComponentMixedIn (name, mixinEls) {
     if (inMixin) { break; }
   }
   return inMixin;
-}
-
-/**
- * Pause component by removing tick behavior and calling pause handler.
- *
- * @param component {object} - Component to pause.
- * @param sceneEl {Element} - Scene, needed to remove the tick behavior.
- */
-function pauseComponent (component, sceneEl) {
-  component.pause();
-  // Remove tick behavior.
-  if (!component.tick) { return; }
-  sceneEl.removeBehavior(component);
-}
-
-/**
- * Play component by adding tick behavior and calling play handler.
- *
- * @param component {object} - Component to play.
- * @param sceneEl {Element} - Scene, needed to add the tick behavior.
- */
-function playComponent (component, sceneEl) {
-  component.play();
-  // Add tick behavior.
-  if (!component.tick) { return; }
-  sceneEl.addBehavior(component);
 }
 
 function isEntity (el) {

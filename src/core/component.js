@@ -203,6 +203,8 @@ Component.prototype = {
     if (!this.initialized) {
       this.init();
       this.initialized = true;
+      // Play the component if the entity is playing.
+      if (el.isPlaying) { this.play(); }
     }
     this.update(oldData);
 
@@ -259,10 +261,13 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent = function (el, attr) {
     Component.call(this, el, attr);
   };
+
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
   NewComponent.prototype.system = systems && systems.systems[name];
+  NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
+  NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
 
   components[name] = {
     Component: NewComponent,
@@ -345,4 +350,42 @@ module.exports.buildData = buildData;
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema) { return source; }
   return utils.extend(dest, source);
+}
+
+/**
+ * Wrapper for user defined pause method
+ * Pause component by removing tick behavior and calling user's pause method.
+ *
+ * @param pauseMethod {function} - user defined pause method
+ */
+function wrapPause (pauseMethod) {
+  return function pause () {
+    var sceneEl = this.el.sceneEl;
+    if (!this.isPlaying) { return; }
+    pauseMethod.call(this);
+    this.isPlaying = false;
+    // Remove tick behavior.
+    if (!this.tick) { return; }
+    sceneEl.removeBehavior(this);
+  };
+}
+
+/**
+ * Wrapper for user defined play method
+ * Play component by adding tick behavior and calling user's play method.
+ *
+ * @param playMethod {function} - user defined play method
+ *
+ */
+function wrapPlay (playMethod) {
+  return function play () {
+    var sceneEl = this.el.sceneEl;
+    var shouldPlay = this.el.isPlaying && !this.isPlaying;
+    if (!this.initialized || !shouldPlay) { return; }
+    playMethod.call(this);
+    this.isPlaying = true;
+    // Add tick behavior.
+    if (!this.tick) { return; }
+    sceneEl.addBehavior(this);
+  };
 }

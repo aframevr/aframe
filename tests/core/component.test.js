@@ -343,4 +343,84 @@ suite('Component', function () {
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
     });
   });
+
+  suite('play', function () {
+    setup(function () {
+      components.dummy = undefined;
+      var playStub = this.playStub = sinon.stub();
+      registerComponent('dummy', {play: playStub});
+    });
+
+    test('not called if entity is not playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.isPlaying = false;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.play();
+      sinon.assert.notCalled(this.playStub);
+    });
+
+    test('not called if component is not initialized', function () {
+      var el = document.createElement('a-entity');
+      el.isPlaying = true;
+      el.setAttribute('dummy', '');
+      el.components.dummy.play();
+      sinon.assert.notCalled(this.playStub);
+    });
+
+    test('not called if component is already playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.isPlaying = true;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.play();
+      dummyComponent.play();
+      sinon.assert.calledOnce(this.playStub);
+    });
+  });
+
+  suite('pause', function () {
+    setup(function () {
+      components.dummy = undefined;
+      var pauseStub = this.pauseStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {color: { default: 'red' }},
+        pause: pauseStub
+      });
+    });
+
+    test('not called if component is not playing', function () {
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', '');
+      el.components.dummy.pause();
+      sinon.assert.notCalled(this.pauseStub);
+    });
+
+    test('called if component is playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.setAttribute('dummy', '');
+      el.isPlaying = true;
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.isPlaying = true;
+      dummyComponent.pause();
+      sinon.assert.called(this.pauseStub);
+    });
+
+    test('not called if component is already paused', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.isPlaying = true;
+      dummyComponent.pause();
+      dummyComponent.pause();
+      sinon.assert.calledOnce(this.pauseStub);
+    });
+  });
 });
