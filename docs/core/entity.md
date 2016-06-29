@@ -154,6 +154,11 @@ The event will bubble by default. we can tell it not to bubble by passing `false
 entity.emit('sink', null, false);
 ```
 
+### `flushToDOM (recursive)`
+
+`flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
+Read more about [component-to-DOM serialization][component-to-dom-serialization].
+
 ### `getAttribute (attr)`
 
 `getAttribute` can be used to retrieve parsed component data. If `attr` is the name of a registered component, `getAttribute` will return only the component data defined in the HTML as a parsed object. `getAttribute` for components is the partial form of `getComputedAttribute` since the returned component data does not include applied mixins or default values:
@@ -379,6 +384,7 @@ Below is what the event detail will contain for `componentchanged`:
 | oldData  | Component's previous data, before it was modified. |
 
 [animation-begin]: ../core/animation.md#Begin
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [ecs]: ../core/
 [geometry]: ../components/geometry.md

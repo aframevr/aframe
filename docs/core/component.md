@@ -399,6 +399,13 @@ Example uses of `.updateSchema` by some A-Frame components:
 | geometry  | Check if `primitive` has changed in order to change the schema to be respective to the geometry type. |
 | material  | Check if `shader` has changed in order to change the schema to be respective to the material type.    |
 
+## Methods
+
+### `.flushToDOM()`
+
+`flushToDOM` will manually serialize the component's data and update the DOM.
+Read more about [component-to-DOM serialization][component-to-dom-serialization].
+
 ## Writing a Component
 
 ### Line Component
@@ -543,6 +550,7 @@ And voila!
 
 [camera]: ../components/camera.md
 [collide]: https://github.com/dmarcos/a-invaders/tree/master/js/components
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 [docs]: ./index.md
 [ecs]: ./index.md
 [entity]: ./entity.md

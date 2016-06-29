@@ -28,3 +28,11 @@ The component data is stored internally. Updating the DOM takes CPU time for con
 ```
 
 Make sure that this component is not active in production.
+
+### Manually Serializing to DOM
+
+To manually serialize to DOM, use [`Entity.flushToDOM`][eftd] or
+[`Component.flushToDOM`][cftd].
+
+[cftd]: ../core/component.md#flushtodom
+[eftd]: ../core/entity.md#flushtodom-recursive
