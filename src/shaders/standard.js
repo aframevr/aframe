@@ -10,15 +10,15 @@ var texturePromises = {};
  */
 module.exports.Component = registerShader('standard', {
   schema: {
-    color: { type: 'color' },
-    envMap: { default: '' },
-    fog: { default: true },
-    height: { default: 256 },
-    metalness: { default: 0.0, min: 0.0, max: 1.0 },
-    repeat: { default: '' },
-    src: { default: '' },
-    roughness: { default: 0.5, min: 0.0, max: 1.0 },
-    width: { default: 512 }
+    color: {type: 'color'},
+    envMap: {default: ''},
+    fog: {default: true},
+    height: {default: 256},
+    metalness: {default: 0.0, min: 0.0, max: 1.0},
+    repeat: {default: ''},
+    roughness: {default: 0.5, min: 0.0, max: 1.0},
+    src: {default: ''},
+    width: {default: 512}
   },
   /**
    * Initializes the shader.
@@ -99,6 +99,7 @@ module.exports.Component = registerShader('standard', {
 function getMaterialData (data) {
   return {
     color: new THREE.Color(data.color),
+    fog: data.fog,
     metalness: data.metalness,
     roughness: data.roughness
   };
