@@ -1,22 +1,54 @@
+/* global HTMLElement */
 var components = require('./component');
-var systems = module.exports.systems = {};  // Keep track of registered components.
+var schema = require('./schema');
+var utils = require('../utils/');
+
+var parseProperties = schema.parseProperties;
+var parseProperty = schema.parseProperty;
+var processSchema = schema.process;
+var isSingleProp = schema.isSingleProperty;
+var styleParser = utils.styleParser;
+
+var systems = module.exports.systems = {};  // Keep track of registered systems.
 
 /**
  * System class definition.
  *
- * Systems provide global scope and services to a group of instantiated components of the.
- * same class. For example, a physics component that creates a physics world that oversees
+ * Systems provide global scope and services to a group of instantiated components of the
+ * same class. They can also help abstract logic away from components such that components
+ * only have to worry about data.
+ * For example, a physics component that creates a physics world that oversees
  * all entities with a physics or rigid body component.
  *
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
-var System = module.exports.System = function () {
+var System = module.exports.System = function (sceneEl) {
   var component = components && components.components[this.name];
+  var schema = this.schema;
+  var rawData;
+
+  // Set reference to scene.
+  this.sceneEl = sceneEl;
+
+  // Set reference to matching component (if exists).
   if (component) { component.Component.prototype.system = this; }
+
+  // Process system configuration.
+  if (!Object.keys(schema).length) { return; }
+  rawData = HTMLElement.prototype.getAttribute.call(sceneEl, this.name);
+  if (isSingleProp(schema)) {
+    this.data = parseProperty(rawData, schema);
+    return;
+  }
+  this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
 };
 
 System.prototype = {
+  /**
+   * Schema to configure system.
+   */
+  schema: {},
 
   /**
    * Init handler. Called during scene initialization and is only run once.
@@ -71,10 +103,11 @@ module.exports.registerSystem = function (name, definition) {
                     'Check that you are not loading two versions of the same system ' +
                     'or two different systems of the same name.');
   }
-  NewSystem = function () { System.call(this); };
+  NewSystem = function (sceneEl) { System.call(this, sceneEl); };
   NewSystem.prototype = Object.create(System.prototype, proto);
   NewSystem.prototype.name = name;
   NewSystem.prototype.constructor = NewSystem;
+  NewSystem.prototype.schema = utils.extend(processSchema(NewSystem.prototype.schema));
   systems[name] = NewSystem;
 
   // Initialize systems for existing scenes

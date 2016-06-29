@@ -105,10 +105,7 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
   propNames.forEach(function parse (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
-
     if (!(schema[propName])) { return; }
-
-    propValue = propValue === undefined ? propDefinition.default : propValue;
     propData[propName] = parseProperty(propValue, propDefinition);
   });
 
@@ -119,6 +116,7 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
  * Deserialize a single property.
  */
 function parseProperty (value, propDefinition) {
+  value = (value === undefined || value === null) ? propDefinition.default : value;
   if (typeof value !== 'string') { return value; }
   if (typeof value === 'undefined') { return value; }
   return propDefinition.parse(value);
