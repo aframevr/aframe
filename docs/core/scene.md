@@ -33,6 +33,7 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 | monoRenderer   | Instance of `THREE.WebGlRenderer`.                                           |
 | object3D       | [`THREE.Scene`][scene] object.                                               |
 | renderer       | Active renderer, one of `monoRenderer` or `stereoRenderer`.                  |
+| renderStarted  | Whether `renderer` has started.                                              |
 | stereoRenderer | Renderer for VR created by passing the `monoRenderer` into `THREE.VREffect`. |
 | systems        | Instantiated [systems][systems].                                             |
 | time           | Global uptime of scene in seconds.                                           |
@@ -52,7 +53,7 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its p
 | enter-vr     | User has entered VR and headset started presenting content. |
 | exit-vr      | User has exited VR and headset stopped presenting content.  |
 | loaded       | All nodes have loaded.                             |
-| renderStarted| Render loop has started.            |
+| renderStart  | Render loop has started.            |
 
 ## Scene Components
 
