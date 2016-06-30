@@ -3,7 +3,9 @@
 var helpers = require('../helpers.js');
 var AAnimation = require('core/a-animation').AAnimation;
 var getAnimationValues = require('core/a-animation').getAnimationValues;
-var getComputedAttributeFor = require('core/a-animation').getComputedAttributeFor;
+var utils = require('utils/');
+
+var getComponentProperty = utils.entity.getComponentProperty;
 
 /**
  * Helpers to start initialize an animation.
@@ -57,9 +59,7 @@ function generateColorAnimationTest (description, from, to, attribute) {
         attributeSplit = attribute.split('.');
         elAttrs = {};
         elAttrs[attribute] = '';
-        elAttrs[attributeSplit[0]] = {
-          shader: 'flat'
-        };
+        elAttrs[attributeSplit[0]] = {shader: 'flat'};
         elAttrs[attributeSplit[0]][attributeSplit[1]] = '#FFF';
       }
       setupAnimation({
@@ -74,24 +74,24 @@ function generateColorAnimationTest (description, from, to, attribute) {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, elAttrs || { color: '' });
+      }, elAttrs || {color: ''});
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#ffffff');
+      assert.equal(getComponentProperty(this.el, attribute || 'color'), '#ffffff');
     });
 
     test('between value', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
-      color = this.el.getComputedAttribute(attribute || 'color');
+      color = getComponentProperty(this.el, attribute || 'color');
       assert.isAbove(color, '#000000');
       assert.isBelow(color, '#ffffff');
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#000000');
+      assert.equal(getComponentProperty(this.el, attribute || 'color'), '#000000');
     });
   });
 }
@@ -662,29 +662,6 @@ suite('a-animation', function () {
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
       assert.equal(this.el.getComputedAttribute(attribute), '#0000ff');
-    });
-  });
-
-  suite('getComputedAttributeFor', function () {
-    setup(function (done) {
-      var el = this.el = helpers.entityFactory();
-      el.addEventListener('loaded', function () {
-        done();
-      });
-    });
-
-    test('can get value of normal attribute', function (done) {
-      var el = this.el;
-      el.setAttribute('color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'color'), '#ffffff');
-      done();
-    });
-
-    test('can get value of attribute using dot notation', function (done) {
-      var el = this.el;
-      el.setAttribute('material', 'color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'material.color'), '#ffffff');
-      done();
     });
   });
 

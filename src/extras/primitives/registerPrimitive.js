@@ -4,6 +4,7 @@ var registerElement = require('../../core/a-register-element').registerElement;
 var utils = require('../../utils/');
 
 var debug = utils.debug;
+var setComponentProperty = utils.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
 
 module.exports = function registerPrimitive (name, definition) {
@@ -104,37 +105,18 @@ module.exports = function registerPrimitive (name, definition) {
        */
       syncAttributeToComponent: {
         value: function (attr, value) {
-          var componentName;
-          var split;
-          var propertyName;
+          var componentName = this.mappings[attr];
 
           if (attr in this.deprecatedMappings) {
             console.warn(this.deprecatedMappings[attr]);
           }
-
-          if (!attr || !this.mappings[attr]) { return; }
-
-          // Differentiate between single-property and multi-property component.
-          componentName = this.mappings[attr];
-          if (componentName.indexOf('.') !== -1) {
-            split = this.mappings[attr].split('.');
-            componentName = split[0];
-            propertyName = split[1];
-          }
-
-          if (!components[componentName]) { return; }
+          if (!attr || !componentName) { return; }
 
           // Run transform.
           value = this.getTransformedValue(attr, value);
 
-          // If multi-property schema, set as update to component to not overwrite.
-          if (propertyName) {
-            this.setAttribute(componentName, propertyName, value);
-            return;
-          }
-
-          // Single-property schema, just set the value.
-          this.setAttribute(componentName, value);
+          // Set value.
+          setComponentProperty(this, componentName, value);
         }
       },
 
