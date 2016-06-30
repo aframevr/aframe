@@ -144,14 +144,6 @@ suite('Component', function () {
         done();
       });
     });
-
-    test('cannot be registered if it uses the character _ in the name', function () {
-      assert.notOk('my__component' in components);
-      assert.throws(function register () {
-        registerComponent('my__component', CloneComponent);
-      }, Error);
-      assert.notOk('my__component' in components);
-    });
   });
 
   suite('schema', function () {
