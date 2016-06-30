@@ -653,6 +653,40 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getComputedAttribute('material').color, 'red');
     });
   });
+
+  suite('debug', function () {
+    test('does flush attributes to the DOM', function (done) {
+      var el = document.createElement('a-scene');
+      el.setAttribute('debug', true);
+      el.addEventListener('loaded', function () {
+        var child = document.createElement('a-entity');
+        child.addEventListener('loaded', function () {
+          child.setAttribute('position', '1 2 3');
+          assert.equal(child.attributes[0].value, '1 2 3');
+          done();
+        });
+        el.appendChild(child);
+        document.body.appendChild(el);
+      });
+      document.body.appendChild(el);
+    });
+
+    test('does allow debug to be a boolean attribute', function (done) {
+      var el = document.createElement('a-scene');
+      el.attributes.setNamedItem(document.createAttribute('debug'));
+      el.addEventListener('loaded', function () {
+        var child = document.createElement('a-entity');
+        child.addEventListener('loaded', function () {
+          child.setAttribute('position', '1 2 3');
+          assert.equal(child.attributes[0].value, '1 2 3');
+          done();
+        });
+        el.appendChild(child);
+        document.body.appendChild(el);
+      });
+      document.body.appendChild(el);
+    });
+  });
 });
 
 suite('a-entity component lifecycle management', function () {

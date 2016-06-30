@@ -537,7 +537,7 @@ var proto = Object.create(ANode.prototype, {
    */
   setAttribute: {
     value: function (attr, value, componentPropValue) {
-      var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      var isDebugMode = this.sceneEl && this.sceneEl.hasAttribute('debug');
       if (components[attr]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
