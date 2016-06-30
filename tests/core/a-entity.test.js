@@ -549,24 +549,6 @@ suite('a-entity', function () {
       el.initComponent('material', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
     });
-
-    test('does not initialize with id if the component is not multiple', function () {
-      var el = this.el;
-      assert.throws(function setAttribute () {
-        el.setAttribute('geometry__1', {primitive: 'box'});
-      }, Error);
-      assert.notOk(el.components.geometry_1);
-    });
-
-    test('initializes components with id if it opts in to multiple', function () {
-      var el = this.el;
-      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3'});
-      el.setAttribute('sound__2', {'src': 'mysoundfile.mp3'});
-      assert.ok(el.components.sound__1);
-      assert.ok(el.components.sound__2);
-      assert.ok(el.components.sound__1 instanceof components.sound.Component);
-      assert.ok(el.components.sound__2 instanceof components.sound.Component);
-    });
   });
 
   suite('removeComponent', function () {
