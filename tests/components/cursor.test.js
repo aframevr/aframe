@@ -30,7 +30,7 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
-      cursorEl.addEventListener('cursor-mousedown', function () {
+      cursorEl.addEventListener('mousedown', function () {
         done();
       });
       cursorEl.components.cursor.onMouseDown();
@@ -40,7 +40,7 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
-      intersectedEl.addEventListener('cursor-mousedown', function () {
+      intersectedEl.addEventListener('mousedown', function () {
         done();
       });
       cursorEl.components.cursor.onMouseDown();
@@ -61,7 +61,7 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
-      cursorEl.addEventListener('cursor-mouseup', function () {
+      cursorEl.addEventListener('mouseup', function () {
         done();
       });
       cursorEl.components.cursor.onMouseUp();
@@ -72,7 +72,7 @@ suite('cursor', function () {
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
       cursorEl.components.cursor.mouseDownEl = document.createElement('a-entity');
-      intersectedEl.addEventListener('cursor-mouseup', function () {
+      intersectedEl.addEventListener('mouseup', function () {
         done();
       });
       cursorEl.components.cursor.onMouseUp();
@@ -83,7 +83,7 @@ suite('cursor', function () {
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
       cursorEl.components.cursor.mouseDownEl = intersectedEl;
-      cursorEl.addEventListener('cursor-click', function () {
+      cursorEl.addEventListener('click', function () {
         done();
       });
       cursorEl.components.cursor.onMouseUp();
@@ -94,7 +94,7 @@ suite('cursor', function () {
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
       cursorEl.components.cursor.mouseDownEl = intersectedEl;
-      intersectedEl.addEventListener('cursor-click', function () {
+      intersectedEl.addEventListener('click', function () {
         done();
       });
       cursorEl.components.cursor.onMouseUp();
@@ -120,7 +120,7 @@ suite('cursor', function () {
     test('emits mouseenter event on cursorEl', function (done) {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
-      cursorEl.addEventListener('cursor-mouseenter', function (evt) {
+      cursorEl.addEventListener('mouseenter', function (evt) {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
         done();
       });
@@ -130,7 +130,7 @@ suite('cursor', function () {
     test('emits mouseenter event on intersectedEl', function (done) {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
-      intersectedEl.addEventListener('cursor-mouseenter', function (evt) {
+      intersectedEl.addEventListener('mouseenter', function (evt) {
         assert.equal(evt.detail.cursorEl, cursorEl);
         done();
       });
@@ -164,7 +164,7 @@ suite('cursor', function () {
       var intersectedEl = this.intersectedEl;
       cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
       cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
-      cursorEl.addEventListener('cursor-click', function () {
+      cursorEl.addEventListener('click', function () {
         assert.notOk(cursorEl.is('cursor-fusing'));
         done();
       });
@@ -175,7 +175,7 @@ suite('cursor', function () {
       var intersectedEl = this.intersectedEl;
       cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
       cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
-      intersectedEl.addEventListener('cursor-click', function () {
+      intersectedEl.addEventListener('click', function () {
         done();
       });
     });
@@ -209,7 +209,7 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
-      cursorEl.addEventListener('cursor-mouseleave', function (evt) {
+      cursorEl.addEventListener('mouseleave', function (evt) {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
         done();
       });
@@ -220,7 +220,7 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.components.cursor.intersectedEl = intersectedEl;
-      intersectedEl.addEventListener('cursor-mouseleave', function (evt) {
+      intersectedEl.addEventListener('mouseleave', function (evt) {
         assert.equal(evt.detail.cursorEl, cursorEl);
         done();
       });

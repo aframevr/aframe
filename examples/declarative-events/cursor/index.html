@@ -20,10 +20,10 @@
 
       <a-box id="orange-cube" position="0 3.5 -2" rotation="30 30 0" width="2" depth="2"
              height="2" color="#F16745" roughness="0.8">
-        <a-event name="cursor-mouseenter" scale="3 1 1" color="#FFC65D"></a-event>
-        <a-event name="cursor-mouseenter" target="#shadow" scale="3 2 2"></a-event>
-        <a-event name="cursor-mouseleave" scale="1 1 1" color="#F16745"></a-event>
-        <a-event name="cursor-mouseleave" target="#shadow" scale="2 2 2"></a-event>
+        <a-event name="mouseenter" scale="3 1 1" color="#FFC65D"></a-event>
+        <a-event name="mouseenter" target="#shadow" scale="3 2 2"></a-event>
+        <a-event name="mouseleave" scale="1 1 1" color="#F16745"></a-event>
+        <a-event name="mouseleave" target="#shadow" scale="2 2 2"></a-event>
       </a-box>
 
       <a-image id="shadow" position="0 0 -2" src="#shadow2" opacity="0.5" rotation="-90 0 0"
