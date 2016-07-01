@@ -11,8 +11,8 @@ var warn = utils.debug('components:mouse-controls:warn');
  */
 module.exports.Component = registerControls('mouse-controls', {
   schema: {
-    enabled: { default: true },
-    sensitivity: { default: 0.002 }
+    enabled: {default: true},
+    sensitivity: {default: 0.002}
   },
 
   init: function () {

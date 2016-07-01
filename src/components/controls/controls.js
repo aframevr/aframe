@@ -12,19 +12,17 @@ var PI_2 = Math.PI / 2;
  */
 module.exports.Component = registerControls('controls', {
   schema: {
-    enabled: { default: true },
+    enabled: {default: true},
 
-    flyingEnabled: { default: false },
+    flyingEnabled: {default: false},
 
-    position: {
-      default: ['hmd-controls']
-    },
-    positionEnabled: { default: true },
-    positionEasing: { default: 0 }, // m/s2
-    positionAcceleration: { default: 260 }, // m/s2
+    position: {default: ['hmd-controls']},
+    positionEnabled: {default: true},
+    positionEasing: {default: 0}, // m/s2
+    positionAcceleration: {default: 260}, // m/s2
 
-    rotation: { default: ['hmd-controls', 'mouse-controls'] },
-    rotationEnabled: { default: true }
+    rotation: {default: ['hmd-controls', 'mouse-controls']},
+    rotationEnabled: {default: true}
   },
 
   init: function () {

@@ -11,8 +11,8 @@ var radToDeg = THREE.Math.radToDeg;
  */
 module.exports.Component = registerControls('hmd-controls', {
   schema: {
-    enabled: { default: true },
-    standing: { default: true }
+    enabled: {default: true},
+    standing: {default: true}
   },
 
   init: function () {

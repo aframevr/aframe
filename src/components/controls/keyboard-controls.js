@@ -9,7 +9,7 @@ var THREE = require('../../lib/three');
  */
 module.exports.Component = registerControls('keyboard-controls', {
   schema: {
-    enabled: { default: true }
+    enabled: {default: true}
   },
 
   init: function () {
