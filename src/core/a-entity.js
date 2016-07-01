@@ -10,6 +10,8 @@ var isNode = re.isNode;
 var debug = utils.debug('core:a-entity:debug');
 var registerElement = re.registerElement;
 
+var MULTIPLE_COMPONENT_DELIMITER = '__';
+
 /**
  * Entity is a container object that components are plugged into to comprise everything in
  * the scene. In A-Frame, they inherently have position, rotation, and scale.
@@ -271,38 +273,48 @@ var proto = Object.create(ANode.prototype, {
   /**
    * Initialize component.
    *
-   * @param {string} name - Component name.
+   * @param {string} attrName - Attribute name asociated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
   initComponent: {
-    value: function (name, data, isDependency) {
+    value: function (attrName, data, isDependency) {
       var component;
-      var isComponentDefined = checkComponentDefined(this, name) || data !== undefined;
+      var componentInfo = attrName.split(MULTIPLE_COMPONENT_DELIMITER);
+      var componentId = componentInfo[1];
+      var componentName = componentInfo[0];
+      var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
 
       // Check if component is registered and whether component should be initialized.
-      if (!components[name] || (!isComponentDefined && !isDependency)) {
+      if (!components[componentName] ||
+          (!isComponentDefined && !isDependency) ||
+          // If component already initialized.
+          (attrName in this.components)) {
         return;
       }
 
-      // Initialize dependencies.
-      this.initComponentDependencies(name);
+      // Initialize dependencies first
+      this.initComponentDependencies(componentName);
 
-      // Check if component already initialized.
-      if (name in this.components) { return; }
-      component = this.components[name] = new components[name].Component(this, data);
+      // If component name has an id we check component type multiplic
+      if (componentId && !components[componentName].multiple) {
+        throw new Error('Trying to initialize multiple ' +
+                        'components of type `' + componentName +
+                        '`. There can only be one component of this type per entity.');
+      }
+      component = this.components[attrName] = new components[componentName].Component(this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
       // hence we set the attribute to empty string.
       // The flag justInitialized is for attributeChangedCallback to not overwrite
       // the component with the empty string.
-      if (!this.hasAttribute(name)) {
+      if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, name, '');
+        HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
-      debug('Component initialized: %s', name);
+      debug('Component initialized: %s', attrName);
     },
     writable: window.debug
   },
@@ -359,7 +371,8 @@ var proto = Object.create(ANode.prototype, {
 
       // add component to the list
       function addComponent (key) {
-        if (!components[key]) { return; }
+        var name = key.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+        if (!components[name]) { return; }
         elComponents[key] = true;
       }
       // updates a component with a given name
@@ -394,8 +407,9 @@ var proto = Object.create(ANode.prototype, {
         component.updateProperties(attrValue);
         return;
       }
+      if (attrValue === null) { return; }
       // Component not yet initialized. Initialize component.
-      this.initComponent(attr, attrValue);
+      this.initComponent(attr, attrValue, false);
     }
   },
 
@@ -426,12 +440,13 @@ var proto = Object.create(ANode.prototype, {
    */
   removeAttribute: {
     value: function (attr) {
-      var component = components[attr];
+      var component = this.components[attr];
       if (component) {
         this.setEntityAttribute(attr, undefined, null);
-      } else {
-        HTMLElement.prototype.removeAttribute.call(this, attr);
+        // The component might not be removed if it's a default one
+        if (this.components[attr]) { return; }
       }
+      HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
 
@@ -499,7 +514,7 @@ var proto = Object.create(ANode.prototype, {
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
-      if (components[attr]) {
+      if (components[attr] || this.components[attr]) {
         this.updateComponent(attr, newVal);
         return;
       }
@@ -538,7 +553,8 @@ var proto = Object.create(ANode.prototype, {
   setAttribute: {
     value: function (attr, value, componentPropValue) {
       var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      if (components[attr]) {
+      var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+      if (components[componentName]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);
