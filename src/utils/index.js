@@ -6,6 +6,7 @@ var objectAssign = require('object-assign');
 
 module.exports.coordinates = require('./coordinates');
 module.exports.debug = require('./debug');
+module.exports.entity = require('./entity');
 module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
 

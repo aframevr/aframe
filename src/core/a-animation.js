@@ -4,9 +4,10 @@ var coordinates = require('../utils/').coordinates;
 var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
-var utils = require('../utils/');
 var THREE = require('../lib/three');
+var utils = require('../utils/');
 
+var getComponentProperty = utils.entity.getComponentProperty;
 var DEFAULTS = constants.defaults;
 var DIRECTIONS = constants.directions;
 var EASING_FUNCTIONS = constants.easingFunctions;
@@ -95,7 +96,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var delay = parseInt(data.delay, 10);
-        var currentValue = getComputedAttributeFor(el, attribute);
+        var currentValue = getComponentProperty(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -418,7 +419,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = getComputedAttributeFor(el, attribute);
+      from[attribute] = getComponentProperty(el, attribute);
     } else {
       from[attribute] = dataFrom;
     }
@@ -491,7 +492,6 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 }
 module.exports.getAnimationValues = getAnimationValues;
-module.exports.getComputedAttributeFor = getComputedAttributeFor;
 
 /**
  * Converts string to bool.
@@ -512,26 +512,6 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
-}
-
-/**
- * A getComputedAttribute that supports dot notation to look up a component property.
- *
- * @param {Element} el - To look up attribute on.
- * @param {string} attr - dot notation or singular 'color' or 'material.color'
- * @returns Resulting value of component property.
- */
-function getComputedAttributeFor (el, attribute) {
-  var attributeSplit = attribute.split('.');
-  var componentName = attributeSplit[0];
-  var componentPropName = attributeSplit[1];
-  var attributeValue = el.getComputedAttribute(componentName);
-  // If the attribute is singular call normal getComputedAttribute function
-  if (attributeSplit.length === 1) { return attributeValue; }
-  // If the component exists as an attribute return the property on it
-  if (attributeValue) { return attributeValue[componentPropName]; }
-  // Otherwise Fall back to native get attribute with the component prop name
-  return el.getComputedAttribute(componentPropName);
 }
 
 /**

@@ -1,5 +1,8 @@
 var ANode = require('../../core/a-node');
 var registerElement = require('../../core/a-register-element').registerElement;
+var utils = require('../../utils/');
+
+var setComponentProperty = utils.entity.setComponentProperty;
 
 /**
  * Declarative events to help register event listeners that set attributes on other entities.
@@ -74,7 +77,6 @@ module.exports = registerElement('a-event', {
         return el.addEventListener(name, function () {
           var attribute;
           var attributeName;
-          var attributeSplit;
           var attributeValue;
           var targetEl;
 
@@ -87,17 +89,7 @@ module.exports = registerElement('a-event', {
 
               // target is a keyword for <a-event>.
               if (attributeName === 'target') { continue; }
-
-              // Handle component property selector like `material.color`.
-              if (attributeName.indexOf('.') !== -1) {
-                attributeSplit = attributeName.split('.');
-                targetEl.setAttribute(attributeSplit[0], attributeSplit[1],
-                                      attributeValue);
-                continue;
-              }
-
-              // Set plain attribute.
-              targetEl.setAttribute(attributeName, attributeValue);
+              setComponentProperty(targetEl, attributeName, attributeValue);
             }
           }
         });
