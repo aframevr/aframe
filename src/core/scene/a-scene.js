@@ -150,6 +150,7 @@ module.exports = registerElement('a-scene', {
     exitVR: {
       value: function () {
         var self = this;
+        if (!this.is('vr-mode')) { return; }
         return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         function exitVRSuccess () {
           self.removeState('vr-mode');
