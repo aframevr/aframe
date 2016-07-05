@@ -1,5 +1,6 @@
 require('./primitives/a-camera');
 require('./primitives/a-collada-model');
+require('./primitives/a-cursor');
 require('./primitives/a-curvedimage');
 require('./primitives/a-image');
 require('./primitives/a-light');
