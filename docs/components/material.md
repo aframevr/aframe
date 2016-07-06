@@ -180,7 +180,7 @@ Most of the other properties works together with textures. For example, the
 `color` property will act as the base color and be multiplied per pixel with
 the texture. Set it to `#fff` to maintain the original colors of the texture.
 
-Textures are cached by A-Frame in order not to push redundant textures to the
+Textures are cached by A-Frame in order to not push redundant textures to the
 GPU.
 
 ### Video Textures

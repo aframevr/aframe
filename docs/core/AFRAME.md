@@ -7,14 +7,11 @@ order: 10
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser
-global. This same interface is exposed if requiring with NPM
-(`require('aframe');`). `AFRAME` can be used to register new things and extend
+global. This same interface is exposed if requiring with Node
+(`require('aframe')`). `AFRAME` can be used to register new things and extend
 AFRAME's capabilities.
 
-## AFRAME Properties
-
-The A-Frame object is available on `window.AFRAME`. This will also be the
-object if required from NPM.
+## `AFRAME` Properties
 
 | Property          | Description                                             |
 | ----------        | -------------                                           |
@@ -32,14 +29,18 @@ object if required from NPM.
 | utils             | A-Frame utility modules.                                |
 | version           | Version of A-Frame build.                               |
 
-## window Properties
-
-A-Frame also sets a few properties on the `window`:
+## `window` Properties
 
 | Property                     | Description                                  |
 | ----------                   | -------------                                |
 | AFRAME                       | The object described above.                  |
 | hasNativeWebVRImplementation | Whether the client has native WebVR support. |
+
+## `document` Properties
+
+| Property        | Description                          |
+| ----------      | -------------                        |
+| registerElement | Modified `registerElement` polyfill. |
 
 [component]: ./component.md
 [entity]: ./entity.md

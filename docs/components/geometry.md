@@ -88,7 +88,7 @@ In degrees, `thetaStart` defines where to start a circle or arc and
 `thetaLength` defines where a circle or arc ends. If we wanted to make a `(`
 shape, we would start the circle halfway through and define the length as half
 of a circle. We can do this with `thetaStart: 180; thetaLength: 180`. Or if we
-wanted to make a `)` shape. We can do do `thetaStart: 0; thetaLength: 180`.
+wanted to make a `)` shape, we can do `thetaStart: 0; thetaLength: 180`.
 
 Useful cases might be to animating `thetaStart` to create a spinner effect or
 animating `thetaLength` on a fuse-based cursor for visual feedback.
@@ -233,7 +233,7 @@ We can create various polyhedrons and abstract shapes by specifying the number
 of horizontal angles and faces:
 
 ```html
-<a-entity geometry="primitive: sphere; segmentsWidth:2; segmentsHeight: 8"></a-entity>
+<a-entity geometry="primitive: sphere; segmentsWidth: 2; segmentsHeight: 8"></a-entity>
 ```
 
 | Property       | Description                    | Default Value |
@@ -251,7 +251,7 @@ of horizontal angles and faces:
 The tetrahedron geometry creates a polygon with four triangular faces.
 
 ```html
-<a-entity geometry="primitive: tetrahedron ; radius: 2"></a-entity>
+<a-entity geometry="primitive: tetrahedron; radius: 2"></a-entity>
 ```
 
 | Property | Description                                                                  | Default Value |

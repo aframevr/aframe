@@ -42,7 +42,7 @@ For room-scale experiences, design the experience with the camera at the origin 
 When the `active` property is toggled, the component will notify the camera system to change the current camera used by the renderer:
 
 ```js
-var secondCameraEl = document.querySelector('#second-camera')
+var secondCameraEl = document.querySelector('#second-camera');
 secondCameraEl.setAttribute('camera', 'active', true);
 ```
 
