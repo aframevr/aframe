@@ -34,23 +34,23 @@
 
       <a-entity position="-3.5 1 0">
         <a-entity mixin="red cube">
-          <a-animation begin="cursor-click" attribute="position" from="0 0 0"
+          <a-animation begin="click" attribute="position" from="0 0 0"
                        to="0 0 -10" dur="2000" fill="both"></a-animation>
         </a-entity>
       </a-entity>
 
       <a-entity position="0 1 0">
         <a-entity mixin="green cube"
-                  sound__1="on: cursor-click; src: ../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav;"
-                  sound__2="on: cursor-mouseenter; src: ../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav;">
-          <a-animation begin="cursor-click" attribute="rotation" to="0 360 0"
+                  sound__1="on: click; src: ../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav;"
+                  sound__2="on: mouseenter; src: ../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav;">
+          <a-animation begin="click" attribute="rotation" to="0 360 0"
                        easing="linear" dur="2000" fill="backwards"></a-animation>
         </a-entity>
       </a-entity>
 
       <a-entity position="3.5 1 0" rotation="0 45 0">
         <a-entity mixin="blue cube">
-          <a-animation begin="cursor-click" fill="forwards" repeat="1"
+          <a-animation begin="click" fill="forwards" repeat="1"
                        direction="alternate" attribute="position" from="0 0 0"
                        to="15 0 0" dur="2000"></a-animation>
         </a-entity>
@@ -66,7 +66,7 @@
         var clickedEl = null;
         var els = document.querySelectorAll('a-entity');
         Array.prototype.forEach.call(els, function (el) {
-          el.addEventListener('cursor-click', function () {
+          el.addEventListener('click', function () {
             if (clickedEl && clickedEl !== el) {
               clickedEl.removeState('selected');
             }
@@ -80,7 +80,7 @@
         var cubes = document.querySelectorAll('a-entity[mixin*=cube]');
         var i;
         for (i = 0; i < cubes.length; ++i) {
-          cubes[i].addEventListener('cursor-click', function () {
+          cubes[i].addEventListener('click', function () {
             var href = this.getAttribute('href');
             if (!href) { return; }
             window.top.postMessage({type: 'navigate', data: {url: href}}, '*');

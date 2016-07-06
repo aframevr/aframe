@@ -13,7 +13,7 @@ The cursor component lets us interact with entities through clicking and gazing.
 - Emits special mouse and hover events (e.g., relating to mouse down/up/enter/leave).
 - Has additional states for hovering.
 
-When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `cursor-click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
+When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
 
 ## Example
 
@@ -36,7 +36,7 @@ For example, we can create a ring-shaped cursor that is fixed to the center of t
 AFRAME.registerComponent('click-color-change', {
   init: function () {
     var COLORS = ['red', 'green', 'blue'];
-    this.el.addEventListener('cursor-click', function () {
+    this.el.addEventListener('click', function () {
       var randomIndex = Math.floor(Math.random() * COLORS.length);
       this.setAttribute('material', 'color', COLORS[randomIndex]);
       console.log('I was clicked!');
@@ -58,11 +58,11 @@ Note, to further customize the cursor component, we can set the properties of th
 
 | Event             | Description                                                                                                                 |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| cursor-click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
-| cursor-mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
-| cursor-mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
-| cursor-mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
-| cursor-mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
+| click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
+| mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
+| mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
+| mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
+| mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
 
 ## States
 
@@ -102,7 +102,7 @@ To add visual feedback to the cursor in order to display indication when the cur
           position="0 0 -1"
           geometry="primitive: ring"
           material="color: black; shader: flat">
-  <a-animation begin="cursor-click" easing="ease-in" attribute="scale"
+  <a-animation begin="click" easing="ease-in" attribute="scale"
                fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
   <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
                fill="forwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
