@@ -180,7 +180,7 @@ module.exports = registerElement('a-node', {
         if (currentObserver) { return; }
         var observer = new MutationObserver(function (mutations) {
           var attr = mutations[0].attributeName;
-          self.applyMixin(attr);
+          self.handleMixinUpdate(attr);
         });
         var config = { attributes: true };
         observer.observe(mixinEl, config);
@@ -188,7 +188,7 @@ module.exports = registerElement('a-node', {
       }
     },
 
-    applyMixin: {
+    handleMixinUpdate: {
       value: function () { /* no-op */ }
     },
 
