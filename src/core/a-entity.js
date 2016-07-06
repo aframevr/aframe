@@ -606,11 +606,9 @@ var proto = Object.create(ANode.prototype, {
    */
   getAttribute: {
     value: function (attr) {
+      // If cached value exists, return partial component data.
       var component = this.components[attr];
-      // If there's a cached value we just return it
-      if (component && component.attrValue !== undefined) {
-        return component.attrValue;
-      }
+      if (component && component.attrValue !== undefined) { return component.attrValue; }
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
@@ -627,6 +625,7 @@ var proto = Object.create(ANode.prototype, {
    */
   getComputedAttribute: {
     value: function (attr) {
+      // If component, return component data.
       var component = this.components[attr];
       if (component) { return component.getData(); }
       return HTMLElement.prototype.getAttribute.call(this, attr);

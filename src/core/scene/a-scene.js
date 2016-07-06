@@ -94,8 +94,7 @@ module.exports = registerElement('a-scene', {
       value: function (name) {
         var system;
         if (this.systems[name]) { return; }
-        system = this.systems[name] = new systems[name]();
-        system.sceneEl = this;
+        system = this.systems[name] = new systems[name](this);
         system.init();
       }
     },
@@ -168,6 +167,46 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Wraps Entity.getAttribute to take into account for systems.
+     * If system exists, then return system data rather than possible component data.
+     */
+    getAttribute: {
+      value: function (attr) {
+        var system = this.systems[attr];
+        if (system) { return system.data; }
+        return AEntity.prototype.getAttribute.call(this, attr);
+      }
+    },
+
+    /**
+     * Wraps Entity.getComputedAttribute to take into account for systems.
+     * If system exists, then return system data rather than possible component data.
+     */
+    getComputedAttribute: {
+      value: function (attr) {
+        var system = this.systems[attr];
+        if (system) { return system.data; }
+        return AEntity.prototype.getComputedAttribute.call(this, attr);
+      }
+    },
+
+    /**
+     * Wraps Entity.setAttribute to take into account for systems.
+     * If system exists, then skip component initialization checks and do a normal
+     * setAttribute.
+     */
+    setAttribute: {
+      value: function (attr, value, componentPropValue) {
+        var system = this.systems[attr];
+        if (system) {
+          ANode.prototype.setAttribute.call(this, attr, value);
+          return;
+        }
+        AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
       }
     },
 
