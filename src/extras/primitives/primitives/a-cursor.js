@@ -22,7 +22,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       z: -1
     },
     raycaster: {
-    	far: 1000
+      far: 1000
     }
   },
 
