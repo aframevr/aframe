@@ -100,7 +100,7 @@ module.exports.Component = registerComponent('cursor', {
     this.fuseTimeout = setTimeout(function fuse () {
       cursorEl.removeState(STATES.FUSING);
       self.twoWayEmit(EVENTS.CLICK);
-    }, data.timeout);
+    }, data.fuseTimeout);
   },
 
   /**

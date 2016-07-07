@@ -162,7 +162,7 @@ suite('cursor', function () {
     test('removes fuse state and emits event on fuse click', function (done) {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
-      cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
+      cursorEl.setAttribute('cursor', {fuse: true, fuseTimeout: 1});
       cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
       cursorEl.addEventListener('click', function () {
         assert.notOk(cursorEl.is('cursor-fusing'));
@@ -173,7 +173,7 @@ suite('cursor', function () {
     test('emits event on intersectedEl on fuse click', function (done) {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
-      cursorEl.setAttribute('cursor', {fuse: true, timeout: 1});
+      cursorEl.setAttribute('cursor', {fuse: true, fuseTimeout: 1});
       cursorEl.emit('raycaster-intersection', {els: [intersectedEl]});
       intersectedEl.addEventListener('click', function () {
         done();
