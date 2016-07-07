@@ -71,6 +71,7 @@ module.exports = window.AFRAME = {
   primitives: {
     getMeshMixin: require('./extras/primitives/getMeshMixin')
   },
+  schema: require('./core/schema'),
   shaders: shaders,
   systems: systems,
   THREE: THREE,
