@@ -31,6 +31,6 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
     fuse: 'cursor.fuse',
     interval: 'raycaster.interval',
     objects: 'raycaster.objects',
-    timeout: 'cursor.fuseTimeout'
+    'fuse-timeout': 'cursor.fuseTimeout'
   }
 }));
