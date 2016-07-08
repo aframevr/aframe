@@ -112,34 +112,6 @@ module.exports = registerElement('a-node', {
       }
     },
 
-    addMixin: {
-      value: function (mixinId) {
-        var mixins = this.getAttribute('mixin');
-        var mixinIds = mixins.split(' ');
-        var i;
-        for (i = 0; i < mixinIds.length; ++i) {
-          if (mixinIds[i] === mixinId) { return; }
-        }
-        mixinIds.push(mixinId);
-        this.setAttribute('mixin', mixinIds.join(' '));
-      }
-    },
-
-    removeMixin: {
-      value: function (mixinId) {
-        var mixins = this.getAttribute('mixin');
-        var mixinIds = mixins.split(' ');
-        var i;
-        for (i = 0; i < mixinIds.length; ++i) {
-          if (mixinIds[i] === mixinId) {
-            mixinIds.splice(i, 1);
-            this.setAttribute('mixin', mixinIds.join(' '));
-            return;
-          }
-        }
-      }
-    },
-
     registerMixin: {
       value: function (mixinId) {
         if (!this.sceneEl) { return; }
