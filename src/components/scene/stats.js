@@ -11,6 +11,8 @@ var AFrameStats = window.aframeStats;
  * Stats appended to document.body by RStats.
  */
 module.exports.Component = registerComponent('stats', {
+  schema: { default: true },
+
   init: function () {
     var scene = this.el;
     this.stats = createStats(scene);
@@ -21,6 +23,10 @@ module.exports.Component = registerComponent('stats', {
 
     scene.addEventListener('enter-vr', this.hideBound);
     scene.addEventListener('exit-vr', this.showBound);
+  },
+
+  update: function () {
+    return (!this.data) ? this.hide() : this.show();
   },
 
   remove: function () {
