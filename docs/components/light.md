@@ -84,10 +84,10 @@ Spot lights are like point lights in the sense that they affect materials depend
 <a-entity light="type: spot; angle: 45"></a-entity>
 ```
 
-| Property    | Description                                                                                                | Default Value |
-|-------------|------------------------------------------------------------------------------------------------------------|---------------|
-| angle       | Maximum extent of spot light from its direction (in degrees).                                               | 60            |
-| decay       | Amount the light dims along the distance of the light.                                                     | 1.0           |
-| distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
-| exponent    | Rapidity of falloff of light from its target direction.                                                    | 10.0          |
-| intensity   | Light strength.                                                                                            | 1.0           |
+| Property  | Description                                                                                                  | Default Value |
+|-----------|--------------------------------------------------------------------------------------------------------------|---------------|
+| angle     | Maximum extent of spot light from its direction (in degrees).                                                | 60            |
+| decay     | Amount the light dims along the distance of the light.                                                       | 1.0           |
+| distance  | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
+| intensity | Light strength.                                                                                              | 1.0           |
+| penumbra  | Percent of the spotlight cone that is attenuated due to penumbra.                                            | 0.0           |

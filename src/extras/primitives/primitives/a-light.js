@@ -11,8 +11,8 @@ registerPrimitive('a-light', {
     'ground-color': 'light.groundColor',
     decay: 'light.decay',
     distance: 'light.distance',
-    exponent: 'light.exponent',
     intensity: 'light.intensity',
+    penumbra: 'light.penumbra',
     type: 'light.type'
   }
 });

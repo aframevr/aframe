@@ -11,16 +11,17 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    angle: { default: 60, if: { type: ['spot'] } },
-    color: { type: 'color' },
-    groundColor: { type: 'color', if: { type: ['hemisphere'] } },
-    decay: { default: 1, if: { type: ['point', 'spot'] } },
-    distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
-    exponent: { default: 10.0, if: { type: ['spot'] } },
-    intensity: { default: 1.0, min: 0, if: { type: ['ambient', 'directional', 'hemisphere', 'point', 'spot'] } },
-    type: { default: 'directional',
-            oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
-    }
+    angle: {default: 60, if: {type: ['spot']}},
+    color: {type: 'color'},
+    groundColor: {type: 'color', if: {type: ['hemisphere']}},
+    decay: {default: 1, if: {type: ['point', 'spot']}},
+    distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
+    intensity: {default: 1.0, min: 0,
+                if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
+    penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
+    type: {default: 'directional',
+           oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
+   }
   },
 
   /**
@@ -108,7 +109,7 @@ function getLight (data) {
       return new THREE.PointLight(color, intensity, distance, decay);
     }
     case 'spot': {
-      return new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.exponent,
+      return new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.penumbra,
                                  decay);
     }
     default: {

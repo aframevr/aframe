@@ -30,9 +30,9 @@ The light primitive adjusts the lighting setup of the scene. It is an entity tha
 | color        | light.color       | #fff          |
 | decay        | light.decay       | 1             |
 | distance     | light.distance    | 0.0           |
-| exponent     | light.exponent    | 10.0          |
 | ground-color | light.groundColor | #fff          |
 | intensity    | light.intensity   | 1.0           |
+| penumbra     | light.penumbra    | 0.0           |
 | type         | light.type        | directional   |
 
 ## Differences with the Default Lighting

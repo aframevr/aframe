@@ -72,10 +72,11 @@ suite('light', function () {
     test('can get spot light', function () {
       var el = this.el;
       var light;
-      el.setAttribute('light', 'type: spot; angle: 180');
+      el.setAttribute('light', 'type: spot; angle: 180; penumbra: 0.5');
       light = el.object3D.children[0];
       assert.equal(light.type, 'SpotLight');
       assert.equal(light.angle, Math.PI);
+      assert.equal(light.penumbra, 0.5);
     });
 
     test('handles invalid type', function () {
