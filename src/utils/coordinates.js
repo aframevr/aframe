@@ -42,7 +42,7 @@ module.exports.parse = parse;
  */
 function stringify (data) {
   if (typeof data !== 'object') { return data; }
-  return [data.x, data.y, data.z].join(' ');
+  return [data.x, data.y, data.z, data.w].join(' ').trim();
 }
 module.exports.stringify = stringify;
 
