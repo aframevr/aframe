@@ -33,5 +33,4 @@ component with the type set to `torus`.
 | src              | material.src             | None          |
 | transparent      | material.transparent     | false         |
 
-[common]: ./common-attributes.md
 [geometry]: ../components/geometry.md

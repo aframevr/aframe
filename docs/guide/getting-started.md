@@ -18,7 +18,7 @@ go, we have several ways of getting started.
 ## Play with CodePen
 
 [CodePen][codepen] is a playground for front-end web development. We can edit
-HTML and JavaScript directly in the browser with their text editor, see changes
+HTML and JavaScript directly in the browser with its text editor, see changes
 live, and share code snippets. This is a fast way to dive in without having to
 download or install anything. Check out the [official MozVR
 CodePens](http://codepen.io/mozvr/) and the [A-Frame Hello World

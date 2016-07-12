@@ -34,5 +34,4 @@ component with the type set to `torusKnot`.
 | src              | material.src             | None          |
 | transparent      | material.transparent     | false         |
 
-[common]: ./common-attributes.md
 [geometry]: ../components/geometry.md

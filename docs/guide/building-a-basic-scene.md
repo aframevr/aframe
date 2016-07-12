@@ -142,7 +142,7 @@ box event, using the animation's `begin` attribute. The cursor will emit the
   </a-box>
 
   <a-camera position="0 1.8 0">
-    <a-cursor color="#2E3A87">
+    <a-cursor color="#2E3A87"></a-cursor>
   </a-camera>
 </a-scene>
 ```
@@ -207,7 +207,7 @@ sun). Once we add lights of our own, this default lighting setup is removed:
 
 ## Adding a Background to the Scene
 
-Lastly, we can add a background to the scene using [`<a-sky>`][sky].  The
+Lastly, we can add a background to the scene using [`<a-sky>`][sky]. The
 background can be a color, a 360&deg; image, or even a 360&deg; video. This is
 created by creating a sphere that wraps the scene:
 

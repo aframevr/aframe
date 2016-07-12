@@ -8,42 +8,31 @@ order: 5
 
 Devices and platform support depends on how well the browsers support certain
 devices and APIs. A-Frame supports both flat (3D on a normal screen) and WebVR
-experiences.  Though its focus is heavily VR. We will break up support into two
+experiences, though its focus is heavily VR. We will break up support into two
 categories: flat and VR.
 
 <!--toc-->
 
 ## Support for Flat Experiences
 
-Support for flat experiences primarily depends on the browsers' WebGL support.
-We can see what browsers support WebGL at [Can I use WebGL?][caniusewebgl].
+Support for flat experiences primarily depends on a browser's WebGL support.
+We can see which browsers support WebGL at [Can I use WebGL?][caniusewebgl].
 
 ## Support for VR Experiences
 
-Support for VR experiences, along with WebGL support, depends on the browsers'
-WebVR API support. The browsers that support the WebVR API *at the moment you
-read this* depends on the browsers and not on A-Frame. As more and more
-browsers adopt the WebVR APIs, they will inherit support from A-Frame.
+Support for VR experiences, along with WebGL support, depends on a browser's
+support for the [WebVR API][webvr-1.0]. You can see which browsers currently
+support the WebVR API at [Is WebVR Ready?][iswebvrready]. A-Frame supports
+version 1.0 of the WebVR API.
 
-You can see what browsers *currently* support the WebVR API at [Is WebVR
-Ready?][iswebvrready].
-
-This version of A-Frame supports these forms of the WebVR API:
-
-| WebVR API                     | Details                                                                             |
-|-------------------------------|-------------------------------------------------------------------------------------|
-| [WebVR 1.0][webvr-1.0]        | Primary support.                                                                    |
-| Deprecated `getVRDevices` API | Supported through the [WebVR Polyfill][webvr-polyfill].                             |
-| WebVR Polyfill                | Supports mobile devices using device motion and orientation APIs (Cardboard-style). |
+The exception to this is for mobile devices, which are supported through the
+[WebVR Polyfill][webvr-polyfill].
 
 ### Support for Controllers
 
-*Out-of-the-box*, A-Frame supports `6DoF` controllers using Brandon Jones'
-4/24/16 experimental build of Chromium with experimental controller support.
-
-*However*, A-Frame is equipped to support any future changes to the controller
-APIs through the component system. [Components][components] can be developed
-and published parallel to the core A-Frame library.
+A-Frame currently supports [`6DoF`][6dof] controllers using Brandon Jones' 4/24/16
+[experimental build of Chromium][chrome] with experimental controller support
+(e.g., Vive controllers).
 
 ## Hardware Specifications
 
@@ -54,12 +43,10 @@ recommended requirements](https://www.htcvive.com/us/product-optimized/).
 For mobile, we recommend at least an *iPhone 6 for iOS* and at least a *Galaxy
 S6 for Android*.
 
+[6dof]: https://en.wikipedia.org/wiki/Six_degrees_of_freedom
 [caniusewebgl]: http://caniuse.com/#feat=webgl
-[chromium]: https://chromium.googlesource.com/experimental/chromium/src/+/refs/wip/bajones/webvr_1
+[chrome]: https://webvr.info/get-chrome/
 [components]: ./components.md
 [iswebvrready]: https://iswebvrready.org
-[nightly]: https://nightly.mozilla.org/
-[mozvr]: https://mozvr.com
-[spec]: https://mozvr.com/webvr-spec/
+[webvr-1.0]: https://w3c.github.io/webvr/
 [webvr-polyfill]: https://github.com/borismus/webvr-polyfill
-[webvr-1.0]: https://hacks.mozilla.org/2016/03/introducing-the-webvr-1-0-api-proposal/

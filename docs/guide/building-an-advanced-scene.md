@@ -13,9 +13,9 @@ order: 4
 Let's go through an example building a scene using an
 [entity-component-system][ecs] workflow. This guide will introduce three concepts:
 
-1. Using the standard [components][components] that ship with A-Frame
-2. Using third-party components from the ecosystem
-3. Writing custom components to accomplish whatever we want
+1. Using the standard [components][components] that ship with A-Frame.
+2. Using third-party components from the ecosystem.
+3. Writing custom components to accomplish whatever we want.
 
 The scene we will build is a **360&deg; image viewer**. There will be three
 panels which the user can click on. Once clicked, the background will fade and
@@ -47,7 +47,7 @@ This is the starting point for our scene:
 
   <!-- Camera + Cursor. -->
   <a-camera>
-    <a-cursor id="cursor">
+    <a-cursor id="cursor"></a-cursor>
       <a-animation begin="cursor-click" easing="ease-in" attribute="scale"
                    fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
       <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
@@ -108,14 +108,14 @@ Now we have a textured plane that plays a click sound when clicked.
 
 ## Using Third-Party Components
 
-We can grab third-party components from the ecosystem, drop them into our
+We can grab third-party components from the [ecosystem][awesome], drop them into our
 scene, and use them from HTML. Components can do anything. By using components
 that other people have developed, we gain tons of power without needing to
 write our own code.
 
 We'll go through using three such third-party components: template, layout, and
-event set. First we have to include them. [k-frame][k-frame] is a component
-pack by an A-Frame core developer that conveniently includes all three of these
+event-set. First we have to include them. [k-frame][k-frame] is a component
+pack by an [A-Frame core developer][ngokevin] that conveniently includes all three of these
 components in one bundle.
 
 To drop in `k-frame`, we can download from its [dist folder][kdist] and include it
@@ -129,7 +129,9 @@ in the `<head>` *after* A-Frame:
     <script src="lib/k-frame.min.js"></script>
   </head>
   <body>
-    <!-- <a-scene>... -->
+    <a-scene>
+      <!-- ... ->
+    </a-scene>
   </body>
 </html>
 ```
@@ -144,9 +146,9 @@ This lets us do things such as encapsulate groups of entities, passing data to
 generate entities, or iteration. Since we want to turn one link into three,
 without copy-and-pasting HTML, we can use the template component.
 
-If we read the component's documentation, we see one way to define a template
-is via a script tag in `<a-assets>`. Let's make our link a template and give it
-a name via `id`:
+If we read the [template component's documentation][template], we see one way
+to define a template is via a script tag in `<a-assets>`. Let's make our link a
+template and give it a name via `id`:
 
 ```html
 <a-assets>
@@ -174,7 +176,7 @@ substitution/interpolation.
 Let's tell the template component to use the popular [Nunjucks][nunjucks]
 engine by specifying `<script type="text/nunjucks">`. The component will
 lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
-}}` variable in the template, which we can pass using the data attributes:
+}}` variable in the template, which we can pass using the [data attributes][data]:
 
 ```html
 <a-assets>
@@ -190,27 +192,27 @@ lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
 <!-- ... -->
 
 <!-- Pass image sources to the template. -->
-<a-entity template="src: #plane" data-thumb="#city-thumb></a-entity>
+<a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
 <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
 <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
 ```
 
-Here, the template component allows us to not have to repeat code and keep our
-scene clean.
+The template component allows us to keep our scene clean by not having to
+repeat verbose code.
 
 ### Layout Component
 
-But the position of the links are all the same so they will overlap. While we
-could manually position each link, we could use the [layout component][layout]
-to do it for us. The layout component will automatically position its children
-to the specified layout.
+Because the default position of an entity is `0 0 0`, the entities will
+overlap. While we could manually position each link, we could use the [layout
+component][layout] to do it for us. The layout component will automatically
+position its children to the specified layout.
 
 We create a wrapper entity around our links and attach the layout component
 using the `line` layout:
 
 ```html
 <a-entity id="links" layout="layout: line; margin: .75" position="-3 -1 -4">
-  <a-entity template="src: #plane" data-thumb="#city-thumb></a-entity>
+  <a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
 </a-entity>
@@ -219,25 +221,25 @@ using the `line` layout:
 Now our links are no longer overlapping without us having to calculate and
 fiddle with positions.
 
-### Event Set Component
+### Event-Set Component
 
 Lastly, we'll add some visual feedback to our links. We want them to scale up
 and scale back when they are hovered or clicked. This involves writing an event
 listener to do `setAttribute`s on the [scale component][scale] in response to
-[cursor events][cursor-events]. This is a fairly common pattern so there is a
-[event set component][event-set] that does `setAttribute` in response to
+[cursor events][cursor-events]. This is a fairly common pattern so there is an
+[event-set component][event-set] that does `setAttribute` in response to
 events.
 
-The event set component defines a unique syntax to be able to define multiple
-event handlers. Wheres single-property component data represents a value, and
-multi-property component data represents an object, the event set component is
-comma-separated and represents an array of objects.
+The event-set component defines a unique syntax to be able to define multiple
+event handlers. Whereas single-property component data represents a value, and
+multi-property component data represents an object, the event-set component's
+value is comma-separated and represents an array of objects.
 
-Let's attach event setters on our links to scale them up when they are gazed
+Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they
-are no longer gazed upon. We are mimicking CSS hover states from the 2D web.
-We can specify event names with `_event` properties, and the rest of the
-properties define the `setAttibute` calls:
+are no longer gazed upon. We are mimicking CSS hover states.  We can specify
+event names with `_event` properties, and the rest of the properties define the
+`setAttibute` calls:
 
 ```html
 <a-assets>
@@ -255,9 +257,8 @@ properties define the `setAttibute` calls:
 ```
 
 Wielding components, we were able to do a lot with just a few more lines of
-HTML. Though most of the time, we need application-specific components or
-components not found in the ecosystem. For these cases, we can easily write our
-own to do whatever we want.
+HTML. Though the ecosystem has a lot to offer, your scenes will often require
+writing your own simple components.
 
 ## Writing Components
 
@@ -298,7 +299,7 @@ Unfortunately since the links are templated, they won't be found at that time.
 What we can do is write a component that refreshes our raycaster when the link
 attaches. Here will be the skeleton of our component:
 
-```
+```js
 AFRAME.registerComponent('update-raycaster', {
   schema: {
     // ...
@@ -326,7 +327,7 @@ AFRAME.registerComponent('update-raycaster', {
 });
 ```
 
-Then we use that data to actually update the raycaster on the `init` lifecycle
+Then we use that data to actually update the raycaster in the `init` lifecycle
 method, which is called when the component is attached to the entity. We grab
 the raycaster and update it:
 
@@ -343,7 +344,7 @@ AFRAME.registerComponent('update-raycaster', {
 });
 ```
 
-### Set Image Component
+### Set-Image Component
 
 > View the full [`set-image` component on GitHub](https://github.com/aframevr/360-image-viewer-boilerplate/blob/master/components/set-image.js).
 
@@ -368,7 +369,7 @@ Now we decide what the API for our image-setting component will be. We need:
 - An event name to listen to.
 - Which entity to change the texture of.
 - The image texture.
-- Animation fade duration.
+- An animation fade duration.
 
 So we translate those properties to the schema:
 
@@ -383,18 +384,12 @@ AFRAME.registerComponent('set-image', {
 
   init: function () {
     // ...
+  },
+
+  setupFadeAnimation: function () {
+    // Appends an <a-animation> that fades to black.
   }
 });
-```
-
-The component needs to set up the fade animation on the target. We don't need
-to get into the details for that, but assume it's abstracted away with
-`this.setupFadeAnimation`. But know that it appends an animation to the target
-that'll look like:
-
-```html
-<a-animation attribute="material.color" begin="set-image-fade" direction="alternate"
-             repeat="1" from="white" to="black"></a-animation>
 ```
 
 Now we set up the event listener to change the image while the texture has
@@ -427,7 +422,7 @@ wait the appropriate amount of time, and swap the image:
 
 And that concludes our 360&deg; image viewer.
 
-> **[Try it out!](http://aframevr.github.io/360-image-viewer-boilerplate)**
+> **[Try it out!](https://aframe.io/360-image-viewer-boilerplate/)**
 
 [a-sky]: ../primitives/a-sky.md
 [ams]: ../core/asset-management-system.md
@@ -441,6 +436,7 @@ And that concludes our 360&deg; image viewer.
 [components]: ../core/component.md
 [cursor]: ../components/cursor.md
 [cursor-events]: ../components/cursor.md#events
+[data]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_data_attributes
 [ecs]: ../core/index.md
 [event-set]: https://github.com/ngokevin/aframe-event-set-component
 [github]: https://github.com/ngokevin/aframe-fps-example
@@ -448,6 +444,7 @@ And that concludes our 360&deg; image viewer.
 [material]: ../components/material.md
 [mixin]: ../core/mixins.md
 [multi-property]: ../core/component.md#multi-property-component
+[ngokevin]: https://github.com/ngokevin
 [nunjucks]: https://mozilla.github.io/nunjucks/
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
 [raycaster-component]: ../components/raycaster.md

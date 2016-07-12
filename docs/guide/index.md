@@ -59,7 +59,7 @@ the behavior of exploding on collision.
 A-Frame was built by the [Mozilla VR team][mozvr] to make it **quicker** and
 **easier** to build 3D/VR scenes in order for them to prototype faster and to
 bridge the web development community into the WebVR ecosystem. For WebVR to
-succeed, it needs content.  There are only a handful of WebGL developers in the
+succeed, it needs content. There are only a handful of WebGL developers in the
 world, but there are *millions* of web developers, designers, and artists.
 A-Frame puts 3D/VR content creation into the hands of everyone.
 
@@ -68,66 +68,48 @@ A-Frame puts 3D/VR content creation into the hands of everyone.
 Without A-Frame, starting a proper WebVR project is a lot of effort. You need
 to know what you are doing and repeat the same tedious work for every scene:
 
-Import the WebVR polyfill, look through the three.js repository examples for
-`VREffect`, declare a canvas, create a camera, set up lights, instantiate a
-render loop, wire everything together, build UI to enter VR, etc.
-
-Would toy sites like [zombo.com](https://zombo.com) exist if simply getting
-started required this much work? WebVR should thrive with long tail bite-sized
-experiences, but boilerplate is a strong barrier to motivation.
-
-In A-Frame, all boilerplate is reduced to one line of HTML: **`<a-scene>`**
-
 <video autoplay loop src="/videos/boilerplate.mp4"></video>
 
-All pieces of work in general are greatly reduced.  Rather than creating a
-mesh, creating a geometry, creating a material, and appending to scene...we can
-just add one of HTML.
+WebVR should thrive with long-tail, bite-sized experiences, but boilerplate is
+a strong barrier to motivation of wanting to build. In A-Frame, all boilerplate
+is reduced to a single line of HTML: **`<a-scene>`**.
+
+And rather than creating a mesh, creating a geometry, creating a material, then
+appending to scene, that is all also reduced to a single line of HTML.
 
 ### A-Frame is Tailored for Web Developers
 
-HTML is arguably the easiest interface in all of computing, and it is
-universally understood amongst web developers and even non-developers. With
-A-Frame based on the DOM, we can manipulate scenes like we would with other web
-application: `getAttribute`, `setAttribute`, `querySelector`, etc., it's all
-there.
-
-This also means that most JavaScript frameworks and libraries integrate with
-A-Frame out-of-the-box. d3, React, Vue.js, Meteor, jQuery all work like a
-charm.
-
-A-Frame was built by front-end web developers *for* front-end web developers.
-Do you like using npm, GitHub, and the shiniest JavaScript frameworks? So do
-we.
+With A-Frame based on the DOM, we can manipulate scenes as we would with other
+web application: `getAttribute`, `setAttribute`, `querySelector`, etc.  Most
+JavaScript frameworks and libraries integrate with A-Frame out of the box.  d3,
+React, Vue.js, Meteor, jQuery all work like a charm. A-Frame was built by web
+developers for web developers.
 
 ### A-Frame Provides Structure to three.js
 
 > "A-Frame is like when MVC landed in traditional front-end work...[where]
 three.js is like jQuery." &mdash; @wizgrav
 
-[three.js][three] is amazing. It has provided mere mortals that ability to work
-with 3D WebGL. Though like jQuery, three.js code is very loosely structured.
-This makes most three.js code hard to reuse and hard to copy-and-paste.
+[three.js][three] has made it very accessible to develop 3D WebGL, but three.js
+code is often loosely structured. A-Frame provides a way to structure three.js
+code.
 
 **A-Frame is a declarative entity-component-system framework for three.js.**
 
-Developers can bundle three.js and JavaScript code within A-Frame components.
-These components can be reused and composed. If published and shared, these
-components can be used by other developers via the HTML abstraction layer.
+Developers can modularize three.js and JavaScript code within A-Frame
+components. These components can be composed with one another. If published and
+shared, these components can be used by other developers via HTML.
 
 ## Have Fun!
 
-Many believe WebVR will become the platform for the open Metaverse. Though
-these are the early days, and it will be a long journey to get there. There is
-much to do, territory to explore, things to discover. Being involved today is
-like being a pioneer. It's a chance to make our marks.
-
-It is recommended to read through the *Guide* and *Core* sections of the
-documentation. If you have any questions, join the other hundreds of developers
-on [Slack][slack]! Welcome to the future of the web!
+It is recommended to read through the [Guide][basic-scene] and [Core][core]
+sections of the documentation. If you have any questions, join the other
+hundreds of developers on [Slack][slack]!
 
 [awesome]: https://github.com/aframevr/awesome-aframe
+[basic-scene]: ./building-a-basic-scene.md
 [component]: ../core/component.md
+[core]: ../core/index.md
 [custom]: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements
 [ecs]: ../core/index.md
 [entity]: ../core/entity.md

@@ -37,7 +37,7 @@ A plain color as a background:
 | opacity         | material.opacity        | 1             |
 | phi-length      | geometry.phiLength      | 360           |
 | phi-start       | geometry.phiStart       | 0             |
-| radius          | geometry.radius         | 100           |
+| radius          | geometry.radius         | 5000          |
 | repeat          | material.repeat         | None          |
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 20            |

@@ -17,9 +17,8 @@ Primitives are [entities][entity] that:
 
 They are a convenience layer on top of the core API and are meant to:
 
-- Make A-Frame more accessible to beginners and non-technical people
 - Pre-compose useful components together with prescribed defaults
-- Act as a shorthand for complex, but common types of entities (e.g., `<a-sky>`)
+- Act as a shorthand for complex-but-common types of entities (e.g., `<a-sky>`)
 - Provide a familiar interface with HTML attributes mapping to only a single value
 
 They are sort of like [Prefabs in Unity][prefab]. Some literature on the
@@ -51,8 +50,8 @@ Here is an assortment of various primitives in use:
 
 ## Primitives are Entities
 
-Since primitives extends `<a-entity>`s, things that can be done with entities
-can be done with primitives. These things include:
+Since every primitive extends `<a-entity>`s, things that can be done with
+entities can be done with primitives:
 
 - Positioning, rotating, and scaling
 - Attaching [components][component] and [mixins][mixin]
@@ -147,7 +146,6 @@ Then we'd be able to create oceans using basic HTML syntax with little configura
 [a-plane]: ./a-plane.md
 [aframe-extras]: https://github.com/donmccurdy/aframe-extras
 [animation]: ../core/animation.md
-[common]: ./common-attributes.md
 [component]: ../core/component.md
 [entity]: ../core/entity.md
 [material]: ../components/material.md
