@@ -20,6 +20,7 @@ module.exports.Component = registerComponent('sound', {
 
   init: function () {
     this.listener = null;
+    this.audioLoader = null;
     this.sound = null;
     this.playSound = this.playSound.bind(this);
   },
@@ -46,7 +47,14 @@ module.exports.Component = registerComponent('sound', {
     }
 
     // All sound values set. Load in `src`.
-    if (srcChanged) { sound.load(data.src); }
+    if (srcChanged) {
+      var audioLoader = this.audioLoader || new THREE.AudioLoader();
+      audioLoader.load(data.src, function (buffer) {
+        sound.setBuffer(buffer);
+        // Remove this key from cache, otherwise we can't play it again
+        THREE.Cache.remove(data.src);
+      });
+    }
   },
 
   /**
