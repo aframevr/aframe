@@ -11,22 +11,57 @@ nav_slug: install
 
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
-There are several ways to get started with A-Frame:
-
-* [Play with CodePen](#CodePen)
-* [Grab the Boilerplate](#Boilerplate)
-* [Include the JS Build](#Builds)
-* [Install from npm](#npm)
-
-## CodePen
+## Beginners:
+You can quickly check out and play with A-frame [in CodePen](#CodePen):
 
 [CodePen][codepen] is a playground for front-end web development. We can edit HTML and JavaScript directly in the browser with their text editor, see changes live, and share code snippets. This is a fast way to dive in without having to download or install anything. Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the [A-Frame Hello World CodePen][codepen]:
 
-<p data-height="300" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<p data-height="300" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World, A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-## Boilerplate
+Now you can get started developing your own A-frame sites.  
 
-The boilerplate contains:
+1) If you don't have one already, you’ll need a place to store and publish your code.  [Create a github account.](https://github.com/join)
+
+2) Next you’ll need a way to keep track of the changes you make to your code as it is developed.  
+[Download and install git.](http://git-scm.com/download)
+
+Git is open source version control software that helps you track changes to your code as it is developed.  It is the de facto standard for developers to help them keep track of changes in their code.
+
+3) Download the A-frame framework for creating virtual reality web experiences from Github.  <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
+
+4) Install Node.  Node simply executes your code so that you can view it in your browser.  [Download node.](https://nodejs.org/en/download/)
+
+As part of the installation you just did for Node, a program called NPM was installed.  NPM checks for packages of code on your computer and looks for dependencies on other packages to help you know which versions of code you are working with and help you find what is missing.  
+
+Here’s a [great resource] (https://try.github.io/levels/1/challenges/1) to learn a bit more about how to use git and the command line.
+
+5) Next you can start your very own development server with these magical words in the terminal:
+```bash
+# Start your server 
+$ npm start
+```
+
+
+6) Go to your Firefox browser window and put in 
+```bash
+http://localhost:9000
+``` 
+as the URL or address.
+
+7) Right click on an example file in your A-frame folder to open in Firefox.  
+
+You should see that scene working in your browser!  
+
+8) Now, open an HTML text editor like [Atom](https://atom.io/) or your favorite text editor.  
+
+You can start testing out and making changes in your text editor to build your virtual reality environments.
+
+9) Once you've made a change in your text editor, the easiest way to publish your virtual reality page is through [github pages.](https://pages.github.com/)  You can follow these quick and easy instructions to [publish your site.](https://pages.github.com/)
+
+
+## Developers:
+
+Download the A-frame boilerplate that contains:
 
 - A simple HTML file that links to the [current version of A-Frame](#builds-prod) of A-Frame
 - An optional local development server
