@@ -117,8 +117,6 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
  */
 function parseProperty (value, propDefinition) {
   value = (value === undefined || value === null) ? propDefinition.default : value;
-  if (typeof value !== 'string') { return value; }
-  if (typeof value === 'undefined') { return value; }
   return propDefinition.parse(value);
 }
 module.exports.parseProperty = parseProperty;

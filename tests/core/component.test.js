@@ -118,6 +118,18 @@ suite('Component', function () {
       data = buildData(el, 'dummy', TestComponent.prototype.schema, 'green', 'green');
       assert.equal(data, 'green');
     });
+
+    test('returns default value for a single-property schema ' +
+         'when the attribute is empty string', function () {
+      var data;
+      var TestComponent = registerComponent('dummy', {
+        schema: { default: 'red' }
+      });
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', '');
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, 'red');
+      assert.equal(data, 'red');
+    });
   });
 
   suite('third-party components', function () {
