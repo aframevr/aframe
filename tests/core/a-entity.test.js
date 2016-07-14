@@ -497,7 +497,7 @@ suite('a-entity', function () {
     test('returns full data of a multiple component', function () {
       var componentData;
       var el = this.el;
-      el.setAttribute('sound__test', 'src: mysoundfile.mp3');
+      el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
       componentData = el.getComputedAttribute('sound__test');
       assert.equal(componentData.src, 'mysoundfile.mp3');
       assert.equal(componentData.autoplay, false);

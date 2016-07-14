@@ -9,8 +9,8 @@ var warn = debug('components:sound:warn');
  */
 module.exports.Component = registerComponent('sound', {
   schema: {
-    src: { default: '' },
-    on: { default: 'click' },
+    src: { type: 'src' },
+    on: { default: '' },
     autoplay: { default: false },
     loop: { default: false },
     volume: { default: 1 }
@@ -20,6 +20,7 @@ module.exports.Component = registerComponent('sound', {
 
   init: function () {
     this.listener = null;
+    this.audioLoader = new THREE.AudioLoader();
     this.sound = null;
     this.playSound = this.playSound.bind(this);
   },
@@ -46,7 +47,13 @@ module.exports.Component = registerComponent('sound', {
     }
 
     // All sound values set. Load in `src`.
-    if (srcChanged) { sound.load(data.src); }
+    if (srcChanged) {
+      this.audioLoader.load(data.src, function (buffer) {
+        sound.setBuffer(buffer);
+        // Remove this key from cache, otherwise we can't play it again
+        THREE.Cache.remove(data.src);
+      });
+    }
   },
 
   /**

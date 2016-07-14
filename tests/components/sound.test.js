@@ -5,7 +5,7 @@ suite('sound', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
 
-    el.setAttribute('sound', 'src: mysoundfile.mp3; autoplay: true; loop: true');
+    el.setAttribute('sound', 'src: url(mysoundfile.mp3); autoplay: true; loop: true');
     el.addEventListener('loaded', function () {
       done();
     });
@@ -22,7 +22,7 @@ suite('sound', function () {
     test('re-creates sound when changing src', function () {
       var el = this.el;
       var oldAudio = el.getObject3D('sound');
-      el.setAttribute('sound', 'src', 'anothersound.wav');
+      el.setAttribute('sound', 'src', 'url(anothersound.wav)');
       assert.notEqual(oldAudio.uuid, el.getObject3D('sound').uuid);
     });
 
@@ -30,7 +30,7 @@ suite('sound', function () {
       var audio;
       var el = this.el;
 
-      el.setAttribute('sound', 'src', 'anothersound.wav');
+      el.setAttribute('sound', 'src', 'url(anothersound.wav)');
       audio = el.getObject3D('sound');
       assert.equal(audio.type, 'Audio');
       assert.ok(audio.autoplay);

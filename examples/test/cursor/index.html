@@ -9,6 +9,8 @@
   <body>
     <a-scene stats>
       <a-assets>
+        <audio id="blip1" src="../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav"></audio>
+        <audio id="blip2" src="../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav"></audio>
         <a-mixin id="cube" geometry="primitive: box"></a-mixin>
         <a-mixin id="cube-hovered" material="color: #CC435F"></a-mixin>
         <a-mixin id="cube-selected" material="color: #876A96"></a-mixin>
@@ -41,8 +43,8 @@
 
       <a-entity position="0 1 0">
         <a-entity mixin="green cube"
-                  sound__1="on: click; src: ../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav;"
-                  sound__2="on: mouseenter; src: ../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav;">
+                  sound__1="on: click; src: #blip1;"
+                  sound__2="on: mouseenter; src: #blip2;">
           <a-animation begin="click" attribute="rotation" to="0 360 0"
                        easing="linear" dur="2000" fill="backwards"></a-animation>
         </a-entity>
