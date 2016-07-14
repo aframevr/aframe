@@ -115,11 +115,16 @@ over everything the component API has to offer.
 
 ### Properties
 
-| Property | Description                                                                                                      |
-|----------|------------------------------------------------------------------------------------------------------------------|
-| data     | Parsed data object of the component derived from the schema default values, mixins, and the entity's attributes. |
-| el       | Reference to the [entity][entity] element.                                                                       |
-| schema   | Component property names, types, default values, parsers, and stringifiers.                                      |
+| Property     | Description                                                                                                                  |
+|--------------|------------------------------------------------------------------------------------------------------------------------------|
+| attrName     | Full HTML attribute name used to define the component. Used if component can have [multiple instances][multiple].            |
+| data         | Parsed data object of the component derived from the schema default values, mixins, and the entity's attributes.             |
+| dependencies | Components to initialize first and wait for.                                                                                 |
+| el           | Reference to the [entity][entity] element.                                                                                   |
+| id           | ID or name of the individual instance of the component. Used if component can have [multiple instances][multiple].           |
+| multiple     | Whether component can have [multiple instances][multiple] by suffixing `__<id>` to the HTML attribute name of the component. |
+| name         | Base name used to register the component.                                                                                    |
+| schema       | Component property names, types, default values, parsers, and stringifiers.                                                  |
 
 ### Methods
 
@@ -132,6 +137,62 @@ over everything the component API has to offer.
 | play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Used to start or resume behavior.                        |
 | pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Used to pause behavior.                              |
 | updateSchema | Called on every update. Can be used to dynamically modify the schema.                                                                         |
+
+## Dependencies
+
+Specifying `dependencies` will guarantee that another component or other
+components are initialized *before* initializing the current component:
+
+```js
+// Initializes last.
+AFRAME.registerComponent('a', {
+  dependencies: ['b']
+});
+
+// Initializes second.
+AFRAME.registerComponent('b', {
+  dependencies: ['c']
+});
+
+// Initializes first.
+AFRAME.registerComponent('c', {});
+```
+
+## Multiple Instancing
+
+By default, a component can only have one instance. For example, an entity can
+only have one geometry component attached. But some components like [the sound
+component][sound] can have multiple instances on a single entity. We use double
+underscores (i.e., `__`) to separate the component name and the ID of
+individual instances of the component
+
+For example, to attach multiple instances of the sound component:
+
+```html
+<a-entity sound="src: url(sound.mp3)"
+          sound__1="src: url(sound1.mp3)"
+          sound__2="src: url(sound2.mp3)"
+          sound__beep="src: url(beep.mp3)"
+          sound__boop="src: url(beep.mp3)"></a-entity>
+```
+
+To enable multiple instancing on your component, set `multiple: true` in the
+component definition:
+
+```js
+AFRAME.registerComponent('my-multiple-component', {
+  multiple: true,
+
+  init: function () {
+    // ...
+  }
+});
+```
+
+The base component name is available through `this.name`. The HTML attribute
+name used to attach the component is available through `this.attrName`. And
+just the ID or name of the instance that follows the double underscore is
+available through `this.id`.
 
 ## Schema
 
@@ -277,6 +338,8 @@ AFRAME.registerComponent('physics-body', {
   }
 }
 ```
+
+## `multiple`
 
 ## Lifecycle Methods
 
@@ -561,10 +624,12 @@ And voila!
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
 [look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
+[multiple]: #multiple-instances
 [physics]: https://github.com/ngokevin/aframe-physics-components
 [position]: ../components/position.md
 [removeObject3d]: ./entity.md#remove-object3d
 [rotation]: ../components/rotation.md
+[sound]: ../components/sound.md
 [text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
 [visible]: ../components/visible.md
