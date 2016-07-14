@@ -10,7 +10,7 @@ var warn = debug('components:sound:warn');
 module.exports.Component = registerComponent('sound', {
   schema: {
     src: { type: 'src' },
-    on: { default: 'click' },
+    on: { default: '' },
     autoplay: { default: false },
     loop: { default: false },
     volume: { default: 1 }
