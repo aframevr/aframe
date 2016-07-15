@@ -11,7 +11,8 @@ order: 4
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
 Let's go through an example building a scene using an
-[entity-component-system][ecs] workflow. This guide will introduce three concepts:
+[entity-component-system][ecs] workflow. This guide will introduce three
+concepts:
 
 1. Using the standard [components][components] that ship with A-Frame.
 2. Using third-party components from the ecosystem.
@@ -30,6 +31,8 @@ This is the starting point for our scene:
 ```html
 <a-scene>
   <a-assets>
+    <audio id="click-sound" src="audio/click.ogg"></audio>
+
     <!-- Images. -->
     <img id="city" src="img/city.jpg">
     <img id="city-thumb" src="img/thumb-city.png">
@@ -48,9 +51,9 @@ This is the starting point for our scene:
   <!-- Camera + Cursor. -->
   <a-camera>
     <a-cursor id="cursor"></a-cursor>
-      <a-animation begin="cursor-click" easing="ease-in" attribute="scale"
+      <a-animation begin="click" easing="ease-in" attribute="scale"
                    fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
-      <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+      <a-animation begin="fusing" easing="ease-in" attribute="scale"
                    from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
     </a-cursor>
   </a-camera>
@@ -95,13 +98,13 @@ defined in the asset management system.
 Let's attach one more standard component, the [sound component][sound]. We want
 to make it such that when we click (via gazing) on the link, it plays a click
 sound. The syntax is the same as just before, but now we are using the sound
-component's properties. We set `on` to `cursor-click` so the sound is played on
-click. And we set `src` to `audio/click.ogg`, our path to a sound file:
+component's properties. We set `on` to `click` so the sound is played on click.
+And we set `src` to `#click-sound`, a selector to our `<audio>` element.
 
 ```html
 <a-plane class="link" height="1" width="1"
          material="shader: flat; src: #cubes-thumb"
-         sound="on: cursor-click; src: audio/click.ogg"></a-plane>
+         sound="on: click; src: #click-sound"></a-plane>
 ```
 
 Now we have a textured plane that plays a click sound when clicked.
@@ -156,7 +159,7 @@ template and give it a name via `id`:
   <script id="link">
     <a-plane class="link" height="1" width="1"
              material="shader: flat; src: #cubes-thumb"
-             sound="on: cursor-click; src: audio/click.ogg"></a-plane>
+             sound="on: click; src: #click-sound"></a-plane>
   </script>
 </a-assets>
 ```
@@ -185,7 +188,7 @@ lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
   <script id="link" type="text/nunjucks">
     <a-plane class="link" height="1" width="1"
              material="shader: flat; src: {{ thumb }}"
-             sound="on: cursor-click; src: audio/click.ogg"></a-plane>
+             sound="on: click; src: #click-sound"></a-plane>
   </script>
 </a-assets>
 
@@ -230,16 +233,12 @@ listener to do `setAttribute`s on the [scale component][scale] in response to
 [event-set component][event-set] that does `setAttribute` in response to
 events.
 
-The event-set component defines a unique syntax to be able to define multiple
-event handlers. Whereas single-property component data represents a value, and
-multi-property component data represents an object, the event-set component's
-value is comma-separated and represents an array of objects.
-
 Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they
-are no longer gazed upon. We are mimicking CSS hover states.  We can specify
+are no longer gazed upon. We are mimicking CSS hover states. We can specify
 event names with `_event` properties, and the rest of the properties define the
-`setAttibute` calls:
+`setAttibute` calls. Note that the event-set component can have [multiple
+instances][multiple]:
 
 ```html
 <a-assets>
@@ -247,11 +246,11 @@ event names with `_event` properties, and the rest of the properties define the
   <script id="link" type="text/nunjucks">
     <a-plane class="link" height="1" width="1"
              material="shader: flat; src: {{ thumb }}"
-             sound="on: cursor-click; src: audio/click.ogg"
-             event-set="_event: cursor-mousedown; scale: 1 1 1,
-                        _event: cursor-mouseup; scale: 1.2 1.2 1,
-                        _event: cursor-mouseenter; scale: 1.2 1.2 1,
-                        _event: cursor-mouseleave; scale: 1 1 1"></a-plane>
+             sound="on: click; src: #click-sound"
+             event-set__1="_event: mousedown; scale: 1 1 1"
+             event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+             event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+             event-set__4="_event: mouseleave; scale: 1 1 1"></a-plane>
   </script>
 </a-assets>
 ```
@@ -349,7 +348,7 @@ AFRAME.registerComponent('update-raycaster', {
 > View the full [`set-image` component on GitHub](https://github.com/aframevr/360-image-viewer-boilerplate/blob/master/components/set-image.js).
 
 Finally, we write the component that fades the sky into a new 360&deg; image
-once one of the links are clicked. Here is the skeleton for our `set-image`
+once one of the links are clicked. Here is the skeleton for our set-image
 component.
 
 ```js
@@ -444,6 +443,7 @@ And that concludes our 360&deg; image viewer.
 [material]: ../components/material.md
 [mixin]: ../core/mixins.md
 [multi-property]: ../core/component.md#multi-property-component
+[multiple]: ../core/component.md#multiple-instances
 [ngokevin]: https://github.com/ngokevin
 [nunjucks]: https://mozilla.github.io/nunjucks/
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
