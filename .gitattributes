@@ -1,16 +1,38 @@
-# Directories to ignore from release archives
-docs export-ignore
-examples export-ignore
-scripts export-ignore
-src export-ignore
-tests export-ignore
-vendor export-ignore
+# A-Frame .gitattributes
+# Directories and files to be ignored from release archives
+# keep it consistent with .npmignore
 
-# Files to ignore from release archives
-.* export-ignore
-*.html export-ignore
-CHANGELOG.md export-ignore
-CONTRIBUTING.md export-ignore
-ORGANIZATION.md export-ignore
-package.json export-ignore
-ROADMAP.md export-ignore
+examples export-ignore
+tests export-ignore
+
+# Avoid creation of unnecessary big commit objects
+# For these files we do not want to see text diff for
+
+*.min.* -diff binary minified
+*js.map* -diff binary
+*.svg -diff binary
+*.mtl -diff binary
+*.obj -diff binary
+*.jpg  -diff binary
+*.jpeg -diff binary
+*.png -diff binary
+*.wav -diff binary
+
+# FIX CRLF always when developer has not set
+# Linux/Mac: git config --global core.autocrlf input
+# Windows: git config --global core.autocrlf true
+# Auto detect text files and perform LF normalization
+* text=auto
+* eol=lf
+
+*.js text
+*.html text
+*.npmignore text
+*.md text
+.ackrc text
+.gitattributes text
+.gitignore text
+.jshintrc text
+.nojekyll text
+.travis.yml text
+LICENSE text
