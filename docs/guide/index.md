@@ -30,7 +30,7 @@ A-Frame is an open-source framework for creating 3D and virtual reality experien
 </html>
 ```
 
-A-Frame allows us to create VR scenes that works across desktop, the Oculus Rift, and mobile with just HTML. We can drop in the library and have a VR scene running in just a few lines of markup. Since it based on HTML, we can manipulate scenes with JavaScript like we would with normal HTML elements, and we can continue using our favorite JavaScript libraries and frameworks (e.g., d3, React). But the key factor is that A-Frame introduces the [entity-component-system pattern][ecs], a pattern commonly used in 3D and game development, to HTML for composability, extensibility, and flexibility. If we are to bring 3D to the web, we need to adopt existing patterns from the industry. The scene in the example above actually uses convenience elements; at A-Frame's core, it translates to:
+A-Frame allows us to create VR scenes that works across desktop, the Oculus Rift, HTC Vive, and mobile with just HTML. We can drop in the library and have a VR scene running in just a few lines of markup. Since it based on HTML, we can manipulate scenes with JavaScript like we would with normal HTML elements, and we can continue using our favorite JavaScript libraries and frameworks (e.g., d3, React). But the key factor is that A-Frame introduces the [entity-component-system pattern][ecs], a pattern commonly used in 3D and game development, to HTML for composability, extensibility, and flexibility. If we are to bring 3D to the web, we need to adopt existing patterns from the industry. The scene in the example above actually uses convenience elements; at A-Frame's core, it translates to:
 
 ```html
 <html>
