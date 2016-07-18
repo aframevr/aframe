@@ -57,6 +57,8 @@ var proto = Object.create(ANode.prototype, {
         delete component.justInitialized;
         return;
       }
+      // When a component is removed after calling el.removeAttribute('material')
+      if (!component && newVal === null) { return; }
       this.setEntityAttribute(attr, oldVal, newVal);
     }
   },
@@ -87,15 +89,11 @@ var proto = Object.create(ANode.prototype, {
 
   applyMixin: {
     value: function (attr) {
-      var attrValue;
       if (!attr) {
         this.updateComponents();
         return;
       }
-      attrValue = this.getAttribute(attr);
-      // Make absence of attribute for getAttribute return undefined rather than null
-      attrValue = attrValue === null ? undefined : attrValue;
-      this.updateComponent(attr, attrValue);
+      this.updateComponent(attr, this.getAttribute(attr));
     }
   },
 
@@ -284,7 +282,6 @@ var proto = Object.create(ANode.prototype, {
       var componentId = componentInfo[1];
       var componentName = componentInfo[0];
       var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
-
       // Check if component is registered and whether component should be initialized.
       if (!components[componentName] ||
           (!isComponentDefined && !isDependency) ||
@@ -379,9 +376,6 @@ var proto = Object.create(ANode.prototype, {
       function updateComponent (name) {
         var attrValue = self.getAttribute(name);
         delete elComponents[name];
-        // turn null into undefined because getAttribute
-        // returns null in the absence of an attribute
-        attrValue = attrValue === null ? undefined : attrValue;
         self.updateComponent(name, attrValue);
       }
     }
@@ -398,8 +392,9 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue) {
       var component = this.components[attr];
+      var isDefault = attr in this.defaultComponents;
       if (component) {
-        if (attrValue === null) {
+        if (attrValue === null && !isDefault) {
           this.removeComponent(attr);
           return;
         }
@@ -407,7 +402,6 @@ var proto = Object.create(ANode.prototype, {
         component.updateProperties(attrValue);
         return;
       }
-      if (attrValue === null) { return; }
       // Component not yet initialized. Initialize component.
       this.initComponent(attr, attrValue, false);
     }
@@ -608,7 +602,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr) {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
-      if (component && component.attrValue !== undefined) { return component.attrValue; }
+      if (component) { return component.attrValue; }
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug

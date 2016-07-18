@@ -20,10 +20,10 @@ var styleParser = utils.styleParser;
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
+ * @member {object} el - Reference to the entity element.
+ * @member {string} attr - Component name exposed as an HTML attribute.
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
- * @member {object} el - Reference to the entity element.
- * @member {string} name - Component name exposed as an HTML attribute.
  */
 var Component = module.exports.Component = function (el, attr, id) {
   this.el = el;
@@ -31,7 +31,7 @@ var Component = module.exports.Component = function (el, attr, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.updateCachedAttrValue(attr);
   if (!el.hasLoaded) { return; }
-  this.updateProperties();
+  this.updateProperties(this.attrValue);
 };
 
 Component.prototype = {
@@ -135,15 +135,8 @@ Component.prototype = {
    */
   updateCachedAttrValue: function (value) {
     var isSinglePropSchema = isSingleProp(this.schema);
-    if (value === '') {
-      this.attrValue = undefined;
-      return;
-    }
-    if (typeof value === 'string') {
-      this.attrValue = this.parseAttrValueForCache(value);
-      return;
-    }
-    this.attrValue = value !== undefined ? extendProperties({}, value, isSinglePropSchema) : this.attrValue;
+    var attrValue = this.parseAttrValueForCache(value);
+    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
   /**
@@ -314,7 +307,7 @@ module.exports.registerComponent = function (name, definition) {
  * @return {object} The component data
  */
 function buildData (el, name, schema, elData, silent) {
-  var componentDefined = !!elData;
+  var componentDefined = elData !== undefined && elData !== null;
   var data;
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
@@ -345,7 +338,7 @@ function buildData (el, name, schema, elData, silent) {
     return parseProperties(data, schema, undefined, silent);
   } else {
      // Parse and coerce using the schema.
-    if (isSinglePropSchema) { return parseProperty(elData !== undefined ? elData : data, schema); }
+    if (isSinglePropSchema) { return parseProperty(data, schema); }
     return parseProperties(data, schema, undefined, silent);
   }
 }
