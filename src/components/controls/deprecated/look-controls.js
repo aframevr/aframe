@@ -1,18 +1,20 @@
-var registerComponent = require('../core/component').registerComponent;
-var THREE = require('../lib/three');
-var isMobile = require('../utils/').isMobile();
+var registerComponent = require('../../../core/component').registerComponent;
+var THREE = require('../../../lib/three');
+var utils = require('../../../utils');
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
 var radToDeg = THREE.Math.radToDeg;
+var isMobile = utils.isMobile();
+var warn = utils.debug('components:look-controls:warn');
 
 module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true },
-    hmdEnabled: { default: true },
-    standing: { default: true }
+    enabled: {default: true},
+    hmdEnabled: {default: true},
+    standing: {default: true}
   },
 
   init: function () {
@@ -20,6 +22,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupMouseControls();
     this.setupHMDControls();
     this.bindMethods();
+
+    warn('The `look-controls` component is deprecated - use `controls` instead.');
   },
 
   update: function (oldData) {

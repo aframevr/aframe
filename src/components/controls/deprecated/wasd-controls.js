@@ -1,24 +1,27 @@
-var registerComponent = require('../core/component').registerComponent;
-var shouldCaptureKeyEvent = require('../utils/').shouldCaptureKeyEvent;
-var THREE = require('../lib/three');
+var registerComponent = require('../../../core/component').registerComponent;
+var shouldCaptureKeyEvent = require('../../../utils/').shouldCaptureKeyEvent;
+var THREE = require('../../../lib/three');
+var utils = require('../../../utils');
 
 var MAX_DELTA = 0.2;
+
+var warn = utils.debug('components:wasd-controls:warn');
 
 /**
  * WASD component to control entities using WASD keys.
  */
 module.exports.Component = registerComponent('wasd-controls', {
   schema: {
-    easing: { default: 20 },
-    acceleration: { default: 65 },
-    enabled: { default: true },
-    fly: { default: false },
-    wsAxis: { default: 'z', oneOf: [ 'x', 'y', 'z' ] },
-    adAxis: { default: 'x', oneOf: [ 'x', 'y', 'z' ] },
-    wsInverted: { default: false },
-    wsEnabled: { default: true },
-    adInverted: { default: false },
-    adEnabled: { default: true }
+    easing: {default: 20},
+    acceleration: {default: 65},
+    enabled: {default: true},
+    fly: {default: false},
+    wsAxis: {default: 'z', oneOf: [ 'x', 'y', 'z' ]},
+    adAxis: {default: 'x', oneOf: [ 'x', 'y', 'z' ]},
+    wsInverted: {default: false},
+    wsEnabled: {default: true},
+    adInverted: {default: false},
+    adEnabled: {default: true}
   },
 
   init: function () {
@@ -31,6 +34,8 @@ module.exports.Component = registerComponent('wasd-controls', {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.attachVisibilityEventListeners();
+
+    warn('The `wasd-controls` component is deprecated - use `controls` instead.');
   },
 
   update: function (previousData) {

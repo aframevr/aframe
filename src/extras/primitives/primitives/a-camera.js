@@ -3,18 +3,17 @@ var registerPrimitive = require('../registerPrimitive');
 registerPrimitive('a-camera', {
   defaultComponents: {
     camera: {},
-    'look-controls': {},
-    'wasd-controls': {}
+    controls: {}
   },
 
   mappings: {
     active: 'camera.active',
     far: 'camera.far',
     fov: 'camera.fov',
-    'look-controls-enabled': 'look-controls.enabled',
     near: 'camera.near',
-    'wasd-controls-enabled': 'wasd-controls.enabled',
-    zoom: 'camera.zoom'
+    zoom: 'camera.zoom',
+    'position-controls-enabled': 'controls.positionEnabled',
+    'rotation-controls-enabled': 'controls.rotationEnabled'
   },
 
   deprecatedMappings: {

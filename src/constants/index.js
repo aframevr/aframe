@@ -1,3 +1,4 @@
 module.exports = {
-  animation: require('./animation')
+  animation: require('./animation'),
+  keyboardevent: require('./keyboardevent')
 };
