@@ -159,6 +159,10 @@ module.exports.AAnimation = registerElement('a-animation', {
     update: {
       value: function () {
         var data = this.data;
+        // Terminology warning if infinite used instead of indefinite
+        if (data.repeat === 'infinite') {
+          console.warn("Using 'infinite' as 'repeat' value is invalid.  Use 'indefinite' instead.");
+        }
         // Deprecation warning for begin when used as a delay.
         if (data.begin !== '' && !isNaN(data.begin)) {
           console.warn("Using 'begin' to specify a delay is deprecated. Use 'delay' instead.");
