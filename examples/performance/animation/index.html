@@ -62,7 +62,7 @@
               ballEl.setAttribute('position', { x: ballInitX + 3 * j, y: 0, z: 0 });
               ballEl.innerHTML = ball;
               animationEl = ballEl.querySelector('a-animation');
-              animationEl.setAttribute('begin', Math.random() * 2000);
+              animationEl.setAttribute('delay', Math.random() * 2000);
               rowEl.appendChild(ballEl);
             }
             fanEl.appendChild(rowEl);
