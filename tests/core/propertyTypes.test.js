@@ -91,15 +91,15 @@ suite('propertyTypes', function () {
     });
 
     test('parses a set of valid selectors', function () {
-      assert.deepEqual(parse('#hello.itsme, #cool.itworks'), this.el.childNodes);
+      assert.deepEqual(parse('#hello.itsme, #cool.itworks'), Array.from(this.el.childNodes));
     });
 
     test('parses null selector', function () {
-      assert.deepEqual(parse('#goodbye'), this.el1.childNodes);
+      assert.deepEqual(parse('#goodbye'), Array.from(this.el1.childNodes));
     });
 
     test('stringifies valid selector', function () {
-      assert.equal(stringify(this.el.childNodes), '#hello, #cool');
+      assert.equal(stringify(Array.from(this.el.childNodes)), '#hello, #cool');
     });
   });
 
