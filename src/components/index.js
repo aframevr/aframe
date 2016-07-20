@@ -1,7 +1,9 @@
+require('./blend-model');
 require('./camera');
 require('./collada-model');
 require('./cursor');
 require('./geometry');
+require('./hand-controls');
 require('./light');
 require('./look-at');
 require('./look-controls');
@@ -12,7 +14,9 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
+require('./tracked-controls');
 require('./visible');
+require('./vive-controls');
 require('./wasd-controls');
 
 require('./scene/canvas');
