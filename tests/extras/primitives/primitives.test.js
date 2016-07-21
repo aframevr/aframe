@@ -1,6 +1,7 @@
 /* global assert, suite, test */
 var helpers = require('../../helpers');
-var registerPrimitive = require('extras/primitives/registerPrimitive');
+var registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
+var primitives = require('extras/primitives/primitives').primitives;
 
 var primitiveId = 0;
 
@@ -16,6 +17,16 @@ function primitiveFactory (definition, cb) {
   });
   entity.appendChild(el);
 }
+
+suite('primitives', function () {
+  test('are public', function () {
+    assert.ok('a-box' in primitives);
+    assert.ok('a-light' in primitives);
+    assert.ok('a-sky' in primitives);
+    assert.ok('a-sphere' in primitives);
+    assert.ok('a-videosphere' in primitives);
+  });
+});
 
 suite('registerPrimitive', function () {
   test('initializes default attributes', function (done) {
