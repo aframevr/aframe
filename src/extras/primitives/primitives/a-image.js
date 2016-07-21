@@ -1,5 +1,5 @@
 var getMeshMixin = require('../getMeshMixin');
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
 
 registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {

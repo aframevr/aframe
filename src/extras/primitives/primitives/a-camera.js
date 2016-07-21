@@ -1,4 +1,4 @@
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
   defaultComponents: {

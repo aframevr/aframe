@@ -4,7 +4,7 @@
 var getMeshMixin = require('../getMeshMixin');
 var geometries = require('../../../core/geometry').geometries;
 var geometryNames = require('../../../core/geometry').geometryNames;
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
 
 // For testing.

@@ -7,7 +7,9 @@ var debug = utils.debug;
 var setComponentProperty = utils.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
 
-module.exports = function registerPrimitive (name, definition) {
+var primitives = module.exports.primitives = {};
+
+module.exports.registerPrimitive = function registerPrimitive (name, definition) {
   name = name.toLowerCase();
   log('Registering <%s>', name);
 
@@ -16,7 +18,7 @@ module.exports = function registerPrimitive (name, definition) {
     console.warn("The 'defaultAttributes' object is deprecated. Use 'defaultComponents' instead.");
   }
 
-  return registerElement(name, {
+  var primitive = registerElement(name, {
     prototype: Object.create(AEntity.prototype, {
       defaultComponentsFromPrimitive: {
         value: definition.defaultComponents || definition.defaultAttributes || {}
@@ -131,4 +133,8 @@ module.exports = function registerPrimitive (name, definition) {
       }
     })
   });
+
+  // Store.
+  primitives[name] = primitive;
+  return primitive;
 };
