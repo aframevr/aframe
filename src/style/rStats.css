@@ -1,10 +1,10 @@
 .rs-base {
-  background-color: #EF2D5E;
+  background-color: #333;
   border-radius: 0;
   font: 10px monospace;
   left: 5px;
   line-height: 1em;
-  opacity: 0.75;
+  opacity: 0.85;
   overflow: hidden;
   padding: 10px;
   position: fixed;
@@ -55,7 +55,7 @@
   -webkit-box-ordinal-group: 0;
   -webkit-order: 0;
   order: 0;
-  width: 50px;
+  width: 54px;
 }
 
 .rs-counter-value {
