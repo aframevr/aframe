@@ -41,7 +41,7 @@ var System = module.exports.System = function (sceneEl) {
     this.data = parseProperty(rawData, schema);
     return;
   }
-  this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+  this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
 };
 
 System.prototype = {

@@ -97,7 +97,7 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
   /**
@@ -335,11 +335,11 @@ function buildData (el, name, schema, elData, silent) {
   if (componentDefined) {
     if (isSinglePropSchema) { return parseProperty(elData, schema); }
     data = extendProperties(data, elData, isSinglePropSchema);
-    return parseProperties(data, schema, undefined, silent);
+    return parseProperties(data, schema, undefined, name, silent);
   } else {
      // Parse and coerce using the schema.
     if (isSinglePropSchema) { return parseProperty(data, schema); }
-    return parseProperties(data, schema, undefined, silent);
+    return parseProperties(data, schema, undefined, name, silent);
   }
 }
 module.exports.buildData = buildData;
