@@ -3,10 +3,10 @@ title: obj-model
 type: components
 layout: docs
 parent_section: components
-order: 12
 ---
 
-The obj-model component loads a 3D model and material using a [Wavefront][wavefront-wiki] (.OBJ) file and a .MTL file.
+The obj-model component loads a 3D model and material using a
+[Wavefront][wavefront-wiki] (.OBJ) file and a .MTL file.
 
 ## Example
 

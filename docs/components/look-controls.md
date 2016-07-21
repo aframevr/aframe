@@ -3,7 +3,6 @@ title: look-controls
 type: components
 layout: docs
 parent_section: components
-order: 10
 ---
 
 The look-controls component defines the following behavior of an entity. The look-controls component acts upon the HMD headset, mouse, *and* touchscreen inputs. A-Frame standard controls are grouped together based upon configuration and behavior rather than by individual input methods:

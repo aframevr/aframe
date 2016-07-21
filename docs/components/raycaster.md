@@ -3,7 +3,6 @@ title: raycaster
 type: components
 layout: docs
 parent_section: components
-order: 14
 ---
 
 The raycaster component does general intersection testing with a [raycaster][wiki-raycasting]. Raycasting is the method of extending a line from an origin towards a direction, and checking whether that line intersects with other entites. The raycaster component is a wrapper on top of the [three.js raycaster][3ray]. It checks for intersections at a certain interval against a list of objects, and will emit events on the entity when it detects intersections or clearing of intersections (i.e., when the raycaster is no longer intersecting an entity).

@@ -6,9 +6,15 @@ parent_section: core
 order: 9
 ---
 
-Games and rich 3D experiences traditionally preload many of their assets, such as models or textures, before rendering their scenes. This makes sure that assets aren't missing visually, and this is benenficial for performance to ensure scenes don't try to fetch assets while rendering. A-Frame has an asset management system that allows us to place all of our assets in one place and to preload and cache assets for better performance.
+Games and rich 3D experiences traditionally preload many of their assets, such
+as models or textures, before rendering their scenes. This makes sure that
+assets aren't missing visually, and this is benenficial for performance to
+ensure scenes don't try to fetch assets while rendering. A-Frame has an asset
+management system that allows us to place all of our assets in one place and to
+preload and cache assets for better performance.
 
-Assets are placed within `<a-assets>`, and `<a-assets>` is placed within `<a-scene>`. Assets include:
+Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
+`<a-scene>`. Assets include:
 
 - `<a-asset-item>` - Miscellaneous assets such as 3D models
 - `<a-mixin>` - Reusable [mixins][mixins]
@@ -17,6 +23,8 @@ Assets are placed within `<a-assets>`, and `<a-assets>` is placed within `<a-sce
 - `<video>` - Video textures
 
 Then the scene will block until all of these assets are fetched (or error out) before playing.
+
+<!--toc-->
 
 ## Example
 

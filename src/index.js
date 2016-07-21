@@ -63,6 +63,7 @@ module.exports = window.AFRAME = {
   ANode: ANode,
   AScene: AScene,
   components: components,
+  geometries: require('./core/geometry').geometries,
   registerComponent: registerComponent,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,

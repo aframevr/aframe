@@ -6,15 +6,22 @@ parent_section: core
 order: 4
 ---
 
-> Note: the systems API is new and may be unstable.
+A system, of the [entity-component-system pattern][ecs], provides global scope,
+services, and management to classes of components. It provides public APIs
+(methods and properties) for classes of components. A system can be accessed
+through the scene element, and can help components interface with the global
+scene.
 
-A system, of the [entity-component-system pattern][ecs], provides global scope, services, and management to classes of components. It provides public APIs (methods and properties) for classes of components. A system can be accessed through the scene element, and can help components interface with the global scene.
+For example, the camera system manages all entities with the [camera
+component][camera], controlling which camera is the active camera.
 
-For example, the camera system manages all entities with the [camera component][camera], controlling which camera is the active camera.
+<!--toc-->
 
 ## Registering a System
 
-A system is registered similarly to a [component][components]. If the system name matches a component name, then the component will have a reference to the system as `this.system`:
+A system is registered similarly to a [component][components]. If the system
+name matches a component name, then the component will have a reference to the
+system as `this.system`:
 
 ```js
 AFRAME.registerSystem('my-component', {
@@ -30,7 +37,8 @@ AFRAME.registerComponent('my-component', {
 
 ## Methods
 
-A system, like a component, defines lifecycle handlers. It can also define methods intended to be public API.
+A system, like a component, defines lifecycle handlers. It can also define
+methods intended to be public API.
 
 | Method   | Description                                                              |
 | -------- | -------------                                                            |

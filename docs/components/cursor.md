@@ -3,7 +3,6 @@ title: cursor
 type: components
 layout: docs
 parent_section: components
-order: 4
 ---
 
 The cursor component lets us interact with entities through clicking and gazing. It is a specific application of the [raycaster][raycaster] component in that it:

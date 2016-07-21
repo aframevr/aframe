@@ -3,7 +3,6 @@ title: light
 type: components
 layout: docs
 parent_section: components
-order: 8
 ---
 
 The light component defines the entity as a source of light. Light affects all materials that have not specified a flat shading model with `shader: flat`. Note that lights are computationally expensive and the number of lights in a scene should be limited.
@@ -14,6 +13,12 @@ The light component defines the entity as a source of light. Light affects all m
 
 By default, A-Frame scenes inject default lighting, an ambient light and a directional light. These default lights are visible in the DOM with the `data-aframe-default-light` attribute. Whenever any lights are added, the default lights are removed from the scene.
 
+```html
+<!-- Default lighting injected by A-Frame. -->
+<a-entity light="type: ambient; color: #BBB"></a-entity>
+<a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+```
+
 ## Properties
 
 We will go through the different types of lights and their respective properties one by one.
@@ -22,6 +27,7 @@ We will go through the different types of lights and their respective properties
 |-----------|-----------------------------------------------------------------|---------------|
 | type      | One of `ambient`, `directional`, `hemisphere`, `point`, `spot`. | directional   |
 | color     | Light color.                                                    | #fff          |
+| intensity | Light strength.                                                 | 1.0           |
 
 ### Ambient
 
@@ -44,10 +50,6 @@ The example below creates a light source shining from the upper-left at a 45-deg
 <a-entity light="type: directional; color: #EEE; intensity: 0.5" position="-1 1 0"></a-entity>
 ```
 
-| Property  | Description     | Default Value |
-|-----------|-----------------|---------------|
-| intensity | Light strength. | 1.0           |
-
 ### Hemisphere
 
 Hemisphere lights can be thought of as an ambient light, but with two colors of light, one from above (`color`) and one from below (`groundColor`). This can be useful for scenes with two distinct lighting colors (e.g., a grassy field under a gray sky).
@@ -59,7 +61,6 @@ Hemisphere lights can be thought of as an ambient light, but with two colors of 
 | Property    | Description             | Default Value |
 |-------------|-------------------------|---------------|
 | groundColor | Light color from below. | #fff          |
-| intensity   | Light strength.         | 1.0           |
 
 ### Point
 
@@ -74,7 +75,6 @@ Point lights, unlike directional lights, are omni-directional and affect materia
 |-------------|------------------------------------------------------------------------------------------------------------|---------------|
 | decay       | Amount the light dims along the distance of the light.                                                     | 1.0           |
 | distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
-| intensity   | Light strength.                                                                                            | 1.0           |
 
 ### Spot
 
@@ -84,10 +84,9 @@ Spot lights are like point lights in the sense that they affect materials depend
 <a-entity light="type: spot; angle: 45"></a-entity>
 ```
 
-| Property  | Description                                                                                                  | Default Value |
-|-----------|--------------------------------------------------------------------------------------------------------------|---------------|
-| angle     | Maximum extent of spot light from its direction (in degrees).                                                | 60            |
-| decay     | Amount the light dims along the distance of the light.                                                       | 1.0           |
-| distance  | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
-| intensity | Light strength.                                                                                              | 1.0           |
+| Property    | Description                                                                                                | Default Value |
+|-------------|------------------------------------------------------------------------------------------------------------|---------------|
+| angle       | Maximum extent of spot light from its direction (in degrees).                                               | 60            |
+| decay       | Amount the light dims along the distance of the light.                                                     | 1.0           |
+| distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
 | penumbra  | Percent of the spotlight cone that is attenuated due to penumbra.                                            | 0.0           |

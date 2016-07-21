@@ -3,8 +3,9 @@ title: collada-model
 type: components
 layout: docs
 parent_section: components
-order: 3
 ---
+
+> COLLADA is not recommended for distributing models over the web in production due to the large size of COLLADA files. We recommend investing into [glTF][gltf]. Check out using the [glTF component](https://github.com/xirvr/aframe-gltf) instead. You can convert from COLLADA to glTF using [the converter](https://cesiumjs.org/convertmodel.html).
 
 The collada-model component loads a 3D model using a [COLLADA][wiki-collada] (.DAE) file.
 
@@ -53,6 +54,7 @@ We can find and download models on the web to drop into our scenes:
 
 [blender]: https://www.blender.org/
 [clara]: https://clara.io
+[gltf]: https://github.com/KhronosGroup/glTF
 [obj-model]: ./obj-model.md
 [sketchup]: https://3dwarehouse.sketchup.com
 [wiki-collada]: https://en.wikipedia.org/wiki/COLLADA
