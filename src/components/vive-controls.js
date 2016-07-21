@@ -55,7 +55,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
-    el.removeEventLister('model-loaded', this.onModelLoaded);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
   },
 
   update: function () {
