@@ -2,7 +2,6 @@
 # Directories and files to be ignored from release archives
 # keep it consistent with .npmignore
 
-examples export-ignore
 tests export-ignore
 
 # Avoid creation of unnecessary big commit objects
