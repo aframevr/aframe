@@ -14,6 +14,7 @@ module.exports = registerElement('a-node', {
       value: function () {
         this.hasLoaded = false;
         this.isNode = true;
+        this.isNodeReady = false;
         this.mixinEls = [];
         this.mixinObservers = {};
       }
@@ -23,8 +24,9 @@ module.exports = registerElement('a-node', {
       value: function () {
         var mixins = this.getAttribute('mixin');
         this.sceneEl = this.isScene ? this : this.closestScene();
-        this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
+        this.isNodeReady = true;
+        this.emit('nodeready', {}, false);
       }
     },
 
@@ -73,33 +75,51 @@ module.exports = registerElement('a-node', {
     },
 
     /**
-     * Wait for children to load, if any.
-     * Then emit `loaded` event and set `hasLoaded`.
+     * Wait for children to attacn and load, if any. Once children are finished, then load.
+     * Emit `loaded` event and set `hasLoaded`.
+     *
+     * @param {function} cb - Callback.
+     * @param {function} childLoadedFilter - Function that takes element as argument. Will
+     *        be used to filter children to wait for `loaded` event.
+     * @param {function} childReadyFilter - Function that takes element as argument. Will
+     *        be used to filter children to wait for `nodeready` event.
      */
     load: {
-      value: function (cb, childFilter) {
-        var children;
-        var childrenLoaded;
+      value: function (cb, childLoadedFilter, childReadyFilter) {
         var self = this;
 
         if (this.hasLoaded) { return; }
 
-        // Default to waiting for all nodes.
-        childFilter = childFilter || function (el) { return el.isNode; };
+        var children = this.getChildren();
 
-        // Wait for children to load (if any), then load.
-        children = this.getChildren();
-        childrenLoaded = children.filter(childFilter).map(function (child) {
-          return new Promise(function waitForLoaded (resolve) {
-            if (child.hasLoaded) { return resolve(); }
-            child.addEventListener('loaded', resolve);
+        // Default to waiting for all nodes.
+        childReadyFilter = childReadyFilter || function (el) { return true; };
+        childLoadedFilter = childLoadedFilter || function (el) { return el.isNode; };
+
+        // Create promises to wait for each node to attach.
+        var childrenReady = children.filter(childReadyFilter).map(function (child) {
+          return new Promise(function waitForReady (resolve) {
+            if (child.isNodeReady) { return resolve(); }
+            child.addEventListener('nodeready', resolve);
           });
         });
 
-        Promise.all(childrenLoaded).then(function emitLoaded () {
-          self.hasLoaded = true;
-          if (cb) { cb(); }
-          self.emit('loaded', {}, false);
+        // Wait for attach.
+        Promise.all(childrenReady).then(function waitAllToLoad () {
+          // Create promises to wait for each node to load.
+          var childrenLoaded = children.filter(childLoadedFilter).map(function (child) {
+            return new Promise(function waitForLoaded (resolve) {
+              if (child.hasLoaded) { return resolve(); }
+              child.addEventListener('loaded', resolve);
+            });
+          });
+
+          // Wait for load. Then load.
+          Promise.all(childrenLoaded).then(function emitLoaded () {
+            self.hasLoaded = true;
+            if (cb) { cb(); }
+            self.emit('loaded', {}, false);
+          });
         });
       },
       writable: true

@@ -126,6 +126,34 @@ suite('a-entity', function () {
     });
   });
 
+  suite('load', function () {
+    /**
+     * @see Issue #1652.
+     */
+    test('waits for children entity to load first', function (done) {
+      var containerEl = document.createElement('div');
+      document.body.appendChild(containerEl);
+
+      registerComponent('test', {
+        init: function () {
+          var child = this.el.children[0];
+          assert.ok(child.hasLoaded);
+          assert.ok(child.isNodeReady);
+          assert.equal(child.getComputedAttribute('position').x, 0);
+          done();
+        }
+      });
+
+      containerEl.innerHTML = [
+        '<a-scene>',
+        '<a-entity id="parent" test>',
+        '<a-entity id="child"></a-entity>',
+        '</a-entity>',
+        '</a-scene>'
+      ].join('');
+    });
+  });
+
   suite('addState', function () {
     test('adds state', function () {
       var el = this.el;
