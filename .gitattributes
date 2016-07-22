@@ -1,8 +1,6 @@
 # A-Frame .gitattributes
 # Directories and files to be ignored from release archives
-# keep it consistent with .npmignore
-
-tests export-ignore
+# (none) archives are snapshot of entire repo
 
 # Avoid creation of unnecessary big commit objects
 # For these files we do not want to see text diff for
