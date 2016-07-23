@@ -91,7 +91,7 @@ AFRAME.registerComponent('aabb-collider', {
       function handleHit (hitEl) {
         hitEl.emit('hit');
         hitEl.addState(self.data.state);
-        self.el.emit('hit', {el: el});
+        self.el.emit('hit', {el: hitEl});
       }
 
       function updateBoundingBox () {
