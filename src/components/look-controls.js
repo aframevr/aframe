@@ -99,7 +99,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   removeEventListeners: function () {
-    var sceneEl = document.querySelector('a-scene');
+    var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl && sceneEl.canvas;
     if (!canvasEl) { return; }
 

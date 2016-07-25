@@ -88,7 +88,7 @@ module.exports.registerSystem = function (name, definition) {
   var i;
   var NewSystem;
   var proto = {};
-  var scenes = document.querySelectorAll('a-scene');
+  var scenes = utils.findAllScenes(document);
 
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {
