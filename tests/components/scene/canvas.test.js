@@ -11,19 +11,4 @@ suite('canvas', function () {
       done();
     });
   });
-
-  test('can take a selector to existing canvas', function (done) {
-    var canvas = document.createElement('canvas');
-    var el = document.createElement('a-scene');
-
-    canvas.setAttribute('id', 'canvas');
-    document.body.appendChild(canvas);
-    document.body.appendChild(el);
-    el.setAttribute('canvas', 'canvas: #canvas');
-
-    el.addEventListener('loaded', function () {
-      assert.equal(el.canvas, canvas);
-      done();
-    });
-  });
 });

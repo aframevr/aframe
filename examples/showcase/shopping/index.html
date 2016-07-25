@@ -18,9 +18,7 @@
         <img id="shoes" src="shoes.png">
       </a-assets>
 
-      <a-camera position="0 1.6 0"></a-camera>
-
-      <a-entity id="model" position="0 0 -2">
+      <a-entity id="model" position="0 0 -3">
         <a-animation attribute="rotation" from="0 -30 0" to="0 330 0" dur="15000"
                      easing="linear" repeat="infinite"></a-animation>
         <a-collada-model position="-.35 0 .55" rotation="0 -20 0" scale="1.5 1.5 1.5"
@@ -29,7 +27,7 @@
       </a-entity>
 
       <a-curvedimage id="mozvr-logo" src="#mozvr" radius="5.7" theta-length="36" height="1"
-                     position="0 2.6 0" opacity="0.5">
+                     position="0 2.6 -1" opacity="0.5">
         <a-animation attribute="rotation" from="0 10 0" to="0 200 0" delay="500"
                      dur="1000"></a-animation>
       </a-curvedimage>
