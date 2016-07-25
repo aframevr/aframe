@@ -22,7 +22,7 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins = this.getAttribute('mixin');
-        this.sceneEl = this.tagName === 'A-SCENE' ? this : this.closest('a-scene');
+        this.sceneEl = this.isScene ? this : this.closestScene();
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
       }
@@ -31,6 +31,21 @@ module.exports = registerElement('a-node', {
     attributeChangedCallback: {
       value: function (attr, oldVal, newVal) {
         if (attr === 'mixin') { this.updateMixins(newVal, oldVal); }
+      }
+    },
+
+   /**
+    * Returns the first scene by traversing up the tree starting from and
+    * including receiver element.
+    */
+    closestScene: {
+      value: function closest () {
+        var element = this;
+        while (element) {
+          if (element.isScene) { break; }
+          element = element.parentElement;
+        }
+        return element;
       }
     },
 
