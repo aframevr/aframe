@@ -189,5 +189,21 @@ module.exports.isIframed = function () {
   return window.top !== window.self;
 };
 
+/**
+ * Finds all elements under the element that have the isScene
+ * property set to true
+ */
+module.exports.findAllScenes = function (el) {
+  var matchingElements = [];
+  var allElements = el.getElementsByTagName('*');
+  for (var i = 0, n = allElements.length; i < n; i++) {
+    if (allElements[i].isScene) {
+      // Element exists with isScene set.
+      matchingElements.push(allElements[i]);
+    }
+  }
+  return matchingElements;
+};
+
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');

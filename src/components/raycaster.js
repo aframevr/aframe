@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Push meshes onto list of objects to intersect.
     if (data.objects) {
-      objectEls = this.el.closest('a-scene').querySelectorAll(data.objects);
+      objectEls = this.el.sceneEl.querySelectorAll(data.objects);
       this.objects = [];
       for (i = 0; i < objectEls.length; i++) {
         this.objects.push(objectEls[i].object3D);
