@@ -17,6 +17,7 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   tick: function () {
+    if (!navigator.getGamepads) { return; }
     var gamepads = navigator.getGamepads();
     var gamepad;
     var controllers = this.controllers = [];
