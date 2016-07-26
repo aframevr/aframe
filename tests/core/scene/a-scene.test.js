@@ -28,6 +28,21 @@ suite('a-scene (without renderer)', function () {
     test('initializes scene object', function () {
       assert.equal(this.el.object3D.type, 'Scene');
     });
+
+    test('does not initialize systems', function () {
+      var sceneEl = document.createElement('a-scene');
+      assert.notOk(Object.keys(sceneEl.systems).length);
+    });
+  });
+
+  suite('attachedCallback', function () {
+    test('initializes systems', function (done) {
+      var self = this;
+      self.el.addEventListener('loaded', function () {
+        assert.ok(Object.keys(self.el.systems).length);
+        done();
+      });
+    });
   });
 
   suite('init', function () {
