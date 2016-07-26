@@ -124,6 +124,16 @@ a-scene audio {
   z-index: 9999;
 }
 
+/*
+  Icon extracted from https://icomoon.io/#icons-icomoon free version
+  Published under GPL / CC BY 4.0 Licences
+*/
+.a-enter-vr-button.fullscreen {
+  background: rgba(0, 0, 0, 0.35) url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHZpZXdCb3g9IjAgMCAxNiAxNiI+CjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0xNiAwaC02LjVsMi41IDIuNS0zIDMgMS41IDEuNSAzLTMgMi41IDIuNXoiPjwvcGF0aD4KPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTE2IDE2di02LjVsLTIuNSAyLjUtMy0zLTEuNSAxLjUgMyAzLTIuNSAyLjV6Ij48L3BhdGg+CjxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0wIDE2aDYuNWwtMi41LTIuNSAzLTMtMS41LTEuNS0zIDMtMi41LTIuNXoiPjwvcGF0aD4KPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTAgMHY2LjVsMi41LTIuNSAzIDMgMS41LTEuNS0zLTMgMi41LTIuNXoiPjwvcGF0aD4KPC9zdmc+Cg==) 50% 50% no-repeat;
+  background-size: 60% 60%;
+  min-width: 45px;
+  min-height: 45px;
+}
 .a-enter-vr-button:active,
 .a-enter-vr-button:hover {
   background-color: #666;
