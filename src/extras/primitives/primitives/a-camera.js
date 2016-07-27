@@ -14,6 +14,7 @@ registerPrimitive('a-camera', {
     'look-controls-enabled': 'look-controls.enabled',
     near: 'camera.near',
     'wasd-controls-enabled': 'wasd-controls.enabled',
+    'user-height': 'camera.userHeight',
     zoom: 'camera.zoom'
   },
 
