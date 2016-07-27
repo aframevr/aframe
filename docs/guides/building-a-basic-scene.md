@@ -3,7 +3,7 @@ title: Building a Basic Scene
 type: guide
 layout: docs
 parent_section: guide
-order: 3
+order: 1
 ---
 
 Let's first start building a scene using the basic [primitive][primitives]

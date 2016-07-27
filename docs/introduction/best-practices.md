@@ -3,7 +3,7 @@ title: Best Practices
 type: guide
 layout: docs
 parent_section: guide
-order: 6
+order: 4
 ---
 
 ## VR Design

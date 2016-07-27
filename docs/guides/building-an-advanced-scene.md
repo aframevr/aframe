@@ -3,7 +3,7 @@ title: Building an Advanced Scene
 type: guide
 layout: docs
 parent_section: guide
-order: 4
+order: 2
 ---
 
 > Fork the [360&deg; Image Viewer Boilerplate on GitHub](https://github.com/aframevr/360-image-browser-boilerplate).

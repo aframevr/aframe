@@ -3,7 +3,7 @@ title: "Device & Platform Support"
 type: guide
 layout: docs
 parent_section: guide
-order: 5
+order: 3
 ---
 
 Devices and platform support depends on how well the browsers support certain
