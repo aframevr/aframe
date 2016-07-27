@@ -61,7 +61,6 @@ module.exports = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
-        this.setupSystems();
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -95,6 +94,7 @@ module.exports = registerElement('a-scene', {
         var resize = this.resize.bind(this);
         initMetaTags(this);
         initWakelock(this);
+        this.initSystems();
 
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
@@ -103,10 +103,9 @@ module.exports = registerElement('a-scene', {
       writable: window.debug
     },
 
-    setupSystems: {
+    initSystems: {
       value: function () {
-        var systemsKeys = Object.keys(systems);
-        systemsKeys.forEach(this.initSystem.bind(this));
+        Object.keys(systems).forEach(this.initSystem.bind(this));
       }
     },
 
