@@ -1,10 +1,16 @@
-var register = require('../../core/component').registerComponent;
+var registerComponent = require('../../core/component').registerComponent;
 
-module.exports.Component = register('canvas', {
+var FULLSCREEN_CLASS = 'fullscreen';
+var GRABBING_CLASS = 'a-canvas-grabbing';
 
+/**
+ * Create canvas that toggles full screen styles when entering and exiting VR.
+ */
+module.exports.Component = registerComponent('canvas', {
   init: function () {
     var sceneEl = this.el;
     var canvasEl = document.createElement('canvas');
+
     canvasEl.classList.add('a-canvas');
     // Mark canvas as provided/injected by A-Frame.
     canvasEl.dataset.aframeCanvas = true;
@@ -14,42 +20,40 @@ module.exports.Component = register('canvas', {
     document.addEventListener('mozfullscreenchange', onFullScreenChange);
     document.addEventListener('webkitfullscreenchange', onFullScreenChange);
 
-    // Prevent overscroll on mobile.
-    canvasEl.addEventListener('touchmove', function (event) {
-      event.preventDefault();
+    // Listen to mousedown to enable grab/grabbing cursors.
+    canvasEl.addEventListener('mousedown', function addGrabbingClass (event) {
+      document.body.classList.add(GRABBING_CLASS);
+    });
+    document.body.addEventListener('mouseup', function removeGrabbingClass (event) {
+      document.body.classList.remove(GRABBING_CLASS);
     });
 
-    // Handle fullscreeen styling
-    sceneEl.addEventListener('enter-vr', addFullscreenClass);
-    sceneEl.addEventListener('exit-vr', removeFullscreenClass);
+    // Handle fullscreeen styling.
+    sceneEl.addEventListener('enter-vr', function addFullscreenClass () {
+      canvasEl.classList.add(FULLSCREEN_CLASS);
+    });
+    sceneEl.addEventListener('exit-vr', function removeFullscreenClass () {
+      canvasEl.classList.remove(FULLSCREEN_CLASS);
+    });
 
     // Set canvas on scene.
     sceneEl.canvas = canvasEl;
-    sceneEl.emit('render-target-loaded', {
-      target: canvasEl
-    });
-
-    function addFullscreenClass (event) {
-      canvasEl.classList.add('fullscreen');
-    }
-
-    function removeFullscreenClass (event) {
-      canvasEl.classList.remove('fullscreen');
-    }
+    sceneEl.emit('render-target-loaded', {target: canvasEl});
 
     function onFullScreenChange () {
       var fullscreenEl =
         document.fullscreenElement ||
         document.mozFullScreenElement ||
         document.webkitFullscreenElement;
-      // No fullscren element === exit fullscreen
+
+      // If no fullscreen element, exit fullscreen.
       if (!fullscreenEl) { sceneEl.exitVR(); }
+
       document.activeElement.blur();
       document.body.focus();
-      // For unkown reasons a syncrhonous resize does
-      // not work on desktop when entering/exiting fullscreen
+      // For unknown reasons, resizing synchronously does not work on desktop when
+      // entering/exiting fullscreen.
       setTimeout(sceneEl.resize.bind(sceneEl), 0);
     }
   }
-
 });
