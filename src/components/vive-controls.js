@@ -12,8 +12,8 @@ module.exports.Component = registerComponent('vive-controls', {
 
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: 'white'},
-    buttonHighlightColor: {default: 'yellow'},
+    buttonColor: {default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
     model: {default: true}
   },
 
