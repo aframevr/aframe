@@ -33,6 +33,19 @@
   width: 100%;
 }
 
+.a-canvas.a-grab-cursor:hover {
+  cursor: grab;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grab;
+}
+
+.a-grabbing,
+.a-canvas.a-grab-cursor:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
 .a-canvas.fullscreen {
   width: 100% !important;
   height: 100% !important;
