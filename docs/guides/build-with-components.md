@@ -1,8 +1,8 @@
 ---
-title: Building an Advanced Scene
-type: guide
+title: Build with Components
+type: guides
 layout: docs
-parent_section: guide
+parent_section: guides
 order: 2
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: Best Practices
-type: guide
+type: introduction
 layout: docs
-parent_section: guide
+parent_section: introduction
 order: 4
 ---
 

@@ -1,9 +1,11 @@
 ---
-title: Building a Basic Scene
-type: guide
+title: Build with Basic HTML
+section_title: Guides
+type: guides
 layout: docs
-parent_section: guide
+parent_section: docs
 order: 1
+section_order: 2
 ---
 
 Let's first start building a scene using the basic [primitive][primitives]

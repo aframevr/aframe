@@ -5,7 +5,7 @@ type: primitives
 layout: docs
 parent_section: docs
 order: 1
-section_order: 4
+section_order: 5
 ---
 
 Primitives are [entities][entity] that:

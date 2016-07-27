@@ -6,7 +6,7 @@ order: 1
 
 parent_section: docs
 section_title: Components
-section_order: 3
+section_order: 4
 ---
 
 The geometry component provides a basic shape for an entity. The general
