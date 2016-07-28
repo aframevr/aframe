@@ -148,18 +148,25 @@ module.exports = registerElement('a-scene', {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
+
         function enterVRSuccess () {
           self.addState('vr-mode');
           self.emit('enter-vr', event);
+
           // Lock to landscape orientation on mobile.
           if (self.isMobile && window.screen.orientation) {
             window.screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
-          // On mobile the polyfill handles fullscreen
-          if (!self.isMobile) { self.requestFullscreen(); }
+
+          // On mobile, the polyfill handles fullscreen.
+          // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
+          // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
+          // connected.
+          if (!self.isMobile && !checkHeadsetConnected()) { requestFullscreen(self.canvas); }
           self.resize();
         }
+
         function enterVRFailure (err) {
           if (err && err.message) {
             throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
@@ -167,17 +174,6 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to enter VR mode (`requestPresent`).');
           }
         }
-      }
-    },
-
-    requestFullscreen: {
-      value: function () {
-        var canvas = this.canvas;
-        var requestFullscreen =
-          canvas.requestFullScreen ||
-          canvas.webkitRequestFullScreen ||
-          canvas.mozRequestFullScreen;
-        requestFullscreen.apply(canvas);
       }
     },
 
@@ -420,4 +416,12 @@ function getCanvasSize (canvasEl, embedded) {
     height: window.innerHeight,
     width: window.innerWidth
   };
+}
+
+function requestFullscreen (canvas) {
+  var requestFullscreen =
+    canvas.requestFullScreen ||
+    canvas.webkitRequestFullScreen ||
+    canvas.mozRequestFullScreen;
+  requestFullscreen.apply(canvas);
 }
