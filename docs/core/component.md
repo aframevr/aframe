@@ -339,8 +339,6 @@ AFRAME.registerComponent('physics-body', {
 }
 ```
 
-## `multiple`
-
 ## Lifecycle Methods
 
 With the schema being the anatomy, the lifecycle methods are the physiology;
