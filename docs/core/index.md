@@ -1,6 +1,6 @@
 ---
 title: Entity-Component-System
-section_title: Core
+section_title: Concepts and API
 type: core
 layout: docs
 parent_section: docs
