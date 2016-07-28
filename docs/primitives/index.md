@@ -85,7 +85,7 @@ property to `box`. And it *maps* (i.e., proxies) the HTML `width` attribute to
 the underlying `geometry.width` property and the HTML `color` attribute to the
 underlying `material.color` property.
 
-## Registering a Primitive
+## Register a Primitive
 
 We can compose and register our own primitives for other people to consume.
 

@@ -491,7 +491,7 @@ Example uses of `.updateSchema` by some A-Frame components:
 `flushToDOM` will manually serialize the component's data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
-## Writing a Component
+## Write a Component
 
 ### Line Component
 

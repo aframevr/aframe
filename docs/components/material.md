@@ -291,7 +291,7 @@ creates confusion and unwanted visual defects.
 
 To work around, try changing the order of the entities.
 
-## Registering a Custom Material
+## Register a Custom Material
 
 We can register custom materials for appearances and effects using `AFRAME.registerShader`.
 
@@ -349,7 +349,7 @@ AFRAME.registerShader('line-dashed', {
 });
 ```
 
-## Registering a Custom GLSL Shader
+## Register a Custom GLSL Shader
 
 We also use `registerShader` for registering
 [THREE.ShaderMaterial][shader-material]s to create custom shaders.
