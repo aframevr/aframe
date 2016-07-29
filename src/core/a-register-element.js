@@ -7,28 +7,27 @@
   `ANode` and `AEntity`.  It's a pass through in any other case.
 
   It wraps some of the prototype methods of the created element to make sure
-  that the corresponding functions in the base classes (`AEntity` and `ANode`)
-  are also invoked. The method in the base class is always called before the one
-  in the derived object.
+  that the corresponding functions in the base prototypes (`AEntity` and `ANode`)
+  are also invoked. The method in the base prototype is always called before the one
+  in the derived prototype.
 */
 
 // Polyfill `document.registerElement`.
 require('document-register-element');
 
-var registerElement = document.registerElement;
-
+var ANode;  // Must declare before AEntity. Initialized at the bottom.
+var AEntity;
 var knownTags = module.exports.knownTags = {};
 
-var addTagName = function (tagName) {
+function addTagName (tagName) {
   knownTags[tagName.toLowerCase()] = true;
-};
+}
 
 /**
- * Returns whether the element type is one of our known registered ones
+ * Return whether the element type is one of our known registered ones.
  *
- * @param   {string} node The name of the tag to register
- * @returns {boolean} Whether the tag name matches that of our registered
- *                    custom elements
+ * @param {string} node - The name of the tag to register.
+ * @returns {boolean} Whether the tag name matches that of our registered custom elements.
  */
 module.exports.isNode = function (node) {
   return node.tagName.toLowerCase() in knownTags || node.isNode;
@@ -47,23 +46,23 @@ module.exports.registerElement = function (tagName, obj) {
 
   if (isANode || isAEntity) { addTagName(tagName); }
 
-  // Does the element inherit from `ANode`?
+  // Wrap if element inherits from `ANode`.
   if (isANode) {
     newObj = wrapANodeMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  // Does the element inherit from `AEntity`?
+  // Wrap if element inherits from `AEntity`.
   if (isAEntity) {
     newObj = wrapAEntityMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  return registerElement.call(document, tagName, newObj);
+  return document.registerElement(tagName, newObj);
 };
 
 /**
- * This wraps some of the obj methods to call those on `ANode` base clase.
+ * Wrap some obj methods to call those on `ANode` base prototype.
  *
  * @param {object} obj - Object that contains the methods that will be wrapped.
  * @return {object} An object with the same properties as the input parameter but
@@ -76,13 +75,13 @@ function wrapANodeMethods (obj) {
     'attributeChangedCallback',
     'createdCallback'
   ];
-  wrapMethods(newObj, ANodeMethods, ANode.prototype, obj);
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
 
 /**
- * This wraps some of the obj methods to call those on `AEntity` base class.
+ * This wraps some of the obj methods to call those on `AEntity` base prototype.
  *
  * @param {object} obj - The objects that contains the methods that will be wrapped.
  * @return {object} - An object with the same properties as the input parameter but
@@ -96,11 +95,12 @@ function wrapAEntityMethods (obj) {
     'createdCallback'
   ];
   var AEntityMethods = [
-    'attributeChangedCallback',
     'attachedCallback',
+    'attributeChangedCallback',
     'createdCallback',
     'detachedCallback'
   ];
+
   wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   wrapMethods(newObj, AEntityMethods, obj, AEntity.prototype);
   // Copies the remaining properties into the new object.
@@ -109,8 +109,8 @@ function wrapAEntityMethods (obj) {
 }
 
 /**
- * Wraps a list a methods to ensure that those in the base class are called
- * through the derived one.
+ * Wrap a list a methods to ensure that those in the base prototype are called
+ * before the derived one.
  *
  * @param {object} targetObj - Object that will contain the wrapped methods.
  * @param {array} methodList - List of methods from the derivedObj that will be wrapped.
@@ -122,9 +122,10 @@ function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
     wrapMethod(targetObj, methodName, derivedObj, baseObj);
   });
 }
+module.exports.wrapMethods = wrapMethods;
 
 /**
- * Wraps one method to ensure that the one in the base class is called before
+ * Wrap one method to ensure that the one in the base prototype is called before
  * the one in the derived one.
  *
  * @param {object} obj - Object that will contain the wrapped method.
@@ -135,16 +136,21 @@ function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
 function wrapMethod (obj, methodName, derivedObj, baseObj) {
   var derivedMethod = derivedObj[methodName];
   var baseMethod = baseObj[methodName];
+
+  // Derived prototype does not define method, no need to wrap.
   if (!derivedMethod || !baseMethod) { return; }
-  // The derived class doesn't override the one in the base one
+
+  // Derived prototype doesn't override the one in the base one, no need to wrap.
   if (derivedMethod === baseMethod) { return; }
-  // Wrapper
-  // The base method is called before the one in the derived class
-  var wrapperMethod = function () {
-    baseMethod.apply(this, arguments);
-    return derivedMethod.apply(this, arguments);
+
+  // Wrap to ensure the base method is called before the one in the derived prototype.
+  obj[methodName] = {
+    value: function wrappedMethod () {
+      baseMethod.apply(this, arguments);
+      return derivedMethod.apply(this, arguments);
+    },
+    writable: window.debug
   };
-  obj[methodName] = {value: wrapperMethod, writable: window.debug};
 }
 
 /**
@@ -165,5 +171,5 @@ function copyProperties (source, destination) {
   });
 }
 
-var ANode = require('./a-node');
-var AEntity = require('./a-entity');
+ANode = require('./a-node');
+AEntity = require('./a-entity');

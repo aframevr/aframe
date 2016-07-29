@@ -34,6 +34,12 @@ suite('a-entity', function () {
     components.test = undefined;
   });
 
+  test('createdCallback', function () {
+    var el = this.el;
+    assert.ok(el.isNode);
+    assert.ok(el.isEntity);
+  });
+
   test('adds itself to parent when attached', function (done) {
     var el = document.createElement('a-entity');
     var parentEl = this.el;

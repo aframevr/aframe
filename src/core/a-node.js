@@ -16,7 +16,8 @@ module.exports = registerElement('a-node', {
         this.isNode = true;
         this.mixinEls = [];
         this.mixinObservers = {};
-      }
+      },
+      writable: window.debug
     },
 
     attachedCallback: {
@@ -25,7 +26,8 @@ module.exports = registerElement('a-node', {
         this.sceneEl = this.isScene ? this : this.closestScene();
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
-      }
+      },
+      writable: window.debug
     },
 
     attributeChangedCallback: {
