@@ -65,7 +65,7 @@ module.exports.Component = registerComponent('hand-controls', {
       modelUrl = 'url(' + RIGHT_HAND_MODEL_URL + ')';
     }
     el.setAttribute('vive-controls', {hand: hand, model: false});
-    el.setAttribute('blend-model', modelUrl);
+    el.setAttribute('blend-character-model', modelUrl);
   },
 
  /** Play the model animations based on the pressed button and kind of event.
