@@ -49,6 +49,7 @@ available depending on the material applied.
 | transparent | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
 | shader      | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
 | side        | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
+| visible | Whether material is visible. Raycasters will ignore visible materials. | true |
 
 ## Events
 
