@@ -2,10 +2,10 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 /**
- * Blend Model component.
- * Loads a model with skeletal Animation Blending
+ * Blend character model component.
+ * Loads a model with skeletal animation blending.
  */
-module.exports.Component = registerComponent('blend-model', {
+module.exports.Component = registerComponent('blend-character-model', {
   schema: {type: 'src'},
 
   init: function () {

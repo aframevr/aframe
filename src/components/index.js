@@ -1,4 +1,4 @@
-require('./blend-model');
+require('./blend-character-model');
 require('./camera');
 require('./collada-model');
 require('./cursor');
