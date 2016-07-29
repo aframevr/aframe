@@ -1,6 +1,6 @@
 /* global assert, process, sinon, setup, suite, teardown, test, HTMLElement */
-'use strict';
 var AEntity = require('core/a-entity');
+var ANode = require('core/a-node');
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
 var components = require('core/component').components;
@@ -129,6 +129,31 @@ suite('a-entity', function () {
         done();
       });
       this.el.sceneEl.appendChild(el);
+    });
+
+    test('waits for <a-assets>', function (done) {
+      var assetsEl;
+      var el;
+      var img;
+      var sceneEl;
+
+      // Create DOM.
+      sceneEl = document.createElement('a-scene');
+      assetsEl = document.createElement('a-assets');
+      img = document.createElement('img');
+      img.setAttribute('src', 'willneverload.jpg');
+      el = document.createElement('a-entity');
+      assetsEl.appendChild(img);
+      sceneEl.appendChild(assetsEl);
+      sceneEl.appendChild(el);
+      document.body.appendChild(sceneEl);
+
+      el.addEventListener('loaded', function () {
+        assert.ok(assetsEl.hasLoaded);
+        assert.ok(el.hasLoaded);
+        done();
+      });
+      ANode.prototype.load.call(assetsEl);
     });
   });
 
@@ -439,14 +464,13 @@ suite('a-entity', function () {
       entity.appendChild(animationChild);
       entity.appendChild(entityChild1);
       entity.appendChild(entityChild2);
-      document.body.appendChild(entity);
-
       entity.addEventListener('loaded', function () {
         var childEntities = entity.getChildEntities();
         assert.equal(childEntities.length, 2);
         assert.equal(childEntities.indexOf(animationChild), -1);
         done();
       });
+      document.body.appendChild(entity);
     });
   });
 
