@@ -63,8 +63,10 @@ module.exports = registerElement('a-assets', {
 
     load: {
       value: function () {
-        ANode.prototype.load.call(this, null, function waitOnFilter (el) {
+        ANode.prototype.load.call(this, null, function waitChildLoadedFilter (el) {
           return el.isAssetItem && el.hasAttribute('src');
+        }, function waitChildReadyFilter (el) {
+          return el.isAssetItem;
         });
       }
     }

@@ -27,9 +27,7 @@ suite('a-assets', function () {
     img.setAttribute('src', IMG_SRC);
     el.appendChild(img);
 
-    scene.addEventListener('loaded', function () {
-      done();
-    });
+    scene.addEventListener('loaded', function () { done(); });
 
     // Load image.
     document.body.appendChild(scene);
