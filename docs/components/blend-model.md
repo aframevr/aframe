@@ -5,12 +5,14 @@ layout: docs
 parent_section: components
 ---
 
-Loads a model with skeletal Animation Blending
-
+Loads a three.js format JSON model containing skeletal animation blending using
+`THREE.BlendCharacter`. This is mainly used to represent the hand and Vive
+controllers.
 
 ## Example
 
-We can load a model by pointing to an asset that specifies the `src` to a  file.
+We can load the model by pointing using the ID to an `<a-asset-item>` that
+specifies the `src` to a file:
 
 ```html
 <a-scene>
@@ -33,12 +35,4 @@ We can load a model by pointing to an asset that specifies the `src` to a  file.
 
 | Event Name   | Description                                                                                 |
 | ----------   | ------------------------------------------------------------------------------------------- |
-| model-loaded | JSON model has been loaded into the scene.                                               |
-
-## Loading Inline
-
-We can also load a model by specifying the path directly within `url()`. Note this is less performant than going through the asset management system.
-
-```html
-<a-entity collada-model="url(/path/to/model.json)"></a-entity>
-```
+| model-loaded | JSON model has been loaded into the scene.                                                  |

@@ -5,32 +5,40 @@ layout: docs
 parent_section: components
 ---
 
-It handles events coming from the vive-controls
-Translate button events to hand related actions:
-gripclose, gripopen, thumbup, thumbdown, pointup, pointdown
-It loads a hand model with gestures that are applied based
-on the button pressed
+[tracked]: ./components/tracked-controls.md
+[vive]: ./components/vive-controls.md
+
+The hand-controls gives tracked hands (using a prescribed model) with animated
+gestures. It wraps the [vive-controls component][vive], which wraps the
+[tracked-controls component][tracked]. It adds additional events, semantically
+named, and handles hand animations.
 
 ## Example
 
 ```html
 <a-entity hand-controls="left"></a-entity>
+<a-entity hand-controls="right"></a-entity>
 ```
 
-## Value
+## Values
 
-| Value | Description                           |
-|-------|---------------------------------------|
-| left  | The entity will track the left hand.  |
-| right | The entity will track the right hand. |                                             |
+| Value | Description                                      |
+|-------|--------------------------------------------------|
+| left  | The entity will track the left hand controller.  |
+| right | The entity will track the right hand controller. |
 
 ## Events
 
-| Event Name   | Description                                                                                 |
-| ----------   | ------------------------------------------------------------------------------------------- |
-| gripclose    | Hand is closed
-| gripopen     | Hand is open
-| pointup      | Index is up
-| pointdown    | Index is down
-| thumbup      | Thumb is up
-| thumbdown    | Thumb is down
+| Event Name | Description                                          |
+| ---------- | -----------                                          |
+| gripclose  | Grip buttons pressed. Hand is closed.                |
+| gripopen   | Grip buttons released. Hand is open.                 |
+| pointup    | Trigger button pressed. Index finger pointing up.    |
+| pointdown  | Trigger button released. Index finger pointing down. |
+| thumbup    | Thumbpad pressed. Thumb is pointing up.              |
+| thumbdown  | Thumbpad released. Thumb is pointing down.           |
+
+## Assets
+
+- [Left hand model](https://media.aframe.io/controllers/hands/leftHand.json)
+- [Right hand model](https://media.aframe.io/controllers/hands/rightHand.json)
