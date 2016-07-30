@@ -62,13 +62,13 @@ suite('schema', function () {
     });
 
     test('returns already-parsed value', function () {
-      var schemaPropDef = { type: 'vec3' };
+      var schemaPropDef = processSchema({ type: 'vec3' });
       var parsed = parseProperty({ x: 0, y: 0, z: 0 }, schemaPropDef);
       assert.shallowDeepEqual(parsed, { x: 0, y: 0, z: 0 });
     });
 
     test('allows undefined default', function () {
-      var schemaPropDef = { type: 'vec3', default: undefined };
+      var schemaPropDef = processSchema({ type: 'vec3', default: undefined });
       var parsed = parseProperty(undefined, schemaPropDef);
       assert.shallowDeepEqual(parsed, undefined);
     });
@@ -82,7 +82,6 @@ suite('schema', function () {
         visible: { type: 'boolean' },
         width: { type: 'int', default: 2 }
       });
-
       var parsed = parseProperties({
         position: '1 2 3',
         visible: 'false',

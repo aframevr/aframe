@@ -8,13 +8,23 @@ order: 1
 section_order: 4
 ---
 
-Primitives alias A-Frame [entities](../core/entity.md) and map HTML attributes to [component](../core/component.md) properties. They are a convenience layer on top of the core API and are meant to:
+Primitives are [entities][entity] that:
 
-- Ease us into the concept of the [entity-component-system](../core/) pattern.
-- Provide a more familiar interface with HTML attributes mapping to only a single value.
-- Pre-compose useful components together with prescribed defaults to create semantic building blocks out-of-the-box.
+- Have a semantic name (e.g., `<a-box>`)
+- Have a preset assemblage of components
+- Have default component property values
+- Map HTML attributes to [component][component] properties
 
-A-Frame ships with a handful of primitives for common use cases such as displaying basic geometric primitives, 3D models, and media assets.
+They are a convenience layer on top of the core API and are meant to:
+
+- Pre-compose useful components together with prescribed defaults
+- Act as a shorthand for complex-but-common types of entities (e.g., `<a-sky>`)
+- Provide a familiar interface with HTML attributes mapping to only a single value
+
+They are sort of like [Prefabs in Unity][prefab]. Some literature on the
+entity-component-system pattern refer to these as *assemblages*.
+
+<!--toc-->
 
 ## Example
 
@@ -22,7 +32,7 @@ Here is an assortment of various primitives in use:
 
 ```html
 <a-scene>
-  <!-- Using the asset management system for better performance. -->
+  <!-- Using the asset management system for caching. -->
   <a-assets>
     <a-asset-item id="fox-obj" src="fox.obj"></a-asset-item>
     <a-asset-item id="fox-mtl" src="fox.mtl"></a-asset-item>
@@ -34,9 +44,25 @@ Here is an assortment of various primitives in use:
   <a-box src="#texture" depth="2" height="5" width="1"></a-box>
   <a-image src="fireball.jpg"></a-image>
   <a-video src="#video"></a-video>
-  <a-obj-model src="#fox-obj" mtl="#fox-mtl"></a-obj-model>
   <a-sky color="#432FA0"></a-sky>
 </a-scene>
+```
+
+## Primitives are Entities
+
+Since every primitive extends `<a-entity>`s, things that can be done with
+entities can be done with primitives:
+
+- Positioning, rotating, and scaling
+- Attaching [components][component] and [mixins][mixin]
+- Applying [animations][animation]
+
+For example, let's take `<a-box>` primitive, and say someone writes a
+third-party physics component. We can attach it to `<a-box>` just as we would
+with any entity:
+
+```html
+<a-box color="red" physics="mass: 2.4"></a-box>
 ```
 
 ## How They Work
@@ -47,46 +73,81 @@ To create a wide red box using the primitives API, we could write:
 <a-box color="red" width="3"></a-box>
 ```
 
-Once attached, this will expand to:
+Which ends up expanding to:
 
 ```html
 <a-box color="red" width="3" geometry="primitive: box; width: 3" material="color: red"></a-box>
 ```
 
-Thus, it is equivalent to:
+Under the hood, we see that primitives *extend* `<a-entity>` as a custom
+element while providing some defaults. It defaults the `geometry.primitive`
+property to `box`. And it *maps* (i.e., proxies) the HTML `width` attribute to
+the underlying `geometry.width` property and the HTML `color` attribute to the
+underlying `material.color` property.
 
-```html
-<a-entity geometry="primitive: box; width: 3" material="color: red"></a-entity>
+## Registering a Primitive
+
+We can compose and register our own primitives for other people to consume.
+
+For example, here is what the registration looks like for `<a-box>` primitive:
+
+```js
+var extendDeep = AFRAME.utils.extendDeep;
+
+// The mesh mixin provides common material properties for creating mesh-based primitives.
+// This makes the material component a default component and maps all the base material properties.
+var meshMixin = AFRAME.primitives.getMeshMixin();
+
+AFRAME.registerPrimitive('a-box', extend({}, meshMixin, {
+  // Preset default components. These components and component properties will be attached to the entity out-of-the-box.
+  defaultComponents: {
+    geometry: {primitive: 'box'}
+  },
+
+  // Defined mappings from HTML attributes to component properties (using dots as delimiters). If we set `depth="5"` in HTML, then the primitive will automatically set `geometry="depth: 5"`.
+  mappings: {
+    depth: 'geometry.depth',
+    height: 'geometry.height',
+    width: 'geometry.width'
+  }
+}));
 ```
 
-Under the hood, we see that primitives *extend* `<a-entity>` as a custom element while providing some defaults. It defaults the `geometry.primitive` property to `box`. And it *maps* (i.e., proxies) the HTML `width` attribute to the underlying `geometry.width` property and the HTML `color` attribute to the underlying `material.color` property.
+For example, Don McCurdy's [aframe-extras][aframe-extras] creates `<a-ocean>`
+primitive using his ocean component:
 
-## Primitives are Entities
+```js
+AFRAME.registerPrimitive('a-ocean', {
+  // Attaches the ocean component by default.
+  // And smartly makes the ocean parallel to the ground.
+  defaultComponents: {
+    ocean: {},
+    rotation: {x: -90, y: 0, z: 0}
+  },
 
-Since primitives extends `<a-entity>`s, operations that can be done upon entities can be done upon primitives. These operations include:
+  // Maps HTML attributes to his ocean component's properties.
+  mappings: {
+    width: 'ocean.width',
+    depth: 'ocean.depth',
+    density: 'ocean.density',
+    color: 'ocean.color',
+    opacity: 'ocean.opacity'
+  }
+});
+```
 
-- Positioning, rotating, and scaling
-- Attaching additional [components](../core/component.md) to define additional appearance, behavior, or functionality
-- Applying [animations](../core/animation.md)
-- Specifying [mixins](../core/mixin.md)
+Then we'd be able to create oceans using basic HTML syntax with little configuration needed:
 
-## Primitives are Helpers
+```html
+<a-ocean color="aqua" height="100" width="100"></a-ocean>
+```
 
-Note that primitives are a helper layer on top of A-Frame's core API. Thus it is still extremely valuable to grasp the following:
-
-- How the rest of the system works under the hood
-- How to compose and configure components onto entities
-- How to use the asset management system
-
-If you haven't already, we heavily recommend skimming through the rest of the documentation.
-
-## Reading the Documentation for Individual Primitives
-
-The following documentation pages for individual primitive elements will:
-
-- Describe what the primitive does in practice
-- Describe roughly how the primitive is composed
-- Describe which component properties the attributes proxy the value to (e.g., `color` maps to `material.color`, meaning the `color` property of the [material component](../components/material.md))
-- Describe any techniques or caveats
-
-A lot of the primitives represent geometric meshes (i.e., shapes with an appearance). Thus, many of them inherit the common [mesh attributes](./mesh-attributes.md). So while attributes such as `color` or `src` are not listed in the attributes table for primitives such as [`<a-box>`](./a-box.md) or [`<a-plane>`](./a-plane.md), they are there. Remember to refer to common mesh attributes table when noted.
+[a-box]: ./a-box.md
+[a-plane]: ./a-plane.md
+[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+[animation]: ../core/animation.md
+[component]: ../core/component.md
+[entity]: ../core/entity.md
+[material]: ../components/material.md
+[mixin]: ../core/mixin.md
+[prefab]: http://docs.unity3d.com/Manual/Prefabs.html

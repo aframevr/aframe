@@ -4,238 +4,453 @@ type: guide
 layout: docs
 parent_section: guide
 order: 4
-show_guide: true
 ---
 
-<script async src="//assets.codepen.io/assets/embed/ei.js"></script>
+> Fork the [360&deg; Image Viewer Boilerplate on GitHub](https://github.com/aframevr/360-image-browser-boilerplate).
 
-> Play with the [finished example on CodePen](http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000).
+![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
-We built a [basic scene][basic], but how can we do more? A-Frame is just an abstraction on top of [three.js][three], and with [A-Frame components][components] (not to be confused with [Web Components][webcomponents]), we can do just about anything three.js can, which is a lot. Let's go through an example building a scene where the workflow revolves around writing components. We'll build an interactive scene in which we fire lasers at enemies surrounding us. We can use the standard components that ship with A-Frame, or use components that A-Frame developers have published to the ecosystem. Better yet, we can write our own components to do whatever we want!
+Let's go through an example building a scene using an
+[entity-component-system][ecs] workflow. This guide will introduce three
+concepts:
 
-Let's start by adding an enemy target:
+1. Using the standard [components][components] that ship with A-Frame.
+2. Using third-party components from the ecosystem.
+3. Writing custom components to accomplish whatever we want.
 
-<p data-height="500" data-theme-id="0" data-slug-hash="wGBLeB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/wGBLeB/">Laser Shooter - Step 1</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+The scene we will build is a **360&deg; image viewer**. There will be three
+panels which the user can click on. Once clicked, the background will fade and
+swap the 360&deg; images.
 
-This creates a basic static scene where the enemy stares at you even as you move around. We can use A-Frame components from the ecosystem to do some neat things.
+<!--toc-->
 
-## Using Components
+## Skeleton
 
-The [awesome-aframe repository][awesome] is a great place to find components that the community has created to enable new features. Many of these components are started from the [Component Boilerplate][boilerplate] and should provide builds in the `dist/` folders in their repositories. Take the [layout component][layout] for example. We can grab the build, drop it into our scene, and immediately be able to use a 3D layout system to automatically position entities. Instead of having one enemy, let's have ten enemies positioned in a circle around the player:
+This is the starting point for our scene:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="bpNPjp" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/bpNPjp/">Laser Shooter - Step 2</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+```html
+<a-scene>
+  <a-assets>
+    <audio id="click-sound" src="audio/click.ogg"></audio>
 
-It is messy in markup to have the enemy entity duplicated ten times. We can drop in the [template component][template] to clean that up. We can also use the [animation system][animation] to have enemies march in a circle around us:
+    <!-- Images. -->
+    <img id="city" src="img/city.jpg">
+    <img id="city-thumb" src="img/thumb-city.png">
+    <img id="cubes" src="img/cubes.jpg">
+    <img id="cubes-thumb" src="img/thumb-cubes.png">
+    <img id="sechelt" src="img/sechelt.jpg">
+    <img id="sechelt-thumb" src="img/thumb-sechelt.png">
+  </a-assets>
 
-<p data-height="500" data-theme-id="0" data-slug-hash="JXoQBm" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/JXoQBm/">Laser Shooter - Step 3</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+  <!-- 360-degree image. -->
+  <a-sky id="image-360" radius="10" src="#city"></a-sky>
 
-By mixing and matching the layout and template components, we now have ten enemies surrounding us in a circle. Let's enable gameplay by writing our own components.
+  <!-- Link. -->
+  <a-plane class="link" height="1" width="1"></a-plane>
+
+  <!-- Camera + Cursor. -->
+  <a-camera>
+    <a-cursor id="cursor"></a-cursor>
+      <a-animation begin="click" easing="ease-in" attribute="scale"
+                   fill="backwards" from="0.1 0.1 0.1" to="1 1 1" dur="150"></a-animation>
+      <a-animation begin="fusing" easing="ease-in" attribute="scale"
+                   from="1 1 1" to="0.1 0.1 0.1" dur="1500"></a-animation>
+    </a-cursor>
+  </a-camera>
+</a-scene>
+```
+
+We have predefined:
+
+- Several images to choose from in the [Asset Management System][ams] within `a-assets`.
+- Our 360&deg; image placeholder with [`a-sky`][a-sky].
+- A [cursor][cursor] with visual feedback using evented
+[animations][animation-begin], fixed to the [camera][camera].
+
+## Using Standard Components
+
+Standard components are components that ship with A-Frame, like a standard
+library. We'll go over how to attach these components to entities and configure
+them from HTML.
+
+We want to add an image texture to `<a-plane>` link using the [material
+component][material].
+
+The material component is a [multi-property component][multi-property]. To
+attach the material component to the plane, we set the component name as an
+HTML attribute:
+
+```html
+<a-plane class="link" height="1" width="1"
+         material></a-plane>
+```
+
+Then we the specify the component data using a syntax that looks like inline
+CSS styles. We set `shader` to `flat` so the image isn't affected negatively by
+lighting. And we set `src` to `#cubes-thumb`, a selector to one of the images
+defined in the asset management system.
+
+```html
+<a-plane class="link" height="1" width="1"
+         material="shader: flat; src: #cubes-thumb"></a-plane>
+```
+
+Let's attach one more standard component, the [sound component][sound]. We want
+to make it such that when we click (via gazing) on the link, it plays a click
+sound. The syntax is the same as just before, but now we are using the sound
+component's properties. We set `on` to `click` so the sound is played on click.
+And we set `src` to `#click-sound`, a selector to our `<audio>` element.
+
+```html
+<a-plane class="link" height="1" width="1"
+         material="shader: flat; src: #cubes-thumb"
+         sound="on: click; src: #click-sound"></a-plane>
+```
+
+Now we have a textured plane that plays a click sound when clicked.
+
+## Using Third-Party Components
+
+We can grab third-party components from the [ecosystem][awesome], drop them into our
+scene, and use them from HTML. Components can do anything. By using components
+that other people have developed, we gain tons of power without needing to
+write our own code.
+
+We'll go through using three such third-party components: template, layout, and
+event-set. First we have to include them. [k-frame][k-frame] is a component
+pack by an [A-Frame core developer][ngokevin] that conveniently includes all three of these
+components in one bundle.
+
+To drop in `k-frame`, we can download from its [dist folder][kdist] and include it
+in the `<head>` *after* A-Frame:
+
+```html
+<html>
+  <head>
+    <title>360 Image Browser</title>
+    <script src="lib/aframe.min.js"></script>
+    <script src="lib/k-frame.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- ... ->
+    </a-scene>
+  </body>
+</html>
+```
+
+### Template Component
+
+Currently, we have one link. We want to create three of them, one for each of
+our 360&deg; images.
+
+The [template component][template] integrates templating engines into A-Frame.
+This lets us do things such as encapsulate groups of entities, passing data to
+generate entities, or iteration. Since we want to turn one link into three,
+without copy-and-pasting HTML, we can use the template component.
+
+If we read the [template component's documentation][template], we see one way
+to define a template is via a script tag in `<a-assets>`. Let's make our link a
+template and give it a name via `id`:
+
+```html
+<a-assets>
+  <!-- ... -->
+  <script id="link">
+    <a-plane class="link" height="1" width="1"
+             material="shader: flat; src: #cubes-thumb"
+             sound="on: click; src: #click-sound"></a-plane>
+  </script>
+</a-assets>
+```
+
+Then we can use the template to create multiple planes without much work:
+
+```html
+<a-entity template="src: #plane"></a-entity>
+<a-entity template="src: #plane"></a-entity>
+<a-entity template="src: #plane"></a-entity>
+```
+
+But then they'll all be displaying the same image texture and look the same.
+Here is where we'll need a template engine with variable
+substitution/interpolation.
+
+Let's tell the template component to use the popular [Nunjucks][nunjucks]
+engine by specifying `<script type="text/nunjucks">`. The component will
+lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
+}}` variable in the template, which we can pass using the [data attributes][data]:
+
+```html
+<a-assets>
+  <!-- ... -->
+  <!-- Specify Nunjucks. -->
+  <script id="link" type="text/nunjucks">
+    <a-plane class="link" height="1" width="1"
+             material="shader: flat; src: {{ thumb }}"
+             sound="on: click; src: #click-sound"></a-plane>
+  </script>
+</a-assets>
+
+<!-- ... -->
+
+<!-- Pass image sources to the template. -->
+<a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
+<a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
+<a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
+```
+
+The template component allows us to keep our scene clean by not having to
+repeat verbose code.
+
+### Layout Component
+
+Because the default position of an entity is `0 0 0`, the entities will
+overlap. While we could manually position each link, we could use the [layout
+component][layout] to do it for us. The layout component will automatically
+position its children to the specified layout.
+
+We create a wrapper entity around our links and attach the layout component
+using the `line` layout:
+
+```html
+<a-entity id="links" layout="layout: line; margin: .75" position="-3 -1 -4">
+  <a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
+  <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
+  <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
+</a-entity>
+```
+
+Now our links are no longer overlapping without us having to calculate and
+fiddle with positions.
+
+### Event-Set Component
+
+Lastly, we'll add some visual feedback to our links. We want them to scale up
+and scale back when they are hovered or clicked. This involves writing an event
+listener to do `setAttribute`s on the [scale component][scale] in response to
+[cursor events][cursor-events]. This is a fairly common pattern so there is an
+[event-set component][event-set] that does `setAttribute` in response to
+events.
+
+Let's attach event listeners on our links to scale them up when they are gazed
+over, scale them down as they are being clicked, and scale them back when they
+are no longer gazed upon. We are mimicking CSS hover states. We can specify
+event names with `_event` properties, and the rest of the properties define the
+`setAttibute` calls. Note that the event-set component can have [multiple
+instances][multiple]:
+
+```html
+<a-assets>
+  <!-- ... -->
+  <script id="link" type="text/nunjucks">
+    <a-plane class="link" height="1" width="1"
+             material="shader: flat; src: {{ thumb }}"
+             sound="on: click; src: #click-sound"
+             event-set__1="_event: mousedown; scale: 1 1 1"
+             event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+             event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+             event-set__4="_event: mouseleave; scale: 1 1 1"></a-plane>
+  </script>
+</a-assets>
+```
+
+Wielding components, we were able to do a lot with just a few more lines of
+HTML. Though the ecosystem has a lot to offer, your scenes will often require
+writing your own simple components.
 
 ## Writing Components
 
-Developers that are comfortable with JavaScript and three.js can write components to add appearance, behavior, and functionality to the experience. As we've seen these components can then be reused and shared with the community. Though not all components have to be shared; they can be ad-hoc or one-off. Since A-Frame is based on an [entity-component-system pattern][ecs], most logic should be implemented within components. The development workflow within A-Frame should try to revolve around components. The [component documentation][components] goes into much more detail on what a component looks like and how to write one.
-
-We want to be able to fire lasers at the enemies and have them disappear. We will need a component to create lasers on click, a component to generate clicks, a component to propel those lasers, a component to check when a laser comes in contact with an enemy.
-
-### spawner Component
-
-Let's start by being able to create lasers. We want to be able to spawn a laser entity that starts at the player's current position. We'll create a spawner component that listens to an event on the entity, and when that event is emitted, we'll spawn an entity with a predefined [mixin][mixin] of components:
+The [component documentation][components] has detailed information on writing a
+component. The most basic component takes the form of:
 
 ```js
-AFRAME.registerComponent('spawner', {
-  schema: {
-    on: { default: 'click' },
-    mixin: { default: '' }
-  },
+AFRAME.registerComponent('component-name', {
+  // Define component properties.
+  schema: {},
 
   /**
-   * Add event listener.
-   */
-  update: function (oldData) {
-    this.el.addEventListener(this.data.on, this.spawn.bind(this));
-  },
-
-  /**
-   * Spawn new entity at entity's current position.
-   */
-  spawn: function () {
-    var el = this.el;
-    var entity = document.createElement('a-entity');
-    var matrixWorld = el.object3D.matrixWorld;
-    var position = new THREE.Vector3();
-    var rotation = el.getAttribute('rotation');
-    var entityRotation;
-
-    position.setFromMatrixPosition(matrixWorld);
-    entity.setAttribute('position', position);
-
-    // Have the spawned entity face the same direction as the entity.
-    // Allow the entity to further modify the inherited rotation.
-    position.setFromMatrixPosition(matrixWorld);
-    entity.setAttribute('position', position);
-    entity.setAttribute('mixin', this.data.mixin);
-    entity.addEventListener('loaded', function () {
-      entityRotation = entity.getComputedAttribute('rotation');
-      entity.setAttribute('rotation', {
-        x: entityRotation.x + rotation.x,
-        y: entityRotation.y + rotation.y,
-        z: entityRotation.z + rotation.z
-      });
-    });
-    el.sceneEl.appendChild(entity);
-  }
-});
-```
-
-### click-listener Component
-
-Now we need to a way to generate a click event on the player entity in order to spawn the laser. We could just write a vanilla JavaScript event handler in a content script, but it is more reusable to write a component that can allow any entity to listen for clicks:
-
-```js
-AFRAME.registerComponent('click-listener', {
-  init: function () {
-    var el = this.el;
-    window.addEventListener('click', function () {
-      el.emit('click', null, false);
-    });
-  }
-});
-```
-
-From HTML, we define the laser mixin and attach the spawner and click-listener components to the player. When we click, the spawner component will generate a laser starting in front of the camera:
-
-<p data-height="500" data-theme-id="0" data-slug-hash="jqEjvB" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/jqEjvB/">Laser Shooter - Step 4</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-
-### projectile Component
-
-Now lasers will spawn in front of us when we click, but we need them to fire and travel. In the spawner component, we had the laser point in the rotation of the camera, and we rotated it 90-degrees around the X-axis to align it correctly. We can add a projectile component to have the laser travel straight in the direction it's already facing (its local Y-axis in this case):
-
-```js
-AFRAME.registerComponent('projectile', {
-  schema: {
-    speed: { default: -0.4 }
-  },
-
-  tick: function () {
-    this.el.object3D.translateY(this.data.speed);
-  }
-});
-```
-
-Then attach the projectile component to the laser mixin:
-
-```html
-<a-assets>
-  <!-- Attach projectile behavior. -->
-  <a-mixin id="laser" geometry="primitive: cylinder; radius: 0.05; translate: 0 -2 0"
-                      material="color: green; metalness: 0.2; opacity: 0.4; roughness: 0.3"
-                      projectile="speed: -0.5"></a-mixin>
-</a-assets>
-```
-
-The laser will now fire like a projectile on click:
-
-<p data-height="500" data-theme-id="0" data-slug-hash="YqPmzK" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/YqPmzK/">Laser Shooter - Step 5</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-
-### collider Component
-
-The last step is to add a collider component so we can detect when the laser hits an entity. We can do this using the [three.js Raycaster][raycaster], drawing a ray (line) from one end of the laser to the other, then continuously checking if one of the enemies are intersecting the ray. If an enemy is intersecting our ray, then it is touching the laser, and we use an event to tell the enemy that it got hit:
-
-```js
-AFRAME.registerComponent('collider', {
-  schema: {
-    target: { default: '' }
-  },
-
-  /**
-   * Calculate targets.
+   * Run when component is attached.
+   * @member {Element} el - Entity.
+   * @member data - Component data.
    */
   init: function () {
-    var targetEls = this.el.sceneEl.querySelectorAll(this.data.target);
-    this.targets = [];
-    for (var i = 0; i < targetEls.length; i++) {
-      this.targets.push(targetEls[i].object3D);
-    }
-    this.el.object3D.updateMatrixWorld();
-  },
-
-  /**
-   * Check for collisions (for cylinder).
-   */
-  tick: function (t) {
-    var collisionResults;
-    var directionVector;
-    var el = this.el;
-    var mesh = el.getObject3D('mesh');
-    var object3D = el.object3D;
-    var raycaster;
-    var vertices = mesh.geometry.vertices;
-    var bottomVertex = vertices[0].clone();
-    var topVertex = vertices[vertices.length - 1].clone();
-
-    // Calculate absolute positions of start and end of entity.
-    bottomVertex.applyMatrix4(object3D.matrixWorld);
-    topVertex.applyMatrix4(object3D.matrixWorld);
-
-    // Direction vector from start to end of entity.
-    directionVector = topVertex.clone().sub(bottomVertex).normalize();
-
-    // Raycast for collision.
-    raycaster = new THREE.Raycaster(bottomVertex, directionVector, 1);
-    collisionResults = raycaster.intersectObjects(this.targets, true);
-    collisionResults.forEach(function (target) {
-      // Tell collided entity about the collision.
-      target.object.el.emit('collider-hit', {target: el});
-    });
+    // Do stuff using `this.el` and `this.data`.
   }
 });
 ```
 
-Then we attach a class to the enemies to designate them as targets, attach animations that trigger on collision to make them disappear, and finally attach the collider component to the laser that targets enemies:
+### Update Raycaster Component
+
+First, let us whitelist the entities that the cursor's raycaster is checking
+for intersections against. That way, the cursor will only click if something
+can be clicked, and it is also better for performance. The cursor is built on
+top of the [raycaster component][raycaster], and we can configure the
+raycaster. We update the raycaster component's `objects` property which takes a
+selector:
 
 ```html
-<a-assets>
-  <img id="enemy-sprite" src="img/enemy.png">
-
-  <script id="enemies" type="text/x-nunjucks-template">
-    <a-entity layout="type: circle; radius: 5">
-      <a-animation attribute="rotation" dur="8000" easing="linear" repeat="indefinite" to="0 360 0"></a-animation>
-
-      {% for x in range(num) %}
-        <!-- Attach enemy class. -->
-        <a-image class="enemy" look-at="#player" src="#enemy-sprite" transparent="true">
-          <!-- Attach collision handler animations. -->
-          <a-animation attribute="opacity" begin="collider-hit" dur="400" ease="linear"
-                       from="1" to="0"></a-animation>
-          <a-animation attribute="scale" begin="collider-hit" dur="400" ease="linear"
-                       to="0 0 0"></a-animation>
-        </a-image>
-      {% endfor %}
-    </a-entity>
-  </script>
-
-  <!-- Attach collider that targets enemies. -->
-  <a-mixin id="laser" geometry="primitive: cylinder; radius: 0.05; translate: 0 -2 0"
-                      material="color: green; metalness: 0.2; opacity: 0.4; roughness: 0.3"
-                      projectile="speed: -0.5" collider="target: .enemy"></a-mixin>
-</a-assets>
+<a-cursor id="cursor" raycaster="objects: .link">
 ```
 
-And there we have a complete basic interactive scene in A-Frame that can be viewed in VR. We package power into components that allow us to declaratively build scenes without losing control or flexibility. The result is a rudimentary FPS game that supports VR in ultimately **just 30 lines of HTML**:
+This list will be populated once the raycaster component attaches.
+Unfortunately since the links are templated, they won't be found at that time.
+What we can do is write a component that refreshes our raycaster when the link
+attaches. Here will be the skeleton of our component:
 
-<p data-height="500" data-theme-id="0" data-slug-hash="reaXNr" data-default-tab="result" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/reaXNr/">Laser Shooter - Final</a> by MozVR (<a href="http://codepen.io/team/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+```js
+AFRAME.registerComponent('update-raycaster', {
+  schema: {
+    // ...
+  },
 
-[animation]: ../core/animation.md
+  init: function () {
+    // ...
+  }
+});
+```
+
+First, we fill out the [`schema`][schema] so that we can pass in which raycaster to
+update. We make it a single-property schema that takes a selector such that we can
+simply do `update-raycaster="#cursor"`:
+
+```js
+AFRAME.registerComponent('update-raycaster', {
+  schema: {
+    type: 'selector'
+  },
+
+  init: function () {
+    // ...
+  }
+});
+```
+
+Then we use that data to actually update the raycaster in the `init` lifecycle
+method, which is called when the component is attached to the entity. We grab
+the raycaster and update it:
+
+```js
+AFRAME.registerComponent('update-raycaster', {
+  schema: {
+    type: 'selector'
+  },
+
+  init: function () {
+    var raycasterEl = this.data;
+    this.data.components.raycaster.refreshObjects();
+  }
+});
+```
+
+### Set-Image Component
+
+> View the full [`set-image` component on GitHub](https://github.com/aframevr/360-image-viewer-boilerplate/blob/master/components/set-image.js).
+
+Finally, we write the component that fades the sky into a new 360&deg; image
+once one of the links are clicked. Here is the skeleton for our set-image
+component.
+
+```js
+AFRAME.registerComponent('set-image', {
+  schema: {
+    // ...
+  },
+
+  init: function () {
+    // ...
+  }
+});
+```
+
+Now we decide what the API for our image-setting component will be. We need:
+
+- An event name to listen to.
+- Which entity to change the texture of.
+- The image texture.
+- An animation fade duration.
+
+So we translate those properties to the schema:
+
+```js
+AFRAME.registerComponent('set-image', {
+  schema: {
+    on: {type: 'string'},
+    target: {type: 'selector'},
+    src: {type: 'string'},
+    dur: {type: 'number', default: 300}
+  },
+
+  init: function () {
+    // ...
+  },
+
+  setupFadeAnimation: function () {
+    // Appends an <a-animation> that fades to black.
+  }
+});
+```
+
+Now we set up the event listener to change the image while the texture has
+faded to black. Whenever the event is emitted (in our case, a click), then the
+component will trigger the animation (which is listening for `set-image-fade`),
+wait the appropriate amount of time, and swap the image:
+
+```js
+  //...
+
+  init: function () {
+    var data = this.data;
+    var el = this.el;
+
+    this.setupFadeAnimation();
+
+    el.addEventListener(data.on, function () {
+      // Fade out image.
+      data.target.emit('set-image-fade');
+      // Wait for fade to complete.
+      setTimeout(function () {
+        // Set image.
+        data.target.setAttribute('material', 'src', data.src);
+      }, data.dur);
+    });
+  }
+
+  //...
+```
+
+And that concludes our 360&deg; image viewer.
+
+> **[Try it out!](https://aframe.io/360-image-viewer-boilerplate/)**
+
+[a-sky]: ../primitives/a-sky.md
+[ams]: ../core/asset-management-system.md
+[animation]: ../core/animations.md
+[animation-begin]: ../core/animations.md#begin
 [awesome]: https://github.com/aframevr/awesome-aframe#components
 [basic]: ./building-a-basic-scene.md
 [boilerplate]: https://github.com/ngokevin/aframe-component-boilerplate
+[camera]: ../primitives/camera.md
 [codepen]: http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000
 [components]: ../core/component.md
+[cursor]: ../components/cursor.md
+[cursor-events]: ../components/cursor.md#events
+[data]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_data_attributes
 [ecs]: ../core/index.md
+[event-set]: https://github.com/ngokevin/aframe-event-set-component
 [github]: https://github.com/ngokevin/aframe-fps-example
 [layout]: https://github.com/ngokevin/aframe-layout-component
+[material]: ../components/material.md
 [mixin]: ../core/mixins.md
+[multi-property]: ../core/component.md#multi-property-component
+[multiple]: ../core/component.md#multiple-instances
+[ngokevin]: https://github.com/ngokevin
+[nunjucks]: https://mozilla.github.io/nunjucks/
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
+[raycaster-component]: ../components/raycaster.md
+[scale]: ../components/scale.md
+[schema]: ../components/components.md#schema
+[sound]: ../components/sound.md
 [template]: https://github.com/ngokevin/aframe-template-component
 [three]: http://threejs.org
 [webcomponents]: http://webcomponents.org/

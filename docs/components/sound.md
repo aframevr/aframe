@@ -3,7 +3,6 @@ title: sound
 type: components
 layout: docs
 parent_section: components
-order: 17
 ---
 
 The sound component defines the entity as a source of sound or audio. The sound component is positional and is therefore affected by the [components-position](position.md).
@@ -12,18 +11,18 @@ The sound component defines the entity as a source of sound or audio. The sound 
 
 ```html
 <a-entity id="river" geometry="primitive: plane" material="color: blue"
-          position="-10 0 0" sound="src: river.mp3; autoplay: true"></a-entity>
+          position="-10 0 0" sound="src: url(river.mp3); autoplay: true"></a-entity>
 ```
 
 ## Properties
 
-| Property | Description                                                | Default Value |
-|----------|------------------------------------------------------------|---------------|
-| autoplay | Whether to automatically play sound once set.              | false         |
-| on       | An event for the entity to listen to before playing sound. | click         |
-| loop     | Whether to loop the sound once the sound finishes playing. | false         |
-| src      | Path to sound file.                                        | null          |
-| volume   | How loud to play the sound.                                | 1             |
+| Property | Description                                                           | Default Value |
+|----------|-----------------------------------------------------------------------|---------------|
+| autoplay | Whether to automatically play sound once set.                         | false         |
+| on       | An event for the entity to listen to before playing sound.            | null          |
+| loop     | Whether to loop the sound once the sound finishes playing.            | false         |
+| src      | Selector to an asset `<audio>`or `url()`-enclosed path to sound file. | null          |
+| volume   | How loud to play the sound.                                           | 1             |
 
 ## Events
 
@@ -39,7 +38,7 @@ The `sound` component can also listen to an event before playing as well. For ex
 <a-entity cursor position="0 0 -5"></a-entity>
 
 <a-entity id="elmo" geometry="primitive: box" material="src: elmo.png"
-          sound="src: ticklelaugh.mp3; on: click"></a-entity>
+          sound="src: url(ticklelaugh.mp3); on: click"></a-entity>
 ```
 
 ## Preloading a Sound Asset
@@ -52,7 +51,7 @@ For performance, it is recommended to block the scene on the sound asset to prel
     <audio id="river" src="river.mp3">
   </a-assets>
 
-  <a-entity sound="src: river.mp3"></a-entity>
+  <a-entity sound="src: #river"></a-entity>
 </a-scene>
 ```
 

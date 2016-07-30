@@ -34,6 +34,12 @@ suite('a-entity', function () {
     components.test = undefined;
   });
 
+  test('createdCallback', function () {
+    var el = this.el;
+    assert.ok(el.isNode);
+    assert.ok(el.isEntity);
+  });
+
   test('adds itself to parent when attached', function (done) {
     var el = document.createElement('a-entity');
     var parentEl = this.el;
@@ -379,6 +385,18 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
+    test('returns null for a default component if it is not set', function () {
+      var el = this.el;
+      assert.shallowDeepEqual(el.getAttribute('position'), null);
+    });
+
+    test('returns parsed data if default component is set', function () {
+      var el = this.el;
+      var position = {x: 5, y: 6, z: 6};
+      el.setAttribute('position', position);
+      assert.shallowDeepEqual(el.getAttribute('position'), position);
+    });
+
     test('returns partial component data', function () {
       var componentData;
       var el = this.el;
@@ -402,6 +420,13 @@ suite('a-entity', function () {
       assert.ok(el.getAttribute('sound__2'));
       assert.notOk(el.getAttribute('sound'));
       assert.equal(el.getAttribute('sound__1').autoplay, true);
+    });
+
+    test('retrieves default value for single property component when ' +
+         'the element attribute is set to empty string', function () {
+      var sceneEl = this.el.sceneEl;
+      sceneEl.setAttribute('debug', '');
+      assert.equal(sceneEl.getAttribute('debug'), true);
     });
   });
 
@@ -494,10 +519,17 @@ suite('a-entity', function () {
       assert.ok('height' in componentData);
     });
 
+    test('returns default value on a default component not set', function () {
+      var el = this.el;
+      var defaultPosition = {x: 0, y: 0, z: 0};
+      var elPosition = el.getComputedAttribute('position');
+      assert.shallowDeepEqual(elPosition, defaultPosition);
+    });
+
     test('returns full data of a multiple component', function () {
       var componentData;
       var el = this.el;
-      el.setAttribute('sound__test', 'src: mysoundfile.mp3');
+      el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
       componentData = el.getComputedAttribute('sound__test');
       assert.equal(componentData.src, 'mysoundfile.mp3');
       assert.equal(componentData.autoplay, false);
@@ -542,7 +574,7 @@ suite('a-entity', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
-      assert.notEqual(el.getAttribute('position'), null);
+      assert.equal(el.getAttribute('position'), null);
       assert.ok('position' in el.components);
     });
 
@@ -579,7 +611,7 @@ suite('a-entity', function () {
     test('initializes dependency component and can set attribute', function () {
       var el = this.el;
       el.initComponent('material', undefined, true);
-      assert.equal(el.getAttribute('material'), '');
+      assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
     test('initializes dependency component and current attribute honored', function () {

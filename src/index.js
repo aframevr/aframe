@@ -25,7 +25,7 @@ var AScene = require('./core/scene/a-scene');
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
 var registerGeometry = require('./core/geometry').registerGeometry;
-var registerPrimitive = require('./extras/primitives/registerPrimitive');
+var registerPrimitive = require('./extras/primitives/primitives').registerPrimitive;
 var registerShader = require('./core/shader').registerShader;
 var registerSystem = require('./core/system').registerSystem;
 var shaders = require('./core/shader').shaders;
@@ -63,13 +63,16 @@ module.exports = window.AFRAME = {
   ANode: ANode,
   AScene: AScene,
   components: components,
+  geometries: require('./core/geometry').geometries,
   registerComponent: registerComponent,
+  registerElement: require('./core/a-register-element').registerElement,
   registerGeometry: registerGeometry,
   registerPrimitive: registerPrimitive,
   registerShader: registerShader,
   registerSystem: registerSystem,
   primitives: {
-    getMeshMixin: require('./extras/primitives/getMeshMixin')
+    getMeshMixin: require('./extras/primitives/getMeshMixin'),
+    primitives: require('./extras/primitives/primitives').primitives
   },
   schema: require('./core/schema'),
   shaders: shaders,

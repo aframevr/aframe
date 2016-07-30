@@ -3,7 +3,6 @@ title: wasd-controls
 type: components
 layout: docs
 parent_section: components
-order: 21
 ---
 
 The wasd-controls component defines the behavior of an entity to be controlled by the WASD keyboard keys. It is usually used alongside the [camera component][components-camera].

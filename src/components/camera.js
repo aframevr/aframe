@@ -1,5 +1,8 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var utils = require('../utils/');
+
+var checkHeadsetConnected = utils.checkHeadsetConnected;
 
 /**
  * Camera component.
@@ -11,6 +14,7 @@ module.exports.Component = registerComponent('camera', {
     far: { default: 10000 },
     fov: { default: 80, min: 0 },
     near: { default: 0.5, min: 0 },
+    userHeight: { default: 0, min: 0 },
     zoom: { default: 1, min: 0 }
   },
 
@@ -20,14 +24,90 @@ module.exports.Component = registerComponent('camera', {
    */
   init: function () {
     var camera = this.camera = new THREE.PerspectiveCamera();
+    var sceneEl = this.el.sceneEl;
     this.el.setObject3D('camera', camera);
+    this.bindMethods();
+    sceneEl.addEventListener('enter-vr', this.removeHeightOffset);
+    sceneEl.addEventListener('enter-vr', this.saveCameraPose);
+    sceneEl.addEventListener('exit-vr', this.restoreCameraPose);
+    sceneEl.addEventListener('exit-vr', this.addHeightOffset);
+  },
+
+  bindMethods: function () {
+    this.addHeightOffset = this.addHeightOffset.bind(this);
+    this.removeHeightOffset = this.removeHeightOffset.bind(this);
+    this.saveCameraPose = this.saveCameraPose.bind(this);
+    this.restoreCameraPose = this.restoreCameraPose.bind(this);
+  },
+
+  /**
+   * Offsets the position of the camera to set a human scale perspective
+   * This offset is not necessary when using a headset because the SDK
+   * will return the real user's head height and position.
+   */
+  addHeightOffset: function () {
+    var el = this.el;
+    var currentPosition;
+    // Only applies if there's a default camera with no applied offset.
+    if (this.userHeightOffset) { return; }
+    currentPosition = el.getComputedAttribute('position') || {x: 0, y: 0, z: 0};
+    this.userHeightOffset = this.data.userHeight;
+    el.setAttribute('position', {
+      x: currentPosition.x,
+      y: currentPosition.y + this.userHeightOffset,
+      z: currentPosition.z
+    });
+  },
+
+  removeHeightOffset: function () {
+    var el = this.el;
+    // Remove default camera if present.
+    var userHeightOffset = this.userHeightOffset;
+    var currentPosition;
+    // Checking this.headsetConnected to make the value injectable for unit tests.
+    var headsetConnected = this.headsetConnected || checkHeadsetConnected();
+    // If there's not a headset connected we keep the offset.
+    // Necessary for fullscreen mode with no headset.
+    if (!userHeightOffset || !headsetConnected) { return; }
+    this.userHeightOffset = undefined;
+    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
+    el.setAttribute('position', {
+      x: currentPosition.x,
+      y: currentPosition.y - userHeightOffset,
+      z: currentPosition.z
+    });
+  },
+
+  saveCameraPose: function () {
+    var el = this.el;
+    var headsetConnected = this.headsetConnected || checkHeadsetConnected();
+    if (this.savedPose || !headsetConnected) { return; }
+    this.savedPose = {
+      position: el.getAttribute('position'),
+      rotation: el.getAttribute('rotation')
+    };
+  },
+
+  restoreCameraPose: function () {
+    var el = this.el;
+    var savedPose = this.savedPose;
+    if (!savedPose) { return; }
+    // Resets camera orientation
+    el.setAttribute('position', savedPose.position);
+    el.setAttribute('rotation', savedPose.rotation);
+    this.savedPose = undefined;
   },
 
   /**
    * Remove camera on remove (callback).
    */
   remove: function () {
+    var sceneEl = this.el.sceneEl;
     this.el.removeObject3D('camera');
+    sceneEl.removeEventListener('enter-vr', this.removeHeightOffset);
+    sceneEl.removeEventListener('enter-vr', this.saveCameraPose);
+    sceneEl.removeEventListener('exit-vr', this.restoreCameraPose);
+    sceneEl.removeEventListener('exit-vr', this.addHeightOffset);
   },
 
   /**
@@ -38,6 +118,10 @@ module.exports.Component = registerComponent('camera', {
     var data = this.data;
     var camera = this.camera;
     var system = this.system;
+    if (!oldData || oldData.userHeight !== data.userHeight) {
+      this.removeHeightOffset();
+      this.addHeightOffset();
+    }
 
     // Update properties.
     camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);

@@ -3,7 +3,6 @@ title: rotation
 type: components
 layout: docs
 parent_section: components
-order: 15
 ---
 
 The rotation component defines the orientation of an entity. It takes the roll (`x`), pitch (`y`), and yaw (`z`) as three space-delimited numbers indicating degrees of rotation.

@@ -3,7 +3,6 @@ title: <a-video>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 18
 ---
 
 The video primitive displays a video on a flat plane as a texture. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.
@@ -26,12 +25,21 @@ The video primitive displays a video on a flat plane as a texture. It is an enti
 
 ## Attributes
 
-Note that the video primitive inherits common [mesh attributes](./mesh-attributes.md).
-
-| Attribute       | Component Mapping     | Default Value |
-|-----------------|-----------------------|---------------|
-| height          | geometry.height       | 1.75          |
-| width           | geometry.width        | 3             |
+| Attribute       | Component Mapping       | Default Value |
+| --------        | -----------------       | ------------- |
+| color           | material.color          | #FFF          |
+| height          | geometry.height         | 1.75          |
+| metalness       | material.metalness      | 0             |
+| opacity         | material.opacity        | 1             |
+| repeat          | material.repeat         | None          |
+| roughness       | material.roughness      | 0.5           |
+| segments-height | geometry.segmentsHeight | 1             |
+| segments-width  | geometry.segmentsWidth  | 1             |
+| shader          | material.shader         | standard      |
+| side            | material.side           | front         |
+| src             | material.src            | None          |
+| transparent     | material.transparent    | false         |
+| width           | geometry.width          | 3             |
 
 ## Caveats
 

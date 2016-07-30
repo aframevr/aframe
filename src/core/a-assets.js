@@ -26,7 +26,7 @@ module.exports = registerElement('a-assets', {
         var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         var videos = this.querySelectorAll('video');
 
-        if (this.parentNode.tagName !== 'A-SCENE') {
+        if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 

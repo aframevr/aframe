@@ -2,16 +2,20 @@
 var entityFactory = require('../../helpers').entityFactory;
 
 suite('fog', function () {
-  'use strict';
-
-  setup(function () {
+  setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
-    this.updateMaterialsSpy = this.sinon.spy(el.systems.material, 'updateMaterials');
+    var self = this;
 
-    // Stub scene load to avoid WebGL code.
-    el.hasLoaded = true;
-    el.setAttribute('fog', '');
+    el.addEventListener('loaded', function () {
+      self.updateMaterialsSpy = self.sinon.spy(el.systems.material, 'updateMaterials');
+
+      // Stub scene load to avoid WebGL code.
+      el.hasLoaded = true;
+      el.setAttribute('fog', '');
+
+      done();
+    });
   });
 
   test('does not set fog for entities', function () {

@@ -196,4 +196,11 @@ suite('material', function () {
       assert.equal(el.getObject3D('mesh').material.depthTest, 0);
     });
   });
+
+  test('can set visible to false', function () {
+    var el = this.el;
+    assert.ok(el.getObject3D('mesh').material.visible);
+    el.setAttribute('material', 'visible: false');
+    assert.notOk(el.getObject3D('mesh').material.visible);
+  });
 });

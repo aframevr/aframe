@@ -3,7 +3,6 @@ title: <a-curvedimage>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 8
 ---
 
 
@@ -28,15 +27,24 @@ The curved image primitive creates images that bend around the user. Curved imag
 
 ## Attributes
 
-Note that the curved image primitive inherits common [mesh attributes](./mesh-attributes.md).
-
-| Attribute       | Component Mapping       | Default Value   |
-|-----------------|-------------------------|-----------------|
-| height          | geometry.height         | 1               |
-| radius          | geometry.radius         | 2               |
-| segments-radial | geometry.segmentsRadial | 48              |
-| theta-length    | geometry.thetaLength    | 270             |
-| theta-start     | geometry.thetaStart     | 0               |
+| Attribute       | Component Mapping       | Default Value |
+| --------        | -----------------       | ------------- |
+| color           | material.color          | #FFF          |
+| height          | geometry.height         | 1             |
+| metalness       | material.metalness      | 0             |
+| opacity         | material.opacity        | 1             |
+| open-ended      | geometry.openEnded      | false         |
+| radius          | geometry.radius         | 1             |
+| repeat          | material.repeat         | None          |
+| roughness       | material.roughness      | 0.5           |
+| segments-height | geometry.segmentsHeight | 18            |
+| segments-radial | geometry.segmentsRadial | 36            |
+| shader          | material.shader         | standard      |
+| side            | material.side           | front         |
+| src             | material.src            | None          |
+| theta-length    | geometry.thetaLength    | 360           |
+| theta-start     | geometry.thetaStart     | 0             |
+| transparent     | material.transparent    | false         |
 
 ## Fine-Tuning
 

@@ -3,7 +3,6 @@ title: keyboard-shortcuts
 type: components
 layout: docs
 parent_section: components
-order: 7
 ---
 
 The keyboard-shortcuts component toggles global keyboard shortcuts. The keyboard-shortcuts component applies only to the [`<a-scene>` element][scene]

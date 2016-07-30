@@ -20,18 +20,16 @@ var styleParser = utils.styleParser;
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
+ * @member {object} el - Reference to the entity element.
+ * @member {string} attr - Component name exposed as an HTML attribute.
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
- * @member {object} el - Reference to the entity element.
- * @member {string} name - Component name exposed as an HTML attribute.
  */
 var Component = module.exports.Component = function (el, attr, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
   this.updateCachedAttrValue(attr);
-  if (!el.hasLoaded) { return; }
-  this.updateProperties();
 };
 
 Component.prototype = {
@@ -97,7 +95,7 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
   /**
@@ -135,15 +133,8 @@ Component.prototype = {
    */
   updateCachedAttrValue: function (value) {
     var isSinglePropSchema = isSingleProp(this.schema);
-    if (value === '') {
-      this.attrValue = undefined;
-      return;
-    }
-    if (typeof value === 'string') {
-      this.attrValue = this.parseAttrValueForCache(value);
-      return;
-    }
-    this.attrValue = value !== undefined ? extendProperties({}, value, isSinglePropSchema) : this.attrValue;
+    var attrValue = this.parseAttrValueForCache(value);
+    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
   /**
@@ -271,6 +262,8 @@ module.exports.registerComponent = function (name, definition) {
   }
   NewComponent = function (el, attr, id) {
     Component.call(this, el, attr, id);
+    if (!el.hasLoaded) { return; }
+    this.updateProperties(this.attrValue);
   };
 
   NewComponent.prototype = Object.create(Component.prototype, proto);
@@ -314,7 +307,7 @@ module.exports.registerComponent = function (name, definition) {
  * @return {object} The component data
  */
 function buildData (el, name, schema, elData, silent) {
-  var componentDefined = !!elData;
+  var componentDefined = elData !== undefined && elData !== null;
   var data;
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
@@ -342,11 +335,11 @@ function buildData (el, name, schema, elData, silent) {
   if (componentDefined) {
     if (isSinglePropSchema) { return parseProperty(elData, schema); }
     data = extendProperties(data, elData, isSinglePropSchema);
-    return parseProperties(data, schema, undefined, silent);
+    return parseProperties(data, schema, undefined, name, silent);
   } else {
      // Parse and coerce using the schema.
-    if (isSinglePropSchema) { return parseProperty(elData !== undefined ? elData : data, schema); }
-    return parseProperties(data, schema, undefined, silent);
+    if (isSinglePropSchema) { return parseProperty(data, schema); }
+    return parseProperties(data, schema, undefined, name, silent);
   }
 }
 module.exports.buildData = buildData;

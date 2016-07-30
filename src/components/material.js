@@ -18,12 +18,13 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    shader: { default: 'standard', oneOf: shaderNames },
-    transparent: { default: false },
-    opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-    depthTest: { default: true },
-    flatShading: { default: false }
+    depthTest: {default: true},
+    flatShading: {default: false},
+    opacity: {default: 1.0, min: 0.0, max: 1.0},
+    shader: {default: 'standard', oneOf: shaderNames},
+    side: {default: 'front', oneOf: ['front', 'back', 'double']},
+    transparent: {default: false},
+    visible: {default: true}
   },
 
   init: function () {
@@ -102,6 +103,7 @@ module.exports.Component = registerComponent('material', {
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.visible = data.visible;
   },
 
   /**

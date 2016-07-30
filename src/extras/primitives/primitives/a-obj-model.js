@@ -1,5 +1,5 @@
 var meshMixin = require('../getMeshMixin')();
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
 
 registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {

@@ -3,7 +3,6 @@ title: visible
 type: components
 layout: docs
 parent_section: components
-order: 19
 ---
 
 The visible component defines whether or not an entity is rendered.

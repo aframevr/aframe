@@ -3,7 +3,6 @@ title: <a-camera>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 4
 ---
 
 The camera primitive places the user somewhere within the scene. It is an entity that prescribes the [camera component](../components/) with mappings to controls-related components.

@@ -2,25 +2,57 @@
 title: geometry
 type: components
 layout: docs
-parent_section: components
-order: 6
+order: 1
+
+parent_section: docs
+section_title: Components
+section_order: 3
 ---
 
-The geometry component provides a basic shape for an entity. The general geometry is defined by the `primitive` property. Geometric primitives, in computer graphics, means an extremely basic shape. With the primitive defined, additional properties are used to further define the geometry. A material component is usually defined alongside to provide a appearance alongside the shape to create a complete mesh.
+The geometry component provides a basic shape for an entity. The general
+geometry is defined by the `primitive` property. Geometric primitives, in
+computer graphics, means an extremely basic shape. With the primitive defined,
+additional properties are used to further define the geometry. A material
+component is usually defined to provide a appearance alongside the
+shape to create a complete mesh.
 
-## Properties
+<!--toc-->
 
-We will go through the basic primitives and their respective properties one by one.
+## Base Properties
 
-| Property  | Description                                                                                                      | Default Value |
-|-----------|------------------------------------------------------------------------------------------------------------------|---------------|
-| buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.       | true          |
-| primitive | One of `box`, `circle`, `cone`, `cylinder`, `plane`, `ring`, `sphere`, `torus`, `torusKnot`.                     | None          |
-| skipCache | Disable retrieving the shared geometry object from the cache.                                                    | false         |
+Every geometry type will have these properties:
 
-### Box
+| Property  | Description                                                                                                                          | Default Value |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.                           | true          |
+| mergeTo   | A selector to an entity to merge the entity's geometry to.                                                                           | None          |
+| primitive | Name of a geometry (e.g., one of the geometries listed below). Determines the geometry type and what other properties are available. | box           |
+| skipCache | Disable retrieving the shared geometry object from the cache.                                                                        | false         |
 
-The box primitive defines boxes (i.e., any quadilateral, not just cubes).
+### `mergeTo`
+
+Merging geometries reduces the number of draw calls, greatly improving
+performance under certain circumstances. Geometries that are merged will
+inherit the material of the target geometry. Thus, it's useful when we have
+entities that share the same material.
+
+Once merged, the individual geometry can no longer be manipulated
+independently.
+
+For geometry merging to be able to work, we will have to turn off `buffer` and
+turn on `skipCache`.
+
+```html
+<a-entity id="target" geometry="primitive: box; buffer: false; skipCache: true" material="color: red"></a-entity>
+<a-entity geometry="primitive: box; buffer: false; skipCache: true; mergeTo: #target"
+          material="color: red" position="1 2 3"></a-entity>
+```
+
+## Built-in Geometries
+
+### `box`
+
+The box geometry defines boxes (i.e., any quadilateral, not just cubes).
 
 ```html
 <a-entity geometry="primitive: box; width: 1; height: 1; depth: 1"></a-entity>
@@ -32,9 +64,12 @@ The box primitive defines boxes (i.e., any quadilateral, not just cubes).
 | height   | Height (in meters) of the sides on the Y axis. | 1             |
 | depth    | Depth (in meters) of the sides on the Z axis.  | 1             |
 
-### Circle
+### `circle`
 
-The circle primitive defines two-dimensional circles, which can be complete circles or partial circles (like Pac-Man). Note that because it is flat, only a single side of the circle will be rendered if "side: double" is not specified on the `material` component.
+The circle geometry creates flat two-dimensional circles. These can be complete
+circles or partial circles (like Pac-Man). Note that because it is flat, only a
+single side of the circle will be rendered if "side: double" is not specified
+on the `material` component.
 
 ```html
 <a-entity geometry="primitive: circle; radius: 1" material="side: double"></a-entity>
@@ -47,9 +82,21 @@ The circle primitive defines two-dimensional circles, which can be complete circ
 | thetaStart  | Start angle for first segment. Can be used to define a partial circle.                                                           | 0             |
 | thetaLength | The central angle (in degrees). Defaults to `360`, which makes for a complete circle.                                            | 360           |
 
-### Cone
+#### `thetaLength` and `thetaStart` Properties
 
-The cone primitive under the hood is a cylinder primitive with varying top and bottom radiuses.
+In degrees, `thetaStart` defines where to start a circle or arc and
+`thetaLength` defines where a circle or arc ends. If we wanted to make a `(`
+shape, we would start the circle halfway through and define the length as half
+of a circle. We can do this with `thetaStart: 180; thetaLength: 180`. Or if we
+wanted to make a `)` shape, we can do `thetaStart: 0; thetaLength: 180`.
+
+Useful cases might be to animating `thetaStart` to create a spinner effect or
+animating `thetaLength` on a fuse-based cursor for visual feedback.
+
+
+### `cone`
+
+The cone geometry is a cylinder geometry that have different top and bottom radii.
 
 ```html
 <a-entity geometry="primitive: cone; radiusBottom: 1; radiusTop: 0.1"></a-entity>
@@ -66,30 +113,30 @@ The cone primitive under the hood is a cylinder primitive with varying top and b
 | thetaStart     | Starting angle in degrees.                                      | 0             |
 | thetaLength    | Central angle in degrees.                                       | 360           |
 
-### Cylinder Primitive
+### `cylinder`
 
-The cylinder primitive can define cylinders in the traditional sense like a Coca-Cola™ can, but it can also define shapes such as tubes and curved surfaces. We'll go over some of these cylinder recipes below.
+The cylinder geometry creates cylinders in the traditional sense like a
+Coca-Cola™ can, but it can also define shapes such as tubes and curved
+surfaces.
 
-#### Basic Cylinder
-
-Traditional cylinders can be defined by using only a height and a radius:
+We can create a basic cylinder using height and radius:
 
 ```html
 <a-entity geometry="primitive: cylinder; height: 3; radius: 2"></a-entity>
 ```
 
-#### Tube
-
-Tubes can be defined by making the cylinder open-ended, which removes the top and bottom surfaces of the cylinder such that the inside is visible. A double-sided material will be needed to render properly:
+We can create a tube by making the cylinder open-ended, which removes the top
+and bottom surfaces of the cylinder such that the inside is visible. Then a
+double-sided material will be needed to render properly:
 
 ```html
 <!-- Tube -->
 <a-entity geometry="primitive: cylinder; openEnded: true" material="side: double"></a-entity>
 ```
 
-#### Curved Surface
-
-Curved surfaces can be defined by specifying the angle via `thetaLength` such that the cylinder doesn't curve all the way around, making the cylinder open-ended, and then making the material double-sided.
+We can create a cured surfaces by specifying the arc via `thetaLength` such
+that the cylinder doesn't curve all the way around, making the cylinder
+open-ended, and then making the material double-sided:
 
 ```html
 <!-- Curved surface -->
@@ -107,26 +154,46 @@ Curved surfaces can be defined by specifying the angle via `thetaLength` such th
 | thetaStart     | Starting angle in degrees.                                          | 0             |
 | thetaLength    | Central angle in degrees.                                           | 360           |
 
-#### Prisms
-
-Other types [of prisms][prisms-wiki] can
-be defined by varying the number of radial segments (i.e., sides). For example, to make
-a hexagonal prism:
+We can create [prisms][prisms-wiki] by changing the number of radial segments
+(i.e., sides). For example, to make a hexagonal prism:
 
 ```html
 <!-- Hexagonal prism -->
 <a-entity geometry="primitive: cylinder; segmentsRadial: 6"></a-entity>
 ```
 
-To play with an example of prism geometry, check out the [Hexagon example on Codepen][hexagon-codepen].
+### `dodecahedron`
 
-### Plane
-
-The plane primitive defines a flat surface. Note that because it is flat, only a single side of the plane will be rendered if `side: double` is not specified on the `material` component.
+The dodecahedron geometry creates a polygon with twelve equally-sized faces.
 
 ```html
-<a-entity geometry="primitive: plane; height: 10; width: 10"
-          material="side: double"></a-entity>
+<a-entity geometry="primitive: dodecahedron; radius: 2"></a-entity>
+```
+
+| Property | Description                             | Default Value |
+|----------|-----------------------------------------|---------------|
+| radius   | Radius (in meters) of the dodecahedron. | 1             |
+
+### `octahedron`
+
+The octahedron geometry creates a polygon with eight equilateral triangular faces.
+
+```html
+<a-entity geometry="primitive: octahedron"></a-entity>
+```
+
+| Property | Description                            | Default Value |
+|----------|----------------------------------------|---------------|
+| radius   | Radius (in meters) of the tetrahedron. | 1             |
+
+### `plane`
+
+The plane geometry creates a flat surface. Because it is flat, only a single
+side of the plane will be rendered unless `side: double` is specified on the
+`material` component.
+
+```html
+<a-entity geometry="primitive: plane; height: 10; width: 10" material="side: double"></a-entity>
 ```
 
 | Property | Description              | Default Value |
@@ -134,9 +201,11 @@ The plane primitive defines a flat surface. Note that because it is flat, only a
 | width    | Width along the X axis.  | 1             |
 | height   | Height along the Y axis. | 1             |
 
-### Ring
+### `ring`
 
-The ring geometry defines a flat ring, like a [CD][cd]. Note that because it is flat, only a single side of the ring will be rendered if `side: double` is not specified on the `material` component.
+The ring geometry creates a flat ring, like a [CD][cd]. Because it is flat,
+only a single side of the ring will be rendered unless `side: double` is
+specified on the `material` component.
 
 ```html
 <a-entity geometry="primitive: ring; radiusInner: 0.5; radiusOuter: 1"
@@ -152,14 +221,19 @@ The ring geometry defines a flat ring, like a [CD][cd]. Note that because it is 
 | thetaStart    | Starting angle in degrees.                                             | 0             |
 | thetaLength   | Central angle in degrees.                                              | 360           |
 
-### Sphere
+### `sphere`
 
-The sphere primitive can define spheres in the traditional sense like a basketball. But it can also define various polyhedrons and abstract shapes given that it can specify the number of horizontal and vertical angles and faces.
-
-Sticking with a basic sphere, the default number of segments is high enough to make the sphere appear round.
+The sphere geometry creates spheres (e.g., balls). We can create a basic sphere:
 
 ```html
 <a-entity geometry="primitive: sphere; radius: 2"></a-entity>
+```
+
+We can create various polyhedrons and abstract shapes by specifying the number
+of horizontal angles and faces:
+
+```html
+<a-entity geometry="primitive: sphere; segmentsWidth: 2; segmentsHeight: 8"></a-entity>
 ```
 
 | Property       | Description                    | Default Value |
@@ -172,9 +246,21 @@ Sticking with a basic sphere, the default number of segments is high enough to m
 | thetaStart     | Vertical starting angle.       | 0             |
 | thetaLength    | Vertical sweep angle size.     | 360           |
 
-### Torus
+### `tetrahedron`
 
-The torus primitive defines a donut shape.
+The tetrahedron geometry creates a polygon with four triangular faces.
+
+```html
+<a-entity geometry="primitive: tetrahedron; radius: 2"></a-entity>
+```
+
+| Property | Description                                                                  | Default Value |
+|----------|------------------------------------------------------------------------------|---------------|
+| radius   | Radius (in meters) of the tetrahedron.                                       | 1             |
+
+### `torus`
+
+The torus geometry creates a donut or curved tube shape:
 
 ```html
 <!-- Half donut -->
@@ -189,9 +275,11 @@ The torus primitive defines a donut shape.
 | segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 32            |
 | arc             | Central angle.                                                                                                  | 360           |
 
-### Torus Knot
+### `torusKnot`
 
-The torus knot primitive defines a pretzel shape, the particular shape of which is defined by a pair of coprime integers, `p` and `q`. If `p` and `q` are not coprime the result will be a torus link.
+The torus knot geometry creates a pretzel shape, the particular shape of which
+is defined by a pair of coprime integers, `p` and `q`. If `p` and `q` are not
+coprime the result will be a torus link:
 
 ```html
 <a-entity geometry="primitive: torusKnot; p: 3; q:7"></a-entity>
@@ -206,50 +294,70 @@ The torus knot primitive defines a pretzel shape, the particular shape of which 
 | p               | Number that helps define the pretzel shape.                                                                     | 2             |
 | q               | Number that helps define the pretzel shape.                                                                     | 3             |
 
-## thetaLength and thetaStart
+## Registering a Custom Geometry
 
-In degrees, `thetaStart` defines where to start a circle and `thetaLength` defines where a circle ends. If we wanted to make a `(` shape, we would start the circle halfway through and define the length as half of a circle. We can do this with `thetaStart: 180; thetaLength: 180`. Or if we wanted to make a `)` shape. We can do do `thetaStart: 0; thetaLength: 180`.
+We can register our own geometries using `AFRAME.registerGeometry` and creating
+an object that is an instance of [`THREE.Geometry`][three-geometry]. All
+built-in geometries in A-Frame are registered using this API.
 
-Useful cases might be to animating `thetaStart` to create a spinner effect or animating `thetaLength` on a fuse-based cursor for visual feedback.
-
-## translate
-
-The `translate` property translates the geometry. It is provided as a vec3.  This is a useful short-hand for translating the geometry to effectively move its pivot point when running animations.
-
-```html
-<!-- Translates the sphere such that its effective pivot point is at its bottom -->
-<a-entity geometry="primitive: sphere; radius: 1; translate: 0 1 0"></a-entity>
-```
-
-## Defining Your Own Geometry
-
-If there is a geometry that you need that is not provided by the standard geometry component, you can register your own geometry component. Later, we may introduce an API to register geometries:
+Here is how the `box` geometry is registered.
 
 ```js
-AFRAME.registerComponent('my-geometry', {
-  /* Called on component attach and data update. */
-  update: function () {
-    // Grab the mesh.
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-
-    // Provide your own geometry.
-    var geometry = mesh.geometry = new THREE.Geometry();
-    geometry.vertices.push(
-      new THREE.Vector3(-10,  10, 0),
-      new THREE.Vector3(-10, -10, 0),
-      new THREE.Vector3( 10, -10, 0)
-    );
-    geometry.faces.push(new THREE.Face3(0, 1, 2));
-    geometry.computeBoundingSphere();
+AFRAME.registerGeometry('box', {
+  schema: {
+    depth: {default: 1, min: 0},
+    height: {default: 1, min: 0},
+    width: {default: 1, min: 0},
+    segmentsHeight: {default: 1, min: 1, max: 20, type: 'int'},
+    segmentsWidth: {default: 1, min: 1, max: 20, type: 'int'},
+    segmentsDepth: {default: 1, min: 1, max: 20, type: 'int'}
   },
 
-  /* Called on component detach. */
-  remove: function () {
-    this.el.getObject3D('mesh').geometry = new THREE.Geometry();
+  init: function (data) {
+    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
   }
 });
 ```
 
+Like with registering components, we provide a name, a
+[schema][component-schema] that will expose the properties of the geometry, and
+lifecycle methods. Then the geometry needs to be created and set on
+`this.geometry` through the `init` and `update` lifecycle methods.
+
+When a geometry component sets its `primitive` property to the custom geometry
+name, the properties of the custom geometry can be set on the geometry
+component. Say we registered a custom geometry:
+
+```js
+AFRAME.registerGeometry('example', {
+  schema: {
+    vertices: {
+      default: ['-10 10 0', '-10 -10 0', '10 -10 0'],
+    }
+  },
+
+  init: function (data) {
+    var geometry = new THREE.Geometry();
+    geometry.vertices.push.call(
+      geometry.vertices,
+      data.vertices.map(function (vertex) {
+        var points = vertex.split(' ').map(parseInt);
+        return new THREE.Vector3(points[0], points[1], points[2]);
+      });
+    );
+    geometry.faces.push(new THREE.Face3(0, 1, 2));
+    this.geometry = geometry;
+  }
+});
+```
+
+We can then use that custom geometry in HTML:
+
+```html
+<a-entity geometry="primitive: example; vertices: 1 1 1, 2 2 2, 3 3 3"></a-entity>
+```
+
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
-[hexagon-codepen]: http://codepen.io/team/mozvr/pen/jWzVXJ
+[component-schema]: ../core/component.md#schema
 [prisms-wiki]: https://en.wikipedia.org/wiki/Prism_%28geometry%29
+[three-geometry]: http://threejs.org/docs/#Reference/Core/Geometry

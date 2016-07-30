@@ -74,6 +74,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
     this.controls = new THREE.VRControls(this.dolly);
+    this.controls.userHeight = 0.0;
   },
 
   addEventListeners: function () {
@@ -88,18 +89,17 @@ module.exports.Component = registerComponent('look-controls', {
 
     // Mouse Events
     canvasEl.addEventListener('mousedown', this.onMouseDown, false);
-    canvasEl.addEventListener('mousemove', this.onMouseMove, false);
-    canvasEl.addEventListener('mouseup', this.releaseMouse, false);
-    canvasEl.addEventListener('mouseout', this.releaseMouse, false);
+    window.addEventListener('mousemove', this.onMouseMove, false);
+    window.addEventListener('mouseup', this.releaseMouse, false);
 
     // Touch events
     canvasEl.addEventListener('touchstart', this.onTouchStart);
-    canvasEl.addEventListener('touchmove', this.onTouchMove);
-    canvasEl.addEventListener('touchend', this.onTouchEnd);
+    window.addEventListener('touchmove', this.onTouchMove);
+    window.addEventListener('touchend', this.onTouchEnd);
   },
 
   removeEventListeners: function () {
-    var sceneEl = document.querySelector('a-scene');
+    var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl && sceneEl.canvas;
     if (!canvasEl) { return; }
 
@@ -118,6 +118,8 @@ module.exports.Component = registerComponent('look-controls', {
   updateOrientation: (function () {
     var hmdEuler = new THREE.Euler();
     return function () {
+      var currentRotation;
+      var deltaRotation;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var hmdQuaternion = this.calculateHMDQuaternion();
@@ -132,11 +134,13 @@ module.exports.Component = registerComponent('look-controls', {
           z: radToDeg(hmdEuler.z)
         };
       } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+        currentRotation = this.el.getComputedAttribute('rotation');
+        deltaRotation = this.calculateDeltaRotation();
         // Mouse look only if HMD disabled or no info coming from the sensors
         rotation = {
-          x: radToDeg(pitchObject.rotation.x),
-          y: radToDeg(yawObject.rotation.y),
-          z: 0
+          x: currentRotation.x + deltaRotation.x,
+          y: currentRotation.y + deltaRotation.y,
+          z: currentRotation.z
         };
       } else {
         // Mouse rotation ignored with an active headset.
@@ -148,6 +152,25 @@ module.exports.Component = registerComponent('look-controls', {
         };
       }
       this.el.setAttribute('rotation', rotation);
+    };
+  })(),
+
+  calculateDeltaRotation: (function () {
+    var previousRotationX;
+    var previousRotationY;
+    return function () {
+      var currentRotationX = radToDeg(this.pitchObject.rotation.x);
+      var currentRotationY = radToDeg(this.yawObject.rotation.y);
+      var deltaRotation;
+      previousRotationX = previousRotationX || currentRotationX;
+      previousRotationY = previousRotationY || currentRotationY;
+      deltaRotation = {
+        x: currentRotationX - previousRotationX,
+        y: currentRotationY - previousRotationY
+      };
+      previousRotationX = currentRotationX;
+      previousRotationY = currentRotationY;
+      return deltaRotation;
     };
   })(),
 
@@ -213,6 +236,7 @@ module.exports.Component = registerComponent('look-controls', {
   onMouseDown: function (event) {
     this.mouseDown = true;
     this.previousMouseEvent = event;
+    event.preventDefault();
   },
 
   releaseMouse: function () {

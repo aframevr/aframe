@@ -6,9 +6,15 @@ parent_section: core
 order: 2
 ---
 
-An entity is represented by the `<a-entity>` element. As defined in the [entity-component-system pattern][ecs], entities are placeholder objects to which we plug in components to in order to provide them apperance, behavior, and functionality.
+An entity is represented by the `<a-entity>` element. As defined in the
+[entity-component-system pattern][ecs], entities are placeholder objects to
+which we plug in components to in order to provide them apperance, behavior,
+and functionality.
 
-In A-Frame, entities have inherently have attached the [position][position], [rotation][rotation], and [scale][scale] components.
+In A-Frame, entities are inherently attached with the [position][position],
+[rotation][rotation], and [scale][scale] components.
+
+<!--toc-->
 
 ## Example
 
@@ -147,6 +153,11 @@ The event will bubble by default. we can tell it not to bubble by passing `false
 ```js
 entity.emit('sink', null, false);
 ```
+
+### `flushToDOM (recursive)`
+
+`flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
+Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
 ### `getAttribute (attr)`
 
@@ -373,6 +384,7 @@ Below is what the event detail will contain for `componentchanged`:
 | oldData  | Component's previous data, before it was modified. |
 
 [animation-begin]: ../core/animation.md#Begin
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [ecs]: ../core/
 [geometry]: ../components/geometry.md

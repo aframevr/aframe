@@ -85,7 +85,7 @@ function selectorParse (value) {
 function selectorAllParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
-  return document.querySelectorAll(value);
+  return Array.from(document.querySelectorAll(value));
 }
 
 function selectorStringify (value) {
@@ -96,14 +96,10 @@ function selectorStringify (value) {
 }
 
 function selectorAllStringify (value) {
-  if (value.item) {
-    var els = '';
-    var i;
-    for (i = 0; i < value.length; ++i) {
-      els += '#' + value[i].getAttribute('id');
-      if (i !== value.length - 1) { els += ', '; }
-    }
-    return els;
+  if (value instanceof Array) {
+    return value.map(function (element) {
+      return '#' + element.getAttribute('id');
+    }).join(', ');
   }
   return defaultStringify(value);
 }

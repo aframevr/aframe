@@ -33,8 +33,12 @@ module.exports = registerElement('a-event', {
         this.el = this.parentNode;
         this.name = this.getAttribute('name') || this.getAttribute('type');
 
+        console.log(
+          '<a-event> has been DEPRECATED. ' +
+          'Use https://github.com/ngokevin/aframe-event-set-component instead.');
+
         if (targetSelector) {
-          this.targetEls = this.closest('a-scene').querySelectorAll(targetSelector);
+          this.targetEls = this.el.sceneEl.querySelectorAll(targetSelector);
         } else {
           this.targetEls = [this.el];
         }

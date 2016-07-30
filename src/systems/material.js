@@ -274,7 +274,7 @@ function createVideoEl (src, width, height) {
   videoEl.setAttribute('webkit-playsinline', '');  // Support inline videos for iOS webviews.
   videoEl.autoplay = true;
   videoEl.loop = true;
-  videoEl.crossOrigin = 'use-credentials';
+  videoEl.crossOrigin = 'anonymous';
   videoEl.addEventListener('error', function () {
     warn('`$s` is not a valid video', src);
   }, true);
@@ -304,7 +304,7 @@ function fixVideoAttributes (videoEl) {
   if (videoEl.getAttribute('preload') === 'false') {
     videoEl.preload = 'none';
   }
-  videoEl.crossOrigin = videoEl.crossOrigin || 'use-credentials';
+  videoEl.crossOrigin = videoEl.crossOrigin || 'anonymous';
   // To support inline videos in iOS webviews.
   videoEl.setAttribute('webkit-playsinline', '');
   return videoEl;

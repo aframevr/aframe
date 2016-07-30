@@ -16,6 +16,8 @@ module.exports.Component = registerComponent('obj-model', {
     this.model = null;
     this.objLoader = new THREE.OBJLoader();
     this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
+    // Allow cross-origin images to be loaded.
+    this.mtlLoader.crossOrigin = '';
   },
 
   update: function () {

@@ -5,6 +5,7 @@ var deepAssign = require('deep-assign');
 var objectAssign = require('object-assign');
 
 module.exports.coordinates = require('./coordinates');
+module.exports.checkHeadsetConnected = require('./checkHeadsetConnected');
 module.exports.debug = require('./debug');
 module.exports.entity = require('./entity');
 module.exports.material = require('./material');
@@ -187,6 +188,22 @@ module.exports.getUrlParameter = function (name) {
  */
 module.exports.isIframed = function () {
   return window.top !== window.self;
+};
+
+/**
+ * Finds all elements under the element that have the isScene
+ * property set to true
+ */
+module.exports.findAllScenes = function (el) {
+  var matchingElements = [];
+  var allElements = el.getElementsByTagName('*');
+  for (var i = 0, n = allElements.length; i < n; i++) {
+    if (allElements[i].isScene) {
+      // Element exists with isScene set.
+      matchingElements.push(allElements[i]);
+    }
+  }
+  return matchingElements;
 };
 
 // Must be at bottom to avoid circular dependency.
