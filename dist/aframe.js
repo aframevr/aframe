@@ -56851,10 +56851,10 @@ var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
 /**
- * Blend Model component.
- * Loads a model with skeletal Animation Blending
+ * Blend character model component.
+ * Loads a model with skeletal animation blending.
  */
-module.exports.Component = registerComponent('blend-model', {
+module.exports.Component = registerComponent('blend-character-model', {
   schema: {type: 'src'},
 
   init: function () {
@@ -57404,7 +57404,7 @@ module.exports.Component = registerComponent('hand-controls', {
       modelUrl = 'url(' + RIGHT_HAND_MODEL_URL + ')';
     }
     el.setAttribute('vive-controls', {hand: hand, model: false});
-    el.setAttribute('blend-model', modelUrl);
+    el.setAttribute('blend-character-model', modelUrl);
   },
 
  /** Play the model animations based on the pressed button and kind of event.
@@ -57468,7 +57468,7 @@ module.exports.Component = registerComponent('hand-controls', {
 });
 
 },{"../core/component":57}],27:[function(_dereq_,module,exports){
-_dereq_('./blend-model');
+_dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -57497,7 +57497,7 @@ _dereq_('./scene/keyboard-shortcuts');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-model":21,"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./hand-controls":26,"./light":28,"./look-at":29,"./look-controls":30,"./material":31,"./obj-model":32,"./position":33,"./raycaster":34,"./rotation":35,"./scale":36,"./scene/canvas":37,"./scene/debug":38,"./scene/embedded":39,"./scene/fog":40,"./scene/keyboard-shortcuts":41,"./scene/stats":42,"./scene/vr-mode-ui":43,"./sound":44,"./tracked-controls":45,"./visible":46,"./vive-controls":47,"./wasd-controls":48}],28:[function(_dereq_,module,exports){
+},{"./blend-character-model":21,"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./hand-controls":26,"./light":28,"./look-at":29,"./look-controls":30,"./material":31,"./obj-model":32,"./position":33,"./raycaster":34,"./rotation":35,"./scale":36,"./scene/canvas":37,"./scene/debug":38,"./scene/embedded":39,"./scene/fog":40,"./scene/keyboard-shortcuts":41,"./scene/stats":42,"./scene/vr-mode-ui":43,"./sound":44,"./tracked-controls":45,"./visible":46,"./vive-controls":47,"./wasd-controls":48}],28:[function(_dereq_,module,exports){
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -58014,12 +58014,13 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    shader: { default: 'standard', oneOf: shaderNames },
-    transparent: { default: false },
-    opacity: { default: 1.0, min: 0.0, max: 1.0 },
-    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
-    depthTest: { default: true },
-    flatShading: { default: false }
+    depthTest: {default: true},
+    flatShading: {default: false},
+    opacity: {default: 1.0, min: 0.0, max: 1.0},
+    shader: {default: 'standard', oneOf: shaderNames},
+    side: {default: 'front', oneOf: ['front', 'back', 'double']},
+    transparent: {default: false},
+    visible: {default: true}
   },
 
   init: function () {
@@ -58098,6 +58099,7 @@ module.exports.Component = registerComponent('material', {
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.visible = data.visible;
   },
 
   /**
@@ -58348,6 +58350,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersected on intersected entity per intersected entity.
     intersections.forEach(function emitEvents (intersection) {
       var intersectedEl = intersection.object.el;
+      if (!intersectedEl) { return; }
       intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
     });
 
@@ -59198,8 +59201,8 @@ module.exports.Component = registerComponent('vive-controls', {
 
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: 'white'},
-    buttonHighlightColor: {default: 'yellow'},
+    buttonColor: {default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
     model: {default: true}
   },
 
@@ -61117,7 +61120,8 @@ module.exports = registerElement('a-node', {
         this.isNode = true;
         this.mixinEls = [];
         this.mixinObservers = {};
-      }
+      },
+      writable: window.debug
     },
 
     attachedCallback: {
@@ -61126,7 +61130,8 @@ module.exports = registerElement('a-node', {
         this.sceneEl = this.isScene ? this : this.closestScene();
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
-      }
+      },
+      writable: window.debug
     },
 
     attributeChangedCallback: {
@@ -61345,28 +61350,27 @@ module.exports = registerElement('a-node', {
   `ANode` and `AEntity`.  It's a pass through in any other case.
 
   It wraps some of the prototype methods of the created element to make sure
-  that the corresponding functions in the base classes (`AEntity` and `ANode`)
-  are also invoked. The method in the base class is always called before the one
-  in the derived object.
+  that the corresponding functions in the base prototypes (`AEntity` and `ANode`)
+  are also invoked. The method in the base prototype is always called before the one
+  in the derived prototype.
 */
 
 // Polyfill `document.registerElement`.
 _dereq_('document-register-element');
 
-var registerElement = document.registerElement;
-
+var ANode;  // Must declare before AEntity. Initialized at the bottom.
+var AEntity;
 var knownTags = module.exports.knownTags = {};
 
-var addTagName = function (tagName) {
+function addTagName (tagName) {
   knownTags[tagName.toLowerCase()] = true;
-};
+}
 
 /**
- * Returns whether the element type is one of our known registered ones
+ * Return whether the element type is one of our known registered ones.
  *
- * @param   {string} node The name of the tag to register
- * @returns {boolean} Whether the tag name matches that of our registered
- *                    custom elements
+ * @param {string} node - The name of the tag to register.
+ * @returns {boolean} Whether the tag name matches that of our registered custom elements.
  */
 module.exports.isNode = function (node) {
   return node.tagName.toLowerCase() in knownTags || node.isNode;
@@ -61385,23 +61389,23 @@ module.exports.registerElement = function (tagName, obj) {
 
   if (isANode || isAEntity) { addTagName(tagName); }
 
-  // Does the element inherit from `ANode`?
+  // Wrap if element inherits from `ANode`.
   if (isANode) {
     newObj = wrapANodeMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  // Does the element inherit from `AEntity`?
+  // Wrap if element inherits from `AEntity`.
   if (isAEntity) {
     newObj = wrapAEntityMethods(obj.prototype);
     newObj = {prototype: Object.create(proto, newObj)};
   }
 
-  return registerElement.call(document, tagName, newObj);
+  return document.registerElement(tagName, newObj);
 };
 
 /**
- * This wraps some of the obj methods to call those on `ANode` base clase.
+ * Wrap some obj methods to call those on `ANode` base prototype.
  *
  * @param {object} obj - Object that contains the methods that will be wrapped.
  * @return {object} An object with the same properties as the input parameter but
@@ -61414,13 +61418,13 @@ function wrapANodeMethods (obj) {
     'attributeChangedCallback',
     'createdCallback'
   ];
-  wrapMethods(newObj, ANodeMethods, ANode.prototype, obj);
+  wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   copyProperties(obj, newObj);
   return newObj;
 }
 
 /**
- * This wraps some of the obj methods to call those on `AEntity` base class.
+ * This wraps some of the obj methods to call those on `AEntity` base prototype.
  *
  * @param {object} obj - The objects that contains the methods that will be wrapped.
  * @return {object} - An object with the same properties as the input parameter but
@@ -61434,11 +61438,12 @@ function wrapAEntityMethods (obj) {
     'createdCallback'
   ];
   var AEntityMethods = [
-    'attributeChangedCallback',
     'attachedCallback',
+    'attributeChangedCallback',
     'createdCallback',
     'detachedCallback'
   ];
+
   wrapMethods(newObj, ANodeMethods, obj, ANode.prototype);
   wrapMethods(newObj, AEntityMethods, obj, AEntity.prototype);
   // Copies the remaining properties into the new object.
@@ -61447,8 +61452,8 @@ function wrapAEntityMethods (obj) {
 }
 
 /**
- * Wraps a list a methods to ensure that those in the base class are called
- * through the derived one.
+ * Wrap a list a methods to ensure that those in the base prototype are called
+ * before the derived one.
  *
  * @param {object} targetObj - Object that will contain the wrapped methods.
  * @param {array} methodList - List of methods from the derivedObj that will be wrapped.
@@ -61460,9 +61465,10 @@ function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
     wrapMethod(targetObj, methodName, derivedObj, baseObj);
   });
 }
+module.exports.wrapMethods = wrapMethods;
 
 /**
- * Wraps one method to ensure that the one in the base class is called before
+ * Wrap one method to ensure that the one in the base prototype is called before
  * the one in the derived one.
  *
  * @param {object} obj - Object that will contain the wrapped method.
@@ -61473,16 +61479,21 @@ function wrapMethods (targetObj, methodList, derivedObj, baseObj) {
 function wrapMethod (obj, methodName, derivedObj, baseObj) {
   var derivedMethod = derivedObj[methodName];
   var baseMethod = baseObj[methodName];
+
+  // Derived prototype does not define method, no need to wrap.
   if (!derivedMethod || !baseMethod) { return; }
-  // The derived class doesn't override the one in the base one
+
+  // Derived prototype doesn't override the one in the base one, no need to wrap.
   if (derivedMethod === baseMethod) { return; }
-  // Wrapper
-  // The base method is called before the one in the derived class
-  var wrapperMethod = function () {
-    baseMethod.apply(this, arguments);
-    return derivedMethod.apply(this, arguments);
+
+  // Wrap to ensure the base method is called before the one in the derived prototype.
+  obj[methodName] = {
+    value: function wrappedMethod () {
+      baseMethod.apply(this, arguments);
+      return derivedMethod.apply(this, arguments);
+    },
+    writable: window.debug
   };
-  obj[methodName] = {value: wrapperMethod, writable: window.debug};
 }
 
 /**
@@ -61503,8 +61514,8 @@ function copyProperties (source, destination) {
   });
 }
 
-var ANode = _dereq_('./a-node');
-var AEntity = _dereq_('./a-entity');
+ANode = _dereq_('./a-node');
+AEntity = _dereq_('./a-entity');
 
 },{"./a-entity":53,"./a-node":55,"document-register-element":8}],57:[function(_dereq_,module,exports){
 /* global HTMLElement */
@@ -62256,18 +62267,25 @@ module.exports = registerElement('a-scene', {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
+
         function enterVRSuccess () {
           self.addState('vr-mode');
           self.emit('enter-vr', event);
+
           // Lock to landscape orientation on mobile.
           if (self.isMobile && window.screen.orientation) {
             window.screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
-          // On mobile the polyfill handles fullscreen
-          if (!self.isMobile) { self.requestFullscreen(); }
+
+          // On mobile, the polyfill handles fullscreen.
+          // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
+          // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
+          // connected.
+          if (!self.isMobile && !checkHeadsetConnected()) { requestFullscreen(self.canvas); }
           self.resize();
         }
+
         function enterVRFailure (err) {
           if (err && err.message) {
             throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
@@ -62275,17 +62293,6 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to enter VR mode (`requestPresent`).');
           }
         }
-      }
-    },
-
-    requestFullscreen: {
-      value: function () {
-        var canvas = this.canvas;
-        var requestFullscreen =
-          canvas.requestFullScreen ||
-          canvas.webkitRequestFullScreen ||
-          canvas.mozRequestFullScreen;
-        requestFullscreen.apply(canvas);
       }
     },
 
@@ -62528,6 +62535,14 @@ function getCanvasSize (canvasEl, embedded) {
     height: window.innerHeight,
     width: window.innerWidth
   };
+}
+
+function requestFullscreen (canvas) {
+  var requestFullscreen =
+    canvas.requestFullScreen ||
+    canvas.webkitRequestFullScreen ||
+    canvas.mozRequestFullScreen;
+  requestFullscreen.apply(canvas);
 }
 
 },{"../../lib/three":101,"../../utils/":117,"../a-entity":53,"../a-node":55,"../a-register-element":56,"../system":66,"./metaTags":61,"./postMessage":62,"./wakelock":63,"tween.js":18}],61:[function(_dereq_,module,exports){
