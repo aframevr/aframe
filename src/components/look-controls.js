@@ -16,10 +16,20 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
+    var sceneEl = this.el.sceneEl;
+
     this.previousHMDPosition = new THREE.Vector3();
     this.setupMouseControls();
     this.setupHMDControls();
     this.bindMethods();
+
+    // Enable grab cursor class on canvas.
+    function enableGrabCursor () { sceneEl.canvas.classList.add('a-grab-cursor'); }
+    if (!sceneEl.canvas) {
+      sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
+    } else {
+      enableGrabCursor();
+    }
   },
 
   update: function (oldData) {
@@ -236,11 +246,13 @@ module.exports.Component = registerComponent('look-controls', {
   onMouseDown: function (event) {
     this.mouseDown = true;
     this.previousMouseEvent = event;
+    document.body.classList.add('a-grabbing');
     event.preventDefault();
   },
 
   releaseMouse: function () {
     this.mouseDown = false;
+    document.body.classList.remove('a-grabbing');
   },
 
   onTouchStart: function (e) {
