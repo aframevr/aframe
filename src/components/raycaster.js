@@ -95,6 +95,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersected on intersected entity per intersected entity.
     intersections.forEach(function emitEvents (intersection) {
       var intersectedEl = intersection.object.el;
+      if (!intersectedEl) { return; }
       intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
     });
 
