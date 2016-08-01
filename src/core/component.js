@@ -170,8 +170,9 @@ Component.prototype = {
    */
   flushToDOM: function () {
     var attrValue = this.attrValue;
-    if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName, this.stringify(attrValue));
+    if (attrValue) {
+      HTMLElement.prototype.setAttribute.call(this.el, this.attrName, this.stringify(attrValue));
+    }
   },
 
   /**
