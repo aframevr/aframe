@@ -266,7 +266,11 @@ module.exports = registerElement('a-scene', {
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
         // Possible camera or canvas not injected yet.
-        if (!camera || !canvas) { return; }
+        // ON MOBILE the webvr-polyfill relies on the fullscreen API to enter
+        // VR mode. The canvas is resized by VREffect following the values returned
+        // by getEyeParameters. We don't want to overwrite the size with the
+        // windows width and height.
+        if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;

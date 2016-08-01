@@ -36,7 +36,7 @@
     "style-attr": "^1.0.2",
     "three": "^0.76.1",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "borismus/webvr-polyfill#5fdd44b"
+    "webvr-polyfill": "0.9.15"
   },
   "devDependencies": {
     "browserify": "^11.0.1",

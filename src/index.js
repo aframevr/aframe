@@ -8,8 +8,7 @@ window.WebVRConfig = window.WebVRConfig || {
   CARDBOARD_UI_DISABLED: true,
   ROTATE_INSTRUCTIONS_DISABLED: true,
   TOUCH_PANNER_DISABLED: true,
-  MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
-  BUFFER_SCALE: 1 / window.devicePixelRatio
+  MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
 
 // WebVR polyfill
