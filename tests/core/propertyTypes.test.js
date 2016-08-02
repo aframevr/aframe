@@ -66,6 +66,9 @@ suite('propertyTypes', function () {
   suite('selectorAll', function () {
     var parse = propertyTypes.selectorAll.parse;
     var stringify = propertyTypes.selectorAll.stringify;
+    var slice = function (nodes) {
+      return Array.prototype.slice.call(nodes, 0);
+    };
 
     setup(function () {
       var el = this.el = document.createElement('div');
@@ -91,15 +94,15 @@ suite('propertyTypes', function () {
     });
 
     test('parses a set of valid selectors', function () {
-      assert.deepEqual(parse('#hello.itsme, #cool.itworks'), Array.from(this.el.childNodes));
+      assert.deepEqual(parse('#hello.itsme, #cool.itworks'), slice(this.el.childNodes));
     });
 
     test('parses null selector', function () {
-      assert.deepEqual(parse('#goodbye'), Array.from(this.el1.childNodes));
+      assert.deepEqual(parse('#goodbye'), slice(this.el1.childNodes));
     });
 
     test('stringifies valid selector', function () {
-      assert.equal(stringify(Array.from(this.el.childNodes)), '#hello, #cool');
+      assert.equal(stringify(slice(this.el.childNodes)), '#hello, #cool');
     });
   });
 
