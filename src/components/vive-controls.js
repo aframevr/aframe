@@ -1,6 +1,8 @@
 var registerComponent = require('../core/component').registerComponent;
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://media.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://media.aframe.io/controllers/vive/vr_controller_vive.mtl';
+
+var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://aframevr.github.io/assets/controllers/vive/vr_controller_vive.obj';
+var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://aframevr.github.io/assets/controllers/vive/vr_controller_vive.mtl';
+
 /**
  * Vive Controls Component
  * Interfaces with vive controls and maps Gamepad events to

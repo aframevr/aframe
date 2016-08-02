@@ -7,7 +7,7 @@ AFRAME.registerComponent('ground', {
   init: function () {
     var objectLoader;
     var object3D = this.el.object3D;
-    var MODEL_URL = 'https://media.aframe.io/link-traversal/models/ground.json';
+    var MODEL_URL = 'https://aframevr.github.io/assets/link-traversal/models/ground.json';
     if (this.objectLoader) { return; }
     objectLoader = this.objectLoader = new THREE.ObjectLoader();
     objectLoader.crossOrigin = '';
