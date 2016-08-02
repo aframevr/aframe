@@ -85,7 +85,7 @@ function selectorParse (value) {
 function selectorAllParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
-  return Array.from(document.querySelectorAll(value));
+  return Array.prototype.slice.call(document.querySelectorAll(value), 0);
 }
 
 function selectorStringify (value) {
