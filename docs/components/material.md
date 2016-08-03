@@ -3,7 +3,6 @@ title: material
 type: components
 layout: docs
 parent_section: components
-order: 2
 ---
 
 The material component gives appearance to an entity. We can define properties

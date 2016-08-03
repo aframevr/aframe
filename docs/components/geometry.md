@@ -2,7 +2,6 @@
 title: geometry
 type: components
 layout: docs
-order: 1
 
 parent_section: docs
 section_title: Components
