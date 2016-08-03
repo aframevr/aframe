@@ -372,6 +372,7 @@ Below is what the event detail contains for each event:
 | child-attached   | el        | Reference to the attached child element.                |
 | componentremoved | name      | Name of component that was removed.                     |
 | componentchanged | name      | Name of component that had its data modified.           |
+|                  | id        | Id of component that had its data modified.             |
 |                  | newData   | Component's new data, after it was modified.            |
 |                  | oldData   | Component's previous data, before it was modified.      |
 | stateadded       | state     | The state that was attached (string).                   |
@@ -396,10 +397,8 @@ We can use the `child-attached` event to listen for elements being attached:
 
 ```js
 entity.addEventListener('child-attached', function(evt) {
-  if (evt.detail.el.nodeType == 1) {
-    if (evt.detail.el.tagName.toLowerCase() === 'a-box') {
-      console.log('a box element has been attached');
-    };
+  if (evt.detail.el.tagName.toLowerCase() === 'a-box') {
+    console.log('a box element has been attached');
   };
 ));
 ```
