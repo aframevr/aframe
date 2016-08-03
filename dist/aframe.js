@@ -51,99 +51,6 @@ module.exports = {
 };
 
 },{}],2:[function(_dereq_,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-},{}],3:[function(_dereq_,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -313,7 +220,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":4}],4:[function(_dereq_,module,exports){
+},{"./debug":3}],3:[function(_dereq_,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -512,7 +419,87 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":5}],5:[function(_dereq_,module,exports){
+},{"ms":7}],4:[function(_dereq_,module,exports){
+'use strict';
+var isObj = _dereq_('is-obj');
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Sources cannot be null or undefined');
+	}
+
+	return Object(val);
+}
+
+function assignKey(to, from, key) {
+	var val = from[key];
+
+	if (val === undefined || val === null) {
+		return;
+	}
+
+	if (hasOwnProperty.call(to, key)) {
+		if (to[key] === undefined || to[key] === null) {
+			throw new TypeError('Cannot convert undefined or null to object (' + key + ')');
+		}
+	}
+
+	if (!hasOwnProperty.call(to, key) || !isObj(val)) {
+		to[key] = val;
+	} else {
+		to[key] = assign(Object(to[key]), from[key]);
+	}
+}
+
+function assign(to, from) {
+	if (to === from) {
+		return to;
+	}
+
+	from = Object(from);
+
+	for (var key in from) {
+		if (hasOwnProperty.call(from, key)) {
+			assignKey(to, from, key);
+		}
+	}
+
+	if (Object.getOwnPropertySymbols) {
+		var symbols = Object.getOwnPropertySymbols(from);
+
+		for (var i = 0; i < symbols.length; i++) {
+			if (propIsEnumerable.call(from, symbols[i])) {
+				assignKey(to, from, symbols[i]);
+			}
+		}
+	}
+
+	return to;
+}
+
+module.exports = function deepAssign(target) {
+	target = toObject(target);
+
+	for (var s = 1; s < arguments.length; s++) {
+		assign(target, arguments[s]);
+	}
+
+	return target;
+};
+
+},{"is-obj":6}],5:[function(_dereq_,module,exports){
+/*! (C) WebReflection Mit Style License */
+(function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
+},{}],6:[function(_dereq_,module,exports){
+'use strict';
+module.exports = function (x) {
+	var type = typeof x;
+	return x !== null && (type === 'object' || type === 'function');
+};
+
+},{}],7:[function(_dereq_,module,exports){
 /**
  * Helpers.
  */
@@ -639,89 +626,9 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
-},{}],6:[function(_dereq_,module,exports){
-'use strict';
-var isObj = _dereq_('is-obj');
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-var propIsEnumerable = Object.prototype.propertyIsEnumerable;
-
-function toObject(val) {
-	if (val === null || val === undefined) {
-		throw new TypeError('Sources cannot be null or undefined');
-	}
-
-	return Object(val);
-}
-
-function assignKey(to, from, key) {
-	var val = from[key];
-
-	if (val === undefined || val === null) {
-		return;
-	}
-
-	if (hasOwnProperty.call(to, key)) {
-		if (to[key] === undefined || to[key] === null) {
-			throw new TypeError('Cannot convert undefined or null to object (' + key + ')');
-		}
-	}
-
-	if (!hasOwnProperty.call(to, key) || !isObj(val)) {
-		to[key] = val;
-	} else {
-		to[key] = assign(Object(to[key]), from[key]);
-	}
-}
-
-function assign(to, from) {
-	if (to === from) {
-		return to;
-	}
-
-	from = Object(from);
-
-	for (var key in from) {
-		if (hasOwnProperty.call(from, key)) {
-			assignKey(to, from, key);
-		}
-	}
-
-	if (Object.getOwnPropertySymbols) {
-		var symbols = Object.getOwnPropertySymbols(from);
-
-		for (var i = 0; i < symbols.length; i++) {
-			if (propIsEnumerable.call(from, symbols[i])) {
-				assignKey(to, from, symbols[i]);
-			}
-		}
-	}
-
-	return to;
-}
-
-module.exports = function deepAssign(target) {
-	target = toObject(target);
-
-	for (var s = 1; s < arguments.length; s++) {
-		assign(target, arguments[s]);
-	}
-
-	return target;
-};
-
-},{"is-obj":7}],7:[function(_dereq_,module,exports){
-'use strict';
-module.exports = function (x) {
-	var type = typeof x;
-	return x !== null && (type === 'object' || type === 'function');
-};
-
 },{}],8:[function(_dereq_,module,exports){
-/*! (C) WebReflection Mit Style License */
-(function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
-},{}],9:[function(_dereq_,module,exports){
-/* eslint-disable no-unused-vars */
 'use strict';
+/* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -733,7 +640,51 @@ function toObject(val) {
 	return Object(val);
 }
 
-module.exports = Object.assign || function (target, source) {
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (e) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	var from;
 	var to = toObject(target);
 	var symbols;
@@ -760,7 +711,7 @@ module.exports = Object.assign || function (target, source) {
 	return to;
 };
 
-},{}],10:[function(_dereq_,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -792,6 +743,127 @@ present.conflict();
 module.exports = present;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],10:[function(_dereq_,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+(function () {
+  try {
+    cachedSetTimeout = setTimeout;
+  } catch (e) {
+    cachedSetTimeout = function () {
+      throw new Error('setTimeout is not defined');
+    }
+  }
+  try {
+    cachedClearTimeout = clearTimeout;
+  } catch (e) {
+    cachedClearTimeout = function () {
+      throw new Error('clearTimeout is not defined');
+    }
+  }
+} ())
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = cachedSetTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    cachedClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        cachedSetTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
 
 },{}],11:[function(_dereq_,module,exports){
 (function(root) {
@@ -990,6 +1062,10 @@ module.exports = present;
 })(this);
 
 },{}],12:[function(_dereq_,module,exports){
+
+
+/*:: type Attr = { [key: string]: string } */
+
 /*
 
 style-attr
@@ -1002,25 +1078,23 @@ Very simple parsing and stringifying of style attributes.
 
 Convert a style attribute string to an object.
 
-- input: string (eg. anything you might see in a style attribute)
-- return: object
-
 */
-function parse (raw) {
-  var trim = function (s) { return s.trim(); };
+
+/*:: declare function parse (raw: string): Attr */
+function parse(raw) {
+  var trim = function (s) {
+    return s.trim();
+  };
   var obj = {};
 
-  getKeyValueChunks(raw)
-    .map(trim)
-    .filter(Boolean)
-    .forEach(function (item) {
-      // split with `.indexOf` rather than `.split` because the value may also contain colons.
-      var pos = item.indexOf(':');
-      var key = item.substr(0, pos).trim();
-      var val = item.substr(pos + 1).trim();
+  getKeyValueChunks(raw).map(trim).filter(Boolean).forEach(function (item) {
+    // split with `.indexOf` rather than `.split` because the value may also contain colons.
+    var pos = item.indexOf(':');
+    var key = item.substr(0, pos).trim();
+    var val = item.substr(pos + 1).trim();
 
-      obj[key] = val;
-    });
+    obj[key] = val;
+  });
 
   return obj;
 }
@@ -1032,11 +1106,9 @@ function parse (raw) {
 
 Split a string into chunks matching `<key>: <value>`
 
-- input: string
-- return: Array<string>
-
 */
-function getKeyValueChunks (raw) {
+/*:: declare function getKeyValueChunks (raw: string): Array<string> */
+function getKeyValueChunks(raw) {
   var chunks = [];
   var offset = 0;
   var sep = ';';
@@ -1045,7 +1117,9 @@ function getKeyValueChunks (raw) {
   var nextSplit;
   while (offset < raw.length) {
     nextSplit = raw.indexOf(sep, offset);
-    if (nextSplit === -1) { nextSplit = raw.length; }
+    if (nextSplit === -1) {
+      nextSplit = raw.length;
+    }
 
     chunk += raw.substring(offset, nextSplit);
 
@@ -1071,16 +1145,12 @@ function getKeyValueChunks (raw) {
 
 Convert an object into an attribute string
 
-- input: object
-- return: string
-
 */
-function stringify (obj) {
-  return Object.keys(obj)
-    .map(function (key) {
-      return key + ':' + obj[key];
-    })
-    .join(';');
+/*:: declare function stringify (obj: Attr): string */
+function stringify(obj) {
+  return Object.keys(obj).map(function (key) {
+    return key + ':' + obj[key];
+  }).join(';');
 }
 
 /*
@@ -1090,18 +1160,15 @@ function stringify (obj) {
 
 Normalize an attribute string (eg. collapse duplicates)
 
-- input: string
-- return: string
-
 */
-function normalize (str) {
+/*:: declare function normalize (str: string): string */
+function normalize(str) {
   return stringify(parse(str));
 }
 
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-
 },{}],13:[function(_dereq_,module,exports){
 /**
  * @author Michael Guerrero / http://realitymeltdown.com
@@ -50082,6 +50149,99 @@ TWEEN.Interpolation = {
 },{}],19:[function(_dereq_,module,exports){
 (function (global){
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],2:[function(_dereq_,module,exports){
 (function (process,global){
 /*!
  * @overview es6-promise - a tiny implementation of Promises/A+.
@@ -51039,7 +51199,7 @@ TWEEN.Interpolation = {
 
 
 }).call(this,_dereq_('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":3}],2:[function(_dereq_,module,exports){
+},{"_process":1}],3:[function(_dereq_,module,exports){
 /* eslint-disable no-unused-vars */
 'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -51079,99 +51239,6 @@ module.exports = Object.assign || function (target, source) {
 
 	return to;
 };
-
-},{}],3:[function(_dereq_,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = setTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    clearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        setTimeout(drainQueue, 0);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
 
 },{}],4:[function(_dereq_,module,exports){
 /*
@@ -51221,13 +51288,14 @@ function VRDisplay() {
 
   this.fullscreenElement_ = null;
   this.fullscreenWrapper_ = null;
-  this.fullscreenElementCachedStyle_ = null;
 
   this.fullscreenEventTarget_ = null;
   this.fullscreenChangeHandler_ = null;
   this.fullscreenErrorHandler_ = null;
 
   this.wakelock_ = new WakeLock();
+
+  this.presentModeClassName = 'WEBVR_POLYFILL_PRESENT';
 }
 
 VRDisplay.prototype.getPose = function() {
@@ -51245,30 +51313,20 @@ VRDisplay.prototype.cancelAnimationFrame = function(id) {
 };
 
 VRDisplay.prototype.wrapForFullscreen = function(element) {
-  // Don't wrap in iOS.
-  if (Util.isIOS()) {
+  if (Util.isIOS())
     return element;
-  }
+
   if (!this.fullscreenWrapper_) {
     this.fullscreenWrapper_ = document.createElement('div');
-    var cssProperties = [
-      'height: ' + Math.min(screen.height, screen.width) + 'px !important',
-      'top: 0 !important',
-      'left: 0 !important',
-      'right: 0 !important',
-      'border: 0',
-      'margin: 0',
-      'padding: 0',
-      'z-index: 999999 !important',
-      'position: fixed',
-    ];
-    this.fullscreenWrapper_.setAttribute('style', cssProperties.join('; ') + ';');
     this.fullscreenWrapper_.classList.add('webvr-polyfill-fullscreen-wrapper');
+    // Make sure the wrapper takes the full screen. Without this, there is a
+    // white line at the bottom.
+    this.fullscreenWrapper_.style.width = '100%';
+    this.fullscreenWrapper_.style.height = '100%';
   }
 
-  if (this.fullscreenElement_ == element) {
+  if (this.fullscreenElement_ == element)
     return this.fullscreenWrapper_;
-  }
 
   // Remove any previously applied wrappers
   this.removeFullscreenWrapper();
@@ -51278,28 +51336,6 @@ VRDisplay.prototype.wrapForFullscreen = function(element) {
   parent.insertBefore(this.fullscreenWrapper_, this.fullscreenElement_);
   parent.removeChild(this.fullscreenElement_);
   this.fullscreenWrapper_.insertBefore(this.fullscreenElement_, this.fullscreenWrapper_.firstChild);
-  this.fullscreenElementCachedStyle_ = this.fullscreenElement_.getAttribute('style');
-
-  var self = this;
-  function applyFullscreenElementStyle() {
-    if (!self.fullscreenElement_) {
-      return;
-    }
-
-    var cssProperties = [
-      'position: absolute',
-      'top: 0',
-      'left: 0',
-      'width: ' + Math.max(screen.width, screen.height) + 'px',
-      'height: ' + Math.min(screen.height, screen.width) + 'px',
-      'border: 0',
-      'margin: 0',
-      'padding: 0',
-    ];
-    self.fullscreenElement_.setAttribute('style', cssProperties.join('; ') + ';');
-  }
-
-  applyFullscreenElementStyle();
 
   return this.fullscreenWrapper_;
 };
@@ -51310,13 +51346,7 @@ VRDisplay.prototype.removeFullscreenWrapper = function() {
   }
 
   var element = this.fullscreenElement_;
-  if (this.fullscreenElementCachedStyle_) {
-    element.setAttribute('style', this.fullscreenElementCachedStyle_);
-  } else {
-    element.removeAttribute('style');
-  }
   this.fullscreenElement_ = null;
-  this.fullscreenElementCachedStyle_ = null;
 
   var parent = this.fullscreenWrapper_.parentElement;
   this.fullscreenWrapper_.removeChild(element);
@@ -51327,10 +51357,6 @@ VRDisplay.prototype.removeFullscreenWrapper = function() {
 };
 
 VRDisplay.prototype.requestPresent = function(layers) {
-  if (this.isPresenting) {
-    console.error('Already presenting!');
-    return;
-  }
   var self = this;
 
   if (!(layers instanceof Array)) {
@@ -51368,11 +51394,13 @@ VRDisplay.prototype.requestPresent = function(layers) {
           }
           self.waitingForPresent_ = false;
           self.beginPresent_();
+          self.setForceCanvasFullscreen_(true);
           resolve();
         } else {
           if (screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
           }
+          self.setForceCanvasFullscreen_(false);
           self.removeFullscreenWrapper();
           self.wakelock_.release();
           self.endPresent_();
@@ -51515,6 +51543,14 @@ VRDisplay.prototype.submitFrame = function(pose) {
 VRDisplay.prototype.getEyeParameters = function(whichEye) {
   // Override to return accurate eye parameters if canPresent is true.
   return null;
+};
+
+VRDisplay.prototype.setForceCanvasFullscreen_ = function(isFullscreen) {
+  if (isFullscreen) {
+    this.fullscreenElement_.classList.add(this.presentModeClassName);
+  } else {
+    this.fullscreenElement_.classList.remove(this.presentModeClassName);
+  }
 };
 
 /*
@@ -51888,7 +51924,6 @@ CardboardDistorter.prototype.patch = function() {
   };
 
   this.isPatched = true;
-  Util.safariCssSizeWorkaround(canvas);
 };
 
 CardboardDistorter.prototype.unpatch = function() {
@@ -51920,10 +51955,6 @@ CardboardDistorter.prototype.unpatch = function() {
   }
 
   this.isPatched = false;
-
-  setTimeout(function() {
-    Util.safariCssSizeWorkaround(canvas);
-  }, 1);
 };
 
 CardboardDistorter.prototype.setTextureBounds = function(leftBounds, rightBounds) {
@@ -52541,13 +52572,9 @@ function CardboardVRDisplay() {
   // Set the correct initial viewer.
   this.deviceInfo_.setViewer(this.viewerSelector_.getCurrentViewer());
 
+  this.injectPresentModeCssClass_();
   if (!WebVRConfig.ROTATE_INSTRUCTIONS_DISABLED) {
     this.rotateInstructions_ = new RotateInstructions();
-  }
-
-  if (Util.isIOS()) {
-    // Listen for resize events to workaround this awful Safari bug.
-    window.addEventListener('resize', this.onResize_.bind(this));
   }
 }
 CardboardVRDisplay.prototype = new VRDisplay();
@@ -52613,8 +52640,6 @@ CardboardVRDisplay.prototype.beginPresent_ = function() {
   // Provides a way to opt out of distortion
   if (this.layer_.predistorted) {
     if (!WebVRConfig.CARDBOARD_UI_DISABLED) {
-      gl.canvas.width = Util.getScreenWidth() * this.bufferScale_;
-      gl.canvas.height = Util.getScreenHeight() * this.bufferScale_;
       this.cardboardUI_ = new CardboardUI(gl);
     }
   } else {
@@ -52628,17 +52653,13 @@ CardboardVRDisplay.prototype.beginPresent_ = function() {
     }
   }
 
-  if (this.cardboardUI_) {
-    this.cardboardUI_.listen(function(e) {
-      // Options clicked.
+  if (this.carboardUI_) {
+    this.cardboardUI_.listen(function() {
+      // Options clicked
       this.viewerSelector_.show(this.layer_.source.parentElement);
-      e.stopPropagation();
-      e.preventDefault();
-    }.bind(this), function(e) {
-      // Back clicked.
+    }.bind(this), function() {
+      // Back clicked
       this.exitPresent();
-      e.stopPropagation();
-      e.preventDefault();
     }.bind(this));
   }
 
@@ -52682,16 +52703,7 @@ CardboardVRDisplay.prototype.endPresent_ = function() {
 CardboardVRDisplay.prototype.submitFrame = function(pose) {
   if (this.distorter_) {
     this.distorter_.submitFrame();
-  } else if (this.cardboardUI_ && this.layer_) {
-    // Hack for predistorted: true.
-    var canvas = this.layer_.source.getContext('webgl').canvas;
-    if (canvas.width != this.lastWidth || canvas.height != this.lastHeight) {
-      this.cardboardUI_.onResize();
-    }
-    this.lastWidth = canvas.width;
-    this.lastHeight = canvas.height;
-
-    // Render the Cardboard UI.
+  } else if (this.cardboardUI_) {
     this.cardboardUI_.render();
   }
 };
@@ -52706,41 +52718,13 @@ CardboardVRDisplay.prototype.onOrientationChange_ = function(e) {
   if (this.rotateInstructions_) {
     this.rotateInstructions_.update();
   }
-
-  this.onResize_();
-};
-
-CardboardVRDisplay.prototype.onResize_ = function(e) {
-  if (this.layer_) {
-    var gl = this.layer_.source.getContext('webgl');
-    // Size the CSS canvas.
-    // Added padding on right and bottom because iPhone 5 will not
-    // hide the URL bar unless content is bigger than the screen.
-    // This will not be visible as long as the container element (e.g. body)
-    // is set to 'overflow: hidden'.
-    var cssProperties = [
-      'position: absolute',
-      'top: 0',
-      'left: 0',
-      'width: ' + Math.max(screen.width, screen.height) + 'px',
-      'height: ' + Math.min(screen.height, screen.width) + 'px',
-      'border: 0',
-      'margin: 0',
-      'padding: 0 10px 10px 0',
-    ];
-    gl.canvas.setAttribute('style', cssProperties.join('; ') + ';');
-
-    Util.safariCssSizeWorkaround(gl.canvas);
-  }
 };
 
 CardboardVRDisplay.prototype.onViewerChanged_ = function(viewer) {
   this.deviceInfo_.setViewer(viewer);
 
-  if (this.distorter_) {
-    // Update the distortion appropriately.
-    this.distorter_.updateDeviceInfo(this.deviceInfo_);
-  }
+  // Update the distortion appropriately.
+  this.distorter_.updateDeviceInfo(this.deviceInfo_);
 
   // Fire a new event containing viewer and device parameters for clients that
   // want to implement their own geometry-based distortion.
@@ -52755,6 +52739,23 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
     }
   });
   window.dispatchEvent(event);
+};
+
+CardboardVRDisplay.prototype.injectPresentModeCssClass_ = function() {
+  var cssProperties = [
+    'width: 100% !important',
+    'height: 100% !important',
+    'top: 0 !important',
+    'left: 0 !important',
+    'right: 0 !important',
+    'bottom: 0 !important',
+    'z-index: 999999 !important',
+    'position: fixed',
+  ];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+  style.innerHTML = '.' + this.presentModeClassName + '{' + cssProperties.join(';') + '}';
+  document.getElementsByTagName('head')[0].appendChild(style);
 };
 
 module.exports = CardboardVRDisplay;
@@ -53031,10 +53032,10 @@ DeviceInfo.prototype.determineDevice_ = function(deviceParams) {
   if (!deviceParams) {
     // No parameters, so use a default.
     if (Util.isIOS()) {
-      console.warn('Using fallback iOS device measurements.');
+      console.warn('Using fallback Android device measurements.');
       return DEFAULT_IOS;
     } else {
-      console.warn('Using fallback Android device measurements.');
+      console.warn('Using fallback iOS device measurements.');
       return DEFAULT_ANDROID;
     }
   }
@@ -53209,29 +53210,6 @@ DeviceInfo.prototype.getUndistortedFieldOfViewLeftEye = function() {
   };
 };
 
-DeviceInfo.prototype.getUndistortedViewportLeftEye = function() {
-  var p = this.getUndistortedParams_();
-  var viewer = this.viewer;
-  var device = this.device;
-
-  // Distances stored in local variables are in tan-angle units unless otherwise
-  // noted.
-  var eyeToScreenDistance = viewer.screenLensDistance;
-  var screenWidth = device.widthMeters / eyeToScreenDistance;
-  var screenHeight = device.heightMeters / eyeToScreenDistance;
-  var xPxPerTanAngle = device.width / screenWidth;
-  var yPxPerTanAngle = device.height / screenHeight;
-
-  var x = Math.round((p.eyePosX - p.outerDist) * xPxPerTanAngle);
-  var y = Math.round((p.eyePosY - p.bottomDist) * yPxPerTanAngle);
-  return {
-    x: x,
-    y: y,
-    width: Math.round((p.eyePosX + p.innerDist) * xPxPerTanAngle) - x,
-    height: Math.round((p.eyePosY + p.topDist) * yPxPerTanAngle) - y
-  };
-};
-
 DeviceInfo.prototype.getUndistortedParams_ = function() {
   var viewer = this.viewer;
   var device = this.device;
@@ -53290,7 +53268,6 @@ function CardboardViewer(params) {
 // Export viewer information.
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
-
 },{"./distortion/distortion.js":11,"./math-util.js":16,"./util.js":24}],10:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
@@ -55318,25 +55295,23 @@ MouseKeyboardVRDisplay.prototype.animatePhi_ = function(targetAngle) {
 MouseKeyboardVRDisplay.prototype.animateKeyTransitions_ = function(angleName, targetAngle) {
   // If an animation is currently running, cancel it.
   if (this.angleAnimation_) {
-    cancelAnimationFrame(this.angleAnimation_);
+    clearInterval(this.angleAnimation_);
   }
   var startAngle = this[angleName];
   var startTime = new Date();
   // Set up an interval timer to perform the animation.
-  this.angleAnimation_ = requestAnimationFrame(function animate() {
+  this.angleAnimation_ = setInterval(function() {
     // Once we're finished the animation, we're done.
     var elapsed = new Date() - startTime;
     if (elapsed >= KEY_ANIMATION_DURATION) {
       this[angleName] = targetAngle;
-      cancelAnimationFrame(this.angleAnimation_);
+      clearInterval(this.angleAnimation_);
       return;
     }
-    // loop with requestAnimationFrame
-    this.angleAnimation_ = requestAnimationFrame(animate.bind(this))
     // Linearly interpolate the angle some amount.
     var percent = elapsed / KEY_ANIMATION_DURATION;
     this[angleName] = startAngle + (targetAngle - startAngle) * percent;
-  }.bind(this));
+  }.bind(this), 1000/60);
 };
 
 MouseKeyboardVRDisplay.prototype.onMouseDown_ = function(e) {
@@ -55416,8 +55391,6 @@ function RotateInstructions() {
   s.left = 0;
   s.backgroundColor = 'gray';
   s.fontFamily = 'sans-serif';
-  // Force this to be above the fullscreen canvas, which is at zIndex: 999999.
-  s.zIndex = 1000000;
 
   var img = document.createElement('img');
   img.src = this.icon;
@@ -55742,22 +55715,22 @@ function FusionPoseSensor() {
 
   // Set the filter to world transform, depending on OS.
   if (Util.isIOS()) {
-    this.filterToWorldQ.setFromAxisAngle(new MathUtil.Vector3(1, 0, 0), Math.PI / 2);
+    this.filterToWorldQ.setFromAxisAngle(new MathUtil.Vector3(1, 0, 0), Math.PI/2);
   } else {
-    this.filterToWorldQ.setFromAxisAngle(new MathUtil.Vector3(1, 0, 0), -Math.PI / 2);
+    this.filterToWorldQ.setFromAxisAngle(new MathUtil.Vector3(1, 0, 0), -Math.PI/2);
   }
 
-  this.inverseWorldToScreenQ = new MathUtil.Quaternion();
-  this.worldToScreenQ = new MathUtil.Quaternion();
-  this.originalPoseAdjustQ = new MathUtil.Quaternion();
-  this.originalPoseAdjustQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1),
-                                           -window.orientation * Math.PI / 180);
+  this.landscapeAdjustQ = new MathUtil.Quaternion();
+  this.landscapeAdjustQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1),
+      (window.orientation / Math.PI) / 2);
 
-  this.setScreenTransform_();
   // Adjust this filter for being in landscape mode.
   if (Util.isLandscapeMode()) {
-    this.filterToWorldQ.multiply(this.inverseWorldToScreenQ);
+    this.filterToWorldQ.multiply(this.landscapeAdjustQ);
   }
+  this.worldToScreenQ = new MathUtil.Quaternion();
+
+  this.setScreenTransform_();
 
   // Keep track of a reset transform for resetSensor.
   this.resetQ = new MathUtil.Quaternion();
@@ -55807,20 +55780,16 @@ FusionPoseSensor.prototype.getOrientation = function() {
 };
 
 FusionPoseSensor.prototype.resetPose = function() {
+  if (!Util.isLandscapeMode()) {
+    this.resetQ.multiply(this.landscapeAdjustQ);
+  }
+
   // Reduce to inverted yaw-only.
   this.resetQ.copy(this.filter.getOrientation());
   this.resetQ.x = 0;
   this.resetQ.y = 0;
   this.resetQ.z *= -1;
   this.resetQ.normalize();
-
-  // Take into account extra transformations in landscape mode.
-  if (Util.isLandscapeMode()) {
-    this.resetQ.multiply(this.inverseWorldToScreenQ);
-  }
-
-  // Take into account original pose.
-  this.resetQ.multiply(this.originalPoseAdjustQ);
 
   if (!WebVRConfig.TOUCH_PANNER_DISABLED) {
     this.touchPanner.resetSensor();
@@ -55870,18 +55839,17 @@ FusionPoseSensor.prototype.setScreenTransform_ = function() {
     case 0:
       break;
     case 90:
-      this.worldToScreenQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1), -Math.PI / 2);
+      this.worldToScreenQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1), -Math.PI/2);
       break;
     case -90:
-      this.worldToScreenQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1), Math.PI / 2);
+      this.worldToScreenQ.setFromAxisAngle(new MathUtil.Vector3(0, 0, 1), Math.PI/2);
       break;
     case 180:
       // TODO.
       break;
   }
-  this.inverseWorldToScreenQ.copy(this.worldToScreenQ);
-  this.inverseWorldToScreenQ.inverse();
 };
+
 
 module.exports = FusionPoseSensor;
 
@@ -56253,35 +56221,9 @@ Util.isMobile = function() {
 
 Util.extend = objectAssign;
 
-Util.safariCssSizeWorkaround = function(canvas) {
-  // TODO(smus): Remove this workaround when Safari for iOS is fixed.
-  // iOS only workaround (for https://bugs.webkit.org/show_bug.cgi?id=152556).
-  //
-  // "To the last I grapple with thee;
-  //  from hell's heart I stab at thee;
-  //  for hate's sake I spit my last breath at thee."
-  // -- Moby Dick, by Herman Melville
-  if (Util.isIOS()) {
-    var width = canvas.style.width;
-    var height = canvas.style.height;
-    canvas.style.width = (parseInt(width) + 1) + 'px';
-    canvas.style.height = (parseInt(height)) + 'px';
-    console.log('Resetting width to...', width);
-    setTimeout(function() {
-      console.log('Done. Width is now', width);
-      canvas.style.width = width;
-      canvas.style.height = height;
-    }, 100);
-  }
-
-  // Debug only.
-  window.Util = Util;
-  window.canvas = canvas;
-};
-
 module.exports = Util;
 
-},{"object-assign":2}],25:[function(_dereq_,module,exports){
+},{"object-assign":3}],25:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -56738,7 +56680,7 @@ WebVRPolyfill.prototype.isCardboardCompatible = function() {
 
 module.exports = WebVRPolyfill;
 
-},{"./base.js":4,"./cardboard-vr-display.js":7,"./display-wrappers.js":10,"./mouse-keyboard-vr-display.js":17,"es6-promise":1}]},{},[15]);
+},{"./base.js":4,"./cardboard-vr-display.js":7,"./display-wrappers.js":10,"./mouse-keyboard-vr-display.js":17,"es6-promise":2}]},{},[15]);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
@@ -61533,7 +61475,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":53,"./a-node":55,"document-register-element":8}],57:[function(_dereq_,module,exports){
+},{"./a-entity":53,"./a-node":55,"document-register-element":5}],57:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
 var systems = _dereq_('./system');
@@ -62132,7 +62074,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":114,"debug":3}],60:[function(_dereq_,module,exports){
+},{"../utils/coordinates":114,"debug":2}],60:[function(_dereq_,module,exports){
 /* global Promise */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -64133,7 +64075,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":20,"./components/index":27,"./core/a-animation":50,"./core/a-assets":51,"./core/a-cubemap":52,"./core/a-entity":53,"./core/a-mixin":54,"./core/a-node":55,"./core/a-register-element":56,"./core/component":57,"./core/geometry":58,"./core/scene/a-scene":60,"./core/schema":64,"./core/shader":65,"./core/system":66,"./extras/components/":67,"./extras/declarative-events/":69,"./extras/primitives/":71,"./extras/primitives/getMeshMixin":70,"./extras/primitives/primitives":72,"./geometries/index":91,"./lib/three":101,"./shaders/index":103,"./style/aframe.css":105,"./style/rStats.css":106,"./systems/index":109,"./utils/":117,"present":10,"promise-polyfill":11,"tween.js":18,"webvr-polyfill":19}],100:[function(_dereq_,module,exports){
+},{"../package":20,"./components/index":27,"./core/a-animation":50,"./core/a-assets":51,"./core/a-cubemap":52,"./core/a-entity":53,"./core/a-mixin":54,"./core/a-node":55,"./core/a-register-element":56,"./core/component":57,"./core/geometry":58,"./core/scene/a-scene":60,"./core/schema":64,"./core/shader":65,"./core/system":66,"./extras/components/":67,"./extras/declarative-events/":69,"./extras/primitives/":71,"./extras/primitives/getMeshMixin":70,"./extras/primitives/primitives":72,"./geometries/index":91,"./lib/three":101,"./shaders/index":103,"./style/aframe.css":105,"./style/rStats.css":106,"./systems/index":109,"./utils/":117,"present":9,"promise-polyfill":11,"tween.js":18,"webvr-polyfill":19}],100:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -65256,7 +65198,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":2,"debug":3,"object-assign":9}],116:[function(_dereq_,module,exports){
+},{"_process":10,"debug":2,"object-assign":8}],116:[function(_dereq_,module,exports){
 /**
  * Get component property using encoded component name + component property name with a
  * delimiter.
@@ -65498,7 +65440,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./checkHeadsetConnected":113,"./coordinates":114,"./debug":115,"./entity":116,"./material":118,"./src-loader":119,"./styleParser":120,"deep-assign":6,"object-assign":9}],118:[function(_dereq_,module,exports){
+},{"./checkHeadsetConnected":113,"./coordinates":114,"./debug":115,"./entity":116,"./material":118,"./src-loader":119,"./styleParser":120,"deep-assign":4,"object-assign":8}],118:[function(_dereq_,module,exports){
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
  *
