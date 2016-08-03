@@ -351,17 +351,32 @@ entity.is('selected');  // >> false
 
 ## Events
 
-| Event Name       | Description                                                                                                 |
-|------------------|-------------------------------------------------------------------------------------------------------------|
-| child-attached   | A child was attached to the entity. The event detail will provide the attached child.                       |
-| componentchanged | One of the entity's component's data was modified. The event detail will provide what data on what changed. |
-| loaded           | The entity has attached and initialized all of its components.                                              |
-| pause            | The entity is now inactive and paused in terms of dynamic behavior.                                         |
-| play             | The entity is now active and playing in terms of dynamic behavior.                                          |
-| stateadded       | The entity received a new state. The event detail will provide which state was attached.                    |
-| stateremoved     | The entity no longer has a certain state. The event detail will provide which state was detached.           |
+| Event Name       | Description                                                         |
+|------------------|---------------------------------------------------------------------|
+| child-attached   | A child was attached to the entity.                                 |
+| componentchanged | One of the entity's component's data was modified.                  |
+| componentremoved | One of the entity's component was removed.                          |
+| loaded           | The entity has attached and initialized all of its components.      |
+| pause            | The entity is now inactive and paused in terms of dynamic behavior. |
+| play             | The entity is now active and playing in terms of dynamic behavior.  |
+| stateadded       | The entity received a new state.                                    |
+| stateremoved     | The entity no longer has a certain state.                           |
 
-### Listening for Component Changes
+### Event Detail
+
+Below is what the event detail contains for each event:
+
+| Event Name       | Property | Description                                              |
+|------------------|----------|----------------------------------------------------------|
+| child-attached   | el       | Reference to the attached child element                  |
+| componentchanged | name     | Name of component that had its data modified.            |
+| componentremoved | name     | Name of component that was removed.                      |
+|                  | newData  | Component's new data, after it was modified.             |
+|                  | oldData  | Component's previous data, before it was modified.       |
+| stateadded       | state    | The state that was attached (string).                    |
+| stateremoved     | state    | The state that was detached (string).                    |
+
+#### Listening for Component Changes
 
 We can use the `componentchanged` event to listen for changes to the entity:
 
@@ -372,16 +387,6 @@ entity.addEventListener('componentchanged', function (evt) {
   }
 });
 ```
-
-#### Event Detail
-
-Below is what the event detail will contain for `componentchanged`:
-
-| Property | Description                                        |
-|----------|----------------------------------------------------|
-| name     | Name of component that had its data modified.      |
-| newData  | Component's new data, after it was modified.       |
-| oldData  | Component's previous data, before it was modified. |
 
 [animation-begin]: ../core/animation.md#Begin
 [component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
