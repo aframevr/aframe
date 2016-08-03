@@ -361,20 +361,23 @@ entity.is('selected');  // >> false
 | play             | The entity is now active and playing in terms of dynamic behavior.  |
 | stateadded       | The entity received a new state.                                    |
 | stateremoved     | The entity no longer has a certain state.                           |
+| schemachanged    | The schema of a component was changed.                              |
 
 ### Event Detail
 
 Below is what the event detail contains for each event:
 
-| Event Name       | Property | Description                                              |
-|------------------|----------|----------------------------------------------------------|
-| child-attached   | el       | Reference to the attached child element                  |
-| componentchanged | name     | Name of component that had its data modified.            |
-| componentremoved | name     | Name of component that was removed.                      |
-|                  | newData  | Component's new data, after it was modified.             |
-|                  | oldData  | Component's previous data, before it was modified.       |
-| stateadded       | state    | The state that was attached (string).                    |
-| stateremoved     | state    | The state that was detached (string).                    |
+| Event Name       | Property  | Description                                             |
+|------------------|-----------|---------------------------------------------------------|
+| child-attached   | el        | Reference to the attached child element.                |
+| componentremoved | name      | Name of component that was removed.                     |
+| componentchanged | name      | Name of component that had its data modified.           |
+|                  | id        | Id of component that had its data modified.             |
+|                  | newData   | Component's new data, after it was modified.            |
+|                  | oldData   | Component's previous data, before it was modified.      |
+| stateadded       | state     | The state that was attached (string).                   |
+| stateremoved     | state     | The state that was detached (string).                   |
+| schemachanged    | component | Name of component that had it's schema changed.         |
 
 #### Listening for Component Changes
 
@@ -382,10 +385,22 @@ We can use the `componentchanged` event to listen for changes to the entity:
 
 ```js
 entity.addEventListener('componentchanged', function (evt) {
-  if (evt.name === 'position') {
-    console.log('Entity has moved from', evt.oldData, 'to', evt.newData, '!');
+  if (evt.detail.name === 'position') {
+    console.log('Entity has moved from', evt.detail.oldData, 'to', evt.detail.newData, '!');
   }
 });
+```
+
+#### Listening for child elements being attached
+
+We can use the `child-attached` event to listen for elements being attached:
+
+```js
+entity.addEventListener('child-attached', function(evt) {
+  if (evt.detail.el.tagName.toLowerCase() === 'a-box') {
+    console.log('a box element has been attached');
+  };
+));
 ```
 
 [animation-begin]: ../core/animation.md#Begin
