@@ -16,9 +16,10 @@
       <a-entity>
         <a-animation attribute="position" from="0 5 0" to="0 0 0" dur="4000"
                      easing="ease-out"></a-animation>
-        <a-camera id="camera" near="1000" far="4000" position="0 880 1290" fov="2.2"
-                  rotation="-34 0 0" wasd-controls-enabled="false"
-                  look-controls-enabled="false"></a-camera>
+        <a-entity position="0 880 1290" rotation="-34 0 0">
+          <a-camera id="camera" near="1000" far="4000" fov="2.2"
+                    wasd-controls-enabled="false" look-controls-enabled="false"></a-camera>
+        </a-entity>  
       </a-entity>
 
       <a-entity id="logo" rotation="0 45 0">
