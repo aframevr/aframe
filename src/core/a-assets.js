@@ -83,9 +83,9 @@ registerElement('a-asset-item', {
     attachedCallback: {
       value: function () {
         var self = this;
-        var src = this.getAttribute('src');
-
+        var src = src = this.getAttribute('src');
         xhrLoader.load(src, function (textResponse) {
+          THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
           ANode.prototype.load.call(self);
         });

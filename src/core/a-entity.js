@@ -68,8 +68,27 @@ var proto = Object.create(ANode.prototype, {
    */
   attachedCallback: {
     value: function () {
+      var assetsEl;  // Asset management system element.
+      var sceneEl = this.sceneEl;
+      var self = this;  // Component.
+
       this.addToParent();
+
+      // Don't .load() scene on attachedCallback.
       if (this.isScene) { return; }
+
+      // Gracefully not error when outside of <a-scene> (e.g., tests).
+      if (!sceneEl) {
+        this.load();
+        return;
+      }
+
+      // Wait for asset management system to finish before loading.
+      assetsEl = sceneEl.querySelector('a-assets');
+      if (assetsEl && !assetsEl.hasLoaded) {
+        assetsEl.addEventListener('loaded', function () { self.load(); });
+        return;
+      }
       this.load();
     }
   },
