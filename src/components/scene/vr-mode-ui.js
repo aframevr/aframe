@@ -6,9 +6,6 @@ var ENTER_VR_BTN_CLASS = 'a-enter-vr-button';
 var HIDDEN_CLASS = 'a-hidden';
 var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 
-var checkHeadsetConnected = utils.checkHeadsetConnected;
-var isMobile = utils.isMobile();
-
 /**
  * UI for entering VR mode.
  */
@@ -110,14 +107,12 @@ module.exports.Component = registerComponent('vr-mode-ui', {
 function createEnterVRButton (enterVRHandler) {
   var vrButton;
   var wrapper;
-  var VRAvailable = window.hasNativeWebVRImplementation && checkHeadsetConnected();
 
   // Create elements.
   wrapper = document.createElement('div');
   wrapper.classList.add(ENTER_VR_CLASS);
   vrButton = document.createElement('button');
-  vrButton.classList.add(ENTER_VR_BTN_CLASS);
-  if (!isMobile && !VRAvailable) { vrButton.classList.add('fullscreen'); }
+  vrButton.className = ENTER_VR_BTN_CLASS;
 
   // Insert elements.
   wrapper.appendChild(vrButton);
