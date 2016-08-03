@@ -127,7 +127,7 @@ Component.prototype = {
   },
 
   /**
-   * Update the cache of the preparsed attribute value
+   * Update the cache of the pre-parsed attribute value.
    *
    * @param {string} value - HTML attribute value.
    */
@@ -178,13 +178,15 @@ Component.prototype = {
    * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
+   *        If undefined, use the cached attribute value and continue updating properties.
    */
   updateProperties: function (value) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var oldData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateCachedAttrValue(value);
+    if (value !== undefined) { this.updateCachedAttrValue(value); }
+
     if (this.updateSchema) {
       this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
     }
@@ -323,8 +325,8 @@ function buildData (el, name, schema, elData, silent) {
   }
 
   // 2. Mixin values.
-  mixinEls.forEach(applyMixin);
-  function applyMixin (mixinEl) {
+  mixinEls.forEach(handleMixinUpdate);
+  function handleMixinUpdate (mixinEl) {
     var mixinData = mixinEl.getAttribute(name);
     if (mixinData) {
       data = extendProperties(data, mixinData, isSinglePropSchema);

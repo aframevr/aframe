@@ -58,7 +58,7 @@ module.exports.AAnimation = registerElement('a-animation', {
             return;
           }
 
-          self.applyMixin();
+          self.handleMixinUpdate();
           self.update();
           self.load();
         }
@@ -69,7 +69,7 @@ module.exports.AAnimation = registerElement('a-animation', {
       value: function (attr, oldVal, newVal) {
         if (!this.hasLoaded || !this.isRunning) { return; }
         this.stop();
-        this.applyMixin();
+        this.handleMixinUpdate();
         this.update();
       }
     },
@@ -326,7 +326,7 @@ module.exports.AAnimation = registerElement('a-animation', {
      * Works the same as component mixins but reimplemented because animations
      * aren't components.
      */
-    applyMixin: {
+    handleMixinUpdate: {
       value: function () {
         var data = {};
         var elData;

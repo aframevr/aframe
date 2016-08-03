@@ -87,13 +87,16 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
-  applyMixin: {
-    value: function (attr) {
-      if (!attr) {
+  /**
+   * Apply mixin to component.
+   */
+  handleMixinUpdate: {
+    value: function (attrName) {
+      if (!attrName) {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attr, this.getAttribute(attr));
+      this.updateComponent(attrName, this.getAttribute(attrName));
     }
   },
 
@@ -299,7 +302,8 @@ var proto = Object.create(ANode.prototype, {
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new components[componentName].Component(this, data, componentId);
+      component = this.components[attrName] = new components[componentName].Component(
+        this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
@@ -345,8 +349,9 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Updates all the entity's components. Given by defaults, mixins and attributes
-   * Default components update before the rest.
+   * Update all components.
+   * Build data using defined attributes, mixins, and defaults.
+   * Update default components before the rest.
    */
   updateComponents: {
     value: function () {
@@ -354,25 +359,34 @@ var proto = Object.create(ANode.prototype, {
       var self = this;
       var i;
       if (!this.hasLoaded) { return; }
-      // Components defined on the entity element
+
+      // Gather entity-defined components.
       var attributes = this.attributes;
       for (i = 0; i < attributes.length; ++i) {
         addComponent(attributes[i].name);
       }
-      // Components defined as mixins
+
+      // Gather mixin-defined components.
       getMixedInComponents(this).forEach(addComponent);
-      // Updates default components first
+
+      // Set default components.
       Object.keys(this.defaultComponents).forEach(updateComponent);
-      // Updates the rest of the components
+
+      // Set rest of components.
       Object.keys(elComponents).forEach(updateComponent);
 
-      // add component to the list
+      /**
+       * Add component to the list.
+       */
       function addComponent (key) {
         var name = key.split(MULTIPLE_COMPONENT_DELIMITER)[0];
         if (!components[name]) { return; }
         elComponents[key] = true;
       }
-      // updates a component with a given name
+
+      /**
+       * Update component with given name.
+       */
       function updateComponent (name) {
         var attrValue = self.getAttribute(name);
         delete elComponents[name];
@@ -677,7 +691,7 @@ function checkComponentDefined (el, name) {
 function getMixedInComponents (entityEl) {
   var components = [];
   entityEl.mixinEls.forEach(function getMixedComponents (mixinEl) {
-    Object.keys(mixinEl.componentAttrCache).forEach(addComponent);
+    Object.keys(mixinEl.componentCache).forEach(addComponent);
     function addComponent (key) {
       components.push(key);
     }
