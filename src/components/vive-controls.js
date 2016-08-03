@@ -1,7 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://assets.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://assets.aframe.io/controllers/vive/vr_controller_vive.mtl';
+var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
+var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
 /**
  * Vive Controls Component

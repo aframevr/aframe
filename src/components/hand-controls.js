@@ -1,7 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 
-var LEFT_HAND_MODEL_URL = 'https://assets.aframe.io/controllers/hands/leftHand.json';
-var RIGHT_HAND_MODEL_URL = 'https://assets.aframe.io/controllers/hands/rightHand.json';
+var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/leftHand.json';
+var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/rightHand.json';
 
 /**
 *
