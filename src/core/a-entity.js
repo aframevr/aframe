@@ -212,8 +212,8 @@ var proto = Object.create(ANode.prototype, {
       if (!el.object3D) {
         throw new Error("Trying to add an element that doesn't have an `object3D`");
       }
-      this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
+      this.emit('child-attached', { el: el });
     }
   },
 
