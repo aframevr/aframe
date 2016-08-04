@@ -6,7 +6,7 @@ suite('camera', function () {
 
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('camera', 'active: false; userHeight: 1.8');
+    el.setAttribute('camera', 'active: false; userHeight: 1.6');
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
@@ -49,7 +49,7 @@ suite('camera', function () {
       sceneEl.emit('enter-vr');
       cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
       sceneEl.emit('exit-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.8, z: 0});
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
 
     test('does not restore camera pose with no headset', function () {
@@ -65,7 +65,7 @@ suite('camera', function () {
   suite('addHeightOffset', function () {
     test('add userHeight offset', function () {
       var cameraEl = this.el;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.8, z: 0});
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
   });
 
@@ -74,7 +74,7 @@ suite('camera', function () {
       var sceneEl = this.el.sceneEl;
       var cameraEl = this.el;
       cameraEl.components.camera.headsetConnected = true;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.8, z: 0});
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 0, z: 0});
     });
@@ -83,9 +83,9 @@ suite('camera', function () {
       var sceneEl = this.el.sceneEl;
       var cameraEl = this.el;
       cameraEl.components.camera.headsetConnected = false;
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.8, z: 0});
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.8, z: 0});
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
   });
 });
