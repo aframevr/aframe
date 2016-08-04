@@ -357,8 +357,6 @@ suite('a-entity', function () {
       var parentEl = entityFactory();
       var el = document.createElement('a-entity');
 
-      parentEl.appendChild(el);
-
       el.addEventListener('loaded', function () {
         parentEl.removeChild(el);
         process.nextTick(function () {
@@ -366,6 +364,8 @@ suite('a-entity', function () {
           done();
         });
       });
+
+      parentEl.appendChild(el);
     });
 
     test('removes itself from scene parent', function (done) {
