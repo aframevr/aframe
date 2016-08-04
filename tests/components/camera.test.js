@@ -87,5 +87,17 @@ suite('camera', function () {
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
+
+    test('does not remove the default offset when entering VR on mobile', function () {
+      var sceneEl = this.el.sceneEl;
+      var cameraEl = this.el;
+
+      sceneEl.isMobile = true;
+      cameraEl.components.camera.headsetConnected = true;
+
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+      sceneEl.emit('enter-vr');
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+    });
   });
 });
