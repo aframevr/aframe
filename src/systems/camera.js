@@ -1,7 +1,7 @@
 var registerSystem = require('../core/system').registerSystem;
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
-var DEFAULT_USER_HEIGHT = 1.8;
+var DEFAULT_USER_HEIGHT = 1.6;
 
 /**
  * Camera system. Manages which camera is active among multiple cameras in scene.
