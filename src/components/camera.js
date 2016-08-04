@@ -59,16 +59,25 @@ module.exports.Component = registerComponent('camera', {
     });
   },
 
+  /**
+   * Remove the height offset (called when entering VR) since WebVR API gives absolute
+   * position.
+   * Does not apply for mobile.
+   */
   removeHeightOffset: function () {
-    var el = this.el;
-    // Remove default camera if present.
-    var userHeightOffset = this.userHeightOffset;
     var currentPosition;
+    var el = this.el;
+    var headsetConnected;
+    var sceneEl = el.sceneEl;
+    var userHeightOffset = this.userHeightOffset;
+
     // Checking this.headsetConnected to make the value injectable for unit tests.
-    var headsetConnected = this.headsetConnected || checkHeadsetConnected();
+    headsetConnected = this.headsetConnected || checkHeadsetConnected();
+
     // If there's not a headset connected we keep the offset.
     // Necessary for fullscreen mode with no headset.
-    if (!userHeightOffset || !headsetConnected) { return; }
+    if (sceneEl.isMobile || !userHeightOffset || !headsetConnected) { return; }
+
     this.userHeightOffset = undefined;
     currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
     el.setAttribute('position', {
