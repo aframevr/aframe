@@ -6,7 +6,7 @@ var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/rightHand.js
 /**
 *
 * Hand Controls component
-* HAndle events coming from the vive-controls
+* Handle events coming from the vive-controls
 * Translate button events to hand related actions:
 * gripclose, gripopen, thumbup, thumbdown, pointup, pointdown
 * Load a hand model with gestures that are applied based
@@ -25,14 +25,13 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onTrackpadUp = function () { self.handleButton('trackpad', 'up'); };
     this.onTriggerDown = function () { self.handleButton('trigger', 'down'); };
     this.onTriggerUp = function () { self.handleButton('trigger', 'up'); };
-    this.addEventListeners();
   },
 
   play: function () {
     this.addEventListeners();
   },
 
-  stop: function () {
+  pause: function () {
     this.removeEventListeners();
   },
 
