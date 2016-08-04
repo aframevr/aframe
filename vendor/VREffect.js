@@ -119,7 +119,7 @@ THREE.VREffect = function ( renderer, onError ) {
 	var leftBounds = [ 0.0, 0.0, 0.5, 1.0 ];
 	var rightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
 
-	function onFullscreenChange () {
+	function onFullscreenChange() {
 
 		var wasPresenting = scope.isPresenting;
 		scope.isPresenting = vrDisplay !== undefined && ( vrDisplay.isPresenting || ( ! isWebVR1 && document[ fullscreenElement ] instanceof window.HTMLElement ) );
@@ -137,12 +137,13 @@ THREE.VREffect = function ( renderer, onError ) {
 				if ( vrDisplay.getLayers ) {
 
 					var layers = vrDisplay.getLayers();
-					if (layers.length) {
+					if ( layers.length ) {
 
 						leftBounds = layers[0].leftBounds || [ 0.0, 0.0, 0.5, 1.0 ];
 						rightBounds = layers[0].rightBounds || [ 0.5, 0.0, 0.5, 1.0 ];
 
 					}
+
 				}
 
 			} else {
@@ -361,15 +362,15 @@ THREE.VREffect = function ( renderer, onError ) {
 				height:  Math.round(size.height * rightBounds[ 3 ] )
 			};
 
-			if (renderTarget) {
+			if ( renderTarget ) {
 
-				renderer.setRenderTarget(renderTarget);
+				renderer.setRenderTarget( renderTarget );
 				renderTarget.scissorTest = true;
 
 			} else  {
 
 				renderer.setScissorTest( true );
-
+			
 			}
 
 			if ( renderer.autoClear || forceClear ) renderer.clear();
@@ -390,8 +391,8 @@ THREE.VREffect = function ( renderer, onError ) {
 			// render left eye
 			if ( renderTarget ) {
 
-				renderTarget.viewport.set(renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height);
-				renderTarget.scissor.set(renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height);
+				renderTarget.viewport.set( renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height );
+				renderTarget.scissor.set( renderRectL.x, renderRectL.y, renderRectL.width, renderRectL.height );
 
 			} else {
 
@@ -402,10 +403,10 @@ THREE.VREffect = function ( renderer, onError ) {
 			renderer.render( scene, cameraL, renderTarget, forceClear );
 
 			// render right eye
-			if (renderTarget) {
+			if ( renderTarget ) {
 
-				renderTarget.viewport.set(renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height);
-  				renderTarget.scissor.set(renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height);
+				renderTarget.viewport.set( renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height );
+				renderTarget.scissor.set( renderRectR.x, renderRectR.y, renderRectR.width, renderRectR.height );
 
 			} else {
 
@@ -415,7 +416,7 @@ THREE.VREffect = function ( renderer, onError ) {
 			}
 			renderer.render( scene, cameraR, renderTarget, forceClear );
 
-			if (renderTarget) {
+			if ( renderTarget ) {
 
 				renderTarget.viewport.set( 0, 0, size.width, size.height );
 				renderTarget.scissor.set( 0, 0, size.width, size.height );
@@ -423,11 +424,11 @@ THREE.VREffect = function ( renderer, onError ) {
 				renderer.setRenderTarget( null );
 
 			} else {
-
+				
 				renderer.setScissorTest( false );
 
 			}
-
+			
 			if ( autoUpdate ) {
 
 				scene.autoUpdate = true;
