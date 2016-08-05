@@ -20,8 +20,8 @@ module.exports.Component = registerComponent('light', {
                 if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
     type: {default: 'directional',
-           oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']
-   }
+           oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']},
+    target: {type: 'selector', if: {type: ['spot', 'directional']}}
   },
 
   /**
@@ -30,6 +30,7 @@ module.exports.Component = registerComponent('light', {
   init: function () {
     var el = this.el;
     this.light = null;
+    this.defaultTarget = null;
     this.system.registerLight(el);
   },
 
@@ -40,16 +41,47 @@ module.exports.Component = registerComponent('light', {
     var data = this.data;
     var diffData = diff(data, oldData);
     var light = this.light;
+    var self = this;
 
     // Existing light.
     if (light && !('type' in diffData)) {
       // Light type has not changed. Update light.
       Object.keys(diffData).forEach(function (key) {
         var value = data[key];
-        if (['color', 'groundColor'].indexOf(key) !== -1) {
-          value = new THREE.Color(value);
+
+        switch (key) {
+          case 'color': {
+            light.color.set(value);
+            break;
+          }
+
+          case 'groundcolor': {
+            light.groundColor.set(value);
+            break;
+          }
+
+          case 'angle': {
+            light.angle = degToRad(value);
+            break;
+          }
+
+          case 'target': {
+            // Reset target if selector is null.
+            if (value === null) {
+              if (data.type === 'spot' || data.type === 'directional') {
+                light.target = self.defaultTarget;
+              }
+            } else {
+              // Target specified, set target using entity's `object3D`.
+              light.target = value.object3D;
+            }
+            break;
+          }
+
+          default: {
+            light[key] = value;
+          }
         }
-        light[key] = value;
       });
       return;
     }
@@ -60,8 +92,7 @@ module.exports.Component = registerComponent('light', {
 
   setLight: function (data) {
     var el = this.el;
-
-    var newLight = getLight(data);
+    var newLight = this.getLight(data);
     if (newLight) {
       if (this.light) {
         el.removeObject3D('light');
@@ -70,6 +101,68 @@ module.exports.Component = registerComponent('light', {
       this.light = newLight;
       this.light.el = el;
       el.setObject3D('light', this.light);
+
+      if (data.type === 'spot') {
+        // HACK solution for issue #1624
+        el.getObject3D('light').translateY(-1);
+        // set and position default lighttarget as a child to enable spotlight orientation
+        el.setObject3D('light-target', this.defaultTarget);
+        el.getObject3D('light-target').position.set(0, 0, -1);
+      }
+    }
+  },
+
+  /**
+   * Creates a new three.js light object given data object defining the light.
+   *
+   * @param {object} data
+   */
+  getLight: function (data) {
+    var angle = data.angle;
+    var color = new THREE.Color(data.color).getHex();
+    var decay = data.decay;
+    var distance = data.distance;
+    var groundColor = new THREE.Color(data.groundColor).getHex();
+    var intensity = data.intensity;
+    var type = data.type;
+    var target = data.target;
+    var light = null;
+
+    switch (type.toLowerCase()) {
+      case 'ambient': {
+        return new THREE.AmbientLight(color, intensity);
+      }
+
+      case 'directional': {
+        light = new THREE.DirectionalLight(color, intensity);
+        this.defaultTarget = light.target;
+        if (target) {
+          light.target = target.object3D;
+        }
+        return light;
+      }
+
+      case 'hemisphere': {
+        return new THREE.HemisphereLight(color, groundColor, intensity);
+      }
+
+      case 'point': {
+        return new THREE.PointLight(color, intensity, distance, decay);
+      }
+
+      case 'spot': {
+        light = new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.penumbra, decay);
+        this.defaultTarget = light.target;
+        if (target) {
+          light.target = target.object3D;
+        }
+        return light;
+      }
+
+      default: {
+        warn('%s is not a valid light type. ' +
+           'Choose from ambient, directional, hemisphere, point, spot.', type);
+      }
     }
   },
 
@@ -80,41 +173,3 @@ module.exports.Component = registerComponent('light', {
     this.el.removeObject3D('light');
   }
 });
-
-/**
- * Creates a new three.js light object given data object defining the light.
- *
- * @param {object} data
- */
-function getLight (data) {
-  var angle = data.angle;
-  var color = new THREE.Color(data.color).getHex();
-  var decay = data.decay;
-  var distance = data.distance;
-  var groundColor = new THREE.Color(data.groundColor).getHex();
-  var intensity = data.intensity;
-  var type = data.type;
-
-  switch (type.toLowerCase()) {
-    case 'ambient': {
-      return new THREE.AmbientLight(color, intensity);
-    }
-    case 'directional': {
-      return new THREE.DirectionalLight(color, intensity);
-    }
-    case 'hemisphere': {
-      return new THREE.HemisphereLight(color, groundColor, intensity);
-    }
-    case 'point': {
-      return new THREE.PointLight(color, intensity, distance, decay);
-    }
-    case 'spot': {
-      return new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.penumbra,
-                                 decay);
-    }
-    default: {
-      warn('%s is not a valid light type. ' +
-           'Choose from ambient, directional, hemisphere, point, spot.', type);
-    }
-  }
-}
