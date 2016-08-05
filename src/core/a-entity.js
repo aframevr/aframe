@@ -241,23 +241,12 @@ var proto = Object.create(ANode.prototype, {
 
       if (this.hasLoaded) { return; }
 
-      // Attach to parent object3D.
-      this.addToParent();
-
-      // Scene load.
-      function sceneLoadCallback () { self.updateComponents(); }
-      if (this.isScene) {
-        ANode.prototype.load.call(this, sceneLoadCallback);
-        return;
-      }
-
+      ANode.prototype.load.call(this, entityLoadCallback);
       // Entity load.
       function entityLoadCallback () {
         self.updateComponents();
-        // self.parentNode should work but that is null during this cb for unknown (#1483).
-        if (self.parentEl.isPlaying) { self.play(); }
+        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
       }
-      ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
     writable: window.debug
   },
@@ -734,10 +723,6 @@ function isComponentMixedIn (name, mixinEls) {
     if (inMixin) { break; }
   }
   return inMixin;
-}
-
-function isEntity (el) {
-  return el.isEntity;
 }
 
 AEntity = registerElement('a-entity', {
