@@ -1,14 +1,12 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
 var components = require('./component').components;
-var re = require('./a-register-element');
+var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var AEntity;
-var isNode = re.isNode;
 var debug = utils.debug('core:a-entity:debug');
-var registerElement = re.registerElement;
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
@@ -41,6 +39,7 @@ var proto = Object.create(ANode.prototype, {
       this.object3D = new THREE.Group();
       this.object3D.el = this;
       this.object3DMap = {};
+      this.parentEl = null;
       this.states = [];
     }
   },
@@ -206,7 +205,11 @@ var proto = Object.create(ANode.prototype, {
       return object3D;
     }
   },
-
+   /**
+   * Add child entity.
+   *
+   * @param {Element} el - Child entity.
+   */
   add: {
     value: function (el) {
       if (!el.object3D) {
@@ -217,24 +220,18 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Tell parentNode to add this entity to itself.
+   */
   addToParent: {
     value: function () {
-      var self = this;
-      var parent = this.parentEl = this.parentNode;
-      var attachedToParent = this.attachedToParent;
-      if (!parent || attachedToParent) { return; }
-      if (isNode(parent)) {
-        attach();
-        return;
-      }
-      parent.addEventListener('nodeready', attach);
-      function attach () {
-        // To prevent an object to attach itself multiple times to the parent.
-        self.attachedToParent = true;
-        if (parent.add) {
-          parent.add(self);
-        }
-      }
+      var parentNode = this.parentEl = this.parentNode;
+
+      // `!parentNode` check primarily for unit tests.
+      if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
+
+      parentNode.add(this);
+      this.attachedToParent = true;  // To prevent multiple attachments to same parent.
     }
   },
 
@@ -265,6 +262,11 @@ var proto = Object.create(ANode.prototype, {
     writable: window.debug
   },
 
+  /**
+   * Remove child entity.
+   *
+   * @param {Element} el - Child entity.
+   */
   remove: {
     value: function (el) {
       this.object3D.remove(el.object3D);

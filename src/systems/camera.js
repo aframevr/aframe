@@ -15,35 +15,35 @@ module.exports.System = registerSystem('camera', {
   },
 
   /**
-   * Creates a default camera if user has not added one during the initial scene traversal.
+   * Create a default camera if user has not added one during the initial scene traversal.
    *
-   * Default camera height is at human level (~1.8m) and back such that
-   * entities at the origin (0, 0, 0) are well-centered.
+   * Default camera offset height is at average eye level (~1.6m).
    */
   setupDefaultCamera: function () {
     var self = this;
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
-    // setTimeout in case the camera is being set dynamically with a setAttribute.
-    setTimeout(checkForCamera);
-    function checkForCamera () {
+
+    // Wait for all entities to fully load before checking for existence of camera.
+    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
+    // will do so asynchronously.
+    sceneEl.addEventListener('loaded', function checkForCamera () {
       var currentCamera = sceneEl.camera;
       if (currentCamera) {
-        sceneEl.emit('camera-ready', { cameraEl: currentCamera.el });
+        sceneEl.emit('camera-ready', {cameraEl: currentCamera.el});
         return;
       }
       defaultCameraEl = document.createElement('a-entity');
       defaultCameraEl.setAttribute('position', '0 0 0');
       defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-      defaultCameraEl.setAttribute('camera',
-        {active: true, userHeight: DEFAULT_USER_HEIGHT});
+      defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
       defaultCameraEl.setAttribute('wasd-controls', '');
       defaultCameraEl.setAttribute('look-controls', '');
       sceneEl.appendChild(defaultCameraEl);
       sceneEl.addEventListener('enter-vr', self.removeDefaultOffset);
       sceneEl.addEventListener('exit-vr', self.addDefaultOffset);
       sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
-    }
+    });
   },
 
   /**
