@@ -5,7 +5,7 @@ layout: docs
 
 parent_section: docs
 section_title: Components
-section_order: 3
+section_order: 4
 ---
 
 The geometry component provides a basic shape for an entity. The general
@@ -293,7 +293,7 @@ coprime the result will be a torus link:
 | p               | Number that helps define the pretzel shape.                                                                     | 2             |
 | q               | Number that helps define the pretzel shape.                                                                     | 3             |
 
-## Registering a Custom Geometry
+## Register a Custom Geometry
 
 We can register our own geometries using `AFRAME.registerGeometry` and creating
 an object that is an instance of [`THREE.Geometry`][three-geometry]. All

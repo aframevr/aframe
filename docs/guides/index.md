@@ -1,14 +1,17 @@
 ---
-title: Building a Basic Scene
-type: guide
+title: Build with Basic HTML
+section_title: Guides
+type: guides
 layout: docs
-parent_section: guide
-order: 3
+parent_section: docs
+order: 1
+section_order: 2
 ---
 
-Let's first start building a scene using the basic [primitive][primitives]
-building blocks. Primitives are the appetizer of A-Frame that ease newcomers
-into the underlying entity-component-system.
+[primitives]: ../primitives/
+
+Let's first start building a scene using the basic [primitive][primitives] HTML
+building blocks.
 
 <!--toc-->
 
@@ -22,9 +25,13 @@ A *Hello World* scene is a scene with a box:
 </a-scene>
 ```
 
+[box]: ../primitives/a-box.md
+
 Just like with regular HTML elements, we can configure the element by setting
 HTML attributes. Here, we define the color, width, height, depth of `<a-box>`.
 See the [`<a-box>`][box] documentation to see the available attributes.
+
+[mozvr]: http://mozvr.com/#start
 
 For flat displays, the default control scheme lets us look around by
 click-dragging the mouse and move with the `WASD` keys. Upon
@@ -48,6 +55,11 @@ The basic rotational unit is defined in degrees. To determine the positive
 direction of rotation, use the right-hand rule. Point our thumbs down the
 direction of a positive axis, and the direction which our fingers curl around
 the positive direction of rotation.
+
+[component]: ../core/component.md
+[position]: ../components/position.md
+[rotation]: ../components/rotation.md
+[scale]: ../components/scale.md
 
 To translate, rotate, and scale the box, we can configure the
 [position][position], [rotation][rotation], and [scale][scale]
@@ -79,6 +91,8 @@ back color to white:
 </a-scene>
 ```
 
+[asset]: ../core/asset-management-system.md
+
 It is desirable to cache the texture and block the scene from rendering until
 the texture is loaded.  We can move the texture into the [asset management
 system][asset]. We define it as an `<img>` tag, give it an ID, and point to it
@@ -97,6 +111,8 @@ using a selector:
 ```
 
 ## Animating the Box
+
+[animation]: ../core/animation.md
 
 We can add an animation to the box using the built-in [animation
 system][animation]. We can place an `<a-animation>` element as a child of the
@@ -178,6 +194,8 @@ And we can attach the component to the `<a-box>` primitive:
 
 ## Lighting the Box
 
+[light]: ../primitives/a-light.md
+
 We can change how the scene is lit with [`<a-light>`][light], By default, the
 scene will inject an ambient light and a directional light (which acts like the
 sun). Once we add lights of our own, this default lighting setup is removed:
@@ -206,6 +224,8 @@ sun). Once we add lights of our own, this default lighting setup is removed:
 ```
 
 ## Adding a Background to the Scene
+
+[sky]: ../primitives/a-sky.md
 
 Lastly, we can add a background to the scene using [`<a-sky>`][sky]. The
 background can be a color, a 360&deg; image, or even a 360&deg; video. This is
@@ -238,24 +258,9 @@ created by creating a sphere that wraps the scene:
 </a-scene>
 ```
 
+[next]: ./build-with-components.md
+
 And that is a very basic scene that places static objects in a 3D space using
 HTML. A good VR experience requires rich interaction and dynamic behavior. With
 the help of using and writing A-Frame components, we can [build a more advanced
 scene][next].
-
-[animation]: ../core/animation.md
-[asset]: ../core/asset-management-system.md
-[box]: ../primitives/a-box.md
-[component]: ../core/component.md
-[entity]: ../core/entity.md
-[events]: ../extras/declarative-events.md
-[light]: ../primitives/a-light.md
-[mesh]: ../primitives/mesh-attributes.md
-[mozvr]: http://mozvr.com/#start
-[next]: ../core/component.md
-[position]: ../components/position.md
-[primitives]: ../primitives/
-[rotation]: ../components/rotation.md
-[scale]: ../components/scale.md
-[sky]: ../primitives/a-sky.md
-[threejs]: http://threejs.org

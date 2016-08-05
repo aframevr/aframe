@@ -1,12 +1,15 @@
 ---
 title: Best Practices
-type: guide
+type: introduction
 layout: docs
-parent_section: guide
-order: 6
+parent_section: introduction
+order: 4
 ---
 
 ## VR Design
+
+[leapmotion]: https://developer.leapmotion.com/assets/Leap%20Motion%20VR%20Best%20Practices%20Guidelines.pdf
+[oculus]: https://developer.oculus.com/documentation/intro-vr/latest/concepts/bp_intro/
 
 Designing for VR is different than designing for flat experiences. As a new
 medium, there are new sets of best practices to follow, especially to maintain
@@ -16,10 +19,20 @@ to these comprehensive guides:
 - [Oculus Best Practices (for VR)][oculus]
 - [Leap Motion VR Best Practices Guidelines][leapmotion]
 
-The common golden rule, however, is to never unexpectedly take control of the
-camera away from users.
+Some things to note:
+
+- The common golden rule is to never unexpectedly take control of the camera
+  away from users.
+- Units (such as for position) should be considered meters. This is because the
+  WebVR API returns pose in meters which is fed into most camera controls. By considering
+  units as meters, we achieve expected scale.
 
 ## Performance
+
+[asm]: ../core/asset-management-system.md
+[hardware]: ../guide/device-and-platform-support.md#hardware-specifications
+[merge]: ../components/geometry.md#mergeto
+[stats]: ../components/stats.md
 
 Performance is critical in VR. A high framerate must be maintained in order for
 users to be comfortable. Here are some ways to help improve performance of an
@@ -36,28 +49,18 @@ A-Frame scene:
   multiple geometries are sharing the same material.
 - If using models, look to bake your lights into textures rather than relying
   on real-time lighting and shadows.
-- Rather than using COLLADA or OBJ models, try using **[glTF][gltf]**, a more
-  efficient 3D format. Note that glTF support in three.js is still very new so
-  your mileage may vary.
 - Generally, the fewer number of entities and lights in the scene, the better.
 
 ## A-Frame
 
-And finally, some best practices for the framework:
+[mixins]: ../components/mixins.md
+[ecs]: ../core/index.md
+[template]: https://github.com/ngokevin/aframe-template-component
+
+Some best practices for the framework:
 
 - Don't repeat yourself (**DRY**). Make use of [mixins][mixins] and [templating][template] to
-reduce the amount of copy-and-pasting and reduce the amount of HTML in your scene.
-- Try to make use of the [entity-component-system framework][ecs]. It's what the
-framework is all about! Develop within components to encourage declarativeness
-and reusability.
-
-[asm]: ../core/asset-management-system.md
-[ecs]: ../core/index.md
-[gltf]: https://github.com/xirvr/aframe-gltf
-[hardware]: ../guide/device-and-platform-support.md#hardware-specifications
-[leapmotion]: https://developer.leapmotion.com/assets/Leap%20Motion%20VR%20Best%20Practices%20Guidelines.pdf
-[merge]: ../components/geometry.md#mergeto
-[mixins]: ../components/mixins.md
-[oculus]: https://developer.oculus.com/documentation/intro-vr/latest/concepts/bp_intro/
-[stats]: ../components/stats.md
-[template]: https://github.com/ngokevin/aframe-template-component
+  reduce the amount of copy-and-pasting and reduce the amount of HTML in your
+  scene.
+- Try to make use of the [entity-component-system framework][ecs]. Develop
+  within components to encourage declarativeness and reusability.

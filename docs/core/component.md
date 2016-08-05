@@ -227,15 +227,39 @@ schema: {
 
 All properties have **property types**. Property types define how the component
 parses incoming data from the DOM, and they prescribe a default value if one is
-not defined in the property definition. A-Frame comes with several built-in
-property types such as `array`, `boolean`, `int`, `number`, `selector`, `src`, `string`,
-and `vec3`.
+not defined in the property definition. Below is the list of built-in property
+types:
 
-Each type assigns a `parse` and a `stringify` function. Parsers deserialize the
-incoming string value from the DOM to be put into the component's data object.
-Stringifiers serialize values back to the DOM when calling `setAttribute` with
-a non-string value. Alternatively, we can define our own property types by
-providing our own `parse` and/or `stringify` functions.
+| Property Type   | Description                                                                                                       | Default Value            |
+| --------------- | -------------                                                                                                     | -------------            |
+| array           | Comma-separated values to array (e.g., `"1, 2, 3" to ['1', '2', '3'].                                             | []                       |
+| boolean         | Convert to boolean (i.e., `"false"` to false, everything else truthy).                                            | false                    |
+| color           | Currently does no parsing. Used by the A-Frame Inspector for widgets.                                             | #FFF                     |
+| int             | Calls `parseInt` (e.g., `"124.5"` to `124`).                                                                      | 0                        |
+| number          | Calls `parseFloat` (e.g., `"124.5" to `124.5').                                                                   | 0                        |
+| selector        | Calls `querySelector` (e.g., `"#box" to `<a-entity id="box">`).                                                   | null                     |
+| selectorAll     | Calls `querySelectorAll` and converts `NodeList` to `Array` (e.g., `".boxes"` to [<a-entity class="boxes", ...]), | null                     |
+| src             | Parses URL out of `url(<url>)` or if it is a selector, calls `querySelector` and `getAttribute('src')`.           | ''                       |
+| string          | Does no parsing.                                                                                                  | ''                       |
+| vec2            | Parses two numbers into an `{x, y}` object (e.g., `1 -2` to `{x: 1, y: -2}`.                                      | {x: 0, y: 0}             |
+| vec3            | Parses three numbers into an `{x, y, z}` object (e.g., `1 -2 3` to `{x: 1, y: -2, z: 3}`.                         | {x: 0, y: 0, z: 0}       |
+| vec4            | Parses four numbers into an `{x, y, z, w}` object (e.g., `1 -2 3 -4.5` to `{x: 1, y: -2, z: 3, w: -4.5}`.         | {x: 0, y: 0, z: 0, w: 0} |
+
+The property types will parse incoming string values from the DOM and store it
+in the component's `data` property. Alternatively, we can define our own
+property types by providing our own `parse` functions:
+
+```js
+schema: {
+  // Takes "a/b" and turns to ["a", "b'".
+  myProperty: {
+    default: ['a', 'b'],
+    parse: function (value) {
+      return value.split('/');
+    }
+  }
+}
+```
 
 ### Schema Inference
 
@@ -338,8 +362,6 @@ AFRAME.registerComponent('physics-body', {
   }
 }
 ```
-
-## `multiple`
 
 ## Lifecycle Methods
 
@@ -469,7 +491,7 @@ Example uses of `.updateSchema` by some A-Frame components:
 `flushToDOM` will manually serialize the component's data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
-## Writing a Component
+## Write a Component
 
 ### Line Component
 

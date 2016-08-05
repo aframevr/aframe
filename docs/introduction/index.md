@@ -1,7 +1,7 @@
 ---
 title: Introduction
-section_title: Guide
-type: guide
+section_title: Introduction
+type: introduction
 layout: docs
 order: 1
 parent_section: docs
@@ -31,6 +31,9 @@ desktop, the Oculus Rift, and the room-scale HTC Vive.
 
 ### Entity-Component-System
 
+[ecs]: ../core/index.md
+[three]: http://threejs.org/
+
 Diving deeper, A-Frame is a [three.js][three] framework that brings the
 [entity-component-system][ecs] pattern to the DOM; everything in a scene is an
 **entity** which we compose and attach **components** to add any appearance,
@@ -55,6 +58,8 @@ the behavior of exploding on collision.
 ```
 
 ## Why A-Frame?
+
+[mozvr]: http://mozvr.com
 
 A-Frame was built by the [Mozilla VR team][mozvr] to make it **quicker** and
 **easier** to build 3D/VR scenes in order for them to prototype faster and to
@@ -102,18 +107,10 @@ shared, these components can be used by other developers via HTML.
 
 ## Have Fun!
 
-It is recommended to read through the [Guide][basic-scene] and [Core][core]
+[basic-scene]: ./guides/building-a-basic-scene.md
+[core]: ../core/index.md
+[slack]: https://aframevr-slack.herokuapp.com/
+
+It is recommended to read through the [Guides][basic-scene] and the [Core][core]
 sections of the documentation. If you have any questions, join the other
 hundreds of developers on [Slack][slack]!
-
-[awesome]: https://github.com/aframevr/awesome-aframe
-[basic-scene]: ./building-a-basic-scene.md
-[component]: ../core/component.md
-[core]: ../core/index.md
-[custom]: https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements
-[ecs]: ../core/index.md
-[entity]: ../core/entity.md
-[mozvr]: http://mozvr.com
-[slack]: https://aframevr-slack.herokuapp.com/
-[three]: http://threejs.org/
-[webvr]: http://mozvr.com/#start

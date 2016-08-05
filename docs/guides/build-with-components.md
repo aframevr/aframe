@@ -1,12 +1,12 @@
 ---
-title: Building an Advanced Scene
-type: guide
+title: Build with Components
+type: guides
 layout: docs
-parent_section: guide
-order: 4
+parent_section: guides
+order: 2
 ---
 
-> Fork the [360&deg; Image Viewer Boilerplate on GitHub](https://github.com/aframevr/360-image-browser-boilerplate).
+> Fork the [360&deg; Image Gallery Boilerplate on GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
@@ -18,7 +18,7 @@ concepts:
 2. Using third-party components from the ecosystem.
 3. Writing custom components to accomplish whatever we want.
 
-The scene we will build is a **360&deg; image viewer**. There will be three
+The scene we will build is a **360&deg; image gallery**. There will be three
 panels which the user can click on. Once clicked, the background will fade and
 swap the 360&deg; images.
 
@@ -419,9 +419,9 @@ wait the appropriate amount of time, and swap the image:
   //...
 ```
 
-And that concludes our 360&deg; image viewer.
+And that concludes our 360&deg; image gallery.
 
-> **[Try it out!](https://aframe.io/360-image-viewer-boilerplate/)**
+> **[Try it out!](https://aframe.io/360-image-gallery-boilerplate/)**
 
 [a-sky]: ../primitives/a-sky.md
 [ams]: ../core/asset-management-system.md

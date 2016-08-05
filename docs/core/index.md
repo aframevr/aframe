@@ -1,11 +1,11 @@
 ---
 title: Entity-Component-System
-section_title: Core
+section_title: Concepts and API
 type: core
 layout: docs
 parent_section: docs
 order: 1
-section_order: 2
+section_order: 3
 ---
 
 A-Frame is based on an **[entity-component-system pattern][ecs]** (ECS), a

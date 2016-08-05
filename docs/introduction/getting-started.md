@@ -1,8 +1,8 @@
 ---
 title: Getting Started
-type: guide
+type: introduction
 layout: docs
-parent_section: guide
+parent_section: introduction
 order: 2
 version: 0.2.0
 installation: true
