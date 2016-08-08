@@ -1,4 +1,5 @@
 var registerSystem = require('../core/system').registerSystem;
+var constants = require('../constants/');
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
 var DEFAULT_USER_HEIGHT = 1.6;
@@ -39,6 +40,7 @@ module.exports.System = registerSystem('camera', {
       defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
       defaultCameraEl.setAttribute('wasd-controls', '');
       defaultCameraEl.setAttribute('look-controls', '');
+      defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
       sceneEl.appendChild(defaultCameraEl);
       sceneEl.addEventListener('enter-vr', self.removeDefaultOffset);
       sceneEl.addEventListener('exit-vr', self.addDefaultOffset);

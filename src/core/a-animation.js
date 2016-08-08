@@ -1,5 +1,5 @@
 var ANode = require('./a-node');
-var constants = require('../constants/animation');
+var animationConstants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
 var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
@@ -8,11 +8,11 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var getComponentProperty = utils.entity.getComponentProperty;
-var DEFAULTS = constants.defaults;
-var DIRECTIONS = constants.directions;
-var EASING_FUNCTIONS = constants.easingFunctions;
-var FILLS = constants.fills;
-var REPEATS = constants.repeats;
+var DEFAULTS = animationConstants.defaults;
+var DIRECTIONS = animationConstants.directions;
+var EASING_FUNCTIONS = animationConstants.easingFunctions;
+var FILLS = animationConstants.fills;
+var REPEATS = animationConstants.repeats;
 var isCoordinate = coordinates.isCoordinate;
 
 /**

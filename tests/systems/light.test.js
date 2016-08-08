@@ -1,4 +1,5 @@
 /* global assert, process, setup, suite, test */
+var constants = require('constants/');
 var entityFactory = require('../helpers').entityFactory;
 
 suite('light system', function () {
@@ -24,10 +25,12 @@ suite('light system', function () {
 
     sceneEl.systems.light.setupDefaultLights();
     lights = sceneEl.querySelectorAll('a-entity');
+
     // Remove lights to re-test.
     for (i = 0; i < lights.length; ++i) {
       if (!lights[i].components.light) { continue; }
       lightsNum += 1;
+      assert.ok(lights[i].hasAttribute(constants.AFRAME_INJECTED));
     }
     assert.equal(lightsNum, 2);
   });
