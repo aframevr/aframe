@@ -21,33 +21,26 @@ module.exports = registerElement('a-assets', {
       value: function () {
         var self = this;
         var loaded = [];
-        var audios = this.querySelectorAll('audio');
+        var medias = this.querySelectorAll('audio, videos');
         var imgs = this.querySelectorAll('img');
         var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
-        var videos = this.querySelectorAll('video');
 
         if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 
         // Wait for <img>s.
-        for (var i = 0; i < imgs.length; i++) {
+        imgs.forEach(function (img) {
           loaded.push(new Promise(function (resolve, reject) {
-            var img = imgs[i];
             img.onload = resolve;
             img.onerror = reject;
           }));
-        }
+        });
 
-        // Wait for <audio>s.
-        for (i = 0; i < audios.length; i++) {
-          loaded.push(mediaElementLoaded(audios[i]));
-        }
-
-        // Wait for <video>s.
-        for (i = 0; i < videos.length; i++) {
-          loaded.push(mediaElementLoaded(videos[i]));
-        }
+        // Wait for <audio>s and <video>s.
+        medias.forEach(function (media) {
+          loaded.push(mediaElementLoaded(media));
+        });
 
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(this.load.bind(this));
