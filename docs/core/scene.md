@@ -36,10 +36,9 @@ before kicking off the render loop.
 | camera         | Active three.js camera.                                                      |
 | canvas         | Reference to the canvas element.                                             |
 | isMobile       | Whether or not environment is detected to be mobile.                         |
-| monoRenderer   | Instance of `THREE.WebGlRenderer`.                                           |
 | object3D       | [`THREE.Scene`][scene] object.                                               |
-| renderer       | Active renderer, one of `monoRenderer` or `stereoRenderer`.                  |
-| stereoRenderer | Renderer for VR created by passing the `monoRenderer` into `THREE.VREffect`. |
+| renderer       | Active `THREE.WebGLRenderer`.                                                |
+| effect         | Renderer for VR created by passing active renderer into `THREE.VREffect`.    |
 | systems        | Instantiated [systems][systems].                                             |
 | time           | Global uptime of scene in seconds.                                           |
 
