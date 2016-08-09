@@ -1,4 +1,4 @@
-/* global Promise */
+/* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
@@ -154,8 +154,8 @@ module.exports = registerElement('a-scene', {
           self.emit('enter-vr', event);
 
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.lock('landscape');
+          if (self.isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
 
@@ -189,12 +189,13 @@ module.exports = registerElement('a-scene', {
           var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.unlock();
+          if (self.isMobile && screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
           }
           // Exiting VR in embedded mode, no longer need fullscreen styles.
           if (embedded) { self.removeFullScreenStyles(); }
           self.resize();
+          if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
           self.emit('exit-vr', {target: self});
         }
         function exitVRFailure (err) {
