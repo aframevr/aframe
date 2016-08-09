@@ -8,7 +8,9 @@
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
     "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
     "dev": "npm run build && node ./scripts/budo",
-    "dist": "mkdirp dist/ && npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js && uglifyjs dist/aframe.js -c warnings=false -m -o dist/aframe.min.js",
+    "dist": "npm run dist:min && npm run dist:max",
+    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js",
+    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map dist/aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
     "lint": "semistandard -v | snazzy",
@@ -26,7 +28,6 @@
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
-    "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "browserify": "^11.0.1",
+    "browserify-css": "^0.8.2",
     "browserify-derequire": "^0.9.4",
     "budo": "^8.1.0",
     "chai": "^3.5.0",
@@ -57,6 +59,7 @@
     "karma-mocha-reporter": "^1.1.0",
     "karma-sinon-chai": "^1.1.0",
     "lolex": "^1.4.0",
+    "minifyify": "^7.3.3",
     "mkdirp": "0.5.1",
     "mocha": "^2.3.3",
     "mozilla-download": "^1.0.5",
@@ -84,13 +87,18 @@
     ]
   },
   "keywords": [
-    "aframe",
-    "vr",
-    "webvr",
     "3d",
-    "three",
+    "aframe",
+    "cardboard",
     "components",
-    "elements"
+    "oculus",
+    "three",
+    "three.js",
+    "rift",
+    "vive",
+    "vr",
+    "web-components",
+    "webvr"
   ],
   "browserify-css": {
     "minify": true
