@@ -150,21 +150,12 @@ module.exports.Component = registerComponent('camera', {
   update: function (oldData) {
     var el = this.el;
     var data = this.data;
-    var camera = this.camera;
     var system = this.system;
     if (!oldData || oldData.userHeight !== data.userHeight) {
       this.userHeightOffset = oldData.userHeight || 0;
       this.updateHeightOffset();
     }
-
-    // Update properties.
-    camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
-    camera.far = data.far;
-    camera.fov = data.fov;
-    camera.near = data.near;
-    camera.zoom = data.zoom;
-    camera.updateProjectionMatrix();
-
+    this.updateCameraParameters();
     // Active property did not change.
     if (oldData && oldData.active === data.active) { return; }
 
@@ -176,5 +167,16 @@ module.exports.Component = registerComponent('camera', {
       // Camera disabled. Set camera to another camera.
       system.disableActiveCamera();
     }
+  },
+
+  updateCameraParameters: function () {
+    var data = this.data;
+    var camera = this.camera;
+    camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
+    camera.far = data.far;
+    camera.fov = data.fov;
+    camera.near = data.near;
+    camera.updateProjectionMatrix();
+    return camera;
   }
 });

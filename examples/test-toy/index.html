@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shader Toy</title>
+    <meta name="description" content="Cube - A-Frame">
+    <script src="../../dist/aframe.js"></script>
+    <style>
+      body { background-color: black; }
+    </style>
+    <script id="heart" type="x-shader/x-fragment">
+      // Created by inigo quilez - iq/2013
+      // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+      uniform vec2 resolution;
+      uniform float time;
+      uniform float pixelRatio;
+      void main() {
+        vec2 p = ((gl_FragCoord.xy / resolution.xy) * 2.0 - 1.0) * pixelRatio;
+        p.x *= resolution.x / resolution.y;
+
+        // background color
+        vec3 bcol = vec3(1.0,0.8,0.7-0.07*p.y)*(1.0-0.25*length(p));
+
+        // animate
+        float tt = mod(time / 1000.0,1.5)/1.5;
+        float ss = pow(tt,.2)*0.5 + 0.5;
+        ss = 1.0 + ss*0.5*sin(tt*6.2831*3.0 + p.y*0.5)*exp(-tt*4.0);
+        p *= vec2(0.5,1.5) + ss*vec2(0.5,-0.5);
+
+        // shape
+        float a = atan(p.x,p.y)/3.141593;
+        float r = length(p);
+        float h = abs(a);
+        float d = (13.0*h - 22.0*h*h + 10.0*h*h*h)/(6.0-5.0*h);
+
+        // color
+        float s = 1.0-0.5*clamp(r/d,0.0,1.0);
+        s = 0.75 + 0.75*p.x;
+        s *= 1.0-0.25*r;
+        s = 0.5 + 0.6*s;
+        s *= 0.5+0.5*pow( 1.0-clamp(r/d, 0.0, 1.0 ), 0.1 );
+        vec3 hcol = vec3(1.0,0.5*r,0.3)*s;
+        vec3 col = mix( bcol, hcol, smoothstep( -0.01, 0.01, d-r) );
+        gl_FragColor = vec4(col,1.0);
+      }
+    </script>
+    <script id="electric" type="x-shader/x-fragment">
+    //Noise animation - Electric
+//by nimitz (stormoid.com) (twitter: @stormoid)
+
+//The domain is displaced by two fbm calls one for each axis.
+//Turbulent fbm (aka ridged) is used for better effect.
+    uniform vec2 resolution;
+    uniform float time;
+#define time time /5000.0
+#define tau 6.2831853
+
+mat2 makem2(in float theta){float c = cos(theta);float s = sin(theta);return mat2(c,-s,s,c);}
+float noise( in vec2 x ){return 0.4;}
+
+float fbm(in vec2 p)
+{
+  float z=2.;
+  float rz = 0.;
+  vec2 bp = p;
+  for (float i= 1.;i < 6.;i++)
+  {
+    rz+= abs((noise(p)-0.5)*2.)/z;
+    z = z*2.;
+    p = p*2.;
+  }
+  return rz;
+}
+
+float dualfbm(in vec2 p)
+{
+    //get two rotated fbm calls and displace the domain
+  vec2 p2 = p*.7;
+  vec2 basis = vec2(fbm(p2-time*1.6),fbm(p2+time*1.7));
+  basis = (basis-.5)*.2;
+  p += basis;
+
+  //coloring
+  return fbm(p*makem2(time*0.2));
+}
+
+float circ(vec2 p)
+{
+  float r = length(p);
+  r = log(sqrt(r));
+  return abs(mod(r*4.,tau)-3.14)*3.+.2;
+
+}
+
+void main()
+{
+  //setup system
+  vec2 p = gl_FragCoord.xy / resolution.xy-0.5;
+  p.x *= resolution.x/resolution.y;
+  p*=4.;
+
+    float rz = dualfbm(p);
+
+  //rings
+  p /= exp(mod(time*10.,3.14159));
+  rz *= pow(abs((0.1-circ(p))),.9);
+
+  //final color
+  vec3 col = vec3(.2,0.1,0.4)/rz;
+  col=pow(abs(col),vec3(.99));
+  gl_FragColor = vec4(col,1.);
+}
+</script>
+    <script id="space" type="x-shader/x-fragment">
+        uniform vec2 resolution;
+    uniform float time;
+      // Star Nest by Pablo Román Andrioli
+
+// This content is under the MIT License.
+
+#define iterations 17
+#define formuparam 0.53
+
+#define volsteps 20
+#define stepsize 0.1
+
+#define zoom   0.800
+#define tile   0.850
+#define speed  0.010
+
+#define brightness 0.0015
+#define darkmatter 0.300
+#define distfading 0.730
+#define saturation 0.850
+
+
+void main()
+{
+  //get coords and direction
+  vec2 uv=gl_FragCoord.xy/resolution.xy-.5;
+  uv.y*=resolution.y/resolution.x;
+  vec3 dir=vec3(uv*zoom,1.);
+  float time=time / 1000.0 *speed+.25;
+
+  //mouse rotation
+  float a1=.5/resolution.x*2.;
+  float a2=.8/resolution.y*2.;
+  mat2 rot1=mat2(cos(a1),sin(a1),-sin(a1),cos(a1));
+  mat2 rot2=mat2(cos(a2),sin(a2),-sin(a2),cos(a2));
+  dir.xz*=rot1;
+  dir.xy*=rot2;
+  vec3 from=vec3(1.,.5,0.5);
+  from+=vec3(time*2.,time,-2.);
+  from.xz*=rot1;
+  from.xy*=rot2;
+
+  //volumetric rendering
+  float s=0.1,fade=1.;
+  vec3 v=vec3(0.);
+  for (int r=0; r<volsteps; r++) {
+    vec3 p=from+s*dir*.5;
+    p = abs(vec3(tile)-mod(p,vec3(tile*2.))); // tiling fold
+    float pa,a=pa=0.;
+    for (int i=0; i<iterations; i++) {
+      p=abs(p)/dot(p,p)-formuparam; // the magic formula
+      a+=abs(length(p)-pa); // absolute sum of average change
+      pa=length(p);
+    }
+    float dm=max(0.,darkmatter-a*a*.001); //dark matter
+    a*=a*a; // add contrast
+    if (r>6) fade*=1.-dm; // dark matter, don't render near
+    //v+=vec3(dm,dm*.5,0.);
+    v+=fade;
+    v+=vec3(s,s*s,s*s*s*s)*a*brightness*fade; // coloring based on distance
+    fade*=distfading; // distance fading
+    s+=stepsize;
+  }
+  v=mix(vec3(length(v)),v,saturation); //color adjust
+  gl_FragColor = vec4(v*.01,1.);
+
+}
+
+
+    </script>
+    <script id="flame" type="x-shader/x-fragment">
+    uniform vec2 resolution;
+    uniform float time;
+    float noise(vec3 p)
+    {
+      vec3 i = floor(p);
+      vec4 a = dot(i, vec3(1., 57., 21.)) + vec4(0., 57., 21., 78.);
+      vec3 f = cos((p-i)*acos(-1.))*(-.5)+.5;
+      a = mix(sin(cos(a)*a),sin(cos(1.+a)*(1.+a)), f.x);
+      a.xy = mix(a.xz, a.yw, f.y);
+      return mix(a.x, a.y, f.z);
+    }
+
+    float sphere(vec3 p, vec4 spr)
+    {
+      return length(spr.xyz-p) - spr.w;
+    }
+
+    float flame(vec3 p)
+    {
+      float d = sphere(p*vec3(1.,.5,1.), vec4(.0,-1.,.0,1.));
+      return d + (noise(p+vec3(.0,(time / 1000.0 )*2.,.0)) + noise(p*3.)*.5)*.25*(p.y) ;
+    }
+
+    float scene(vec3 p)
+    {
+      return min(100.-length(p) , abs(flame(p)) );
+    }
+
+    vec4 raymarch(vec3 org, vec3 dir)
+    {
+      float d = 0.0, glow = 0.0, eps = 0.02;
+      vec3  p = org;
+      bool glowed = false;
+
+      for(int i=0; i<64; i++)
+      {
+        d = scene(p) + eps;
+        p += d * dir;
+        if( d>eps )
+        {
+          if(flame(p) < .0)
+            glowed=true;
+          if(glowed)
+                glow = float(i)/64.;
+        }
+      }
+      return vec4(p,glow);
+    }
+
+    void main()
+    {
+      vec2 v = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
+      v.x *= resolution.x / resolution.y;
+
+      vec3 org = vec3(0., -2., 4.);
+      vec3 dir = normalize(vec3(v.x*1.6, -v.y, -1.5));
+
+      vec4 p = raymarch(org, dir);
+      float glow = p.w;
+
+      vec4 col = mix(vec4(1.,.5,.1,1.), vec4(0.1,.5,1.,1.), p.y*.02+.4);
+
+      gl_FragColor = mix(vec4(0.), col, pow(glow*2.,4.));
+
+    }
+
+    </script>
+    <script id="fs" type="x-shader/x-fragment">
+      // Created by Pol Jeremias - pol/2015
+      // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+      uniform vec2 resolution;
+      uniform float time;
+
+      float drawCircle(float r, float polarRadius, float thickness)
+      {
+        return  smoothstep(r, r + thickness, polarRadius) -
+                smoothstep(r + thickness, r + 2.0 * thickness, polarRadius);
+      }
+
+      float sin01(float v)
+      {
+        return 0.5 + 0.5 * sin(v);
+      }
+
+      void main()
+      {
+          vec2 uv = (gl_FragCoord.xy / resolution.xy) - 1.0;
+          float time = time / 1000.0;
+
+          // Center the coordinates and apply the aspect ratio
+          vec2 p = uv;
+          p.x *= resolution.x / resolution.y;
+
+          // Calculate polar coordinates
+          float pr = length(p);
+          float pa = atan(p.y, p.x);
+
+          // Draw the circles
+          float o = 0.0;
+          float inc = 0.0;
+
+          for( float i = 1.0 ; i < 8.0 ; i += 1.0 )
+          {
+              float baseradius = 0.3 * ( 0.3 + sin01(time * 0.2) );
+              float radius = baseradius + inc;
+
+              radius += 0.01 * ( sin01(pa * i + time * (i - 1.0) ) );
+
+              o += drawCircle(radius, pr, 0.008 * (1.0 * (i - 1.0)));
+
+              inc += 0.005;
+          }
+
+          // Calculate the background color
+          vec3 bcol = vec3(1.0, 0.22, 0.5 - 0.4*p.y) * (1.0 - 0.6 * pr);
+          vec3 col = mix(bcol, vec3(1.0,1.0,0.7), o);
+          gl_FragColor = vec4(col, 1.0);
+      }
+    </script>
+    <script id="sin" type="x-shader/x-fragment">
+      uniform vec2 resolution;
+      uniform float time;
+      void main()
+      {
+        float time = time / 1000.0;
+        vec2 uv = gl_FragCoord.xy / resolution.xy;
+        float s1 = 0.5+0.5*sin(time+uv.x*3.1415*(sin(time)+4.0));
+        float s2 = 0.5+0.25*sin(time+uv.x*3.1415*(sin(time)*2.0+2.0));
+        float r = pow(1.0-sqrt( abs(uv.y-s1)),1.5 );
+        float g = pow(1.0-sqrt( abs(uv.y-s2)),1.5 );
+        float b = 1.5*(r+g);
+        gl_FragColor = vec4( r,g,b,1 );
+      }
+    </script>
+  </head>
+  <body>
+    <a-scene stats="true">
+      <!-- Cube -->
+      <a-entity rotation="0 0 0" position="0 0 1"></a-entity>
+      <a-entity geometry="primitive: quad;" material="shader: toy; fragmentSrc: sin"></a-entity>
+    </a-scene>
+  </body>
+</html>
