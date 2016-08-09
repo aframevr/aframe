@@ -21,26 +21,28 @@ module.exports = registerElement('a-assets', {
       value: function () {
         var self = this;
         var loaded = [];
-        var medias = this.querySelectorAll('audio, videos');
+        var medias = this.querySelectorAll('audio, video');
         var imgs = this.querySelectorAll('img');
         var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
+        var i;
 
         if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 
         // Wait for <img>s.
-        imgs.forEach(function (img) {
+        for (i = 0; i < imgs.length; i++) {
+          var img = imgs[i];
           loaded.push(new Promise(function (resolve, reject) {
             img.onload = resolve;
             img.onerror = reject;
           }));
-        });
+        }
 
         // Wait for <audio>s and <video>s.
-        medias.forEach(function (media) {
-          loaded.push(mediaElementLoaded(media));
-        });
+        for (i = 0; i < medias.length; i++) {
+          loaded.push(mediaElementLoaded(medias[i]));
+        }
 
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(this.load.bind(this));
