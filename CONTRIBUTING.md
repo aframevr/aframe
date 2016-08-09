@@ -1,9 +1,14 @@
+[stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
+
 # Join the Community on Slack
 
 1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to the A-Frame Slack channel.
 2. [Join the discussion](https://aframevr.slack.com)!
 
 # Filing an Issue
+
+If you have a question rather than an issue, you can post to [the A-Frame Stack
+Overflow tag][stackoverflow]
 
 1. Search the [issue tracker](https://github.com/aframevr/aframe/issues) for similar issues.
 2. Specify the version of A-Frame in which the bug occurred.
@@ -23,7 +28,7 @@ Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
 3. Run `npm install` and `npm run dev` to serve the test examples.
 4. Make changes to your fork of the repository.
-5. If possible, write a unit test and run with `npm test`.
+5. If necessary, [write unit tests](tests/) and run with `npm test`.
 6. Submit a pull request to the master branch.
 7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) and [squash your commits](https://davidwalsh.name/squash-commits-git) once ready.
 
@@ -38,8 +43,6 @@ Please note you would agree to license your contributions under the [license](LI
 4. For bonus points, write and publish a case study to explain how you built it.
 
 # Help Your Fellow A-Framers
-
-[stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
 ## On Slack
 
