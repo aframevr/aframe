@@ -13,7 +13,7 @@ module.exports.Component = registerComponent('camera', {
     active: { default: true },
     far: { default: 10000 },
     fov: { default: 80, min: 0 },
-    near: { default: 0.5, min: 0 },
+    near: { default: 0.005, min: 0 },
     userHeight: { default: 0, min: 0 },
     zoom: { default: 1, min: 0 }
   },
