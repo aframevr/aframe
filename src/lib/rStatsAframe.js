@@ -15,8 +15,29 @@ window.aframeStats = function (scene) {
   } ];
 
   function _update () {
-    _rS('te').set(_scene.querySelectorAll('a-entity').length);
+    _rS('te').set(getEntitiesCount());
     _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
+  }
+
+  function getEntitiesCount () {
+    var aframeElements = getAllTagMatches(_scene, /^a-/i);
+    var assetEl = _scene.querySelector('a-assets');
+    var count;
+
+    aframeElements.filter(function (el) {
+      return el.tagName !== 'a-animation';
+    });
+    count = aframeElements.length;
+    if (assetEl) {
+      count -= getAllTagMatches(assetEl, /^a-/i).length + 1;
+    }
+    return count;
+  }
+
+  function getAllTagMatches (element, regEx) {
+    return Array.prototype.slice.call(element.querySelectorAll('*')).filter(function (el) {
+      return el.tagName.match(regEx);
+    });
   }
 
   function _start () {}
