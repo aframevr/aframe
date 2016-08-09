@@ -5,6 +5,7 @@ window.Promise = window.Promise || require('promise-polyfill');
 window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
+  BUFFER_SCALE: 1,
   CARDBOARD_UI_DISABLED: true,
   ROTATE_INSTRUCTIONS_DISABLED: true,
   TOUCH_PANNER_DISABLED: true,
