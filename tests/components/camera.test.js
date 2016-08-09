@@ -91,13 +91,20 @@ suite('camera', function () {
     test('does not remove the default offset when entering VR on mobile', function () {
       var sceneEl = this.el.sceneEl;
       var cameraEl = this.el;
-
       sceneEl.isMobile = true;
       cameraEl.components.camera.headsetConnected = true;
-
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+    });
+  });
+
+  suite('updateHeightOffset', function () {
+    test('updates userHeight', function () {
+      var el = this.el;
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+      el.setAttribute('camera', 'userHeight', 2.5);
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 2.5, z: 0});
     });
   });
 });
