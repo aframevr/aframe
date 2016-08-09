@@ -1,4 +1,4 @@
-/* global assert, setup, suite, sinon, test */
+/* global assert, setup, suite, test */
 'use strict';
 var helpers = require('../helpers.js');
 var AAnimation = require('core/a-animation').AAnimation;
@@ -19,7 +19,7 @@ var getComponentProperty = utils.entity.getComponentProperty;
 function setupAnimation (animationAttrs, cb, elAttrs) {
   var animationEl = document.createElement('a-animation');
   var el = helpers.entityFactory();
-  var done;
+  var done = false;
 
   // TODO: have <a-animation> setAttribute support this.
   Object.keys(animationAttrs).forEach(function (key) {
@@ -34,9 +34,6 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
       cb(el, animationEl, window.performance.now());
       done = true;
     }
-  });
-  animationEl.addEventListener('loaded', function () {
-    animationEl.start();
   });
   el.isPlaying = true;
   el.appendChild(animationEl);
@@ -131,9 +128,9 @@ suite('a-animation', function () {
 
   suite('update', function () {
     test('called on initialization', function (done) {
-      this.sinon.stub(AAnimation.prototype, 'update');
+      var spy = this.sinon.spy(AAnimation.prototype, 'update');
       setupAnimation({}, function (el, animationEl) {
-        sinon.assert.called(AAnimation.prototype.update);
+        assert.ok(spy.called);
         done();
       });
     });
@@ -357,7 +354,7 @@ suite('a-animation', function () {
       animationEl.setAttribute('begin', 'click');
       el.isPlaying = true;
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.emit('click');
         assert.ok(animationEl.isRunning);
         done();
@@ -381,7 +378,7 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', '1');
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.play();
         assert.ok(animationEl.isRunning);
         done();
@@ -393,7 +390,7 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('delay', '1');
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.play();
         assert.ok(animationEl.isRunning);
         done();
@@ -673,13 +670,51 @@ suite('a-animation', function () {
       animationEl.setAttribute('end', 'end-event');
       el.isPlaying = true;
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.emit('begin-event');
         assert.ok(animationEl.isRunning);
         el.emit('end-event');
         assert.ok(!animationEl.isRunning);
         done();
       });
+    });
+  });
+
+  suite('dynamic animations', function () {
+    test('animation plays when both entity and animation are dynamically created', function (done) {
+      var sceneEl = document.createElement('a-scene');
+      sceneEl.addEventListener('loaded', createAnimation);
+      document.body.appendChild(sceneEl);
+      function createAnimation () {
+        var entityEl = document.createElement('a-entity');
+        var animationEl = document.createElement('a-animation');
+        animationEl.setAttribute('attribute', 'rotation');
+        animationEl.setAttribute('repeat', 'indefinite');
+        animationEl.setAttribute('to', '0 360 0');
+        entityEl.appendChild(animationEl);
+        sceneEl.appendChild(entityEl);
+        entityEl.addEventListener('loaded', function () {
+          assert.ok(animationEl.isRunning);
+          done();
+        });
+      }
+    });
+
+    test('animation does not play if entity has not loaded when both entity and animation are dynamically created', function (done) {
+      var sceneEl = document.createElement('a-scene');
+      sceneEl.addEventListener('loaded', createAnimation);
+      document.body.appendChild(sceneEl);
+      function createAnimation () {
+        var entityEl = document.createElement('a-entity');
+        var animationEl = document.createElement('a-animation');
+        animationEl.setAttribute('attribute', 'rotation');
+        animationEl.setAttribute('repeat', 'indefinite');
+        animationEl.setAttribute('to', '0 360 0');
+        entityEl.appendChild(animationEl);
+        sceneEl.appendChild(entityEl);
+        assert.notOk(animationEl.isRunning);
+        done();
+      }
     });
   });
 });
