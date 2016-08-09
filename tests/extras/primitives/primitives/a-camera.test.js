@@ -22,16 +22,13 @@ suite('a-camera', function () {
   });
 
   suite('user-height', function () {
-    test('updates height offset when DOM user-height attibute changes', function () {
+    test('updates height offset when DOM user-height attibute changes', function (done) {
       var camera = this.camera;
       assert.shallowDeepEqual(camera.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       camera.setAttribute('user-height', '0.5');
       process.nextTick(function () {
         assert.shallowDeepEqual(camera.getAttribute('position'), {x: 0, y: 0.5, z: 0});
-      });
-      camera.setAttribute('user-height', '0');
-      process.nextTick(function () {
-        assert.shallowDeepEqual(camera.getAttribute('position'), {x: 0, y: 0, z: 0});
+        done();
       });
     });
   });
