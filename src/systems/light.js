@@ -1,4 +1,5 @@
 var registerSystem = require('../core/system').registerSystem;
+var constants = require('../constants/');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
 
@@ -47,11 +48,13 @@ module.exports.System = registerSystem('light', {
 
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+    ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
 
     directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6});
     directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
+    directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(directionalLight);
 
     this.defaultLightsEnabled = true;
