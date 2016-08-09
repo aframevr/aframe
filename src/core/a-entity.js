@@ -142,12 +142,11 @@ var proto = Object.create(ANode.prototype, {
       var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
       // Remove the mixins that are gone on update
       diff.forEach(function (mixinId) {
-        var forEach = Array.prototype.forEach;
-        // State Mixins
-        var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = [];
-        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.unregisterMixin.bind(self));
+        // State mixins
+        var stateMixinsEls = Array.prototype.slice.call(document.querySelectorAll('[id^=' + mixinId + '-]'), 0);
+        stateMixinsEls.map(function (el) { return el.id; }).forEach(
+          self.unregisterMixin.bind(self)
+        );
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
