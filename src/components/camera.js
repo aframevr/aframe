@@ -36,6 +36,7 @@ module.exports.Component = registerComponent('camera', {
   bindMethods: function () {
     this.addHeightOffset = this.addHeightOffset.bind(this);
     this.removeHeightOffset = this.removeHeightOffset.bind(this);
+    this.updateHeightOffset = this.updateHeightOffset.bind(this);
     this.saveCameraPose = this.saveCameraPose.bind(this);
     this.restoreCameraPose = this.restoreCameraPose.bind(this);
   },
@@ -87,6 +88,30 @@ module.exports.Component = registerComponent('camera', {
     });
   },
 
+  /**
+   * Enables updating camera.userHeight
+   */
+  updateHeightOffset: function () {
+    var currentPosition;
+    var headsetConnected;
+    var el = this.el;
+    var oldHeightOffset = this.userHeightOffset;
+
+    headsetConnected = this.headsetConnected || checkHeadsetConnected();
+
+    // Do not update camera.userHeight if headset is connected
+    if (headsetConnected) { return; }
+
+    this.userHeightOffset = this.data.userHeight;
+
+    currentPosition = el.getComputedAttribute('position') || {x: 0, y: 0, z: 0};
+    el.setAttribute('position', {
+      x: currentPosition.x,
+      y: currentPosition.y - oldHeightOffset + this.userHeightOffset,
+      z: currentPosition.z
+    });
+  },
+
   saveCameraPose: function () {
     var el = this.el;
     var headsetConnected = this.headsetConnected || checkHeadsetConnected();
@@ -128,8 +153,8 @@ module.exports.Component = registerComponent('camera', {
     var camera = this.camera;
     var system = this.system;
     if (!oldData || oldData.userHeight !== data.userHeight) {
-      this.removeHeightOffset();
-      this.addHeightOffset();
+      this.userHeightOffset = oldData.userHeight || 0;
+      this.updateHeightOffset();
     }
 
     // Update properties.
