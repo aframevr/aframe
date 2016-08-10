@@ -25,7 +25,6 @@ module.exports.fireEvent = function (el, name, data) {
   data.detail = data.detail || {};
   data.detail.target = data.detail.target || el;
   var evt = new CustomEvent(name, data);
-  evt.target = el;
   el.dispatchEvent(evt);
 };
 
