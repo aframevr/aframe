@@ -210,7 +210,7 @@ Component.prototype = {
       name: this.name,
       newData: this.getData(),
       oldData: oldData
-    }, false);
+    });
   },
 
   /**
