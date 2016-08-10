@@ -57,7 +57,7 @@ before kicking off the render loop.
 | enter-vr     | User has entered VR and headset started presenting content. |
 | exit-vr      | User has exited VR and headset stopped presenting content.  |
 | loaded       | All nodes have loaded.                             |
-| render-start | Render loop has started.            |
+| renderstart | Render loop has started.            |
 
 ## Scene Components
 
