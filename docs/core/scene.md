@@ -30,17 +30,18 @@ before kicking off the render loop.
 
 ## Properties
 
-| Name           | Description                                                                  |
-|----------------|------------------------------------------------------------------------------|
-| behaviors      | Array of components with tick methods that will be run on every frame.       |
-| camera         | Active three.js camera.                                                      |
-| canvas         | Reference to the canvas element.                                             |
-| isMobile       | Whether or not environment is detected to be mobile.                         |
-| object3D       | [`THREE.Scene`][scene] object.                                               |
-| renderer       | Active `THREE.WebGLRenderer`.                                                |
-| effect         | Renderer for VR created by passing active renderer into `THREE.VREffect`.    |
-| systems        | Instantiated [systems][systems].                                             |
-| time           | Global uptime of scene in seconds.                                           |
+| Name          | Description                                                               |
+|---------------|---------------------------------------------------------------------------|
+| behaviors     | Array of components with tick methods that will be run on every frame.    |
+| camera        | Active three.js camera.                                                   |
+| canvas        | Reference to the canvas element.                                          |
+| isMobile      | Whether or not environment is detected to be mobile.                      |
+| object3D      | [`THREE.Scene`][scene] object.                                            |
+| renderer      | Active `THREE.WebGLRenderer`.                                             |
+| renderStarted | Whether scene is rendering.                                               |
+| effect        | Renderer for VR created by passing active renderer into `THREE.VREffect`. |
+| systems       | Instantiated [systems][systems].                                          |
+| time          | Global uptime of scene in seconds.                                        |
 
 ## Methods
 
