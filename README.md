@@ -94,6 +94,10 @@ To publish to __https://your_username.github.io/aframe/__:
 
     npm run ghpages your_username
 
+## Contributing
+
+Check out the [Contributing Guide](CONTRIBUTING.md)!
+
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).
