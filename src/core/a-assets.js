@@ -82,7 +82,11 @@ registerElement('a-asset-item', {
         xhrLoader.load(src, function (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
-          ANode.prototype.load.call(self);
+          // In Chrome if another XMLHttpRequest is sent to the same url
+          // before the previous one closes. The second request never finishes.
+          // setTimeout finishes the first request and lets the logic
+          // triggered by load open subsequent requests.
+          setTimeout(function load () { ANode.prototype.load.call(self); });
         });
       }
     }
