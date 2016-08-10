@@ -96,7 +96,7 @@ To publish to __https://your_username.github.io/aframe/__:
 
 ## Contributing
 
-Check out the [Contributing Guide](CONTRIBUTING.md)!
+Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) on how to get started!
 
 ## License
 
