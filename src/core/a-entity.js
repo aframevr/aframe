@@ -145,9 +145,9 @@ var proto = Object.create(ANode.prototype, {
         var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = [];
-        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.unregisterMixin.bind(self));
+        forEach.call(stateMixinsEls, function (el) {
+          self.unregisterMixin(el.id);
+        });
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
