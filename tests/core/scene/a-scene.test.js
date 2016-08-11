@@ -155,6 +155,12 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     });
   });
 
+  suite('play', function () {
+    test('has camera on renderstart', function () {
+      assert.ok(this.el.camera);
+    });
+  });
+
   test('calls behaviors', function () {
     var scene = this.el;
     var Component = { el: { isPlaying: true }, tick: function () {} };
