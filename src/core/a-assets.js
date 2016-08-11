@@ -82,10 +82,13 @@ registerElement('a-asset-item', {
         xhrLoader.load(src, function (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
-          // In Chrome if another XMLHttpRequest is sent to the same url
+          // Workaround for a Chrome bug.
+          // if another XMLHttpRequest is sent to the same url
           // before the previous one closes. The second request never finishes.
           // setTimeout finishes the first request and lets the logic
           // triggered by load open subsequent requests.
+          // setTimeout can be removed once the fix for the bug below ships:
+          // https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
           setTimeout(function load () { ANode.prototype.load.call(self); });
         });
       }
