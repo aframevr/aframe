@@ -290,8 +290,8 @@ coprime the result will be a torus link:
 | radiusTubular   | Radius of the tubes of the torus knot.                                                                          | 0.2           |
 | segmentsRadial  | Number of segments along the circumference of the tube ends. A higher number means the tube will be more round. | 36            |
 | segmentsTubular | Number of segments along the circumference of the tube face. A higher number means the tube will be more round. | 32            |
-| p               | Number that helps define the pretzel shape.                                                                     | 2             |
-| q               | Number that helps define the pretzel shape.                                                                     | 3             |
+| p               | How many times the geometry winds around its axis of rotational symmetry.                                       | 2             |
+| q               | How many times the geometry winds around a circle in the interior of the torus.                                 | 3             |
 
 ## Register a Custom Geometry
 
