@@ -630,7 +630,7 @@ And voila!
 
 ![](http://i.imgur.com/icggby2.jpg)
 <div class="page-caption"><span>
-  Happy face with the line component! Play with it on [Codepen][line-codepen].
+  Happy face with the line component! Play with it on [CodePen][line-codepen].
 </span></div>
 
 [camera]: ../components/camera.md

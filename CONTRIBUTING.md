@@ -14,7 +14,7 @@ Overflow tag][stackoverflow]
 2. Specify the version of A-Frame in which the bug occurred.
 3. Specify information about your browser and system (e.g., "Firefox Nightly on OS X")
 4. Describe the problem in detail (i.e., what happened and what you expected would happen).
-5. If possible, provide a small test case with [Codepen](http://codepen.io), a link to your application, and/or a screenshot. You can fork this [sample pen](http://codepen.io/anon/pen/KVWpbb).
+5. If possible, provide a small test case with [CodePen](http://codepen.io), a link to your application, and/or a screenshot. You can fork this [sample pen](http://codepen.io/anon/pen/KVWpbb).
 
 # Contributing Code to A-Frame
 

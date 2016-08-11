@@ -108,7 +108,7 @@ To add visual feedback to the cursor in order to display indication when the cur
 </a-entity>
 ```
 
-To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on Codepen][cursor-codepen].
+To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on CodePen][cursor-codepen].
 
 [animation]: ../core/animations.md
 [camera]: ./camera.md
