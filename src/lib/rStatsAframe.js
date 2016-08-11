@@ -15,8 +15,16 @@ window.aframeStats = function (scene) {
   } ];
 
   function _update () {
-    _rS('te').set(_scene.querySelectorAll('a-entity').length);
+    _rS('te').set(getEntityCount());
     _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
+  }
+
+  function getEntityCount () {
+    var elements = _scene.querySelectorAll('*');
+    Array.prototype.slice.call(elements).filter(function (el) {
+      return el.isEntity;
+    });
+    return elements.length;
   }
 
   function _start () {}
