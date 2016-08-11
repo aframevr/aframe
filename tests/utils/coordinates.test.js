@@ -1,5 +1,4 @@
 /* global assert, suite, test */
-'use strict';
 var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {

@@ -1,5 +1,4 @@
 /* global assert, process, suite, test, setup, sinon, HTMLElement */
-'use strict';
 var buildData = require('core/component').buildData;
 var components = require('index').components;
 var helpers = require('../helpers');

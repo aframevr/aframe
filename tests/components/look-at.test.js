@@ -13,8 +13,6 @@ function squirrelFactory (el) {
 }
 
 suite('look-at', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     this.spy = this.sinon.spy(el.object3D, 'lookAt');

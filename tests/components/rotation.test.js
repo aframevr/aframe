@@ -1,5 +1,4 @@
 /* global assert, process, setup, suite, test */
-'use strict';
 var entityFactory = require('../helpers').entityFactory;
 var degToRad = require('index').THREE.Math.degToRad;
 

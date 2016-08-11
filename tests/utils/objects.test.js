@@ -1,5 +1,4 @@
 /* global assert, suite, test */
-'use strict';
 var diff = require('index').utils.diff;
 
 suite('utils.objects', function () {

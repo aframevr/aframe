@@ -1,5 +1,4 @@
 /* global assert, setup, suite, test */
-'use strict';
 var helpers = require('../helpers.js');
 var AAnimation = require('core/a-animation').AAnimation;
 var getAnimationValues = require('core/a-animation').getAnimationValues;

@@ -2,8 +2,6 @@
 var entityFactory = require('../helpers').entityFactory;
 
 suite('light', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('light', '');

@@ -4,8 +4,6 @@ var entityFactory = require('../../helpers').entityFactory;
 var UI_CLASSES = ['.a-orientation-modal', '.a-enter-vr-button'];
 
 suite('vr-mode-ui', function () {
-  'use strict';
-
   setup(function (done) {
     this.entityEl = entityFactory();
     var el = this.el = this.entityEl.parentNode;
