@@ -2,8 +2,6 @@
 var entityFactory = require('../helpers').entityFactory;
 
 suite('camera', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('camera', 'active: false; userHeight: 1.6');

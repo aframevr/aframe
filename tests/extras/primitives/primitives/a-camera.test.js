@@ -1,7 +1,5 @@
 /* global assert, process, setup, suite, test */
 suite('a-camera', function () {
-  'use strict';
-
   setup(function (done) {
     var sceneEl = this.sceneEl = document.createElement('a-scene');
     var camera = this.camera = document.createElement('a-camera');

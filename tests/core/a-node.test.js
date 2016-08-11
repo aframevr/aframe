@@ -1,8 +1,6 @@
 /* global assert, setup, suite, test */
 
 suite('a-node', function () {
-  'use strict';
-
   setup(function () {
     this.el = document.createElement('a-node');
   });
