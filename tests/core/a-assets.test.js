@@ -86,6 +86,67 @@ suite('a-assets', function () {
 
     document.body.appendChild(scene);
   });
+
+  suite('crossorigin', function () {
+    test('recreates media elements with crossorigin if necessary', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var img = document.createElement('img');
+
+      img.setAttribute('id', 'myImage');
+      img.setAttribute('src', 'https://example.url/asset.png');
+      el.setAttribute('timeout', 50);
+      el.appendChild(img);
+
+      el.addEventListener('loaded', function () {
+        assert.ok(el.querySelectorAll('img').length, 1);
+        assert.ok(el.querySelector('#myImage').hasAttribute('crossorigin'));
+        done();
+      });
+
+      document.body.appendChild(scene);
+    });
+
+    test('does not recreate media element if not crossorigin', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var img = document.createElement('img');
+      var cloneSpy = this.sinon.spy(img, 'cloneNode');
+
+      img.setAttribute('id', 'myImage');
+      img.setAttribute('src', 'asset.png');
+      el.setAttribute('timeout', 50);
+      el.appendChild(img);
+
+      el.addEventListener('loaded', function () {
+        assert.notOk(el.querySelector('#myImage').hasAttribute('crossorigin'));
+        assert.notOk(cloneSpy.called);
+        done();
+      });
+
+      document.body.appendChild(scene);
+    });
+
+    test('does not recreate media element if crossorigin already set', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var img = document.createElement('img');
+      var cloneSpy = this.sinon.spy(img, 'cloneNode');
+
+      img.setAttribute('id', 'myImage');
+      img.setAttribute('src', 'https://example.url/asset.png');
+      img.setAttribute('crossorigin', '');
+      el.setAttribute('timeout', 50);
+      el.appendChild(img);
+
+      el.addEventListener('loaded', function () {
+        assert.notOk(cloneSpy.called);
+        done();
+      });
+
+      document.body.appendChild(scene);
+    });
+  });
 });
 
 test('a-assets throws error if not in a-scene', function () {
