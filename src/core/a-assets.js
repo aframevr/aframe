@@ -20,33 +20,40 @@ module.exports = registerElement('a-assets', {
     attachedCallback: {
       value: function () {
         var self = this;
-        var loaded = [];
-        var medias = this.querySelectorAll('audio, video');
-        var imgs = this.querySelectorAll('img');
-        var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         var i;
+        var loaded = [];
+        var mediaEl;
+        var mediaEls;
+        var imgEl;
+        var imgEls;
+        var timeout;
 
         if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 
         // Wait for <img>s.
-        for (i = 0; i < imgs.length; i++) {
-          var img = imgs[i];
+        imgEls = this.querySelectorAll('img');
+        for (i = 0; i < imgEls.length; i++) {
+          imgEl = setCrossOrigin(imgEls[i]);
           loaded.push(new Promise(function (resolve, reject) {
-            img.onload = resolve;
-            img.onerror = reject;
+            imgEl.onload = resolve;
+            imgEl.onerror = reject;
           }));
         }
 
         // Wait for <audio>s and <video>s.
-        for (i = 0; i < medias.length; i++) {
-          loaded.push(mediaElementLoaded(medias[i]));
+        mediaEls = this.querySelectorAll('audio, video');
+        for (i = 0; i < mediaEls.length; i++) {
+          mediaEl = setCrossOrigin(mediaEls[i]);
+          loaded.push(mediaElementLoaded(mediaEl));
         }
 
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(this.load.bind(this));
 
+        // Timeout to start loading anyways.
+        timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         setTimeout(function () {
           if (self.hasLoaded) { return; }
           warn('Asset loading timed out in ', timeout, 'ms');
@@ -129,4 +136,50 @@ function mediaElementLoaded (el) {
       }
     }
   });
+}
+
+/**
+ * Automatically set `crossorigin` if not defined on the media element.
+ * If it is not defined, we must create and re-append a new media element <img> and
+ * have the browser re-request it with `crossorigin` set.
+ *
+ * @param {Element} Media element (e.g., <img>, <audio>, <video>).
+ * @returns {Element} Media element to be used to listen to for loaded events.
+ */
+function setCrossOrigin (mediaEl) {
+  var newMediaEl;
+  var src;
+
+  // Already has crossorigin set.
+  if (mediaEl.hasAttribute('crossorigin')) { return mediaEl; }
+
+  src = mediaEl.getAttribute('src');
+
+  // Does not have protocol.
+  if (src.indexOf('://') === -1) { return mediaEl; }
+
+  // Determine if cross origin is actually needed.
+  if (extractDomain(src) === window.location.host) { return mediaEl; }
+
+  warn('Cross-origin element was requested without `crossorigin` set. ' +
+       'A-Frame will re-request the asset with `crossorigin` attribute set.', src);
+  mediaEl.crossOrigin = 'anonymous';
+  newMediaEl = mediaEl.cloneNode(true);
+  mediaEl.parentNode.appendChild(newMediaEl);
+  mediaEl.parentNode.removeChild(mediaEl);
+  return newMediaEl;
+}
+
+/**
+ * Extract domain out of URL.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function extractDomain (url) {
+  // Find and remove protocol (e.g., http, ftp, etc.) to get domain.
+  var domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
+
+  // Find and remove port number.
+  return domain.split(':')[0];
 }
