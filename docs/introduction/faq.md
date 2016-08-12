@@ -52,7 +52,7 @@ whether you know how to model).
 If you need additional support, [contact us][contact]! We are very interested
 in understanding learning curve difficulties.
 
-## Why does my asset (e.g., image, video, model) not loading?
+## Why does my asset (e.g., image, video, model) not load?
 
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 [uploader]: https://aframe.io/aframe/examples/_uploader/
