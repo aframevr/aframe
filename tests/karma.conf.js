@@ -11,7 +11,7 @@ module.exports = function (config) {
               embedSource: true
             },
             defaultIgnore: true,
-            ignore: ['**/node_modules/**', '**/tests/**', '**/*.css']
+            ignore: ['**/node_modules/**', '**/tests/**', '**/vendor/**', '**/*.css']
           }
         ]
       ]
@@ -43,19 +43,12 @@ module.exports = function (config) {
     },
     reporters: ['mocha', 'coverage'],
     coverageReporter: {
-      dir: 'coverage',
+      dir: 'tests/coverage',
       includeAllSources: true,
       reporters: [
         {'type': 'html', subdir: 'report'},
         {'type': 'lcov', subdir: '.'}
-      ],
-      check: {
-        global: {
-          excludes: [
-            'vendor/**/*.js'
-          ]
-        }
-      }
+      ]
     }
   });
 };
