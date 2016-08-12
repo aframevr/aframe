@@ -57,20 +57,15 @@ in understanding learning curve difficulties.
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
 [uploader]: https://aframe.io/aframe/examples/_uploader/
 
-If you are loading the asset from a different domain, you will need
-[cross-origin resource sharing (CORS) headers][cors] set on the asset. Else we
-have to serve the asset on the same domain as the A-Frame site. For some
-options, all resources hosted on [GitHub Pages][ghpages] are served with CORS
-headers. We highly recommend GitHub Pages as a simple deployment platform.
-Alternatively, you could also upload assets using the [A-Frame + Uploadcare
-Uploader][uploader], a service that will help serve our assets CORS'd.
+If you are loading the asset from a different domain, make sure that the asset
+is served with [cross-origin resource sharing (CORS) headers][cors]. You could
+either find a host to serve the asset with CORS headers, or place the asset on
+the same domain as your scene.
 
-Given that CORS headers are set, if fetching a texture from a different origin
-or domain such as from an image hosting service or a CDN, then we should
-specify the `crossorigin` attribute on the `<img>`, `<video>`, or `<canvas>`
-element used to create a texture. [CORS][cors] security mechanisms in the
-browser generally disallow reading raw data from media elements from other
-domains if not explicitly allowed.
+For some options, all resources hosted on [GitHub Pages][ghpages] are served
+with CORS headers. We recommend GitHub Pages as a simple deployment platform.
+Or you could also upload assets using the [A-Frame + Uploadcare
+Uploader][uploader], a service that serves files with CORS headers set.
 
 ## Why does my video not play on mobile?
 

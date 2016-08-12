@@ -244,28 +244,6 @@ refresh itself as the canvas changes.
           draw-canvas="my-canvas"></a-entity>
 ```
 
-### Enabling Cross-Origin Textures
-
-If the image or video we are using as a texture is hosted on a different
-domain, then we must make sure that the asset is being served with CORS
-headers. Notably if you are using AWS S3, you may need to enable CORS.
-
-If we are defining our own image or video elements, we will need to set the
-`crossorigin` attribute:
-
-```html
-<a-scene>
-  <a-assets>
-    <img id="myImg" crossorigin="anonymous">
-    <video id="myVideo" crossorigin="anonymous"></video>
-  </a-assets>
-</a-scene>
-```
-
-Note that if the asset requires cookies or credentials, we will need to set
-`crossorigin="use-credentials"` instead. But if we set this, the asset *must*
-require credentials else the fetch will fail.
-
 ### Repeating Textures
 
 We might want to tile textures rather than having them stretch. The `repeat`
