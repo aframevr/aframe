@@ -2,6 +2,7 @@
 .cache
 *.swp
 build
+coverage/
 firefox/
 gh-pages/
 karma.conf.js

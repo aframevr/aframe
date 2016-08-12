@@ -3,7 +3,18 @@ module.exports = function (config) {
     basePath: '../',
     browserify: {
       debug: true,
-      paths: ['src']
+      paths: ['src'],
+      transform: [
+        [
+          'browserify-istanbul', {
+            instrumenterConfig: {
+              embedSource: true
+            },
+            defaultIgnore: true,
+            ignore: ['**/node_modules/**', '**/tests/**', '**/*.css']
+          }
+        ]
+      ]
     },
     browsers: ['firefox_latest', 'Chrome'],
     customLaunchers: {
@@ -25,11 +36,26 @@ module.exports = function (config) {
       // Serve test assets.
       {pattern: 'tests/assets/**/*', included: false, served: true}
     ],
-    frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal',
-                 'browserify'],
+    frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
     preprocessors: {
-      'tests/**/*.js': ['browserify', 'env']
+      'tests/**/*.js': ['browserify', 'env'],
+      'src/**/*.js': ['coverage']
     },
-    reporters: ['mocha']
+    reporters: ['mocha', 'coverage'],
+    coverageReporter: {
+      dir: 'coverage',
+      includeAllSources: true,
+      reporters: [
+        {'type': 'html', subdir: 'report'},
+        {'type': 'lcov', subdir: '.'}
+      ],
+      check: {
+        global: {
+          excludes: [
+            'vendor/**/*.js'
+          ]
+        }
+      }
+    }
   });
 };
