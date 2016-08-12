@@ -27,4 +27,6 @@ env:
 branches:
   only:
     - master
-    - dev
+
+after_success:
+    - npm run codecov
