@@ -117,8 +117,10 @@ suite('light', function () {
       assert.notEqual(oldLight, el.components.light.light);
       assert.equal(oldLight.parent, null);
     });
+  });
 
-    test('temp bugfix issue #1624: spotlight object3d position is at spotlight element position', function () {
+  suite('temp bugfix issue #1624:', function () {
+    test('spot light object3d position is at light element position', function () {
       var lightEl = this.el;
       var light;
 
@@ -129,10 +131,60 @@ suite('light', function () {
       assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
       assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
     });
+
+    test('directional light object3d position is at light element position', function () {
+      var lightEl = this.el;
+      var light;
+
+      lightEl.setAttribute('light', 'type', 'directional');
+      light = lightEl.getObject3D('light');
+
+      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
+      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
+      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+    });
+
+    // point light doesn't have the bug
+    test('point light object3d position is at light element position', function () {
+      var lightEl = this.el;
+      var light;
+
+      lightEl.setAttribute('light', 'type', 'point');
+      light = lightEl.getObject3D('light');
+
+      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
+      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
+      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+    });
+
+    // ambient light doesn't have the bug
+    test('ambient light object3d position is at light element position', function () {
+      var lightEl = this.el;
+      var light;
+
+      lightEl.setAttribute('light', 'type', 'ambient');
+      light = lightEl.getObject3D('light');
+
+      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
+      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
+      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+    });
+
+    test('hemisphere light object3d position is at light element position', function () {
+      var lightEl = this.el;
+      var light;
+
+      lightEl.setAttribute('light', 'type', 'hemisphere');
+      light = lightEl.getObject3D('light');
+
+      assert.equal(lightEl.object3D.position.x, light.getWorldPosition().x);
+      assert.equal(lightEl.object3D.position.y, light.getWorldPosition().y);
+      assert.equal(lightEl.object3D.position.z, light.getWorldPosition().z);
+    });
   });
 
   suite('light target', function () {
-    test('spotlight: set light target with selector when light is created', function () {
+    test('spotlight: set light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -141,10 +193,17 @@ suite('light', function () {
       targetEl.setAttribute('id', 'target');
       lightEl.setAttribute('light', 'type: spot; target: #target');
 
-      assert.strictEqual(lightEl.getObject3D('light').target, targetEl.object3D);
+      if (targetEl.hasLoaded) {
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+      } else {
+        targetEl.addEventListener('loaded', function () {
+          assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+          done();
+        });
+      }
     });
 
-    test('spotlight: change light target with selector', function () {
+    test('spotlight: change light target with selector', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -159,7 +218,14 @@ suite('light', function () {
       lightEl.setAttribute('light', 'target: #target');
       lightEl.setAttribute('light', 'target: #othertarget');
 
-      assert.strictEqual(lightEl.getObject3D('light').target, othertargetEl.object3D);
+      if (othertargetEl.hasLoaded) {
+        assert.equal(lightEl.getObject3D('light').target.uuid, othertargetEl.object3D.uuid);
+      } else {
+        othertargetEl.addEventListener('loaded', function () {
+          assert.equal(lightEl.getObject3D('light').target.uuid, othertargetEl.object3D.uuid);
+          done();
+        });
+      }
     });
 
     test('spotlight: when created, light target is child object positioned at 0 0 -1', function () {
@@ -198,20 +264,26 @@ suite('light', function () {
       assert.equal(lightTarget.position.z, -1);
     });
 
-    test('directional: set light target with selector when light is created', function () {
+    test('directional: set light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
 
       sceneEl.appendChild(targetEl);
       targetEl.setAttribute('id', 'target');
-
       lightEl.setAttribute('light', 'type: directional; target: #target');
 
-      assert.strictEqual(lightEl.getObject3D('light').target, targetEl.object3D);
+      if (targetEl.hasLoaded) {
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+      } else {
+        targetEl.addEventListener('loaded', function () {
+          assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+          done();
+        });
+      }
     });
 
-    test('directional: change light target with selector', function () {
+    test('directional: change light target with selector', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -226,7 +298,14 @@ suite('light', function () {
       lightEl.setAttribute('light', 'target: #target');
       lightEl.setAttribute('light', 'target: #othertarget');
 
-      assert.strictEqual(lightEl.getObject3D('light').target, othertargetEl.object3D);
+      if (othertargetEl.hasLoaded) {
+        assert.equal(lightEl.getObject3D('light').target.uuid, othertargetEl.object3D.uuid);
+      } else {
+        othertargetEl.addEventListener('loaded', function () {
+          assert.equal(lightEl.getObject3D('light').target.uuid, othertargetEl.object3D.uuid);
+          done();
+        });
+      }
     });
 
     test('directional: when created, light target is positioned at 0 0 0, but NOT a child', function () {
