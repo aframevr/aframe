@@ -9,12 +9,17 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * Prescribes default lighting if not specified (one ambient, one directional).
  * Removes default lighting from the scene when a new light is added.
  *
- * @param {bool} defaultLightsEnabled - Whether default lighting is active.
+ * @param {bool} defaultLights - Whether default lighting are defined.
+ * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
 module.exports.System = registerSystem('light', {
   init: function () {
-    this.defaultLightsEnabled = null;
-    this.setupDefaultLights();
+    this.defaultLights = false;
+    this.userDefinedLights = false;
+    // Wait for all entities to fully load before checking for existence of lights.
+    // Since entities wait for <a-assets> to load, any lights attaching to the scene
+    // will do so asynchronously.
+    this.sceneEl.addEventListener('loaded', this.setupDefaultLights.bind(this));
   },
 
   /**
@@ -23,17 +28,23 @@ module.exports.System = registerSystem('light', {
    * @param {object} el - element holding the light component.
    */
   registerLight: function (el) {
+    if (!el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
+      // User added a light, remove default lights through DOM.
+      this.removeDefaultLights();
+      this.userDefinedLights = true;
+    }
+  },
+
+  removeDefaultLights: function () {
     var defaultLights;
     var sceneEl = this.sceneEl;
 
-    if (this.defaultLightsEnabled && !el.hasAttribute(DEFAULT_LIGHT_ATTR)) {
-      // User added a light, remove default lights through DOM.
-      defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
-      for (var i = 0; i < defaultLights.length; i++) {
-        sceneEl.removeChild(defaultLights[i]);
-      }
-      this.defaultLightsEnabled = false;
+    if (!this.defaultLights) { return; }
+    defaultLights = document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']');
+    for (var i = 0; i < defaultLights.length; i++) {
+      sceneEl.removeChild(defaultLights[i]);
     }
+    this.defaultLights = false;
   },
 
   /**
@@ -43,9 +54,12 @@ module.exports.System = registerSystem('light', {
    */
   setupDefaultLights: function () {
     var sceneEl = this.sceneEl;
-    var ambientLight = document.createElement('a-entity');
-    var directionalLight = document.createElement('a-entity');
+    var ambientLight;
+    var directionalLight;
 
+    if (this.userDefinedLights || this.defaultLights) { return; }
+    ambientLight = document.createElement('a-entity');
+    directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
@@ -57,6 +71,6 @@ module.exports.System = registerSystem('light', {
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(directionalLight);
 
-    this.defaultLightsEnabled = true;
+    this.defaultLights = true;
   }
 });
