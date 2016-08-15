@@ -72,8 +72,12 @@ module.exports.Component = registerComponent('light', {
                 light.target = self.defaultTarget;
               }
             } else {
-              // Target specified, set target using entity's `object3D`.
-              light.target = value.object3D;
+              // Target specified, set target to entity's `object3D` when it is loaded.
+              if (value.hasLoaded) {
+                self.onSetTarget(value);
+              } else {
+                value.addEventListener('loaded', self.onSetTarget.bind(self, value));
+              }
             }
             break;
           }
@@ -102,10 +106,13 @@ module.exports.Component = registerComponent('light', {
       this.light.el = el;
       el.setObject3D('light', this.light);
 
-      if (data.type === 'spot') {
-        // HACK solution for issue #1624
+      // HACK solution for issue #1624
+      if (data.type === 'spot' || data.type === 'directional' || data.type === 'hemisphere') {
         el.getObject3D('light').translateY(-1);
-        // set and position default lighttarget as a child to enable spotlight orientation
+      }
+
+      // set and position default lighttarget as a child to enable spotlight orientation
+      if (data.type === 'spot') {
         el.setObject3D('light-target', this.defaultTarget);
         el.getObject3D('light-target').position.set(0, 0, -1);
       }
@@ -137,7 +144,11 @@ module.exports.Component = registerComponent('light', {
         light = new THREE.DirectionalLight(color, intensity);
         this.defaultTarget = light.target;
         if (target) {
-          light.target = target.object3D;
+          if (target.hasLoaded) {
+            this.onSetTarget(target);
+          } else {
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target));
+          }
         }
         return light;
       }
@@ -154,7 +165,11 @@ module.exports.Component = registerComponent('light', {
         light = new THREE.SpotLight(color, intensity, distance, degToRad(angle), data.penumbra, decay);
         this.defaultTarget = light.target;
         if (target) {
-          light.target = target.object3D;
+          if (target.hasLoaded) {
+            this.onSetTarget(target);
+          } else {
+            target.addEventListener('loaded', this.onSetTarget.bind(this, target));
+          }
         }
         return light;
       }
@@ -164,6 +179,10 @@ module.exports.Component = registerComponent('light', {
            'Choose from ambient, directional, hemisphere, point, spot.', type);
       }
     }
+  },
+
+  onSetTarget: function (targetEl) {
+    this.light.target = targetEl.object3D;
   },
 
   /**
