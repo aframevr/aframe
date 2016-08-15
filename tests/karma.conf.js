@@ -1,20 +1,23 @@
+var transforms = [];
+if (process.env.CI) {
+  transforms.push([
+    'browserify-istanbul', {
+      instrumenterConfig: {
+        embedSource: true
+      },
+      defaultIgnore: true,
+      ignore: ['**/node_modules/**', '**/tests/**', '**/vendor/**', '**/*.css']
+    }
+  ]);
+}
+
 module.exports = function (config) {
   config.set({
     basePath: '../',
     browserify: {
       debug: true,
       paths: ['src'],
-      transform: [
-        [
-          'browserify-istanbul', {
-            instrumenterConfig: {
-              embedSource: true
-            },
-            defaultIgnore: true,
-            ignore: ['**/node_modules/**', '**/tests/**', '**/vendor/**', '**/*.css']
-          }
-        ]
-      ]
+      transform: transforms,
     },
     browsers: ['firefox_latest', 'Chrome'],
     customLaunchers: {
