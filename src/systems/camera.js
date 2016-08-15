@@ -12,7 +12,10 @@ var DEFAULT_USER_HEIGHT = 1.6;
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
-    this.setupDefaultCamera();
+    // Wait for all entities to fully load before checking for existence of camera.
+    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
+    // will do so asynchronously.
+    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera.bind(this));
   },
 
   /**
@@ -21,33 +24,27 @@ module.exports.System = registerSystem('camera', {
    * Default camera offset height is at average eye level (~1.6m).
    */
   setupDefaultCamera: function () {
-    var self = this;
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
 
-    // Wait for all entities to fully load before checking for existence of camera.
-    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
-    // will do so asynchronously.
-    sceneEl.addEventListener('loaded', function checkForCamera () {
-      // Camera already defined.
-      if (sceneEl.camera) {
-        sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
-        return;
-      }
+    // Camera already defined.
+    if (sceneEl.camera) {
+      sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
+      return;
+    }
 
-      // Set up default camera.
-      defaultCameraEl = document.createElement('a-entity');
-      defaultCameraEl.setAttribute('position', '0 0 0');
-      defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-      defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
-      defaultCameraEl.setAttribute('wasd-controls', '');
-      defaultCameraEl.setAttribute('look-controls', '');
-      defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
-      sceneEl.appendChild(defaultCameraEl);
-      sceneEl.addEventListener('enter-vr', self.removeDefaultOffset);
-      sceneEl.addEventListener('exit-vr', self.addDefaultOffset);
-      sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
-    });
+    // Set up default camera.
+    defaultCameraEl = document.createElement('a-entity');
+    defaultCameraEl.setAttribute('position', '0 0 0');
+    defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
+    defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
+    defaultCameraEl.setAttribute('wasd-controls', '');
+    defaultCameraEl.setAttribute('look-controls', '');
+    defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
+    sceneEl.appendChild(defaultCameraEl);
+    sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);
+    sceneEl.addEventListener('exit-vr', this.addDefaultOffset);
+    sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
   },
 
   /**
