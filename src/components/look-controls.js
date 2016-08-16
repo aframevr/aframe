@@ -98,9 +98,9 @@ module.exports.Component = registerComponent('look-controls', {
     }
 
     // Mouse Events
-    canvasEl.addEventListener('mousedown', this.onMouseDown, false);
-    window.addEventListener('mousemove', this.onMouseMove, false);
-    window.addEventListener('mouseup', this.releaseMouse, false);
+    canvasEl.addEventListener('mousedown', this.onMouseDown);
+    window.addEventListener('mousemove', this.onMouseMove);
+    window.addEventListener('mouseup', this.releaseMouse);
 
     // Touch events
     canvasEl.addEventListener('touchstart', this.onTouchStart);
