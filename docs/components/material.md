@@ -378,7 +378,7 @@ AFRAME.registerShader('hello-world', {
 
   vertexShader: [
     'void main() {',
-    '  gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * gl_Vertex;',
+    '  gl_Position = projectionMatrix * modelViewMatrix * position;',
     '}'
   ].join('\n'),
 
