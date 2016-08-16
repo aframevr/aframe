@@ -8,33 +8,27 @@
       html {
         font-size: 14px;
       }
-
       body {
         background: rgb(239,45,94);
         color: #fff;
         font: normal 500 1.2rem/1.2 Inconsolata, Andale Mono, Courier New, monospace;
         padding: 1rem 2rem;
       }
-
       ul {
         list-style: none;
         margin: 0;
         padding: 0;
       }
-
       .header {
         position: relative;
       }
-
       .resources {
         font-size: 0;  /* Collapse whitespace. */
         text-transform: uppercase;
       }
-
       .resources li + li {
         margin-top: 0.5rem;
       }
-
       .resources a {
         color: rgba(0,0,0,0.5);
         display: inline-block;
@@ -44,16 +38,13 @@
         text-decoration: none;
         transition: all 0.075s ease-in-out;
       }
-
       .resources a:hover {
         background-color: rgba(0,0,0,0.25);
         color: #fff;
       }
-
       h1, h2 {
         line-height: 100%;
       }
-
       h1 {
         font-size: 1.6rem;
         font-weight: 100;
@@ -61,7 +52,6 @@
         margin-bottom: 1.25rem;
         text-transform: uppercase;
       }
-
       h2 {
         color: rgba(0,0,0,0.5);
         font-size: 0.9rem;
@@ -70,49 +60,41 @@
         padding: 0;
         text-transform: uppercase;
       }
-
       hr {
         background: none;
         border: 0;
         border-bottom: 1px dashed rgba(255,255,255,0.25);
         margin: 2rem 0;
       }
-
       .links li + li {
         box-shadow: inset 0 0.15rem 0.1rem -0.15rem rgba(0,0,0,0.5);
       }
-
       .links a {
         color: #fff;
         display: block;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         letter-spacing: 0.01em;
         padding: 0.75rem 0;
         text-decoration: none;
         transition: opacity 0.075s ease-in-out;
       }
-
       .links a:hover {
         background-color: rgba(0,0,0,0.15);
         box-shadow: inset 0 0 0 0.15rem rgba(0,0,0,0.15);
       }
-
       .links a:active {
         background-color: rgba(0,0,0,0.25);
         opacity: 0.75;
       }
-
       .links li:hover,
       .links li:hover + li {
         margin: 0 -0.75rem;
       }
-
       .links li:hover a,
       .links li:hover + li a {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
       }
-
       .moz-link {
         display: block;
         margin: -2rem;
@@ -124,33 +106,26 @@
         text-align: right;
         transition: 0.075s opacity ease-in-out;
       }
-
       .moz-link:hover {
         opacity: 1;
       }
-
       .moz-logo {
         display: block;
         height: 1.4rem;
       }
-
       @media only screen and (min-width: 1000px) {
         h1 {
           font-size: 3rem;
         }
-
         .resources {
           font-size: 1.2;
         }
-
         .resources li {
           display: inline-block;
         }
-
         .resources li + li {
           margin-left: 2.5rem;
         }
-
         .moz-link {
           top: 1.1rem;
           height: 1.5rem;
@@ -162,7 +137,7 @@
     <header class="header">
       <h1>A-Frame Examples</h1>
       <a href="https://mozilla.org/" class="moz-link">
-        <img src="https://cdn.aframe.io/mozilla/logo-mozilla-white.svg" class="moz-logo"
+        <img src="https://cdn.aframe.io/mozilla/img/logo-mozilla-white.svg" class="moz-logo"
              alt="Mozilla" title="Mozilla">
       </a>
       <ul id="resources" class="resources">
@@ -198,56 +173,46 @@
       <li><a href="boilerplate/3d-model/">3D Model</a></li>
     </ul>
 
-    <h2>Animations</h2>
-
-    <ul class="links">
-      <li><a href="animation/aframe-logo/">A-Frame Logo</a></li>
-      <li><a href="animation/arms/">Arms</a></li>
-      <li><a href="animation/plane-reveals/">Plane Reveals</a></li>
-      <li><a href="animation/generic-logo/">Generic Logo</a></li>
-      <li><a href="animation/pivots/">Pivots</a></li>
-      <li><a href="animation/unfold/">Unfold</a></li>
-      <li><a href="animation/warps/">Warps</a></li>
-    </ul>
-
     <h2>Tests</h2>
 
     <ul class="links">
-      <li><a href="test/animation/">Animation</a></li>
-      <li><a href="test/animation-color/">Animation of Color</a></li>
-      <li><a href="test/canvas-texture/">Canvas Texture</a></li>
-      <li><a href="test/cube/">Cube</a></li>
-      <li><a href="test/cursor/">Cursor</a></li>
-      <li><a href="test/cylinders/">Cylinders</a></li>
-      <li><a href="test/fog/">Fog</a></li>
-      <li><a href="test/geometry/">Geometry</a></li>
-      <li><a href="test/geometry-gallery/">Geometry Gallery</a></li>
-      <li><a href="test/geometry-merging/">Geometry Merging</a></li>
-      <li><a href="test/look-at/">Look-At</a></li>
-      <li><a href="test/mixin/">Mixin</a></li>
-      <li><a href="test/model/">Model</a></li>
-      <li><a href="test/opacity/">Opacity</a></li>
-      <li><a href="test/physical/">Physically-Based Materials</a></li>
-      <li><a href="test/pivot/">Pivot</a></li>
-      <li><a href="test/raycaster/">Raycaster</a></li>
-      <li><a href="test/shaders/">Shaders</a></li>
-      <li><a href="test/towers/">Towers</a></li>
-      <li><a href="test/video/">Video</a></li>
-      <li><a href="test/videosphere/">Video 360&deg;</a></li>
-      <li><a href="test/visibility/">Visibility</a></li>
-    </ul>
-
-    <h2>Primitives</h2>
-
-    <ul class="links">
-      <li><a href="primitives/boxes/">Boxes</a></li>
-      <li><a href="primitives/cylinders/">Cylinders</a></li>
-      <li><a href="primitives/defaults/">Defaults</a></li>
-      <li><a href="primitives/images/">Images</a></li>
-      <li><a href="primitives/models/">Models</a></li>
-      <li><a href="primitives/planes/">Planes</a></li>
-      <li><a href="primitives/ring/">Ring</a></li>
-      <li><a href="primitives/torus/">Torus</a></li>
+      <li><a href="tests/animation-color/">Animation of Color</a></li>
+      <li><a href="tests/animation/">Animation</a></li>
+      <li><a href="tests/animations/aframe-logo/">A-Frame Logo</a></li>
+      <li><a href="tests/animations/arms/">Arms</a></li>
+      <li><a href="tests/animations/generic-logo/">Generic Logo</a></li>
+      <li><a href="tests/animations/pivots/">Pivots</a></li>
+      <li><a href="tests/animations/plane-reveals/">Plane Reveals</a></li>
+      <li><a href="tests/animations/unfold/">Unfold</a></li>
+      <li><a href="tests/animations/warps/">Warps</a></li>
+      <li><a href="tests/canvas-texture/">Canvas Texture</a></li>
+      <li><a href="tests/cube/">Cube</a></li>
+      <li><a href="tests/cursor/">Cursor</a></li>
+      <li><a href="tests/cylinders/">Cylinders</a></li>
+      <li><a href="tests/fog/">Fog</a></li>
+      <li><a href="tests/geometry-gallery/">Geometry Gallery</a></li>
+      <li><a href="tests/geometry-merging/">Geometry Merging</a></li>
+      <li><a href="tests/geometry/">Geometry</a></li>
+      <li><a href="tests/look-at/">Look-At</a></li>
+      <li><a href="tests/mixin/">Mixin</a></li>
+      <li><a href="tests/model/">Model</a></li>
+      <li><a href="tests/opacity/">Opacity</a></li>
+      <li><a href="tests/physical/">Physically-Based Materials</a></li>
+      <li><a href="tests/pivot/">Pivot</a></li>
+      <li><a href="tests/primitives/boxes/">Boxes</a></li>
+      <li><a href="tests/primitives/cylinders/">Cylinders</a></li>
+      <li><a href="tests/primitives/defaults/">Defaults</a></li>
+      <li><a href="tests/primitives/images/">Images</a></li>
+      <li><a href="tests/primitives/models/">Models</a></li>
+      <li><a href="tests/primitives/planes/">Planes</a></li>
+      <li><a href="tests/primitives/ring/">Ring</a></li>
+      <li><a href="tests/primitives/torus/">Torus</a></li>
+      <li><a href="tests/raycaster/">Raycaster</a></li>
+      <li><a href="tests/shaders/">Shaders</a></li>
+      <li><a href="tests/towers/">Towers</a></li>
+      <li><a href="tests/video/">Video</a></li>
+      <li><a href="tests/videosphere/">Video 360&deg;</a></li>
+      <li><a href="tests/visibility/">Visibility</a></li>
     </ul>
   </body>
 </html>
