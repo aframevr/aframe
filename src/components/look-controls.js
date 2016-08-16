@@ -247,7 +247,6 @@ module.exports.Component = registerComponent('look-controls', {
     this.mouseDown = true;
     this.previousMouseEvent = event;
     document.body.classList.add('a-grabbing');
-    event.preventDefault();
   },
 
   releaseMouse: function () {
