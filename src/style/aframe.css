@@ -47,7 +47,7 @@
 }
 
 // Class is removed when doing <a-scene embedded>.
-.a-canvas.fullscreen {
+a-scene.fullscreen .a-canvas {
   width: 100% !important;
   height: 100% !important;
   top: 0 !important;
