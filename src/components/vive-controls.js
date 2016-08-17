@@ -1,4 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
+var bind = require('../utils/bind');
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -38,10 +39,10 @@ module.exports.Component = registerComponent('vive-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
-    this.onButtonChanged = this.onButtonChanged.bind(this);
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onModelLoaded = this.onModelLoaded.bind(this);
+    this.onModelLoaded = bind(this.onModelLoaded, this);
   },
 
   play: function () {

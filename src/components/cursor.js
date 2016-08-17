@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
+var bind = utils.bind;
 
 var EVENTS = {
   CLICK: 'click',
@@ -42,16 +43,16 @@ module.exports.Component = registerComponent('cursor', {
 
     // Wait for canvas to load.
     if (!canvas) {
-      cursorEl.sceneEl.addEventListener('render-target-loaded', this.init.bind(this));
+      cursorEl.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
       return;
     }
 
     // Attach event listeners.
-    canvas.addEventListener('mousedown', this.onMouseDown.bind(this));
-    canvas.addEventListener('mouseup', this.onMouseUp.bind(this));
-    cursorEl.addEventListener('raycaster-intersection', this.onIntersection.bind(this));
+    canvas.addEventListener('mousedown', bind(this.onMouseDown, this));
+    canvas.addEventListener('mouseup', bind(this.onMouseUp, this));
+    cursorEl.addEventListener('raycaster-intersection', bind(this.onIntersection, this));
     cursorEl.addEventListener('raycaster-intersection-cleared',
-                              this.onIntersectionCleared.bind(this));
+                              bind(this.onIntersectionCleared, this));
   },
 
   /**

@@ -11,6 +11,7 @@ var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
+var bind = utils.bind;
 var checkHeadsetConnected = utils.checkHeadsetConnected;
 var registerElement = re.registerElement;
 var isIOS = utils.isIOS();
@@ -49,7 +50,7 @@ module.exports = registerElement('a-scene', {
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
-        this.render = this.render.bind(this);
+        this.render = bind(this.render, this);
         this.systems = {};
         this.time = 0;
 
@@ -93,7 +94,7 @@ module.exports = registerElement('a-scene', {
 
     attachedCallback: {
       value: function () {
-        var resize = this.resize.bind(this);
+        var resize = bind(this.resize, this);
         initMetaTags(this);
         initWakelock(this);
         this.initSystems();
@@ -107,7 +108,7 @@ module.exports = registerElement('a-scene', {
 
     initSystems: {
       value: function () {
-        Object.keys(systems).forEach(this.initSystem.bind(this));
+        Object.keys(systems).forEach(bind(this.initSystem, this));
       }
     },
 
