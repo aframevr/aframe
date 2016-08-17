@@ -12,6 +12,12 @@ window.WebVRConfig = window.WebVRConfig || {
   MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
 
+// Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
+// Should be fixed in iOS 10.
+if (/(iphone|ipod|ipad).*os.*(7|8|9)/i.test(navigator.userAgent)) {
+  window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
+}
+
 // WebVR polyfill
 require('webvr-polyfill');
 
