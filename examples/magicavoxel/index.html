@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MagicaVoxel</title>
+    <meta name="description" content="MagicaVoxel - A-Frame">
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe.min.js"></script>
+    <script src="https://rawgit.com/donmccurdy/aframe-extras/v2.2.0/dist/aframe-extras.loaders.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-asset-item id="aframe-ply" src="https://cdn.aframe.io/magicavoxel-boilerplate/models/aframe.ply"></a-asset-item>
+        <audio autoplay loop src="https://cdn.aframe.io/magicavoxel-boilerplate/audio/231537__vkproduktion__forest-birds-loop-02.wav"></audio>
+      </a-assets>
+
+      <!-- Model. -->
+      <a-entity ply-model="src: #aframe-ply" position="1 -4 -30" scale=".8 .8 .8" rotation="-90 0 0"></a-entity>
+
+      <!-- Lights. -->
+      <a-light type="ambient" color="#AAA"></a-light>
+      <a-light type="directional" color="#FFF" position="1 0.2 0.5" intensity="0.5"></a-light>
+      <a-sky color="#B9DBE6"></a-sky>
+    </a-scene>
+  </body>
+</html>

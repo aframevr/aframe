@@ -1,0 +1,30 @@
+title: "360&deg; Image Gallery"
+repo: "aframevr/360-image-gallery-boilerplate"
+description: "An interactive example of selecting and swapping between 360&deg; images. On desktop, drag the cursor and click on a panel. On mobile, simply gaze at a panel."
+mobile: true
+components:
+  - title: animation
+    file: https://npmcdn.com/aframe-animation-component@3.0.1
+    source: https://github.com/ngokevin/aframe-animation-component
+  - title: event-set
+    file: https://npmcdn.com/aframe-event-set-component@3.0.1
+    source: https://github.com/ngokevin/aframe-event-set-component
+  - title: layout
+    file: https://npmcdn.com/aframe-layout-component@3.0.1
+    source: https://github.com/ngokevin/aframe-layout-component
+  - title: template
+    file: https://npmcdn.com/aframe-template-component@3.0.1
+    source: https://github.com/ngokevin/aframe-template-component
+  - title: set-image
+    file: components/set-image.js
+  - title: update-raycaster
+    file: components/update-raycaster.js
+assets:
+  - title: city.jpg
+    file: https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg
+  - title: cubes.jpg
+    file: https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg
+  - title: sechelt.jpg
+    file: https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg
+  - title: click.ogg
+    file: https://cdn.aframe.io/360-image-gallery-boilerplate/audio/click.ogg
