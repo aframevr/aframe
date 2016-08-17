@@ -45,12 +45,14 @@ module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.isMobile = isMobile;
         this.isIOS = isIOS;
+        this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.render = this.render.bind(this);
         this.systems = {};
         this.time = 0;
+
         this.init();
       }
     },
@@ -404,9 +406,9 @@ module.exports = registerElement('a-scene', {
         this.effect.render(this.object3D, this.camera);
 
         this.time = time;
-        this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
+        this.animationFrameID = window.requestAnimationFrame(this.render);
       },
-      writable: window.debug
+      writable: true
     }
   })
 });
