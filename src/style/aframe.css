@@ -46,6 +46,7 @@
   cursor: -webkit-grabbing;
 }
 
+// Class is removed when doing <a-scene embedded>.
 .a-canvas.fullscreen {
   width: 100% !important;
   height: 100% !important;
@@ -54,7 +55,7 @@
   right: 0 !important;
   bottom: 0 !important;
   z-index: 999999 !important;
-  position: fixed;
+  position: fixed !important;
 }
 
 a-scene {
