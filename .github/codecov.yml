@@ -1,0 +1,20 @@
+coverage:
+  precision: 2
+  round: down
+  range: 70...100
+
+  status:
+    # Learn more at https://codecov.io/docs#yaml_default_commit_status
+    project:
+      default:
+        target: 70
+        threshold: null
+        branches: null
+    patch:
+      default:
+        target: 1
+        threshold: null
+        branches: null
+    changes: false
+
+comment: off
