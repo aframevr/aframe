@@ -31,3 +31,7 @@ branches:
 
 after_success:
     - npm run codecov
+
+cache:
+  directories:
+    - node_modules
