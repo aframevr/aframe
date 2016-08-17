@@ -12,7 +12,6 @@ var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
-var checkHeadsetConnected = utils.checkHeadsetConnected;
 var registerElement = re.registerElement;
 var isIOS = utils.isIOS();
 var isMobile = utils.isMobile();
