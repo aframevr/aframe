@@ -5,13 +5,7 @@ var karma_conf = {
     debug: true,
     paths: ['src']
   },
-  browsers: ['firefox_latest', 'Chrome'],
-  customLaunchers: {
-    firefox_latest: {
-      base: 'FirefoxNightly',
-      prefs: { /* empty */ }
-    }
-  },
+  browsers: ['Firefox', 'Chrome'],
   client: {
     captureConsole: true,
     mocha: {'ui': 'tdd'}
