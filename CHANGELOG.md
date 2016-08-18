@@ -1,4 +1,4 @@
-## 0.3.0 Milestone
+## 0.3.0
 
 0.3.0 improves performance, adds support for the WebVR 1.0 API, and adds
 tracked controllers (using experimental Gamepad APIs).
