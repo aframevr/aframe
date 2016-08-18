@@ -48,7 +48,7 @@ override the set position:
 
 When we use the camera primitive, A-Frame will not prescribe a default camera.
 
-Note the default camera is positioned at `0 1.8 4` whereas the camera primitive
+Note the default camera is positioned at `0 1.6 0` whereas the camera primitive
 will be positioned at `0 0 0`. In the example below, we would see a box:
 
 ```html

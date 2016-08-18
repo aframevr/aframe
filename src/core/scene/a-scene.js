@@ -1,4 +1,4 @@
-/* global Promise */
+/* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
@@ -29,7 +29,7 @@ var isMobile = utils.isMobile();
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
  * @member {bool} renderStarted
- * @member {object} stereoRenderer
+ * @member (object) effect - three.js VREffect
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -38,6 +38,7 @@ module.exports = registerElement('a-scene', {
     defaultComponents: {
       value: {
         'canvas': '',
+        'inspector': '',
         'keyboard-shortcuts': '',
         'vr-mode-ui': ''
       }
@@ -45,12 +46,14 @@ module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.isMobile = isMobile;
         this.isIOS = isIOS;
+        this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.render = this.render.bind(this);
         this.systems = {};
         this.time = 0;
+
         this.init();
       }
     },
@@ -154,8 +157,8 @@ module.exports = registerElement('a-scene', {
           self.emit('enter-vr', event);
 
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.lock('landscape');
+          if (self.isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape');
           }
           self.addFullScreenStyles();
 
@@ -189,12 +192,13 @@ module.exports = registerElement('a-scene', {
           var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.unlock();
+          if (self.isMobile && screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
           }
           // Exiting VR in embedded mode, no longer need fullscreen styles.
           if (embedded) { self.removeFullScreenStyles(); }
           self.resize();
+          if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
           self.emit('exit-vr', {target: self});
         }
         function exitVRFailure (err) {
@@ -312,19 +316,29 @@ module.exports = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
-          if (this.renderStarted) { return; }
+          AEntity.prototype.play.call(this);  // .play() *before* render.
 
-          AEntity.prototype.play.call(this);
-          this.resize();
+          // Wait for camera if necessary before rendering.
+          if (this.camera) {
+            startRender(this);
+            return;
+          }
+          this.addEventListener('camera-set-active', function () { startRender(this); });
 
-          // Kick off render loop.
-          if (this.renderer) {
-            if (window.performance) {
-              window.performance.mark('render-started');
+          function startRender (sceneEl) {
+            if (sceneEl.renderStarted) { return; }
+
+            sceneEl.resize();
+
+            // Kick off render loop.
+            if (sceneEl.renderer) {
+              if (window.performance) {
+                window.performance.mark('render-started');
+              }
+              sceneEl.render(0);
+              sceneEl.renderStarted = true;
+              sceneEl.emit('renderstart');
             }
-            this.render(0);
-            this.renderStarted = true;
-            this.emit('renderstart');
           }
         });
 
@@ -387,16 +401,15 @@ module.exports = registerElement('a-scene', {
      */
     render: {
       value: function (time) {
-        var camera = this.camera;
         var timeDelta = time - this.time;
 
         if (this.isPlaying) { this.tick(time, timeDelta); }
-        this.effect.render(this.object3D, camera);
+        this.effect.render(this.object3D, this.camera);
 
         this.time = time;
-        this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
+        this.animationFrameID = window.requestAnimationFrame(this.render);
       },
-      writable: window.debug
+      writable: true
     }
   })
 });

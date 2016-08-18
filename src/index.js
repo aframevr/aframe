@@ -5,11 +5,18 @@ window.Promise = window.Promise || require('promise-polyfill');
 window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
+  BUFFER_SCALE: 1,
   CARDBOARD_UI_DISABLED: true,
   ROTATE_INSTRUCTIONS_DISABLED: true,
   TOUCH_PANNER_DISABLED: true,
   MOUSE_KEYBOARD_CONTROLS_DISABLED: true
 };
+
+// Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
+// Should be fixed in iOS 10.
+if (/(iphone|ipod|ipad).*os.*(7|8|9)/i.test(navigator.userAgent)) {
+  window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
+}
 
 // WebVR polyfill
 require('webvr-polyfill');

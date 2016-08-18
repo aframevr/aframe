@@ -1,5 +1,6 @@
 language: node_js
-
+addons:
+  firefox: 'latest'
 node_js:
   - '0.12'
 
@@ -22,9 +23,14 @@ env:
     - CI_ACTION="npm run test:ci"
     - CI_ACTION="npm run lint"
     - CI_ACTION="npm run build"
-    - CI_ACTION="npm run dist"
 
 branches:
   only:
     - master
-    - dev
+
+after_success:
+    - npm run codecov
+
+cache:
+  directories:
+    - node_modules

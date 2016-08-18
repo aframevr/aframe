@@ -1,3 +1,4 @@
+var constants = require('../constants/');
 var registerSystem = require('../core/system').registerSystem;
 
 var DEFAULT_CAMERA_ATTR = 'data-aframe-default-camera';
@@ -11,7 +12,10 @@ var DEFAULT_USER_HEIGHT = 1.6;
 module.exports.System = registerSystem('camera', {
   init: function () {
     this.activeCameraEl = null;
-    this.setupDefaultCamera();
+    // Wait for all entities to fully load before checking for existence of camera.
+    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
+    // will do so asynchronously.
+    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera.bind(this));
   },
 
   /**
@@ -20,30 +24,27 @@ module.exports.System = registerSystem('camera', {
    * Default camera offset height is at average eye level (~1.6m).
    */
   setupDefaultCamera: function () {
-    var self = this;
     var sceneEl = this.sceneEl;
     var defaultCameraEl;
 
-    // Wait for all entities to fully load before checking for existence of camera.
-    // Since entities wait for <a-assets> to load, any cameras attaching to the scene
-    // will do so asynchronously.
-    sceneEl.addEventListener('loaded', function checkForCamera () {
-      var currentCamera = sceneEl.camera;
-      if (currentCamera) {
-        sceneEl.emit('camera-ready', {cameraEl: currentCamera.el});
-        return;
-      }
-      defaultCameraEl = document.createElement('a-entity');
-      defaultCameraEl.setAttribute('position', '0 0 0');
-      defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-      defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
-      defaultCameraEl.setAttribute('wasd-controls', '');
-      defaultCameraEl.setAttribute('look-controls', '');
-      sceneEl.appendChild(defaultCameraEl);
-      sceneEl.addEventListener('enter-vr', self.removeDefaultOffset);
-      sceneEl.addEventListener('exit-vr', self.addDefaultOffset);
-      sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
-    });
+    // Camera already defined.
+    if (sceneEl.camera) {
+      sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
+      return;
+    }
+
+    // Set up default camera.
+    defaultCameraEl = document.createElement('a-entity');
+    defaultCameraEl.setAttribute('position', '0 0 0');
+    defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
+    defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
+    defaultCameraEl.setAttribute('wasd-controls', '');
+    defaultCameraEl.setAttribute('look-controls', '');
+    defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
+    sceneEl.appendChild(defaultCameraEl);
+    sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);
+    sceneEl.addEventListener('exit-vr', this.addDefaultOffset);
+    sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
   },
 
   /**
@@ -67,16 +68,21 @@ module.exports.System = registerSystem('camera', {
    */
   setActiveCamera: function (newCameraEl) {
     var cameraEl;
-    var cameraEls = this.sceneEl.querySelectorAll('[camera]');
+    var cameraEls;
     var i;
-    var sceneEl = this.sceneEl;
-    var newCamera = newCameraEl.getObject3D('camera');
+    var newCamera;
     var previousCamera = this.activeCameraEl;
+    var sceneEl = this.sceneEl;
+
+    // Same camera.
+    newCamera = newCameraEl.getObject3D('camera');
     if (!newCamera || newCameraEl === this.activeCameraEl) { return; }
+
     // Grab the default camera.
     var defaultCameraWrapper = sceneEl.querySelector('[' + DEFAULT_CAMERA_ATTR + ']');
     var defaultCameraEl = defaultCameraWrapper &&
                           defaultCameraWrapper.querySelector('[camera]');
+
     // Remove default camera if new camera is not the default camera.
     if (newCameraEl !== defaultCameraEl) { removeDefaultCamera(sceneEl); }
 
@@ -89,7 +95,9 @@ module.exports.System = registerSystem('camera', {
     if (previousCamera) {
       previousCamera.setAttribute('camera', 'active', false);
     }
+
     // Disable other cameras in the scene
+    cameraEls = sceneEl.querySelectorAll('[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
       if (newCameraEl === cameraEl) { continue; }

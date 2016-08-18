@@ -2,8 +2,6 @@
 var entityFactory = require('../helpers').entityFactory;
 
 suite('camera', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('camera', 'active: false; userHeight: 1.6');
@@ -39,65 +37,97 @@ suite('camera', function () {
       el.setAttribute('camera', 'fov: 65');
       assert.equal(el.object3D.children[0].uuid, cameraId);
     });
+
+    test('can update userHeight', function () {
+      var el = this.el;
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+      el.setAttribute('camera', 'userHeight', 2.5);
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 2.5, z: 0});
+    });
   });
 
-  suite('restoreCameraPose', function () {
-    test('restore camera pose when exiting VR with a headset', function () {
-      var sceneEl = this.el.sceneEl;
+  suite('saveCameraPose', function () {
+    test('saves camera pose when entering VR with headset', function () {
       var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
       cameraEl.components.camera.headsetConnected = true;
       sceneEl.emit('enter-vr');
-      cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
-      sceneEl.emit('exit-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+      assert.shallowDeepEqual(cameraEl.components.camera.savedPose.position,
+                              {x: 0, y: 1.6, z: 0});
     });
 
-    test('does not restore camera pose with no headset', function () {
-      var sceneEl = this.el.sceneEl;
+    test('does not save camera pose when entering VR without headset', function () {
       var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
+      cameraEl.components.camera.headsetConnected = false;
       sceneEl.emit('enter-vr');
-      cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
-      sceneEl.emit('exit-vr');
-      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 6, y: 6, z: 6});
+      assert.notOk(cameraEl.components.camera.savedPose);
     });
   });
 
   suite('addHeightOffset', function () {
-    test('add userHeight offset', function () {
+    test('adds userHeight offset', function () {
       var cameraEl = this.el;
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+    });
+
+    test('adds userHeight offset on mobile', function () {
+      var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
+      sceneEl.isMobile = true;
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
   });
 
-  suite('removeHeightOffset', function () {
-    test('removes the default offset when entering VR with a headset', function () {
-      var sceneEl = this.el.sceneEl;
+  suite('removeCameraPose (enter VR)', function () {
+    test('removes the default offset with headset', function () {
       var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
       cameraEl.components.camera.headsetConnected = true;
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 0, z: 0});
     });
 
-    test('does not remove the default offset when entering VR with no headset', function () {
-      var sceneEl = this.el.sceneEl;
+    test('does not remove the default offset without headset', function () {
       var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
       cameraEl.components.camera.headsetConnected = false;
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
     });
 
-    test('does not remove the default offset when entering VR on mobile', function () {
-      var sceneEl = this.el.sceneEl;
+    test('does not remove the default offset on mobile', function () {
       var cameraEl = this.el;
-
+      var sceneEl = cameraEl.sceneEl;
       sceneEl.isMobile = true;
       cameraEl.components.camera.headsetConnected = true;
-
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
       sceneEl.emit('enter-vr');
       assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+    });
+  });
+
+  suite('restoreCameraPose (exit VR)', function () {
+    test('restores camera pose with headset', function () {
+      var cameraEl = this.el;
+      var sceneEl = cameraEl.sceneEl;
+      cameraEl.components.camera.headsetConnected = true;
+      sceneEl.emit('enter-vr');
+      cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
+      sceneEl.emit('exit-vr');
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 0, y: 1.6, z: 0});
+    });
+
+    test('does not restore camera pose without headset', function () {
+      var sceneEl = this.el.sceneEl;
+      var cameraEl = this.el;
+      cameraEl.components.camera.headsetConnected = false;
+      sceneEl.emit('enter-vr');
+      cameraEl.setAttribute('position', {x: 6, y: 6, z: 6});
+      sceneEl.emit('exit-vr');
+      assert.shallowDeepEqual(cameraEl.getAttribute('position'), {x: 6, y: 6, z: 6});
     });
   });
 });

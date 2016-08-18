@@ -23,7 +23,7 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins = this.getAttribute('mixin');
-        this.sceneEl = this.isScene ? this : this.closestScene();
+        this.sceneEl = this.closestScene();
         this.emit('nodeready', {}, false);
         if (mixins) { this.updateMixins(mixins); }
       },

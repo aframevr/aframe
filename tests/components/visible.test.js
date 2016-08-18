@@ -2,8 +2,6 @@
 var entityFactory = require('../helpers').entityFactory;
 
 suite('visible', function () {
-  'use strict';
-
   setup(function (done) {
     var el = this.el = entityFactory();
     el.setAttribute('visible', '');

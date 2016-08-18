@@ -1,5 +1,4 @@
 /* global assert, suite, test */
-'use strict';
 var Schema = require('core/schema');
 var registerPropertyType = require('core/propertyTypes').registerPropertyType;
 

@@ -3,6 +3,7 @@
 **Building Blocks for the VR Web**
 
 [![build status][travis-image]][travis-url]
+[![codecov][codecov-image]][codecov-url]
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][downloads-url]
 [![js-semistandard-style][semistandard-image]][semistandard-url]
@@ -94,6 +95,10 @@ To publish to __https://your_username.github.io/aframe/__:
 
     npm run ghpages your_username
 
+## Contributing
+
+Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get started.
+
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).
@@ -106,3 +111,6 @@ This program is free software and is distributed under an [MIT License](LICENSE)
 [downloads-url]: https://npmjs.org/package/aframe
 [semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
 [semistandard-url]: https://github.com/Flet/semistandard
+<!-- codecov -->
+[codecov-image]: https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/aframevr/aframe

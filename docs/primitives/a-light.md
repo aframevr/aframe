@@ -33,6 +33,7 @@ The light primitive adjusts the lighting setup of the scene. It is an entity tha
 | intensity    | light.intensity   | 1.0           |
 | penumbra     | light.penumbra    | 0.0           |
 | type         | light.type        | directional   |
+| target       | light.target      | null          |
 
 ## Differences with the Default Lighting
 

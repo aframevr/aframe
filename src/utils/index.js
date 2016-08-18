@@ -8,6 +8,7 @@ module.exports.coordinates = require('./coordinates');
 module.exports.checkHeadsetConnected = require('./checkHeadsetConnected');
 module.exports.debug = require('./debug');
 module.exports.entity = require('./entity');
+module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
 
@@ -24,7 +25,6 @@ module.exports.fireEvent = function (el, name, data) {
   data.detail = data.detail || {};
   data.detail.target = data.detail.target || el;
   var evt = new CustomEvent(name, data);
-  evt.target = el;
   el.dispatchEvent(evt);
 };
 

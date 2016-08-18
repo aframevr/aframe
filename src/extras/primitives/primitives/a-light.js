@@ -13,6 +13,7 @@ registerPrimitive('a-light', {
     distance: 'light.distance',
     intensity: 'light.intensity',
     penumbra: 'light.penumbra',
-    type: 'light.type'
+    type: 'light.type',
+    target: 'light.target'
   }
 });

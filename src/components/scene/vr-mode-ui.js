@@ -1,4 +1,5 @@
 var registerComponent = require('../../core/component').registerComponent;
+var constants = require('../../constants/');
 var utils = require('../../utils/');
 
 var ENTER_VR_CLASS = 'a-enter-vr';
@@ -111,8 +112,10 @@ function createEnterVRButton (enterVRHandler) {
   // Create elements.
   wrapper = document.createElement('div');
   wrapper.classList.add(ENTER_VR_CLASS);
+  wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
+  vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
   wrapper.appendChild(vrButton);
@@ -128,8 +131,10 @@ function createOrientationModal (exitVRHandler) {
   var modal = document.createElement('div');
   modal.className = ORIENTATION_MODAL_CLASS;
   modal.classList.add(HIDDEN_CLASS);
+  modal.setAttribute(constants.AFRAME_INJECTED, '');
 
   var exit = document.createElement('button');
+  exit.setAttribute(constants.AFRAME_INJECTED, '');
   exit.innerHTML = 'Exit VR';
 
   // Exit VR on close.

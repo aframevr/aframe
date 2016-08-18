@@ -20,38 +20,40 @@ module.exports = registerElement('a-assets', {
     attachedCallback: {
       value: function () {
         var self = this;
+        var i;
         var loaded = [];
-        var audios = this.querySelectorAll('audio');
-        var imgs = this.querySelectorAll('img');
-        var timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
-        var videos = this.querySelectorAll('video');
+        var mediaEl;
+        var mediaEls;
+        var imgEl;
+        var imgEls;
+        var timeout;
 
         if (!this.parentNode.isScene) {
           throw new Error('<a-assets> must be a child of a <a-scene>.');
         }
 
         // Wait for <img>s.
-        for (var i = 0; i < imgs.length; i++) {
+        imgEls = this.querySelectorAll('img');
+        for (i = 0; i < imgEls.length; i++) {
+          imgEl = setCrossOrigin(imgEls[i]);
           loaded.push(new Promise(function (resolve, reject) {
-            var img = imgs[i];
-            img.onload = resolve;
-            img.onerror = reject;
+            imgEl.onload = resolve;
+            imgEl.onerror = reject;
           }));
         }
 
-        // Wait for <audio>s.
-        for (i = 0; i < audios.length; i++) {
-          loaded.push(mediaElementLoaded(audios[i]));
-        }
-
-        // Wait for <video>s.
-        for (i = 0; i < videos.length; i++) {
-          loaded.push(mediaElementLoaded(videos[i]));
+        // Wait for <audio>s and <video>s.
+        mediaEls = this.querySelectorAll('audio, video');
+        for (i = 0; i < mediaEls.length; i++) {
+          mediaEl = setCrossOrigin(mediaEls[i]);
+          loaded.push(mediaElementLoaded(mediaEl));
         }
 
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(this.load.bind(this));
 
+        // Timeout to start loading anyways.
+        timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         setTimeout(function () {
           if (self.hasLoaded) { return; }
           warn('Asset loading timed out in ', timeout, 'ms');
@@ -87,7 +89,14 @@ registerElement('a-asset-item', {
         xhrLoader.load(src, function (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
-          ANode.prototype.load.call(self);
+          // Workaround for a Chrome bug.
+          // if another XMLHttpRequest is sent to the same url
+          // before the previous one closes. The second request never finishes.
+          // setTimeout finishes the first request and lets the logic
+          // triggered by load open subsequent requests.
+          // setTimeout can be removed once the fix for the bug below ships:
+          // https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
+          setTimeout(function load () { ANode.prototype.load.call(self); });
         });
       }
     }
@@ -127,4 +136,50 @@ function mediaElementLoaded (el) {
       }
     }
   });
+}
+
+/**
+ * Automatically set `crossorigin` if not defined on the media element.
+ * If it is not defined, we must create and re-append a new media element <img> and
+ * have the browser re-request it with `crossorigin` set.
+ *
+ * @param {Element} Media element (e.g., <img>, <audio>, <video>).
+ * @returns {Element} Media element to be used to listen to for loaded events.
+ */
+function setCrossOrigin (mediaEl) {
+  var newMediaEl;
+  var src;
+
+  // Already has crossorigin set.
+  if (mediaEl.hasAttribute('crossorigin')) { return mediaEl; }
+
+  src = mediaEl.getAttribute('src');
+
+  // Does not have protocol.
+  if (src.indexOf('://') === -1) { return mediaEl; }
+
+  // Determine if cross origin is actually needed.
+  if (extractDomain(src) === window.location.host) { return mediaEl; }
+
+  warn('Cross-origin element was requested without `crossorigin` set. ' +
+       'A-Frame will re-request the asset with `crossorigin` attribute set.', src);
+  mediaEl.crossOrigin = 'anonymous';
+  newMediaEl = mediaEl.cloneNode(true);
+  mediaEl.parentNode.appendChild(newMediaEl);
+  mediaEl.parentNode.removeChild(mediaEl);
+  return newMediaEl;
+}
+
+/**
+ * Extract domain out of URL.
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function extractDomain (url) {
+  // Find and remove protocol (e.g., http, ftp, etc.) to get domain.
+  var domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
+
+  // Find and remove port number.
+  return domain.split(':')[0];
 }

@@ -1,3 +1,4 @@
+var constants = require('../../constants/');
 var extend = require('../../utils').extend;
 
 var MOBILE_HEAD_TAGS = module.exports.MOBILE_HEAD_TAGS = [
@@ -73,5 +74,6 @@ module.exports.inject = function injectHeadTags (scene) {
 function createTag (tagObj) {
   if (!tagObj || !tagObj.tagName) { return; }
   var meta = document.createElement(tagObj.tagName);
+  meta.setAttribute(constants.AFRAME_INJECTED, '');
   return extend(meta, tagObj.attributes);
 }

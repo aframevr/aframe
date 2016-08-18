@@ -145,9 +145,9 @@ var proto = Object.create(ANode.prototype, {
         var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = [];
-        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.unregisterMixin.bind(self));
+        forEach.call(stateMixinsEls, function (el) {
+          self.unregisterMixin(el.id);
+        });
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
@@ -241,23 +241,12 @@ var proto = Object.create(ANode.prototype, {
 
       if (this.hasLoaded) { return; }
 
-      // Attach to parent object3D.
-      this.addToParent();
-
-      // Scene load.
-      function sceneLoadCallback () { self.updateComponents(); }
-      if (this.isScene) {
-        ANode.prototype.load.call(this, sceneLoadCallback);
-        return;
-      }
-
+      ANode.prototype.load.call(this, entityLoadCallback);
       // Entity load.
       function entityLoadCallback () {
         self.updateComponents();
-        // self.parentNode should work but that is null during this cb for unknown (#1483).
-        if (self.parentEl.isPlaying) { self.play(); }
+        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
       }
-      ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
     writable: window.debug
   },
@@ -734,10 +723,6 @@ function isComponentMixedIn (name, mixinEls) {
     if (inMixin) { break; }
   }
   return inMixin;
-}
-
-function isEntity (el) {
-  return el.isEntity;
 }
 
 AEntity = registerElement('a-entity', {

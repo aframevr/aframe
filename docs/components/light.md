@@ -50,6 +50,14 @@ The example below creates a light source shining from the upper-left at a 45-deg
 <a-entity light="type: directional; color: #EEE; intensity: 0.5" position="-1 1 0"></a-entity>
 ```
 
+It is also possible to specify the direction of the directional light with it's orientation by creating a child entity it targets. for example pointing down it's -Z axis:
+
+```html
+<a-light type="directional" position="0 0 0" rotation="-90 0 0" target="#directionaltarget">
+	<a-entity id="directionaltarget" position="0 0 -1"></a-entity>
+</a-light>
+```
+
 ### Hemisphere
 
 Hemisphere lights can be thought of as an ambient light, but with two colors of light, one from above (`color`) and one from below (`groundColor`). This can be useful for scenes with two distinct lighting colors (e.g., a grassy field under a gray sky).
@@ -84,9 +92,10 @@ Spot lights are like point lights in the sense that they affect materials depend
 <a-entity light="type: spot; angle: 45"></a-entity>
 ```
 
-| Property    | Description                                                                                                | Default Value |
-|-------------|------------------------------------------------------------------------------------------------------------|---------------|
-| angle       | Maximum extent of spot light from its direction (in degrees).                                               | 60            |
-| decay       | Amount the light dims along the distance of the light.                                                     | 1.0           |
-| distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance. | 0.0           |
-| penumbra  | Percent of the spotlight cone that is attenuated due to penumbra.                                            | 0.0           |
+| Property    | Description                                                                                                    | Default Value |
+|-------------|----------------------------------------------------------------------------------------------------------------|---------------|
+| angle       | Maximum extent of spot light from its direction (in degrees).                                                  | 60            |
+| decay       | Amount the light dims along the distance of the light.                                                         | 1.0           |
+| distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance.   | 0.0           |
+| penumbra    | Percent of the spotlight cone that is attenuated due to penumbra.                                              | 0.0           |
+| target      | element the spot should point to. set to null to transform spotlight by orientation, pointing to it's -Z axis. | null          |

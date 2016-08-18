@@ -26,7 +26,7 @@
       <a-entity hand-controls="right" aabb-collider="objects: .cube;" grab></a-entity>
 
       <!-- A-Frame cubes -->
-      <a-entity position="0 0 -4">
+      <a-entity position="0 0 -1">
         <a-entity class="cube" mixin="cube" position="0.30 1.65 0"></a-entity>
         <a-entity class="cube" mixin="cube" position="0 1.95 0"></a-entity>
         <a-entity class="cube" mixin="cube" position="-0.30 1.65 0"></a-entity>
@@ -58,22 +58,4 @@
       </a-entity>
     </a-scene>
   </body>
-  <script>
-    var sceneEl = document.querySelector('a-scene');
-    sceneEl.addEventListener('loaded', createSphere);
-    function createSphere() {
-      var sphereEl = document.createElement("a-sphere");
-      sphereEl.setAttribute('color', 'blue');
-      sphereEl.setAttribute("position", "0 1 0");
-      sphereEl.setAttribute("scale", "0.1 0.1 0.1");
-      sphereEl.setAttribute("class", "cube");
-      sphereEl.setAttribute("mixin", "cube");
-      sphereEl.addEventListener('hit', function() {
-         sphereEl.setAttribute('color', 'red');
-      });
-      sceneEl.appendChild(sphereEl);
-    }
-
-  </script>
-
 </html>

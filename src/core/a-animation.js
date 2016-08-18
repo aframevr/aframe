@@ -1,5 +1,5 @@
 var ANode = require('./a-node');
-var constants = require('../constants/animation');
+var animationConstants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
 var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
@@ -8,11 +8,11 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var getComponentProperty = utils.entity.getComponentProperty;
-var DEFAULTS = constants.defaults;
-var DIRECTIONS = constants.directions;
-var EASING_FUNCTIONS = constants.easingFunctions;
-var FILLS = constants.fills;
-var REPEATS = constants.repeats;
+var DEFAULTS = animationConstants.defaults;
+var DIRECTIONS = animationConstants.directions;
+var EASING_FUNCTIONS = animationConstants.easingFunctions;
+var FILLS = animationConstants.fills;
+var REPEATS = animationConstants.repeats;
 var isCoordinate = coordinates.isCoordinate;
 
 /**
@@ -43,25 +43,10 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     attachedCallback: {
       value: function () {
-        var self = this;
-        var el = this.el = this.parentNode;
-
-        init();
-
-        function init () {
-          if (!el.isPlaying) {
-            el.addEventListener('play', init);
-            return;
-          }
-          if (!el.hasLoaded) {
-            el.addEventListener('loaded', init);
-            return;
-          }
-
-          self.handleMixinUpdate();
-          self.update();
-          self.load();
-        }
+        this.el = this.parentNode;
+        this.handleMixinUpdate();
+        this.update();
+        this.load();
       }
     },
 
@@ -172,7 +157,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var begin = data.begin;
         var end = data.end;
         // Cancel previous event listeners
-        if (this.evt) this.removeEventListeners(this.evt);
+        if (this.evt) { this.removeEventListeners(this.evt); }
         // Store new event name.
         this.evt = { begin: begin, end: end };
         // Add new event listeners
@@ -214,6 +199,12 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     start: {
       value: function () {
+        var self = this;
+        // Postpone animation start until the entity has loaded
+        if (!this.el.hasLoaded) {
+          this.el.addEventListener('loaded', function () { self.start(); });
+          return;
+        }
         if (this.isRunning || !this.el.isPlaying) { return; }
         this.tween = this.getTween();
         this.isRunning = true;

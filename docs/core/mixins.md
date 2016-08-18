@@ -91,4 +91,4 @@ If an entity itself defines a property that is already defined by a mixin, the e
 </a-scene>
 ```
 
-[assets]: ./assets.md
+[assets]: ./asset-management-system.md

@@ -2,6 +2,7 @@
 var helpers = require('../../helpers');
 var initMetaTags = require('core/scene/metaTags').inject;
 var metaTags = require('core/scene/metaTags');
+var constants = require('constants/');
 
 suite('metaTags', function () {
   setup(function (done) {
@@ -49,12 +50,15 @@ suite('metaTags', function () {
     webAppCapableMetaTag = document.querySelector('meta[name="mobile-web-app-capable"]');
 
     assert.ok(appleMobileWebAppCapableMetaTag);
+    assert.ok(appleMobileWebAppCapableMetaTag.hasAttribute(constants.AFRAME_INJECTED));
     assert.equal(appleMobileWebAppCapableMetaTag.content, 'yes');
 
     assert.ok(viewportMetaTag);
+    assert.ok(viewportMetaTag.hasAttribute(constants.AFRAME_INJECTED));
     assert.equal(viewportMetaTag.content, metaTags.MOBILE_HEAD_TAGS[0].attributes.content);
 
     assert.ok(webAppCapableMetaTag);
+    assert.ok(webAppCapableMetaTag.hasAttribute(constants.AFRAME_INJECTED));
     assert.equal(webAppCapableMetaTag.content, 'yes');
   });
 });

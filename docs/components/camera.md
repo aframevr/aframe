@@ -28,7 +28,7 @@ A camera situated at human-level height (1.8 meters).
 | active     | Whether the camera is currently the active camera in a scene with multiple cameras.                                             | true          |
 | far        | Camera frustum far clipping plane.                                                                                              | 10000         |
 | fov        | Field of view (in degrees).                                                                                                     | 80            |
-| near       | Camera frustum near clipping plane.                                                                                             | 0.5           |
+| near       | Camera frustum near clipping plane.                                                                                             | 0.005         |
 | userHeight | How much height to add to the camera when *not* in VR mode. The default camera has this set to 1.8 (to represent human height). | 0             |
 | zoom       | Zoom factor of the camera.                                                                                                      | 1             |
 

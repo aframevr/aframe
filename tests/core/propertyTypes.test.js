@@ -1,5 +1,4 @@
 /* global assert, setup, suite, teardown, test */
-'use strict';
 var PropertyTypes = require('core/propertyTypes');
 
 var propertyTypes = PropertyTypes.propertyTypes;

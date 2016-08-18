@@ -50,6 +50,9 @@ A-Frame scene:
 - If using models, look to bake your lights into textures rather than relying
   on real-time lighting and shadows.
 - Generally, the fewer number of entities and lights in the scene, the better.
+- Make sure your textures' resolutions are sized to powers of two (e.g.,
+  256x256, 512x1024) in order to avoid the renderer having to resize the
+  texture during runtime.
 
 ## A-Frame
 
