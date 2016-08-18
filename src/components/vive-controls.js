@@ -13,10 +13,10 @@ module.exports.Component = registerComponent('vive-controls', {
   dependencies: ['tracked-controls'],
 
   schema: {
-    hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
-    model: {default: true}
+    hand: { default: 'left' },
+    buttonColor: { default: '#FAFAFA' },  // Off-white.
+    buttonHighlightColor: { default: '#22D1EE' },  // Light blue.
+    model: { default: true }
   },
 
   // buttonId
@@ -69,7 +69,7 @@ module.exports.Component = registerComponent('vive-controls', {
     var controller = data.hand === 'right' ? 0 : 1;
     el.setAttribute('tracked-controls', 'controller', controller);
     if (!data.model) { return; }
-    el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+    el.setAttribute('obj-model', { obj: objUrl, mtl: mtlUrl });
   },
 
   onButtonChanged: function (evt) {

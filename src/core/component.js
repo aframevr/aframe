@@ -37,7 +37,7 @@ Component.prototype = {
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: { },
+  schema: {},
 
   /**
    * Init handler. Similar to attachedCallback.

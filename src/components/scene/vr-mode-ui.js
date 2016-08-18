@@ -14,7 +14,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   dependencies: ['canvas'],
 
   schema: {
-    enabled: {default: true}
+    enabled: { default: true }
   },
 
   init: function () {

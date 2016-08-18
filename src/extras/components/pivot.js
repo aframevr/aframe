@@ -10,7 +10,7 @@ var originalRotation = new THREE.Vector3();
 registerComponent('pivot', {
   dependencies: ['position'],
 
-  schema: {type: 'vec3'},
+  schema: { type: 'vec3' },
 
   init: function () {
     var data = this.data;

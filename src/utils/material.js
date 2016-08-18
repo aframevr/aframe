@@ -13,7 +13,7 @@ module.exports.updateMap = function (shader, data) {
     if (src === shader.textureSrc) { return; }
     // Texture added or changed.
     shader.textureSrc = src;
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat}, setMap);
+    el.sceneEl.systems.material.loadTexture(src, { src: src, repeat: data.repeat }, setMap);
     return;
   }
 
@@ -37,16 +37,16 @@ module.exports.updateMap = function (shader, data) {
 function handleTextureEvents (el, texture) {
   if (!texture) { return; }
 
-  el.emit('materialtextureloaded', {src: texture.image, texture: texture});
+  el.emit('materialtextureloaded', { src: texture.image, texture: texture });
 
   // Video events.
   if (texture.image.tagName !== 'VIDEO') { return; }
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
-    el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
+    el.emit('materialvideoloadeddata', { src: texture.image, texture: texture });
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
     // Works for non-looping videos only.
-    el.emit('materialvideoended', {src: texture.image, texture: texture});
+    el.emit('materialvideoended', { src: texture.image, texture: texture });
   });
 }
 module.exports.handleTextureEvents = handleTextureEvents;

@@ -88,7 +88,7 @@ module.exports.Component = registerComponent('geometry', {
 
     mesh.parent.updateMatrixWorld();
     toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
-    el.emit('geometry-merged', {mergeTarget: toEl});
+    el.emit('geometry-merged', { mergeTarget: toEl });
     el.parentNode.removeChild(el);
   },
 

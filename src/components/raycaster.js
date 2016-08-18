@@ -17,11 +17,11 @@ var scaleDummy = new THREE.Vector3();
  */
 module.exports.Component = registerComponent('raycaster', {
   schema: {
-    far: {default: Infinity}, // Infinity.
-    interval: {default: 100},
-    near: {default: 0},
-    objects: {default: ''},
-    recursive: {default: true}
+    far: { default: Infinity }, // Infinity.
+    interval: { default: 100 },
+    near: { default: 0 },
+    objects: { default: '' },
+    recursive: { default: true }
   },
 
   init: function () {
@@ -103,7 +103,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersected on intersected entity per intersected entity.
     intersections.forEach(function emitEvents (intersection) {
       var intersectedEl = intersection.object.el;
-      intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
+      intersectedEl.emit('raycaster-intersected', { el: el, intersection: intersection });
     });
 
     // Emit all intersections at once on raycasting entity.
@@ -117,8 +117,8 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersection cleared on both entities per formerly intersected entity.
     prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
       if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      intersectedEl.emit('raycaster-intersected-cleared', {el: el});
+      el.emit('raycaster-intersection-cleared', { el: intersectedEl });
+      intersectedEl.emit('raycaster-intersected-cleared', { el: el });
     });
   },
 
