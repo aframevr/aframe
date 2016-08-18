@@ -1,5 +1,5 @@
 ---
-title: Build with MagicaVoxel
+title: Building with MagicaVoxel
 type: guides
 layout: docs
 parent_section: guides
