@@ -142,7 +142,7 @@ to add a cursor, we will need to define one.
 
 Then what we can tell the animation only to start when the cursor clicks the
 box event, using the animation's `begin` attribute. The cursor will emit the
-`cursor-click` event on the box, and the animation will listen to it:
+`click` event on the box, and the animation will listen to it:
 
 ```html
 <a-scene>
@@ -154,7 +154,7 @@ box event, using the animation's `begin` attribute. The cursor will emit the
          position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
          src="#texture">
     <!-- Animation will only play when the box is clicked. -->
-    <a-animation attribute="rotation" begin="cursor-click" repeat="indefinite" to="0 360 0"></a-animation>
+    <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
   </a-box>
 
   <a-camera position="0 1.8 0">
@@ -174,7 +174,7 @@ AFRAME.registerComponent('scale-on-click', {
 
   init: function () {
     var data = this.data;
-    this.el.addEventListener('cursor-click', function () {
+    this.el.addEventListener('click', function () {
       this.setAttribute('scale', data.to);
     });
   }
@@ -188,7 +188,7 @@ And we can attach the component to the `<a-box>` primitive:
        position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
        src="#texture" scale-on-click="to: 3 3 3">
   <!-- Animation will only play when the box is clicked. -->
-  <a-animation attribute="rotation" begin="cursor-click" repeat="indefinite" to="0 360 0"></a-animation>
+  <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
 </a-box>
 ```
 
@@ -210,7 +210,7 @@ sun). Once we add lights of our own, this default lighting setup is removed:
          position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
          src="#texture">
     <!-- Animation will only play when the box is clicked. -->
-    <a-animation attribute="rotation" begin="cursor-click" repeat="indefinite" to="0 360 0"></a-animation>
+    <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
   </a-box>
 
   <!-- New lights. -->
