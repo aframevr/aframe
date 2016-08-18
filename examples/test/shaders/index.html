@@ -23,6 +23,9 @@
             if (evt.detail.name !== 'rotation') { return; }
 
             sunPosition = orbitEl.getComputedAttribute('rotation');
+
+            if(sunPosition === null) { return; }
+
             theta = Math.PI * (- 0.5);
             phi = 2 * Math.PI * (sunPosition.y / 360 - 0.5);
             skyEl.setAttribute('material', 'sunPosition', {
