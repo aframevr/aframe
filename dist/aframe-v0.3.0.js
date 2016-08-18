@@ -58834,11 +58834,14 @@ module.exports.Component = registerComponent('inspector', {
   injectInspector: function () {
     var self = this;
     var script;
-    if (AFRAME.inspector || AFRAME.inspectorInjected) { return; }
+
+    if (AFRAME.INSPECTOR || AFRAME.inspectorInjected) { return; }
+
+    // Inject.
     script = document.createElement('script');
     script.src = this.data.url;
     script.onload = function () {
-      AFRAME.inspector.open();
+      AFRAME.INSPECTOR.open();
       window.removeEventListener('keydown', self.onKeydown);
     };
     document.head.appendChild(script);
