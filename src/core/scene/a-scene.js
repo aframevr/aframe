@@ -38,6 +38,7 @@ module.exports = registerElement('a-scene', {
     defaultComponents: {
       value: {
         'canvas': '',
+        'inspector': '',
         'keyboard-shortcuts': '',
         'vr-mode-ui': ''
       }
