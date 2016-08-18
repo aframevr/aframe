@@ -18,6 +18,7 @@ tracked controllers (using experimental Gamepad APIs).
 - Default lighting setup tweaked. (#1478)
 - Made `sound.src` use the `src` property type. Sound URLs must now either be wrapped in `url()` or a selector to an `<audio>` element. (#1629)
 - Added A-Frame Code of Conduct. (#954)
+- Reduced webvr-polyfill `BUFFER_SCALE` to `1 / window.devicePixelRatio` only for iOS versions under 10 as a workaround to a Webkit bug. This will cause decrease resolutions on iPhone VR mode temporarily. It can be overridden in `window.WebVRConfig.BUFFER_SCALE`, but will cause canvas sizing issues upon entering stereo causing people to have to rotate their phones back and forth. (#1803)
 
 ### Deprecations
 
@@ -66,6 +67,8 @@ tracked controllers (using experimental Gamepad APIs).
 - Removed instances of hard-coded `<a-scene>`, done to support an independent augmented reality (AR) initiative. (#1665)
 - Added cursor grabbing styles to look-controls component. (#1680)
 - Added support for mixins being attached at runtime, done to support a third-party CSS syntax for components. (#1610)
+- Added `<ctrl> + <alt> + i` shortcut to inject the A-Frame Inspector tool. (#1599)
+- Removed a `Function.prototype.bind` call on each frame render (#1808)
 
 ## Fixes
 
