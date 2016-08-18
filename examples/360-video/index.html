@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360&deg; Video - A-Frame</title>
+    <meta name="description" content="360&deg; Video - A-Frame">
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-video-controls@0.2.1"></script>
+    <script src="https://npmcdn.com/aframe-animation-component@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-event-set-component@3.0.1"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <img id="video-pause-image" crossorigin src="https://cdn.aframe.io/360-video-boilerplate/img/pause.png">
+        <img id="video-play-image" crossorigin src="https://cdn.aframe.io/360-video-boilerplate/img/play.png">
+        <video id="cityVideo" autoplay loop crossorigin
+               src="https://cdn.aframe.io/360-video-boilerplate/video/city.mp4"></video>
+      </a-assets>
+
+      <!-- 360 video, rotated 180-degrees to select an initial view. -->
+      <a-videosphere src="#cityVideo" rotation="0 180 0"></a-videosphere>
+
+      <!-- Video controls. -->
+      <a-entity
+        video-controls="src: #cityVideo; backgroundColor: #333; barColor: #EF2D5E; textColor: #DADADA; infoTextTop: Gaze and click on the icon or progress bar.; infoTextBottom: Double-click outside of the player to toggle it."
+        position="0 1 -2"></a-entity>
+
+      <!-- Cursor to interact with video controls, with visual feedback. -->
+      <a-camera user-height="1.6">
+        <a-cursor color="#333"
+          animation__click="property: scale; startEvents: click; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150"
+          animation__fusing="property: fusing; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+          event-set__1="_event: mouseenter; color: springgreen"
+          event-set__2="_event: mouseleave; color: #333"></a-cursor>
+      </a-camera>
+    </a-scene>
+  </body>
+</html>

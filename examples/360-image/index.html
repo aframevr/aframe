@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>360&deg; Image - A-Frame</title>
+    <meta name="description" content="360&deg; Image - A-Frame">
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-bmfont-text-component@0.1.2/dist/aframe-bmfont-text-component.min.js"></script>
+    <script src="https://npmcdn.com/aframe-animation-component@3.0.1/dist/aframe-animation-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <!-- Equirectangular image to wrap around a sphere. -->
+        <img id="image360" crossorigin src="https://cdn.aframe.io/360-image-boilerplate/img/puydesancy.jpg">
+      </a-assets>
+
+      <!-- 360-degree image or background. -->
+      <a-sky src="#image360" rotation="0 180 0"></a-sky>
+
+      <!-- Floating text. -->
+      <a-entity
+        bmfont-text="color: #FFF; text: Welcome to Puy de Sancy; width: 250"
+        position="-1.7 1.07 -2"
+        scale="1.2 1.2 1.2"
+        animation="property: position; to: -1.7 1.1 -2; dir: alternate; loop: true; dur: 2500"
+      ></a-entity>
+    </a-scene>
+  </body>
+</html>

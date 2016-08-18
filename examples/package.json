@@ -1,0 +1,24 @@
+{
+  "name": "aframe-examples",
+  "description": "Starter kits for creating WebVR scenes using A-Frame.",
+  "version": "0.3.0-beta2",
+  "license": "MIT",
+  "scripts": {
+    "start": "budo --live --verbose --port 3000 --open",
+    "deploy": "ghpages",
+    "ghpages": "ghpages"
+  },
+  "devDependencies": {
+    "budo": "^7.0.0",
+    "ghpages": "0.0.3"
+  },
+  "keywords": [
+    "aframe",
+    "boilerplate",
+    "aframe-example",
+    "aframe-examples",
+    "aframe-scene",
+    "webvr",
+    "vr"
+  ]
+}

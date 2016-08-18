@@ -1,0 +1,17 @@
+title: "360&deg; Video"
+repo: "aframevr/360-video-boilerplate"
+description: "360&deg; video with `<a-videosphere>`. This example uses `<a-assets>` for the browser to cache the video. Note that mobile browsers have [many limitations in playing inline video](https://aframe.io/faq/#why-does-my-video-not-play-on-mobile)."
+mobile: true
+components:
+  - title: video-controls
+    file: https://npmcdn.com/aframe-video-controls@0.2.1
+    source: https://github.com/oscarmarinmiro/aframe-video-controls
+  - title: animation
+    file: https://npmcdn.com/aframe-animation-component@3.0.1
+    source: https://github.com/ngokevin/aframe-animation-component
+  - title: event-set
+    file: https://npmcdn.com/aframe-event-set-component@3.0.1
+    source: https://github.com/ngokevin/aframe-event-set-component
+assets:
+  - title: city.mp4
+    file: https://cdn.aframe.io/360-video-boilerplate/video/city.mp4

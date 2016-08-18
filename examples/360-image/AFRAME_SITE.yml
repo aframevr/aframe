@@ -1,0 +1,14 @@
+title: "360&deg Image"
+repo: "aframevr/360-image-boilerplate"
+description: "360&deg; image in one line of HTML. `<a-sky>` takes an equirectangular image and maps it onto the inside of a sphere. Try replacing the `src` with [panoramas from Flickr](https://www.flickr.com/groups/equirectangular/)."
+mobile: true
+components:
+  - title: bmfont-text
+    file: https://npmcdn.com/aframe-bmfont-text-component@0.1.2/dist/aframe-bmfont-text-component.min.js
+    source: https://github.com/bryik/aframe-bmfont-text-component
+  - title: animation
+    file: https://npmcdn.com/aframe-animation-component@3.0.1
+    source: https://github.com/ngokevin/aframe-animation-component
+assets:
+  - title: puydesancy.jpg
+    file: https://cdn.aframe.io/360-image-boilerplate/img/puydesancy.jpg

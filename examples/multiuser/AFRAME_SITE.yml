@@ -1,0 +1,11 @@
+title: "Multiuser"
+repo: "aframevr/multiuser-boilerplate"
+description: "Multiuser experiences using [Firebase](https://firebase.google.com), a real-time database service. Everything is still declarative HTML, and no need to set up your own server."
+mobile: true
+components:
+  - title: firebase
+    file: https://npmcdn.com/aframe-firebase-component@3.0.0
+    source: https://github.com/ngokevin/aframe-firebase-component
+  - title: random-position
+    file: https://npmcdn.com/aframe-randomizer-components@3.0.1
+    source: https://github.com/ngokevin/aframe-randomizer-components

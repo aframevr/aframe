@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Audio Visualizer</title>
+    <meta name="description" content="Audio Visualizer - A-Frame">
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-audio-visualizer-components@3.0.1"></script>
+    <script src="https://npmcdn.com/aframe-entity-generator-component@3.0.0"></script>
+    <script src="https://npmcdn.com/aframe-layout-component@3.0.1"></script>
+    <script src="components/scale-y-color.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <audio id="song" crossorigin autoplay loop src="https://cdn.aframe.io/audio-visualizer-boilerplate/audio/broke-for-free__night-owl.mp3"></audio>
+        <!-- Mixin that describes each individual bar in the audio visualizer. -->
+        <a-mixin id="bar"
+          geometry="primitive: box"
+          material="color: rgb(10, 60, 10)"
+          scale-y-color="from: 10 60 10; to: 180 250 180; maxScale: 15"></a-mixin>
+      </a-assets>
+
+      <!--
+        Audio visualizer.
+          audio-visualizer - Creates AnalyserNode to read spectrum data from.
+          audio-visualizer-spectrum-scale - Scale children based on spectrum data.
+          entity-generator - Create N entities described by a mixin.
+          layout - Position all children in a certain layout (e.g., circle).
+      -->
+      <a-entity
+        audio-visualizer="src: #song; smoothingTimeConstant: 0.9"
+        audio-visualizer-spectrum-scale="max: 50; multiplier: 0.06"
+        entity-generator="mixin: bar; num: 256"
+        layout="type: circle; radius: 10"
+        rotation="0 180 0"></a-entity>
+
+      <!-- Ground. -->
+      <a-circle color="#333" opacity="0.8" rotation="-90 0 0" radius="12" roughness="1"></a-circle>
+
+      <!-- Lights. -->
+      <a-light type="ambient" color="#222"></a-light>
+      <a-light type="point" position="0 1 0" intensity="1.2"></a-light>
+
+      <!-- Background. -->
+      <a-sky color="#222"></a-sky>
+    </a-scene>
+  </body>
+</html>

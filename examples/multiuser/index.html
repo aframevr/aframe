@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Multiuser - A-Frame</title>
+    <meta name="description" content="Multiuser - A-Frame">
+    <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe.min.js"></script>
+    <script src="https://npmcdn.com/aframe-firebase-component@3.0.0"></script>
+    <script src="https://npmcdn.com/aframe-randomizer-components@3.0.1"></script>
+  </head>
+  <body>
+    <a-scene firebase="apiKey: AIzaSyBFBn5MIxtegDAL-zG6sFNReh_S8XQRTv8;
+                       authDomain: aframe-site.firebaseapp.com;
+                       databaseURL: https://aframe-site.firebaseio.com;
+                       storageBucket: aframe-site.appspot.com">
+      <!-- Firebase information above. Set up at https://firebase.google.com/ -->
+
+      <a-assets>
+        <!-- Mixin to describe the avatar head. -->
+        <a-mixin
+          id="avatar-head"
+          geometry="primitive: box; depth: 0.3; height: 0.3; width: 0.3"
+          material="color: #222"></a-mixin>
+        <!-- Mixin to describe the avatar body. -->
+        <a-mixin
+          id="avatar-body"
+          geometry="primitive: cone; height: 1.5; radiusTop: 0.1; radiusBottom: 0.4"
+          material="color: #222"></a-mixin>
+      </a-assets>
+
+      <!-- Synced avatar head. Rotates separately from body. -->
+      <a-entity
+        id="head"
+        mixin="avatar-head"
+        camera look-controls wasd-controls
+        random-position="min: -10 1.8 -10; max: 10 1.8 10"
+        firebase-broadcast="componentsOnce: mixin; components: position, rotation"></a-entity>
+
+      <!-- Synced avatar body that separately follows the head. -->
+      <a-entity id="body" firebase-broadcast="components: position" follow="[camera]">
+        <a-entity
+          mixin="avatar-body"
+          firebase-broadcast="componentsOnce: mixin; components: position"
+          position="0 -1 0"></a-entity>
+      </a-entity>
+
+      <!-- Scene objects. -->
+      <a-sphere color="#645FCE" radius="0.2" position="-3 0 2"></a-sphere>
+      <a-sphere color="#69E9F5" position="3 1 -7"></a-sphere>
+      <a-sphere color="#43BFC7" radius="0.4" position="1 1 -2"></a-sphere>
+      <a-sphere color="#A45FBE" position="-2 0 3"></a-sphere>
+      <a-sphere color="#382F60" radius="0.8" position="2 4 -4"></a-sphere>
+      <a-sphere color="#485188" position="2 4 -1"></a-sphere>
+      <a-sphere color="#FFF" radius="0.2" shader="flat" position="0 0.2 0"></a-sphere>
+
+      <!-- Lights. -->
+      <a-light type="ambient" color="#444"></a-light>
+      <a-light type="point" intensity="1.2"></a-light>
+
+      <!-- Ground. -->
+      <a-plane rotation="-90 0 0" color="#0C2233" height="25" width="25" position="0 -0.1 0"></a-plane>
+
+      <!-- Background. -->
+      <a-sky color="#222"></a-sky>
+    </a-scene>
+  </body>
+</html>

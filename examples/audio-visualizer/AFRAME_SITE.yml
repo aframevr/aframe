@@ -1,0 +1,20 @@
+title: "Audio Visualizer"
+repo: "aframevr/audio-visualizer-boilerplate"
+description: "Hooking up Web Audio AnalyserNode data to box scale and color using various components."
+mobile: false
+components:
+  - title: audio-visualizer
+    file: https://npmcdn.com/aframe-audio-visualizer-components@3.0.1
+    source: https://github.com/ngokevin/aframe-audio-visualizer-components
+  - title: entity-generator
+    file: https://npmcdn.com/aframe-entity-generator-component@3.0.0
+    source: https://github.com/ngokevin/aframe-entity-generator-component
+  - title: layout
+    file: https://npmcdn.com/aframe-layout-component@3.0.1
+    source: https://github.com/ngokevin/aframe-layout-component
+  - title: scale-y-color
+    file: components/scale-y-color.js
+assets:
+  - title: broke-for-free__night-owl.mp3
+    file: https://cdn.aframe.io/aframe-audio-visualizer-boilerplate/audio/broke-for-free__night-owl.mp3
+    source: https://freemusicarchive.org/music/broke_for_free/directionless_ep/broke_for_free_-_directionless_ep_-_01_night_owl
