@@ -6,7 +6,7 @@ var zeroScale = 0.00001;
 module.exports.Component = registerComponent('scale', {
   schema: {
     type: 'vec3',
-    default: { x: 1, y: 1, z: 1 }
+    default: {x: 1, y: 1, z: 1}
   },
 
   update: function () {

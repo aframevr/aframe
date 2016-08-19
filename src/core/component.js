@@ -228,7 +228,7 @@ Component.prototype = {
     // Extend base schema with new schema chunk.
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
-    this.el.emit('schemachanged', { component: this.name });
+    this.el.emit('schemachanged', {component: this.name});
   }
 };
 
