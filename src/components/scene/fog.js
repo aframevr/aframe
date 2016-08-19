@@ -10,11 +10,11 @@ var warn = debug('components:fog:warn');
  */
 module.exports.Component = register('fog', {
   schema: {
-    color: { default: '#000' },
-    density: { default: 0.00025 },
-    far: { default: 1000, min: 0 },
-    near: { default: 1, min: 0 },
-    type: { default: 'linear', oneOf: ['linear', 'exponential'] }
+    color: {default: '#000'},
+    density: {default: 0.00025},
+    far: {default: 1000, min: 0},
+    near: {default: 1, min: 0},
+    type: {default: 'linear', oneOf: ['linear', 'exponential']}
   },
 
   update: function () {

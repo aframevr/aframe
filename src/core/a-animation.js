@@ -159,7 +159,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         // Cancel previous event listeners
         if (this.evt) { this.removeEventListeners(this.evt); }
         // Store new event name.
-        this.evt = { begin: begin, end: end };
+        this.evt = {begin: begin, end: end};
         // Add new event listeners
         this.addEventListeners(this.evt);
         // If `begin` is not defined, start the animation right away.

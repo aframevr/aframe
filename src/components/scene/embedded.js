@@ -6,7 +6,7 @@ var registerComponent = require('../../core/component').registerComponent;
 module.exports.Component = registerComponent('embedded', {
   dependencies: ['vr-mode-ui'],
 
-  schema: { default: true },
+  schema: {default: true},
 
   update: function () {
     var sceneEl = this.el;

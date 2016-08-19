@@ -9,16 +9,16 @@ var MAX_DELTA = 0.2;
  */
 module.exports.Component = registerComponent('wasd-controls', {
   schema: {
-    easing: { default: 20 },
-    acceleration: { default: 65 },
-    enabled: { default: true },
-    fly: { default: false },
-    wsAxis: { default: 'z', oneOf: [ 'x', 'y', 'z' ] },
-    adAxis: { default: 'x', oneOf: [ 'x', 'y', 'z' ] },
-    wsInverted: { default: false },
-    wsEnabled: { default: true },
-    adInverted: { default: false },
-    adEnabled: { default: true }
+    easing: {default: 20},
+    acceleration: {default: 65},
+    enabled: {default: true},
+    fly: {default: false},
+    wsAxis: {default: 'z', oneOf: [ 'x', 'y', 'z' ]},
+    adAxis: {default: 'x', oneOf: [ 'x', 'y', 'z' ]},
+    wsInverted: {default: false},
+    wsEnabled: {default: true},
+    adInverted: {default: false},
+    adEnabled: {default: true}
   },
 
   init: function () {

@@ -9,11 +9,11 @@ var warn = debug('components:sound:warn');
  */
 module.exports.Component = registerComponent('sound', {
   schema: {
-    src: { type: 'src' },
+    src: {type: 'src'},
     on: { default: '' },
-    autoplay: { default: false },
-    loop: { default: false },
-    volume: { default: 1 }
+    autoplay: {default: false},
+    loop: {default: false},
+    volume: {default: 1}
   },
 
   multiple: true,

@@ -10,9 +10,9 @@ module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true },
-    hmdEnabled: { default: true },
-    standing: { default: true }
+    enabled: {default: true},
+    hmdEnabled: {default: true},
+    standing: {default: true}
   },
 
   init: function () {

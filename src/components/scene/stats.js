@@ -11,7 +11,7 @@ var AFrameStats = window.aframeStats;
  * Stats appended to document.body by RStats.
  */
 module.exports.Component = registerComponent('stats', {
-  schema: { default: true },
+  schema: {default: true},
 
   init: function () {
     var scene = this.el;
