@@ -628,7 +628,7 @@ Then with the line component written and registered, we can use it in HTML:
 
 And voila!
 
-![](http://i.imgur.com/icggby2.jpg)
+![](https://i.imgur.com/icggby2.jpg)
 <div class="page-caption"><span>
   Happy face with the line component! Play with it on [CodePen][line-codepen].
 </span></div>

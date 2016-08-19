@@ -12,7 +12,7 @@ order: 3
 3D scenes and models using *voxels* (i.e., blocks). This makes modeling super
 easy, similar to building in Minecraft.
 
-![magicavoxel](http://i.imgur.com/XYYXjIn.jpg)
+![magicavoxel](https://i.imgur.com/XYYXjIn.jpg)
 
 <!--toc-->
 
@@ -21,12 +21,12 @@ easy, similar to building in Minecraft.
 MagicaVoxel works on Windows and OS X. On the [MagicaVoxel
 homepage][magicavoxel], click the *Download* button and install it:
 
-![magicavoxel install](http://i.imgur.com/GmgdyHs.jpg)
+![magicavoxel install](https://i.imgur.com/GmgdyHs.jpg)
 
 On OS X, make sure to allow third-party applications that have not been installed
 from the App Store in the *Security & Privacy* settings:
 
-![osx security](http://i.imgur.com/iaa4pSO.jpg)
+![osx security](https://i.imgur.com/iaa4pSO.jpg)
 
 ## Tutorial
 
@@ -67,7 +67,7 @@ so if you change from the palette a color that a voxel is using, the voxel will
 update its color. At the bottom, there are tools to define your own color with
 sliders or via copying and pasting hex or rgb values:
 
-![magicavoxel color palette](http://i.imgur.com/vq34Mkk.jpg)
+![magicavoxel color palette](https://i.imgur.com/vq34Mkk.jpg)
 
 ### Brushes
 
@@ -75,7 +75,7 @@ The brushes panel is on the right of the color palette. Brushes add, erase, or
 paint voxels in various shapes, sizes, and patterns. With a brush selected, you
 simply click in the viewport on your model to use it:
 
-![magicavoxel brushes](http://i.imgur.com/pqrUAFT.gif)
+![magicavoxel brushes](https://i.imgur.com/pqrUAFT.gif)
 
 There are six brushes:
 
@@ -100,7 +100,7 @@ There are four actions that work in conjunction with the brush type:
 - **Move**: Moves entire model. Unfortunately, there is no way to select
   individual voxel(s) to move.
 
-![magicavoxel actions](http://i.imgur.com/uLQcQrT.gif)
+![magicavoxel actions](https://i.imgur.com/uLQcQrT.gif)
 
 Below the actions are three color picking tools to pick, remove, and place
 color. It is useful to know the `<alt> + <click>` shortcut to select a color by
@@ -113,7 +113,7 @@ to see! We recommend exporting to either the `.PLY` or `.OBJ` formats.
 
 ### `.PLY` (with Baked Shadows)
 
-![magicavoxel ply](http://i.imgur.com/OIdqrSH.jpg)
+![magicavoxel ply](https://i.imgur.com/OIdqrSH.jpg)
 
 [ply]: https://wikipedia.org/wiki/PLY_(file_format)
 
