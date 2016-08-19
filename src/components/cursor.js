@@ -29,8 +29,8 @@ module.exports.Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {
-    fuse: {default: utils.isMobile()},
-    fuseTimeout: {default: 1500, min: 0}
+    fuse: { default: utils.isMobile() },
+    fuseTimeout: { default: 1500, min: 0 }
   },
 
   init: function () {
@@ -131,8 +131,8 @@ module.exports.Component = registerComponent('cursor', {
    */
   twoWayEmit: function (evtName) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evtName, {intersectedEl: this.intersectedEl});
+    this.el.emit(evtName, { intersectedEl: this.intersectedEl });
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, {cursorEl: this.el});
+    intersectedEl.emit(evtName, { cursorEl: this.el });
   }
 });

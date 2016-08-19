@@ -15,7 +15,7 @@ var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/rightHand.js
 * @property {left/right} Hand mapping
 */
 module.exports.Component = registerComponent('hand-controls', {
-  schema: {default: 'left'},
+  schema: { default: 'left' },
 
   init: function () {
     var self = this;
@@ -64,7 +64,7 @@ module.exports.Component = registerComponent('hand-controls', {
     } else {
       modelUrl = 'url(' + RIGHT_HAND_MODEL_URL + ')';
     }
-    el.setAttribute('vive-controls', {hand: hand, model: false});
+    el.setAttribute('vive-controls', { hand: hand, model: false });
     el.setAttribute('blend-character-model', modelUrl);
   },
 

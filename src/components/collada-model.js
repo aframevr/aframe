@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('collada-model', {
     this.loader.load(src, function (colladaModel) {
       self.model = colladaModel.scene;
       el.setObject3D('mesh', self.model);
-      el.emit('model-loaded', {format: 'collada', model: self.model});
+      el.emit('model-loaded', { format: 'collada', model: self.model });
     });
   },
 

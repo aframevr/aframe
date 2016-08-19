@@ -29,7 +29,7 @@ module.exports.System = registerSystem('camera', {
 
     // Camera already defined.
     if (sceneEl.camera) {
-      sceneEl.emit('camera-ready', {cameraEl: sceneEl.camera.el});
+      sceneEl.emit('camera-ready', { cameraEl: sceneEl.camera.el });
       return;
     }
 
@@ -37,14 +37,14 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl = document.createElement('a-entity');
     defaultCameraEl.setAttribute('position', '0 0 0');
     defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-    defaultCameraEl.setAttribute('camera', {active: true, userHeight: DEFAULT_USER_HEIGHT});
+    defaultCameraEl.setAttribute('camera', { active: true, userHeight: DEFAULT_USER_HEIGHT });
     defaultCameraEl.setAttribute('wasd-controls', '');
     defaultCameraEl.setAttribute('look-controls', '');
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(defaultCameraEl);
     sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);
     sceneEl.addEventListener('exit-vr', this.addDefaultOffset);
-    sceneEl.emit('camera-ready', {cameraEl: defaultCameraEl});
+    sceneEl.emit('camera-ready', { cameraEl: defaultCameraEl });
   },
 
   /**
@@ -104,7 +104,7 @@ module.exports.System = registerSystem('camera', {
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
-    sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+    sceneEl.emit('camera-set-active', { cameraEl: newCameraEl });
   }
 });
 

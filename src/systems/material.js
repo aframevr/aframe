@@ -129,7 +129,7 @@ module.exports.System = registerSystem('material', {
     setTextureProperties(texture, data);
 
     // Cache as promise to be consistent with image texture caching.
-    videoTextureResult = {texture: texture, videoEl: videoEl};
+    videoTextureResult = { texture: texture, videoEl: videoEl };
     textureCache[hash] = Promise.resolve(videoTextureResult);
     handleVideoTextureLoaded(videoTextureResult);
   },

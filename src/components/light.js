@@ -11,17 +11,17 @@ var warn = debug('components:light:warn');
  */
 module.exports.Component = registerComponent('light', {
   schema: {
-    angle: {default: 60, if: {type: ['spot']}},
-    color: {type: 'color'},
-    groundColor: {type: 'color', if: {type: ['hemisphere']}},
-    decay: {default: 1, if: {type: ['point', 'spot']}},
-    distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
-    intensity: {default: 1.0, min: 0,
-                if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
-    penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
-    type: {default: 'directional',
-           oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']},
-    target: {type: 'selector', if: {type: ['spot', 'directional']}}
+    angle: { default: 60, if: { type: ['spot'] } },
+    color: { type: 'color' },
+    groundColor: { type: 'color', if: { type: ['hemisphere'] } },
+    decay: { default: 1, if: { type: ['point', 'spot'] } },
+    distance: { default: 0.0, min: 0, if: { type: ['point', 'spot'] } },
+    intensity: { default: 1.0, min: 0,
+            if: { type: ['ambient', 'directional', 'hemisphere', 'point', 'spot'] } },
+    penumbra: { default: 0, min: 0, max: 1, if: { type: ['spot'] } },
+    type: { default: 'directional',
+       oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot'] },
+    target: { type: 'selector', if: { type: ['spot', 'directional'] } }
   },
 
   /**

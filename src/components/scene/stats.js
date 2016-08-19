@@ -58,10 +58,10 @@ function createStats (scene) {
   return new RStats({
     css: [],  // Our stylesheet is injected from `src/index.js`.
     values: {
-      fps: {caption: 'fps', below: 30}
+      fps: { caption: 'fps', below: 30 }
     },
     groups: [
-      {caption: 'Framerate', values: ['fps', 'raf']}
+      { caption: 'Framerate', values: ['fps', 'raf'] }
     ],
     plugins: plugins
   });

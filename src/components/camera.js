@@ -10,12 +10,12 @@ var checkHeadsetConnected = utils.checkHeadsetConnected;
  */
 module.exports.Component = registerComponent('camera', {
   schema: {
-    active: {default: true},
-    far: {default: 10000},
-    fov: {default: 80, min: 0},
-    near: {default: 0.005, min: 0},
-    userHeight: {default: 0, min: 0},
-    zoom: {default: 1, min: 0}
+    active: { default: true },
+    far: { default: 10000 },
+    fov: { default: 80, min: 0 },
+    near: { default: 0.005, min: 0 },
+    userHeight: { default: 0, min: 0 },
+    zoom: { default: 1, min: 0 }
   },
 
   /**
@@ -109,7 +109,7 @@ module.exports.Component = registerComponent('camera', {
     var userHeightOffset = this.data.userHeight;
 
     oldOffset = oldOffset || 0;
-    currentPosition = el.getComputedAttribute('position') || {x: 0, y: 0, z: 0};
+    currentPosition = el.getComputedAttribute('position') || { x: 0, y: 0, z: 0 };
     el.setAttribute('position', {
       x: currentPosition.x,
       y: currentPosition.y - oldOffset + userHeightOffset,
@@ -135,7 +135,7 @@ module.exports.Component = registerComponent('camera', {
     headsetConnected = this.headsetConnected || checkHeadsetConnected();
     if (sceneEl.isMobile || !userHeightOffset || !headsetConnected) { return; }
 
-    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
+    currentPosition = el.getAttribute('position') || { x: 0, y: 0, z: 0 };
     el.setAttribute('position', {
       x: currentPosition.x,
       y: currentPosition.y - userHeightOffset,

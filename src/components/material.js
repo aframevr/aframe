@@ -18,13 +18,13 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
-    depthTest: {default: true},
-    flatShading: {default: false},
-    opacity: {default: 1.0, min: 0.0, max: 1.0},
-    shader: {default: 'standard', oneOf: shaderNames},
-    side: {default: 'front', oneOf: ['front', 'back', 'double']},
-    transparent: {default: false},
-    visible: {default: true}
+    depthTest: { default: true },
+    flatShading: { default: false },
+    opacity: { default: 1.0, min: 0.0, max: 1.0 },
+    shader: { default: 'standard', oneOf: shaderNames },
+    side: { default: 'front', oneOf: ['front', 'back', 'double'] },
+    transparent: { default: false },
+    visible: { default: true }
   },
 
   init: function () {

@@ -106,7 +106,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     }
     if (!changed) { return; }
     previousAxis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: previousAxis});
+    this.el.emit('axismove', { axis: previousAxis });
   },
 
   handleButton: function (id, buttonState) {
@@ -115,7 +115,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     changed = changed || this.handleTouch(id, buttonState);
     changed = changed || this.handleValue(id, buttonState);
     if (!changed) { return; }
-    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    this.el.emit('buttonchanged', { id: id, state: buttonState });
   },
 
   handlePress: function (id, buttonState) {
@@ -128,7 +128,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     } else {
       evtName = 'up';
     }
-    this.el.emit('button' + evtName, {id: id});
+    this.el.emit('button' + evtName, { id: id });
     previousButtonState.pressed = buttonState.pressed;
   },
 
@@ -145,7 +145,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       evtName = 'end';
     }
     previousButtonState.touched = buttonState.touched;
-    this.el.emit('touch' + evtName, {id: id, state: previousButtonState});
+    this.el.emit('touch' + evtName, { id: id, state: previousButtonState });
     return true;
   },
 

@@ -6,7 +6,7 @@ var THREE = require('../lib/three');
  * Loads a model with skeletal animation blending.
  */
 module.exports.Component = registerComponent('blend-character-model', {
-  schema: {type: 'src'},
+  schema: { type: 'src' },
 
   init: function () {
     this.model = null;
@@ -24,7 +24,7 @@ module.exports.Component = registerComponent('blend-character-model', {
 
     this.model.load(src, function () {
       el.setObject3D('mesh', self.model);
-      el.emit('model-loaded', {format: 'blend', model: self.model});
+      el.emit('model-loaded', { format: 'blend', model: self.model });
       self.model.castShadow = true;
       self.model.receiveShadow = true;
       self.model.material.shading = THREE.FlatShading;
