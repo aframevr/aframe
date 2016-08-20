@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var shouldCaptureKeyEvent = require('../utils/').shouldCaptureKeyEvent;
+var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
 var THREE = require('../lib/three');
 
 var MAX_DELTA = 0.2;
@@ -64,12 +65,12 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     if (data.enabled) {
       if (data.adEnabled) {
-        if (keys[65]) { velocity[adAxis] -= adSign * acceleration * delta; } // Left
-        if (keys[68]) { velocity[adAxis] += adSign * acceleration * delta; } // Right
+        if (keys.KeyA || keys.ArrowLeft) { velocity[adAxis] -= adSign * acceleration * delta; }
+        if (keys.KeyD || keys.ArrowRight) { velocity[adAxis] += adSign * acceleration * delta; }
       }
       if (data.wsEnabled) {
-        if (keys[87]) { velocity[wsAxis] -= wsSign * acceleration * delta; } // Up
-        if (keys[83]) { velocity[wsAxis] += wsSign * acceleration * delta; } // Down
+        if (keys.KeyW || keys.ArrowUp) { velocity[wsAxis] -= wsSign * acceleration * delta; }
+        if (keys.KeyS || keys.ArrowDown) { velocity[wsAxis] += wsSign * acceleration * delta; }
       }
     }
 
@@ -143,12 +144,14 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   onKeyDown: function (event) {
     if (!shouldCaptureKeyEvent(event)) { return; }
-    this.keys[event.keyCode] = true;
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    this.keys[code] = true;
   },
 
   onKeyUp: function (event) {
     if (!shouldCaptureKeyEvent(event)) { return; }
-    this.keys[event.keyCode] = false;
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    this.keys[code] = false;
   },
 
   getMovementVector: (function (delta) {
