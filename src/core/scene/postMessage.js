@@ -1,3 +1,4 @@
+var bind = require('../../utils/bind');
 var isIframed = require('../../utils/').isIframed;
 
 /**
@@ -8,7 +9,7 @@ module.exports = function initPostMessageAPI (scene) {
   // Handles fullscreen behavior when inside an iframe.
   if (!isIframed()) { return; }
   // postMessage API handler
-  window.addEventListener('message', postMessageAPIHandler.bind(scene));
+  window.addEventListener('message', bind(postMessageAPIHandler, scene));
 };
 
 function postMessageAPIHandler (event) {

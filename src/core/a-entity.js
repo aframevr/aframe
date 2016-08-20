@@ -4,6 +4,7 @@ var components = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
+var bind = utils.bind;
 
 var AEntity;
 var debug = utils.debug('core:a-entity:debug');
@@ -100,7 +101,7 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
       // Remove components.
-      Object.keys(this.components).forEach(this.removeComponent.bind(this));
+      Object.keys(this.components).forEach(bind(this.removeComponent, this));
       this.parentEl.remove(this);
     }
   },
@@ -654,7 +655,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, this.registerMixin.bind(this));
+      this.mapStateMixins(state, bind(this.registerMixin, this));
       this.emit('stateadded', {state: state});
     }
   },
@@ -664,7 +665,7 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, this.unregisterMixin.bind(this));
+      this.mapStateMixins(state, bind(this.unregisterMixin, this));
       this.emit('stateremoved', {state: state});
     }
   },

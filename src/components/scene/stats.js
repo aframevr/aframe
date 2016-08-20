@@ -1,5 +1,6 @@
 var registerComponent = require('../../core/component').registerComponent;
 var RStats = require('../../../vendor/rStats');
+var bind = require('../../utils/bind');
 require('../../../vendor/rStats.extras');
 require('../../lib/rStatsAframe');
 
@@ -18,8 +19,8 @@ module.exports.Component = registerComponent('stats', {
     this.stats = createStats(scene);
     this.statsEl = document.querySelector('.rs-base');
 
-    this.hideBound = this.hide.bind(this);
-    this.showBound = this.show.bind(this);
+    this.hideBound = bind(this.hide, this);
+    this.showBound = bind(this.show, this);
 
     scene.addEventListener('enter-vr', this.hideBound);
     scene.addEventListener('exit-vr', this.showBound);

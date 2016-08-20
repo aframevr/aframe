@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var isMobile = require('../utils/').isMobile();
+var bind = require('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -63,12 +64,12 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   bindMethods: function () {
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.releaseMouse = this.releaseMouse.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onMouseDown = bind(this.onMouseDown, this);
+    this.onMouseMove = bind(this.onMouseMove, this);
+    this.releaseMouse = bind(this.releaseMouse, this);
+    this.onTouchStart = bind(this.onTouchStart, this);
+    this.onTouchMove = bind(this.onTouchMove, this);
+    this.onTouchEnd = bind(this.onTouchEnd, this);
   },
 
   setupMouseControls: function () {
@@ -93,7 +94,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     // listen for canvas to load.
     if (!canvasEl) {
-      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
+      sceneEl.addEventListener('render-target-loaded', bind(this.addEventListeners, this));
       return;
     }
 

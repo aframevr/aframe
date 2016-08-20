@@ -6,6 +6,7 @@ var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
 var THREE = require('../lib/three');
 var utils = require('../utils/');
+var bind = utils.bind;
 
 var getComponentProperty = utils.entity.getComponentProperty;
 var DEFAULTS = animationConstants.defaults;
@@ -134,7 +135,7 @@ module.exports.AAnimation = registerElement('a-animation', {
           .onUpdate(function () {
             self.partialSetAttribute(this);
           })
-          .onComplete(self.onCompleted.bind(self));
+          .onComplete(bind(self.onCompleted, self));
       }
     },
 
@@ -257,10 +258,10 @@ module.exports.AAnimation = registerElement('a-animation', {
      */
     bindMethods: {
       value: function () {
-        this.start = this.start.bind(this);
-        this.stop = this.stop.bind(this);
-        this.onStateAdded = this.onStateAdded.bind(this);
-        this.onStateRemoved = this.onStateRemoved.bind(this);
+        this.start = bind(this.start, this);
+        this.stop = bind(this.stop, this);
+        this.onStateAdded = bind(this.onStateAdded, this);
+        this.onStateRemoved = bind(this.onStateRemoved, this);
       }
     },
 
