@@ -12,18 +12,16 @@ module.exports.Component = registerShader('standard', {
   schema: {
     ambientOcclusionMap: {default: ''},
     ambientOcclusionMapIntensity: {default: 1},
-    ambientOcclusionTextureWrap: {default: 'repeat'}, // one of 'repeat', 'clamp', 'mirrored'
-    ambientOcclusionTextureOffset: {type: 'vec2'},
-    ambientOcclusionTextureRepeat: {type: 'vec2', default: '1 1'},
+    ambientOcclusionTextureOffset: {default: ''},
+    ambientOcclusionTextureRepeat: {default: ''},
 
     color: {type: 'color'},
 
     displacementMap: {default: ''},
     displacementScale: {default: 1},
     displacementBias: {default: 1},
-    displacementTextureWrap: {default: 'repeat'}, // one of 'repeat', 'clamp', 'mirrored'
-    displacementTextureOffset: {type: 'vec2'},
-    displacementTextureRepeat: {type: 'vec2', default: '1 1'},
+    displacementTextureOffset: {default: ''},
+    displacementTextureRepeat: {default: ''},
     envMap: {default: ''},
 
     fog: {default: true},
@@ -32,9 +30,8 @@ module.exports.Component = registerShader('standard', {
 
     normalMap: {default: ''},
     normalScale: {type: 'vec2', default: '1 1'},
-    normalTextureWrap: {default: 'repeat'}, // one of 'repeat', 'clamp', 'mirrored'
-    normalTextureOffset: {type: 'vec2'},
-    normalTextureRepeat: {type: 'vec2', default: '1 1'},
+    normalTextureOffset: {default: ''},
+    normalTextureRepeat: {default: ''},
 
     repeat: {default: ''},
     roughness: {default: 0.5, min: 0.0, max: 1.0},
@@ -102,6 +99,7 @@ module.exports.Component = registerShader('standard', {
         self.isLoadingEnvMap = false;
         texture.mapping = THREE.SphericalReflectionMapping;
         material.envMap = texture;
+        utils.material.handleTextureEvents(self.el, texture);
         material.needsUpdate = true;
       });
       return;
@@ -112,6 +110,7 @@ module.exports.Component = registerShader('standard', {
       texturePromises[envMap].then(function (cube) {
         self.isLoadingEnvMap = false;
         material.envMap = cube;
+        utils.material.handleTextureEvents(self.el, cube);
         material.needsUpdate = true;
       });
       return;
@@ -124,6 +123,7 @@ module.exports.Component = registerShader('standard', {
           // Texture loaded.
           self.isLoadingEnvMap = false;
           material.envMap = cube;
+          utils.material.handleTextureEvents(self.el, cube);
           resolve(cube);
         });
       });

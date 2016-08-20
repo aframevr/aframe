@@ -64,10 +64,11 @@ function validateCubemapSrc (src, cb) {
   var urls;
   var validatedUrls = [];
 
-  for (i = 0; i < 6; i++) {
-    cubemapSrcRegex += 'url\((.+)\)\s*,\s*';
+  for (i = 0; i < 5; i++) {
+    cubemapSrcRegex += '(url\\((?:[^\\)]+)\\),\\s*)';
   }
-  urls = src.match(cubemapSrcRegex);
+  cubemapSrcRegex += '(url\\((?:[^\\)]+)\\)\\s*)';
+  urls = src.match(new RegExp(cubemapSrcRegex));
 
   // `src` is a comma-separated list of URLs.
   // In this case, re-use validateSrc for each side of the cube.

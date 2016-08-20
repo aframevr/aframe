@@ -1,5 +1,3 @@
-var THREE = require('../lib/three');
-
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
  *
@@ -31,7 +29,7 @@ module.exports.updateMap = function (shader, data) {
 };
 
 /**
- * Update's the material's maps which give the illusion of extra geometry.
+ * Updates the material's maps which give the illusion of extra geometry.
  *
  * @param {string} longType - The friendly name of the map from the component e.g. ambientOcclusionMap becomes aoMap in THREE.js
  * @param {object} shader - A-Frame shader instance
@@ -44,7 +42,12 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   var material = shader.material;
   var src = data[longType + 'Map'];
   var info = {};
-  info[longType + 'Map'] = src;
+  info.src = src;
+
+  // Pass through the repeat and offset to be handled by the material loader.
+  info.offset = data[longType + 'TextureOffset'];
+  info.repeat = data[longType + 'TextureRepeat'];
+  info.wrap = data[longType + 'TextureWrap'];
 
   if (src) {
     if (src === shader[longType + 'TextureSrc']) { return; }
@@ -60,19 +63,6 @@ module.exports.updateDistortionMap = function (longType, shader, data) {
   setMap(null);
 
   function setMap (texture) {
-    if (data[longType + 'TextureWrap'] === 'repeat') {
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    } else if (data[longType + 'TextureWrap'] === 'clamp') {
-      texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
-    } else if (data[longType + 'TextureWrap'] === 'mirrored') {
-      texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-    } else {
-      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-    }
-
-    texture.offset = data[longType + 'TextureOffset'];
-    texture.repeat = (new THREE.Vector2()).copy(data[longType + 'TextureRepeat']);
-
     material[shortType + 'Map'] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
