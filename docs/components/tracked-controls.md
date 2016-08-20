@@ -18,24 +18,26 @@ Selects the appropriate controller, applies pose to the entity, observes buttons
 
 ## Value
 
-| Property             | Description                                        | Default Value        |
-|----------------------|----------------------------------------------------|----------------------|
-| controller           | Index of the controller in array returned by the Gamepad API.  | 0                |
-| id                   | Selects the controller returned by the Gamepad API.            | 'OpenVR Gamepad' |
+| Property    | Description                                                    | Default Value    |
+|-------------|----------------------------------------------------------------|------------------|
+| controller  | Index of the controller in array returned by the Gamepad API.  | 0                |
+| id          | Selects the controller returned by the Gamepad API.            | 'OpenVR Gamepad' |
 
 ## Events
 
-| Event Name   | Description             |
-| ----------   | -----------             |
+| Event Name     | Description                                |
+|----------------|--------------------------------------------|
 | buttonchanged  | Any touch or press of a button fires this. |
-| buttondown     | Button pressed.    |
-| buttonup       | Button released.    |
-| touchstart     | Touch sensitive button touched.    |
-| touchend       | Touch sensitive button released.   |
-| axismove   | Axis changed.  |
+| buttondown     | Button pressed.                            |
+| buttonup       | Button released.                           |
+| touchstart     | Touch sensitive button touched.            |
+| touchend       | Touch sensitive button released.           |
+| axismove       | Axis changed.                              |
 
 ### Additional Resources
 
 - [Gamepad API][gamepadAPI] - W3C Gamepad API
+- [OpenVR][openVR] - OpenVR Documentation
 
 [gamepadAPI]: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API
+[openVR]: https://github.com/ValveSoftware/openvr/wiki/API-Documentation
