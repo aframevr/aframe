@@ -5,9 +5,13 @@ layout: docs
 parent_section: components
 ---
 
+[handcontrols]: ./hand-controls.md
+[vivecontrols]: ./vive-controls.md
+
 The tracked-controls component interfaces with tracked controllers. 
-Uses the Gamepad API to handle tracked controllers. 
-Selects the appropriate controller, applies pose to the entity, observes buttons state and emits appropriate events.
+It uses the Gamepad API to handle tracked controllers, 
+and is abstracted by the [hand-controls component][handcontrols] & the [vive-controls component][vivecontrols].
+This component elects the appropriate controller, applies pose to the entity, observes buttons state and emits appropriate events.
 
 
 ## Example
@@ -21,18 +25,18 @@ Selects the appropriate controller, applies pose to the entity, observes buttons
 | Property    | Description                                                    | Default Value    |
 |-------------|----------------------------------------------------------------|------------------|
 | controller  | Index of the controller in array returned by the Gamepad API.  | 0                |
-| id          | Selects the controller returned by the Gamepad API.            | 'OpenVR Gamepad' |
+| id          | Selects the controller returned by the Gamepad API.            | OpenVR Gamepad   |
 
 ## Events
 
 | Event Name     | Description                                |
 |----------------|--------------------------------------------|
+| axismove       | Axis changed.                              |
 | buttonchanged  | Any touch or press of a button fires this. |
 | buttondown     | Button pressed.                            |
 | buttonup       | Button released.                           |
 | touchstart     | Touch sensitive button touched.            |
 | touchend       | Touch sensitive button released.           |
-| axismove       | Axis changed.                              |
 
 ### Additional Resources
 
