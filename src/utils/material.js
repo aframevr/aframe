@@ -4,7 +4,6 @@
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-
 module.exports.updateMap = function (shader, data) {
   var el = shader.el;
   var material = shader.material;
