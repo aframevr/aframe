@@ -95,7 +95,7 @@ module.exports.Component = registerShader('standard', {
 
     // if a spherical env map is defined then use it.
     if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, { src: sphericalEnvMap }, function (texture) {
+      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, { src: sphericalEnvMap }, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
         texture.mapping = THREE.SphericalReflectionMapping;
         material.envMap = texture;
