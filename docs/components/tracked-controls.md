@@ -17,7 +17,7 @@ This component elects the appropriate controller, applies pose to the entity, ob
 ## Example
 
 ```html
-<a-entity tracked-controls="controller: 0; id: 'OpenVR Gamepad'"></a-entity>
+<a-entity tracked-controls="controller: 0; id: OpenVR Gamepad"></a-entity>
 ```
 
 ## Value
