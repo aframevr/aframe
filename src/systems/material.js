@@ -257,6 +257,14 @@ function setTextureProperties (texture, data) {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(parseFloat(repeatXY[0]), parseFloat(repeatXY[1]));
+
+  // Handle UV offset.
+  var offset = data.offset || '0 0';
+  var offsetXY = offset.split(' ');
+
+  // Don't bother setting offset if it is 0/0.
+  if (offset === '0 0' || offsetXY.length !== 2) { return; }
+  texture.offset.set(parseFloat(offsetXY[0]), parseFloat(offsetXY[1]));
 }
 
 /**
