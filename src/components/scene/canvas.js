@@ -1,3 +1,4 @@
+var bind = require('../../utils/bind');
 var register = require('../../core/component').registerComponent;
 
 module.exports.Component = register('canvas', {
@@ -48,7 +49,7 @@ module.exports.Component = register('canvas', {
       document.body.focus();
       // For unkown reasons a syncrhonous resize does
       // not work on desktop when entering/exiting fullscreen
-      setTimeout(sceneEl.resize.bind(sceneEl), 0);
+      setTimeout(bind(sceneEl.resize, sceneEl), 0);
     }
   }
 

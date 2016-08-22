@@ -1,5 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
+var bind = require('../utils/bind');
 var shouldCaptureKeyEvent = require('../utils/').shouldCaptureKeyEvent;
+var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
 var THREE = require('../lib/three');
 
 var MAX_DELTA = 0.2;
@@ -9,27 +11,27 @@ var MAX_DELTA = 0.2;
  */
 module.exports.Component = registerComponent('wasd-controls', {
   schema: {
-    easing: { default: 20 },
-    acceleration: { default: 65 },
-    enabled: { default: true },
-    fly: { default: false },
-    wsAxis: { default: 'z', oneOf: [ 'x', 'y', 'z' ] },
-    adAxis: { default: 'x', oneOf: [ 'x', 'y', 'z' ] },
-    wsInverted: { default: false },
-    wsEnabled: { default: true },
-    adInverted: { default: false },
-    adEnabled: { default: true }
+    easing: {default: 20},
+    acceleration: {default: 65},
+    enabled: {default: true},
+    fly: {default: false},
+    wsAxis: {default: 'z', oneOf: [ 'x', 'y', 'z' ]},
+    adAxis: {default: 'x', oneOf: [ 'x', 'y', 'z' ]},
+    wsInverted: {default: false},
+    wsEnabled: {default: true},
+    adInverted: {default: false},
+    adEnabled: {default: true}
   },
 
   init: function () {
     this.velocity = new THREE.Vector3();
     // To keep track of the pressed keys
     this.keys = {};
-    this.onBlur = this.onBlur.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onVisibilityChange = this.onVisibilityChange.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onBlur = bind(this.onBlur, this);
+    this.onFocus = bind(this.onFocus, this);
+    this.onVisibilityChange = bind(this.onVisibilityChange, this);
+    this.onKeyDown = bind(this.onKeyDown, this);
+    this.onKeyUp = bind(this.onKeyUp, this);
     this.attachVisibilityEventListeners();
   },
 
@@ -64,12 +66,12 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     if (data.enabled) {
       if (data.adEnabled) {
-        if (keys[65]) { velocity[adAxis] -= adSign * acceleration * delta; } // Left
-        if (keys[68]) { velocity[adAxis] += adSign * acceleration * delta; } // Right
+        if (keys.KeyA || keys.ArrowLeft) { velocity[adAxis] -= adSign * acceleration * delta; }
+        if (keys.KeyD || keys.ArrowRight) { velocity[adAxis] += adSign * acceleration * delta; }
       }
       if (data.wsEnabled) {
-        if (keys[87]) { velocity[wsAxis] -= wsSign * acceleration * delta; } // Up
-        if (keys[83]) { velocity[wsAxis] += wsSign * acceleration * delta; } // Down
+        if (keys.KeyW || keys.ArrowUp) { velocity[wsAxis] -= wsSign * acceleration * delta; }
+        if (keys.KeyS || keys.ArrowDown) { velocity[wsAxis] += wsSign * acceleration * delta; }
       }
     }
 
@@ -143,12 +145,14 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   onKeyDown: function (event) {
     if (!shouldCaptureKeyEvent(event)) { return; }
-    this.keys[event.keyCode] = true;
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    this.keys[code] = true;
   },
 
   onKeyUp: function (event) {
     if (!shouldCaptureKeyEvent(event)) { return; }
-    this.keys[event.keyCode] = false;
+    var code = event.code || KEYCODE_TO_CODE[event.keyCode];
+    this.keys[code] = false;
   },
 
   getMovementVector: (function (delta) {

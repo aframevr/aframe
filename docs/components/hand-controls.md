@@ -5,8 +5,8 @@ layout: docs
 parent_section: components
 ---
 
-[tracked]: ./components/tracked-controls.md
-[vive]: ./components/vive-controls.md
+[tracked]: ./tracked-controls.md
+[vive]: ./vive-controls.md
 
 The hand-controls gives tracked hands (using a prescribed model) with animated
 gestures. It wraps the [vive-controls component][vive], which wraps the

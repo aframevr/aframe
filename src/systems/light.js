@@ -1,4 +1,5 @@
 var registerSystem = require('../core/system').registerSystem;
+var bind = require('../utils/bind');
 var constants = require('../constants/');
 
 var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
@@ -19,7 +20,7 @@ module.exports.System = registerSystem('light', {
     // Wait for all entities to fully load before checking for existence of lights.
     // Since entities wait for <a-assets> to load, any lights attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', this.setupDefaultLights.bind(this));
+    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
   },
 
   /**

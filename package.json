@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Building blocks for the VR Web",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe.js",
@@ -32,12 +32,13 @@
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
+    "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
-    "promise-polyfill": "^3.1.0",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
+    "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "three": "^0.76.1",
     "tween.js": "^15.0.0",
@@ -45,7 +46,6 @@
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "browserify-css": "^0.8.2",
     "browserify-derequire": "^0.9.4",
     "browserify-istanbul": "^2.0.0",
     "budo": "^8.1.0",

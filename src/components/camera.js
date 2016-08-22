@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
+var bind = utils.bind;
 
 var checkHeadsetConnected = utils.checkHeadsetConnected;
 
@@ -34,8 +35,8 @@ module.exports.Component = registerComponent('camera', {
     el.setObject3D('camera', camera);
 
     // Add listeners to save and restore camera pose if headset is present.
-    this.onEnterVR = this.onEnterVR.bind(this);
-    this.onExitVR = this.onExitVR.bind(this);
+    this.onEnterVR = bind(this.onEnterVR, this);
+    this.onExitVR = bind(this.onExitVR, this);
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
     sceneEl.addEventListener('exit-vr', this.onExitVR);
   },

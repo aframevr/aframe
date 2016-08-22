@@ -3,6 +3,7 @@ var components = require('../../core/component').components;
 var registerElement = require('../../core/a-register-element').registerElement;
 var utils = require('../../utils/');
 
+var bind = utils.bind;
 var debug = utils.debug;
 var setComponentProperty = utils.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
@@ -128,7 +129,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       getTransformedValue: {
         value: function (attr, value) {
           if (!this.transforms || !this.transforms[attr]) { return value; }
-          return this.transforms[attr].bind(this)(value);
+          return bind(this.transforms[attr], this)(value);
         }
       }
     })

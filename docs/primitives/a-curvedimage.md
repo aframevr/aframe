@@ -21,7 +21,7 @@ The curved image primitive creates images that bend around the user. Curved imag
                  rotation="0 100 0" scale="0.8 0.8 0.8"></a-curvedimage>
 
   <!-- Defining the URL inline. Not recommended but more comfortable for web developers. -->
-  <a-curvedimage src="another-image.png"></a-curved-image>
+  <a-curvedimage src="another-image.png"></a-curvedimage>
 </a-scene>
 ```
 

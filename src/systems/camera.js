@@ -1,3 +1,4 @@
+var bind = require('../utils/bind');
 var constants = require('../constants/');
 var registerSystem = require('../core/system').registerSystem;
 
@@ -15,7 +16,7 @@ module.exports.System = registerSystem('camera', {
     // Wait for all entities to fully load before checking for existence of camera.
     // Since entities wait for <a-assets> to load, any cameras attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', this.setupDefaultCamera.bind(this));
+    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultCamera, this));
   },
 
   /**

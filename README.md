@@ -45,23 +45,31 @@ __Also, be sure to check out the awesome [examples](https://aframe.io/examples/)
 
 First install from npm:
 
-    npm install aframe
+```sh
+npm install aframe
+```
 
 And in your Browserify/Webpack modules, simply require the module:
 
-    require('aframe')
+```js
+require('aframe')
+```
 
 
 ## Local Installation and Development
 
 Alternatively, you can clone this repository to work locally on this project and explore the examples.
 
-    git clone git@github.com:aframevr/aframe.git
-    cd aframe && npm install
+```sh
+git clone git@github.com:aframevr/aframe.git
+cd aframe && npm install
+```
 
 To start the local development server:
 
-    npm start
+```sh
+npm start
+```
 
 And fire up __[http://localhost:9000](http://localhost:9000)__!
 
@@ -73,27 +81,37 @@ Ensure you have [cloned the repo and installed the dependencies](#local-installa
 
 To increment the preminor version of the package (e.g., `0.1.19` to `0.1.20`) and create a git tag (e.g., `v0.1.20`):
 
-    npm run release:bump
+```sh
+npm run release:bump
+```
 
 ___NOTE:___ npm versions __cannot__ be unpublished.
 
 Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1.20`) and to the new tag to GitHub (e.g., `v0.1.20`):
 
-    npm run release:push
+```sh
+npm run release:push
+```
 
 ## Updating `dist` Files
 
-    npm run dist
+```sh
+npm run dist
+```
 
 ## Publishing to GitHub Pages
 
 To publish to __https://aframevr.github.io/aframe/__:
 
-    npm run ghpages
+```sh
+npm run ghpages
+```
 
 To publish to __https://your_username.github.io/aframe/__:
 
-    npm run ghpages your_username
+```sh
+npm run ghpages your_username
+```
 
 ## Contributing
 

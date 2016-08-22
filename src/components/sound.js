@@ -1,5 +1,6 @@
-var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
+var debug = require('../utils/debug');
+var bind = require('../utils/bind');
 var THREE = require('../lib/three');
 
 var warn = debug('components:sound:warn');
@@ -9,11 +10,11 @@ var warn = debug('components:sound:warn');
  */
 module.exports.Component = registerComponent('sound', {
   schema: {
-    src: { type: 'src' },
+    src: {type: 'src'},
     on: { default: '' },
-    autoplay: { default: false },
-    loop: { default: false },
-    volume: { default: 1 }
+    autoplay: {default: false},
+    loop: {default: false},
+    volume: {default: 1}
   },
 
   multiple: true,
@@ -22,7 +23,7 @@ module.exports.Component = registerComponent('sound', {
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
     this.sound = null;
-    this.playSound = this.playSound.bind(this);
+    this.playSound = bind(this.playSound, this);
   },
 
   update: function (oldData) {

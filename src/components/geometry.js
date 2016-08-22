@@ -13,10 +13,10 @@ var warn = debug('components:geometry:warn');
  */
 module.exports.Component = registerComponent('geometry', {
   schema: {
-    buffer: { default: true },
-    mergeTo: { type: 'selector' },
-    primitive: { default: 'box', oneOf: geometryNames },
-    skipCache: { default: false }
+    buffer: {default: true},
+    mergeTo: {type: 'selector'},
+    primitive: {default: 'box', oneOf: geometryNames},
+    skipCache: {default: false}
   },
 
   init: function () {

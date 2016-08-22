@@ -1,4 +1,5 @@
 var ANode = require('./a-node');
+var bind = require('../utils/bind');
 var debug = require('../utils/debug');
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
@@ -50,7 +51,7 @@ module.exports = registerElement('a-assets', {
         }
 
         // Trigger loaded for scene to start rendering.
-        Promise.all(loaded).then(this.load.bind(this));
+        Promise.all(loaded).then(bind(this.load, this));
 
         // Timeout to start loading anyways.
         timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;

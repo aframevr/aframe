@@ -7,12 +7,12 @@ var utils = require('../utils/');
  */
 module.exports.Component = registerShader('flat', {
   schema: {
-    color: { type: 'color' },
-    fog: { default: true },
-    height: { default: 256 },
-    repeat: { default: '' },
-    src: { default: '' },
-    width: { default: 512 }
+    color: {type: 'color'},
+    fog: {default: true},
+    height: {default: 256},
+    repeat: {default: ''},
+    src: {default: ''},
+    width: {default: 512}
   },
 
   /**

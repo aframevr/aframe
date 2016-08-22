@@ -56,7 +56,7 @@ A-Frame scene:
 
 ## A-Frame
 
-[mixins]: ../components/mixins.md
+[mixins]: ../core/mixins.md
 [ecs]: ../core/index.md
 [template]: https://github.com/ngokevin/aframe-template-component
 
