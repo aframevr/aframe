@@ -20,6 +20,7 @@ Overflow tag][stackoverflow]
 
 [easy]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28easy%29
 [hard]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28hard%29
+[testing-guide]: https://github.com/aframevr/aframe/tree/master/tests#a-frame-unit-tests
 
 Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
 (hard)*][hard] for good issues to tackle.
@@ -28,9 +29,9 @@ Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
 3. Run `npm install` and `npm run dev` to serve the test examples.
 4. Make changes to your fork of the repository.
-5. If necessary, [write unit tests](tests/) and run with `npm test`.
+5. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
 6. Submit a pull request to the master branch.
-7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) and [squash your commits](https://davidwalsh.name/squash-commits-git) once ready.
+7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) if any.
 
 Please note you would agree to license your contributions under the [license](LICENSE).
 

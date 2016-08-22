@@ -87,6 +87,12 @@ suite('module/component/custom element', function () {
 
 ### Testing Tips
 
+[coverage]: https://en.wikipedia.org/wiki/Code_coverage
+[codecov-chrome]: https://chrome.google.com/webstore/detail/codecov-extension/keefkhehidemnokodkdkejapdgfjmijf
+[codecov-ff]: https://addons.mozilla.org/en-US/firefox/addon/codecov-extension/
+
+- Install the Codecov [Chrome Extension][codecov-chrome] or
+  [Firefox Add-on](codecov-ff) to view [code coverage][coverage] information on GitHub's UI.
 - `helpers.js:entityFactory` is common called in `setup` hooks to setup an
   entity within a scene that is attached to the body.
 - When testing with an `<a-entity>`, we often to have wait until it fires the
