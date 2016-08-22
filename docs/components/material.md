@@ -315,6 +315,7 @@ AFRAME.registerShader('line-dashed', {
    */
   init: function (data) {
     this.material = new THREE.LineDashedMaterial(data);
+    this.update(data);  // `update()` currently not called after `init`. (#1834)
   },
 
   /**
