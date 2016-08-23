@@ -73,7 +73,7 @@ These properties are available on top of the base material properties.
 | Property                      | Description                                                                                                                                     | Default Value |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | ambientOcclusionMap           | Ambient occlusion map. Used to add shadows to the mesh. Can either be a selector to an `<img>` an inline URL.                                   | None          |
-| ambientOcclusionMapIntensity  | The intensity of the ambient occlusion map, a number betwwen 0 and 1.                                                                           | 1             |
+| ambientOcclusionMapIntensity  | The intensity of the ambient occlusion map, a number between 0 and 1.                                                                           | 1             |
 | ambientOcclusionTextureRepeat | How many times the ambient occlusion texture repeats in the X and Y direction.                                                                  | 1 1           |
 | ambientOcclusionTextureOffset | How the ambient occlusion texture is offset in the x y direction.                                                                               | 0 0           |
 | color                         | Base diffuse color.                                                                                                                             | #fff          |
@@ -130,7 +130,7 @@ The `envMap` and `sphericalEnvMap` properties define what environment
 the material reflects. The clarity of the environment reflection depends
 on the `metalness`, and `roughness` properties.
 
-The `sphericalEnvMap` property takes a single sperical mapped
+The `sphericalEnvMap` property takes a single spherical mapped
 texture. Of the kind you would assign to a `<a-sky>`.
 
 Unlike textures, the `envMap` property takes a cubemap, six images put together to
