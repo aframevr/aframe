@@ -122,4 +122,25 @@ suite('propertyTypes', function () {
       assert.equal(stringify([1, 'five', true, '5 0 5']), '1, five, true, 5 0 5');
     });
   });
+
+  suite('srcParse', function () {
+    var parse = propertyTypes.src.parse;
+
+    setup(function () {
+      var el = this.el = document.createElement('div');
+      el.setAttribute('id', 'hello');
+      el.setAttribute('src', 'file2.jpg');
+      document.body.appendChild(el);
+    });
+
+    teardown(function () {
+      this.el.parentNode.removeChild(this.el);
+    });
+
+    test('parses src', function () {
+      assert.equal(parse('url(file.jpg)'), 'file.jpg');
+      assert.equal(parse('file.jpg'), '');
+      assert.equal(parse('#hello'), 'file2.jpg');
+    });
+  });
 });
