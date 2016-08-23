@@ -19,7 +19,7 @@ module.exports.Component = registerShader('standard', {
 
     displacementMap: {default: ''},
     displacementScale: {default: 1},
-    displacementBias: {default: 1},
+    displacementBias: {default: 0.5},
     displacementTextureOffset: {default: ''},
     displacementTextureRepeat: {default: ''},
     envMap: {default: ''},
