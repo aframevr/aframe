@@ -15,10 +15,10 @@ without colliding with controls.
 
 ## Example
 
-A camera situated at human-level height (1.8 meters).
+A camera situated at the average height of human eye level (1.6 meters).
 
 ```html
-<a-entity camera="userHeight: 1.8" look-controls></a-entity>
+<a-entity camera="userHeight: 1.6" look-controls></a-entity>
 ```
 
 ## Properties
@@ -29,16 +29,17 @@ A camera situated at human-level height (1.8 meters).
 | far        | Camera frustum far clipping plane.                                                                                              | 10000         |
 | fov        | Field of view (in degrees).                                                                                                     | 80            |
 | near       | Camera frustum near clipping plane.                                                                                             | 0.005         |
-| userHeight | How much height to add to the camera when *not* in VR mode. The default camera has this set to 1.8 (to represent human height). | 0             |
+| userHeight | How much height to add to the camera when *not* in VR mode. The default camera has this set to 1.6 (meters, to represent average eye level.). | 0             |
 | zoom       | Zoom factor of the camera.                                                                                                      | 1             |
 
 ## VR Behavior
 
-When not in VR mode, `userHeight` translates the camera up to simulate human
-height. The injected camera has this set to 1.8 (meters). When entering VR,
-this height offset is *removed* such that the absolute position return from the
-VR headset is used. This is very convenient for experiences that work both in
-and out of VR, as well as making experiences look decent from the monitor as
+When not in VR mode, `userHeight` translates the camera up to approximate
+average height of human eye level. The injected camera has this set to 1.6
+(meters). When entering VR, this height offset is *removed* such that the
+absolute position return from the VR headset is used. This is very convenient
+for experiences that work both in and out of VR, as well as making experiences
+look decent from the monitor as
 opposed to clipping the ground if the headset was resting on the ground.
 
 When exiting VR, the camera will restore its rotation to its rotation *before*
