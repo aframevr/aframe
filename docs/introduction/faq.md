@@ -83,7 +83,9 @@ Because of an [iOS platform restriction][iosvideo] in order to get inline video
 Inline video support on iOS 10 may change this. On certain Android devices or
 browsers, we must:
 
-- Require user interaction to trigger the video (such as a click or tap event).
+[android-touch-bug]: https://bugs.chromium.org/p/chromium/issues/detail?id=178297
+
+- Require user interaction to trigger the video (such as a click or tap event). See [Chromium Bug 178297][android-touch-bug].
 
 We will try to create a video boilerplate that has all the configurations to
 work on mobile devices.
