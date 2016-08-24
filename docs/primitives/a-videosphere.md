@@ -45,5 +45,5 @@ In order to be seamless, videos should be [equirectangular](https://en.wikipedia
 iOS has a lot of restrictions on playing videos in the browser. To play an inline video texture, we must:
 
 - Set the `<meta name="apple-mobile-web-app-capable" content="yes">` meta tag (will be injected if missing).
-- Set the `webkit-playsinline` attribute to the video element.
+- Set the `webkit-playsinline` attribute to the video element (is automatically added to all videos).
 - Pin the webpage to the iOS homescreen.

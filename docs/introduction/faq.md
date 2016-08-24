@@ -76,8 +76,8 @@ Mobile browsers have limitations with displaying inline video.
 Because of an [iOS platform restriction][iosvideo] in order to get inline video
 (with or without autoplay), we must:
 
-- Set the `<meta name="apple-mobile-web-app-capable" content="yes">` metatag.
-- Set the `webkit-playsinline` attribute to the video element.
+- Set the `<meta name="apple-mobile-web-app-capable" content="yes">` meta tag (will be injected if missing).
+- Set the `webkit-playsinline` attribute to the video element (is automatically added to all videos).
 - Pin the webpage to the iOS homescreen.
 
 Inline video support on iOS 10 may change this. On certain Android devices or
