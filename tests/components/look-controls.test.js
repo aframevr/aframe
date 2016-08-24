@@ -22,7 +22,7 @@ suite('look-controls', function () {
       el.canvas.dispatchEvent(new Event('mousedown'));
       process.nextTick(function () {
         assert.ok(document.body.classList.contains(GRABBING_CLASS));
-        document.body.classList.remove('a-grabbing');
+        document.body.classList.remove(GRABBING_CLASS);
         done();
       });
     });
