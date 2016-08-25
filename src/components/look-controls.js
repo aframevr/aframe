@@ -1,6 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
-var isMobile = require('../utils/').device.isMobile();
 var bind = require('../utils/bind');
 
 var radToDeg = THREE.Math.radToDeg;
@@ -185,7 +184,7 @@ module.exports.Component = registerComponent('look-controls', {
       hmdQuaternion = this.calculateHMDQuaternion();
       hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
 
-      if (isMobile) {
+      if (el.sceneEl.isMobile) {
         // In mobile, allow camera rotation with touch events and sensors.
         rotation = {
           x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
@@ -229,17 +228,12 @@ module.exports.Component = registerComponent('look-controls', {
    * @member previousRotationY
    */
   calculateDeltaRotation: (function () {
-    var previousRotationX;
-    var previousRotationY;
+    var previousRotationX = 0;
+    var previousRotationY = 0;
     return function () {
       var currentRotationX = radToDeg(this.pitchObject.rotation.x);
       var currentRotationY = radToDeg(this.yawObject.rotation.y);
-      var deltaRotation;
-
-      previousRotationX = previousRotationX || currentRotationX;
-      previousRotationY = previousRotationY || currentRotationY;
-
-      deltaRotation = {
+      var deltaRotation = {
         x: currentRotationX - previousRotationX,
         y: currentRotationY - previousRotationY
       };
@@ -311,6 +305,9 @@ module.exports.Component = registerComponent('look-controls', {
 
   /**
    * Translate mouse drag into rotation.
+   *
+   * Dragging up and down rotates the camera around the X-axis (yaw).
+   * Dragging left and right rotates the camera around the Y-axis (pitch).
    */
   onMouseMove: function (event) {
     var movementX;
@@ -370,7 +367,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Translate touch move to Y-axis rotation.
    */
   onTouchMove: function (event) {
-    var canvas = this.sceneEl.canvas;
+    var canvas = this.el.sceneEl.canvas;
     var deltaY;
     var yawObject = this.yawObject;
 

@@ -1,5 +1,4 @@
  /* global Event, assert, process, setup, suite, test */
-
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
 var GRABBING_CLASS = 'a-grabbing';
 
@@ -17,7 +16,7 @@ suite('look-controls', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
     });
 
-    test('adds grabbing class to document body on mousedown', function (done) {
+    test('adds grabbing class to body on mousedown', function (done) {
       var el = this.sceneEl;
       process.nextTick(function () {
         assert.ok(document.body.classList.contains(GRABBING_CLASS));
@@ -27,7 +26,7 @@ suite('look-controls', function () {
       el.canvas.dispatchEvent(new Event('mousedown'));
     });
 
-    test('removes grabbing class from document body on document body mouseup', function (done) {
+    test('removes grabbing class from body on body mouseup', function (done) {
       document.body.classList.add(GRABBING_CLASS);
       process.nextTick(function () {
         assert.notOk(document.body.classList.contains(GRABBING_CLASS));
