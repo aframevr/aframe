@@ -103,7 +103,7 @@ module.exports.isMobile = function () {
       check = true;
     }
     if (isGearVR()) {
-      check = false;
+      check = true;
     }
   })(navigator.userAgent || navigator.vendor || window.opera);
   return check;
