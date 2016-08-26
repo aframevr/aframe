@@ -32,7 +32,7 @@ For example, we can create a ring-shaped cursor that is fixed to the center of t
 
 ```js
 // Component to change to random color on click.
-AFRAME.registerComponent('click-color-change', {
+AFRAME.registerComponent('cursor-listener', {
   init: function () {
     var COLORS = ['red', 'green', 'blue'];
     this.el.addEventListener('click', function () {
