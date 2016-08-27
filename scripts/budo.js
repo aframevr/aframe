@@ -25,6 +25,7 @@ var opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
   live: true,
+  ssl: true,
   stream: process.stdout,
   host: process.env.HOST,
   port: process.env.PORT || consts.PORT,
