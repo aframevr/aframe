@@ -11,9 +11,7 @@ navigator.getVRDisplays = function () {
     requestPresent: resolvePromise,
     exitPresent: resolvePromise
   };
-  return new Promise(function (resolve) {
-    resolve([mockVRDisplay]);
-  });
+  return Promise.resolve([mockVRDisplay]);
 };
 
 var AScene = require('core/scene/a-scene');
@@ -28,11 +26,10 @@ setup(function () {
 
 teardown(function () {
   // Clean up any attached elements.
-  ['canvas', 'a-assets', 'a-scene'].forEach(function (tagName) {
-    var els = document.querySelectorAll(tagName);
-    for (var i = 0; i < els.length; i++) {
-      els[i].parentNode.removeChild(els[i]);
-    }
-  });
+  var attachedEls = ['canvas', 'a-assets', 'a-scene'];
+  var els = document.querySelectorAll(attachedEls.join(','));
+  for (var i = 0; i < els.length; i++) {
+    els[i].parentNode.removeChild(els[i]);
+  }
   this.sinon.restore();
 });
