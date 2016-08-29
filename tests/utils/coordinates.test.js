@@ -15,7 +15,7 @@ suite('utils.coordinates', function () {
   suite('parse', function () {
     test('parses string', function () {
       assert.shallowDeepEqual(
-        coordinates.parse('1 2.5 -3'), { x: 1, y: 2.5, z: -3 });
+        coordinates.parse('1 2.5 -3'), {x: 1, y: 2.5, z: -3});
     });
 
     test('parses null', function () {
@@ -23,33 +23,33 @@ suite('utils.coordinates', function () {
     });
 
     test('can return fallback values', function () {
-      var defaultCoordinate = { z: -3 };
+      var defaultCoordinate = {z: -3};
       assert.shallowDeepEqual(coordinates.parse('1 2', defaultCoordinate),
-                              { x: 1, y: 2, z: -3 });
+                              {x: 1, y: 2, z: -3});
     });
 
     test('returns already-parsed object', function () {
-      assert.shallowDeepEqual(coordinates.parse({ x: 1, y: 2, z: -3 }),
-                              { x: 1, y: 2, z: -3 });
+      assert.shallowDeepEqual(coordinates.parse({x: 1, y: 2, z: -3}),
+                              {x: 1, y: 2, z: -3});
     });
 
     test('parses object with strings', function () {
-      assert.shallowDeepEqual(coordinates.parse({ x: '1', y: '2', z: -3 }),
-                              { x: 1, y: 2, z: -3 });
+      assert.shallowDeepEqual(coordinates.parse({x: '1', y: '2', z: -3}),
+                              {x: 1, y: 2, z: -3});
     });
   });
 
   suite('stringify', function () {
     test('stringifies a vec2', function () {
-      assert.equal(coordinates.stringify({ x: 1, y: 2 }), '1 2');
+      assert.equal(coordinates.stringify({x: 1, y: 2}), '1 2');
     });
 
     test('stringifies a vec3', function () {
-      assert.equal(coordinates.stringify({ x: 1, y: 2, z: -3 }), '1 2 -3');
+      assert.equal(coordinates.stringify({x: 1, y: 2, z: -3}), '1 2 -3');
     });
 
     test('stringifies a vec4', function () {
-      assert.equal(coordinates.stringify({ x: 1, y: 2, z: -3, w: -4 }), '1 2 -3 -4');
+      assert.equal(coordinates.stringify({x: 1, y: 2, z: -3, w: -4}), '1 2 -3 -4');
     });
 
     test('returns already-stringified string', function () {
