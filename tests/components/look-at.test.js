@@ -90,13 +90,13 @@ suite('look-at', function () {
     test('parses position vector', function () {
       var el = this.el;
       el.setAttribute('look-at', '1 2 3');
-      assert.shallowDeepEqual(el.components['look-at'].data, { x: 1, y: 2, z: 3 });
+      assert.shallowDeepEqual(el.components['look-at'].data, {x: 1, y: 2, z: 3});
     });
 
     test('parses position vector with whitespaces', function () {
       var el = this.el;
       el.setAttribute('look-at', ' 4   5 2   ');
-      assert.shallowDeepEqual(el.components['look-at'].data, { x: 4, y: 5, z: 2 });
+      assert.shallowDeepEqual(el.components['look-at'].data, {x: 4, y: 5, z: 2});
     });
 
     test('parses target selector', function () {

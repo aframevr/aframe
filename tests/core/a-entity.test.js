@@ -11,8 +11,8 @@ var entityFactory = helpers.entityFactory;
 var mixinFactory = helpers.mixinFactory;
 var TestComponent = {
   schema: {
-    a: { default: 0 },
-    b: { default: 1 }
+    a: {default: 0},
+    b: {default: 1}
   },
   init: function () { },
   update: function () { },
@@ -226,7 +226,7 @@ suite('a-entity', function () {
     test('can set a component with an object', function () {
       var el = this.el;
       var material;
-      var value = { color: '#F0F', metalness: 0.75 };
+      var value = {color: '#F0F', metalness: 0.75};
       el.setAttribute('material', value);
       material = el.getAttribute('material');
       assert.equal(material.color, '#F0F');
@@ -236,7 +236,7 @@ suite('a-entity', function () {
     test('can replace component attributes with an object', function () {
       var el = this.el;
       var material;
-      var value = { color: '#000' };
+      var value = {color: '#000'};
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
       el.setAttribute('material', value);
       material = el.getAttribute('material');
@@ -263,7 +263,7 @@ suite('a-entity', function () {
 
     test('transforms object to string before setting on DOM', function () {
       var el = this.el;
-      var positionObj = { x: 10, y: 20, z: 30 };
+      var positionObj = {x: 10, y: 20, z: 30};
       el.setAttribute('position', positionObj);
       assert.ok(el.outerHTML.indexOf('position=""') !== -1);
     });
@@ -605,7 +605,7 @@ suite('a-entity', function () {
     test('does not remove mixed-in component', function () {
       var el = this.el;
       var mixinId = 'geometry';
-      mixinFactory(mixinId, { geometry: 'primitive: box' });
+      mixinFactory(mixinId, {geometry: 'primitive: box'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok('geometry' in el.components);
@@ -687,23 +687,23 @@ suite('a-entity', function () {
     test('initialize a component', function () {
       var el = this.el;
       assert.equal(el.components.material, undefined);
-      el.updateComponent('material', { color: 'blue' });
+      el.updateComponent('material', {color: 'blue'});
       assert.equal(el.getAttribute('material').color, 'blue');
     });
 
     test('update an existing component', function () {
       var el = this.el;
-      var component = new components.material.Component(el, { color: 'red' });
+      var component = new components.material.Component(el, {color: 'red'});
       el.components.material = component;
       assert.equal(el.getAttribute('material').color, 'red');
-      el.updateComponent('material', { color: 'blue' });
+      el.updateComponent('material', {color: 'blue'});
       assert.equal(component, el.components.material);
       assert.equal(el.getAttribute('material').color, 'blue');
     });
 
     test('remove a component', function () {
       var el = this.el;
-      el.components.material = new components.material.Component(el, { color: 'red' });
+      el.components.material = new components.material.Component(el, {color: 'red'});
       assert.equal(el.getAttribute('material').color, 'red');
       el.updateComponent('material', null);
       assert.equal(el.components.material, undefined);
@@ -720,7 +720,7 @@ suite('a-entity', function () {
 
     test('update a property of an existing component', function () {
       var el = this.el;
-      var component = new components.material.Component(el, { color: 'red' });
+      var component = new components.material.Component(el, {color: 'red'});
       el.components.material = component;
       assert.equal(el.getAttribute('material').color, 'red');
       el.updateComponentProperty('material', 'color', 'blue');
@@ -733,10 +733,10 @@ suite('a-entity', function () {
     test('combines mixin and element components with a dynamic schema', function () {
       var el = this.el;
       var mixinId = 'material';
-      mixinFactory(mixinId, { material: 'shader: flat' });
+      mixinFactory(mixinId, {material: 'shader: flat'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('material', 'color: red');
-      assert.shallowDeepEqual(el.getComputedAttribute('material'), { shader: 'flat', color: 'red' });
+      assert.shallowDeepEqual(el.getComputedAttribute('material'), {shader: 'flat', color: 'red'});
     });
 
     test('merges component properties from mixin', function (done) {
@@ -758,15 +758,15 @@ suite('a-entity', function () {
     test('applies default vec3 component from mixin', function () {
       var el = this.el;
       var mixinId = 'position';
-      mixinFactory(mixinId, { position: '1 2 3' });
+      mixinFactory(mixinId, {position: '1 2 3'});
       el.setAttribute('mixin', mixinId);
-      assert.shallowDeepEqual(el.getComputedAttribute('position'), { x: 1, y: 2, z: 3 });
+      assert.shallowDeepEqual(el.getComputedAttribute('position'), {x: 1, y: 2, z: 3});
     });
 
     test('does not override defined property', function () {
       var el = this.el;
-      el.setAttribute('material', { color: 'red' });
-      mixinFactory('blue', { material: 'color: blue' });
+      el.setAttribute('material', {color: 'red'});
+      mixinFactory('blue', {material: 'color: blue'});
       el.setAttribute('mixin', 'blue');
       assert.shallowDeepEqual(el.getComputedAttribute('material').color, 'red');
     });

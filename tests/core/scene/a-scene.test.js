@@ -163,7 +163,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls behaviors', function () {
     var scene = this.el;
-    var Component = { el: { isPlaying: true }, tick: function () {} };
+    var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
     scene.render();

@@ -10,23 +10,23 @@ var processSchema = Schema.process;
 suite('schema', function () {
   suite('isSingleProperty', function () {
     test('for empty object', function () {
-      assert.notOk(isSingleProperty({ }));
+      assert.notOk(isSingleProperty({}));
     });
 
     test('for type defined', function () {
-      assert.ok(isSingleProperty({ type: 'vec3' }));
+      assert.ok(isSingleProperty({type: 'vec3'}));
     });
 
     test('for property named type', function () {
       assert.notOk(isSingleProperty({
-        type: { default: '' }
+        type: {default: ''}
       }));
     });
 
     test('for properties named type and default', function () {
       assert.notOk(isSingleProperty({
-        type: { default: '' },
-        default: { default: 5 }
+        type: {default: ''},
+        default: {default: 5}
       }));
     });
 
@@ -46,9 +46,9 @@ suite('schema', function () {
 
   suite('parseProperty', function () {
     test('can parse using built-in property type', function () {
-      var schemaPropDef = processSchema({ type: 'vec3' });
+      var schemaPropDef = processSchema({type: 'vec3'});
       var parsed = parseProperty('1 2 3', schemaPropDef);
-      assert.shallowDeepEqual(parsed, { x: 1, y: 2, z: 3 });
+      assert.shallowDeepEqual(parsed, {x: 1, y: 2, z: 3});
     });
 
     test('can parse using inline parse', function () {
@@ -61,13 +61,13 @@ suite('schema', function () {
     });
 
     test('returns already-parsed value', function () {
-      var schemaPropDef = processSchema({ type: 'vec3' });
-      var parsed = parseProperty({ x: 0, y: 0, z: 0 }, schemaPropDef);
-      assert.shallowDeepEqual(parsed, { x: 0, y: 0, z: 0 });
+      var schemaPropDef = processSchema({type: 'vec3'});
+      var parsed = parseProperty({x: 0, y: 0, z: 0}, schemaPropDef);
+      assert.shallowDeepEqual(parsed, {x: 0, y: 0, z: 0});
     });
 
     test('allows undefined default', function () {
-      var schemaPropDef = processSchema({ type: 'vec3', default: undefined });
+      var schemaPropDef = processSchema({type: 'vec3', default: undefined});
       var parsed = parseProperty(undefined, schemaPropDef);
       assert.shallowDeepEqual(parsed, undefined);
     });
@@ -76,10 +76,10 @@ suite('schema', function () {
   suite('parseProperties', function () {
     test('parses multiple properties', function () {
       var schema = processSchema({
-        position: { type: 'vec3', default: { x: 0, y: 0, z: 0 } },
-        scale: { type: 'vec3', default: '0 0 0' },
-        visible: { type: 'boolean' },
-        width: { type: 'int', default: 2 }
+        position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+        scale: {type: 'vec3', default: '0 0 0'},
+        visible: {type: 'boolean'},
+        width: {type: 'int', default: 2}
       });
       var parsed = parseProperties({
         position: '1 2 3',
@@ -88,8 +88,8 @@ suite('schema', function () {
       }, schema);
 
       assert.shallowDeepEqual(parsed, {
-        position: { x: 1, y: 2, z: 3 },
-        scale: { x: 0, y: 0, z: 0 },
+        position: {x: 1, y: 2, z: 3},
+        scale: {x: 0, y: 0, z: 0},
         visible: false,
         width: 7
       });
@@ -97,14 +97,14 @@ suite('schema', function () {
 
     test('inserts default for missing properties', function () {
       var schema = processSchema({
-        position: { type: 'vec3', default: { x: 0, y: 0, z: 0 } },
-        scale: { type: 'vec3', default: '0 0 0' }
+        position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
+        scale: {type: 'vec3', default: '0 0 0'}
       });
       var parsed = parseProperties({}, schema);
 
       assert.shallowDeepEqual(parsed, {
-        position: { x: 0, y: 0, z: 0 },
-        scale: { x: 0, y: 0, z: 0 }
+        position: {x: 0, y: 0, z: 0},
+        scale: {x: 0, y: 0, z: 0}
       });
     });
   });
@@ -117,21 +117,21 @@ suite('schema', function () {
     });
 
     test('adds bool type if default value is bool', function () {
-      var definition = processSchema({ default: false });
+      var definition = processSchema({default: false});
       assert.equal(definition.type, 'boolean');
       assert.ok(typeof definition.parse, 'function');
       assert.ok(typeof definition.stringify, 'function');
     });
 
     test('adds number type if default value is number', function () {
-      var definition = processSchema({ default: 2.5 });
+      var definition = processSchema({default: 2.5});
       assert.equal(definition.type, 'number');
       assert.ok(typeof definition.parse, 'function');
       assert.ok(typeof definition.stringify, 'function');
     });
 
     test('adds array type if default value is array', function () {
-      var definition = processSchema({ default: [5, 10, 'fifty'] });
+      var definition = processSchema({default: [5, 10, 'fifty']});
       assert.equal(definition.type, 'array');
       assert.ok(typeof definition.parse, 'function');
       assert.ok(typeof definition.stringify, 'function');
@@ -139,7 +139,7 @@ suite('schema', function () {
 
     test('sets default value if not defined', function () {
       registerPropertyType('faketype', 'FAKEDEFAULT');
-      var definition = processSchema({ type: 'faketype' });
+      var definition = processSchema({type: 'faketype'});
       assert.equal(definition.default, 'FAKEDEFAULT');
     });
 
@@ -162,9 +162,9 @@ suite('schema', function () {
       registerPropertyType('faketype', 'FAKEDEFAULT');
 
       var schema = processSchema({
-        type: { default: 'directional' },
-        boolean: { default: false },
-        position: { type: 'vec3' }
+        type: {default: 'directional'},
+        boolean: {default: false},
+        position: {type: 'vec3'}
       });
 
       Object.keys(schema).forEach(function (propName) {
