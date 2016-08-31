@@ -16,7 +16,9 @@ window.aframeStats = function (scene) {
 
   function _update () {
     _rS('te').set(getEntityCount());
-    _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
+    if (window.performance.getEntriesByName) {
+      _rS('lt').set(window.performance.getEntriesByName('render-started')[0].startTime.toFixed(0));
+    }
   }
 
   function getEntityCount () {
