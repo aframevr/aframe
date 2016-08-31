@@ -251,6 +251,7 @@ window.rStats = function rStats ( settings ) {
             var a = ( _def && ( ( _def.below && _value < _def.below ) || ( _def.over && _value > _def.over ) ) );
             _graph.draw( _value, a );
             _dom.style.color = a ? '#b70000' : '#ffffff';
+            _dom.style.backgroundColor = a ? '#ffffff' : null;
         }
 
         function _frame () {
