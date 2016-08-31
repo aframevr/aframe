@@ -1,9 +1,10 @@
+var DEFAULT_CAMERA_HEIGHT = require('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-camera', {
   defaultComponents: {
     camera: {
-      userHeight: 1.6
+      userHeight: DEFAULT_CAMERA_HEIGHT
     },
     'look-controls': {},
     'wasd-controls': {}
