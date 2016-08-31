@@ -333,7 +333,7 @@ AFRAME.registerComponent('example-light', {
 
 ### `removeState (stateName)`
 
-`removeState` will pop a state from the entity. This will emit the `stateremove` event, and the state can then be checked for its removal using `.is`:
+`removeState` will pop a state from the entity. This will emit the `stateremoved` event, and the state can then be checked for its removal using `.is`:
 
 ```js
 entity.addEventListener('stateremoved', function (evt) {
