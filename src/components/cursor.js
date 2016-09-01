@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('cursor', {
    * - Currently-intersected entity is the same as the one when mousedown was triggered,
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
-  onMouseUp: function () {
+  onMouseUp: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEUP);
     if (this.data.fuse || !this.intersectedEl ||
         this.mouseDownEl !== this.intersectedEl) { return; }
@@ -85,6 +85,8 @@ module.exports.Component = registerComponent('cursor', {
     var cursorEl = this.el;
     var data = this.data;
     var intersectedEl = evt.detail.els[0];  // Grab the closest.
+    var intersection = evt.detail.intersections[0];
+    this.intersection = intersection;
 
     // Set intersected entity if not already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
@@ -141,8 +143,10 @@ module.exports.Component = registerComponent('cursor', {
    */
   twoWayEmit: function (evtName) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evtName, {intersectedEl: this.intersectedEl});
+    var cursorPayload = { intersectedEl: this.intersectedEl, intersection: this.intersection };
+    var intersectedElPayload = { cursorEl: this.el, intersection: this.intersection };
+    this.el.emit(evtName, cursorPayload);
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, {cursorEl: this.el});
+    intersectedEl.emit(evtName, intersectedElPayload);
   }
 });
