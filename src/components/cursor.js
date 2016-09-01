@@ -73,7 +73,7 @@ module.exports.Component = registerComponent('cursor', {
    * - Currently-intersected entity is the same as the one when mousedown was triggered,
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
-  onMouseUp: function () {
+  onMouseUp: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEUP);
     if (this.data.fuse || !this.intersectedEl ||
         this.mouseDownEl !== this.intersectedEl) { return; }
@@ -87,17 +87,25 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
     var cursorEl = this.el;
     var data = this.data;
+    var index;
+    var intersectedEl;
+    var intersection;
 
-    // Select closest object, other than the cursor.
-    var index = evt.detail.els[0] === cursorEl ? 1 : 0;
-    var intersection = evt.detail.intersections[index];
-    var intersectedEl = evt.detail.els[index];
+    // Select closest object, excluding the cursor.
+    index = evt.detail.els[0] === cursorEl ? 1 : 0;
+    intersection = evt.detail.intersections[index];
+    intersectedEl = evt.detail.els[index];
 
     // If cursor is the only intersected object, ignore the event.
     if (!intersectedEl) { return; }
 
-    // Set intersected entity if not already intersecting.
+    // Already intersecting this entity.
     if (this.intersectedEl === intersectedEl) { return; }
+
+    // Unset current intersection.
+    if (this.intersectedEl) { this.leaveCurrentIntersection(); }
+
+    // Set new intersection.
     this.intersection = intersection;
     this.intersectedEl = intersectedEl;
 
@@ -125,11 +133,17 @@ module.exports.Component = registerComponent('cursor', {
     // Ignore the cursor.
     if (cursorEl === intersectedEl) { return; }
 
-    // Not intersecting.
-    if (!intersectedEl || !this.intersectedEl) { return; }
+    // ignore if the event didn't occur on the current intersection
+    if (intersectedEl !== this.intersectedEl) { return; }
+
+    this.clearCurrentIntersection(intersectedEl);
+  },
+
+  clearCurrentIntersection: function () {
+    var cursorEl = this.el;
 
     // No longer hovering (or fusing).
-    intersectedEl.removeState(STATES.HOVERED);
+    this.intersectedEl.removeState(STATES.HOVERED);
     cursorEl.removeState(STATES.HOVERING);
     cursorEl.removeState(STATES.FUSING);
     this.twoWayEmit(EVENTS.MOUSELEAVE);
@@ -147,14 +161,10 @@ module.exports.Component = registerComponent('cursor', {
    */
   twoWayEmit: function (evtName) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evtName, {
-      intersection: this.intersection,
-      intersectedEl: this.intersectedEl
-    });
+    var cursorEvtDetail = { intersectedEl: this.intersectedEl, intersection: this.intersection };
+    var intersectedElEvtDetail = { cursorEl: this.el, intersection: this.intersection };
+    this.el.emit(evtName, cursorEvtDetail);
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, {
-      intersection: this.intersection,
-      cursorEl: this.el
-    });
+    intersectedEl.emit(evtName, intersectedElEvtDetail);
   }
 });

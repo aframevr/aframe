@@ -26,24 +26,37 @@
 
       <a-entity position="0 .6 4">
         <a-camera>
-          <a-entity cursor
+          <a-entity raycaster="far: 30; objects: .intersectable"
+                    cursor
                     geometry="primitive: ring; radiusOuter: 0.015;
                               radiusInner: 0.01; segmentsTheta: 32"
                     material="color: #283644; shader: flat"
-                    raycaster="far: 30"
                     position="0 0 -0.75"></a-entity>
         </a-camera>
       </a-entity>
 
       <a-entity position="-3.5 1 0">
-        <a-entity mixin="red cube">
+        <a-entity mixin="red cube"
+                  class="intersectable">
           <a-animation begin="click" attribute="position" from="0 0 0"
                        to="0 0 -10" dur="2000" fill="both"></a-animation>
         </a-entity>
       </a-entity>
 
-      <a-entity position="-1 1 0">
-        <a-entity mixin="green cube"
+      <a-entity position="0 1 1">
+        <a-entity id="invisibleCube"
+                  mixin="cube"
+                  material="color: grey; opacity: 0.3; transparent: true"
+                  scale="1 1 0.1">
+          <a-animation begin="click" attribute="rotation" to="0 360 0"
+                       easing="linear" dur="2000" fill="backwards"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="0 1 0">
+        <a-entity id="foregroundCube"
+                  class="intersectable"
+                  mixin="green cube"
                   sound__1="on: click; src: #blip1;"
                   sound__2="on: mouseenter; src: #blip2;">
           <a-animation begin="click" attribute="rotation" to="0 360 0"
@@ -60,15 +73,25 @@
         </a-entity>
       </a-entity>
 
+      <a-entity position="0 1 -3">
+        <a-entity id="backgroundCube"
+                  class="intersectable"
+                  mixin="green cube">
+          <a-animation begin="click" attribute="rotation" to="0 360 0"
+                       easing="linear" dur="2000" fill="backwards"></a-animation>
+        </a-entity>
+      </a-entity>
+
       <a-entity position="3.5 1 0" rotation="0 45 0">
-        <a-entity mixin="blue cube">
+        <a-entity mixin="blue cube"
+                  class="intersectable">
           <a-animation begin="click" fill="forwards" repeat="1"
                        direction="alternate" attribute="position" from="0 0 0"
                        to="15 0 0" dur="2000"></a-animation>
         </a-entity>
       </a-entity>
 
-      <a-entity mixin="yellow cube" position="0 3 0" class="clickable"
+      <a-entity mixin="yellow cube" position="0 3 -3" class="intersectable clickable"
                 rotation="0 45 0" scale=".5 .5 .5"></a-entity>
     </a-scene>
 
@@ -98,6 +121,46 @@
             window.top.postMessage({type: 'navigate', data: {url: href}}, '*');
           })
         }
+
+        // testing mouseenter and mouseleave
+        var foregroundCube = document.querySelector('#foregroundCube');
+        foregroundCube.addEventListener('mouseenter', function (evt) {
+          foregroundCube.setAttribute('mixin','cube cube-hovered')
+        })
+        foregroundCube.addEventListener('mouseleave', function (evt) {
+          foregroundCube.setAttribute('mixin','green cube')
+        })
+        foregroundCube.addEventListener('mousedown', function (evt) {
+          foregroundCube.setAttribute('mixin','cube cube-selected')
+        })
+        foregroundCube.addEventListener('mouseup', function (evt) {
+          foregroundCube.setAttribute('mixin','cube cube-hovered')
+        })
+        foregroundCube.addEventListener('click', function (evt) {
+          var scene = document.querySelector('a-scene');
+          var clickRing = document.createElement('a-entity');
+          clickRing.id = 'clickRing-'+new Date().getTime();
+          clickRing.setAttribute('material','color: magenta; transparent: true; opacity: 0.6');
+          clickRing.setAttribute('geometry','primitive: ring; radius-inner: 0.5; radius-outer: 0.6');
+          clickRing.setAttribute('position',evt.detail.intersection.point);
+          var opacityAnimation = document.createElement('a-animation');
+          opacityAnimation.setAttribute('attribute','material.opacity');
+          opacityAnimation.setAttribute('to',0);
+          opacityAnimation.setAttribute('duration','250');
+          opacityAnimation.setAttribute('easing','ease-out-quad');
+          var scaleAnimation = document.createElement('a-animation');
+          scaleAnimation.setAttribute('attribute','scale');
+          scaleAnimation.setAttribute('to','3 3 3');
+          scaleAnimation.setAttribute('duration','250');
+          scaleAnimation.setAttribute('easing','ease-out-quad');
+          var onAnimationEnd = function () {
+            scene.removeChild(document.querySelector('#'+clickRing.id))
+          }
+          scaleAnimation.addEventListener('animationend', onAnimationEnd.bind(this))
+          clickRing.appendChild(opacityAnimation);
+          clickRing.appendChild(scaleAnimation);
+          scene.appendChild(clickRing);
+        })
       })();
     </script>
   </body>
