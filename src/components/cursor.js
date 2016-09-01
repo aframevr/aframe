@@ -89,10 +89,7 @@ module.exports.Component = registerComponent('cursor', {
     // Set intersected entity if not already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
 
-    if (this.intersectedEl) {
-      this.leaveCurrentIntersection();
-    }
-
+    if (this.intersectedEl) { this.clearCurrentIntersection(); }
     this.intersectedEl = intersectedEl;
 
     // Hovering.
@@ -120,10 +117,10 @@ module.exports.Component = registerComponent('cursor', {
     // ignore if the event didn't occur on the current intersection
     if (intersectedEl !== this.intersectedEl) { return; }
 
-    this.leaveCurrentIntersection(intersectedEl);
+    this.clearCurrentIntersection(intersectedEl);
   },
 
-  leaveCurrentIntersection: function () {
+  clearCurrentIntersection: function () {
     var cursorEl = this.el;
 
     // No longer hovering (or fusing).
