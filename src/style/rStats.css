@@ -50,6 +50,19 @@
   margin: 2px 0;
 }
 
+.rs-counter-base.alarm {
+  color: #b70000;
+  text-shadow: 0 0 0 #b70000,
+               0 0 1px #fff,
+               0 0 1px #fff,
+               0 0 2px #fff,
+               0 0 2px #fff,
+               0 0 3px #fff,
+               0 0 3px #fff,
+               0 0 4px #fff,
+               0 0 4px #fff;
+}
+
 .rs-counter-id {
   font-weight: 300;
   -webkit-box-ordinal-group: 0;
