@@ -242,9 +242,11 @@ var proto = Object.create(ANode.prototype, {
    */
   removeFromParent: {
     value: function () {
+      var parentEl = this.parentEl;
       this.parentEl.remove(this);
-      this.parentEl = this.parentNode = null;
       this.attachedToParent = false;
+      this.parentEl = this.parentNode = null;
+      parentEl.emit('child-detached', {el: this});
     }
   },
 

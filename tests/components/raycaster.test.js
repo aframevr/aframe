@@ -74,6 +74,32 @@ suite('raycaster', function () {
     });
   });
 
+  suite('refreshObjects', function () {
+    test('refresh objects when new entities are added to the scene', function (done) {
+      var el = this.el;
+      var newEl = this.targetEl = document.createElement('a-entity');
+      var numObjects = el.components.raycaster.objects.length;
+      newEl.addEventListener('loaded', function () {
+        assert.equal(el.components.raycaster.objects.length, numObjects + 1);
+        done();
+      });
+      this.el.sceneEl.appendChild(newEl);
+    });
+
+    test('refresh objects when new entities are removed from the scene', function (done) {
+      var el = this.el;
+      var newEl = this.targetEl = document.createElement('a-entity');
+      var numObjects = el.components.raycaster.objects.length;
+      var sceneEl = this.el.sceneEl;
+      sceneEl.appendChild(newEl);
+      sceneEl.removeChild(newEl);
+      setTimeout(function () {
+        assert.equal(el.components.raycaster.objects.length, numObjects);
+        done();
+      });
+    });
+  });
+
   suite('raycaster', function () {
     setup(function createRaycasterAndTarget (done) {
       var el = this.el;

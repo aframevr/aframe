@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var bind = require('../utils/').bind;
 
 var scaleDummy = new THREE.Vector3();
 
@@ -31,6 +32,17 @@ module.exports.Component = registerComponent('raycaster', {
     this.prevCheckTime = undefined;
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
+    this.refreshObjects = bind(this.refreshObjects, this);
+  },
+
+  play: function () {
+    this.el.sceneEl.addEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.addEventListener('child-detached', this.refreshObjects);
+  },
+
+  pause: function () {
+    this.el.sceneEl.removeEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
   },
 
   /**
