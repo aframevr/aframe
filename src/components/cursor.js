@@ -143,10 +143,10 @@ module.exports.Component = registerComponent('cursor', {
    */
   twoWayEmit: function (evtName) {
     var intersectedEl = this.intersectedEl;
-    var cursorPayload = { intersectedEl: this.intersectedEl, intersection: this.intersection };
-    var intersectedElPayload = { cursorEl: this.el, intersection: this.intersection };
-    this.el.emit(evtName, cursorPayload);
+    var cursorEvtDetail = { intersectedEl: this.intersectedEl, intersection: this.intersection };
+    var intersectedElEvtDetail = { cursorEl: this.el, intersection: this.intersection };
+    this.el.emit(evtName, cursorEvtDetail);
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, intersectedElPayload);
+    intersectedEl.emit(evtName, intersectedElEvtDetail);
   }
 });
