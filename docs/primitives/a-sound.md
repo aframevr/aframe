@@ -11,7 +11,7 @@ The sound primitive wraps the [sound component](../components/sound.md).
 
 ```html
 <a-scene>
-  <a-sound src="src: click.mp3; autoplay: true" position="0 2 5"></a-sound>
+  <a-sound src="src: url(click.mp3)" autoplay="true" position="0 2 5"></a-sound>
 </a-scene>
 ```
 
