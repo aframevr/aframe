@@ -646,7 +646,7 @@ And voila!
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
 [look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
-[multiple]: #multiple-instances
+[multiple]: #multiple-instancing
 [physics]: https://github.com/ngokevin/aframe-physics-components
 [position]: ../components/position.md
 [removeObject3d]: ./entity.md#remove-object3d
