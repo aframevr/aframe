@@ -121,7 +121,7 @@ console.log(entity.sceneEl === sceneEl);  // >> true.
 
 ```js
 entity.addEventListener('stateadded', function (evt) {
-  if (evt.state === 'selected') {
+  if (evt.detail.state === 'selected') {
     console.log('Entity now selected!');
   }
 });
@@ -337,7 +337,7 @@ AFRAME.registerComponent('example-light', {
 
 ```js
 entity.addEventListener('stateremoved', function (evt) {
-  if (evt.state === 'selected') {
+  if (evt.detail.state === 'selected') {
     console.log('Entity no longer selected.');
   }
 });
