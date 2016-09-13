@@ -97,7 +97,7 @@ The advantage of fuse-based interactions for VR is that it does not require addi
 To add visual feedback to the cursor in order to display indication when the cursor is clicking or fusing, we can use the [animation system][animation]. When the cursor intersects the entity, it will emit an event, and the animation system will pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true; timeout: 500"
+<a-entity cursor="fuse: true; fuseTimeout: 500"
           position="0 0 -1"
           geometry="primitive: ring"
           material="color: black; shader: flat">
