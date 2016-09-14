@@ -107,6 +107,24 @@ suite('a-assets', function () {
       document.body.appendChild(scene);
     });
 
+    test('recreates media elements with crossorigin even if no src set', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var img = document.createElement('img');
+
+      img.setAttribute('id', 'myImage');
+      el.setAttribute('timeout', 50);
+      el.appendChild(img);
+
+      el.addEventListener('loaded', function () {
+        assert.ok(el.querySelectorAll('img').length, 1);
+        assert.ok(el.querySelector('#myImage').hasAttribute('crossorigin'));
+        done();
+      });
+
+      document.body.appendChild(scene);
+    });
+
     test('does not recreate media element if not crossorigin', function (done) {
       var el = this.el;
       var scene = this.scene;
