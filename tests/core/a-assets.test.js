@@ -107,6 +107,26 @@ suite('a-assets', function () {
       document.body.appendChild(scene);
     });
 
+    test('does not recreate media element if no src set', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var img = document.createElement('img');
+      var cloneSpy = this.sinon.spy(img, 'cloneNode');
+
+      img.setAttribute('id', 'myImage');
+      el.setAttribute('timeout', 50);
+      el.appendChild(img);
+
+      el.addEventListener('loaded', function () {
+        assert.ok(el.querySelectorAll('img').length, 1);
+        assert.notOk(el.querySelector('#myImage').hasAttribute('crossorigin'));
+        assert.notOk(cloneSpy.called);
+        done();
+      });
+
+      document.body.appendChild(scene);
+    });
+
     test('does not recreate media element if not crossorigin', function (done) {
       var el = this.el;
       var scene = this.scene;

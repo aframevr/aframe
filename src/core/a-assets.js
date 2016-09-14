@@ -156,8 +156,8 @@ function setCrossOrigin (mediaEl) {
 
   src = mediaEl.getAttribute('src');
 
-  // Does not have protocol.
-  if (src.indexOf('://') === -1) { return mediaEl; }
+  // Does not have src or src does not have protocol.
+  if (src === null || src.indexOf('://') === -1) { return mediaEl; }
 
   // Determine if cross origin is actually needed.
   if (extractDomain(src) === window.location.host) { return mediaEl; }
