@@ -2,6 +2,7 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var isMobile = require('../utils/').isMobile();
 var bind = require('../utils/bind');
+var isNullVector = require('../utils/coordinates').isNullVector;
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -282,7 +283,3 @@ module.exports.Component = registerComponent('look-controls', {
     this.touchStarted = false;
   }
 });
-
-function isNullVector (vector) {
-  return vector.x === 0 && vector.y === 0 && vector.z === 0;
-}

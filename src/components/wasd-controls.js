@@ -1,3 +1,4 @@
+var isNullVector = require('../utils/coordinates').isNullVector;
 var KEYCODE_TO_CODE = require('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
@@ -57,6 +58,8 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     // Get movement vector and translate position.
     movementVector = this.getMovementVector(delta);
+    if (isNullVector(movementVector)) { return; }
+
     position = el.getComputedAttribute('position');
     el.setAttribute('position', {
       x: position.x + movementVector.x,
