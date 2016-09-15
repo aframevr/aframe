@@ -1,5 +1,5 @@
 ---
-title: Build with Basic HTML
+title: Building with Basic HTML
 section_title: Guides
 type: guides
 layout: docs

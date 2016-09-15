@@ -1,5 +1,5 @@
 ---
-title: Build with Components
+title: Building with Components
 type: guides
 layout: docs
 parent_section: guides
