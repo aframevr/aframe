@@ -6,6 +6,8 @@ parent_section: core
 order: 5
 ---
 
+[entity]: ./entity.md
+
 A scene is represented by the `<a-scene>` element. The scene is the global root
 object, and all [entities][entity] are contained within the scene.
 
@@ -13,6 +15,13 @@ The scene inherits from the [`Entity`][entity] class so it inherits all of its
 properties, its methods, the ability to attach components, and the behavior to
 wait for all of its child nodes (e.g., `<a-assets>` and `<a-entity>`) to load
 before kicking off the render loop.
+
+`<a-scene>` handles all of the three.js and WebVR boilerplate is handled for us:
+
+- Set up canvas, renderer, render loop
+- Default camera and lights
+- Set up webvr-polyfill, VREffect
+- Add UI to Enter VR that calls WebVR API
 
 <!--toc-->
 
@@ -29,6 +38,9 @@ before kicking off the render loop.
 ```
 
 ## Properties
+
+[scene]: http://threejs.org/docs/#Reference/Scenes/Scene
+[systems]: ../core/systems.md
 
 | Name          | Description                                                               |
 |---------------|---------------------------------------------------------------------------|
@@ -65,20 +77,28 @@ before kicking off the render loop.
 Components can be attached to the scene as well as entities:
 
 ```html
-<a-scene canvas="canvas: #my-canvas" fog stats>
+<a-scene fog stats>
 ```
+
+[embedded]: ../components/embedded.md
+[fog]: ../components/fog.md
+[keyboard-shortcuts]: ../components/keyboard-shortcuts.md
+[inspector]: ../components/inspector.md
+[stats]: ../components/stats.md
+[vr-mode-ui]: ../components/vr-mode-ui.md
 
 A-Frame ships with a few components to configure the scene:
 
-- [canvas][canvas] - Configure which canvas to render to, or the width/height of the injected canvas.
-- [fog][fog] - Scene fog.
+- [embedded][embedded] - Remove fullscreen styles from the canvas.
+- [fog][fog] - Add fog.
 - [keyboard-shortcuts][keyboard-shortcuts] - Toggle keyboard shortcuts.
+- [inspector][inspector] - Inject the A-Frame Inspector.
 - [stats][stats] - Toggle performance stats.
 - [vr-mode-ui][vr-mode-ui] - Toggle UI for entering and exiting VR.
 
 ## Running Content Scripts on the Scene
 
-When running JavaScript on the scene, wait for it to finish loading first:
+We usually need to wait for the scene to finish initializing and attaching:
 
 ```js
 var scene = document.querySelector('a-scene');
@@ -95,11 +115,17 @@ function run () {
 }
 ```
 
-[canvas]: ../components/canvas.md
-[entity]: ./entity.md
-[fog]: ../components/fog.md
-[keyboard-shortcuts]: ../components/keyboard-shortcuts.md
-[scene]: http://threejs.org/docs/#Reference/Scenes/Scene
-[stats]: ../components/stats.md
-[systems]: ../core/systems.md
-[vr-mode-ui]: ../components/vr-mode-ui.md
+But the recommended way is to write a component. When a component initializes,
+it is ensured that everything is attached and ready:
+
+```js
+AFRAME.registerComponent('do-something', {
+  init: function () {
+    var sceneEl = this.el;
+  }
+});
+```
+
+```html
+<a-scene do-something></a-scene>
+```
