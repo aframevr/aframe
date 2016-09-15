@@ -318,9 +318,9 @@ suite('a-entity', function () {
 
     test('updates DOM attributes of a multiple component', function () {
       var el = this.el;
-      var soundStr = 'src:mysoundfile.mp3;autoplay:true';
+      var soundStr = 'src:url(mysoundfile.mp3);autoplay:true';
       var soundAttrValue;
-      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3', autoplay: true});
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
       soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
       assert.equal(soundAttrValue, '');
       el.flushToDOM();
@@ -439,8 +439,8 @@ suite('a-entity', function () {
 
     test('retrieves data from a multiple component', function () {
       var el = this.el;
-      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3', autoplay: true});
-      el.setAttribute('sound__2', {'src': 'mysoundfile.mp3', autoplay: false});
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
+      el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)', autoplay: false});
       assert.ok(el.getAttribute('sound__1'));
       assert.ok(el.getAttribute('sound__2'));
       assert.notOk(el.getAttribute('sound'));
@@ -587,7 +587,7 @@ suite('a-entity', function () {
 
     test('can remove a multiple component', function () {
       var el = this.el;
-      el.setAttribute('sound__test', 'src: mysoundfile.mp3');
+      el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
       assert.ok(el.components.sound__test);
       el.removeAttribute('sound__test');
       assert.equal(el.getAttribute('sound__test'), null);
@@ -660,8 +660,8 @@ suite('a-entity', function () {
 
     test('initializes components with id if the component opts into multiple', function () {
       var el = this.el;
-      el.setAttribute('sound__1', {'src': 'mysoundfile.mp3'});
-      el.setAttribute('sound__2', {'src': 'mysoundfile.mp3'});
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)'});
+      el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)'});
       assert.ok(el.components.sound__1);
       assert.ok(el.components.sound__2);
       assert.ok(el.components.sound__1 instanceof components.sound.Component);
