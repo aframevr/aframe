@@ -70,3 +70,10 @@ function vecParseFloat (vec) {
 module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
+
+/**
+ * @returns {bool}
+ */
+module.exports.isNullVector = function (vector) {
+  return vector.x === 0 && vector.y === 0 && vector.z === 0;
+};
