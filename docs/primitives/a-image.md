@@ -43,7 +43,7 @@ The image primitive displays an image on a flat plane. It is an entity that pres
 
 ## Fine-Tuning
 
-Ensuring that the image is not distorted by stretching requires us to approriately set the `width` and `height`.
+Ensuring that the image is not distorted by stretching requires us to appropriately set the `width` and `height`.
 
 ```html
 <a-image src="#logo" width="200" height="100"></a-image>
