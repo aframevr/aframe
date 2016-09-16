@@ -1,5 +1,6 @@
 /* global AFRAME */
 var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
+var bind = require('../../utils/bind');
 var pkg = require('../../../package');
 var registerComponent = require('../../core/component').registerComponent;
 
@@ -11,7 +12,7 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   init: function () {
-    this.onKeydown = this.onKeydown.bind(this);
+    this.onKeydown = bind(this.onKeydown, this);
     window.addEventListener('keydown', this.onKeydown);
   },
 
