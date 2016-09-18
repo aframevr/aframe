@@ -35,10 +35,10 @@ For example, we can create a ring-shaped cursor that is fixed to the center of t
 AFRAME.registerComponent('cursor-listener', {
   init: function () {
     var COLORS = ['red', 'green', 'blue'];
-    this.el.addEventListener('click', function () {
+    this.el.addEventListener('click', function (evt) {
       var randomIndex = Math.floor(Math.random() * COLORS.length);
       this.setAttribute('material', 'color', COLORS[randomIndex]);
-      console.log('I was clicked!');
+      console.log('I was clicked at: ', evt.detail.intersection.point);
     });
   }
 });
