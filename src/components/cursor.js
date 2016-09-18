@@ -23,6 +23,8 @@ var STATES = {
  *
  * @member {object} fuseTimeout - Timeout to trigger fuse-click.
  * @member {Element} mouseDownEl - Entity that was last mousedowned during current click.
+ * @member {object} intersection - Attributes of the current intersection event, including
+ *         3D- and 2D-space coordinates. See: http://threejs.org/docs/api/core/Raycaster.html
  * @member {Element} intersectedEl - Currently-intersected entity. Used to keep track to
  *         emit events when unintersecting.
  */
@@ -39,6 +41,7 @@ module.exports.Component = registerComponent('cursor', {
     var canvas = cursorEl.sceneEl.canvas;
     this.fuseTimeout = undefined;
     this.mouseDownEl = null;
+    this.intersection = null;
     this.intersectedEl = null;
 
     // Wait for canvas to load.
@@ -84,10 +87,12 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
     var cursorEl = this.el;
     var data = this.data;
-    var intersectedEl = evt.detail.els[0];  // Grab the closest.
+    var intersection = evt.detail.intersections[0];  // Grab the closest.
+    var intersectedEl = evt.detail.els[0];
 
     // Set intersected entity if not already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
+    this.intersection = intersection;
     this.intersectedEl = intersectedEl;
 
     // Hovering.
@@ -121,6 +126,7 @@ module.exports.Component = registerComponent('cursor', {
     this.twoWayEmit(EVENTS.MOUSELEAVE);
 
     // Unset intersected entity (after emitting the event).
+    this.intersection = null;
     this.intersectedEl = null;
 
     // Clear fuseTimeout.
@@ -132,8 +138,14 @@ module.exports.Component = registerComponent('cursor', {
    */
   twoWayEmit: function (evtName) {
     var intersectedEl = this.intersectedEl;
-    this.el.emit(evtName, {intersectedEl: this.intersectedEl});
+    this.el.emit(evtName, {
+      intersection: this.intersection,
+      intersectedEl: this.intersectedEl
+    });
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, {cursorEl: this.el});
+    intersectedEl.emit(evtName, {
+      intersection: this.intersection,
+      cursorEl: this.el
+    });
   }
 });
