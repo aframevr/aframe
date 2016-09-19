@@ -7,8 +7,10 @@
 
 # Getting Help or Asking a Question
 
-If you're not sure how to do something with A-Frame, please post a question (and any code you've tried so far) to [Stack Overflow under the 'aframe' tag][stackoverflow]. Questions there will automatically create notifications in [Slack](https://aframevr-slack.herokuapp.com), and are easier for others to find – so new developers can
-learn from your questions, too.
+If you're not sure how to do something with A-Frame, please post a question (and any code you've tried so far)
+to [Stack Overflow under the 'aframe' tag][stackoverflow]. Questions there will automatically create
+notifications in [Slack](https://aframevr-slack.herokuapp.com), and are easier for others to find – so new
+developers can learn from your questions, too.
 
 # File an Issue
 
