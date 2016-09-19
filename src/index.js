@@ -57,7 +57,6 @@ require('./core/a-mixin');
 
 // Extras.
 require('./extras/components/');
-require('./extras/declarative-events/');
 require('./extras/primitives/');
 
 console.log('A-Frame Version:', pkg.version);
