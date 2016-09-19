@@ -145,7 +145,7 @@ module.exports.Component = registerComponent('look-controls', {
           z: radToDeg(hmdEuler.z)
         };
       } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
-        currentRotation = this.el.getComputedAttribute('rotation');
+        currentRotation = this.el.getAttribute('rotation');
         deltaRotation = this.calculateDeltaRotation();
         // Mouse look only if HMD disabled or no info coming from the sensors
         rotation = {
@@ -197,7 +197,7 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaHMDPosition = new THREE.Vector3();
     return function () {
       var el = this.el;
-      var currentPosition = el.getComputedAttribute('position');
+      var currentPosition = el.getAttribute('position');
       var currentHMDPosition;
       var previousHMDPosition = this.previousHMDPosition;
       var sceneEl = this.el.sceneEl;

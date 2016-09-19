@@ -154,20 +154,20 @@ suite('a-animation', function () {
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute('light').intensity, 0);
+      assert.equal(this.el.getAttribute('light').intensity, 0);
     });
 
     test('between value', function () {
       var intensity;
       this.animationEl.tween.update(this.startTime + 500);
-      intensity = this.el.getComputedAttribute('light').intensity;
+      intensity = this.el.getAttribute('light').intensity;
       assert.isAbove(intensity, 0);
       assert.isBelow(intensity, 1);
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute('light').intensity, 1);
+      assert.equal(this.el.getAttribute('light').intensity, 1);
     });
   });
 
@@ -644,20 +644,20 @@ suite('a-animation', function () {
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute(attribute), '#ff0000');
+      assert.equal(this.el.getAttribute(attribute), '#ff0000');
     });
 
     test('between value', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
-      color = this.el.getComputedAttribute(attribute);
+      color = this.el.getAttribute(attribute);
       assert.isAbove(color, '#0000ff');
       assert.isBelow(color, '#ff0000');
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute(attribute), '#0000ff');
+      assert.equal(this.el.getAttribute(attribute), '#0000ff');
     });
   });
 

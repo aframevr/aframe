@@ -23,10 +23,10 @@ suite('a-mixin', function () {
     this.assetsEl.appendChild(mixinEl);
 
     mixinEl.addEventListener('loaded', function () {
-      assert.equal(el.getComputedAttribute('geometry').primitive, 'ring');
+      assert.equal(el.getAttribute('geometry').primitive, 'ring');
       mixinEl.setAttribute('geometry', 'primitive: circle');
       process.nextTick(function () {
-        assert.equal(el.getComputedAttribute('geometry').primitive, 'circle');
+        assert.equal(el.getAttribute('geometry').primitive, 'circle');
         done();
       });
     });
@@ -43,7 +43,7 @@ suite('a-mixin', function () {
     this.assetsEl.appendChild(mixinEl);
 
     mixinEl.addEventListener('loaded', function () {
-      var geometry = el.getComputedAttribute('geometry');
+      var geometry = el.getAttribute('geometry');
       assert.equal(geometry.buffer, false);
       assert.equal(geometry.primitive, 'ring');
       done();

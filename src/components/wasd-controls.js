@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('wasd-controls', {
 
     // Get movement vector and translate position.
     movementVector = this.getMovementVector(delta);
-    position = el.getComputedAttribute('position');
+    position = el.getAttribute('position');
     el.setAttribute('position', {
       x: position.x + movementVector.x,
       y: position.y + movementVector.y,
@@ -132,7 +132,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     var rotationEuler = new THREE.Euler(0, 0, 0, 'YXZ');
 
     return function (delta) {
-      var rotation = this.el.getComputedAttribute('rotation');
+      var rotation = this.el.getAttribute('rotation');
       var velocity = this.velocity;
 
       directionVector.copy(velocity);

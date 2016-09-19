@@ -88,7 +88,7 @@ suite('a-scene (without renderer)', function () {
 
       sceneEl.initSystem('test');
       assert.equal(sceneEl.getAttribute('test'), 'system');
-      assert.equal(sceneEl.getComputedAttribute('test'), 'system');
+      assert.equal(sceneEl.getAttribute('test'), 'system');
     });
 
     test('does not initialize component on setAttribute', function () {
