@@ -5,7 +5,6 @@ require('./cursor');
 require('./geometry');
 require('./hand-controls');
 require('./light');
-require('./look-at');
 require('./look-controls');
 require('./material');
 require('./obj-model');
