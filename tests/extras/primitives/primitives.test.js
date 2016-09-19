@@ -75,7 +75,7 @@ suite('registerPrimitive', function () {
     entity.children[0].addEventListener('loaded', function () {
       var material = entity.children[0].getAttribute('material');
       assert.equal(material.color, 'red');
-      assert.equal(material.fog, 'false');
+      assert.equal(material.fog, false);
       done();
     });
   });

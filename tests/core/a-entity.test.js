@@ -265,7 +265,7 @@ suite('a-entity', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; metalness: 0.75');
-      material = el.getAttribute('material');
+      material = el.getDefinedAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
@@ -275,7 +275,7 @@ suite('a-entity', function () {
       var material;
       var value = {color: '#F0F', metalness: 0.75};
       el.setAttribute('material', value);
-      material = el.getAttribute('material');
+      material = el.getDefinedAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
@@ -286,7 +286,7 @@ suite('a-entity', function () {
       var value = {color: '#000'};
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
       el.setAttribute('material', value);
-      material = el.getAttribute('material');
+      material = el.getDefinedAttribute('material');
       assert.equal(material.color, '#000');
       assert.equal(material.roughness, undefined);
     });
@@ -294,16 +294,16 @@ suite('a-entity', function () {
     test('can set a single component via a single attribute', function () {
       var el = this.el;
       el.setAttribute('material', 'color', '#F0F');
-      assert.equal(el.getAttribute('material').color, '#F0F');
+      assert.equal(el.getDefinedAttribute('material').color, '#F0F');
     });
 
     test('can update a single component attribute', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      assert.equal(el.getAttribute('material').roughness, 0.25);
+      assert.equal(el.getDefinedAttribute('material').roughness, 0.25);
       el.setAttribute('material', 'roughness', 0.75);
-      material = el.getAttribute('material');
+      material = el.getDefinedAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.roughness, 0.75);
     });
@@ -320,11 +320,11 @@ suite('a-entity', function () {
       var position;
 
       el.setAttribute('position', '10 20 30');
-      position = el.getAttribute('position');
+      position = el.getDefinedAttribute('position');
       assert.deepEqual(position, {x: 10, y: 20, z: 30});
 
       el.setAttribute('position', {x: 30, y: 20, z: 10});
-      position = el.getAttribute('position');
+      position = el.getDefinedAttribute('position');
       assert.deepEqual(position, {x: 30, y: 20, z: 10});
     });
 
@@ -445,12 +445,12 @@ suite('a-entity', function () {
     });
   });
 
-  suite('getAttribute', function () {
+  suite('getDefinedAttribute', function () {
     test('returns parsed component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
-      componentData = el.getAttribute('geometry');
+      componentData = el.getDefinedAttribute('geometry');
       assert.equal(componentData.width, 5);
       assert.notOk('height' in componentData);
     });
@@ -458,26 +458,26 @@ suite('a-entity', function () {
     test('returns empty object if component is at defaults', function () {
       var el = this.el;
       el.setAttribute('material', '');
-      assert.shallowDeepEqual(el.getAttribute('material'), {});
+      assert.shallowDeepEqual(el.getDefinedAttribute('material'), {});
     });
 
     test('returns null for a default component if it is not set', function () {
       var el = this.el;
-      assert.shallowDeepEqual(el.getAttribute('position'), null);
+      assert.shallowDeepEqual(el.getDefinedAttribute('position'), null);
     });
 
     test('returns parsed data if default component is set', function () {
       var el = this.el;
       var position = {x: 5, y: 6, z: 6};
       el.setAttribute('position', position);
-      assert.shallowDeepEqual(el.getAttribute('position'), position);
+      assert.shallowDeepEqual(el.getDefinedAttribute('position'), position);
     });
 
     test('returns partial component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
-      componentData = el.getAttribute('geometry');
+      componentData = el.getDefinedAttribute('geometry');
       assert.equal(componentData.width, 5);
       assert.notOk('height' in componentData);
     });
@@ -485,24 +485,24 @@ suite('a-entity', function () {
     test('falls back to HTML getAttribute if not a component', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
-      assert.equal(el.getAttribute('class'), 'pied piper');
+      assert.equal(el.getDefinedAttribute('class'), 'pied piper');
     });
 
     test('retrieves data from a multiple component', function () {
       var el = this.el;
       el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
       el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)', autoplay: false});
-      assert.ok(el.getAttribute('sound__1'));
-      assert.ok(el.getAttribute('sound__2'));
-      assert.notOk(el.getAttribute('sound'));
-      assert.equal(el.getAttribute('sound__1').autoplay, true);
+      assert.ok(el.getDefinedAttribute('sound__1'));
+      assert.ok(el.getDefinedAttribute('sound__2'));
+      assert.notOk(el.getDefinedAttribute('sound'));
+      assert.equal(el.getDefinedAttribute('sound__1').autoplay, true);
     });
 
     test('retrieves default value for single property component when ' +
          'the element attribute is set to empty string', function () {
       var sceneEl = this.el.sceneEl;
       sceneEl.setAttribute('debug', '');
-      assert.equal(sceneEl.getAttribute('debug'), true);
+      assert.equal(sceneEl.getDefinedAttribute('debug'), true);
     });
   });
 
@@ -583,12 +583,12 @@ suite('a-entity', function () {
     });
   });
 
-  suite('getComputedAttribute', function () {
+  suite('getAttribute', function () {
     test('returns full component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
-      componentData = el.getComputedAttribute('geometry');
+      componentData = el.getAttribute('geometry');
       assert.equal(componentData.primitive, 'box');
       assert.equal(componentData.width, 5);
       assert.ok('height' in componentData);
@@ -597,7 +597,7 @@ suite('a-entity', function () {
     test('returns default value on a default component not set', function () {
       var el = this.el;
       var defaultPosition = {x: 0, y: 0, z: 0};
-      var elPosition = el.getComputedAttribute('position');
+      var elPosition = el.getAttribute('position');
       assert.shallowDeepEqual(elPosition, defaultPosition);
     });
 
@@ -605,7 +605,7 @@ suite('a-entity', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
-      componentData = el.getComputedAttribute('sound__test');
+      componentData = el.getAttribute('sound__test');
       assert.equal(componentData.src, 'mysoundfile.mp3');
       assert.equal(componentData.autoplay, false);
       assert.ok('loop' in componentData);
@@ -614,7 +614,7 @@ suite('a-entity', function () {
     test('falls back to HTML getAttribute if not a component', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
-      assert.equal(el.getComputedAttribute('class'), 'pied piper');
+      assert.equal(el.getAttribute('class'), 'pied piper');
     });
   });
 
@@ -649,7 +649,7 @@ suite('a-entity', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
-      assert.equal(el.getAttribute('position'), null);
+      assert.equal(el.getDefinedAttribute('position'), null);
       assert.ok('position' in el.components);
     });
 
@@ -787,7 +787,7 @@ suite('a-entity', function () {
       mixinFactory(mixinId, {material: 'shader: flat'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('material', 'color: red');
-      assert.shallowDeepEqual(el.getComputedAttribute('material'), {shader: 'flat', color: 'red'});
+      assert.shallowDeepEqual(el.getAttribute('material'), {shader: 'flat', color: 'red'});
     });
 
     test('merges component properties from mixin', function (done) {
@@ -796,7 +796,7 @@ suite('a-entity', function () {
       process.nextTick(function () {
         el.setAttribute('mixin', 'box');
         el.setAttribute('geometry', {depth: 5, height: 5, width: 5});
-        assert.shallowDeepEqual(el.getComputedAttribute('geometry'), {
+        assert.shallowDeepEqual(el.getAttribute('geometry'), {
           depth: 5,
           height: 5,
           primitive: 'box',
@@ -811,7 +811,7 @@ suite('a-entity', function () {
       var mixinId = 'position';
       mixinFactory(mixinId, {position: '1 2 3'});
       el.setAttribute('mixin', mixinId);
-      assert.shallowDeepEqual(el.getComputedAttribute('position'), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
     });
 
     test('does not override defined property', function () {
@@ -819,7 +819,7 @@ suite('a-entity', function () {
       el.setAttribute('material', {color: 'red'});
       mixinFactory('blue', {material: 'color: blue'});
       el.setAttribute('mixin', 'blue');
-      assert.shallowDeepEqual(el.getComputedAttribute('material').color, 'red');
+      assert.shallowDeepEqual(el.getAttribute('material').color, 'red');
     });
   });
 });
