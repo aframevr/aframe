@@ -1,6 +1,6 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
-var components = require('./component').components;
+var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -297,7 +297,7 @@ var proto = Object.create(ANode.prototype, {
       var componentName = componentInfo[0];
       var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
       // Check if component is registered and whether component should be initialized.
-      if (!components[componentName] ||
+      if (!COMPONENTS[componentName] ||
           (!isComponentDefined && !isDependency) ||
           // If component already initialized.
           (attrName in this.components)) {
@@ -308,12 +308,12 @@ var proto = Object.create(ANode.prototype, {
       this.initComponentDependencies(componentName);
 
       // If component name has an id we check component type multiplic
-      if (componentId && !components[componentName].multiple) {
+      if (componentId && !COMPONENTS[componentName].multiple) {
         throw new Error('Trying to initialize multiple ' +
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new components[componentName].Component(
+      component = this.components[attrName] = new COMPONENTS[componentName].Component(
         this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
@@ -334,10 +334,10 @@ var proto = Object.create(ANode.prototype, {
   initComponentDependencies: {
     value: function (name) {
       var self = this;
-      var component = components[name];
+      var component = COMPONENTS[name];
       var dependencies;
       if (!component) { return; }
-      dependencies = components[name].dependencies;
+      dependencies = COMPONENTS[name].dependencies;
       if (!dependencies) { return; }
       dependencies.forEach(function (component) {
         self.initComponent(component, undefined, true);
@@ -391,7 +391,7 @@ var proto = Object.create(ANode.prototype, {
        */
       function addComponent (key) {
         var name = key.split(MULTIPLE_COMPONENT_DELIMITER)[0];
-        if (!components[name]) { return; }
+        if (!COMPONENTS[name]) { return; }
         elComponents[key] = true;
       }
 
@@ -533,7 +533,7 @@ var proto = Object.create(ANode.prototype, {
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
-      if (components[attr] || this.components[attr]) {
+      if (COMPONENTS[attr] || this.components[attr]) {
         this.updateComponent(attr, newVal);
         return;
       }
@@ -573,7 +573,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr, value, componentPropValue) {
       var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
       var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
-      if (components[componentName]) {
+      if (COMPONENTS[componentName]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);
