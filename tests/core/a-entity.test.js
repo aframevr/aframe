@@ -47,6 +47,8 @@ suite('a-entity', function () {
     parentEl.appendChild(el);
     el.addEventListener('loaded', function () {
       assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
       done();
     });
   });
@@ -361,6 +363,8 @@ suite('a-entity', function () {
         parentEl.removeChild(el);
         process.nextTick(function () {
           assert.equal(parentEl.object3D.children.length, 0);
+          assert.notOk(el.parentEl);
+          assert.notOk(el.parentNode);
           done();
         });
       });

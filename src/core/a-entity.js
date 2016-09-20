@@ -102,7 +102,7 @@ var proto = Object.create(ANode.prototype, {
       if (!this.parentEl || this.isScene) { return; }
       // Remove components.
       Object.keys(this.components).forEach(bind(this.removeComponent, this));
-      this.parentEl.remove(this);
+      this.removeFromParent();
     }
   },
 
@@ -233,6 +233,17 @@ var proto = Object.create(ANode.prototype, {
 
       parentNode.add(this);
       this.attachedToParent = true;  // To prevent multiple attachments to same parent.
+    }
+  },
+
+  /**
+   * Tell parentNode to remove this entity from itself.
+   */
+  removeFromParent: {
+    value: function () {
+      this.parentEl.remove(this);
+      this.parentEl = this.parentNode = null;
+      this.attachedToParent = false;
     }
   },
 
