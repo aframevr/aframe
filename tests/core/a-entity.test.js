@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, teardown, test, HTMLElement */
+/* global assert, process, sinon, setup, suite, teardown, test, HTMLElement, MutationObserver */
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var extend = require('utils').extend;
@@ -95,8 +95,9 @@ suite('a-entity', function () {
       assert.notOk(el.parentEl);
       assert.notOk(el.parentNode);
 
+      var observer = new MutationObserver(afterSecondAttachment);
+      observer.observe(parentEl, {childList: true});
       parentEl.appendChild(el);
-      process.nextTick(afterSecondAttachment);
     }
 
     function afterSecondAttachment () {
