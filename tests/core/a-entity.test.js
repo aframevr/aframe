@@ -74,6 +74,40 @@ suite('a-entity', function () {
     el.removeAttribute('geometry');
   });
 
+  test('can be detached and re-attached safely', function (done) {
+    var el = document.createElement('a-entity');
+    var parentEl = this.el;
+    el.object3D = new THREE.Mesh();
+    parentEl.appendChild(el);
+    el.addEventListener('loaded', afterFirstAttachment);
+
+    function afterFirstAttachment () {
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+
+      parentEl.removeChild(el);
+      process.nextTick(afterDetachment);
+    }
+
+    function afterDetachment () {
+      assert.equal(parentEl.object3D.children.length, 0);
+      assert.notOk(el.parentEl);
+      assert.notOk(el.parentNode);
+
+      parentEl.appendChild(el);
+      process.nextTick(afterSecondAttachment);
+    }
+
+    function afterSecondAttachment () {
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+
+      done();
+    }
+  });
+
   suite('attachedCallback', function () {
     test('initializes 3D object', function (done) {
       var el = entityFactory();
