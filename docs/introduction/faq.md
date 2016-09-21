@@ -144,10 +144,9 @@ WebVR](https://github.com/cvan/webvr360).
 
 ## Can I add links to my scene?
 
-Yes. Link traversal support was introduced in the WebVR 1.0 API and A-Frame
-0.3.0. There is a link component that can trigger navigation and built-in
-support for knowing whether the user is navigating from another WebVR
-experience.
+We (Mozilla) are currently improving the link traversal user experience within
+the browser as well as helping iterate the API. Once link traversal gets into a
+good state on the platform side, A-Frame should have a link component ready.
 
 ## How is A-Frame different from VRML?
 
