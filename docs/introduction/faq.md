@@ -44,7 +44,7 @@ read, copy, and paste code to quickly get started. Each example comes with an
 accompanying guide explaining how it was built and what components were used to
 built it that will help your understanding.
 
-Below the examples are various workflow [guides][guides] featuring different
+Below the examples are various workflow [guides][guides] LINK DOESNT WORK featuring different
 tools and libraries. Select a guide based on what you are comfortable with
 (e.g., whether you know how to code, whether you know a certain framework,
 whether you know how to model).
@@ -65,7 +65,7 @@ the same domain as your scene.
 For some options, all resources hosted on [GitHub Pages][ghpages] are served
 with CORS headers. We recommend GitHub Pages as a simple deployment platform.
 Or you could also upload assets using the [A-Frame + Uploadcare
-Uploader][uploader], a service that serves files with CORS headers set.
+Uploader][uploader] LINK DOESNT WORK , a service that serves files with CORS headers set.
 
 ## Why does my video not play on mobile?
 
