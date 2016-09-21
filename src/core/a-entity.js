@@ -103,6 +103,7 @@ var proto = Object.create(ANode.prototype, {
       // Remove components.
       Object.keys(this.components).forEach(bind(this.removeComponent, this));
       this.removeFromParent();
+      ANode.prototype.detachedCallback.call(this);
     }
   },
 
