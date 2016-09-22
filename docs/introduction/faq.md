@@ -18,9 +18,10 @@ order: 5
 
 ## What is A-Frame?
 
-A-Frame is an open-source WebVR framework for building virtual reality
-experiences with HTML. Under the hood, it is a [three.js][three] framework that
-brings the [entity-component-system][ecs] pattern to the DOM.
+A-Frame is an open-source web framework for building virtual reality
+experiences. We can build VR web pages that we can walk inside with just HTML.
+Under the hood, it is a [three.js][three] framework that brings the
+[entity-component-system][ecs] pattern to the DOM.
 
 ## Why was A-Frame built?
 
@@ -33,7 +34,7 @@ a vehicle in which to make WebVR successful.
 
 [contact]: #how-can-i-get-in-touch-with-the-aframe-team
 [homepage]: https://aframe.io
-[guides]: /guides/index.md
+[guides]: ../guides/index.md
 
 A-Frame is very extensive across different disciplines so it can be difficult
 to know how to get started. We've tried our best to compile resources to get
@@ -55,7 +56,7 @@ in understanding learning curve difficulties.
 ## Why does my asset (e.g., image, video, model) not load?
 
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-[uploader]: https://aframe.io/aframe/examples/_uploader/
+[uploader]: https://cdn.aframe.io/
 
 If you are loading the asset from a different domain, make sure that the asset
 is served with [cross-origin resource sharing (CORS) headers][cors]. You could
