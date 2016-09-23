@@ -117,7 +117,7 @@ that other people have developed, we gain tons of power without needing to
 write our own code.
 
 We'll go through using three such third-party components: template, layout, and
-event-set. First we have to include them. [K-Frame][kframe] is a component
+event-set. First, we have to include them. [K-Frame][kframe] is a component
 pack by [Kevin Ngo][ngokevin], an A-Frame core developer, that conveniently
 includes all three of these components in one bundle.
 
