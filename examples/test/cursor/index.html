@@ -11,6 +11,7 @@
       <a-assets>
         <audio id="blip1" src="../../showcase/anime-UI/audio/321103__nsstudios__blip1.wav"></audio>
         <audio id="blip2" src="../../showcase/anime-UI/audio/321104__nsstudios__blip2.wav"></audio>
+        <audio id="shot" src="shot.ogg"></audio>
         <a-mixin id="cube" geometry="primitive: box"></a-mixin>
         <a-mixin id="cube-hovered" material="color: #CC435F"></a-mixin>
         <a-mixin id="cube-selected" material="color: #876A96"></a-mixin>
@@ -41,12 +42,21 @@
         </a-entity>
       </a-entity>
 
-      <a-entity position="0 1 0">
+      <a-entity position="-1 1 0">
         <a-entity mixin="green cube"
                   sound__1="on: click; src: #blip1;"
                   sound__2="on: mouseenter; src: #blip2;">
           <a-animation begin="click" attribute="rotation" to="0 360 0"
                        easing="linear" dur="2000" fill="backwards"></a-animation>
+        </a-entity>
+      </a-entity>
+
+      <a-entity position="1 1 0">
+        <a-entity mixin="yellow cube"
+                  sound__1="on: click; src: #shot; poolSize: 6"
+                  sound__2="src: #blip2; autoplay: true">
+          <a-animation begin="click" attribute="scale" to="1.2 1.2 1.2"
+                       easing="linear" dur="200" fill="backwards"></a-animation>
         </a-entity>
       </a-entity>
 
