@@ -130,6 +130,16 @@ suite('cursor', function () {
       assert.notOk(intersectedEl.is('cursor-hovered'));
     });
 
+    test('does not do anything if only the cursor is intersecting', function () {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [cursorEl]
+      });
+      assert.notOk(cursorEl.is('cursor-hovered'));
+    });
+
     test('sets hovered state on intersectedEl', function () {
       var cursorEl = this.cursorEl;
       var intersection = this.intersection;
@@ -166,6 +176,21 @@ suite('cursor', function () {
       cursorEl.emit('raycaster-intersection', {
         intersections: [intersection],
         els: [intersectedEl]
+      });
+    });
+
+    test('emits mousenter event on intersectedEl, ignoring cursorEl intersection', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.addEventListener('mouseenter', this.fail);
+      intersectedEl.addEventListener('mouseenter', function (evt) {
+        assert.equal(evt.detail.cursorEl, cursorEl);
+        done();
+      });
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection, intersection],
+        els: [cursorEl, intersectedEl]
       });
     });
 
@@ -238,6 +263,15 @@ suite('cursor', function () {
       var cursorEl = this.cursorEl;
       var intersectedEl = this.intersectedEl;
       cursorEl.emit('raycaster-intersection-cleared', {el: intersectedEl});
+    });
+
+    test('does not do anything if only the cursor is intersecting', function () {
+      var cursorEl = this.cursorEl;
+      cursorEl.components.cursor.intersection = this.intersection;
+      cursorEl.components.cursor.intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection-cleared', {els: [cursorEl]});
+      assert.ok(cursorEl.components.cursor.intersection);
+      assert.ok(cursorEl.components.cursor.intersectedEl);
     });
 
     test('unsets intersectedEl', function () {
