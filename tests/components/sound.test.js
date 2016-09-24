@@ -58,7 +58,7 @@ suite('sound', function () {
   suite('pause', function () {
     test('does not call sound pause if not playing', function () {
       var el = this.el;
-      var sound = el.components.sound.soundsPool.children[0] = {
+      var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
         isPlaying: false,
@@ -70,7 +70,7 @@ suite('sound', function () {
 
     test('calls sound pause if playing', function () {
       var el = this.el;
-      var sound = el.components.sound.soundsPool.children[0] = {
+      var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
         isPlaying: true,
@@ -85,7 +85,7 @@ suite('sound', function () {
   suite('play', function () {
     test('does not call sound pause if not playing', function () {
       var el = this.el;
-      var sound = el.components.sound.soundsPool.children[0] = {
+      var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
         isPlaying: false,
