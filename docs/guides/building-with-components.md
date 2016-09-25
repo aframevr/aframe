@@ -156,7 +156,7 @@ template and give it a name via `id`:
 ```html
 <a-assets>
   <!-- ... -->
-  <script id="link">
+  <script id="plane">
     <a-plane class="link" height="1" width="1"
              material="shader: flat; src: #cubes-thumb"
              sound="on: click; src: #click-sound"></a-plane>
@@ -185,7 +185,7 @@ lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
 <a-assets>
   <!-- ... -->
   <!-- Specify Nunjucks. -->
-  <script id="link" type="text/nunjucks">
+  <script id="plane" type="text/nunjucks">
     <a-plane class="link" height="1" width="1"
              material="shader: flat; src: {{ thumb }}"
              sound="on: click; src: #click-sound"></a-plane>
