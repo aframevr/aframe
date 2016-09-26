@@ -62,14 +62,14 @@ This is the starting point for our scene:
 
 We have predefined:
 
-- Several images to choose from in the [Asset Management System][ams] within `a-assets`.
-- Our 360&deg; image placeholder with [`a-sky`][a-sky].
-- A [cursor][cursor] with visual feedback using evented
+- Several images to choose from in the [Asset Management System][ams] within `<a-assets>`.
+- Our 360&deg; image placeholder with [`<a-sky>`][a-sky].
+- A [cursor][cursor] with visual feedback using event-driven
 [animations][animation-begin], fixed to the [camera][camera].
 
 ## Using Standard Components
 
-Standard components are components that ship with A-Frame, like a standard
+Standard components are components that ship with A-Frame, like any standard
 library. We'll go over how to attach these components to entities and configure
 them from HTML.
 
@@ -85,10 +85,10 @@ HTML attribute:
          material></a-plane>
 ```
 
-Then we the specify the component data using a syntax that looks like inline
-CSS styles. We set `shader` to `flat` so the image isn't affected negatively by
-lighting. And we set `src` to `#cubes-thumb`, a selector to one of the images
-defined in the asset management system.
+Then we the specify the component data using a syntax that resembles that of
+inline CSS styles. We set `shader` to `flat` so the image isn't affected
+negatively by lighting. And we set `src` to `#cubes-thumb`, a selector to one
+of the images defined in the [Asset Management System][ams].
 
 ```html
 <a-plane class="link" height="1" width="1"
@@ -97,7 +97,7 @@ defined in the asset management system.
 
 Let's attach one more standard component, the [sound component][sound]. We want
 to make it such that when we click (via gazing) on the link, it plays a click
-sound. The syntax is the same as just before, but now we are using the sound
+sound. The syntax is the same as before, but instead we are now using the sound
 component's properties. We set `on` to `click` so the sound is played on click.
 And we set `src` to `#click-sound`, a selector to our `<audio>` element.
 
@@ -112,28 +112,28 @@ Now we have a textured plane that plays a click sound when clicked.
 ## Using Third-Party Components
 
 We can grab third-party components from the [ecosystem][awesome], drop them into our
-scene, and use them from HTML. Components can do anything. By using components
+scene, and use them in our HTML. Components can do anything. By using components
 that other people have developed, we gain tons of power without needing to
 write our own code.
 
 We'll go through using three such third-party components: template, layout, and
-event-set. First we have to include them. [k-frame][k-frame] is a component
-pack by an [A-Frame core developer][ngokevin] that conveniently includes all three of these
-components in one bundle.
+event-set. First, we have to include them. [K-Frame][kframe] is a component
+pack by [Kevin Ngo][ngokevin], an A-Frame core developer, that conveniently
+includes all three of these components in one bundle.
 
-To drop in `k-frame`, we can download from its [dist folder][kdist] and include it
-in the `<head>` *after* A-Frame:
+To drop in K-Frame, download [`k-frame.min.js`](kmin) from the project's
+[`dist` folder][kdist] and include it in the `<head>` *after* A-Frame:
 
 ```html
 <html>
   <head>
-    <title>360 Image Browser</title>
+    <title>360° Image Browser</title>
     <script src="lib/aframe.min.js"></script>
     <script src="lib/k-frame.min.js"></script>
   </head>
   <body>
     <a-scene>
-      <!-- ... ->
+      <!-- ... -->
     </a-scene>
   </body>
 </html>
@@ -151,7 +151,7 @@ without copy-and-pasting HTML, we can use the template component.
 
 If we read the [template component's documentation][template], we see one way
 to define a template is via a script tag in `<a-assets>`. Let's make our link a
-template and give it a name via `id`:
+template and give it a name using an `id`:
 
 ```html
 <a-assets>
@@ -206,9 +206,9 @@ repeat verbose code.
 ### Layout Component
 
 Because the default position of an entity is `0 0 0`, the entities will
-overlap. While we could manually position each link, we could use the [layout
-component][layout] to do it for us. The layout component will automatically
-position its children to the specified layout.
+overlap. While we could manually position each link, we could instead use the
+[layout component][layout] to do it for us. The layout component will
+automatically position its children to the specified layout.
 
 We create a wrapper entity around our links and attach the layout component
 using the `line` layout:
@@ -235,9 +235,9 @@ events.
 
 Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they
-are no longer gazed upon. We are mimicking CSS hover states. We can specify
+are no longer gazed upon. We are mimicking CSS `:hover` states. We can specify
 event names with `_event` properties, and the rest of the properties define the
-`setAttibute` calls. Note that the event-set component can have [multiple
+`setAttibute` calls. Notice that the event-set component can have [multiple
 instances][multiple]:
 
 ```html
@@ -296,7 +296,7 @@ selector:
 This list will be populated once the raycaster component attaches.
 Unfortunately since the links are templated, they won't be found at that time.
 What we can do is write a component that refreshes our raycaster when the link
-attaches. Here will be the skeleton of our component:
+attaches. Here is the skeleton of our component:
 
 ```js
 AFRAME.registerComponent('update-raycaster', {
@@ -439,6 +439,9 @@ And that concludes our 360&deg; image gallery.
 [ecs]: ../core/index.md
 [event-set]: https://github.com/ngokevin/aframe-event-set-component
 [github]: https://github.com/ngokevin/aframe-fps-example
+[kdist]: https://github.com/ngokevin/kframe/tree/master/dist
+[kframe]: https://github.com/ngokevin/kframe/
+[kmin]: https://raw.githubusercontent.com/ngokevin/kframe/master/dist/kframe.min.js
 [layout]: https://github.com/ngokevin/aframe-layout-component
 [material]: ../components/material.md
 [mixin]: ../core/mixins.md
