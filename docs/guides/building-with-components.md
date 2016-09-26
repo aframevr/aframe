@@ -42,7 +42,7 @@ This is the starting point for our scene:
     <img id="sechelt-thumb" src="img/thumb-sechelt.png">
   </a-assets>
 
-  <!-- 360° image. -->
+  <!-- 360-degree image. -->
   <a-sky id="image-360" radius="10" src="#city"></a-sky>
 
   <!-- Link. -->
@@ -85,9 +85,9 @@ HTML attribute:
          material></a-plane>
 ```
 
-Then, we the specify the component data using a syntax that resembles that of
+Then we the specify the component data using a syntax that resembles that of
 inline CSS styles. We set `shader` to `flat` so the image isn't affected
-negatively by lighting. And, we set `src` to `#cubes-thumb`, a selector to one
+negatively by lighting. And we set `src` to `#cubes-thumb`, a selector to one
 of the images defined in the [Asset Management System][ams].
 
 ```html
@@ -99,7 +99,7 @@ Let's attach one more standard component, the [sound component][sound]. We want
 to make it such that when we click (via gazing) on the link, it plays a click
 sound. The syntax is the same as before, but instead we are now using the sound
 component's properties. We set `on` to `click` so the sound is played on click.
-And, we set `src` to `#click-sound`, a selector to our `<audio>` element.
+And we set `src` to `#click-sound`, a selector to our `<audio>` element.
 
 ```html
 <a-plane class="link" height="1" width="1"
@@ -172,13 +172,13 @@ Then we can use the template to create multiple planes without much work:
 <a-entity template="src: #plane"></a-entity>
 ```
 
-But, then they'll all be displaying the same image texture and look the same.
+But then they'll all be displaying the same image texture and look the same.
 Here is where we'll need a template engine with variable
 substitution/interpolation.
 
 Let's tell the template component to use the popular [Nunjucks][nunjucks]
 engine by specifying `<script type="text/nunjucks">`. The component will
-lazy-load the template engine for us. And, with Nunjucks, we define a `{{ thumb
+lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
 }}` variable in the template, which we can pass using the [data attributes][data]:
 
 ```html
@@ -294,7 +294,7 @@ selector:
 ```
 
 This list will be populated once the raycaster component attaches.
-Unfortunately, since the links are templated, they won't be found at that time.
+Unfortunately since the links are templated, they won't be found at that time.
 What we can do is write a component that refreshes our raycaster when the link
 attaches. Here is the skeleton of our component:
 
@@ -326,7 +326,7 @@ AFRAME.registerComponent('update-raycaster', {
 });
 ```
 
-Then, we use that data to actually update the raycaster in the `init` lifecycle
+Then we use that data to actually update the raycaster in the `init` lifecycle
 method, which is called when the component is attached to the entity. We grab
 the raycaster and update it:
 
@@ -370,7 +370,7 @@ Now we decide what the API for our image-setting component will be. We need:
 - The image texture.
 - An animation fade duration.
 
-So, we translate those properties to the schema:
+So we translate those properties to the schema:
 
 ```js
 AFRAME.registerComponent('set-image', {
@@ -419,7 +419,7 @@ wait the appropriate amount of time, and swap the image:
   //...
 ```
 
-And, that concludes our 360&deg; image gallery.
+And that concludes our 360&deg; image gallery.
 
 > **[Try it out!](https://aframe.io/360-image-gallery-boilerplate/)**
 
