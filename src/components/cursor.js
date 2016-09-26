@@ -87,8 +87,14 @@ module.exports.Component = registerComponent('cursor', {
     var self = this;
     var cursorEl = this.el;
     var data = this.data;
-    var intersection = evt.detail.intersections[0];  // Grab the closest.
-    var intersectedEl = evt.detail.els[0];
+
+    // Select closest object, other than the cursor.
+    var index = evt.detail.els[0] === cursorEl ? 1 : 0;
+    var intersection = evt.detail.intersections[index];
+    var intersectedEl = evt.detail.els[index];
+
+    // If cursor is the only intersected object, ignore the event.
+    if (!intersectedEl) { return; }
 
     // Set intersected entity if not already intersecting.
     if (this.intersectedEl === intersectedEl) { return; }
@@ -115,6 +121,9 @@ module.exports.Component = registerComponent('cursor', {
   onIntersectionCleared: function (evt) {
     var cursorEl = this.el;
     var intersectedEl = evt.detail.el;
+
+    // Ignore the cursor.
+    if (cursorEl === intersectedEl) { return; }
 
     // Not intersecting.
     if (!intersectedEl || !this.intersectedEl) { return; }
