@@ -133,7 +133,7 @@ module.exports.Component = registerComponent('cursor', {
     // Ignore the cursor.
     if (cursorEl === intersectedEl) { return; }
 
-    // ignore if the event didn't occur on the current intersection
+    // Ignore if the event didn't occur on the current intersection.
     if (intersectedEl !== this.intersectedEl) { return; }
 
     this.clearCurrentIntersection(intersectedEl);
@@ -160,11 +160,11 @@ module.exports.Component = registerComponent('cursor', {
    * Helper to emit on both the cursor and the intersected entity (if exists).
    */
   twoWayEmit: function (evtName) {
+    var el = this.el;
     var intersectedEl = this.intersectedEl;
-    var cursorEvtDetail = { intersectedEl: this.intersectedEl, intersection: this.intersection };
-    var intersectedElEvtDetail = { cursorEl: this.el, intersection: this.intersection };
-    this.el.emit(evtName, cursorEvtDetail);
+    var intersection = this.intersection;
+    el.emit(evtName, {intersectedEl: intersectedEl, intersection: intersection});
     if (!intersectedEl) { return; }
-    intersectedEl.emit(evtName, intersectedElEvtDetail);
+    intersectedEl.emit(evtName, {cursorEl: el, intersection: intersection});
   }
 });
