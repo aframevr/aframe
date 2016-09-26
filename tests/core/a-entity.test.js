@@ -47,6 +47,8 @@ suite('a-entity', function () {
     parentEl.appendChild(el);
     el.addEventListener('loaded', function () {
       assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
       done();
     });
   });
@@ -70,6 +72,51 @@ suite('a-entity', function () {
       done();
     });
     el.removeAttribute('geometry');
+  });
+
+  test('can be detached and re-attached safely', function (done) {
+    var el = document.createElement('a-entity');
+    var parentEl = this.el;
+    el.object3D = new THREE.Mesh();
+    el.setAttribute('geometry', 'primitive:plane');
+    parentEl.appendChild(el);
+    el.addEventListener('loaded', afterFirstAttachment);
+
+    function afterFirstAttachment () {
+      el.removeEventListener('loaded', afterFirstAttachment);
+
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+      assert.ok(el.components.geometry);
+      assert.isTrue(el.hasLoaded);
+
+      parentEl.removeChild(el);
+      process.nextTick(afterDetachment);
+    }
+
+    function afterDetachment () {
+      assert.equal(parentEl.object3D.children.length, 0);
+      assert.notOk(el.parentEl);
+      assert.notOk(el.parentNode);
+      assert.notOk(el.components.geometry);
+      assert.isFalse(el.hasLoaded);
+
+      parentEl.appendChild(el);
+      el.addEventListener('loaded', afterSecondAttachment);
+    }
+
+    function afterSecondAttachment () {
+      el.removeEventListener('loaded', afterSecondAttachment);
+
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+      assert.ok(el.components.geometry);
+      assert.isTrue(el.hasLoaded);
+
+      done();
+    }
   });
 
   suite('attachedCallback', function () {
@@ -361,6 +408,8 @@ suite('a-entity', function () {
         parentEl.removeChild(el);
         process.nextTick(function () {
           assert.equal(parentEl.object3D.children.length, 0);
+          assert.notOk(el.parentEl);
+          assert.notOk(el.parentNode);
           done();
         });
       });
