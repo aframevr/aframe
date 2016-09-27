@@ -112,7 +112,7 @@ texture. There are some components in the ecosystem that enable this:
 There are several possible solutions:
 
 - [Bitmap Font Text Component (recommended)][bmfont-text-component]
-- [Text Geometry Component][text-component]
+- [Text Geometry Component][text-geometry-component]
 - [HTML Shader][html-shader]
 - [Text Wrap Component][text-wrap-component]
 - Use images
