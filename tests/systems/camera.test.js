@@ -10,6 +10,41 @@ suite('camera system', function () {
     });
   });
 
+  suite('setupDefaultCamera', function () {
+    test('uses defined camera if defined', function (done) {
+      var assetsEl;
+      var imgEl;  // Image that will never load.
+      var cameraEl;
+      var sceneEl;
+
+      // Create assets.
+      assetsEl = document.createElement('a-assets');
+      imgEl = document.createElement('img');
+      imgEl.setAttribute('src', 'neverloadlalala5.gif');
+      assetsEl.appendChild(imgEl);
+
+      // Create scene.
+      sceneEl = document.createElement('a-scene');
+      sceneEl.appendChild(assetsEl);
+
+      // Create camera.
+      cameraEl = document.createElement('a-entity');
+      cameraEl.setAttribute('camera', '');
+      sceneEl.appendChild(cameraEl);
+
+      sceneEl.addEventListener('loaded', function () {
+        assert.equal(sceneEl.camera.el, cameraEl);
+        done();
+      });
+
+      document.body.appendChild(sceneEl);
+
+      // Trigger scene load through assets. Camera will be waiting for assets.
+      // Add `setTimeout` to mimic asynchrony of asset loading.
+      setTimeout(function () { assetsEl.load(); });
+    });
+  });
+
   suite('setActiveCamera', function () {
     test('sets new active camera on scene', function () {
       var el = this.el;

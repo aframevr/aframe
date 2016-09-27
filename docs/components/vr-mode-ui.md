@@ -3,7 +3,6 @@ title: vr-mode-ui
 type: components
 layout: docs
 parent_section: components
-order: 20
 ---
 
 The vr-mode-ui component toggles UI such as an Enter VR button, compatibility modal, and orientation modal for mobile. The vr-mode-ui component applies only to the [`<a-scene>` element][scene].

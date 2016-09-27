@@ -1,6 +1,6 @@
 /* global assert, process, sinon, setup, suite, teardown, test, HTMLElement */
-'use strict';
 var AEntity = require('core/a-entity');
+var ANode = require('core/a-node');
 var extend = require('utils').extend;
 var registerComponent = require('core/component').registerComponent;
 var components = require('core/component').components;
@@ -11,8 +11,8 @@ var entityFactory = helpers.entityFactory;
 var mixinFactory = helpers.mixinFactory;
 var TestComponent = {
   schema: {
-    a: { default: 0 },
-    b: { default: 1 }
+    a: {default: 0},
+    b: {default: 1}
   },
   init: function () { },
   update: function () { },
@@ -34,6 +34,12 @@ suite('a-entity', function () {
     components.test = undefined;
   });
 
+  test('createdCallback', function () {
+    var el = this.el;
+    assert.ok(el.isNode);
+    assert.ok(el.isEntity);
+  });
+
   test('adds itself to parent when attached', function (done) {
     var el = document.createElement('a-entity');
     var parentEl = this.el;
@@ -41,6 +47,8 @@ suite('a-entity', function () {
     parentEl.appendChild(el);
     el.addEventListener('loaded', function () {
       assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
       done();
     });
   });
@@ -64,6 +72,51 @@ suite('a-entity', function () {
       done();
     });
     el.removeAttribute('geometry');
+  });
+
+  test('can be detached and re-attached safely', function (done) {
+    var el = document.createElement('a-entity');
+    var parentEl = this.el;
+    el.object3D = new THREE.Mesh();
+    el.setAttribute('geometry', 'primitive:plane');
+    parentEl.appendChild(el);
+    el.addEventListener('loaded', afterFirstAttachment);
+
+    function afterFirstAttachment () {
+      el.removeEventListener('loaded', afterFirstAttachment);
+
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+      assert.ok(el.components.geometry);
+      assert.isTrue(el.hasLoaded);
+
+      parentEl.removeChild(el);
+      process.nextTick(afterDetachment);
+    }
+
+    function afterDetachment () {
+      assert.equal(parentEl.object3D.children.length, 0);
+      assert.notOk(el.parentEl);
+      assert.notOk(el.parentNode);
+      assert.notOk(el.components.geometry);
+      assert.isFalse(el.hasLoaded);
+
+      parentEl.appendChild(el);
+      el.addEventListener('loaded', afterSecondAttachment);
+    }
+
+    function afterSecondAttachment () {
+      el.removeEventListener('loaded', afterSecondAttachment);
+
+      assert.equal(parentEl.object3D.children[0].uuid, el.object3D.uuid);
+      assert.ok(el.parentEl);
+      assert.ok(el.parentNode);
+      assert.ok(el.components.geometry);
+      assert.isTrue(el.hasLoaded);
+
+      done();
+    }
   });
 
   suite('attachedCallback', function () {
@@ -123,6 +176,31 @@ suite('a-entity', function () {
         done();
       });
       this.el.sceneEl.appendChild(el);
+    });
+
+    test('waits for <a-assets>', function (done) {
+      var assetsEl;
+      var el;
+      var img;
+      var sceneEl;
+
+      // Create DOM.
+      sceneEl = document.createElement('a-scene');
+      assetsEl = document.createElement('a-assets');
+      img = document.createElement('img');
+      img.setAttribute('src', 'willneverload.jpg');
+      el = document.createElement('a-entity');
+      assetsEl.appendChild(img);
+      sceneEl.appendChild(assetsEl);
+      sceneEl.appendChild(el);
+      document.body.appendChild(sceneEl);
+
+      el.addEventListener('loaded', function () {
+        assert.ok(assetsEl.hasLoaded);
+        assert.ok(el.hasLoaded);
+        done();
+      });
+      ANode.prototype.load.call(assetsEl);
     });
   });
 
@@ -195,7 +273,7 @@ suite('a-entity', function () {
     test('can set a component with an object', function () {
       var el = this.el;
       var material;
-      var value = { color: '#F0F', metalness: 0.75 };
+      var value = {color: '#F0F', metalness: 0.75};
       el.setAttribute('material', value);
       material = el.getAttribute('material');
       assert.equal(material.color, '#F0F');
@@ -205,7 +283,7 @@ suite('a-entity', function () {
     test('can replace component attributes with an object', function () {
       var el = this.el;
       var material;
-      var value = { color: '#000' };
+      var value = {color: '#000'};
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
       el.setAttribute('material', value);
       material = el.getAttribute('material');
@@ -232,7 +310,7 @@ suite('a-entity', function () {
 
     test('transforms object to string before setting on DOM', function () {
       var el = this.el;
-      var positionObj = { x: 10, y: 20, z: 30 };
+      var positionObj = {x: 10, y: 20, z: 30};
       el.setAttribute('position', positionObj);
       assert.ok(el.outerHTML.indexOf('position=""') !== -1);
     });
@@ -285,6 +363,18 @@ suite('a-entity', function () {
       assert.equal(material, materialStr);
     });
 
+    test('updates DOM attributes of a multiple component', function () {
+      var el = this.el;
+      var soundStr = 'src:url(mysoundfile.mp3);autoplay:true';
+      var soundAttrValue;
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
+      soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
+      assert.equal(soundAttrValue, '');
+      el.flushToDOM();
+      soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
+      assert.equal(soundAttrValue, soundStr);
+    });
+
     test('updates DOM attributes recursively', function (done) {
       var el = this.el;
       var childEl = document.createElement('a-entity');
@@ -314,23 +404,27 @@ suite('a-entity', function () {
       var parentEl = entityFactory();
       var el = document.createElement('a-entity');
 
-      parentEl.appendChild(el);
-
       el.addEventListener('loaded', function () {
         parentEl.removeChild(el);
         process.nextTick(function () {
           assert.equal(parentEl.object3D.children.length, 0);
+          assert.notOk(el.parentEl);
+          assert.notOk(el.parentNode);
           done();
         });
       });
+
+      parentEl.appendChild(el);
     });
 
     test('removes itself from scene parent', function (done) {
+      var count;
       var el = this.el;
       var parentEl = el.parentNode;
+      count = parentEl.object3D.children.length;
       parentEl.removeChild(el);
       process.nextTick(function () {
-        assert.equal(parentEl.object3D.children.length, 3);
+        assert.equal(parentEl.object3D.children.length, count - 1);
         done();
       });
     });
@@ -367,6 +461,18 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
+    test('returns null for a default component if it is not set', function () {
+      var el = this.el;
+      assert.shallowDeepEqual(el.getAttribute('position'), null);
+    });
+
+    test('returns parsed data if default component is set', function () {
+      var el = this.el;
+      var position = {x: 5, y: 6, z: 6};
+      el.setAttribute('position', position);
+      assert.shallowDeepEqual(el.getAttribute('position'), position);
+    });
+
     test('returns partial component data', function () {
       var componentData;
       var el = this.el;
@@ -381,6 +487,23 @@ suite('a-entity', function () {
       el.setAttribute('class', 'pied piper');
       assert.equal(el.getAttribute('class'), 'pied piper');
     });
+
+    test('retrieves data from a multiple component', function () {
+      var el = this.el;
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
+      el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)', autoplay: false});
+      assert.ok(el.getAttribute('sound__1'));
+      assert.ok(el.getAttribute('sound__2'));
+      assert.notOk(el.getAttribute('sound'));
+      assert.equal(el.getAttribute('sound__1').autoplay, true);
+    });
+
+    test('retrieves default value for single property component when ' +
+         'the element attribute is set to empty string', function () {
+      var sceneEl = this.el.sceneEl;
+      sceneEl.setAttribute('debug', '');
+      assert.equal(sceneEl.getAttribute('debug'), true);
+    });
   });
 
   suite('getChildEntities', function () {
@@ -392,14 +515,13 @@ suite('a-entity', function () {
       entity.appendChild(animationChild);
       entity.appendChild(entityChild1);
       entity.appendChild(entityChild2);
-      document.body.appendChild(entity);
-
       entity.addEventListener('loaded', function () {
         var childEntities = entity.getChildEntities();
         assert.equal(childEntities.length, 2);
         assert.equal(childEntities.indexOf(animationChild), -1);
         done();
       });
+      document.body.appendChild(entity);
     });
   });
 
@@ -472,6 +594,23 @@ suite('a-entity', function () {
       assert.ok('height' in componentData);
     });
 
+    test('returns default value on a default component not set', function () {
+      var el = this.el;
+      var defaultPosition = {x: 0, y: 0, z: 0};
+      var elPosition = el.getComputedAttribute('position');
+      assert.shallowDeepEqual(elPosition, defaultPosition);
+    });
+
+    test('returns full data of a multiple component', function () {
+      var componentData;
+      var el = this.el;
+      el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
+      componentData = el.getComputedAttribute('sound__test');
+      assert.equal(componentData.src, 'mysoundfile.mp3');
+      assert.equal(componentData.autoplay, false);
+      assert.ok('loop' in componentData);
+    });
+
     test('falls back to HTML getAttribute if not a component', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
@@ -493,24 +632,36 @@ suite('a-entity', function () {
       el.setAttribute('material', 'color: #F0F');
       assert.ok(el.components.material);
       el.removeAttribute('material');
+      assert.equal(el.getAttribute('material'), null);
       assert.notOk(el.components.material);
+    });
+
+    test('can remove a multiple component', function () {
+      var el = this.el;
+      el.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
+      assert.ok(el.components.sound__test);
+      el.removeAttribute('sound__test');
+      assert.equal(el.getAttribute('sound__test'), null);
+      assert.notOk(el.components.sound__test);
     });
 
     test('does not remove default component', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
+      assert.equal(el.getAttribute('position'), null);
       assert.ok('position' in el.components);
     });
 
     test('does not remove mixed-in component', function () {
       var el = this.el;
       var mixinId = 'geometry';
-      mixinFactory(mixinId, { geometry: 'primitive: box' });
+      mixinFactory(mixinId, {geometry: 'primitive: box'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('geometry', 'primitive: sphere');
       assert.ok('geometry' in el.components);
       el.removeAttribute('geometry');
+      assert.notEqual(el.getAttribute('geometry'), null);
       // Geometry still exists since it is mixed in.
       assert.ok('geometry' in el.components);
     });
@@ -535,7 +686,7 @@ suite('a-entity', function () {
     test('initializes dependency component and can set attribute', function () {
       var el = this.el;
       el.initComponent('material', undefined, true);
-      assert.equal(el.getAttribute('material'), '');
+      assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
     test('initializes dependency component and current attribute honored', function () {
@@ -548,6 +699,24 @@ suite('a-entity', function () {
       el.setAttribute('material', materialAttribute);
       el.initComponent('material', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
+    });
+
+    test('does not initialize with id if the component is not multiple', function () {
+      var el = this.el;
+      assert.throws(function setAttribute () {
+        el.setAttribute('geometry__1', {primitive: 'box'});
+      }, Error);
+      assert.notOk(el.components.geometry__1);
+    });
+
+    test('initializes components with id if the component opts into multiple', function () {
+      var el = this.el;
+      el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)'});
+      el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)'});
+      assert.ok(el.components.sound__1);
+      assert.ok(el.components.sound__2);
+      assert.ok(el.components.sound__1 instanceof components.sound.Component);
+      assert.ok(el.components.sound__2 instanceof components.sound.Component);
     });
   });
 
@@ -569,23 +738,23 @@ suite('a-entity', function () {
     test('initialize a component', function () {
       var el = this.el;
       assert.equal(el.components.material, undefined);
-      el.updateComponent('material', { color: 'blue' });
+      el.updateComponent('material', {color: 'blue'});
       assert.equal(el.getAttribute('material').color, 'blue');
     });
 
     test('update an existing component', function () {
       var el = this.el;
-      var component = new components.material.Component(el, { color: 'red' });
+      var component = new components.material.Component(el, {color: 'red'});
       el.components.material = component;
       assert.equal(el.getAttribute('material').color, 'red');
-      el.updateComponent('material', { color: 'blue' });
+      el.updateComponent('material', {color: 'blue'});
       assert.equal(component, el.components.material);
       assert.equal(el.getAttribute('material').color, 'blue');
     });
 
     test('remove a component', function () {
       var el = this.el;
-      el.components.material = new components.material.Component(el, { color: 'red' });
+      el.components.material = new components.material.Component(el, {color: 'red'});
       assert.equal(el.getAttribute('material').color, 'red');
       el.updateComponent('material', null);
       assert.equal(el.components.material, undefined);
@@ -602,7 +771,7 @@ suite('a-entity', function () {
 
     test('update a property of an existing component', function () {
       var el = this.el;
-      var component = new components.material.Component(el, { color: 'red' });
+      var component = new components.material.Component(el, {color: 'red'});
       el.components.material = component;
       assert.equal(el.getAttribute('material').color, 'red');
       el.updateComponentProperty('material', 'color', 'blue');
@@ -615,10 +784,10 @@ suite('a-entity', function () {
     test('combines mixin and element components with a dynamic schema', function () {
       var el = this.el;
       var mixinId = 'material';
-      mixinFactory(mixinId, { material: 'shader: flat' });
+      mixinFactory(mixinId, {material: 'shader: flat'});
       el.setAttribute('mixin', mixinId);
       el.setAttribute('material', 'color: red');
-      assert.shallowDeepEqual(el.getComputedAttribute('material'), { shader: 'flat', color: 'red' });
+      assert.shallowDeepEqual(el.getComputedAttribute('material'), {shader: 'flat', color: 'red'});
     });
 
     test('merges component properties from mixin', function (done) {
@@ -640,15 +809,15 @@ suite('a-entity', function () {
     test('applies default vec3 component from mixin', function () {
       var el = this.el;
       var mixinId = 'position';
-      mixinFactory(mixinId, { position: '1 2 3' });
+      mixinFactory(mixinId, {position: '1 2 3'});
       el.setAttribute('mixin', mixinId);
-      assert.shallowDeepEqual(el.getComputedAttribute('position'), { x: 1, y: 2, z: 3 });
+      assert.shallowDeepEqual(el.getComputedAttribute('position'), {x: 1, y: 2, z: 3});
     });
 
     test('does not override defined property', function () {
       var el = this.el;
-      el.setAttribute('material', { color: 'red' });
-      mixinFactory('blue', { material: 'color: blue' });
+      el.setAttribute('material', {color: 'red'});
+      mixinFactory('blue', {material: 'color: blue'});
       el.setAttribute('mixin', 'blue');
       assert.shallowDeepEqual(el.getComputedAttribute('material').color, 'red');
     });

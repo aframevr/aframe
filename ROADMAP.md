@@ -2,20 +2,26 @@
 
 ## Top-Level Goals
 
-- Performance: run fast at low latency
-- Extensibility: enable reusable components, shaders, and snippets
-- Ecosystem: enable discovery and distribution of assets, components, scenes, shaders, and snippets
+- Community: help people get involved with WebVR in a welcoming and fun environment
+- Performance: ensure no overheads in using A-Frame in order to maintain high and consistent framerate
+- Ecosystem: enable discovery and distribution of assets, components, libraries, shaders, and tools
 
-## Short-Term
+## 0.3.0 (est. Aug 2016)
 
-Check the A-Frame milestones (https://github.com/aframevr/aframe/milestones) to see what work is specifically queued for upcoming releases.
-
+- WebVR 1.0 API: room scale, tracked controls, and link traversal
+- Visual Inspector: complementary tool for visually editing scenes
 - Performance: solve low-hanging performance issues
-- Controls: make controls easier to configure
-- Interactivity: improve raycaster, cursor, and add desktop cursor mode
+- aframe.io: update homepage to be more helpful and resourceful
 
-## Long-Term
+## 0.4.0 (est. Oct 2016)
 
-- Scene editor and inspector
-- Asset discovery service
-- Multi-user support
+- Room-scale Demos: create and prototype more room scale demos for people to fork
+- Component Discovery: have a central place to find components and be able to consume components without needing to search and install
+- Controls: make controls easier to extend and configure
+- Post-processing: enable post-render effects
+- Tutorials: produce more learning resources such as articles, guides, and screencasts
+
+## 0.5.0 (est. Dec 2016)
+
+- Asset Discovery: curate and provide free-to-use assets (such as models, sounds, and textures)
+- In-VR Editor: edit scenes from within VR with tracked controllers

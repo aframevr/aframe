@@ -20,16 +20,16 @@ var styleParser = utils.styleParser;
  * by adding, removing, or updating components. Entities do not share instances
  * of components.
  *
+ * @member {object} el - Reference to the entity element.
+ * @member {string} attr - Component name exposed as an HTML attribute.
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
- * @member {object} el - Reference to the entity element.
- * @member {string} name - Component name exposed as an HTML attribute.
  */
-var Component = module.exports.Component = function (el, attr) {
+var Component = module.exports.Component = function (el, attr, id) {
   this.el = el;
+  this.id = id;
+  this.attrName = this.name + (id ? '__' + id : '');
   this.updateCachedAttrValue(attr);
-  if (!el.hasLoaded) { return; }
-  this.updateProperties();
 };
 
 Component.prototype = {
@@ -37,7 +37,7 @@ Component.prototype = {
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: { },
+  schema: {},
 
   /**
    * Init handler. Similar to attachedCallback.
@@ -95,7 +95,7 @@ Component.prototype = {
   parse: function (value, silent) {
     var schema = this.schema;
     if (isSingleProp(schema)) { return parseProperty(value, schema); }
-    return parseProperties(styleParser.parse(value), schema, true, silent);
+    return parseProperties(styleParser.parse(value), schema, true, this.name, silent);
   },
 
   /**
@@ -127,21 +127,14 @@ Component.prototype = {
   },
 
   /**
-   * Update the cache of the preparsed attribute value
+   * Update the cache of the pre-parsed attribute value.
    *
    * @param {string} value - HTML attribute value.
    */
   updateCachedAttrValue: function (value) {
     var isSinglePropSchema = isSingleProp(this.schema);
-    if (value === '') {
-      this.attrValue = undefined;
-      return;
-    }
-    if (typeof value === 'string') {
-      this.attrValue = this.parseAttrValueForCache(value);
-      return;
-    }
-    this.attrValue = value !== undefined ? extendProperties({}, value, isSinglePropSchema) : this.attrValue;
+    var attrValue = this.parseAttrValueForCache(value);
+    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
   /**
@@ -178,20 +171,22 @@ Component.prototype = {
   flushToDOM: function () {
     var attrValue = this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.name, this.stringify(attrValue));
+    HTMLElement.prototype.setAttribute.call(this.el, this.attrName, this.stringify(attrValue));
   },
 
   /**
    * Apply new component data if data has changed.
    *
    * @param {string} value - HTML attribute value.
+   *        If undefined, use the cached attribute value and continue updating properties.
    */
   updateProperties: function (value) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var oldData = extendProperties({}, this.data, isSinglePropSchema);
 
-    this.updateCachedAttrValue(value);
+    if (value !== undefined) { this.updateCachedAttrValue(value); }
+
     if (this.updateSchema) {
       this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
     }
@@ -203,14 +198,19 @@ Component.prototype = {
     if (!this.initialized) {
       this.init();
       this.initialized = true;
+      // Play the component if the entity is playing.
+      this.update(oldData);
+      if (el.isPlaying) { this.play(); }
+    } else {
+      this.update(oldData);
     }
-    this.update(oldData);
 
     el.emit('componentchanged', {
+      id: this.id,
       name: this.name,
       newData: this.getData(),
       oldData: oldData
-    });
+    }, false);
   },
 
   /**
@@ -228,7 +228,7 @@ Component.prototype = {
     // Extend base schema with new schema chunk.
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
-    this.el.emit('schemachanged', { component: this.name });
+    this.el.emit('schemachanged', {component: this.name});
   }
 };
 
@@ -243,6 +243,12 @@ module.exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
 
+  if (name.indexOf('__') !== -1) {
+    throw new Error('The component name `' + name + '` is not allowed. ' +
+                    'The sequence __ (double underscore) is reserved to specify an id' +
+                    ' for multiple components of the same type');
+  }
+
   // Format definition object to prototype object.
   Object.keys(definition).forEach(function (key) {
     proto[key] = {
@@ -256,17 +262,23 @@ module.exports.registerComponent = function (name, definition) {
                     'Check that you are not loading two versions of the same component ' +
                     'or two different components of the same name.');
   }
-  NewComponent = function (el, attr) {
-    Component.call(this, el, attr);
+  NewComponent = function (el, attr, id) {
+    Component.call(this, el, attr, id);
+    if (!el.hasLoaded) { return; }
+    this.updateProperties(this.attrValue);
   };
+
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
   NewComponent.prototype.system = systems && systems.systems[name];
+  NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
+  NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
 
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema)),
@@ -297,7 +309,7 @@ module.exports.registerComponent = function (name, definition) {
  * @return {object} The component data
  */
 function buildData (el, name, schema, elData, silent) {
-  var componentDefined = !!elData;
+  var componentDefined = elData !== undefined && elData !== null;
   var data;
   var isSinglePropSchema = isSingleProp(schema);
   var mixinEls = el.mixinEls;
@@ -313,8 +325,8 @@ function buildData (el, name, schema, elData, silent) {
   }
 
   // 2. Mixin values.
-  mixinEls.forEach(applyMixin);
-  function applyMixin (mixinEl) {
+  mixinEls.forEach(handleMixinUpdate);
+  function handleMixinUpdate (mixinEl) {
     var mixinData = mixinEl.getAttribute(name);
     if (mixinData) {
       data = extendProperties(data, mixinData, isSinglePropSchema);
@@ -325,11 +337,11 @@ function buildData (el, name, schema, elData, silent) {
   if (componentDefined) {
     if (isSinglePropSchema) { return parseProperty(elData, schema); }
     data = extendProperties(data, elData, isSinglePropSchema);
-    return parseProperties(data, schema, undefined, silent);
+    return parseProperties(data, schema, undefined, name, silent);
   } else {
      // Parse and coerce using the schema.
-    if (isSinglePropSchema) { return parseProperty(elData !== undefined ? elData : data, schema); }
-    return parseProperties(data, schema, undefined, silent);
+    if (isSinglePropSchema) { return parseProperty(data, schema); }
+    return parseProperties(data, schema, undefined, name, silent);
   }
 }
 module.exports.buildData = buildData;
@@ -345,4 +357,42 @@ module.exports.buildData = buildData;
 function extendProperties (dest, source, isSinglePropSchema) {
   if (isSinglePropSchema) { return source; }
   return utils.extend(dest, source);
+}
+
+/**
+ * Wrapper for user defined pause method
+ * Pause component by removing tick behavior and calling user's pause method.
+ *
+ * @param pauseMethod {function} - user defined pause method
+ */
+function wrapPause (pauseMethod) {
+  return function pause () {
+    var sceneEl = this.el.sceneEl;
+    if (!this.isPlaying) { return; }
+    pauseMethod.call(this);
+    this.isPlaying = false;
+    // Remove tick behavior.
+    if (!this.tick) { return; }
+    sceneEl.removeBehavior(this);
+  };
+}
+
+/**
+ * Wrapper for user defined play method
+ * Play component by adding tick behavior and calling user's play method.
+ *
+ * @param playMethod {function} - user defined play method
+ *
+ */
+function wrapPlay (playMethod) {
+  return function play () {
+    var sceneEl = this.el.sceneEl;
+    var shouldPlay = this.el.isPlaying && !this.isPlaying;
+    if (!this.initialized || !shouldPlay) { return; }
+    playMethod.call(this);
+    this.isPlaying = true;
+    // Add tick behavior.
+    if (!this.tick) { return; }
+    sceneEl.addBehavior(this);
+  };
 }

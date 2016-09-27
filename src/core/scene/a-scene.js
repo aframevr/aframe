@@ -1,4 +1,4 @@
-/* global Promise */
+/* global Promise, screen */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
@@ -11,6 +11,8 @@ var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
+var bind = utils.bind;
+var checkHeadsetConnected = utils.checkHeadsetConnected;
 var registerElement = re.registerElement;
 var isIOS = utils.isIOS();
 var isMobile = utils.isMobile();
@@ -28,7 +30,7 @@ var isMobile = utils.isMobile();
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
  * @member {bool} renderStarted
- * @member {object} stereoRenderer
+ * @member (object) effect - three.js VREffect
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -37,6 +39,7 @@ module.exports = registerElement('a-scene', {
     defaultComponents: {
       value: {
         'canvas': '',
+        'inspector': '',
         'keyboard-shortcuts': '',
         'vr-mode-ui': ''
       }
@@ -44,12 +47,14 @@ module.exports = registerElement('a-scene', {
 
     createdCallback: {
       value: function () {
-        this.isMobile = isMobile;
         this.isIOS = isIOS;
+        this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
+        this.render = bind(this.render, this);
         this.systems = {};
         this.time = 0;
+
         this.init();
       }
     },
@@ -60,34 +65,51 @@ module.exports = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
-        this.setupSystems();
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
         });
+        this.addFullScreenStyles();
         initPostMessageAPI(this);
       },
       writable: true
     },
 
+    addFullScreenStyles: {
+      value: function () {
+        var htmlEl = document.documentElement;
+        htmlEl.classList.add('a-html');
+        document.body.classList.add('a-body');
+        this.classList.add('fullscreen');
+      }
+    },
+
+    removeFullScreenStyles: {
+      value: function () {
+        var htmlEl = document.documentElement;
+        htmlEl.classList.remove('a-html');
+        document.body.classList.remove('a-body');
+        this.classList.remove('fullscreen');
+      }
+    },
+
     attachedCallback: {
       value: function () {
-        var resize = this.resize.bind(this);
+        var resize = bind(this.resize, this);
         initMetaTags(this);
         initWakelock(this);
+        this.initSystems();
 
         window.addEventListener('load', resize);
-        window.addEventListener('beforeunload', this.exitVR.bind(this));
         window.addEventListener('resize', resize);
         this.play();
       },
       writable: window.debug
     },
 
-    setupSystems: {
+    initSystems: {
       value: function () {
-        var systemsKeys = Object.keys(systems);
-        systemsKeys.forEach(this.initSystem.bind(this));
+        Object.keys(systems).forEach(bind(this.initSystem, this));
       }
     },
 
@@ -95,8 +117,7 @@ module.exports = registerElement('a-scene', {
       value: function (name) {
         var system;
         if (this.systems[name]) { return; }
-        system = this.systems[name] = new systems[name]();
-        system.sceneEl = this;
+        system = this.systems[name] = new systems[name](this);
         system.init();
       }
     },
@@ -123,23 +144,39 @@ module.exports = registerElement('a-scene', {
       }
     },
 
-    /**
-     * Generally must be triggered on user action for requesting fullscreen.
-     */
     enterVR: {
       value: function (event) {
         var self = this;
-        return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+        if (this.is('vr-mode')) { return; }
+        if (checkHeadsetConnected() || this.isMobile) {
+          return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+        }
+        enterVRSuccess();
+
         function enterVRSuccess () {
           self.addState('vr-mode');
           self.emit('enter-vr', event);
+
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.lock('landscape');
+          if (self.isMobile && screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape');
           }
+          self.addFullScreenStyles();
+
+          // On mobile, the polyfill handles fullscreen.
+          // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
+          // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
+          // connected.
+          if (!self.isMobile && !checkHeadsetConnected()) { requestFullscreen(self.canvas); }
+          self.resize();
         }
-        function enterVRFailure () {
-          throw new Error('enter VR mode error. requestPresent failed');
+
+        function enterVRFailure (err) {
+          if (err && err.message) {
+            throw new Error('Failed to enter VR mode (`requestPresent`): ' + err.message);
+          } else {
+            throw new Error('Failed to enter VR mode (`requestPresent`).');
+          }
         }
       }
     },
@@ -147,19 +184,71 @@ module.exports = registerElement('a-scene', {
     exitVR: {
       value: function () {
         var self = this;
-        return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
+        if (!this.is('vr-mode')) { return Promise.resolve(); }
+        if (checkHeadsetConnected() || this.isMobile) {
+          return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
+        }
+        exitVRSuccess();
         function exitVRSuccess () {
+          var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
-          if (self.isMobile && window.screen.orientation) {
-            window.screen.orientation.unlock();
+          if (self.isMobile && screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
           }
+          // Exiting VR in embedded mode, no longer need fullscreen styles.
+          if (embedded) { self.removeFullScreenStyles(); }
           self.resize();
+          if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
           self.emit('exit-vr', {target: self});
         }
-        function exitVRFailure () {
-          throw new Error('exit VR mode error. exitPresent failed');
+        function exitVRFailure (err) {
+          if (err && err.message) {
+            throw new Error('Failed to exit VR mode (`exitPresent`): ' + err.message);
+          } else {
+            throw new Error('Failed to exit VR mode (`exitPresent`).');
+          }
         }
+      }
+    },
+
+    /**
+     * Wraps Entity.getAttribute to take into account for systems.
+     * If system exists, then return system data rather than possible component data.
+     */
+    getAttribute: {
+      value: function (attr) {
+        var system = this.systems[attr];
+        if (system) { return system.data; }
+        return AEntity.prototype.getAttribute.call(this, attr);
+      }
+    },
+
+    /**
+     * Wraps Entity.getComputedAttribute to take into account for systems.
+     * If system exists, then return system data rather than possible component data.
+     */
+    getComputedAttribute: {
+      value: function (attr) {
+        var system = this.systems[attr];
+        if (system) { return system.data; }
+        return AEntity.prototype.getComputedAttribute.call(this, attr);
+      }
+    },
+
+    /**
+     * Wraps Entity.setAttribute to take into account for systems.
+     * If system exists, then skip component initialization checks and do a normal
+     * setAttribute.
+     */
+    setAttribute: {
+      value: function (attr, value, componentPropValue) {
+        var system = this.systems[attr];
+        if (system) {
+          ANode.prototype.setAttribute.call(this, attr, value);
+          return;
+        }
+        AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
       }
     },
 
@@ -179,24 +268,20 @@ module.exports = registerElement('a-scene', {
       value: function () {
         var camera = this.camera;
         var canvas = this.canvas;
+        var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
-
         // Possible camera or canvas not injected yet.
-        if (!camera || !canvas) { return; }
-
-        // Update canvas if canvas was provided by A-Frame.
-        if (!isMobile && canvas.dataset.aframeDefault) {
-          canvas.style.width = '100%';
-          canvas.style.height = '100%';
-        }
-
+        // ON MOBILE the webvr-polyfill relies on the fullscreen API to enter
+        // VR mode. The canvas is resized by VREffect following the values returned
+        // by getEyeParameters. We don't want to overwrite the size with the
+        // windows width and height.
+        if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
         // Update camera.
-        size = getCanvasSize(canvas, isMobile);
+        size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
-
         // Notify renderer of size change.
-        this.renderer.setSize(size.width, size.height, true);
+        this.renderer.setSize(size.width, size.height);
       },
       writable: window.debug
     },
@@ -232,19 +317,29 @@ module.exports = registerElement('a-scene', {
         }
 
         this.addEventListener('loaded', function () {
-          if (this.renderStarted) { return; }
+          AEntity.prototype.play.call(this);  // .play() *before* render.
 
-          AEntity.prototype.play.call(this);
-          this.resize();
+          // Wait for camera if necessary before rendering.
+          if (this.camera) {
+            startRender(this);
+            return;
+          }
+          this.addEventListener('camera-set-active', function () { startRender(this); });
 
-          // Kick off render loop.
-          if (this.renderer) {
-            if (window.performance) {
-              window.performance.mark('render-started');
+          function startRender (sceneEl) {
+            if (sceneEl.renderStarted) { return; }
+
+            sceneEl.resize();
+
+            // Kick off render loop.
+            if (sceneEl.renderer) {
+              if (window.performance) {
+                window.performance.mark('render-started');
+              }
+              sceneEl.render(0);
+              sceneEl.renderStarted = true;
+              sceneEl.emit('renderstart');
             }
-            this.render(0);
-            this.renderStarted = true;
-            this.emit('renderstart');
           }
         });
 
@@ -307,31 +402,45 @@ module.exports = registerElement('a-scene', {
      */
     render: {
       value: function (time) {
-        var camera = this.camera;
+        var effect = this.effect;
         var timeDelta = time - this.time;
 
-        if (this.isPlaying) {
-          this.tick(time, timeDelta);
-        }
-        this.effect.render(this.object3D, camera);
+        if (this.isPlaying) { this.tick(time, timeDelta); }
 
+        this.animationFrameID = effect.requestAnimationFrame(this.render);
+        effect.render(this.object3D, this.camera);
         this.time = time;
-        this.animationFrameID = window.requestAnimationFrame(this.render.bind(this));
       },
-      writable: window.debug
+      writable: true
     }
   })
 });
 
-function getCanvasSize (canvas) {
-  if (isMobile) {
+/**
+ * Return the canvas size where the scene will be rendered
+ * It will be always the window size except when the scene
+ * is embedded. The parent size will be returned in that case
+ *
+ * @param {object} canvasEl - the canvas element
+ * @param {boolean} embedded - Is the scene embedded?
+ */
+function getCanvasSize (canvasEl, embedded) {
+  if (embedded) {
     return {
-      height: window.innerHeight,
-      width: window.innerWidth
+      height: canvasEl.parentElement.offsetHeight,
+      width: canvasEl.parentElement.offsetWidth
     };
   }
   return {
-    height: canvas.offsetHeight,
-    width: canvas.offsetWidth
+    height: window.innerHeight,
+    width: window.innerWidth
   };
+}
+
+function requestFullscreen (canvas) {
+  var requestFullscreen =
+    canvas.requestFullScreen ||
+    canvas.webkitRequestFullScreen ||
+    canvas.mozRequestFullScreen;
+  requestFullscreen.apply(canvas);
 }

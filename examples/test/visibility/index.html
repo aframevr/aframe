@@ -19,10 +19,10 @@
         <a-mixin id="sphere" geometry="primitive: sphere"></a-mixin>
       </a-assets>
 
-      <a-entity position="0 1.8 4">
-        <a-entity camera look-controls wasd-controls>
+      <a-entity position="0 0 4">
+        <a-camera>
           <a-cursor></a-cursor>
-        </a-entity>
+        </a-camera>
       </a-entity>
 
       <a-entity id="shapes" position="0 0 -2">
@@ -55,7 +55,7 @@
         var blueCube = document.querySelector('#blueCube');
         var redSphere = document.querySelector('#redSphere');
         var greenCylinder = document.querySelector('#greenCylinder');
-        document.addEventListener('cursor-click', function (e) {
+        document.addEventListener('click', function (e) {
           switch (e.target) {
             case blueCube: {
               redSphere.setAttribute('visible', true);

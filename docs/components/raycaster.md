@@ -3,7 +3,6 @@ title: raycaster
 type: components
 layout: docs
 parent_section: components
-order: 14
 ---
 
 The raycaster component does general intersection testing with a [raycaster][wiki-raycasting]. Raycasting is the method of extending a line from an origin towards a direction, and checking whether that line intersects with other entites. The raycaster component is a wrapper on top of the [three.js raycaster][3ray]. It checks for intersections at a certain interval against a list of objects, and will emit events on the entity when it detects intersections or clearing of intersections (i.e., when the raycaster is no longer intersecting an entity).
@@ -86,15 +85,23 @@ For example, here is applying a raycaster along the length of a rotated bullet:
 
 ## Whitelisting Entities to Test for Intersection
 
-We usually don't want everything in the scene to be tested for intersections (e.g., for collisions or for clicks). It is also good for performance to limit the number of entities to test for intersection since it is an operation that will usually run many times per second.
+We usually don't want everything in the scene to be tested for intersections
+(e.g., for collisions or for clicks). It is also good for performance to limit
+the number of entities to test for intersection since it is an operation that
+will usually run many times per second.
 
-To select or pick the entities we want to test for intersection, we can use the `objects` property. If this property is not defined, then every object in the scene will be tested for intersection. `objects` takes a query selector value:
+To select or pick the entities we want to test for intersection, we can use the
+`objects` property. If this property is not defined, then every object in the
+scene will be tested for intersection. `objects` takes a query selector value:
 
 ```html
-<a-entity cursor raycaster="objects: .clickable"></a-entity>
+<a-entity raycaster="objects: .clickable" cursor></a-entity>
 <a-entity class="clickable" geometry="primitive: box" position="1 0 0"></a-entity>
 <a-entity class="not-clickable" geometry="primitive: sphere" position="-1 0 0"></a-entity>
 ```
+
+When using with the cursor, note there is currently a bug that requires the
+raycaster component be defined before the cursor component.
 
 [3ray]: http://threejs.org/docs/#Reference/Core/Raycaster
 [components-cursor]: ./cursor.md

@@ -28,7 +28,7 @@ Shader.prototype = {
    * Contains the type schema and defaults for the data values.
    * Data is coerced into the types of the values of the defaults.
    */
-  schema: { },
+  schema: {},
 
   vertexShader:
     'void main() {' +
@@ -60,9 +60,9 @@ Shader.prototype = {
     var self = this;
     var variables = {};
     var schema = this.schema;
-    var squemaKeys = Object.keys(schema);
-    squemaKeys.forEach(processSquema);
-    function processSquema (key) {
+    var schemaKeys = Object.keys(schema);
+    schemaKeys.forEach(processSchema);
+    function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
       var varValue = schema[key].parse(data[key] || schema[key].default);

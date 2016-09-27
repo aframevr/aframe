@@ -1,5 +1,4 @@
 /* global assert, process, suite, test, setup, sinon, HTMLElement */
-'use strict';
 var buildData = require('core/component').buildData;
 var components = require('index').components;
 var helpers = require('../helpers');
@@ -35,8 +34,8 @@ suite('Component', function () {
 
     test('uses default values', function () {
       var schema = processSchema({
-        color: { default: 'blue' },
-        size: { default: 5 }
+        color: {default: 'blue'},
+        size: {default: 5}
       });
       var el = document.createElement('a-entity');
       var data = buildData(el, 'dummy', schema, {}, null);
@@ -57,8 +56,8 @@ suite('Component', function () {
       var data;
       var TestComponent = registerComponent('dummy', {
         schema: {
-          color: { default: 'red' },
-          size: { default: 5 }
+          color: {default: 'red'},
+          size: {default: 5}
         }
       });
       var el = document.createElement('a-entity');
@@ -90,8 +89,8 @@ suite('Component', function () {
       var data;
       var TestComponent = registerComponent('dummy', {
         schema: {
-          color: { default: 'red' },
-          size: { default: 5 }
+          color: {default: 'red'},
+          size: {default: 5}
         }
       });
       var el = document.createElement('a-entity');
@@ -109,7 +108,7 @@ suite('Component', function () {
     test('uses defined values for single-property schema', function () {
       var data;
       var TestComponent = registerComponent('dummy', {
-        schema: { default: 'red' }
+        schema: {default: 'red'}
       });
       var el = document.createElement('a-entity');
       var mixinEl = document.createElement('a-mixin');
@@ -117,6 +116,18 @@ suite('Component', function () {
       el.mixinEls = [mixinEl];
       data = buildData(el, 'dummy', TestComponent.prototype.schema, 'green', 'green');
       assert.equal(data, 'green');
+    });
+
+    test('returns default value for a single-property schema ' +
+         'when the attribute is empty string', function () {
+      var data;
+      var TestComponent = registerComponent('dummy', {
+        schema: {default: 'red'}
+      });
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', '');
+      data = buildData(el, 'dummy', TestComponent.prototype.schema, 'red');
+      assert.equal(data, 'red');
     });
   });
 
@@ -144,6 +155,14 @@ suite('Component', function () {
         done();
       });
     });
+
+    test('cannot be registered if it uses the character __ in the name', function () {
+      assert.notOk('my__component' in components);
+      assert.throws(function register () {
+        registerComponent('my__component', CloneComponent);
+      }, Error);
+      assert.notOk('my__component' in components);
+    });
   });
 
   suite('schema', function () {
@@ -159,24 +178,24 @@ suite('Component', function () {
 
     test('parses single value component', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: { default: '0 0 1', type: 'vec3' }
+        schema: {default: '0 0 1', type: 'vec3'}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
       var componentObj = component.parse('1 2 3');
-      assert.deepEqual(componentObj, { x: 1, y: 2, z: 3 });
+      assert.deepEqual(componentObj, {x: 1, y: 2, z: 3});
     });
 
     test('parses component properties vec3', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {
-          position: { type: 'vec3', default: '0 0 1' }
+          position: {type: 'vec3', default: '0 0 1'}
         }
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      var componentObj = component.parse({ position: '0 1 0' });
-      assert.deepEqual(componentObj.position, { x: 0, y: 1, z: 0 });
+      var componentObj = component.parse({position: '0 1 0'});
+      assert.deepEqual(componentObj.position, {x: 0, y: 1, z: 0});
     });
   });
 
@@ -187,36 +206,36 @@ suite('Component', function () {
 
     test('parses single value component', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: { default: '0 0 1', type: 'vec3' }
+        schema: {default: '0 0 1', type: 'vec3'}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
       var componentObj = component.parseAttrValueForCache('1 2 3');
-      assert.deepEqual(componentObj, { x: 1, y: 2, z: 3 });
+      assert.deepEqual(componentObj, {x: 1, y: 2, z: 3});
     });
 
     test('parses component using the style parser for a complex schema', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {
-          position: { type: 'vec3', default: '0 0 1' },
-          color: { default: 'red' }
+          position: {type: 'vec3', default: '0 0 1'},
+          color: {default: 'red'}
         }
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      var componentObj = component.parseAttrValueForCache({ position: '0 1 0', color: 'red' });
-      assert.deepEqual(componentObj, { position: '0 1 0', color: 'red' });
+      var componentObj = component.parseAttrValueForCache({position: '0 1 0', color: 'red'});
+      assert.deepEqual(componentObj, {position: '0 1 0', color: 'red'});
     });
 
     test('does not parse properties that parse to another string', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {
-          url: { type: 'src', default: '' }
+          url: {type: 'src', default: ''}
         }
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      var componentObj = component.parseAttrValueForCache({ url: 'url(www.mozilla.com)' });
+      var componentObj = component.parseAttrValueForCache({url: 'url(www.mozilla.com)'});
       assert.equal(componentObj.url, 'url(www.mozilla.com)');
     });
   });
@@ -228,23 +247,23 @@ suite('Component', function () {
 
     test('stringifies single value component', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: { default: '0 0 1', type: 'vec3' }
+        schema: {default: '0 0 1', type: 'vec3'}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      var componentString = component.stringify({ x: 1, y: 2, z: 3 });
+      var componentString = component.stringify({x: 1, y: 2, z: 3});
       assert.deepEqual(componentString, '1 2 3');
     });
 
     test('stringifies component property vec3', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {
-          position: { type: 'vec3', default: '0 0 1' }
+          position: {type: 'vec3', default: '0 0 1'}
         }
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      var componentObj = { position: { x: 1, y: 2, z: 3 } };
+      var componentObj = {position: {x: 1, y: 2, z: 3}};
       var componentString = component.stringify(componentObj);
       assert.deepEqual(componentString, 'position:1 2 3');
     });
@@ -257,11 +276,11 @@ suite('Component', function () {
 
     test('extends the schema', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: {color: { default: 'red' }}
+        schema: {color: {default: 'red'}}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      component.extendSchema({ size: { default: 5 } });
+      component.extendSchema({size: {default: 5}});
       assert.ok(component.schema.size);
       assert.ok(component.schema.color);
     });
@@ -274,9 +293,9 @@ suite('Component', function () {
 
     test('updates the schema of a component', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: {color: { default: 'red' }},
+        schema: {color: {default: 'red'}},
         updateSchema: function (data) {
-          this.extendSchema({ energy: { default: 100 } });
+          this.extendSchema({energy: {default: 100}});
         }
       });
       var el = document.createElement('a-entity');
@@ -289,7 +308,7 @@ suite('Component', function () {
 
     test('updates the properties with the new value', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: {color: { default: 'red' }}
+        schema: {color: {default: 'red'}}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
@@ -299,11 +318,11 @@ suite('Component', function () {
 
     test('updates the properties with a null value', function () {
       var TestComponent = registerComponent('dummy', {
-        schema: {color: { default: 'red' }}
+        schema: {color: {default: 'red'}}
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      component.updateProperties({ color: 'blue' });
+      component.updateProperties({color: 'blue'});
       assert.equal(component.data.color, 'blue');
     });
   });
@@ -316,13 +335,13 @@ suite('Component', function () {
     test('not called if component data does not change', function () {
       var updateStub = sinon.stub();
       var TestComponent = registerComponent('dummy', {
-        schema: {color: { default: 'red' }},
+        schema: {color: {default: 'red'}},
         update: updateStub
       });
       var el = document.createElement('a-entity');
       var component = new TestComponent(el);
-      component.updateProperties({ color: 'blue' });
-      component.updateProperties({ color: 'blue' });
+      component.updateProperties({color: 'blue'});
+      component.updateProperties({color: 'blue'});
       assert.ok(updateStub.calledOnce);
     });
   });
@@ -334,13 +353,93 @@ suite('Component', function () {
 
     test('updates component DOM attribute', function () {
       registerComponent('dummy', {
-        schema: {color: { default: 'red' }}
+        schema: {color: {default: 'red'}}
       });
       var el = document.createElement('a-entity');
-      el.setAttribute('dummy', { color: 'blue' });
+      el.setAttribute('dummy', {color: 'blue'});
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
       el.components.dummy.flushToDOM();
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
+    });
+  });
+
+  suite('play', function () {
+    setup(function () {
+      components.dummy = undefined;
+      var playStub = this.playStub = sinon.stub();
+      registerComponent('dummy', {play: playStub});
+    });
+
+    test('not called if entity is not playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.isPlaying = false;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.play();
+      sinon.assert.notCalled(this.playStub);
+    });
+
+    test('not called if component is not initialized', function () {
+      var el = document.createElement('a-entity');
+      el.isPlaying = true;
+      el.setAttribute('dummy', '');
+      el.components.dummy.play();
+      sinon.assert.notCalled(this.playStub);
+    });
+
+    test('not called if component is already playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.isPlaying = true;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.play();
+      dummyComponent.play();
+      sinon.assert.calledOnce(this.playStub);
+    });
+  });
+
+  suite('pause', function () {
+    setup(function () {
+      components.dummy = undefined;
+      var pauseStub = this.pauseStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {color: {default: 'red'}},
+        pause: pauseStub
+      });
+    });
+
+    test('not called if component is not playing', function () {
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', '');
+      el.components.dummy.pause();
+      sinon.assert.notCalled(this.pauseStub);
+    });
+
+    test('called if component is playing', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.setAttribute('dummy', '');
+      el.isPlaying = true;
+      dummyComponent = el.components.dummy;
+      dummyComponent.initialized = true;
+      dummyComponent.isPlaying = true;
+      dummyComponent.pause();
+      sinon.assert.called(this.pauseStub);
+    });
+
+    test('not called if component is already paused', function () {
+      var el = document.createElement('a-entity');
+      var dummyComponent;
+      el.setAttribute('dummy', '');
+      dummyComponent = el.components.dummy;
+      dummyComponent.isPlaying = true;
+      dummyComponent.pause();
+      dummyComponent.pause();
+      sinon.assert.calledOnce(this.pauseStub);
     });
   });
 });

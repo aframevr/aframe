@@ -8,14 +8,16 @@ module.exports.Component = registerComponent('obj-model', {
   dependencies: ['material'],
 
   schema: {
-    mtl: { type: 'src' },
-    obj: { type: 'src' }
+    mtl: {type: 'src'},
+    obj: {type: 'src'}
   },
 
   init: function () {
     this.model = null;
     this.objLoader = new THREE.OBJLoader();
     this.mtlLoader = new THREE.MTLLoader(this.objLoader.manager);
+    // Allow cross-origin images to be loaded.
+    this.mtlLoader.crossOrigin = '';
   },
 
   update: function () {

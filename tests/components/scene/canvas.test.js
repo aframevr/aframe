@@ -1,9 +1,10 @@
  /* global assert, process, suite, test */
-'use strict';
+
+var FULLSCREEN_CLASS = 'fullscreen';
 
 suite('canvas', function () {
   test('adds canvas to a-scene element', function (done) {
-    var el = document.createElement('a-scene');
+    var el = this.sceneEl = document.createElement('a-scene');
     document.body.appendChild(el);
     el.addEventListener('loaded', function () {
       el.setAttribute('canvas', '');
@@ -12,18 +13,18 @@ suite('canvas', function () {
     });
   });
 
-  test('can take a selector to existing canvas', function (done) {
-    var canvas = document.createElement('canvas');
-    var el = document.createElement('a-scene');
+  suite('fullscreen', function () {
+    test('adds fullscreen class on enter VR', function () {
+      var el = this.sceneEl;
+      el.emit('enter-vr');
+      assert.ok(el.canvas.classList.contains(FULLSCREEN_CLASS));
+    });
 
-    canvas.setAttribute('id', 'canvas');
-    document.body.appendChild(canvas);
-    document.body.appendChild(el);
-    el.setAttribute('canvas', 'canvas: #canvas');
-
-    el.addEventListener('loaded', function () {
-      assert.equal(el.canvas, canvas);
-      done();
+    test('removes fullscreen class on exit VR', function () {
+      var el = this.sceneEl;
+      el.canvas.classList.add(FULLSCREEN_CLASS);
+      el.emit('exit-vr');
+      assert.notOk(el.canvas.classList.contains(FULLSCREEN_CLASS));
     });
   });
 });

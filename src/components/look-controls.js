@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var isMobile = require('../utils/').isMobile();
+var bind = require('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick
 var PI_2 = Math.PI / 2;
@@ -10,16 +11,26 @@ module.exports.Component = registerComponent('look-controls', {
   dependencies: ['position', 'rotation'],
 
   schema: {
-    enabled: { default: true },
-    hmdEnabled: { default: true },
-    standing: { default: true }
+    enabled: {default: true},
+    hmdEnabled: {default: true},
+    standing: {default: true}
   },
 
   init: function () {
+    var sceneEl = this.el.sceneEl;
+
     this.previousHMDPosition = new THREE.Vector3();
     this.setupMouseControls();
     this.setupHMDControls();
     this.bindMethods();
+
+    // Enable grab cursor class on canvas.
+    function enableGrabCursor () { sceneEl.canvas.classList.add('a-grab-cursor'); }
+    if (!sceneEl.canvas) {
+      sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
+    } else {
+      enableGrabCursor();
+    }
   },
 
   update: function (oldData) {
@@ -53,12 +64,12 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   bindMethods: function () {
-    this.onMouseDown = this.onMouseDown.bind(this);
-    this.onMouseMove = this.onMouseMove.bind(this);
-    this.releaseMouse = this.releaseMouse.bind(this);
-    this.onTouchStart = this.onTouchStart.bind(this);
-    this.onTouchMove = this.onTouchMove.bind(this);
-    this.onTouchEnd = this.onTouchEnd.bind(this);
+    this.onMouseDown = bind(this.onMouseDown, this);
+    this.onMouseMove = bind(this.onMouseMove, this);
+    this.releaseMouse = bind(this.releaseMouse, this);
+    this.onTouchStart = bind(this.onTouchStart, this);
+    this.onTouchMove = bind(this.onTouchMove, this);
+    this.onTouchEnd = bind(this.onTouchEnd, this);
   },
 
   setupMouseControls: function () {
@@ -74,6 +85,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
     this.controls = new THREE.VRControls(this.dolly);
+    this.controls.userHeight = 0.0;
   },
 
   addEventListeners: function () {
@@ -82,24 +94,23 @@ module.exports.Component = registerComponent('look-controls', {
 
     // listen for canvas to load.
     if (!canvasEl) {
-      sceneEl.addEventListener('render-target-loaded', this.addEventListeners.bind(this));
+      sceneEl.addEventListener('render-target-loaded', bind(this.addEventListeners, this));
       return;
     }
 
     // Mouse Events
     canvasEl.addEventListener('mousedown', this.onMouseDown, false);
-    canvasEl.addEventListener('mousemove', this.onMouseMove, false);
-    canvasEl.addEventListener('mouseup', this.releaseMouse, false);
-    canvasEl.addEventListener('mouseout', this.releaseMouse, false);
+    window.addEventListener('mousemove', this.onMouseMove, false);
+    window.addEventListener('mouseup', this.releaseMouse, false);
 
     // Touch events
     canvasEl.addEventListener('touchstart', this.onTouchStart);
-    canvasEl.addEventListener('touchmove', this.onTouchMove);
-    canvasEl.addEventListener('touchend', this.onTouchEnd);
+    window.addEventListener('touchmove', this.onTouchMove);
+    window.addEventListener('touchend', this.onTouchEnd);
   },
 
   removeEventListeners: function () {
-    var sceneEl = document.querySelector('a-scene');
+    var sceneEl = this.el.sceneEl;
     var canvasEl = sceneEl && sceneEl.canvas;
     if (!canvasEl) { return; }
 
@@ -118,6 +129,8 @@ module.exports.Component = registerComponent('look-controls', {
   updateOrientation: (function () {
     var hmdEuler = new THREE.Euler();
     return function () {
+      var currentRotation;
+      var deltaRotation;
       var pitchObject = this.pitchObject;
       var yawObject = this.yawObject;
       var hmdQuaternion = this.calculateHMDQuaternion();
@@ -132,11 +145,13 @@ module.exports.Component = registerComponent('look-controls', {
           z: radToDeg(hmdEuler.z)
         };
       } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+        currentRotation = this.el.getComputedAttribute('rotation');
+        deltaRotation = this.calculateDeltaRotation();
         // Mouse look only if HMD disabled or no info coming from the sensors
         rotation = {
-          x: radToDeg(pitchObject.rotation.x),
-          y: radToDeg(yawObject.rotation.y),
-          z: 0
+          x: currentRotation.x + deltaRotation.x,
+          y: currentRotation.y + deltaRotation.y,
+          z: currentRotation.z
         };
       } else {
         // Mouse rotation ignored with an active headset.
@@ -148,6 +163,25 @@ module.exports.Component = registerComponent('look-controls', {
         };
       }
       this.el.setAttribute('rotation', rotation);
+    };
+  })(),
+
+  calculateDeltaRotation: (function () {
+    var previousRotationX;
+    var previousRotationY;
+    return function () {
+      var currentRotationX = radToDeg(this.pitchObject.rotation.x);
+      var currentRotationY = radToDeg(this.yawObject.rotation.y);
+      var deltaRotation;
+      previousRotationX = previousRotationX || currentRotationX;
+      previousRotationY = previousRotationY || currentRotationY;
+      deltaRotation = {
+        x: currentRotationX - previousRotationX,
+        y: currentRotationY - previousRotationY
+      };
+      previousRotationX = currentRotationX;
+      previousRotationY = currentRotationY;
+      return deltaRotation;
     };
   })(),
 
@@ -213,10 +247,12 @@ module.exports.Component = registerComponent('look-controls', {
   onMouseDown: function (event) {
     this.mouseDown = true;
     this.previousMouseEvent = event;
+    document.body.classList.add('a-grabbing');
   },
 
   releaseMouse: function () {
     this.mouseDown = false;
+    document.body.classList.remove('a-grabbing');
   },
 
   onTouchStart: function (e) {

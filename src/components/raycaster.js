@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Push meshes onto list of objects to intersect.
     if (data.objects) {
-      objectEls = this.el.closest('a-scene').querySelectorAll(data.objects);
+      objectEls = this.el.sceneEl.querySelectorAll(data.objects);
       this.objects = [];
       for (i = 0; i < objectEls.length; i++) {
         this.objects.push(objectEls[i].object3D);
@@ -75,21 +75,29 @@ module.exports.Component = registerComponent('raycaster', {
   tick: function (time) {
     var el = this.el;
     var data = this.data;
-    var prevIntersectedEls = this.intersectedEls.slice();
-    var intersectedEls = this.intersectedEls = [];  // Reset intersectedEls.
+    var intersectedEls;
     var intersections;
     var prevCheckTime = this.prevCheckTime;
+    var prevIntersectedEls;
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+
+    // Store old previously intersected entities.
+    prevIntersectedEls = this.intersectedEls.slice();
 
     // Raycast.
     this.updateOriginDirection();
     intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
-    // Update intersectedEls object first in case event handlers try to inspect it.
-    intersections.forEach(function emitEvents (intersection) {
-      intersectedEls.push(intersection.object.el);
+    // Only keep intersections against objects that have a reference to an entity.
+    intersections = intersections.filter(function hasEl (intersection) {
+      return !!intersection.object.el;
+    });
+
+    // Update intersectedEls.
+    intersectedEls = this.intersectedEls = intersections.map(function getEl (intersection) {
+      return intersection.object.el;
     });
 
     // Emit intersected on intersected entity per intersected entity.
@@ -101,9 +109,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit all intersections at once on raycasting entity.
     if (intersections.length) {
       el.emit('raycaster-intersection', {
-        els: intersections.map(function getEl (intersection) {
-          return intersection.object.el;
-        }),
+        els: intersectedEls,
         intersections: intersections
       });
     }

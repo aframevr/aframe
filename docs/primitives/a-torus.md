@@ -3,26 +3,34 @@ title: <a-torus>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 17
 ---
 
-The torus primitive creates a donut or circular tube shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `torus`.
+The torus primitive creates donut or tube shapes using the [geometry][geometry]
+component with the type set to `torus`.
 
 ## Example
 
 ```html
-<a-torus color="blue" position="0 0 0" segments-radial="50" segments-tubular="200" radius="5"
-         radius-tubular="0.1"></a-torus>
+<a-torus color="#43A367" arc="270" radius="5" radius-tubular="0.1"></a-torus>
 ```
 
 ## Attributes
 
-Note that the torus primitive inherits common [mesh attributes](./mesh-attributes.md).
+| Attribute        | Component Mapping        | Default Value |
+| --------         | -----------------        | ------------- |
+| arc              | geometry.arc             | 360           |
+| color            | material.color           | #FFF          |
+| metalness        | material.metalness       | 0             |
+| opacity          | material.opacity         | 1             |
+| radius           | geometry.radius          | 1             |
+| radius-tubular   | geometry.radiusTubular   | 0.2           |
+| repeat           | material.repeat          | None          |
+| roughness        | material.roughness       | 0.5           |
+| segments-radial  | geometry.segmentsRadial  | 0             |
+| segments-tubular | geometry.segmentsTubular | 32            |
+| shader           | material.shader          | standard      |
+| side             | material.side            | front         |
+| src              | material.src             | None          |
+| transparent      | material.transparent     | false         |
 
-| Attribute         | Component Mapping        | Default Value |
-|-------------------|--------------------------|---------------|
-| arc               | geometry.arc             | 360           |
-| radius            | geometry.radius          | 1             |
-| radius-tubular    | geometry.radiusTubular   | 0.2           |
-| segments-radial   | geometry.segmentsRadial  | 36            |
-| segments-tubular  | geometry.segmentsTubular | 8             |
+[geometry]: ../components/geometry.md

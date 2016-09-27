@@ -35,9 +35,10 @@ module.exports.System = registerSystem('material', {
    */
   loadTexture: function (src, data, cb) {
     var self = this;
-    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
+    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb, loadCanvasCb);
     function loadImageCb (src) { self.loadImage(src, data, cb); }
     function loadVideoCb (src) { self.loadVideo(src, data, cb); }
+    function loadCanvasCb (src) { self.loadCanvas(src, data, cb); }
   },
 
   /**
@@ -61,6 +62,20 @@ module.exports.System = registerSystem('material', {
     // Texture not yet being loaded. Start loading it.
     textureCache[hash] = loadImageTexture(src, data);
     textureCache[hash].then(handleImageTextureLoaded);
+  },
+
+  /**
+   * High-level function for loading canvas textures (THREE.Texture).
+   *
+   * @param {Element|string} src - Texture source.
+   * @param {object} data - Texture data.
+   * @param {function} cb - Callback to pass texture to.
+   */
+  loadCanvas: function (src, data, cb) {
+    // Hack readyState and HAVE_CURRENT_DATA on canvas to work with THREE.VideoTexture
+    src.readyState = 2;
+    src.HAVE_CURRENT_DATA = 2;
+    this.loadVideo(src, data, cb);
   },
 
     /**
@@ -241,7 +256,15 @@ function setTextureProperties (texture, data) {
 
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(parseInt(repeatXY[0], 10), parseInt(repeatXY[1], 10));
+  texture.repeat.set(parseFloat(repeatXY[0]), parseFloat(repeatXY[1]));
+
+  // Handle UV offset.
+  var offset = data.offset || '0 0';
+  var offsetXY = offset.split(' ');
+
+  // Don't bother setting offset if it is 0/0.
+  if (offset === '0 0' || offsetXY.length !== 2) { return; }
+  texture.offset.set(parseFloat(offsetXY[0]), parseFloat(offsetXY[1]));
 }
 
 /**
@@ -259,7 +282,7 @@ function createVideoEl (src, width, height) {
   videoEl.setAttribute('webkit-playsinline', '');  // Support inline videos for iOS webviews.
   videoEl.autoplay = true;
   videoEl.loop = true;
-  videoEl.crossOrigin = true;
+  videoEl.crossOrigin = 'anonymous';
   videoEl.addEventListener('error', function () {
     warn('`$s` is not a valid video', src);
   }, true);
@@ -289,7 +312,7 @@ function fixVideoAttributes (videoEl) {
   if (videoEl.getAttribute('preload') === 'false') {
     videoEl.preload = 'none';
   }
-  videoEl.crossOrigin = true;
+  videoEl.crossOrigin = videoEl.crossOrigin || 'anonymous';
   // To support inline videos in iOS webviews.
   videoEl.setAttribute('webkit-playsinline', '');
   return videoEl;

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas Texture</title>
+    <meta name="description" content="Canvas Texture - A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <script src="./components/draw-canvas-rectangles.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <canvas id="helloWorldCanvas" crossOrigin="anonymous"></canvas>
+      </a-assets>
+
+      <a-entity material="shader: flat; src: #helloWorldCanvas"
+                geometry="primitive: plane; width: 160; height: 90"
+                position="0 60 -250" rotation="0 35 0"
+                draw-canvas-rectangles="#helloWorldCanvas">
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

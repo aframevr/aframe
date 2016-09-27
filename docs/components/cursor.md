@@ -3,7 +3,6 @@ title: cursor
 type: components
 layout: docs
 parent_section: components
-order: 4
 ---
 
 The cursor component lets us interact with entities through clicking and gazing. It is a specific application of the [raycaster][raycaster] component in that it:
@@ -13,7 +12,7 @@ The cursor component lets us interact with entities through clicking and gazing.
 - Emits special mouse and hover events (e.g., relating to mouse down/up/enter/leave).
 - Has additional states for hovering.
 
-When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `cursor-click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
+When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
 
 ## Example
 
@@ -33,13 +32,13 @@ For example, we can create a ring-shaped cursor that is fixed to the center of t
 
 ```js
 // Component to change to random color on click.
-AFRAME.registerComponent('click-color-change', {
+AFRAME.registerComponent('cursor-listener', {
   init: function () {
     var COLORS = ['red', 'green', 'blue'];
-    this.el.addEventListener('cursor-click', function () {
+    this.el.addEventListener('click', function (evt) {
       var randomIndex = Math.floor(Math.random() * COLORS.length);
       this.setAttribute('material', 'color', COLORS[randomIndex]);
-      console.log('I was clicked!');
+      console.log('I was clicked at: ', evt.detail.intersection.point);
     });
   }
 });
@@ -58,11 +57,11 @@ Note, to further customize the cursor component, we can set the properties of th
 
 | Event             | Description                                                                                                                 |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------|
-| cursor-click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
-| cursor-mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
-| cursor-mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
-| cursor-mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
-| cursor-mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
+| click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
+| mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
+| mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
+| mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
+| mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
 
 ## States
 
@@ -98,18 +97,18 @@ The advantage of fuse-based interactions for VR is that it does not require addi
 To add visual feedback to the cursor in order to display indication when the cursor is clicking or fusing, we can use the [animation system][animation]. When the cursor intersects the entity, it will emit an event, and the animation system will pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true; timeout: 500"
+<a-entity cursor="fuse: true; fuseTimeout: 500"
           position="0 0 -1"
           geometry="primitive: ring"
           material="color: black; shader: flat">
-  <a-animation begin="cursor-click" easing="ease-in" attribute="scale"
+  <a-animation begin="click" easing="ease-in" attribute="scale"
                fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
   <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
                fill="forwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
 </a-entity>
 ```
 
-To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on Codepen][cursor-codepen].
+To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on CodePen][cursor-codepen].
 
 [animation]: ../core/animations.md
 [camera]: ./camera.md

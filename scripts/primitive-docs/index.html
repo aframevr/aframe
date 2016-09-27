@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="http://localhost:9000/build/aframe.js"></script>
+</head>
+<body>
+<script>
+(function () {
+/* Generate attribute tables for primitive documentation. */
+var geometries = AFRAME.geometries;
+var geometryNames = Object.keys(geometries).sort();
+var meshMappings = AFRAME.primitives.getMeshMixin().mappings;
+
+geometryNames.forEach(function (geometryName) {
+  // Create mesh primitive header.
+  console.log('a-' + unCamelCase(geometryName));
+
+  var str = [];
+  str.push('## Attributes\n');
+  str.push('| Attribute | Component Mapping | Default Value |');
+  str.push('| -------- | ----------------- | ------------- |');
+
+  // Compile geometry mappings.
+  var geometry = geometries[geometryName];
+  var rows = {};
+  Object.keys(geometry.schema).forEach(function addMapping (property) {
+    rows[unCamelCase(property)] = '|' + [
+      unCamelCase(property),
+      'geometry.' + property,
+      geometry.schema[property].default
+    ].join('|') + '|';
+  });
+
+  // Compile mesh mixin mappings.
+  Object.keys(meshMappings).forEach(function addMapping (attribute) {
+    var mapping = meshMappings[attribute];
+    var property = mapping.split('.')[1];
+    var materialProp = AFRAME.components.material.schema[property] ||
+                       AFRAME.shaders.standard.schema[property];
+    rows[attribute] = '|' + [
+      attribute,
+      mapping,
+      (materialProp.default === undefined || materialProp.default === null ||
+       materialProp.default === '') ?
+        'None' : materialProp.default
+    ].join('|') + '|';
+  });
+
+  // Append rows.
+  Object.keys(rows).sort().forEach(function (attribute) {
+    str.push(rows[attribute]);
+  });
+
+  console.log(str.join('\n'));
+});
+
+function unCamelCase (str) {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+})();
+</script>
+</body>
+</html>

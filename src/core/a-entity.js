@@ -1,14 +1,15 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
-var components = require('./component').components;
-var re = require('./a-register-element');
+var COMPONENTS = require('./component').components;
+var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
+var bind = utils.bind;
 
 var AEntity;
-var isNode = re.isNode;
 var debug = utils.debug('core:a-entity:debug');
-var registerElement = re.registerElement;
+
+var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
@@ -39,6 +40,7 @@ var proto = Object.create(ANode.prototype, {
       this.object3D = new THREE.Group();
       this.object3D.el = this;
       this.object3DMap = {};
+      this.parentEl = null;
       this.states = [];
     }
   },
@@ -55,6 +57,8 @@ var proto = Object.create(ANode.prototype, {
         delete component.justInitialized;
         return;
       }
+      // When a component is removed after calling el.removeAttribute('material')
+      if (!component && newVal === null) { return; }
       this.setEntityAttribute(attr, oldVal, newVal);
     }
   },
@@ -64,8 +68,27 @@ var proto = Object.create(ANode.prototype, {
    */
   attachedCallback: {
     value: function () {
+      var assetsEl;  // Asset management system element.
+      var sceneEl = this.sceneEl;
+      var self = this;  // Component.
+
       this.addToParent();
+
+      // Don't .load() scene on attachedCallback.
       if (this.isScene) { return; }
+
+      // Gracefully not error when outside of <a-scene> (e.g., tests).
+      if (!sceneEl) {
+        this.load();
+        return;
+      }
+
+      // Wait for asset management system to finish before loading.
+      assetsEl = sceneEl.querySelector('a-assets');
+      if (assetsEl && !assetsEl.hasLoaded) {
+        assetsEl.addEventListener('loaded', function () { self.load(); });
+        return;
+      }
       this.load();
     }
   },
@@ -78,22 +101,22 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       if (!this.parentEl || this.isScene) { return; }
       // Remove components.
-      Object.keys(this.components).forEach(this.removeComponent.bind(this));
-      this.parentEl.remove(this);
+      Object.keys(this.components).forEach(bind(this.removeComponent, this));
+      this.removeFromParent();
+      ANode.prototype.detachedCallback.call(this);
     }
   },
 
-  applyMixin: {
-    value: function (attr) {
-      var attrValue;
-      if (!attr) {
+  /**
+   * Apply mixin to component.
+   */
+  handleMixinUpdate: {
+    value: function (attrName) {
+      if (!attrName) {
         this.updateComponents();
         return;
       }
-      attrValue = this.getAttribute(attr);
-      // Make absence of attribute for getAttribute return undefined rather than null
-      attrValue = attrValue === null ? undefined : attrValue;
-      this.updateComponent(attr, attrValue);
+      this.updateComponent(attrName, this.getAttribute(attrName));
     }
   },
 
@@ -124,9 +147,9 @@ var proto = Object.create(ANode.prototype, {
         var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        var stateMixinIds = [];
-        forEach.call(stateMixinsEls, function (el) { stateMixinIds.push(el.id); });
-        stateMixinIds.forEach(self.unregisterMixin.bind(self));
+        forEach.call(stateMixinsEls, function (el) {
+          self.unregisterMixin(el.id);
+        });
       });
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
@@ -184,35 +207,44 @@ var proto = Object.create(ANode.prototype, {
       return object3D;
     }
   },
-
+   /**
+   * Add child entity.
+   *
+   * @param {Element} el - Child entity.
+   */
   add: {
     value: function (el) {
       if (!el.object3D) {
         throw new Error("Trying to add an element that doesn't have an `object3D`");
       }
-      this.emit('child-attached', { el: el });
       this.object3D.add(el.object3D);
+      this.emit('child-attached', { el: el });
     }
   },
 
+  /**
+   * Tell parentNode to add this entity to itself.
+   */
   addToParent: {
     value: function () {
-      var self = this;
-      var parent = this.parentEl = this.parentNode;
-      var attachedToParent = this.attachedToParent;
-      if (!parent || attachedToParent) { return; }
-      if (isNode(parent)) {
-        attach();
-        return;
-      }
-      parent.addEventListener('nodeready', attach);
-      function attach () {
-        // To prevent an object to attach itself multiple times to the parent.
-        self.attachedToParent = true;
-        if (parent.add) {
-          parent.add(self);
-        }
-      }
+      var parentNode = this.parentEl = this.parentNode;
+
+      // `!parentNode` check primarily for unit tests.
+      if (!parentNode || !parentNode.add || this.attachedToParent) { return; }
+
+      parentNode.add(this);
+      this.attachedToParent = true;  // To prevent multiple attachments to same parent.
+    }
+  },
+
+  /**
+   * Tell parentNode to remove this entity from itself.
+   */
+  removeFromParent: {
+    value: function () {
+      this.parentEl.remove(this);
+      this.parentEl = this.parentNode = null;
+      this.attachedToParent = false;
     }
   },
 
@@ -222,27 +254,21 @@ var proto = Object.create(ANode.prototype, {
 
       if (this.hasLoaded) { return; }
 
-      // Attach to parent object3D.
-      this.addToParent();
-
-      // Scene load.
-      function sceneLoadCallback () { self.updateComponents(); }
-      if (this.isScene) {
-        ANode.prototype.load.call(this, sceneLoadCallback);
-        return;
-      }
-
+      ANode.prototype.load.call(this, entityLoadCallback);
       // Entity load.
       function entityLoadCallback () {
         self.updateComponents();
-        // self.parentNode should work but that is null during this cb for unknown (#1483).
-        if (self.parentEl.isPlaying) { self.play(); }
+        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
       }
-      ANode.prototype.load.call(this, entityLoadCallback, isEntity);
     },
     writable: window.debug
   },
 
+  /**
+   * Remove child entity.
+   *
+   * @param {Element} el - Child entity.
+   */
   remove: {
     value: function (el) {
       this.object3D.remove(el.object3D);
@@ -271,38 +297,48 @@ var proto = Object.create(ANode.prototype, {
   /**
    * Initialize component.
    *
-   * @param {string} name - Component name.
+   * @param {string} attrName - Attribute name asociated to the component.
    * @param {object} data - Component data
    * @param {boolean} isDependency - True if the component is a dependency.
    */
   initComponent: {
-    value: function (name, data, isDependency) {
+    value: function (attrName, data, isDependency) {
       var component;
-      var isComponentDefined = checkComponentDefined(this, name) || data !== undefined;
-
+      var componentInfo = attrName.split(MULTIPLE_COMPONENT_DELIMITER);
+      var componentId = componentInfo[1];
+      var componentName = componentInfo[0];
+      var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
       // Check if component is registered and whether component should be initialized.
-      if (!components[name] || (!isComponentDefined && !isDependency)) {
+      if (!COMPONENTS[componentName] ||
+          (!isComponentDefined && !isDependency) ||
+          // If component already initialized.
+          (attrName in this.components)) {
         return;
       }
 
-      // Initialize dependencies.
-      this.initComponentDependencies(name);
+      // Initialize dependencies first
+      this.initComponentDependencies(componentName);
 
-      // Check if component already initialized.
-      if (name in this.components) { return; }
-      component = this.components[name] = new components[name].Component(this, data);
-      if (this.isPlaying) { playComponent(component, this.sceneEl); }
+      // If component name has an id we check component type multiplic
+      if (componentId && !COMPONENTS[componentName].multiple) {
+        throw new Error('Trying to initialize multiple ' +
+                        'components of type `' + componentName +
+                        '`. There can only be one component of this type per entity.');
+      }
+      component = this.components[attrName] = new COMPONENTS[componentName].Component(
+        this, data, componentId);
+      if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
       // hence we set the attribute to empty string.
       // The flag justInitialized is for attributeChangedCallback to not overwrite
       // the component with the empty string.
-      if (!this.hasAttribute(name)) {
+      if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, name, '');
+        HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
-      debug('Component initialized: %s', name);
+      debug('Component initialized: %s', attrName);
     },
     writable: window.debug
   },
@@ -310,10 +346,10 @@ var proto = Object.create(ANode.prototype, {
   initComponentDependencies: {
     value: function (name) {
       var self = this;
-      var component = components[name];
+      var component = COMPONENTS[name];
       var dependencies;
       if (!component) { return; }
-      dependencies = components[name].dependencies;
+      dependencies = COMPONENTS[name].dependencies;
       if (!dependencies) { return; }
       dependencies.forEach(function (component) {
         self.initComponent(component, undefined, true);
@@ -328,7 +364,7 @@ var proto = Object.create(ANode.prototype, {
       var isMixedIn = isComponentMixedIn(name, this.mixinEls);
       // Don't remove default or mixed in components
       if (isDefault || isMixedIn) { return; }
-      pauseComponent(component, this.sceneEl);
+      component.pause();
       component.remove();
       delete this.components[name];
       this.emit('componentremoved', { name: name });
@@ -336,8 +372,9 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * Updates all the entity's components. Given by defaults, mixins and attributes
-   * Default components update before the rest.
+   * Update all components.
+   * Build data using defined attributes, mixins, and defaults.
+   * Update default components before the rest.
    */
   updateComponents: {
     value: function () {
@@ -345,30 +382,37 @@ var proto = Object.create(ANode.prototype, {
       var self = this;
       var i;
       if (!this.hasLoaded) { return; }
-      // Components defined on the entity element
+
+      // Gather entity-defined components.
       var attributes = this.attributes;
       for (i = 0; i < attributes.length; ++i) {
         addComponent(attributes[i].name);
       }
-      // Components defined as mixins
+
+      // Gather mixin-defined components.
       getMixedInComponents(this).forEach(addComponent);
-      // Updates default components first
+
+      // Set default components.
       Object.keys(this.defaultComponents).forEach(updateComponent);
-      // Updates the rest of the components
+
+      // Set rest of components.
       Object.keys(elComponents).forEach(updateComponent);
 
-      // add component to the list
+      /**
+       * Add component to the list.
+       */
       function addComponent (key) {
-        if (!components[key]) { return; }
+        var name = key.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+        if (!COMPONENTS[name]) { return; }
         elComponents[key] = true;
       }
-      // updates a component with a given name
+
+      /**
+       * Update component with given name.
+       */
       function updateComponent (name) {
         var attrValue = self.getAttribute(name);
         delete elComponents[name];
-        // turn null into undefined because getAttribute
-        // returns null in the absence of an attribute
-        attrValue = attrValue === null ? undefined : attrValue;
         self.updateComponent(name, attrValue);
       }
     }
@@ -385,8 +429,9 @@ var proto = Object.create(ANode.prototype, {
   updateComponent: {
     value: function (attr, attrValue) {
       var component = this.components[attr];
+      var isDefault = attr in this.defaultComponents;
       if (component) {
-        if (attrValue === null) {
+        if (attrValue === null && !isDefault) {
           this.removeComponent(attr);
           return;
         }
@@ -395,7 +440,7 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
       // Component not yet initialized. Initialize component.
-      this.initComponent(attr, attrValue);
+      this.initComponent(attr, attrValue, false);
     }
   },
 
@@ -426,12 +471,13 @@ var proto = Object.create(ANode.prototype, {
    */
   removeAttribute: {
     value: function (attr) {
-      var component = components[attr];
+      var component = this.components[attr];
       if (component) {
         this.setEntityAttribute(attr, undefined, null);
-      } else {
-        HTMLElement.prototype.removeAttribute.call(this, attr);
+        // The component might not be removed if it's a default one
+        if (this.components[attr]) { return; }
       }
+      HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
 
@@ -443,15 +489,14 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      var sceneEl = this.sceneEl;
 
       // Already playing.
       if (this.isPlaying || !this.hasLoaded) { return; }
       this.isPlaying = true;
 
       // Wake up all components.
-      componentKeys.forEach(function _playComponent (key) {
-        playComponent(components[key], sceneEl);
+      componentKeys.forEach(function playComponent (key) {
+        components[key].play();
       });
 
       // Tell all child entities to play.
@@ -472,14 +517,13 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var components = this.components;
       var componentKeys = Object.keys(components);
-      var sceneEl = this.sceneEl;
 
       if (!this.isPlaying) { return; }
       this.isPlaying = false;
 
       // Sleep all components.
-      componentKeys.forEach(function _pauseComponent (key) {
-        pauseComponent(components[key], sceneEl);
+      componentKeys.forEach(function pauseComponent (key) {
+        components[key].pause();
       });
 
       // Tell all child entities to pause.
@@ -501,7 +545,7 @@ var proto = Object.create(ANode.prototype, {
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
-      if (components[attr]) {
+      if (COMPONENTS[attr] || this.components[attr]) {
         this.updateComponent(attr, newVal);
         return;
       }
@@ -540,7 +584,8 @@ var proto = Object.create(ANode.prototype, {
   setAttribute: {
     value: function (attr, value, componentPropValue) {
       var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      if (components[attr]) {
+      var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+      if (COMPONENTS[componentName]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);
@@ -592,11 +637,9 @@ var proto = Object.create(ANode.prototype, {
    */
   getAttribute: {
     value: function (attr) {
+      // If cached value exists, return partial component data.
       var component = this.components[attr];
-      // If there's a cached value we just return it
-      if (component && component.attrValue !== undefined) {
-        return component.attrValue;
-      }
+      if (component) { return component.attrValue; }
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
@@ -613,6 +656,7 @@ var proto = Object.create(ANode.prototype, {
    */
   getComputedAttribute: {
     value: function (attr) {
+      // If component, return component data.
       var component = this.components[attr];
       if (component) { return component.getData(); }
       return HTMLElement.prototype.getAttribute.call(this, attr);
@@ -623,7 +667,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, this.registerMixin.bind(this));
+      this.mapStateMixins(state, bind(this.registerMixin, this));
       this.emit('stateadded', {state: state});
     }
   },
@@ -633,7 +677,7 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, this.unregisterMixin.bind(this));
+      this.mapStateMixins(state, bind(this.unregisterMixin, this));
       this.emit('stateremoved', {state: state});
     }
   },
@@ -670,7 +714,7 @@ function checkComponentDefined (el, name) {
 function getMixedInComponents (entityEl) {
   var components = [];
   entityEl.mixinEls.forEach(function getMixedComponents (mixinEl) {
-    Object.keys(mixinEl.componentAttrCache).forEach(addComponent);
+    Object.keys(mixinEl.componentCache).forEach(addComponent);
     function addComponent (key) {
       components.push(key);
     }
@@ -692,36 +736,6 @@ function isComponentMixedIn (name, mixinEls) {
     if (inMixin) { break; }
   }
   return inMixin;
-}
-
-/**
- * Pause component by removing tick behavior and calling pause handler.
- *
- * @param component {object} - Component to pause.
- * @param sceneEl {Element} - Scene, needed to remove the tick behavior.
- */
-function pauseComponent (component, sceneEl) {
-  component.pause();
-  // Remove tick behavior.
-  if (!component.tick) { return; }
-  sceneEl.removeBehavior(component);
-}
-
-/**
- * Play component by adding tick behavior and calling play handler.
- *
- * @param component {object} - Component to play.
- * @param sceneEl {Element} - Scene, needed to add the tick behavior.
- */
-function playComponent (component, sceneEl) {
-  component.play();
-  // Add tick behavior.
-  if (!component.tick) { return; }
-  sceneEl.addBehavior(component);
-}
-
-function isEntity (el) {
-  return el.isEntity;
 }
 
 AEntity = registerElement('a-entity', {

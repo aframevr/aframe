@@ -88,9 +88,11 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
  * @param {object} schema - Property types definition.
  * @param {boolean} getPartialData - Whether to return full component data or just the data
  *        with keys in `propData`.
+ * @param {string } componentName - Name of the component, used for the property warning.
  * @param {boolean} silent - Suppress warning messages.
  */
-module.exports.parseProperties = function (propData, schema, getPartialData, silent) {
+module.exports.parseProperties = function (propData, schema, getPartialData, componentName,
+                                           silent) {
   var propNames = Object.keys(getPartialData ? propData : schema);
 
   if (propData === null || typeof propData !== 'object') { return propData; }
@@ -98,17 +100,15 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
   // Validation errors.
   Object.keys(propData).forEach(function (propName) {
     if (!schema[propName] && !silent) {
-      warn('Unknown component property: ' + propName);
+      warn('Unknown property `' + propName +
+           '` for component/system `' + componentName + '`.');
     }
   });
 
   propNames.forEach(function parse (propName) {
     var propDefinition = schema[propName];
     var propValue = propData[propName];
-
     if (!(schema[propName])) { return; }
-
-    propValue = propValue === undefined ? propDefinition.default : propValue;
     propData[propName] = parseProperty(propValue, propDefinition);
   });
 
@@ -119,8 +119,7 @@ module.exports.parseProperties = function (propData, schema, getPartialData, sil
  * Deserialize a single property.
  */
 function parseProperty (value, propDefinition) {
-  if (typeof value !== 'string') { return value; }
-  if (typeof value === 'undefined') { return value; }
+  value = (value === undefined || value === null) ? propDefinition.default : value;
   return propDefinition.parse(value);
 }
 module.exports.parseProperty = parseProperty;

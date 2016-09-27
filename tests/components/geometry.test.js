@@ -16,6 +16,10 @@ suite('geometry', function () {
   });
 
   suite('update', function () {
+    test('allows empty geometry', function () {
+      this.el.setAttribute('geometry', '');
+    });
+
     test('creates geometry', function () {
       var mesh = this.el.getObject3D('mesh');
       assert.ok(mesh.geometry);
@@ -122,8 +126,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0,
-      thetaLength: 350
+      buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0, thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -138,8 +141,15 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
-      segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      buffer: false,
+      primitive: 'cylinder',
+      radius: 1,
+      height: 2,
+      segmentsRadial: 3,
+      segmentsHeight: 4,
+      openEnded: true,
+      thetaStart: 240,
+      thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -158,8 +168,16 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2,
-      segmentsRadial: 3, segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      buffer: false,
+      primitive: 'cone',
+      radiusTop: 1,
+      radiusBottom: 5,
+      height: 2,
+      segmentsRadial: 3,
+      segmentsHeight: 4,
+      openEnded: true,
+      thetaStart: 240,
+      thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -213,8 +231,14 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
-      phiStart: 45, phiLength: 90, thetaStart: 45
+      buffer: false,
+      primitive: 'sphere',
+      radius: 1,
+      segmentsWidth: 2,
+      segmentsHeight: 3,
+      phiStart: 45,
+      phiLength: 90,
+      thetaStart: 45
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -232,8 +256,13 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3,
-      segmentsTubular: 4, arc: 350
+      buffer: false,
+      primitive: 'torus',
+      radius: 1,
+      radiusTubular: 2,
+      segmentsRadial: 3,
+      segmentsTubular: 4,
+      arc: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -249,8 +278,14 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
-      segmentsTubular: 4, p: 5, q: 6
+      buffer: false,
+      primitive: 'torusKnot',
+      radius: 1,
+      radiusTubular: 2,
+      segmentsRadial: 3,
+      segmentsTubular: 4,
+      p: 5,
+      q: 6
     });
 
     geometry = el.getObject3D('mesh').geometry;

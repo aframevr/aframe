@@ -1,4 +1,4 @@
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
   defaultComponents: {
@@ -11,8 +11,9 @@ registerPrimitive('a-light', {
     'ground-color': 'light.groundColor',
     decay: 'light.decay',
     distance: 'light.distance',
-    exponent: 'light.exponent',
     intensity: 'light.intensity',
-    type: 'light.type'
+    penumbra: 'light.penumbra',
+    type: 'light.type',
+    target: 'light.target'
   }
 });

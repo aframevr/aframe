@@ -1,5 +1,5 @@
 var getMeshMixin = require('../getMeshMixin');
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
 
 registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
@@ -8,7 +8,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
       primitive: 'sphere',
       radius: 5000,
       segmentsWidth: 64,
-      segmentsHeight: 64
+      segmentsHeight: 20
     },
     material: {
       color: '#FFF',

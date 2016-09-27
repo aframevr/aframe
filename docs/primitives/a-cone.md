@@ -3,7 +3,6 @@ title: <a-cone>
 type: primitives
 layout: docs
 parent_section: primitives
-order: 6
 ---
 
 The cone primitive creates a cone shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cone`.
@@ -24,15 +23,22 @@ The cone primitive creates a cone shape. It is an entity that prescribes the [ge
 
 ## Attributes
 
-Note that the cone primitive inherits common [mesh attributes](./mesh-attributes.md).
-
 | Attribute       | Component Mapping       | Default Value |
-|-----------------|-------------------------|---------------|
-| height          | geometry.height         | 1.5           |
+| --------        | -----------------       | ------------- |
+| color           | material.color          | #FFF          |
+| height          | geometry.height         | 1             |
+| metalness       | material.metalness      | 0             |
+| opacity         | material.opacity        | 1             |
 | open-ended      | geometry.openEnded      | false         |
-| radius-bottom   | geometry.radiusBottom   | 0.75          |
-| radius-top      | geometry.radiusTop      | 0.75          |
-| segments-height | geometry.segmentsHeight | 1             |
+| radius-bottom   | geometry.radiusBottom   | 1             |
+| radius-top      | geometry.radiusTop      | 0.8           |
+| repeat          | material.repeat         | None          |
+| roughness       | material.roughness      | 0.5           |
+| segments-height | geometry.segmentsHeight | 18            |
 | segments-radial | geometry.segmentsRadial | 36            |
+| shader          | material.shader         | standard      |
+| side            | material.side           | front         |
+| src             | material.src            | None          |
 | theta-length    | geometry.thetaLength    | 360           |
 | theta-start     | geometry.thetaStart     | 0             |
+| transparent     | material.transparent    | false         |

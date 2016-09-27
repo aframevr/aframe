@@ -1,5 +1,5 @@
 var getMeshMixin = require('../getMeshMixin');
-var registerPrimitive = require('../registerPrimitive');
+var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
 
 registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
@@ -21,7 +21,9 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       y: 0,
       z: -1
     },
-    raycaster: {}
+    raycaster: {
+      far: 1000
+    }
   },
 
   mappings: {
@@ -29,6 +31,6 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
     fuse: 'cursor.fuse',
     interval: 'raycaster.interval',
     objects: 'raycaster.objects',
-    timeout: 'cursor.timeout'
+    'fuse-timeout': 'cursor.fuseTimeout'
   }
 }));

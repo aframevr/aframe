@@ -2,6 +2,7 @@ var coordinates = require('../utils/coordinates');
 var debug = require('debug');
 
 var error = debug('core:propertyTypes:warn');
+var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 
@@ -16,9 +17,9 @@ registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
-registerPropertyType('vec2', { x: 0, y: 0 }, vecParse, coordinates.stringify);
-registerPropertyType('vec3', { x: 0, y: 0, z: 0 }, vecParse, coordinates.stringify);
-registerPropertyType('vec4', { x: 0, y: 0, z: 0, w: 0 }, vecParse, coordinates.stringify);
+registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
+registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
+registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -85,7 +86,7 @@ function selectorParse (value) {
 function selectorAllParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
-  return document.querySelectorAll(value);
+  return Array.prototype.slice.call(document.querySelectorAll(value), 0);
 }
 
 function selectorStringify (value) {
@@ -96,14 +97,10 @@ function selectorStringify (value) {
 }
 
 function selectorAllStringify (value) {
-  if (value.item) {
-    var els = '';
-    var i;
-    for (i = 0; i < value.length; ++i) {
-      els += '#' + value[i].getAttribute('id');
-      if (i !== value.length - 1) { els += ', '; }
-    }
-    return els;
+  if (value instanceof Array) {
+    return value.map(function (element) {
+      return '#' + element.getAttribute('id');
+    }).join(', ');
   }
   return defaultStringify(value);
 }
@@ -120,6 +117,11 @@ function srcParse (value) {
 
   var el = selectorParse(value);
   if (el) { return el.getAttribute('src'); }
+
+  if (value.charAt(0) !== '#') {
+    warn('"' + value + '" is not a valid `src` attribute. ' +
+         'Value must be an ID selector (i.e. "#someElement") or wrapped in `url()`.');
+  }
 
   return '';
 }

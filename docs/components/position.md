@@ -3,7 +3,6 @@ title: position
 type: components
 layout: docs
 parent_section: components
-order: 13
 ---
 
 The position component defines where an entity is placed in the scene's world space. It takes a coordinate value as three space-delimited numbers.
@@ -23,7 +22,7 @@ A-Frame uses a right-handed coordinate system where the negative Z axis extends 
 | Axis | Description                                                  | Default Value |
 |------|--------------------------------------------------------------|---------------|
 | x    | Negative X axis extends left. Positive X Axis extends right. | 0             |
-| y    | Negative Y axis extends up. Positive Y Axis extends down.    | 0             |
+| y    | Negative Y axis extends down. Positive Y Axis extends up.    | 0             |
 | z    | Negative Z axis extends in. Positive Z Axis extends out.     | 0             |
 
 ## Relative Positioning

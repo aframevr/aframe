@@ -1,17 +1,19 @@
 var ANode = require('./a-node');
-var constants = require('../constants/animation');
+var animationConstants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
 var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
 var TWEEN = require('tween.js');
-var utils = require('../utils/');
 var THREE = require('../lib/three');
+var utils = require('../utils/');
+var bind = utils.bind;
 
-var DEFAULTS = constants.defaults;
-var DIRECTIONS = constants.directions;
-var EASING_FUNCTIONS = constants.easingFunctions;
-var FILLS = constants.fills;
-var REPEATS = constants.repeats;
+var getComponentProperty = utils.entity.getComponentProperty;
+var DEFAULTS = animationConstants.defaults;
+var DIRECTIONS = animationConstants.directions;
+var EASING_FUNCTIONS = animationConstants.easingFunctions;
+var FILLS = animationConstants.fills;
+var REPEATS = animationConstants.repeats;
 var isCoordinate = coordinates.isCoordinate;
 
 /**
@@ -42,25 +44,10 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     attachedCallback: {
       value: function () {
-        var self = this;
-        var el = this.el = this.parentNode;
-
-        init();
-
-        function init () {
-          if (!el.isPlaying) {
-            el.addEventListener('play', init);
-            return;
-          }
-          if (!el.hasLoaded) {
-            el.addEventListener('loaded', init);
-            return;
-          }
-
-          self.applyMixin();
-          self.update();
-          self.load();
-        }
+        this.el = this.parentNode;
+        this.handleMixinUpdate();
+        this.update();
+        this.load();
       }
     },
 
@@ -68,7 +55,7 @@ module.exports.AAnimation = registerElement('a-animation', {
       value: function (attr, oldVal, newVal) {
         if (!this.hasLoaded || !this.isRunning) { return; }
         this.stop();
-        this.applyMixin();
+        this.handleMixinUpdate();
         this.update();
       }
     },
@@ -95,7 +82,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         var animationValues;
         var attribute = data.attribute;
         var delay = parseInt(data.delay, 10);
-        var currentValue = getComputedAttributeFor(el, attribute);
+        var currentValue = getComponentProperty(el, attribute);
         var direction = self.getDirection(data.direction);
         var easing = EASING_FUNCTIONS[data.easing];
         var fill = data.fill;
@@ -148,7 +135,7 @@ module.exports.AAnimation = registerElement('a-animation', {
           .onUpdate(function () {
             self.partialSetAttribute(this);
           })
-          .onComplete(self.onCompleted.bind(self));
+          .onComplete(bind(self.onCompleted, self));
       }
     },
 
@@ -158,6 +145,10 @@ module.exports.AAnimation = registerElement('a-animation', {
     update: {
       value: function () {
         var data = this.data;
+        // Terminology warning if infinite used instead of indefinite
+        if (data.repeat === 'infinite') {
+          console.warn("Using 'infinite' as 'repeat' value is invalid.  Use 'indefinite' instead.");
+        }
         // Deprecation warning for begin when used as a delay.
         if (data.begin !== '' && !isNaN(data.begin)) {
           console.warn("Using 'begin' to specify a delay is deprecated. Use 'delay' instead.");
@@ -167,9 +158,9 @@ module.exports.AAnimation = registerElement('a-animation', {
         var begin = data.begin;
         var end = data.end;
         // Cancel previous event listeners
-        if (this.evt) this.removeEventListeners(this.evt);
+        if (this.evt) { this.removeEventListeners(this.evt); }
         // Store new event name.
-        this.evt = { begin: begin, end: end };
+        this.evt = {begin: begin, end: end};
         // Add new event listeners
         this.addEventListeners(this.evt);
         // If `begin` is not defined, start the animation right away.
@@ -209,6 +200,12 @@ module.exports.AAnimation = registerElement('a-animation', {
 
     start: {
       value: function () {
+        var self = this;
+        // Postpone animation start until the entity has loaded
+        if (!this.el.hasLoaded) {
+          this.el.addEventListener('loaded', function () { self.start(); });
+          return;
+        }
         if (this.isRunning || !this.el.isPlaying) { return; }
         this.tween = this.getTween();
         this.isRunning = true;
@@ -261,10 +258,10 @@ module.exports.AAnimation = registerElement('a-animation', {
      */
     bindMethods: {
       value: function () {
-        this.start = this.start.bind(this);
-        this.stop = this.stop.bind(this);
-        this.onStateAdded = this.onStateAdded.bind(this);
-        this.onStateRemoved = this.onStateRemoved.bind(this);
+        this.start = bind(this.start, this);
+        this.stop = bind(this.stop, this);
+        this.onStateAdded = bind(this.onStateAdded, this);
+        this.onStateRemoved = bind(this.onStateRemoved, this);
       }
     },
 
@@ -321,7 +318,7 @@ module.exports.AAnimation = registerElement('a-animation', {
      * Works the same as component mixins but reimplemented because animations
      * aren't components.
      */
-    applyMixin: {
+    handleMixinUpdate: {
       value: function () {
         var data = {};
         var elData;
@@ -418,7 +415,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     }
     schema = component.schema;
     if (dataFrom === undefined) {  // dataFrom can be 0.
-      from[attribute] = getComputedAttributeFor(el, attribute);
+      from[attribute] = getComponentProperty(el, attribute);
     } else {
       from[attribute] = dataFrom;
     }
@@ -491,7 +488,6 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
   }
 }
 module.exports.getAnimationValues = getAnimationValues;
-module.exports.getComputedAttributeFor = getComputedAttributeFor;
 
 /**
  * Converts string to bool.
@@ -512,26 +508,6 @@ function strToBool (str) {
  */
 function boolToNum (bool) {
   return bool ? 1 : 0;
-}
-
-/**
- * A getComputedAttribute that supports dot notation to look up a component property.
- *
- * @param {Element} el - To look up attribute on.
- * @param {string} attr - dot notation or singular 'color' or 'material.color'
- * @returns Resulting value of component property.
- */
-function getComputedAttributeFor (el, attribute) {
-  var attributeSplit = attribute.split('.');
-  var componentName = attributeSplit[0];
-  var componentPropName = attributeSplit[1];
-  var attributeValue = el.getComputedAttribute(componentName);
-  // If the attribute is singular call normal getComputedAttribute function
-  if (attributeSplit.length === 1) { return attributeValue; }
-  // If the component exists as an attribute return the property on it
-  if (attributeValue) { return attributeValue[componentPropName]; }
-  // Otherwise Fall back to native get attribute with the component prop name
-  return el.getComputedAttribute(componentPropName);
 }
 
 /**

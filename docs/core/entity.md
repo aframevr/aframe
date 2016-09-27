@@ -6,9 +6,15 @@ parent_section: core
 order: 2
 ---
 
-An entity is represented by the `<a-entity>` element. As defined in the [entity-component-system pattern][ecs], entities are placeholder objects to which we plug in components to in order to provide them apperance, behavior, and functionality.
+An entity is represented by the `<a-entity>` element. As defined in the
+[entity-component-system pattern][ecs], entities are placeholder objects to
+which we plug in components to in order to provide them apperance, behavior,
+and functionality.
 
-In A-Frame, entities have inherently have attached the [position][position], [rotation][rotation], and [scale][scale] components.
+In A-Frame, entities are inherently attached with the [position][position],
+[rotation][rotation], and [scale][scale] components.
+
+<!--toc-->
 
 ## Example
 
@@ -83,7 +89,7 @@ The different types `Object3D`s can be accessed through `object3DMap`.
 
 ### `object3DMap`
 
-An entity's `object3DMap` is an JavaScript object that gives access to the different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that may have been registered by components.
+An entity's `object3DMap` is a JavaScript object that gives access to the different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that may have been registered by components.
 
 For an entity with a [geometry][geometry] and [light][light] components attached, `object3DMap` might look like:
 
@@ -115,7 +121,7 @@ console.log(entity.sceneEl === sceneEl);  // >> true.
 
 ```js
 entity.addEventListener('stateadded', function (evt) {
-  if (evt.state === 'selected') {
+  if (evt.detail.state === 'selected') {
     console.log('Entity now selected!');
   }
 });
@@ -147,6 +153,11 @@ The event will bubble by default. we can tell it not to bubble by passing `false
 ```js
 entity.emit('sink', null, false);
 ```
+
+### `flushToDOM (recursive)`
+
+`flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
+Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
 ### `getAttribute (attr)`
 
@@ -183,13 +194,13 @@ Compare the output of the above example of [`getAttribute`](#getAttribute):
 ```js
 // <a-entity geometry="primitive: box; width: 3">
 
-entity.getAttribute('geometry');
+entity.getComputedAttribute('geometry');
 // >> { primitive: "box", depth: 2, height: 2, translate: "0 0 0", width: 3, ... }
 
-entity.getAttribute('geometry').primitive;
+entity.getComputedAttribute('geometry').primitive;
 // >> "box"
 
-entity.getAttribute('geometry').height;
+entity.getComputedAttribute('geometry').height;
 // >> 2
 ```
 
@@ -209,7 +220,7 @@ AFRAME.registerComponent('example-mesh', {
 });
 ```
 
-### `getOrCreateObject3D (type, Constructor)
+### `getOrCreateObject3D (type, Constructor)`
 
 If the entity does not have a `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the passed `Constructor`. If the entity does have an `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will act as `getObject3D`:
 
@@ -282,7 +293,7 @@ entity.setAttribute('material', 'color', 'crimson');
 
 ### `setObject3D (type, obj)`
 
-`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistered the `THREE.Object3D` previously registered under `type`.
+`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistering the `THREE.Object3D` previously registered under `type`.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
@@ -322,11 +333,11 @@ AFRAME.registerComponent('example-light', {
 
 ### `removeState (stateName)`
 
-`removeState` will pop a state from the entity. This will emit the `stateremove` event, and the state can then be checked for its removal using `.is`:
+`removeState` will pop a state from the entity. This will emit the `stateremoved` event, and the state can then be checked for its removal using `.is`:
 
 ```js
 entity.addEventListener('stateremoved', function (evt) {
-  if (evt.state === 'selected') {
+  if (evt.detail.state === 'selected') {
     console.log('Entity no longer selected.');
   }
 });
@@ -340,39 +351,60 @@ entity.is('selected');  // >> false
 
 ## Events
 
-| Event Name       | Description                                                                                                 |
-|------------------|-------------------------------------------------------------------------------------------------------------|
-| child-attached   | A child was attached to the entity. The event detail will provide the attached child.                       |
-| componentchanged | One of the entity's component's data was modified. The event detail will provide what data on what changed. |
-| loaded           | The entity has attached and initialized all of its components.                                              |
-| pause            | The entity is now inactive and paused in terms of dynamic behavior.                                         |
-| play             | The entity is now active and playing in terms of dynamic behavior.                                          |
-| stateadded       | The entity received a new state. The event detail will provide which state was attached.                    |
-| stateremoved     | The entity no longer has a certain state. The event detail will provide which state was detached.           |
+| Event Name       | Description                                                         |
+|------------------|---------------------------------------------------------------------|
+| child-attached   | A child was attached to the entity.                                 |
+| componentchanged | One of the entity's component's data was modified.                  |
+| componentremoved | One of the entity's component was removed.                          |
+| loaded           | The entity has attached and initialized all of its components.      |
+| pause            | The entity is now inactive and paused in terms of dynamic behavior. |
+| play             | The entity is now active and playing in terms of dynamic behavior.  |
+| stateadded       | The entity received a new state.                                    |
+| stateremoved     | The entity no longer has a certain state.                           |
+| schemachanged    | The schema of a component was changed.                              |
 
-### Listening for Component Changes
+### Event Detail
+
+Below is what the event detail contains for each event:
+
+| Event Name       | Property  | Description                                             |
+|------------------|-----------|---------------------------------------------------------|
+| child-attached   | el        | Reference to the attached child element.                |
+| componentremoved | name      | Name of component that was removed.                     |
+| componentchanged | name      | Name of component that had its data modified.           |
+|                  | id        | Id of component that had its data modified.             |
+|                  | newData   | Component's new data, after it was modified.            |
+|                  | oldData   | Component's previous data, before it was modified.      |
+| stateadded       | state     | The state that was attached (string).                   |
+| stateremoved     | state     | The state that was detached (string).                   |
+| schemachanged    | component | Name of component that had it's schema changed.         |
+
+#### Listening for Component Changes
 
 We can use the `componentchanged` event to listen for changes to the entity:
 
 ```js
 entity.addEventListener('componentchanged', function (evt) {
-  if (evt.name === 'position') {
-    console.log('Entity has moved from', evt.oldData, 'to', evt.newData, '!');
+  if (evt.detail.name === 'position') {
+    console.log('Entity has moved from', evt.detail.oldData, 'to', evt.detail.newData, '!');
   }
 });
 ```
 
-#### Event Detail
+#### Listening for child elements being attached
 
-Below is what the event detail will contain for `componentchanged`:
+We can use the `child-attached` event to listen for elements being attached:
 
-| Property | Description                                        |
-|----------|----------------------------------------------------|
-| name     | Name of component that had its data modified.      |
-| newData  | Component's new data, after it was modified.       |
-| oldData  | Component's previous data, before it was modified. |
+```js
+entity.addEventListener('child-attached', function(evt) {
+  if (evt.detail.el.tagName.toLowerCase() === 'a-box') {
+    console.log('a box element has been attached');
+  };
+));
+```
 
 [animation-begin]: ../core/animation.md#Begin
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [ecs]: ../core/
 [geometry]: ../components/geometry.md

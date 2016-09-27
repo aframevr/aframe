@@ -1,9 +1,10 @@
-/* global assert, setup, suite, sinon, test */
-'use strict';
+/* global assert, setup, suite, test */
 var helpers = require('../helpers.js');
 var AAnimation = require('core/a-animation').AAnimation;
 var getAnimationValues = require('core/a-animation').getAnimationValues;
-var getComputedAttributeFor = require('core/a-animation').getComputedAttributeFor;
+var utils = require('utils/');
+
+var getComponentProperty = utils.entity.getComponentProperty;
 
 /**
  * Helpers to start initialize an animation.
@@ -17,7 +18,7 @@ var getComputedAttributeFor = require('core/a-animation').getComputedAttributeFo
 function setupAnimation (animationAttrs, cb, elAttrs) {
   var animationEl = document.createElement('a-animation');
   var el = helpers.entityFactory();
-  var done;
+  var done = false;
 
   // TODO: have <a-animation> setAttribute support this.
   Object.keys(animationAttrs).forEach(function (key) {
@@ -32,9 +33,6 @@ function setupAnimation (animationAttrs, cb, elAttrs) {
       cb(el, animationEl, window.performance.now());
       done = true;
     }
-  });
-  animationEl.addEventListener('loaded', function () {
-    animationEl.start();
   });
   el.isPlaying = true;
   el.appendChild(animationEl);
@@ -57,9 +55,7 @@ function generateColorAnimationTest (description, from, to, attribute) {
         attributeSplit = attribute.split('.');
         elAttrs = {};
         elAttrs[attribute] = '';
-        elAttrs[attributeSplit[0]] = {
-          shader: 'flat'
-        };
+        elAttrs[attributeSplit[0]] = {shader: 'flat'};
         elAttrs[attributeSplit[0]][attributeSplit[1]] = '#FFF';
       }
       setupAnimation({
@@ -74,24 +70,24 @@ function generateColorAnimationTest (description, from, to, attribute) {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, elAttrs || { color: '' });
+      }, elAttrs || {color: ''});
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#ffffff');
+      assert.equal(getComponentProperty(this.el, attribute || 'color'), '#ffffff');
     });
 
     test('between value', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
-      color = this.el.getComputedAttribute(attribute || 'color');
+      color = getComponentProperty(this.el, attribute || 'color');
       assert.isAbove(color, '#000000');
       assert.isBelow(color, '#ffffff');
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute(attribute || 'color'), '#000000');
+      assert.equal(getComponentProperty(this.el, attribute || 'color'), '#000000');
     });
   });
 }
@@ -106,7 +102,7 @@ suite('a-animation', function () {
   suite('attachedCallback', function () {
     test('applies mixin', function (done) {
       helpers.entityFactory();
-      helpers.mixinFactory('walt', { repeat: 'indefinite' });
+      helpers.mixinFactory('walt', {repeat: 'indefinite'});
       setupAnimation({
         mixin: 'walt'
       }, function (el, animationEl) {
@@ -131,9 +127,9 @@ suite('a-animation', function () {
 
   suite('update', function () {
     test('called on initialization', function (done) {
-      this.sinon.stub(AAnimation.prototype, 'update');
+      var spy = this.sinon.spy(AAnimation.prototype, 'update');
       setupAnimation({}, function (el, animationEl) {
-        sinon.assert.called(AAnimation.prototype.update);
+        assert.ok(spy.called);
         done();
       });
     });
@@ -154,7 +150,7 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { light: '' });
+      }, {light: ''});
     });
 
     test('start value', function () {
@@ -186,9 +182,9 @@ suite('a-animation', function () {
         to: '10 10 10'
       }, function (el, animationEl, startTime) {
         animationEl.tween = animationEl.tween;
-        assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 10, y: 10, z: 10 });
+        assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 10, z: 10});
         animationEl.addEventListener('animationend', function () {
-          assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 0, y: 0, z: 0 });
+          assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 0, y: 0, z: 0});
           done();
         });
         animationEl.tween.update(startTime + 1000);
@@ -210,18 +206,18 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { scale: '1 1 1' });
+      }, {scale: '1 1 1'});
     });
 
     test('starts at `from`', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('scale'), { x: 5, y: 10, z: 5 });
+      assert.shallowDeepEqual(this.el.getAttribute('scale'), {x: 5, y: 10, z: 5});
     });
 
     test('goes back to initial value after animation', function (done) {
       var el = this.el;
       var animationEl = this.animationEl;
       animationEl.addEventListener('animationend', function () {
-        assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
+        assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
         done();
       });
       animationEl.tween.update(this.startTime + 1000);
@@ -235,7 +231,7 @@ suite('a-animation', function () {
       fill: 'backwards',
       to: '10 10 10'
     }, function (el, animationEl) {
-      assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
       done();
     });
   });
@@ -254,18 +250,18 @@ suite('a-animation', function () {
         self.el = el;
         self.startTime = startTime;
         done();
-      }, { scale: '1 1 1' });
+      }, {scale: '1 1 1'});
     });
 
     test('starts at `from`', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('scale'), { x: 5, y: 10, z: 5 });
+      assert.shallowDeepEqual(this.el.getAttribute('scale'), {x: 5, y: 10, z: 5});
     });
 
     test('stays at `to`', function (done) {
       var el = this.el;
       var animationEl = this.animationEl;
       animationEl.addEventListener('animationend', function () {
-        assert.shallowDeepEqual(el.getAttribute('scale'), { x: 10, y: 10, z: 10 });
+        assert.shallowDeepEqual(el.getAttribute('scale'), {x: 10, y: 10, z: 10});
         done();
       });
       animationEl.tween.update(this.startTime + 1000);
@@ -286,18 +282,18 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { rotation: '10 10 10' });
+      }, {rotation: '10 10 10'});
     });
 
     test('starts at initial value', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('rotation'), { x: 10, y: 10, z: 10 });
+      assert.shallowDeepEqual(this.el.getAttribute('rotation'), {x: 10, y: 10, z: 10});
     });
 
     test('stays at `to`', function () {
       var animationEl = this.animationEl;
       var el = this.el;
       animationEl.tween.update(this.startTime + 1000);
-      assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 360, y: 0, z: 360 });
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 360, y: 0, z: 360});
     });
   });
 
@@ -315,7 +311,7 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { opacity: '' });
+      }, {opacity: ''});
     });
 
     test('start value', function () {
@@ -357,7 +353,7 @@ suite('a-animation', function () {
       animationEl.setAttribute('begin', 'click');
       el.isPlaying = true;
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.emit('click');
         assert.ok(animationEl.isRunning);
         done();
@@ -381,7 +377,7 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('begin', '1');
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.play();
         assert.ok(animationEl.isRunning);
         done();
@@ -393,7 +389,7 @@ suite('a-animation', function () {
       var el = helpers.entityFactory();
       animationEl.setAttribute('delay', '1');
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.play();
         assert.ok(animationEl.isRunning);
         done();
@@ -411,8 +407,8 @@ suite('a-animation', function () {
 
     test('gets correct values for multiple-attribute component', function () {
       var values = getAnimationValues(this.el, 'light.intensity', 0, 1);
-      assert.shallowDeepEqual(values.from, { 'light.intensity': 0 });
-      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+      assert.shallowDeepEqual(values.from, {'light.intensity': 0});
+      assert.shallowDeepEqual(values.to, {'light.intensity': 1});
     });
 
     test('gets correct values multiple-attribute component with no `from`', function () {
@@ -420,40 +416,40 @@ suite('a-animation', function () {
       var values;
       el.setAttribute('light', 'intensity: 0.5');
       values = getAnimationValues(el, 'light.intensity', undefined, '1');
-      assert.shallowDeepEqual(values.from, { 'light.intensity': 0.5 });
-      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+      assert.shallowDeepEqual(values.from, {'light.intensity': 0.5});
+      assert.shallowDeepEqual(values.to, {'light.intensity': 1});
     });
 
     test('gets correct values coordinate component', function () {
       var values = getAnimationValues(this.el, 'position', '1 2 3', '4 5 6');
-      assert.shallowDeepEqual(values.from, { x: 1, y: 2, z: 3 });
-      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+      assert.shallowDeepEqual(values.from, {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(values.to, {x: 4, y: 5, z: 6});
     });
 
     test('gets correct values coordinate component with no `from`', function () {
-      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6', { x: 0, y: 0, z: 0 });
-      assert.shallowDeepEqual(values.from, { x: 0, y: 0, z: 0 });
-      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6', {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(values.from, {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(values.to, {x: 4, y: 5, z: 6});
     });
 
     test('gets correct values for bool component', function () {
       var values = getAnimationValues(this.el, 'visible', 'false', 'true');
-      assert.shallowDeepEqual(values.from, { visible: 0 });
-      assert.shallowDeepEqual(values.to, { visible: 1 });
+      assert.shallowDeepEqual(values.from, {visible: 0});
+      assert.shallowDeepEqual(values.to, {visible: 1});
     });
 
     test('gets correct values coordinate component with no `from`', function () {
       var values = getAnimationValues(this.el, 'transparent', undefined, 'true');
-      assert.shallowDeepEqual(values.from, { transparent: 0 });
-      assert.shallowDeepEqual(values.to, { transparent: 1 });
+      assert.shallowDeepEqual(values.from, {transparent: 0});
+      assert.shallowDeepEqual(values.to, {transparent: 1});
     });
 
     test('gets correct partialSetAttribute for bool component', function () {
       var el = this.el;
       var values = getAnimationValues(el, 'visible', 'false', 'true');
-      values.partialSetAttribute({ visible: 0 });
+      values.partialSetAttribute({visible: 0});
       assert.equal(el.getAttribute('visible'), false);
-      values.partialSetAttribute({ visible: 1 });
+      values.partialSetAttribute({visible: 1});
       assert.equal(el.getAttribute('visible'), true);
     });
   });
@@ -596,7 +592,7 @@ suite('a-animation', function () {
         animationEl.tween.update(startTime + 1000);
         animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
-          assert.shallowDeepEqual(position, { x: 5, y: 5, z: 5 });
+          assert.shallowDeepEqual(position, {x: 5, y: 5, z: 5});
         });
         done();
       });
@@ -613,7 +609,7 @@ suite('a-animation', function () {
         animationEl.tween.update(startTime + 1000);
         animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
-          assert.shallowDeepEqual(position, { x: 0, y: 0, z: 0 });
+          assert.shallowDeepEqual(position, {x: 0, y: 0, z: 0});
         });
         done();
       });
@@ -630,7 +626,7 @@ suite('a-animation', function () {
     var attribute = 'material.color';
     setup(function (done) {
       var self = this;
-      var elAttrs = { color: '', material: { shader: 'flat', color: '#FF0000' } };
+      var elAttrs = {color: '', material: {shader: 'flat', color: '#FF0000'}};
 
       setupAnimation({
         attribute: 'material.color',
@@ -665,29 +661,6 @@ suite('a-animation', function () {
     });
   });
 
-  suite('getComputedAttributeFor', function () {
-    setup(function (done) {
-      var el = this.el = helpers.entityFactory();
-      el.addEventListener('loaded', function () {
-        done();
-      });
-    });
-
-    test('can get value of normal attribute', function (done) {
-      var el = this.el;
-      el.setAttribute('color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'color'), '#ffffff');
-      done();
-    });
-
-    test('can get value of attribute using dot notation', function (done) {
-      var el = this.el;
-      el.setAttribute('material', 'color', '#ffffff');
-      assert.equal(getComputedAttributeFor(el, 'material.color'), '#ffffff');
-      done();
-    });
-  });
-
   suite('end', function () {
     test('stops animation when event is triggered', function (done) {
       var animationEl = document.createElement('a-animation');
@@ -696,13 +669,51 @@ suite('a-animation', function () {
       animationEl.setAttribute('end', 'end-event');
       el.isPlaying = true;
       el.appendChild(animationEl);
-      animationEl.addEventListener('loaded', function () {
+      el.addEventListener('loaded', function () {
         el.emit('begin-event');
         assert.ok(animationEl.isRunning);
         el.emit('end-event');
         assert.ok(!animationEl.isRunning);
         done();
       });
+    });
+  });
+
+  suite('dynamic animations', function () {
+    test('animation plays when both entity and animation are dynamically created', function (done) {
+      var sceneEl = document.createElement('a-scene');
+      sceneEl.addEventListener('loaded', createAnimation);
+      document.body.appendChild(sceneEl);
+      function createAnimation () {
+        var entityEl = document.createElement('a-entity');
+        var animationEl = document.createElement('a-animation');
+        animationEl.setAttribute('attribute', 'rotation');
+        animationEl.setAttribute('repeat', 'indefinite');
+        animationEl.setAttribute('to', '0 360 0');
+        entityEl.appendChild(animationEl);
+        sceneEl.appendChild(entityEl);
+        entityEl.addEventListener('loaded', function () {
+          assert.ok(animationEl.isRunning);
+          done();
+        });
+      }
+    });
+
+    test('animation does not play if entity has not loaded when both entity and animation are dynamically created', function (done) {
+      var sceneEl = document.createElement('a-scene');
+      sceneEl.addEventListener('loaded', createAnimation);
+      document.body.appendChild(sceneEl);
+      function createAnimation () {
+        var entityEl = document.createElement('a-entity');
+        var animationEl = document.createElement('a-animation');
+        animationEl.setAttribute('attribute', 'rotation');
+        animationEl.setAttribute('repeat', 'indefinite');
+        animationEl.setAttribute('to', '0 360 0');
+        entityEl.appendChild(animationEl);
+        sceneEl.appendChild(entityEl);
+        assert.notOk(animationEl.isRunning);
+        done();
+      }
     });
   });
 });

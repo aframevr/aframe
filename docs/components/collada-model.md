@@ -3,7 +3,6 @@ title: collada-model
 type: components
 layout: docs
 parent_section: components
-order: 3
 ---
 
 The collada-model component loads a 3D model using a [COLLADA][wiki-collada] (.DAE) file.
@@ -53,6 +52,5 @@ We can find and download models on the web to drop into our scenes:
 
 [blender]: https://www.blender.org/
 [clara]: https://clara.io
-[obj-model]: ./obj-model.md
 [sketchup]: https://3dwarehouse.sketchup.com
 [wiki-collada]: https://en.wikipedia.org/wiki/COLLADA

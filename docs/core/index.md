@@ -1,22 +1,31 @@
 ---
 title: Entity-Component-System
-section_title: Core
+section_title: Concepts and API
 type: core
 layout: docs
 parent_section: docs
 order: 1
-section_order: 2
+section_order: 3
 ---
 
-A-Frame is based on an **[entity-component-system pattern][ecs]** (ECS), a pattern common in game development that emphasizes composability over inheritance:
+A-Frame is based on an **[entity-component-system pattern][ecs]** (ECS), a
+pattern common in game development that emphasizes composability over
+inheritance:
 
 - An [entity][entity] is a general-purpose object that inherently does and renders nothing.
 - A [component][component] is a reusable module that is plugged into entities in order to provide appearance, behavior, and/or functionality. They are plug-and-play for objects.
 - A [system][system] provides global scope, services, and management to classes of components.
 
-ECS lets us build complex entities with rich behavior by plugging different reusable components into the sockets on the entity. Contrast this to traditional inheritance where if we want to extend an object, we would have to manually create a new class to do so.
+ECS lets us build complex entities with rich behavior by plugging different
+reusable components into the sockets on the entity. Contrast this to
+traditional inheritance where if we want to extend an object, we would have to
+manually create a new class to do so.
 
-ECS grants developers the key to permissionless innovation. Developers can write, share, and plug in components that extend new features or iterate upon existing features.
+ECS grants developers the key to permissionless innovation. Developers can
+write, share, and plug in components that extend new features or iterate upon
+existing features.
+
+<!--toc-->
 
 ## Concept
 
@@ -50,7 +59,7 @@ From there, we can attach more and more components to add whatever appearance, b
 We can even attach third-party components that other people have created. If someone writes a component that enables a mesh to explode, or a component that enables the mesh to use a canvas as its material texture, we could just drop the component into our A-Frame experience and use it immediately in HTML. The entity-component-system pattern enables great flexibility and extensibility.
 
 [component]: ./component.md
-[composegif]: http://i.imgur.com/0UIZFgs.gif
+[composegif]: https://i.imgur.com/0UIZFgs.gif
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
 [entity]: ./entity.md
 [geometry]: ../components/geometry.md
@@ -58,4 +67,4 @@ We can even attach third-party components that other people have created. If som
 [material]: ../components/material.md
 [physics]: https://github.com/ngokevin/aframe-physics-components
 [sound]: ../components/sound.md
-[system]: ./system.md
+[system]: ./systems.md
