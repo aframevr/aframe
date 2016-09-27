@@ -159,24 +159,28 @@ entity.emit('sink', null, false);
 `flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
-### `getAttribute (attr)`
+### `getAttribute (componentName)`
 
-`getAttribute` can be used to retrieve parsed component data. If `attr` is the name of a registered component, `getAttribute` will return only the component data defined in the HTML as a parsed object. `getAttribute` for components is the partial form of `getComputedAttribute` since the returned component data does not include applied mixins or default values:
+`getAttribute` retrieves parsed component data (including mixins and defaults).
 
 ```js
 // <a-entity geometry="primitive: box; width: 3">
 
 entity.getAttribute('geometry');
-// >> { primitive: "box", width: 3 }
+// >> {primitive: "box", depth: 2, height: 2, translate: "0 0 0", width: 3, ...}
 
 entity.getAttribute('geometry').primitive;
 // >> "box"
 
 entity.getAttribute('geometry').height;
-// >> undefined
+// >> 2
+
+entity.getAttribute('position');
+// >> {x: 0, y: 0, z: 0}
 ```
 
-If `attr` is not the name of a registered component, `getAttribute` will behave as it normally would:
+If `componentName` is not the name of a registered component, `getAttribute`
+will behave as it normally would:
 
 ```js
 // <a-entity data-position="0 1 1">
@@ -185,26 +189,32 @@ entity.getAttribute('data-position');
 // >> "0 1 1"
 ```
 
-### `getComputedAttribute (attr)`
+### `getDefinedAttribute (componentName)`
 
-`getComputedAttribute` is similar to `getAttribute`, but it will return *all* of the component's properties for multi-property components. It can be thought of as an analog to [`getComputedStyle`](https://developer.mozilla.org/docs/Web/API/Window/getComputedStyle), which in CSS returns all CSS properties after applying stylesheets and computations. `getComputedAttribute` will return all component properties after applying mixins and default values.
+`getDefinedAttribute` retrieves only parsed component data that is explicitly
+defined in the DOM or via `setAttribute`. If `componentName` is the name of a
+registered component, `getDefinedAttribute` will return only the component data
+defined in the HTML as a parsed object. `getDefinedAttribute` for components is
+the partial form of `getAttribute` since the returned component data does not
+include applied mixins or default values:
 
 Compare the output of the above example of [`getAttribute`](#getAttribute):
 
 ```js
 // <a-entity geometry="primitive: box; width: 3">
 
-entity.getComputedAttribute('geometry');
-// >> { primitive: "box", depth: 2, height: 2, translate: "0 0 0", width: 3, ... }
+entity.getDefinedAttribute('geometry');
+// >> { primitive: "box", width: 3 }
 
-entity.getComputedAttribute('geometry').primitive;
+entity.getDefinedAttribute('geometry').primitive;
 // >> "box"
 
-entity.getComputedAttribute('geometry').height;
-// >> 2
-```
+entity.getDefinedAttribute('geometry').height;
+// >> undefined
 
-More often we will want to use `getComputedAttribute` to inspect the component's data. Though sometimes we might want to use `getAttribute` to discern which properties were explicitly defined.
+entity.getDefinedAttribute('position');
+// >> undefined
+```
 
 ### `getObject3D (type)`
 
