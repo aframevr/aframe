@@ -200,9 +200,8 @@ of the box. We've found A-Frame works wonderfully with:
 Don McCurdy has published a [Leap Hands component][leap] for Leap Motion
 controls.
 
-Dr. Ryan James has built a [medical education
-project][https://github.com/drryanjames/CadaVR] that also features Leap Motion
-controls code.
+Dr. Ryan James has built a [medical education project][cadavr] that also
+features Leap Motion controls code.
 
 ## Which devices, headsets, platforms does A-Frame support?
 
