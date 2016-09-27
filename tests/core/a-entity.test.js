@@ -265,7 +265,7 @@ suite('a-entity', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; metalness: 0.75');
-      material = el.getDefinedAttribute('material');
+      material = el.getDOMAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
@@ -275,7 +275,7 @@ suite('a-entity', function () {
       var material;
       var value = {color: '#F0F', metalness: 0.75};
       el.setAttribute('material', value);
-      material = el.getDefinedAttribute('material');
+      material = el.getDOMAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
@@ -286,7 +286,7 @@ suite('a-entity', function () {
       var value = {color: '#000'};
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
       el.setAttribute('material', value);
-      material = el.getDefinedAttribute('material');
+      material = el.getDOMAttribute('material');
       assert.equal(material.color, '#000');
       assert.equal(material.roughness, undefined);
     });
@@ -294,16 +294,16 @@ suite('a-entity', function () {
     test('can set a single component via a single attribute', function () {
       var el = this.el;
       el.setAttribute('material', 'color', '#F0F');
-      assert.equal(el.getDefinedAttribute('material').color, '#F0F');
+      assert.equal(el.getDOMAttribute('material').color, '#F0F');
     });
 
     test('can update a single component attribute', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      assert.equal(el.getDefinedAttribute('material').roughness, 0.25);
+      assert.equal(el.getDOMAttribute('material').roughness, 0.25);
       el.setAttribute('material', 'roughness', 0.75);
-      material = el.getDefinedAttribute('material');
+      material = el.getDOMAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.roughness, 0.75);
     });
@@ -320,11 +320,11 @@ suite('a-entity', function () {
       var position;
 
       el.setAttribute('position', '10 20 30');
-      position = el.getDefinedAttribute('position');
+      position = el.getDOMAttribute('position');
       assert.deepEqual(position, {x: 10, y: 20, z: 30});
 
       el.setAttribute('position', {x: 30, y: 20, z: 10});
-      position = el.getDefinedAttribute('position');
+      position = el.getDOMAttribute('position');
       assert.deepEqual(position, {x: 30, y: 20, z: 10});
     });
 
@@ -445,12 +445,12 @@ suite('a-entity', function () {
     });
   });
 
-  suite('getDefinedAttribute', function () {
+  suite('getDOMAttribute', function () {
     test('returns parsed component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
-      componentData = el.getDefinedAttribute('geometry');
+      componentData = el.getDOMAttribute('geometry');
       assert.equal(componentData.width, 5);
       assert.notOk('height' in componentData);
     });
@@ -458,26 +458,26 @@ suite('a-entity', function () {
     test('returns empty object if component is at defaults', function () {
       var el = this.el;
       el.setAttribute('material', '');
-      assert.shallowDeepEqual(el.getDefinedAttribute('material'), {});
+      assert.shallowDeepEqual(el.getDOMAttribute('material'), {});
     });
 
     test('returns null for a default component if it is not set', function () {
       var el = this.el;
-      assert.shallowDeepEqual(el.getDefinedAttribute('position'), null);
+      assert.shallowDeepEqual(el.getDOMAttribute('position'), null);
     });
 
     test('returns parsed data if default component is set', function () {
       var el = this.el;
       var position = {x: 5, y: 6, z: 6};
       el.setAttribute('position', position);
-      assert.shallowDeepEqual(el.getDefinedAttribute('position'), position);
+      assert.shallowDeepEqual(el.getDOMAttribute('position'), position);
     });
 
     test('returns partial component data', function () {
       var componentData;
       var el = this.el;
       el.setAttribute('geometry', 'primitive: box; width: 5');
-      componentData = el.getDefinedAttribute('geometry');
+      componentData = el.getDOMAttribute('geometry');
       assert.equal(componentData.width, 5);
       assert.notOk('height' in componentData);
     });
@@ -485,24 +485,24 @@ suite('a-entity', function () {
     test('falls back to HTML getAttribute if not a component', function () {
       var el = this.el;
       el.setAttribute('class', 'pied piper');
-      assert.equal(el.getDefinedAttribute('class'), 'pied piper');
+      assert.equal(el.getDOMAttribute('class'), 'pied piper');
     });
 
     test('retrieves data from a multiple component', function () {
       var el = this.el;
       el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
       el.setAttribute('sound__2', {'src': 'url(mysoundfile.mp3)', autoplay: false});
-      assert.ok(el.getDefinedAttribute('sound__1'));
-      assert.ok(el.getDefinedAttribute('sound__2'));
-      assert.notOk(el.getDefinedAttribute('sound'));
-      assert.equal(el.getDefinedAttribute('sound__1').autoplay, true);
+      assert.ok(el.getDOMAttribute('sound__1'));
+      assert.ok(el.getDOMAttribute('sound__2'));
+      assert.notOk(el.getDOMAttribute('sound'));
+      assert.equal(el.getDOMAttribute('sound__1').autoplay, true);
     });
 
     test('retrieves default value for single property component when ' +
          'the element attribute is set to empty string', function () {
       var sceneEl = this.el.sceneEl;
       sceneEl.setAttribute('debug', '');
-      assert.equal(sceneEl.getDefinedAttribute('debug'), true);
+      assert.equal(sceneEl.getDOMAttribute('debug'), true);
     });
   });
 
@@ -649,7 +649,7 @@ suite('a-entity', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
-      assert.equal(el.getDefinedAttribute('position'), null);
+      assert.equal(el.getDOMAttribute('position'), null);
       assert.ok('position' in el.components);
     });
 

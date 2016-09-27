@@ -189,12 +189,12 @@ entity.getAttribute('data-position');
 // >> "0 1 1"
 ```
 
-### `getDefinedAttribute (componentName)`
+### `getDOMAttribute (componentName)`
 
-`getDefinedAttribute` retrieves only parsed component data that is explicitly
+`getDOMAttribute` retrieves only parsed component data that is explicitly
 defined in the DOM or via `setAttribute`. If `componentName` is the name of a
-registered component, `getDefinedAttribute` will return only the component data
-defined in the HTML as a parsed object. `getDefinedAttribute` for components is
+registered component, `getDOMAttribute` will return only the component data
+defined in the HTML as a parsed object. `getDOMAttribute` for components is
 the partial form of `getAttribute` since the returned component data does not
 include applied mixins or default values:
 
@@ -203,16 +203,16 @@ Compare the output of the above example of [`getAttribute`](#getAttribute):
 ```js
 // <a-entity geometry="primitive: box; width: 3">
 
-entity.getDefinedAttribute('geometry');
+entity.getDOMAttribute('geometry');
 // >> { primitive: "box", width: 3 }
 
-entity.getDefinedAttribute('geometry').primitive;
+entity.getDOMAttribute('geometry').primitive;
 // >> "box"
 
-entity.getDefinedAttribute('geometry').height;
+entity.getDOMAttribute('geometry').height;
 // >> undefined
 
-entity.getDefinedAttribute('position');
+entity.getDOMAttribute('position');
 // >> undefined
 ```
 

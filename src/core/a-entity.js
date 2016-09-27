@@ -117,7 +117,7 @@ var proto = Object.create(ANode.prototype, {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attrName, this.getDefinedAttribute(attrName));
+      this.updateComponent(attrName, this.getDOMAttribute(attrName));
     }
   },
 
@@ -412,7 +412,7 @@ var proto = Object.create(ANode.prototype, {
        * Update component with given name.
        */
       function updateComponent (name) {
-        var attrValue = self.getDefinedAttribute(name);
+        var attrValue = self.getDOMAttribute(name);
         delete elComponents[name];
         self.updateComponent(name, attrValue);
       }
@@ -646,7 +646,7 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * `getAttribute` used to be `getDefinedAttribute` and `getComputedAttribute` used to be
+   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
    * what `getAttribute` is now. Now legacy code.
    *
    * @param {string} attr
@@ -669,7 +669,7 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
    */
-  getDefinedAttribute: {
+  getDOMAttribute: {
     value: function (attr) {
       // If cached value exists, return partial component data.
       var component = this.components[attr];

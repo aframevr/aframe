@@ -226,7 +226,7 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * `getAttribute` used to be `getDefinedAttribute` and `getComputedAttribute` used to be
+     * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
      * what `getAttribute` is now. Now legacy code.
      */
     getComputedAttribute: {
@@ -237,14 +237,14 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Wraps Entity.getDefinedAttribute to take into account for systems.
+     * Wraps Entity.getDOMAttribute to take into account for systems.
      * If system exists, then return system data rather than possible component data.
      */
-    getDefinedAttribute: {
+    getDOMAttribute: {
       value: function (attr) {
         var system = this.systems[attr];
         if (system) { return system.data; }
-        return AEntity.prototype.getDefinedAttribute.call(this, attr);
+        return AEntity.prototype.getDOMAttribute.call(this, attr);
       }
     },
 
