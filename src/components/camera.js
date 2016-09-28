@@ -110,7 +110,7 @@ module.exports.Component = registerComponent('camera', {
     var userHeightOffset = this.data.userHeight;
 
     oldOffset = oldOffset || 0;
-    currentPosition = el.getComputedAttribute('position') || {x: 0, y: 0, z: 0};
+    currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
     el.setAttribute('position', {
       x: currentPosition.x,
       y: currentPosition.y - oldOffset + userHeightOffset,

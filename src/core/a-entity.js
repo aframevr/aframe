@@ -8,6 +8,7 @@ var bind = utils.bind;
 
 var AEntity;
 var debug = utils.debug('core:a-entity:debug');
+var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
@@ -116,7 +117,7 @@ var proto = Object.create(ANode.prototype, {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attrName, this.getAttribute(attrName));
+      this.updateComponent(attrName, this.getDOMAttribute(attrName));
     }
   },
 
@@ -413,7 +414,7 @@ var proto = Object.create(ANode.prototype, {
        * Update component with given name.
        */
       function updateComponent (name) {
-        var attrValue = self.getAttribute(name);
+        var attrValue = self.getDOMAttribute(name);
         delete elComponents[name];
         self.updateComponent(name, attrValue);
       }
@@ -628,6 +629,39 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
+   * If `attr` is a component, returns ALL component data including applied mixins and
+   * defaults.
+   *
+   * If `attr` is not a component, fall back to HTML getAttribute.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
+   */
+  getAttribute: {
+    value: function (attr) {
+      // If component, return component data.
+      var component = this.components[attr];
+      if (component) { return component.getData(); }
+      return HTMLElement.prototype.getAttribute.call(this, attr);
+    },
+    writable: window.debug
+  },
+
+  /**
+   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
+   * what `getAttribute` is now. Now legacy code.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
+   */
+  getComputedAttribute: {
+    value: function (attr) {
+      warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
+      return this.getAttribute(attr);
+    }
+  },
+
+  /**
    * If `attr` is a component, returns JUST the component data defined on the entity.
    * Like a partial version of `getComputedAttribute` as returned component data
    * does not include applied mixins or defaults.
@@ -637,7 +671,7 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
    */
-  getAttribute: {
+  getDOMAttribute: {
     value: function (attr) {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
@@ -645,24 +679,6 @@ var proto = Object.create(ANode.prototype, {
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
-  },
-
-  /**
-   * If `attr` is a component, returns ALL component data including applied mixins and
-   * defaults.
-   *
-   * If `attr` is not a component, fall back to HTML getAttribute.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getComputedAttribute: {
-    value: function (attr) {
-      // If component, return component data.
-      var component = this.components[attr];
-      if (component) { return component.getData(); }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
-    }
   },
 
   addState: {

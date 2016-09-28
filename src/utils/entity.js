@@ -7,9 +7,9 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = name.split(delimiter);
-    return el.getComputedAttribute(splitName[0])[splitName[1]];
+    return el.getAttribute(splitName[0])[splitName[1]];
   }
-  return el.getComputedAttribute(name);
+  return el.getAttribute(name);
 };
 
 /**

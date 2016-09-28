@@ -14,7 +14,7 @@ suite('a-camera', function () {
   suite('active camera', function () {
     test('is the active camera when applied', function (done) {
       var camera = this.camera;
-      assert.ok(camera.getComputedAttribute('camera').active);
+      assert.ok(camera.getAttribute('camera').active);
       done();
     });
   });

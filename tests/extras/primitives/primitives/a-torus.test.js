@@ -14,7 +14,7 @@ suite('a-torus', function () {
   });
 
   test('has default position when created', function () {
-    assert.deepEqual(this.torusEl.getComputedAttribute('position'), {x: 0, y: 0, z: 0});
+    assert.deepEqual(this.torusEl.getAttribute('position'), {x: 0, y: 0, z: 0});
   });
 
   test('sets geometry.primitive', function () {
