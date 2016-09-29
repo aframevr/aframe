@@ -131,6 +131,36 @@ suite('Component', function () {
     });
   });
 
+  suite('updateProperties', function () {
+    test('emits componentchanged', function (done) {
+      var el = entityFactory();
+      el.setAttribute('material', 'color: red');
+      el.addEventListener('componentchanged', function (evt) {
+        if (evt.detail.name !== 'material') { return; }
+        assert.equal(evt.detail.oldData.color, 'red');
+        assert.equal(evt.detail.newData.color, 'blue');
+        assert.equal(evt.detail.name, 'material');
+        assert.ok('id' in evt.detail);
+        done();
+      });
+      process.nextTick(function () {
+        el.setAttribute('material', 'color: blue');
+      });
+    });
+
+    test('emits componentinitialized', function (done) {
+      var el = entityFactory();
+      el.addEventListener('componentinitialized', function (evt) {
+        if (evt.detail.name !== 'material') { return; }
+        assert.ok(evt.detail.data);
+        assert.ok('id' in evt.detail);
+        assert.equal(evt.detail.name, 'material');
+        done();
+      });
+      el.setAttribute('material', '');
+    });
+  });
+
   suite('third-party components', function () {
     setup(function () {
       delete components.clone;

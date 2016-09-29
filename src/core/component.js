@@ -201,16 +201,20 @@ Component.prototype = {
       // Play the component if the entity is playing.
       this.update(oldData);
       if (el.isPlaying) { this.play(); }
+      el.emit('componentinitialized', {
+        id: this.id,
+        name: this.name,
+        data: this.getData()
+      }, false);
     } else {
       this.update(oldData);
+      el.emit('componentchanged', {
+        id: this.id,
+        name: this.name,
+        newData: this.getData(),
+        oldData: oldData
+      }, false);
     }
-
-    el.emit('componentchanged', {
-      id: this.id,
-      name: this.name,
-      newData: this.getData(),
-      oldData: oldData
-    }, false);
   },
 
   /**

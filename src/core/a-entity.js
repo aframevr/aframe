@@ -362,15 +362,23 @@ var proto = Object.create(ANode.prototype, {
 
   removeComponent: {
     value: function (name) {
-      var component = this.components[name];
-      var isDefault = name in this.defaultComponents;
-      var isMixedIn = isComponentMixedIn(name, this.mixinEls);
-      // Don't remove default or mixed in components
+      var component;
+      var isDefault;
+      var isMixedIn;
+
+      // Don't remove default or mixed-in components.
+      isDefault = name in this.defaultComponents;
+      isMixedIn = isComponentMixedIn(name, this.mixinEls);
       if (isDefault || isMixedIn) { return; }
+
+      component = this.components[name];
       component.pause();
       component.remove();
       delete this.components[name];
-      this.emit('componentremoved', { name: name });
+      this.emit('componentremoved', {
+        id: component.id,
+        name: name
+      });
     }
   },
 
