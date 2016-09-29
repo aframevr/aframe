@@ -363,11 +363,13 @@ AFRAME.registerComponent('physics-body', {
 }
 ```
 
-## Lifecycle Methods
+## Interface / Lifecycle Methods
 
-With the schema being the anatomy, the lifecycle methods are the physiology;
-the schema defines the data, the lifecycle methods *use* the data. A component
-has access to `this.data` which in a single-property schema is a value and in a
+When writing a component, we implement one or several methods of the component
+interface. Most of these methods are lifecycle handlers. With the schema being
+the anatomy, the lifecycle methods are the physiology; the schema defines the
+data, the lifecycle methods *use* the data. A component has access to
+`this.data` which in a single-property schema is a value and in a
 multi-property schema is an object.
 
 The handlers will almost always interact with the entity. Read about the
@@ -473,9 +475,24 @@ Example uses of `.pause` and `.play` by some A-Frame components:
 |---------------|--------------------------------|
 | sound         | Pause/play sound.              |
 
-### `.updateSchema()`
+### `.updateSchema(data)`
 
-`.updateSchema` is optionally used to dynamically modify the schema.
+`.updateSchema` is an optional method used to dynamically modify the schema,
+usually depending on the value of other properties. The example below checks if
+the type changed to determine whether or not to update the schema using
+`extendSchema`:
+
+```js
+AFRAME.registerComponent('example', {
+  updateSchema: (data) {
+    var newSchema;
+    if (data.type !== this.data.type) {
+      newSchema = getNewSchema(data.type);
+      this.extendSchema(newSchema);
+    }
+  }
+});
+```
 
 Example uses of `.updateSchema` by some A-Frame components:
 
@@ -485,6 +502,24 @@ Example uses of `.updateSchema` by some A-Frame components:
 | material  | Check if `shader` has changed in order to change the schema to be respective to the material type.    |
 
 ## Methods
+
+### `.extendSchema(schema)`
+
+Attach the new `schema` to the base schema of the component. Useful if we want
+to change the schema based on certain properties. For example, the geometry
+component changes its schema based on the `primitive` property.
+
+```js
+AFRAME.registerComponent('example', {
+  updateSchema: (data) {
+    var newSchema;
+    if (data.type !== this.data.type) {
+      newSchema = getNewSchema(data.type);
+      this.extendSchema(newSchema);
+    }
+  }
+});
+```
 
 ### `.flushToDOM()`
 
