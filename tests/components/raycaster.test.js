@@ -79,7 +79,7 @@ suite('raycaster', function () {
       var el = this.el;
       var newEl = this.targetEl = document.createElement('a-entity');
       var numObjects = el.components.raycaster.objects.length;
-      newEl.addEventListener('loaded', function () {
+      el.sceneEl.addEventListener('child-attached', function () {
         assert.equal(el.components.raycaster.objects.length, numObjects + 1);
         done();
       });
