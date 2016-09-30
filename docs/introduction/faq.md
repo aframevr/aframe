@@ -56,12 +56,14 @@ in understanding learning curve difficulties.
 ## Why does my asset (e.g., image, video, model) not load?
 
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-[uploader]: https://cdn.aframe.io/
 
 If you are loading the asset from a different domain, make sure that the asset
 is served with [cross-origin resource sharing (CORS) headers][cors]. You could
 either find a host to serve the asset with CORS headers, or place the asset on
 the same domain as your scene.
+
+[ghpages]: https://github.com/blog/2228-simpler-github-pages-publishing
+[uploader]: https://cdn.aframe.io/
 
 For some options, all resources hosted on [GitHub Pages][ghpages] are served
 with CORS headers. We recommend GitHub Pages as a simple deployment platform.
