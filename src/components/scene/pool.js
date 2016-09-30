@@ -6,7 +6,8 @@ var warn = debug('components:pool:warn');
 module.exports.Component = register('pool', {
   schema: {
     mixin: {default: ''},
-    size: {default: 0}
+    size: {default: 0},
+    dynamic: {default: false}
   },
 
   multiple: true,
@@ -16,19 +17,22 @@ module.exports.Component = register('pool', {
   },
 
   createEntities: function () {
-    var el;
     var mixin = this.data.mixin;
     if (!mixin) { return; }
     this.pool = [];
     this.pooledEls = [];
     for (var i = 0; i < this.data.size; ++i) {
-      el = document.createElement('a-entity');
-      el.play = this.wrapPlay(el.play);
-      el.setAttribute('mixin', mixin);
-      el.setAttribute('visible', false);
-      this.el.appendChild(el);
-      this.pool.push(el);
+      this.createEntity();
     }
+  },
+
+  createEntity: function () {
+    var el = document.createElement('a-entity');
+    el.play = this.wrapPlay(el.play);
+    el.setAttribute('mixin', this.data.mixin);
+    el.setAttribute('visible', false);
+    this.el.appendChild(el);
+    this.pool.push(el);
   },
 
   wrapPlay: function (playMethod) {
@@ -42,8 +46,11 @@ module.exports.Component = register('pool', {
   requestEntity: function () {
     var el;
     if (this.pool.length === 0) {
-      warn('Requested entity from empty pool ' + this.name);
-      return;
+      if (this.data.dynamic === false) {
+        warn('Requested entity from empty pool ' + this.name);
+        return;
+      }
+      this.createEntity();
     }
     el = this.pool.shift();
     this.pooledEls.push(el);
