@@ -43,7 +43,8 @@
     function updateMessage() {
       var messageEl = document.querySelector('.message');
       var updatePoolCount  = function () {
-        var poolSize = sceneEl.getAttribute('pool').size;
+        var poolComponent = sceneEl.components.pool;
+        var poolSize = poolComponent.poolEls.length + poolComponent.pooledEls.length;
         var usedPoolEntities = sceneEl.components.pool.pooledEls.length;
         messageEl.innerHTML = message + usedPoolEntities + '/' + poolSize + '</p>';
         window.requestAnimationFrame(updatePoolCount);
