@@ -1,5 +1,5 @@
 ---
-title: Build with MagicaVoxel
+title: Building with MagicaVoxel
 type: guides
 layout: docs
 parent_section: guides
@@ -8,8 +8,8 @@ order: 3
 
 [magicavoxel]: https://ephtracy.github.io/
 
-[MagicaVoxel][magicavoxel] is a free and user-friendly tool that lets you build
-3D scenes and models using *voxels* (i.e., blocks). This makes modeling super
+[MagicaVoxel][magicavoxel] is a free and user-friendly tool for building
+3D scenes and models using *voxels* (i.e., blocks). MagicaVoxel makes modeling super
 easy, similar to building in Minecraft.
 
 ![magicavoxel](https://i.imgur.com/XYYXjIn.jpg)
@@ -19,7 +19,7 @@ easy, similar to building in Minecraft.
 ## Installation
 
 MagicaVoxel works on Windows and OS X. On the [MagicaVoxel
-homepage][magicavoxel], click the *Download* button and install it:
+homepage][magicavoxel], click the *Download* button and install the application:
 
 ![magicavoxel install](https://i.imgur.com/GmgdyHs.jpg)
 
@@ -30,22 +30,20 @@ from the App Store in the *Security & Privacy* settings:
 
 ## Tutorial
 
-A good basic introduction to using MagicaVoxel is to watch the official
-tutorial video as the author quickly runs through a lot of the features in 10
-minutes:
+The official tutorial video serves as a good introduction to using MagicaVoxel.
+The author quickly runs through many basic features in 10 minutes:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/PPu7SJ1_bwc" frameborder="0" allowfullscreen></iframe>
 
-The best way to learn is to click around, play with the UI, and pay attention
-to the tooltips on hover. We were able to create a scene in less than 20
-minutes without having ever used the program nor watched any tutorials. But
-given the absence of official tutorials, we will provide guidance on navigating
-the UI.
+The best way to learn the MagicaVoxel UI is to click around, play with application controls,
+and pay attention to the tooltips on hover. Many developers are able to create their first
+scene within a half hour!  Given the absence of official tutorials, however,
+the following serves as a quick guide to navigating the UI.
 
 ### Viewport
 
-In the center is the viewport where we build our model. We can change the
-viewport with our mouse/trackpad or the `wasd` keys:
+The center panel hosts the viewport where we build our model. We can change the
+viewport our mouse/trackpad or the `wasd` keys:
 
 - **Pan**: Hold `<space> + <right-click>` and move the mouse or trackpad, or
   hold `<space>` and press one of the `<a>` or `<d>` keys.
@@ -56,12 +54,13 @@ viewport with our mouse/trackpad or the `wasd` keys:
 
 ![magicavoxel viewport](http://imgur.com/vq34Mkk.jpg)
 
-On the top right, we can change the bounding dimensions of our model. Note, in
-MagicaVoxel, the XY plane is horizontal, and the Z axis points up.
+The top right corner of the viewport allows you to change the bounding dimensions
+of the model. Note that in MagicaVoxel, the XY plane is horizontal and the Z
+axis points up.
 
 ### Color Palette
 
-On the left panel is the color palette. You can use the default palettes,
+The left panel is the color palette. You can use the default palettes,
 modify them, create your own, and save them. The palette is tied to the scene
 so if you change from the palette a color that a voxel is using, the voxel will
 update its color. At the bottom, there are tools to define your own color with
@@ -71,8 +70,8 @@ sliders or via copying and pasting hex or rgb values:
 
 ### Brushes
 
-The brushes panel is on the right of the color palette. Brushes add, erase, or
-paint voxels in various shapes, sizes, and patterns. With a brush selected, you
+The brushes panel is to the right of the color palette. Brushes add, erase, or
+paint voxels in various shapes, sizes, and patterns. With a brush selected,
 simply click in the viewport on your model to use it:
 
 ![magicavoxel brushes](https://i.imgur.com/pqrUAFT.gif)
@@ -108,7 +107,7 @@ clicking on a voxel.
 
 ## Exporting to A-Frame
 
-After creating your model, we can export it to an A-Frame scene for the world
+After creating your model, you can export it to an A-Frame scene for the world
 to see! We recommend exporting to either the `.PLY` or `.OBJ` formats.
 
 ### `.PLY` (with Baked Shadows)
@@ -117,18 +116,18 @@ to see! We recommend exporting to either the `.PLY` or `.OBJ` formats.
 
 [ply]: https://wikipedia.org/wiki/PLY_(file_format)
 
-The [PLY][ply] format produces a large file size, but it includes *baked
+The [PLY][ply] format produces a large file size but includes *baked
 shadows*, meaning the rendered shadow colors are stored in the file. The
-A-Frame scenes shown above produces about a 5MB file size with baked shadows.
+A-Frame scenes shown above produce a ~5MB file size with baked shadows.
 It depends on your desired constraints whether or not file sizes on this order
-is tolerable, but it exporting with baked shadows will look visually great in
+is tolerable, but exporting with baked shadows will look visually great in
 A-Frame.
 
 [aframe-extras]: https://github.com/donmccurdy/aframe-extras/
 
-To see the `.PLY` model in A-Frame, we can use the `ply-model` component found
-in Don McCurdy's [aframe-extras][aframe-extras]. Currently for some reason, we
-must rotate the model by `-90 0 0` to have it straight:
+To see the `.PLY` model in A-Frame, use the `ply-model` component found
+in Don McCurdy's [aframe-extras][aframe-extras]. Currently the model must be
+rotated by `-90 0 0` to display properly:
 
 ```html
 <html>
@@ -152,7 +151,7 @@ must rotate the model by `-90 0 0` to have it straight:
 
 The `.OBJ` format produces a much smaller file size than `.PLY`, but
 MagicaVoxel does not support baked exports to `.OBJ`. Exporting to `.OBJ` will
-also produce a `.MTL` for the colors and textures. We will need to include both
+also produce a `.MTL` for the colors and textures. You will need to include both
 and put them in the same directory as each other.
 
 To render a `.OBJ` in A-Frame with HTML:

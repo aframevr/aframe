@@ -23,6 +23,7 @@ The sound component defines the entity as a source of sound or audio. The sound 
 | loop     | Whether to loop the sound once the sound finishes playing.            | false         |
 | src      | Selector to an asset `<audio>`or `url()`-enclosed path to sound file. | null          |
 | volume   | How loud to play the sound.                                           | 1             |
+| poolSize | Numbers of simultaneous instances of this sound that can be playing at the same time | 1             |
 
 ## Events
 

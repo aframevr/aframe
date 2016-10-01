@@ -1,5 +1,5 @@
 ---
-title: Build with Basic HTML
+title: Building with Basic HTML
 section_title: Guides
 type: guides
 layout: docs
@@ -10,14 +10,14 @@ section_order: 2
 
 [primitives]: ../primitives/
 
-Let's first start building a scene using the basic [primitive][primitives] HTML
-building blocks.
+Let's build a scene using A-Frame's basic [primitive][primitives] HTML
+building blocks!
 
 <!--toc-->
 
 ## Adding a Box
 
-A *Hello World* scene is a scene with a box:
+This sample *Hello World* scene starts with a box:
 
 ```html
 <a-scene>
@@ -48,8 +48,8 @@ A-Frame uses a right-handed coordinate system:
 
 The basic distance unit is defined in meters. When designing a scene for VR, it
 is important to consider the real world scale of the objects we create. A box
-with `height="100"` may fine on our computer screens, but in VR it will look
-massive.
+with `height="100"` may look normal on our computer screens, but in VR the
+box will appear massive.
 
 The basic rotational unit is defined in degrees. To determine the positive
 direction of rotation, use the right-hand rule. Point our thumbs down the
@@ -74,14 +74,14 @@ To translate, rotate, and scale the box, we can configure the
 
 The example above (assuming we are positioned on the origin looking down the
 negative Z-axis) will translate the box left/up/back, rotate the box to the
-right, stretches the box left-and-right and back-and-front, and shrinks the box
+right, stretch the box left-and-right and back-and-front, and shrink the box
 up-and-down:
 
 ## Applying a Texture to the Box
 
 We can apply an image texture to the box with an image or video using the `src`
 attribute. To make sure the color does not mix with the texture, we set the
-back color to white:
+background color to white:
 
 ```html
 <a-scene>
@@ -93,10 +93,13 @@ back color to white:
 
 [asset]: ../core/asset-management-system.md
 
-It is desirable to cache the texture and block the scene from rendering until
-the texture is loaded.  We can move the texture into the [asset management
-system][asset]. We define it as an `<img>` tag, give it an ID, and point to it
-using a selector:
+It is best to cache the texture and block the scene from rendering until
+the texture has loaded.  To do so we must move the texture into the [asset management
+system][asset] by:
+
+- Defining the asset as an `<img>`
+- Giving it an ID (`id="texture"`)
+- Referring to the asset using the ID in selector format (`#texture`)
 
 ```html
 <a-scene>
@@ -117,7 +120,7 @@ using a selector:
 We can add an animation to the box using the built-in [animation
 system][animation]. We can place an `<a-animation>` element as a child of the
 entity to interpolate values. Let's have the box rotate indefinitely to add
-some motion into the scene:
+some motion to the scene:
 
 ```html
 <a-scene>
@@ -138,11 +141,11 @@ some motion into the scene:
 To interact with the box via clicking or gazing, we can use a cursor which we
 place as a child of the camera such that it is fixed to the screen. When we
 don't define a camera, the scene will inject a default camera, but in this case
-to add a cursor, we will need to define one.
+to add a cursor, we will need to explicitly define a camera.
 
-Then what we can tell the animation only to start when the cursor clicks the
-box event, using the animation's `begin` attribute. The cursor will emit the
-`click` event on the box, and the animation will listen to it:
+Next we direct the animation to start when the cursor clicks the
+box, using the animation's `begin` attribute. The cursor will emit the
+`click` event on the box, and the animation will listen for it:
 
 ```html
 <a-scene>
@@ -181,7 +184,7 @@ AFRAME.registerComponent('scale-on-click', {
 });
 ```
 
-And we can attach the component to the `<a-box>` primitive:
+We can then attach the component to the `<a-box>` primitive:
 
 ```html
 <a-box color="#FFF" width="4" height="10" depth="2"
@@ -196,9 +199,9 @@ And we can attach the component to the `<a-box>` primitive:
 
 [light]: ../primitives/a-light.md
 
-We can change how the scene is lit with [`<a-light>`][light], By default, the
+We can change how the scene is lit with [`<a-light>`][light]. By default the
 scene will inject an ambient light and a directional light (which acts like the
-sun). Once we add lights of our own, this default lighting setup is removed:
+sun). Once we add lights of our own, however, the default lighting setup is removed:
 
 ```html
 <a-scene>
@@ -228,8 +231,7 @@ sun). Once we add lights of our own, this default lighting setup is removed:
 [sky]: ../primitives/a-sky.md
 
 Lastly, we can add a background to the scene using [`<a-sky>`][sky]. The
-background can be a color, a 360&deg; image, or even a 360&deg; video. This is
-created by creating a sphere that wraps the scene:
+background can be a color, a 360&deg; image, or even a 360&deg; video:
 
 ```html
 <a-scene>
@@ -260,7 +262,7 @@ created by creating a sphere that wraps the scene:
 
 [next]: ./build-with-components.md
 
-And that is a very basic scene that places static objects in a 3D space using
+That is all it takes to create a very basic scene which places static objects in a 3D space using
 HTML. A good VR experience requires rich interaction and dynamic behavior. With
-the help of using and writing A-Frame components, we can [build a more advanced
+the help of A-Frame components, we can [build a more advanced
 scene][next].

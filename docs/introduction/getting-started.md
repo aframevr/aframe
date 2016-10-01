@@ -40,6 +40,12 @@ We can grab the boilerplate in one of two ways:
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
+We should develop with a local server so that files are properly served. We can either:
+
+- Download the [Mongoose](https://www.cesanta.com/products/binary) application
+  and open it from the same directory as your HTML file.
+- Or use Node and npm to start the local server with `npm install && npm run start`.
+
 ## Include the JS Build
 
 If we want to just include the JS build from the CDN, we can drop a `<script>` tag straight into our HTML:

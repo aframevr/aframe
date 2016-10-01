@@ -102,7 +102,7 @@ suite('a-animation', function () {
   suite('attachedCallback', function () {
     test('applies mixin', function (done) {
       helpers.entityFactory();
-      helpers.mixinFactory('walt', { repeat: 'indefinite' });
+      helpers.mixinFactory('walt', {repeat: 'indefinite'});
       setupAnimation({
         mixin: 'walt'
       }, function (el, animationEl) {
@@ -150,24 +150,24 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { light: '' });
+      }, {light: ''});
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute('light').intensity, 0);
+      assert.equal(this.el.getAttribute('light').intensity, 0);
     });
 
     test('between value', function () {
       var intensity;
       this.animationEl.tween.update(this.startTime + 500);
-      intensity = this.el.getComputedAttribute('light').intensity;
+      intensity = this.el.getAttribute('light').intensity;
       assert.isAbove(intensity, 0);
       assert.isBelow(intensity, 1);
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute('light').intensity, 1);
+      assert.equal(this.el.getAttribute('light').intensity, 1);
     });
   });
 
@@ -182,9 +182,9 @@ suite('a-animation', function () {
         to: '10 10 10'
       }, function (el, animationEl, startTime) {
         animationEl.tween = animationEl.tween;
-        assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 10, y: 10, z: 10 });
+        assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 10, y: 10, z: 10});
         animationEl.addEventListener('animationend', function () {
-          assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 0, y: 0, z: 0 });
+          assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 0, y: 0, z: 0});
           done();
         });
         animationEl.tween.update(startTime + 1000);
@@ -206,18 +206,18 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { scale: '1 1 1' });
+      }, {scale: '1 1 1'});
     });
 
     test('starts at `from`', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('scale'), { x: 5, y: 10, z: 5 });
+      assert.shallowDeepEqual(this.el.getAttribute('scale'), {x: 5, y: 10, z: 5});
     });
 
     test('goes back to initial value after animation', function (done) {
       var el = this.el;
       var animationEl = this.animationEl;
       animationEl.addEventListener('animationend', function () {
-        assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
+        assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
         done();
       });
       animationEl.tween.update(this.startTime + 1000);
@@ -231,7 +231,7 @@ suite('a-animation', function () {
       fill: 'backwards',
       to: '10 10 10'
     }, function (el, animationEl) {
-      assert.shallowDeepEqual(el.getAttribute('scale'), { x: 1, y: 1, z: 1 });
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
       done();
     });
   });
@@ -250,18 +250,18 @@ suite('a-animation', function () {
         self.el = el;
         self.startTime = startTime;
         done();
-      }, { scale: '1 1 1' });
+      }, {scale: '1 1 1'});
     });
 
     test('starts at `from`', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('scale'), { x: 5, y: 10, z: 5 });
+      assert.shallowDeepEqual(this.el.getAttribute('scale'), {x: 5, y: 10, z: 5});
     });
 
     test('stays at `to`', function (done) {
       var el = this.el;
       var animationEl = this.animationEl;
       animationEl.addEventListener('animationend', function () {
-        assert.shallowDeepEqual(el.getAttribute('scale'), { x: 10, y: 10, z: 10 });
+        assert.shallowDeepEqual(el.getAttribute('scale'), {x: 10, y: 10, z: 10});
         done();
       });
       animationEl.tween.update(this.startTime + 1000);
@@ -282,18 +282,18 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { rotation: '10 10 10' });
+      }, {rotation: '10 10 10'});
     });
 
     test('starts at initial value', function () {
-      assert.shallowDeepEqual(this.el.getAttribute('rotation'), { x: 10, y: 10, z: 10 });
+      assert.shallowDeepEqual(this.el.getAttribute('rotation'), {x: 10, y: 10, z: 10});
     });
 
     test('stays at `to`', function () {
       var animationEl = this.animationEl;
       var el = this.el;
       animationEl.tween.update(this.startTime + 1000);
-      assert.shallowDeepEqual(el.getAttribute('rotation'), { x: 360, y: 0, z: 360 });
+      assert.shallowDeepEqual(el.getAttribute('rotation'), {x: 360, y: 0, z: 360});
     });
   });
 
@@ -311,7 +311,7 @@ suite('a-animation', function () {
         self.animationEl = animationEl;
         self.startTime = startTime;
         done();
-      }, { opacity: '' });
+      }, {opacity: ''});
     });
 
     test('start value', function () {
@@ -407,8 +407,8 @@ suite('a-animation', function () {
 
     test('gets correct values for multiple-attribute component', function () {
       var values = getAnimationValues(this.el, 'light.intensity', 0, 1);
-      assert.shallowDeepEqual(values.from, { 'light.intensity': 0 });
-      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+      assert.shallowDeepEqual(values.from, {'light.intensity': 0});
+      assert.shallowDeepEqual(values.to, {'light.intensity': 1});
     });
 
     test('gets correct values multiple-attribute component with no `from`', function () {
@@ -416,40 +416,40 @@ suite('a-animation', function () {
       var values;
       el.setAttribute('light', 'intensity: 0.5');
       values = getAnimationValues(el, 'light.intensity', undefined, '1');
-      assert.shallowDeepEqual(values.from, { 'light.intensity': 0.5 });
-      assert.shallowDeepEqual(values.to, { 'light.intensity': 1 });
+      assert.shallowDeepEqual(values.from, {'light.intensity': 0.5});
+      assert.shallowDeepEqual(values.to, {'light.intensity': 1});
     });
 
     test('gets correct values coordinate component', function () {
       var values = getAnimationValues(this.el, 'position', '1 2 3', '4 5 6');
-      assert.shallowDeepEqual(values.from, { x: 1, y: 2, z: 3 });
-      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+      assert.shallowDeepEqual(values.from, {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(values.to, {x: 4, y: 5, z: 6});
     });
 
     test('gets correct values coordinate component with no `from`', function () {
-      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6', { x: 0, y: 0, z: 0 });
-      assert.shallowDeepEqual(values.from, { x: 0, y: 0, z: 0 });
-      assert.shallowDeepEqual(values.to, { x: 4, y: 5, z: 6 });
+      var values = getAnimationValues(this.el, 'position', undefined, '4 5 6', {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(values.from, {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(values.to, {x: 4, y: 5, z: 6});
     });
 
     test('gets correct values for bool component', function () {
       var values = getAnimationValues(this.el, 'visible', 'false', 'true');
-      assert.shallowDeepEqual(values.from, { visible: 0 });
-      assert.shallowDeepEqual(values.to, { visible: 1 });
+      assert.shallowDeepEqual(values.from, {visible: 0});
+      assert.shallowDeepEqual(values.to, {visible: 1});
     });
 
     test('gets correct values coordinate component with no `from`', function () {
       var values = getAnimationValues(this.el, 'transparent', undefined, 'true');
-      assert.shallowDeepEqual(values.from, { transparent: 0 });
-      assert.shallowDeepEqual(values.to, { transparent: 1 });
+      assert.shallowDeepEqual(values.from, {transparent: 0});
+      assert.shallowDeepEqual(values.to, {transparent: 1});
     });
 
     test('gets correct partialSetAttribute for bool component', function () {
       var el = this.el;
       var values = getAnimationValues(el, 'visible', 'false', 'true');
-      values.partialSetAttribute({ visible: 0 });
+      values.partialSetAttribute({visible: 0});
       assert.equal(el.getAttribute('visible'), false);
-      values.partialSetAttribute({ visible: 1 });
+      values.partialSetAttribute({visible: 1});
       assert.equal(el.getAttribute('visible'), true);
     });
   });
@@ -592,7 +592,7 @@ suite('a-animation', function () {
         animationEl.tween.update(startTime + 1000);
         animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
-          assert.shallowDeepEqual(position, { x: 5, y: 5, z: 5 });
+          assert.shallowDeepEqual(position, {x: 5, y: 5, z: 5});
         });
         done();
       });
@@ -609,7 +609,7 @@ suite('a-animation', function () {
         animationEl.tween.update(startTime + 1000);
         animationEl.addEventListener('animationend', function () {
           var position = el.getAttribute('position');
-          assert.shallowDeepEqual(position, { x: 0, y: 0, z: 0 });
+          assert.shallowDeepEqual(position, {x: 0, y: 0, z: 0});
         });
         done();
       });
@@ -626,7 +626,7 @@ suite('a-animation', function () {
     var attribute = 'material.color';
     setup(function (done) {
       var self = this;
-      var elAttrs = { color: '', material: { shader: 'flat', color: '#FF0000' } };
+      var elAttrs = {color: '', material: {shader: 'flat', color: '#FF0000'}};
 
       setupAnimation({
         attribute: 'material.color',
@@ -644,20 +644,20 @@ suite('a-animation', function () {
     });
 
     test('start value', function () {
-      assert.equal(this.el.getComputedAttribute(attribute), '#ff0000');
+      assert.equal(this.el.getAttribute(attribute), '#ff0000');
     });
 
     test('between value', function () {
       var color;
       this.animationEl.tween.update(this.startTime + 500);
-      color = this.el.getComputedAttribute(attribute);
+      color = this.el.getAttribute(attribute);
       assert.isAbove(color, '#0000ff');
       assert.isBelow(color, '#ff0000');
     });
 
     test('finish value', function () {
       this.animationEl.tween.update(this.startTime + 1000);
-      assert.equal(this.el.getComputedAttribute(attribute), '#0000ff');
+      assert.equal(this.el.getAttribute(attribute), '#0000ff');
     });
   });
 

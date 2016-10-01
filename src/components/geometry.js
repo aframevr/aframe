@@ -69,7 +69,7 @@ module.exports.Component = registerComponent('geometry', {
     toMesh = toEl.getObject3D('mesh');
     if (!toMesh) {
       toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
-      toEl.setAttribute('material', el.getComputedAttribute('material'));
+      toEl.setAttribute('material', el.getAttribute('material'));
       return;
     }
 

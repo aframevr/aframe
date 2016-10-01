@@ -18,9 +18,10 @@ order: 5
 
 ## What is A-Frame?
 
-A-Frame is an open-source WebVR framework for building virtual reality
-experiences with HTML. Under the hood, it is a [three.js][three] framework that
-brings the [entity-component-system][ecs] pattern to the DOM.
+A-Frame is an open-source web framework for building virtual reality
+experiences. We can build VR web pages that we can walk inside with just HTML.
+Under the hood, it is a [three.js][three] framework that brings the
+[entity-component-system][ecs] pattern to the DOM.
 
 ## Why was A-Frame built?
 
@@ -33,7 +34,7 @@ a vehicle in which to make WebVR successful.
 
 [contact]: #how-can-i-get-in-touch-with-the-aframe-team
 [homepage]: https://aframe.io
-[guides]: /guides/index.md
+[guides]: ../guides/index.md
 
 A-Frame is very extensive across different disciplines so it can be difficult
 to know how to get started. We've tried our best to compile resources to get
@@ -55,12 +56,14 @@ in understanding learning curve difficulties.
 ## Why does my asset (e.g., image, video, model) not load?
 
 [cors]: https://en.wikipedia.org/wiki/Cross-origin_resource_sharing
-[uploader]: https://aframe.io/aframe/examples/_uploader/
 
 If you are loading the asset from a different domain, make sure that the asset
 is served with [cross-origin resource sharing (CORS) headers][cors]. You could
 either find a host to serve the asset with CORS headers, or place the asset on
 the same domain as your scene.
+
+[ghpages]: https://github.com/blog/2228-simpler-github-pages-publishing
+[uploader]: https://cdn.aframe.io/
 
 For some options, all resources hosted on [GitHub Pages][ghpages] are served
 with CORS headers. We recommend GitHub Pages as a simple deployment platform.
@@ -76,14 +79,16 @@ Mobile browsers have limitations with displaying inline video.
 Because of an [iOS platform restriction][iosvideo] in order to get inline video
 (with or without autoplay), we must:
 
-- Set the `<meta name="apple-mobile-web-app-capable" content="yes">` metatag.
-- Set the `webkit-playsinline` attribute to the video element.
+- Set the `<meta name="apple-mobile-web-app-capable" content="yes">` meta tag (will be injected if missing).
+- Set the `webkit-playsinline` attribute to the video element (is automatically added to all videos).
 - Pin the webpage to the iOS homescreen.
 
 Inline video support on iOS 10 may change this. On certain Android devices or
 browsers, we must:
 
-- Require user interaction to trigger the video (such as a click or tap event).
+[android-touch-bug]: https://bugs.chromium.org/p/chromium/issues/detail?id=178297
+
+- Require user interaction to trigger the video (such as a click or tap event). See [Chromium Bug 178297][android-touch-bug].
 
 We will try to create a video boilerplate that has all the configurations to
 work on mobile devices.
@@ -109,7 +114,7 @@ texture. There are some components in the ecosystem that enable this:
 There are several possible solutions:
 
 - [Bitmap Font Text Component (recommended)][bmfont-text-component]
-- [Text Geometry Component][text-component]
+- [Text Geometry Component][text-geometry-component]
 - [HTML Shader][html-shader]
 - [Text Wrap Component][text-wrap-component]
 - Use images
@@ -142,10 +147,9 @@ WebVR](https://github.com/cvan/webvr360).
 
 ## Can I add links to my scene?
 
-Yes. Link traversal support was introduced in the WebVR 1.0 API and A-Frame
-0.3.0. There is a link component that can trigger navigation and built-in
-support for knowing whether the user is navigating from another WebVR
-experience.
+We (Mozilla) are currently improving the link traversal user experience within
+the browser as well as helping iterate the API. Once link traversal gets into a
+good state on the platform side, A-Frame should have a link component ready.
 
 ## How is A-Frame different from VRML?
 
@@ -198,9 +202,8 @@ of the box. We've found A-Frame works wonderfully with:
 Don McCurdy has published a [Leap Hands component][leap] for Leap Motion
 controls.
 
-Dr. Ryan James has built a [medical education
-project][https://github.com/drryanjames/CadaVR] that also features Leap Motion
-controls code.
+Dr. Ryan James has built a [medical education project][cadavr] that also
+features Leap Motion controls code.
 
 ## Which devices, headsets, platforms does A-Frame support?
 

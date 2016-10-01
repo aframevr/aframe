@@ -1,6 +1,6 @@
 /* global HTMLElement */
 var ANode = require('./a-node');
-var components = require('./component').components;
+var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
@@ -8,6 +8,7 @@ var bind = utils.bind;
 
 var AEntity;
 var debug = utils.debug('core:a-entity:debug');
+var warn = utils.debug('core:a-entity:warn');
 
 var MULTIPLE_COMPONENT_DELIMITER = '__';
 
@@ -102,7 +103,8 @@ var proto = Object.create(ANode.prototype, {
       if (!this.parentEl || this.isScene) { return; }
       // Remove components.
       Object.keys(this.components).forEach(bind(this.removeComponent, this));
-      this.parentEl.remove(this);
+      this.removeFromParent();
+      ANode.prototype.detachedCallback.call(this);
     }
   },
 
@@ -115,7 +117,7 @@ var proto = Object.create(ANode.prototype, {
         this.updateComponents();
         return;
       }
-      this.updateComponent(attrName, this.getAttribute(attrName));
+      this.updateComponent(attrName, this.getDOMAttribute(attrName));
     }
   },
 
@@ -236,6 +238,19 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Tell parentNode to remove this entity from itself.
+   */
+  removeFromParent: {
+    value: function () {
+      var parentEl = this.parentEl;
+      this.parentEl.remove(this);
+      this.attachedToParent = false;
+      this.parentEl = this.parentNode = null;
+      parentEl.emit('child-detached', {el: this});
+    }
+  },
+
   load: {
     value: function () {
       var self = this;
@@ -297,7 +312,7 @@ var proto = Object.create(ANode.prototype, {
       var componentName = componentInfo[0];
       var isComponentDefined = checkComponentDefined(this, attrName) || data !== undefined;
       // Check if component is registered and whether component should be initialized.
-      if (!components[componentName] ||
+      if (!COMPONENTS[componentName] ||
           (!isComponentDefined && !isDependency) ||
           // If component already initialized.
           (attrName in this.components)) {
@@ -308,12 +323,12 @@ var proto = Object.create(ANode.prototype, {
       this.initComponentDependencies(componentName);
 
       // If component name has an id we check component type multiplic
-      if (componentId && !components[componentName].multiple) {
+      if (componentId && !COMPONENTS[componentName].multiple) {
         throw new Error('Trying to initialize multiple ' +
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new components[componentName].Component(
+      component = this.components[attrName] = new COMPONENTS[componentName].Component(
         this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
@@ -334,10 +349,10 @@ var proto = Object.create(ANode.prototype, {
   initComponentDependencies: {
     value: function (name) {
       var self = this;
-      var component = components[name];
+      var component = COMPONENTS[name];
       var dependencies;
       if (!component) { return; }
-      dependencies = components[name].dependencies;
+      dependencies = COMPONENTS[name].dependencies;
       if (!dependencies) { return; }
       dependencies.forEach(function (component) {
         self.initComponent(component, undefined, true);
@@ -391,7 +406,7 @@ var proto = Object.create(ANode.prototype, {
        */
       function addComponent (key) {
         var name = key.split(MULTIPLE_COMPONENT_DELIMITER)[0];
-        if (!components[name]) { return; }
+        if (!COMPONENTS[name]) { return; }
         elComponents[key] = true;
       }
 
@@ -399,7 +414,7 @@ var proto = Object.create(ANode.prototype, {
        * Update component with given name.
        */
       function updateComponent (name) {
-        var attrValue = self.getAttribute(name);
+        var attrValue = self.getDOMAttribute(name);
         delete elComponents[name];
         self.updateComponent(name, attrValue);
       }
@@ -533,7 +548,7 @@ var proto = Object.create(ANode.prototype, {
    */
   setEntityAttribute: {
     value: function (attr, oldVal, newVal) {
-      if (components[attr] || this.components[attr]) {
+      if (COMPONENTS[attr] || this.components[attr]) {
         this.updateComponent(attr, newVal);
         return;
       }
@@ -573,7 +588,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr, value, componentPropValue) {
       var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
       var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
-      if (components[componentName]) {
+      if (COMPONENTS[componentName]) {
         // Just update one of the component properties
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);
@@ -614,6 +629,39 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
+   * If `attr` is a component, returns ALL component data including applied mixins and
+   * defaults.
+   *
+   * If `attr` is not a component, fall back to HTML getAttribute.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
+   */
+  getAttribute: {
+    value: function (attr) {
+      // If component, return component data.
+      var component = this.components[attr];
+      if (component) { return component.getData(); }
+      return HTMLElement.prototype.getAttribute.call(this, attr);
+    },
+    writable: window.debug
+  },
+
+  /**
+   * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
+   * what `getAttribute` is now. Now legacy code.
+   *
+   * @param {string} attr
+   * @returns {object|string} Object if component, else string.
+   */
+  getComputedAttribute: {
+    value: function (attr) {
+      warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
+      return this.getAttribute(attr);
+    }
+  },
+
+  /**
    * If `attr` is a component, returns JUST the component data defined on the entity.
    * Like a partial version of `getComputedAttribute` as returned component data
    * does not include applied mixins or defaults.
@@ -623,7 +671,7 @@ var proto = Object.create(ANode.prototype, {
    * @param {string} attr
    * @returns {object|string} Object if component, else string.
    */
-  getAttribute: {
+  getDOMAttribute: {
     value: function (attr) {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
@@ -631,24 +679,6 @@ var proto = Object.create(ANode.prototype, {
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
-  },
-
-  /**
-   * If `attr` is a component, returns ALL component data including applied mixins and
-   * defaults.
-   *
-   * If `attr` is not a component, fall back to HTML getAttribute.
-   *
-   * @param {string} attr
-   * @returns {object|string} Object if component, else string.
-   */
-  getComputedAttribute: {
-    value: function (attr) {
-      // If component, return component data.
-      var component = this.components[attr];
-      if (component) { return component.getData(); }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
-    }
   },
 
   addState: {

@@ -4,7 +4,7 @@
 module.exports = function getMeshMixin () {
   return {
     defaultComponents: {
-      material: { }
+      material: {}
     },
 
     mappings: {

@@ -19,7 +19,7 @@ module.exports.Component = registerComponent('tracked-controls', {
 
   init: function () {
     this.buttonStates = {};
-    this.axisState = [];
+    this.previousAxis = [];
   },
 
   update: function () {
@@ -33,8 +33,8 @@ module.exports.Component = registerComponent('tracked-controls', {
 
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
-    if (!mesh) { return; }
-    if (mesh.update) { mesh.update(delta / 1000); }
+    // Update mesh animations.
+    if (mesh && mesh.update) { mesh.update(delta / 1000); }
     this.updatePose();
     this.updateButtons();
   },
@@ -95,7 +95,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   handleAxes: function (controllerAxes) {
-    var previousAxis = this.axisState;
+    var previousAxis = this.previousAxis;
     var changed = false;
     var i;
     for (i = 0; i < controllerAxes.length; ++i) {
@@ -105,8 +105,8 @@ module.exports.Component = registerComponent('tracked-controls', {
       }
     }
     if (!changed) { return; }
-    previousAxis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: previousAxis});
+    this.previousAxis = controllerAxes.slice();
+    this.el.emit('axismove', {axis: this.previousAxis});
   },
 
   handleButton: function (id, buttonState) {

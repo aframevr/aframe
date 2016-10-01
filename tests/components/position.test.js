@@ -19,7 +19,7 @@ suite('position', function () {
 
   suite('schema', function () {
     test('can get position', function () {
-      assert.shallowDeepEqual(this.el.getComputedAttribute('position'), {
+      assert.shallowDeepEqual(this.el.getAttribute('position'), {
         x: 0, y: 0, z: 0
       });
     });
@@ -44,7 +44,7 @@ suite('position', function () {
 
     test('can set position with object', function () {
       var el = this.el;
-      el.setAttribute('position', { x: 1, y: 2, z: 3 });
+      el.setAttribute('position', {x: 1, y: 2, z: 3});
       assert.equal(el.object3D.position.x, 1);
       assert.equal(el.object3D.position.y, 2);
       assert.equal(el.object3D.position.z, 3);

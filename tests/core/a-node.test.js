@@ -21,7 +21,7 @@ suite('a-node', function () {
         assert.equal(event.detail.target, el);
         done();
       });
-      el.emit('hadouken', { power: 10 });
+      el.emit('hadouken', {power: 10});
     });
 
     test('bubbles', function (done) {

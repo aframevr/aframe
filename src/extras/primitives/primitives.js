@@ -84,7 +84,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             // Set component properties individually to not overwrite user-defined components.
             if (componentData instanceof Object) {
               var component = components[componentName];
-              var attrValues = self.getAttribute(componentName) || {};
+              var attrValues = self.getDOMAttribute(componentName) || {};
               var data = component.parse(attrValues);
 
               // Check if component property already defined.

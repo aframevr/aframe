@@ -1,6 +1,8 @@
 /* global AFRAME */
-var registerComponent = require('../../core/component').registerComponent;
+var AFRAME_INJECTED = require('../../constants').AFRAME_INJECTED;
+var bind = require('../../utils/bind');
 var pkg = require('../../../package');
+var registerComponent = require('../../core/component').registerComponent;
 
 var INSPECTOR_URL = pkg.homepage + 'releases/' + pkg.version + '/aframe-inspector.min.js';
 
@@ -10,7 +12,7 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   init: function () {
-    this.onKeydown = this.onKeydown.bind(this);
+    this.onKeydown = bind(this.onKeydown, this);
     window.addEventListener('keydown', this.onKeydown);
   },
 
@@ -30,6 +32,8 @@ module.exports.Component = registerComponent('inspector', {
     // Inject.
     script = document.createElement('script');
     script.src = this.data.url;
+    script.setAttribute('data-name', 'aframe-inspector');
+    script.setAttribute(AFRAME_INJECTED, '');
     script.onload = function () {
       AFRAME.INSPECTOR.open();
       window.removeEventListener('keydown', self.onKeydown);

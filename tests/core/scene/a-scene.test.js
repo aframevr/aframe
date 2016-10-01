@@ -88,7 +88,7 @@ suite('a-scene (without renderer)', function () {
 
       sceneEl.initSystem('test');
       assert.equal(sceneEl.getAttribute('test'), 'system');
-      assert.equal(sceneEl.getComputedAttribute('test'), 'system');
+      assert.equal(sceneEl.getAttribute('test'), 'system');
     });
 
     test('does not initialize component on setAttribute', function () {
@@ -163,7 +163,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
 
   test('calls behaviors', function () {
     var scene = this.el;
-    var Component = { el: { isPlaying: true }, tick: function () {} };
+    var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
     scene.render();

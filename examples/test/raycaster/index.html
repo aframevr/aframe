@@ -15,6 +15,9 @@
         <a-mixin id="box" geometry="primitive: box; depth: 0.1, height: 0.3; width: 0.1"
                           material="color: #DDD; opacity: 0.4; shader: flat"
                           intersect-color-change></a-mixin>
+        <a-mixin id="sphere" geometry="primitive: sphere; radius: 0.1"
+                             material="color: #333; opacity: 0.4; shader: flat"
+                             intersect-color-change></a-mixin>
         <a-mixin id="finger" geometry="primitive: box; height: 0.02; width: 0.02; depth: 0.5"
                              material="side: double"></a-mixin>
         <a-mixin id="raycaster" raycaster="objects: [mixin~='box']"
@@ -69,7 +72,11 @@
         </a-camera>
       </a-entity>
 
-      <a-entity id="rain" position="0 10 0" entity-generator="mixin: box">
+      <a-entity position="0 10 0" entity-generator="mixin: box">
+        <a-animation attribute="position" dur="16000" easing="linear" repeat="indefinite"
+                     to="0 0 0"></a-animation>
+      </a-entity>
+      <a-entity position="0 10 0" entity-generator="mixin: sphere">
         <a-animation attribute="position" dur="16000" easing="linear" repeat="indefinite"
                      to="0 0 0"></a-animation>
       </a-entity>

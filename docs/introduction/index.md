@@ -107,10 +107,10 @@ shared, these components can be used by other developers via HTML.
 
 ## Have Fun!
 
-[basic-scene]: ./guides/building-a-basic-scene.md
+[guides]: ../guides
 [core]: ../core/index.md
 [slack]: https://aframevr-slack.herokuapp.com/
 
-It is recommended to read through the [Guides][basic-scene] and the [Core][core]
+It is recommended to read through the [Guides][guides] and the [Core][core]
 sections of the documentation. If you have any questions, join the other
 hundreds of developers on [Slack][slack]!

@@ -19,7 +19,7 @@ suite('scale', function () {
 
   suite('schema', function () {
     test('can get scale', function () {
-      assert.shallowDeepEqual(this.el.getComputedAttribute('scale'), {
+      assert.shallowDeepEqual(this.el.getAttribute('scale'), {
         x: 1, y: 1, z: 1
       });
     });

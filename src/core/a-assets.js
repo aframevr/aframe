@@ -156,11 +156,13 @@ function setCrossOrigin (mediaEl) {
 
   src = mediaEl.getAttribute('src');
 
-  // Does not have protocol.
-  if (src.indexOf('://') === -1) { return mediaEl; }
+  if (src !== null) {
+    // Does not have protocol.
+    if (src.indexOf('://') === -1) { return mediaEl; }
 
-  // Determine if cross origin is actually needed.
-  if (extractDomain(src) === window.location.host) { return mediaEl; }
+    // Determine if cross origin is actually needed.
+    if (extractDomain(src) === window.location.host) { return mediaEl; }
+  }
 
   warn('Cross-origin element was requested without `crossorigin` set. ' +
        'A-Frame will re-request the asset with `crossorigin` attribute set.', src);

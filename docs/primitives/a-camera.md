@@ -9,15 +9,17 @@ The camera primitive places the user somewhere within the scene. It is an
 entity that prescribes the [camera component](../components/) with mappings to
 controls-related components.
 
+[userheight]: ../components/camera.md#vr-behavior
+
+Note that by default, the camera origin will be at `0 1.6 0` in desktop mode
+and `0 0 0` in VR mode. Read about the [`camera.userHeight` property][userheight].
+
 ## Example
 
 ```html
 <a-scene>
   <a-box></a-box>
-
-  <a-entity position="0 1.8 5">
-    <a-camera></a-camera>
-  </a-entity>
+  <a-camera></a-camera>
 </a-scene>
 ```
 
@@ -29,7 +31,7 @@ controls-related components.
 | fov                   | camera.fov            | 80            |
 | look-controls-enabled | look-controls.enabled | true          |
 | near                  | camera.near           | 0.5           |
-| user-height           | camera.userHeight     | 0             |
+| user-height           | camera.userHeight     | 1.6           |
 | wasd-controls-enabled | wasd-controls.enabled | true          |
 
 ## Manually Positioning the Camera
@@ -43,25 +45,3 @@ override the set position:
   <a-camera></a-camera>
 </a-entity>
 ```
-
-## Differences with the Default Camera
-
-When we use the camera primitive, A-Frame will not prescribe a default camera.
-
-Note the default camera is positioned at `0 1.6 0` whereas the camera primitive
-will be positioned at `0 0 0`. In the example below, we would see a box:
-
-```html
-<a-box></a-box>
-```
-
-But if we prescribe our own camera and do not adjust its position:
-
-```html
-<a-box></a-box>
-<a-camera></a-camera>
-```
-
-Then both the cube and camera wll be positioned at `0 0 0`, the camera will be
-*inside* the cube, and thus the box won't be visible without moving the camera.
-So make sure the have the camera well-positioned.

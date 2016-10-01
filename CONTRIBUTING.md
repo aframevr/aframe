@@ -1,14 +1,20 @@
+[slack]: https://aframevr-slack.herokuapp.com
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
 # Join the Community on Slack
 
-1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to the A-Frame Slack channel.
+1. [Invite yourself][slack] to the A-Frame Slack channel.
 2. [Join the discussion](https://aframevr.slack.com)!
 
-# File an Issue
+# Get Help or Ask a Question
 
-If you have a question rather than an issue, you can post to [the A-Frame Stack
-Overflow tag][stackoverflow]
+If you're not sure how to do something with A-Frame, please post a question
+(and any code you've tried so far) to [Stack Overflow under the 'aframe'
+tag][stackoverflow]. Questions there will automatically create notifications in
+[Slack][slack], and are easier for others to find so new developers can learn
+from your questions too.
+
+# File an Issue
 
 1. Search the [issue tracker](https://github.com/aframevr/aframe/issues) for similar issues.
 2. Specify the version of A-Frame in which the bug occurred.

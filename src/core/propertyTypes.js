@@ -2,6 +2,7 @@ var coordinates = require('../utils/coordinates');
 var debug = require('debug');
 
 var error = debug('core:propertyTypes:warn');
+var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
 
@@ -116,6 +117,11 @@ function srcParse (value) {
 
   var el = selectorParse(value);
   if (el) { return el.getAttribute('src'); }
+
+  if (value.charAt(0) !== '#') {
+    warn('"' + value + '" is not a valid `src` attribute. ' +
+         'Value must be an ID selector (i.e. "#someElement") or wrapped in `url()`.');
+  }
 
   return '';
 }
