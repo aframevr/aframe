@@ -24,7 +24,7 @@ module.exports = registerElement('a-mixin', {
 
     attachedCallback: {
       value: function () {
-        this.sceneEl = this.closest('a-scene');
+        this.sceneEl = this.closestScene();
         this.cacheAttributes();
         this.updateEntities();
         this.load();
