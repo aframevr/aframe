@@ -1,6 +1,13 @@
 [slack]: https://aframevr-slack.herokuapp.com
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
+Interested in contributing? As an open source project, we'd appreciate any help
+and contributions! On top of the A-Frame framework itself, you can also
+contribute to these related projects:
+
+- [aframe-inspector](https://github.com/aframevr/aframe-inspector)
+- [aframe-site](https://github.com/aframevr/aframe-site)
+
 # Join the Community on Slack
 
 1. [Invite yourself][slack] to the A-Frame Slack channel.
@@ -74,5 +81,22 @@ branches for older versions if necessary.
 1. Help respond to [newly-filed GitHub issues](https://github.com/aframevr/aframe/issues)
 2. Redirect developers to [Stack Overflow][stackoverflow] if a question is filed rather than an issue.
 3. For extra points, cross-post and answer the question on Stack Overflow after redirecting!
+
+# Curate and Make Efforts Known
+
+Every week, we round up all the cool stuff happening with A-Frame on the
+[blog](https://aframe.io/blog). We collect things to show off in [these GitHub
+issues](https://github.com/aframevr/aframe-site/labels/A%20Week%20of%20A-Frame).
+If you see anything, just post it there!
+
+We also need help keeping the [`awesome-aframe`
+repository](https://github.com/aframevr/awesome-aframe) up to date. If you see
+any missing content or things that haven't been synced to the blog, make a pull
+request there.
+
+# Spread the Word
+
+If you want to hold an event and talk about WebVR and A-Frame, check out [the
+presentation kit](https://github.com/aframevr/aframe-presentation-kit).
 
 Thanks so much for contributing and helping grow WebVR!
