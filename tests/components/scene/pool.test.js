@@ -18,8 +18,8 @@ suite('pool', function () {
   test('pool is initialized', function () {
     var sceneEl = this.sceneEl;
     var poolComponent = sceneEl.components.pool;
-    assert.equal(poolComponent.poolEls.length, 1);
-    assert.equal(poolComponent.pooledEls.length, 0);
+    assert.equal(poolComponent.availableEls.length, 1);
+    assert.equal(poolComponent.usedEls.length, 0);
   });
 
   suite('requestEntity', function () {
@@ -49,9 +49,9 @@ suite('pool', function () {
       var sceneEl = this.sceneEl;
       var poolComponent = sceneEl.components.pool;
       var el = poolComponent.requestEntity();
-      assert.equal(poolComponent.poolEls.length, 0);
+      assert.equal(poolComponent.availableEls.length, 0);
       poolComponent.returnEntity(el);
-      assert.equal(poolComponent.poolEls.length, 1);
+      assert.equal(poolComponent.availableEls.length, 1);
     });
 
     test('cannot return an entity that did not belong to the pool', function () {
@@ -59,11 +59,11 @@ suite('pool', function () {
       var poolComponent = sceneEl.components.pool;
       var el = poolComponent.requestEntity();
       var badEl = document.createElement('a-entity');
-      assert.equal(poolComponent.poolEls.length, 0);
+      assert.equal(poolComponent.availableEls.length, 0);
       poolComponent.returnEntity(badEl);
-      assert.equal(poolComponent.poolEls.length, 0);
+      assert.equal(poolComponent.availableEls.length, 0);
       poolComponent.returnEntity(el);
-      assert.equal(poolComponent.poolEls.length, 1);
+      assert.equal(poolComponent.availableEls.length, 1);
     });
   });
 

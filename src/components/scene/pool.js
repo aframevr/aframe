@@ -5,34 +5,35 @@ var warn = debug('components:pool:warn');
 
 /**
  * Pool component.
- * It initialized a pool of entities that will be reused.
- * It avoids creating and destroying the same kind entities
- * in dynamic scenes. Useful for example in a game where you want
- * to reuse enemies entities
+ * A pool of entities that will be reused.
+ * It avoids creating and destroying the same kind of entities
+ * in dynamic scenes. It will help reduce GC pauses. Useful for example
+ * in a game where you want to reuse enemies entities.
  *
- * @member {array} poolEls - Available entities in the pool.
- * @member {array} pooledEls - Entities of the pool in use.
+ * @member {array} availableEls - Available entities in the pool.
+ * @member {array} useedEls - Entities of the pool in use.
  *
  */
 module.exports.Component = register('pool', {
   schema: {
     mixin: {default: ''},
     size: {default: 0},
-    dynamicSize: {default: false}
+    dynamic: {default: false}
   },
 
   multiple: true,
 
   init: function () {
-    this.createEntities();
+    this.initPool();
   },
 
-  createEntities: function () {
+  initPool: function () {
     var mixin = this.data.mixin;
+    var i;
     if (!mixin) { return; }
-    this.poolEls = [];
-    this.pooledEls = [];
-    for (var i = 0; i < this.data.size; ++i) {
+    this.availableEls = [];
+    this.usedEls = [];
+    for (i = 0; i < this.data.size; ++i) {
       this.createEntity();
     }
   },
@@ -40,7 +41,7 @@ module.exports.Component = register('pool', {
   update: function (oldData) {
     var data = this.data;
     if (oldData.mixin !== data.mixin || oldData.size !== data.size) {
-      this.createEntities();
+      this.initPool();
     }
   },
 
@@ -53,7 +54,7 @@ module.exports.Component = register('pool', {
     el.setAttribute('mixin', this.data.mixin);
     el.setAttribute('visible', false);
     this.el.appendChild(el);
-    this.poolEls.push(el);
+    this.availableEls.push(el);
   },
 
   /**
@@ -61,9 +62,9 @@ module.exports.Component = register('pool', {
    * a scene we don't want to play the entities that are not in use
    */
   wrapPlay: function (playMethod) {
-    var pooledEls = this.pooledEls;
+    var usedEls = this.usedEls;
     return function () {
-      if (pooledEls.indexOf(this) === -1) { return; }
+      if (usedEls.indexOf(this) === -1) { return; }
       playMethod.call(this);
     };
   },
@@ -73,15 +74,15 @@ module.exports.Component = register('pool', {
    */
   requestEntity: function () {
     var el;
-    if (this.poolEls.length === 0) {
-      if (this.data.dynamicSize === false) {
+    if (this.availableEls.length === 0) {
+      if (this.data.dynamic === false) {
         warn('Requested entity from empty pool ' + this.name);
         return;
       }
       this.createEntity();
     }
-    el = this.poolEls.shift();
-    this.pooledEls.push(el);
+    el = this.availableEls.shift();
+    this.usedEls.push(el);
     el.setAttribute('visible', true);
     return el;
   },
@@ -90,13 +91,13 @@ module.exports.Component = register('pool', {
    * Used to return a used entity to the pool
    */
   returnEntity: function (el) {
-    var index = this.pooledEls.indexOf(el);
+    var index = this.usedEls.indexOf(el);
     if (index === -1) {
       warn('The returned entity was not previously pooled from ' + this.name);
       return;
     }
-    this.pooledEls.splice(index, 1);
-    this.poolEls.push(el);
+    this.usedEls.splice(index, 1);
+    this.availableEls.push(el);
     el.setAttribute('visible', false);
     el.pause();
   }

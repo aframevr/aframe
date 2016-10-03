@@ -44,8 +44,8 @@
       var messageEl = document.querySelector('.message');
       var updatePoolCount  = function () {
         var poolComponent = sceneEl.components.pool;
-        var poolSize = poolComponent.poolEls.length + poolComponent.pooledEls.length;
-        var usedPoolEntities = sceneEl.components.pool.pooledEls.length;
+        var poolSize = poolComponent.availableEls.length + poolComponent.usedEls.length;
+        var usedPoolEntities = sceneEl.components.pool.usedEls.length;
         messageEl.innerHTML = message + usedPoolEntities + '/' + poolSize + '</p>';
         window.requestAnimationFrame(updatePoolCount);
       }
