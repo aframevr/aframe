@@ -78,6 +78,9 @@ module.exports.Component = registerComponent('pool', {
       if (this.data.dynamic === false) {
         warn('Requested entity from empty pool ' + this.name);
         return;
+      } else {
+        warn('Requested entity from empty pool. This pool is dynamic' +
+        'and will resize automatically. You might want to increase its initial size' + this.name);
       }
       this.createEntity();
     }

@@ -19,5 +19,5 @@ A pool of entities that will be reused. It avoids creating and destroying the sa
 |----------|--------------------------------------------------------------------------------------|---------------|
 | mixin     | Mixin used to initialize the entities of the pool.                          | ''        |
 | size    | the number of preallocated entities in the pool | 0          |
-| dynamicSize | the pool grows automatically if more entities are requested after reaching the current size | false |
+| dynamic | the pool grows automatically if more entities are requested after reaching the current size | false |
 [scene]: ../core/scene.md
