@@ -1,5 +1,5 @@
 var debug = require('../../utils/debug');
-var register = require('../../core/component').registerComponent;
+var registerComponent = require('../../core/component').registerComponent;
 
 var warn = debug('components:pool:warn');
 
@@ -14,7 +14,7 @@ var warn = debug('components:pool:warn');
  * @member {array} useedEls - Entities of the pool in use.
  *
  */
-module.exports.Component = register('pool', {
+module.exports.Component = registerComponent('pool', {
   schema: {
     mixin: {default: ''},
     size: {default: 0},
@@ -28,8 +28,8 @@ module.exports.Component = register('pool', {
   },
 
   initPool: function () {
-    var mixin = this.data.mixin;
     var i;
+    var mixin = this.data.mixin;
     if (!mixin) { return; }
     this.availableEls = [];
     this.usedEls = [];
