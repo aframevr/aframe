@@ -1,18 +1,13 @@
 /* global assert, process, setup, suite, test */
+var helpers = require('../../helpers');
 
 suite('pool', function () {
   setup(function (done) {
-    var el = this.sceneEl = document.createElement('a-scene');
-    var assetsEl = document.createElement('a-assets');
-    var mixinEl = document.createElement('a-mixin');
-    mixinEl.id = 'test';
-    mixinEl.setAttribute('material', 'color: red');
-    assetsEl.appendChild(mixinEl);
-    el.appendChild(assetsEl);
-    // Set a fake URL so the inspector doesn't interfere with other tests
-    el.setAttribute('pool', 'mixin: test; size: 1');
-    el.addEventListener('loaded', function () { done(); });
-    document.body.appendChild(el);
+    var el = helpers.entityFactory();
+    var sceneEl = this.sceneEl = el.parentNode;
+    sceneEl.setAttribute('pool', 'mixin: test; size: 1');
+    helpers.mixinFactory('test', {material: 'color: red'}, sceneEl);
+    sceneEl.addEventListener('loaded', function () { done(); });
   });
 
   test('pool is initialized', function () {
