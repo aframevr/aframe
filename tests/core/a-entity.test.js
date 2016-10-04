@@ -418,15 +418,14 @@ suite('a-entity', function () {
     });
 
     test('removes itself from scene parent', function (done) {
-      var count;
       var el = this.el;
       var parentEl = el.parentNode;
-      count = parentEl.object3D.children.length;
-      parentEl.removeChild(el);
+      assert.notEqual(parentEl.object3D.children.indexOf(el.object3D), -1);
       process.nextTick(function () {
-        assert.equal(parentEl.object3D.children.length, count - 1);
+        assert.equal(parentEl.object3D.children.indexOf(el.object3D), -1);
         done();
       });
+      parentEl.removeChild(el);
     });
 
     test('properly detaches components', function (done) {

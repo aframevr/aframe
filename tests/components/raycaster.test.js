@@ -91,12 +91,12 @@ suite('raycaster', function () {
       var newEl = this.targetEl = document.createElement('a-entity');
       var numObjects = el.components.raycaster.objects.length;
       var sceneEl = this.el.sceneEl;
-      sceneEl.appendChild(newEl);
-      sceneEl.removeChild(newEl);
       setTimeout(function () {
         assert.equal(el.components.raycaster.objects.length, numObjects);
         done();
       });
+      sceneEl.appendChild(newEl);
+      sceneEl.removeChild(newEl);
     });
   });
 
