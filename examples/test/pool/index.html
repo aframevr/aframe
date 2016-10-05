@@ -23,7 +23,7 @@
   </head>
   <body>
     <div class="message"><p>Left and right arrows to move and space bar to shoot</p><p>Used Pool Entities</p></div>
-    <a-scene stats pool="mixin: laser; size: 10">
+    <a-scene update-pool-message=".message" stats pool="mixin: laser; size: 10">
       <a-assets>
         <a-mixin id="laser" laser></a-mixin>
       </a-assets>
@@ -37,19 +37,15 @@
     </a-scene>
   </body>
   <script>
-    var sceneEl = document.querySelector('a-scene');
     var message = '<p>Left and right arrows to move and space bar to shoot</p><p>Used Pool Entities ';
-    sceneEl.addEventListener('loaded', updateMessage);
-    function updateMessage() {
-      var messageEl = document.querySelector('.message');
-      var updatePoolCount  = function () {
-        var poolComponent = sceneEl.components.pool;
+    AFRAME.registerComponent('update-pool-message', {
+      schema: {type: 'selector'},
+      tick: function () {
+        var poolComponent = this.el.components.pool;
         var poolSize = poolComponent.availableEls.length + poolComponent.usedEls.length;
-        var usedPoolEntities = sceneEl.components.pool.usedEls.length;
-        messageEl.innerHTML = message + usedPoolEntities + '/' + poolSize + '</p>';
-        window.requestAnimationFrame(updatePoolCount);
+        var usedPoolEntities = this.el.components.pool.usedEls.length;
+        this.data.innerHTML = message + usedPoolEntities + '/' + poolSize + '</p>';
       }
-      updatePoolCount();
-    }
+    });
   </script>
 </html>

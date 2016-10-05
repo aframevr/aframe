@@ -60,6 +60,18 @@ suite('pool', function () {
       poolComponent.returnEntity(el);
       assert.equal(poolComponent.availableEls.length, 1);
     });
+
+    test('return an entity and makes the pool grow if dynamic', function () {
+      var sceneEl = this.sceneEl;
+      var poolComponent = sceneEl.components.pool;
+      poolComponent.requestEntity();
+      sceneEl.setAttribute('pool', 'dynamic', true);
+      assert.equal(poolComponent.availableEls.length, 0);
+      assert.equal(poolComponent.usedEls.length, 1);
+      poolComponent.requestEntity();
+      assert.equal(poolComponent.availableEls.length, 0);
+      assert.equal(poolComponent.usedEls.length, 2);
+    });
   });
 
   suite('wrapPlay', function () {
