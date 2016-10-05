@@ -364,8 +364,9 @@ entity.is('selected');  // >> false
 | Event Name       | Description                                                         |
 |------------------|---------------------------------------------------------------------|
 | child-attached   | A child was attached to the entity.                                 |
-| componentchanged | One of the entity's component's data was modified.                  |
-| componentremoved | One of the entity's component was removed.                          |
+| componentchanged | One of the entity's components was modified.                        |
+| componentinit    | One of the entity's components was initialized.                     |
+| componentremoved | One of the entity's components was removed.                         |
 | loaded           | The entity has attached and initialized all of its components.      |
 | pause            | The entity is now inactive and paused in terms of dynamic behavior. |
 | play             | The entity is now active and playing in terms of dynamic behavior.  |
@@ -377,17 +378,21 @@ entity.is('selected');  // >> false
 
 Below is what the event detail contains for each event:
 
-| Event Name       | Property  | Description                                             |
-|------------------|-----------|---------------------------------------------------------|
-| child-attached   | el        | Reference to the attached child element.                |
-| componentremoved | name      | Name of component that was removed.                     |
-| componentchanged | name      | Name of component that had its data modified.           |
-|                  | id        | Id of component that had its data modified.             |
-|                  | newData   | Component's new data, after it was modified.            |
-|                  | oldData   | Component's previous data, before it was modified.      |
-| stateadded       | state     | The state that was attached (string).                   |
-| stateremoved     | state     | The state that was detached (string).                   |
-| schemachanged    | component | Name of component that had it's schema changed.         |
+| Event Name           | Property  | Description                                        |
+|----------------------|-----------|----------------------------------------------------|
+| child-attached       | el        | Reference to the attached child element.           |
+| componentchanged     | name      | Name of component that had its data modified.      |
+|                      | id        | ID of component that had its data modified.        |
+|                      | newData   | Component's new data, after it was modified.       |
+|                      | oldData   | Component's previous data, before it was modified. |
+| componentinitialized | name      | Name of component that was initialized.            |
+|                      | id        | ID of component that had its data modified.        |
+|                      | data      | Component data.                                    |
+| componentremoved     | name      | Name of component that was removed.                |
+|                      | id        | ID of component that was removed.                  |
+| stateadded           | state     | The state that was attached (string).              |
+| stateremoved         | state     | The state that was detached (string).              |
+| schemachanged        | component | Name of component that had it's schema changed.    |
 
 #### Listening for Component Changes
 
