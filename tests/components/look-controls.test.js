@@ -19,21 +19,21 @@ suite('look-controls', function () {
 
     test('adds grabbing class to document body on mousedown', function (done) {
       var el = this.sceneEl;
-      el.canvas.dispatchEvent(new Event('mousedown'));
       process.nextTick(function () {
         assert.ok(document.body.classList.contains(GRABBING_CLASS));
         document.body.classList.remove(GRABBING_CLASS);
         done();
       });
+      el.canvas.dispatchEvent(new Event('mousedown'));
     });
 
     test('removes grabbing class from document body on document body mouseup', function (done) {
       document.body.classList.add(GRABBING_CLASS);
-      window.dispatchEvent(new Event('mouseup'));
       process.nextTick(function () {
         assert.notOk(document.body.classList.contains(GRABBING_CLASS));
         done();
       });
+      window.dispatchEvent(new Event('mouseup'));
     });
   });
 });
