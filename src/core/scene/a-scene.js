@@ -451,8 +451,9 @@ function getCanvasSize (canvasEl, embedded) {
 
 function requestFullscreen (canvas) {
   var requestFullscreen =
-    canvas.requestFullScreen ||
-    canvas.webkitRequestFullScreen ||
-    canvas.mozRequestFullScreen;
+    canvas.requestFullscreen ||
+    canvas.webkitRequestFullscreen ||
+    canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
+    canvas.msRequestFullscreen;
   requestFullscreen.apply(canvas);
 }
