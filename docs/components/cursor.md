@@ -112,7 +112,7 @@ To play with an example of a cursor with visual feedback, check out the [Cursor 
 
 [animation]: ../core/animations.md
 [camera]: ./camera.md
-[cursor-codepen]: http://codepen.io/team/mozvr/pen/RrxgwE
+[cursor-codepen]: http://codepen.io/anon/pen/dpmpJP
 [geometry]: ./geometry.md
 [material]: ./material.md
 [raycaster]: ./raycaster.md
