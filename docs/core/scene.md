@@ -16,7 +16,7 @@ properties, its methods, the ability to attach components, and the behavior to
 wait for all of its child nodes (e.g., `<a-assets>` and `<a-entity>`) to load
 before kicking off the render loop.
 
-`<a-scene>` handles all of the three.js and WebVR boilerplate is handled for us:
+`<a-scene>` handles all of the three.js and WebVR boilerplate for us:
 
 - Set up canvas, renderer, render loop
 - Default camera and lights
