@@ -63,7 +63,7 @@ A-Frame ships with a few built-in materials.
 
 ### `standard`
 
-The `standard` material is the default material. It uses the physically-based
+The `standard` shader is the default material shader. It uses the physically-based
 [THREE.MeshStandardMaterial][standard].
 
 #### Properties
@@ -94,6 +94,8 @@ These properties are available on top of the base material properties.
 | roughness                     | How rough the material is from `0` to `1`. A rougher material will scatter reflected light in more directions than a smooth material.           | 0.5           |
 | sphericalEnvMap               | Environment spherical texture for reflections. Can either be a selector to an `<img>`, or an inline URL.                                        | None          |
 | width                         | Width of video (in pixels), if defining a video texture.                                                                                        | 640           |
+| wireframe                     | Whether to render just the geometry edges.                                                                                                      | false         |
+| wireframeLinewidth            | Width in px of the rendered line.                                                                                                               | 2             |
 | src                           | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                              | None          |
 
 #### Physically-Based Shading
@@ -168,14 +170,16 @@ such as images or videos. Set `shader` to `flat`:
 
 #### Properties
 
-| Property  | Description                                                                                                                                     | Default Value |
+| Property             | Description                                                                                                                          | Default Value |
 |-----------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| color     | Base diffuse color.                                                                                                                             | #fff          |
-| fog       | Whether or not material is affected by [fog][fog].                                                                                              | true          |
-| height    | Height of video (in pixels), if defining a video texture.                                                                                       | 360           |
-| repeat    | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                                   | 1 1           |
-| src       | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                              | None          |
-| width     | Width of video (in pixels), if defining a video texture.                                                                                        | 640           |
+| color                | Base diffuse color.                                                                                                                  | #fff          |
+| fog                  | Whether or not material is affected by [fog][fog].                                                                                   | true          |
+| height               | Height of video (in pixels), if defining a video texture.                                                                            | 360           |
+| repeat               | How many times a texture (defined by `src`) repeats in the X and Y direction.                                                        | 1 1           |
+| src                  | Image or video texture map. Can either be a selector to an `<img>` or `<video>`, or an inline URL.                                   | None          |
+| width                | Width of video (in pixels), if defining a video texture.                                                                             | 640           |
+| wireframe            | Whether to render just the geometry edges.                                                                                           | false         |
+| wireframeLinewidth   | Width in px of the rendered line.                                                                                                    | 2             |
 
 ## Textures
 

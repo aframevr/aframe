@@ -88,4 +88,12 @@ suite('standard material', function () {
       done();
     });
   });
+
+  test('can use wireframes', function () {
+    var el = this.el;
+    assert.notOk(el.getObject3D('mesh').material.wireframe);
+    el.setAttribute('material', 'wireframe', true);
+    assert.ok(el.getObject3D('mesh').material.wireframe);
+    assert.equal(el.getObject3D('mesh').material.wireframeLinewidth, 2);
+  });
 });
