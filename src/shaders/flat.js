@@ -12,7 +12,9 @@ module.exports.Component = registerShader('flat', {
     height: {default: 256},
     repeat: {default: ''},
     src: {default: ''},
-    width: {default: 512}
+    width: { default: 512 },
+    wireframe: { default: false },
+    wireframeLinewidth: {default: 2}
   },
 
   /**
@@ -53,6 +55,8 @@ module.exports.Component = registerShader('flat', {
 function getMaterialData (data) {
   return {
     fog: data.fog,
-    color: new THREE.Color(data.color)
+    color: new THREE.Color(data.color),
+    wireframe: data.wireframe,
+    wireframeLinewidth: data.wireframeLinewidth
   };
 }
