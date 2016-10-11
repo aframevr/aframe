@@ -36,26 +36,49 @@ a vehicle in which to make WebVR successful.
 
 ## How can I get started?
 
-[contact]: #how-can-i-get-in-touch-with-the-aframe-team
-[homepage]: https://aframe.io
+[intro]: ../introduction/index.md
+[gettingstarted]: ../introduction/getting-started.md
 [guides]: ../guides/index.md
 
-A-Frame is very extensive across different disciplines so it can be difficult
-to know how to get started. We've tried our best to compile resources to get
-your started on your journey.
+Read the [Introduction][intro] to get a deeper feel of what A-Frame is.
 
-The examples on the [homepage][homepage] act as a starting point for you to
-read, copy, and paste code to quickly get started. Each example comes with an
-accompanying guide explaining how it was built and what components were used to
-built it that will help your understanding.
+See the [Getting Started][gettingstarted] guide to get set up.
 
-Below the examples are various workflow [guides][guides] featuring different
-tools and libraries. Select a guide based on what you are comfortable with
-(e.g., whether you know how to code, whether you know a certain framework,
-whether you know how to model).
+Check out the [guides][guides] for basic tutorials.
 
-If you need additional support, [contact us][contact]! We are very interested
-in understanding learning curve difficulties.
+Past that, you can browse the resources on the [`awesome-aframe`
+repository][awesome]. If you need additional support, [ask on
+StackOverflow][stackoverflow].
+
+## How is A-Frame's performance?
+
+[a-painter]: https://blog.mozvr.com/a-painter
+
+The layout system of the DOM have been one of the primary performance
+bottlenecks for web applications. A-Frame uses the DOM via Custom Elements as
+effectively data containers for objects in the scene graph. These elements are
+not touched by the browser's rendering system and ultimately rendered with
+WebGL. This allows us to run 90+ FPS room-scale experiences in the HTC Vive.
+See [A-Painter][a-painter] for an example of a full A-Frame application running
+with smooth performance.
+
+- The effects of `setAttribute` are synchronous. When modifying an entity's
+position, there is almost zero overhead. Doing `setAttribute('position', {x:
+1, y: 2, z: 3})` is practically directly modifying the underlying three.js
+objects themselves.
+- When changing an entity's properties, data is not serialized back to the DOM. This
+reduces the DOM overhead and most modifications are done directly in memory,
+similar to Virtual DOM.
+- HTML attributes explicitly set from an HTML file are cached in memory.
+
+[bestpractices]: ../introduction/best-pratices.md
+
+A-Frame provides reasonable defaults that yield good performance for the most
+common use cases. However, performance is ultimately determined by the
+complexity and characteristics of each individual scene. To get the best use of
+resources, we will need deeper understanding about 3D graphics. Read these
+[best performance practices and guidelines][bestpractices] to help get you
+started.
 
 ## Why does my asset (e.g., image, video, model) not load?
 
