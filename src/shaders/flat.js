@@ -12,8 +12,8 @@ module.exports.Component = registerShader('flat', {
     height: {default: 256},
     repeat: {default: ''},
     src: {default: ''},
-    width: { default: 512 },
-    wireframe: { default: false },
+    width: {default: 512},
+    wireframe: {default: false},
     wireframeLinewidth: {default: 2}
   },
 

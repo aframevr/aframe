@@ -63,7 +63,7 @@ A-Frame ships with a few built-in materials.
 
 ### `standard`
 
-The `standard` shader is the default material shader. It uses the physically-based
+The `standard` material is the default material. It uses the physically-based
 [THREE.MeshStandardMaterial][standard].
 
 #### Properties

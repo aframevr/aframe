@@ -38,7 +38,7 @@ module.exports.Component = registerShader('standard', {
     sphericalEnvMap: {default: ''},
     src: {default: ''},
     width: {default: 512},
-    wireframe: { default: false },
+    wireframe: {default: false},
     wireframeLinewidth: {default: 2}
   },
 
