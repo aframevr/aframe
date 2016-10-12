@@ -17,7 +17,7 @@ desktop, the Oculus Rift, and the room-scale HTC Vive.
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.3.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.3.2/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
