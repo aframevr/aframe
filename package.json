@@ -1,6 +1,6 @@
 {
   "name": "aframe",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Building blocks for the VR Web",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe.js",
@@ -13,8 +13,8 @@
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js",
     "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
     "dist:release": "npm run dist:release:min && npm run dist:release:max",
-    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.0.js.map > dist/aframe-v0.3.0.js",
-    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.0.min.js.map --output dist/aframe-v0.3.0.min.js.map] -o dist/aframe-v0.3.0.min.js",
+    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.2.js.map > dist/aframe-v0.3.2.js",
+    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.2.min.js.map --output dist/aframe-v0.3.2.min.js.map] -o dist/aframe-v0.3.2.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
     "lint": "semistandard -v | snazzy",

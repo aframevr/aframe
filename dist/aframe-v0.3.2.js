@@ -56814,7 +56814,7 @@ module.exports = WebVRPolyfill;
 },{}],20:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Building blocks for the VR Web",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe.js",
@@ -56827,8 +56827,8 @@ module.exports={
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js",
     "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
     "dist:release": "npm run dist:release:min && npm run dist:release:max",
-    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.0.js.map > dist/aframe-v0.3.0.js",
-    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.0.min.js.map --output dist/aframe-v0.3.0.min.js.map] -o dist/aframe-v0.3.0.min.js",
+    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.2.js.map > dist/aframe-v0.3.2.js",
+    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.2.min.js.map --output dist/aframe-v0.3.2.min.js.map] -o dist/aframe-v0.3.2.min.js",
     "gh-pages": "npm run ghpages",
     "ghpages": "node ./scripts/gh-pages",
     "lint": "semistandard -v | snazzy",
@@ -56846,12 +56846,13 @@ module.exports={
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
+    "browserify-css": "^0.8.2",
     "debug": "^2.2.0",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
-    "promise-polyfill": "^3.1.0",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
+    "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "three": "^0.76.1",
     "tween.js": "^15.0.0",
@@ -56859,7 +56860,6 @@ module.exports={
   },
   "devDependencies": {
     "browserify": "^13.1.0",
-    "browserify-css": "^0.8.2",
     "browserify-derequire": "^0.9.4",
     "browserify-istanbul": "^2.0.0",
     "budo": "^8.1.0",
@@ -62877,13 +62877,14 @@ module.exports = registerElement('a-scene', {
      */
     render: {
       value: function (time) {
+        var effect = this.effect;
         var timeDelta = time - this.time;
 
         if (this.isPlaying) { this.tick(time, timeDelta); }
-        this.effect.render(this.object3D, this.camera);
 
+        this.animationFrameID = effect.requestAnimationFrame(this.render);
+        effect.render(this.object3D, this.camera);
         this.time = time;
-        this.animationFrameID = window.requestAnimationFrame(this.render);
       },
       writable: true
     }
@@ -66361,43 +66362,33 @@ THREE.VRControls = function ( object, onError ) {
  * WebVR Spec: http://mozvr.github.io/webvr-spec/webvr.html
  *
  * Firefox: http://mozvr.com/downloads/
- * Chromium: https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ&usp=sharing#list
+ * Chromium: https://webvr.info/get-chrome
  *
  */
 
 THREE.VREffect = function ( renderer, onError ) {
 
-	var isWebVR1 = true;
-
 	var vrDisplay, vrDisplays;
 	var eyeTranslationL = new THREE.Vector3();
 	var eyeTranslationR = new THREE.Vector3();
 	var renderRectL, renderRectR;
-	var eyeFOVL, eyeFOVR;
+
+	var frameData = null;
+	if ( 'VRFrameData' in window ) {
+
+		frameData = new VRFrameData();
+
+	}
 
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;
 
-		for ( var i = 0; i < displays.length; i ++ ) {
+		if ( displays.length > 0 ) {
 
-			if ( 'VRDisplay' in window && displays[ i ] instanceof VRDisplay ) {
+			vrDisplay = displays[ 0 ];
 
-				vrDisplay = displays[ i ];
-				isWebVR1 = true;
-				break; // We keep the first we encounter
-
-			} else if ( 'HMDVRDevice' in window && displays[ i ] instanceof HMDVRDevice ) {
-
-				vrDisplay = displays[ i ];
-				isWebVR1 = false;
-				break; // We keep the first we encounter
-
-			}
-
-		}
-
-		if ( vrDisplay === undefined ) {
+		} else {
 
 			if ( onError ) onError( 'HMD not available' );
 
@@ -66409,11 +66400,6 @@ THREE.VREffect = function ( renderer, onError ) {
 
 		navigator.getVRDisplays().then( gotVRDisplays );
 
-	} else if ( navigator.getVRDevices ) {
-
-		// Deprecated API.
-		navigator.getVRDevices().then( gotVRDisplays );
-
 	}
 
 	//
@@ -66424,6 +66410,7 @@ THREE.VREffect = function ( renderer, onError ) {
 	var scope = this;
 
 	var rendererSize = renderer.getSize();
+	var rendererUpdateStyle = false;
 	var rendererPixelRatio = renderer.getPixelRatio();
 
 	this.getVRDisplay = function () {
@@ -66438,29 +66425,21 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	};
 
-	this.setSize = function ( width, height ) {
+	this.setSize = function ( width, height, updateStyle ) {
 
 		rendererSize = { width: width, height: height };
+		rendererUpdateStyle = updateStyle;
 
 		if ( scope.isPresenting ) {
 
 			var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
 			renderer.setPixelRatio( 1 );
-
-			if ( isWebVR1 ) {
-
-				renderer.setSize( eyeParamsL.renderWidth * 2, eyeParamsL.renderHeight, false );
-
-			} else {
-
-				renderer.setSize( eyeParamsL.renderRect.width * 2, eyeParamsL.renderRect.height, false );
-
-			}
+			renderer.setSize( eyeParamsL.renderWidth * 2, eyeParamsL.renderHeight, false );
 
 		} else {
 
 			renderer.setPixelRatio( rendererPixelRatio );
-			renderer.setSize( width, height );
+			renderer.setSize( width, height, updateStyle );
 
 		}
 
@@ -66478,34 +66457,21 @@ THREE.VREffect = function ( renderer, onError ) {
 	function onFullscreenChange() {
 
 		var wasPresenting = scope.isPresenting;
-		scope.isPresenting = vrDisplay !== undefined && ( vrDisplay.isPresenting || ( ! isWebVR1 && document[ fullscreenElement ] instanceof window.HTMLElement ) );
+		scope.isPresenting = vrDisplay !== undefined && vrDisplay.isPresenting;
 
 		if ( scope.isPresenting ) {
 
 			var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
-			var eyeWidth, eyeHeight;
+			var eyeWidth = eyeParamsL.renderWidth;
+			var eyeHeight = eyeParamsL.renderHeight;
 
-			if ( isWebVR1 ) {
+			var layers = vrDisplay.getLayers();
+			if ( layers.length ) {
 
-				eyeWidth = eyeParamsL.renderWidth;
-				eyeHeight = eyeParamsL.renderHeight;
+				var layer = layers[0];
 
-				if ( vrDisplay.getLayers ) {
-
-					var layers = vrDisplay.getLayers();
-					if ( layers.length ) {
-
-						leftBounds = layers[0].leftBounds || [ 0.0, 0.0, 0.5, 1.0 ];
-						rightBounds = layers[0].rightBounds || [ 0.5, 0.0, 0.5, 1.0 ];
-
-					}
-
-				}
-
-			} else {
-
-				eyeWidth = eyeParamsL.renderRect.width;
-				eyeHeight = eyeParamsL.renderRect.height;
+				leftBounds = layer.leftBounds !== null && layer.leftBounds.length === 4 ? layer.leftBounds : [ 0.0, 0.0, 0.5, 1.0 ];
+				rightBounds = layer.rightBounds !== null && layer.rightBounds.length === 4 ? layer.rightBounds : [ 0.5, 0.0, 0.5, 1.0 ];
 
 			}
 
@@ -66522,32 +66488,9 @@ THREE.VREffect = function ( renderer, onError ) {
 		} else if ( wasPresenting ) {
 
 			renderer.setPixelRatio( rendererPixelRatio );
-			renderer.setSize( rendererSize.width, rendererSize.height );
+			renderer.setSize( rendererSize.width, rendererSize.height, rendererUpdateStyle );
 
 		}
-
-	}
-
-	if ( canvas.requestFullscreen ) {
-
-		requestFullscreen = 'requestFullscreen';
-		fullscreenElement = 'fullscreenElement';
-		exitFullscreen = 'exitFullscreen';
-		document.addEventListener( 'fullscreenchange', onFullscreenChange, false );
-
-	} else if ( canvas.mozRequestFullScreen ) {
-
-		requestFullscreen = 'mozRequestFullScreen';
-		fullscreenElement = 'mozFullScreenElement';
-		exitFullscreen = 'mozCancelFullScreen';
-		document.addEventListener( 'mozfullscreenchange', onFullscreenChange, false );
-
-	} else {
-
-		requestFullscreen = 'webkitRequestFullscreen';
-		fullscreenElement = 'webkitFullscreenElement';
-		exitFullscreen = 'webkitExitFullscreen';
-		document.addEventListener( 'webkitfullscreenchange', onFullscreenChange, false );
 
 	}
 
@@ -66571,31 +66514,13 @@ THREE.VREffect = function ( renderer, onError ) {
 
 			}
 
-			if ( isWebVR1 ) {
+			if ( boolean ) {
 
-				if ( boolean ) {
-
-					resolve( vrDisplay.requestPresent( [ { source: canvas } ] ) );
-
-				} else {
-
-					resolve( vrDisplay.exitPresent() );
-
-				}
+				resolve( vrDisplay.requestPresent( [ { source: canvas } ] ) );
 
 			} else {
 
-				if ( canvas[ requestFullscreen ] ) {
-
-					canvas[ boolean ? requestFullscreen : exitFullscreen ]( { vrDisplay: vrDisplay } );
-					resolve();
-
-				} else {
-
-					console.error( 'No compatible requestFullscreen method found.' );
-					reject( new Error( 'No compatible requestFullscreen method found.' ) );
-
-				}
+				resolve( vrDisplay.exitPresent() );
 
 			}
 
@@ -66617,7 +66542,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	this.requestAnimationFrame = function ( f ) {
 
-		if ( isWebVR1 && vrDisplay !== undefined ) {
+		if ( vrDisplay !== undefined ) {
 
 			return vrDisplay.requestAnimationFrame( f );
 
@@ -66631,7 +66556,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	this.cancelAnimationFrame = function ( h ) {
 
-		if ( isWebVR1 && vrDisplay !== undefined ) {
+		if ( vrDisplay !== undefined ) {
 
 			vrDisplay.cancelAnimationFrame( h );
 
@@ -66645,7 +66570,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	this.submitFrame = function () {
 
-		if ( isWebVR1 && vrDisplay !== undefined && scope.isPresenting ) {
+		if ( vrDisplay !== undefined && scope.isPresenting ) {
 
 			vrDisplay.submitFrame();
 
@@ -66679,21 +66604,8 @@ THREE.VREffect = function ( renderer, onError ) {
 			var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
 			var eyeParamsR = vrDisplay.getEyeParameters( 'right' );
 
-			if ( isWebVR1 ) {
-
-				eyeTranslationL.fromArray( eyeParamsL.offset );
-				eyeTranslationR.fromArray( eyeParamsR.offset );
-				eyeFOVL = eyeParamsL.fieldOfView;
-				eyeFOVR = eyeParamsR.fieldOfView;
-
-			} else {
-
-				eyeTranslationL.copy( eyeParamsL.eyeTranslation );
-				eyeTranslationR.copy( eyeParamsR.eyeTranslation );
-				eyeFOVL = eyeParamsL.recommendedFieldOfView;
-				eyeFOVR = eyeParamsR.recommendedFieldOfView;
-
-			}
+			eyeTranslationL.fromArray( eyeParamsL.offset );
+			eyeTranslationR.fromArray( eyeParamsR.offset );
 
 			if ( Array.isArray( scene ) ) {
 
@@ -66725,16 +66637,14 @@ THREE.VREffect = function ( renderer, onError ) {
 
 			} else  {
 
+				renderer.setRenderTarget( null );
 				renderer.setScissorTest( true );
-			
+
 			}
 
 			if ( renderer.autoClear || forceClear ) renderer.clear();
 
 			if ( camera.parent === null ) camera.updateMatrixWorld();
-
-			cameraL.projectionMatrix = fovToProjection( eyeFOVL, true, camera.near, camera.far );
-			cameraR.projectionMatrix = fovToProjection( eyeFOVR, true, camera.near, camera.far );
 
 			camera.matrixWorld.decompose( cameraL.position, cameraL.quaternion, cameraL.scale );
 			camera.matrixWorld.decompose( cameraR.position, cameraR.quaternion, cameraR.scale );
@@ -66743,6 +66653,23 @@ THREE.VREffect = function ( renderer, onError ) {
 			cameraL.translateOnAxis( eyeTranslationL, scale );
 			cameraR.translateOnAxis( eyeTranslationR, scale );
 
+			if ( vrDisplay.getFrameData ) {
+
+				vrDisplay.depthNear = camera.near;
+				vrDisplay.depthFar = camera.far;
+
+				vrDisplay.getFrameData( frameData );
+
+				cameraL.projectionMatrix.elements = frameData.leftProjectionMatrix;
+				cameraR.projectionMatrix.elements = frameData.rightProjectionMatrix;
+
+			} else {
+
+				cameraL.projectionMatrix = fovToProjection( eyeParamsL.fieldOfView, true, camera.near, camera.far );
+				cameraR.projectionMatrix = fovToProjection( eyeParamsR.fieldOfView, true, camera.near, camera.far );
+
+
+			}
 
 			// render left eye
 			if ( renderTarget ) {
@@ -66780,11 +66707,11 @@ THREE.VREffect = function ( renderer, onError ) {
 				renderer.setRenderTarget( null );
 
 			} else {
-				
+
 				renderer.setScissorTest( false );
 
 			}
-			
+
 			if ( autoUpdate ) {
 
 				scene.autoUpdate = true;
@@ -66882,6 +66809,7 @@ THREE.VREffect = function ( renderer, onError ) {
 	}
 
 };
+
 },{}],126:[function(_dereq_,module,exports){
 window.glStats = function () {
 
@@ -67742,4 +67670,4 @@ module.exports = getWakeLock();
 
 },{"./util.js":128}]},{},[101])(101)
 });
-//# sourceMappingURL=aframe-v0.3.0.js.map
+//# sourceMappingURL=aframe-v0.3.2.js.map
