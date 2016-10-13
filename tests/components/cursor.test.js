@@ -10,6 +10,7 @@ suite('cursor', function () {
     var cursorEl = this.cursorEl = document.createElement('a-entity');
     this.intersection = {distance: 10.5};
     this.intersectedEl = document.createElement('a-entity');
+    this.prevIntersectedEl = document.createElement('a-entity');
     cameraEl.setAttribute('camera', 'active: true');
     cursorEl.setAttribute('cursor', '');
 
@@ -203,6 +204,24 @@ suite('cursor', function () {
         els: [intersectedEl]
       });
       assert.ok(cursorEl.is('cursor-hovering'));
+    });
+
+    test('emits a mouseleave event on the prevIntersectedEl', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      var prevIntersectedEl = this.prevIntersectedEl;
+      prevIntersectedEl.addEventListener('mouseleave', function (evt) {
+        done();
+      });
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [prevIntersectedEl]
+      });
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [intersectedEl]
+      });
     });
 
     test('does not set fusing state on cursor if not fuse', function () {
