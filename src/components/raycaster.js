@@ -121,7 +121,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit all intersections at once on raycasting entity.
     if (intersections.length) {
       el.emit('raycaster-intersection', {
-        els: intersectedEls,
+        els: intersectedEls.slice(),
         intersections: intersections
       });
     }
@@ -129,6 +129,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersection cleared on both entities per formerly intersected entity.
     prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
       if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
+      console.log('cleared');
       el.emit('raycaster-intersection-cleared', {el: intersectedEl});
       intersectedEl.emit('raycaster-intersected-cleared', {el: el});
     });
