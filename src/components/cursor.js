@@ -103,7 +103,7 @@ module.exports.Component = registerComponent('cursor', {
     if (this.intersectedEl === intersectedEl) { return; }
 
     // Unset current intersection.
-    if (this.intersectedEl) { this.leaveCurrentIntersection(); }
+    if (this.intersectedEl) { this.clearCurrentIntersection(); }
 
     // Set new intersection.
     this.intersection = intersection;
@@ -136,7 +136,7 @@ module.exports.Component = registerComponent('cursor', {
     // Ignore if the event didn't occur on the current intersection.
     if (intersectedEl !== this.intersectedEl) { return; }
 
-    this.clearCurrentIntersection(intersectedEl);
+    this.clearCurrentIntersection();
   },
 
   clearCurrentIntersection: function () {
