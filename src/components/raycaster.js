@@ -129,7 +129,6 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit intersection cleared on both entities per formerly intersected entity.
     prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
       if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
-      console.log('cleared');
       el.emit('raycaster-intersection-cleared', {el: intersectedEl});
       intersectedEl.emit('raycaster-intersected-cleared', {el: el});
     });
