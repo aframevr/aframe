@@ -121,7 +121,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit all intersections at once on raycasting entity.
     if (intersections.length) {
       el.emit('raycaster-intersection', {
-        els: intersectedEls,
+        els: intersectedEls.slice(),
         intersections: intersections
       });
     }
