@@ -55,7 +55,6 @@ suite('material system', function () {
         var hash = system.hash(data);
 
         system.loadImage(src, data, function (texture) {
-          assert.equal(texture.image.getAttribute('src'), src);
           system.textureCache[hash].then(function (texture2) {
             assert.equal(texture, texture2);
             done();
@@ -90,7 +89,6 @@ suite('material system', function () {
           new Promise(function (resolve) { system.loadImage(src, data, resolve); })
         ]).then(function (results) {
           assert.equal(results[0], results[1]);
-          assert.equal(results[0].image.getAttribute('src'), src);
           assert.ok(system.textureCache[hash]);
           assert.equal(Object.keys(system.textureCache).length, 1);
           done();
@@ -108,8 +106,6 @@ suite('material system', function () {
           new Promise(function (resolve) { system.loadImage(src1, data1, resolve); }),
           new Promise(function (resolve) { system.loadImage(src2, data2, resolve); })
         ]).then(function (results) {
-          assert.equal(results[0].image.getAttribute('src'), src1);
-          assert.equal(results[1].image.getAttribute('src'), src2);
           assert.notEqual(results[0].uuid, results[1].uuid);
           done();
         });
@@ -146,7 +142,6 @@ suite('material system', function () {
 
         system.loadVideo(src, data, function (texture) {
           var hash = Object.keys(system.textureCache)[0];
-          assert.equal(texture.image.getAttribute('src'), src);
           system.textureCache[hash].then(function (result) {
             assert.equal(texture, result.texture);
             assert.equal(texture.image, result.videoEl);
@@ -182,7 +177,6 @@ suite('material system', function () {
           new Promise(function (resolve) { system.loadVideo(src, data, resolve); })
         ]).then(function (results) {
           assert.equal(results[0], results[1]);
-          assert.equal(results[0].image.getAttribute('src'), src);
           assert.equal(Object.keys(system.textureCache).length, 1);
           done();
         });
@@ -199,8 +193,6 @@ suite('material system', function () {
           new Promise(function (resolve) { system.loadVideo(src1, data1, resolve); }),
           new Promise(function (resolve) { system.loadVideo(src2, data2, resolve); })
         ]).then(function (results) {
-          assert.equal(results[0].image.getAttribute('src'), src1);
-          assert.equal(results[1].image.getAttribute('src'), src2);
           assert.notEqual(results[0].uuid, results[1].uuid);
           done();
         });

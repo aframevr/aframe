@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, AFRAME */
+/* global assert, process, setup, suite, test, sinon, AFRAME */
 var entityFactory = require('../helpers').entityFactory;
 var shaders = require('core/shader').shaders;
 var THREE = require('index').THREE;
@@ -6,6 +6,7 @@ var THREE = require('index').THREE;
 suite('material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    this.sinon = sinon.sandbox.create();
     el.setAttribute('material', 'shader: flat');
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
@@ -70,9 +71,12 @@ suite('material', function () {
     test('emits event when loading texture', function (done) {
       var el = this.el;
       var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
       el.setAttribute('material', 'src: url(' + imageUrl + ')');
       el.addEventListener('materialtextureloaded', function (evt) {
-        assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
         done();
       });
     });

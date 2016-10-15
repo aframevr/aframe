@@ -26,7 +26,6 @@ suite('standard material', function () {
     el.setAttribute('material', 'ambientOcclusionMapIntensity: 0.4; ambientOcclusionMap: url(' + imageUrl + ');');
     assert.equal(el.getObject3D('mesh').material.aoMapIntensity, 0.4);
     el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
       assert.equal(el.getObject3D('mesh').material.aoMap, evt.detail.texture);
       done();
     });
@@ -40,7 +39,6 @@ suite('standard material', function () {
     assert.equal(el.getObject3D('mesh').material.normalScale.x, 0.3);
     assert.equal(el.getObject3D('mesh').material.normalScale.y, -0.4);
     el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
       assert.equal(el.getObject3D('mesh').material.normalMap, evt.detail.texture);
       assert.equal(evt.detail.texture.repeat.x, 2);
       assert.equal(evt.detail.texture.offset.x, 0.1);
@@ -56,7 +54,6 @@ suite('standard material', function () {
     assert.equal(el.getObject3D('mesh').material.displacementScale, 0.3);
     assert.equal(el.getObject3D('mesh').material.displacementBias, 0.2);
     el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
       assert.equal(el.getObject3D('mesh').material.displacementMap, evt.detail.texture);
       assert.equal(evt.detail.texture.repeat.x, 2);
       assert.equal(evt.detail.texture.offset.x, 0.1);
@@ -70,7 +67,6 @@ suite('standard material', function () {
     el.setAttribute('material', 'sphericalEnvMap: url(' + imageUrl + ');');
     assert.ok(el.components.material.shader.isLoadingEnvMap);
     el.addEventListener('materialtextureloaded', function (evt) {
-      assert.equal(evt.detail.texture.image.getAttribute('src'), imageUrl);
       assert.equal(evt.detail.texture.mapping, THREE.SphericalReflectionMapping);
       assert.equal(el.getObject3D('mesh').material.envMap, evt.detail.texture);
       done();
