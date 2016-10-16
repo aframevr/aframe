@@ -4,7 +4,6 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 2
-version: 0.3.2
 installation: true
 ---
 
@@ -52,16 +51,16 @@ If we want to just include the JS build from the CDN, we can drop a `<script>` t
 
 ```html
 <!-- Production Version, Minified -->
-<script src="https://aframe.io/releases/{{ version }}/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.3.2/aframe.min.js"></script>
 
 <!-- Development Version, Uncompressed with Source Maps -->
-<script src="https://aframe.io/releases/{{ version }}/aframe.js"></script>
+<script src="https://aframe.io/releases/0.3.2/aframe.js"></script>
 ```
 
 If we want to serve it locally, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.min.js" download>Production Version <span>{{ version }}</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/{{ version }}/aframe.js" download>Development Version <span>{{ version }}</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.3.2/aframe.min.js" download>Production Version <span>0.3.2</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.3.2/aframe.js" download>Development Version <span>0.3.2</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 ## Install from npm
 
