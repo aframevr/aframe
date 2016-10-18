@@ -239,8 +239,8 @@ module.exports.Component = registerComponent('look-controls', {
     }
     this.previousMouseEvent = event;
 
-    yawObject.rotation.y -= movementX * 0.002;
-    pitchObject.rotation.x -= movementY * 0.002;
+    yawObject.rotation.y += movementX * 0.002;
+    pitchObject.rotation.x += movementY * 0.002;
     pitchObject.rotation.x = Math.max(-PI_2, Math.min(PI_2, pitchObject.rotation.x));
   },
 
