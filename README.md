@@ -7,6 +7,7 @@
 [![NPM version][npm-image]][npm-url]
 [![Downloads][downloads-image]][downloads-url]
 [![js-semistandard-style][semistandard-image]][semistandard-url]
+[![CDNJS](https://img.shields.io/cdnjs/v/aframe.svg)](https://cdnjs.com/libraries/aframe)
 
 A-Frame is a framework for creating virtual reality web experiences.
 
