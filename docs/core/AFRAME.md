@@ -14,8 +14,8 @@ global. This same interface is also exposed if requiring with Node
 
 [componentregister]: ./component.md#write-a-component
 [entity]: ./entity.md
-[geometryregister]: ./geometry.md#register-a-custom-geometry
-[materialregister]: ./material.md#register-a-custom-material
+[geometryregister]: ../components/geometry.md#register-a-custom-geometry
+[materialregister]: ../components/material.md#register-a-custom-material
 [primitiveregister]: ../primitives/index.md#register-a-primitive
 [scene]: ./scene.md
 [three.js]: http://threejs.org
