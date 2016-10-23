@@ -62,17 +62,14 @@ module.exports.Component = registerComponent('sound', {
     }
   },
 
-  /**
-  *  Update listener attached to the user defined on event.
-  */
-  updateEventListener: function (oldEvt) {
-    var el = this.el;
-    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
-    el.addEventListener(this.data.on, this.playSound);
+  pause: function () {
+    this.pauseSound();
+    this.removeEventListener();
   },
 
-  removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSound);
+  play: function () {
+    if (this.data.autoplay) { this.playSound(); }
+    this.updateEventListener();
   },
 
   remove: function () {
@@ -88,12 +85,17 @@ module.exports.Component = registerComponent('sound', {
     }
   },
 
-  play: function () {
-    // Look for an unused sound in the pool and play it if found.
-    if (this.data.autoplay) {
-      this.playSound();
-    }
-    this.updateEventListener();
+  /**
+  *  Update listener attached to the user defined on event.
+  */
+  updateEventListener: function (oldEvt) {
+    var el = this.el;
+    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
+    el.addEventListener(this.data.on, this.playSound);
+  },
+
+  removeEventListener: function () {
+    this.el.removeEventListener(this.data.on, this.playSound);
   },
 
   /**
@@ -106,7 +108,7 @@ module.exports.Component = registerComponent('sound', {
     var sceneEl = el.sceneEl;
 
     if (this.pool.children.length > 0) {
-      this.stop();
+      this.stopSound();
       el.removeObject3D('sound');
     }
 
@@ -139,8 +141,20 @@ module.exports.Component = registerComponent('sound', {
     });
   },
 
+  /**
+   * Pause all the sounds in the pool.
+   */
+  pauseSound: function () {
+    this.pool.children.forEach(function (sound) {
+      if (!sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      sound.pause();
+    });
+  },
+
+  /**
+   * Look for an unused sound in the pool and play it if found.
+   */
   playSound: function () {
-    // Look for an unused sound in the pool and play it if found.
     var found = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.source.buffer && !found) {
@@ -151,24 +165,18 @@ module.exports.Component = registerComponent('sound', {
     });
 
     if (!found) {
-      warn('All the sounds are playing. If you need to play more sounds simultaneously consider increasing the size of pool with the `poolSize` attribute.');
+      warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
+           'consider increasing the size of pool with the `poolSize` attribute.');
     }
   },
 
-  stop: function () {
-    // Stop all the sounds in the pool
+  /**
+   * Stop all the sounds in the pool.
+   */
+  stopSound: function () {
     this.pool.children.forEach(function (sound) {
       if (!sound.source.buffer) { return; }
       sound.stop();
     });
-  },
-
-  pause: function () {
-    // Pause all the sounds in the pool
-    this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer || !sound.isPlaying) { return; }
-      sound.pause();
-    });
-    this.removeEventListener();
   }
 });

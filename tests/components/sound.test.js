@@ -4,8 +4,12 @@ var entityFactory = require('../helpers').entityFactory;
 suite('sound', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-
-    el.setAttribute('sound', 'src: url(mysoundfile.mp3); autoplay: true; loop: true; poolSize: 3;');
+    el.setAttribute('sound', {
+      autoplay: true,
+      src: 'url(mysoundfile.mp3)',
+      loop: true,
+      poolSize: 3
+    });
     el.addEventListener('loaded', function () {
       done();
     });
@@ -94,6 +98,48 @@ suite('sound', function () {
       el.components.sound.autoplay = true;
       el.play();
       assert.notOk(sound.play.called);
+    });
+  });
+
+  suite('pauseSound', function () {
+    test('pauses sound', function () {
+      var el = this.el;
+      var sound = el.components.sound.pool.children[0] = {
+        disconnect: sinon.stub(),
+        isPlaying: true,
+        pause: sinon.stub(),
+        source: {buffer: true}
+      };
+      el.components.sound.pauseSound();
+      assert.ok(sound.pause.called);
+    });
+  });
+
+  suite('playSound', function () {
+    test('plays sound', function () {
+      var el = this.el;
+      var sound = el.components.sound.pool.children[0] = {
+        disconnect: sinon.stub(),
+        play: sinon.stub(),
+        isPlaying: false,
+        source: {buffer: true}
+      };
+      el.components.sound.playSound();
+      assert.ok(sound.play.called);
+    });
+  });
+
+  suite('stopSound', function () {
+    test('stops sound', function () {
+      var el = this.el;
+      var sound = el.components.sound.pool.children[0] = {
+        disconnect: sinon.stub(),
+        isPlaying: true,
+        stop: sinon.stub(),
+        source: {buffer: true}
+      };
+      el.components.sound.stopSound();
+      assert.ok(sound.stop.called);
     });
   });
 });
