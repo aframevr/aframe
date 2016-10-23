@@ -33,11 +33,11 @@ To get started immediately, just fire up [__this CodePen example scene__](http:/
 
 To embed this library in your project, include this file:
 
-* [`aframe.min.js`](https://aframe.io/releases/0.2.0/aframe.min.js)
+* [`aframe.min.js`](https://aframe.io/releases/0.3.2/aframe.min.js)
 
 For the unminified version for local development (with source maps), include this file:
 
-* [`aframe.js`](https://aframe.io/releases/0.2.0/aframe.js)
+* [`aframe.js`](https://aframe.io/releases/0.3.2/aframe.js)
 
 __Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
@@ -55,7 +55,6 @@ And in your Browserify/Webpack modules, simply require the module:
 require('aframe')
 ```
 
-
 ## Local Installation and Development
 
 Alternatively, you can clone this repository to work locally on this project and explore the examples.
@@ -72,26 +71,6 @@ npm start
 ```
 
 And fire up __[http://localhost:9000](http://localhost:9000)__!
-
-## Maintainers
-
-Ensure you have [cloned the repo and installed the dependencies](#local-installation-and-development).
-
-### Publishing to [npm](https://www.npmjs.com/)
-
-To increment the preminor version of the package (e.g., `0.1.19` to `0.1.20`) and create a git tag (e.g., `v0.1.20`):
-
-```sh
-npm run release:bump
-```
-
-___NOTE:___ npm versions __cannot__ be unpublished.
-
-Once the package is 100% ready to go, to push the new version to npm (e.g., `0.1.20`) and to the new tag to GitHub (e.g., `v0.1.20`):
-
-```sh
-npm run release:push
-```
 
 ## Updating `dist` Files
 
