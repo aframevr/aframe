@@ -166,21 +166,21 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
-    scene.render();
+    scene.render(0);
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
   });
 
   test('calls tock behaviors', function () {
     var scene = this.el;
-    scene.setAttribute('postprocessing', null);
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
-    scene.render();
+	scene.setAttribute('postprocessing', false);
+    scene.render(0);
     sinon.assert.notCalled(Component.tock);
-    scene.setAttribute('postprocessing', 'true');
-    scene.render();
+    scene.setAttribute('postprocessing', true);
+    scene.render(0);
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
   });

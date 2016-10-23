@@ -199,7 +199,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	this.cancelAnimationFrame = function ( h ) {
 
-		if ( vrDisplay !== undefined ) {
+		if ( vrDisplay !== undefined && vrDisplay.cancelAnimationFrame ) {
 
 			vrDisplay.cancelAnimationFrame( h );
 
