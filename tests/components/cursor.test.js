@@ -195,6 +195,36 @@ suite('cursor', function () {
       });
     });
 
+    test('updates existing intersections for intersected entities', function (done, fail) {
+      var cursorEl = this.cursorEl;
+      var intersection1 = {distance: 10.5};
+      var intersection2 = {distance: 12.0};
+      var intersectedEl = this.intersectedEl;
+
+      intersectedEl.addEventListener('mouseenter', function onMouseenter (evt) {
+        assert.equal(evt.detail.intersection, intersection1);
+
+        intersectedEl.removeEventListener('mouseenter', onMouseenter);
+        intersectedEl.addEventListener('mouseenter', fail);
+        cursorEl.addEventListener('mouseenter', fail);
+
+        cursorEl.emit('raycaster-intersection', {
+          intersections: [intersection2],
+          els: [intersectedEl]
+        });
+
+        process.nextTick(function () {
+          assert.equal(cursorEl.components.cursor.intersection, intersection2);
+          done();
+        });
+      });
+
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection1],
+        els: [intersectedEl]
+      });
+    });
+
     test('sets hovering state on cursor', function () {
       var cursorEl = this.cursorEl;
       var intersection = this.intersection;
