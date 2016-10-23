@@ -100,7 +100,10 @@ module.exports.Component = registerComponent('cursor', {
     if (!intersectedEl) { return; }
 
     // Already intersecting this entity.
-    if (this.intersectedEl === intersectedEl) { return; }
+    if (this.intersectedEl === intersectedEl) {
+      this.intersection = intersection;
+      return;
+    }
 
     // Unset current intersection.
     if (this.intersectedEl) { this.clearCurrentIntersection(); }
