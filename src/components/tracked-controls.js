@@ -43,8 +43,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerEuler = new THREE.Euler();
     var controllerPosition = new THREE.Vector3();
     var controllerQuaternion = new THREE.Quaternion();
+    var deltaControllerPosition = new THREE.Vector3();
     var dolly = new THREE.Object3D();
     var standingMatrix = new THREE.Matrix4();
+    var previousControllerPosition = new THREE.Vector3();
     controllerEuler.order = 'YXZ';
     return function () {
       var controller;
@@ -74,10 +76,15 @@ module.exports.Component = registerComponent('tracked-controls', {
         y: THREE.Math.radToDeg(controllerEuler.y),
         z: THREE.Math.radToDeg(controllerEuler.z)
       });
+
+      deltaControllerPosition.copy(controllerPosition).sub(previousControllerPosition);
+      previousControllerPosition.copy(controllerPosition);
+      var currentPosition = el.getAttribute('position');
+
       el.setAttribute('position', {
-        x: controllerPosition.x,
-        y: controllerPosition.y,
-        z: controllerPosition.z
+        x: currentPosition.x + deltaControllerPosition.x,
+        y: currentPosition.x + deltaControllerPosition.y,
+        z: currentPosition.x + deltaControllerPosition.z
       });
     };
   })(),
