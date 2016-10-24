@@ -1,10 +1,13 @@
 /* global assert, setup, suite, test */
 var THREE = require('lib/three');
 
-suite('a-assets', function () {
-  // Empty src will not trigger load events in Chrome. Use data URI where a load event is needed.
-  var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+// Empty src will not trigger load events in Chrome.
+// Use data URI where a load event is needed.
+var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+var XHR_SRC = 'base/src/README.md';
+
+suite('a-assets', function () {
   setup(function () {
     var el = this.el = document.createElement('a-assets');
     var scene = this.scene = document.createElement('a-scene');
@@ -181,11 +184,34 @@ suite('a-assets', function () {
   });
 });
 
-test('a-assets throws error if not in a-scene', function () {
-  var div = document.createElement('div');
-  var assets = document.createElement('a-assets');
-  div.appendChild(assets);
-  assert.throws(function () {
-    assets.attachedCallback();
-  }, Error);
+suite('a-asset-item', function () {
+  setup(function () {
+    var el = this.assetsEl = document.createElement('a-assets');
+    var scene = this.sceneEl = document.createElement('a-scene');
+    scene.appendChild(el);
+  });
+
+  test('emits progress event', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('progress', function (evt) {
+      assert.ok(evt.detail.loadedBytes !== undefined);
+      assert.ok(evt.detail.totalBytes !== undefined);
+      assert.ok(evt.detail.xhr !== undefined);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('emits error event', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', 'doesntexist');
+    assetItem.addEventListener('error', function (evt) {
+      assert.ok(evt.detail.xhr !== undefined);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
 });

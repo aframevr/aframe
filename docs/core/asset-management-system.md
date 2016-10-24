@@ -134,9 +134,16 @@ the `loaded` event when they say they have finished loading.
 
 ### `<a-asset-item>`
 
-| Event Name | Description                           |
-|------------|---------------------------------------|
-| loaded     | Asset pointed to by `src` was loaded. |
+`<a-asset-item>` invokes the [three.js
+XHRLoader](https://threejs.org/docs/#Reference/Loaders/XHRLoader) and can be
+used for any type of file. When finished, it will set its `data` member with
+the text response.
+
+| Event Name | Description                                                                                                       |
+|------------|-------------------------------------------------------------------------------------------------------------------|
+| error      | Fetch error. Event detail contains `xhr` with `XMLHttpRequest` instance.                                          |
+| progress   | Emitted on progress. Event detail contains `xhr` with `XMLHttpRequest` instance, `loadedBytes`, and `totalBytes`. |
+| loaded     | Asset pointed to by `src` was loaded.                                                                             |
 
 ### `<img>`
 
