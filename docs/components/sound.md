@@ -5,7 +5,9 @@ layout: docs
 parent_section: components
 ---
 
-The sound component defines the entity as a source of sound or audio. The sound component is positional and is therefore affected by the [components-position](position.md).
+The sound component defines the entity as a source of sound or audio. The sound
+component is positional and is therefore affected by the
+[components-position](position.md).
 
 ## Example
 
@@ -24,6 +26,14 @@ The sound component defines the entity as a source of sound or audio. The sound 
 | src      | Selector to an asset `<audio>`or `url()`-enclosed path to sound file. | null          |
 | volume   | How loud to play the sound.                                           | 1             |
 | poolSize | Numbers of simultaneous instances of this sound that can be playing at the same time | 1             |
+
+## Methods
+
+| Event Name | Description  |
+|------------|--------------|
+| pauseSound | Pause sound. |
+| playSound  | Play sound.  |
+| stopSound  | Stop sound.  |
 
 ## Events
 
@@ -44,7 +54,8 @@ The `sound` component can also listen to an event before playing as well. For ex
 
 ## Preloading a Sound Asset
 
-For performance, it is recommended to block the scene on the sound asset to preload and cache. We can do so through the asset management system:
+For performance, it is recommended to block the scene on the sound asset to
+preload and cache. We can do so through the asset management system:
 
 ```html
 <a-scene>
@@ -58,19 +69,24 @@ For performance, it is recommended to block the scene on the sound asset to prel
 
 ## Pause and Resume
 
-To programmatically pause or resume a playing sound, we can tell the entity to pause or resume:
+To programmatically pause or resume a playing sound, we can tell the entity to
+pause or resume:
 
 ```js
 var entity = document.querySelector('[sound]');
-entity.pause();
+entity.components.sound.stopSound();
 ```
 
 Or to pause only the sound:
 
-```
-entity.components.sound.pause();
+```js
+entity.components.sound.pauseSound();
 ```
 
-Then call `.play()` on either the entity or the sound component to resume.
+And to play the sound:
+
+```js
+entity.components.sound.playSound();
+```
 
 [components-position]: ./position.md
