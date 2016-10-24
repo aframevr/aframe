@@ -280,67 +280,16 @@ AFRAME.registerComponent('component-name', {
 });
 ```
 
-### Update Raycaster Component
+### Configuring the Raycaster
 
-First, let us whitelist the entities that the cursor's raycaster is checking
-for intersections against. That way, the cursor will only click if something
-can be clicked, and it is also better for performance. The cursor is built on
-top of the [raycaster component][raycaster], and we can configure the
-raycaster. We update the raycaster component's `objects` property which takes a
-selector:
+We can specify the entities that the cursor's raycaster checks for
+intersections against. That way, the cursor will only click if something can be
+clicked, and it is also better for performance. The cursor is built on top of
+the [raycaster component][raycaster], and we can configure the raycaster. We
+update the raycaster component's `objects` property which takes a selector:
 
 ```html
 <a-cursor id="cursor" raycaster="objects: .link">
-```
-
-This list will be populated once the raycaster component attaches.
-Unfortunately since the links are templated, they won't be found at that time.
-What we can do is write a component that refreshes our raycaster when the link
-attaches. Here is the skeleton of our component:
-
-```js
-AFRAME.registerComponent('update-raycaster', {
-  schema: {
-    // ...
-  },
-
-  init: function () {
-    // ...
-  }
-});
-```
-
-First, we fill out the [`schema`][schema] so that we can pass in which raycaster to
-update. We make it a single-property schema that takes a selector such that we can
-simply do `update-raycaster="#cursor"`:
-
-```js
-AFRAME.registerComponent('update-raycaster', {
-  schema: {
-    type: 'selector'
-  },
-
-  init: function () {
-    // ...
-  }
-});
-```
-
-Then we use that data to actually update the raycaster in the `init` lifecycle
-method, which is called when the component is attached to the entity. We grab
-the raycaster and update it:
-
-```js
-AFRAME.registerComponent('update-raycaster', {
-  schema: {
-    type: 'selector'
-  },
-
-  init: function () {
-    var raycasterEl = this.data;
-    this.data.components.raycaster.refreshObjects();
-  }
-});
 ```
 
 ### Set-Image Component
