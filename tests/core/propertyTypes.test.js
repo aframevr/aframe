@@ -5,6 +5,27 @@ var propertyTypes = PropertyTypes.propertyTypes;
 var register = PropertyTypes.registerPropertyType;
 
 suite('propertyTypes', function () {
+  suite('assetParse', function () {
+    var parse = propertyTypes.asset.parse;
+
+    setup(function () {
+      var el = this.el = document.createElement('div');
+      el.setAttribute('id', 'hello');
+      el.setAttribute('src', 'file2.jpg');
+      document.body.appendChild(el);
+    });
+
+    teardown(function () {
+      this.el.parentNode.removeChild(this.el);
+    });
+
+    test('parses src', function () {
+      assert.equal(parse('url(file.jpg)'), 'file.jpg');
+      assert.equal(parse('file.jpg'), '');
+      assert.equal(parse('#hello'), 'file2.jpg');
+    });
+  });
+
   suite('boolean', function () {
     var parse = propertyTypes.boolean.parse;
     var stringify = propertyTypes.boolean.stringify;

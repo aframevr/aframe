@@ -8,6 +8,7 @@ var propertyTypes = module.exports.propertyTypes = {};
 
 // Built-in property types.
 registerPropertyType('array', [], arrayParse, arrayStringify);
+registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
@@ -54,6 +55,27 @@ function arrayParse (value) {
 
 function arrayStringify (value) {
   return value.join(', ');
+}
+
+/**
+ * `src` parser for assets.
+ *
+ * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
+ * @returns {string} Parsed value from `url(<value>)` or src from `<someasset src>`.
+ */
+function assetParse (value) {
+  var parsedUrl = value.match(/\url\((.+)\)/);
+  if (parsedUrl) { return parsedUrl[1]; }
+
+  var el = selectorParse(value);
+  if (el) { return el.getAttribute('src'); }
+
+  if (value.charAt(0) !== '#') {
+    warn('"' + value + '" is not a valid `src` attribute. ' +
+         'Value must be an ID selector (i.e. "#someElement") or wrapped in `url()`.');
+  }
+
+  return '';
 }
 
 function defaultParse (value) {
@@ -105,25 +127,9 @@ function selectorAllStringify (value) {
   return defaultStringify(value);
 }
 
-/**
- * `src` parser for assets.
- *
- * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
- * @returns {string} Parsed value from `url(<value>)` or src from `<someasset src>`.
- */
 function srcParse (value) {
-  var parsedUrl = value.match(/\url\((.+)\)/);
-  if (parsedUrl) { return parsedUrl[1]; }
-
-  var el = selectorParse(value);
-  if (el) { return el.getAttribute('src'); }
-
-  if (value.charAt(0) !== '#') {
-    warn('"' + value + '" is not a valid `src` attribute. ' +
-         'Value must be an ID selector (i.e. "#someElement") or wrapped in `url()`.');
-  }
-
-  return '';
+  warn('`src` property type is deprecated. Use `asset` instead.');
+  return assetParse(value);
 }
 
 function vecParse (value) {
