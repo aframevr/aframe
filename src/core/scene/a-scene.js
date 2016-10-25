@@ -42,6 +42,7 @@ module.exports = registerElement('a-scene', {
         'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
+        'screenshot': '',
         'vr-mode-ui': ''
       }
     },
