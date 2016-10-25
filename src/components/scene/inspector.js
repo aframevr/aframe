@@ -5,6 +5,7 @@ var pkg = require('../../../package');
 var registerComponent = require('../../core/component').registerComponent;
 
 var INSPECTOR_URL = pkg.homepage + 'releases/' + pkg.version + '/aframe-inspector.min.js';
+var LOADING_MESSAGE = 'Loading Inspector';
 
 module.exports.Component = registerComponent('inspector', {
   schema: {
@@ -14,8 +15,16 @@ module.exports.Component = registerComponent('inspector', {
   init: function () {
     this.onKeydown = bind(this.onKeydown, this);
     this.onMessage = bind(this.onMessage, this);
+    this.initOverlay();
     window.addEventListener('keydown', this.onKeydown);
     window.addEventListener('message', this.onMessage);
+  },
+
+  initOverlay: function () {
+    var dotsHTML = '<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+    this.loadingMessageEl = document.createElement('div');
+    this.loadingMessageEl.classList.add('a-inspector-loader');
+    this.loadingMessageEl.innerHTML = LOADING_MESSAGE + dotsHTML;
   },
 
   remove: function () {
@@ -31,6 +40,14 @@ module.exports.Component = registerComponent('inspector', {
     this.injectInspector();
   },
 
+  showLoader: function () {
+    document.body.appendChild(this.loadingMessageEl);
+  },
+
+  hideLoader: function () {
+    this.el.removeChild(this.loadingMessageEl);
+  },
+
   /**
    * postMessage. aframe.io uses this to create a button on examples to open Inspector.
    */
@@ -44,6 +61,8 @@ module.exports.Component = registerComponent('inspector', {
 
     if (AFRAME.INSPECTOR || AFRAME.inspectorInjected) { return; }
 
+    this.showLoader();
+
     // Inject.
     script = document.createElement('script');
     script.src = this.data.url;
@@ -51,6 +70,7 @@ module.exports.Component = registerComponent('inspector', {
     script.setAttribute(AFRAME_INJECTED, '');
     script.onload = function () {
       AFRAME.INSPECTOR.open();
+      self.hideLoader();
       self.removeEventListeners();
     };
     document.head.appendChild(script);
