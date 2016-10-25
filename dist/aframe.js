@@ -50149,9 +50149,968 @@ TWEEN.Interpolation = {
 } )( this );
 
 },{}],19:[function(_dereq_,module,exports){
+(function (global){
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-'use strict';
+(function (process,global){
+/*!
+ * @overview es6-promise - a tiny implementation of Promises/A+.
+ * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
+ * @license   Licensed under MIT license
+ *            See https://raw.githubusercontent.com/jakearchibald/es6-promise/master/LICENSE
+ * @version   3.1.2
+ */
+
+(function() {
+    "use strict";
+    function lib$es6$promise$utils$$objectOrFunction(x) {
+      return typeof x === 'function' || (typeof x === 'object' && x !== null);
+    }
+
+    function lib$es6$promise$utils$$isFunction(x) {
+      return typeof x === 'function';
+    }
+
+    function lib$es6$promise$utils$$isMaybeThenable(x) {
+      return typeof x === 'object' && x !== null;
+    }
+
+    var lib$es6$promise$utils$$_isArray;
+    if (!Array.isArray) {
+      lib$es6$promise$utils$$_isArray = function (x) {
+        return Object.prototype.toString.call(x) === '[object Array]';
+      };
+    } else {
+      lib$es6$promise$utils$$_isArray = Array.isArray;
+    }
+
+    var lib$es6$promise$utils$$isArray = lib$es6$promise$utils$$_isArray;
+    var lib$es6$promise$asap$$len = 0;
+    var lib$es6$promise$asap$$vertxNext;
+    var lib$es6$promise$asap$$customSchedulerFn;
+
+    var lib$es6$promise$asap$$asap = function asap(callback, arg) {
+      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len] = callback;
+      lib$es6$promise$asap$$queue[lib$es6$promise$asap$$len + 1] = arg;
+      lib$es6$promise$asap$$len += 2;
+      if (lib$es6$promise$asap$$len === 2) {
+        // If len is 2, that means that we need to schedule an async flush.
+        // If additional callbacks are queued before the queue is flushed, they
+        // will be processed by this flush that we are scheduling.
+        if (lib$es6$promise$asap$$customSchedulerFn) {
+          lib$es6$promise$asap$$customSchedulerFn(lib$es6$promise$asap$$flush);
+        } else {
+          lib$es6$promise$asap$$scheduleFlush();
+        }
+      }
+    }
+
+    function lib$es6$promise$asap$$setScheduler(scheduleFn) {
+      lib$es6$promise$asap$$customSchedulerFn = scheduleFn;
+    }
+
+    function lib$es6$promise$asap$$setAsap(asapFn) {
+      lib$es6$promise$asap$$asap = asapFn;
+    }
+
+    var lib$es6$promise$asap$$browserWindow = (typeof window !== 'undefined') ? window : undefined;
+    var lib$es6$promise$asap$$browserGlobal = lib$es6$promise$asap$$browserWindow || {};
+    var lib$es6$promise$asap$$BrowserMutationObserver = lib$es6$promise$asap$$browserGlobal.MutationObserver || lib$es6$promise$asap$$browserGlobal.WebKitMutationObserver;
+    var lib$es6$promise$asap$$isNode = typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
+
+    // test for web worker but not in IE10
+    var lib$es6$promise$asap$$isWorker = typeof Uint8ClampedArray !== 'undefined' &&
+      typeof importScripts !== 'undefined' &&
+      typeof MessageChannel !== 'undefined';
+
+    // node
+    function lib$es6$promise$asap$$useNextTick() {
+      // node version 0.10.x displays a deprecation warning when nextTick is used recursively
+      // see https://github.com/cujojs/when/issues/410 for details
+      return function() {
+        process.nextTick(lib$es6$promise$asap$$flush);
+      };
+    }
+
+    // vertx
+    function lib$es6$promise$asap$$useVertxTimer() {
+      return function() {
+        lib$es6$promise$asap$$vertxNext(lib$es6$promise$asap$$flush);
+      };
+    }
+
+    function lib$es6$promise$asap$$useMutationObserver() {
+      var iterations = 0;
+      var observer = new lib$es6$promise$asap$$BrowserMutationObserver(lib$es6$promise$asap$$flush);
+      var node = document.createTextNode('');
+      observer.observe(node, { characterData: true });
+
+      return function() {
+        node.data = (iterations = ++iterations % 2);
+      };
+    }
+
+    // web worker
+    function lib$es6$promise$asap$$useMessageChannel() {
+      var channel = new MessageChannel();
+      channel.port1.onmessage = lib$es6$promise$asap$$flush;
+      return function () {
+        channel.port2.postMessage(0);
+      };
+    }
+
+    function lib$es6$promise$asap$$useSetTimeout() {
+      return function() {
+        setTimeout(lib$es6$promise$asap$$flush, 1);
+      };
+    }
+
+    var lib$es6$promise$asap$$queue = new Array(1000);
+    function lib$es6$promise$asap$$flush() {
+      for (var i = 0; i < lib$es6$promise$asap$$len; i+=2) {
+        var callback = lib$es6$promise$asap$$queue[i];
+        var arg = lib$es6$promise$asap$$queue[i+1];
+
+        callback(arg);
+
+        lib$es6$promise$asap$$queue[i] = undefined;
+        lib$es6$promise$asap$$queue[i+1] = undefined;
+      }
+
+      lib$es6$promise$asap$$len = 0;
+    }
+
+    function lib$es6$promise$asap$$attemptVertx() {
+      try {
+        var r = _dereq_;
+        var vertx = r('vertx');
+        lib$es6$promise$asap$$vertxNext = vertx.runOnLoop || vertx.runOnContext;
+        return lib$es6$promise$asap$$useVertxTimer();
+      } catch(e) {
+        return lib$es6$promise$asap$$useSetTimeout();
+      }
+    }
+
+    var lib$es6$promise$asap$$scheduleFlush;
+    // Decide what async method to use to triggering processing of queued callbacks:
+    if (lib$es6$promise$asap$$isNode) {
+      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useNextTick();
+    } else if (lib$es6$promise$asap$$BrowserMutationObserver) {
+      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMutationObserver();
+    } else if (lib$es6$promise$asap$$isWorker) {
+      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useMessageChannel();
+    } else if (lib$es6$promise$asap$$browserWindow === undefined && typeof _dereq_ === 'function') {
+      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$attemptVertx();
+    } else {
+      lib$es6$promise$asap$$scheduleFlush = lib$es6$promise$asap$$useSetTimeout();
+    }
+    function lib$es6$promise$then$$then(onFulfillment, onRejection) {
+      var parent = this;
+      var state = parent._state;
+
+      if (state === lib$es6$promise$$internal$$FULFILLED && !onFulfillment || state === lib$es6$promise$$internal$$REJECTED && !onRejection) {
+        return this;
+      }
+
+      var child = new this.constructor(lib$es6$promise$$internal$$noop);
+      var result = parent._result;
+
+      if (state) {
+        var callback = arguments[state - 1];
+        lib$es6$promise$asap$$asap(function(){
+          lib$es6$promise$$internal$$invokeCallback(state, child, callback, result);
+        });
+      } else {
+        lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection);
+      }
+
+      return child;
+    }
+    var lib$es6$promise$then$$default = lib$es6$promise$then$$then;
+    function lib$es6$promise$promise$resolve$$resolve(object) {
+      /*jshint validthis:true */
+      var Constructor = this;
+
+      if (object && typeof object === 'object' && object.constructor === Constructor) {
+        return object;
+      }
+
+      var promise = new Constructor(lib$es6$promise$$internal$$noop);
+      lib$es6$promise$$internal$$resolve(promise, object);
+      return promise;
+    }
+    var lib$es6$promise$promise$resolve$$default = lib$es6$promise$promise$resolve$$resolve;
+
+    function lib$es6$promise$$internal$$noop() {}
+
+    var lib$es6$promise$$internal$$PENDING   = void 0;
+    var lib$es6$promise$$internal$$FULFILLED = 1;
+    var lib$es6$promise$$internal$$REJECTED  = 2;
+
+    var lib$es6$promise$$internal$$GET_THEN_ERROR = new lib$es6$promise$$internal$$ErrorObject();
+
+    function lib$es6$promise$$internal$$selfFulfillment() {
+      return new TypeError("You cannot resolve a promise with itself");
+    }
+
+    function lib$es6$promise$$internal$$cannotReturnOwn() {
+      return new TypeError('A promises callback cannot return that same promise.');
+    }
+
+    function lib$es6$promise$$internal$$getThen(promise) {
+      try {
+        return promise.then;
+      } catch(error) {
+        lib$es6$promise$$internal$$GET_THEN_ERROR.error = error;
+        return lib$es6$promise$$internal$$GET_THEN_ERROR;
+      }
+    }
+
+    function lib$es6$promise$$internal$$tryThen(then, value, fulfillmentHandler, rejectionHandler) {
+      try {
+        then.call(value, fulfillmentHandler, rejectionHandler);
+      } catch(e) {
+        return e;
+      }
+    }
+
+    function lib$es6$promise$$internal$$handleForeignThenable(promise, thenable, then) {
+       lib$es6$promise$asap$$asap(function(promise) {
+        var sealed = false;
+        var error = lib$es6$promise$$internal$$tryThen(then, thenable, function(value) {
+          if (sealed) { return; }
+          sealed = true;
+          if (thenable !== value) {
+            lib$es6$promise$$internal$$resolve(promise, value);
+          } else {
+            lib$es6$promise$$internal$$fulfill(promise, value);
+          }
+        }, function(reason) {
+          if (sealed) { return; }
+          sealed = true;
+
+          lib$es6$promise$$internal$$reject(promise, reason);
+        }, 'Settle: ' + (promise._label || ' unknown promise'));
+
+        if (!sealed && error) {
+          sealed = true;
+          lib$es6$promise$$internal$$reject(promise, error);
+        }
+      }, promise);
+    }
+
+    function lib$es6$promise$$internal$$handleOwnThenable(promise, thenable) {
+      if (thenable._state === lib$es6$promise$$internal$$FULFILLED) {
+        lib$es6$promise$$internal$$fulfill(promise, thenable._result);
+      } else if (thenable._state === lib$es6$promise$$internal$$REJECTED) {
+        lib$es6$promise$$internal$$reject(promise, thenable._result);
+      } else {
+        lib$es6$promise$$internal$$subscribe(thenable, undefined, function(value) {
+          lib$es6$promise$$internal$$resolve(promise, value);
+        }, function(reason) {
+          lib$es6$promise$$internal$$reject(promise, reason);
+        });
+      }
+    }
+
+    function lib$es6$promise$$internal$$handleMaybeThenable(promise, maybeThenable, then) {
+      if (maybeThenable.constructor === promise.constructor &&
+          then === lib$es6$promise$then$$default &&
+          constructor.resolve === lib$es6$promise$promise$resolve$$default) {
+        lib$es6$promise$$internal$$handleOwnThenable(promise, maybeThenable);
+      } else {
+        if (then === lib$es6$promise$$internal$$GET_THEN_ERROR) {
+          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$GET_THEN_ERROR.error);
+        } else if (then === undefined) {
+          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
+        } else if (lib$es6$promise$utils$$isFunction(then)) {
+          lib$es6$promise$$internal$$handleForeignThenable(promise, maybeThenable, then);
+        } else {
+          lib$es6$promise$$internal$$fulfill(promise, maybeThenable);
+        }
+      }
+    }
+
+    function lib$es6$promise$$internal$$resolve(promise, value) {
+      if (promise === value) {
+        lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$selfFulfillment());
+      } else if (lib$es6$promise$utils$$objectOrFunction(value)) {
+        lib$es6$promise$$internal$$handleMaybeThenable(promise, value, lib$es6$promise$$internal$$getThen(value));
+      } else {
+        lib$es6$promise$$internal$$fulfill(promise, value);
+      }
+    }
+
+    function lib$es6$promise$$internal$$publishRejection(promise) {
+      if (promise._onerror) {
+        promise._onerror(promise._result);
+      }
+
+      lib$es6$promise$$internal$$publish(promise);
+    }
+
+    function lib$es6$promise$$internal$$fulfill(promise, value) {
+      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
+
+      promise._result = value;
+      promise._state = lib$es6$promise$$internal$$FULFILLED;
+
+      if (promise._subscribers.length !== 0) {
+        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, promise);
+      }
+    }
+
+    function lib$es6$promise$$internal$$reject(promise, reason) {
+      if (promise._state !== lib$es6$promise$$internal$$PENDING) { return; }
+      promise._state = lib$es6$promise$$internal$$REJECTED;
+      promise._result = reason;
+
+      lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publishRejection, promise);
+    }
+
+    function lib$es6$promise$$internal$$subscribe(parent, child, onFulfillment, onRejection) {
+      var subscribers = parent._subscribers;
+      var length = subscribers.length;
+
+      parent._onerror = null;
+
+      subscribers[length] = child;
+      subscribers[length + lib$es6$promise$$internal$$FULFILLED] = onFulfillment;
+      subscribers[length + lib$es6$promise$$internal$$REJECTED]  = onRejection;
+
+      if (length === 0 && parent._state) {
+        lib$es6$promise$asap$$asap(lib$es6$promise$$internal$$publish, parent);
+      }
+    }
+
+    function lib$es6$promise$$internal$$publish(promise) {
+      var subscribers = promise._subscribers;
+      var settled = promise._state;
+
+      if (subscribers.length === 0) { return; }
+
+      var child, callback, detail = promise._result;
+
+      for (var i = 0; i < subscribers.length; i += 3) {
+        child = subscribers[i];
+        callback = subscribers[i + settled];
+
+        if (child) {
+          lib$es6$promise$$internal$$invokeCallback(settled, child, callback, detail);
+        } else {
+          callback(detail);
+        }
+      }
+
+      promise._subscribers.length = 0;
+    }
+
+    function lib$es6$promise$$internal$$ErrorObject() {
+      this.error = null;
+    }
+
+    var lib$es6$promise$$internal$$TRY_CATCH_ERROR = new lib$es6$promise$$internal$$ErrorObject();
+
+    function lib$es6$promise$$internal$$tryCatch(callback, detail) {
+      try {
+        return callback(detail);
+      } catch(e) {
+        lib$es6$promise$$internal$$TRY_CATCH_ERROR.error = e;
+        return lib$es6$promise$$internal$$TRY_CATCH_ERROR;
+      }
+    }
+
+    function lib$es6$promise$$internal$$invokeCallback(settled, promise, callback, detail) {
+      var hasCallback = lib$es6$promise$utils$$isFunction(callback),
+          value, error, succeeded, failed;
+
+      if (hasCallback) {
+        value = lib$es6$promise$$internal$$tryCatch(callback, detail);
+
+        if (value === lib$es6$promise$$internal$$TRY_CATCH_ERROR) {
+          failed = true;
+          error = value.error;
+          value = null;
+        } else {
+          succeeded = true;
+        }
+
+        if (promise === value) {
+          lib$es6$promise$$internal$$reject(promise, lib$es6$promise$$internal$$cannotReturnOwn());
+          return;
+        }
+
+      } else {
+        value = detail;
+        succeeded = true;
+      }
+
+      if (promise._state !== lib$es6$promise$$internal$$PENDING) {
+        // noop
+      } else if (hasCallback && succeeded) {
+        lib$es6$promise$$internal$$resolve(promise, value);
+      } else if (failed) {
+        lib$es6$promise$$internal$$reject(promise, error);
+      } else if (settled === lib$es6$promise$$internal$$FULFILLED) {
+        lib$es6$promise$$internal$$fulfill(promise, value);
+      } else if (settled === lib$es6$promise$$internal$$REJECTED) {
+        lib$es6$promise$$internal$$reject(promise, value);
+      }
+    }
+
+    function lib$es6$promise$$internal$$initializePromise(promise, resolver) {
+      try {
+        resolver(function resolvePromise(value){
+          lib$es6$promise$$internal$$resolve(promise, value);
+        }, function rejectPromise(reason) {
+          lib$es6$promise$$internal$$reject(promise, reason);
+        });
+      } catch(e) {
+        lib$es6$promise$$internal$$reject(promise, e);
+      }
+    }
+
+    function lib$es6$promise$promise$all$$all(entries) {
+      return new lib$es6$promise$enumerator$$default(this, entries).promise;
+    }
+    var lib$es6$promise$promise$all$$default = lib$es6$promise$promise$all$$all;
+    function lib$es6$promise$promise$race$$race(entries) {
+      /*jshint validthis:true */
+      var Constructor = this;
+
+      var promise = new Constructor(lib$es6$promise$$internal$$noop);
+
+      if (!lib$es6$promise$utils$$isArray(entries)) {
+        lib$es6$promise$$internal$$reject(promise, new TypeError('You must pass an array to race.'));
+        return promise;
+      }
+
+      var length = entries.length;
+
+      function onFulfillment(value) {
+        lib$es6$promise$$internal$$resolve(promise, value);
+      }
+
+      function onRejection(reason) {
+        lib$es6$promise$$internal$$reject(promise, reason);
+      }
+
+      for (var i = 0; promise._state === lib$es6$promise$$internal$$PENDING && i < length; i++) {
+        lib$es6$promise$$internal$$subscribe(Constructor.resolve(entries[i]), undefined, onFulfillment, onRejection);
+      }
+
+      return promise;
+    }
+    var lib$es6$promise$promise$race$$default = lib$es6$promise$promise$race$$race;
+    function lib$es6$promise$promise$reject$$reject(reason) {
+      /*jshint validthis:true */
+      var Constructor = this;
+      var promise = new Constructor(lib$es6$promise$$internal$$noop);
+      lib$es6$promise$$internal$$reject(promise, reason);
+      return promise;
+    }
+    var lib$es6$promise$promise$reject$$default = lib$es6$promise$promise$reject$$reject;
+
+    var lib$es6$promise$promise$$counter = 0;
+
+    function lib$es6$promise$promise$$needsResolver() {
+      throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+    }
+
+    function lib$es6$promise$promise$$needsNew() {
+      throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+    }
+
+    var lib$es6$promise$promise$$default = lib$es6$promise$promise$$Promise;
+    /**
+      Promise objects represent the eventual result of an asynchronous operation. The
+      primary way of interacting with a promise is through its `then` method, which
+      registers callbacks to receive either a promise's eventual value or the reason
+      why the promise cannot be fulfilled.
+
+      Terminology
+      -----------
+
+      - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
+      - `thenable` is an object or function that defines a `then` method.
+      - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
+      - `exception` is a value that is thrown using the throw statement.
+      - `reason` is a value that indicates why a promise was rejected.
+      - `settled` the final resting state of a promise, fulfilled or rejected.
+
+      A promise can be in one of three states: pending, fulfilled, or rejected.
+
+      Promises that are fulfilled have a fulfillment value and are in the fulfilled
+      state.  Promises that are rejected have a rejection reason and are in the
+      rejected state.  A fulfillment value is never a thenable.
+
+      Promises can also be said to *resolve* a value.  If this value is also a
+      promise, then the original promise's settled state will match the value's
+      settled state.  So a promise that *resolves* a promise that rejects will
+      itself reject, and a promise that *resolves* a promise that fulfills will
+      itself fulfill.
+
+
+      Basic Usage:
+      ------------
+
+      ```js
+      var promise = new Promise(function(resolve, reject) {
+        // on success
+        resolve(value);
+
+        // on failure
+        reject(reason);
+      });
+
+      promise.then(function(value) {
+        // on fulfillment
+      }, function(reason) {
+        // on rejection
+      });
+      ```
+
+      Advanced Usage:
+      ---------------
+
+      Promises shine when abstracting away asynchronous interactions such as
+      `XMLHttpRequest`s.
+
+      ```js
+      function getJSON(url) {
+        return new Promise(function(resolve, reject){
+          var xhr = new XMLHttpRequest();
+
+          xhr.open('GET', url);
+          xhr.onreadystatechange = handler;
+          xhr.responseType = 'json';
+          xhr.setRequestHeader('Accept', 'application/json');
+          xhr.send();
+
+          function handler() {
+            if (this.readyState === this.DONE) {
+              if (this.status === 200) {
+                resolve(this.response);
+              } else {
+                reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
+              }
+            }
+          };
+        });
+      }
+
+      getJSON('/posts.json').then(function(json) {
+        // on fulfillment
+      }, function(reason) {
+        // on rejection
+      });
+      ```
+
+      Unlike callbacks, promises are great composable primitives.
+
+      ```js
+      Promise.all([
+        getJSON('/posts'),
+        getJSON('/comments')
+      ]).then(function(values){
+        values[0] // => postsJSON
+        values[1] // => commentsJSON
+
+        return values;
+      });
+      ```
+
+      @class Promise
+      @param {function} resolver
+      Useful for tooling.
+      @constructor
+    */
+    function lib$es6$promise$promise$$Promise(resolver) {
+      this._id = lib$es6$promise$promise$$counter++;
+      this._state = undefined;
+      this._result = undefined;
+      this._subscribers = [];
+
+      if (lib$es6$promise$$internal$$noop !== resolver) {
+        typeof resolver !== 'function' && lib$es6$promise$promise$$needsResolver();
+        this instanceof lib$es6$promise$promise$$Promise ? lib$es6$promise$$internal$$initializePromise(this, resolver) : lib$es6$promise$promise$$needsNew();
+      }
+    }
+
+    lib$es6$promise$promise$$Promise.all = lib$es6$promise$promise$all$$default;
+    lib$es6$promise$promise$$Promise.race = lib$es6$promise$promise$race$$default;
+    lib$es6$promise$promise$$Promise.resolve = lib$es6$promise$promise$resolve$$default;
+    lib$es6$promise$promise$$Promise.reject = lib$es6$promise$promise$reject$$default;
+    lib$es6$promise$promise$$Promise._setScheduler = lib$es6$promise$asap$$setScheduler;
+    lib$es6$promise$promise$$Promise._setAsap = lib$es6$promise$asap$$setAsap;
+    lib$es6$promise$promise$$Promise._asap = lib$es6$promise$asap$$asap;
+
+    lib$es6$promise$promise$$Promise.prototype = {
+      constructor: lib$es6$promise$promise$$Promise,
+
+    /**
+      The primary way of interacting with a promise is through its `then` method,
+      which registers callbacks to receive either a promise's eventual value or the
+      reason why the promise cannot be fulfilled.
+
+      ```js
+      findUser().then(function(user){
+        // user is available
+      }, function(reason){
+        // user is unavailable, and you are given the reason why
+      });
+      ```
+
+      Chaining
+      --------
+
+      The return value of `then` is itself a promise.  This second, 'downstream'
+      promise is resolved with the return value of the first promise's fulfillment
+      or rejection handler, or rejected if the handler throws an exception.
+
+      ```js
+      findUser().then(function (user) {
+        return user.name;
+      }, function (reason) {
+        return 'default name';
+      }).then(function (userName) {
+        // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
+        // will be `'default name'`
+      });
+
+      findUser().then(function (user) {
+        throw new Error('Found user, but still unhappy');
+      }, function (reason) {
+        throw new Error('`findUser` rejected and we're unhappy');
+      }).then(function (value) {
+        // never reached
+      }, function (reason) {
+        // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
+        // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
+      });
+      ```
+      If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
+
+      ```js
+      findUser().then(function (user) {
+        throw new PedagogicalException('Upstream error');
+      }).then(function (value) {
+        // never reached
+      }).then(function (value) {
+        // never reached
+      }, function (reason) {
+        // The `PedgagocialException` is propagated all the way down to here
+      });
+      ```
+
+      Assimilation
+      ------------
+
+      Sometimes the value you want to propagate to a downstream promise can only be
+      retrieved asynchronously. This can be achieved by returning a promise in the
+      fulfillment or rejection handler. The downstream promise will then be pending
+      until the returned promise is settled. This is called *assimilation*.
+
+      ```js
+      findUser().then(function (user) {
+        return findCommentsByAuthor(user);
+      }).then(function (comments) {
+        // The user's comments are now available
+      });
+      ```
+
+      If the assimliated promise rejects, then the downstream promise will also reject.
+
+      ```js
+      findUser().then(function (user) {
+        return findCommentsByAuthor(user);
+      }).then(function (comments) {
+        // If `findCommentsByAuthor` fulfills, we'll have the value here
+      }, function (reason) {
+        // If `findCommentsByAuthor` rejects, we'll have the reason here
+      });
+      ```
+
+      Simple Example
+      --------------
+
+      Synchronous Example
+
+      ```javascript
+      var result;
+
+      try {
+        result = findResult();
+        // success
+      } catch(reason) {
+        // failure
+      }
+      ```
+
+      Errback Example
+
+      ```js
+      findResult(function(result, err){
+        if (err) {
+          // failure
+        } else {
+          // success
+        }
+      });
+      ```
+
+      Promise Example;
+
+      ```javascript
+      findResult().then(function(result){
+        // success
+      }, function(reason){
+        // failure
+      });
+      ```
+
+      Advanced Example
+      --------------
+
+      Synchronous Example
+
+      ```javascript
+      var author, books;
+
+      try {
+        author = findAuthor();
+        books  = findBooksByAuthor(author);
+        // success
+      } catch(reason) {
+        // failure
+      }
+      ```
+
+      Errback Example
+
+      ```js
+
+      function foundBooks(books) {
+
+      }
+
+      function failure(reason) {
+
+      }
+
+      findAuthor(function(author, err){
+        if (err) {
+          failure(err);
+          // failure
+        } else {
+          try {
+            findBoooksByAuthor(author, function(books, err) {
+              if (err) {
+                failure(err);
+              } else {
+                try {
+                  foundBooks(books);
+                } catch(reason) {
+                  failure(reason);
+                }
+              }
+            });
+          } catch(error) {
+            failure(err);
+          }
+          // success
+        }
+      });
+      ```
+
+      Promise Example;
+
+      ```javascript
+      findAuthor().
+        then(findBooksByAuthor).
+        then(function(books){
+          // found books
+      }).catch(function(reason){
+        // something went wrong
+      });
+      ```
+
+      @method then
+      @param {Function} onFulfilled
+      @param {Function} onRejected
+      Useful for tooling.
+      @return {Promise}
+    */
+      then: lib$es6$promise$then$$default,
+
+    /**
+      `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
+      as the catch block of a try/catch statement.
+
+      ```js
+      function findAuthor(){
+        throw new Error('couldn't find that author');
+      }
+
+      // synchronous
+      try {
+        findAuthor();
+      } catch(reason) {
+        // something went wrong
+      }
+
+      // async with promises
+      findAuthor().catch(function(reason){
+        // something went wrong
+      });
+      ```
+
+      @method catch
+      @param {Function} onRejection
+      Useful for tooling.
+      @return {Promise}
+    */
+      'catch': function(onRejection) {
+        return this.then(null, onRejection);
+      }
+    };
+    var lib$es6$promise$enumerator$$default = lib$es6$promise$enumerator$$Enumerator;
+    function lib$es6$promise$enumerator$$Enumerator(Constructor, input) {
+      this._instanceConstructor = Constructor;
+      this.promise = new Constructor(lib$es6$promise$$internal$$noop);
+
+      if (Array.isArray(input)) {
+        this._input     = input;
+        this.length     = input.length;
+        this._remaining = input.length;
+
+        this._result = new Array(this.length);
+
+        if (this.length === 0) {
+          lib$es6$promise$$internal$$fulfill(this.promise, this._result);
+        } else {
+          this.length = this.length || 0;
+          this._enumerate();
+          if (this._remaining === 0) {
+            lib$es6$promise$$internal$$fulfill(this.promise, this._result);
+          }
+        }
+      } else {
+        lib$es6$promise$$internal$$reject(this.promise, this._validationError());
+      }
+    }
+
+    lib$es6$promise$enumerator$$Enumerator.prototype._validationError = function() {
+      return new Error('Array Methods must be provided an Array');
+    };
+
+    lib$es6$promise$enumerator$$Enumerator.prototype._enumerate = function() {
+      var length  = this.length;
+      var input   = this._input;
+
+      for (var i = 0; this._state === lib$es6$promise$$internal$$PENDING && i < length; i++) {
+        this._eachEntry(input[i], i);
+      }
+    };
+
+    lib$es6$promise$enumerator$$Enumerator.prototype._eachEntry = function(entry, i) {
+      var c = this._instanceConstructor;
+      var resolve = c.resolve;
+
+      if (resolve === lib$es6$promise$promise$resolve$$default) {
+        var then = lib$es6$promise$$internal$$getThen(entry);
+
+        if (then === lib$es6$promise$then$$default &&
+            entry._state !== lib$es6$promise$$internal$$PENDING) {
+          this._settledAt(entry._state, i, entry._result);
+        } else if (typeof then !== 'function') {
+          this._remaining--;
+          this._result[i] = entry;
+        } else if (c === lib$es6$promise$promise$$default) {
+          var promise = new c(lib$es6$promise$$internal$$noop);
+          lib$es6$promise$$internal$$handleMaybeThenable(promise, entry, then);
+          this._willSettleAt(promise, i);
+        } else {
+          this._willSettleAt(new c(function(resolve) { resolve(entry); }), i);
+        }
+      } else {
+        this._willSettleAt(resolve(entry), i);
+      }
+    };
+
+    lib$es6$promise$enumerator$$Enumerator.prototype._settledAt = function(state, i, value) {
+      var promise = this.promise;
+
+      if (promise._state === lib$es6$promise$$internal$$PENDING) {
+        this._remaining--;
+
+        if (state === lib$es6$promise$$internal$$REJECTED) {
+          lib$es6$promise$$internal$$reject(promise, value);
+        } else {
+          this._result[i] = value;
+        }
+      }
+
+      if (this._remaining === 0) {
+        lib$es6$promise$$internal$$fulfill(promise, this._result);
+      }
+    };
+
+    lib$es6$promise$enumerator$$Enumerator.prototype._willSettleAt = function(promise, i) {
+      var enumerator = this;
+
+      lib$es6$promise$$internal$$subscribe(promise, undefined, function(value) {
+        enumerator._settledAt(lib$es6$promise$$internal$$FULFILLED, i, value);
+      }, function(reason) {
+        enumerator._settledAt(lib$es6$promise$$internal$$REJECTED, i, reason);
+      });
+    };
+    function lib$es6$promise$polyfill$$polyfill() {
+      var local;
+
+      if (typeof global !== 'undefined') {
+          local = global;
+      } else if (typeof self !== 'undefined') {
+          local = self;
+      } else {
+          try {
+              local = Function('return this')();
+          } catch (e) {
+              throw new Error('polyfill failed because global object is unavailable in this environment');
+          }
+      }
+
+      var P = local.Promise;
+
+      if (P && Object.prototype.toString.call(P.resolve()) === '[object Promise]' && !P.cast) {
+        return;
+      }
+
+      local.Promise = lib$es6$promise$promise$$default;
+    }
+    var lib$es6$promise$polyfill$$default = lib$es6$promise$polyfill$$polyfill;
+
+    var lib$es6$promise$umd$$ES6Promise = {
+      'Promise': lib$es6$promise$promise$$default,
+      'polyfill': lib$es6$promise$polyfill$$default
+    };
+
+    /* global define:true module:true window: true */
+    if (typeof define === 'function' && define['amd']) {
+      define(function() { return lib$es6$promise$umd$$ES6Promise; });
+    } else if (typeof module !== 'undefined' && module['exports']) {
+      module['exports'] = lib$es6$promise$umd$$ES6Promise;
+    } else if (typeof this !== 'undefined') {
+      this['ES6Promise'] = lib$es6$promise$umd$$ES6Promise;
+    }
+
+    lib$es6$promise$polyfill$$default();
+}).call(this);
+
+
+}).call(this,_dereq_('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":3}],2:[function(_dereq_,module,exports){
 /* eslint-disable no-unused-vars */
+'use strict';
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 var propIsEnumerable = Object.prototype.propertyIsEnumerable;
 
@@ -50163,51 +51122,7 @@ function toObject(val) {
 	return Object(val);
 }
 
-function shouldUseNative() {
-	try {
-		if (!Object.assign) {
-			return false;
-		}
-
-		// Detect buggy property enumeration order in older V8 versions.
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
-		var test1 = new String('abc');  // eslint-disable-line
-		test1[5] = 'de';
-		if (Object.getOwnPropertyNames(test1)[0] === '5') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test2 = {};
-		for (var i = 0; i < 10; i++) {
-			test2['_' + String.fromCharCode(i)] = i;
-		}
-		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
-			return test2[n];
-		});
-		if (order2.join('') !== '0123456789') {
-			return false;
-		}
-
-		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
-		var test3 = {};
-		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
-			test3[letter] = letter;
-		});
-		if (Object.keys(Object.assign({}, test3)).join('') !==
-				'abcdefghijklmnopqrst') {
-			return false;
-		}
-
-		return true;
-	} catch (e) {
-		// We don't expect any of the above to throw, but better to be safe.
-		return false;
-	}
-}
-
-module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+module.exports = Object.assign || function (target, source) {
 	var from;
 	var to = toObject(target);
 	var symbols;
@@ -50234,7 +51149,100 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],2:[function(_dereq_,module,exports){
+},{}],3:[function(_dereq_,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = setTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    clearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        setTimeout(drainQueue, 0);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],4:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -50257,21 +51265,6 @@ var WakeLock = _dereq_('./wakelock.js');
 var nextDisplayId = 1000;
 var hasShowDeprecationWarning = false;
 
-var defaultLeftBounds = [0, 0, 0.5, 1];
-var defaultRightBounds = [0.5, 0, 0.5, 1];
-
-/**
- * The base class for all VR frame data.
- */
-
-function VRFrameData() {
-  this.leftProjectionMatrix = new Float32Array(16);
-  this.leftViewMatrix = new Float32Array(16);
-  this.rightProjectionMatrix = new Float32Array(16);
-  this.rightViewMatrix = new Float32Array(16);
-  this.pose = null;
-};
-
 /**
  * The base class for all VR displays.
  */
@@ -50279,9 +51272,6 @@ function VRDisplay() {
   this.isPolyfilled = true;
   this.displayId = nextDisplayId++;
   this.displayName = 'webvr-polyfill displayName';
-
-  this.depthNear = 0.01;
-  this.depthFar = 10000.0;
 
   this.isConnected = true;
   this.isPresenting = false;
@@ -50308,12 +51298,6 @@ function VRDisplay() {
 
   this.wakelock_ = new WakeLock();
 }
-
-VRDisplay.prototype.getFrameData = function(frameData) {
-  // TODO: Technically this should retain it's value for the duration of a frame
-  // but I doubt that's practical to do in javascript.
-  return Util.frameDataFromPose(frameData, this.getPose(), this);
-};
 
 VRDisplay.prototype.getPose = function() {
   // TODO: Technically this should retain it's value for the duration of a frame
@@ -50412,7 +51396,10 @@ VRDisplay.prototype.removeFullscreenWrapper = function() {
 };
 
 VRDisplay.prototype.requestPresent = function(layers) {
-  var wasPresenting = this.isPresenting;
+  if (this.isPresenting) {
+    console.error('Already presenting!');
+    return;
+  }
   var self = this;
 
   if (!(layers instanceof Array)) {
@@ -50434,52 +51421,7 @@ VRDisplay.prototype.requestPresent = function(layers) {
       return;
     }
 
-    var incomingLayer = layers[0];
-    if (!incomingLayer.source) {
-      /*
-      todo: figure out the correct behavior if the source is not provided.
-      see https://github.com/w3c/webvr/issues/58
-      */
-      resolve();
-      return;
-    }
-
-    var leftBounds = incomingLayer.leftBounds || defaultLeftBounds;
-    var rightBounds = incomingLayer.rightBounds || defaultRightBounds;
-    if (wasPresenting) {
-      // Already presenting, just changing configuration
-      var changed = false;
-      var layer = self.layer_;
-      if (layer.source !== incomingLayer.source) {
-        layer.source = incomingLayer.source;
-        changed = true;
-      }
-
-      for (var i = 0; i < 4; i++) {
-        if (layer.leftBounds[i] !== leftBounds[i]) {
-          layer.leftBounds[i] = leftBounds[i];
-          changed = true;
-        }
-        if (layer.rightBounds[i] !== rightBounds[i]) {
-          layer.rightBounds[i] = rightBounds[i];
-          changed = true;
-        }
-      }
-
-      if (changed) {
-        self.fireVRDisplayPresentChange_();
-      }
-      resolve();
-      return;
-    }
-
-    // Was not already presenting.
-    self.layer_ = {
-      predistorted: incomingLayer.predistorted,
-      source: incomingLayer.source,
-      leftBounds: leftBounds.slice(0),
-      rightBounds: rightBounds.slice(0)
-    };
+    self.layer_ = layers[0];
 
     self.waitingForPresent_ = false;
     if (self.layer_ && self.layer_.source) {
@@ -50491,9 +51433,7 @@ VRDisplay.prototype.requestPresent = function(layers) {
         self.isPresenting = (fullscreenElement === actualFullscreenElement);
         if (self.isPresenting) {
           if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape-primary').catch(function(error){
-                    console.error('screen.orientation.lock() failed due to', error.message)
-            });
+            screen.orientation.lock('landscape-primary');
           }
           self.waitingForPresent_ = false;
           self.beginPresent_();
@@ -50588,27 +51528,17 @@ VRDisplay.prototype.addFullscreenListeners_ = function(element, changeHandler, e
   this.fullscreenErrorHandler_ = errorHandler;
 
   if (changeHandler) {
-    if (document.fullscreenEnabled) {
-      element.addEventListener('fullscreenchange', changeHandler, false);
-    } else if (document.webkitFullscreenEnabled) {
-      element.addEventListener('webkitfullscreenchange', changeHandler, false);
-    } else if (document.mozFullScreenEnabled) {
-      document.addEventListener('mozfullscreenchange', changeHandler, false);
-    } else if (document.msFullscreenEnabled) {
-      element.addEventListener('msfullscreenchange', changeHandler, false);
-    }
+    element.addEventListener('fullscreenchange', changeHandler, false);
+    element.addEventListener('webkitfullscreenchange', changeHandler, false);
+    document.addEventListener('mozfullscreenchange', changeHandler, false);
+    element.addEventListener('msfullscreenchange', changeHandler, false);
   }
 
   if (errorHandler) {
-    if (document.fullscreenEnabled) {
-      element.addEventListener('fullscreenerror', errorHandler, false);
-    } else if (document.webkitFullscreenEnabled) {
-      element.addEventListener('webkitfullscreenerror', errorHandler, false);
-    } else if (document.mozFullScreenEnabled) {
-      document.addEventListener('mozfullscreenerror', errorHandler, false);
-    } else if (document.msFullscreenEnabled) {
-      element.addEventListener('msfullscreenerror', errorHandler, false);
-    }
+    element.addEventListener('fullscreenerror', errorHandler, false);
+    element.addEventListener('webkitfullscreenerror', errorHandler, false);
+    document.addEventListener('mozfullscreenerror', errorHandler, false);
+    element.addEventListener('msfullscreenerror', errorHandler, false);
   }
 };
 
@@ -50684,13 +51614,12 @@ function PositionSensorVRDevice() {
 }
 PositionSensorVRDevice.prototype = new VRDevice();
 
-module.exports.VRFrameData = VRFrameData;
 module.exports.VRDisplay = VRDisplay;
 module.exports.VRDevice = VRDevice;
 module.exports.HMDVRDevice = HMDVRDevice;
 module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
 
-},{"./util.js":22,"./wakelock.js":24}],3:[function(_dereq_,module,exports){
+},{"./util.js":24,"./wakelock.js":26}],5:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51338,7 +52267,7 @@ CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrNam
 
 module.exports = CardboardDistorter;
 
-},{"./cardboard-ui.js":4,"./deps/wglu-preserve-state.js":6,"./util.js":22}],4:[function(_dereq_,module,exports){
+},{"./cardboard-ui.js":6,"./deps/wglu-preserve-state.js":8,"./util.js":24}],6:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51626,7 +52555,7 @@ CardboardUI.prototype.renderNoState = function() {
 
 module.exports = CardboardUI;
 
-},{"./deps/wglu-preserve-state.js":6,"./util.js":22}],5:[function(_dereq_,module,exports){
+},{"./deps/wglu-preserve-state.js":8,"./util.js":24}],7:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51736,13 +52665,7 @@ CardboardVRDisplay.prototype.onDeviceParamsUpdated_ = function(newParams) {
   this.deviceInfo_.updateDeviceParams(newParams);
 
   if (this.distorter_) {
-    this.distorter_.updateDeviceInfo(this.deviceInfo_);
-  }
-};
-
-CardboardVRDisplay.prototype.updateBounds_ = function () {
-  if (this.layer_ && this.distorter_ && (this.layer_.leftBounds || this.layer_.rightBounds)) {
-    this.distorter_.setTextureBounds(this.layer_.leftBounds, this.layer_.rightBounds);
+    this.distorter.updateDeviceInfo(this.deviceInfo_);
   }
 };
 
@@ -51768,6 +52691,10 @@ CardboardVRDisplay.prototype.beginPresent_ = function() {
     this.distorter_ = new CardboardDistorter(gl);
     this.distorter_.updateDeviceInfo(this.deviceInfo_);
     this.cardboardUI_ = this.distorter_.cardboardUI;
+
+    if (this.layer_.leftBounds || this.layer_.rightBounds) {
+      this.distorter_.setTextureBounds(this.layer_.leftBounds, this.layer_.rightBounds);
+    }
   }
 
   if (this.cardboardUI_) {
@@ -51798,10 +52725,6 @@ CardboardVRDisplay.prototype.beginPresent_ = function() {
   this.orientationHandler = this.onOrientationChange_.bind(this);
   window.addEventListener('orientationchange', this.orientationHandler);
 
-  // Listen for present display change events in order to update distorter dimensions
-  this.vrdisplaypresentchangeHandler = this.updateBounds_.bind(this);
-  window.addEventListener('vrdisplaypresentchange', this.vrdisplaypresentchangeHandler);
-
   // Fire this event initially, to give geometry-distortion clients the chance
   // to do something custom.
   this.fireVRDisplayDeviceParamsChange_();
@@ -51823,7 +52746,6 @@ CardboardVRDisplay.prototype.endPresent_ = function() {
   this.viewerSelector_.hide();
 
   window.removeEventListener('orientationchange', this.orientationHandler);
-  window.removeEventListener('vrdisplaypresentchange', this.vrdisplaypresentchangeHandler);
 };
 
 CardboardVRDisplay.prototype.submitFrame = function(pose) {
@@ -51906,7 +52828,7 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
 
 module.exports = CardboardVRDisplay;
 
-},{"./base.js":2,"./cardboard-distorter.js":3,"./cardboard-ui.js":4,"./device-info.js":7,"./dpdb/dpdb.js":11,"./rotate-instructions.js":16,"./sensor-fusion/fusion-pose-sensor.js":18,"./util.js":22,"./viewer-selector.js":23}],6:[function(_dereq_,module,exports){
+},{"./base.js":4,"./cardboard-distorter.js":5,"./cardboard-ui.js":6,"./device-info.js":9,"./dpdb/dpdb.js":13,"./rotate-instructions.js":18,"./sensor-fusion/fusion-pose-sensor.js":20,"./util.js":24,"./viewer-selector.js":25}],8:[function(_dereq_,module,exports){
 /*
 Copyright (c) 2016, Brandon Jones.
 
@@ -52071,7 +52993,7 @@ function WGLUPreserveGLState(gl, bindings, callback) {
 }
 
 module.exports = WGLUPreserveGLState;
-},{}],7:[function(_dereq_,module,exports){
+},{}],9:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52438,7 +53360,7 @@ function CardboardViewer(params) {
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
 
-},{"./distortion/distortion.js":9,"./math-util.js":14,"./util.js":22}],8:[function(_dereq_,module,exports){
+},{"./distortion/distortion.js":11,"./math-util.js":16,"./util.js":24}],10:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52530,7 +53452,7 @@ module.exports.VRDisplayHMDDevice = VRDisplayHMDDevice;
 module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
 
 
-},{"./base.js":2}],9:[function(_dereq_,module,exports){
+},{"./base.js":4}],11:[function(_dereq_,module,exports){
 /**
  * TODO(smus): Implement coefficient inversion.
  */
@@ -52713,7 +53635,7 @@ Distortion.prototype.approximateInverse = function(maxRadius, numSamples) {
 
 module.exports = Distortion;
 
-},{}],10:[function(_dereq_,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53684,7 +54606,7 @@ var DPDB_CACHE = {
 
 module.exports = DPDB_CACHE;
 
-},{}],11:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53874,7 +54796,7 @@ function DeviceParams(params) {
 }
 
 module.exports = Dpdb;
-},{"../util.js":22,"./dpdb-cache.js":10}],12:[function(_dereq_,module,exports){
+},{"../util.js":24,"./dpdb-cache.js":12}],14:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53918,7 +54840,7 @@ Emitter.prototype.on = function(eventName, callback) {
 
 module.exports = Emitter;
 
-},{}],13:[function(_dereq_,module,exports){
+},{}],15:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53934,7 +54856,7 @@ module.exports = Emitter;
  * limitations under the License.
  */
 var Util = _dereq_('./util.js');
-var WebVRPolyfill = _dereq_('./webvr-polyfill.js').WebVRPolyfill;
+var WebVRPolyfill = _dereq_('./webvr-polyfill.js');
 
 // Initialize a WebVRConfig just in case.
 window.WebVRConfig = Util.extend({
@@ -53947,8 +54869,8 @@ window.WebVRConfig = Util.extend({
   // How far into the future to predict during fast motion (in seconds).
   PREDICTION_TIME_S: 0.040,
 
-  // Flag to enable touch panner. In case you have your own touch controls.
-  TOUCH_PANNER_DISABLED: true,
+  // Flag to disable touch panner. In case you have your own touch controls.
+  TOUCH_PANNER_DISABLED: false,
 
   // Flag to disabled the UI in VR Mode.
   CARDBOARD_UI_DISABLED: false, // Default: false
@@ -53995,7 +54917,7 @@ if (!window.WebVRConfig.DEFER_INITIALIZATION) {
   }
 }
 
-},{"./util.js":22,"./webvr-polyfill.js":25}],14:[function(_dereq_,module,exports){
+},{"./util.js":24,"./webvr-polyfill.js":27}],16:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54354,7 +55276,7 @@ MathUtil.Quaternion.prototype = {
 
 module.exports = MathUtil;
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54533,7 +55455,7 @@ MouseKeyboardVRDisplay.prototype.resetPose = function() {
 
 module.exports = MouseKeyboardVRDisplay;
 
-},{"./base.js":2,"./math-util.js":14,"./util.js":22}],16:[function(_dereq_,module,exports){
+},{"./base.js":4,"./math-util.js":16,"./util.js":24}],18:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54679,7 +55601,7 @@ RotateInstructions.prototype.loadIcon_ = function() {
 
 module.exports = RotateInstructions;
 
-},{"./util.js":22}],17:[function(_dereq_,module,exports){
+},{"./util.js":24}],19:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54695,6 +55617,9 @@ module.exports = RotateInstructions;
  * limitations under the License.
  */
 
+/**
+ * TODO: Fix up all "new THREE" instantiations to improve performance.
+ */
 var SensorSample = _dereq_('./sensor-sample.js');
 var MathUtil = _dereq_('../math-util.js');
 var Util = _dereq_('../util.js');
@@ -54723,14 +55648,9 @@ function ComplementaryFilter(kFilter) {
   this.currentGyroMeasurement = new SensorSample();
   this.previousGyroMeasurement = new SensorSample();
 
-  // Set default look direction to be in the correct direction.
-  if (Util.isIOS()) {
-    this.filterQ = new MathUtil.Quaternion(-1, 0, 0, 1);
-  } else {
-    this.filterQ = new MathUtil.Quaternion(1, 0, 0, 1);
-  }
+  // Current filter orientation
+  this.filterQ = new MathUtil.Quaternion();
   this.previousFilterQ = new MathUtil.Quaternion();
-  this.previousFilterQ.copy(this.filterQ);
 
   // Orientation based on the accelerometer.
   this.accelQ = new MathUtil.Quaternion();
@@ -54849,7 +55769,7 @@ ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
 
 module.exports = ComplementaryFilter;
 
-},{"../math-util.js":14,"../util.js":22,"./sensor-sample.js":20}],18:[function(_dereq_,module,exports){
+},{"../math-util.js":16,"../util.js":24,"./sensor-sample.js":22}],20:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55034,7 +55954,7 @@ FusionPoseSensor.prototype.setScreenTransform_ = function() {
 
 module.exports = FusionPoseSensor;
 
-},{"../math-util.js":14,"../touch-panner.js":21,"../util.js":22,"./complementary-filter.js":17,"./pose-predictor.js":19}],19:[function(_dereq_,module,exports){
+},{"../math-util.js":16,"../touch-panner.js":23,"../util.js":24,"./complementary-filter.js":19,"./pose-predictor.js":21}],21:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55109,7 +56029,6 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
   this.outQ.multiply(this.deltaQ);
 
   this.previousQ.copy(currentQ);
-  this.previousTimestampS = timestampS;
 
   return this.outQ;
 };
@@ -55117,7 +56036,7 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
 
 module.exports = PosePredictor;
 
-},{"../math-util.js":14}],20:[function(_dereq_,module,exports){
+},{"../math-util.js":16}],22:[function(_dereq_,module,exports){
 function SensorSample(sample, timestampS) {
   this.set(sample, timestampS);
 };
@@ -55133,7 +56052,7 @@ SensorSample.prototype.copy = function(sensorSample) {
 
 module.exports = SensorSample;
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55211,7 +56130,7 @@ TouchPanner.prototype.onTouchEnd_ = function(e) {
 
 module.exports = TouchPanner;
 
-},{"./math-util.js":14,"./util.js":22}],22:[function(_dereq_,module,exports){
+},{"./math-util.js":16,"./util.js":24}],24:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55429,187 +56348,9 @@ Util.safariCssSizeWorkaround = function(canvas) {
   window.canvas = canvas;
 };
 
-Util.frameDataFromPose = (function() {
-  var piOver180 = Math.PI / 180.0;
-  var rad45 = Math.PI * 0.25;
-
-  // Borrowed from glMatrix.
-  function mat4_perspectiveFromFieldOfView(out, fov, near, far) {
-    var upTan = Math.tan(fov ? (fov.upDegrees * piOver180) : rad45),
-    downTan = Math.tan(fov ? (fov.downDegrees * piOver180) : rad45),
-    leftTan = Math.tan(fov ? (fov.leftDegrees * piOver180) : rad45),
-    rightTan = Math.tan(fov ? (fov.rightDegrees * piOver180) : rad45),
-    xScale = 2.0 / (leftTan + rightTan),
-    yScale = 2.0 / (upTan + downTan);
-
-    out[0] = xScale;
-    out[1] = 0.0;
-    out[2] = 0.0;
-    out[3] = 0.0;
-    out[4] = 0.0;
-    out[5] = yScale;
-    out[6] = 0.0;
-    out[7] = 0.0;
-    out[8] = -((leftTan - rightTan) * xScale * 0.5);
-    out[9] = ((upTan - downTan) * yScale * 0.5);
-    out[10] = far / (near - far);
-    out[11] = -1.0;
-    out[12] = 0.0;
-    out[13] = 0.0;
-    out[14] = (far * near) / (near - far);
-    out[15] = 0.0;
-    return out;
-  }
-
-  function mat4_fromRotationTranslation(out, q, v) {
-    // Quaternion math
-    var x = q[0], y = q[1], z = q[2], w = q[3],
-        x2 = x + x,
-        y2 = y + y,
-        z2 = z + z,
-
-        xx = x * x2,
-        xy = x * y2,
-        xz = x * z2,
-        yy = y * y2,
-        yz = y * z2,
-        zz = z * z2,
-        wx = w * x2,
-        wy = w * y2,
-        wz = w * z2;
-
-    out[0] = 1 - (yy + zz);
-    out[1] = xy + wz;
-    out[2] = xz - wy;
-    out[3] = 0;
-    out[4] = xy - wz;
-    out[5] = 1 - (xx + zz);
-    out[6] = yz + wx;
-    out[7] = 0;
-    out[8] = xz + wy;
-    out[9] = yz - wx;
-    out[10] = 1 - (xx + yy);
-    out[11] = 0;
-    out[12] = v[0];
-    out[13] = v[1];
-    out[14] = v[2];
-    out[15] = 1;
-
-    return out;
-  };
-
-  function mat4_translate(out, a, v) {
-    var x = v[0], y = v[1], z = v[2],
-        a00, a01, a02, a03,
-        a10, a11, a12, a13,
-        a20, a21, a22, a23;
-
-    if (a === out) {
-      out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-      out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-      out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-      out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-    } else {
-      a00 = a[0]; a01 = a[1]; a02 = a[2]; a03 = a[3];
-      a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
-      a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
-
-      out[0] = a00; out[1] = a01; out[2] = a02; out[3] = a03;
-      out[4] = a10; out[5] = a11; out[6] = a12; out[7] = a13;
-      out[8] = a20; out[9] = a21; out[10] = a22; out[11] = a23;
-
-      out[12] = a00 * x + a10 * y + a20 * z + a[12];
-      out[13] = a01 * x + a11 * y + a21 * z + a[13];
-      out[14] = a02 * x + a12 * y + a22 * z + a[14];
-      out[15] = a03 * x + a13 * y + a23 * z + a[15];
-    }
-
-    return out;
-  };
-
-  mat4_invert = function(out, a) {
-    var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3],
-        a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7],
-        a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11],
-        a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15],
-
-        b00 = a00 * a11 - a01 * a10,
-        b01 = a00 * a12 - a02 * a10,
-        b02 = a00 * a13 - a03 * a10,
-        b03 = a01 * a12 - a02 * a11,
-        b04 = a01 * a13 - a03 * a11,
-        b05 = a02 * a13 - a03 * a12,
-        b06 = a20 * a31 - a21 * a30,
-        b07 = a20 * a32 - a22 * a30,
-        b08 = a20 * a33 - a23 * a30,
-        b09 = a21 * a32 - a22 * a31,
-        b10 = a21 * a33 - a23 * a31,
-        b11 = a22 * a33 - a23 * a32,
-
-        // Calculate the determinant
-        det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-
-    if (!det) {
-      return null;
-    }
-    det = 1.0 / det;
-
-    out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-    out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-    out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-    out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-    out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-    out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-    out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-    out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-    out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-    out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-    out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-    out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-    out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-    out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-    out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-    out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
-
-    return out;
-  };
-
-  var defaultOrientation = new Float32Array([0, 0, 0, 1]);
-  var defaultPosition = new Float32Array([0, 0, 0]);
-
-  function updateEyeMatrices(projection, view, pose, parameters, vrDisplay) {
-    mat4_perspectiveFromFieldOfView(projection, parameters ? parameters.fieldOfView : null, vrDisplay.depthNear, vrDisplay.depthFar);
-
-    var orientation = pose.orientation || defaultOrientation;
-    var position = pose.position || defaultPosition;
-
-    mat4_fromRotationTranslation(view, orientation, position);
-    if (parameters)
-      mat4_translate(view, view, parameters.offset);
-    mat4_invert(view, view);
-  }
-
-  return function(frameData, pose, vrDisplay) {
-    if (!frameData || !pose)
-      return false;
-
-    frameData.pose = pose;
-    frameData.timestamp = pose.timestamp;
-
-    updateEyeMatrices(
-        frameData.leftProjectionMatrix, frameData.leftViewMatrix,
-        pose, vrDisplay.getEyeParameters("left"), vrDisplay);
-    updateEyeMatrices(
-        frameData.rightProjectionMatrix, frameData.rightViewMatrix,
-        pose, vrDisplay.getEyeParameters("right"), vrDisplay);
-
-    return true;
-  };
-})();
-
 module.exports = Util;
 
-},{"object-assign":1}],23:[function(_dereq_,module,exports){
+},{"object-assign":2}],25:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55810,7 +56551,7 @@ ViewerSelector.prototype.createButton_ = function(label, onclick) {
 
 module.exports = ViewerSelector;
 
-},{"./device-info.js":7,"./emitter.js":12,"./util.js":22}],24:[function(_dereq_,module,exports){
+},{"./device-info.js":9,"./emitter.js":14,"./util.js":24}],26:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55885,7 +56626,7 @@ function getWakeLock() {
 }
 
 module.exports = getWakeLock();
-},{"./util.js":22}],25:[function(_dereq_,module,exports){
+},{"./util.js":24}],27:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55901,13 +56642,14 @@ module.exports = getWakeLock();
  * limitations under the License.
  */
 
-var Util = _dereq_('./util.js');
+// Polyfill ES6 Promises (mostly for IE 11).
+_dereq_('es6-promise').polyfill();
+
 var CardboardVRDisplay = _dereq_('./cardboard-vr-display.js');
 var MouseKeyboardVRDisplay = _dereq_('./mouse-keyboard-vr-display.js');
 // Uncomment to add positional tracking via webcam.
 //var WebcamPositionSensorVRDevice = require('./webcam-position-sensor-vr-device.js');
 var VRDisplay = _dereq_('./base.js').VRDisplay;
-var VRFrameData = _dereq_('./base.js').VRFrameData;
 var HMDVRDevice = _dereq_('./base.js').HMDVRDevice;
 var PositionSensorVRDevice = _dereq_('./base.js').PositionSensorVRDevice;
 var VRDisplayHMDDevice = _dereq_('./display-wrappers.js').VRDisplayHMDDevice;
@@ -55928,9 +56670,6 @@ function WebVRPolyfill() {
       this.enableDeprecatedPolyfill();
     }
   }
-
-  // Put a shim in place to update the API to 1.1 if needed.
-  InstallWebVRSpecShim();
 }
 
 WebVRPolyfill.prototype.isWebVRAvailable = function() {
@@ -55988,21 +56727,6 @@ WebVRPolyfill.prototype.enablePolyfill = function() {
 
   // Provide the VRDisplay object.
   window.VRDisplay = VRDisplay;
-
-  // Provide navigator.vrEnabled.
-  var self = this;
-  Object.defineProperty(navigator, 'vrEnabled', {
-    get: function () {
-      return self.isCardboardCompatible() &&
-        (document.fullscreenEnabled ||
-          document.mozFullScreenEnabled ||
-          document.webkitFullscreenEnabled ||
-          false);
-    }
-  });
-
-  // Provide the VRFrameData object.
-  window.VRFrameData = VRFrameData;
 };
 
 WebVRPolyfill.prototype.enableDeprecatedPolyfill = function() {
@@ -56081,32 +56805,11 @@ WebVRPolyfill.prototype.isCardboardCompatible = function() {
   return this.isMobile() || WebVRConfig.FORCE_ENABLE_VR;
 };
 
-// Installs a shim that updates a WebVR 1.0 spec implementation to WebVR 1.1
-function InstallWebVRSpecShim() {
-  if ('VRDisplay' in window && !('VRFrameData' in window)) {
-    // Provide the VRFrameData object.
-    window.VRFrameData = VRFrameData;
+module.exports = WebVRPolyfill;
 
-    // A lot of Chrome builds don't have depthNear and depthFar, even
-    // though they're in the WebVR 1.0 spec. Patch them in if they're not present.
-    if(!('depthNear' in window.VRDisplay.prototype)) {
-      window.VRDisplay.prototype.depthNear = 0.01;
-    }
+},{"./base.js":4,"./cardboard-vr-display.js":7,"./display-wrappers.js":10,"./mouse-keyboard-vr-display.js":17,"es6-promise":1}]},{},[15]);
 
-    if(!('depthFar' in window.VRDisplay.prototype)) {
-      window.VRDisplay.prototype.depthFar = 10000.0;
-    }
-
-    window.VRDisplay.prototype.getFrameData = function(frameData) {
-      return Util.frameDataFromPose(frameData, this.getPose(), this);
-    }
-  }
-};
-
-module.exports.WebVRPolyfill = WebVRPolyfill;
-
-},{"./base.js":2,"./cardboard-vr-display.js":5,"./display-wrappers.js":8,"./mouse-keyboard-vr-display.js":15,"./util.js":22}]},{},[13])
-
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],20:[function(_dereq_,module,exports){
 module.exports={
@@ -56150,7 +56853,7 @@ module.exports={
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "three": "^0.76.1",
+    "three": "^0.81.2",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "0.9.15"
   },
@@ -56268,7 +56971,7 @@ module.exports.Component = registerComponent('blend-character-model', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103}],22:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104}],22:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -56447,7 +57150,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103,"../utils/":121}],23:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils/":122}],23:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -56484,7 +57187,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103}],24:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104}],24:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
@@ -56659,7 +57362,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":60,"../utils/":121}],25:[function(_dereq_,module,exports){
+},{"../core/component":61,"../utils/":122}],25:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -56783,7 +57486,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":60,"../core/geometry":61,"../lib/three":103,"../utils/debug":118}],26:[function(_dereq_,module,exports){
+},{"../core/component":61,"../core/geometry":62,"../lib/three":104,"../utils/debug":119}],26:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 var LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/leftHand.json';
@@ -56914,7 +57617,7 @@ module.exports.Component = registerComponent('hand-controls', {
   }
 });
 
-},{"../core/component":60}],27:[function(_dereq_,module,exports){
+},{"../core/component":61}],27:[function(_dereq_,module,exports){
 _dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
@@ -56942,10 +57645,11 @@ _dereq_('./scene/inspector');
 _dereq_('./scene/fog');
 _dereq_('./scene/keyboard-shortcuts');
 _dereq_('./scene/pool');
+_dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":21,"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./hand-controls":26,"./light":28,"./look-controls":29,"./material":30,"./obj-model":31,"./position":32,"./raycaster":33,"./rotation":34,"./scale":35,"./scene/canvas":36,"./scene/debug":37,"./scene/embedded":38,"./scene/fog":39,"./scene/inspector":40,"./scene/keyboard-shortcuts":41,"./scene/pool":42,"./scene/stats":43,"./scene/vr-mode-ui":44,"./sound":45,"./tracked-controls":46,"./visible":47,"./vive-controls":48,"./wasd-controls":49}],28:[function(_dereq_,module,exports){
+},{"./blend-character-model":21,"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./hand-controls":26,"./light":28,"./look-controls":29,"./material":30,"./obj-model":31,"./position":32,"./raycaster":33,"./rotation":34,"./scale":35,"./scene/canvas":36,"./scene/debug":37,"./scene/embedded":38,"./scene/fog":39,"./scene/inspector":40,"./scene/keyboard-shortcuts":41,"./scene/pool":42,"./scene/screenshot":43,"./scene/stats":44,"./scene/vr-mode-ui":45,"./sound":46,"./tracked-controls":47,"./visible":48,"./vive-controls":49,"./wasd-controls":50}],28:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -57141,7 +57845,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103,"../utils":121,"../utils/bind":115,"../utils/debug":118}],29:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils":122,"../utils/bind":116,"../utils/debug":119}],29:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').isMobile();
@@ -57431,7 +58135,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":60,"../lib/three":103,"../utils/":121,"../utils/bind":115}],30:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils/":122,"../utils/bind":116}],30:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -57599,7 +58303,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":60,"../core/shader":68,"../lib/three":103,"../utils/":121}],31:[function(_dereq_,module,exports){
+},{"../core/component":61,"../core/shader":69,"../lib/three":104,"../utils/":122}],31:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -57677,7 +58381,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103,"../utils/debug":118}],32:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils/debug":119}],32:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -57690,7 +58394,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":60}],33:[function(_dereq_,module,exports){
+},{"../core/component":61}],33:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/').bind;
@@ -57852,7 +58556,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":60,"../lib/three":103,"../utils/":121}],34:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils/":122}],34:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -57870,7 +58574,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103}],35:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104}],35:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -57892,7 +58596,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":60}],36:[function(_dereq_,module,exports){
+},{"../core/component":61}],36:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var register = _dereq_('../../core/component').registerComponent;
 
@@ -57950,14 +58654,14 @@ module.exports.Component = register('canvas', {
 
 });
 
-},{"../../core/component":60,"../../utils/bind":115}],37:[function(_dereq_,module,exports){
+},{"../../core/component":61,"../../utils/bind":116}],37:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":60}],38:[function(_dereq_,module,exports){
+},{"../../core/component":61}],38:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -57982,7 +58686,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":60}],39:[function(_dereq_,module,exports){
+},{"../../core/component":61}],39:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -58057,7 +58761,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":60,"../../lib/three":103,"../../utils/debug":118}],40:[function(_dereq_,module,exports){
+},{"../../core/component":61,"../../lib/three":104,"../../utils/debug":119}],40:[function(_dereq_,module,exports){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
 var bind = _dereq_('../../utils/bind');
@@ -58073,14 +58777,29 @@ module.exports.Component = registerComponent('inspector', {
 
   init: function () {
     this.onKeydown = bind(this.onKeydown, this);
+    this.onMessage = bind(this.onMessage, this);
     window.addEventListener('keydown', this.onKeydown);
+    window.addEventListener('message', this.onMessage);
   },
 
+  remove: function () {
+    this.removeEventListeners();
+  },
+
+  /**
+   * <ctrl> + <alt> + i keyboard shortcut.
+   */
   onKeydown: function (evt) {
-    // Alt + Ctrl + i
     var shortcutPressed = evt.keyCode === 73 && evt.ctrlKey && evt.altKey;
     if (!this.data || !shortcutPressed) { return; }
     this.injectInspector();
+  },
+
+  /**
+   * postMessage. aframe.io uses this to create a button on examples to open Inspector.
+   */
+  onMessage: function (evt) {
+    if (evt.data === 'INJECT_AFRAME_INSPECTOR') { this.injectInspector(); }
   },
 
   injectInspector: function () {
@@ -58096,18 +58815,19 @@ module.exports.Component = registerComponent('inspector', {
     script.setAttribute(AFRAME_INJECTED, '');
     script.onload = function () {
       AFRAME.INSPECTOR.open();
-      window.removeEventListener('keydown', self.onKeydown);
+      self.removeEventListeners();
     };
     document.head.appendChild(script);
     AFRAME.inspectorInjected = true;
   },
 
-  remove: function () {
+  removeEventListeners: function () {
     window.removeEventListener('keydown', this.onKeydown);
+    window.removeEventListener('message', this.onMessage);
   }
 });
 
-},{"../../../package":20,"../../constants":51,"../../core/component":60,"../../utils/bind":115}],41:[function(_dereq_,module,exports){
+},{"../../../package":20,"../../constants":52,"../../core/component":61,"../../utils/bind":116}],41:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -58150,7 +58870,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":60,"../../lib/three":103,"../../utils/":121}],42:[function(_dereq_,module,exports){
+},{"../../core/component":61,"../../lib/three":104,"../../utils/":122}],42:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -58259,7 +58979,233 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":60,"../../utils/debug":118}],43:[function(_dereq_,module,exports){
+},{"../../core/component":61,"../../utils/debug":119}],43:[function(_dereq_,module,exports){
+/* global ImageData, URL */
+var registerComponent = _dereq_('../../core/component').registerComponent;
+var THREE = _dereq_('../../lib/three');
+
+var VERTEX_SHADER = `
+attribute vec3 position;
+attribute vec2 uv;
+uniform mat4 projectionMatrix;
+uniform mat4 modelViewMatrix;
+varying vec2 vUv;
+void main()  {
+  vUv = vec2( 1.- uv.x, uv.y );
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`;
+
+var FRAGMENT_SHADER = `
+precision mediump float;
+uniform samplerCube map;
+varying vec2 vUv;
+#define M_PI 3.1415926535897932384626433832795
+void main()  {
+  vec2 uv = vUv;
+  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.;
+  float latitude = uv.y * M_PI;
+  vec3 dir = vec3(
+    - sin( longitude ) * sin( latitude ),
+    cos( latitude ),
+    - cos( longitude ) * sin( latitude )
+  );
+  normalize( dir );
+  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1. );
+}
+`;
+
+/**
+ * Component to take screenshots of the scene using a keboard shortcut (alt+s).
+ * It can be configured to either take 360&deg; captures (`equirectangular`)
+ * or regular screenshots (`projection`)
+ *
+ * This is based on https://github.com/spite/THREE.CubemapToEquirectangular
+ * To capture an equirectangular projection of the scene a THREE.CubeCamera is used
+ * The cube map produced by the CubeCamera is projected on a quad and then rendered to
+ * WebGLRenderTarget with an ortographic camera.
+ */
+module.exports.Component = registerComponent('screenshot', {
+  schema: {
+    width: {default: 4096},
+    height: {default: 2048},
+    projection: {default: 'equirectangular', oneOf: ['equirectangular', 'perspective']}
+  },
+
+  init: function () {
+    var el = this.el;
+    var self = this;
+    if (el.renderer) {
+      setup();
+    } else {
+      el.addEventListener('render-target-loaded', setup);
+    }
+    function setup () {
+      var gl = el.renderer.getContext();
+      self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
+      self.material = new THREE.RawShaderMaterial({
+        uniforms: {map: {type: 't', value: null}},
+        vertexShader: VERTEX_SHADER,
+        fragmentShader: FRAGMENT_SHADER,
+        side: THREE.DoubleSide
+      });
+      self.quad = new THREE.Mesh(
+        new THREE.PlaneBufferGeometry(1, 1),
+        self.material
+      );
+      self.quad.visible = false;
+      self.camera = new THREE.OrthographicCamera(1 / -2, 1 / 2, 1 / 2, 1 / -2, -10000, 10000);
+      self.canvas = document.createElement('canvas');
+      self.ctx = self.canvas.getContext('2d');
+      if (el.camera) { el.camera.add(self.quad); }
+      self.onKeyDown = self.onKeyDown.bind(self);
+      self.onCameraActive = self.onCameraActive.bind(self);
+      el.addEventListener('camera-set-active', self.onCameraActive);
+    }
+  },
+
+  getRenderTarget: function (width, height) {
+    return new THREE.WebGLRenderTarget(width, height, {
+      minFilter: THREE.LinearFilter,
+      magFilter: THREE.LinearFilter,
+      wrapS: THREE.ClampToEdgeWrapping,
+      wrapT: THREE.ClampToEdgeWrapping,
+      format: THREE.RGBAFormat,
+      type: THREE.UnsignedByteType
+    });
+  },
+
+  resize: function (width, height) {
+    // Resize quad
+    this.quad.scale.set(width, height, 1);
+
+    // Resize Camera
+    this.camera.left = width / -2;
+    this.camera.right = width / 2;
+    this.camera.top = height / 2;
+    this.camera.bottom = height / -2;
+    this.camera.updateProjectionMatrix();
+
+    // Resize canvas
+    this.canvas.width = width;
+    this.canvas.height = height;
+  },
+
+  play: function () {
+    window.addEventListener('keydown', this.onKeyDown);
+  },
+
+  onCameraActive: function (evt) {
+    var cameraParent = this.quad.parent;
+    if (cameraParent) { cameraParent.remove(this.quad); }
+    evt.detail.cameraEl.getObject3D('camera').add(this.quad);
+  },
+
+  /**
+   * <ctrl> + <alt> + s keyboard shortcut.
+   */
+  onKeyDown: function (evt) {
+    var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
+    if (!this.data || !shortcutPressed) { return; }
+    this.capture();
+  },
+
+  capture: function () {
+    var el = this.el;
+    var renderer = el.renderer;
+    var size;
+    var camera;
+    var cubeCamera;
+    // Configure camera
+    if (this.data.projection === 'perspective') {
+      // the quad is used for projection in the equirectangular mode
+      // we hide it in this case.
+      this.quad.visible = false;
+      // use scene camera
+      camera = el.camera;
+      size = renderer.getSize();
+    } else {
+      // use ortho camera
+      camera = this.camera;
+      // copy position and rotation of scene camera into the ortho one
+      camera.position.copy(el.camera.getWorldPosition());
+      camera.rotation.copy(el.camera.getWorldRotation());
+      // create cube camera and copy position from scene camera
+      cubeCamera = new THREE.CubeCamera(el.camera.near, el.camera.far, Math.min(this.cubeMapSize, 2048));
+      cubeCamera.position.copy(el.camera.getWorldPosition());
+      cubeCamera.rotation.copy(el.camera.getWorldRotation());
+      // render scene with cube camera
+      cubeCamera.updateCubeMap(el.renderer, el.object3D);
+      this.quad.material.uniforms.map.value = cubeCamera.renderTarget.texture;
+      size = {width: this.data.width, height: this.data.height};
+      // use quad to project image taken by the cube camera
+      this.quad.visible = true;
+    }
+    this.renderCapture(camera, size);
+    // Trigger file download
+    this.saveCapture();
+  },
+
+  renderCapture: function (camera, size) {
+    var autoClear = this.el.renderer.autoClear;
+    var el = this.el;
+    var imageData;
+    var output;
+    var pixels;
+    var renderer = this.el.renderer;
+    // Create rendering target and buffer to store the read pixels
+    output = this.getRenderTarget(size.width, size.height);
+    pixels = new Uint8Array(4 * size.width * size.height);
+    // Resize quad, camera and canvas
+    this.resize(size.width, size.height);
+    // Render scene to render target
+    renderer.autoClear = true;
+    renderer.render(el.object3D, camera, output, true);
+    renderer.autoClear = autoClear;
+    // Read image pizels back
+    renderer.readRenderTargetPixels(output, 0, 0, size.width, size.height, pixels);
+    if (this.data.projection === 'perspective') {
+      pixels = this.flipPixelsVertically(pixels, size.width, size.height);
+    }
+    imageData = new ImageData(new Uint8ClampedArray(pixels), size.width, size.height);
+    // Hide quad after projecting the image
+    this.quad.visible = false;
+    // Copy pixels into canvas
+    this.ctx.putImageData(imageData, 0, 0);
+  },
+
+  flipPixelsVertically: function (pixels, width, height) {
+    var flippedPixels = pixels.slice(0);
+    for (var x = 0; x < width; ++x) {
+      for (var y = 0; y < height; ++y) {
+        flippedPixels[x * 4 + y * width * 4] = pixels[x * 4 + (height - y) * width * 4];
+        flippedPixels[x * 4 + 1 + y * width * 4] = pixels[x * 4 + 1 + (height - y) * width * 4];
+        flippedPixels[x * 4 + 2 + y * width * 4] = pixels[x * 4 + 2 + (height - y) * width * 4];
+        flippedPixels[x * 4 + 3 + y * width * 4] = pixels[x * 4 + 3 + (height - y) * width * 4];
+      }
+    }
+    return flippedPixels;
+  },
+
+  saveCapture: function () {
+    this.canvas.toBlob(function (blob) {
+      var url = URL.createObjectURL(blob);
+      var fileName = 'screenshot-' + document.title + '-' + Date.now() + '.png';
+      var aEl = document.createElement('a');
+      aEl.href = url;
+      aEl.setAttribute('download', fileName);
+      aEl.innerHTML = 'downloading...';
+      aEl.style.display = 'none';
+      document.body.appendChild(aEl);
+      setTimeout(function () {
+        aEl.click();
+        document.body.removeChild(aEl);
+      }, 1);
+    }, 'image/png');
+  }
+});
+
+},{"../../core/component":61,"../../lib/three":104}],44:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -58338,7 +59284,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":128,"../../../vendor/rStats.extras":127,"../../core/component":60,"../../lib/rStatsAframe":102,"../../utils":121}],44:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":129,"../../../vendor/rStats.extras":128,"../../core/component":61,"../../lib/rStatsAframe":103,"../../utils":122}],45:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -58487,7 +59433,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":51,"../../core/component":60,"../../utils/":121}],45:[function(_dereq_,module,exports){
+},{"../../constants/":52,"../../core/component":61,"../../utils/":122}],46:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -58552,17 +59498,14 @@ module.exports.Component = registerComponent('sound', {
     }
   },
 
-  /**
-  *  Update listener attached to the user defined on event.
-  */
-  updateEventListener: function (oldEvt) {
-    var el = this.el;
-    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
-    el.addEventListener(this.data.on, this.playSound);
+  pause: function () {
+    this.pauseSound();
+    this.removeEventListener();
   },
 
-  removeEventListener: function () {
-    this.el.removeEventListener(this.data.on, this.playSound);
+  play: function () {
+    if (this.data.autoplay) { this.playSound(); }
+    this.updateEventListener();
   },
 
   remove: function () {
@@ -58578,12 +59521,17 @@ module.exports.Component = registerComponent('sound', {
     }
   },
 
-  play: function () {
-    // Look for an unused sound in the pool and play it if found.
-    if (this.data.autoplay) {
-      this.playSound();
-    }
-    this.updateEventListener();
+  /**
+  *  Update listener attached to the user defined on event.
+  */
+  updateEventListener: function (oldEvt) {
+    var el = this.el;
+    if (oldEvt) { el.removeEventListener(oldEvt, this.playSound); }
+    el.addEventListener(this.data.on, this.playSound);
+  },
+
+  removeEventListener: function () {
+    this.el.removeEventListener(this.data.on, this.playSound);
   },
 
   /**
@@ -58596,7 +59544,7 @@ module.exports.Component = registerComponent('sound', {
     var sceneEl = el.sceneEl;
 
     if (this.pool.children.length > 0) {
-      this.stop();
+      this.stopSound();
       el.removeObject3D('sound');
     }
 
@@ -58629,8 +59577,20 @@ module.exports.Component = registerComponent('sound', {
     });
   },
 
+  /**
+   * Pause all the sounds in the pool.
+   */
+  pauseSound: function () {
+    this.pool.children.forEach(function (sound) {
+      if (!sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      sound.pause();
+    });
+  },
+
+  /**
+   * Look for an unused sound in the pool and play it if found.
+   */
   playSound: function () {
-    // Look for an unused sound in the pool and play it if found.
     var found = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.source.buffer && !found) {
@@ -58641,29 +59601,23 @@ module.exports.Component = registerComponent('sound', {
     });
 
     if (!found) {
-      warn('All the sounds are playing. If you need to play more sounds simultaneously consider increasing the size of pool with the `poolSize` attribute.');
+      warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
+           'consider increasing the size of pool with the `poolSize` attribute.');
     }
   },
 
-  stop: function () {
-    // Stop all the sounds in the pool
+  /**
+   * Stop all the sounds in the pool.
+   */
+  stopSound: function () {
     this.pool.children.forEach(function (sound) {
       if (!sound.source.buffer) { return; }
       sound.stop();
     });
-  },
-
-  pause: function () {
-    // Pause all the sounds in the pool
-    this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer || !sound.isPlaying) { return; }
-      sound.pause();
-    });
-    this.removeEventListener();
   }
 });
 
-},{"../core/component":60,"../lib/three":103,"../utils/bind":115,"../utils/debug":118}],46:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104,"../utils/bind":116,"../utils/debug":119}],47:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -58709,8 +59663,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerEuler = new THREE.Euler();
     var controllerPosition = new THREE.Vector3();
     var controllerQuaternion = new THREE.Quaternion();
+    var deltaControllerPosition = new THREE.Vector3();
     var dolly = new THREE.Object3D();
     var standingMatrix = new THREE.Matrix4();
+    var previousControllerPosition = new THREE.Vector3();
     controllerEuler.order = 'YXZ';
     return function () {
       var controller;
@@ -58740,10 +59696,15 @@ module.exports.Component = registerComponent('tracked-controls', {
         y: THREE.Math.radToDeg(controllerEuler.y),
         z: THREE.Math.radToDeg(controllerEuler.z)
       });
+
+      deltaControllerPosition.copy(controllerPosition).sub(previousControllerPosition);
+      previousControllerPosition.copy(controllerPosition);
+      var currentPosition = el.getAttribute('position');
+
       el.setAttribute('position', {
-        x: controllerPosition.x,
-        y: controllerPosition.y,
-        z: controllerPosition.z
+        x: currentPosition.x + deltaControllerPosition.x,
+        y: currentPosition.x + deltaControllerPosition.y,
+        z: currentPosition.x + deltaControllerPosition.z
       });
     };
   })(),
@@ -58824,7 +59785,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":60,"../lib/three":103}],47:[function(_dereq_,module,exports){
+},{"../core/component":61,"../lib/three":104}],48:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -58838,7 +59799,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":60}],48:[function(_dereq_,module,exports){
+},{"../core/component":61}],49:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 
@@ -58960,7 +59921,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":60,"../utils/bind":115}],49:[function(_dereq_,module,exports){
+},{"../core/component":61,"../utils/bind":116}],50:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -59166,7 +60127,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":51,"../core/component":60,"../lib/three":103,"../utils/":121}],50:[function(_dereq_,module,exports){
+},{"../constants":52,"../core/component":61,"../lib/three":104,"../utils/":122}],51:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -59270,7 +60231,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":18}],51:[function(_dereq_,module,exports){
+},{"tween.js":18}],52:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -59278,7 +60239,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":50,"./keyboardevent":52}],52:[function(_dereq_,module,exports){
+},{"./animation":51,"./keyboardevent":53}],53:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -59293,7 +60254,7 @@ module.exports = {
   }
 };
 
-},{}],53:[function(_dereq_,module,exports){
+},{}],54:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -59837,7 +60798,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":50,"../lib/three":103,"../utils/":121,"./a-node":58,"./a-register-element":59,"./schema":67,"tween.js":18}],54:[function(_dereq_,module,exports){
+},{"../constants/animation":51,"../lib/three":104,"../utils/":122,"./a-node":59,"./a-register-element":60,"./schema":68,"tween.js":18}],55:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -60027,7 +60988,7 @@ function extractDomain (url) {
   return domain.split(':')[0];
 }
 
-},{"../lib/three":103,"../utils/bind":115,"../utils/debug":118,"./a-node":58,"./a-register-element":59}],55:[function(_dereq_,module,exports){
+},{"../lib/three":104,"../utils/bind":116,"../utils/debug":119,"./a-node":59,"./a-register-element":60}],56:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -60078,7 +61039,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":118,"./a-register-element":59}],56:[function(_dereq_,module,exports){
+},{"../utils/debug":119,"./a-register-element":60}],57:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
@@ -60850,7 +61811,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":103,"../utils/":121,"./a-node":58,"./a-register-element":59,"./component":60}],57:[function(_dereq_,module,exports){
+},{"../lib/three":104,"../utils/":122,"./a-node":59,"./a-register-element":60,"./component":61}],58:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -60955,7 +61916,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":58,"./a-register-element":59,"./component":60}],58:[function(_dereq_,module,exports){
+},{"./a-node":59,"./a-register-element":60,"./component":61}],59:[function(_dereq_,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
@@ -61197,7 +62158,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":121,"./a-register-element":59}],59:[function(_dereq_,module,exports){
+},{"../utils/":122,"./a-register-element":60}],60:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -61374,7 +62335,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":56,"./a-node":58,"document-register-element":8}],60:[function(_dereq_,module,exports){
+},{"./a-entity":57,"./a-node":59,"document-register-element":8}],61:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
 var systems = _dereq_('./system');
@@ -61778,7 +62739,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":121,"./schema":67,"./system":69}],61:[function(_dereq_,module,exports){
+},{"../utils/":122,"./schema":68,"./system":70}],62:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -61852,7 +62813,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":103,"./schema":67}],62:[function(_dereq_,module,exports){
+},{"../lib/three":104,"./schema":68}],63:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -61985,7 +62946,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":117,"debug":3}],63:[function(_dereq_,module,exports){
+},{"../utils/coordinates":118,"debug":3}],64:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -62030,6 +62991,7 @@ module.exports = registerElement('a-scene', {
         'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
+        'screenshot': '',
         'vr-mode-ui': ''
       }
     },
@@ -62446,7 +63408,7 @@ function requestFullscreen (canvas) {
   requestFullscreen.apply(canvas);
 }
 
-},{"../../lib/three":103,"../../utils/":121,"../a-entity":56,"../a-node":58,"../a-register-element":59,"../system":69,"./metaTags":64,"./postMessage":65,"./wakelock":66,"tween.js":18}],64:[function(_dereq_,module,exports){
+},{"../../lib/three":104,"../../utils/":122,"../a-entity":57,"../a-node":59,"../a-register-element":60,"../system":70,"./metaTags":65,"./postMessage":66,"./wakelock":67,"tween.js":18}],65:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -62527,7 +63489,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":51,"../../utils":121}],65:[function(_dereq_,module,exports){
+},{"../../constants/":52,"../../utils":122}],66:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -62560,7 +63522,7 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":121,"../../utils/bind":115}],66:[function(_dereq_,module,exports){
+},{"../../utils/":122,"../../utils/bind":116}],67:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -62571,7 +63533,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":130}],67:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":131}],68:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -62727,7 +63689,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":118,"./propertyTypes":62}],68:[function(_dereq_,module,exports){
+},{"../utils/debug":119,"./propertyTypes":63}],69:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -62886,7 +63848,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":103,"./schema":67}],69:[function(_dereq_,module,exports){
+},{"../lib/three":104,"./schema":68}],70:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -63003,10 +63965,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":121,"./component":60,"./schema":67}],70:[function(_dereq_,module,exports){
+},{"../utils/":122,"./component":61,"./schema":68}],71:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":71}],71:[function(_dereq_,module,exports){
+},{"./pivot":72}],72:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -63055,7 +64017,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":60,"../../lib/three":103}],72:[function(_dereq_,module,exports){
+},{"../../core/component":61,"../../lib/three":104}],73:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -63088,7 +64050,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{}],73:[function(_dereq_,module,exports){
+},{}],74:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -63102,7 +64064,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":75,"./primitives/a-collada-model":76,"./primitives/a-cursor":77,"./primitives/a-curvedimage":78,"./primitives/a-image":79,"./primitives/a-light":80,"./primitives/a-obj-model":81,"./primitives/a-sky":82,"./primitives/a-sound":83,"./primitives/a-video":84,"./primitives/a-videosphere":85,"./primitives/meshPrimitives":86}],74:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":76,"./primitives/a-collada-model":77,"./primitives/a-cursor":78,"./primitives/a-curvedimage":79,"./primitives/a-image":80,"./primitives/a-light":81,"./primitives/a-obj-model":82,"./primitives/a-sky":83,"./primitives/a-sound":84,"./primitives/a-video":85,"./primitives/a-videosphere":86,"./primitives/meshPrimitives":87}],75:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -63245,7 +64207,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
   return primitive;
 };
 
-},{"../../core/a-entity":56,"../../core/a-register-element":59,"../../core/component":60,"../../utils/":121}],75:[function(_dereq_,module,exports){
+},{"../../core/a-entity":57,"../../core/a-register-element":60,"../../core/component":61,"../../utils/":122}],76:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -63279,7 +64241,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":51,"../primitives":74}],76:[function(_dereq_,module,exports){
+},{"../../../constants/":52,"../primitives":75}],77:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63290,7 +64252,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],77:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],78:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63328,7 +64290,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],78:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],79:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63365,7 +64327,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],79:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],80:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63389,7 +64351,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],80:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],81:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -63410,7 +64372,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":74}],81:[function(_dereq_,module,exports){
+},{"../primitives":75}],82:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63426,7 +64388,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],82:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],83:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63453,7 +64415,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],83:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],84:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -63470,7 +64432,7 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":74}],84:[function(_dereq_,module,exports){
+},{"../primitives":75}],85:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63494,7 +64456,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],85:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],86:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -63521,7 +64483,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],86:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],87:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -63561,7 +64523,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":61,"../../../utils/":121,"../getMeshMixin":72,"../primitives":74}],87:[function(_dereq_,module,exports){
+},{"../../../core/geometry":62,"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],88:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63580,7 +64542,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],88:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],89:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63600,7 +64562,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],89:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],90:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63626,7 +64588,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],90:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],91:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63650,7 +64612,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],91:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],92:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63665,7 +64627,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],92:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],93:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63680,7 +64642,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],93:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],94:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -63695,7 +64657,7 @@ _dereq_('./tetrahedron.js');
 _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 
-},{"./box.js":87,"./circle.js":88,"./cone.js":89,"./cylinder.js":90,"./dodecahedron.js":91,"./icosahedron.js":92,"./octahedron.js":94,"./plane.js":95,"./ring.js":96,"./sphere.js":97,"./tetrahedron.js":98,"./torus.js":99,"./torusKnot.js":100}],94:[function(_dereq_,module,exports){
+},{"./box.js":88,"./circle.js":89,"./cone.js":90,"./cylinder.js":91,"./dodecahedron.js":92,"./icosahedron.js":93,"./octahedron.js":95,"./plane.js":96,"./ring.js":97,"./sphere.js":98,"./tetrahedron.js":99,"./torus.js":100,"./torusKnot.js":101}],95:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63710,7 +64672,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],95:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],96:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63727,7 +64689,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],96:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],97:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63750,7 +64712,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],97:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],98:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63774,7 +64736,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],98:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],99:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63789,7 +64751,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],99:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],100:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63811,7 +64773,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],100:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],101:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -63832,7 +64794,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":61,"../lib/three":103}],101:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../lib/three":104}],102:[function(_dereq_,module,exports){
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
@@ -63923,7 +64885,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":20,"./components/index":27,"./core/a-animation":53,"./core/a-assets":54,"./core/a-cubemap":55,"./core/a-entity":56,"./core/a-mixin":57,"./core/a-node":58,"./core/a-register-element":59,"./core/component":60,"./core/geometry":61,"./core/scene/a-scene":63,"./core/schema":67,"./core/shader":68,"./core/system":69,"./extras/components/":70,"./extras/primitives/":73,"./extras/primitives/getMeshMixin":72,"./extras/primitives/primitives":74,"./geometries/index":93,"./lib/three":103,"./shaders/index":105,"./style/aframe.css":107,"./style/rStats.css":108,"./systems/index":111,"./utils/":121,"present":10,"promise-polyfill":11,"tween.js":18,"webvr-polyfill":19}],102:[function(_dereq_,module,exports){
+},{"../package":20,"./components/index":27,"./core/a-animation":54,"./core/a-assets":55,"./core/a-cubemap":56,"./core/a-entity":57,"./core/a-mixin":58,"./core/a-node":59,"./core/a-register-element":60,"./core/component":61,"./core/geometry":62,"./core/scene/a-scene":64,"./core/schema":68,"./core/shader":69,"./core/system":70,"./extras/components/":71,"./extras/primitives/":74,"./extras/primitives/getMeshMixin":73,"./extras/primitives/primitives":75,"./geometries/index":94,"./lib/three":104,"./shaders/index":106,"./style/aframe.css":108,"./style/rStats.css":109,"./systems/index":112,"./utils/":122,"present":10,"promise-polyfill":11,"tween.js":18,"webvr-polyfill":19}],103:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -63980,7 +64942,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],103:[function(_dereq_,module,exports){
+},{}],104:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -64018,7 +64980,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":125,"../../vendor/VREffect":126,"three":17,"three/examples/js/BlendCharacter":13,"three/examples/js/loaders/ColladaLoader":14,"three/examples/js/loaders/MTLLoader":15,"three/examples/js/loaders/OBJLoader":16}],104:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":126,"../../vendor/VREffect":127,"three":17,"three/examples/js/BlendCharacter":13,"three/examples/js/loaders/ColladaLoader":14,"three/examples/js/loaders/MTLLoader":15,"three/examples/js/loaders/OBJLoader":16}],105:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -64082,11 +65044,11 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":68,"../lib/three":103,"../utils/":121}],105:[function(_dereq_,module,exports){
+},{"../core/shader":69,"../lib/three":104,"../utils/":122}],106:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 
-},{"./flat":104,"./standard":106}],106:[function(_dereq_,module,exports){
+},{"./flat":105,"./standard":107}],107:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -64250,11 +65212,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":68,"../lib/three":103,"../utils/":121}],107:[function(_dereq_,module,exports){
+},{"../core/shader":69,"../lib/three":104,"../utils/":122}],108:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grabbing;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. .a-canvas.fullscreen{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;height:10%;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":1}],108:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#333;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":1}],109:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#333;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":1}],110:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -64381,7 +65343,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":51,"../core/system":69,"../utils/bind":115}],110:[function(_dereq_,module,exports){
+},{"../constants/":52,"../core/system":70,"../utils/bind":116}],111:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -64521,7 +65483,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":61,"../core/system":69,"../lib/three":103}],111:[function(_dereq_,module,exports){
+},{"../core/geometry":62,"../core/system":70,"../lib/three":104}],112:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./light');
@@ -64529,7 +65491,7 @@ _dereq_('./material');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":109,"./geometry":110,"./light":112,"./material":113,"./tracked-controls":114}],112:[function(_dereq_,module,exports){
+},{"./camera":110,"./geometry":111,"./light":113,"./material":114,"./tracked-controls":115}],113:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -64608,7 +65570,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":51,"../core/system":69,"../utils/bind":115}],113:[function(_dereq_,module,exports){
+},{"../constants/":52,"../core/system":70,"../utils/bind":116}],114:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -64929,7 +65891,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":69,"../lib/three":103,"../utils/":121}],114:[function(_dereq_,module,exports){
+},{"../core/system":70,"../lib/three":104,"../utils/":122}],115:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 
 /**
@@ -64961,7 +65923,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":69}],115:[function(_dereq_,module,exports){
+},{"../core/system":70}],116:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -64978,7 +65940,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],116:[function(_dereq_,module,exports){
+},{}],117:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 var dummyDolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dummyDolly);
@@ -64996,7 +65958,7 @@ module.exports = function checkHeadsetConnected () {
   }
 };
 
-},{"../lib/three":103}],117:[function(_dereq_,module,exports){
+},{"../lib/three":104}],118:[function(_dereq_,module,exports){
 /* global THREE */
 
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -65070,7 +66032,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{}],118:[function(_dereq_,module,exports){
+},{}],119:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -65167,7 +66129,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":2,"debug":3,"object-assign":9}],119:[function(_dereq_,module,exports){
+},{"_process":2,"debug":3,"object-assign":9}],120:[function(_dereq_,module,exports){
 /**
  * Get component property using encoded component name + component property name with a
  * delimiter.
@@ -65197,7 +66159,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],120:[function(_dereq_,module,exports){
+},{}],121:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -65213,7 +66175,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],121:[function(_dereq_,module,exports){
+},{}],122:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 
@@ -65426,7 +66388,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":115,"./checkHeadsetConnected":116,"./coordinates":117,"./debug":118,"./entity":119,"./forceCanvasResizeSafariMobile":120,"./material":122,"./src-loader":123,"./styleParser":124,"deep-assign":6,"object-assign":9}],122:[function(_dereq_,module,exports){
+},{"./bind":116,"./checkHeadsetConnected":117,"./coordinates":118,"./debug":119,"./entity":120,"./forceCanvasResizeSafariMobile":121,"./material":123,"./src-loader":124,"./styleParser":125,"deep-assign":6,"object-assign":9}],123:[function(_dereq_,module,exports){
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
  *
@@ -65521,7 +66483,7 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-},{}],123:[function(_dereq_,module,exports){
+},{}],124:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -65671,7 +66633,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":118}],124:[function(_dereq_,module,exports){
+},{"./debug":119}],125:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -65731,7 +66693,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":12}],125:[function(_dereq_,module,exports){
+},{"style-attr":12}],126:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -65908,7 +66870,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],126:[function(_dereq_,module,exports){
+},{}],127:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -66364,7 +67326,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 };
 
-},{}],127:[function(_dereq_,module,exports){
+},{}],128:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -66629,7 +67591,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],128:[function(_dereq_,module,exports){
+},{}],129:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -67083,7 +68045,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],129:[function(_dereq_,module,exports){
+},{}],130:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67145,7 +68107,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],130:[function(_dereq_,module,exports){
+},{}],131:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -67221,6 +68183,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":129}]},{},[101])(101)
+},{"./util.js":130}]},{},[102])(102)
 });
 //# sourceMappingURL=aframe.js.map
