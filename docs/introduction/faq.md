@@ -263,8 +263,6 @@ channels below are great:
 
 ## How can I get in touch with the A-Frame team?
 
-[stackoverflow]: https://stackoverflow.com/questions/ask/?tags=aframe
-
 We are an extremely responsive and helpful bunch:
 
 - Got a question? Ask us using the [A-Frame StackOverflow tag][stackoverflow].
