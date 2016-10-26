@@ -2,36 +2,34 @@
 var registerComponent = require('../../core/component').registerComponent;
 var THREE = require('../../lib/three');
 
-var VERTEX_SHADER = `
-attribute vec3 position;
-attribute vec2 uv;
-uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
-varying vec2 vUv;
-void main()  {
-  vUv = vec2( 1.- uv.x, uv.y );
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-}
-`;
+var VERTEX_SHADER = [
+  'attribute vec3 position;',
+  'attribute vec2 uv;',
+  'uniform mat4 projectionMatrix;',
+  'uniform mat4 modelViewMatrix;',
+  'varying vec2 vUv;',
+  'void main()  {',
+  '  vUv = vec2( 1.- uv.x, uv.y );',
+  '  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );'
+].join('\n');
 
-var FRAGMENT_SHADER = `
-precision mediump float;
-uniform samplerCube map;
-varying vec2 vUv;
-#define M_PI 3.1415926535897932384626433832795
-void main()  {
-  vec2 uv = vUv;
-  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.;
-  float latitude = uv.y * M_PI;
-  vec3 dir = vec3(
-    - sin( longitude ) * sin( latitude ),
-    cos( latitude ),
-    - cos( longitude ) * sin( latitude )
-  );
-  normalize( dir );
-  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1. );
-}
-`;
+var FRAGMENT_SHADER = [
+  'precision mediump float',
+  'uniform samplerCube map',
+  'varying vec2 vUv',
+  '#define M_PI 3.141592653589793238462643383279',
+  'void main()  ',
+  '  vec2 uv = vUv',
+  '  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.',
+  '  float latitude = uv.y * M_PI',
+  '  vec3 dir = vec3',
+  '    - sin( longitude ) * sin( latitude )',
+  '    cos( latitude )',
+  '    - cos( longitude ) * sin( latitude ',
+  '  )',
+  '  normalize( dir )',
+  '  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1.0 )'
+].join('\n');
 
 /**
  * Component to take screenshots of the scene using a keboard shortcut (alt+s).
