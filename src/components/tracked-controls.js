@@ -20,6 +20,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.buttonStates = {};
     this.previousAxis = [];
+    this.previousControllerPosition = new THREE.Vector3();
   },
 
   update: function () {
@@ -46,7 +47,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var deltaControllerPosition = new THREE.Vector3();
     var dolly = new THREE.Object3D();
     var standingMatrix = new THREE.Matrix4();
-    var previousControllerPosition = new THREE.Vector3();
     controllerEuler.order = 'YXZ';
     return function () {
       var controller;
@@ -77,14 +77,14 @@ module.exports.Component = registerComponent('tracked-controls', {
         z: THREE.Math.radToDeg(controllerEuler.z)
       });
 
-      deltaControllerPosition.copy(controllerPosition).sub(previousControllerPosition);
-      previousControllerPosition.copy(controllerPosition);
+      deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
+      this.previousControllerPosition.copy(controllerPosition);
       var currentPosition = el.getAttribute('position');
 
       el.setAttribute('position', {
         x: currentPosition.x + deltaControllerPosition.x,
-        y: currentPosition.x + deltaControllerPosition.y,
-        z: currentPosition.x + deltaControllerPosition.z
+        y: currentPosition.y + deltaControllerPosition.y,
+        z: currentPosition.z + deltaControllerPosition.z
       });
     };
   })(),
