@@ -15,9 +15,6 @@ order: 5
 [twitter]: https://twitter.com/aframevr
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
 
-Check out the [A-Frame StackOverflow threads][stackoverflow] for many
-previously asked and answered questions.
-
 <!--toc-->
 
 ## What is A-Frame?
