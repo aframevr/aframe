@@ -176,7 +176,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
-	scene.setAttribute('postprocessing', false);
+    scene.setAttribute('postprocessing', false);
     scene.render(0);
     sinon.assert.notCalled(Component.tock);
     scene.setAttribute('postprocessing', true);

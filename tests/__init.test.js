@@ -10,7 +10,9 @@ navigator.getVRDisplays = function () {
   var mockVRDisplay = {
     requestPresent: resolvePromise,
     exitPresent: resolvePromise,
-    requestAnimationFrame: function () { return 1; }
+    requestAnimationFrame: function () { return 1; },
+    cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); },
+    submitFrame: function () { return; }
   };
   return Promise.resolve([mockVRDisplay]);
 };
