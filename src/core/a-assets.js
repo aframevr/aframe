@@ -15,6 +15,7 @@ module.exports = registerElement('a-assets', {
     createdCallback: {
       value: function () {
         this.isAssets = true;
+        this.xhrLoader = xhrLoader;
       }
     },
 
