@@ -237,7 +237,7 @@ Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they
 are no longer gazed upon. We are mimicking CSS `:hover` states. We can specify
 event names with `_event` properties, and the rest of the properties define the
-`setAttibute` calls. Notice that the event-set component can have [multiple
+`setAttribute` calls. Notice that the event-set component can have [multiple
 instances][multiple]:
 
 ```html
