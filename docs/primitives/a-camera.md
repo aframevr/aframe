@@ -25,14 +25,15 @@ and `0 0 0` in VR mode. Read about the [`camera.userHeight` property][userheight
 
 ## Attributes
 
-| Attribute             | Component Mapping     | Default Value |
-|-----------------------|-----------------------|---------------|
-| far                   | camera.far            | 10000         |
-| fov                   | camera.fov            | 80            |
-| look-controls-enabled | look-controls.enabled | true          |
-| near                  | camera.near           | 0.5           |
-| user-height           | camera.userHeight     | 1.6           |
-| wasd-controls-enabled | wasd-controls.enabled | true          |
+| Attribute             | Component Mapping              | Default Value |
+|-----------------------|--------------------------------|---------------|
+| far                   | camera.far                     | 10000         |
+| fov                   | camera.fov                     | 80            |
+| look-controls-enabled | look-controls.enabled          | true          |
+| near                  | camera.near                    | 0.5           |
+| user-height           | camera.userHeight              | 1.6           |
+| reverse-mouse-drag    | look-controls.reverseMouseDrag | false         |
+| wasd-controls-enabled | wasd-controls.enabled          | true          |
 
 ## Manually Positioning the Camera
 
