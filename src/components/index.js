@@ -18,7 +18,6 @@ require('./visible');
 require('./vive-controls');
 require('./wasd-controls');
 
-require('./scene/canvas');
 require('./scene/debug');
 require('./scene/embedded');
 require('./scene/inspector');
@@ -27,4 +26,3 @@ require('./scene/keyboard-shortcuts');
 require('./scene/pool');
 require('./scene/screenshot');
 require('./scene/stats');
-require('./scene/vr-mode-ui');

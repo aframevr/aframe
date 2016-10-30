@@ -1,6 +1,8 @@
 /* global Promise, screen */
+var initCanvas = require('./canvas').init;
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
+var Loader = require('./loader').Loader;
 var re = require('../a-register-element');
 var systems = require('../system').systems;
 var THREE = require('../../lib/three');
@@ -10,6 +12,7 @@ var utils = require('../../utils/');
 var AEntity = require('../a-entity');
 var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
+var VRModeUI = require('./vr-mode-ui.js').VRModeUI;
 
 var bind = utils.bind;
 var checkHeadsetConnected = utils.device.checkHeadsetConnected;
@@ -39,7 +42,6 @@ module.exports = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
-        'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
@@ -63,14 +65,17 @@ module.exports = registerElement('a-scene', {
 
     init: {
       value: function () {
+        var loaderAttr = this.getAttribute('loader');
+        var hasLoader = loaderAttr !== 'false';
         this.behaviors = [];
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
-        this.addEventListener('render-target-loaded', function () {
-          this.setupRenderer();
-          this.resize();
-        });
+        initCanvas(this);
+        this.setupRenderer();
+        if (hasLoader) { this.loader = new Loader(this); }
+        this.vrModeUI = new VRModeUI(this);
+        this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
       },
@@ -282,19 +287,21 @@ module.exports = registerElement('a-scene', {
         var camera = this.camera;
         var canvas = this.canvas;
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
-        var size;
+        var size = getCanvasSize(canvas, embedded);
+        // Notify renderer of loader resize.
+        if (this.loader) { this.loader.resize(size); }
         // Possible camera or canvas not injected yet.
         // ON MOBILE the webvr-polyfill relies on the fullscreen API to enter
         // VR mode. The canvas is resized by VREffect following the values returned
         // by getEyeParameters. We don't want to overwrite the size with the
         // windows width and height.
-        if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
-        // Update camera.
-        size = getCanvasSize(canvas, embedded);
-        camera.aspect = size.width / size.height;
-        camera.updateProjectionMatrix();
+        if (this.is('vr-mode') && isMobile) { return; }
         // Notify renderer of size change.
         this.renderer.setSize(size.width, size.height);
+        if (!camera) { return; }
+        // Update camera.
+        camera.aspect = size.width / size.height;
+        camera.updateProjectionMatrix();
       },
       writable: window.debug
     },
