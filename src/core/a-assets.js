@@ -16,6 +16,7 @@ module.exports = registerElement('a-assets', {
       value: function () {
         this.isAssets = true;
         this.fileLoader = fileLoader;
+        this.loadedData = 0;
         this.timeout = null;
       }
     },
@@ -82,6 +83,22 @@ module.exports = registerElement('a-assets', {
   })
 });
 
+// Lets create the object that will hold asset's loaded/total info.
+var assetsElement = {};
+function assetsProgress () {
+  var assetsLoaded = 0;
+  var assetsTotal = 0;
+  var mediaPercent = 0;
+  for (var key in assetsElement) {
+    assetsLoaded += assetsElement[key].loaded;
+    assetsTotal += assetsElement[key].total;
+  }
+  if (assetsTotal > 0) {
+    mediaPercent = Math.round((assetsLoaded * 100) / assetsTotal);
+  }
+  return mediaPercent;
+}
+
 /**
  * Preload using XHRLoader for any type of asset.
  */
@@ -98,6 +115,10 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
+        // Since the XHRLoader doesn't send an id through the callback
+        // We'll use the file name as an id
+        var file = (src).split('/').pop().replace('.', '-');
+        if (!(file in assetsElement)) { assetsElement[file] = {'id': file, 'loaded': 0, 'total': 0}; }
         fileLoader.load(src, function handleOnLoad (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
@@ -111,11 +132,20 @@ registerElement('a-asset-item', {
           */
           setTimeout(function load () { ANode.prototype.load.call(self); });
         }, function handleOnProgress (xhr) {
-          self.emit('progress', {
-            loadedBytes: xhr.loaded,
-            totalBytes: xhr.total,
-            xhr: xhr
-          });
+          if (xhr != null) {
+            var file = (xhr.currentTarget.responseURL).split('/').pop().replace('.', '-');
+            assetsElement[file].loaded = xhr.loaded / 1000000;
+            assetsElement[file].total = xhr.total / 1000000;
+            // mediaElement updated, trigger assetsProgress()
+            // add value to our newly accesible property loadedData
+            self.parentNode.loadedData = assetsProgress();
+            // Finally, lets trigger an emit to <a-assets> to make the value accessible.
+            self.emit('progress', {
+              loadedBytes: xhr.loaded,
+              totalBytes: xhr.total,
+              xhr: xhr
+            });
+          }
         }, function handleOnError (xhr) {
           self.emit('error', {xhr: xhr});
         });
@@ -131,11 +161,18 @@ registerElement('a-asset-item', {
  * @returns {Promise}
  */
 function mediaElementLoaded (el) {
-  if (!el.hasAttribute('autoplay') && el.getAttribute('preload') !== 'auto') {
+  // Instead of checking for autoplay + preload="auto" combination
+  // have 3 options for preload: buffer, full, none
+  // buffer: works in combination with autoplay (your typical stream).
+  // full: waits untill all media assets have fully buffered.
+  // none: gets us out with a return.
+  // ** unfortunately, video preloads without the need of autoplay,
+  // ** audio files don't begin preloading unless autoplay is defined
+  // ** For now, I'm doing preload="none" for audios
+  if (el.getAttribute('preload') === 'none' || !el.hasAttribute('preload')) {
     return;
   }
-
-  // If media specifies autoplay or preload, wait until media is completely buffered.
+  // If media specifies preload, wait until media is completely buffered.
   return new Promise(function (resolve, reject) {
     if (el.readyState === 4) { return resolve(); }  // Already loaded.
     if (el.error) { return reject(); }  // Error.
@@ -145,12 +182,23 @@ function mediaElementLoaded (el) {
     el.addEventListener('error', reject, false);
 
     function checkProgress () {
+      // add new mediaElement to assetsElement object
+      // check that the mediaElement with isNaN(el.duration)
+      // use file name as object key
+      var file = (el.src).split('/').pop().replace('.', '-');
+      if (!(file in assetsElement) && !(isNaN(el.duration))) { assetsElement[file] = {'id': file, 'loaded': 0, 'total': el.duration}; }
       // Add up the seconds buffered.
       var secondsBuffered = 0;
       for (var i = 0; i < el.buffered.length; i++) {
         secondsBuffered += el.buffered.end(i) - el.buffered.start(i);
       }
-
+      // Time to update the value of "loaded" to this mediaElement.
+      if (file in assetsElement) { assetsElement[file].loaded = secondsBuffered; }
+      // mediaElement updated, trigger assetsProgress()
+      // add value to our newly accesible property loadedData
+      el.parentNode.loadedData = assetsProgress();
+      // Finally, lets trigger an emit to <a-assets> to make the value accessible.
+      el.parentNode.emit('progress', {'progress': el.parentNode.loadedData});
       // Compare seconds buffered to media duration.
       if (secondsBuffered >= el.duration) {
         resolve();
