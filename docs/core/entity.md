@@ -8,7 +8,7 @@ order: 2
 
 An entity is represented by the `<a-entity>` element. As defined in the
 [entity-component-system pattern][ecs], entities are placeholder objects to
-which we plug in components to in order to provide them apperance, behavior,
+which we plug in components in order to provide them apperance, behavior,
 and functionality.
 
 In A-Frame, entities are inherently attached with the [position][position],
