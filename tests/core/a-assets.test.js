@@ -104,7 +104,7 @@ suite('a-assets', function () {
     document.body.appendChild(scene);
   });
 
-  suite('crossorigin', function () {
+  suite('fixUpMediaElement', function () {
     test('recreates media elements with crossorigin if necessary', function (done) {
       var el = this.el;
       var scene = this.scene;
@@ -179,6 +179,23 @@ suite('a-assets', function () {
         done();
       });
 
+      document.body.appendChild(scene);
+    });
+
+    test('sets playsinline', function (done) {
+      var el = this.el;
+      var scene = this.scene;
+      var video = document.createElement('video');
+
+      video.setAttribute('id', 'test');
+      video.setAttribute('src', 'dummy.mp4');
+      el.setAttribute('timeout', 10);
+      el.appendChild(video);
+      scene.addEventListener('loaded', function () {
+        assert.ok(video.hasAttribute('webkit-playsinline'));
+        assert.ok(video.hasAttribute('playsinline'));
+        done();
+      });
       document.body.appendChild(scene);
     });
   });
