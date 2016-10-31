@@ -192,7 +192,7 @@ are defined, and the entity is fetching files using some form
 To access the three.js `XHRLoader` if we want to listen more closely:
 
 ```js
-console.log(document.querySelector('a-assets').xhrLoader);
+console.log(document.querySelector('a-assets').fileLoader);
 ```
 
 To access the cache that stores XHR responses:

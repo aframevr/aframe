@@ -28,8 +28,8 @@ suite('a-assets', function () {
     }, Error);
   });
 
-  test('has xhrLoader', function () {
-    assert.ok(this.el.xhrLoader.constructor, THREE.XHRLoader);
+  test('has fileLoader', function () {
+    assert.ok(this.el.fileLoader.constructor, THREE.XHRLoader);
   });
 
   test('waits for images to load', function (done) {
