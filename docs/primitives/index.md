@@ -87,7 +87,8 @@ underlying `material.color` property.
 
 ## Register a Primitive
 
-We can compose and register our own primitives for other people to consume.
+We can compose and register our own primitives (i.e., register an element) for
+other people to easily use.
 
 For example, here is what the registration looks like for `<a-box>` primitive:
 

@@ -22,26 +22,26 @@ global. This same interface is also exposed if requiring with Node
 [tween.js]: https://github.com/tweenjs/tween.js
 [utils]: ./utils.md
 
-| Property              | Description                                                                                    |
-| ----------            | -------------                                                                                  |
-| AEntity               | [Entity][entity] prototype.                                                                    |
-| ANode                 | Base node prototype that A-Frame elements inherit from.                                        |
-| AScene                | [Scene][scene] prototype.                                                                      |
-| components            | Object of registered components.                                                               |
-| geometries            | Object of registered geometries .                                                              |
-| primitives.primitives | Object of registered primitives.                                                               |
-| registerComponent     | Function to [register a component][componentregister].                                         |
-| registerElement       | A flavor of `document.registerElement` that calls parent prototype handlers before child ones. |
-| registerGeometry      | Function to [register a geometry][geometryregister].                                           |
-| registerPrimitive     | Function to [register a primitive][primitiveregister].                                         |
-| registerShader        | Function to [register a material][materialregister] or shader.                                 |
-| schema                | Schema-related utilities.                                                                      |
-| shaders               | Object of registered shaders.                                                                  |
-| systems               | Object of registered systems.                                                                  |
-| THREE                 | Global [three.js][three.js] object.                                                            |
-| TWEEN                 | Global [tween.js][tween.js] object.                                                            |
-| utils                 | A-Frame [utility modules][utils].                                                              |
-| version               | Version of A-Frame build.                                                                      |
+| Property              | Description                                                                                                                                                                                                                            |
+| ----------            | -------------                                                                                                                                                                                                                          |
+| AEntity               | [Entity][entity] prototype.                                                                                                                                                                                                            |
+| ANode                 | Base node prototype that A-Frame elements inherit from.                                                                                                                                                                                |
+| AScene                | [Scene][scene] prototype.                                                                                                                                                                                                              |
+| components            | Object of registered components.                                                                                                                                                                                                       |
+| geometries            | Object of registered geometries .                                                                                                                                                                                                      |
+| primitives.primitives | Object of registered primitives.                                                                                                                                                                                                       |
+| registerComponent     | Function to [register a component][componentregister].                                                                                                                                                                                 |
+| registerElement       | A flavor of `document.registerElement` for A-Frame nodes calls parent prototype handlers before child ones. The base class of A-Frame elements. Also see `registerPrimitive` for registering an A-Frame elements similar to `<a-box>`. |
+| registerGeometry      | Function to [register a geometry][geometryregister].                                                                                                                                                                                   |
+| registerPrimitive     | Function to [register a primitive][primitiveregister].                                                                                                                                                                                 |
+| registerShader        | Function to [register a material][materialregister] or shader.                                                                                                                                                                         |
+| schema                | Schema-related utilities.                                                                                                                                                                                                              |
+| shaders               | Object of registered shaders.                                                                                                                                                                                                          |
+| systems               | Object of registered systems.                                                                                                                                                                                                          |
+| THREE                 | Global [three.js][three.js] object.                                                                                                                                                                                                    |
+| TWEEN                 | Global [tween.js][tween.js] object.                                                                                                                                                                                                    |
+| utils                 | A-Frame [utility modules][utils].                                                                                                                                                                                                      |
+| version               | Version of A-Frame build.                                                                                                                                                                                                              |
 
 ## `window` Properties
 
