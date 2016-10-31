@@ -175,6 +175,10 @@ We (Mozilla) are currently improving the link traversal user experience within
 the browser as well as helping iterate the API. Once link traversal gets into a
 good state on the platform side, A-Frame should have a link component ready.
 
+## What type of units does A-Frame use? 
+
+A-Frame uses life-like meters. It maintains a 1:1 ratio. 5 units in A-Frame is equal to 5 meters in real life. Furthermore, when using programs like Blender, configured in imperial or metric mode, measurements will also translate 1:1. 10 feet in Blender will equal 10 feet in real life.
+
 ## How is A-Frame different from VRML?
 
 [extensible]: https://extensiblewebmanifesto.org/
