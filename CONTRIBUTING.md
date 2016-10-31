@@ -68,6 +68,9 @@ pull request.
 5. We will merge the pull request and cherry-pick it onto documentation
 branches for older versions if necessary.
 
+You can also do `npm run docs` within the A-Frame project to start a local live
+server for watching and serving documentation.
+
 # Help Your Fellow A-Framers
 
 ## On Slack
