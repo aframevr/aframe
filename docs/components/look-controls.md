@@ -25,9 +25,12 @@ component][components-camera].
 
 ## Properties
 
-| Property  | Description                        | Default Value |
-|-----------|-----------------------------------------------------
-| enabled   | Whether look controls are enabled. | true          |
+| Property         | Description                                                      | Default Value |
+|------------------|------------------------------------------------------------------|---------------|
+| enabled          | Whether look controls are enabled.                               | true          |
+| hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
+| reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
+| standing         | Whether standing mode is enabled (passed to `THREE.VRControls`). | true          |
 
 ## Caveats
 

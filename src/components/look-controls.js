@@ -13,6 +13,7 @@ module.exports.Component = registerComponent('look-controls', {
   schema: {
     enabled: {default: true},
     hmdEnabled: {default: true},
+    reverseMouseDrag: {default: false},
     standing: {default: true}
   },
 
@@ -148,11 +149,19 @@ module.exports.Component = registerComponent('look-controls', {
         currentRotation = this.el.getAttribute('rotation');
         deltaRotation = this.calculateDeltaRotation();
         // Mouse look only if HMD disabled or no info coming from the sensors
-        rotation = {
-          x: currentRotation.x + deltaRotation.x,
-          y: currentRotation.y + deltaRotation.y,
-          z: currentRotation.z
-        };
+        if (this.data.reverseMouseDrag) {
+          rotation = {
+            x: currentRotation.x - deltaRotation.x,
+            y: currentRotation.y - deltaRotation.y,
+            z: currentRotation.z
+          };
+        } else {
+          rotation = {
+            x: currentRotation.x + deltaRotation.x,
+            y: currentRotation.y + deltaRotation.y,
+            z: currentRotation.z
+          };
+        }
       } else {
         // Mouse rotation ignored with an active headset.
         // The user head rotation takes priority
