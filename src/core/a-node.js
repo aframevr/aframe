@@ -25,6 +25,7 @@ module.exports = registerElement('a-node', {
       value: function () {
         var mixins;
 
+        this.hasAttached = true;
         this.hasLoaded = false;
         this.sceneEl = this.closestScene();
         this.emit('nodeready', {}, false);

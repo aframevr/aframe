@@ -346,16 +346,32 @@ var proto = Object.create(ANode.prototype, {
     writable: window.debug
   },
 
+  /**
+   * Initialize dependencies of a component.
+   *
+   * @param {string} name - Root component name.
+   */
   initComponentDependencies: {
     value: function (name) {
       var self = this;
       var component = COMPONENTS[name];
       var dependencies;
+
+      // Not a component.
       if (!component) { return; }
+
+      // No dependencies.
       dependencies = COMPONENTS[name].dependencies;
       if (!dependencies) { return; }
-      dependencies.forEach(function (component) {
-        self.initComponent(component, undefined, true);
+
+      // Initialize dependencies.
+      dependencies.forEach(function initializeDependency (componentName) {
+        // Call getAttribute to initialize the data from the DOM.
+        self.initComponent(
+          componentName,
+          HTMLElement.prototype.getAttribute.call(self, componentName),
+          true
+        );
       });
     }
   },
@@ -594,16 +610,20 @@ var proto = Object.create(ANode.prototype, {
    */
   setAttribute: {
     value: function (attr, value, componentPropValue) {
-      var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-      var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+      var componentName;
+      var isDebugMode;
+
+      componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
-        // Just update one of the component properties
+        // Just update one of the component properties.
         if (typeof value === 'string' && componentPropValue !== undefined) {
           this.updateComponentProperty(attr, value, componentPropValue);
         } else {
           this.updateComponent(attr, value);
         }
-        // On debug mode we write the component state to the DOM attributes
+
+        // On debug mode we write the component state to the DOM attributes.
+        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
         if (isDebugMode) { this.components[attr].flushToDOM(); }
         return;
       }

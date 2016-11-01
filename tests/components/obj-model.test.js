@@ -12,9 +12,7 @@ suite('obj-model', function () {
     objAsset.setAttribute('src', '/base/tests/assets/crate/crate.obj');
     el = this.el = entityFactory({assets: [mtlAsset, objAsset]});
     if (el.hasLoaded) { done(); }
-    el.addEventListener('loaded', function () {
-      done();
-    });
+    el.addEventListener('loaded', function () { done(); });
   });
 
   test('can load .OBJ only', function (done) {
@@ -60,5 +58,20 @@ suite('obj-model', function () {
       el2.setAttribute('obj-model', {obj: '#obj'});
     });
     el.sceneEl.appendChild(el2);
+  });
+
+  test('can load .OBJ with material', function (done) {
+    var parentEl = this.el;
+    parentEl.addEventListener('child-attached', function (evt) {
+      var el = evt.detail.el;
+      el.addEventListener('model-loaded', function () {
+        var material = el.getObject3D('mesh').children[0].material;
+        assert.equal(material.color.r, 1);
+        assert.equal(material.metalness, 0.123);
+        done();
+      });
+    });
+    parentEl.innerHTML = '<a-entity ' +
+      'obj-model="obj: #obj" material="color: red; metalness: 0.123"></a-entity>';
   });
 });
