@@ -369,7 +369,7 @@ var proto = Object.create(ANode.prototype, {
         // Call getAttribute to initialize the data from the DOM.
         self.initComponent(
           componentName,
-          HTMLElement.prototype.getAttribute.call(self, componentName),
+          HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
           true
         );
       });
@@ -611,7 +611,7 @@ var proto = Object.create(ANode.prototype, {
   setAttribute: {
     value: function (attr, value, componentPropValue) {
       var componentName;
-      var isDebugMode;
+      var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
 
       componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
@@ -622,8 +622,7 @@ var proto = Object.create(ANode.prototype, {
           this.updateComponent(attr, value);
         }
 
-        // On debug mode we write the component state to the DOM attributes.
-        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+        // In debug mode, write component data up to the DOM.
         if (isDebugMode) { this.components[attr].flushToDOM(); }
         return;
       }

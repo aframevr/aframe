@@ -729,6 +729,27 @@ suite('a-entity', function () {
       this.el.innerHTML = '<a-entity root dependency="foo: bar">';
     });
 
+    test('initializes defined dependency component with null data w/ HTML', function (done) {
+      registerComponent('root', {
+        dependencies: ['dependency'],
+        init: function () {
+          assert.equal(this.el.components.dependency.data.foo, 'bar');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {default: 'bar'}},
+        init: function () {
+          assert.equal(this.data.foo, 'bar');
+        }
+      });
+
+      this.el.innerHTML = '<a-entity root dependency>';
+    });
+
     test('initializes defined dependency component with HTML reverse', function (done) {
       registerComponent('root', {
         dependencies: ['dependency']
