@@ -32,7 +32,7 @@ module.exports.Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {
-    fuse: {default: utils.isMobile()},
+    fuse: {default: utils.device.isMobile()},
     fuseTimeout: {default: 1500, min: 0}
   },
 
