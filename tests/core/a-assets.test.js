@@ -1,4 +1,5 @@
 /* global assert, setup, suite, test */
+var THREE = require('lib/three');
 
 suite('a-assets', function () {
   // Empty src will not trigger load events in Chrome. Use data URI where a load event is needed.
@@ -16,6 +17,19 @@ suite('a-assets', function () {
       done();
     });
     document.body.appendChild(scene);
+  });
+
+  test('throws error if not in a-scene', function () {
+    var div = document.createElement('div');
+    var assets = document.createElement('a-assets');
+    div.appendChild(assets);
+    assert.throws(function () {
+      assets.attachedCallback();
+    }, Error);
+  });
+
+  test('has fileLoader', function () {
+    assert.ok(this.el.fileLoader.constructor, THREE.XHRLoader);
   });
 
   test('waits for images to load', function (done) {

@@ -81,7 +81,8 @@ Given that CORS headers *are* set, `<a-assets>` will automatically set
 
 ## Preloading Audio and Video
 
-Audio and video assets will only block the scene if `autoplay` is set or if `preload="auto"`:
+Audio and video assets will only block the scene if `autoplay` is set or if
+`preload="auto"`:
 
 ```html
 <a-scene>
@@ -185,3 +186,17 @@ Thus, since we block entity initialization on assets, by the time entities
 load, all assets will have been already fetched. As long as `<a-asset-item>`s
 are defined, and the entity is fetching files using some form
 `THREE.XHRLoader`, then caching will automatically work.
+
+## Accessing the `XHRLoader` and Cache
+
+To access the three.js `XHRLoader` if we want to listen more closely:
+
+```js
+console.log(document.querySelector('a-assets').fileLoader);
+```
+
+To access the cache that stores XHR responses:
+
+```js
+console.log(THREE.Cache);
+```

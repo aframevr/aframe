@@ -4,7 +4,7 @@ var debug = require('../utils/debug');
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 
-var xhrLoader = new THREE.XHRLoader();
+var fileLoader = new THREE.XHRLoader();
 var warn = debug('core:a-assets:warn');
 
 /**
@@ -15,6 +15,7 @@ module.exports = registerElement('a-assets', {
     createdCallback: {
       value: function () {
         this.isAssets = true;
+        this.fileLoader = fileLoader;
       }
     },
 
@@ -87,7 +88,7 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        xhrLoader.load(src, function (textResponse) {
+        fileLoader.load(src, function (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
           // Workaround for a Chrome bug.
