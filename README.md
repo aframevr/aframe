@@ -19,6 +19,7 @@ A-Frame is a framework for creating virtual reality web experiences.
 Find out more:
 
 - [Guide](https://aframe.io/docs/guide/)
+- [Device & Platform Support][aframe-browser-support]
 - [Examples](https://aframe.io/examples/)
 - [awesome-aframe](https://github.com/aframevr/awesome-aframe)
 - [Ask us on Slack!](https://aframevr-slack.herokuapp.com/)
@@ -108,6 +109,9 @@ This program is free software and is distributed under an [MIT License](LICENSE)
 [downloads-url]: https://npmjs.org/package/aframe
 [semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
 [semistandard-url]: https://github.com/Flet/semistandard
+[aframe-browser-support]: https://aframe.io/docs/0.3.0/introduction/device-and-platform-support.html
 <!-- codecov -->
 [codecov-image]: https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/aframevr/aframe
+
+[aframe-browser-support]: https://aframe.io/docs/0.3.0/introduction/device-and-platform-support.html
