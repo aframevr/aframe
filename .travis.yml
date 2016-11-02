@@ -2,7 +2,7 @@ language: node_js
 addons:
   firefox: 'latest'
 node_js:
-  - '0.12'
+  - '4.6'
 
 install:
   - npm install
