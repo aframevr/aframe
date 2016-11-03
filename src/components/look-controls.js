@@ -1,6 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
-var isMobile = require('../utils/').isMobile();
+var isMobile = require('../utils/').device.isMobile();
 var bind = require('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick

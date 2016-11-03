@@ -12,10 +12,10 @@ var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
-var checkHeadsetConnected = utils.checkHeadsetConnected;
+var checkHeadsetConnected = utils.device.checkHeadsetConnected;
+var isIOS = utils.device.isIOS();
+var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
-var isIOS = utils.isIOS();
-var isMobile = utils.isMobile();
 var warn = utils.debug('core:a-scene:warn');
 
 /**

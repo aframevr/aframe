@@ -132,3 +132,21 @@ diff({a: 1, b: 2, c: 3}, {b: 2, c: 4})
 ### `AFRAME.utils.extendDeep(target, source, [source, ...])`
 
 [Deep Assign](https://www.npmjs.com/package/deep-assign)
+
+## `AFRAME.utils.device`
+
+### `AFRAME.utils.device.checkHasPositionalTracking()`
+
+Checks if there is positional tracking available. Returns a `boolean`.
+
+### `AFRAME.utils.device.checkHeadsetConnected()`
+
+Checks if a VR headset is connected by looking for orientation data. Returns a `boolean`.
+
+### `AFRAME.utils.device.isGearVR()`
+
+Checks if device is Gear VR. Returns a `boolean`.
+
+### `AFRAME.utils.device.isMobile()`
+
+Checks if device is a smartphone. Returns a `boolean`.
