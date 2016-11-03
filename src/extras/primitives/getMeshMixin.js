@@ -13,19 +13,7 @@ Object.keys(shaders.standard.schema).forEach(function addMapping (prop) {
 
 module.exports = function getMeshMixin () {
   return {
-    defaultComponents: {
-      material: {}
-    },
-
-    mappings: utils.extend({}, materialMappings),
-
-    transforms: {
-      src: function (value) {
-        // Selector.
-        if (value[0] === '#') { return value; }
-        // Inline url().
-        return 'url(' + value + ')';
-      }
-    }
+    defaultComponents: {material: {}},
+    mappings: utils.extend({}, materialMappings)
   };
 };

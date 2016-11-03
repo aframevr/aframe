@@ -73,25 +73,6 @@ suite('registerPrimitive', function () {
       });
     });
   });
-
-  test('transforms', function (done) {
-    primitiveFactory({
-      mappings: {
-        opacity: 'material.opacity'
-      },
-      transforms: {
-        opacity: function (value) {
-          return value * 2;
-        }
-      }
-    }, function (el) {
-      el.setAttribute('opacity', '.25');
-      process.nextTick(function () {
-        assert.equal(el.getAttribute('material').opacity, 0.5);
-        done();
-      });
-    });
-  });
 });
 
 suite('registerPrimitive (using innerHTML)', function () {

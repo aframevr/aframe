@@ -233,13 +233,13 @@ types:
 | Property Type   | Description                                                                                                       | Default Value            |
 | --------------- | -------------                                                                                                     | -------------            |
 | array           | Comma-separated values to array (e.g., `"1, 2, 3" to ['1', '2', '3'].                                             | []                       |
+| asset           | Parse URL out of `url(<url>)`. If a selector, call `querySelector` and `getAttribute('src')`. Can take a string.  | ''                       |
 | boolean         | Convert to boolean (i.e., `"false"` to false, everything else truthy).                                            | false                    |
 | color           | Currently does no parsing. Used by the A-Frame Inspector for widgets.                                             | #FFF                     |
 | int             | Calls `parseInt` (e.g., `"124.5"` to `124`).                                                                      | 0                        |
 | number          | Calls `parseFloat` (e.g., `"124.5" to `124.5').                                                                   | 0                        |
 | selector        | Calls `querySelector` (e.g., `"#box" to `<a-entity id="box">`).                                                   | null                     |
 | selectorAll     | Calls `querySelectorAll` and converts `NodeList` to `Array` (e.g., `".boxes"` to [<a-entity class="boxes", ...]), | null                     |
-| src             | Parses URL out of `url(<url>)` or if it is a selector, calls `querySelector` and `getAttribute('src')`.           | ''                       |
 | string          | Does no parsing.                                                                                                  | ''                       |
 | vec2            | Parses two numbers into an `{x, y}` object (e.g., `1 -2` to `{x: 1, y: -2}`.                                      | {x: 0, y: 0}             |
 | vec3            | Parses three numbers into an `{x, y, z}` object (e.g., `1 -2 3` to `{x: 1, y: -2, z: 3}`.                         | {x: 0, y: 0, z: 0}       |

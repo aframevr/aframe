@@ -19,10 +19,11 @@ suite('propertyTypes', function () {
       this.el.parentNode.removeChild(this.el);
     });
 
-    test('parses src', function () {
+    test('parses asset', function () {
       assert.equal(parse('url(file.jpg)'), 'file.jpg');
-      assert.equal(parse('file.jpg'), '');
+      assert.equal(parse('file.jpg'), 'file.jpg');
       assert.equal(parse('#hello'), 'file2.jpg');
+      assert.equal(parse('#where'), null);
     });
   });
 
@@ -171,7 +172,7 @@ suite('propertyTypes', function () {
 
     test('parses src', function () {
       assert.equal(parse('url(file.jpg)'), 'file.jpg');
-      assert.equal(parse('file.jpg'), '');
+      assert.equal(parse('file.jpg'), 'file.jpg');
       assert.equal(parse('#hello'), 'file2.jpg');
     });
   });
