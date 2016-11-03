@@ -11,7 +11,7 @@ assets in one place and to preload and cache assets for better performance.
 
 Games and rich 3D experiences traditionally preload many of their assets, such
 as models or textures, before rendering their scenes. This makes sure that
-assets aren't missing visually, and this is benenficial for performance to
+assets aren't missing visually, and this is beneficial for performance to
 ensure scenes don't try to fetch assets while rendering.
 
 Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
@@ -22,8 +22,8 @@ Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
 - `<img>` - Image textures
 - `<video>` - Video textures
 
-The scene and all entities will block until all of these types of assets are
-fetched (or error out) before playing.
+The scene and all entities will block (i.e., the scene won't render) until all 
+of these types of assets are fetched (or error out) before playing.
 
 <!--toc-->
 
