@@ -22,7 +22,7 @@ suite('cursor', function () {
   });
 
   suite('init', function () {
-    test('initializes raycasters as dependency', function () {
+    test('initializes raycaster as a dependency', function () {
       assert.ok(this.cursorEl.components.raycaster);
     });
   });
@@ -383,5 +383,19 @@ suite('cursor', function () {
       assert.notOk(cursorEl.is('cursor-fusing'));
       assert.notOk(cursorEl.is('cursor-hovering'));
     });
+  });
+});
+
+suite('cursor + raycaster', function () {
+  test('can use HTML-configured raycaster', function (done) {
+    var parentEl = entityFactory();
+    parentEl.addEventListener('child-attached', function (evt) {
+      var el = evt.detail.el;
+      el.addEventListener('loaded', function () {
+        assert.equal(el.components.raycaster.data.objects, '.clickable');
+        done();
+      });
+    });
+    parentEl.innerHTML = '<a-entity cursor raycaster="objects: .clickable"></a-entity>';
   });
 });

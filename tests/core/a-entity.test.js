@@ -688,6 +688,107 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
+    test('initializes defined dependency component with setAttributes', function (done) {
+      var el = document.createElement('a-entity');
+
+      registerComponent('root', {
+        dependencies: ['dependency']
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {type: 'string'}},
+        init: function () {
+          assert.equal(this.data.foo, 'bar');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      // Create entity all at once with defined dependency component and component.
+      el.setAttribute('dependency', 'foo: bar');
+      el.setAttribute('root', '');
+      this.el.appendChild(el);
+    });
+
+    test('initializes defined dependency component with HTML', function (done) {
+      registerComponent('root', {
+        dependencies: ['dependency']
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {type: 'string'}},
+        init: function () {
+          assert.equal(this.data.foo, 'bar');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      this.el.innerHTML = '<a-entity root dependency="foo: bar">';
+    });
+
+    test('initializes defined dependency component with null data w/ HTML', function (done) {
+      registerComponent('root', {
+        dependencies: ['dependency'],
+        init: function () {
+          assert.equal(this.el.components.dependency.data.foo, 'bar');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {default: 'bar'}},
+        init: function () {
+          assert.equal(this.data.foo, 'bar');
+        }
+      });
+
+      this.el.innerHTML = '<a-entity root dependency>';
+    });
+
+    test('initializes defined dependency component with HTML reverse', function (done) {
+      registerComponent('root', {
+        dependencies: ['dependency']
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {type: 'string'}},
+        init: function () {
+          assert.equal(this.data.foo, 'bar');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      this.el.innerHTML = '<a-entity dependency="foo: bar" root>';
+    });
+
+    test('can access dependency component data', function (done) {
+      registerComponent('root', {
+        dependencies: ['dependency'],
+
+        init: function () {
+          assert.equal(this.el.components.dependency.data.foo, 'bar');
+          assert.equal(this.el.components.dependency.qux, 'baz');
+          delete components.root;
+          delete components.dependency;
+          done();
+        }
+      });
+
+      registerComponent('dependency', {
+        schema: {foo: {type: 'string'}},
+        init: function () { this.qux = 'baz'; }
+      });
+
+      this.el.innerHTML = '<a-entity dependency="foo: bar" root>';
+    });
+
     test('initializes dependency component and current attribute honored', function () {
       var el = this.el;
       var materialAttribute = 'color: #F0F; transparent: true';
@@ -953,31 +1054,45 @@ suite('a-entity component dependency management', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     var componentNames = ['codependency', 'dependency', 'nested-dependency', 'test'];
+    var componentProto;
+
     componentNames.forEach(function clearComponent (componentName) {
       components[componentName] = undefined;
     });
 
-    registerComponent('test', extend({}, TestComponent, {
-      dependencies: ['dependency', 'codependency'],
-
-      init: function () {
-        this.el.components.dependency.el;
-      }
+    /**
+     * root
+     *   dependency
+     *     nestedDependency
+     *   codependency
+     */
+    componentProto = extend({}, TestComponent);
+    var RootComponent = registerComponent('root', extend(componentProto, {
+      dependencies: ['dependency', 'codependency']
     }));
-    this.DependencyComponent = registerComponent('dependency', extend({}, TestComponent, {
+    this.rootInit = this.sinon.spy(RootComponent.prototype, 'init');
+
+    componentProto = extend({}, TestComponent);
+    this.DependencyComponent = registerComponent('dependency', extend(componentProto, {
       dependencies: ['nested-dependency']
     }));
-    registerComponent('codependency', extend({}, TestComponent, {
+    this.dependencyInit = this.sinon.spy(this.DependencyComponent.prototype, 'init');
+
+    componentProto = extend({}, TestComponent);
+    var CodependencyComponent = registerComponent('codependency', extend(componentProto, {
       dependencies: []
     }));
-    registerComponent('nested-dependency', TestComponent);
-    el.addEventListener('loaded', function () {
-      done();
-    });
+    this.codependencyInit = this.sinon.spy(CodependencyComponent.prototype, 'init');
+
+    componentProto = extend({}, TestComponent);
+    var NestedDependency = registerComponent('nested-dependency', componentProto);
+    this.nestedDependencyInit = this.sinon.spy(NestedDependency.prototype, 'init');
+
+    el.addEventListener('loaded', function () { done(); });
   });
 
   teardown(function () {
-    components.test = undefined;
+    components.root = undefined;
     components.codependency = undefined;
     components.dependency = undefined;
     components['nested-dependency'] = undefined;
@@ -985,25 +1100,60 @@ suite('a-entity component dependency management', function () {
 
   test('initializes dependency components', function () {
     var el = this.el;
-    el.setAttribute('test', '');
-    assert.ok('test' in el.components);
+    el.setAttribute('root', '');
+    assert.ok('root' in el.components);
     assert.ok('dependency' in el.components);
     assert.ok('codependency' in el.components);
     assert.ok('nested-dependency' in el.components);
   });
 
   test('only initializes each component once', function () {
-    var spy = this.sinon.spy(this.DependencyComponent.prototype, 'init');
-    this.el.setAttribute('test', '');
-    assert.equal(spy.callCount, 1);
+    this.el.setAttribute('root', '');
+    assert.equal(this.rootInit.callCount, 1);
+    assert.equal(this.dependencyInit.callCount, 1);
+    assert.equal(this.codependencyInit.callCount, 1);
+    assert.equal(this.nestedDependencyInit.callCount, 1);
   });
 
   test('initializes dependency components when not yet loaded', function () {
     var el = document.createElement('a-entity');
-    el.setAttribute('test', '');
-    assert.ok('test' in el.components);
+    el.setAttribute('root', '');
+    assert.ok('root' in el.components);
     assert.ok('dependency' in el.components);
     assert.ok('codependency' in el.components);
     assert.ok('nested-dependency' in el.components);
+  });
+
+  test('initializes components (calling .init()) in the correct order', function (done) {
+    var el = helpers.entityFactory();
+    var self = this;
+    el.addEventListener('loaded', function () {
+      sinon.assert.callOrder(
+        self.nestedDependencyInit,
+        self.dependencyInit,
+        self.codependencyInit,
+        self.rootInit
+      );
+      done();
+    });
+    el.setAttribute('root', '');
+  });
+
+  test('initializes components (calling .init()) in the correct order via HTML', function (done) {
+    var parentEl = helpers.entityFactory();
+    var self = this;
+    parentEl.addEventListener('child-attached', function (evt) {
+      var el = evt.detail.el;
+      el.addEventListener('loaded', function () {
+        sinon.assert.callOrder(
+          self.nestedDependencyInit,
+          self.dependencyInit,
+          self.codependencyInit,
+          self.rootInit
+        );
+        done();
+      });
+    });
+    parentEl.innerHTML = '<a-entity root></a-entity>';
   });
 });
