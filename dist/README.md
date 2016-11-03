@@ -17,10 +17,10 @@ serve directly from `rawgit.com` CDN:
 These builds are bleeding-edge **unstable builds** that contain newer fixes or
 features, but may contain regressions or breaking changes.
 
-- `aframe.min.js` - Minified production build.
-- `aframe.min.js.map` - Source maps for minified production build.
-- `aframe.js` - Unminified build, for development or debugging.
-- `aframe.js.map` - Source maps for unminified build.
+- `aframe-dev.min.js` - Minified production build.
+- `aframe-dev.min.js.map` - Source maps for minified production build.
+- `aframe-dev.js` - Unminified build, for development or debugging.
+- `aframe-dev.js.map` - Source maps for unminified build.
 
 ### Stable Builds
 

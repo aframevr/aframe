@@ -128,7 +128,7 @@ To drop in K-Frame, download [`k-frame.min.js`](kmin) from the project's
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="lib/aframe.min.js"></script>
+    <script src="lib/aframe-dev.min.js"></script>
     <script src="lib/k-frame.min.js"></script>
   </head>
   <body>
