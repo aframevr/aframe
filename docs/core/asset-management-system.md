@@ -22,8 +22,8 @@ Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
 - `<img>` - Image textures
 - `<video>` - Video textures
 
-The scene and all entities will block (i.e., won't render) until all of these 
-types of assets are fetched (or error out) before playing.
+The scene and all entities will block (i.e., the scene won't render) until all 
+of these types of assets are fetched (or error out) before playing.
 
 <!--toc-->
 
