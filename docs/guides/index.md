@@ -115,7 +115,7 @@ system][asset] by:
 
 ## Animating the Box
 
-[animation]: ../core/animation.md
+[animation]: ../core/animations.md
 
 We can add an animation to the box using the built-in [animation
 system][animation]. We can place an `<a-animation>` element as a child of the
