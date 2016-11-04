@@ -379,7 +379,7 @@ And that concludes our 360&deg; image gallery.
 [awesome]: https://github.com/aframevr/awesome-aframe#components
 [basic]: ./building-a-basic-scene.md
 [boilerplate]: https://github.com/ngokevin/aframe-component-boilerplate
-[camera]: ../primitives/camera.md
+[camera]: ../primitives/a-camera.md
 [codepen]: http://codepen.io/team/mozvr/pen/PNoWEz/?editors=1000
 [components]: ../core/component.md
 [cursor]: ../components/cursor.md
