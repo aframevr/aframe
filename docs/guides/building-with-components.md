@@ -121,7 +121,7 @@ event-set. First, we have to include them. [K-Frame][kframe] is a component
 pack by [Kevin Ngo][ngokevin], an A-Frame core developer, that conveniently
 includes all three of these components in one bundle.
 
-To drop in K-Frame, download [`k-frame.min.js`](kmin) from the project's
+To drop in K-Frame, download [`k-frame.min.js`][kmin] from the project's
 [`dist` folder][kdist] and include it in the `<head>` *after* A-Frame:
 
 ```html
