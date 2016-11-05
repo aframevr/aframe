@@ -214,7 +214,7 @@ We create a wrapper entity around our links and attach the layout component
 using the `line` layout:
 
 ```html
-<a-entity id="links" layout="layout: line; margin: .75" position="-3 -1 -4">
+<a-entity id="links" layout="layout: line; margin: 1.5" position="-3 -1 -4">
   <a-entity template="src: #plane" data-thumb="#city-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#cubes-thumb"></a-entity>
   <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
@@ -395,7 +395,7 @@ And that concludes our 360&deg; image gallery.
 [material]: ../components/material.md
 [mixin]: ../core/mixins.md
 [multi-property]: ../core/component.md#multi-property-component
-[multiple]: ../core/component.md#multiple-instances
+[multiple]: ../core/component.md#multiple-instancing
 [ngokevin]: https://github.com/ngokevin
 [nunjucks]: https://mozilla.github.io/nunjucks/
 [raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
