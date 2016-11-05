@@ -11,7 +11,7 @@ module.exports.Component = registerShader('flat', {
     fog: {default: true},
     height: {default: 256},
     repeat: {default: ''},
-    src: {default: ''},
+    src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2}

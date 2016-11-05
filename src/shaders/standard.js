@@ -10,14 +10,14 @@ var texturePromises = {};
  */
 module.exports.Component = registerShader('standard', {
   schema: {
-    ambientOcclusionMap: {default: ''},
+    ambientOcclusionMap: {type: 'map'},
     ambientOcclusionMapIntensity: {default: 1},
     ambientOcclusionTextureOffset: {default: ''},
     ambientOcclusionTextureRepeat: {default: ''},
 
     color: {type: 'color'},
 
-    displacementMap: {default: ''},
+    displacementMap: {type: 'map'},
     displacementScale: {default: 1},
     displacementBias: {default: 0.5},
     displacementTextureOffset: {default: ''},
@@ -28,15 +28,15 @@ module.exports.Component = registerShader('standard', {
     height: {default: 256},
     metalness: {default: 0.0, min: 0.0, max: 1.0},
 
-    normalMap: {default: ''},
+    normalMap: {type: 'map'},
     normalScale: {type: 'vec2', default: '1 1'},
     normalTextureOffset: {default: ''},
     normalTextureRepeat: {default: ''},
 
     repeat: {default: ''},
     roughness: {default: 0.5, min: 0.0, max: 1.0},
-    sphericalEnvMap: {default: ''},
-    src: {default: ''},
+    sphericalEnvMap: {type: 'map'},
+    src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2}
@@ -97,7 +97,7 @@ module.exports.Component = registerShader('standard', {
 
     // if a spherical env map is defined then use it.
     if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, { src: sphericalEnvMap }, function textureLoaded (texture) {
+      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
         texture.mapping = THREE.SphericalReflectionMapping;
         material.envMap = texture;

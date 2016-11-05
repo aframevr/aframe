@@ -14,7 +14,7 @@ module.exports.Component = registerComponent('sound', {
     loop: {default: false},
     on: {default: ''},
     poolSize: {default: 1},
-    src: {type: 'src'},
+    src: {type: 'audio'},
     volume: {default: 1}
   },
 
