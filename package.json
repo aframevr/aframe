@@ -6,12 +6,12 @@
   "main": "dist/aframe.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
-    "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
+    "build": "mkdirp build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
     "codecov": "codecov",
-    "dev": "npm run build && node ./scripts/budo",
+    "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js",
-    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
+    "dist:max": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] | exorcist dist/aframe.js.map > dist/aframe.js",
+    "dist:min": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] -p [minifyify --map aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
     "dist:release": "npm run dist:release:min && npm run dist:release:max",
     "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.0.js.map > dist/aframe-v0.3.0.js",
     "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.0.min.js.map --output dist/aframe-v0.3.0.min.js.map] -o dist/aframe-v0.3.0.min.js",
@@ -52,6 +52,7 @@
     "chai": "^3.5.0",
     "chai-shallow-deep-equal": "^1.4.0",
     "codecov": "^1.0.1",
+    "envify": "^3.4.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "husky": "^0.11.7",
@@ -84,7 +85,8 @@
   "link": true,
   "browserify": {
     "transform": [
-      "browserify-css"
+      "browserify-css",
+      "envify"
     ]
   },
   "semistandard": {

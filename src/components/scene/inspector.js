@@ -4,7 +4,9 @@ var bind = require('../../utils/bind');
 var pkg = require('../../../package');
 var registerComponent = require('../../core/component').registerComponent;
 
-var INSPECTOR_URL = pkg.homepage + 'releases/' + pkg.version + '/aframe-inspector.min.js';
+var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/build/aframe-inspector.js';
+var INSPECTOR_RELEASE_URL = pkg.homepage + 'releases/' + pkg.version + '/aframe-inspector.min.js';
+var INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
 var LOADING_MESSAGE = 'Loading Inspector';
 
 module.exports.Component = registerComponent('inspector', {
