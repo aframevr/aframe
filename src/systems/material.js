@@ -35,10 +35,16 @@ module.exports.System = registerSystem('material', {
    */
   loadTexture: function (src, data, cb) {
     var self = this;
-    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb, loadCanvasCb);
+
+    // Canvas.
+    if (src.tagName === 'CANVAS') {
+      this.loadCanvas(src, data, cb);
+      return;
+    }
+
+    utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
     function loadImageCb (src) { self.loadImage(src, data, cb); }
     function loadVideoCb (src) { self.loadVideo(src, data, cb); }
-    function loadCanvasCb (src) { self.loadCanvas(src, data, cb); }
   },
 
   /**

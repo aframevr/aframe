@@ -7,12 +7,15 @@ var warn = debug('core:propertyTypes:warn');
 var propertyTypes = module.exports.propertyTypes = {};
 
 // Built-in property types.
+registerPropertyType('audio', '', assetParse);
 registerPropertyType('array', [], arrayParse, arrayStringify);
 registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
+registerPropertyType('map', '', assetParse);
+registerPropertyType('model', '', assetParse);
 registerPropertyType('selector', '', selectorParse, selectorStringify);
 registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
@@ -61,21 +64,23 @@ function arrayStringify (value) {
  * `src` parser for assets.
  *
  * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
- * @returns {string} Parsed value from `url(<value>)` or src from `<someasset src>`.
+ * @returns {string|Element} Parsed value from `url(<value>)`, src from `<someasset src>`, or
+ *   canvas.
  */
 function assetParse (value) {
+  var el;
   var parsedUrl = value.match(/\url\((.+)\)/);
+
   if (parsedUrl) { return parsedUrl[1]; }
 
-  var el = selectorParse(value);
-  if (el) { return el.getAttribute('src'); }
+  el = selectorParse(value);
+  if (!el) { return ''; }
 
-  if (value.charAt(0) !== '#') {
-    warn('"' + value + '" is not a valid `src` attribute. ' +
-         'Value must be an ID selector (i.e. "#someElement") or wrapped in `url()`.');
+  if (el.tagName === 'CANVAS') {
+    return el;
+  } else {
+    return el.getAttribute('src');
   }
-
-  return '';
 }
 
 function defaultParse (value) {

@@ -8,8 +8,8 @@ module.exports.Component = registerComponent('obj-model', {
   dependencies: ['material'],
 
   schema: {
-    mtl: {type: 'src'},
-    obj: {type: 'src'}
+    mtl: {type: 'model'},
+    obj: {type: 'model'}
   },
 
   init: function () {
