@@ -5,7 +5,9 @@ layout: docs
 parent_section: primitives
 ---
 
-The video primitive displays a video on a flat plane as a texture. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `plane`.
+The video primitive displays a video on a flat plane as a texture. It is an
+entity that prescribes the [geometry](../components/geometry.md) with its
+geometric primitive set to `plane`.
 
 ## Example
 
@@ -35,7 +37,7 @@ The video primitive displays a video on a flat plane as a texture. It is an enti
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 1             |
 | segments-width  | geometry.segmentsWidth  | 1             |
-| shader          | material.shader         | standard      |
+| shader          | material.shader         | flat          |
 | side            | material.side           | front         |
 | src             | material.src            | None          |
 | transparent     | material.transparent    | false         |

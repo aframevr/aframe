@@ -42,7 +42,7 @@ A plain color as a background:
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 20            |
 | segments-width  | geometry.segmentsWidth  | 64            |
-| shader          | material.shader         | standard      |
+| shader          | material.shader         | flat          |
 | side            | material.side           | front         |
 | src             | material.src            | None          |
 | theta-length    | geometry.thetaLength    | 180           |

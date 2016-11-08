@@ -6,7 +6,14 @@ parent_section: primitives
 ---
 
 
-The curved image primitive creates images that bend around the user. Curved images arranged around the camera can be pleasing for legibility since each pixel sits at the same distance from the user. They can be a better choice than angled flat planes for complex layouts because they ensure a smooth surface rather than a series of awkward seams between planes. It is an entity that prescribes a double-sided open-ended cylinder with the [geometry component](../components/geometry.md) and rendering textures on the inside of the cylinder with the [material component](../components/material.md).
+The curved image primitive creates images that bend around the user. Curved
+images arranged around the camera can be pleasing for legibility since each
+pixel sits at the same distance from the user. They can be a better choice than
+angled flat planes for complex layouts because they ensure a smooth surface
+rather than a series of awkward seams between planes. It is an entity that
+prescribes a double-sided open-ended cylinder with the [geometry
+component](../components/geometry.md) and rendering textures on the inside of
+the cylinder with the [material component](../components/material.md).
 
 ## Example
 
@@ -39,7 +46,7 @@ The curved image primitive creates images that bend around the user. Curved imag
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 18            |
 | segments-radial | geometry.segmentsRadial | 36            |
-| shader          | material.shader         | standard      |
+| shader          | material.shader         | flat          |
 | side            | material.side           | front         |
 | src             | material.src            | None          |
 | theta-length    | geometry.thetaLength    | 360           |
