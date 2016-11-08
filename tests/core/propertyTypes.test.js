@@ -5,7 +5,7 @@ var propertyTypes = PropertyTypes.propertyTypes;
 var register = PropertyTypes.registerPropertyType;
 
 suite('propertyTypes', function () {
-  suite('assetParse', function () {
+  suite('asset', function () {
     var parse = propertyTypes.asset.parse;
 
     setup(function () {
@@ -52,6 +52,17 @@ suite('propertyTypes', function () {
       register('mytype', 5);
       assert.ok('mytype' in propertyTypes);
       assert.equal(propertyTypes.mytype.default, 5);
+    });
+  });
+
+  suite('int', function () {
+    var parse = propertyTypes.int.parse;
+
+    test('parses int', function () {
+      assert.equal(parse('5'), 5);
+      assert.equal(parse(5), 5);
+      assert.equal(parse('4.5'), 4);
+      assert.equal(parse(4.5), 4);
     });
   });
 
@@ -144,7 +155,7 @@ suite('propertyTypes', function () {
     });
   });
 
-  suite('srcParse', function () {
+  suite('src', function () {
     var parse = propertyTypes.src.parse;
 
     setup(function () {

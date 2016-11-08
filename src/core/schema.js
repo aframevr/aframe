@@ -119,8 +119,12 @@ module.exports.parseProperties = function (propData, schema, getPartialData, com
  * Deserialize a single property.
  */
 function parseProperty (value, propDefinition) {
-  value = (value === undefined || value === null) ? propDefinition.default : value;
-  return propDefinition.parse(value);
+  // Use default value if value is falsy.
+  if (value === undefined || value === null || value === '') {
+    value = propDefinition.default;
+  }
+  // Invoke property type parser.
+  return propDefinition.parse(value, propDefinition.default);
 }
 module.exports.parseProperty = parseProperty;
 
