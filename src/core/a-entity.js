@@ -4,9 +4,9 @@ var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
-var bind = utils.bind;
 
 var AEntity;
+var bind = utils.bind;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
@@ -634,24 +634,30 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * To make the DOM attributes reflect the state of the components.
+   * Reflect component data in the DOM (as seen from the browser DOM Inspector).
    *
-   * @param {bool} recursive - Call updateDOM on the children
+   * @param {bool} recursive - Also flushToDOM on the children.
    **/
   flushToDOM: {
     value: function (recursive) {
       var components = this.components;
-      var children = this.children;
+      var defaultComponents = this.defaultComponents;
       var child;
+      var children = this.children;
       var i;
-      Object.keys(components).forEach(updateDOMAtrribute);
+
+      // Flush entity's components to DOM.
+      Object.keys(components).forEach(function flushComponent (componentName) {
+        components[componentName].flushToDOM(componentName in defaultComponents);
+      });
+
+      // Recurse.
       if (!recursive) { return; }
       for (i = 0; i < children.length; ++i) {
         child = children[i];
         if (!child.flushToDOM) { continue; }
         child.flushToDOM(recursive);
       }
-      function updateDOMAtrribute (name) { components[name].flushToDOM(); }
     }
   },
 

@@ -166,12 +166,16 @@ Component.prototype = {
   },
 
   /**
-   * Writes cached attribute data to the entity DOM element.
+   * Write cached attribute data to the entity DOM element.
+   *
+   * @param {bool} isDefault - Whether component is a default component. Always flush for
+   *   default components.
    */
-  flushToDOM: function () {
-    var attrValue = this.attrValue;
+  flushToDOM: function (isDefault) {
+    var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName, this.stringify(attrValue));
+    HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+                                            this.stringify(attrValue));
   },
 
   /**
