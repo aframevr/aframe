@@ -397,6 +397,20 @@ suite('a-entity', function () {
       });
       el.appendChild(childEl);
     });
+
+    test('flushes default component values', function (done) {
+      var parentEl = this.el;
+      var el = document.createElement('a-entity');
+      el.addEventListener('loaded', function () {
+        el.flushToDOM();
+        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'position'), '0 0 0');
+        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'rotation'), '0 0 0');
+        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'scale'), '1 1 1');
+        assert.equal(HTMLElement.prototype.getAttribute.call(el, 'visible'), 'true');
+        done();
+      });
+      parentEl.appendChild(el);
+    });
   });
 
   suite('detachedCallback', function () {
