@@ -51,6 +51,14 @@ suite('schema', function () {
       assert.shallowDeepEqual(parsed, {x: 1, y: 2, z: 3});
     });
 
+    test('uses default value if value is falsy', function () {
+      var schemaPropDef = processSchema({type: 'int', default: 2});
+      assert.equal(parseProperty(null, schemaPropDef), 2);
+      assert.equal(parseProperty('', schemaPropDef), 2);
+      assert.equal(parseProperty(undefined, schemaPropDef), 2);
+      assert.equal(parseProperty(0, schemaPropDef), 0);
+    });
+
     test('can parse using inline parse', function () {
       var schemaPropDef = {
         default: 'xyz',
