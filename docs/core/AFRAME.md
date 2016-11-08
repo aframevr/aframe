@@ -7,11 +7,12 @@ order: 10
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser
-global. This same interface is also exposed if requiring with Node
+global. This same interface is also exposed if requiring with CommonJS
 (`require('aframe')`).
 
 ## `AFRAME` Properties
 
+[component]: ./component.md
 [componentregister]: ./component.md#write-a-component
 [entity]: ./entity.md
 [geometryregister]: ../components/geometry.md#register-a-custom-geometry
@@ -24,6 +25,7 @@ global. This same interface is also exposed if requiring with Node
 
 | Property              | Description                                                                                                                                                                                                                            |
 | ----------            | -------------                                                                                                                                                                                                                          |
+| AComponent | [Component][component] prototype.                                                                                                                                                                                                            |
 | AEntity               | [Entity][entity] prototype.                                                                                                                                                                                                            |
 | ANode                 | Base node prototype that A-Frame elements inherit from.                                                                                                                                                                                |
 | AScene                | [Scene][scene] prototype.                                                                                                                                                                                                              |

@@ -73,6 +73,7 @@ console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
 module.exports = window.AFRAME = {
+  AComponent: require('./core/component').Component,
   AEntity: AEntity,
   ANode: ANode,
   AScene: AScene,
