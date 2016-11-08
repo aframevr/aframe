@@ -1,18 +1,13 @@
-/* global HTMLElement */
-var components = require('./component');
-var schema = require('./schema');
-var utils = require('../utils/');
+var componentModule = require('./component');
+var utils = require('../utils');
 
-var parseProperties = schema.parseProperties;
-var parseProperty = schema.parseProperty;
-var processSchema = schema.process;
-var isSingleProp = schema.isSingleProperty;
-var styleParser = utils.styleParser;
+var Component = componentModule.Component;
+var components = componentModule.components;
 
 var systems = module.exports.systems = {};  // Keep track of registered systems.
 
 /**
- * System class definition.
+ * System constructor. Extends the Component constructor.
  *
  * Systems provide global scope and services to a group of instantiated components of the
  * same class. They can also help abstract logic away from components such that components
@@ -23,93 +18,39 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
-var System = module.exports.System = function (sceneEl) {
-  var component = components && components.components[this.name];
-  var schema = this.schema;
-  var rawData;
-
-  // Set reference to scene.
-  this.sceneEl = sceneEl;
+var System = module.exports.System = function (el, attrName, id) {
+  Component.call(this, el, attrName, id);
 
   // Set reference to matching component (if exists).
-  if (component) { component.Component.prototype.system = this; }
-
-  // Process system configuration.
-  if (!Object.keys(schema).length) { return; }
-  rawData = HTMLElement.prototype.getAttribute.call(sceneEl, this.name);
-  if (isSingleProp(schema)) {
-    this.data = parseProperty(rawData, schema);
-    return;
-  }
-  this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
+  if (components[attrName]) { components[attrName].Constructor.prototype.system = this; }
 };
 
-System.prototype = {
-  /**
-   * Schema to configure system.
-   */
-  schema: {},
-
-  /**
-   * Init handler. Called during scene initialization and is only run once.
-   * Systems can use this to set initial state.
-   */
-  init: function () { /* no-op */ },
-
-  /**
-   * Tick handler.
-   * Called on each tick of the scene render loop.
-   * Affected by play and pause.
-   *
-   * @param {number} time - Scene tick time.
-   * @param {number} timeDelta - Difference in current render time and previous render time.
-   */
-  tick: undefined,
-
-  /**
-   * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  play: function () { /* no-op */ },
-
-  /**
-   * Called to stop any dynamic behavior (e.g., animation, AI, events, physics).
-   */
-  pause: function () { /* no-op */ }
-};
+// System prototype. Extends the Component prototype.
+System.prototype = utils.extendDeep({}, Component.prototype);
 
 /**
- * Registers a system to A-Frame.
+ * Register system to A-Frame.
  *
- * @param {string} name - Component name.
- * @param {object} definition - Component property and methods.
- * @returns {object} Component.
+ * @param {string} name - System name.
+ * @param {object} definition - System property and methods.
+ * @returns {object} System.
  */
 module.exports.registerSystem = function (name, definition) {
-  var i;
   var NewSystem;
-  var proto = {};
-  var scenes = utils.findAllScenes(document);
+  var entry;
+  var i;
+  var scenes;
 
-  // Format definition object to prototype object.
-  Object.keys(definition).forEach(function (key) {
-    proto[key] = {
-      value: definition[key],
-      writable: true
-    };
-  });
+  // System constructor.
+  NewSystem = function (el, attrName, id) {
+    System.call(this, el, attrName, id);
+  };
+  NewSystem.prototype = utils.createPrototype(name, definition, System, 'system', systems);
+  entry = componentModule.registerComponentConstructor(name, NewSystem, systems);
 
-  if (systems[name]) {
-    throw new Error('The system `' + name + '` has been already registered. ' +
-                    'Check that you are not loading two versions of the same system ' +
-                    'or two different systems of the same name.');
-  }
-  NewSystem = function (sceneEl) { System.call(this, sceneEl); };
-  NewSystem.prototype = Object.create(System.prototype, proto);
-  NewSystem.prototype.name = name;
-  NewSystem.prototype.constructor = NewSystem;
-  NewSystem.prototype.schema = utils.extend(processSchema(NewSystem.prototype.schema));
-  systems[name] = NewSystem;
-
-  // Initialize systems for existing scenes
+  // Initialize systems for already-running scenes.
+  scenes = utils.findAllScenes(document);
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
+
+  return entry;
 };

@@ -54,6 +54,7 @@ module.exports = registerElement('a-scene', {
         this.isScene = true;
         this.object3D = new THREE.Scene();
         this.render = bind(this.render, this);
+        this.sceneEl = this;
         this.systems = {};
         this.time = 0;
 

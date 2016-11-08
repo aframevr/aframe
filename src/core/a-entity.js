@@ -328,7 +328,7 @@ var proto = Object.create(ANode.prototype, {
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new COMPONENTS[componentName].Component(
+      component = this.components[attrName] = new COMPONENTS[componentName].Constructor(
         this, data, componentId);
       if (this.isPlaying) { component.play(); }
 

@@ -1,6 +1,5 @@
 /* global HTMLElement */
 var schema = require('./schema');
-var systems = require('./system');
 var utils = require('../utils/');
 
 var components = module.exports.components = {}; // Keep track of registered components.
@@ -21,15 +20,16 @@ var styleParser = utils.styleParser;
  * of components.
  *
  * @member {object} el - Reference to the entity element.
- * @member {string} attr - Component name exposed as an HTML attribute.
+ * @member {string} attrName - Component name exposed as an HTML attribute.
  * @member {object} data - Component data populated by parsing the
- *         mapped attribute of the component plus applying defaults and mixins.
+ *   mapped attribute of the component plus applying defaults and mixins.
  */
-var Component = module.exports.Component = function (el, attr, id) {
+var Component = module.exports.Component = function (el, attrName, id) {
   this.el = el;
+  this.sceneEl = el.sceneEl;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
-  this.updateCachedAttrValue(attr);
+  this.updateCachedAttrValue(attrName);
 };
 
 Component.prototype = {
@@ -249,52 +249,56 @@ Component.prototype = {
  */
 module.exports.registerComponent = function (name, definition) {
   var NewComponent;
-  var proto = {};
 
+  // Validate `multiple`.
   if (name.indexOf('__') !== -1) {
     throw new Error('The component name `' + name + '` is not allowed. ' +
                     'The sequence __ (double underscore) is reserved to specify an id' +
                     ' for multiple components of the same type');
   }
 
-  // Format definition object to prototype object.
-  Object.keys(definition).forEach(function (key) {
-    proto[key] = {
-      value: definition[key],
-      writable: true
-    };
-  });
-
-  if (components[name]) {
-    throw new Error('The component `' + name + '` has been already registered. ' +
-                    'Check that you are not loading two versions of the same component ' +
-                    'or two different components of the same name.');
-  }
+  // Constructor that <a-entity> will invoke from `initComponent`.
   NewComponent = function (el, attr, id) {
     Component.call(this, el, attr, id);
     if (!el.hasLoaded) { return; }
     this.updateProperties(this.attrValue);
   };
 
-  NewComponent.prototype = Object.create(Component.prototype, proto);
-  NewComponent.prototype.name = name;
-  NewComponent.prototype.constructor = NewComponent;
-  NewComponent.prototype.system = systems && systems.systems[name];
-  NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
-  NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
-
-  components[name] = {
-    Component: NewComponent,
-    dependencies: NewComponent.prototype.dependencies,
-    multiple: NewComponent.prototype.multiple,
-    parse: NewComponent.prototype.parse,
-    parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
-    stringify: NewComponent.prototype.stringify,
-    type: NewComponent.prototype.type
-  };
-  return NewComponent;
+  NewComponent.prototype = utils.createPrototype(name, definition, Component, 'component',
+                                                 components);
+  return registerComponentConstructor(name, NewComponent, components);
 };
+
+/**
+ * Register component on AFRAME.components and set some stuff on the prototype.
+ * This function is refactored out for reuse by Systems as they share many common things.
+ *
+ * @param {string} name - Component (or system) name.
+ * @param {object} Constructor - Component (or System) constructor.
+ * @param {object} registeredConstructors - AFRAME.components (or AFRAME.systems).
+ */
+function registerComponentConstructor (name, Constructor, registeredConstructors) {
+  // Set common properties on the prototype.
+  Constructor.prototype.constructor = Constructor;
+  Constructor.prototype.name = name;
+  Constructor.prototype.play = wrapPlay(Constructor.prototype.play);
+  Constructor.prototype.pause = wrapPause(Constructor.prototype.pause);
+
+  // Public API in AFRAME[moduleType].
+  registeredConstructors[name] = {
+    Constructor: Constructor,
+    dependencies: Constructor.prototype.dependencies,
+    multiple: Constructor.prototype.multiple,
+    parse: Constructor.prototype.parse,
+    parseAttrValueForCache: Constructor.prototype.parseAttrValueForCache,
+    schema: utils.extend(processSchema(Constructor.prototype.schema)),
+    stringify: Constructor.prototype.stringify,
+    type: Constructor.prototype.type
+  };
+
+  return Constructor;
+}
+module.exports.registerComponentConstructor = registerComponentConstructor;
 
 /**
  * Builds component data from the current state of the entity, ultimately
@@ -368,10 +372,10 @@ function extendProperties (dest, source, isSinglePropSchema) {
 }
 
 /**
- * Wrapper for user defined pause method
- * Pause component by removing tick behavior and calling user's pause method.
+ * Wrapper for component-defined pause method
+ * Pause component by removing tick behavior and calling component's pause method.
  *
- * @param pauseMethod {function} - user defined pause method
+ * @param {function} pauseMethod - Component-defined pause handler.
  */
 function wrapPause (pauseMethod) {
   return function pause () {
@@ -384,13 +388,13 @@ function wrapPause (pauseMethod) {
     sceneEl.removeBehavior(this);
   };
 }
+module.exports.wrapPause = wrapPause;
 
 /**
- * Wrapper for user defined play method
- * Play component by adding tick behavior and calling user's play method.
+ * Wrapper for component-defined play method.
+ * Play component by adding tick behavior and calling component's play method.
  *
- * @param playMethod {function} - user defined play method
- *
+ * @param {function} playMethod - Component-defined play handler.
  */
 function wrapPlay (playMethod) {
   return function play () {
@@ -404,3 +408,4 @@ function wrapPlay (playMethod) {
     sceneEl.addBehavior(this);
   };
 }
+module.exports.wrapPlay = wrapPlay;
