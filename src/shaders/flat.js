@@ -10,7 +10,7 @@ module.exports.Component = registerShader('flat', {
     color: {type: 'color'},
     fog: {default: true},
     height: {default: 256},
-    repeat: {default: ''},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
