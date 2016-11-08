@@ -16,6 +16,7 @@ module.exports = registerElement('a-assets', {
       value: function () {
         this.isAssets = true;
         this.fileLoader = fileLoader;
+        this.timeout = null;
       }
     },
 
@@ -56,12 +57,18 @@ module.exports = registerElement('a-assets', {
 
         // Timeout to start loading anyways.
         timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
-        setTimeout(function () {
+        this.timeout = setTimeout(function () {
           if (self.hasLoaded) { return; }
           warn('Asset loading timed out in ', timeout, 'ms');
           self.emit('timeout');
           self.load();
         }, timeout);
+      }
+    },
+
+    detachedCallback: {
+      value: function () {
+        if (this.timeout) { clearTimeout(this.timeout); }
       }
     },
 
