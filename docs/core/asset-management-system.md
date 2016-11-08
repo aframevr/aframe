@@ -22,7 +22,7 @@ Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
 - `<img>` - Image textures
 - `<video>` - Video textures
 
-The scene and all entities will block (i.e., the scene won't render) until all 
+The scene and all entities will block (i.e., the scene won't render) until all
 of these types of assets are fetched (or error out) before playing.
 
 <!--toc-->
@@ -151,7 +151,7 @@ Images are a standard DOM element so we can listen to the standard DOM events.
 
 | Event Name | Description       |
 |------------|-------------------|
-| loaded     | Image was loaded. |
+| load       | Image was loaded. |
 
 ### `HTMLMediaElement`
 
