@@ -12,16 +12,16 @@ module.exports.Component = registerShader('standard', {
   schema: {
     ambientOcclusionMap: {type: 'map'},
     ambientOcclusionMapIntensity: {default: 1},
-    ambientOcclusionTextureOffset: {default: ''},
-    ambientOcclusionTextureRepeat: {default: ''},
+    ambientOcclusionTextureOffset: {type: 'vec2'},
+    ambientOcclusionTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
     color: {type: 'color'},
 
     displacementMap: {type: 'map'},
     displacementScale: {default: 1},
     displacementBias: {default: 0.5},
-    displacementTextureOffset: {default: ''},
-    displacementTextureRepeat: {default: ''},
+    displacementTextureOffset: {type: 'vec2'},
+    displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
     envMap: {default: ''},
 
     fog: {default: true},
@@ -30,10 +30,10 @@ module.exports.Component = registerShader('standard', {
 
     normalMap: {type: 'map'},
     normalScale: {type: 'vec2', default: '1 1'},
-    normalTextureOffset: {default: ''},
-    normalTextureRepeat: {default: ''},
+    normalTextureOffset: {type: 'vec2'},
+    normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
-    repeat: {default: ''},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     roughness: {default: 0.5, min: 0.0, max: 1.0},
     sphericalEnvMap: {type: 'map'},
     src: {type: 'map'},

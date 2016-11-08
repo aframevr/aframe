@@ -115,7 +115,7 @@ suite('material system', function () {
         var system = this.system;
         var src = IMAGE1;
         var data1 = {src: src};
-        var data2 = {src: src, repeat: '5 5'};
+        var data2 = {src: src, repeat: {x: 5, y: 5}};
         var hash1 = system.hash(data1);
         var hash2 = system.hash(data2);
 
@@ -202,7 +202,7 @@ suite('material system', function () {
         var system = this.system;
         var src = VIDEO1;
         var data1 = {src: src};
-        var data2 = {src: src, repeat: '5 5'};
+        var data2 = {src: src, repeat: {x: 5, y: 5}};
 
         Promise.all([
           new Promise(function (resolve) { system.loadVideo(src, data1, resolve); }),
