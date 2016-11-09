@@ -186,7 +186,7 @@ module.exports.createPrototype = function (moduleName, definition, BasePrototype
   var proto = {};
 
   // Format definition object to prototype object.
-  Object.keys(definition).forEach(function (key) {
+  Object.keys(definition).forEach(function convertToPrototype (key) {
     proto[key] = {
       value: definition[key],
       writable: true

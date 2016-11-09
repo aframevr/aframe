@@ -3,10 +3,6 @@ var components = require('core/component').components;
 var systems = require('core/system').systems;
 var registerSystem = require('core/system').registerSystem;
 
-var TestSystem = {
-  init: function () {}
-};
-
 suite('System', function () {
   suite('standard systems', function () {
     test('are registered', function () {
@@ -21,7 +17,7 @@ suite('System', function () {
 
     test('can be registered', function () {
       assert.notOk('TestSystem' in systems);
-      registerSystem('test', TestSystem);
+      registerSystem('test', {init: function () {}});
       assert.ok('test' in systems);
     });
   });
@@ -32,18 +28,17 @@ suite('System', function () {
       delete systems.test;
     });
 
-    test('initializes data for single-prop schema', function () {
+    test.only('initializes data for single-prop schema', function () {
       var sceneEl = document.createElement('a-scene');
       var system;
       var TestSystem;
 
-      AFRAME.registerSystem('test', {
+      TestSystem = AFRAME.registerSystem('test', {
         schema: {default: ''}
       });
-      TestSystem = systems.test;
 
       sceneEl.setAttribute('test', 'candy');
-      system = new TestSystem(sceneEl);
+      system = new TestSystem(sceneEl, 'candy', '');
       assert.equal(system.data, 'candy');
     });
 
@@ -52,16 +47,15 @@ suite('System', function () {
       var system;
       var TestSystem;
 
-      AFRAME.registerSystem('test', {
+      TestSystem = AFRAME.registerSystem('test', {
         schema: {
           a: {type: 'number'},
           b: {type: 'string'}
         }
       });
-      TestSystem = systems.test;
 
       sceneEl.setAttribute('test', 'a: 50; b: horses');
-      system = new TestSystem(sceneEl);
+      system = new TestSystem(sceneEl, 'test', '');
       assert.equal(system.data.a, 50);
       assert.equal(system.data.b, 'horses');
     });
@@ -71,15 +65,14 @@ suite('System', function () {
       var system;
       var TestSystem;
 
-      AFRAME.registerSystem('test', {
+      TestSystem = AFRAME.registerSystem('test', {
         schema: {
           a: {default: 50},
           b: {default: 'horses'}
         }
       });
-      TestSystem = systems.test;
 
-      system = new TestSystem(sceneEl);
+      system = new TestSystem(sceneEl, 'test', '');
       assert.equal(system.data.a, 50);
       assert.equal(system.data.b, 'horses');
     });
@@ -89,10 +82,9 @@ suite('System', function () {
       var system;
       var TestSystem;
 
-      AFRAME.registerSystem('test', {schema: {}});
-      TestSystem = systems.test;
+      TestSystem = AFRAME.registerSystem('test', {schema: {}});
 
-      system = new TestSystem(sceneEl);
+      system = new TestSystem(sceneEl, 'test', '');
       assert.notOk(system.data);
     });
   });

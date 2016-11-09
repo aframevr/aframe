@@ -45,7 +45,8 @@ module.exports.registerSystem = function (name, definition) {
   NewSystem = function (el, attrName, id) {
     System.call(this, el, attrName, id);
   };
-  NewSystem.prototype = utils.createPrototype(name, definition, System, 'system', systems);
+  NewSystem.prototype = utils.createPrototype(name, definition, System.prototype, 'system',
+                                              systems);
   entry = componentModule.registerComponentConstructor(name, NewSystem, systems);
 
   // Initialize systems for already-running scenes.

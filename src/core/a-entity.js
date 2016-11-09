@@ -14,14 +14,16 @@ var MULTIPLE_COMPONENT_DELIMITER = '__';
 
 /**
  * Entity is a container object that components are plugged into to comprise everything in
- * the scene. In A-Frame, they inherently have position, rotation, and scale.
+ * the scene. In A-Frame, they inherently have position, rotation, and scale. The entity
+ * handles component lifecycle.
  *
  * To be able to take components, the scene element inherits from the entity definition.
+ * Since systems are similar to components, the entity also handles system lifecycle.
  *
- * @member {object} components - entity's currently initialized components.
+ * @member {object} components - Entity's currently initialized components.
  * @member {object} object3D - three.js object.
  * @member {array} states
- * @member {boolean} isPlaying - false if dynamic behavior of the entity is paused.
+ * @member {boolean} isPlaying - `false` if dynamic behavior of the entity is paused.
  */
 var proto = Object.create(ANode.prototype, {
   defaultComponents: {

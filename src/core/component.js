@@ -24,12 +24,13 @@ var styleParser = utils.styleParser;
  * @member {object} data - Component data populated by parsing the
  *   mapped attribute of the component plus applying defaults and mixins.
  */
-var Component = module.exports.Component = function (el, attrName, id) {
-  this.el = el;
-  this.sceneEl = el.sceneEl;
-  this.id = id;
+var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
-  this.updateCachedAttrValue(attrName);
+  this.el = el;
+  this.id = id;
+  this.sceneEl = el.sceneEl;
+
+  this.updateCachedAttrValue(attrValue);
 };
 
 Component.prototype = {
@@ -127,39 +128,38 @@ Component.prototype = {
   },
 
   /**
-   * Update the cache of the pre-parsed attribute value.
+   * Update cache for the HTML attribute using unparsed value.
    *
    * @param {string} value - HTML attribute value.
    */
   updateCachedAttrValue: function (value) {
-    var isSinglePropSchema = isSingleProp(this.schema);
     var attrValue = this.parseAttrValueForCache(value);
-    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
+    this.attrValue = extendProperties({}, attrValue, isSingleProp(this.schema));
   },
 
   /**
-   * Given an HTML attribute value parses the string
-   * based on the component schema. To avoid double parsings of
-   * strings into strings we store the original instead
-   * of the parsed one
+   * Given an HTML attribute value parses the string based on the component schema.
+   * To avoid double parsings of strings into strings, store the original value instead of the
+   * parsed one.
    *
-   * @param {string} value - HTML attribute value
+   * To avoid bogus double parsings. The cached values will be parsed when building
+   * component data. For instance when parsing a src id to its url. Cache the original
+   * string and not the parsed one (#monster -> models/monster.dae) so when building
+   * data again we parse the expected value.
+   *
+   * @param {string} value - HTML attribute value.
    */
   parseAttrValueForCache: function (value) {
-    var parsedValue;
+    var parsedValue;  // Return value.
+
+    // Already parsed.
     if (typeof value !== 'string') { return value; }
+
     if (isSingleProp(this.schema)) {
       parsedValue = this.schema.parse(value);
-      // To avoid bogus double parsings. The cached values will
-      // be parsed when building the component data.
-      // For instance when parsing a src id to it's url.
-      // We want to cache the original string and not the parsed
-      // one (#monster -> models/monster.dae) so when building
-      // data we parse the expected value.
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
-      // We just parse using the style parser to avoid double parsing
-      // of individual properties.
+      // Parse using the style parser to avoid double-parsing of individual properties.
       parsedValue = styleParser.parse(value);
     }
     return parsedValue;
@@ -264,8 +264,8 @@ module.exports.registerComponent = function (name, definition) {
     this.updateProperties(this.attrValue);
   };
 
-  NewComponent.prototype = utils.createPrototype(name, definition, Component, 'component',
-                                                 components);
+  NewComponent.prototype = utils.createPrototype(name, definition, Component.prototype,
+                                                 'component', components);
   return registerComponentConstructor(name, NewComponent, components);
 };
 
