@@ -192,9 +192,9 @@ Component.prototype = {
     if (value !== undefined) { this.updateCachedAttrValue(value); }
 
     if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
+      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue, true));
     }
-    this.data = buildData(el, this.name, this.schema, this.attrValue);
+    this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
     // Don't update if properties haven't changed
     if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
@@ -311,12 +311,13 @@ module.exports.registerComponent = function (name, definition) {
  *
  * @param {object} el - Element to build data from.
  * @param {object} name - Component name.
+ * @param {object} attrName - Attribute name associated to the component.
  * @param {object} schema - Component schema.
  * @param {object} elData - Element current data.
  * @param {boolean} silent - Suppress warning messages.
  * @return {object} The component data
  */
-function buildData (el, name, schema, elData, silent) {
+function buildData (el, name, attrName, schema, elData, silent) {
   var componentDefined = elData !== undefined && elData !== null;
   var data;
   var isSinglePropSchema = isSingleProp(schema);
@@ -335,7 +336,7 @@ function buildData (el, name, schema, elData, silent) {
   // 2. Mixin values.
   mixinEls.forEach(handleMixinUpdate);
   function handleMixinUpdate (mixinEl) {
-    var mixinData = mixinEl.getAttribute(name);
+    var mixinData = mixinEl.getAttribute(attrName);
     if (mixinData) {
       data = extendProperties(data, mixinData, isSinglePropSchema);
     }

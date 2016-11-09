@@ -935,6 +935,21 @@ suite('a-entity', function () {
       el.setAttribute('mixin', 'blue');
       assert.shallowDeepEqual(el.getAttribute('material').color, 'red');
     });
+
+    test('applies multiple components from mixin', function () {
+      var el = this.el;
+      var mixinId = 'sound';
+      var soundUrl = 'mysoundfile.mp3';
+      mixinFactory(mixinId, {
+        sound__1: 'src: url(' + soundUrl + '); autoplay: false',
+        sound__2: 'src: url(' + soundUrl + '); autoplay: true'
+      });
+      el.setAttribute('mixin', mixinId);
+      assert.equal(el.getAttribute('sound__1').src, soundUrl);
+      assert.equal(el.getAttribute('sound__1').autoplay, false);
+      assert.equal(el.getAttribute('sound__2').src, soundUrl);
+      assert.equal(el.getAttribute('sound__2').autoplay, true);
+    });
   });
 });
 
