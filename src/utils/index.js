@@ -171,5 +171,37 @@ module.exports.findAllScenes = function (el) {
   return matchingElements;
 };
 
+/**
+ * Helper for registering extendable A-Frame modules (e.g, components, systems).
+ *
+ * @param {string} moduleName - Name of instance of the module.
+ * @param {object} definition - Module prototype definition as plain JavaScript object.
+ * @param {string} moduleType - Type of module, used to generate error messages.
+ * @param {object} registeredModules - Object containing registered modules of the type.
+
+ * @returns {object} Prototype object.
+ */
+module.exports.createPrototype = function (moduleName, definition, BasePrototype, moduleType,
+                                           registeredModules) {
+  var proto = {};
+
+  // Format definition object to prototype object.
+  Object.keys(definition).forEach(function convertToPrototype (key) {
+    proto[key] = {
+      value: definition[key],
+      writable: true
+    };
+  });
+
+  // Check if already registered.
+  if (registeredModules[moduleName]) {
+    throw new Error('The %type `' + moduleName + '` has been already registered. ' +
+                    'Check that you are not loading two versions of the same %type' +
+                    'or two different %type of the same name.'.replace(/%type/g, moduleType));
+  }
+
+  return Object.create(BasePrototype, proto);
+};
+
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = require('./src-loader');

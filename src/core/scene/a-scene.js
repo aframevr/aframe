@@ -2,7 +2,6 @@
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
-var systems = require('../system').systems;
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
 var utils = require('../../utils/');
@@ -19,7 +18,7 @@ var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
 /**
- * Scene element, holds all entities.
+ * Scene element. Holds all entities.
  *
  * @member {number} animationFrameID
  * @member {array} behaviors - Component instances that have registered themselves to be
@@ -54,6 +53,7 @@ module.exports = registerElement('a-scene', {
         this.isScene = true;
         this.object3D = new THREE.Scene();
         this.render = bind(this.render, this);
+        this.sceneEl = this;
         this.systems = {};
         this.time = 0;
 
@@ -100,28 +100,11 @@ module.exports = registerElement('a-scene', {
         var resize = bind(this.resize, this);
         initMetaTags(this);
         initWakelock(this);
-        this.initSystems();
-
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
         this.play();
       },
       writable: window.debug
-    },
-
-    initSystems: {
-      value: function () {
-        Object.keys(systems).forEach(bind(this.initSystem, this));
-      }
-    },
-
-    initSystem: {
-      value: function (name) {
-        var system;
-        if (this.systems[name]) { return; }
-        system = this.systems[name] = new systems[name](this);
-        system.init();
-      }
     },
 
     /**
@@ -136,7 +119,7 @@ module.exports = registerElement('a-scene', {
 
     /**
      * @param {object} behavior - Generally a component. Must implement a .update() method to
-     *        be called on every tick.
+     *   be called on every tick.
      */
     addBehavior: {
       value: function (behavior) {
@@ -215,18 +198,6 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Wraps Entity.getAttribute to take into account for systems.
-     * If system exists, then return system data rather than possible component data.
-     */
-    getAttribute: {
-      value: function (attr) {
-        var system = this.systems[attr];
-        if (system) { return system.data; }
-        return AEntity.prototype.getAttribute.call(this, attr);
-      }
-    },
-
-    /**
      * `getAttribute` used to be `getDOMAttribute` and `getComputedAttribute` used to be
      * what `getAttribute` is now. Now legacy code.
      */
@@ -234,34 +205,6 @@ module.exports = registerElement('a-scene', {
       value: function (attr) {
         warn('`getComputedAttribute` is deprecated. Use `getAttribute` instead.');
         this.getAttribute(attr);
-      }
-    },
-
-    /**
-     * Wraps Entity.getDOMAttribute to take into account for systems.
-     * If system exists, then return system data rather than possible component data.
-     */
-    getDOMAttribute: {
-      value: function (attr) {
-        var system = this.systems[attr];
-        if (system) { return system.data; }
-        return AEntity.prototype.getDOMAttribute.call(this, attr);
-      }
-    },
-
-    /**
-     * Wraps Entity.setAttribute to take into account for systems.
-     * If system exists, then skip component initialization checks and do a normal
-     * setAttribute.
-     */
-    setAttribute: {
-      value: function (attr, value, componentPropValue) {
-        var system = this.systems[attr];
-        if (system) {
-          ANode.prototype.setAttribute.call(this, attr, value);
-          return;
-        }
-        AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
       }
     },
 
@@ -389,19 +332,13 @@ module.exports = registerElement('a-scene', {
      */
     tick: {
       value: function (time, timeDelta) {
-        var systems = this.systems;
-
         // Animations.
         TWEEN.update(time);
-        // Components.
-        this.behaviors.forEach(function (component) {
+
+        // Components (and systems).
+        this.behaviors.forEach(function runTick (component) {
           if (!component.el.isPlaying) { return; }
           component.tick(time, timeDelta);
-        });
-        // Systems.
-        Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tick) { return; }
-          systems[key].tick(time, timeDelta);
         });
       }
     },
