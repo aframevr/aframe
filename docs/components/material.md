@@ -5,6 +5,9 @@ layout: docs
 parent_section: components
 ---
 
+[fog]: ./fog.md
+[geometry]: ./geometry.md
+
 The material component gives appearance to an entity. We can define properties
 such as color, opacity, or texture. This is often paired with the [geometry
 component][geometry] which provides shape.
@@ -37,6 +40,9 @@ Here is an example of using an example custom material:
 
 ## Properties
 
+[flat]: #flat
+[standard]: #standard
+
 The material component has a few base properties. More properties will be
 available depending on the material applied.
 
@@ -63,8 +69,10 @@ A-Frame ships with a few built-in materials.
 
 ### `standard`
 
+[threestandardmaterial]: http://threejs.org/docs/#Reference/Materials/MeshStandardMaterial
+
 The `standard` material is the default material. It uses the physically-based
-[THREE.MeshStandardMaterial][standard].
+[THREE.MeshStandardMaterial][threestandardmaterial].
 
 #### Properties
 
@@ -159,6 +167,7 @@ For example:
 
 ### `flat`
 
+[basic]: http://threejs.org/docs/#Reference/Materials/MeshBasicMaterial
 
 The `flat` material uses the [THREE.MeshBasicMaterial][basic]. Flat materials
 are not affected by the scene's lighting conditions. This is useful for things
@@ -182,6 +191,8 @@ such as images or videos. Set `shader` to `flat`:
 | wireframeLinewidth   | Width in px of the rendered line.                                                                                                    | 2             |
 
 ## Textures
+
+[asm]: ../core/asset-management-system.md
 
 To set a texture using one of the built-in materials, specify the `src`
 property. `src` can be a selector to either an `<img>` or `<video>` element in the
@@ -233,6 +244,8 @@ selector for the `id` attribute (e.g., `#my-video`):
 ```
 
 #### Controlling Video Textures
+
+[mediaplayback]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_HTML5_audio_and_video#Controlling_media_playback
 
 To control the video playback such as pausing or seeking, we can use the video
 element to [control media playback][mediaplayback]. For example:
@@ -329,6 +342,8 @@ AFRAME.registerShader('custom', {
 
 ### Example
 
+[line-dashed]: http://threejs.org/docs/index.html#Reference/Materials/LineDashedMaterial
+
 To create a custom material, we have the `init` and `update` handlers set and
 update `this.material` to the desired material. Here is an example of
 registering a [`THREE.LinedDashedMaterial`][line-dashed]:
@@ -360,8 +375,13 @@ AFRAME.registerShader('line-dashed', {
 
 ## Register a Custom GLSL Shader
 
+[component-schema]: ../core/component.md#schema
+[shader-material]: http://threejs.org/docs/#Reference/Materials/ShaderMaterial
+
 We also use `registerShader` for registering
 [THREE.ShaderMaterial][shader-material]s to create custom shaders.
+
+[glsl]: https://en.wikipedia.org/wiki/OpenGL_Shading_Language
 
 We can provide our own [GLSL][glsl] vertex and fragment shaders (small programs
 that run on the GPU), and we can define a schema for their uniforms and
@@ -433,28 +453,8 @@ properties like we would with components:
 
 ### Additional Resources
 
+[shaderex]: https://github.com/aframevr/aframe/tree/50a07cac9cd2f764b9ff4cd0a5bb20e408f8f4d6/examples/test-shaders
+[shadertoy]: https://www.shadertoy.com
+
 - [A-Frame Shader Example][shaderex]
 - [ShaderToy][shadertoy]
-
-[asm]: ../core/asset-management-system.md
-[basic]: http://threejs.org/docs/#Reference/Materials/MeshBasicMaterial
-[built-in]: #built-in_shading_models
-[component-schema]: ../core/component.md#schema
-[corsimage]: https://developer.mozilla.org/docs/Web/HTML/CORS_enabled_image
-[cross-component-changes]: http://codepen.io/team/mozvr/pen/NxEpJe
-[customshader]: ../core/shaders.md#registering_a_custom_shader
-[flat]: ../core/shaders.md#flat_shading_model
-[fog]: ../components/fog.md
-[geometry]: ./geometry.md
-[glsl]: https://en.wikipedia.org/wiki/OpenGL_Shading_Language
-[line-dashed]: http://threejs.org/docs/index.html#Reference/Materials/LineDashedMaterial
-[material]: ../components/material.md
-[mediaplayback]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_HTML5_audio_and_video#Controlling_media_playback
-[register-custom-shaders]: #registering_a_custom_shader
-[shader-material]: http://threejs.org/docs/#Reference/Materials/ShaderMaterial
-[shaderex]: https://github.com/aframevr/aframe/tree/50a07cac9cd2f764b9ff4cd0a5bb20e408f8f4d6/examples/test-shaders
-[shaders]: ../core/shaders.md
-[shadertoy]: https://www.shadertoy.com
-[standard]: ../core/shaders.md#standard_shading_model
-[standard]: http://threejs.org/docs/#Reference/Materials/MeshStandardMaterial
-[threematerial]: http://threejs.org/docs/#Reference/Materials/Material

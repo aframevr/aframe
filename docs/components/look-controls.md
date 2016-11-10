@@ -37,5 +37,3 @@ component][components-camera].
 If you want to create your own component for look controls, you will have to
 copy and paste the HMD-tracking bits into your component. In the future, we may
 have a system for people to more easily implement their controls.
-
-[components-camera]: ../components/index.md

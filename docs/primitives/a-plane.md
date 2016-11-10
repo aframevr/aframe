@@ -5,6 +5,8 @@ layout: docs
 parent_section: primitives
 ---
 
+[geometry]: ../components/geometry.md
+
 The plane primitive creates flat surfaces using the [geometry][geometry]
 component with the type set to `plane`.
 
@@ -64,6 +66,3 @@ rotate it around the X-axis:
 ```html
 <a-plane rotation="-90 0 0"></a-plane>
 ```
-
-[common]: ./common-attributes.md
-[geometry]: ../components/geometry.md

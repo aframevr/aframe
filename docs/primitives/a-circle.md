@@ -66,5 +66,4 @@ To make a circle parallel to the ground, rotate it around the X-axis:
 <a-plane rotation="-90 0 0"></a-plane>
 ```
 
-[common]: ./common-attributes.md
 [geometry]: ../components/geometry.md

@@ -43,11 +43,11 @@ AFRAME.utils.coordinates.stringify({x: 1, y: 2, z: -3})
 
 ## `AFRAME.utils.entity`
 
-[getattr]: ./entity.md#getcomputedattribute
+[getattr]: ./entity.md#getattribute-componentname
 
 ### `.getComponentProperty(entity, componentName, delimiter='.')`
 
-Performs like [`Entity.getComputedAttribute`][getattr], but with support for
+Performs like [`Entity.getAttribute`][getattr], but with support for
 return an individual property for a multi-property component. `componentName`
 is a string that can either be a component name, or a component name delimited
 with a property name.
@@ -69,7 +69,7 @@ multi-property component.
 
 ### `.setComponentProperty(entity, componentName, value, delimiter)`
 
-[setattr]: ./entity.md#setattribute
+[setattr]: ./entity.md#setattribute-attr-value-componentattrvalue
 
 Performs like [`Entity.setAttribute`][setattr], but with support for setting an
 individual property for a multi-property component. `componentName` is a string

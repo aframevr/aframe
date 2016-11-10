@@ -6,10 +6,16 @@ parent_section: core
 order: 2
 ---
 
+[ecs]: ./index.md
+               .
 An entity is represented by the `<a-entity>` element. As defined in the
 [entity-component-system pattern][ecs], entities are placeholder objects to
 which we plug in components in order to provide them apperance, behavior,
 and functionality.
+
+[position]: ../components/position.md
+[rotation]: ../components/rotation.md
+[scale]: ../components/scale.md
 
 In A-Frame, entities are inherently attached with the [position][position],
 [rotation][rotation], and [scale][scale] components.
@@ -18,17 +24,25 @@ In A-Frame, entities are inherently attached with the [position][position],
 
 ## Example
 
-Consider the entity below. By itself, it has no appearance, behavior, or functionality. It does nothing:
+Consider the entity below. By itself, it has no appearance, behavior, or
+functionality. It does nothing:
 
 ```html
 <a-entity>
 ```
 
-We can attach components to it to make it render something or do something. To give it shape and appearance, we can attach the [geometry][geometry] and [material][material] components:
+[geometry]: ../components/geometry.md
+[material]: ../components/material.md
+
+We can attach components to it to make it render something or do something. To
+give it shape and appearance, we can attach the [geometry][geometry] and
+[material][material] components:
 
 ```html
 <a-entity geometry="primitive: box" material="color: red">
 ```
+
+[light]: ../components/light.md
 
 Or to make it emit light, we can further attach the [light][light] component:
 
@@ -49,15 +63,19 @@ We can simply retrieve an entity using DOM APIs.
 var el = document.querySelector('#mario');
 ```
 
-Once we have an entity, we have access to all of its properties and methods, which are detailed below.
+Once we have an entity, we have access to all of its properties and methods,
+which are detailed below.
 
 ## Properties
 
 ### `components`
 
-`<a-entity>.components` is an object of components attached to the entity. This gives us access to all of the entity's components including their data, methods, and API.
+`<a-entity>.components` is an object of components attached to the entity. This
+gives us access to all of the entity's components including their data,
+methods, and API.
 
-For example, if we wanted to grab an entity's three.js camera object or material object, we could reach into its components:
+For example, if we wanted to grab an entity's three.js camera object or
+material object, we could reach into its components:
 
 ```js
 var camera = document.querySelector('a-entity[camera]').components.camera.camera;
@@ -72,11 +90,17 @@ document.querySelector('a-entity[sound]').components.sound.pause();
 
 ### `isPlaying`
 
-Whether or not the entity is active and playing. If the entity is paused, then `isPlaying` will be false.
+Whether or not the entity is active and playing. If the entity is paused, then
+`isPlaying` will be false.
 
 ### `object3D`
 
-`<a-entity>.object3D` is a reference to the entity's [three.js `Object3D`][object3D] representation. More specifically, `object3D` will be a `THREE.Group` object that may contain different types of `THREE.Object3D`s such as cameras, meshes, lights, or sounds:
+[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
+
+`<a-entity>.object3D` is a reference to the entity's [three.js
+`Object3D`][object3d] representation. More specifically, `object3D` will be a
+`THREE.Group` object that may contain different types of `THREE.Object3D`s such
+as cameras, meshes, lights, or sounds:
 
 ```js
 // Gaining access to the internal three.js scene graph.
@@ -89,9 +113,12 @@ The different types `Object3D`s can be accessed through `object3DMap`.
 
 ### `object3DMap`
 
-An entity's `object3DMap` is a JavaScript object that gives access to the different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that may have been registered by components.
+An entity's `object3DMap` is a JavaScript object that gives access to the
+different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds)
+that may have been registered by components.
 
-For an entity with a [geometry][geometry] and [light][light] components attached, `object3DMap` might look like:
+For an entity with a [geometry][geometry] and [light][light] components
+attached, `object3DMap` might look like:
 
 ```js
 {
@@ -100,7 +127,8 @@ For an entity with a [geometry][geometry] and [light][light] components attached
 }
 ```
 
-An entity's `THREE.Object3D`s can be managed using `getOrCreateObject3D`, `setObject3D`, and `removeObject3D`.
+An entity's `THREE.Object3D`s can be managed using `getOrCreateObject3D`,
+`setObject3D`, and `removeObject3D`.
 
 ### `sceneEl`
 
@@ -116,7 +144,8 @@ console.log(entity.sceneEl === sceneEl);  // >> true.
 
 ### `addState (stateName)`
 
-`addState` will push a state onto the entity. This will emit the `stateadded` event, and the state can then be checked for existence using `.is`:
+`addState` will push a state onto the entity. This will emit the `stateadded`
+event, and the state can then be checked for existence using `.is`:
 
 
 ```js
@@ -131,6 +160,8 @@ entity.is('selected');  // >> true
 ```
 
 ### `emit (name, detail, bubbles)`
+
+[animation-begin]: ./animations.md#begin
 
 `emit` emits a custom DOM event on the entity. For example, we can emit an event to
 [trigger an animation][animation-begin]:
@@ -148,13 +179,16 @@ We can also pass event detail or data as the second argument:
 entity.emit('collide', { target: collidingEntity });
 ```
 
-The event will bubble by default. we can tell it not to bubble by passing `false` for `bubble`:
+The event will bubble by default. we can tell it not to bubble by passing
+`false` for `bubble`:
 
 ```js
 entity.emit('sink', null, false);
 ```
 
 ### `flushToDOM (recursive)`
+
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 
 `flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
@@ -218,7 +252,8 @@ entity.getDOMAttribute('position');
 
 ### `getObject3D (type)`
 
-`getObject3D` looks up a child `THREE.Object3D` of the entity that is registered under `type` for `object3DMap`:
+`getObject3D` looks up a child `THREE.Object3D` of the entity that is
+registered under `type` for `object3DMap`:
 
 ```js
 AFRAME.registerComponent('example-mesh', {
@@ -232,7 +267,10 @@ AFRAME.registerComponent('example-mesh', {
 
 ### `getOrCreateObject3D (type, Constructor)`
 
-If the entity does not have a `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the passed `Constructor`. If the entity does have an `THREE.Object3D` registered under `type`, `getOrCreateObject3D` will act as `getObject3D`:
+If the entity does not have a `THREE.Object3D` registered under `type`,
+`getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the
+passed `Constructor`. If the entity does have an `THREE.Object3D` registered
+under `type`, `getOrCreateObject3D` will act as `getObject3D`:
 
 ```js
 AFRAME.registerComponent('example-geometry', {
@@ -245,7 +283,12 @@ AFRAME.registerComponent('example-geometry', {
 
 ### `pause ()`
 
-`pause` will stop any dynamic behavior as defined by animations and components. When an entity is paused, it will stop all of its animations and call `Component.pause` on each of its components. It is up to the components to implement how they paused, but they generally remove event listeners and background behavior. An entity will call `pause` on all of its children when it is paused itself.
+`pause` will stop any dynamic behavior as defined by animations and components.
+When an entity is paused, it will stop all of its animations and call
+`Component.pause` on each of its components. It is up to the components to
+implement how they paused, but they generally remove event listeners and
+background behavior. An entity will call `pause` on all of its children when it
+is paused itself.
 
 ```js
 // <a-entity id="spinning-jumping-ball">
@@ -256,24 +299,32 @@ For example, the [look-controls component](../components/look-controls.md) on pa
 
 ### `play ()`
 
-`play` will start any dynamic behavior as defined by animations and components. This is automatically called when the entity is attached. When an entity calls `play`, it will call `play` on all of its children.
+`play` will start any dynamic behavior as defined by animations and components.
+This is automatically called when the entity is attached. When an entity calls
+`play`, it will call `play` on all of its children.
 
 ```js
 entity.pause();
 entity.play();
 ```
 
+[sound]: ../components/sound.md
+
 For example, the [sound component][sound] on play will begin playing the sound.
 
 ### `setAttribute (attr, value, componentAttrValue)`
 
-If `attr` is not the name of a registered component or the component is a single-property component, `setAttribute` behaves mostly as it normally would:
+If `attr` is not the name of a registered component or the component is a
+single-property component, `setAttribute` behaves mostly as it normally would:
 
 ```js
 entity.setAttribute('visible', false);
 ```
 
-Though if `attr` is the name of a registered component, it may handle special parsing for the value. For example, the [position component][position] is a single-property component, but its property type parser allows it to take an object:
+Though if `attr` is the name of a registered component, it may handle special
+parsing for the value. For example, the [position component][position] is a
+single-property component, but its property type parser allows it to take an
+object:
 
 ```js
 entity.setAttribute('position', { x: 1, y: 2, z: 3 });
@@ -281,7 +332,9 @@ entity.setAttribute('position', { x: 1, y: 2, z: 3 });
 
 #### Putting Multi-Property Component Data
 
-To set or replace component data for a multi-property component, we can pass the name of a registered component as the `attr`, and pass an object of properties as the `value`:
+To set or replace component data for a multi-property component, we can pass
+the name of a registered component as the `attr`, and pass an object of
+properties as the `value`:
 
 ```js
 // All previous properties for the light component will be removed and overwritten.
@@ -294,7 +347,9 @@ entity.setAttribute('light', {
 
 #### Updating Multi-Property Component Data
 
-To update individual properties for a multi-property component, we can pass the name of registered component as the `attr`, a property name as the second argument, and the property value to set as the third argument:
+To update individual properties for a multi-property component, we can pass the
+name of registered component as the `attr`, a property name as the second
+argument, and the property value to set as the third argument:
 
 ```js
 // All previous properties for the material component (besides the color)  will be unaffected.
@@ -303,7 +358,10 @@ entity.setAttribute('material', 'color', 'crimson');
 
 ### `setObject3D (type, obj)`
 
-`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type` under the entity's `object3DMap`. `obj` will be added as a child of the entity's root `object3D`. Passing in the value `null` for `obj` has the effect of unregistering the `THREE.Object3D` previously registered under `type`.
+`setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type`
+under the entity's `object3DMap`. `obj` will be added as a child of the
+entity's root `object3D`. Passing in the value `null` for `obj` has the effect
+of unregistering the `THREE.Object3D` previously registered under `type`.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
@@ -315,7 +373,9 @@ AFRAME.registerComponent('example-orthogonal-camera', {
 
 ### `removeAttribute (attr)`
 
-If `attr` is the name of a registered component, along with removing the attribute from the DOM, `removeAttribute` will also detach the component from the entity, invoking the component's `remove` lifecycle method.
+If `attr` is the name of a registered component, along with removing the
+attribute from the DOM, `removeAttribute` will also detach the component from
+the entity, invoking the component's `remove` lifecycle method.
 
 ```js
 entity.removeAttribute('sound');  // The entity will no longer play sound.
@@ -323,7 +383,10 @@ entity.removeAttribute('sound');  // The entity will no longer play sound.
 
 ### `removeObject3D (type)`
 
-`removeObject3D` removes the object specified by `type` from the entity's `THREE.Group` and thus from the scene. This will update the entity's `object3DMap`, setting the value of the `type` key to `null`. This is generally called from a component, often within the remove handler:
+`removeObject3D` removes the object specified by `type` from the entity's
+`THREE.Group` and thus from the scene. This will update the entity's
+`object3DMap`, setting the value of the `type` key to `null`. This is generally
+called from a component, often within the remove handler:
 
 ```js
 AFRAME.registerComponent('example-light', {
@@ -343,7 +406,9 @@ AFRAME.registerComponent('example-light', {
 
 ### `removeState (stateName)`
 
-`removeState` will pop a state from the entity. This will emit the `stateremoved` event, and the state can then be checked for its removal using `.is`:
+`removeState` will pop a state from the entity. This will emit the
+`stateremoved` event, and the state can then be checked for its removal using
+`.is`:
 
 ```js
 entity.addEventListener('stateremoved', function (evt) {
@@ -406,26 +471,14 @@ entity.addEventListener('componentchanged', function (evt) {
 });
 ```
 
-#### Listening for child elements being attached
+#### Listening for Child Elements Being Attached
 
 We can use the `child-attached` event to listen for elements being attached:
 
 ```js
-entity.addEventListener('child-attached', function(evt) {
+entity.addEventListener('child-attached', function (evt) {
   if (evt.detail.el.tagName.toLowerCase() === 'a-box') {
     console.log('a box element has been attached');
   };
-));
+});
 ```
-
-[animation-begin]: ../core/animation.md#Begin
-[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
-[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
-[ecs]: ../core/
-[geometry]: ../components/geometry.md
-[light]: ../components/light.md
-[material]: ../components/material.md
-[position]: ../components/position.md
-[rotation]: ../components/rotation.md
-[scale]: ../components/scale.md
-[sound]: ../components/sound.md

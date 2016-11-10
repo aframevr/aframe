@@ -75,7 +75,7 @@ Uploader][uploader], a service that serves files with CORS headers set.
 
 [corsimage]: https://developer.mozilla.org/docs/Web/HTML/CORS_enabled_image
 
-Given that CORS headers *are* set, `<a-assets>` will automatically set
+Given that [CORS headers][corsimage] *are* set, `<a-assets>` will automatically set
 `crossorigin` attributes on media elements (e.g., `<audio>`, `<img>`,
 `<video>`) if it detects the resource is on a different domain.
 
