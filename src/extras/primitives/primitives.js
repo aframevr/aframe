@@ -24,26 +24,13 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       defaultComponentsFromPrimitive: {
         value: definition.defaultComponents || definition.defaultAttributes || {}
       },
-
-      deprecated: {
-        value: definition.deprecated || null
-      },
-
-      deprecatedMappings: {
-        value: definition.deprecatedMappings || {}
-      },
-
-      mappings: {
-        value: definition.mappings || {}
-      },
-
-      transforms: {
-        value: definition.transforms || {}
-      },
+      deprecated: {value: definition.deprecated || null},
+      deprecatedMappings: {value: definition.deprecatedMappings || {}},
+      mappings: {value: definition.mappings || {}},
+      transforms: {value: definition.transforms || {}},
 
       createdCallback: {
         value: function () {
-          this.componentData = {};
           if (definition.deprecated) {
             console.warn(definition.deprecated);
           }
@@ -52,67 +39,74 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
       attachedCallback: {
         value: function () {
+          var attr;
+          var Component;
+          var initialComponents;
+          var i;
+          var mapping;
+          var mixins;
+          var path;
           var self = this;
-          var attributes = this.attributes;
-          this.applyDefaultComponents();
-          // Apply initial attributes.
-          Object.keys(attributes).forEach(function applyInitial (attributeName) {
-            var attr = attributes[attributeName];
-            self.syncAttributeToComponent(attr.name, attr.value);
+
+          // Gather component data from default components.
+          initialComponents = utils.extend({}, this.defaultComponentsFromPrimitive);
+
+          // Gather component data from mixins.
+          mixins = this.getAttribute('mixin');
+          if (mixins) {
+            mixins = mixins.trim().split(' ');
+            mixins.forEach(function (mixinId) {
+              var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
+              Object.keys(mixinComponents).forEach(function setComponent (name) {
+                initialComponents[name] = utils.extendDeep(
+                  initialComponents[name], mixinComponents[name]);
+              });
+            });
+          }
+
+          for (i = 0; i < this.attributes.length; i++) {
+            attr = this.attributes[i];
+
+            // Gather component data from mappings.
+            mapping = this.mappings[attr.name];
+            if (mapping) {
+              path = utils.entity.getComponentPropertyPath(mapping);
+              initialComponents[path[0]][path[1]] = attr.value;
+              continue;
+            }
+
+            // Gather component data from components.
+            if (components[attr.name]) {
+              Component = components[attr.name];
+              if (Component.isSingleProp) {
+                initialComponents[attr.name] = attr.value;
+              } else {
+                initialComponents[attr.name] = utils.extendDeep(
+                  initialComponents[attr.name], Component.parse(attr.value || {}));
+              }
+            }
+          }
+
+          // Set components.
+          Object.keys(initialComponents).forEach(function initComponent (componentName) {
+            self.setAttribute(componentName, initialComponents[componentName]);
           });
         }
       },
 
       /**
        * Sync to attribute to component property whenever mapped attribute changes.
-       */
-      attributeChangedCallback: {
-        value: function (attr, oldVal, newVal) {
-          this.syncAttributeToComponent(attr, newVal);
-        }
-      },
-
-      applyDefaultComponents: {
-        value: function () {
-          var self = this;
-          var defaultData = this.defaultComponentsFromPrimitive;
-
-          // Apply default components.
-          Object.keys(defaultData).forEach(function applyDefault (componentName) {
-            var componentData = defaultData[componentName];
-
-            // Set component properties individually to not overwrite user-defined components.
-            if (componentData instanceof Object) {
-              var component = components[componentName];
-              var attrValues = self.getDOMAttribute(componentName) || {};
-              var data = component.parse(attrValues);
-
-              // Check if component property already defined.
-              Object.keys(componentData).forEach(function setProperty (propName) {
-                if (data[propName]) { return; }
-                data[propName] = componentData[propName];
-              });
-              self.setAttribute(componentName, data);
-              return;
-            }
-
-            // Component is single-property schema, just set the attribute.
-            self.setAttribute(componentName, componentData);
-          });
-        }
-      },
-
-      /**
        * If attribute is mapped to a component property, set the component property using
        * the attribute value.
        */
-      syncAttributeToComponent: {
-        value: function (attr, value) {
+      attributeChangedCallback: {
+        value: function (attr, oldVal, value) {
           var componentName = this.mappings[attr];
 
           if (attr in this.deprecatedMappings) {
             console.warn(this.deprecatedMappings[attr]);
           }
+
           if (!attr || !componentName) { return; }
 
           // Run transform.

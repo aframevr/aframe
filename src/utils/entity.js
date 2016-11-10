@@ -1,4 +1,15 @@
 /**
+ * Split a delimited component property string (e.g., `material.color`) to an object
+ * containing `component` name and `property` name. If there is no delimiter, just return the
+ * string back.
+ */
+module.exports.getComponentPropertyPath = function (str, delimiter) {
+  delimiter = delimiter || '.';
+  if (str.indexOf(delimiter) === -1) { return str; }
+  return str.split(delimiter);
+};
+
+/**
  * Get component property using encoded component name + component property name with a
  * delimiter.
  */

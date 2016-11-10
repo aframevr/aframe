@@ -286,6 +286,7 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    isSingleProp: isSingleProp(NewComponent.prototype.schema),
     multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
