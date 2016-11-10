@@ -5,9 +5,11 @@ layout: docs
 parent_section: components
 ---
 
+[position]: ./position.md
+
 The sound component defines the entity as a source of sound or audio. The sound
 component is positional and is therefore affected by the
-[components-position](position.md).
+[components-position][position].
 
 ## Example
 
@@ -88,5 +90,3 @@ And to play the sound:
 ```js
 entity.components.sound.playSound();
 ```
-
-[components-position]: ./position.md

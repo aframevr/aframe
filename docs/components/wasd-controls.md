@@ -5,6 +5,8 @@ layout: docs
 parent_section: components
 ---
 
+[components-camera]: ./camera.md
+
 The wasd-controls component defines the behavior of an entity to be controlled by the WASD keyboard keys. It is usually used alongside the [camera component][components-camera].
 
 ## Example
@@ -25,5 +27,3 @@ The wasd-controls component defines the behavior of an entity to be controlled b
 | fly          | Whether or not movement is restricted to the entity's initial plane.     | false         |
 | wsAxis       | Axis that the `W` and `S` keys act upon.                                 | z             |
 | wsInverted   | Whether the axis that the W and S keys act upon are inverted.            | false         |
-
-[components-camera]: ../components/index.md

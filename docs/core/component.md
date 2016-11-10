@@ -669,25 +669,17 @@ And voila!
 </span></div>
 
 [camera]: ../components/camera.md
-[collide]: https://github.com/dmarcos/a-invaders/tree/master/js/components
 [component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
-[docs]: ./index.md
 [ecs]: ./index.md
 [entity]: ./entity.md
-[follow]: https://jsbin.com/dasefeh/edit?html,output
-[geometry]: ../components/geometry.md
-[layout]: https://github.com/ngokevin/aframe-layout-component
 [light]: ../components/light.md
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
-[look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [multiple]: #multiple-instancing
-[physics]: https://github.com/ngokevin/aframe-physics-components
 [position]: ../components/position.md
 [removeObject3d]: ./entity.md#remove-object3d
 [rotation]: ../components/rotation.md
 [sound]: ../components/sound.md
-[text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
 [visible]: ../components/visible.md
 [vrjump]: http://thevrjump.com

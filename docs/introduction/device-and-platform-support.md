@@ -46,7 +46,6 @@ S6 for Android*.
 [6dof]: https://en.wikipedia.org/wiki/Six_degrees_of_freedom
 [caniusewebgl]: http://caniuse.com/#feat=webgl
 [chrome]: https://webvr.info/get-chrome/
-[components]: ./components.md
 [iswebvrready]: https://iswebvrready.org
 [webvr-1.0]: https://w3c.github.io/webvr/
 [webvr-polyfill]: https://github.com/borismus/webvr-polyfill

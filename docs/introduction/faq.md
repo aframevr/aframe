@@ -7,10 +7,10 @@ order: 5
 ---
 
 [awesome]: https://github.com/aframevr/awesome-aframe
+[ecs]: ../core/index.md
 [github]: http://github.com/aframevr/aframe
 [html-shader]: https://github.com/mayognaise/aframe-html-shader
 [three]: http://threejs.org
-[ecs]: ../docs/core
 [slack]: https://aframevr-slack.herokuapp.com/
 [twitter]: https://twitter.com/aframevr
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
@@ -68,7 +68,7 @@ reduces the DOM overhead and most modifications are done directly in memory,
 similar to Virtual DOM.
 - HTML attributes explicitly set from an HTML file are cached in memory.
 
-[bestpractices]: ../introduction/best-pratices.md
+[bestpractices]: ../introduction/best-practices.md
 
 A-Frame provides reasonable defaults that yield good performance for the most
 common use cases. However, performance is ultimately determined by the
@@ -175,9 +175,12 @@ We (Mozilla) are currently improving the link traversal user experience within
 the browser as well as helping iterate the API. Once link traversal gets into a
 good state on the platform side, A-Frame should have a link component ready.
 
-## What type of units does A-Frame use? 
+## What type of units does A-Frame use?
 
-A-Frame uses life-like meters. It maintains a 1:1 ratio. 5 units in A-Frame is equal to 5 meters in real life. Furthermore, when using programs like Blender, configured in imperial or metric mode, measurements will also translate 1:1. 10 feet in Blender will equal 10 feet in real life.
+A-Frame uses life-like meters. It maintains a 1:1 ratio. 5 units in A-Frame is
+equal to 5 meters in real life. Furthermore, when using programs like Blender,
+configured in imperial or metric mode, measurements will also translate 1:1. 10
+feet in Blender will equal 10 feet in real life.
 
 ## How is A-Frame different from VRML?
 
@@ -195,7 +198,7 @@ existing web development frameworks and tools.
 
 [aframe-components]: https://github.com/aframevr/aframe/tree/master/src/components
 [awesome-components]: https://github.com/aframevr/awesome-aframe#components
-[component]: ../docs/core/component.html
+[component]: ../core/component.md
 
 A-Frame ships with a handful of components and primitives. However being based
 on top of an [entity-component-system pattern][ecs], if a feature doesn't

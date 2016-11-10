@@ -23,5 +23,3 @@ attached to the scene by default so it's automatically available on each scene.
 | width      | The width in pixels of the screenshot taken.                   | 4096            |
 | height     | The height in pixels of the screenshot taken.                  | 2048            |
 | projection | The screenshot projection: `perspective` or `equirectangular`. | equirectangular |
-
-[scene]: ../core/scene.md
