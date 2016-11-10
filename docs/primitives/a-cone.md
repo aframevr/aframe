@@ -23,22 +23,38 @@ The cone primitive creates a cone shape. It is an entity that prescribes the [ge
 
 ## Attributes
 
-| Attribute       | Component Mapping       | Default Value |
-| --------        | -----------------       | ------------- |
-| color           | material.color          | #FFF          |
-| height          | geometry.height         | 1             |
-| metalness       | material.metalness      | 0             |
-| opacity         | material.opacity        | 1             |
-| open-ended      | geometry.openEnded      | false         |
-| radius-bottom   | geometry.radiusBottom   | 1             |
-| radius-top      | geometry.radiusTop      | 0.8           |
-| repeat          | material.repeat         | None          |
-| roughness       | material.roughness      | 0.5           |
-| segments-height | geometry.segmentsHeight | 18            |
-| segments-radial | geometry.segmentsRadial | 36            |
-| shader          | material.shader         | standard      |
-| side            | material.side           | front         |
-| src             | material.src            | None          |
-| theta-length    | geometry.thetaLength    | 360           |
-| theta-start     | geometry.thetaStart     | 0             |
-| transparent     | material.transparent    | false         |
+
+| Attribute                        | Component Mapping                      | Default Value |
+| --------                         | -----------------                      | ------------- |
+| ambient-occlusion-map            | material.ambientOcclusionMap           | None          |
+| ambient-occlusion-map-intensity  | material.ambientOcclusionMapIntensity  | 1             |
+| ambient-occlusion-texture-offset | material.ambientOcclusionTextureOffset | 0 0           |
+| ambient-occlusion-texture-repeat | material.ambientOcclusionTextureRepeat | 1 1           |
+| color                            | material.color                         | #FFF          |
+| displacement-bias                | material.displacementBias              | 0.5           |
+| displacement-map                 | material.displacementMap               | None          |
+| displacement-scale               | material.displacementScale             | 1             |
+| displacement-texture-offset      | material.displacementTextureOffset     | 0 0           |
+| displacement-texture-repeat      | material.displacementTextureRepeat     | 1 1           |
+| env-map                          | material.envMap                        | None          |
+| fog                              | material.fog                           | true          |
+| height                           | material.height                        | 256           |
+| metalness                        | material.metalness                     | 0             |
+| normal-map                       | material.normalMap                     | None          |
+| normal-scale                     | material.normalScale                   | 1 1           |
+| normal-texture-offset            | material.normalTextureOffset           | 0 0           |
+| normal-texture-repeat            | material.normalTextureRepeat           | 1 1           |
+| open-ended                       | geometry.openEnded                     | false         |
+| radius-bottom                    | geometry.radiusBottom                  | 1             |
+| radius-top                       | geometry.radiusTop                     | 0.8           |
+| repeat                           | material.repeat                        | 1 1           |
+| roughness                        | material.roughness                     | 0.5           |
+| segments-height                  | geometry.segmentsHeight                | 18            |
+| segments-radial                  | geometry.segmentsRadial                | 36            |
+| spherical-env-map                | material.sphericalEnvMap               | None          |
+| src                              | material.src                           | None          |
+| theta-length                     | geometry.thetaLength                   | 360           |
+| theta-start                      | geometry.thetaStart                    | 0             |
+| width                            | material.width                         | 512           |
+| wireframe                        | material.wireframe                     | false         |
+| wireframe-linewidth              | material.wireframeLinewidth            | 2             |

@@ -28,7 +28,7 @@ geometryNames.forEach(function (geometryName) {
     rows[unCamelCase(property)] = '|' + [
       unCamelCase(property),
       'geometry.' + property,
-      geometry.schema[property].default
+      geometry.schema[property].stringify(geometry.schema[property].default)
     ].join('|') + '|';
   });
 
@@ -43,7 +43,7 @@ geometryNames.forEach(function (geometryName) {
       mapping,
       (materialProp.default === undefined || materialProp.default === null ||
        materialProp.default === '') ?
-        'None' : materialProp.default
+        'None' : materialProp.stringify(materialProp.default)
     ].join('|') + '|';
   });
 
