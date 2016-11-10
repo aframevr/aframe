@@ -167,27 +167,56 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Set a THREE.Object3D into the map.
+   *
+   * @param {string} type - Developer-set name of the type of object, will be unique per type.
+   * @param {object} obj - A THREE.Object3D.
+   */
   setObject3D: {
     value: function (type, obj) {
+      var oldObj;
       var self = this;
-      var oldObj = this.object3DMap[type];
-      if (oldObj) { this.object3D.remove(oldObj); }
-      if (obj instanceof THREE.Object3D) {
-        obj.el = self;
-        this.object3D.add(obj);
-        if (obj.children.length) {
-          obj.traverse(function bindEl (child) {
-            child.el = self;
-          });
-        }
+
+      if (!(obj instanceof THREE.Object3D)) {
+        throw new Error(
+          '`Entity.setObject3D` was called with an object that was not an instance of ' +
+          'THREE.Object3D.'
+        );
       }
+
+      // Remove existing object of the type.
+      oldObj = this.getObject3D(type);
+      if (oldObj) { this.object3D.remove(oldObj); }
+
+      // Set references to A-Frame entity.
+      obj.el = this;
+      if (obj.children.length) {
+        obj.traverse(function bindEl (child) {
+          child.el = self;
+        });
+      }
+
+      // Add.
+      this.object3D.add(obj);
       this.object3DMap[type] = obj;
+      this.emit('object3dset', {object: obj, type: type});
     }
   },
 
+  /**
+   * Remove object from scene and entity object3D map.
+   */
   removeObject3D: {
     value: function (type) {
-      this.setObject3D(type, null);
+      var obj = this.getObject3D(type);
+      if (!obj) {
+        warn('Tried to remove `Object3D` of type:', type, 'which was not defined.');
+        return;
+      }
+      this.object3D.remove(obj);
+      delete this.object3DMap[type];
+      this.emit('object3dremove', {type: type});
     }
   },
 
@@ -195,8 +224,8 @@ var proto = Object.create(ANode.prototype, {
    * Gets or creates an object3D of a given type.
 
    * @param {string} type - Type of the object3D.
-   * @param {string} Constructor - Constructor to use if need to create the object3D.
-   * @type {Object}
+   * @param {string} Constructor - Constructor to use to create the object3D if needed.
+   * @returns {object}
    */
   getOrCreateObject3D: {
     value: function (type, Constructor) {
@@ -208,7 +237,8 @@ var proto = Object.create(ANode.prototype, {
       return object3D;
     }
   },
-   /**
+
+  /**
    * Add child entity.
    *
    * @param {Element} el - Child entity.
