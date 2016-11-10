@@ -622,43 +622,82 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * If attribute is a component, setAttribute will apply the value to the
-   * existing component data, not replace it. Examples:
+   * setAttribute can:
    *
-   * Examples:
+   * 1. Set a single property of a multi-property component.
+   * 2. Set multiple properties of a multi-property component.
+   * 3. Replace properties of a multi-property component.
+   * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
-   * setAttribute('id', 'my-element');
-   * setAttribute('material', { color: 'crimson' });
-   * setAttribute('material', 'color', 'crimson');
-   *
-   * @param {string} attr - Attribute name. setAttribute will initialize or update
-   *        a component if the name corresponds to a registered component.
-   * @param {string|object} value - If a string, setAttribute will update the attribute or.
-   *        component. If an object, the value will be mixed into the component.
-   * @param {string} componentPropValue - If defined, `value` will act as the property
-   *        name and setAttribute will only set a single component property.
+   * @param {string} attrName - Component or attribute name.
+   * @param {string|object} arg1 - Can be a property name or object of properties.
+   * @param {string|bool} arg2 - Can be a value, or boolean indicating whether to update or
+   *   replace.
    */
   setAttribute: {
-    value: function (attr, value, componentPropValue) {
+    value: function (attrName, arg1, arg2) {
       var componentName;
-      var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      var isDebugMode;
 
-      componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+      // Determine which type of setAttribute to call based on the types of the arguments.
+      componentName = attrName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
-        // Just update one of the component properties.
-        if (typeof value === 'string' && componentPropValue !== undefined) {
-          this.updateComponentProperty(attr, value, componentPropValue);
+        if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
+          singlePropertyUpdate(this, attrName, arg1, arg2);
+        } else if (typeof arg1 === 'object' && arg2 === true) {
+          multiPropertyClobber(this, attrName, arg1);
         } else {
-          this.updateComponent(attr, value);
+          componentUpdate(this, attrName, arg1);
         }
 
         // In debug mode, write component data up to the DOM.
-        if (isDebugMode) { this.components[attr].flushToDOM(); }
+        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+        if (isDebugMode) { this.components[attrName].flushToDOM(); }
         return;
+      } else {
+        normalSetAttribute(this, attrName, arg1);
       }
 
-      ANode.prototype.setAttribute.call(this, attr, value);
-      if (attr === 'mixin') { this.mixinUpdate(value); }
+      /**
+       * Just update one of the component properties.
+       * >> setAttribute('foo', 'bar', 'baz')
+       */
+      function singlePropertyUpdate (el, componentName, propName, propertyValue) {
+        el.updateComponentProperty(componentName, propName, propertyValue);
+      }
+
+      /**
+       * Just update multiple component properties at once for a multi-property component.
+       * >> setAttribute('foo', {bar: 'baz'})
+       */
+      function componentUpdate (el, componentName, propValue) {
+        var component = el.components[componentName];
+        if (component && typeof propValue === 'object') {
+          // Extend existing component data.
+          el.updateComponent(
+            componentName,
+            utils.extendDeep(utils.extendDeep({}, component.data), propValue));
+        } else {
+          el.updateComponent(componentName, propValue);
+        }
+      }
+
+      /**
+       * Pass in complete data set for a multi-property component.
+       * >> setAttribute('foo', {bar: 'baz'}, true)
+       */
+      function multiPropertyClobber (el, componentName, propObject) {
+        el.updateComponent(componentName, propObject);
+      }
+
+      /**
+       * Just update one of the component properties.
+       * >> setAttribute('id', 'myEntity')
+       */
+      function normalSetAttribute (el, attrName, value) {
+        ANode.prototype.setAttribute.call(el, attrName, value);
+        if (attrName === 'mixin') { el.mixinUpdate(value); }
+      }
     },
     writable: window.debug
   },
