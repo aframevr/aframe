@@ -463,7 +463,7 @@ into the tick handler.
 This is useful for things that need to update constantly such as controls or
 physics.
 
-### `.pause() and `.play()`
+### `.pause()` and `.play()`
 
 The `.pause` and `.play` methods are invoked when the entity calls its own
 `.pause` or `.play` methods. Components should use this to stop or resume any
@@ -631,7 +631,10 @@ want to more granularly update objects for better performance.
 
 #### Remove
 
-For removal of the line mesh from the entity, we use [`Entity.removeObject3D`][removeObject3d]:
+[removeobject3d]: ./entity.md#removeobject3d-type
+
+For removal of the line mesh from the entity, we use
+[`Entity.removeObject3D`][removeobject3d]:
 
 ```js
 remove: function () {
@@ -677,7 +680,6 @@ And voila!
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [multiple]: #multiple-instancing
 [position]: ../components/position.md
-[removeObject3d]: ./entity.md#remove-object3d
 [rotation]: ../components/rotation.md
 [sound]: ../components/sound.md
 [three]: http://threejs.org/
