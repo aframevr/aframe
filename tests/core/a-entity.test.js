@@ -551,7 +551,7 @@ suite('a-entity', function () {
   });
 
   suite('setObject3D', function () {
-    test('sets the object3D for the given type', function () {
+    test('sets an object3D for a given type', function () {
       var el = this.el;
       var object3D = new THREE.Group();
       el.setObject3D('mesh', object3D);
@@ -559,14 +559,7 @@ suite('a-entity', function () {
       assert.equal(object3D.el, el);
     });
 
-    test('resets the object3D for a given type', function () {
-      var el = this.el;
-      var nullObj = null;
-      el.setObject3D('mesh', nullObj);
-      assert.equal(el.getObject3D('mesh'), nullObj);
-    });
-
-    test('binds el to object3D.children', function () {
+    test('binds el to object3D children', function () {
       var el = this.el;
       var parentObject = new THREE.Object3D();
       var childObject = new THREE.Object3D();
@@ -574,15 +567,58 @@ suite('a-entity', function () {
       el.setObject3D('mesh', parentObject);
       assert.equal(el.getObject3D('mesh').children[0].el, el);
     });
+
+    test('emits an event', function (done) {
+      var el = this.el;
+      var mesh = new THREE.Mesh();
+      el.addEventListener('object3dset', evt => {
+        assert.equal(evt.detail.object, mesh);
+        assert.equal(evt.detail.type, 'mesh');
+        done();
+      });
+      el.setObject3D('mesh', mesh);
+    });
+
+    test('throws an error if object is not a THREE.Object3D', function () {
+      assert.throws(() => {
+        this.el.setObject3D('mesh', function () {});
+      }, Error);
+    });
+  });
+
+  suite('removeObject3D', () => {
+    test('removes object3D', function () {
+      var el = this.el;
+      el.setObject3D('mesh', new THREE.Mesh());
+      el.removeObject3D('mesh', new THREE.Mesh());
+      assert.notOk(el.getObject3D('mesh'));
+      assert.notOk('mesh' in el.object3DMap);
+    });
+
+    test('handles trying to remove object3D that is not set', function () {
+      var el = this.el;
+      var removeSpy = this.sinon.spy(el.object3D, 'remove');
+      el.removeObject3D('foo');
+      assert.notOk(removeSpy.called);
+    });
+
+    test('emits an event', function (done) {
+      var el = this.el;
+      el.setObject3D('mesh', new THREE.Mesh());
+      el.addEventListener('object3dremove', evt => {
+        assert.equal(evt.detail.type, 'mesh');
+        done();
+      });
+      el.removeObject3D('mesh');
+    });
   });
 
   suite('getOrCreateObject3D', function () {
     test('creates an object3D if the type does not exist', function () {
       var el = this.el;
-      var Constructor = function () {};
-      el.getOrCreateObject3D('mesh', Constructor);
+      el.getOrCreateObject3D('mesh', THREE.Object3D);
       assert.ok(el.getObject3D('mesh'));
-      assert.equal(el.getObject3D('mesh').constructor, Constructor);
+      assert.equal(el.getObject3D('mesh').constructor, THREE.Object3D);
     });
 
     test('returns existing object3D if it exists', function () {
