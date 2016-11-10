@@ -88,9 +88,9 @@ module.exports = registerElement('a-assets', {
       value: function () {
         var loaded = 0;
         var total = 0;
-        for (var assetId in this.progress) {
-          loaded += this.progress[assetId].loaded;
-          total += this.progress[assetId].total;
+        for (var src in this.progress) {
+          loaded += this.progress[src].loaded;
+          total += this.progress[src].total;
         }
         this.loadedBytes = loaded;
         this.totalBytes = total;
