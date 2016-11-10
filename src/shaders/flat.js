@@ -5,7 +5,7 @@ var utils = require('../utils/');
 /**
  * Flat shader using THREE.MeshBasicMaterial.
  */
-module.exports.Component = registerShader('flat', {
+module.exports.Shader = registerShader('flat', {
   schema: {
     color: {type: 'color'},
     fog: {default: true},

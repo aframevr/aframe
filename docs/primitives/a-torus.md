@@ -5,6 +5,8 @@ layout: docs
 parent_section: primitives
 ---
 
+[geometry]: ../components/geometry.md
+
 The torus primitive creates donut or tube shapes using the [geometry][geometry]
 component with the type set to `torus`.
 
@@ -16,21 +18,35 @@ component with the type set to `torus`.
 
 ## Attributes
 
-| Attribute        | Component Mapping        | Default Value |
-| --------         | -----------------        | ------------- |
-| arc              | geometry.arc             | 360           |
-| color            | material.color           | #FFF          |
-| metalness        | material.metalness       | 0             |
-| opacity          | material.opacity         | 1             |
-| radius           | geometry.radius          | 1             |
-| radius-tubular   | geometry.radiusTubular   | 0.2           |
-| repeat           | material.repeat          | None          |
-| roughness        | material.roughness       | 0.5           |
-| segments-radial  | geometry.segmentsRadial  | 0             |
-| segments-tubular | geometry.segmentsTubular | 32            |
-| shader           | material.shader          | standard      |
-| side             | material.side            | front         |
-| src              | material.src             | None          |
-| transparent      | material.transparent     | false         |
-
-[geometry]: ../components/geometry.md
+| Attribute                        | Component Mapping                      | Default Value |
+| --------                         | -----------------                      | ------------- |
+| ambient-occlusion-map            | material.ambientOcclusionMap           | None          |
+| ambient-occlusion-map-intensity  | material.ambientOcclusionMapIntensity  | 1             |
+| ambient-occlusion-texture-offset | material.ambientOcclusionTextureOffset | 0 0           |
+| ambient-occlusion-texture-repeat | material.ambientOcclusionTextureRepeat | 1 1           |
+| arc                              | geometry.arc                           | 360           |
+| color                            | material.color                         | #FFF          |
+| displacement-bias                | material.displacementBias              | 0.5           |
+| displacement-map                 | material.displacementMap               | None          |
+| displacement-scale               | material.displacementScale             | 1             |
+| displacement-texture-offset      | material.displacementTextureOffset     | 0 0           |
+| displacement-texture-repeat      | material.displacementTextureRepeat     | 1 1           |
+| env-map                          | material.envMap                        | None          |
+| fog                              | material.fog                           | true          |
+| height                           | material.height                        | 256           |
+| metalness                        | material.metalness                     | 0             |
+| normal-map                       | material.normalMap                     | None          |
+| normal-scale                     | material.normalScale                   | 1 1           |
+| normal-texture-offset            | material.normalTextureOffset           | 0 0           |
+| normal-texture-repeat            | material.normalTextureRepeat           | 1 1           |
+| radius                           | geometry.radius                        | 1             |
+| radius-tubular                   | geometry.radiusTubular                 | 0.2           |
+| repeat                           | material.repeat                        | 1 1           |
+| roughness                        | material.roughness                     | 0.5           |
+| segments-radial                  | geometry.segmentsRadial                | 36            |
+| segments-tubular                 | geometry.segmentsTubular               | 32            |
+| spherical-env-map                | material.sphericalEnvMap               | None          |
+| src                              | material.src                           | None          |
+| width                            | material.width                         | 512           |
+| wireframe                        | material.wireframe                     | false         |
+| wireframe-linewidth              | material.wireframeLinewidth            | 2             |

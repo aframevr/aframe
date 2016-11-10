@@ -8,7 +8,7 @@ var texturePromises = {};
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
-module.exports.Component = registerShader('standard', {
+module.exports.Shader = registerShader('standard', {
   schema: {
     ambientOcclusionMap: {type: 'map'},
     ambientOcclusionMapIntensity: {default: 1},
