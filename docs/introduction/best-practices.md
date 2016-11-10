@@ -30,7 +30,7 @@ Some things to note:
 ## Performance
 
 [asm]: ../core/asset-management-system.md
-[hardware]: ../guide/device-and-platform-support.md#hardware-specifications
+[hardware]: ./device-and-platform-support.md#hardware-specifications
 [merge]: ../components/geometry.md#mergeto
 [stats]: ../components/stats.md
 

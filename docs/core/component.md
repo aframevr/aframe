@@ -463,7 +463,7 @@ into the tick handler.
 This is useful for things that need to update constantly such as controls or
 physics.
 
-### `.pause() and `.play()`
+### `.pause()` and `.play()`
 
 The `.pause` and `.play` methods are invoked when the entity calls its own
 `.pause` or `.play` methods. Components should use this to stop or resume any
@@ -631,7 +631,10 @@ want to more granularly update objects for better performance.
 
 #### Remove
 
-For removal of the line mesh from the entity, we use [`Entity.removeObject3D`][removeObject3d]:
+[removeobject3d]: ./entity.md#removeobject3d-type
+
+For removal of the line mesh from the entity, we use
+[`Entity.removeObject3D`][removeobject3d]:
 
 ```js
 remove: function () {
@@ -669,25 +672,16 @@ And voila!
 </span></div>
 
 [camera]: ../components/camera.md
-[collide]: https://github.com/dmarcos/a-invaders/tree/master/js/components
 [component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
-[docs]: ./index.md
 [ecs]: ./index.md
 [entity]: ./entity.md
-[follow]: https://jsbin.com/dasefeh/edit?html,output
-[geometry]: ../components/geometry.md
-[layout]: https://github.com/ngokevin/aframe-layout-component
 [light]: ../components/light.md
 [line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
-[look-controls]: ../components/look-controls.md
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [multiple]: #multiple-instancing
-[physics]: https://github.com/ngokevin/aframe-physics-components
 [position]: ../components/position.md
-[removeObject3d]: ./entity.md#remove-object3d
 [rotation]: ../components/rotation.md
 [sound]: ../components/sound.md
-[text]: https://github.com/ngokevin/aframe-text-component
 [three]: http://threejs.org/
 [visible]: ../components/visible.md
 [vrjump]: http://thevrjump.com

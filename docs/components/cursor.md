@@ -80,7 +80,13 @@ The cursor will add states to intersected entities on certain events:
 
 ## Configuring the Cursor through the Raycaster Component
 
-The cursor is built on top of and depends on the raycaster component. If we want to customize the raycasting pieces of the cursor, we can do by changing the [raycaster component properties][raycasterprops]. Say we want set a max distance, check for intersections less frequently, and set which objects are clickable:
+[raycasterprops]: ./raycaster.md#properties
+
+The cursor is built on top of and depends on the raycaster component. If we
+want to customize the raycasting pieces of the cursor, we can do by changing
+the [raycaster component properties][raycasterprops]. Say we want set a max
+distance, check for intersections less frequently, and set which objects are
+clickable:
 
 ```html
 <a-entity cursor raycaster="far: 20; interval: 1000; objects: .clickable"></a-entity>
@@ -116,4 +122,3 @@ To play with an example of a cursor with visual feedback, check out the [Cursor 
 [geometry]: ./geometry.md
 [material]: ./material.md
 [raycaster]: ./raycaster.md
-[raycasterprops]: ./raycaster.md#Properties
