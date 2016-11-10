@@ -163,4 +163,15 @@ suite('registerPrimitive (using innerHTML)', function () {
       helpers.mixinFactory('foo', {material: 'color: red'}, sceneEl);
     });
   });
+
+  test('handles mapping to a single-property component', function (done) {
+    primitiveFactory({
+      mappings: {
+        viz: 'visible'
+      }
+    }, 'viz="false"', function postCreation (el) {
+      assert.equal(el.getAttribute('visible'), false);
+      done();
+    });
+  });
 });

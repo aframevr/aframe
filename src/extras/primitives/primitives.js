@@ -71,7 +71,11 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             mapping = this.mappings[attr.name];
             if (mapping) {
               path = utils.entity.getComponentPropertyPath(mapping);
-              initialComponents[path[0]][path[1]] = attr.value;
+              if (path.constructor === Array) {
+                initialComponents[path[0]][path[1]] = attr.value;
+              } else {
+                initialComponents[path] = attr.value;
+              }
               continue;
             }
 
