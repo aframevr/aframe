@@ -16,7 +16,11 @@ module.exports = registerElement('a-assets', {
       value: function () {
         this.isAssets = true;
         this.fileLoader = fileLoader;
-        this.loadedData = 0;
+        this.loadedBytes = 0;
+        this.percent = 0;
+        this.progress = {};
+        this.progressInterval = null;
+        this.totalBytes = 0;
         this.timeout = null;
       }
     },
@@ -56,9 +60,19 @@ module.exports = registerElement('a-assets', {
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(bind(this.load, this));
 
+        // Progress checker.
+        this.progressInterval = setInterval(function updateProgress () {
+          self.emit('progress', {
+            percent: self.percent,
+            loadedBytes: self.loadedBytes,
+            totalBytes: self.totalBytes
+          });
+        }, 100);
+
         // Timeout to start loading anyways.
         timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         this.timeout = setTimeout(function () {
+          clearInterval(self.progressInterval);
           if (self.hasLoaded) { return; }
           warn('Asset loading timed out in ', timeout, 'ms');
           self.emit('timeout');
@@ -67,9 +81,28 @@ module.exports = registerElement('a-assets', {
       }
     },
 
+    /**
+     * Calculate overall progress as a percentage.
+     */
+    calculateProgressPercent: {
+      value: function () {
+        var loaded = 0;
+        var total = 0;
+        for (var assetId in this.progress) {
+          loaded += this.progress[assetId].loaded;
+          total += this.progress[assetId].total;
+        }
+        this.loadedBytes = loaded;
+        this.totalBytes = total;
+        this.progress = Math.round(loaded * 100 / total);
+        return this.progress;
+      }
+    },
+
     detachedCallback: {
       value: function () {
         if (this.timeout) { clearTimeout(this.timeout); }
+        if (this.progressInterval) { clearInterval(this.progressInterval); }
       }
     },
 
@@ -82,22 +115,6 @@ module.exports = registerElement('a-assets', {
     }
   })
 });
-
-// Lets create the object that will hold asset's loaded/total info.
-var assetsElement = {};
-function assetsProgress () {
-  var assetsLoaded = 0;
-  var assetsTotal = 0;
-  var mediaPercent = 0;
-  for (var key in assetsElement) {
-    assetsLoaded += assetsElement[key].loaded;
-    assetsTotal += assetsElement[key].total;
-  }
-  if (assetsTotal > 0) {
-    mediaPercent = Math.round((assetsLoaded * 100) / assetsTotal);
-  }
-  return mediaPercent;
-}
 
 /**
  * Preload using XHRLoader for any type of asset.
@@ -113,12 +130,15 @@ registerElement('a-asset-item', {
 
     attachedCallback: {
       value: function () {
+        var assetsEl = this.parentNode;
         var self = this;
         var src = this.getAttribute('src');
-        // Since the XHRLoader doesn't send an id through the callback
-        // We'll use the file name as an id
-        var file = (src).split('/').pop().replace('.', '-');
-        if (!(file in assetsElement)) { assetsElement[file] = {'id': file, 'loaded': 0, 'total': 0}; }
+
+        // XHRLoader doesn't send ID through the callback, use the filename instead for ID.
+        if (!(src in assetsEl.progress)) {
+          assetsEl.progress[src] = {loaded: 0, total: 0};
+        }
+
         fileLoader.load(src, function handleOnLoad (textResponse) {
           THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
@@ -126,26 +146,17 @@ registerElement('a-asset-item', {
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
             setTimeout finishes the first request and lets the logic triggered by load open
-            subsequent requests.
-            setTimeout can be removed once the fix for the bug below ships:
-            https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
+            subsequent requests. setTimeout can be removed once this bug is fixed:
+            https://bugs.chromium.org/p/chromium/issues/detail?id=633696
           */
           setTimeout(function load () { ANode.prototype.load.call(self); });
         }, function handleOnProgress (xhr) {
-          if (xhr != null) {
-            var file = (xhr.currentTarget.responseURL).split('/').pop().replace('.', '-');
-            assetsElement[file].loaded = xhr.loaded / 1000000;
-            assetsElement[file].total = xhr.total / 1000000;
-            // mediaElement updated, trigger assetsProgress()
-            // add value to our newly accesible property loadedData
-            self.parentNode.loadedData = assetsProgress();
-            // Finally, lets trigger an emit to <a-assets> to make the value accessible.
-            self.emit('progress', {
-              loadedBytes: xhr.loaded,
-              totalBytes: xhr.total,
-              xhr: xhr
-            });
-          }
+          var src;
+          if (!xhr) { return; }
+          src = xhr.currentTarget.responseURL;
+          if (!(src in assetsEl.progress)) { assetsEl.progress[src] = {}; }
+          assetsEl.progress[src].loaded = xhr.loaded / 1000000;
+          assetsEl.progress[src].total = xhr.total / 1000000;
         }, function handleOnError (xhr) {
           self.emit('error', {xhr: xhr});
         });
@@ -158,21 +169,25 @@ registerElement('a-asset-item', {
  * Create a Promise that resolves once the media element has finished buffering.
  *
  * @param {Element} el - HTMLMediaElement.
- * @returns {Promise}
+ * @returns {Promise|null}
  */
 function mediaElementLoaded (el) {
-  // Instead of checking for autoplay + preload="auto" combination
-  // have 3 options for preload: buffer, full, none
-  // buffer: works in combination with autoplay (your typical stream).
-  // full: waits untill all media assets have fully buffered.
-  // none: gets us out with a return.
-  // ** unfortunately, video preloads without the need of autoplay,
-  // ** audio files don't begin preloading unless autoplay is defined
-  // ** For now, I'm doing preload="none" for audios
-  if (el.getAttribute('preload') === 'none' || !el.hasAttribute('preload')) {
-    return;
-  }
+  var assetsEl;
+  var autoplay;
+  var preload;
+
+  /*
+    Video elements need either `autoplay` or `preload` to preload.
+    Audio elements need either `autoplay` or `preload` to preload.
+    Use of `preload` is recommended. `autoplay` would start playing before scene starts.
+    Check for opt-out.
+   */
+  autoplay = el.getAttribute('autoplay');
+  preload = el.getAttribute('preload');
+  if (!(preload === 'auto' || preload === '') && !autoplay) { return; }
+
   // If media specifies preload, wait until media is completely buffered.
+  assetsEl = this.parentNode;
   return new Promise(function (resolve, reject) {
     if (el.readyState === 4) { return resolve(); }  // Already loaded.
     if (el.error) { return reject(); }  // Error.
@@ -182,27 +197,28 @@ function mediaElementLoaded (el) {
     el.addEventListener('error', reject, false);
 
     function checkProgress () {
-      // add new mediaElement to assetsElement object
-      // check that the mediaElement with isNaN(el.duration)
-      // use file name as object key
-      var file = (el.src).split('/').pop().replace('.', '-');
-      if (!(file in assetsElement) && !(isNaN(el.duration))) { assetsElement[file] = {'id': file, 'loaded': 0, 'total': el.duration}; }
+      var i;
+      var secondsBuffered;
+      var src;
+
+      src = el.getAttribute('src');
+      if (!(src in assetsEl.progress) && !(isNaN(el.duration))) {
+        assetsEl.progress[src] = {loaded: 0, total: el.duration};
+      }
+
       // Add up the seconds buffered.
-      var secondsBuffered = 0;
-      for (var i = 0; i < el.buffered.length; i++) {
+      secondsBuffered = 0;
+      for (i = 0; i < el.buffered.length; i++) {
         secondsBuffered += el.buffered.end(i) - el.buffered.start(i);
       }
-      // Time to update the value of "loaded" to this mediaElement.
-      if (file in assetsElement) { assetsElement[file].loaded = secondsBuffered; }
-      // mediaElement updated, trigger assetsProgress()
-      // add value to our newly accesible property loadedData
-      el.parentNode.loadedData = assetsProgress();
-      // Finally, lets trigger an emit to <a-assets> to make the value accessible.
-      el.parentNode.emit('progress', {'progress': el.parentNode.loadedData});
-      // Compare seconds buffered to media duration.
-      if (secondsBuffered >= el.duration) {
-        resolve();
+
+      // Update loaded progress.
+      if (src in assetsEl.progress) {
+        assetsEl.progress[src].loaded = secondsBuffered;
       }
+
+      // Compare seconds buffered to media duration.
+      if (secondsBuffered >= el.duration) { resolve(); }
     }
   });
 }
