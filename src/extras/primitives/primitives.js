@@ -5,6 +5,7 @@ var utils = require('../../utils/');
 
 var bind = utils.bind;
 var debug = utils.debug;
+var getComponentPropertyPath = utils.entity.getComponentPropertyPath;
 var setComponentProperty = utils.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
 
@@ -54,11 +55,38 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
         value: function () {
           var self = this;
           var attributes = this.attributes;
-          this.applyDefaultComponents();
+          var components = {};
+
           // Apply initial attributes.
-          Object.keys(attributes).forEach(function applyInitial (attributeName) {
-            var attr = attributes[attributeName];
-            self.syncAttributeToComponent(attr.name, attr.value);
+          this.applyDefaultComponents();
+
+          // Group attributes by the component to which they are mapped.
+          Object.keys(attributes).forEach(function groupAttributes (attributeIndex) {
+            var attribute = attributes[attributeIndex];
+            var attributeName = attribute.name;
+
+            // Run the transform.
+            var value = self.getTransformedValue(attributeName, attribute.value);
+
+            var propertyPath = getComponentPropertyPath(
+              self.getMapping(attributeName) || attributeName
+            );
+            var componentName = propertyPath[0];
+            var propertyName = propertyPath[1];
+
+            if (!componentName) { return; }
+
+            if (propertyName) {
+              components[componentName] = components[componentName] || {};
+              components[componentName][propertyName] = value;
+            } else {
+              components[componentName] = value;
+            }
+          });
+
+          // Apply attributes for each component.
+          Object.keys(components).forEach(function applyInitial (componentName) {
+            self.setAttribute(componentName, components[componentName]);
           });
         }
       },
@@ -68,7 +96,15 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
        */
       attributeChangedCallback: {
         value: function (attr, oldVal, newVal) {
-          this.syncAttributeToComponent(attr, newVal);
+          var componentName = this.getMapping(attr);
+
+          if (!attr || !componentName) { return; }
+
+          // Run transform.
+          newVal = this.getTransformedValue(attr, newVal);
+
+          // Set value.
+          setComponentProperty(this, componentName, newVal);
         }
       },
 
@@ -103,33 +139,25 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       },
 
       /**
-       * If attribute is mapped to a component property, set the component property using
-       * the attribute value.
-       */
-      syncAttributeToComponent: {
-        value: function (attr, value) {
-          var componentName = this.mappings[attr];
-
-          if (attr in this.deprecatedMappings) {
-            console.warn(this.deprecatedMappings[attr]);
-          }
-          if (!attr || !componentName) { return; }
-
-          // Run transform.
-          value = this.getTransformedValue(attr, value);
-
-          // Set value.
-          setComponentProperty(this, componentName, value);
-        }
-      },
-
-      /**
        * Calls defined transform function on value if any.
        */
       getTransformedValue: {
         value: function (attr, value) {
           if (!this.transforms || !this.transforms[attr]) { return value; }
           return bind(this.transforms[attr], this)(value);
+        }
+      },
+
+      /**
+       * Returns the mapping path string for the given attribute.
+       * @type {Object}
+       */
+      getMapping: {
+        value: function (attr) {
+          if (attr in this.deprecatedMappings) {
+            console.warn(this.deprecatedMappings[attr]);
+          }
+          return this.mappings[attr];
         }
       }
     })
