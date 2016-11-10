@@ -38,7 +38,7 @@ module.exports = registerElement('a-assets', {
         // Wait for <img>s.
         imgEls = this.querySelectorAll('img');
         for (i = 0; i < imgEls.length; i++) {
-          imgEl = setCrossOrigin(imgEls[i]);
+          imgEl = fixUpMediaElement(imgEls[i]);
           loaded.push(new Promise(function (resolve, reject) {
             imgEl.onload = resolve;
             imgEl.onerror = reject;
@@ -48,7 +48,7 @@ module.exports = registerElement('a-assets', {
         // Wait for <audio>s and <video>s.
         mediaEls = this.querySelectorAll('audio, video');
         for (i = 0; i < mediaEls.length; i++) {
-          mediaEl = setCrossOrigin(mediaEls[i]);
+          mediaEl = fixUpMediaElement(mediaEls[i]);
           loaded.push(mediaElementLoaded(mediaEl));
         }
 
@@ -160,6 +160,27 @@ function mediaElementLoaded (el) {
 }
 
 /**
+ * Automatically add attributes to media elements where convenient.
+ * crossorigin, playsinline.
+ */
+function fixUpMediaElement (mediaEl) {
+  // Cross-origin.
+  var newMediaEl = setCrossOrigin(mediaEl);
+
+  // Plays inline for mobile.
+  if (newMediaEl.tagName === 'VIDEO') {
+    newMediaEl.setAttribute('playsinline', '');
+    newMediaEl.setAttribute('webkit-playsinline', '');
+  }
+
+  if (newMediaEl !== mediaEl) {
+    mediaEl.parentNode.appendChild(newMediaEl);
+    mediaEl.parentNode.removeChild(mediaEl);
+  }
+  return newMediaEl;
+}
+
+/**
  * Automatically set `crossorigin` if not defined on the media element.
  * If it is not defined, we must create and re-append a new media element <img> and
  * have the browser re-request it with `crossorigin` set.
@@ -188,8 +209,6 @@ function setCrossOrigin (mediaEl) {
        'A-Frame will re-request the asset with `crossorigin` attribute set.', src);
   mediaEl.crossOrigin = 'anonymous';
   newMediaEl = mediaEl.cloneNode(true);
-  mediaEl.parentNode.appendChild(newMediaEl);
-  mediaEl.parentNode.removeChild(mediaEl);
   return newMediaEl;
 }
 
