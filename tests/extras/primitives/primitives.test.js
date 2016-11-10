@@ -1,4 +1,4 @@
-/* global assert, suite, test */
+/* global AFRAME, assert, suite, test */
 var helpers = require('../../helpers');
 var registerPrimitive = require('extras/primitives/primitives').registerPrimitive;
 var primitives = require('extras/primitives/primitives').primitives;
@@ -9,7 +9,6 @@ function primitiveFactory (definition, cb) {
   var el;
   var entity = helpers.entityFactory();
   var tagName = 'a-test-' + primitiveId++;
-
   registerPrimitive(tagName, definition);
   el = document.createElement(tagName);
   el.addEventListener('loaded', function () {
@@ -58,29 +57,7 @@ suite('registerPrimitive', function () {
     });
   });
 
-  test('does not destroy defined components when proxying attributes', function (done) {
-    var entity = helpers.entityFactory();
-    var tag = 'a-test-' + primitiveId++;
-    registerPrimitive(tag, {
-      defaultComponents: {
-        material: {color: '#FFF'}
-      },
-
-      mappings: {
-        color: 'material.color'
-      }
-    });
-    // Use innerHTML to set everything at once.
-    entity.innerHTML = '<' + tag + ' color="red" material="fog: false"></' + tag + '>';
-    entity.children[0].addEventListener('loaded', function () {
-      var material = entity.children[0].getAttribute('material');
-      assert.equal(material.color, 'red');
-      assert.equal(material.fog, false);
-      done();
-    });
-  });
-
-  test('proxies attributes to components', function (done) {
+  test('maps attributes to components', function (done) {
     primitiveFactory({
       mappings: {
         color: 'material.color',
@@ -113,6 +90,77 @@ suite('registerPrimitive', function () {
         assert.equal(el.getAttribute('material').opacity, 0.5);
         done();
       });
+    });
+  });
+});
+
+suite('registerPrimitive (using innerHTML)', function () {
+  function primitiveFactory (definition, attributes, cb, preCb) {
+    var el = helpers.entityFactory();
+    var tagName = 'a-test-' + primitiveId++;
+    registerPrimitive(tagName, definition);
+    if (preCb) { preCb(el.sceneEl); }
+    if (cb) {
+      el.addEventListener('child-attached', function (evt) {
+        evt.detail.el.addEventListener('loaded', function () {
+          cb(el.children[0], tagName);
+        });
+      });
+    }
+    el.innerHTML = `<${tagName} ${attributes}></${tagName}>`;
+  }
+
+  test('prioritizes defined components over default components', function (done) {
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: '#FFF', metalness: 0.63}
+      }
+    }, 'material="color: tomato"', function (el) {
+      var material = el.getAttribute('material');
+      assert.equal(material.color, 'tomato');
+      assert.equal(material.metalness, 0.63);
+      done();
+    });
+  });
+
+  test('batches default components and mappings for one `init` call', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {
+        foo: {default: ''},
+        qux: {default: ''},
+        quux: {default: ''}
+      },
+      init: function () {
+        // Set by default component.
+        assert.equal(this.data.foo, 'bar');
+        // Set by first mapping.
+        assert.equal(this.data.qux, 'qaz');
+        // Set by second mapping.
+        assert.equal(this.data.quux, 'corge');
+        done();
+      }
+    });
+    primitiveFactory({
+      defaultComponents: {
+        test: {foo: 'bar'}
+      },
+      mappings: {
+        qux: 'test.qux',
+        quux: 'test.quux'
+      }
+    }, 'qux="qaz" quux="corge"');
+  });
+
+  test('prioritizes mixins over default components', function (done) {
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: 'blue'}
+      }
+    }, 'mixin="foo"', function postCreation (el) {
+      assert.equal(el.getAttribute('material').color, 'red');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('foo', {material: 'color: red'}, sceneEl);
     });
   });
 });
