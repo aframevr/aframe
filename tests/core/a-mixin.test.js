@@ -66,6 +66,13 @@ suite('a-mixin (detached)', function () {
       mixinEl.cacheAttributes();
       assert.equal(mixinEl.componentCache.test, undefined);
     });
+
+    test('caches multiple component attributes', function () {
+      var mixinEl = document.createElement('a-mixin');
+      mixinEl.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
+      mixinEl.cacheAttributes();
+      assert.shallowDeepEqual(mixinEl.componentCache.sound__test, {src: 'url(mysoundfile.mp3)'});
+    });
   });
 });
 
