@@ -57216,24 +57216,20 @@ module.exports={
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] | exorcist dist/aframe-dev.js.map > dist/aframe-dev.js",
-    "dist:min": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] -p [minifyify --map aframe-dev.min.js.map --output dist/aframe-dev.min.js.map] -o dist/aframe-dev.min.js",
-    "dist:release": "npm run dist:release:min && npm run dist:release:max",
-    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.4.0.js.map > dist/aframe-v0.4.0.js",
-    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.4.0.min.js.map --output dist/aframe-v0.4.0.min.js.map] -o dist/aframe-v0.4.0.min.js",
+    "dist:max": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
+    "dist:min": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
     "precommit": "npm run lint",
     "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
-    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
-    "release:push": "npm login && npm publish && git push --follow-tags",
+    "prerelease": "npm run dist && node scripts/release.js 0.3.2 0.4.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
+    "test:docs": "node scripts/docs-link-check.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox",
-    "version": "npm run dist"
+    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
@@ -57262,6 +57258,7 @@ module.exports={
     "envify": "^3.4.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
+    "glob": "^7.1.1",
     "husky": "^0.11.7",
     "istanbul": "^0.4.5",
     "karma": "^1.3.0",
@@ -61670,27 +61667,56 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Set a THREE.Object3D into the map.
+   *
+   * @param {string} type - Developer-set name of the type of object, will be unique per type.
+   * @param {object} obj - A THREE.Object3D.
+   */
   setObject3D: {
     value: function (type, obj) {
+      var oldObj;
       var self = this;
-      var oldObj = this.object3DMap[type];
-      if (oldObj) { this.object3D.remove(oldObj); }
-      if (obj instanceof THREE.Object3D) {
-        obj.el = self;
-        this.object3D.add(obj);
-        if (obj.children.length) {
-          obj.traverse(function bindEl (child) {
-            child.el = self;
-          });
-        }
+
+      if (!(obj instanceof THREE.Object3D)) {
+        throw new Error(
+          '`Entity.setObject3D` was called with an object that was not an instance of ' +
+          'THREE.Object3D.'
+        );
       }
+
+      // Remove existing object of the type.
+      oldObj = this.getObject3D(type);
+      if (oldObj) { this.object3D.remove(oldObj); }
+
+      // Set references to A-Frame entity.
+      obj.el = this;
+      if (obj.children.length) {
+        obj.traverse(function bindEl (child) {
+          child.el = self;
+        });
+      }
+
+      // Add.
+      this.object3D.add(obj);
       this.object3DMap[type] = obj;
+      this.emit('object3dset', {object: obj, type: type});
     }
   },
 
+  /**
+   * Remove object from scene and entity object3D map.
+   */
   removeObject3D: {
     value: function (type) {
-      this.setObject3D(type, null);
+      var obj = this.getObject3D(type);
+      if (!obj) {
+        warn('Tried to remove `Object3D` of type:', type, 'which was not defined.');
+        return;
+      }
+      this.object3D.remove(obj);
+      delete this.object3DMap[type];
+      this.emit('object3dremove', {type: type});
     }
   },
 
@@ -61698,8 +61724,8 @@ var proto = Object.create(ANode.prototype, {
    * Gets or creates an object3D of a given type.
 
    * @param {string} type - Type of the object3D.
-   * @param {string} Constructor - Constructor to use if need to create the object3D.
-   * @type {Object}
+   * @param {string} Constructor - Constructor to use to create the object3D if needed.
+   * @returns {object}
    */
   getOrCreateObject3D: {
     value: function (type, Constructor) {
@@ -61711,7 +61737,8 @@ var proto = Object.create(ANode.prototype, {
       return object3D;
     }
   },
-   /**
+
+  /**
    * Add child entity.
    *
    * @param {Element} el - Child entity.
@@ -68724,4 +68751,4 @@ module.exports = getWakeLock();
 
 },{"./util.js":130}]},{},[102])(102)
 });
-//# sourceMappingURL=aframe-dev.js.map
+//# sourceMappingURL=aframe-master.js.map
