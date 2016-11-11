@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Asset Progress</title>
+    <meta name="description" content="Asset Progress — A-Frame">
+    <script src="../../../dist/aframe.js"></script>
+    <style>
+      #progressOverlay {
+        background: #333;
+        color: #FAFAFA;
+        height: 100px;
+        left: 0;
+        padding-left: 10px;
+        position: fixed;
+        top: 0;
+        width: 200px;
+        z-index: 99999;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets timeout="99999">
+        <video id="video" src="https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/"
+               autoplay loop crossorigin></video>
+      </a-assets>
+    </a-scene>
+
+    <div id="progressOverlay">
+      <p id="percent"></p>
+      <p id="bytes"></p>
+    </div>
+
+    <script>
+      var assetsEl = document.querySelector('a-assets');
+      var bytesEl = document.querySelector('#bytes');
+      var percentEl = document.querySelector('#percent');
+      assetsEl.addEventListener('progress', function (evt) {
+        percentEl.innerHTML = evt.detail.percent + '%';
+        bytesEl.innerHTML = evt.detail.loadedBytes + ' / ' + evt.detail.totalBytes + 'MB';
+      });
+    </script>
+  </body>
+</html>

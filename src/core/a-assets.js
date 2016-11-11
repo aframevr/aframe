@@ -62,6 +62,7 @@ module.exports = registerElement('a-assets', {
 
         // Progress checker.
         this.progressInterval = setInterval(function updateProgress () {
+          self.calculateProgressPercent();
           self.emit('progress', {
             percent: self.percent,
             loadedBytes: self.loadedBytes,
@@ -94,8 +95,8 @@ module.exports = registerElement('a-assets', {
         }
         this.loadedBytes = loaded;
         this.totalBytes = total;
-        this.progress = Math.round(loaded * 100 / total);
-        return this.progress;
+        this.percent = Math.round(loaded * 100 / total);
+        return this.percent;
       }
     },
 
@@ -182,12 +183,12 @@ function mediaElementLoaded (el) {
     Use of `preload` is recommended. `autoplay` would start playing before scene starts.
     Check for opt-out.
    */
-  autoplay = el.getAttribute('autoplay');
+  autoplay = el.hasAttribute('autoplay');
   preload = el.getAttribute('preload');
   if (!(preload === 'auto' || preload === '') && !autoplay) { return; }
 
   // If media specifies preload, wait until media is completely buffered.
-  assetsEl = this.parentNode;
+  assetsEl = el.parentNode;
   return new Promise(function (resolve, reject) {
     if (el.readyState === 4) { return resolve(); }  // Already loaded.
     if (el.error) { return reject(); }  // Error.
