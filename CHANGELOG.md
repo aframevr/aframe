@@ -1,4 +1,74 @@
-## 0.3.0
+## 0.4.0 (est. November 2016)
+
+0.4.0 contains bug fixes and API polish. *not yet released*
+
+### Major Changes
+
+- `getAttribute` returns full computed rather than just defined component data set. (#1925)
+- `setAttribute` when passed an object (i.e., `setAttribute('material', {color: 'red'})`) no longer clobbers existing component data, it will instead *extend* existing component data. Pass a `true` flag as the third argument to clobber existing data.
+- Removed `transforms` feature from the `registerPrimitive` API. (#2045)
+- Removed deprecated `look-at` component. (#1913)
+- Removed deprecated Declarative Events API (`<a-event>`). (#1914)
+
+### Deprecations
+
+- `getComputedAttribute` deprecated in favor of `getAttribute`. `getDOMAttribute` does what `getAttribute` used to do. (#1925)
+- `src` schema property type deprecated in favor of `asset`, `audio`, `map`, `model` schema property types. (#2003)
+
+### Enhancements
+
+- Bumped three.js to r82. (#2081)
+- Added `reverseDrag` property to `look-controls` component to reverse mouse drag (ideal for static 360&deg; content). (#2024)
+- Added standard material map properties for ambient occlusion, displacements, normals, and spherical environments. (#1826, #2078)
+- Asset parser no longer strictly demands URLs be wrapped with `url()`. (#2045)
+- Added ability to take equirectangular and projection screenshots with a keyboard shortcut. (#1984)
+- Added `asset`, `map`, `model`, `audio` schema property types. (#2054)
+- Added wireframe properties to the standard and flat materials. (#1971)
+- Have `raycaster` component refresh its list of intersection targets when entities are attached or detached from the scene. (#1887)
+- Added `pool` component for performant object pooling and reuse. (#1954)
+- Added support for `tracked-controls` component to change its origin position (e.g., for teleportation). (#2002)
+- Added pooling to the `sound` component. (#1924)
+- Added intersection data to `cursor` component events. (#1920)
+- Added events to entity `setObject3D` and `removeObject3D`. (#2075)
+- Added `pauseSound()` method to the `sound` component. (#1996)
+- Added loading feedback while A-Frame Inspector is being injected over the network. (#2006)
+- Added console warning message if A-Frame script tag is included in the `<body>`. (#2000)
+- Added support for non-QWERTY keyboard layouts in `wasd-controls` component. (#1832)
+- Automatically set `playsinline` and `webkit-playsinline` on video elements in asset system. (#2076)
+- Used slightly faster function binding. (#1782)
+- Made `stats` component alert text more readable. (#1885)
+- Allowed `inspector` component to be opened via `postMessage`. (#1997)
+- Allowed `stats` component to be disabled via querystring. (#1836)
+- Exposed component prototype. (#2062)
+- Exposed `XHRLoader` in `<a-assets>`. (#2023)
+- Added local Markdown documentation server `npm run docs`. (48ff50)
+- Added documentation test and lint script for checking links, fix links. (#2080)
+
+### Fixes
+
+- Fixed component dependencies where bugs manifested in the `obj-model` and `raycaster` components. (#2036)
+- Fixed `int` property type with empty data being turned to `NaN`. (#2063)
+- Fixed GearVR VR mode height by only removing `camera.userHeight` if positional tracking exists and the device is not a GearVR or smartphone. (#2044)
+- Fixed mixins not working with multiple-instanced components. (#1699)
+- Fixed default components (i.e., `position`, `rotation`, `scale`, `visible`) not being flushed to DOM in debug mode. (#2064)
+- Fixed `cursor` `mouseleave` event not being reliable with multiple close objects. (#1882)
+- Fixed `cursor` component intersecting itself. (#1936)
+- Fixed entity not being able to re-attach after being detached. (#1928)
+- Fixed typos for `requestFullscreen` calls. (#1963)
+- Fixed `tracked-controls` component if a mesh was not applied. (#1875)
+- Fixed `raycaster` component passing its actual intersection objects through events. (#1978)
+- Fixed `stats` component for Safari. (#1865)
+- Normalized Git-tracked files to Unix-style line feeds. (#1825)
+
+### 0.3.2 (October 12, 2016)
+
+- WebVR 1.1 API support (#1931)
+
+### 0.3.1 (August 25, 2016)
+
+- Fix requiring A-Frame with Browserify from npm. (#1824)
+
+## 0.3.0 (August 17, 2016)
 
 0.3.0 improves performance, adds support for the WebVR 1.0 API, and adds
 tracked controllers (using experimental Gamepad APIs).
@@ -87,7 +157,7 @@ tracked controllers (using experimental Gamepad APIs).
 - Fixed single-property components with a default truthy value not obeying truthiness if defined in HTML without a value. (#1631)
 - Fixed spotlight angles. (#1728)
 
-## 0.2.0
+## 0.2.0 (March 25, 2016)
 
 0.2.0 improves extensibility:
 
