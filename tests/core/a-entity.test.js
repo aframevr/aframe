@@ -265,7 +265,7 @@ suite('a-entity', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; metalness: 0.75');
-      material = el.getDOMAttribute('material');
+      material = el.getAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
@@ -275,35 +275,35 @@ suite('a-entity', function () {
       var material;
       var value = {color: '#F0F', metalness: 0.75};
       el.setAttribute('material', value);
-      material = el.getDOMAttribute('material');
+      material = el.getAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.metalness, 0.75);
     });
 
-    test('can replace component attributes with an object', function () {
+    test('can clobber component attributes with an object and flag', function () {
       var el = this.el;
       var material;
-      var value = {color: '#000'};
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      el.setAttribute('material', value);
-      material = el.getDOMAttribute('material');
+      el.setAttribute('material', {color: '#000'}, true);
+      material = el.getAttribute('material');
       assert.equal(material.color, '#000');
-      assert.equal(material.roughness, undefined);
+      assert.equal(material.roughness, 0.5);
+      assert.equal(el.getDOMAttribute('material').roughness, undefined);
     });
 
     test('can set a single component via a single attribute', function () {
       var el = this.el;
       el.setAttribute('material', 'color', '#F0F');
-      assert.equal(el.getDOMAttribute('material').color, '#F0F');
+      assert.equal(el.getAttribute('material').color, '#F0F');
     });
 
     test('can update a single component attribute', function () {
       var el = this.el;
       var material;
       el.setAttribute('material', 'color: #F0F; roughness: 0.25');
-      assert.equal(el.getDOMAttribute('material').roughness, 0.25);
+      assert.equal(el.getAttribute('material').roughness, 0.25);
       el.setAttribute('material', 'roughness', 0.75);
-      material = el.getDOMAttribute('material');
+      material = el.getAttribute('material');
       assert.equal(material.color, '#F0F');
       assert.equal(material.roughness, 0.75);
     });
@@ -317,15 +317,30 @@ suite('a-entity', function () {
 
     test('can update component data', function () {
       var el = this.el;
-      var position;
-
       el.setAttribute('position', '10 20 30');
-      position = el.getDOMAttribute('position');
-      assert.deepEqual(position, {x: 10, y: 20, z: 30});
+      assert.deepEqual(el.getAttribute('position'), {x: 10, y: 20, z: 30});
 
       el.setAttribute('position', {x: 30, y: 20, z: 10});
-      position = el.getDOMAttribute('position');
-      assert.deepEqual(position, {x: 30, y: 20, z: 10});
+      assert.deepEqual(el.getAttribute('position'), {x: 30, y: 20, z: 10});
+    });
+
+    test('can partially update multiple properties of a component', function () {
+      var el = this.el;
+      var geometry;
+      el.setAttribute('geometry', {primitive: 'box'});
+      el.setAttribute('geometry', {depth: 2.5});
+      el.setAttribute('geometry', {height: 1.5, width: 3});
+      geometry = el.getAttribute('geometry');
+      assert.equal(geometry.primitive, 'box');
+      assert.equal(geometry.depth, 2.5);
+      assert.equal(geometry.height, 1.5);
+      assert.equal(geometry.width, 3);
+    });
+
+    test('can partially update vec3', function () {
+      var el = this.el;
+      el.setAttribute('position', {y: 20});
+      assert.deepEqual(el.getAttribute('position'), {x: 0, y: 20, z: 0});
     });
 
     test('can update component property with asymmetrical property type', function () {
