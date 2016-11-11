@@ -61,26 +61,37 @@ function arrayStringify (value) {
 }
 
 /**
- * `src` parser for assets.
+ * For general assets.
  *
- * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
- * @returns {string|Element} Parsed value from `url(<value>)`, src from `<someasset src>`, or
- *   canvas.
+ * @param {string} value - Can either be `url(<value>)`, an ID selector to an asset, or
+ *   just string.
+ * @returns {string} Parsed value from `url(<value>)`, src from `<someasset src>`, or
+ *   just string.
  */
 function assetParse (value) {
   var el;
-  var parsedUrl = value.match(/\url\((.+)\)/);
+  var parsedUrl;
 
+  // Wrapped `url()` in case of data URI.
+  parsedUrl = value.match(/\url\((.+)\)/);
   if (parsedUrl) { return parsedUrl[1]; }
 
-  el = selectorParse(value);
-  if (!el) { return ''; }
-
-  if (el.tagName === 'CANVAS') {
-    return el;
-  } else {
-    return el.getAttribute('src');
+  // ID.
+  if (value.charAt(0) === '#') {
+    el = selectorParse(value);
+    if (el) {
+      if (el.tagName === 'CANVAS') {
+        return el;
+      } else {
+        return el.getAttribute('src');
+      }
+    }
+    warn('"' + value + '" asset not found.');
+    return;
   }
+
+  // Non-wrapped url().
+  return value;
 }
 
 function defaultParse (value) {
