@@ -20,3 +20,15 @@ glob.sync('dist/aframe-master*', {
 
 // Remove `aframe-v{prevVersion}.js`.
 glob.sync(`dist/aframe*v${prevVersion}*`).forEach(fs.unlinkSync);
+
+// Replace instances of version in documentation and README.
+var versionRegex = new RegExp(`${prevVersion}`, 'g');
+glob.sync('docs/**/*.md').forEach(updateDoc);
+glob.sync('README.md').forEach(updateDoc);
+function updateDoc (docFilename) {
+  var contents = fs.readFileSync(docFilename, 'utf-8');
+  if (versionRegex.exec(contents)) {
+    contents = contents.replace(versionRegex, nextVersion);
+    fs.writeFileSync(docFilename, contents);
+  }
+}
