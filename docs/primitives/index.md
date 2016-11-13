@@ -84,7 +84,7 @@ To create a wide red box using the primitives API, we could write:
 Which ends up expanding to:
 
 ```html
-<a-box color="red" width="3" geometry="primitive: box; width: 3" material="color: red"></a-box>
+<a-entity geometry="primitive: box; width: 3" material="color: red"></a-box>
 ```
 
 Under the hood, we see that primitives *extend* `<a-entity>` as a custom
@@ -150,5 +150,5 @@ AFRAME.registerPrimitive('a-ocean', {
 Then we'd be able to create oceans using basic HTML syntax with little configuration needed:
 
 ```html
-<a-ocean color="aqua" height="100" width="100"></a-ocean>
+<a-ocean color="aqua" depth="100" width="100"></a-ocean>
 ```

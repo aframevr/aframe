@@ -94,6 +94,13 @@ with CORS headers. We recommend GitHub Pages as a simple deployment platform.
 Or you could also upload assets using the [A-Frame + Uploadcare
 Uploader][uploader], a service that serves files with CORS headers set.
 
+## Why is the HTML/DOM not updating in A-Frame?
+
+[debug]: https://aframe.io/docs/0.3.0/components/debug.html
+
+For performance reasons, A-Frame does not update the DOM with component data.
+Use the [debug component][debug] to enable component-to-DOM serialization.
+
 ## Why does my video not play on mobile?
 
 [iosvideo]: https://developer.apple.com/library/iad/documentation/UserExperience/Conceptual/iAdJSProgGuide/PlayingVideosinAds/PlayingVideosinAds.html
