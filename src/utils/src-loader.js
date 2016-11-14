@@ -8,12 +8,9 @@ var warn = debug('utils:src-loader:warn');
  * Detects whether `src` is pointing to an image or video and invokes the appropriate
  * callback.
  *
- * If `src` is selector, check if it's valid, return the el in the callback.
- * An el is returned so that it can be reused for texture loading.
+ * The src will be returned on the callback
  *
- * If `src` is a URL, check if it's valid, return the src in the callback.
- *
- * @params {string} src - A selector or a URL. URLs must be wrapped by `url()`.
+ * @params {string} src - URL.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
  */
