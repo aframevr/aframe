@@ -17,7 +17,7 @@ and behavior rather than by individual input methods:
 ## Example
 
 The look-controls component is usually used alongside the [camera
-component][components-camera].
+component](camera.md).
 
 ```html
 <a-entity camera look-controls></a-entity>
