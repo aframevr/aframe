@@ -5,13 +5,19 @@ layout: docs
 parent_section: components
 ---
 
-The light component defines the entity as a source of light. Light affects all materials that have not specified a flat shading model with `shader: flat`. Note that lights are computationally expensive and the number of lights in a scene should be limited.
+The light component defines the entity as a source of light. Light affects all
+materials that have not specified a flat shading model with `shader: flat`.
+Note that lights are computationally expensive we should limit number of lights
+in a scene.
 
 ```html
 <a-entity light="color: #AFA; intensity: 1.5" position="-1 1 0"></a-entity>
 ```
 
-By default, A-Frame scenes inject default lighting, an ambient light and a directional light. These default lights are visible in the DOM with the `data-aframe-default-light` attribute. Whenever any lights are added, the default lights are removed from the scene.
+By default, A-Frame scenes inject default lighting, an ambient light and a
+directional light. These default lights are visible in the DOM with the
+`data-aframe-default-light` attribute. Whenever we add any lights, A-Frame
+removes the default lights from the scene.
 
 ```html
 <!-- Default lighting injected by A-Frame. -->
@@ -31,10 +37,12 @@ We will go through the different types of lights and their respective properties
 
 ### Ambient
 
-Ambient lights are applied to all entities in the scene globally. They are defined by the `color` and `intensity` properties. Additionally, `position`, `rotation`, and `scale` have no effect on ambient lights.
+Ambient lights globally affect all entities in the scene. The `color` and
+`intensity` properties define ambient lights. Additionally, `position`,
+`rotation`, and `scale` have no effect on ambient lights.
 
-It is recommended to have some form of ambient light such that shadowed areas
-are not completely black and to mimic indirect lighting.
+We recommend to have some form of ambient light such that shadowed areas are
+not fully black and to mimic indirect lighting.
 
 ```html
 <a-entity light="type: ambient; color: #CCC"></a-entity>
@@ -42,15 +50,21 @@ are not completely black and to mimic indirect lighting.
 
 ### Directional
 
-Directional lights can be thought of as a light source infinitely far away, but shining from a specific direction, like the sun. Thus, absolute position do not have an effect on the intensity of the light on an entity. We can specify the direction using the `position` component.
+Directional lights are like a light source that is infinitely far away, but shining
+from a specific direction, like the sun. Thus, absolute position do not have an
+effect on the intensity of the light on an entity. We can specify the direction
+using the `position` component.
 
-The example below creates a light source shining from the upper-left at a 45-degree angle. Note that because only the vector matters, `position="-100 100 0"` and `position="-1 1 0"` are equivalent.
+The example below creates a light source shining from the upper-left at a
+45-degree angle. Note that because only the vector matters, `position="-100 100
+0"` and `position="-1 1 0"` are the same.
 
 ```html
 <a-entity light="type: directional; color: #EEE; intensity: 0.5" position="-1 1 0"></a-entity>
 ```
 
-It is also possible to specify the direction of the directional light with it's orientation by creating a child entity it targets. for example pointing down it's -Z axis:
+We can specify the direction of the directional light with its orientation by
+creating a child entity it targets. For example, pointing down its -Z axis:
 
 ```html
 <a-light type="directional" position="0 0 0" rotation="-90 0 0" target="#directionaltarget">
@@ -60,7 +74,10 @@ It is also possible to specify the direction of the directional light with it's 
 
 ### Hemisphere
 
-Hemisphere lights can be thought of as an ambient light, but with two colors of light, one from above (`color`) and one from below (`groundColor`). This can be useful for scenes with two distinct lighting colors (e.g., a grassy field under a gray sky).
+Hemisphere lights are like an ambient light, but with two different colors, one
+from above (`color`) and one from below (`groundColor`). This can be useful for
+scenes with two distinct lighting colors (e.g., a grassy field under a gray
+sky).
 
 ```html
 <a-entity light="type: hemisphere; color: #33C; groundColor: #3C3; intensity: 2"></a-entity>
@@ -72,7 +89,10 @@ Hemisphere lights can be thought of as an ambient light, but with two colors of 
 
 ### Point
 
-Point lights, unlike directional lights, are omni-directional and affect materials depending on their position and distance. They can be thought of as a light bulb. The closer the light bulb gets to an object, the greater the object is lit.
+Point lights, unlike directional lights, are omni-directional and affect
+materials depending on their position and distance. Point likes are like light
+bulb. The closer the light bulb gets to an object, the greater the object is
+lit.
 
 ```html
 <a-entity light="type: point; intensity: 0.75; distance: 50; decay: 2"

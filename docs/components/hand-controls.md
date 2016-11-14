@@ -10,8 +10,8 @@ parent_section: components
 
 The hand-controls gives tracked hands (using a prescribed model) with animated
 gestures. It wraps the [vive-controls component][vive], which wraps the
-[tracked-controls component][tracked]. It adds additional events, semantically
-named, and handles hand animations.
+[tracked-controls component][tracked]. It adds extra semantically-named events
+and handles hand animations.
 
 ## Example
 

@@ -5,9 +5,8 @@ layout: docs
 parent_section: primitives
 ---
 
-The camera primitive places the user somewhere within the scene. It is an
-entity that prescribes the [camera component](../components/) with mappings to
-controls-related components.
+The camera primitive determines what the user sees. We can change the viewport
+by modifying the camera entity's position and rotation.
 
 [userheight]: ../components/camera.md#vr-behavior
 

@@ -6,15 +6,15 @@ parent_section: core
 order: 9
 ---
 
-A-Frame has an asset management system that allows us to place all of our
-assets in one place and to preload and cache assets for better performance.
+A-Frame has an asset management system that allows us to place our assets in
+one place and to preload and cache assets for better performance.
 
-Games and rich 3D experiences traditionally preload many of their assets, such
-as models or textures, before rendering their scenes. This makes sure that
-assets aren't missing visually, and this is beneficial for performance to
-ensure scenes don't try to fetch assets while rendering.
+Games and rich 3D experiences traditionally preload their assets, such as
+models or textures, before rendering their scenes. This makes sure that assets
+aren't missing visually, and this is beneficial for performance to ensure
+scenes don't try to fetch assets while rendering.
 
-Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
+We place assets within `<a-assets>`, and we place `<a-assets>` within
 `<a-scene>`. Assets include:
 
 - `<a-asset-item>` - Miscellaneous assets such as 3D models and materials
@@ -22,15 +22,15 @@ Assets are placed within `<a-assets>`, and `<a-assets>` is placed within
 - `<img>` - Image textures
 - `<video>` - Video textures
 
-The scene and all entities will block (i.e., the scene won't render) until all
-of these types of assets are fetched (or error out) before playing.
+The scene won't render or initialize until the browser fetches (or errors out)
+all the assets or the asset system reaches the timeout.
 
 <!--toc-->
 
 ## Example
 
-We can define all of our assets in `<a-assets>` and point to those assets from
-our entities using selectors:
+We can define our assets in `<a-assets>` and point to those assets from our
+entities using selectors:
 
 ```html
 <a-scene>
@@ -52,26 +52,26 @@ our entities using selectors:
 </a-scene>
 ```
 
-The scene and all of its entities will wait for all of the assets (up until the
-timeout) before initializing and rendering.
+The scene and its entities will wait for every asset (up until the timeout)
+before initializing and rendering.
 
 ## Cross-Origin Resource Sharing (CORS)
 
 [cors]: https://wikipedia.org/wiki/Cross-origin_resource_sharing
 [xhr]: https://developer.mozilla.org/docs/Web/API/XMLHttpRequest
 
-Since assets are fetched using [XHRs][xhr], browser security requires assets be
-served with [cross-origin resource sharing (CORS) headers][cors] if it is
-hosted on a different domain. Otherwise, we'd have to host assets on the same
-origin as the scene.
+Since A-Frame fetches assets using [XHRs][xhr], browser security requires the
+browser to serve assets with [cross-origin resource sharing (CORS)
+headers][cors] if the asset is on a different domain. Otherwise, we'd have
+to host assets on the same origin as the scene.
 
 [ghpages]: https://pages.github.com/
 [uploader]: https://aframe.io/aframe/examples/_uploader/
 
-For some options, all resources hosted on [GitHub Pages][ghpages] are served
-with CORS headers. We recommend GitHub Pages as a simple deployment platform.
-Or you could also upload assets using the [A-Frame + Uploadcare
-Uploader][uploader], a service that serves files with CORS headers set.
+For some options, [GitHub Pages][ghpages] serves everything with CORS headers.
+We recommend GitHub Pages as a simple deployment platform.  Or you could also
+upload assets using the [A-Frame + Uploadcare Uploader][uploader], a service
+that serves files with CORS headers set.
 
 [corsimage]: https://developer.mozilla.org/docs/Web/HTML/CORS_enabled_image
 
@@ -81,8 +81,8 @@ Given that [CORS headers][corsimage] *are* set, `<a-assets>` will automatically 
 
 ## Preloading Audio and Video
 
-Audio and video assets will only block the scene if `autoplay` is set or if
-`preload="auto"`:
+Audio and video assets will only block the scene if we set `autoplay` or if we
+set `preload="auto"`:
 
 ```html
 <a-scene>
@@ -135,9 +135,9 @@ the `loaded` event when they say they have finished loading.
 ### `<a-asset-item>`
 
 `<a-asset-item>` invokes the [three.js
-XHRLoader](https://threejs.org/docs/#Reference/Loaders/XHRLoader) and can be
-used for any type of file. When finished, it will set its `data` member with
-the text response.
+XHRLoader](https://threejs.org/docs/#Reference/Loaders/XHRLoader).  We can use
+`<a-asset-item>` for any file type. When finished, it will set its `data`
+member with the text response.
 
 | Event Name | Description                                                                                                       |
 |------------|-------------------------------------------------------------------------------------------------------------------|
@@ -166,32 +166,33 @@ particular events on these elements; noted here for convenience:
 | loadeddata | Progress.                             |
 | progress   | Progress.                             |
 
-A-Frame uses these progress events, comparing how much time was buffered with
-the duration of the asset, in order to detect when the asset has been loaded.
+A-Frame uses these progress events, comparing how much time the browser
+buffered with the duration of the asset, to detect when the asset becomes loaded.
 
 ## How It Works Internally
 
 Every element in A-Frame inherits from `<a-node>`, the `AFRAME.ANode`
 prototype. `ANode` controls load and initialization order. For an element to
-initialize (whether it is `<a-assets>`, `<a-asset-item>`, `<a-scene>`, or
-`<a-entity>`), all of its children must have already initialized. Nodes
-initialize bottom up.
+initialize (whether it be `<a-assets>`, `<a-asset-item>`, `<a-scene>`, or
+`<a-entity>`), its children must have already initialized. Nodes initialize
+bottom up.
 
-`<a-assets>` is an `ANode`, and it waits for all of its children to load before
+`<a-assets>` is an `ANode`, and it waits for its children to load before
 it loads. And since `<a-assets>` is a child of `<a-scene>`, the scene
 effectively must wait for all assets to load. We also added extra load logic to
-`<a-entity>` such that they explicitly wait for `<a-assets>` to load if it is
-defined.
+`<a-entity>` such that they explicitly wait for `<a-assets>` to load if we have
+defined `<a-assets>`.
 
-`<a-asset-item>` uses `THREE.XHRLoader` to fetch files. The data returned is
-stored in `THREE.Cache`. Every three.js loader inherits from `THREE.XHRLoader`,
-whether they are a `ColladaLoader`, `OBJLoader`, `ImageLoader`, etc. And they
-all have access and are aware of the central `THREE.Cache`. If a file has
-already been fetched, it won't be fetched again.
+`<a-asset-item>` uses `THREE.XHRLoader` to fetch files. three.js stores the
+returned data in `THREE.Cache`. Every three.js loader inherits from
+`THREE.XHRLoader`, whether they are a `ColladaLoader`, `OBJLoader`,
+`ImageLoader`, etc. And they all have access and are aware of the central
+`THREE.Cache`. If A-Frame already fetched a file, A-Frame won't try to fetch it
+again.
 
 Thus, since we block entity initialization on assets, by the time entities
-load, all assets will have been already fetched. As long as `<a-asset-item>`s
-are defined, and the entity is fetching files using some form
+load, all assets will have been already fetched. As long as we define
+`<a-asset-item>`s, and the entity is fetching files using some form
 `THREE.XHRLoader`, then caching will automatically work.
 
 ## Accessing the `XHRLoader` and Cache

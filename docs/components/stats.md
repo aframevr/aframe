@@ -21,10 +21,10 @@ component applies only to the [`<a-scene>` element][scene].
 - **fps**: frames per second, framerate. Aim for stable 90 fps with the WebVR 1.0 API.
 - **requestAnimationFrame** (raf): Latency.
 - **Textures**: number of three.js textures in the scene. A lower count means
-  less memory is being used and less data is being sent to the GPU.
+  the scene is using less memory and sending less data to the GPU.
 - **Programs**: number of GLSL shaders in the scene.
 - **Geometries**: number of three.js geometries in the scene. A lower count
-  means less memory is being used.
+  means the scene is using less memory.
 - **Vertices**: number of vertices in the scene.
 - **Faces**: number of faces in the scene.
 - **Calls**: number of draw calls on each frame.

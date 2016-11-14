@@ -11,7 +11,7 @@ var warn = debug('components:pool:warn');
  * in a game where you want to reuse enemies entities.
  *
  * @member {array} availableEls - Available entities in the pool.
- * @member {array} useedEls - Entities of the pool in use.
+ * @member {array} usedEls - Entities of the pool in use.
  *
  */
 module.exports.Component = registerComponent('pool', {

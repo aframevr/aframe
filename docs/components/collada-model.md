@@ -42,7 +42,7 @@ We can also load a COLLADA model by specifying the path directly within `url()`.
 <a-entity collada-model="url(/path/to/tree.dae)"></a-entity>
 ```
 
-## Additional Resources
+## More Resources
 
 We can find and download models on the web to drop into our scenes:
 

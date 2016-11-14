@@ -6,16 +6,20 @@ parent_section: core
 order: 3
 ---
 
+[ecs]: ./index.md
+
 In the [entity-component-system pattern][ecs], a component is a reusable and
-modular chunk of data that is plugged into an entity to add appearance, behavior,
+modular chunk of data that we plug into an entity to add appearance, behavior,
 and/or functionality.
+
+[three]: http://threejs.org/
 
 In A-Frame, components modify entities which are 3D objects in the scene. We
 mix and compose components together to build complex objects. They let us
-encapsulate [three.js][three] and JavaScript code into modules that can be used
+encapsulate [three.js][three] and JavaScript code into modules that we can use
 declaratively from HTML.
 
-As an abstract analogy, if a smartphone were defined as an entity, we might use
+As an abstract analogy, if we define a smartphone as an entity, we might use
 components to give it appearance (color, shape), to define its behavior
 (vibrate when called, shut down on low battery), or to add functionality
 (camera, screen).
@@ -29,8 +33,10 @@ and functionality of entities.
 ## What a Component Looks Like
 
 A component holds a bucket of data in the form of one or more component
-properties. This data is used to modify the entity. Consider an *engine*
+properties. Components use this data to modify entities. Consider an *engine*
 component, we might define properties such as *horsepower* or *cylinders*.
+
+[vrjump]: http://thevrjump.com
 
 ![](http://thevrjump.com/assets/img/articles/aframe-system/aframe-system.jpg)
 <div class="page-caption"><span>
@@ -44,9 +50,11 @@ represent component data.
 
 #### Single-Property Component
 
-If a component is a *single-property* component, meaning its data is
-represented by a single value, then in HTML, the component value looks like a normal
-HTML attribute:
+If a component is a *single-property* component, meaning its data consists of a
+single value, then in HTML, the component value looks like a normal HTML
+attribute:
+
+[position]: ../components/position.md
 
 ```html
 <!-- `position` is the name of the position component. -->
@@ -56,8 +64,8 @@ HTML attribute:
 
 #### Multi-Property Component
 
-If a component is a *multi-property* component, meaning its data is represented
-by several properties and values, then in HTML, the component value looks like
+If a component is a *multi-property* component, meaning the data is consists of
+multiple properties and values, then in HTML, the component value resembles
 inline CSS styles:
 
 ```html
@@ -69,9 +77,9 @@ inline CSS styles:
 
 ## Under the Hood
 
-A component is registered using `AFRAME.registerComponent`, which we pass a
-component name to register a component under and a component definition. Below
-is the outer skeleton for the [position component][position]:
+`AFRAME.registerComponent` registers components, which we pass a component name
+to register a component under and a component definition. Below is the outer
+skeleton for the [position component][position]:
 
 ```js
 AFRAME.registerComponent('position', {
@@ -90,6 +98,8 @@ AFRAME.registerComponent('position', {
   // ...
 });
 ```
+
+[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 
 Then a component defines lifecycle methods that handles what it does with its
 data, giving *physiology* to the component. During initialization and on
@@ -114,6 +124,9 @@ The position component uses only a small subset of the component API. We'll go
 over everything the component API has to offer.
 
 ### Properties
+
+[entity]: ./entity.md
+[multiple]: #multiple-instancing
 
 | Property     | Description                                                                                                                  |
 |--------------|------------------------------------------------------------------------------------------------------------------------------|
@@ -140,8 +153,8 @@ over everything the component API has to offer.
 
 ## Dependencies
 
-Specifying `dependencies` will guarantee that another component or other
-components are initialized *before* initializing the current component:
+Specifying `dependencies` will tell A-Frame to initialize other components
+(left-to-right) first *before* initializing the current component:
 
 ```js
 // Initializes last.
@@ -159,6 +172,8 @@ AFRAME.registerComponent('c', {});
 ```
 
 ## Multiple Instancing
+
+[sound]: ../components/sound.md
 
 By default, a component can only have one instance. For example, an entity can
 only have one geometry component attached. But some components like [the sound
@@ -246,8 +261,8 @@ types:
 | vec4            | Parses four numbers into an `{x, y, z, w}` object (e.g., `1 -2 3 -4.5` to `{x: 1, y: -2, z: 3, w: -4.5}`.         | {x: 0, y: 0, z: 0, w: 0} |
 
 The property types will parse incoming string values from the DOM and store it
-in the component's `data` property. Alternatively, we can define our own
-property types by providing our own `parse` functions:
+in the component's `data` property. Or we can define our own property types by
+providing our own `parse` functions:
 
 ```js
 schema: {
@@ -263,8 +278,8 @@ schema: {
 
 ### Schema Inference
 
-Property types can either be assigned explicitly, or the schema will infer one
-given the default value.
+We can assign property types explicitly, or the schema will infer one given the
+default value.
 
 Given a default value, the schema will infer a property type and inject a
 parser and stringifer into the property definition:
@@ -311,6 +326,8 @@ Single-property schemas define only a single anonymous flat property. They must
 define either a `type` or a `default` value to be able to infer an appropriate
 parser and stringifier.
 
+[rotation]: ../components/rotation.md
+
 For example, the [rotation component][rotation] takes a `vec3`:
 
 ```js
@@ -323,6 +340,8 @@ AFRAME.registerComponent('rotation', {
   // ...
 });
 ```
+
+[visible]: ../components/visible.md
 
 And for example, the [visible component][visible] takes a boolean:
 
@@ -365,23 +384,25 @@ AFRAME.registerComponent('physics-body', {
 
 ## Interface / Lifecycle Methods
 
-When writing a component, we implement one or several methods of the component
-interface. Most of these methods are lifecycle handlers. With the schema being
-the anatomy, the lifecycle methods are the physiology; the schema defines the
-data, the lifecycle methods *use* the data. A component has access to
-`this.data` which in a single-property schema is a value and in a
+When writing a component, we implement at least one of the methods of the
+component interface. Most of these methods are lifecycle handlers. With the
+schema being the anatomy, the lifecycle methods are the physiology; the schema
+defines the data, the lifecycle methods *use* the data. A component has access
+to `this.data` which in a single-property schema is a value and in a
 multi-property schema is an object.
 
 The handlers will almost always interact with the entity. Read about the
 [entity API](./entity.md) if you have not already.
 
-### `.init()`
+### `.init ()`
 
-`.init` is called once in a component's lifecycle when it is attached to the
-entity. The init handler is generally used to set up state and instantiate
-variables that may used throughout a component. Not every component will need
-to define `.init`. It is similar to `createdCallback` or
-`React.ComponentDidMount`.
+A-Frame calls `.init()` only once in a component's lifecycle: when we attach the
+component to the entity. The init handler is generally used to set up state and
+instantiate variables that may used throughout a component. Not every component
+will need to define `.init()`. `.init()` is analogous to
+`HTMLElement.createdCallback` or `React.ComponentDidMount`.
+
+[camera]: ../components/camera.md
 
 For example, the [camera component][camera]'s `init` creates
 and sets the camera.
@@ -404,14 +425,14 @@ Example uses of `init` by some A-Frame components:
 | light         | Register light to the lighting system.                            |
 | material      | Set up variables, mainly to visualize the state of a component.   |
 
-### `.update(oldData)`
+### `.update (oldData)`
 
-`.update` is called both at the beginning of a component's lifecycle and every
+A-Frame calls `.update()` both at the beginning of a component's lifecycle and every
 time a component's data changes (e.g., as a result of `setAttribute`). The
 update handler often uses `this.data` to modify the entity. The update handler
 has access to the previous state of a component's data via its first argument.
-The previous state of a component can be used to tell exactly which properties
-changed in order to do granular updates.
+We can use the previous data of a component used to tell exactly which
+properties changed to do granular updates.
 
 For example, the [visible][visible] component's update handler toggles the
 visibility of the [entity][entity].
@@ -430,14 +451,17 @@ Example uses of `update` by some A-Frame components:
 | geometry  | Create new geometry given new data.                                                                                                         |
 | material  | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material. |
 
-### `.remove()`
+### `.remove ()`
 
-`.remove` is called when a component detaches from the entity (e.g., as a result
-of `removeAttribute`). This is used to remove all modifications, listeners, and
-behaviors to the entity that a component has added in its lifetime.
+A-Frame calls `.remove()` when we detach a component from the entity (e.g., as
+a result of `removeAttribute`). We can use `remove()` to remove all
+modifications, listeners, and behaviors to the entity that a component has
+added in its lifetime.
 
-For example, when the [light component][light] detaches, it removes the light
-it previously attached to the entity:
+[light]: ../components/light.md
+
+For example, when the [light component][light] detaches, the component removes
+the light that the component had attached to the entity:
 
 ```js
 remove: function () {
@@ -455,31 +479,32 @@ Example uses of `remove` by some A-Frame components:
 
 ### `.tick(time, timeDelta)`
 
-`.tick` is called on every single tick or render loop of the scene. Expect it
-to run on the order of 60 to 120 times per second. The global uptime of the
-scene in milliseconds and the time difference from the last frame is passed
-into the tick handler.
+A-Frame calls `.tick()` is every single tick or frame in the render loop of the
+scene. Expect it to run on the order of 60 to 120 times per second. A-Frame
+passes into `.tick()` the global uptime of the scene (milliseconds) and the time
+difference since the last frame.
 
 This is useful for things that need to update constantly such as controls or
 physics.
 
 ### `.pause()` and `.play()`
 
-The `.pause` and `.play` methods are invoked when the entity calls its own
-`.pause` or `.play` methods. Components should use this to stop or resume any
-dynamic behavior such as event listeners.
+A-Frame calls `.pause()` and `.play()` when an entity calls its own `.pause()`
+or `.play()` methods. Components should use this to stop or resume any dynamic
+behavior such as event listeners.
 
-Example uses of `.pause` and `.play` by some A-Frame components:
+Example uses of `.pause()` and `.play()` by some A-Frame components:
 
-| Component     | Usage                          |
-|---------------|--------------------------------|
-| sound         | Pause/play sound.              |
+| Component | Usage                                                      |
+|-----------|------------------------------------------------------------|
+| inspector | Pause/play the scene when the A-Frame Inspector is opened. |
+| sound     | Pause/play sound.                                          |
 
 ### `.updateSchema(data)`
 
 `.updateSchema` is an optional method used to dynamically modify the schema,
 usually depending on the value of other properties. The example below checks if
-the type changed to determine whether or not to update the schema using
+the type changed to determine whether to update the schema using
 `extendSchema`:
 
 ```js
@@ -523,6 +548,8 @@ AFRAME.registerComponent('example', {
 
 ### `.flushToDOM()`
 
+[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
+
 `flushToDOM` will manually serialize the component's data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
@@ -560,9 +587,9 @@ AFRAME.registerComponent('line', {
 #### Schema
 
 We have two properties we want to accept: `color` and `path`. Thus we will need
-a multi-property schema. The `color` property will be a simple string that will
-be fed to `THREE.Color`. The `path` property will need a custom parser and
-stringifier to handle an array of `vec3`s for the vertices.
+a multi-property schema. The `color` property will be a simple string that
+A-Frame passes to `THREE.Color`. The `path` property will need a custom parser
+and stringifier to handle an array of `vec3`s for the vertices.
 
 ```js
   // Allow line component to accept vertices and color.
@@ -626,8 +653,8 @@ update: function (oldData) {
 // ...
 ```
 
-Here, we update the line by completely replacing it. Though sometimes, we might
-want to more granularly update objects for better performance.
+Here, we update the line by replacing it. Though sometimes, we might want to
+more granularly update objects for better performance.
 
 #### Remove
 
@@ -666,22 +693,9 @@ Then with the line component written and registered, we can use it in HTML:
 
 And voila!
 
+[line-codepen]: https://codepen.io/dirkk0/pen/MbJEy
+
 ![](https://i.imgur.com/icggby2.jpg)
 <div class="page-caption"><span>
   Happy face with the line component! Play with it on [CodePen][line-codepen].
 </span></div>
-
-[camera]: ../components/camera.md
-[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
-[ecs]: ./index.md
-[entity]: ./entity.md
-[light]: ../components/light.md
-[line-codepen]: http://codepen.io/dirkk0/pen/MbJEyj
-[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
-[multiple]: #multiple-instancing
-[position]: ../components/position.md
-[rotation]: ../components/rotation.md
-[sound]: ../components/sound.md
-[three]: http://threejs.org/
-[visible]: ../components/visible.md
-[vrjump]: http://thevrjump.com

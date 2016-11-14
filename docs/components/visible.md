@@ -5,7 +5,7 @@ layout: docs
 parent_section: components
 ---
 
-The visible component defines whether or not an entity is rendered.
+The visible component determines whether to render an entity.
 
 ## Example
 

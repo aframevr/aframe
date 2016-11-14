@@ -10,10 +10,10 @@ The curved image primitive creates images that bend around the user. Curved
 images arranged around the camera can be pleasing for legibility since each
 pixel sits at the same distance from the user. They can be a better choice than
 angled flat planes for complex layouts because they ensure a smooth surface
-rather than a series of awkward seams between planes. It is an entity that
-prescribes a double-sided open-ended cylinder with the [geometry
-component](../components/geometry.md) and rendering textures on the inside of
-the cylinder with the [material component](../components/material.md).
+rather than a series of awkward seams between planes.
+
+Under the hood, a curved image is a double-sided open-ended cylinder with
+textures mapped to the inside of the cylinder.
 
 ## Example
 
@@ -55,4 +55,7 @@ the cylinder with the [material component](../components/material.md).
 
 ## Fine-Tuning
 
-Ensuring that the image is not distorted by stretching requires us to carefully set the `height`, `radius`, and `theta-length` attributes with respect to the image aspect ratio. Once those values are fine-tuned to avoid distortion, `scale` can then be used to safely adjust the distance of the curved image relative to the user.
+Ensuring that the image is not distorted by stretching requires us to carefully
+set the `height`, `radius`, and `theta-length` attributes relative to the image
+aspect ratio. Once those values are fine-tuned to avoid distortion, we can use
+`scale` to safely adjust the distance of the curved image relative to the user.

@@ -5,7 +5,7 @@ layout: docs
 parent_section: primitives
 ---
 
-The ring primitive creates a ring or disc shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `ring`.
+The ring primitive creates a ring or disc shape.
 
 ## Example
 

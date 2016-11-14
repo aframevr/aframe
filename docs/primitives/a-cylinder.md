@@ -5,11 +5,11 @@ layout: docs
 parent_section: primitives
 ---
 
-The cylinder primitive is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cylinder`. It can be used to create tubes and curved surfaces.
+The cylinder primitive is used to create tubes and curved surfaces.
 
 ## Examples
 
-The cylinder primitive is versatile and can actually be used to create various shapes:
+The cylinder primitive is versatile and can be used to create different kinds of shapes:
 
 ```html
 <!-- Basic cylinder. -->
