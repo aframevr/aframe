@@ -46,8 +46,7 @@ var FRAGMENT_SHADER = [
 module.exports.Component = registerComponent('screenshot', {
   schema: {
     width: {default: 4096},
-    height: {default: 2048},
-    projection: {default: 'equirectangular', oneOf: ['equirectangular', 'perspective']}
+    height: {default: 2048}
   },
 
   init: function () {
@@ -120,22 +119,29 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   /**
-   * <ctrl> + <alt> + s keyboard shortcut.
+   * <ctrl> + <alt> + s = regular screenshot
+   * <ctrl> + <alt> + <shift> + s = equirectangular screenshot
    */
   onKeyDown: function (evt) {
     var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
     if (!this.data || !shortcutPressed) { return; }
-    this.capture();
+    var projection = evt.shiftKey ? 'equirectangular' : 'perspective';
+    this.capture(projection);
   },
 
-  capture: function () {
+  /**
+   * Captures a screenshot of the scene
+   *
+   * @param {string} projection - Screenshot projection (equirectangular | perspective)
+   */
+  capture: function (projection) {
     var el = this.el;
     var renderer = el.renderer;
     var size;
     var camera;
     var cubeCamera;
     // Configure camera
-    if (this.data.projection === 'perspective') {
+    if (projection === 'perspective') {
       // the quad is used for projection in the equirectangular mode
       // we hide it in this case.
       this.quad.visible = false;
@@ -159,12 +165,12 @@ module.exports.Component = registerComponent('screenshot', {
       // use quad to project image taken by the cube camera
       this.quad.visible = true;
     }
-    this.renderCapture(camera, size);
+    this.renderCapture(camera, size, projection);
     // Trigger file download
     this.saveCapture();
   },
 
-  renderCapture: function (camera, size) {
+  renderCapture: function (camera, size, projection) {
     var autoClear = this.el.renderer.autoClear;
     var el = this.el;
     var imageData;
@@ -182,7 +188,7 @@ module.exports.Component = registerComponent('screenshot', {
     renderer.autoClear = autoClear;
     // Read image pizels back
     renderer.readRenderTargetPixels(output, 0, 0, size.width, size.height, pixels);
-    if (this.data.projection === 'perspective') {
+    if (projection === 'perspective') {
       pixels = this.flipPixelsVertically(pixels, size.width, size.height);
     }
     imageData = new ImageData(new Uint8ClampedArray(pixels), size.width, size.height);
