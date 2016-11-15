@@ -222,7 +222,7 @@ var proto = Object.create(ANode.prototype, {
 
   /**
    * Gets or creates an object3D of a given type.
-
+   *
    * @param {string} type - Type of the object3D.
    * @param {string} Constructor - Constructor to use to create the object3D if needed.
    * @returns {object}
