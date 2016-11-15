@@ -53,7 +53,7 @@ pages.forEach(function checkPage (pagePath) {
   let referenceRegex = new RegExp(`\\[\(\.\*\)\?\\]: \.\*`, 'g');
   match = referenceRegex.exec(content);
   while (match !== null) {
-    referencingRegex = new RegExp(`\\]\\[${match[1]}\\]`, 'g');
+    referencingRegex = new RegExp(`\\[${match[1]}\\]`, 'g');
     referencingMatch = referencingRegex.exec(content);
     if (!referencingMatch) {
       addError(pagePath, match[1], 'Link definition not being used');
