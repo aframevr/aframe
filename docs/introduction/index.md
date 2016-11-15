@@ -83,7 +83,7 @@ The existing web ecosystem of tools were built on top of the notion of
 manipulating plain HTML and are thus compatible with A-Frame.
 
 [integrationimage]: https://cloud.githubusercontent.com/assets/674727/20290346/5f3f10b6-aa94-11e6-9d71-94c3e4350d08.png
-![Works with Everything](https://cloud.githubusercontent.com/assets/674727/20290346/5f3f10b6-aa94-11e6-9d71-94c3e4350d08.png)
+![Works with Everything][integrationimage]
 
 ### Entity-Component-System
 
