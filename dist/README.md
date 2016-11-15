@@ -38,7 +38,7 @@ These master builds are unstable **bleeding-edge unstable builds** that contain
 newer fixes or features from the **master branch** on GitHub, but may contain
 regressions or breaking changes.
 
-- [`aframe-master.min.js`][aframe-master.min.js] - Minified production build.
-- [`aframe-master.min.js.map`][aframe-master.min.js.map] - Source maps for minified production build.
-- [`aframe-master.js`][aframe-master.js] - Unminified build, for development or debugging.
-- [`aframe-master.js.map`][aframe-master.js.map] - Source maps for unminified build.
+- [`aframe-master.min.js`](aframe-master.min.js) - Minified production build.
+- [`aframe-master.min.js.map`](aframe-master.min.js.map) - Source maps for minified production build.
+- [`aframe-master.js`](aframe-master.js) - Unminified build, for development or debugging.
+- [`aframe-master.js.map`](aframe-master.js.map) - Source maps for unminified build.
