@@ -154,20 +154,28 @@ function vecParse (value) {
 }
 
 function matrix4Parse (value) {
-  var defaultValues = propertyTypes.matrix4.default;
+  var defaultValues = this.default;
+  var masterDefaultValues = propertyTypes.matrix4.default;
   if (Array.isArray(value)) { return beMatrix4Array(value); }
   if (!value || typeof value !== 'string') { return beMatrix4Array([]); }
   return beMatrix4Array(value.split(/\s+/).map(trim));
   function trim (str) { return str.trim(); }
+  function getValue (array, n) {
+    var value;
+    if (array.length > n) {
+      value = parseFloat(array[n], 10);
+      if (!isNaN(value)) { return value; }
+    }
+    if (Array.isArray(defaultValues) && defaultValues.length > n) {
+      value = parseFloat(defaultValues[n], 10);
+      if (!isNaN(value)) { return value; }
+    }
+    return masterDefaultValues[n];
+  }
   function beMatrix4Array (array) {
     if (array.length > 16) { array.length = 16; }
     for (var i = 0; i < 16; i++) {
-      if (i >= array.length) {
-        array[i] = defaultValues[i];
-      } else {
-        var value = parseFloat(array[i], 10);
-        array[i] = isNaN(value) ? defaultValues[i] : value;
-      }
+      array[i] = getValue(array, i);
     }
     return array;
   }
