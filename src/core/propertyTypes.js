@@ -24,6 +24,7 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
+registerPropertyType('matrix4', [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], matrix4Parse, arrayStringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -150,4 +151,24 @@ function srcParse (value) {
 
 function vecParse (value) {
   return coordinates.parse(value, this.default);
+}
+
+function matrix4Parse (value) {
+  var defaultValues = propertyTypes.matrix4.default;
+  if (Array.isArray(value)) { return beMatrix4Array(value); }
+  if (!value || typeof value !== 'string') { return beMatrix4Array([]); }
+  return beMatrix4Array(value.split(/\s+/).map(trim));
+  function trim (str) { return str.trim(); }
+  function beMatrix4Array (array) {
+    if (array.length > 16) { array.length = 16; }
+    for (var i = 0; i < 16; i++) {
+      if (i >= array.length) {
+        array[i] = defaultValues[i];
+      } else {
+        var value = parseFloat(array[i], 10);
+        array[i] = isNaN(value) ? defaultValues[i] : value;
+      }
+    }
+    return array;
+  }
 }
