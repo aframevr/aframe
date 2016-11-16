@@ -14,6 +14,7 @@
 
 - `getComputedAttribute` deprecated in favor of `getAttribute`. `getDOMAttribute` does what `getAttribute` used to do. (#1925)
 - `src` schema property type deprecated in favor of `asset`, `audio`, `map`, `model` schema property types. (#2003)
+- `AFRAME.utils.isMobile`, `AFRAME.utils.isGearVR`, `AFRAME.utils.checkHeadsetConnected`, and `AFRAME.utils.isIOS` have all moved to the `AFRAME.utils.device` namespace.
 
 ### Enhancements
 
