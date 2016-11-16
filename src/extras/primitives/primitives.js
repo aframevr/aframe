@@ -85,7 +85,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
                 initialComponents[attr.name] = attr.value;
               } else {
                 initialComponents[attr.name] = utils.extendDeep(
-                  initialComponents[attr.name], Component.parse(attr.value || {}));
+                  initialComponents[attr.name] || {}, Component.parse(attr.value || {}));
               }
             }
           }

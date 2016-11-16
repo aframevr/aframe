@@ -118,6 +118,7 @@ suite('registerPrimitive (using innerHTML)', function () {
         assert.equal(this.data.qux, 'qaz');
         // Set by second mapping.
         assert.equal(this.data.quux, 'corge');
+        delete AFRAME.components.test;
         done();
       }
     });
@@ -152,6 +153,23 @@ suite('registerPrimitive (using innerHTML)', function () {
       }
     }, 'viz="false"', function postCreation (el) {
       assert.equal(el.getAttribute('visible'), false);
+      done();
+    });
+  });
+
+  test('handles initializing with a defined multi-property component', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {
+        foo: {type: 'string'},
+        bar: {type: 'number'}
+      }
+    });
+    primitiveFactory({}, 'test="foo: qux; bar: 10"', function postCreation (el) {
+      assert.shallowDeepEqual(el.getAttribute('test'), {
+        foo: 'qux',
+        bar: 10
+      });
+      delete AFRAME.components.test;
       done();
     });
   });
