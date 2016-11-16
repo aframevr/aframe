@@ -57244,7 +57244,7 @@ module.exports={
     "style-attr": "^1.0.2",
     "three": "^0.82.1",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "0.9.15"
+    "webvr-polyfill": "^0.9.23"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -59413,25 +59413,27 @@ var VERTEX_SHADER = [
   'varying vec2 vUv;',
   'void main()  {',
   '  vUv = vec2( 1.- uv.x, uv.y );',
-  '  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );'
+  '  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+  '}'
 ].join('\n');
 
 var FRAGMENT_SHADER = [
-  'precision mediump float',
-  'uniform samplerCube map',
-  'varying vec2 vUv',
+  'precision mediump float;',
+  'uniform samplerCube map;',
+  'varying vec2 vUv;',
   '#define M_PI 3.141592653589793238462643383279',
-  'void main()  ',
-  '  vec2 uv = vUv',
-  '  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.',
-  '  float latitude = uv.y * M_PI',
-  '  vec3 dir = vec3',
-  '    - sin( longitude ) * sin( latitude )',
-  '    cos( latitude )',
-  '    - cos( longitude ) * sin( latitude ',
-  '  )',
-  '  normalize( dir )',
-  '  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1.0 )'
+  'void main() {',
+  '  vec2 uv = vUv;',
+  '  float longitude = uv.x * 2. * M_PI - M_PI + M_PI / 2.;',
+  '  float latitude = uv.y * M_PI;',
+  '  vec3 dir = vec3(',
+  '    - sin( longitude ) * sin( latitude ),',
+  '    cos( latitude ),',
+  '    - cos( longitude ) * sin( latitude )',
+  '  );',
+  '  normalize( dir );',
+  '  gl_FragColor = vec4( textureCube( map, dir ).rgb, 1.0 );',
+  '}'
 ].join('\n');
 
 /**
@@ -59447,8 +59449,7 @@ var FRAGMENT_SHADER = [
 module.exports.Component = registerComponent('screenshot', {
   schema: {
     width: {default: 4096},
-    height: {default: 2048},
-    projection: {default: 'equirectangular', oneOf: ['equirectangular', 'perspective']}
+    height: {default: 2048}
   },
 
   init: function () {
@@ -59521,22 +59522,29 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   /**
-   * <ctrl> + <alt> + s keyboard shortcut.
+   * <ctrl> + <alt> + s = regular screenshot
+   * <ctrl> + <alt> + <shift> + s = equirectangular screenshot
    */
   onKeyDown: function (evt) {
     var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
     if (!this.data || !shortcutPressed) { return; }
-    this.capture();
+    var projection = evt.shiftKey ? 'equirectangular' : 'perspective';
+    this.capture(projection);
   },
 
-  capture: function () {
+  /**
+   * Captures a screenshot of the scene
+   *
+   * @param {string} projection - Screenshot projection (equirectangular | perspective)
+   */
+  capture: function (projection) {
     var el = this.el;
     var renderer = el.renderer;
     var size;
     var camera;
     var cubeCamera;
     // Configure camera
-    if (this.data.projection === 'perspective') {
+    if (projection === 'perspective') {
       // the quad is used for projection in the equirectangular mode
       // we hide it in this case.
       this.quad.visible = false;
@@ -59560,12 +59568,12 @@ module.exports.Component = registerComponent('screenshot', {
       // use quad to project image taken by the cube camera
       this.quad.visible = true;
     }
-    this.renderCapture(camera, size);
+    this.renderCapture(camera, size, projection);
     // Trigger file download
     this.saveCapture();
   },
 
-  renderCapture: function (camera, size) {
+  renderCapture: function (camera, size, projection) {
     var autoClear = this.el.renderer.autoClear;
     var el = this.el;
     var imageData;
@@ -59583,7 +59591,7 @@ module.exports.Component = registerComponent('screenshot', {
     renderer.autoClear = autoClear;
     // Read image pizels back
     renderer.readRenderTargetPixels(output, 0, 0, size.width, size.height, pixels);
-    if (this.data.projection === 'perspective') {
+    if (projection === 'perspective') {
       pixels = this.flipPixelsVertically(pixels, size.width, size.height);
     }
     imageData = new ImageData(new Uint8ClampedArray(pixels), size.width, size.height);
@@ -61722,7 +61730,7 @@ var proto = Object.create(ANode.prototype, {
 
   /**
    * Gets or creates an object3D of a given type.
-
+   *
    * @param {string} type - Type of the object3D.
    * @param {string} Constructor - Constructor to use to create the object3D if needed.
    * @returns {object}
@@ -62122,43 +62130,82 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * If attribute is a component, setAttribute will apply the value to the
-   * existing component data, not replace it. Examples:
+   * setAttribute can:
    *
-   * Examples:
+   * 1. Set a single property of a multi-property component.
+   * 2. Set multiple properties of a multi-property component.
+   * 3. Replace properties of a multi-property component.
+   * 4. Set a value for a single-property component, mixin, or normal HTML attribute.
    *
-   * setAttribute('id', 'my-element');
-   * setAttribute('material', { color: 'crimson' });
-   * setAttribute('material', 'color', 'crimson');
-   *
-   * @param {string} attr - Attribute name. setAttribute will initialize or update
-   *        a component if the name corresponds to a registered component.
-   * @param {string|object} value - If a string, setAttribute will update the attribute or.
-   *        component. If an object, the value will be mixed into the component.
-   * @param {string} componentPropValue - If defined, `value` will act as the property
-   *        name and setAttribute will only set a single component property.
+   * @param {string} attrName - Component or attribute name.
+   * @param {string|object} arg1 - Can be a property name or object of properties.
+   * @param {string|bool} arg2 - Can be a value, or boolean indicating whether to update or
+   *   replace.
    */
   setAttribute: {
-    value: function (attr, value, componentPropValue) {
+    value: function (attrName, arg1, arg2) {
       var componentName;
-      var isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      var isDebugMode;
 
-      componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+      // Determine which type of setAttribute to call based on the types of the arguments.
+      componentName = attrName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
-        // Just update one of the component properties.
-        if (typeof value === 'string' && componentPropValue !== undefined) {
-          this.updateComponentProperty(attr, value, componentPropValue);
+        if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
+          singlePropertyUpdate(this, attrName, arg1, arg2);
+        } else if (typeof arg1 === 'object' && arg2 === true) {
+          multiPropertyClobber(this, attrName, arg1);
         } else {
-          this.updateComponent(attr, value);
+          componentUpdate(this, attrName, arg1);
         }
 
         // In debug mode, write component data up to the DOM.
-        if (isDebugMode) { this.components[attr].flushToDOM(); }
+        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+        if (isDebugMode) { this.components[attrName].flushToDOM(); }
         return;
+      } else {
+        normalSetAttribute(this, attrName, arg1);
       }
 
-      ANode.prototype.setAttribute.call(this, attr, value);
-      if (attr === 'mixin') { this.mixinUpdate(value); }
+      /**
+       * Just update one of the component properties.
+       * >> setAttribute('foo', 'bar', 'baz')
+       */
+      function singlePropertyUpdate (el, componentName, propName, propertyValue) {
+        el.updateComponentProperty(componentName, propName, propertyValue);
+      }
+
+      /**
+       * Just update multiple component properties at once for a multi-property component.
+       * >> setAttribute('foo', {bar: 'baz'})
+       */
+      function componentUpdate (el, componentName, propValue) {
+        var component = el.components[componentName];
+        if (component && typeof propValue === 'object') {
+          // Extend existing component data.
+          el.updateComponent(
+            componentName,
+            utils.extendDeep(utils.extendDeep({}, component.data), propValue));
+        } else {
+          el.updateComponent(componentName, propValue);
+        }
+      }
+
+      /**
+       * Pass in complete data set for a multi-property component.
+       * >> setAttribute('foo', {bar: 'baz'}, true)
+       */
+      function multiPropertyClobber (el, componentName, propObject) {
+        el.updateComponent(componentName, propObject);
+      }
+
+      /**
+       * Just update one of the component properties.
+       * >> setAttribute('id', 'myEntity')
+       */
+      function normalSetAttribute (el, attrName, value) {
+        ANode.prototype.setAttribute.call(el, attrName, value);
+        if (attrName === 'mixin') { el.mixinUpdate(value); }
+      }
     },
     writable: window.debug
   },
@@ -63399,26 +63446,37 @@ function arrayStringify (value) {
 }
 
 /**
- * `src` parser for assets.
+ * For general assets.
  *
- * @param {string} value - Can either be `url(<value>)` or a selector to an asset.
- * @returns {string|Element} Parsed value from `url(<value>)`, src from `<someasset src>`, or
- *   canvas.
+ * @param {string} value - Can either be `url(<value>)`, an ID selector to an asset, or
+ *   just string.
+ * @returns {string} Parsed value from `url(<value>)`, src from `<someasset src>`, or
+ *   just string.
  */
 function assetParse (value) {
   var el;
-  var parsedUrl = value.match(/\url\((.+)\)/);
+  var parsedUrl;
 
+  // Wrapped `url()` in case of data URI.
+  parsedUrl = value.match(/\url\((.+)\)/);
   if (parsedUrl) { return parsedUrl[1]; }
 
-  el = selectorParse(value);
-  if (!el) { return ''; }
-
-  if (el.tagName === 'CANVAS') {
-    return el;
-  } else {
-    return el.getAttribute('src');
+  // ID.
+  if (value.charAt(0) === '#') {
+    el = selectorParse(value);
+    if (el) {
+      if (el.tagName === 'CANVAS') {
+        return el;
+      } else {
+        return el.getAttribute('src');
+      }
+    }
+    warn('"' + value + '" asset not found.');
+    return;
   }
+
+  // Non-wrapped url().
+  return value;
 }
 
 function defaultParse (value) {
@@ -64574,20 +64632,8 @@ Object.keys(shaders.standard.schema).forEach(function addMapping (prop) {
 
 module.exports = function getMeshMixin () {
   return {
-    defaultComponents: {
-      material: {}
-    },
-
-    mappings: utils.extend({}, materialMappings),
-
-    transforms: {
-      src: function (value) {
-        // Selector.
-        if (value[0] === '#') { return value; }
-        // Inline url().
-        return 'url(' + value + ')';
-      }
-    }
+    defaultComponents: {material: {}},
+    mappings: utils.extend({}, materialMappings)
   };
 };
 
@@ -64611,7 +64657,6 @@ var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
 var utils = _dereq_('../../utils/');
 
-var bind = utils.bind;
 var debug = utils.debug;
 var setComponentProperty = utils.entity.setComponentProperty;
 var log = debug('extras:primitives:debug');
@@ -64694,7 +64739,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
                 initialComponents[attr.name] = attr.value;
               } else {
                 initialComponents[attr.name] = utils.extendDeep(
-                  initialComponents[attr.name], Component.parse(attr.value || {}));
+                  initialComponents[attr.name] || {}, Component.parse(attr.value || {}));
               }
             }
           }
@@ -64721,21 +64766,8 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
           if (!attr || !componentName) { return; }
 
-          // Run transform.
-          value = this.getTransformedValue(attr, value);
-
           // Set value.
           setComponentProperty(this, componentName, value);
-        }
-      },
-
-      /**
-       * Calls defined transform function on value if any.
-       */
-      getTransformedValue: {
-        value: function (attr, value) {
-          if (!this.transforms || !this.transforms[attr]) { return value; }
-          return bind(this.transforms[attr], this)(value);
         }
       }
     })
@@ -64921,10 +64953,6 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   mappings: {
     src: 'obj-model.obj',
     mtl: 'obj-model.mtl'
-  },
-
-  transforms: {
-    mtl: meshMixin.transforms.src
   }
 }));
 
@@ -64932,6 +64960,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
+var meshPrimitives = _dereq_('./meshPrimitives');
 
 registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {
@@ -64948,14 +64977,10 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
     scale: '-1 1 1'
   },
 
-  mappings: {
-    radius: 'geometry.radius',
-    'segments-width': 'geometry.segmentsWidth',
-    'segments-height': 'geometry.segmentsHeight'
-  }
+  mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75}],84:[function(_dereq_,module,exports){
+},{"../../../utils/":122,"../getMeshMixin":73,"../primitives":75,"./meshPrimitives":87}],84:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -67080,12 +67105,9 @@ var warn = debug('utils:src-loader:warn');
  * Detects whether `src` is pointing to an image or video and invokes the appropriate
  * callback.
  *
- * If `src` is selector, check if it's valid, return the el in the callback.
- * An el is returned so that it can be reused for texture loading.
+ * The src will be returned on the callback
  *
- * If `src` is a URL, check if it's valid, return the src in the callback.
- *
- * @params {string} src - A selector or a URL. URLs must be wrapped by `url()`.
+ * @params {string} src - URL.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
  */
@@ -67269,25 +67291,27 @@ THREE.VRControls = function ( object, onError ) {
 
 	var scope = this;
 
-	var vrInput;
+	var vrDisplay, vrDisplays;
 
 	var standingMatrix = new THREE.Matrix4();
 
-	function gotVRDevices( devices ) {
+	var frameData = null;
 
-		for ( var i = 0; i < devices.length; i ++ ) {
+	if ( 'VRFrameData' in window ) {
 
-			if ( ( 'VRDisplay' in window && devices[ i ] instanceof VRDisplay ) ||
-				 ( 'PositionSensorVRDevice' in window && devices[ i ] instanceof PositionSensorVRDevice ) ) {
+		frameData = new VRFrameData();
 
-				vrInput = devices[ i ];
-				break;  // We keep the first we encounter
+	}
 
-			}
+	function gotVRDisplays( displays ) {
 
-		}
+		vrDisplays = displays;
 
-		if ( !vrInput ) {
+		if ( displays.length > 0 ) {
+
+			vrDisplay = displays[ 0 ];
+
+		} else {
 
 			if ( onError ) onError( 'VR input not available.' );
 
@@ -67297,12 +67321,11 @@ THREE.VRControls = function ( object, onError ) {
 
 	if ( navigator.getVRDisplays ) {
 
-		navigator.getVRDisplays().then( gotVRDevices );
+		navigator.getVRDisplays().then( gotVRDisplays ).catch ( function () {
 
-	} else if ( navigator.getVRDevices ) {
+			console.warn( 'THREE.VRControls: Unable to get VR Displays' );
 
-		// Deprecated API.
-		navigator.getVRDevices().then( gotVRDevices );
+		} );
 
 	}
 
@@ -67320,60 +67343,71 @@ THREE.VRControls = function ( object, onError ) {
 	// standing=true but the VRDisplay doesn't provide stageParameters.
 	this.userHeight = 1.6;
 
+	this.getVRDisplay = function () {
+
+		return vrDisplay;
+
+	};
+
+	this.setVRDisplay = function ( value ) {
+
+		vrDisplay = value;
+
+	};
+
+	this.getVRDisplays = function () {
+
+		console.warn( 'THREE.VRControls: getVRDisplays() is being deprecated.' );
+		return vrDisplays;
+
+	};
+
+	this.getStandingMatrix = function () {
+
+		return standingMatrix;
+
+	};
+
 	this.update = function () {
 
-		if ( vrInput ) {
+		if ( vrDisplay ) {
 
-			if ( vrInput.getPose ) {
+			var pose;
 
-				var pose = vrInput.getPose();
+			if ( vrDisplay.getFrameData ) {
 
-				if ( pose.orientation !== null ) {
+				vrDisplay.getFrameData( frameData );
+				pose = frameData.pose;
 
-					object.quaternion.fromArray( pose.orientation );
+			} else if ( vrDisplay.getPose ) {
 
-				}
+				pose = vrDisplay.getPose();
 
-				if ( pose.position !== null ) {
+			}
 
-					object.position.fromArray( pose.position );
+			if ( pose.orientation !== null ) {
 
-				} else {
+				object.quaternion.fromArray( pose.orientation );
 
-					object.position.set( 0, 0, 0 );
+			}
 
-				}
+			if ( pose.position !== null ) {
+
+				object.position.fromArray( pose.position );
 
 			} else {
 
-				// Deprecated API.
-				var state = vrInput.getState();
-
-				if ( state.orientation !== null ) {
-
-					object.quaternion.copy( state.orientation );
-
-				}
-
-				if ( state.position !== null ) {
-
-					object.position.copy( state.position );
-
-				} else {
-
-					object.position.set( 0, 0, 0 );
-
-				}
+				object.position.set( 0, 0, 0 );
 
 			}
 
 			if ( this.standing ) {
 
-				if ( vrInput.stageParameters ) {
+				if ( vrDisplay.stageParameters ) {
 
 					object.updateMatrix();
 
-					standingMatrix.fromArray(vrInput.stageParameters.sittingToStandingTransform);
+					standingMatrix.fromArray( vrDisplay.stageParameters.sittingToStandingTransform );
 					object.applyMatrix( standingMatrix );
 
 				} else {
@@ -67392,23 +67426,9 @@ THREE.VRControls = function ( object, onError ) {
 
 	this.resetPose = function () {
 
-		if ( vrInput ) {
+		if ( vrDisplay ) {
 
-			if ( vrInput.resetPose !== undefined ) {
-
-				vrInput.resetPose();
-
-			} else if ( vrInput.resetSensor !== undefined ) {
-
-				// Deprecated API.
-				vrInput.resetSensor();
-
-			} else if ( vrInput.zeroSensor !== undefined ) {
-
-				// Really deprecated API.
-				vrInput.zeroSensor();
-
-			}
+			vrDisplay.resetPose();
 
 		}
 
@@ -67430,7 +67450,7 @@ THREE.VRControls = function ( object, onError ) {
 
 	this.dispose = function () {
 
-		vrInput = null;
+		vrDisplay = null;
 
 	};
 
@@ -67456,6 +67476,7 @@ THREE.VREffect = function ( renderer, onError ) {
 	var renderRectL, renderRectR;
 
 	var frameData = null;
+
 	if ( 'VRFrameData' in window ) {
 
 		frameData = new VRFrameData();
@@ -67480,7 +67501,11 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	if ( navigator.getVRDisplays ) {
 
-		navigator.getVRDisplays().then( gotVRDisplays );
+		navigator.getVRDisplays().then( gotVRDisplays ).catch ( function () {
+
+			console.warn( 'THREE.VREffect: Unable to get VR Displays' );
+
+		} );
 
 	}
 
@@ -67501,8 +67526,15 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	};
 
+	this.setVRDisplay = function ( value ) {
+
+		vrDisplay = value;
+
+	};
+
 	this.getVRDisplays = function () {
 
+		console.warn( 'THREE.VREffect: getVRDisplays() is being deprecated.' );
 		return vrDisplays;
 
 	};
@@ -67533,10 +67565,10 @@ THREE.VREffect = function ( renderer, onError ) {
 	var requestFullscreen;
 	var exitFullscreen;
 	var fullscreenElement;
-	var leftBounds = [ 0.0, 0.0, 0.5, 1.0 ];
-	var rightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
+	var defaultLeftBounds = [ 0.0, 0.0, 0.5, 1.0 ];
+	var defaultRightBounds = [ 0.5, 0.0, 0.5, 1.0 ];
 
-	function onFullscreenChange() {
+	function onVRDisplayPresentChange() {
 
 		var wasPresenting = scope.isPresenting;
 		scope.isPresenting = vrDisplay !== undefined && vrDisplay.isPresenting;
@@ -67546,16 +67578,6 @@ THREE.VREffect = function ( renderer, onError ) {
 			var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
 			var eyeWidth = eyeParamsL.renderWidth;
 			var eyeHeight = eyeParamsL.renderHeight;
-
-			var layers = vrDisplay.getLayers();
-			if ( layers.length ) {
-
-				var layer = layers[0];
-
-				leftBounds = layer.leftBounds !== null && layer.leftBounds.length === 4 ? layer.leftBounds : [ 0.0, 0.0, 0.5, 1.0 ];
-				rightBounds = layer.rightBounds !== null && layer.rightBounds.length === 4 ? layer.rightBounds : [ 0.5, 0.0, 0.5, 1.0 ];
-
-			}
 
 			if ( !wasPresenting ) {
 
@@ -67576,7 +67598,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 	}
 
-	window.addEventListener( 'vrdisplaypresentchange', onFullscreenChange, false );
+	window.addEventListener( 'vrdisplaypresentchange', onVRDisplayPresentChange, false );
 
 	this.setFullScreen = function ( boolean ) {
 
@@ -67699,17 +67721,35 @@ THREE.VREffect = function ( renderer, onError ) {
 			// When rendering we don't care what the recommended size is, only what the actual size
 			// of the backbuffer is.
 			var size = renderer.getSize();
+			var layers = vrDisplay.getLayers();
+			var leftBounds;
+			var rightBounds;
+
+			if ( layers.length ) {
+
+				var layer = layers[ 0 ];
+
+				leftBounds = layer.leftBounds !== null && layer.leftBounds.length === 4 ? layer.leftBounds : defaultLeftBounds;
+				rightBounds = layer.rightBounds !== null && layer.rightBounds.length === 4 ? layer.rightBounds : defaultRightBounds;
+
+			} else {
+
+				leftBounds = defaultLeftBounds;
+				rightBounds = defaultRightBounds;
+
+			}
+
 			renderRectL = {
 				x: Math.round( size.width * leftBounds[ 0 ] ),
 				y: Math.round( size.height * leftBounds[ 1 ] ),
 				width: Math.round( size.width * leftBounds[ 2 ] ),
-				height:  Math.round(size.height * leftBounds[ 3 ] )
+				height: Math.round(size.height * leftBounds[ 3 ] )
 			};
 			renderRectR = {
 				x: Math.round( size.width * rightBounds[ 0 ] ),
 				y: Math.round( size.height * rightBounds[ 1 ] ),
 				width: Math.round( size.width * rightBounds[ 2 ] ),
-				height:  Math.round(size.height * rightBounds[ 3 ] )
+				height: Math.round(size.height * rightBounds[ 3 ] )
 			};
 
 			if ( renderTarget ) {
@@ -67717,7 +67757,7 @@ THREE.VREffect = function ( renderer, onError ) {
 				renderer.setRenderTarget( renderTarget );
 				renderTarget.scissorTest = true;
 
-			} else  {
+			} else {
 
 				renderer.setRenderTarget( null );
 				renderer.setScissorTest( true );
@@ -67749,7 +67789,6 @@ THREE.VREffect = function ( renderer, onError ) {
 
 				cameraL.projectionMatrix = fovToProjection( eyeParamsL.fieldOfView, true, camera.near, camera.far );
 				cameraR.projectionMatrix = fovToProjection( eyeParamsR.fieldOfView, true, camera.near, camera.far );
-
 
 			}
 
@@ -67790,6 +67829,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 			} else {
 
+				renderer.setViewport( 0, 0, size.width, size.height );
 				renderer.setScissorTest( false );
 
 			}
@@ -67813,6 +67853,12 @@ THREE.VREffect = function ( renderer, onError ) {
 		// Regular render mode if not HMD
 
 		renderer.render( scene, camera, renderTarget, forceClear );
+
+	};
+
+	this.dispose = function () {
+
+		window.removeEventListener( 'vrdisplaypresentchange', onVRDisplayPresentChange, false );
 
 	};
 
