@@ -38,6 +38,10 @@ module.exports.fireEvent = function (el, name, data) {
 module.exports.extend = objectAssign;
 module.exports.extendDeep = deepAssign;
 
+module.exports.clone = function (obj) {
+  return JSON.parse(JSON.stringify(obj));
+};
+
 /**
  * Checks if two objects have the same attributes and values, including nested objects.
  *
