@@ -1,5 +1,5 @@
 /* global THREE */
-
+var extend = require('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
 module.exports.regex = regex;
@@ -21,7 +21,7 @@ function parse (value, defaultVec) {
   }
 
   if (typeof value !== 'string' || value === null) {
-    return defaultVec;
+    return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');

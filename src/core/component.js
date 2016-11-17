@@ -330,7 +330,8 @@ function buildData (el, name, attrName, schema, elData, silent) {
   } else {
     data = {};
     Object.keys(schema).forEach(function applyDefault (key) {
-      data[key] = schema[key].default;
+      var defaultValue = schema[key].default;
+      data[key] = typeof defaultValue === 'object' ? utils.extend({}, defaultValue) : defaultValue;
     });
   }
 

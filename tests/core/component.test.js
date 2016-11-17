@@ -129,6 +129,25 @@ suite('Component', function () {
       data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, 'red');
       assert.equal(data, 'red');
     });
+
+    test('multiple vec3 properties do not share same default value object', function (done) {
+      var data;
+      var el = entityFactory();
+      var TestComponent = registerComponent('dummy', {
+        schema: {
+          direction: {type: 'vec3'},
+          position: {type: 'vec3'}
+        }
+      });
+      el.addEventListener('loaded', function () {
+        el.setAttribute('dummy', '');
+        data = el.getAttribute('dummy');
+        assert.shallowDeepEqual(data.direction, TestComponent.prototype.schema.direction.default);
+        assert.shallowDeepEqual(data.position, TestComponent.prototype.schema.position.default);
+        assert.notEqual(data.direction, data.position);
+        done();
+      });
+    });
   });
 
   suite('updateProperties', function () {
