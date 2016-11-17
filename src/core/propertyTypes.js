@@ -24,7 +24,7 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
-registerPropertyType('matrix4', [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], matrix4Parse, arrayStringify);
+registerPropertyType('matrix4', [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], matrix4Parse, matrix4Stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -179,4 +179,8 @@ function matrix4Parse (value) {
     }
     return array;
   }
+}
+
+function matrix4Stringify (value) {
+  return value.join(' ');
 }
