@@ -48,7 +48,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
           var self = this;
 
           // Gather component data from default components.
-          initialComponents = utils.extend({}, this.defaultComponentsFromPrimitive);
+          initialComponents = JSON.parse(JSON.stringify(this.defaultComponentsFromPrimitive));
 
           // Gather component data from mixins.
           mixins = this.getAttribute('mixin');
