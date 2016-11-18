@@ -24,10 +24,6 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
-registerPropertyType('mat2', [
-  1, 0,
-  0, 1
-], matParse, matStringify);
 registerPropertyType('mat3', [
   1, 0, 0,
   0, 1, 0,
@@ -177,8 +173,15 @@ function matParse (value) {
   var rows = arrayParse(value).map(function (row) {
     return row.trim().replace(/\s+/g, ' ').split(' ').map(Number);
   });
-  // Flatten.
-  return [].concat.apply([], rows);
+
+  // Convert to column-major format.
+  var elements = [];
+  for (var i = 0; i < rows.length; i++) {
+    for (var j = 0; j < rows[i].length; j++) {
+      elements.push(rows[j][i]);
+    }
+  }
+  return elements;
 }
 
 function matStringify (value) {
@@ -193,7 +196,7 @@ function matStringify (value) {
   for (var i = 0; i < n; i++) {
     var row = [];
     for (var j = 0; j < n; j++) {
-      row.push(value[i * n + j]);
+      row.push(value[i + j * n]);
     }
     rows.push(row.join(' '));
   }
