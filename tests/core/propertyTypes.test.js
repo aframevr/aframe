@@ -176,4 +176,45 @@ suite('propertyTypes', function () {
       assert.equal(parse('#hello'), 'file2.jpg');
     });
   });
+
+  suite('matrix', function () {
+    var parse = propertyTypes.mat4.parse;
+    var stringify = propertyTypes.mat4.stringify;
+
+    test('parses matrices', function () {
+      assert.deepEqual(parse('2 0 0 0, 0 2 0 0, 0 0 2 0, 0 0 0 2'), [
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 2
+      ]);
+      assert.deepEqual(parse('1 2 3, 4 5 6, 7 8 9'), [
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 9
+      ]);
+      assert.deepEqual(parse('1 2, 3 4'), [
+        1, 2,
+        3, 4
+      ]);
+    });
+
+    test('stringifies matrices', function () {
+      assert.equal(stringify([
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 2
+      ]), '2 0 0 0, 0 2 0 0, 0 0 2 0, 0 0 0 2');
+      assert.equal(stringify([
+        1, 2, 3,
+        4, 5, 6,
+        7, 8, 9
+      ]), '1 2 3, 4 5 6, 7 8 9');
+      assert.equal(stringify([
+        1, 2,
+        3, 4
+      ]), '1 2, 3 4');
+    });
+  });
 });
