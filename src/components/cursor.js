@@ -4,6 +4,7 @@ var bind = utils.bind;
 
 var EVENTS = {
   CLICK: 'click',
+  FUSING: 'fusing',
   MOUSEENTER: 'mouseenter',
   MOUSEDOWN: 'mousedown',
   MOUSELEAVE: 'mouseleave',
@@ -120,6 +121,7 @@ module.exports.Component = registerComponent('cursor', {
     // Begin fuse if necessary.
     if (data.fuseTimeout === 0 || !data.fuse) { return; }
     cursorEl.addState(STATES.FUSING);
+    this.twoWayEmit(EVENTS.FUSING);
     this.fuseTimeout = setTimeout(function fuse () {
       cursorEl.removeState(STATES.FUSING);
       self.twoWayEmit(EVENTS.CLICK);
