@@ -40,3 +40,5 @@ buttons (trigger, grip, menu, system) and trackpad.
 | systemup     | System button released. |
 | trackpadup   | Trackpad pressed.       |
 | trackpaddown | Trackpad released.      |
+| trigger up   | Trigger pressed.        |
+| triggerdown  | Trigger released.       |
