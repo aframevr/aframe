@@ -676,7 +676,7 @@ And voila!
 [ecs]: ./index.md
 [entity]: ./entity.md
 [light]: ../components/light.md
-[line-codepen]: http://codepen.io/team/mozvr/pen/yeEQNG
+[line-codepen]: http://codepen.io/dirkk0/pen/MbJEyj
 [object3d]: http://threejs.org/docs/#Reference/Core/Object3D
 [multiple]: #multiple-instancing
 [position]: ../components/position.md
