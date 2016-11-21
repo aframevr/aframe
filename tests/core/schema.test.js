@@ -6,6 +6,7 @@ var isSingleProperty = Schema.isSingleProperty;
 var parseProperties = Schema.parseProperties;
 var parseProperty = Schema.parseProperty;
 var processSchema = Schema.process;
+var stringifyProperty = Schema.stringifyProperty;
 
 suite('schema', function () {
   suite('isSingleProperty', function () {
@@ -182,6 +183,23 @@ suite('schema', function () {
         assert.equal(typeof propDefinition.parse, 'function');
         assert.equal(typeof propDefinition.stringify, 'function');
       });
+    });
+  });
+
+  suite('stringifyProperty', function () {
+    test('returns input if input is not an object', function () {
+      var parsedValue = stringifyProperty(5, {stringify: JSON.stringify});
+      assert.equal(parsedValue, 5);
+    });
+
+    test('returns parsed input if input is an object', function () {
+      var parsedValue = stringifyProperty({x: 5}, {stringify: JSON.stringify});
+      assert.equal(parsedValue, '{"x":5}');
+    });
+
+    test('returns parsed input if input is null', function () {
+      var parsedValue = stringifyProperty(null, {stringify: JSON.stringify});
+      assert.equal(parsedValue, 'null');
     });
   });
 });
