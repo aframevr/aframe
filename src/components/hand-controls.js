@@ -64,7 +64,7 @@ module.exports.Component = registerComponent('hand-controls', {
     } else {
       modelUrl = 'url(' + RIGHT_HAND_MODEL_URL + ')';
     }
-    el.setAttribute('vive-controls', {hand: hand, model: false});
+    el.setAttribute('vive-controls', {hand: hand, model: false, rotationOffset: -999});
     el.setAttribute('blend-character-model', modelUrl);
   },
 

@@ -17,7 +17,8 @@ module.exports.Component = registerComponent('vive-controls', {
     hand: {default: 'left'},
     buttonColor: {default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
-    model: {default: true}
+    model: { default: true },
+    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
 
   // buttonId
@@ -74,6 +75,7 @@ module.exports.Component = registerComponent('vive-controls', {
     // (to do a priori, we need to figure out whether to use Vive or Rift)
     var gpads = navigator.getGamepads && navigator.getGamepads();
     if (typeof gpads !== "undefined") {
+        var numopenvr = 0;
         for (var i = 0; i < gpads.length; i++) {
             console.log("gamepad id " + i + " is " + gpads[i].id);
 
@@ -82,16 +84,19 @@ module.exports.Component = registerComponent('vive-controls', {
                 if (gpads[i].hand == data.hand) {
                     el.setAttribute('tracked-controls', 'id', gpads[i].id);
                     el.setAttribute('tracked-controls', 'controller', 0);
-                    el.setAttribute('tracked-controls', 'rotationOffset', controller ? 90 : -90);
+                    el.setAttribute('tracked-controls', 'rotationOffset', data.rotationOffset != -999 ? data.rotationOffset : (data.hand === "left" ? 90 : -90));
                     break;
                 }
             } else
             if (gpads[i].id.indexOf("OpenVR Gamepad") == 0) {
                 // if we have an OpenVR Gamepad, use the fixed mapping
-                el.setAttribute('tracked-controls', 'id', gpads[i].id);
-                el.setAttribute('tracked-controls', 'controller', controller);
-                el.setAttribute('tracked-controls', 'rotationOffset', 0);
-                break;
+                if (gpads[i].hand == data.hand) {
+                    el.setAttribute('tracked-controls', 'id', gpads[i].id);
+                    el.setAttribute('tracked-controls', 'controller', numopenvr);
+                    el.setAttribute('tracked-controls', 'rotationOffset', data.rotationOffset != -999 ? data.rotationOffset : (data.hand === "left" ? 90 : -90));
+                    break;
+                }
+                numopenvr++;
             }
         }
     }
