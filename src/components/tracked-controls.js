@@ -14,7 +14,8 @@ var THREE = require('../lib/three');
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: { default: 0 },
-    id: { default: 'OpenVR Gamepad' }
+    id: { default: 'OpenVR Gamepad' },
+    rotationOffset: { default: 0 }
   },
 
   init: function () {
@@ -72,7 +73,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       el.setAttribute('rotation', {
         x: THREE.Math.radToDeg(controllerEuler.x),
         y: THREE.Math.radToDeg(controllerEuler.y),
-        z: THREE.Math.radToDeg(controllerEuler.z)
+        z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
       });
       el.setAttribute('position', {
         x: controllerPosition.x,
