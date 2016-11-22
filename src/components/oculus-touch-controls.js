@@ -2,16 +2,17 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var trackedControlsUtils = require('../utils/tracked-controls');
 
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+// FIXME: need appropriate models, not the vive ones!
+var TOUCH_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
+var TOUCH_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
+ * Oculus Touch Controls Component
+ * Interfaces with Oculus Touch controllers and maps Gamepad events to
  * common controller buttons: trackpad, trigger, grip, menu and system
  * It loads a controller model and highlights the pressed buttons
  */
-module.exports.Component = registerComponent('vive-controls', {
+module.exports.Component = registerComponent('oculus-touch-controls', {
   dependencies: ['tracked-controls'],
 
   schema: {
@@ -19,25 +20,36 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonColor: { default: '#FAFAFA' },  // Off-white.
     buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
 
-  idPrefix: 'OpenVR Gamepad',
+  idPrefix: 'Oculus Touch',
 
   // buttonId
-  // 0 - trackpad
+  // 0 - thumbstick
   // 1 - trigger ( intensity value from 0.5 to 1 )
   // 2 - grip
   // 3 - menu ( dispatch but better for menu options )
   // 4 - system ( never dispatched on this layer )
   mapping: {
-    axis0: 'trackpad',
-    axis1: 'trackpad',
-    button0: 'trackpad',
-    button1: 'trigger',
-    button2: 'grip',
-    button3: 'menu',
-    button4: 'system'
+    'left': {
+      axis0: 'thumbstick',
+      axis1: 'thumbstick',
+      button0: 'thumbstick',
+      button1: 'trigger',
+      button2: 'grip',
+      button3: ['oculus-touch.X', 'menu'],
+      button4: ['oculus-touch.Y', 'system']
+    },
+    'right': {
+      axis0: 'thumbstick',
+      axis1: 'thumbstick',
+      button0: 'thumbstick',
+      button1: 'trigger',
+      button2: 'grip',
+      button3: ['oculus-touch.A', 'menu'],
+      button4: ['oculus-touch.B', 'system']
+    }
   },
 
   init: function () {
@@ -76,13 +88,10 @@ module.exports.Component = registerComponent('vive-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var isPresent = false;
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var numopenvr = 0;
     trackedControlsUtils.enumerateControllers(function (gamepad) {
-      if (numopenvr === controller) {
+      if (gamepad.hand === data.hand) {
         isPresent = true;
       }
-      numopenvr++;
     }, this.idPrefix);
 
     if (isPresent !== this.controllerPresent) {
@@ -125,13 +134,18 @@ module.exports.Component = registerComponent('vive-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    var objUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_URL + ')';
-    var mtlUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_MTL + ')';
+    var objUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_URL + ')';
+    var mtlUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_MTL + ')';
 
     // handId: 0 - right, 1 - left, 2 - anything else...
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    // if we have an OpenVR Gamepad, use the fixed mapping
-    el.setAttribute('tracked-controls', {id: data.idPrefix, controller: controller, rotationOffset: data.rotationOffset});
+
+    // since each hand is named differently, avoid enumeration
+    el.setAttribute('tracked-controls', {
+      id: controller === 0 ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+      controller: 0,
+      rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : controller === 1 ? 90 : -90
+    });
 
     if (!data.model) { return; }
     el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
@@ -152,7 +166,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping['button' + evt.detail.id];
+    var button = this.mapping[this.data.hand]['button' + evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var value;
     if (typeof button === 'undefined' || typeof buttonMeshes === 'undefined') { return; }
@@ -179,7 +193,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
+    var buttonName = this.mapping[this.data.hand]['button' + id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {

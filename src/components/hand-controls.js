@@ -6,7 +6,8 @@ var RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/hands/rightHand.js
 /**
 *
 * Hand Controls component
-* Handle events coming from the vive-controls
+* Auto-detect appropriate controllers
+* Handle common events coming from the detected vendor-specific controls
 * Translate button events to hand related actions:
 * gripclose, gripopen, thumbup, thumbdown, pointup, pointdown
 * Load a hand model with gestures that are applied based
@@ -62,9 +63,19 @@ module.exports.Component = registerComponent('hand-controls', {
     if (hand === 'left') {
       modelUrl = 'url(' + LEFT_HAND_MODEL_URL + ')';
     } else {
+      // NOTE: in theory some controllers may not only 'left' or 'right'
+      // ... but as we only have two models, here we will use right hand
       modelUrl = 'url(' + RIGHT_HAND_MODEL_URL + ')';
     }
-    el.setAttribute('vive-controls', {hand: hand, model: false});
+
+    var controlConfiguration = {
+      hand: hand,
+      model: false,
+      rotationOffset: hand === 'left' ? 90 : -90
+    };
+    el.setAttribute('vive-controls', controlConfiguration);
+    el.setAttribute('oculus-touch-controls', controlConfiguration);
+
     el.setAttribute('blend-character-model', modelUrl);
   },
 
