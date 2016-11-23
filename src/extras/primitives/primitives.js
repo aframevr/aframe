@@ -53,7 +53,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             mixins.forEach(function applyMixin (mixinId) {
               var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
               Object.keys(mixinComponents).forEach(function setComponent (name) {
-                data[name] = utils.extendDeep(data[name], mixinComponents[name]);
+                data[name] = utils.extendDeep(data[name] || {}, mixinComponents[name]);
               });
             });
           }
