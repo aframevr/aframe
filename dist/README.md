@@ -42,3 +42,9 @@ regressions or breaking changes.
 - [`aframe-master.min.js.map`](aframe-master.min.js.map) - Source maps for minified production build.
 - [`aframe-master.js`](aframe-master.js) - Unminified build, for development or debugging.
 - [`aframe-master.js.map`](aframe-master.js.map) - Source maps for unminified build.
+
+### Deprecated Builds
+
+The builds such as `aframe.js` or `aframe.min.js` are deprecated. They will be
+removed in time. We are currently allowing time for people to switch pointing
+their scenes to these builds through `rawgit.com`.
