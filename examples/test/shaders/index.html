@@ -22,7 +22,7 @@
 
             if (evt.detail.name !== 'rotation') { return; }
 
-            sunPosition = orbitEl.getComputedAttribute('rotation');
+            sunPosition = orbitEl.getAttribute('rotation');
 
             if(sunPosition === null) { return; }
 
