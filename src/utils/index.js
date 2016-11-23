@@ -1,17 +1,37 @@
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
-
+var debug = require('./debug');
 var deepAssign = require('deep-assign');
+var device = require('./device');
 var objectAssign = require('object-assign');
+
+var warn = debug('utils:warn');
 
 module.exports.bind = require('./bind');
 module.exports.coordinates = require('./coordinates');
-module.exports.debug = require('./debug');
-module.exports.device = require('./device');
+module.exports.debug = debug;
+module.exports.device = device;
 module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
 module.exports.styleParser = require('./styleParser');
+
+module.exports.checkHeadsetConnected = function () {
+  warn('`utils.checkHeadsetConnected` has moved to `utils.device.checkHeadsetConnected`');
+  return device.checkHeadsetConnected(arguments);
+};
+module.exports.isGearVR = function () {
+  warn('`utils.isGearVR` has moved to `utils.device.isGearVR`');
+  return device.isGearVR(arguments);
+};
+module.exports.isIOS = function () {
+  warn('`utils.isIOS` has moved to `utils.device.isIOS`');
+  return device.isIOS(arguments);
+};
+module.exports.isMobile = function () {
+  warn('`utils.isMobile has moved to `utils.device.isMobile`');
+  return device.isMobile(arguments);
+};
 
 /**
  * Fires a custom DOM event.
