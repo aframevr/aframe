@@ -57,6 +57,7 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
+    var scene = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
     var tickProperties = {};
@@ -67,13 +68,16 @@ module.exports.Component = registerComponent('material', {
       self.shader.update(tickProperties);
     };
     var keys = Object.keys(schema);
-    this.tick = undefined;
     keys.forEach(function (key) {
       if (schema[key].type === 'time') {
         self.tick = tick;
         tickProperties[key] = true;
+        scene.addBehavior(self);
       }
     });
+    if (Object.keys(tickProperties).length === 0) {
+      scene.removeBehavior(this);
+    }
   },
 
   updateShader: function (shaderName) {
