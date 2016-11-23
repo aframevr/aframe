@@ -23,6 +23,27 @@ Find out more:
 - [awesome-aframe](https://github.com/aframevr/awesome-aframe)
 - [Ask us on Slack!](https://aframevr-slack.herokuapp.com/)
 
+## Browser Support
+###Flat Experience
+A-frame support is mainly dependent on browser WebGL support.  
+  
+![Mozilla][moz-badge]
+![IE][ie-badge]
+![Chrome][chrome-badge]
+![Opera][opera-badge]
+![Safari][safari-badge]  
+
+* Firefox and Opera require user's graphics drivers to be up-to-date
+* Safari browser support in 9.1+
+
+Additional details regarding browser support for WebGL at [WebGL support][caniuse-webgl].
+
+###VR Experience
+Based on WebVR API support in addition to WebGL. See which browsers support the [WebVR API][webvr-api-support].
+
+###More info
+Visit A-frame's [Device & Platform Support][aframe-browser-support] page for additional information including mobile browser suppport, controller support, and hardware specs.
+
 ## Usage
 
 ### CodePen
@@ -132,3 +153,12 @@ This program is free software and is distributed under an [MIT License](LICENSE)
 <!-- codecov -->
 [codecov-image]: https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/aframevr/aframe
+<!-- browser support -->
+[aframe-browser-support]: https://aframe.io/docs/0.3.0/introduction/device-and-platform-support.html
+[moz-badge]: http://browserbadge.com/firefox/47
+[safari-badge]: http://browserbadge.com/safari/9
+[chrome-badge]: http://browserbadge.com/chrome/49
+[ie-badge]: http://browserbadge.com/ie/11
+[opera-badge]: http://browserbadge.com/opera/41
+[webvr-api-support]: https://iswebvrready.org/
+[caniuse-webgl]: http://caniuse.com/#feat=webgl
