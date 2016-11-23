@@ -66,7 +66,7 @@
               break;
             }
             case greenCylinder: {
-              var oldVisible = greenCylinder.getComputedAttribute('visible');
+              var oldVisible = greenCylinder.getAttribute('visible');
               // See issue: https://github.com/aframevr/aframe/issues/579
               if (oldVisible === null) { oldVisible = true; }
               greenCylinder.setAttribute('visible', !oldVisible);
@@ -74,7 +74,7 @@
             }
             case pinkTorus: {
               // Yes, this is gross. See https://github.com/aframevr/aframe/issues/531
-              var oldMaterial = pinkTorus.getComputedAttribute('material');
+              var oldMaterial = pinkTorus.getAttribute('material');
               var oldOpacity = oldMaterial.opacity;
               var newOpacity = oldOpacity === 1 ? 0 : 1;
               var newMaterial = oldMaterial;
