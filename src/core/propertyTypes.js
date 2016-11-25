@@ -80,7 +80,7 @@ function assetParse (value) {
   if (value.charAt(0) === '#') {
     el = selectorParse(value);
     if (el) {
-      if (el.tagName === 'CANVAS') {
+      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO') {
         return el;
       } else {
         return el.getAttribute('src');
