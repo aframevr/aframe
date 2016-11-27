@@ -52,6 +52,19 @@ suite('Component', function () {
       assert.equal(data, 'blue');
     });
 
+    test('preserves type of default values', function () {
+      var schema = processSchema({
+        list: {default: [1, 2, 3, 4]},
+        none: {default: null},
+        string: {default: ''}
+      });
+      var el = document.createElement('a-entity');
+      var data = buildData(el, 'dummy', 'dummy', schema, undefined, null);
+      assert.shallowDeepEqual(data.list, [1, 2, 3, 4]);
+      assert.equal(data.none, null);
+      assert.equal(data.string, '');
+    });
+
     test('uses mixin values', function () {
       var data;
       var TestComponent = registerComponent('dummy', {
