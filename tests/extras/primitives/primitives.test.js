@@ -273,4 +273,19 @@ suite('registerPrimitive (using innerHTML)', function () {
       helpers.mixinFactory('bar', {material: 'color: orange'}, sceneEl);
     });
   });
+
+  test('resolves mapping collisions', function (done) {
+    primitiveFactory({
+      defaultComponents: {
+        geometry: {primitive: 'box'},
+        material: {},
+        position: '1 2 3'
+      },
+      mappings: {visible: 'material.visible'}
+    }, '', function (el) {
+      assert.equal(el.mappings['material-visible'], 'material.visible');
+      assert.notOk(el.mappings['visible']);
+      done();
+    });
+  });
 });

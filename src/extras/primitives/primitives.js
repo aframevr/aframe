@@ -1,4 +1,5 @@
 var AEntity = require('../../core/a-entity');
+var components = require('../../core/component').components;
 var registerElement = require('../../core/a-register-element').registerElement;
 var utils = require('../../utils/');
 
@@ -30,6 +31,29 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
       createdCallback: {
         value: function () {
           if (definition.deprecated) { console.warn(definition.deprecated); }
+          this.resolveMappingCollisions();
+        }
+      },
+
+      /**
+       * If a mapping collides with a registered component name
+       * it renames the mapping to componentname-property
+       */
+      resolveMappingCollisions: {
+        value: function () {
+          var mappings = this.mappings;
+          var self = this;
+          Object.keys(mappings).forEach(function resolveCollision (key) {
+            var newAttribute;
+            if (components[key]) {
+              newAttribute = mappings[key].replace('.', '-');
+              mappings[newAttribute] = mappings[key];
+              delete mappings[key];
+              console.warn('The primitive ' + self.tagName.toLowerCase() + ' has a mapping collision. ' +
+                           'The attribute ' + key + ' has the same name as a registered component and' +
+                           ' has been renamed to ' + newAttribute);
+            }
+          });
         }
       },
 
