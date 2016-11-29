@@ -260,7 +260,7 @@ background can be a color, a 360&deg; image, or even a 360&deg; video:
 </a-scene>
 ```
 
-[next]: ./build-with-components.md
+[next]: ./building-with-components.md
 
 That is all it takes to create a very basic scene which places static objects in a 3D space using
 HTML. A good VR experience requires rich interaction and dynamic behavior. With
