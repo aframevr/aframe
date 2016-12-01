@@ -65,15 +65,13 @@ module.exports = registerElement('a-scene', {
 
     init: {
       value: function () {
-        var loaderAttr = this.getAttribute('loader');
-        var hasLoader = loaderAttr !== 'false';
         this.behaviors = [];
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         initCanvas(this);
         this.setupRenderer();
-        if (hasLoader) { this.loader = new Loader(this); }
+        this.loader = new Loader(this);
         this.vrModeUI = new VRModeUI(this);
         this.resize();
         this.addFullScreenStyles();
@@ -356,9 +354,9 @@ module.exports = registerElement('a-scene', {
               if (window.performance) {
                 window.performance.mark('render-started');
               }
+              sceneEl.emit('renderstart');
               sceneEl.render(0);
               sceneEl.renderStarted = true;
-              sceneEl.emit('renderstart');
             }
           }
         });
