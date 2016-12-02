@@ -119,9 +119,6 @@ module.exports.diff = function (a, b) {
  * @returns {Boolean} Whether the key event should be captured.
  */
 module.exports.shouldCaptureKeyEvent = function (event) {
-  if (event.shiftKey || event.metaKey || event.altKey || event.ctrlKey) {
-    return false;
-  }
   return document.activeElement === document.body;
 };
 
