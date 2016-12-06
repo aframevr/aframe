@@ -197,7 +197,6 @@ module.exports.Component = registerComponent('wasd-controls', {
 
   onKeyUp: function (event) {
     var code;
-    if (!shouldCaptureKeyEvent(event)) { return; }
     code = event.code || KEYCODE_TO_CODE[event.keyCode];
     this.keys[code] = false;
   }
