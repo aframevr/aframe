@@ -19,7 +19,7 @@ An equirectangular image as a background:
     <img id="sky" src="sky.png">
   </a-assets>
   <a-sky src="#sky"></a-sky>
-</a-scene
+</a-scene>
 ```
 
 A plain color as a background:
