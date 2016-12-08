@@ -264,7 +264,7 @@ function setTextureProperties (texture, data) {
   texture.repeat.set(repeat.x, repeat.y);
 
   // Don't bother setting offset if it is 0/0.
-  if (offset.x === 0 || offset.y === 0) { return; }
+  if (offset.x === 0 && offset.y === 0) { return; }
   texture.offset.set(offset.x, offset.y);
 }
 

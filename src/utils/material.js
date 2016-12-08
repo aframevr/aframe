@@ -13,7 +13,7 @@ module.exports.updateMap = function (shader, data) {
     if (src === shader.textureSrc) { return; }
     // Texture added or changed.
     shader.textureSrc = src;
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat}, setMap);
+    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset}, setMap);
     return;
   }
 
