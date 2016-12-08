@@ -1,9 +1,11 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
-var trackedControlsUtils = require('../utils/tracked-controls');
+var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+
+var GAMEPAD_ID_PREFIX = 'OpenVR Gamepad';
 
 /**
  * Vive Controls Component
@@ -12,17 +14,13 @@ var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_c
  * It loads a controller model and highlights the pressed buttons
  */
 module.exports.Component = registerComponent('vive-controls', {
-  dependencies: ['tracked-controls'],
-
   schema: {
     hand: {default: 'left'},
-    buttonColor: { default: '#FAFAFA' },  // Off-white.
+    buttonColor: {default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
     model: {default: true},
     rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
-
-  idPrefix: 'OpenVR Gamepad',
 
   // buttonId
   // 0 - trackpad
@@ -40,21 +38,28 @@ module.exports.Component = registerComponent('vive-controls', {
     button4: 'system'
   },
 
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onGamepadConnected = bind(this.onGamepadConnected, this);
+    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+  },
+
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
-    this.onTrackedControlsTick = bind(this.onTrackedControlsTick, this);
-    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
-    this.removeTrackedControlsTickListener = bind(this.removeTrackedControlsTickListener, this);
-    this.onGamepadConnected = bind(this.onGamepadConnected, this);
-    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+    this.bindMethods();
+    this.isControllerPresent = isControllerPresent; // to allow mock
   },
 
   addEventListeners: function () {
@@ -62,6 +67,8 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
   },
 
@@ -70,41 +77,34 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
   },
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var isPresent = false;
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var numopenvr = 0;
-    trackedControlsUtils.enumerateControllers(function (gamepad) {
-      if (numopenvr === controller) {
-        isPresent = true;
-      }
-      numopenvr++;
-    }, this.idPrefix);
-
-    if (isPresent !== this.controllerPresent) {
-      this.controllerPresent = isPresent;
-      if (isPresent) {
-        this.injectTrackedControls(); // inject track-controls
-        this.addEventListeners();
-      } else {
-        this.removeEventListeners();
-      }
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
+    if (isPresent === this.controllerPresent) { return; }
+    this.controllerPresent = isPresent;
+    if (isPresent) {
+      this.injectTrackedControls(); // inject track-controls
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
     }
   },
 
   onGamepadConnected: function (evt) {
     this.everGotGamepadEvent = true;
-    this.removeTrackedControlsTickListener();
+    this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 
   onGamepadDisconnected: function (evt) {
     this.everGotGamepadEvent = true;
-    this.removeTrackedControlsTickListener();
+    this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 
@@ -112,13 +112,13 @@ module.exports.Component = registerComponent('vive-controls', {
     this.checkIfControllerPresent();
     window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
     window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.addTrackedControlsTickListener();
+    this.addControllersUpdateListener();
   },
 
   pause: function () {
     window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
     window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.removeTrackedControlsTickListener();
+    this.removeControllersUpdateListener();
     this.removeEventListeners();
   },
 
@@ -131,32 +131,29 @@ module.exports.Component = registerComponent('vive-controls', {
     // handId: 0 - right, 1 - left, 2 - anything else...
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
     // if we have an OpenVR Gamepad, use the fixed mapping
-    el.setAttribute('tracked-controls', {id: data.idPrefix, controller: controller, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {id: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
 
     if (!data.model) { return; }
     el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
   },
 
-  addTrackedControlsTickListener: function () {
-    this.el.sceneEl.addEventListener('tracked-controls.tick', this.onTrackedControlsTick, false);
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
-  removeTrackedControlsTickListener: function () {
-    this.el.sceneEl.removeEventListener('tracked-controls.tick', this.onTrackedControlsTick, false);
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
-  onTrackedControlsTick: function () {
-    if (!this.everGotGamepadEvent) {
-      this.checkIfControllerPresent();
-    }
+  onControllersUpdate: function () {
+    if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
   },
 
   onButtonChanged: function (evt) {
     var button = this.mapping['button' + evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var value;
-    if (typeof button === 'undefined' || typeof buttonMeshes === 'undefined') { return; }
-    if (button !== 'trigger' || !buttonMeshes) { return; }
+    if (!button || !buttonMeshes || button !== 'trigger') { return; }
     value = evt.detail.state.value;
     buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
   },
@@ -188,17 +185,22 @@ module.exports.Component = registerComponent('vive-controls', {
     } else {
       this.el.emit(buttonName + evtName);
     }
+    this.updateModel(buttonName, evtName);
+  },
+
+  updateModel: function (buttonName, evtName) {
+    var i;
     if (!this.data.model) { return; }
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
-        this.updateModel(buttonName[i], evtName);
+        this.updateButtonModel(buttonName[i], evtName);
       }
     } else {
-      this.updateModel(buttonName, evtName);
+      this.updateButtonModel(buttonName, evtName);
     }
   },
 
-  updateModel: function (buttonName, state) {
+  updateButtonModel: function (buttonName, state) {
     var color = state === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
     if (!buttonMeshes) { return; }

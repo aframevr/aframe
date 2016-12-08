@@ -27,6 +27,7 @@ buttons (trigger, grip, menu, system) and trackpad.
 | buttonHighlightColor | Button colors when pressed and active.             | #22D1EE (light blue) |
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | model                | Whether the Vive controller model is loaded.       | true                 |
+| rotationOffset       | Offset to apply to model rotation.                 | 0                    |
 
 ## Events
 
@@ -42,3 +43,9 @@ buttons (trigger, grip, menu, system) and trackpad.
 | trackpadup   | Trackpad released.      |
 | triggerdown  | Trigger pressed.        |
 | triggerup    | Trigger released.       |
+
+## Assets
+
+- [Controller OBJ](https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj)
+- [Controller MTL](https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl)
+

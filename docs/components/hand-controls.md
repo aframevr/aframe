@@ -7,11 +7,13 @@ parent_section: components
 
 [tracked]: ./tracked-controls.md
 [vive]: ./vive-controls.md
+[oculustouch]: ./oculus-touch-controls.md
 
 The hand-controls gives tracked hands (using a prescribed model) with animated
-gestures. It wraps the [vive-controls component][vive], which wraps the
-[tracked-controls component][tracked]. It adds extra semantically-named events
-and handles hand animations.
+gestures. hand-controls wraps the [vive-controls][vive] and
+[oculus-touch-controls][oculustouch] components, which in turn wrap the
+[tracked-controls component][tracked]. The component gives extra events and
+handles hand animations and poses.
 
 ## Example
 
@@ -29,16 +31,20 @@ and handles hand animations.
 
 ## Events
 
-| Event Name | Description                                          |
-| ---------- | -----------                                          |
-| gripclose  | Grip buttons pressed. Hand is closed.                |
-| gripopen   | Grip buttons released. Hand is open.                 |
-| pointup    | Trigger button pressed. Index finger pointing up.    |
-| pointdown  | Trigger button released. Index finger pointing down. |
-| thumbup    | Thumbpad pressed. Thumb is pointing up.              |
-| thumbdown  | Thumbpad released. Thumb is pointing down.           |
+| Event Name    | Description                                                    |
+| ----------    | -----------                                                    |
+| gripclose     | The hand is closed into a fist without thumb raised.           |
+| gripopen      | The hand is no longer closed into a fist without thumb raised. |
+| pointup       | The hand is touching or pressing the trigger only.             |
+| pointdown     | The hand is no longer touching or pressing the trigger only.   |
+| thumbup       | The hand is closed into a fist with thumb raised.              |
+| thumbdown     | The hand is no longer closed into a fist with thumb raised.    |
+| pointingstart | The hand is pointing with index finger without thumb raised.   |
+| pointingend   | The hand is no longer pointing without thumb raised.           |
+| pistolstart   | The hand is pointing with index finger and thumb raised.       |
+| pistolend     | The hand is no longer pointing with thumb raised.              |
 
 ## Assets
 
-- [Left hand model](https://media.aframe.io/controllers/hands/leftHand.json)
-- [Right hand model](https://media.aframe.io/controllers/hands/rightHand.json)
+- [Left hand model](https://cdn.aframe.io/controllers/oculus-hands/leftHand.json)
+- [Right hand model](https://cdn.aframe.io/controllers/oculus-hands/rightHand.json)

@@ -15,7 +15,38 @@ suite('tracked-controls', function () {
     });
   });
 
+  suite('id', function () {
+    test('do not match controller by default', function () {
+      var el = this.el;
+      var trackedControls = el.components['tracked-controls'];
+      assert.notOk(trackedControls.controller);
+    });
+
+    test('do not match controller with different id', function () {
+      var el = this.el;
+      var trackedControls = el.components['tracked-controls'];
+      assert.notEqual(trackedControls.data.id, trackedControls.system.controllers[0].id);
+      assert.notOk(trackedControls.controller);
+    });
+
+    test('match controller with same id', function () {
+      var el = this.el;
+      var trackedControls = el.components['tracked-controls'];
+      assert.notOk(trackedControls.controller);
+      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
+      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
+    });
+  });
+
   suite('tick', function () {
+    setup(function (done) {
+      var el = this.el;
+      var trackedControls = el.components['tracked-controls'];
+      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
+      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
+      done();
+    });
+
     test('pose and buttons update if mesh is not defined', function () {
       var el = this.el;
       var trackedControls = el.components['tracked-controls'];
@@ -29,6 +60,14 @@ suite('tracked-controls', function () {
   });
 
   suite('position', function () {
+    setup(function (done) {
+      var el = this.el;
+      var trackedControls = el.components['tracked-controls'];
+      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
+      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
+      done();
+    });
+
     test('defaults position and pose to [0 0 0]', function () {
       var el = this.el;
       var trackedControls = el.components['tracked-controls'];

@@ -9,7 +9,7 @@ module.exports.System = registerSystem('tracked-controls', {
   init: function () {
     var self = this;
     this.controllers = [];
-    this.lastControllerCheck = 0;
+    this.lastControllersUpdate = 0;
     if (!navigator.getVRDisplays) { return; }
     navigator.getVRDisplays().then(function (displays) {
       if (displays.length > 0) {
@@ -18,15 +18,19 @@ module.exports.System = registerSystem('tracked-controls', {
     });
   },
 
-  tick: function () {
-    var now = Date.now();
-    if (now >= this.lastControllerCheck + 10) {
-      this.lastControllerCheck = now;
-      var controllers = this.controllers = [];
-      trackedControlsUtils.enumerateGamepads(function (gamepad) {
-        if (gamepad && gamepad.pose) { controllers.push(gamepad); }
-      });
-      this.sceneEl.emit('tracked-controls.tick', { timestamp: now, controllers: controllers });
+  updateControllerList: function () {
+    var controllers = this.controllers = [];
+    var gamepads = trackedControlsUtils.getGamepadsByPrefix('');
+    for (var i = 0; i < gamepads.length; i++) {
+      var gamepad = gamepads[i];
+      if (gamepad && gamepad.pose) { controllers.push(gamepad); }
     }
+  },
+
+  tick: function (time) {
+    if (time < this.lastControllersUpdate + 10) { return; }
+    this.lastControllersUpdate = time;
+    this.updateControllerList();
+    this.sceneEl.emit('controllersupdated', { timestamp: time, controllers: this.controllers });
   }
 });
