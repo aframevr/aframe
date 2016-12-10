@@ -12,7 +12,7 @@ The videosphere primitive easily adds a 360-degree video background to a scene o
 ```html
 <a-scene>
   <a-assets>
-    <video id="antarctica" autoplay loop="true" src="antarctica.mp4">
+    <video id="antarctica" autoplay="true" loop="true" src="antarctica.mp4">
   </a-assets>
 
   <!-- Using the asset management system. -->
