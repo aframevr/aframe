@@ -61,7 +61,7 @@ require('aframe')
 Alternatively, you can clone this repository to work locally on this project and explore the examples.
 
 ```sh
-git clone git@github.com:aframevr/aframe.git
+git clone https://github.com/aframevr/aframe.git
 cd aframe && npm install
 ```
 
