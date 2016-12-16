@@ -36,7 +36,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     var data = this.data;
     if (data === false || data === 'false') { return false; }
     if (typeof data === 'string') {
-      var display = scene.effect && scene.effect.getVRDisplay();
+      var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
       if (!display || !display.displayName || display.displayName.indexOf(data) < 0) { return false; }
     }
     return true;
