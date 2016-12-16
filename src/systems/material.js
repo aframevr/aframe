@@ -29,7 +29,7 @@ module.exports.System = registerSystem('material', {
   /**
    * Determine whether `src` is a image or video. Then try to load the asset, then call back.
    *
-   * @param {string} src - Texture URL.
+   * @param {string, or element} src - Texture URL or element.
    * @param {string} data - Relevant texture data used for caching.
    * @param {function} cb - Callback to pass texture to.
    */
@@ -39,6 +39,15 @@ module.exports.System = registerSystem('material', {
     // Canvas.
     if (src.tagName === 'CANVAS') {
       this.loadCanvas(src, data, cb);
+      return;
+    }
+
+    // Video element.
+    if (src.tagName === 'VIDEO') {
+      if (!src.hasAttribute('src') && !src.hasAttribute('srcObject')) {
+        warn('video element has neither src nor srcObject');
+      }
+      this.loadVideo(src, data, cb);
       return;
     }
 
