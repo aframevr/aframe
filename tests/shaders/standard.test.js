@@ -2,6 +2,8 @@
 var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
+var VIDEO = 'base/tests/assets/test.mp4';
+
 suite('standard material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
@@ -91,5 +93,27 @@ suite('standard material', function () {
     el.setAttribute('material', 'wireframe', true);
     assert.ok(el.getObject3D('mesh').material.wireframe);
     assert.equal(el.getObject3D('mesh').material.wireframeLinewidth, 2);
+  });
+
+  test('can use video textures with selector', function (done) {
+    var el = this.el;
+    var videoEl = document.createElement('video');
+    videoEl.setAttribute('src', VIDEO);
+    videoEl.setAttribute('id', 'video');
+    el.sceneEl.appendChild(videoEl);
+    el.addEventListener('materialtextureloaded', () => {
+      assert.equal(el.components.material.material.map.image, videoEl);
+      done();
+    });
+    el.setAttribute('material', 'src', '#video');
+  });
+
+  test('can use video textures with inline URL', function (done) {
+    var el = this.el;
+    el.addEventListener('materialtextureloaded', () => {
+      assert.equal(el.components.material.material.map.image.getAttribute('src'), VIDEO);
+      done();
+    });
+    el.setAttribute('material', 'src', VIDEO);
   });
 });

@@ -45,7 +45,7 @@ module.exports.System = registerSystem('material', {
     // Video element.
     if (src.tagName === 'VIDEO') {
       if (!src.hasAttribute('src') && !src.hasAttribute('srcObject')) {
-        warn('video element has neither src nor srcObject');
+        warn('Video element was defined without `src` nor `srcObject` attributes.');
       }
       this.loadVideo(src, data, cb);
       return;
