@@ -42,6 +42,12 @@ module.exports.System = registerSystem('material', {
       return;
     }
 
+    // Video element.
+    if (src.tagName === 'VIDEO') {
+      this.loadVideo(src, data, cb);
+      return;
+    }
+
     utils.srcLoader.validateSrc(src, loadImageCb, loadVideoCb);
     function loadImageCb (src) { self.loadImage(src, data, cb); }
     function loadVideoCb (src) { self.loadVideo(src, data, cb); }

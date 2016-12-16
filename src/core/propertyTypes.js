@@ -80,11 +80,8 @@ function assetParse (value) {
   if (value.charAt(0) === '#') {
     el = selectorParse(value);
     if (el) {
-      if (el.tagName === 'CANVAS') {
-        return el;
-      } else {
-        return el.getAttribute('src');
-      }
+      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO') { return el; }
+      return el.getAttribute('src');
     }
     warn('"' + value + '" asset not found.');
     return;

@@ -17,7 +17,8 @@ module.exports.Component = registerComponent('vive-controls', {
     hand: {default: 'left'},
     buttonColor: {default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
-    model: {default: true}
+    model: {default: true},
+    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
 
   // buttonId
@@ -66,9 +67,34 @@ module.exports.Component = registerComponent('vive-controls', {
     var data = this.data;
     var objUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_URL + ')';
     var mtlUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_MTL + ')';
+
     // handId: 0 - right, 1 - left
     var controller = data.hand === 'right' ? 0 : 1;
-    el.setAttribute('tracked-controls', 'controller', controller);
+
+    // interrogate gamepads ourselves to see what we need to specify
+    // (to do a priori, we need to figure out whether to use Vive or Rift)
+    var gpads = navigator.getGamepads && navigator.getGamepads();
+    if (typeof gpads !== 'undefined') {
+      for (var i = 0; i < gpads.length; i++) {
+        if (gpads[i].id.indexOf('Oculus Touch') === 0) {
+          // in Chromium, Oculus Touch tells us which hand is which
+          if (gpads[i].hand === data.hand) {
+            el.setAttribute('tracked-controls', 'id', gpads[i].id);
+            el.setAttribute('tracked-controls', 'controller', 0);
+            el.setAttribute('tracked-controls', 'rotationOffset', controller ? 90 : -90);
+            break;
+          }
+        } else
+        if (gpads[i].id.indexOf('OpenVR Gamepad') === 0) {
+          // if we have an OpenVR Gamepad, use the fixed mapping
+          el.setAttribute('tracked-controls', 'id', gpads[i].id);
+          el.setAttribute('tracked-controls', 'controller', controller);
+          el.setAttribute('tracked-controls', 'rotationOffset', 0);
+          break;
+        }
+      }
+    }
+
     if (!data.model) { return; }
     el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
   },
