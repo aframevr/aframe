@@ -11,6 +11,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
 
   init: function () {
     var scene = this.el;
+    var self = this;
 
     // define methods to allow mock testing
     this.enterVR = scene.enterVR.bind(scene);
@@ -27,7 +28,6 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     window.addEventListener('vrdisplaydeactivate', function () { this.exitVR(); }, false);
 
     // check if we should try to enter VR... turns out we need to wait for next tick
-    var self = this;
     setTimeout(function () { if (self.shouldAutoEnterVR()) { this.enterVR(); } }, 0);
   },
 
@@ -38,8 +38,8 @@ module.exports.Component = registerComponent('auto-enter-vr', {
   shouldAutoEnterVR: function () {
     var scene = this.el;
     var data = this.data;
-    // if false (or string false), we should not auto-enter VR
-    if (data === false || data === 'false') { return false; }
+    // if false, we should not auto-enter VR
+    if (data === 'false') { return false; }
     // if we have a data string to match against display name, try and get it;
     // if we can't get display name, or it doesn't match, we should not auto-enter VR
     if (typeof data === 'string') {
