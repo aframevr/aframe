@@ -25,6 +25,7 @@ by means of the Inspector, API polish, and bug fixes.
 - Oculus Touch controller support and controller refactor. (#2132)
 - Inspector is pulled from `unpkg.com` CDN to be able to reference a fuzzy version. (e664fe6)
 - Added `reverseDrag` property to `look-controls` component to reverse mouse drag (ideal for static 360&deg; content). (#2024)
+- `auto-enter-vr` component for Carmel browser support, may be replaced once link traversal lands. (ae69e1d)
 - Added standard material map properties for ambient occlusion, displacements, normals, and spherical environments. (#1826, #2078)
 - Asset parser no longer strictly demands URLs be wrapped with `url()`. (#2045)
 - Added ability to take equirectangular and projection screenshots with a keyboard shortcut. (#1984)
