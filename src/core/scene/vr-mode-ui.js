@@ -1,4 +1,3 @@
-var registerComponent = require('../../core/component').registerComponent;
 var constants = require('../../constants/');
 var utils = require('../../utils/');
 var bind = utils.bind;
@@ -11,48 +10,44 @@ var ORIENTATION_MODAL_CLASS = 'a-orientation-modal';
 /**
  * UI for entering VR mode.
  */
-module.exports.Component = registerComponent('vr-mode-ui', {
-  dependencies: ['canvas'],
+var VRModeUI = module.exports.VRModeUI = function (sceneEl) {
+  var self = this;
+  this.sceneEl = sceneEl;
 
-  schema: {
-    enabled: {default: true}
-  },
+  if (utils.getUrlParameter('ui') === 'false') { return; }
 
-  init: function () {
-    var self = this;
-    var sceneEl = this.el;
+  this.enterVR = bind(sceneEl.enterVR, sceneEl);
+  this.exitVR = bind(sceneEl.exitVR, sceneEl);
+  this.insideLoader = false;
+  this.enterVREl = null;
+  this.orientationModalEl = null;
 
-    if (utils.getUrlParameter('ui') === 'false') { return; }
+  // Hide/show VR UI when entering/exiting VR mode.
+  sceneEl.addEventListener('enter-vr', bind(this.updateEnterVRInterface, this));
+  sceneEl.addEventListener('exit-vr', bind(this.updateEnterVRInterface, this));
 
-    this.enterVR = bind(sceneEl.enterVR, sceneEl);
-    this.exitVR = bind(sceneEl.exitVR, sceneEl);
-    this.insideLoader = false;
-    this.enterVREl = null;
-    this.orientationModalEl = null;
+  window.addEventListener('message', function (event) {
+    if (event.data.type === 'loaderReady') {
+      self.insideLoader = true;
+      self.remove();
+    }
+  });
 
-    // Hide/show VR UI when entering/exiting VR mode.
-    sceneEl.addEventListener('enter-vr', bind(this.updateEnterVRInterface, this));
-    sceneEl.addEventListener('exit-vr', bind(this.updateEnterVRInterface, this));
+  // Modal that tells the user to change orientation if in portrait.
+  window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
 
-    window.addEventListener('message', function (event) {
-      if (event.data.type === 'loaderReady') {
-        self.insideLoader = true;
-        self.remove();
-      }
-    });
+  this.update();
+};
 
-    // Modal that tells the user to change orientation if in portrait.
-    window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
-  },
-
+VRModeUI.prototype = {
   update: function () {
-    var sceneEl = this.el;
+    var sceneEl = this.sceneEl;
+    var disabled = sceneEl.getAttribute('vr-mode-ui') === 'false';
 
-    if (!this.data.enabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
+    if (disabled || this.insideLoader || utils.getUrlParameter('ui') === 'false') {
       return this.remove();
     }
     if (this.enterVREl || this.orientationModalEl) { return; }
-
     // Add UI if enabled and not already present.
     this.enterVREl = createEnterVRButton(this.enterVR);
     sceneEl.appendChild(this.enterVREl);
@@ -77,7 +72,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleEnterVRButtonIfNeeded: function () {
-    var sceneEl = this.el;
+    var sceneEl = this.sceneEl;
     if (!this.enterVREl) { return; }
     if (sceneEl.is('vr-mode')) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
@@ -87,7 +82,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   },
 
   toggleOrientationModalIfNeeded: function () {
-    var sceneEl = this.el;
+    var sceneEl = this.sceneEl;
     var orientationModalEl = this.orientationModalEl;
     if (!orientationModalEl || !sceneEl.isMobile) { return; }
     if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
@@ -97,7 +92,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
       orientationModalEl.classList.add(HIDDEN_CLASS);
     }
   }
-});
+};
 
 /**
  * Creates a button that when clicked will enter into stereo-rendering mode for VR.
