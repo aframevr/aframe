@@ -7,7 +7,9 @@ parent_section: components
 
 [components-camera]: ./camera.md
 
-The wasd-controls component defines the behavior of an entity to be controlled by the WASD keyboard keys. It is usually used alongside the [camera component][components-camera].
+The wasd-controls component controls an entity with the WASD or arrow keyboard
+eeys. The wasd-controls component is commonly attached to an entity with the [camera
+component][components-camera].
 
 ## Example
 

@@ -5,7 +5,7 @@ layout: docs
 parent_section: primitives
 ---
 
-The cone primitive creates a cone shape. It is an entity that prescribes the [geometry](../components/geometry.md) with its geometric primitive set to `cone`.
+The cone primitive creates a cone shape.
 
 ## Example
 

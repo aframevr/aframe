@@ -8,7 +8,7 @@ parent_section: components
 [position]: ./position.md
 
 The sound component defines the entity as a source of sound or audio. The sound
-component is positional and is therefore affected by the
+component is positional and is thus affected by the
 [components-position][position].
 
 ## Example
@@ -45,7 +45,8 @@ component is positional and is therefore affected by the
 
 ## Playing on an Event
 
-The `sound` component can also listen to an event before playing as well. For example, we might have a laughing sound play every time a monster is clicked:
+The `sound` component can also listen to an event before playing as well. For
+example, we might have a laughing sound play every time we click a monster:
 
 ```html
 <a-entity cursor position="0 0 -5"></a-entity>
@@ -56,13 +57,13 @@ The `sound` component can also listen to an event before playing as well. For ex
 
 ## Preloading a Sound Asset
 
-For performance, it is recommended to block the scene on the sound asset to
-preload and cache. We can do so through the asset management system:
+For performance, we recommend to block the scene on the sound asset to preload
+and cache. We can do so through the asset management system:
 
 ```html
 <a-scene>
   <a-assets>
-    <audio id="river" src="river.mp3">
+    <audio id="river" src="river.mp3" preload="auto">
   </a-assets>
 
   <a-entity sound="src: #river"></a-entity>

@@ -20,7 +20,7 @@
     "prerelease": "npm run dist && node scripts/release.js 0.3.2 0.4.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
-    "test:docs": "node scripts/docs-link-check.js",
+    "test:docs": "node scripts/docs-lint.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
@@ -47,6 +47,7 @@
     "budo": "^9.2.0",
     "chai": "^3.5.0",
     "chai-shallow-deep-equal": "^1.4.0",
+    "chalk": "^1.1.3",
     "codecov": "^1.0.1",
     "cross-env": "^3.1.3",
     "envify": "^3.4.1",
@@ -78,7 +79,9 @@
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
     "snazzy": "^5.0.0",
-    "uglifyjs": "^2.4.10"
+    "too-wordy": "ngokevin/too-wordy",
+    "uglifyjs": "^2.4.10",
+    "write-good": "^0.9.1"
   },
   "link": true,
   "browserify": {

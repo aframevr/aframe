@@ -6,9 +6,9 @@ parent_section: components
 ---
 
 The screenshot component lets us take screenshots with a keyboard shortcut
-(`<ctrl> + <alt> +s`). It can be configured to either take 360&deg; captures
-(`equirectangular`) or regular screenshots (`projection`). This component is
-attached to the scene by default so it's automatically available on each scene.
+(`<ctrl> + <alt> +s`). The component can take 360&deg; captures
+(`equirectangular`) or regular screenshots (`projection`). A-Frame attaches
+this component to the scene by default so it's automatically available.
 
 ## Example
 

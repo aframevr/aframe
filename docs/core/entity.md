@@ -8,10 +8,10 @@ order: 2
 
 [ecs]: ./index.md
                .
-An entity is represented by the `<a-entity>` element. As defined in the
+A-Frame represents an entity via the `<a-entity>` element. As defined in the
 [entity-component-system pattern][ecs], entities are placeholder objects to
-which we plug in components in order to provide them with appearance, behavior,
-and functionality.
+which we plug in components to provide them appearance, behavior, and
+functionality.
 
 [position]: ../components/position.md
 [rotation]: ../components/rotation.md
@@ -63,16 +63,16 @@ We can simply retrieve an entity using DOM APIs.
 var el = document.querySelector('#mario');
 ```
 
-Once we have an entity, we have access to all of its properties and methods,
-which are detailed below.
+Once we have an entity, we have access to its properties and methods detailed
+below.
 
 ## Properties
 
 ### `components`
 
 `<a-entity>.components` is an object of components attached to the entity. This
-gives us access to all of the entity's components including their data,
-methods, and API.
+gives us access to the entity's components including each component's data,
+state, and methods.
 
 For example, if we wanted to grab an entity's three.js camera object or
 material object, we could reach into its components:
@@ -90,8 +90,8 @@ document.querySelector('a-entity[sound]').components.sound.pause();
 
 ### `isPlaying`
 
-Whether or not the entity is active and playing. If the entity is paused, then
-`isPlaying` will be false.
+Whether the entity is active and playing. If we pause the entity , then
+`isPlaying` becomes `false`.
 
 ### `object3D`
 
@@ -109,13 +109,13 @@ console.log(groupObject3D.parent);
 console.log(groupObject3D.children);
 ```
 
-The different types `Object3D`s can be accessed through `object3DMap`.
+We can access the different types of `Object3D`s through `object3DMap`.
 
 ### `object3DMap`
 
-An entity's `object3DMap` is a JavaScript object that gives access to the
-different types of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds)
-that may have been registered by components.
+An entity's `object3DMap` is an object that gives access to the different types
+of `THREE.Object3D`s (e.g., camera, meshes, lights, sounds) that components
+have set.
 
 For an entity with a [geometry][geometry] and [light][light] components
 attached, `object3DMap` might look like:
@@ -127,7 +127,7 @@ attached, `object3DMap` might look like:
 }
 ```
 
-An entity's `THREE.Object3D`s can be managed using `getOrCreateObject3D`,
+We can manage an entity's set of `THREE.Object3D`s by using `getOrCreateObject3D`,
 `setObject3D`, and `removeObject3D`.
 
 ### `sceneEl`
@@ -145,7 +145,7 @@ console.log(entity.sceneEl === sceneEl);  // >> true.
 ### `addState (stateName)`
 
 `addState` will push a state onto the entity. This will emit the `stateadded`
-event, and the state can then be checked for existence using `.is`:
+event, and we can check the state can for existence using `.is`:
 
 
 ```js
@@ -190,7 +190,7 @@ entity.emit('sink', null, false);
 
 [component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
 
-`flushToDOM` will manually serialize all of the entity's components' data and update the DOM.
+`flushToDOM` will manually serialize an entity's components' data and update the DOM.
 Read more about [component-to-DOM serialization][component-to-dom-serialization].
 
 ### `getAttribute (componentName)`
@@ -252,8 +252,7 @@ entity.getDOMAttribute('position');
 
 ### `getObject3D (type)`
 
-`getObject3D` looks up a child `THREE.Object3D` of the entity that is
-registered under `type` for `object3DMap`:
+`getObject3D` looks up a child `THREE.Object3D` referenced by `type` on `object3DMap`.
 
 ```js
 AFRAME.registerComponent('example-mesh', {
@@ -283,25 +282,25 @@ AFRAME.registerComponent('example-geometry', {
 
 ### `pause ()`
 
-`pause` will stop any dynamic behavior as defined by animations and components.
-When an entity is paused, it will stop all of its animations and call
-`Component.pause` on each of its components. It is up to the components to
-implement how they paused, but they generally remove event listeners and
-background behavior. An entity will call `pause` on all of its children when it
-is paused itself.
+`pause()` will stop any dynamic behavior as defined by animations and
+components.  When we pause an entity, it will stop its animations and call
+`Component.pause()` on each of its components. The components decide to
+implement what happens on pause, which is often removing event listeners. An
+entity will call `pause()` on its child entities when we pause an entity.
 
 ```js
 // <a-entity id="spinning-jumping-ball">
 entity.pause();
 ```
 
-For example, the [look-controls component](../components/look-controls.md) on pause will remove event handlers that listen for input.
+For example, the [look-controls component](../components/look-controls.md) on
+pause will remove event handlers that listen for input.
 
 ### `play ()`
 
-`play` will start any dynamic behavior as defined by animations and components.
-This is automatically called when the entity is attached. When an entity calls
-`play`, it will call `play` on all of its children.
+`play()` will start any dynamic behavior as defined by animations and
+components.  This is automatically called when the DOM attaches an entity. When
+an entity `play()`, the entity calls `play()` on its child entities.
 
 ```js
 entity.pause();
@@ -315,7 +314,7 @@ For example, the [sound component][sound] on play will begin playing the sound.
 ### `setAttribute (attr, value, componentAttrValue)`
 
 If `attr` is not the name of a registered component or the component is a
-single-property component, `setAttribute` behaves mostly as it normally would:
+single-property component, `setAttribute` behaves as it normally would:
 
 ```js
 entity.setAttribute('visible', false);
@@ -359,9 +358,8 @@ entity.setAttribute('material', 'color', 'crimson');
 ### `setObject3D (type, obj)`
 
 `setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type`
-under the entity's `object3DMap`. `obj` will be added as a child of the
-entity's root `object3D`. Passing in the value `null` for `obj` has the effect
-of unregistering the `THREE.Object3D` previously registered under `type`.
+under the entity's `object3DMap`. A-Frame adds `obj` as a child of the entity's
+root `object3D`.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
@@ -407,8 +405,7 @@ AFRAME.registerComponent('example-light', {
 ### `removeState (stateName)`
 
 `removeState` will pop a state from the entity. This will emit the
-`stateremoved` event, and the state can then be checked for its removal using
-`.is`:
+`stateremoved` event, and we can check the state its removal using `.is`:
 
 ```js
 entity.addEventListener('stateremoved', function (evt) {
@@ -432,7 +429,7 @@ entity.is('selected');  // >> false
 | componentchanged | One of the entity's components was modified.                        |
 | componentinit    | One of the entity's components was initialized.                     |
 | componentremoved | One of the entity's components was removed.                         |
-| loaded           | The entity has attached and initialized all of its components.      |
+| loaded           | The entity has attached and initialized its components.      |
 | pause            | The entity is now inactive and paused in terms of dynamic behavior. |
 | play             | The entity is now active and playing in terms of dynamic behavior.  |
 | stateadded       | The entity received a new state.                                    |
@@ -471,9 +468,10 @@ entity.addEventListener('componentchanged', function (evt) {
 });
 ```
 
-#### Listening for Child Elements Being Attached
+#### Listening for Child Elements Being Attached an Detached
 
-We can use the `child-attached` event to listen for elements being attached:
+We can use the `child-attached` and `child-detached` events to listen for when
+the scene attaches or detaches an entity:
 
 ```js
 entity.addEventListener('child-attached', function (evt) {

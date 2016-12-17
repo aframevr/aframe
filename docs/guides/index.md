@@ -1,268 +1,693 @@
 ---
-title: Building with Basic HTML
+title: Building a Basic Scene
 section_title: Guides
 type: guides
 layout: docs
 parent_section: docs
 order: 1
 section_order: 2
+nav_expand_sections: true
+
 ---
 
 [primitives]: ../primitives/
-
-Let's build a scene using A-Frame's basic [primitive][primitives] HTML
-building blocks!
-
-<!--toc-->
-
-## Adding a Box
-
-This sample *Hello World* scene starts with a box:
-
-```html
-<a-scene>
-  <a-box color="#6173F4" width="4" height="10" depth="2"></a-box>
-</a-scene>
-```
-
-[box]: ../primitives/a-box.md
-
-Just like with regular HTML elements, we can configure the element by setting
-HTML attributes. Here, we define the color, width, height, depth of `<a-box>`.
-See the [`<a-box>`][box] documentation to see the available attributes.
-
-[mozvr]: http://mozvr.com/#start
-
-For flat displays, the default control scheme lets us look around by
-click-dragging the mouse and move with the `WASD` keys. Upon
-[entering VR][mozvr], the default control scheme lets us look around with a VR
-headset and, if room scale is possible, literally *walk* around.
-
-## Transforming the Box
-
-A-Frame uses a right-handed coordinate system:
-
-- Positive X-axis is "right"
-- Positive Y-axis is "up"
-- Positive Z-axis is pointing out of the screen towards us
-
-The basic distance unit is defined in meters. When designing a scene for VR, it
-is important to consider the real world scale of the objects we create. A box
-with `height="100"` may look normal on our computer screens, but in VR the
-box will appear massive.
-
-The basic rotational unit is defined in degrees. To determine the positive
-direction of rotation, use the right-hand rule. Point our thumbs down the
-direction of a positive axis, and the direction which our fingers curl around
-the positive direction of rotation.
-
-[component]: ../core/component.md
 [position]: ../components/position.md
 [rotation]: ../components/rotation.md
 [scale]: ../components/scale.md
 
-To translate, rotate, and scale the box, we can configure the
-[position][position], [rotation][rotation], and [scale][scale]
-[components][component]:
+Let's start building a basic A-Frame scene. For this, you will need to have a
+simple understanding of HTML. You will learn how to add 3D **entities** (i.e.,
+objects) with [primitives][primitives], transform them in 3D space, apply image
+textures, add interactivity using animations and events, modify appearance by
+tweaking lighting and adding a background, and add text by using A-Frame's
+entity-component ecosystem.
+
+As A-Frame is accessible to people that may have not had experience with 3D or
+VR (or even programming), we'll take this guide slowly step-by-step.
+
+[A-Frame Inspector]: ./using-the-aframe-inspector.md
+
+Below is the finished scene running live, you can open the [A-Frame Inspector]
+by pressing `<ctrl> + <alt> + i`. **Note:** the CSS for the Inspector currently
+conflict with the A-Frame site styles, so visuals may look ugly.
+
+<div>
+  <script src="http://localhost:9000/dist/aframe.js"></script>
+  <script src="https://unpkg.com/aframe-bmfont-text-component@0.1.4/dist/aframe-bmfont-text-component.min.js"></script>
+  <a-scene embedded style="height: 320px; width: 100%">
+    <a-assets>
+      <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+      <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+      <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
+    </a-assets>
+
+    <a-box position="0 2 -5" rotation="0 45 45" scale="2 2 2" src="#boxTexture">
+      <a-animation attribute="position" direction="alternate" dur="2000" repeat="indefinite"
+        to="0 2.2 -5"></a-animation>
+      <a-animation attribute="rotation" begin="click" dur="2000" to="360 405 45"></a-animation>
+      <a-animation attribute="scale" begin="mouseenter" dur="300" to="2.3 2.3 2.3"></a-animation>
+      <a-animation attribute="scale" begin="mouseleave" dur="300" to="2 2 2"></a-animation>
+    </a-box>
+
+    <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
+
+    <a-light type="ambient" color="#445451"></a-light>
+    <a-light type="point" intensity="2" position="2 4 4"></a-light>
+
+    <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
+
+    <a-entity bmfont-text="text: Hello, A-Frame!; color: #BBB"
+      position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-entity>
+
+    <a-camera>
+      <a-cursor color="#FAFAFA">
+    </a-camera>
+  </a-scene>
+</div>
+
+<!--toc-->
+
+## Starting with HTML
+
+We start out with the minimum required HTML structure:
+
+```html
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+    </a-scene>
+  <body>
+</html>
+```
+
+We include A-Frame as a script tag in the `<head>`, pointing to the A-Frame
+build hosted on a CDN. This has to be included *before* `<a-scene>` because
+A-Frame registers custom HTML elements which must be defined before `<a-scene>`
+is attached or else `<a-scene>` will do nothing.
+
+[scene]: ../core/scene.md
+
+Next, we include [`<a-scene>`][scene] in the `<body>`. `<a-scene>` will contain every
+entity in our scene. `<a-scene>` handles all of the setup that is required for
+3D: setting up WebGL, the canvas, camera, lights, renderer, render loop as well
+as out of the box WebVR support on platforms such as HTC Vive, Oculus Rift,
+Samsung GearVR, and smartphones (Google Cardboard). `<a-scene>` alone takes a
+lot of load off of us!
+
+## Adding an Entity
+
+[abox]: ../primitives/a-box.md
+
+Within our `<a-scene>`, we attach 3D entities using one of A-Frame's standard
+[primitives] `<a-box>`. We can use `<a-box>` just like a normal HTML element,
+defining the tag and using HTML attributes to customize it. Some other examples
+of primitives that come with A-Frame include `<a-cylinder>`, `<a-plane>`, or
+`<a-sphere>`.
+
+Here we define the color `<a-box>`, see [`<a-box>`'s documentation][abox] for
+the more attributes (e.g., `width`, `height`, `depth`).
+
+[boximage]: https://cloud.githubusercontent.com/assets/674727/20326452/b7f94966-ab3d-11e6-95e1-47cabf425278.jpg
+![boximage]
+<small class="image-caption"><i>Image by Ruben Mueller from vrjump.de</i></small>
 
 ```html
 <a-scene>
-  <a-box color="#6173F4" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"></a-box>
+  <a-box color="red"></a-box>
 </a-scene>
 ```
 
-The example above (assuming we are positioned on the origin looking down the
-negative Z-axis) will translate the box left/up/back, rotate the box to the
-right, stretch the box left-and-right and back-and-front, and shrink the box
-up-and-down:
+[entity]: ../core/entity.md
+[geometry]: ../components/geometry.md
+[material]: ../components/material.md
 
-## Applying a Texture to the Box
+As a side note, primitives are A-Frame's easy-to-use HTML elements that wrap
+the underlying entity-component assembly. They can be convenient, but
+underneath `<a-box>` is [`<a-entity>`][entity] with the [geometry] and
+[material] components:
 
-We can apply an image texture to the box with an image or video using the `src`
-attribute. To make sure the color does not mix with the texture, we set the
-background color to white:
+```html
+<a-entity id="box" geometry="primitive: box" material="color: red"></a-entity>
+```
+
+[camera]: ../components/camera.md
+
+However, because the default [camera] and the box are positioned at the default
+position at the `0 0 0` origin, we won't be able to see the box unless we move
+it. We can do this by using the [position][position] component to transform the
+box in 3D space.
+
+## Transforming an Entity in 3D
+
+Let's first go over 3D space. A-Frame uses a right-handed coordinate system.
+With the default camera direction: positive X-axis extends *right*, positive
+Y-axis extends *up*, and the positive Z-axis extends *out* of the screen
+towards us:
+
+[righthandimage]: https://cloud.githubusercontent.com/assets/674727/20328731/326137a8-ab49-11e6-9b76-4e3a65f333d9.jpg
+![righthandimage]
+<small class="image-caption"><i>Image from what-when-how.com</i></small>
+
+[webvr]: https://developer.mozilla.org/docs/Web/API/WebVR_API
+
+A-Frame's distance unit is in **meters** because the [WebVR
+API][webvr] returns pose data in meters. When designing a scene for VR, it is
+important to consider the real world scale of the entities we create. A box with
+`height="10"` may look normal on our computer screens, but in VR the box will
+appear massive.
+
+[right-hand rule]: https://wikipedia.org/wiki/Right-hand_rule
+
+A-Frame's rotational unit in A-Frame is in **degrees**, although it will get
+internally converted to radians when passing to three.js. To determine the
+positive direction of rotation, use the [right-hand rule]. Point our thumbs
+down the direction of a positive axis, and the direction which our fingers curl
+around the positive direction of rotation.
+
+To translate, rotate, and scale the box, we can change the
+[position][position], [rotation][rotation], and [scale][scale] components.
+Let's first apply the rotation and scale components:
 
 ```html
 <a-scene>
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="texture.png"></a-box>
+  <a-box color="red" rotation="0 45 45" scale="2 2 2"></a-box>
 </a-scene>
 ```
 
-[asset]: ../core/asset-management-system.md
+This will rotate our box at an angle and double its size.
 
-It is best to cache the texture and block the scene from rendering until
-the texture has loaded.  To do so we must move the texture into the [asset management
-system][asset] by:
+### Parent and Child Transforms
 
-- Defining the asset as an `<img>`
-- Giving it an ID (`id="texture"`)
-- Referring to the asset using the ID in selector format (`#texture`)
+[scene graph]: https://wikipedia.org/wiki/Scene_graph
 
-```html
-<a-scene>
-  <a-assets>
-    <img id="texture" src="texture.png">
-  </a-assets>
+A-Frame HTML represent a 3D [scene graph]. In a scene graph, entities can have
+a single parent and multiple children. Child entities inherit transformations
+(i.e., position, rotation, and scale) from their parent.
 
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="#texture"></a-box>
-</a-scene>
-```
-
-## Animating the Box
-
-[animation]: ../core/animations.md
-
-We can add an animation to the box using the built-in [animation
-system][animation]. We can place an `<a-animation>` element as a child of the
-entity to interpolate values. Let's have the box rotate indefinitely to add
-some motion to the scene:
+For example, we could have a sphere as a child of a box:
 
 ```html
 <a-scene>
-  <a-assets>
-    <img id="texture" src="texture.png">
-  </a-assets>
-
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="#texture">
-    <a-animation attribute="rotation" repeat="indefinite" to="0 360 0"></a-animation>
+  <a-box position="0 2 0" rotation="0 45 45" scale="2 4 2">
+    <a-sphere position="1 0 3"><a-sphere>
   </a-box>
 </a-scene>
 ```
 
-## Interacting with the Box
+If we calculate the sphere's world position, it would be `1 2 3`, achieved by
+composing the sphere's parent position with its own position. Similarly, for
+rotation and scale, the sphere would inherit the box's rotation and scale. The
+sphere too would be rotated and stretched just as like its parent box. If the
+box were to change its position, rotation, or scale, it would immediately apply
+to and affect the sphere.
 
-To interact with the box via clicking or gazing, we can use a cursor which we
-place as a child of the camera such that it is fixed to the screen. When we
-don't define a camera, the scene will inject a default camera, but in this case
-to add a cursor, we will need to explicitly define a camera.
+If we were to add a cylinder as a child to our sphere, the cylinder's transform
+would be affected by both the sphere's *and* box's transforms. Under the hood
+in three.js, this is done by multiplying *transformation matrices* together.
+Fortunately, we don't have to think about that!
 
-Next we direct the animation to start when the cursor clicks the
-box, using the animation's `begin` attribute. The cursor will emit the
-`click` event on the box, and the animation will listen for it:
+### Placing our Box in Front of the Camera
 
-```html
-<a-scene>
-  <a-assets>
-    <img id="texture" src="texture.png">
-  </a-assets>
-
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="#texture">
-    <!-- Animation will only play when the box is clicked. -->
-    <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
-  </a-box>
-
-  <a-camera position="0 1.8 0">
-    <a-cursor color="#2E3A87"></a-cursor>
-  </a-camera>
-</a-scene>
-```
-
-As an aside, a more advanced method would be to write a component that listens
-to an event and does whatever we want it to do:
-
-```js
-AFRAME.registerComponent('scale-on-click', {
-  schema: {
-    to: {default: '2 2 2'}
-  },
-
-  init: function () {
-    var data = this.data;
-    this.el.addEventListener('click', function () {
-      this.setAttribute('scale', data.to);
-    });
-  }
-});
-```
-
-We can then attach the component to the `<a-box>` primitive:
-
-```html
-<a-box color="#FFF" width="4" height="10" depth="2"
-       position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-       src="#texture" scale-on-click="to: 3 3 3">
-  <!-- Animation will only play when the box is clicked. -->
-  <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
-</a-box>
-```
-
-## Lighting the Box
-
-[light]: ../primitives/a-light.md
-
-We can change how the scene is lit with [`<a-light>`][light]. By default the
-scene will inject an ambient light and a directional light (which acts like the
-sun). Once we add lights of our own, however, the default lighting setup is removed:
+Now let's get back to making our box visible to the camera from the start. We
+can move the box back *5 meters* on the negative Z-axis with the position
+component. We also have to move it up *2 meters* on the positive Y-axis so the
+box doesn't intersect with the ground since we scaled the box and scaling happens
+from the center:
 
 ```html
 <a-scene>
-  <a-assets>
-    <img id="texture" src="texture.png">
-  </a-assets>
-
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="#texture">
-    <!-- Animation will only play when the box is clicked. -->
-    <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
-  </a-box>
-
-  <!-- New lights. -->
-  <a-light type="spot" color="#333" position="-20 0 0" look-at="a-box"></a-light>
-  <a-light type="point" color="#AAA" position="0 5 0"></a-light>
-
-  <a-camera position="0 1.8 0">
-    <a-cursor color="#2E3A87">
-  </a-camera>
+  <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
 </a-scene>
 ```
+
+Now we see our box!
+
+[boximage2]: https://cloud.githubusercontent.com/assets/674727/20327511/34a5e5f6-ab42-11e6-8107-66c42b80f846.png
+![boximage2]
+
+### Default Controls
+
+For flat displays (i.e., laptop, desktop), the default control scheme lets us
+look around by click-dragging the mouse and move around with the `WASD` or
+arrow keys. On mobile, we can pan the phone around to rotate the camera.
+Although A-Frame is tailored for WebVR, this default control scheme allows
+people to view scenes without a headset.
+
+[mozvr]: http://mozvr.com/#start
+[webvrimage]: https://cloud.githubusercontent.com/assets/674727/20328949/69e2c628-ab4a-11e6-97e9-6e25104d6673.png
+![webvrimage]
+
+> [Check out the instructions on the Mozilla VR homepage for setting up and entering WebVR][mozvr].
+
+Upon [entering VR][mozvr] by clicking the goggles icon with a VR headset
+connected (e.g., Oculus Rift, HTC Vive), we can experience the scene in
+immersive VR. If room-scale is available, we can physically *walk* around the
+scene!
 
 ## Adding a Background to the Scene
 
 [sky]: ../primitives/a-sky.md
 
-Lastly, we can add a background to the scene using [`<a-sky>`][sky]. The
-background can be a color, a 360&deg; image, or even a 360&deg; video:
+With a single line of HTML, we can add an immersive background with
+[`<a-sky>`][sky] that completely surrounds the scene. `<a-sky>`, which is a
+material applied to the inside of a sphere, can be a flat color, a 360&deg;
+image, or a 360&deg; video. For example, a dark gray background would be:
+
+```html
+<a-scene>
+  <a-box color="red" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
+
+  <a-sky color="#222"></a-sky>
+</a-scene>
+```
+
+## Applying an Image Texture
+
+We can apply an image texture to the box with an image, video, or `<canvas>`
+using the `src` attribute, just like we would with a normal `<img>` element.
+We also should remove the `color="red"` that we set so that the color doesn't
+get blended in with the texture. The default material color is `white`, so
+removing the color attribute is good enough.
+
+```html
+<a-scene>
+  <a-box src="https://i.imgur.com/mYmmbrp.jpg" position="0 2 -5" rotation="0 45 45"
+    scale="2 2 2"></a-box>
+
+  <a-sky color="#222"></a-sky>
+</a-scene>
+```
+
+Now we'll see our box with an image texture pulled from online:
+
+[boxtextureimage]: https://cloud.githubusercontent.com/assets/674727/20329111/368aea3e-ab4b-11e6-89e1-d13c994290ce.png
+![boxtextureimage]
+
+### Using the Asset Management System
+
+[asset management system]: ../core/asset-management-system.md
+
+However, we recommend using the [asset management system] for performance. The
+asset management system makes it easier for the browser to cache assets (e.g.,
+images, videos, models) and A-Frame will make sure all of the assets are
+fetched before rendering.
+
+If we define an `<img>` in the asset management system, later three.js doesn't
+have to internally create an `<img>`. Creating the `<img>` ourselves also gives
+us more control and lets us reuse the texture across multiple entities. A-Frame
+is also smart enough to set `crossOrigin` and other such attributes when
+necessary.
+
+To use the asset management system for an image texture:
+
+- Add `<a-assets>` to the scene.
+- Define the texture as an `<img>` under `<a-assets>`.
+- Give the `<img>` an HTML ID (e.g., `id="boxTexture"`).
+- Reference the asset using the ID in DOM selector format (`src="#boxTexture"`).
 
 ```html
 <a-scene>
   <a-assets>
-    <img id="texture" src="texture.png">
+    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
   </a-assets>
 
-  <a-box color="#FFF" width="4" height="10" depth="2"
-         position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
-         src="#texture">
-    <!-- Animation will only play when the box is clicked. -->
-    <a-animation attribute="rotation" begin="click" repeat="indefinite" to="0 360 0"></a-animation>
-    <a-event name="mouseenter" scale="4 1 6"></a-event>
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
+
+  <a-sky color="#222"></a-sky>
+</a-scene>
+```
+
+### Adding a Background Image
+
+Going back to our `<a-sky>`, we can use an image texture to get a 360&deg;
+background image by using `src` instead of `color`:
+
+```html
+<a-scene>
+  <a-assets>
+    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+    <img id="skyTexture"
+      src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
+  </a-assets>
+
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
+
+  <a-sky src="#skyTexture"></a-sky>
+</a-scene>
+```
+
+## Adding a Ground
+
+[aplane]: ../primitives/a-plane.md
+
+To add a ground, we can use [`<a-plane>`][aplane]. By default, planes are
+oriented parallel to the XY axis. To make it parallel to the ground, we need to
+orient it along the XZ axis. We can do so by rotating the plane negative
+90&deg; on the X-axis.
+
+```html
+<a-plane rotation="-90 0 0"></a-plane>
+```
+
+We'll want the ground to be large, so we can increase the `width` and `height`. Let's
+make it 30-meters in each direction:
+
+```html
+<a-plane rotation="-90 0 0" width="30" height="30"></a-plane>
+```
+
+Then we can apply an image texture to our ground:
+
+```html
+  <a-assets>
+    <!-- ... -->
+    <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+    <!-- ... -->
+  </a-assets>
+
+  <!-- ... -->
+  <a-plane src="#groundTexture" rotation="-90 0 0" width="30" height="30"></a-plane>
+  <!-- ... -->
+```
+
+To tile our texture, we can use the `repeat` attribute. `repeat` takes two
+numbers, how many times to repeat in the X direction and how many times to
+repeat in the Y direction (commonly referred to as U and V for textures).
+
+```html
+<a-plane src="#groundTexture" rotation="-90 0 0" width="30" height="30"
+  repeat="10 10"></a-plane>
+```
+
+## Tweaking Lighting
+
+[light]: ../primitives/a-light.md
+
+We can change how the scene is lit by using [`<a-light>s`][light]. By default
+if we don't specify any lights, A-Frame adds an ambient light and a directional
+light. If A-Frame didn't add lights for us, the scene would be black. Once we
+add lights of our own, however, the default lighting setup is removed and
+replaced with our setup.
+
+We'll add an ambient light that has a slight blue-green hue that matches the
+sky. Ambient lights are applied to all entities in the scene (given they have
+the default material applied at least).
+
+We'll also add a point light. Point lights are like light bulbs; we can
+position them around the scene, and the effect of the point light on an entity
+depends on its distance to the entity:
+
+```html
+<a-scene>
+  <a-assets>
+    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+    <img id="skyTexture"
+      src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
+    <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+  </a-assets>
+
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"></a-box>
+
+  <a-sky src="#skyTexture"></a-sky>
+
+  <a-light type="ambient" color="#445451"></a-light>
+  <a-light type="point" intensity="2" position="2 4 4"></a-light>
+</a-scene>
+```
+
+## Adding Animation
+
+> `<a-animation>` may become [deprecated in favor of a component
+> form](https://github.com/aframevr/aframe/issues/1927) like this [Animation
+> Component](https://github.com/ngokevin/kframe/tree/master/components/animation/).
+
+[animation]: ../core/animations.md
+
+We can add animations to the box using A-Frame's [built-in animation
+system][animation]. Animations *interpolate* or *tween* a value over time. We
+can place an `<a-animation>` element as a child of the entity. Let's have the
+box hover up and down to add some motion to the scene.
+
+```html
+<a-scene>
+  <a-assets>
+    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+  </a-assets>
+
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2">
+    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
+      repeat="indefinite"></a-animation>
+  </a-box>
+</a-scene>
+```
+
+We tell `<a-animation>` to:
+
+- Animate the position *attribute*.
+- Animate *to* `0 2.2. -5` which is 20 centimeters higher.
+- Alternate the *direction* of the animation on each repeated cycle of the animation.
+- Last for 2000 millisecond *duration* on each cycle.
+- *Repeat* the animation indefinitely.
+
+[animationgif]: https://cloud.githubusercontent.com/assets/674727/20375894/e8b3fa48-ac36-11e6-9ecd-5a5fe33cb9db.gif
+![animationgif]
+
+### Advanced Details
+
+`<a-animation>` hooks into A-Frame's render loop such that it is called only
+once per frame. If you need more control and want to manually interpolate or
+tween a value, you can write an A-Frame component using the `tick` handler and
+a library like Tween.js (which is available at `AFRAME.TWEEN` for now). For best
+performance, once-per-frame operations should be done at an A-Frame level, try
+not to create your own `requestAnimationFrame` when A-Frame already provides
+one.
+
+## Adding Interaction
+
+[cursor component]: ../components/cursor.md
+
+Let's add interaction with the box: when we look at the box, we'll increase the
+size of the box, and when we "click" on the box, we'll make it spin.
+
+Given that many developers currently do not have proper VR hardware with
+controllers, we'll focus this section on using basic mobile and desktop inputs
+with the built-in [cursor component]. The cursor component by default provides
+the ability to "click" on entities by staring or gazing at them on mobile, or
+on desktop, looking at an entity and click the mouse. But know that the cursor
+component is just one way to add interactions, things open up if we have access
+to actual controllers.
+
+[parentchild]: #parent-and-child-transforms
+
+To have a visible cursor fixed to the [camera], we place the cursor as a child
+of the camera as explained above in [Parent and Child Transforms][parentchild].
+A-Frame
+
+[camera]: ../components/camera.md
+
+Since we didn't specifically define a camera, A-Frame included a default camera
+for us. But since we need to add a cursor as a child of the camera, we will
+need to now define [`<a-camera>`][camera] containing `<a-cursor>`:
+
+```html
+<a-scene>
+  <a-assets>
+    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+  </a-assets>
+
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2">
+    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
+      repeat="indefinite"></a-animation>
   </a-box>
 
-  <!-- New lights. -->
-  <a-light type="spot" color="#333" position="-20 0 0" look-at="a-box"></a-light>
-  <a-light type="point" color="#AAA" position="0 5 0"></a-light>
-
-  <!-- Background. -->
-  <a-sky color="#73F7DD"></a-sky>
-
-  <a-camera position="0 1.8 0">
-    <a-cursor color="#2E3A87">
+  <a-camera>
+    <a-cursor></a-cursor>
   </a-camera>
 </a-scene>
 ```
 
-[next]: ./building-with-components.md
+If we check the [documentation of the cursor component][cursor component] that
+`<a-cursor>` wraps, we see that it emits hover events such as `mouseenter`,
+`mouseleave` as well as `click`.
 
-That is all it takes to create a very basic scene which places static objects in a 3D space using
-HTML. A good VR experience requires rich interaction and dynamic behavior. With
-the help of A-Frame components, we can [build a more advanced
-scene][next].
+### Event Listener Component (Intermediate)
+
+[addeventlistener]: https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener
+[animatingonevents]: #animating-on-events
+[queryselector]: https://developer.mozilla.org/docs/Web/API/Document/querySelector
+[setattribute]: ../core/entity.md#setattribute-attr-value-componentattrvalue
+
+One way to manually handle the cursor events is to [add an event listener with
+JavaScript][addeventlistener] just like we would with a normal DOM element. If
+you aren't comfortable with JavaScript, you may skip to [Animating on
+Events][animatingonevents] below.
+
+In JavaScript, we grab the box with [`querySelector`][queryselector], use
+[`addEventListener`][addeventlistener], and then [`setAttribute`][setattribute]
+to make the box grow its scale when its hovered over. Note that A-Frame adds
+features to `setAttribute` to work with multi-property components. We can pass
+a full `{x, y, z}` object as the second argument.
+
+```js
+<script>
+  var boxEl = document.querySelector('a-box')
+  boxEl.addEventListener('mouseenter', function () {
+    boxEl.setAttribute('scale', {x: 2, y: 2: z: 2});
+  });
+</script>
+```
+
+But a much more robust method would be to encapsulate this logic into an
+A-Frame component. This way, we don't have to wait for the scene to load, we
+don't have to run query selectors because components give us context, and
+components can be reused and configured versus having an uncontrolled script
+running on the page:
+
+```js
+<script>
+  AFRAME.registerComponent('scale-on-mouseenter', {
+    schema: {
+      to: {default: '2.5 2.5 2.5'}
+    },
+
+    init: function () {
+      var data = this.data;
+      this.el.addEventListener('click', function () {
+        this.setAttribute('scale', data.to);
+      });
+    }
+  });
+</script>
+```
+
+We can attach this component to our box straight from HTML:
+
+```html
+<script>
+  AFRAME.registerComponent('scale-on-mouseenter', {
+    // ...
+  });
+</script>
+
+<a-scene>
+  <!-- ... -->
+  <a-box src="#boxTexture" position="0 2 -5" rotation="0 45 45" scale="2 2 2"
+         scale-on-mouseenter="to: 2.2 2.2 2.2">
+    <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
+      repeat="indefinite"></a-animation>
+  </a-box>
+  <!-- ... -->
+</a-scene>
+```
+
+### Animating on Events
+
+`<a-animation>` has a feature to begin its animation when the entity it is
+animating emits an event. This can be done through the `begin` attribute, which
+takes an event name.
+
+We can add two animations for the cursor component's `mouseenter` and one
+`mouseleave` events to change the box's scale, and one for rotating the box
+around the Y-axis on `click`:
+
+```html
+<a-box color="#FFF" width="4" height="10" depth="2"
+       position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"
+       src="#texture">
+  <a-animation attribute="position" to="0 2.2 -5" direction="alternate" dur="2000"
+    repeat="indefinite"></a-animation>
+  <!-- These animations will start when the box is looked at. -->
+  <a-animation attribute="scale" begin="mouseenter" dur="300" to="2.3 2.3 2.3"></a-animation>
+  <a-animation attribute="scale" begin="mouseleave" dur="300" to="2 2 2"></a-animation>
+  <a-animation attribute="rotation" begin="click" dur="2000" to="360 405 45"></a-animation>
+</a-box>
+```
+
+## Adding Audio
+
+Audio is important for providing immersion and presence in VR. Even adding
+simple white noise in the background goes a long way. We recommend having some
+audio for every scene. One way would be to add an `<audio>` element to to our
+HTML (preferably under `<a-assets>`) to play an audio file:
+
+```html
+<a-scene>
+  <a-assets>
+    <audio src="https://cdn.aframe.io/basis-guide/backgroundnoise.wav" autoplay
+      preload></audio>
+  </a-assets>
+
+  <!-- ... -->
+</a-scene>
+```
+
+Or we can add positional audio using `<a-sound>`. This makes the sound get
+louder as we approach it and get softer as we distance from it. We could place
+the sound in our scene using `position`.
+
+```html
+<a-scene>
+  <!-- ... -->
+  <a-sound src="https://cdn.aframe.io/basis-guide/backgroundnoise.wav" autoplay="true"
+    position="-3 1 -4"></a-sound>
+  <!-- ... -->
+</a-scene>
+```
+
+### Adding Text
+
+Text doesn't come core with A-Frame yet, but we can easily include community
+text components. In WebGL, there are different components in A-Frame's
+ecosystem to handle text, each with their advantages and disadvantages:
+
+[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text
+[bitmapfont]: https://github.com/bryik/aframe-bmfont-text-component
+[htmlshader]: https://github.com/mayognaise/aframe-html-shader
+[Kevin Ngo]: https://twitter.com/andgokevin
+[Ben Pyrik]: https://twitter.com/bryik_ws
+[Mayo Tobita]: https://twitter.com/mayognaise
+
+- [Bitmap Font Text][bitmapfont] by [Ben Pyrik] - Signed distance field font for flat and clear text.
+- [Text Geometry][textgeometry] by [Kevin Ngo] - 3D text that we can apply materials to, but more expensive to draw.
+- [HTML to Canvas to Texture][htmlshader] by [Mayo Tobita] - Render HTML as a texture, but can be slow to compute.
+
+Let's try using Ben's bitmap font text component. We include the component via
+a `<script>` tag and then add the text to our HTML. We'll be using `<a-entity>`
+which is the base of all objects in A-Frame, and then plug the text component
+into it:
+
+```html
+<a-entity bmfont-text="text: Hello, A-Frame!; color: #BBB" position="-0.9 0.2 -3"
+  scale="1.5 1.5 1.5"></a-entity>
+```
+
+## Opening the A-Frame Inspector
+
+Traditionally, we would use a browser's development tools and DOM inspector to
+debug web pages. A-Frame comes with its own development tools and inspector
+designed for 3D and VR. The A-Frame Inspector can be opened by pressing `<ctrl>
++ <alt> + i` on our keyboard. The A-Frame scene at the top of this page will be
+opened in a visual tool, where we can inspect objects and change values live.
+And we can do this for any A-Frame scene we find on the Web.
+
+Alternatively, press the button below:
+
+<button style="background: #24CAFF; color: #FAFAFA; cursor: pointer; padding: 10px" onclick="document.querySelector('a-scene').components.inspector.injectInspector();">Open the A-Frame Inspector</button>
+
+[inspectorguide]: ../guides/using-the-aframe-inspector.md
+
+[Read more about using the A-Frame Inspector][inspectorguide].
+
+## What's Next?
+
+[component]: ../core/component.md
+
+The core value proposition of A-Frame is its extensible entity-component
+architecture that allows for a declarative structure to define and compose
+reusable JavaScript modules. We'll see more about components and the ecosystem
+in the upcoming sections.  We will release a *Writing an A-Frame Component*
+guide soon, for now the [component documentation][component] serves as a rough
+guide.

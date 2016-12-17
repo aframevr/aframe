@@ -5,9 +5,7 @@ layout: docs
 parent_section: primitives
 ---
 
-The image primitive displays an image on a flat plane. It is an entity that
-prescribes the [geometry](../components/geometry.md) with its geometric
-primitive set to `plane`.
+The image primitive shows an image on a flat plane.
 
 ## Example
 

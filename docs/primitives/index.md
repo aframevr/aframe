@@ -18,7 +18,7 @@ Primitives are [entities][entity] that:
 - Have default component property values
 - Map HTML attributes to [component][component] properties
 
-They are a convenience layer on top of the core API and are meant to:
+Primitives abstract the core API to:
 
 - Pre-compose useful components together with prescribed defaults
 - Act as a shorthand for complex-but-common types of entities (e.g., `<a-sky>`)
@@ -33,7 +33,7 @@ entity-component-system pattern refer to these as *assemblages*.
 
 ## Example
 
-Here is an assortment of various primitives in use:
+Below is an assortment of primitives in use:
 
 ```html
 <a-scene>
@@ -58,8 +58,8 @@ Here is an assortment of various primitives in use:
 [animations]: ../core/animations.md
 [mixins]: ../core/mixins.md
 
-Since every primitive extends `<a-entity>`s, things that can be done with
-entities can be done with primitives:
+Since every primitive extends `<a-entity>`s, primitives can do the same things
+as entities such as:
 
 - Positioning, rotating, and scaling
 - Attaching [components][component] and [mixins][mixins]

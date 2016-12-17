@@ -1,9 +1,14 @@
 'use strict';
+const chalk = require('chalk');
 const glob = require('glob');
 const fs = require('fs');
 const path = require('path');
+const writeGood = require('write-good');
 
+let errorCount = 0;
+let warningCount = 0;
 const errors = {};
+const warnings = {};
 
 let pages = glob.sync('docs/**/*.md');
 pages.forEach(function checkPage (pagePath) {
@@ -14,6 +19,9 @@ pages.forEach(function checkPage (pagePath) {
   var urlRegex;
 
   let content = fs.readFileSync(pagePath, 'utf-8');
+
+  // Check prose with `write-good`.
+  checkProse(pagePath, content);
 
   // Inline links: `[link](../page.md)`
   let inlineLinkRegex = /\[.*?\]\((.*?)\)/g;
@@ -45,7 +53,7 @@ pages.forEach(function checkPage (pagePath) {
   let referenceRegex = new RegExp(`\\[\(\.\*\)\?\\]: \.\*`, 'g');
   match = referenceRegex.exec(content);
   while (match !== null) {
-    referencingRegex = new RegExp(`\\]\\[${match[1]}\\]`, 'g');
+    referencingRegex = new RegExp(`\\[${match[1]}\\]`, 'g');
     referencingMatch = referencingRegex.exec(content);
     if (!referencingMatch) {
       addError(pagePath, match[1], 'Link definition not being used');
@@ -96,20 +104,54 @@ function checkLink (pagePath, url) {
   return true;
 }
 
+function checkProse (pagePath, content) {
+  content = content.replace(/^---[\s\S]*?---/g, '');  // Remove metadata.
+  content = content.replace(/(\|.*\|)+/g, '');  // Remove tables.
+  content = content.replace(/```[\s\S]*?```/g, '');  // Remove code blocks.
+  content = content.replace(/`[\s\S]*?`/g, '');  // Remove inline code.
+  content = content.replace(/\n#+.*/g, '');  // Remove headings.
+  writeGood(content, {adverb: false, illusion: false}).forEach(function add (error) {
+    addWarning(
+      pagePath,
+      `...${content.substring(error.index - 10, error.index + error.offset + 10).replace(/\n/g, '')}...`,
+      error.reason);
+  });
+}
+
 function addError (pagePath, str, message) {
   if (!errors[pagePath]) { errors[pagePath] = []; }
   errors[pagePath].push({
     message: message,
     str: str
   });
+  errorCount++;
 }
 
-if (Object.keys(errors).length) {
-  Object.keys(errors).forEach(function (pagePath) {
-    console.log(pagePath);
-    errors[pagePath].forEach(function (error) {
-      console.log(`    ${error.message}: ${error.str}`);
-    });
+function addWarning (pagePath, str, message) {
+  if (!warnings[pagePath]) { warnings[pagePath] = []; }
+  warnings[pagePath].push({
+    message: message,
+    str: str
   });
-  process.exit(1);
+  warningCount++;
 }
+
+Object.keys(errors).forEach(function (pagePath) {
+  console.log(chalk.red.bold(`\n[error]: ${pagePath}`));
+  errors[pagePath].forEach(function (error) {
+    console.log(chalk.red(`    ${error.message}: `) + `${error.str}`);
+  });
+});
+
+Object.keys(warnings).forEach(function (pagePath) {
+  console.log(chalk.yellow.bold(`\n[warn]: ${pagePath}`));
+  warnings[pagePath].forEach(function (warning) {
+    console.log(chalk.yellow(`    ${warning.message}: `) + `${warning.str}`);
+  });
+});
+
+console.log(chalk.red.bold(`${errorCount} errors`));
+console.log(chalk.yellow.bold(`${warningCount} warnings`));
+
+// Fail.
+if (errorCount) { process.exit(1); }

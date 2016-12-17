@@ -8,11 +8,13 @@ parent_section: components
 [handcontrols]: ./hand-controls.md
 [vivecontrols]: ./vive-controls.md
 
-The tracked-controls component interfaces with tracked controllers. 
-It uses the Gamepad API to handle tracked controllers, 
-and is abstracted by the [hand-controls component][handcontrols] & the [vive-controls component][vivecontrols].
-This component elects the appropriate controller, applies pose to the entity, observes buttons state and emits appropriate events.
+The tracked-controls component interfaces with tracked controllers. The component uses
+the Gamepad API to handle tracked controllers. This component choose the
+appropriate controller, applies pose to the entity, observes buttons state and
+emits appropriate events.
 
+The [hand-controls component][handcontrols] and the [vive-controls
+component][vivecontrols] abstract the tracked-controls component further.
 
 ## Example
 
@@ -38,10 +40,10 @@ This component elects the appropriate controller, applies pose to the entity, ob
 | touchstart     | Touch sensitive button touched.            |
 | touchend       | Touch sensitive button released.           |
 
-### Additional Resources
-
-- [Gamepad API][gamepadAPI] - W3C Gamepad API
-- [OpenVR][openVR] - OpenVR Documentation
+### More Resources
 
 [gamepadAPI]: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API
 [openVR]: https://github.com/ValveSoftware/openvr/wiki/API-Documentation
+
+- [Gamepad API][gamepadAPI] - W3C Gamepad API
+- [OpenVR][openVR] - OpenVR Documentation

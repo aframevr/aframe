@@ -5,18 +5,27 @@ layout: docs
 parent_section: components
 ---
 
-The cursor component lets us interact with entities through clicking and gazing. It is a specific application of the [raycaster][raycaster] component in that it:
+The cursor component lets us interact with entities through clicking and
+gazing. The cursor is a specific application of the [raycaster][raycaster]
+component in that it:
 
 - Listens for mouse clicks and gaze-based fuses.
 - Captures only the first intersected entity.
 - Emits special mouse and hover events (e.g., relating to mouse down/up/enter/leave).
-- Has additional states for hovering.
+- Has more states for hovering.
 
-When the mouse is clicked, the closest visible entity intersecting the cursor, if any, will emit a `click` event. Note the cursor component only applies the raycasting behavior. To provide a shape or appearance to the cursor, you could apply the [geometry][geometry] and [material][material] components.
+When the mouse clicks, the closest visible entity intersecting the cursor, if
+any, will emit a `click` event. Note the cursor component only applies the
+raycasting behavior. To provide a shape or appearance to the cursor, you could
+apply the [geometry][geometry] and [material][material] components.
 
 ## Example
 
-For example, we can create a ring-shaped cursor that is fixed to the center of the screen. To fix it to the screen such that it is always present no matter where we look, we place it as a child of the active [camera][camera] entity. We pull it in front of the camera by placing it on the negative Z axis. When the cursor clicks on the box, we can listen to the click event.
+For example, we can create a ring-shaped cursor fixed to the center of the
+screen. To fix the cursor to the screen so the cursor is always present no
+matter where we look, we place it as a child of the active [camera][camera]
+entity. We pull it in front of the camera by placing it on the negative Z axis.
+When the cursor clicks on the box, we can listen to the click event.
 
 ```html
 <a-entity camera>
@@ -46,7 +55,8 @@ AFRAME.registerComponent('cursor-listener', {
 
 ## Properties
 
-Note, to further customize the cursor component, we can set the properties of the raycaster component.
+Note, to further customize the cursor component, we can set the properties of
+the raycaster component.
 
 | Property    | Description                                                                    | Default Value                    |
 |-------------|--------------------------------------------------------------------------------|----------------------------------|
@@ -68,10 +78,10 @@ Note, to further customize the cursor component, we can set the properties of th
 
 The cursor will add states to the cursor entity on certain events:
 
-| State           | Description                                                          |
-|-----------------|----------------------------------------------------------------------|
-| cursor-fusing   | Added to the cursor entity when it is fusing on another entity.      |
-| cursor-hovering | Added to the cursor entity when it is hovering over another entity.  |
+| State           | Description                                            |
+|-----------------|--------------------------------------------------------|
+| cursor-fusing   | Added when the cursor is fusing on another entity.     |
+| cursor-hovering | Added when the cursor is hovering over another entity. |
 
 The cursor will add states to intersected entities on certain events:
 
@@ -83,7 +93,7 @@ The cursor will add states to intersected entities on certain events:
 
 [raycasterprops]: ./raycaster.md#properties
 
-The cursor is built on top of and depends on the raycaster component. If we
+The cursor builds on top of and depends on the raycaster component. If we
 want to customize the raycasting pieces of the cursor, we can do by changing
 the [raycaster component properties][raycasterprops]. Say we want set a max
 distance, check for intersections less frequently, and set which objects are
@@ -95,13 +105,23 @@ clickable:
 
 ## Fuse-Based Cursor
 
-Also known as gaze-based cursor. If the cursor is set to be fuse-based, the cursor will trigger a click if the user gazes at an entity for a set amount of time. Imagine a laser strapped to the user's head, and the laser extends out into the scene. If the user stares at an entity long enough (i.e., the `fuseTimeout`), then the cursor will trigger a click.
+Also known as gaze-based cursor. If we set the cursor to be fuse-based, the
+cursor will trigger a click if the user gazes at an entity for a set amount of
+time. Imagine a laser strapped to the user's head, and the laser extends out
+into the scene. If the user stares at an entity long enough (i.e., the
+`fuseTimeout`), then the cursor will trigger a click.
 
-The advantage of fuse-based interactions for VR is that it does not require additional input devices other than the headset. It is primarily intended for Google Cardboard applications. The disadvantage of fuse-based interactions is that it requires the user to turn their head a lot.
+The advantage of fuse-based interactions for VR is that it does not require
+extra input devices other than the headset. The fuse-based cursor is primarily
+intended for Google Cardboard applications. The disadvantage of fuse-based
+interactions is that it requires the user to turn their head a lot.
 
 ## Adding Visual Feedback
 
-To add visual feedback to the cursor in order to display indication when the cursor is clicking or fusing, we can use the [animation system][animation]. When the cursor intersects the entity, it will emit an event, and the animation system will pick up event with the `begin` attribute:
+To add visual feedback to the cursor to show when the cursor is clicking or
+fusing, we can use the [animation system][animation].  When the cursor
+intersects the entity, it will emit an event, and the animation system will
+pick up event with the `begin` attribute:
 
 ```html
 <a-entity cursor="fuse: true; fuseTimeout: 500"
@@ -115,7 +135,8 @@ To add visual feedback to the cursor in order to display indication when the cur
 </a-entity>
 ```
 
-To play with an example of a cursor with visual feedback, check out the [Cursor with Visual Feedback example on CodePen][cursor-codepen].
+To play with an example of a cursor with visual feedback, check out the [Cursor
+with Visual Feedback example on CodePen][cursor-codepen].
 
 [animation]: ../core/animations.md
 [camera]: ./camera.md

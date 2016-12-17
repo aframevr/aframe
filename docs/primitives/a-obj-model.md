@@ -5,17 +5,13 @@ layout: docs
 parent_section: primitives
 ---
 
-> glTF is recommended for distributing assets in production over the web. Check
+> We recommend glTF for distributing assets in production over the web. Check
 > out using the [glTF component](https://github.com/xirvr/aframe-gltf). You can
 > either instead export to COLLADA and use [the
 > converter](https://cesiumjs.org/convertmodel.html) or try out the [OBJ
 > converter](https://github.com/AnalyticalGraphicsInc/OBJ2GLTF).
 
-[objcomponent]: ../components/obj-model.md
-
-The .OBJ model primitive displays a 3D Wavefront model. It is an entity that
-maps the `src` and `mtl` attributes to the [obj-model
-component's][objcomponent] `obj` and `mtl` properties respectively.
+The .OBJ model primitive displays a 3D Wavefront model.
 
 ## Example
 
