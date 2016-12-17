@@ -2,40 +2,62 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
+var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
+var TOUCH_CONTROLLER_MODEL_OBJ_MTL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.mtl';
+var TOUCH_CONTROLLER_MODEL_OBJ_URL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.obj';
+var TOUCH_CONTROLLER_MODEL_OBJ_MTL_R = TOUCH_CONTROLLER_MODEL_BASE_URL + 'right.mtl';
 
-var GAMEPAD_ID_PREFIX = 'OpenVR Gamepad';
+var GAMEPAD_ID_PREFIX = 'Oculus Touch';
+
+var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
+
+// currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
+// however those have analog values, and this (below button-down values) can be used to fake them
+var EMULATED_TOUCH_THRESHOLD = 0.001;
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
+ * Oculus Touch Controls Component
+ * Interfaces with Oculus Touch controllers and maps Gamepad events to
  * common controller buttons: trackpad, trigger, grip, menu and system
  * It loads a controller model and highlights the pressed buttons
  */
-module.exports.Component = registerComponent('vive-controls', {
+module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
+    buttonColor: {default: '#FAFAFA'},          // Off-white.
+    buttonHighlightColor: {default: '#22D1EE'}, // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
 
   // buttonId
-  // 0 - trackpad
+  // 0 - thumbstick
   // 1 - trigger ( intensity value from 0.5 to 1 )
   // 2 - grip
   // 3 - menu ( dispatch but better for menu options )
   // 4 - system ( never dispatched on this layer )
   mapping: {
-    axis0: 'trackpad',
-    axis1: 'trackpad',
-    button0: 'trackpad',
-    button1: 'trigger',
-    button2: 'grip',
-    button3: 'menu',
-    button4: 'system'
+    'left': {
+      axis0: 'thumbstick',
+      axis1: 'thumbstick',
+      button0: 'thumbstick',
+      button1: 'trigger',
+      button2: 'grip',
+      button3: 'X',
+      button4: 'Y',
+      button5: 'surface'
+    },
+    'right': {
+      axis0: 'thumbstick',
+      axis1: 'thumbstick',
+      button0: 'thumbstick',
+      button1: 'trigger',
+      button2: 'grip',
+      button3: 'A',
+      button4: 'B',
+      button5: 'surface'
+    }
   },
 
   bindMethods: function () {
@@ -58,6 +80,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
+    this.previousButtonValues = {};
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
   },
@@ -84,8 +107,7 @@ module.exports.Component = registerComponent('vive-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
@@ -126,19 +148,31 @@ module.exports.Component = registerComponent('vive-controls', {
     this.removeEventListeners();
   },
 
+  updateControllerModel: function () {
+    var objUrl, mtlUrl;
+    if (!this.data.model) { return; }
+    if (this.data.hand === 'right') {
+      objUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_URL_R + ')';
+      mtlUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_MTL_R + ')';
+    } else {
+      objUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_URL_L + ')';
+      mtlUrl = 'url(' + TOUCH_CONTROLLER_MODEL_OBJ_MTL_L + ')';
+    }
+    this.el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+  },
+
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    var objUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_URL + ')';
-    var mtlUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_MTL + ')';
+    var isRightHand = data.hand === 'right';
 
-    // handId: 0 - right, 1 - left, 2 - anything else...
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    // if we have an OpenVR Gamepad, use the fixed mapping
-    el.setAttribute('tracked-controls', {id: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
-
-    if (!data.model) { return; }
-    el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+    // since each hand is named differently, avoid enumeration
+    el.setAttribute('tracked-controls', {
+      id: isRightHand ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+      controller: 0,
+      rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : isRightHand ? -90 : 90
+    });
+    this.updateControllerModel();
   },
 
   addControllersUpdateListener: function () {
@@ -153,34 +187,57 @@ module.exports.Component = registerComponent('vive-controls', {
     if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
   },
 
+  // currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
+  // however those have analog values, and this (below button-down values) can be used to fake them
+  isEmulatedTouchEvent: function (analogValue) {
+    return analogValue && (analogValue >= EMULATED_TOUCH_THRESHOLD);
+  },
+
   onButtonChanged: function (evt) {
-    var button = this.mapping['button' + evt.detail.id];
+    var button = this.mapping[this.data.hand]['button' + evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
-    var value;
-    if (!button || !buttonMeshes || button !== 'trigger') { return; }
-    value = evt.detail.state.value;
-    buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    var isPreviousValueEmulatedTouch;
+    var analogValue;
+    var isEmulatedTouch;
+
+    // at the moment, if trigger or grip,
+    // touch events aren't happening (touched is stuck true);
+    // synthesize touch events from very low analog values
+    if (button !== 'trigger' && button !== 'grip') { return; }
+    analogValue = evt.detail.state.value;
+    isPreviousValueEmulatedTouch = this.isEmulatedTouchEvent(this.previousButtonValues[button]);
+    this.previousButtonValues[button] = analogValue;
+    isEmulatedTouch = this.isEmulatedTouchEvent(analogValue);
+    if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
+      (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
+    }
+    if (button !== 'trigger' || !buttonMeshes || !buttonMeshes.trigger) { return; }
+    buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
   },
 
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
     if (!this.data.model) { return; }
+
+    var leftHand = this.data.hand === 'left';
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.grip = {
-      left: controllerObject3D.getObjectByName('leftgrip'),
-      right: controllerObject3D.getObjectByName('rightgrip')
-    };
-    buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
-    buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
-    buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
+
+    buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'grip tooche1 group3' : 'grip tooche group4');
+    buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 control_surface group2 thumb_stick' : 'tooche group4 control_surface group2 thumb_stick');
+    buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 trigger' : 'tooche group4 trigger');
+    buttonMeshes['X'] = controllerObject3D.getObjectByName('tooche1 group3 control_surface group2 button2');
+    buttonMeshes['A'] = controllerObject3D.getObjectByName('tooche group4 control_surface group2 button2');
+    buttonMeshes['Y'] = controllerObject3D.getObjectByName('tooche1 group3 control_surface group2 button3');
+    buttonMeshes['B'] = controllerObject3D.getObjectByName('tooche group4 control_surface group2 button3');
+    buttonMeshes.surface = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 face control_surface group2' : 'tooche group4 face control_surface group2');
+
     // Offset pivot point
-    controllerObject3D.position.set(0, -0.015, 0.04);
+    controllerObject3D.position = PIVOT_OFFSET;
   },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
+    var buttonName = this.mapping[this.data.hand]['button' + id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
@@ -194,7 +251,6 @@ module.exports.Component = registerComponent('vive-controls', {
 
   updateModel: function (buttonName, evtName) {
     var i;
-    if (!this.data.model) { return; }
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
         this.updateButtonModel(buttonName[i], evtName);
@@ -207,12 +263,9 @@ module.exports.Component = registerComponent('vive-controls', {
   updateButtonModel: function (buttonName, state) {
     var color = state === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
-    if (!buttonMeshes) { return; }
-    if (buttonName === 'grip') {
-      buttonMeshes.grip.left.material.color.set(color);
-      buttonMeshes.grip.right.material.color.set(color);
-      return;
+    if (!this.data.model) { return; }
+    if (buttonMeshes && buttonMeshes[buttonName]) {
+      buttonMeshes[buttonName].material.color.set(color);
     }
-    buttonMeshes[buttonName].material.color.set(color);
   }
 });

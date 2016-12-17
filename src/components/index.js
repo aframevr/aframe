@@ -8,6 +8,7 @@ require('./light');
 require('./look-controls');
 require('./material');
 require('./obj-model');
+require('./oculus-touch-controls');
 require('./position');
 require('./raycaster');
 require('./rotation');
