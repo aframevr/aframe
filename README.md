@@ -34,11 +34,11 @@ To get started immediately, just fire up [__this CodePen example scene__](http:/
 
 To embed this library in your project, include this file:
 
-* [`aframe.min.js`](https://aframe.io/releases/0.3.2/aframe.min.js)
+* [`aframe.min.js`](https://aframe.io/releases/0.4.0/aframe.min.js)
 
 For the unminified version for local development (with source maps), include this file:
 
-* [`aframe.js`](https://aframe.io/releases/0.3.2/aframe.js)
+* [`aframe.js`](https://aframe.io/releases/0.4.0/aframe.js)
 
 __Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
 
@@ -109,7 +109,7 @@ This program is free software and is distributed under an [MIT License](LICENSE)
 [downloads-url]: https://npmjs.org/package/aframe
 [semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
 [semistandard-url]: https://github.com/Flet/semistandard
-[aframe-browser-support]: https://aframe.io/docs/0.3.0/introduction/device-and-platform-support.html
+[aframe-browser-support]: https://aframe.io/docs/master/introduction/device-and-platform-support.html
 <!-- codecov -->
 [codecov-image]: https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/aframevr/aframe
