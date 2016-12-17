@@ -7,7 +7,10 @@ var utils = require('../../utils');
  * The default data string is 'GearVR' for Carmel browser which only does VR.
  */
 module.exports.Component = registerComponent('auto-enter-vr', {
-  schema: {default: 'GearVR'},
+  schema: {
+    display: {type: 'string', default: 'GearVR'},
+    enabled: {type: 'boolean', default: true}
+  },
 
   init: function () {
     var scene = this.el;
@@ -39,12 +42,12 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     var scene = this.el;
     var data = this.data;
     // if false, we should not auto-enter VR
-    if (data === 'false') { return false; }
+    if (!data.enabled) { return false; }
     // if we have a data string to match against display name, try and get it;
     // if we can't get display name, or it doesn't match, we should not auto-enter VR
-    if (typeof data === 'string') {
+    if (data.display) {
       var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
-      if (!display || !display.displayName || display.displayName.indexOf(data) < 0) { return false; }
+      if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) { return false; }
     }
     // we should auto-enter VR
     return true;
