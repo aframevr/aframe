@@ -119,14 +119,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onGamepadConnected: function (evt) {
-    this.everGotGamepadEvent = true;
-    this.removeControllersUpdateListener();
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 
   onGamepadDisconnected: function (evt) {
-    this.everGotGamepadEvent = true;
-    this.removeControllersUpdateListener();
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 

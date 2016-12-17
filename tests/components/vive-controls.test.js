@@ -110,7 +110,7 @@ suite(controllerComponentName, function () {
     });
   });
 
-  suite('onGamepadConnected / Disconnected', function () {
+  suite.skip('onGamepadConnected / Disconnected', function () {
     test('if we get onGamepadConnected or onGamepadDisconnected, remove periodic change listener and check if present', function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
