@@ -1,11 +1,14 @@
-## 0.4.0 (est. November 2016)
+## 0.4.0
 
-0.4.0 contains bug fixes and API polish. *not yet released*
+0.4.0 contains Oculus Touch controller support, integration with the Registry
+by means of the Inspector, API polish, and bug fixes.
 
 ### Major Changes
 
 - `getAttribute` returns full computed rather than just defined component data set. (#1925)
 - `setAttribute` when passed an object (i.e., `setAttribute('material', {color: 'red'})`) no longer clobbers existing component data, it will instead *extend* existing component data. Pass a `true` flag as the third argument to clobber existing data.
+- Asset property type will directly pass the video element to a component if the value is a selector. (#2129)
+- Refactored primitives to fix component dependencies and initialization ordering. (#2106)
 - Removed `transforms` feature from the `registerPrimitive` API. (#2045)
 - Removed deprecated `look-at` component. (#1913)
 - Removed deprecated Declarative Events API (`<a-event>`). (#1914)
@@ -19,6 +22,8 @@
 ### Enhancements
 
 - Bumped three.js to r82. (#2081)
+- Oculus Touch controller support and controller refactor. (#2132)
+- Inspector is pulled from `unpkg.com` CDN to be able to reference a fuzzy version. (e664fe6)
 - Added `reverseDrag` property to `look-controls` component to reverse mouse drag (ideal for static 360&deg; content). (#2024)
 - Added standard material map properties for ambient occlusion, displacements, normals, and spherical environments. (#1826, #2078)
 - Asset parser no longer strictly demands URLs be wrapped with `url()`. (#2045)
@@ -60,6 +65,15 @@
 - Fixed `raycaster` component passing its actual intersection objects through events. (#1978)
 - Fixed `stats` component for Safari. (#1865)
 - Normalized Git-tracked files to Unix-style line feeds. (#1825)
+- Fix stringifying default `null` values for object property types. (#2138)
+- Fix material update referencing `sceneEl` when the scene has not yet loaded. (#2137)
+- Fix default values of a schema property getting changed to weird values. (#2140)
+
+### Known Issues
+
+- A regression in the October 29th version of Chromium passes microsecond-based
+  timestamp into `requestAnimationFrame` instead of milliseconds, breaking
+  animations.
 
 ### 0.3.2 (October 12, 2016)
 
