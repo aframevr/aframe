@@ -22,13 +22,13 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     if (utils.getUrlParameter('auto-enter-vr') === 'false') { return; }
 
     // enter VR on vrdisplayactivate (e.g. putting on Rift headset)
-    window.addEventListener('vrdisplayactivate', function () { this.enterVR(); }, false);
+    window.addEventListener('vrdisplayactivate', function () { self.enterVR(); }, false);
 
     // exit VR on vrdisplaydeactivate (e.g. taking off Rift headset)
-    window.addEventListener('vrdisplaydeactivate', function () { this.exitVR(); }, false);
+    window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); }, false);
 
     // check if we should try to enter VR... turns out we need to wait for next tick
-    setTimeout(function () { if (self.shouldAutoEnterVR()) { this.enterVR(); } }, 0);
+    setTimeout(function () { if (self.shouldAutoEnterVR()) { self.enterVR(); } }, 0);
   },
 
   update: function () {
