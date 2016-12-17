@@ -124,6 +124,7 @@ module.exports.Component = registerComponent('hand-controls', {
     }
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
+    if (hand === 'right') { el.setAttribute('carmel-gearvr-controls', 'hand: right'); }
     el.setAttribute('blend-character-model', modelUrl);
   },
 
@@ -156,6 +157,12 @@ module.exports.Component = registerComponent('hand-controls', {
     return controllerId === 'OpenVR Gamepad';
   },
 
+  isOculusTouchController: function () {
+    var trackedControls = this.el.components['tracked-controls'];
+    var controllerId = trackedControls && trackedControls.controller && trackedControls.controller.id;
+    return controllerId && controllerId.indexOf('Oculus Touch') === 0;
+  },
+
   determineGesture: function () {
     var gesture;
     var isGripActive = this.pressedButtons['grip'];
@@ -163,18 +170,18 @@ module.exports.Component = registerComponent('hand-controls', {
     var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
     var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
-    var isVive = this.isViveController();
-    // this works well with Oculus Touch, but Vive needs tweaks
+    var isOculusTouch = this.isOculusTouchController();
+      // this works well with Oculus Touch, but Vive needs tweaks
     if (isGripActive) {
-      if (isVive) { gesture = 'fist'; } else
+      if (!isOculusTouch) { gesture = 'fist'; } else
       if (isSurfaceActive || isABXYActive || isTrackpadActive) {
         gesture = isTriggerActive ? 'fist' : 'pointing';
       } else {
         gesture = isTriggerActive ? 'thumb' : 'pistol';
       }
     } else
-    if (isTriggerActive) { gesture = isVive ? 'fist' : 'touch'; } else
-    if (isVive && isTrackpadActive) { gesture = 'pointing'; }
+    if (isTriggerActive) { gesture = isOculusTouch ? 'touch' : 'fist'; } else
+    if (!isOculusTouch && isTrackpadActive) { gesture = 'pointing'; }
     return gesture;
   },
 
@@ -187,13 +194,13 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   animateGesture: function (gesture) {
-    var isVive = this.isViveController();
+    var isOculusTouch = this.isOculusTouchController();
     if (!gesture) {
-      this.playAnimation('touch', !isVive);
+      this.playAnimation('touch', isOculusTouch);
       return;
     }
     var animation = this.gestureAnimationMapping[gesture];
-    this.playAnimation(animation || 'touch', !animation && !isVive);
+    this.playAnimation(animation || 'touch', !animation && isOculusTouch);
   },
 
   // map to old vive-specific event names for now
