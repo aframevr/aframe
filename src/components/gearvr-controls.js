@@ -6,12 +6,13 @@ var THREE = require('../lib/three');
 var GAMEPAD_ID_PREFIX = 'Gear VR Touchpad';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * GearVR Controls Component
+ * Interfaces with Gear VR touchpad.  For Carmel browser, it maps
+ * Gamepad events to common controller button (trackpad) and axes.
+ * For Samsung Internet GearVR browser, it uses mouse and touch events
+ * to simulate appropriate Gamepad behavior.
  */
-module.exports.Component = registerComponent('carmel-gearvr-controls', {
+module.exports.Component = registerComponent('gearvr-controls', {
   // since aframe-teleport-controls looks for tracked-controls, add one
   dependencies: ['tracked-controls'],
 
@@ -23,10 +24,6 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
 
   // buttonId
   // 0 - trackpad
-  // 1 - trigger ( intensity value from 0.5 to 1 )
-  // 2 - grip
-  // 3 - menu ( dispatch but better for menu options )
-  // 4 - system ( never dispatched on this layer )
   mapping: {
     axis0: 'trackpad',
     axis1: 'trackpad',
@@ -38,6 +35,9 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.onGamepadConnected = bind(this.onGamepadConnected, this);
     this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+    this.onTouchStart = bind(this.onTouchStart, this);
+    this.onMouseMove = bind(this.onMouseMove, this);
+    this.onTouchEnd = bind(this.onTouchEnd, this);
   },
 
   init: function () {
@@ -47,14 +47,36 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     this.controllerPresent = false;
     this.bindMethods();
     this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
+    // check whether we need to emulate Gamepad for Samsung Internet browser
+    this.isSamsungInternetBrowser = navigator.userAgent.indexOf(' SamsungBrowser/') >= 0;
+    if (this.isSamsungInternetBrowser) {
+      this.controller = this.fauxController = {buttons: [{pressed: false}], axes: [0, 0]};
+    }
+  },
+
+  onTouchStart: function () { this.fauxController.buttons[0].pressed = true; },
+  onTouchEnd: function () { this.fauxController.buttons[0].pressed = false; },
+  onMouseMove: function (evt) {
+    this.fauxController.axes[0] = 2 * evt.screenX / window.screen.width - 1;
+    this.fauxController.axes[1] = 2 * evt.screenY / window.screen.height - 1;
   },
 
   addControllerAttributes: function () {
     this.el.setAttribute('look-controls', '');
+    if (this.isSamsungInternetBrowser) {
+      window.addEventListener('touchstart', this.onTouchStart, false);
+      window.addEventListener('mousemove', this.onMouseMove, false);
+      window.addEventListener('touchend', this.onTouchEnd, false);
+    }
   },
 
   removeControllerAttributes: function () {
     this.el.removeAttribute('look-controls');
+    if (this.isSamsungInternetBrowser) {
+      window.removeEventListener('touchstart', this.onTouchStart, false);
+      window.removeEventListener('mousemove', this.onMouseMove, false);
+      window.removeEventListener('touchend', this.onTouchEnd, false);
+    }
   },
 
   getControllerIfPresent: function () {
@@ -69,6 +91,7 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     var controller = this.getControllerIfPresent();
     var isPresent = !(!controller); // coerce to boolean for matching purposes
     if (controller) { this.controller = controller; }
+    if (this.isSamsungInternetBrowser) { isPresent = true; }
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
@@ -118,7 +141,6 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     }
     if (!changed) { return; }
     this.previousAxis = controllerAxes.slice();
-    console.log('axismove ' + this.previousAxis);
     this.el.emit('axismove', { axis: this.previousAxis });
   },
 
@@ -128,7 +150,6 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     changed = changed || this.handleTouch(id, buttonState);
     changed = changed || this.handleValue(id, buttonState);
     if (!changed) { return; }
-    console.log('buttonchanged ' + id + ' ' + JSON.stringify(buttonState));
     this.el.emit('buttonchanged', { id: id, state: buttonState });
   },
 
@@ -139,7 +160,8 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     // as workaround for Carmel deferring button down event until button up,
     // if non-zero axis (which requires holding finger on touchpad), treat as down
     var previousAxis = this.previousAxis;
-    if (previousAxis && (previousAxis.length > 1) && (previousAxis[0] || previousAxis[1])) { pressed = true; }
+    if (!this.isSamsungInternetBrowser &&
+      previousAxis && (previousAxis.length > 1) && (previousAxis[0] || previousAxis[1])) { pressed = true; }
     if (pressed === previousButtonState.pressed) { return false; }
     this.onButtonEvent(id, pressed ? 'down' : 'up');
     previousButtonState.pressed = pressed;
@@ -189,11 +211,9 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
-        console.log('buttonEvent ' + buttonName[i] + evtName);
         this.el.emit(buttonName[i] + evtName);
       }
     } else {
-      console.log('buttonEvent ' + buttonName + evtName);
       this.el.emit(buttonName + evtName);
     }
   }

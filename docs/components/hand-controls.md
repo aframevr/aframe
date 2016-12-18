@@ -8,11 +8,11 @@ parent_section: components
 [tracked]: ./tracked-controls.md
 [vive]: ./vive-controls.md
 [oculustouch]: ./oculus-touch-controls.md
-[carmelgearvr]: ./carmel-gearvr-controls.md
+[gearvr]: ./gearvr-controls.md
 
 The hand-controls gives tracked hands (using a prescribed model) with animated
 gestures. hand-controls wraps the [vive-controls][vive], [oculus-touch-controls][oculustouch]
-and [carmel-gearvr-controls][carmelgearvr] components, which in turn wrap the
+and [gearvr-controls][gearvr] components, which in turn wrap the
 [tracked-controls component][tracked]. The component gives extra events and
 handles hand animations and poses.
 

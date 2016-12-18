@@ -1,6 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var controllerComponentName = 'carmel-gearvr-controls';
+var controllerComponentName = 'gearvr-controls';
 
 suite(controllerComponentName, function () {
   setup(function (done) {

@@ -1,5 +1,5 @@
 ---
-title: carmel-gearvr-controls
+title: gearvr-controls
 type: components
 layout: docs
 parent_section: components
@@ -9,24 +9,26 @@ parent_section: components
 [lookcontrols]: ./look-controls.md
 [handcontrols]: ./hand-controls.md
 
-The carmel-gearvr-controls component interfaces with the Gear VR Touchpad
-controller exposed by the Carmel browser.  As that controller has no pose,
-the [tracked-controls component][trackedcontrols] cannot provide its usual
-functionality, but an instance is added anyway since other components such 
-as aframe-teleport-controls use that to find controller entities.  Instead,
+The gearvr-controls component interfaces with the Gear VR Touchpad
+controller exposed by the Carmel and Samsung Internet VR browsers.
+The [tracked-controls component][trackedcontrols] cannot provide its usual
+functionality, since the Gear VR touchpad has no pose.  Instead,
 the [look-controls component][lookcontrols] is used to mimic a 3DOF controller.
+(Note that a dummy instance of tracked-controls is currently added anyway
+for compatibility, since other components such as aframe-teleport-controls
+query for entities with that component attached.)
 
 This component adds button mappings and events, but does not currently provide
 a controller model since it is assumed that end users will use this indirectly
 through higher level components such as the [hand-controls component][handcontrols].  
 
-As there is only one Gear VR Touchpad, currently this component will only bind
-to the right hand, not the left.
+As there is only one Gear VR Touchpad, currently this component should only be
+bound to one hand (e.g. to the right hand, not the left).
 
 ## Example
 
 ```html
-<a-entity carmel-gearvr-controls="hand: right"></a-entity>
+<a-entity gearvr-controls></a-entity>
 ```
 
 ## Value

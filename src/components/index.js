@@ -1,6 +1,6 @@
 require('./blend-character-model');
 require('./camera');
-require('./carmel-gearvr-controls');
+require('./gearvr-controls');
 require('./collada-model');
 require('./cursor');
 require('./geometry');
