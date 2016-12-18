@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var getGamepadsByPrefix = require('../utils/tracked-controls').getGamepadsByPrefix;
+var THREE = require('../lib/three');
 
 var GAMEPAD_ID_PREFIX = 'Gear VR Touchpad';
 
@@ -11,8 +12,13 @@ var GAMEPAD_ID_PREFIX = 'Gear VR Touchpad';
  * It loads a controller model and highlights the pressed buttons
  */
 module.exports.Component = registerComponent('carmel-gearvr-controls', {
+  // since aframe-teleport-controls looks for tracked-controls, add one
+  dependencies: ['tracked-controls'],
+
   schema: {
-    hand: {default: 'left'}
+    hand: {default: 'left'},
+    model: {default: 'false'},
+    rotationOffset: {default: 0}
   },
 
   // buttonId
@@ -43,42 +49,32 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
   },
 
-  addEventListeners: function () {
-    var el = this.el;
-    el.addEventListener('buttonchanged', this.onButtonChanged);
-    el.addEventListener('buttondown', this.onButtonDown);
-    el.addEventListener('buttonup', this.onButtonUp);
-    el.addEventListener('touchstart', this.onButtonTouchStart);
-    el.addEventListener('touchend', this.onButtonTouchEnd);
-    el.addEventListener('model-loaded', this.onModelLoaded);
+  addControllerAttributes: function () {
+    this.el.setAttribute('look-controls', '');
   },
 
-  removeEventListeners: function () {
-    var el = this.el;
-    el.removeEventListener('buttonchanged', this.onButtonChanged);
-    el.removeEventListener('buttondown', this.onButtonDown);
-    el.removeEventListener('buttonup', this.onButtonUp);
-    el.removeEventListener('touchstart', this.onButtonTouchStart);
-    el.removeEventListener('touchend', this.onButtonTouchEnd);
-    el.removeEventListener('model-loaded', this.onModelLoaded);
+  removeControllerAttributes: function () {
+    this.el.removeAttribute('look-controls');
   },
 
-  checkIfControllerPresent: function () {
-    // var data = this.data;
+  getControllerIfPresent: function () {
     // The 'Gear VR Touchpad' gamepad exposed by Carmel has no pose,
     // so it won't show up in the tracked-controls system controllers.
     var gamepads = this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX);
-    var isPresent = gamepads && gamepads.length > 0;
-    // we need up to update the controller state ourselves
-    if (isPresent) { this.controller = gamepads[0]; }
+    if (!gamepads || !gamepads.length) { return undefined; }
+    return gamepads[0];
+  },
+
+  checkIfControllerPresent: function () {
+    var controller = this.getControllerIfPresent();
+    var isPresent = controller && true; // coerce to boolean for matching purposes
+    if (controller) { this.controller = controller; }
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
-      this.el.setAttribute('look-controls', '');
-      this.addEventListeners();
+      this.addControllerAttributes();
     } else {
-      this.el.removeAttribute('look-controls');
-      this.removeEventListeners();
+      this.removeControllerAttributes();
     }
   },
 
@@ -87,7 +83,14 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
     // so it won't show up in the tracked-controls system controllers.
     // Therefore, we have to do tick processing for the Gear VR Touchpad ourselves.
     this.checkIfControllerPresent();
-    // we don't need to update the pose since we inject look-controls
+    // offset the hand position so it's not on the ground
+    var offset = new THREE.Vector3(this.data.hand === 'left' ? -0.15 : 0.15, 1.25, -0.15);
+    // look-controls and/or tracked-controls computed position and rotation before we get here
+    // so rotate the offset in the right direction and add it
+    offset.applyAxisAngle(this.el.object3D.up, this.el.object3D.rotation.y);
+    this.el.object3D.position.add(offset);
+    // apply the model rotation, since tracked-controls can't do it for us
+    this.el.object3D.rotation.z += this.data.rotationOffset;
     this.updateButtons();
   },
 
@@ -131,11 +134,15 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
 
   handlePress: function (id, buttonState) {
     var buttonStates = this.buttonStates;
-    var evtName = buttonState.pressed ? 'down' : 'up';
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
-    if (buttonState.pressed === previousButtonState.pressed) { return false; }
-    this.onButtonEvent(id, evtName);
-    previousButtonState.pressed = buttonState.pressed;
+    var pressed = buttonState.pressed;
+    // as workaround for Carmel deferring button down event until button up,
+    // if non-zero axis (which requires holding finger on touchpad), treat as down
+    var previousAxis = this.previousAxis;
+    if (previousAxis && (previousAxis.length > 1) && (previousAxis[0] || previousAxis[1])) { pressed = true; }
+    if (pressed === previousButtonState.pressed) { return false; }
+    this.onButtonEvent(id, pressed ? 'down' : 'up');
+    previousButtonState.pressed = pressed;
     return true;
   },
 
@@ -158,18 +165,10 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
   },
 
   onGamepadConnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 
   onGamepadDisconnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
     this.checkIfControllerPresent();
   },
 

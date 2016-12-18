@@ -128,14 +128,9 @@ module.exports.Component = registerComponent('tracked-controls', {
 
   handlePress: function (id, buttonState) {
     var buttonStates = this.buttonStates;
-    var evtName;
+    var evtName = buttonState.pressed ? 'down' : 'up';
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
     if (buttonState.pressed === previousButtonState.pressed) { return false; }
-    if (buttonState.pressed) {
-      evtName = 'down';
-    } else {
-      evtName = 'up';
-    }
     this.el.emit('button' + evtName, {id: id});
     previousButtonState.pressed = buttonState.pressed;
     return true;
