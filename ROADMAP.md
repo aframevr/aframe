@@ -9,6 +9,7 @@
 ## 0.4.1 (est. Jan 2016)
 
 - Built-in implementation of text
+- Link traversal
 
 ## 0.5.0 (est. Mar 2016)
 
