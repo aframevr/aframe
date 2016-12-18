@@ -67,7 +67,7 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
 
   checkIfControllerPresent: function () {
     var controller = this.getControllerIfPresent();
-    var isPresent = controller && true; // coerce to boolean for matching purposes
+    var isPresent = !(!controller); // coerce to boolean for matching purposes
     if (controller) { this.controller = controller; }
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
@@ -181,7 +181,7 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
   pause: function () {
     window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
     window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.removeEventListeners();
+    this.removeControllerAttributes();
   },
 
   onButtonEvent: function (id, evtName) {
