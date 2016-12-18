@@ -16,7 +16,7 @@ module.exports.Component = registerComponent('carmel-gearvr-controls', {
   dependencies: ['tracked-controls'],
 
   schema: {
-    hand: {default: 'left'},
+    hand: {default: 'right'},
     model: {default: 'false'},
     rotationOffset: {default: 0}
   },
