@@ -17,7 +17,12 @@ function parse (value, defaultVec) {
   var vec = {};
 
   if (value && typeof value === 'object') {
-    return vecParseFloat(value);
+    return vecParseFloat({
+      x: value.x || defaultVec && defaultVec.x,
+      y: value.y || defaultVec && defaultVec.y,
+      z: value.z || defaultVec && defaultVec.z,
+      w: value.w || defaultVec && defaultVec.w
+    });
   }
 
   if (typeof value !== 'string' || value === null) {
