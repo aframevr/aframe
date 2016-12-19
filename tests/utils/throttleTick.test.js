@@ -6,34 +6,36 @@ suite('utils.throttleTick', function () {
   var dts;
   var interval = 1000;
   var throttleTickFn = throttleTick(function (t, dt) { ts.push(t); dts.push(dt); }, interval);
+  var arbitraryLargeTime = 987634578;
+  var arbitraryLargeDelta = 12345;
 
-  test('utils.throttleTick fires callback on first tick whatever', function () {
+  test('fires callback on first tick whatever', function () {
     ts = [];
     dts = [];
     assert.equal(ts.length, 0);
     assert.equal(dts.length, 0);
     throttleTickFn = throttleTick(function (t, dt) { ts.push(t); dts.push(dt); }, interval);
-    throttleTickFn(987634578, 12345);
+    throttleTickFn(arbitraryLargeTime, arbitraryLargeDelta);
     assert.equal(ts.length, 1);
-    assert.equal(ts[0], 987634578);
+    assert.equal(ts[0], arbitraryLargeTime);
     assert.equal(dts.length, 1);
-    assert.equal(dts[0], 12345);
+    assert.equal(dts[0], arbitraryLargeDelta);
   });
 
-  test('utils.throttleTick fires callback on first tick zero', function () {
+  test('fires callback on first tick zero', function () {
     ts = [];
     dts = [];
     assert.equal(ts.length, 0);
     assert.equal(dts.length, 0);
     throttleTickFn = throttleTick(function (t, dt) { ts.push(t); dts.push(dt); }, interval);
-    throttleTickFn(0, 34586);
+    throttleTickFn(0, arbitraryLargeDelta);
     assert.equal(ts.length, 1);
     assert.equal(ts[0], 0);
     assert.equal(dts.length, 1);
-    assert.equal(dts[0], 34586);
+    assert.equal(dts[0], arbitraryLargeDelta);
   });
 
-  test('utils.throttleTick does not fire callback on ticks too soon', function () {
+  test('does not fire callback on ticks too soon', function () {
     var tlen = ts.length;
     var dtlen = dts.length;
     assert.equal(ts.length, dts.length);
@@ -48,7 +50,7 @@ suite('utils.throttleTick', function () {
     assert.equal(dts.length, dtlen);
   });
 
-  test('utils.throttleTick does fire callback on ticks after enough', function () {
+  test('does fire callback on ticks after enough', function () {
     var tlen = ts.length;
     var dtlen = dts.length;
     assert.equal(ts.length, dts.length);
@@ -59,7 +61,7 @@ suite('utils.throttleTick', function () {
     assert.ok(ts[tlen] - ts[tlen - 1] === dts[tlen]);
   });
 
-  test('utils.throttleTick fires only one callback on multiply late ticks', function () {
+  test('fires only one callback on multiply late ticks', function () {
     var tlen = ts.length;
     var dtlen = dts.length;
     assert.equal(ts.length, dts.length);
