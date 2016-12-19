@@ -235,6 +235,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var animationActive = this.animationActive;
     var timeScale = 1;
     var mesh = this.el.getObject3D('mesh');
+    var clipAction;
     if (!mesh) { return; }
 
     // determine direction of the animation.
@@ -244,9 +245,11 @@ module.exports.Component = registerComponent('hand-controls', {
     if (animationActive) { mesh.play(animationActive, 0); }
 
     // play new animation.
-    mesh.mixer.clipAction(animation).loop = 2200;
-    mesh.mixer.clipAction(animation).clampWhenFinished = true;
-    mesh.mixer.clipAction(animation).timeScale = timeScale;
+    clipAction = mesh.mixer.clipAction(animation);
+    if (!clipAction) { return; }
+    clipAction.loop = 2200;
+    clipAction.clampWhenFinished = true;
+    clipAction.timeScale = timeScale;
     mesh.play(animation, 1);
     this.animationActive = animation;
   }
