@@ -1,7 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 
-var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/leftHand.json';
-var OCULUS_RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/rightHand.json';
+var OCULUS_LEFT_HAND_MODEL_URL = 'https://rawgit.com/arturitu/assets/e698020d6f335fb46a6169f8985b4e12297e157d/controllers/oculus-hands/leftHand.json'; // 'https://cdn.aframe.io/controllers/oculus-hands/leftHand.json';
+var OCULUS_RIGHT_HAND_MODEL_URL = 'https://rawgit.com/arturitu/assets/e698020d6f335fb46a6169f8985b4e12297e157d/controllers/oculus-hands/rightHand.json'; // 'https://cdn.aframe.io/controllers/oculus-hands/rightHand.json';
 
 /**
 *
@@ -156,6 +156,12 @@ module.exports.Component = registerComponent('hand-controls', {
     return controllerId && controllerId.indexOf('Oculus Touch') === 0;
   },
 
+  isOculusTouchController: function () {
+    var trackedControls = this.el.components['tracked-controls'];
+    var controllerId = trackedControls && trackedControls.controller && trackedControls.controller.id;
+    return controllerId && controllerId.indexOf('Oculus Touch') === 0;
+  },
+
   determineGesture: function () {
     var gesture;
     var isGripActive = this.pressedButtons['grip'];
@@ -183,21 +189,23 @@ module.exports.Component = registerComponent('hand-controls', {
   },
 
   gestureAnimationMapping: {
-    'pointing': 'pointing',
-    'pistol': 'pistol',
-    'fist': 'press',
-    'touch': 'touch',
-    'thumb': 'thumb'
+    '': 'Open',
+    'pointing': 'Point',
+    'pistol': 'Point + Thumb',
+    'fist': 'Fist',
+    'touch': 'Hold',
+    'thumb': 'Thumb Up'
   },
 
   animateGesture: function (gesture) {
     var isOculusTouch = this.isOculusTouchController();
-    if (!gesture) {
-      this.playAnimation('touch', isOculusTouch);
+    if (!gesture && !isOculusTouch) {
+      // for Vive (and other non-Oculus Touch), change rest pose to be thumb down
+      this.playAnimation('Open', true);
       return;
     }
-    var animation = this.gestureAnimationMapping[gesture];
-    this.playAnimation(animation || 'touch', !animation && isOculusTouch);
+    var animation = this.gestureAnimationMapping[gesture || ''];
+    this.playAnimation(animation || 'Open', !animation && isOculusTouch);
   },
 
   // map to old vive-specific event names for now
@@ -239,6 +247,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var animationActive = this.animationActive;
     var timeScale = 1;
     var mesh = this.el.getObject3D('mesh');
+    var clipAction;
     if (!mesh) { return; }
 
     // determine direction of the animation.
@@ -248,9 +257,11 @@ module.exports.Component = registerComponent('hand-controls', {
     if (animationActive) { mesh.play(animationActive, 0); }
 
     // play new animation.
-    mesh.mixer.clipAction(animation).loop = 2200;
-    mesh.mixer.clipAction(animation).clampWhenFinished = true;
-    mesh.mixer.clipAction(animation).timeScale = timeScale;
+    clipAction = mesh.mixer.clipAction(animation);
+    if (!clipAction) { return; }
+    clipAction.loop = 2200;
+    clipAction.clampWhenFinished = true;
+    clipAction.timeScale = timeScale;
     mesh.play(animation, 1);
     this.animationActive = animation;
   }
