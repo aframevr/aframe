@@ -35,6 +35,24 @@ module.exports.isMobile = function () {
 };
 
 /**
+ * Returns tick throttle function that only fires callback after minimum interval.
+ * Note, this does not try to make up for any lost time by firing multiple callbacks.
+ * @param {callback}   The callback to fire; function (time, deltaTime) {...}
+ * @param {interval}   Interval between callbacks, in tick time units (milliseconds).
+ * @returns {function} Tick throttling handler function.
+ */
+module.exports.throttleTick = function (callback, interval) {
+  var data = {};
+  return function (time, delta) {
+    var sinceLastTime = typeof data.lastTime === 'undefined' ? delta : time - data.lastTime;
+    if (typeof data.lastTime === 'undefined' || (sinceLastTime >= interval)) {
+      data.lastTime = time;
+      callback(time, sinceLastTime);
+    }
+  };
+};
+
+/**
  * Fires a custom DOM event.
  *
  * @param {Element} el Element on which to fire the event.

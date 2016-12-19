@@ -150,3 +150,18 @@ Checks if device is Gear VR. Returns a `boolean`.
 ### `AFRAME.utils.device.isMobile()`
 
 Checks if device is a smartphone. Returns a `boolean`.
+
+## Tick Utils
+
+### `AFRAME.utils.throttleTick(function (t, dt) {...}, interval)`
+
+Returns tick throttle function that only fires callback after minimum interval.
+Note, this does not try to make up for any lost time by firing multiple callbacks.
+
+```
+AFRAME.registerComponent('foo', {
+  tick: utils.throttleTick(function (t, dt) {
+  
+  }, 500);
+});
+```
