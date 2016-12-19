@@ -5,7 +5,8 @@ suite('utils.throttleTick', function () {
   var ts;
   var dts;
   var interval = 1000;
-  var throttleTickFn = throttleTick(function (t, dt) { ts.push(t); dts.push(dt); }, interval);
+  var functionToThrottle = function (t, dt) { ts.push(t); dts.push(dt); };
+  var throttleTickFn = throttleTick(functionToThrottle, interval);
   var arbitraryLargeTime = 987634578;
   var arbitraryLargeDelta = 12345;
 
@@ -14,7 +15,7 @@ suite('utils.throttleTick', function () {
     dts = [];
     assert.equal(ts.length, 0);
     assert.equal(dts.length, 0);
-    throttleTickFn = throttleTick(function (t, dt) { ts.push(t); dts.push(dt); }, interval);
+    throttleTickFn = throttleTick(functionToThrottle, interval);
     throttleTickFn(arbitraryLargeTime, arbitraryLargeDelta);
     assert.equal(ts.length, 1);
     assert.equal(ts[0], arbitraryLargeTime);
@@ -75,5 +76,17 @@ suite('utils.throttleTick', function () {
     assert.ok(ts[tlen + 1] - ts[tlen] >= interval);
     assert.equal(dts.length, dtlen + 2);
     assert.ok(ts[tlen + 1] - ts[tlen] === dts[tlen + 1]);
+  });
+
+  test('binds function if context given', function () {
+    var obj = {};
+    obj.functionToThrottle = function (t, dt) { this.t = t; this.dt = dt; };
+    var spy = this.sinon.spy(obj, 'functionToThrottle');
+    obj.functionToThrottle = throttleTick(obj.functionToThrottle, interval, obj);
+    obj.functionToThrottle(arbitraryLargeTime, arbitraryLargeDelta);
+    assert.ok(spy.calledOnce);
+    assert.ok(spy.calledWith(arbitraryLargeTime, arbitraryLargeDelta));
+    assert.equal(obj.t, arbitraryLargeTime);
+    assert.equal(obj.dt, arbitraryLargeDelta);
   });
 });

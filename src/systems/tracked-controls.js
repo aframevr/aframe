@@ -11,7 +11,8 @@ module.exports.System = registerSystem('tracked-controls', {
     var self = this;
     this.controllers = [];
     this.lastControllersUpdate = 0;
-    this.tick = utils.throttleTick(this.throttledTickHandler.bind(this), 10);
+    // Throttle the (renamed) tick handler to minimum 10ms interval.
+    this.tick = utils.throttleTick(this.throttledTick, 10, this);
     if (!navigator.getVRDisplays) { return; }
     navigator.getVRDisplays().then(function (displays) {
       if (displays.length > 0) {
@@ -29,7 +30,9 @@ module.exports.System = registerSystem('tracked-controls', {
     }
   },
 
-  throttledTickHandler: function (time, delta) {
+  // This tick handler will be throttled at init time.
+  // This method was renamed only to make it clearer e.g. when debugging
+  throttledTick: function (time, delta) {
     this.updateControllerList();
     this.sceneEl.emit('controllersupdated', { timestamp: time, controllers: this.controllers });
   }
