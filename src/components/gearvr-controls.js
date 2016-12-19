@@ -106,6 +106,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     // so it won't show up in the tracked-controls system controllers.
     // Therefore, we have to do tick processing for the Gear VR Touchpad ourselves.
     this.checkIfControllerPresent();
+    if (!this.controllerPresent) { return; }
     // offset the hand position so it's not on the ground
     var offset = new THREE.Vector3(this.data.hand === 'left' ? -0.15 : 0.15, 1.25, -0.15);
     // look-controls and/or tracked-controls computed position and rotation before we get here
