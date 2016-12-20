@@ -1,4 +1,4 @@
-/* global assert, process, sinon, setup, suite, teardown, test, HTMLElement */
+/* global AFRAME, assert, process, sinon, setup, suite, teardown, test, HTMLElement */
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var extend = require('utils').extend;
@@ -364,7 +364,7 @@ suite('a-entity', function () {
       el.setAttribute('test', 'other', 2);
     });
 
-    test('the attribute cache only stores the modified properties', function () {
+    test('only stores modified properties in attribute cache', function () {
       var el = this.el;
       el.setAttribute('geometry', {primitive: 'box'});
       assert.deepEqual(el.components.geometry.attrValue, {primitive: 'box'});
@@ -372,7 +372,7 @@ suite('a-entity', function () {
       assert.deepEqual(el.components.geometry.attrValue, {primitive: 'sphere', radius: 10});
     });
 
-    test('when changing schema only the modified properties are cached', function () {
+    test('only caches modified properties when changing schema only', function () {
       var el = this.el;
       var geometry;
       el.setAttribute('geometry', {primitive: 'box'});
@@ -385,6 +385,27 @@ suite('a-entity', function () {
       assert.notOk(geometry.depth);
       assert.notOk(geometry.height);
       assert.notOk(geometry.width);
+    });
+
+    test('parses individual properties when passing object', function (done) {
+      var el = this.el;
+      AFRAME.registerComponent('foo', {
+        schema: {
+          bar: {type: 'asset'},
+          baz: {type: 'asset'}
+        },
+
+        init: function () {
+          assert.equal(this.data.bar, 'test.png');
+          assert.equal(this.data.baz, 'test.jpg');
+          delete AFRAME.components.foo;
+          done();
+        }
+      });
+      el.setAttribute('foo', {
+        bar: 'url(test.png)',
+        baz: 'url(test.jpg)'
+      });
     });
   });
 
