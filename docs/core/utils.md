@@ -153,7 +153,13 @@ Checks if device is a smartphone. Returns a `boolean`.
 
 ## Function Utils
 
-### `AFRAME.utils.throttleTick(function (t, dt) {...}, interval)`
+### `AFRAME.utils.throttle(function, minimumInterval [, optionalContext])`
+
+Returns throttle function that only fires call after minimum interval,
+in tick time units (milliseconds).
+Note, this does not try to make up for any lost time by firing multiple callbacks.
+
+### `AFRAME.utils.throttleTick(function (t, dt) {...}, minimumInterval [, optionalContext])`
 
 Returns tick throttle function that only fires call after minimum interval,
 in tick time units (milliseconds).
