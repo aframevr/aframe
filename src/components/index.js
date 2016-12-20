@@ -1,6 +1,5 @@
 require('./blend-character-model');
 require('./camera');
-require('./gearvr-controls');
 require('./collada-model');
 require('./cursor');
 require('./geometry');
