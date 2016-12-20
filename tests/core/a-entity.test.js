@@ -363,6 +363,29 @@ suite('a-entity', function () {
       el.setAttribute('test', 'asym', 1);
       el.setAttribute('test', 'other', 2);
     });
+
+    test('the attribute cache only stores the modified properties', function () {
+      var el = this.el;
+      el.setAttribute('geometry', {primitive: 'box'});
+      assert.deepEqual(el.components.geometry.attrValue, {primitive: 'box'});
+      el.setAttribute('geometry', {primitive: 'sphere', radius: 10});
+      assert.deepEqual(el.components.geometry.attrValue, {primitive: 'sphere', radius: 10});
+    });
+
+    test('when changing schema only the modified properties are cached', function () {
+      var el = this.el;
+      var geometry;
+      el.setAttribute('geometry', {primitive: 'box'});
+      assert.deepEqual(el.components.geometry.attrValue, {primitive: 'box'});
+      el.setAttribute('geometry', {primitive: 'sphere', radius: 10});
+      assert.deepEqual(el.components.geometry.attrValue, {primitive: 'sphere', radius: 10});
+      geometry = el.getAttribute('geometry');
+      assert.equal(geometry.primitive, 'sphere');
+      assert.equal(geometry.radius, 10);
+      assert.notOk(geometry.depth);
+      assert.notOk(geometry.height);
+      assert.notOk(geometry.width);
+    });
   });
 
   suite('flushToDOM', function () {

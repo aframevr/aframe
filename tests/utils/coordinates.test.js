@@ -18,6 +18,11 @@ suite('utils.coordinates', function () {
         coordinates.parse('1 2.5 -3'), {x: 1, y: 2.5, z: -3});
     });
 
+    test('applies defaults to the missing values', function () {
+      assert.deepEqual(
+        coordinates.parse({x: 1}, {x: 0, y: 0, z: 0}), {x: 1, y: 0, z: 0});
+    });
+
     test('parses null', function () {
       assert.equal(coordinates.parse(null), null);
     });

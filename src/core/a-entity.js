@@ -686,10 +686,10 @@ var proto = Object.create(ANode.prototype, {
       function componentUpdate (el, componentName, propValue) {
         var component = el.components[componentName];
         if (component && typeof propValue === 'object') {
-          // Extend existing component data.
+          // Extend existing component attribute value.
           el.updateComponent(
             componentName,
-            utils.extendDeep(utils.extendDeep({}, component.data), propValue));
+            utils.extendDeep(utils.extendDeep({}, component.attrValue), propValue));
         } else {
           el.updateComponent(componentName, propValue);
         }
