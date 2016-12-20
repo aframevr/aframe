@@ -1,15 +1,18 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
+var MTL = '/base/tests/assets/crate/crate.mtl';
+var OBJ = '/base/tests/assets/crate/crate.obj';
+
 suite('obj-model', function () {
   setup(function (done) {
     var el;
     var objAsset = document.createElement('a-asset-item');
     var mtlAsset = document.createElement('a-asset-item');
     mtlAsset.setAttribute('id', 'mtl');
-    mtlAsset.setAttribute('src', '/base/tests/assets/crate/crate.mtl');
+    mtlAsset.setAttribute('src', MTL);
     objAsset.setAttribute('id', 'obj');
-    objAsset.setAttribute('src', '/base/tests/assets/crate/crate.obj');
+    objAsset.setAttribute('src', OBJ);
     el = this.el = entityFactory({assets: [mtlAsset, objAsset]});
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () { done(); });
@@ -26,7 +29,7 @@ suite('obj-model', function () {
 
   test('can load .OBJ + .MTL', function (done) {
     var el = this.el;
-    var handled = false; // Event listener is not getting torn down for some reason.
+    var handled = false;  // Event listener is not getting torn down for some reason.
     el.addEventListener('model-loaded', function () {
       if (handled) { return; }
       handled = true;
@@ -34,6 +37,18 @@ suite('obj-model', function () {
       done();
     });
     el.setAttribute('obj-model', {mtl: '#mtl', obj: '#obj'});
+  });
+
+  test('can load .OBJ + .MTL with url()', function (done) {
+    var el = this.el;
+    var handled = false;  // Event listener is not getting torn down for some reason.
+    el.addEventListener('model-loaded', function () {
+      if (handled) { return; }
+      handled = true;
+      assert.ok(el.components['obj-model'].model);
+      done();
+    });
+    el.setAttribute('obj-model', {mtl: `url(${MTL})`, obj: `url(${OBJ})`});
   });
 
   test('can load multiple .OBJ', function (done) {

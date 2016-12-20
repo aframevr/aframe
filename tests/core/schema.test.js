@@ -87,11 +87,13 @@ suite('schema', function () {
       var schema = processSchema({
         position: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
         scale: {type: 'vec3', default: '0 0 0'},
+        src: {type: 'asset'},
         visible: {type: 'boolean'},
         width: {type: 'int', default: 2}
       });
       var parsed = parseProperties({
         position: '1 2 3',
+        src: 'url(test.png)',
         visible: 'false',
         width: '7'
       }, schema);
@@ -99,6 +101,7 @@ suite('schema', function () {
       assert.shallowDeepEqual(parsed, {
         position: {x: 1, y: 2, z: 3},
         scale: {x: 0, y: 0, z: 0},
+        src: 'test.png',
         visible: false,
         width: 7
       });
