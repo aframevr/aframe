@@ -129,8 +129,8 @@ module.exports.Component = registerComponent('vive-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    var objUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_URL + ')';
-    var mtlUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_MTL + ')';
+    var objUrl = VIVE_CONTROLLER_MODEL_OBJ_URL;
+    var mtlUrl = VIVE_CONTROLLER_MODEL_OBJ_MTL;
 
     // handId: 0 - right, 1 - left, 2 - anything else...
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
