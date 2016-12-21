@@ -60,7 +60,8 @@ depending on the material type applied.
 
 | Event Name              | Description                                                                                |
 |-------------------------|--------------------------------------------------------------------------------------------|
-| materialtextureloaded   | Texture loaded onto material. Or when the first frame is playing for video textures.       |
+| materialtextureloaded   | Texture loaded onto material.                                                              |
+| materialvideoloadeddata | Video data loaded and is going to play.                                                    |
 | materialvideoended      | For video textures, emitted when the video has reached its end (may not work with `loop`). |
 
 ## Built-in Materials
