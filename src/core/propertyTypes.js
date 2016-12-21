@@ -72,6 +72,8 @@ function assetParse (value) {
   var el;
   var parsedUrl;
 
+  if (typeof value !== 'string') { return value; }
+
   // Wrapped `url()` in case of data URI.
   parsedUrl = value.match(/\url\((.+)\)/);
   if (parsedUrl) { return parsedUrl[1]; }
