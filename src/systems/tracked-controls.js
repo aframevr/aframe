@@ -30,8 +30,9 @@ module.exports.System = registerSystem('tracked-controls', {
     }
   },
 
-  // This tick handler will be throttled at init time.
-  // This method was renamed only to make it clearer e.g. when debugging
+  /**
+   * Update controller list every 10 millseconds.
+   */
   throttledTick: function (time, delta) {
     this.updateControllerList();
     this.sceneEl.emit('controllersupdated', { timestamp: time, controllers: this.controllers });
