@@ -1,96 +1,123 @@
-# A-Frame
+<h1 align="center">A-Frame</h1>
 
-**Building Blocks for the VR Web**
+<p align="center"><a href="https://aframe.io" target="_blank"><img width="480" alt="A-Frame" src="https://cloud.githubusercontent.com/assets/674727/21375108/2c10b308-c6e0-11e6-945e-2394beb9a8ed.png"></a></p>
 
-[![build status][travis-image]][travis-url]
-[![codecov][codecov-image]][codecov-url]
-[![NPM version][npm-image]][npm-url]
-[![Downloads][downloads-image]][downloads-url]
-[![js-semistandard-style][semistandard-image]][semistandard-url]
+<p align="center"><b>A web framework for building virtual reality experiences.</b></p>
 
-A-Frame is a web framework for building virtual reality experiences.
+<p align="center">
+  <a href="https://travis-ci.org/aframevr/aframe"><img src="https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square" alt="Build Status"></a>
+  <a href="https://codecov.io/gh/aframevr/aframe">
+    <img src="https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg" alt="Coverage Status">
+  </a>
+  <a href="https://npmjs.org/package/aframe">
+    <img src="http://img.shields.io/npm/dt/aframe.svg?style=flat-square" alt="Downloads">
+  </a>
+  <a href="https://npmjs.org/package/aframe">
+    <img src="http://img.shields.io/npm/v/aframe.svg?style=flat-square" alt="Version">
+  </a>
+  <a href="https://npmjs.com/package/aframe">
+    <img src="https://img.shields.io/npm/l/aframe.svg?style=flat-square" alt="License"></a>
+  </a>
+</p>
 
-![A-Frame](https://cloud.githubusercontent.com/assets/674727/21370104/fc4409ca-c6be-11e6-93a7-461810b724ab.png)
+<div align="center">
+  <a href="https://aframe.io">Site</a>
+  &mdash;
+  <a href="https://aframe.io/docs/">Docs</a>
+  &mdash;
+  <a href="https://aframevr-slack.herokuapp.com">Slack</a>
+  &mdash;
+  <a href="https://aframe.io/blog/">Blog</a>
+  &mdash;
+  <a href="https://github.com/aframevr/aframe">awesome-aframe</a>
+</div>
 
-- **Virtual Reality**: Drop in the library and have a WebVR scene within a few lines of markup.
-- **Based on the DOM**: Manipulate with JavaScript, use with your favorite [libraries and frameworks](https://github.com/aframevr/awesome-aframe).
-- **[Entity-Component-System](https://aframe.io/docs/core/)**: Based on an entity-component-system pattern for better composability and extensibility.
+## Features
 
-Find out more:
+:eyeglasses: **Virtual reality made simple**: A-Frame handles the 3D and WebVR boilerplate required to get running across platforms including mobile, desktop, Vive, and Rift just by dropping in `<a-scene>`.
 
-- [Documentation](https://aframe.io/docs/)
-- [Examples](https://aframe.io/examples/)
-- [awesome-aframe](https://github.com/aframevr/awesome-aframe)
-- [Ask us on Slack!](https://aframevr-slack.herokuapp.com/)
+:heart: **Declarative HTML**: A-Frame is accessible to all developers due to its easy-to-read and copy-and-pastable HTML.
+
+&#9881; **Entity-component pattern**: A-Frame is a powerful framework for three.js, providing an declarative, composable, reusable entity-component architecture.
+
+&#128296; **Tool agnostic**: A-Frame interoperates beautifully with JavaScript DOM APIs and most libraries such as React, Vue.js, Angular, or d3.js.
+
+:mag: **Visual Inspector**: A-Frame provides a built-in visual inspector that acts just like your browser's DevTools; open up a scene and hit `<ctrl> + <alt> + i`.
+
+:package: **Registry**: A-Frame has a [Registry](https://aframe.io/aframe-registry), a curated component repository similar to the Unity Asset Store. Install some components and use them right from your HTML.
 
 ## Usage
 
-### CodePen
+### Basic Example
 
-To get started immediately, just fire up [__this CodePen example scene__](http://codepen.io/team/mozvr/pen/BjygdO?editors=100)!
+To get started playing now, open this [**CodePen example
+scene**](http://codepen.io/team/mozvr/pen/BjygdO?editors=100).
 
-### Downloads
+```html
+<html>
+  <head>
+    <title>My A-Frame Scene</title>
+    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>
+```
 
-To embed this library in your project, include this file:
+### Builds
 
-* [`aframe.min.js`](https://aframe.io/releases/0.4.0/aframe.min.js)
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.4.0/aframe.min.js):
 
-For the unminified version for local development (with source maps), include this file:
+```js
+<head>
+  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script.
+</head>
+```
 
-* [`aframe.js`](https://aframe.io/releases/0.4.0/aframe.js)
-
-__Also, be sure to check out the awesome [examples](https://aframe.io/examples/) (or [the ones in this repository](examples/)).__
+To check out the stable and master builds, see the [`dist/` folder](dist/).
 
 ### npm
 
-First install from npm:
-
 ```sh
-npm install aframe
+npm install --save aframe
 ```
-
-And in your Browserify/Webpack modules, simply require the module:
 
 ```js
-require('aframe')
+require('aframe')  // e.g., with Browserify or Webpack.
 ```
 
-## Local Installation and Development
-
-Alternatively, you can clone this repository to work locally on this project and explore the examples.
+## Local Development
 
 ```sh
-git clone https://github.com/aframevr/aframe.git
-cd aframe && npm install
+git clone https://github.com/aframevr/aframe.git  # Clone the repository.
+cd aframe && npm install  # Install dependencies.
+npm start  # Start the local development server.
 ```
 
-To start the local development server:
+And open in your browser **[http://localhost:9000](http://localhost:9000)**.
 
-```sh
-npm start
-```
-
-And fire up __[http://localhost:9000](http://localhost:9000)__!
-
-## Updating `dist` Files
+### Generating Builds
 
 ```sh
 npm run dist
 ```
 
-## Publishing to GitHub Pages
+## Questions
 
-To publish to __https://aframevr.github.io/aframe/__:
+For questions and support, [ask on StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe).
 
-```sh
-npm run ghpages
-```
+## Stay in Touch
 
-To publish to __https://your_username.github.io/aframe/__:
-
-```sh
-npm run ghpages your_username
-```
+- To hang out with the community, [join the A-Frame Slack](https://aframevr-slack.herokuapp.com).
+- [Follow `A Week of A-Frame` on the A-Frame blog](https://aframe.io/blog).
+- [Follow @aframevr on Twitter](https://twitter.com/aframevr).
 
 ## Contributing
 
@@ -99,18 +126,3 @@ Get involved! Check out the [Contributing Guide](CONTRIBUTING.md) for how to get
 ## License
 
 This program is free software and is distributed under an [MIT License](LICENSE).
-
-[npm-image]: https://img.shields.io/npm/v/aframe.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/aframe
-[travis-image]: https://img.shields.io/travis/aframevr/aframe.svg?style=flat-square
-[travis-url]: http://travis-ci.org/aframevr/aframe
-[downloads-image]: http://img.shields.io/npm/dm/aframe.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/aframe
-[semistandard-image]: https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square
-[semistandard-url]: https://github.com/Flet/semistandard
-[aframe-browser-support]: https://aframe.io/docs/master/introduction/device-and-platform-support.html
-<!-- codecov -->
-[codecov-image]: https://codecov.io/gh/aframevr/aframe/branch/master/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/aframevr/aframe
-
-[aframe-browser-support]: https://aframe.io/docs/0.3.0/introduction/device-and-platform-support.html
