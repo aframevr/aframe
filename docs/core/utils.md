@@ -153,37 +153,32 @@ Checks if device is a smartphone. Returns a `boolean`.
 
 ## Function Utils
 
-### `AFRAME.utils.throttle(function, minimumInterval [, optionalContext])`
+### `AFRAME.utils.throttle(function, interval [, optionalContext])`
 
-Returns a throttled function that limits the amount of times it is called
-to at most every `minimumInterval` milliseconds. A context such as `this`
-can be provided to handle function binding for convenience.
-Note, this does not try to make up for any lost time by firing multiple callbacks.
+Returns a throttled function that is called at most once every
+`minimumInterval` milliseconds. A context such as `this` can be provided to
+handle function binding for convenience.
 
-### `AFRAME.utils.throttleTick(function (t, dt) {...}, minimumInterval [, optionalContext])`
+### `AFRAME.utils.throttleTick(function (t, dt) {...}, interval [, optionalContext])`
 
-Returns a throttled tick function that limits the amount of times it is called
-to at most every `minimumInterval` milliseconds. A context such as `this`
-can be provided to handle function binding for convenience.
-Note, this does not try to make up for any lost time by firing multiple callbacks.
+Returns a throttled function that is called at most once every
+`minimumInterval` milliseconds. A context such as `this` can be provided to
+handle function binding for convenience.
 
-```
+This variant of `.throttle()` is slightly more performant and tailored for
+`tick` handlers as it uses the `t` and `dt` timestamps passed by the global
+render loop.
+
+```js
 AFRAME.registerComponent('foo', {
   init: function () {
     // Set up the tick throttling.
-    this.tick = AFRAME.utils.throttleTick(
-      // The function to throttle.
-      this.throttledTick,
-      // The function to throttle will not be called again sooner than this in milliseconds.
-      500,
-      // Because the function to throttle is an object method, bind this pointer.
-      this);
+    this.tick = AFRAME.utils.throttleTick(this.throttledTick, 500, this);
   },
 
-  // Renamed tick handler to make it clear that it is throttled.
-  // (for example, when debugging).
-  throttledTick: function (t, dt) {
-    // Called at most once every 500 milliseconds
-  }
+  /**
+   * Tick function that will be wrapped to be throttled.
+   */
+  throttledTick: function (t, dt) {}
 });
 ```

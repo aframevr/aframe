@@ -35,12 +35,12 @@ module.exports.isMobile = function () {
 };
 
 /**
- * Returns throttle function that only fires call after minimum interval.
- * Note, this does not try to make up for any lost time by firing multiple callbacks.
- * @param {function}    The function to throttle; function (time, deltaTime) {...}
- * @param {number}      Minimal interval between calls, in tick time units (milliseconds).
- * @param {object}      Optional context; if given, bind function to throttle to this context.
- * @returns {function}  Tick throttling handler function.
+ * Returns throttle function that gets called at most once every interval.
+ *
+ * @param {function} functionToThrottle
+ * @param {number} minimumInterval - Minimal interval between calls (milliseconds).
+ * @param {object} optionalContext - If given, bind function to throttle to this context.
+ * @returns {function} Throttled function.
  */
 module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
@@ -58,12 +58,13 @@ module.exports.throttle = function (functionToThrottle, minimumInterval, optiona
 };
 
 /**
- * Returns tick throttle function that only fires call after minimum interval.
- * Note, this does not try to make up for any lost time by firing multiple callbacks.
- * @param {functionToThrottle} The function to throttle; function (time, deltaTime) {...}
- * @param {minimumInterval}    Minimal interval between calls, in tick time units (milliseconds).
- * @param {optionalContext}    Optional context; if given, bind function to throttle to this context.
- * @returns {function}         Tick throttling handler function.
+ * Returns throttle function that gets called at most once every interval.
+ * Uses the time/timeDelta timestamps provided by the global render loop for better perf.
+ *
+ * @param {function} functionToThrottle
+ * @param {number} minimumInterval - Minimal interval between calls (milliseconds).
+ * @param {object} optionalContext - If given, bind function to throttle to this context.
+ * @returns {function} Throttled function.
  */
 module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
   var lastTime;
