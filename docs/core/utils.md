@@ -150,3 +150,40 @@ Checks if device is Gear VR. Returns a `boolean`.
 ### `AFRAME.utils.device.isMobile()`
 
 Checks if device is a smartphone. Returns a `boolean`.
+
+## Function Utils
+
+### `AFRAME.utils.throttle(function, minimumInterval [, optionalContext])`
+
+Returns a throttled function that limits the amount of times it is called
+to at most every `minimumInterval` milliseconds. A context such as `this`
+can be provided to handle function binding for convenience.
+Note, this does not try to make up for any lost time by firing multiple callbacks.
+
+### `AFRAME.utils.throttleTick(function (t, dt) {...}, minimumInterval [, optionalContext])`
+
+Returns a throttled tick function that limits the amount of times it is called
+to at most every `minimumInterval` milliseconds. A context such as `this`
+can be provided to handle function binding for convenience.
+Note, this does not try to make up for any lost time by firing multiple callbacks.
+
+```
+AFRAME.registerComponent('foo', {
+  init: function () {
+    // Set up the tick throttling.
+    this.tick = AFRAME.utils.throttleTick(
+      // The function to throttle.
+      this.throttledTick,
+      // The function to throttle will not be called again sooner than this in milliseconds.
+      500,
+      // Because the function to throttle is an object method, bind this pointer.
+      this);
+  },
+
+  // Renamed tick handler to make it clear that it is throttled.
+  // (for example, when debugging).
+  throttledTick: function (t, dt) {
+    // Called at most once every 500 milliseconds
+  }
+});
+```

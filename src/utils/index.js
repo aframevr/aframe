@@ -35,6 +35,51 @@ module.exports.isMobile = function () {
 };
 
 /**
+ * Returns throttle function that only fires call after minimum interval.
+ * Note, this does not try to make up for any lost time by firing multiple callbacks.
+ * @param {function}    The function to throttle; function (time, deltaTime) {...}
+ * @param {number}      Minimal interval between calls, in tick time units (milliseconds).
+ * @param {object}      Optional context; if given, bind function to throttle to this context.
+ * @returns {function}  Tick throttling handler function.
+ */
+module.exports.throttle = function (functionToThrottle, minimumInterval, optionalContext) {
+  var lastTime;
+  if (optionalContext) {
+    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+  }
+  return function () {
+    var time = Date.now();
+    var sinceLastTime = typeof lastTime === 'undefined' ? minimumInterval : time - lastTime;
+    if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
+      lastTime = time;
+      functionToThrottle.apply(null, arguments);
+    }
+  };
+};
+
+/**
+ * Returns tick throttle function that only fires call after minimum interval.
+ * Note, this does not try to make up for any lost time by firing multiple callbacks.
+ * @param {functionToThrottle} The function to throttle; function (time, deltaTime) {...}
+ * @param {minimumInterval}    Minimal interval between calls, in tick time units (milliseconds).
+ * @param {optionalContext}    Optional context; if given, bind function to throttle to this context.
+ * @returns {function}         Tick throttling handler function.
+ */
+module.exports.throttleTick = function (functionToThrottle, minimumInterval, optionalContext) {
+  var lastTime;
+  if (optionalContext) {
+    functionToThrottle = module.exports.bind(functionToThrottle, optionalContext);
+  }
+  return function (time, delta) {
+    var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
+    if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
+      lastTime = time;
+      functionToThrottle(time, sinceLastTime);
+    }
+  };
+};
+
+/**
  * Fires a custom DOM event.
  *
  * @param {Element} el Element on which to fire the event.

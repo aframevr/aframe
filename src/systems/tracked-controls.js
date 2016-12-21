@@ -1,5 +1,6 @@
 var registerSystem = require('../core/system').registerSystem;
 var trackedControlsUtils = require('../utils/tracked-controls');
+var utils = require('../utils');
 
 /**
  * Tracked controls system.
@@ -10,6 +11,8 @@ module.exports.System = registerSystem('tracked-controls', {
     var self = this;
     this.controllers = [];
     this.lastControllersUpdate = 0;
+    // Throttle the (renamed) tick handler to minimum 10ms interval.
+    this.tick = utils.throttleTick(this.throttledTick, 10, this);
     if (!navigator.getVRDisplays) { return; }
     navigator.getVRDisplays().then(function (displays) {
       if (displays.length > 0) {
@@ -27,9 +30,10 @@ module.exports.System = registerSystem('tracked-controls', {
     }
   },
 
-  tick: function (time) {
-    if (time < this.lastControllersUpdate + 10) { return; }
-    this.lastControllersUpdate = time;
+  /**
+   * Update controller list every 10 millseconds.
+   */
+  throttledTick: function (time, delta) {
     this.updateControllerList();
     this.sceneEl.emit('controllersupdated', { timestamp: time, controllers: this.controllers });
   }
