@@ -33,11 +33,13 @@
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
     "envify": "^3.4.1",
+    "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "three": "^0.83.0",
+    "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "^0.9.23"
   },

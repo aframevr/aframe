@@ -1,4 +1,5 @@
 require('./blend-character-model');
+require('./bmfont-text');
 require('./camera');
 require('./collada-model');
 require('./cursor');

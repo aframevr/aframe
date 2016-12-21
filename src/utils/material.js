@@ -1,3 +1,5 @@
+var THREE = require('../lib/three');
+
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
  *
@@ -14,6 +16,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     if (src === shader[shadowSrcName]) { return; }
     // Texture added or changed.
     shader[shadowSrcName] = src;
+    if (src instanceof THREE.Texture) { setMap(src); return; }
     el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
   }
@@ -94,7 +97,7 @@ function handleTextureEvents (el, texture) {
   el.emit('materialtextureloaded', {src: texture.image, texture: texture});
 
   // Video events.
-  if (texture.image.tagName !== 'VIDEO') { return; }
+  if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
