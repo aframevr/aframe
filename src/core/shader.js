@@ -98,7 +98,7 @@ Shader.prototype = {
     var schema = this.schema;
     dataKeys.forEach(processData);
     function processData (key) {
-      var varKey = key;
+      var varKey;
       var materialKey = '_texture_' + key;
       if (!schema[key] || schema[key].is !== type) { return; }
       if (schema[key].type === 'map') {
@@ -107,7 +107,7 @@ Shader.prototype = {
         if (varKey === 'src' && type === 'uniform') {
           varKey = 'map';
           materialKey = 'map';
-        }
+        } else { varKey = key; }
         // If data unchanged, get out early.
         if (variables[varKey].value === data[key]) { return; }
         // We can't actually set the variable correctly until we've loaded the texture.
@@ -117,11 +117,12 @@ Shader.prototype = {
         });
         // Kick off the texture update now that handler is added.
         utils.material.updateMapMaterialFromData(materialKey, key, self, data);
-      } else {
-        if (variables[varKey].value === data[key]) { return; }
-        variables[varKey].value = self.parseValue(schema[key].type, data[key]);
-        variables[varKey].needsUpdate = true;
+        return;
       }
+
+      if (variables[key].value === data[key]) { return; }
+      variables[key].value = self.parseValue(schema[key].type, data[key]);
+      variables[key].needsUpdate = true;
     }
   },
 
