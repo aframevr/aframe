@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 'use strict';
 const chalk = require('chalk');
 const glob = require('glob');

@@ -109,7 +109,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         // Handle indefinite + forwards + alternate yoyo edge-case (#405).
         if (repeat === Infinity && fill === FILLS.forwards &&
             [DIRECTIONS.alternate,
-             DIRECTIONS.alternateReverse].indexOf(data.direction) !== -1) {
+              DIRECTIONS.alternateReverse].indexOf(data.direction) !== -1) {
           yoyo = true;
         }
 

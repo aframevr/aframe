@@ -211,6 +211,7 @@ module.exports.getElData = function (el, defaults) {
  * @return {String}      Value
  */
 module.exports.getUrlParameter = function (name) {
+  // eslint-disable-next-line no-useless-escape
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
   var results = regex.exec(location.search);

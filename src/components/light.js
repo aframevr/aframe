@@ -19,8 +19,7 @@ module.exports.Component = registerComponent('light', {
     distance: {default: 0.0, min: 0, if: {type: ['point', 'spot']}},
     intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
-    type: {default: 'directional',
-           oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']},
+    type: {default: 'directional', oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']},
     target: {type: 'selector', if: {type: ['spot', 'directional']}}
   },
 
