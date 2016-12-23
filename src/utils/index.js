@@ -73,7 +73,8 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
   }
   return function (time, delta) {
     var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
-    if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval)) {
+    var invalidTime = time < 0 || Math.abs(delta) > 3600;
+    if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval) || invalidTime) {
       lastTime = time;
       functionToThrottle(time, sinceLastTime);
     }
