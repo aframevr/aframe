@@ -73,9 +73,9 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
   }
   return function (time, delta) {
     time = Date.now(); // since Chromium is providing invalid timestamps
-    var sinceLastTime = typeof lastTime === 'undefined' ? delta : time - lastTime;
-    var invalidTime = time < 0 || Math.abs(delta) > 3600;
-    if (typeof lastTime === 'undefined' || (sinceLastTime >= minimumInterval) || invalidTime) {
+    var sinceLastTime = lastTime === undefined ? 3600000 : time - lastTime;
+    var invalidTime = time < 0 || delta < 0 || delta >= 3600000; // invalid if negative or delta > 1 hour
+    if (lastTime === undefined || (sinceLastTime >= minimumInterval) || invalidTime) {
       lastTime = time;
       functionToThrottle(time, sinceLastTime);
     }
