@@ -164,7 +164,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
     var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
     var isOculusTouch = this.isOculusTouchController();
-      // this works well with Oculus Touch, but Vive needs tweaks
+    // this works well with Oculus Touch, but Vive needs tweaks
     if (isGripActive) {
       if (!isOculusTouch) {
         gesture = 'fist';
