@@ -192,7 +192,7 @@ For example, we could have a sphere as a child of a box:
 ```html
 <a-scene>
   <a-box position="0 2 0" rotation="0 45 45" scale="2 4 2">
-    <a-sphere position="1 0 3"><a-sphere>
+    <a-sphere position="1 0 3"></a-sphere>
   </a-box>
 </a-scene>
 ```
