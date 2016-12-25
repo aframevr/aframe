@@ -24,7 +24,7 @@ suite('utils.coordinates', function () {
     });
 
     test('parses null', function () {
-      assert.equal(coordinates.parse(null), null);
+      assert.equal(coordinates.parse(null), undefined);
     });
 
     test('can return fallback values', function () {
