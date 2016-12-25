@@ -81,11 +81,5 @@ suite('utils.matrices', function () {
           [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15]),
         '0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15');
     });
-
-    test('returns already-stringified string', function () {
-      assert.equal(
-        matrices.stringify('0 1 2 -3 4 5 -6 7 8'),
-        '0 1 2 -3 4 5 -6 7 8');
-    });
   });
 });
