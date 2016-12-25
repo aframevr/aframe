@@ -8,7 +8,7 @@ suite('utils.coordinates', function () {
     });
 
     test('rejects invalid coordinate', function () {
-      assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
+      assert.ok(!coordinates.isCoordinate('1 1 2.5 -3'));
     });
   });
 
