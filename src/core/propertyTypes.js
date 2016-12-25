@@ -1,4 +1,5 @@
 var coordinates = require('../utils/coordinates');
+var matrices = require('../utils/matrices');
 var debug = require('debug');
 
 var error = debug('core:propertyTypes:warn');
@@ -24,7 +25,17 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
-registerPropertyType('matrix4', [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], matrix4Parse, matrix4Stringify);
+registerPropertyType('mat3', [
+  1, 0, 0,
+  0, 1, 0,
+  0, 0, 1
+], matrix3Parse, matrices.stringify);
+registerPropertyType('mat4', [
+  1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1
+], matrix4Parse, matrices.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -153,34 +164,10 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-function matrix4Parse (value) {
-  var defaultValues = this.default;
-  var masterDefaultValues = propertyTypes.matrix4.default;
-  if (Array.isArray(value)) { return beMatrix4Array(value); }
-  if (!value || typeof value !== 'string') { return beMatrix4Array([]); }
-  return beMatrix4Array(value.split(/\s+/).map(trim));
-  function trim (str) { return str.trim(); }
-  function getValue (array, n) {
-    var value;
-    if (array.length > n) {
-      value = parseFloat(array[n], 10);
-      if (!isNaN(value)) { return value; }
-    }
-    if (Array.isArray(defaultValues) && defaultValues.length > n) {
-      value = parseFloat(defaultValues[n], 10);
-      if (!isNaN(value)) { return value; }
-    }
-    return masterDefaultValues[n];
-  }
-  function beMatrix4Array (array) {
-    if (array.length > 16) { array.length = 16; }
-    for (var i = 0; i < 16; i++) {
-      array[i] = getValue(array, i);
-    }
-    return array;
-  }
+function matrix3Parse (value) {
+  return matrices.parseMatrix3(value, this.default);
 }
 
-function matrix4Stringify (value) {
-  return value.join(' ');
+function matrix4Parse (value) {
+  return matrices.parseMatrix4(value, this.default);
 }

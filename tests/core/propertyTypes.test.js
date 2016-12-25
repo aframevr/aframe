@@ -156,26 +156,6 @@ suite('propertyTypes', function () {
     });
   });
 
-  suite('matrix4', function () {
-    var parse = propertyTypes.matrix4.parse;
-    var stringify = propertyTypes.matrix4.stringify;
-
-    test('parses matrix4', function () {
-      assert.deepEqual(parse(''), [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-      assert.deepEqual(parse({}), [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-      assert.deepEqual(parse([]), [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-      assert.deepEqual(parse('0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15'), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-      assert.deepEqual(parse('0 1 2 3'), [0, 1, 2, 3, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
-      assert.deepEqual(parse('0   1  2 3 4 5   6 7 8 9 10   11  12 13 14 15   16 17 18    19 20'), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-      assert.deepEqual(parse([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-    });
-
-    test('stringifies matrix4', function () {
-      assert.equal(stringify([]), '');
-      assert.equal(stringify([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]), '0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15');
-    });
-  });
-
   suite('src', function () {
     var parse = propertyTypes.src.parse;
 
