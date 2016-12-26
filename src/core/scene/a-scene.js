@@ -18,6 +18,14 @@ var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
 
+// Experimental versions of Chromium used for WebVR have a known issue
+// where the requestAnimationFrame timestamp is off by 1000
+// (microseconds instead of milliseconds)
+// This threshold is a time delta between requestAnimationFrame calls
+// that is implausible for correct times in milliseconds,
+// but reasonable for incorrect values in microseconds.
+var FIX_TIMESTAMPS_DELTA_THRESHOLD = 5000;
+
 /**
  * Scene element, holds all entities.
  *
@@ -418,6 +426,25 @@ module.exports = registerElement('a-scene', {
       value: function (time) {
         var effect = this.effect;
         var timeDelta = time - this.time;
+
+        // Experimental versions of Chromium used for WebVR have a known issue
+        // where the requestAnimationFrame timestamp is off by 1000
+        // (microseconds instead of milliseconds)
+        // Make sure time doesn't go backwards, and that deltas are reasonable.
+        if (!this.fixTimestamps &&
+          time && this.time &&
+          (timeDelta < 0 || timeDelta > FIX_TIMESTAMPS_DELTA_THRESHOLD)) {
+          warn('`timeDelta` ' + timeDelta + ' implausible; fixing timestamps');
+          this.fixTimestamps = true;
+        }
+
+        // Assume that Performance.now() is accurate.
+        // If we're fixing timestamps, use that.
+        // The first call to render uses zero as time value, don't correct that.
+        if (time && this.fixTimestamps) {
+          time = (window.performance && window.performance.now) ? window.performance.now() : Date.now ? Date.now() : (new Date()).getTime();
+          timeDelta = time - this.time;
+        }
 
         if (this.isPlaying) { this.tick(time, timeDelta); }
 
