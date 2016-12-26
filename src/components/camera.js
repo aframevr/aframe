@@ -54,7 +54,7 @@ module.exports.Component = registerComponent('camera', {
     this.addHeightOffset(oldData.userHeight);
 
     // Update properties.
-    camera.aspect = data.aspect || (window.innerWidth / window.innerHeight);
+    camera.aspect = data.aspect || this.getAspectRatio();
     camera.far = data.far;
     camera.fov = data.fov;
     camera.near = data.near;
@@ -171,5 +171,36 @@ module.exports.Component = registerComponent('camera', {
     el.setAttribute('position', savedPose.position);
     el.setAttribute('rotation', savedPose.rotation);
     this.savedPose = null;
+  },
+  /**
+   * Return canvas/window aspect ratio
+   */
+  getAspectRatio: function () {
+    var sceneEl = this.el.sceneEl;
+    var canvas = sceneEl.canvas;
+    var embedded = sceneEl.getAttribute('embedded') && !sceneEl.is('vr-mode');
+    var size = getCanvasSize(canvas, embedded);
+    return size.width / size.height;
   }
 });
+
+/**
+ * Return the canvas size where the scene will be rendered
+ * It will be always the window size except when the scene
+ * is embedded. The parent size will be returned in that case
+ *
+ * @param {object} canvasEl - the canvas element
+ * @param {boolean} embedded - Is the scene embedded?
+ */
+function getCanvasSize (canvasEl, embedded) {
+  if (embedded) {
+    return {
+      height: canvasEl.parentElement.offsetHeight,
+      width: canvasEl.parentElement.offsetWidth
+    };
+  }
+  return {
+    height: window.innerHeight,
+    width: window.innerWidth
+  };
+}
