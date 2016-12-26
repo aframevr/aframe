@@ -134,8 +134,8 @@ module.exports.Component = registerComponent('sound', {
     el.setObject3D(this.attrName, this.pool);
 
     this.pool.children.forEach(function (sound) {
-      sound.source.onended = function () {
-        sound.onEnded();
+      sound.onEnded = function () {
+        sound.isPlaying = false;
         el.emit('sound-ended', {index: i});
       };
     });
@@ -146,7 +146,7 @@ module.exports.Component = registerComponent('sound', {
    */
   pauseSound: function () {
     this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
       sound.pause();
     });
   },
@@ -157,7 +157,7 @@ module.exports.Component = registerComponent('sound', {
   playSound: function () {
     var found = false;
     this.pool.children.forEach(function (sound) {
-      if (!sound.isPlaying && sound.source.buffer && !found) {
+      if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
         found = true;
         return;
@@ -175,7 +175,7 @@ module.exports.Component = registerComponent('sound', {
    */
   stopSound: function () {
     this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer) { return; }
+      if (!sound.source || !sound.source.buffer) { return; }
       sound.stop();
     });
   }
