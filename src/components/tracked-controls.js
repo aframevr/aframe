@@ -131,7 +131,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    *
    * @param {string} id - id of the button to check.
    * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if something happened, false otherwise.
+   * @returns {boolean} true if button press state changed, false otherwise.
    */
   handlePress: function (id, buttonState) {
     var buttonStates = this.buttonStates;
@@ -153,7 +153,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    *
    * @param {string} id - id of the button to check.
    * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if something happened, false otherwise.
+   * @returns {boolean} true if button touch state changed, false otherwise.
    */
   handleTouch: function (id, buttonState) {
     var buttonStates = this.buttonStates;
@@ -175,7 +175,7 @@ module.exports.Component = registerComponent('tracked-controls', {
    *
    * @param {string} id - id of the button to check.
    * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if something happened, false otherwise.
+   * @returns {boolean} true if button value changed, false otherwise.
    */
   handleValue: function (id, buttonState) {
     var buttonStates = this.buttonStates;
