@@ -1,75 +1,55 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
-var controllerComponentName = 'hand-controls';
 
-suite(controllerComponentName, function () {
+suite('hand-controls', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute(controllerComponentName, '');
-    process.nextTick(function () {
+    el.setAttribute('hand-controls', '');
+    if (el.hasLoaded) { done(); }
+    el.addEventListener('loaded', function () {
       done();
     });
   });
 
   suite('update', function () {
-    test('oculus-touch-controls and vive-controls injected', function (done) {
+    test('oculus-touch-controls, vive-controls and oculus-touch-controls injected', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      controllerComponent.update();
-      process.nextTick(function () {
-        assert.ok(el.components['oculus-touch-controls']);
-        assert.ok(el.components['vive-controls']);
-        done();
-      });
-    });
-
-    test('blend-character-model injected', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      controllerComponent.update();
-      process.nextTick(function () {
-        assert.ok(el.components['blend-character-model']);
-        done();
-      });
+      assert.ok(el.components['blend-character-model']);
+      assert.ok(el.components['oculus-touch-controls']);
+      assert.ok(el.components['vive-controls']);
     });
   });
 
   suite('isOculusTouch', function () {
-    test('true if controller id starts with "Oculus Touch"', function (done) {
+    test('true if controller id starts with "Oculus Touch"', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+      var controllerComponent = el.components['hand-controls'];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
-      process.nextTick(function () {
-        trackedControls = el.components['tracked-controls'];
-        // mock controller
-        trackedControls.controller = {id: 'Oculus Touch (Left)', connected: true};
-        // do the check
-        assert.ok(controllerComponent.isOculusTouchController());
-        done();
-      });
+      trackedControls = el.components['tracked-controls'];
+      // mock controller
+      trackedControls.controller = {id: 'Oculus Touch (Left)', connected: true};
+      // do the check
+      assert.ok(controllerComponent.isOculusTouchController());
     });
 
-    test('false if controller id does not start with "Oculus Touch"', function (done) {
+    test('false if controller id does not start with "Oculus Touch"', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+      var controllerComponent = el.components['hand-controls'];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
-      process.nextTick(function () {
-        trackedControls = el.components['tracked-controls'];
-        // mock controller
-        trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
-        // do the check
-        assert.notOk(controllerComponent.isOculusTouchController());
-        done();
-      });
+      trackedControls = el.components['tracked-controls'];
+      // mock controller
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
+      // do the check
+      assert.notOk(controllerComponent.isOculusTouchController());
     });
   });
 
   suite('determineGesture', function () {
-    test('if nothing touched or triggered, no gesture', function (done) {
+    test('if nothing touched or triggered, no gesture', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+      var controllerComponent = el.components['hand-controls'];
       // mock button / touch flags
       controllerComponent.pressedButtons['grip'] = false;
       controllerComponent.pressedButtons['trigger'] = false;
@@ -81,73 +61,66 @@ suite(controllerComponentName, function () {
       controllerComponent.pressedButtons['surface'] = false;
       // do the check
       assert.notOk(controllerComponent.determineGesture());
-      process.nextTick(function () { done(); });
     });
 
-    test('if non-Oculus Touch and only trackpad. pointing gesture', function (done) {
+    test('if non-Oculus Touch and only trackpad. pointing gesture', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+      var controllerComponent = el.components['hand-controls'];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
-      process.nextTick(function () {
-        trackedControls = el.components['tracked-controls'];
-        // mock controller
-        trackedControls.controller = {id: 'Foobar', connected: true};
-        // mock button / touch flags
-        controllerComponent.pressedButtons['grip'] = false;
-        controllerComponent.pressedButtons['trigger'] = false;
-        controllerComponent.pressedButtons['trackpad'] = true;
-        controllerComponent.pressedButtons['thumbstick'] = false;
-        controllerComponent.pressedButtons['menu'] = false;
-        controllerComponent.pressedButtons['AorX'] = false;
-        controllerComponent.pressedButtons['BorY'] = false;
-        controllerComponent.pressedButtons['surface'] = false;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'pointing');
-        process.nextTick(function () { done(); });
-      });
+      trackedControls = el.components['tracked-controls'];
+      // mock controller
+      trackedControls.controller = {id: 'Foobar', connected: true};
+      // mock button / touch flags
+      controllerComponent.pressedButtons['grip'] = false;
+      controllerComponent.pressedButtons['trigger'] = false;
+      controllerComponent.pressedButtons['trackpad'] = true;
+      controllerComponent.pressedButtons['thumbstick'] = false;
+      controllerComponent.pressedButtons['menu'] = false;
+      controllerComponent.pressedButtons['AorX'] = false;
+      controllerComponent.pressedButtons['BorY'] = false;
+      controllerComponent.pressedButtons['surface'] = false;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'pointing');
     });
 
-    test('if non-Oculus Touch and grip or trigger, gesture = fist', function (done) {
+    test('if non-Oculus Touch and grip or trigger, gesture = fist', function () {
       var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+      var controllerComponent = el.components['hand-controls'];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
-      process.nextTick(function () {
-        trackedControls = el.components['tracked-controls'];
-        // mock controller
-        trackedControls.controller = {id: 'Foobar', connected: true};
-        // mock button / touch flags
-        controllerComponent.pressedButtons['grip'] = true;
-        controllerComponent.pressedButtons['trigger'] = false;
-        controllerComponent.pressedButtons['trackpad'] = false;
-        controllerComponent.pressedButtons['thumbstick'] = false;
-        controllerComponent.pressedButtons['menu'] = false;
-        controllerComponent.pressedButtons['AorX'] = false;
-        controllerComponent.pressedButtons['BorY'] = false;
-        controllerComponent.pressedButtons['surface'] = false;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'fist');
-        // mock button / touch flags
-        controllerComponent.pressedButtons['grip'] = false;
-        controllerComponent.pressedButtons['trigger'] = true;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'fist');
-        // mock button / touch flags
-        controllerComponent.pressedButtons['grip'] = true;
-        controllerComponent.pressedButtons['trigger'] = true;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'fist');
-        // mock button / touch flags
-        controllerComponent.pressedButtons['trackpad'] = true;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'fist');
-        // mock button / touch flags
-        controllerComponent.pressedButtons['menu'] = true;
-        // do the check
-        assert.equal(controllerComponent.determineGesture(), 'fist');
-        process.nextTick(function () { done(); });
-      });
+      trackedControls = el.components['tracked-controls'];
+      // mock controller
+      trackedControls.controller = {id: 'Foobar', connected: true};
+      // mock button / touch flags
+      controllerComponent.pressedButtons['grip'] = true;
+      controllerComponent.pressedButtons['trigger'] = false;
+      controllerComponent.pressedButtons['trackpad'] = false;
+      controllerComponent.pressedButtons['thumbstick'] = false;
+      controllerComponent.pressedButtons['menu'] = false;
+      controllerComponent.pressedButtons['AorX'] = false;
+      controllerComponent.pressedButtons['BorY'] = false;
+      controllerComponent.pressedButtons['surface'] = false;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'fist');
+      // mock button / touch flags
+      controllerComponent.pressedButtons['grip'] = false;
+      controllerComponent.pressedButtons['trigger'] = true;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'fist');
+      // mock button / touch flags
+      controllerComponent.pressedButtons['grip'] = true;
+      controllerComponent.pressedButtons['trigger'] = true;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'fist');
+      // mock button / touch flags
+      controllerComponent.pressedButtons['trackpad'] = true;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'fist');
+      // mock button / touch flags
+      controllerComponent.pressedButtons['menu'] = true;
+      // do the check
+      assert.equal(controllerComponent.determineGesture(), 'fist');
     });
   });
 });
