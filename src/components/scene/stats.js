@@ -25,6 +25,7 @@ module.exports.Component = registerComponent('stats', {
 
     // hide the DOM stats panel
     this.statsEl.style = 'display: none !important';
+    this.statsEl.className = 'a-hidden';
 
     // defer most initialization until after camera is injected
     var self = this;

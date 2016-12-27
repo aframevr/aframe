@@ -48,7 +48,7 @@ suite('stats', function () {
     });
 
     test('Stats are created when query string "stats" is "true"', function () {
-      assert.equal(document.querySelector('.rs-base'), this.sceneEl.components.stats.statsEl);
+      assert.equal(document.querySelector('.rs-container').parentNode, this.sceneEl.components.stats.statsEl);
       assert.ok(this.sceneEl.components.stats.statsEl);
     });
 
