@@ -131,7 +131,6 @@ a-scene audio {
 }
 
 .a-enter-vr {
-  bottom: 5px;
   font-family: sans-serif, monospace;
   font-size: 13px;
   width: 100%;

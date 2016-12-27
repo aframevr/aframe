@@ -4,7 +4,7 @@ var debug = require('../utils/debug');
 var registerElement = require('./a-register-element').registerElement;
 var THREE = require('../lib/three');
 
-var fileLoader = new THREE.XHRLoader();
+var fileLoader = new THREE.FileLoader();
 var warn = debug('core:a-assets:warn');
 
 /**
