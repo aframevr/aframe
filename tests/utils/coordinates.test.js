@@ -3,12 +3,16 @@ var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
   suite('isCoordinate', function () {
-    test('verifies valid coordinate', function () {
+    test('verifies valid vec3 coordinate', function () {
       assert.ok(coordinates.isCoordinate(' 1 2.5  -3'));
     });
 
-    test('rejects invalid coordinate', function () {
+    test('verifies valid vec4 coordinate', function () {
       assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
+    });
+
+    test('rejects invalid coordinate', function () {
+      assert.notOk(coordinates.isCoordinate('1 1 2.5 -3 0.1'));
     });
   });
 

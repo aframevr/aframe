@@ -25,7 +25,7 @@ AFRAME.utils.coordinates.isCoordinate('1 2 3')
 
 ### `.parse(value)`
 
-Parses an "x y z" string to an `{x, y, z}` vec3 object. Or parses an "x y z w" string to an {x, y, z w} vec3 object.
+Parses an "x y z" string to an `{x, y, z}` vec3 object. Or parses an "x y z w" string to an {x, y, z, w} vec4 object.
 
 ```js
 AFRAME.utils.coordinates.parse('1 2 -3')
