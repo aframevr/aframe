@@ -42,6 +42,12 @@ suite('utils.coordinates', function () {
                               {x: 1, y: 2, z: -3});
     });
 
+    test('zero value of object won\'t be overriden by defaults', function () {
+      assert.shallowDeepEqual(
+        coordinates.parse({x: 0, y: 1}, {x: 4, y: 5, z: 6}),
+        {x: 0, y: 1, z: 6});
+    });
+
     test('parses object with strings', function () {
       assert.shallowDeepEqual(coordinates.parse({x: '1', y: '2', z: -3}),
                               {x: 1, y: 2, z: -3});
