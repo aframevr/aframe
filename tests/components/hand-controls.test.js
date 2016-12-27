@@ -1,10 +1,11 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var controllerComponentName = 'hand-controls';
 
-suite('hand-controls', function () {
+suite(controllerComponentName, function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute('hand-controls', '');
+    el.setAttribute(controllerComponentName, '');
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
       done();
@@ -23,7 +24,7 @@ suite('hand-controls', function () {
   suite('isOculusTouch', function () {
     test('true if controller id starts with "Oculus Touch"', function () {
       var el = this.el;
-      var controllerComponent = el.components['hand-controls'];
+      var controllerComponent = el.components[controllerComponentName];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
@@ -35,7 +36,7 @@ suite('hand-controls', function () {
 
     test('false if controller id does not start with "Oculus Touch"', function () {
       var el = this.el;
-      var controllerComponent = el.components['hand-controls'];
+      var controllerComponent = el.components[controllerComponentName];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
@@ -49,7 +50,7 @@ suite('hand-controls', function () {
   suite('determineGesture', function () {
     test('if nothing touched or triggered, no gesture', function () {
       var el = this.el;
-      var controllerComponent = el.components['hand-controls'];
+      var controllerComponent = el.components[controllerComponentName];
       // mock button / touch flags
       controllerComponent.pressedButtons['grip'] = false;
       controllerComponent.pressedButtons['trigger'] = false;
@@ -65,7 +66,7 @@ suite('hand-controls', function () {
 
     test('if non-Oculus Touch and only trackpad. pointing gesture', function () {
       var el = this.el;
-      var controllerComponent = el.components['hand-controls'];
+      var controllerComponent = el.components[controllerComponentName];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
@@ -86,7 +87,7 @@ suite('hand-controls', function () {
 
     test('if non-Oculus Touch and grip or trigger, gesture = fist', function () {
       var el = this.el;
-      var controllerComponent = el.components['hand-controls'];
+      var controllerComponent = el.components[controllerComponentName];
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];

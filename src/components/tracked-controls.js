@@ -126,6 +126,13 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.el.emit('buttonchanged', {id: id, state: buttonState});
   },
 
+  /**
+   * Determine whether a button press has occured and emit events as appropriate.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if something happened, false otherwise.
+   */
   handlePress: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var evtName;
@@ -138,17 +145,21 @@ module.exports.Component = registerComponent('tracked-controls', {
     }
     this.el.emit('button' + evtName, {id: id});
     previousButtonState.pressed = buttonState.pressed;
-    // return true so handleButton knows something changed
     return true;
   },
 
+  /**
+   * Determine whether a button touch has occured and emit events as appropriate.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if something happened, false otherwise.
+   */
   handleTouch: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var evtName;
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
-    if (buttonState.touched === previousButtonState.touched) {
-      return false;
-    }
+    if (buttonState.touched === previousButtonState.touched) { return false; }
     if (buttonState.touched) {
       evtName = 'start';
     } else {
@@ -156,16 +167,21 @@ module.exports.Component = registerComponent('tracked-controls', {
     }
     previousButtonState.touched = buttonState.touched;
     this.el.emit('touch' + evtName, {id: id, state: previousButtonState});
-    // return true so handleButton knows something changed
     return true;
   },
 
+  /**
+   * Determine whether a button value has changed.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if something happened, false otherwise.
+   */
   handleValue: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
     if (buttonState.value === previousButtonState.value) { return false; }
     previousButtonState.value = buttonState.value;
-    // return true so handleButton knows something changed
     return true;
   }
 });
