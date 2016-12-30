@@ -32,7 +32,7 @@ by pressing `<ctrl> + <alt> + i`. **Note:** the CSS for the Inspector currently
 conflict with the A-Frame site styles, so visuals may look ugly.
 
 <div>
-  <script src="http://localhost:9000/dist/aframe.js"></script>
+  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-bmfont-text-component@0.1.4/dist/aframe-bmfont-text-component.min.js"></script>
   <a-scene embedded style="height: 320px; width: 100%">
     <a-assets>
