@@ -115,6 +115,12 @@
         font-size: inherit;
       }
 
+      .btn[disabled],
+      .btn[disabled]:hover {
+        background-color: #AAA;
+        cursor: default;
+      }
+
       .btn--upload {
         background-color: #1ad;
         border-radius: 0.15rem;
@@ -176,7 +182,8 @@
         </div>
         <h1 class="masthead__wordmark"><span class="masthead__bracket">&lt;</span>A-Frame<span class="masthead__bracket">&gt;</span></h1>
         <p class="masthead__slogan">Asset Uploader</p>
-        <p><button id="uploadButton" class="btn btn--upload">Upload</button></p>
+        <p><button id="uploadButton" class="btn btn--upload" disabled="true">Upload</button></p>
+        <p>Sorry, the Asset Uploader is currently not working. Please try another file hosting service for now.</p>
         <ul id="filesList" class="files"></ul>
       </div>
     </main>
