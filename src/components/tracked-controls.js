@@ -2,14 +2,13 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 /**
- * Tracked controls component
- * Interface with the gamepad API to handled tracked controllers. Selects
- * the appropriate controller and applies pose to the entity. It also observes
- * buttons state and emits appropriate events.
+ * Tracked controls component.
+ * Interface with the gamepad API to handled tracked controllers.
+ * Select the appropriate controller and apply pose to the entity.
+ * Observe buttons state and emit appropriate events.
  *
- * @property {number} controller - index of the controller in the array
- *                                 returned by the Gamepad API.
- * @property {string} id - Selects the controllers among those returned by the Gamepad API.
+ * @property {number} controller - Index of the controller in array returned by Gamepad API.
+ * @property {string} id - Selected controller among those returned by Gamepad API.
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
