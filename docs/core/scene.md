@@ -98,8 +98,7 @@ A-Frame ships with a few components to configure the scene:
 
 ## Running Content Scripts on the Scene
 
-The recommended way is to write a component. When a component initializes,
-it is ensured that everything is attached and ready:
+The recommended way is to write a component, and attach it to the scene element. The scene and its children will be initialized before this component.
 
 ```js
 AFRAME.registerComponent('do-something', {
