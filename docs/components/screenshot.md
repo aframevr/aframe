@@ -11,6 +11,7 @@ To take a regular (`projection`) screenshot, use the keyboard shortcut (`<ctrl> 
 
 To take a 360&deg; (`equirectangular`) screenshot, use the keyboard shortcut (`<ctrl> + <alt> + + <shift> +s`).
 
+## Example
 
 ```html
 <a-scene screenshot="projection: equirectangular"></a-scene>
