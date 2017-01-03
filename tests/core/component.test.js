@@ -406,6 +406,19 @@ suite('Component', function () {
       component.updateProperties({color: 'blue'});
       assert.ok(updateStub.calledOnce);
     });
+
+    test('supports array properties', function () {
+      var updateStub = sinon.stub();
+      var TestComponent = registerComponent('dummy', {
+        schema: {list: {default: ['a']}},
+        update: updateStub
+      });
+      var el = document.createElement('a-entity');
+      var component = new TestComponent(el);
+      component.updateProperties({list: ['b']});
+      component.updateProperties({list: ['b']});
+      sinon.assert.calledOnce(updateStub);
+    });
   });
 
   suite('flushToDOM', function () {
