@@ -254,10 +254,13 @@ module.exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
 
-  var testForUpperCase = new RegExp("(?=\S*[A-Z])")
+  var testForUpperCase = new RegExp("(?=\S*[A-Z])");
 
   if(testForUpperCase.test(name)===true){
-      console.warn( 'The component name `' + name + '` contains uppercase characters, but HTML ignores the capitalization of attributes.  Consider changing it.  Your component can be accessed as '+ name.toLowerCase());
+      console.warn( 'The component name `' + name + '` contains uppercase characters,'+ 
+        'but HTML ignores the capitalization of attributes. '+
+        'Consider changing it. '+
+        'Your component can be accessed as '+ name.toLowerCase());
   }
   
   if (name.indexOf('__') !== -1) {
