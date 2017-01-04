@@ -93,6 +93,14 @@ module.exports = registerElement('a-node', {
 
         if (this.hasLoaded) { return; }
 
+        if (self.closestScene() === null) {
+          console.warn('You are attempting to attach an entity ' +
+                        'outside of the A-Frame scene. ' +
+                        'Try appending to the "a-scene" element. '
+                      );
+          return;
+        }
+
         // Default to waiting for all nodes.
         childFilter = childFilter || function (el) { return el.isNode; };
 
