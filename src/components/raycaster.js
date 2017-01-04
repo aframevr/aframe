@@ -77,6 +77,11 @@ module.exports.Component = registerComponent('raycaster', {
       return;
     }
 
+    if (this.el.sceneEl === null) {
+      console.warn('There is no scene element for the raycaster.');
+      return;
+    }
+
     // If objects not defined, intersect with everything.
     this.objects = this.el.sceneEl.object3D.children;
   },
