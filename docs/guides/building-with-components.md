@@ -76,9 +76,8 @@ them from HTML.
 We want to add an image texture to `<a-plane>` link using the [material
 component][material].
 
-The material component is a [multi-property component][multi-property]. To
-attach the material component to the plane, we set the component name as an
-HTML attribute:
+The material component consists of multiple properties. To attach the material
+component to the plane, we first set the component name as an HTML attribute:
 
 ```html
 <a-plane class="link" height="1" width="1"
@@ -388,7 +387,6 @@ And that concludes our 360&deg; image gallery.
 [kmin]: https://raw.githubusercontent.com/ngokevin/kframe/master/dist/kframe.min.js
 [layout]: https://github.com/ngokevin/aframe-layout-component
 [material]: ../components/material.md
-[multi-property]: ../core/component.md#multi-property-component
 [multiple]: ../core/component.md#multiple-instancing
 [ngokevin]: https://github.com/ngokevin
 [nunjucks]: https://mozilla.github.io/nunjucks/
