@@ -98,7 +98,6 @@ module.exports = registerElement('a-node', {
                         'outside of the A-Frame scene. ' +
                         'Try appending to the "a-scene" element. '
                       );
-          return;
         }
 
         // Default to waiting for all nodes.
