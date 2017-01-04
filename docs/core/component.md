@@ -431,7 +431,7 @@ A-Frame calls `.update()` both at the beginning of a component's lifecycle and e
 time a component's data changes (e.g., as a result of `setAttribute`). The
 update handler often uses `this.data` to modify the entity. The update handler
 has access to the previous state of a component's data via its first argument.
-We can use the previous data of a component used to tell exactly which
+We can use the previous data of a component to tell exactly which
 properties changed to do granular updates.
 
 For example, the [visible][visible] component's update handler toggles the
@@ -453,7 +453,7 @@ Example uses of `update` by some A-Frame components:
 
 ### `.remove ()`
 
-A-Frame calls `.remove()` when we detach a component from the entity (e.g., as
+A-Frame calls `.remove()` when we detach a component from the entity (e.g. as
 a result of `removeAttribute`). We can use `remove()` to remove all
 modifications, listeners, and behaviors to the entity that a component has
 added in its lifetime.
@@ -479,7 +479,7 @@ Example uses of `remove` by some A-Frame components:
 
 ### `.tick(time, timeDelta)`
 
-A-Frame calls `.tick()` is every single tick or frame in the render loop of the
+A-Frame calls `.tick()` every single tick or frame in the render loop of the
 scene. Expect it to run on the order of 60 to 120 times per second. A-Frame
 passes into `.tick()` the global uptime of the scene (milliseconds) and the time
 difference since the last frame.
@@ -682,9 +682,10 @@ Then with the line component written and registered, we can use it in HTML:
   </a-assets>
 
   <a-entity id="happy-face" position="0 2 -10">
+    <a-entity geometry="primitive: circle; radius:4.5;" material="color: #ff9b26;"></a-entity>
     <a-entity mixin="red" line="path: -1 1 0, -1 0.5 0, -1 0 0"></a-entity>
     <a-entity mixin="red" line="path: 1 1 0, 1 0.5 0, 1 0 0"></a-entity>
-    <a-entity mixin="red" line="path: -2 -1 0, 0 -2 0, 2 -1"></a-entity>
+    <a-entity mixin="red" line="path: -2 -1 0, 0 -2 0, 2 -1 0"></a-entity>
   </a-entity>
 
   <a-sky color="#FFEED0"></a-sky>
@@ -693,7 +694,7 @@ Then with the line component written and registered, we can use it in HTML:
 
 And voila!
 
-[line-codepen]: https://codepen.io/dirkk0/pen/MbJEy
+[line-codepen]: https://codepen.io/TechnoBuddhist/pen/MJWVJN
 
 ![](https://i.imgur.com/icggby2.jpg)
 <div class="page-caption"><span>
