@@ -1,7 +1,9 @@
 /* global HTMLElement, MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
 var utils = require('../utils/');
+
 var bind = utils.bind;
+var warn = utils.debug('core:a-node:warn');
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -24,9 +26,14 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins;
+        this.sceneEl = this.closestScene();
+
+        if (!this.sceneEl) {
+          warn('You are attempting to attach <' + this.tagName + '> outside of an A-Frame ' +
+               'scene. Append this element to `<a-scene>` instead.');
+        }
 
         this.hasLoaded = false;
-        this.sceneEl = this.closestScene();
         this.emit('nodeready', {}, false);
 
         mixins = this.getAttribute('mixin');
@@ -92,13 +99,6 @@ module.exports = registerElement('a-node', {
         var self = this;
 
         if (this.hasLoaded) { return; }
-
-        if (self.closestScene() === null) {
-          console.warn('You are attempting to attach an entity ' +
-                        'outside of the A-Frame scene. ' +
-                        'Try appending to the "a-scene" element. '
-                      );
-        }
 
         // Default to waiting for all nodes.
         childFilter = childFilter || function (el) { return el.isNode; };
