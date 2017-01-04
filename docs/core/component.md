@@ -694,7 +694,7 @@ Then with the line component written and registered, we can use it in HTML:
 
 And voila!
 
-[line-codepen]: https://codepen.io/dirkk0/pen/MbJEy
+[line-codepen]: https://codepen.io/TechnoBuddhist/pen/MJWVJN
 
 ![](https://i.imgur.com/icggby2.jpg)
 <div class="page-caption"><span>
