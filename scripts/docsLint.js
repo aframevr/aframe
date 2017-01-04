@@ -71,15 +71,6 @@ function checkLink (pagePath, url) {
   var headingIds;
   var urlPath;
 
-  function convertHeading (heading) {
-    return heading
-      .replace(/#+\s+/, '')
-      .toLowerCase()
-      .replace(/[`*\.\(\)]/g, '')
-      .replace(/[^\w]+/g, '-')
-      .replace(/-$/g, '');
-  }
-
   // Relative path.
   if (url.indexOf('.') === 0) {
     // Check page exists.
@@ -102,6 +93,16 @@ function checkLink (pagePath, url) {
   }
 
   return true;
+}
+
+function convertHeading (heading) {
+  return heading
+    .replace(/#+\s+/, '')
+    .toLowerCase()
+    .replace(/`\./g, '')  // Remove leading dot.
+    .replace(/[`*\(\),]/g, '')  // Remove special characters.
+    .replace(/[^\w]+/g, '-')
+    .replace(/-$/g, '');
 }
 
 function checkProse (pagePath, content) {
@@ -136,13 +137,6 @@ function addWarning (pagePath, str, message) {
   warningCount++;
 }
 
-Object.keys(errors).forEach(function (pagePath) {
-  console.log(chalk.red.bold(`\n[error]: ${pagePath}`));
-  errors[pagePath].forEach(function (error) {
-    console.log(chalk.red(`    ${error.message}: `) + `${error.str}`);
-  });
-});
-
 Object.keys(warnings).forEach(function (pagePath) {
   console.log(chalk.yellow.bold(`\n[warn]: ${pagePath}`));
   warnings[pagePath].forEach(function (warning) {
@@ -150,8 +144,15 @@ Object.keys(warnings).forEach(function (pagePath) {
   });
 });
 
-console.log(chalk.red.bold(`${errorCount} errors`));
+Object.keys(errors).forEach(function (pagePath) {
+  console.log(chalk.red.bold(`\n[error]: ${pagePath}`));
+  errors[pagePath].forEach(function (error) {
+    console.log(chalk.red(`    ${error.message}: `) + `${error.str}`);
+  });
+});
+
 console.log(chalk.yellow.bold(`${warningCount} warnings`));
+console.log(chalk.red.bold(`${errorCount} errors`));
 
 // Fail.
 if (errorCount) { process.exit(1); }

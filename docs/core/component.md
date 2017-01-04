@@ -6,13 +6,15 @@ parent_section: core
 order: 3
 ---
 
+[componentguide]: ../guides/writing-an-aframe-component.md
 [ecs]: ./index.md
+[entity]: ./entity.md
+[multiple]: #multiple
+[three]: http://threejs.org/
 
 In the [entity-component-system pattern][ecs], a component is a reusable and
 modular chunk of data that we plug into an entity to add appearance, behavior,
 and/or functionality.
-
-[three]: http://threejs.org/
 
 In A-Frame, components modify entities which are 3D objects in the scene. We
 mix and compose components together to build complex objects. They let us
@@ -30,31 +32,20 @@ and functionality of entities.
 
 <!--toc-->
 
-## What a Component Looks Like
+## Component HTML Form
 
 A component holds a bucket of data in the form of one or more component
 properties. Components use this data to modify entities. Consider an *engine*
 component, we might define properties such as *horsepower* or *cylinders*.
 
-[vrjump]: http://thevrjump.com
-
-![](http://thevrjump.com/assets/img/articles/aframe-system/aframe-system.jpg)
-<div class="page-caption"><span>
-Abstract representation of a component by @rubenmueller of [The VR Jump][vrjump].
-</span></div>
-
-### From HTML
-
 HTML attributes represent component names and the value of those attributes
 represent component data.
 
-#### Single-Property Component
+### Single-Property Component
 
 If a component is a *single-property* component, meaning its data consists of a
 single value, then in HTML, the component value looks like a normal HTML
 attribute:
-
-[position]: ../components/position.md
 
 ```html
 <!-- `position` is the name of the position component. -->
@@ -62,7 +53,7 @@ attribute:
 <a-entity position="1 2 3"></a-entity>
 ```
 
-#### Multi-Property Component
+### Multi-Property Component
 
 If a component is a *multi-property* component, meaning the data is consists of
 multiple properties and values, then in HTML, the component value resembles
@@ -75,86 +66,418 @@ inline CSS styles:
 <a-entity light="type: point; color: crimson"></a-entity>
 ```
 
-## Under the Hood
+## Register a Component
 
-`AFRAME.registerComponent` registers components, which we pass a component name
-to register a component under and a component definition. Below is the outer
-skeleton for the [position component][position]:
+### `AFRAME.registerComponent (name, definition)`
+
+Register an A-Frame component. We must register components *before* we use them
+anywhere in `<a-scene>`. Meaning from an HTML file, components should come in
+order before `<a-scene>`.
+
+- `{string} name` - Component name. The component's public API as represented through an HTML attribute name.
+- `{Object} definition` - Component definition. Contains schema and lifecycle handler methods.
 
 ```js
-AFRAME.registerComponent('position', {
-  // ...
+// Registering component in foo-component.js
+AFRAME.registerComponent('foo', {
+  schema: {},
+  init: function () {},
+  update: function () {},
+  tick: function () {},
+  remove: function () {},
+  pause: function () {},
+  play: function () {}
 });
 ```
 
-A component defines a **schema** that defines its properties, giving *anatomy*
-to the component. The position component takes a flat `vec3`, or an `{x, y, z}`
-object.
-
-```js
-AFRAME.registerComponent('position', {
-  schema: { type: 'vec3' },
-
-  // ...
-});
+```html
+<!-- Usage of `foo` component. -->
+<html>
+  <head>
+    <script src="aframe.min.js"></script>
+    <script src="foo-component.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-entity foo></a-entity>
+    </a-scene>
+  </body>
+</html>
 ```
 
-[object3d]: http://threejs.org/docs/#Reference/Core/Object3D
+## Schema
 
-Then a component defines lifecycle methods that handles what it does with its
-data, giving *physiology* to the component. During initialization and on
-attribute updates, the position component takes its `vec3` value and applies it
-to its [three.js Object3D][object3d]:
-
-Components will often be talking to the three.js API.
+The schema is an object that defines and describes the property or properties
+of the component. The schema's keys are the names of the property, and the
+schema's values define the types and values of the property (in case of a
+multi-property component):
 
 ```js
-AFRAME.registerComponent('position', {
-  schema: { type: 'vec3' },
-
-  update: function () {
-    var object3D = this.el.object3D;
-    var data = this.data;
-    object3D.position.set(data.x, data.y, data.z);
+AFRAME.registerComponent('bar', {
+  schema: {
+    color: {default: '#FFF'},
+    size: {type: 'int', default: 5}
   }
+}
+```
+
+```html
+<a-scene>
+  <a-entity foo="color: red; size: 20"></a-entity>
+</a-scene>
+```
+
+### Property Types
+
+Property types primarily define how the schema parses incoming data from the
+DOM for each property. The parsed data will then be available via the `data`
+property on the component's prototype. Below are A-Frame's built-in property
+types:
+
+| Property Type   | Description                                                                                                                                                                                                                                                                                                                                                      | Default Value            |
+| --------------- | -------------                                                                                                                                                                                                                                                                                                                                                    | -------------            |
+| array           | Parses comma-separated values to array (i.e., `"1, 2, 3" to ['1', '2', '3'])`.                                                                                                                                                                                                                                                                                   | []                       |
+| asset           | For URLs pointing to general assets. Can parse URL out of a string in the form of `url(<url>)`. If the value is an element ID selector (e.g., `#texture`), this property type will call `getElementById` and `getAttribute('src')` to return a URL. The `asset` property type may or may not change to handle XHRs or return MediaElements directly (e.g., `<img>` elements). | ''                       |
+| audio           | Same parsing as the `asset` property type. Will possibly be used by the A-Frame Inspector to present audio assets.                                                                                                                                                                                                                                               | ''                       |
+| boolean         | Parses string to boolean (i.e., `"false"` to false, everything else truthy).                                                                                                                                                                                                                                                                                     | false                    |
+| color           | Currently doesn't do any parsing. Primarily used by the A-Frame Inspector to present a color picker.                                                                                                                                                                                                                                                             | #FFF                     |
+| int             | Calls `parseInt` (e.g., `"124.5"` to `124`).                                                                                                                                                                                                                                                                                                                     | 0                        |
+| map             | Same parsing as the `asset` property type. Will possibly be used bt the A-Frame Inspector to present texture assets.                                                                                                                                                                                                                                             | ''                       |
+| model           | Same parsing as the `asset` property type. Will possibly be used bt the A-Frame Inspector to present model assets.                                                                                                                                                                                                                                               | ''                       |
+| number          | Calls `parseFloat` (e.g., `"124.5"` to `124.5'`).                                                                                                                                                                                                                                                                                                                  | 0                        |
+| selector        | Calls `querySelector` (e.g., `"#box"` to `<a-entity id="box">`).                                                                                                                                                                                                                                                                                                  | null                     |
+| selectorAll     | Calls `querySelectorAll` and converts `NodeList` to `Array` (e.g., `".boxes"` to [<a-entity class="boxes", ...]),                                                                                                                                                                                                                                                | null                     |
+| string          | Doesn't do any parsing.                                                                                                                                                                                                                                                                                                                                          | ''                       |
+| vec2            | Parses two numbers into an `{x, y}` object (e.g., `1 -2` to `{x: 1, y: -2}`.                                                                                                                                                                                                                                                                                     | {x: 0, y: 0}             |
+| vec3            | Parses three numbers into an `{x, y, z}` object (e.g., `1 -2 3` to `{x: 1, y: -2, z: 3}`.                                                                                                                                                                                                                                                                        | {x: 0, y: 0, z: 0}       |
+| vec4            | Parses four numbers into an `{x, y, z, w}` object (e.g., `1 -2 3 -4.5` to `{x: 1, y: -2, z: 3, w: -4.5}`.                                                                                                                                                                                                                                                        | {x: 0, y: 0, z: 0, w: 0} |
+
+
+#### Property Type Inference
+
+The schema will try to infer a property type given only a default value:
+
+```js
+schema: {default: 10}  // type: "number"
+schema: {default: "foo"}  // type: "string"
+schema: {default: [1, 2, 3]}  // type: "array"
+```
+
+The schema will set a default value if not provided, given the property type:
+
+```
+schema: {type: 'number'}  // default: 0
+schema: {type: 'string'}  // default: ''
+schema: {type: 'vec3'}  // default: {x: 0, y: 0, z: 0}
+```
+
+#### Custom Property Type
+
+We can also define our own property type or parser by providing a `parse`
+function in place of a `type`:
+
+```js
+schema: {
+  // Parse slash-delimited string to an array (e.g., `foo="myProperty: a/b"` to `['a', 'b']`).
+  myProperty: {
+    default: [],
+    parse: function (value) {
+      return value.split('/');
+    }
+  }
+}
+```
+
+### Single-Property Schema
+
+A component can either be a single-property component (consisting of one
+anonymous value) or a multi-property component (consisting of multiple named
+values). A-Frame will infer whether a component is single-property vs.
+multi-property based on the structure of the schema.
+
+A single-property component's schema contains `type` and/or `default` keys, and
+the schema's values are plain values rather than objects:
+
+```js
+AFRAME.registerComponent('foo', {
+  schema: {type: 'int', default: 5}
 });
 ```
 
-The position component uses only a small subset of the component API. We'll go
-over everything the component API has to offer.
+```html
+<a-scene>
+  <a-entity foo="20"></a-entity>
+</a-scene>
+```
 
-### Properties
+## Definition Lifecycle Handler Methods
 
-[entity]: ./entity.md
-[multiple]: #multiple-instancing
+With the schema being the anatomy, the lifecycle methods are the physiology;
+the schema defines the shape of the data, the lifecycle handler methods *use*
+the data to modify the entity. The handlers will usually interact with the
+[Entity API][entity].
 
-| Property     | Description                                                                                                                  |
-|--------------|------------------------------------------------------------------------------------------------------------------------------|
-| attrName     | Full HTML attribute name used to define the component. Used if component can have [multiple instances][multiple].            |
-| data         | Parsed data object of the component derived from the schema default values, mixins, and the entity's attributes.             |
-| dependencies | Components to initialize first and wait for.                                                                                 |
-| el           | Reference to the [entity][entity] element.                                                                                   |
-| id           | ID or name of the individual instance of the component. Used if component can have [multiple instances][multiple].           |
-| multiple     | Whether component can have [multiple instances][multiple] by suffixing `__<id>` to the HTML attribute name of the component. |
-| name         | Base name used to register the component.                                                                                    |
-| schema       | Component property names, types, default values, parsers, and stringifiers.                                                  |
+### Overview of Methods
 
-### Methods
+| Method       | Description                                                                                                                                                                                                               |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| init         | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                                                                                                    |
+| update       | Called both when the component is initialized and whenever any of the component's properties is updated (e.g, via *setAttribute*). Used to modify the entity.                                                             |
+| remove       | Called when the component is removed from the entity (e.g., via *removeAttribute*) or when the entity is detached from the scene. Used to undo all previous modifications to the entity.                                  |
+| tick         | Called on each render loop or tick of the scene. Used for continuous changes or checks.                                                                                                                                   |
+| play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Also called once when the component is initialized. Used to start or resume behavior.                                                |
+| pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause behavior. |
+| updateSchema | Called whenever any of the component's properties is updated. Can be used to dynamically modify the schema.                                                                                                               |
+## Component Prototype Properties
 
-| Method       | Description                                                                                                                                   |
-|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| init         | Called once when the component is initialized. Used to set up initial state and instantiate variables.                                        |
-| update       | Called both when the component is initialized and whenever the component's data changes (e.g, via *setAttribute*). Used to modify the entity. |
-| remove       | Called when the component detaches from the element (e.g., via *removeAttribute*). Used to undo all previous modifications to the entity.     |
-| tick         | Called on each render loop or tick of the scene. Used for continuous changes.                                                                 |
-| play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Used to start or resume behavior.                        |
-| pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Used to pause behavior.                              |
-| updateSchema | Called on every update. Can be used to dynamically modify the schema.                                                                         |
+[scene]: ./scene.md
 
-## Dependencies
+Within the methods, we have access to the component prototype via `this`:
 
-Specifying `dependencies` will tell A-Frame to initialize other components
-(left-to-right) first *before* initializing the current component:
+| Property        | Description                                                                                                                                   |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| this.data       | Parsed component properties computed from the schema default values, mixins, and the entity's attributes.                                     |
+| this.el         | Reference to the [entity][entity] as an HTML element.                                                                                         |
+| this.el.sceneEl | Reference to the [scene][scene] as an HTML element.                                                                                           |
+| this.id         | If the component can have [multiple instances][multiple], the ID of the individual instance of the component (e.g., `foo` from `sound__foo`). |
+
+### `.init ()`
+
+`.init ()` is called once at the beginning of the component's lifecycle.
+An entity can call the component's `init` handler:
+
+- When the component is statically set on the entity in the HTML file and the page is loaded.
+- When the component is set on an attached entity via `setAttribute`.
+- When the component is set on an unattached entity, and the entity is
+  then attached to the scene via `appendChild`.
+
+The `init` handler is often used to:
+
+- Set up initial state and variables
+- Bind methods
+- Attach event listeners
+
+For example, a cursor component's `init` would set state variables, bind
+methods, and add event listeners:
+
+```js
+AFRAME.registerComponent('cursor', {
+  // ...
+  init: function () {
+    // Set up initial state and variables.
+    this.intersection = null;
+    // Bind methods.
+    this.onIntersection = AFRAME.utils.bind(this.onIntersection, this);
+    // Attach event listener.
+    this.el.addEventListener('raycaster-intersection', this.onIntersection);
+  }
+  // ...
+```
+
+### `.update (oldData)`
+
+`.update (oldData)` is called whenever the component's properties change,
+including at the beginning of the component's lifecycle. An entity can call a
+component's `update` handler:
+
+- After `init ()` is called, at the beginning of component's lifecycle.
+- When the component's properties are updated with `.setAttribute`.
+
+The `update` handler is often used to:
+
+- Do most of the work in making modifications to the entity, using `this.data`.
+- Modify the entity whenever one or more component properties change.
+
+[diff]: ./utils.md#aframe-utils-diff-a-b
+
+Granular modifications to the entity can be done by [diffing][diff] the current
+dataset (`this.data`) with the previous dataset before the update (`oldData`).
+
+A-Frame calls `.update()` both at the beginning of a component's lifecycle and every
+time a component's data changes (e.g., as a result of `setAttribute`). The
+update handler often uses `this.data` to modify the entity. The update handler
+has access to the previous state of a component's data via its first argument.
+We can use the previous data of a component to tell exactly which
+properties changed to do granular updates.
+
+[visible]: ../components/visible.md
+
+For example, the [visible][visible] component's `update` sets the visibility of
+the entity.
+
+```js
+AFRAME.registerComponent('visible', {
+  /**
+   * this.el is the entity element.
+   * this.el.object3D is the three.js object of the entity.
+   * this.data is the component's property or properties.
+   */
+  update: function (oldData) {
+    this.el.object3D.visible = this.data;
+  }
+  // ...
+});
+```
+
+### `.remove ()`
+
+`.remove ()` is called whenever the component is detached from the entity. An
+entity can call a component's `remove` handler:
+
+- When the component is removed from the entity via `removeAttribute`.
+- When the entity is detached from the scene (e.g., `removeChild`).
+
+The `remove` handler is often used to:
+
+- Remove, undo, or clean up all of the component's modifications to the entity.
+- Detach event listeners.
+
+[light]: ../components/light.md
+
+For example, when the [light component][light] is removed, the light component
+will remove the light object that it had previously set on the entity, thus
+removing it from the scene.
+
+```js
+AFRAME.registerComponent('light', {
+  // ...
+  remove: function () {
+    this.el.removeObject3D('light');
+  }
+  // ...
+});
+```
+
+### `.tick (time, timeDelta)`
+
+`.tick ()` is called on each tick or frame of the scene's render loop. The scene
+will call a component's `tick` handler:
+
+- On each frame of the render loop.
+- On the order of 60 to 120 times per second.
+- If the entity or scene is not paused (e.g., the Inspector is open).
+- If the entity is still attached to the scene.
+
+The `tick` handler is often used to:
+
+- Continuously modify the entity on each frame or on an interval.
+- Poll for conditions.
+
+The `tick` handler is provided the global uptime of the scene in milliseconds
+(`time`) and the time difference in milliseconds since the last frame
+(`timeDelta`). These can be used for interpolation or to only run parts of the
+`tick` handler on a set interval.
+
+[trackedcontrols]: ../components/tracked-controls.md
+
+For example, the [tracked controls component][trackedcontrols] will progress
+the controller's animations, update the controller's position and rotation, and
+check for button presses.
+
+```js
+AFRAME.registerComponent('tracked-controls', {
+  // ...
+  tick: function (time, timeDelta) {
+    this.updateMeshAnimation();
+    this.updatePose();
+    this.updateButtons();
+  }
+  // ...
+});
+```
+
+### `.pause ()`
+
+`.pause ()` is called when the entity or scene pauses. The entity can call a
+component's `pause` handler:
+
+- When the entity is paused with `Entity.pause ()`.
+- When the scene is paused with `Scene.pause ()` (e.g., the Inspector is opened).
+
+The `pause` handler is often used to:
+
+- Remove event listeners.
+- Remove any chances of dynamic behavior.
+
+[sound]: ../components/sound.md
+
+For example, the [sound component][sound] will pause the sound and remove an
+event listener that would have played a sound on an event:
+
+```js
+AFRAME.registerComponent('sound', {
+  // ...
+  pause: function () {
+    this.pauseSound();
+    this.removeEventListener();
+  }
+  // ...
+});
+```
+
+### `.play ()`
+
+`.play ()` is called when the entity or scene resumes. The entity can call
+a component's `play` handler:
+
+- When the component is first attached, after the `update` handler is called.
+- When the entity was paused but then resumed with `Entity.play ()`.
+- When the scene was paused but then resumed with `Scene.play ()`.
+
+The `play` handler is often use to:
+
+- Add event listeners.
+
+For example, the [sound component][sound] will play the sound and update the
+event listener that would play a sound on an event:
+
+```js
+AFRAME.registerComponent('sound', {
+  // ...
+  play: function () {
+    if (this.data.autoplay) { this.playSound(); }
+    this.updateEventListener();
+  }
+  // ...
+});
+```
+
+### `.updateSchema(data)`
+
+`.updateSchema ()`, if defined, is called on every update in order to check if
+the schema needs to be dynamically modified.
+
+The `updateSchema` handler is often used to:
+
+- Dynamically update or extend the schema, usually depending on the value of a property.
+
+[geometry]: ../components/geometry.md
+
+For example, the [geometry component][geometry] checks if the `primitive`
+property changed to determine whether to update the schema for a different
+type of geometry:
+
+```js
+AFRAME.registerComponent('geometry', {
+  // ...
+  updateSchema: (newData) {
+    if (newData.primitive !== this.data.primitive) {
+      this.extendSchema(GEOMETRIES[newData.primitive].schema);
+    }
+  }
+  // ...
+});
+```
+
+## Definition Properties
+
+### `dependencies`
+
+`dependencies` allows for control on ordering of component initialization if a
+component depends on one or more other components. Component names specified in
+the `dependencies` array will be initialized left-to-right before initializing
+the current component. If the dependency have other dependency components,
+those other dependency components will be ordered in the same manner:
 
 ```js
 // Initializes last.
@@ -171,532 +494,77 @@ AFRAME.registerComponent('b', {
 AFRAME.registerComponent('c', {});
 ```
 
-## Multiple Instancing
+### `multiple`
 
 [sound]: ../components/sound.md
 
-By default, a component can only have one instance. For example, an entity can
-only have one geometry component attached. But some components like [the sound
-component][sound] can have multiple instances on a single entity. We use double
-underscores (i.e., `__`) to separate the component name and the ID of
-individual instances of the component
+`multiple` allows for a component to have multiple instances. By default, since
+`multiple` is set to `false`, a component could have one instance. For
+example, an entity could only have one geometry component.
 
-For example, to attach multiple instances of the sound component:
-
-```html
-<a-entity sound="src: url(sound.mp3)"
-          sound__1="src: url(sound1.mp3)"
-          sound__2="src: url(sound2.mp3)"
-          sound__beep="src: url(beep.mp3)"
-          sound__boop="src: url(beep.mp3)"></a-entity>
-```
-
-To enable multiple instancing on your component, set `multiple: true` in the
-component definition:
+But if a component has `multiple` set to `true`, then the component can have
+multiple instances:
 
 ```js
-AFRAME.registerComponent('my-multiple-component', {
+AFRAME.registerComponent('foo', {
   multiple: true,
-
-  init: function () {
-    // ...
-  }
-});
-```
-
-The base component name is available through `this.name`. The HTML attribute
-name used to attach the component is available through `this.attrName`. And
-just the ID or name of the instance that follows the double underscore is
-available through `this.id`.
-
-## Schema
-
-A component's schema defines and describes the property or properties it takes.
-A component can either be a single-property component (one flat value) or a
-multi-property component (multiple named values).
-
-A single-property schema might look like:
-
-```js
-schema: {
-  type: 'int', default: 5
-}
-```
-
-A multi-property schema might look like:
-
-```js
-schema: {
-  color: { default: '#FFF' },
-  target: { type: 'selector' },
-  uv: {
-    default: '1 1',
-    parse: function (value) {
-      return value.split(' ').map(parseFloat);
-    }
-  },
-}
-```
-
-### Property Types
-
-All properties have **property types**. Property types define how the component
-parses incoming data from the DOM, and they prescribe a default value if one is
-not defined in the property definition. Below is the list of built-in property
-types:
-
-| Property Type   | Description                                                                                                       | Default Value            |
-| --------------- | -------------                                                                                                     | -------------            |
-| array           | Comma-separated values to array (e.g., `"1, 2, 3" to ['1', '2', '3'].                                             | []                       |
-| asset           | Parse URL out of `url(<url>)`. If a selector, call `querySelector` and `getAttribute('src')`. Can take a string.  | ''                       |
-| boolean         | Convert to boolean (i.e., `"false"` to false, everything else truthy).                                            | false                    |
-| color           | Currently does no parsing. Used by the A-Frame Inspector for widgets.                                             | #FFF                     |
-| int             | Calls `parseInt` (e.g., `"124.5"` to `124`).                                                                      | 0                        |
-| number          | Calls `parseFloat` (e.g., `"124.5" to `124.5').                                                                   | 0                        |
-| selector        | Calls `querySelector` (e.g., `"#box" to `<a-entity id="box">`).                                                   | null                     |
-| selectorAll     | Calls `querySelectorAll` and converts `NodeList` to `Array` (e.g., `".boxes"` to [<a-entity class="boxes", ...]), | null                     |
-| string          | Does no parsing.                                                                                                  | ''                       |
-| vec2            | Parses two numbers into an `{x, y}` object (e.g., `1 -2` to `{x: 1, y: -2}`.                                      | {x: 0, y: 0}             |
-| vec3            | Parses three numbers into an `{x, y, z}` object (e.g., `1 -2 3` to `{x: 1, y: -2, z: 3}`.                         | {x: 0, y: 0, z: 0}       |
-| vec4            | Parses four numbers into an `{x, y, z, w}` object (e.g., `1 -2 3 -4.5` to `{x: 1, y: -2, z: 3, w: -4.5}`.         | {x: 0, y: 0, z: 0, w: 0} |
-
-The property types will parse incoming string values from the DOM and store it
-in the component's `data` property. Or we can define our own property types by
-providing our own `parse` functions:
-
-```js
-schema: {
-  // Takes "a/b" and turns to ["a", "b'".
-  myProperty: {
-    default: ['a', 'b'],
-    parse: function (value) {
-      return value.split('/');
-    }
-  }
-}
-```
-
-### Schema Inference
-
-We can assign property types explicitly, or the schema will infer one given the
-default value.
-
-Given a default value, the schema will infer a property type and inject a
-parser and stringifer into the property definition:
-
-```js
-schema: {
-  default: 32
-}
-
-// Will process to:
-
-schema: {
-  default: 32,
-  type: 'number',
-  parse: function numberParse (value) {
-    return parseFloat(value);
-  },
-  stringify: function defaultStringify (value) {
-    return value.toString();
-  }
-}
-```
-
-And given only a type, the schema will infer a default value:
-
-```
-schema: {
-  type: 'vec3'
-}
-
-// Will process to:
-
-schema: {
-  type: 'vec3',
-  default: { x: 0, y: 0, z: 0 },
-  parse: AFRAME.utils.coordinates.parse,
-  stringify: AFRAME.utils.coordinates.stringify
-}
-```
-
-### Single-Property Schemas
-
-Single-property schemas define only a single anonymous flat property. They must
-define either a `type` or a `default` value to be able to infer an appropriate
-parser and stringifier.
-
-[rotation]: ../components/rotation.md
-
-For example, the [rotation component][rotation] takes a `vec3`:
-
-```js
-AFRAME.registerComponent('rotation', {
-  schema: {
-    // Default value will be 0, 0, 0 as defined by the vec3 property type.
-    type: 'vec3'
-  }
-
   // ...
 });
 ```
 
-[visible]: ../components/visible.md
-
-And for example, the [visible component][visible] takes a boolean:
-
-```js
-AFRAME.registerComponent('visible', {
-  schema: {
-    // Type will be inferred to be boolean.
-    default: true
-  },
-
-  // ...
-});
-```
-
-### Multi-Property Schemas
-
-Multi-property schemas it consists of one or more named property definitions.
-Unlike single-property schemas, each property has a name. When a component has
-properties then the HTML usage syntax will look like `physics="mass: 2;
-velocity: 1 1 1"`.
-
-For example, a physics component might look like:
-
-```js
-AFRAME.registerComponent('physics-body', {
-  schema: {
-    boundingBox: {
-      type: 'vec3',
-      default: { x: 1, y: 1, z: 1 }
-    },
-    mass: {
-      default: 0
-    },
-    velocity: {
-      type: 'vec3'
-    }
-  }
-}
-```
-
-## Interface / Lifecycle Methods
-
-When writing a component, we implement at least one of the methods of the
-component interface. Most of these methods are lifecycle handlers. With the
-schema being the anatomy, the lifecycle methods are the physiology; the schema
-defines the data, the lifecycle methods *use* the data. A component has access
-to `this.data` which in a single-property schema is a value and in a
-multi-property schema is an object.
-
-The handlers will almost always interact with the entity. Read about the
-[entity API](./entity.md) if you have not already.
-
-### `.init ()`
-
-A-Frame calls `.init()` only once in a component's lifecycle: when we attach the
-component to the entity. The init handler is generally used to set up state and
-instantiate variables that may used throughout a component. Not every component
-will need to define `.init()`. `.init()` is analogous to
-`HTMLElement.createdCallback` or `React.ComponentDidMount`.
-
-[camera]: ../components/camera.md
-
-For example, the [camera component][camera]'s `init` creates
-and sets the camera.
-
-```js
-init: function () {
-  var camera = this.camera = new THREE.PerspectiveCamera();
-  this.el.setObject3D('camera', camera);
-},
-
-// ...
-```
-
-Example uses of `init` by some A-Frame components:
-
-| Component     | Usage                                                             |
-|---------------|-------------------------------------------------------------------|
-| camera        | Create and set a THREE.PerspectiveCamera on the entity.           |
-| cursor        | Attach event listeners.                                           |
-| light         | Register light to the lighting system.                            |
-| material      | Set up variables, mainly to visualize the state of a component.   |
-
-### `.update (oldData)`
-
-A-Frame calls `.update()` both at the beginning of a component's lifecycle and every
-time a component's data changes (e.g., as a result of `setAttribute`). The
-update handler often uses `this.data` to modify the entity. The update handler
-has access to the previous state of a component's data via its first argument.
-We can use the previous data of a component to tell exactly which
-properties changed to do granular updates.
-
-For example, the [visible][visible] component's update handler toggles the
-visibility of the [entity][entity].
-
-```js
-update: function () {
-  this.el.object3D.visible = this.data;
-}
-```
-
-Example uses of `update` by some A-Frame components:
-
-| Component | Usage                                                                                                                                       |
-|-----------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| camera    | Set THREE.PerspectiveCamera object properties such as aspect ratio, fov, or near/far clipping planes.                                       |
-| geometry  | Create new geometry given new data.                                                                                                         |
-| material  | If component is just attaching, create a material. If shader has not changed, update material. If shader has changed, replace the material. |
-
-### `.remove ()`
-
-A-Frame calls `.remove()` when we detach a component from the entity (e.g. as
-a result of `removeAttribute`). We can use `remove()` to remove all
-modifications, listeners, and behaviors to the entity that a component has
-added in its lifetime.
-
-[light]: ../components/light.md
-
-For example, when the [light component][light] detaches, the component removes
-the light that the component had attached to the entity:
-
-```js
-remove: function () {
-  this.el.removeObject3D('light');
-}
-```
-
-Example uses of `remove` by some A-Frame components:
-
-| Component     | Usage                                                                                      |
-|---------------|--------------------------------------------------------------------------------------------|
-| camera        | Remove the THREE.PerspectiveCamera from the entity.                                        |
-| geometry      | Set a plain THREE.Geometry on the mesh.                                                    |
-| material      | Set a default THREE.MeshBasicMaterial on the mesh and unregister material from the system. |
-
-### `.tick(time, timeDelta)`
-
-A-Frame calls `.tick()` every single tick or frame in the render loop of the
-scene. Expect it to run on the order of 60 to 120 times per second. A-Frame
-passes into `.tick()` the global uptime of the scene (milliseconds) and the time
-difference since the last frame.
-
-This is useful for things that need to update constantly such as controls or
-physics.
-
-### `.pause()` and `.play()`
-
-A-Frame calls `.pause()` and `.play()` when an entity calls its own `.pause()`
-or `.play()` methods. Components should use this to stop or resume any dynamic
-behavior such as event listeners.
-
-Example uses of `.pause()` and `.play()` by some A-Frame components:
-
-| Component | Usage                                                      |
-|-----------|------------------------------------------------------------|
-| inspector | Pause/play the scene when the A-Frame Inspector is opened. |
-| sound     | Pause/play sound.                                          |
-
-### `.updateSchema(data)`
-
-`.updateSchema` is an optional method used to dynamically modify the schema,
-usually depending on the value of other properties. The example below checks if
-the type changed to determine whether to update the schema using
-`extendSchema`:
-
-```js
-AFRAME.registerComponent('example', {
-  updateSchema: (data) {
-    var newSchema;
-    if (data.type !== this.data.type) {
-      newSchema = getNewSchema(data.type);
-      this.extendSchema(newSchema);
-    }
-  }
-});
-```
-
-Example uses of `.updateSchema` by some A-Frame components:
-
-| Component | Usage                                                                                                 |
-|-----------|-------------------------------------------------------------------------------------------------------|
-| geometry  | Check if `primitive` has changed in order to change the schema to be respective to the geometry type. |
-| material  | Check if `shader` has changed in order to change the schema to be respective to the material type.    |
-
-## Methods
-
-### `.extendSchema(schema)`
-
-Attach the new `schema` to the base schema of the component. Useful if we want
-to change the schema based on certain properties. For example, the geometry
-component changes its schema based on the `primitive` property.
-
-```js
-AFRAME.registerComponent('example', {
-  updateSchema: (data) {
-    var newSchema;
-    if (data.type !== this.data.type) {
-      newSchema = getNewSchema(data.type);
-      this.extendSchema(newSchema);
-    }
-  }
-});
-```
-
-### `.flushToDOM()`
-
-[component-to-dom-serialization]: ../components/debug.md#component-to-dom-serialization
-
-`flushToDOM` will manually serialize the component's data and update the DOM.
-Read more about [component-to-DOM serialization][component-to-dom-serialization].
-
-## Write a Component
-
-### Line Component
-
-Let's build an example line component that renders a line. We want to make the
-property API flexible enough to be able to specify the color and vertices:
-
-```html
-<a-entity line="color: red; path: -1 1 0, -1 0.5 0, -1 0 0"></a-entity>
-```
-
-#### Skeleton
-
-Here is a skeleton of the component. We'll just need a schema, a update
-handler, and a remove handler:
-
-```js
-var coordinates = AFRAME.utils.coordinates;
-
-AFRAME.registerComponent('line', {
-  // Allow line component to accept vertices and color.
-  schema: {},
-
-  // Create or update the line geometry.
-  update: {},
-
-  // Remove the line geometry.
-  remove: {}
-});
-```
-
-#### Schema
-
-We have two properties we want to accept: `color` and `path`. Thus we will need
-a multi-property schema. The `color` property will be a simple string that
-A-Frame passes to `THREE.Color`. The `path` property will need a custom parser
-and stringifier to handle an array of `vec3`s for the vertices.
-
-```js
-  // Allow line component to accept vertices and color.
-  schema: {
-    color: { default: '#333' },
-
-    path: {
-      default: [
-        { x: -0.5, y: 0, z: 0 },
-        { x: 0.5, y: 0, z: 0 }
-      ],
-
-      // Deserialize path in the form of comma-separated vec3s: `0 0 0, 1 1 1, 2 0 3`.
-      parse: function (value) {
-        return value.split(',').map(coordinates.parse);
-      },
-
-      // Serialize array of vec3s in case someone does
-      // setAttribute('line', 'path', [...]).
-      stringify: function (data) {
-        return data.map(coordinates.stringify).join(',');
-      }
-    }
-  },
-
-  //...
-```
-
-The component API is entirely up to us. If we wanted the path to take a
-different syntax or abstract it further such that it maybe only accepts a
-starting point and a length and handle the math for the developer, we could do
-so.
-
-#### Update
-
-The schema will hand the data to the update handler all parsed and ready to go.
-Here, we want to create a line geometry if it doesn't exist yet and update it
-if it does. We can create a line in three.js by combining a
-`THREE.LineBasicMaterial` and `THREE.Geometry` and then manually pushing
-vertices.
-
-```js
-update: function (oldData) {
-  // Set color with material.
-  var material = new THREE.LineBasicMaterial({
-    color: this.data.color
-  });
-
-  // Add vertices to geometry.
-  var geometry = new THREE.Geometry();
-  this.data.path.forEach(function (vec3) {
-    geometry.vertices.push(
-      new THREE.Vector3(vec3.x, vec3.y, vec3.z)
-    );
-  });
-
-  // Apply mesh.
-  this.el.setObject3D('mesh', new THREE.Line(geometry, material));
-},
-
-// ...
-```
-
-Here, we update the line by replacing it. Though sometimes, we might want to
-more granularly update objects for better performance.
-
-#### Remove
-
-[removeobject3d]: ./entity.md#removeobject3d-type
-
-For removal of the line mesh from the entity, we use
-[`Entity.removeObject3D`][removeobject3d]:
-
-```js
-remove: function () {
-  this.el.removeObject3D('mesh');
-}
-```
-
-This will remove the object from the entity's scene graph.
-
-#### Usage
-
-Then with the line component written and registered, we can use it in HTML:
+In the DOM, we can differentiate between instances of the component by giving a
+suffix of a double underscore and ID (`__<ID>`). For example, to attach
+multiple instances of the sound component:
 
 ```html
 <a-scene>
-  <a-assets>
-    <a-mixin id="red" line="color: #E20049"></a-mixin>
-  </a-assets>
-
-  <a-entity id="happy-face" position="0 2 -10">
-    <a-entity geometry="primitive: circle; radius:4.5;" material="color: #ff9b26;"></a-entity>
-    <a-entity mixin="red" line="path: -1 1 0, -1 0.5 0, -1 0 0"></a-entity>
-    <a-entity mixin="red" line="path: 1 1 0, 1 0.5 0, 1 0 0"></a-entity>
-    <a-entity mixin="red" line="path: -2 -1 0, 0 -2 0, 2 -1 0"></a-entity>
-  </a-entity>
-
-  <a-sky color="#FFEED0"></a-sky>
+  <a-entity
+    sound="src: url(sound.mp3)"
+    sound__beep="src: url(beep.mp3)"
+    sound__boop="src: url(boop.mp3)"
+  ></a-entity>
 </a-scene>
 ```
 
-And voila!
+From the component lifecycle handler methods, we can differentiate between
+instances of the component with `this.id`. If a component instance is set with
+`foo__bar`, then `this.id` would be `"bar"`:
 
-[line-codepen]: https://codepen.io/TechnoBuddhist/pen/MJWVJN
+```js
+AFRAME.registerComponent('foo', {
+  multiple: true,
 
-![](https://i.imgur.com/icggby2.jpg)
-<div class="page-caption"><span>
-  Happy face with the line component! Play with it on [CodePen][line-codepen].
-</span></div>
+  update: function () {
+    console.log('This component instance has the ID', this.id);
+  }
+});
+```
+
+## Component Prototype Methods
+
+### `.flushToDOM ()`
+
+[componentserialization]: ../components/debug.md#component-to-dom-serialization
+
+To save on CPU time on stringification, A-Frame will only update in debug mode
+the component's serialized representation in the actual DOM. Calling
+`flushToDOM ()` will manually serialize the component's data and update the
+DOM:
+
+```js
+document.querySelector('[geometry]').components.geometry.flushToDOM();
+```
+
+Read more about [component-to-DOM serialization][componentserialization].
+
+## Accessing a Component's Methods and Properties
+
+A component's methods and properties can be access through the entity from the
+`.components` object. Look up the component from the entity's map of
+components, and we'll have access to the component's public API:
+
+```js
+var fooComponent = document.querySelector('[foo]').components.foo;
+console.log(fooComponent.barProperty);
+fooComponent.bazMethod();
+```

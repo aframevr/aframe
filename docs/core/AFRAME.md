@@ -13,7 +13,7 @@ global. This same interface is also exposed if requiring with CommonJS
 ## `AFRAME` Properties
 
 [component]: ./component.md
-[componentregister]: ./component.md#write-a-component
+[componentregister]: ./component.md#register-a-component
 [entity]: ./entity.md
 [geometryregister]: ../components/geometry.md#register-a-custom-geometry
 [materialregister]: ../components/material.md#register-a-custom-material
