@@ -86,6 +86,22 @@ suite('geometry', function () {
       assert.equal(sceneEl.querySelector('#mergeSource'), null);
       assert.equal(targetGeometry.vertices.length, 16);
     });
+
+    test('it does not merge geometries if the target is not a valid entity', function () {
+      var sourceEl = this.sourceEl;
+      // The target is not an entity.
+      var sceneEl = sourceEl.sceneEl;
+      var targetEl = document.createElement('a');
+      sceneEl.appendChild(targetEl);
+      targetEl.id = 'mergeTarget';
+      sourceEl.id = 'mergeSource';
+      assert.ok(sceneEl.querySelector('#mergeSource'));
+      assert.ok(sceneEl.querySelector('#mergeTarget'));
+      sourceEl.setAttribute('geometry', 'buffer: false; skipCache: true; primitive: box; mergeTo: #mergeTarget');
+      assert.notEqual(sceneEl.querySelector('#mergeSource'), null);
+      assert.ok(sceneEl.querySelector('#mergeTarget'));
+      assert.equal(sourceEl.getObject3D('mesh').geometry.vertices.length, 8);
+    });
   });
 
   suite('remove', function () {
