@@ -3,7 +3,7 @@ title: Building with MagicaVoxel
 type: guides
 layout: docs
 parent_section: guides
-order: 3
+order: 5
 ---
 
 [magicavoxel]: https://ephtracy.github.io/

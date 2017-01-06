@@ -3,7 +3,7 @@ title: Using the A-Frame Inspector
 type: guides
 layout: docs
 parent_section: guides
-order: 4
+order: 2
 ---
 
 [github]: https://github.com/aframevr/aframe-inspector
