@@ -349,8 +349,11 @@ suite('Component', function () {
   });
 
   suite('updateProperties', function () {
-    setup(function () {
+    setup(function (done) {
       components.dummy = undefined;
+      var el = this.el = entityFactory();
+      if (el.hasLoaded) { done(); }
+      el.addEventListener('loaded', function () { done(); });
     });
 
     test('updates the schema of a component', function () {
@@ -360,8 +363,7 @@ suite('Component', function () {
           this.extendSchema({energy: {default: 100}});
         }
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      var component = new TestComponent(this.el);
       component.updateProperties(null);
       assert.equal(component.schema.color.default, 'red');
       assert.equal(component.schema.energy.default, 100);
@@ -372,8 +374,7 @@ suite('Component', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      var component = new TestComponent(this.el);
       component.updateProperties(null);
       assert.equal(component.data.color, 'red');
     });
@@ -382,26 +383,27 @@ suite('Component', function () {
       var TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      var component = new TestComponent(this.el);
       component.updateProperties({color: 'blue'});
       assert.equal(component.data.color, 'blue');
     });
   });
 
   suite('update', function () {
-    setup(function () {
+    setup(function (done) {
       components.dummy = undefined;
+      var el = this.el = entityFactory();
+      if (el.hasLoaded) { done(); }
+      el.addEventListener('loaded', function () { done(); });
     });
 
     test('not called if component data does not change', function () {
       var updateStub = sinon.stub();
       var TestComponent = registerComponent('dummy', {
-        schema: {color: {default: 'red'}},
-        update: updateStub
+        schema: {color: {default: 'red'}}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      var component = new TestComponent(this.el);
+      component.update = updateStub;
       component.updateProperties({color: 'blue'});
       component.updateProperties({color: 'blue'});
       assert.ok(updateStub.calledOnce);
@@ -410,11 +412,10 @@ suite('Component', function () {
     test('supports array properties', function () {
       var updateStub = sinon.stub();
       var TestComponent = registerComponent('dummy', {
-        schema: {list: {default: ['a']}},
-        update: updateStub
+        schema: {list: {default: ['a']}}
       });
-      var el = document.createElement('a-entity');
-      var component = new TestComponent(el);
+      var component = new TestComponent(this.el);
+      component.update = updateStub;
       component.updateProperties({list: ['b']});
       component.updateProperties({list: ['b']});
       sinon.assert.calledOnce(updateStub);
@@ -434,6 +435,24 @@ suite('Component', function () {
       el.setAttribute('dummy', {color: 'blue'});
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
       el.components.dummy.flushToDOM();
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
+    });
+
+    test('init and update are not called for a not loaded entity', function () {
+      var updateStub = sinon.stub();
+      var initStub = sinon.stub();
+      var el = document.createElement('a-entity');
+      registerComponent('dummy', {
+        schema: {color: {default: 'red'}},
+        init: initStub,
+        update: updateStub
+      });
+      assert.notOk(el.hasLoaded);
+      el.setAttribute('dummy', {color: 'blue'});
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
+      el.components.dummy.flushToDOM();
+      sinon.assert.notCalled(initStub);
+      sinon.assert.notCalled(updateStub);
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
     });
   });
