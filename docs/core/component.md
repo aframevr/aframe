@@ -228,7 +228,7 @@ the data to modify the entity. The handlers will usually interact with the
 | play         | Called whenever the scene or entity plays to add any background or dynamic behavior. Also called once when the component is initialized. Used to start or resume behavior.                                                |
 | pause        | Called whenever the scene or entity pauses to remove any background or dynamic behavior. Also called when the component is removed from the entity or when the entity is detached from the scene. Used to pause behavior. |
 | updateSchema | Called whenever any of the component's properties is updated. Can be used to dynamically modify the schema.                                                                                                               |
-## Component Prototype Properties
+### Component Prototype Properties
 
 [scene]: ./scene.md
 
@@ -442,7 +442,7 @@ AFRAME.registerComponent('sound', {
 });
 ```
 
-### `.updateSchema(data)`
+### `.updateSchema (data)`
 
 `.updateSchema ()`, if defined, is called on every update in order to check if
 the schema needs to be dynamically modified.
