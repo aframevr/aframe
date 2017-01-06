@@ -58736,7 +58736,7 @@ module.exports={
     "prerelease": "npm run dist && node scripts/release.js 0.3.2 0.4.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
-    "test:docs": "node scripts/docs-lint.js",
+    "test:docs": "node scripts/docsLint.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
@@ -59325,7 +59325,7 @@ module.exports.Component = registerComponent('geometry', {
     var mesh = el.getObject3D('mesh');
     var toMesh;
 
-    if (!toEl) {
+    if (!toEl || !toEl.isEntity) {
       warn('There is not a valid entity to merge the geometry to');
       return;
     }
