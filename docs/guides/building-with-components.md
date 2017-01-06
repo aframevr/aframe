@@ -10,12 +10,16 @@ order: 2
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
+[components]: ../core/component.md
+[ecs]: ../core/index.md
+[registry]: https://aframe.io/registry/
+
 Let's create an example of building a scene using an
 [entity-component-system][ecs] workflow. This guide will introduce three
 concepts:
 
 1. Using the standard [components][components] that ship with A-Frame.
-2. Using third-party components from the ecosystem.
+2. Using community components from the ecosystem.
 3. Writing custom components to accomplish whatever we want.
 
 The scene we will build is a **360&deg; image gallery**. There will be three
@@ -45,8 +49,8 @@ This is the starting point for our scene:
   <!-- 360-degree image. -->
   <a-sky id="image-360" radius="10" src="#city"></a-sky>
 
-  <!-- Link. -->
-  <a-plane class="link" height="1" width="1"></a-plane>
+  <!-- Link we will build. -->
+  <a-entity class="link"></a-entity>
 
   <!-- Camera + Cursor. -->
   <a-camera>
@@ -59,6 +63,12 @@ This is the starting point for our scene:
   </a-camera>
 </a-scene>
 ```
+
+[a-sky]: ../primitives/a-sky.md
+[ams]: ../core/asset-management-system.md
+[animation-begin]: ../core/animations.md#begin
+[camera]: ../primitives/a-camera.md
+[cursor]: ../components/cursor.md
 
 We have predefined:
 
@@ -73,27 +83,41 @@ Standard components are components that ship with A-Frame, like any standard
 library. We'll go over how to attach these components to entities and configure
 them from HTML.
 
-We want to add an image texture to `<a-plane>` link using the [material
-component][material].
-
-The material component consists of multiple properties. To attach the material
-component to the plane, we first set the component name as an HTML attribute:
+We want to build a textured plane to act as a link that when clicked, will
+change the 360&deg; image. We start with an empty entity. Without any
+components, any empty entity does nothing and renders nothing:
 
 ```html
-<a-plane class="link" height="1" width="1"
-         material></a-plane>
+<a-entity class="link"></a-entity>
 ```
 
-Then we the specify the component data using a syntax that resembles that of
-inline CSS styles. We set `shader` to `flat` so the image isn't affected
+[geometry]: ../components/geometry.md
+
+To give our entity shape, we can attach the [geometry component][geometry],
+configured to a plane shape. We specify the component data using a syntax that
+resembles that of inline CSS styles:
+
+```html
+<a-entity class="link"
+  geometry="primitive: plane; height: 1; width: 1"></a-entity>
+```
+
+[material]: ../components/material.md
+
+Then to give our entity appearance, we can attach the [material
+component][material].  We set `shader` to `flat` so the image isn't affected
 negatively by lighting. And we set `src` to `#cubes-thumb`, a selector to one
 of the images defined in the [Asset Management System][ams].
 
 ```html
-<a-plane class="link" height="1" width="1"
-         material="shader: flat; src: #cubes-thumb"></a-plane>
+<a-entity class="link"
+  geometry="primitive: plane; height: 1; width: 1"
+  material="shader: flat; src: #cubes-thumb"></a-entity>
 ```
 
+[sound]: ../components/sound.md
+
+We can continue adding features to our entity by plugging in more components.
 Let's attach one more standard component, the [sound component][sound]. We want
 to make it such that when we click (via gazing) on the link, it plays a click
 sound. The syntax is the same as before, but instead we are now using the sound
@@ -101,34 +125,46 @@ component's properties. We set `on` to `click` so the sound is played on click.
 And we set `src` to `#click-sound`, a selector to our `<audio>` element.
 
 ```html
-<a-plane class="link" height="1" width="1"
-         material="shader: flat; src: #cubes-thumb"
-         sound="on: click; src: #click-sound"></a-plane>
+<a-entity class="link"
+  geometry="primitive: plane; height: 1; width: 1"
+  material="shader: flat; src: #cubes-thumb"
+  sound="on: click; src: #click-sound"></a-entity>
 ```
 
 Now we have a textured plane that plays a click sound when clicked.
 
-## Using Third-Party Components
+## Using Community Components
 
-We can grab third-party components from the [ecosystem][awesome], drop them into our
-scene, and use them in our HTML. Components can do anything. By using components
-that other people have developed, we gain tons of power without needing to
-write our own code.
+[awesome]: https://github.com/aframevr/awesome-aframe#components
 
-We'll go through using three such third-party components: template, layout, and
-event-set. First, we have to include them. [K-Frame][kframe] is a component
-pack by [Kevin Ngo][ngokevin], an A-Frame core developer, that conveniently
-includes all three of these components in one bundle.
+A-Frame comes with a small core of standard components, but the magic is in the
+large number of open source community components in the A-Frame ecosystem. We
+can find community components from places such as the [A-Frame
+Registry][registry] or the [awesome-aframe repo][awesome]. We can drop them
+into our scene and use them straight in our HTML. Components can do anything.
+By using components that other people have developed, we gain power without
+needing to write our own code.
 
-To drop in K-Frame, download [`k-frame.min.js`][kmin] from the project's
-[`dist` folder][kdist] and include it in the `<head>` *after* A-Frame:
+We'll go through using three community components:
+
+- [template](https://ngokevin.github.io/kframe/components/template/)
+- [layout](https://ngokevin.github.io/kframe/components/layout/)
+- [event-set](https://ngokevin.github.io/kframe/components/event-set/)
+
+Community components are generally available through both GitHub and published
+on npm. An easy way to include components is to use the [unpkg.com
+CDN](http://unpkg.com/), which lets us include components hosted on npm as a
+script tag, even with support for specifying fuzzy versions. We usually just
+need to know the component's npm package name and the path:
 
 ```html
 <html>
   <head>
     <title>360° Image Browser</title>
-    <script src="lib/aframe.min.js"></script>
-    <script src="lib/k-frame.min.js"></script>
+    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-template-component@3.x.x/dist/aframe-template-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-layout-component@3.x.x/dist/aframe-layout-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@3.x.x/dist/aframe-event-set-component.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -138,10 +174,27 @@ To drop in K-Frame, download [`k-frame.min.js`][kmin] from the project's
 </html>
 ```
 
+[angle]: https://www.npmjs.com/package/angle
+
+Community components are curated to [the A-Frame Registry][registry].  If a
+component is on the Registry, there is a way to include it without having to
+know which version of the component is compatible with your A-Frame version and
+without having to know the path. [angle][angle] is a command-line tool for
+A-Frame that has a command to install components straight to our HTML files.
+
+```sh
+npm install -g angle
+angle install layout
+angle install template
+angle install event-set
+```
+
 ### Template Component
 
 Currently, we have one link. We want to create three of them, one for each of
 our 360&deg; images.
+
+[template]: https://github.com/ngokevin/aframe-template-component
 
 The [template component][template] integrates templating engines into A-Frame.
 This lets us do things such as encapsulate groups of entities, passing data to
@@ -155,10 +208,11 @@ template and give it a name using an `id`:
 ```html
 <a-assets>
   <!-- ... -->
-  <script id="plane">
-    <a-plane class="link" height="1" width="1"
-             material="shader: flat; src: #cubes-thumb"
-             sound="on: click; src: #click-sound"></a-plane>
+  <script id="plane" type="text/html">
+    <a-entity class="link"
+      geometry="primitive: plane; height: 1; width: 1"
+      material="shader: flat; src: #cubes-thumb"
+      sound="on: click; src: #click-sound"></a-entity>
   </script>
 </a-assets>
 ```
@@ -171,23 +225,29 @@ Then we can use the template to create multiple planes without much work:
 <a-entity template="src: #plane"></a-entity>
 ```
 
-But then they'll all be displaying the same image texture and look the same.
-Here is where we'll need a template engine with variable
-substitution/interpolation.
+[templateliteral]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Template_literals
 
-Let's tell the template component to use the popular [Nunjucks][nunjucks]
-engine by specifying `<script type="text/nunjucks">`. The component will
-lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
-}}` variable in the template, which we can pass using the [data attributes][data]:
+But then they'll all be displaying the same image texture and look the same.
+Here is where we'll need a template engine with variable substitution. The
+template component comes with simple [ES6 string
+interpolation][templateliteral] (i.e., `${var}` format). Though the template
+component supports many popular templating engines such as Nunjucks, Jade,
+Handlebars, or Mustache.
+
+[data]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_data_attributes
+
+To allow each instance of the template to be customizable, we define a
+`${thumb}` variable in the template, which we can pass using [data
+attributes][data]:
 
 ```html
 <a-assets>
   <!-- ... -->
-  <!-- Specify Nunjucks. -->
-  <script id="plane" type="text/nunjucks">
-    <a-plane class="link" height="1" width="1"
-             material="shader: flat; src: {{ thumb }}"
-             sound="on: click; src: #click-sound"></a-plane>
+  <script id="plane" type="text/html">
+    <a-entity class="link"
+      geometry="primitive: plane; height: 1; width: 1"
+      material="shader: flat; src: ${thumb}"
+      sound="on: click; src: #click-sound"></a-entity>
   </script>
 </a-assets>
 
@@ -199,10 +259,12 @@ lazy-load the template engine for us. And with Nunjucks, we define a `{{ thumb
 <a-entity template="src: #plane" data-thumb="#sechelt-thumb"></a-entity>
 ```
 
-The template component allows us to keep our scene clean by not having to
-repeat verbose code.
+The template component has allowed us to not have to repeat a lot of HTML,
+keeping our scene very readable.
 
 ### Layout Component
+
+[layout]: https://www.npmjs.com/package/aframe-layout-component
 
 Because the default position of an entity is `0 0 0`, the entities will
 overlap. While we could manually position each link, we could instead use the
@@ -221,9 +283,14 @@ using the `line` layout:
 ```
 
 Now our links are no longer overlapping without us having to calculate and
-fiddle with positions.
+fiddle with positions. The layout component supports other layouts including
+grid, circle, and dodecahedron.
 
 ### Event-Set Component
+
+[cursor-events]: ../components/cursor.md#events
+[event-set]: https://www.npmjs.com/package/aframe-event-set-component
+[scale]: ../components/scale.md
 
 Lastly, we'll add some visual feedback to our links. We want them to scale up
 and scale back when they are hovered or clicked. This involves writing an event
@@ -231,6 +298,8 @@ listener to do `setAttribute`s on the [scale component][scale] in response to
 [cursor events][cursor-events]. This is a fairly common pattern so there is an
 [event-set component][event-set] that does `setAttribute` in response to
 events.
+
+[multiple]: ../core/component.md#multiple-instancing
 
 Let's attach event listeners on our links to scale them up when they are gazed
 over, scale them down as they are being clicked, and scale them back when they
@@ -243,61 +312,32 @@ instances][multiple]:
 <a-assets>
   <!-- ... -->
   <script id="link" type="text/nunjucks">
-    <a-plane class="link" height="1" width="1"
-             material="shader: flat; src: {{ thumb }}"
-             sound="on: click; src: #click-sound"
-             event-set__1="_event: mousedown; scale: 1 1 1"
-             event-set__2="_event: mouseup; scale: 1.2 1.2 1"
-             event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
-             event-set__4="_event: mouseleave; scale: 1 1 1"></a-plane>
+    <a-entity class="link"
+      geometry="primitive: plane; height: 1; width: 1"
+      material="shader: flat; src: ${thumb}"
+      sound="on: click; src: #click-sound"
+      event-set__1="_event: mousedown; scale: 1 1 1"
+      event-set__2="_event: mouseup; scale: 1.2 1.2 1"
+      event-set__3="_event: mouseenter; scale: 1.2 1.2 1"
+      event-set__4="_event: mouseleave; scale: 1 1 1"></a-entity>
   </script>
 </a-assets>
 ```
 
-Wielding components, we were able to do a lot with just a few more lines of
-HTML. Though the ecosystem has a lot to offer, your scenes will often require
-writing your own simple components.
+Wielding components, we were able to do a lot with surprisingly little HTML.
+Though the ecosystem has a lot to offer, non-trivial VR applications will
+require us to write application-specific components.
 
-## Writing Components
-
-The [component documentation][components] has detailed information on writing a
-component. The most basic component takes the form of:
-
-```js
-AFRAME.registerComponent('component-name', {
-  // Define component properties.
-  schema: {},
-
-  /**
-   * Run when component is attached.
-   * @member {Element} el - Entity.
-   * @member data - Component data.
-   */
-  init: function () {
-    // Do stuff using `this.el` and `this.data`.
-  }
-});
-```
-
-### Configuring the Raycaster
-
-We can specify the entities that the cursor's raycaster checks for
-intersections against. That way, the cursor will only click if something can be
-clicked, and it is also better for performance. The cursor is built on top of
-the [raycaster component][raycaster], and we can configure the raycaster. We
-update the raycaster component's `objects` property which takes a selector:
-
-```html
-<a-cursor id="cursor" raycaster="objects: .link">
-```
-
-### Set-Image Component
+## Writing an Application-Specific Component
 
 > View the full [`set-image` component on GitHub](https://github.com/aframevr/360-image-viewer-boilerplate/blob/master/components/set-image.js).
 
-Finally, we write the component that fades the sky into a new 360&deg; image
-once one of the links are clicked. Here is the skeleton for our set-image
-component.
+We want to write the component that fades the sky into a new 360&deg; image
+once one of the links are clicked. We'll call it `set-image`. The [component
+API documentation][components] provides a detailed reference for writing a
+component. A basic component skeleton might look like:
+
+Here is the skeleton for our set-image component.
 
 ```js
 AFRAME.registerComponent('set-image', {
@@ -370,27 +410,3 @@ wait the appropriate amount of time, and swap the image:
 And that concludes our 360&deg; image gallery.
 
 > **[Try it out!](https://aframe.io/360-image-gallery-boilerplate/)**
-
-[a-sky]: ../primitives/a-sky.md
-[ams]: ../core/asset-management-system.md
-[animation-begin]: ../core/animations.md#begin
-[awesome]: https://github.com/aframevr/awesome-aframe#components
-[camera]: ../primitives/a-camera.md
-[components]: ../core/component.md
-[cursor]: ../components/cursor.md
-[cursor-events]: ../components/cursor.md#events
-[data]: https://developer.mozilla.org/docs/Web/Guide/HTML/Using_data_attributes
-[ecs]: ../core/index.md
-[event-set]: https://github.com/ngokevin/aframe-event-set-component
-[kdist]: https://github.com/ngokevin/kframe/tree/master/dist
-[kframe]: https://github.com/ngokevin/kframe/
-[kmin]: https://raw.githubusercontent.com/ngokevin/kframe/master/dist/kframe.min.js
-[layout]: https://github.com/ngokevin/aframe-layout-component
-[material]: ../components/material.md
-[multiple]: ../core/component.md#multiple-instancing
-[ngokevin]: https://github.com/ngokevin
-[nunjucks]: https://mozilla.github.io/nunjucks/
-[raycaster]: http://threejs.org/docs/index.html#Reference/Core/Raycaster
-[scale]: ../components/scale.md
-[sound]: ../components/sound.md
-[template]: https://github.com/ngokevin/aframe-template-component
