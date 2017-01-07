@@ -137,7 +137,7 @@ We can query for elements that have a class with a class selector (i.e.,
 `.<CLASS_NAME>`). Let's grab every entity that has the `clickable` class:
 
 ```js
-console.log(sceneEl.querySelectorAll('.class'));
+console.log(sceneEl.querySelectorAll('.clickable'));
 // [
 //  <a-box id="redBox" class="clickable" color="red"></a-box>
 //  <a-sphere class="clickable" color="blue"></a-sphere>
@@ -151,8 +151,8 @@ every entity that has a light:
 ```js
 console.log(sceneEl.querySelectorAll('[light]'));
 // [
-//  <a-box id="redBox" class="clickable" color="red"></a-box>,
-//  <a-box color="green"></a-box>
+//  <a-entity light="type: ambient"></a-entity>
+// <a-entity light="type: directional"></a-entity>
 // ]
 ```
 

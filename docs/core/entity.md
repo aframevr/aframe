@@ -468,7 +468,7 @@ entity.addEventListener('componentchanged', function (evt) {
 });
 ```
 
-#### Listening for Child Elements Being Attached an Detached
+#### Listening for Child Elements Being Attached and Detached
 
 We can use the `child-attached` and `child-detached` events to listen for when
 the scene attaches or detaches an entity:
