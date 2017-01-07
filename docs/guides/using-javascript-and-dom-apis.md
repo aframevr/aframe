@@ -3,7 +3,7 @@ title: Using JavaScript and DOM APIs
 type: guides
 layout: docs
 parent_section: guides
-order: 3
+order: 4
 ---
 
 [geometry]: ../components/geometry.md
