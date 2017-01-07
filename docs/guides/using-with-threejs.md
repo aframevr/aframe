@@ -1,5 +1,5 @@
 ---
-title: Using three.js
+title: Using with three.js
 type: guides
 layout: docs
 parent_section: guides
