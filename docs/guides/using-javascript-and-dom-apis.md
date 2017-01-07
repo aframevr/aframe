@@ -14,8 +14,8 @@ JavaScript and [DOM] APIs as we mostly would in ordinary web development.
 
 [vrjump]: http://vrjump.de
 
-[asceneimage]: https://cloud.githubusercontent.com/assets/674727/20290104/e155c380-aa92-11e6-9507-f19403783a7b.jpg
-![<a-scene>][asceneimage]
+[jsimage]: https://cloud.githubusercontent.com/assets/674727/20290105/e1573210-aa92-11e6-8f1a-8a31fb6dad52.jpg
+![With JavaScript][jsimage]
 <small class="image-caption"><i>Image by Ruben Mueller from [The VR Jump][vrjump].</i></small>
 
 [entity]: ../core/entity.md
