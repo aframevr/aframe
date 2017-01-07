@@ -3,7 +3,7 @@ title: Building with Components
 type: guides
 layout: docs
 parent_section: guides
-order: 4
+order: 3
 ---
 
 > Fork the [360&deg; Image Gallery Boilerplate on GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
