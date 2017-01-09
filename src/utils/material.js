@@ -14,7 +14,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     if (src === shader[shadowSrcName]) { return; }
     // Texture added or changed.
     shader[shadowSrcName] = src;
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset}, setMap);
+    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
   }
 
