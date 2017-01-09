@@ -31,7 +31,7 @@ When the cursor clicks on the box, we can listen to the click event.
 <a-entity camera>
   <a-entity cursor="fuse: true; fuseTimeout: 500"
             position="0 0 -1"
-            geometry="primitive: ring"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
             material="color: black; shader: flat">
   </a-entity>
 </a-entity>
