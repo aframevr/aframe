@@ -47,7 +47,7 @@
 }
 
 // Class is removed when doing <a-scene embedded>.
-.a-canvas.fullscreen {
+a-scene.fullscreen .a-canvas {
   width: 100% !important;
   height: 100% !important;
   top: 0 !important;
@@ -131,7 +131,6 @@ a-scene audio {
 }
 
 .a-enter-vr {
-  bottom: 5px;
   font-family: sans-serif, monospace;
   font-size: 13px;
   width: 100%;

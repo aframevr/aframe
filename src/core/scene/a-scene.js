@@ -12,7 +12,6 @@ var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
-var checkHeadsetConnected = utils.device.checkHeadsetConnected;
 var isIOS = utils.device.isIOS();
 var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
@@ -147,14 +146,33 @@ module.exports = registerElement('a-scene', {
       }
     },
 
+    /**
+     * For tests.
+     */
+    checkHeadsetConnected: {
+      value: utils.device.checkHeadsetConnected,
+      writable: window.debug
+    },
+
+    /**
+     * Call `requestPresent` if WebVR or WebVR polyfill.
+     * Call `requestFullscreen` on desktop.
+     * Handle events, states, fullscreen styles.
+     *
+     * @returns {Promise}
+     */
     enterVR: {
       value: function (event) {
         var self = this;
-        if (this.is('vr-mode')) { return; }
-        if (checkHeadsetConnected() || this.isMobile) {
+
+        // Don't enter VR if already in VR.
+        if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
+
+        if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
+        return Promise.resolve();
 
         function enterVRSuccess () {
           self.addState('vr-mode');
@@ -170,7 +188,9 @@ module.exports = registerElement('a-scene', {
           // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
           // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
           // connected.
-          if (!self.isMobile && !checkHeadsetConnected()) { requestFullscreen(self.canvas); }
+          if (!self.isMobile && !self.checkHeadsetConnected()) {
+            requestFullscreen(self.canvas);
+          }
           self.resize();
         }
 
@@ -183,28 +203,38 @@ module.exports = registerElement('a-scene', {
         }
       }
     },
-
+     /**
+     * Call `exitPresent` if WebVR or WebVR polyfill.
+     * Handle events, states, fullscreen styles.
+     *
+     * @returns {Promise}
+     */
     exitVR: {
       value: function () {
         var self = this;
-        if (!this.is('vr-mode')) { return Promise.resolve(); }
-        if (checkHeadsetConnected() || this.isMobile) {
+
+        // Don't exit VR if not in VR.
+        if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
+
+        if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
         exitVRSuccess();
+        return Promise.resolve();
+
         function exitVRSuccess () {
-          var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
           }
           // Exiting VR in embedded mode, no longer need fullscreen styles.
-          if (embedded) { self.removeFullScreenStyles(); }
+          if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
           self.resize();
           if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
           self.emit('exit-vr', {target: self});
         }
+
         function exitVRFailure (err) {
           if (err && err.message) {
             throw new Error('Failed to exit VR mode (`exitPresent`): ' + err.message);

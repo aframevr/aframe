@@ -55,6 +55,9 @@ depending on the material type applied.
 | shader      | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
 | side        | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
 | visible | Whether material is visible. Raycasters will ignore invisible materials. | true |
+| offset | Texture offset to be used. | {x: 0, y: 0} |
+| repeat | Texture repeat to be used. | {x: 1, y: 1} |
+| npot | Use settings for non-power-of-two (NPOT) texture. | false |
 
 ## Events
 

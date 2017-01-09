@@ -2,14 +2,13 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 /**
- * Tracked controls component
- * Interface with the gamepad API to handled tracked controllers. Selects
- * the appropriate controller and applies pose to the entity. It also observes
- * buttons state and emits appropriate events.
+ * Tracked controls component.
+ * Interface with the gamepad API to handled tracked controllers.
+ * Select the appropriate controller and apply pose to the entity.
+ * Observe buttons state and emit appropriate events.
  *
- * @property {number} controller - index of the controller in the array
- *                                 returned by the Gamepad API.
- * @property {string} id - Selects the controllers among those returned by the Gamepad API.
+ * @property {number} controller - Index of the controller in array returned by Gamepad API.
+ * @property {string} id - Selected controller among those returned by Gamepad API.
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
@@ -126,11 +125,18 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.el.emit('buttonchanged', {id: id, state: buttonState});
   },
 
+  /**
+   * Determine whether a button press has occured and emit events as appropriate.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if button press state changed, false otherwise.
+   */
   handlePress: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var evtName;
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
-    if (buttonState.pressed === previousButtonState.pressed) { return; }
+    if (buttonState.pressed === previousButtonState.pressed) { return false; }
     if (buttonState.pressed) {
       evtName = 'down';
     } else {
@@ -138,15 +144,21 @@ module.exports.Component = registerComponent('tracked-controls', {
     }
     this.el.emit('button' + evtName, {id: id});
     previousButtonState.pressed = buttonState.pressed;
+    return true;
   },
 
+  /**
+   * Determine whether a button touch has occured and emit events as appropriate.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if button touch state changed, false otherwise.
+   */
   handleTouch: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var evtName;
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};
-    if (buttonState.touched === previousButtonState.touched) {
-      return false;
-    }
+    if (buttonState.touched === previousButtonState.touched) { return false; }
     if (buttonState.touched) {
       evtName = 'start';
     } else {
@@ -157,6 +169,13 @@ module.exports.Component = registerComponent('tracked-controls', {
     return true;
   },
 
+  /**
+   * Determine whether a button value has changed.
+   *
+   * @param {string} id - id of the button to check.
+   * @param {object} buttonState - state of the button to check.
+   * @returns {boolean} true if button value changed, false otherwise.
+   */
   handleValue: function (id, buttonState) {
     var buttonStates = this.buttonStates;
     var previousButtonState = buttonStates[id] = buttonStates[id] || {};

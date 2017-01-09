@@ -10,7 +10,7 @@ module.exports.Shader = registerShader('flat', {
     color: {type: 'color'},
     fog: {default: true},
     height: {default: 256},
-    offset: {type: 'vec2', default: {x: 1, y: 1}},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
     src: {type: 'map'},
     width: {default: 512},

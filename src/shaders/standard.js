@@ -33,7 +33,7 @@ module.exports.Shader = registerShader('standard', {
     normalTextureOffset: {type: 'vec2'},
     normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
-    offset: {type: 'vec2', default: {x: 1, y: 1}},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
     repeat: {type: 'vec2', default: {x: 1, y: 1}},
     roughness: {default: 0.5, min: 0.0, max: 1.0},
     sphericalEnvMap: {type: 'map'},

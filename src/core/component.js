@@ -21,18 +21,15 @@ var styleParser = utils.styleParser;
  * of components.
  *
  * @member {object} el - Reference to the entity element.
- * @member {string} attr - Component name exposed as an HTML attribute.
+ * @member {string} attrValue - Value of the corresponding HTML attribute.
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
  */
-var Component = module.exports.Component = function (el, attr, id) {
+var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
-  this.updateCachedAttrValue(attr);
-
-  if (!el.hasLoaded) { return; }
-  this.updateProperties(this.attrValue);
+  this.updateProperties(attrValue);
 };
 
 Component.prototype = {
@@ -184,15 +181,17 @@ Component.prototype = {
   /**
    * Apply new component data if data has changed.
    *
-   * @param {string} value - HTML attribute value.
+   * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
    */
-  updateProperties: function (value) {
+  updateProperties: function (attrValue) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var oldData = extendProperties({}, this.data, isSinglePropSchema);
 
-    if (value !== undefined) { this.updateCachedAttrValue(value); }
+    if (attrValue !== undefined) { this.updateCachedAttrValue(attrValue); }
+
+    if (!el.hasLoaded) { return; }
 
     if (this.updateSchema) {
       this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue, true));
@@ -253,6 +252,15 @@ Component.prototype = {
 module.exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
+
+  var testForUpperCase = new RegExp('[A-Z]+');
+
+  if (testForUpperCase.test(name) === true) {
+    console.warn('The component name `' + name + '`contains uppercase characters,' +
+                  'but HTML ignores the capitalization of attributes. ' +
+                  'Consider changing it. ' +
+                  'Your component can be accessed as ' + name.toLowerCase());
+  }
 
   if (name.indexOf('__') !== -1) {
     throw new Error('The component name `' + name + '` is not allowed. ' +

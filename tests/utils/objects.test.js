@@ -1,5 +1,8 @@
 /* global assert, suite, test */
-var diff = require('index').utils.diff;
+var utils = require('index').utils;
+
+var diff = utils.diff;
+var deepEqual = utils.deepEqual;
 
 suite('utils.objects', function () {
   suite('diff', function () {
@@ -48,6 +51,43 @@ suite('utils.objects', function () {
         metallic: undefined,
         roughness: 1
       });
+    });
+  });
+
+  suite('deepEqual', function () {
+    test('can compare identical objects', function () {
+      var objA = {id: 62, label: 'Foo', parent: null};
+      var objB = {id: 62, label: 'Foo', parent: null};
+      assert.ok(deepEqual(objA, objB));
+    });
+
+    test('can compare for missing properties', function () {
+      var objA = {id: 62, label: 'Foo', parent: null};
+      var objB = {id: 62, label: 'Foo', parent: null, extraProp: true};
+      assert.notOk(deepEqual(objA, objB));
+    });
+
+    test('can compare for differing property values', function () {
+      var objA = {id: 62, label: 'Foo', parent: null, extraProp: false};
+      var objB = {id: 62, label: 'Foo', parent: null, extraProp: true};
+      assert.notOk(deepEqual(objA, objB));
+    });
+
+    test('can compare nested arrays', function () {
+      var objA = {children: [1, 2, 3, 4]};
+      var objB = {children: [1, 2, 3, 4]};
+      var objC = {children: [1, 2, 3, 5]};
+      assert.ok(deepEqual(objA, objB));
+      assert.notOk(deepEqual(objA, objC));
+    });
+
+    /** SKIPPED: Comparison of nested objects is not yet implemented. */
+    test.skip('can compare nested objects', function () {
+      var objA = {metadata: {source: 'Wikipedia, 2016'}};
+      var objB = {metadata: {source: 'Wikipedia, 2016'}};
+      var objC = {metadata: {source: 'Nature, 2015'}};
+      assert.ok(deepEqual(objA, objB));
+      assert.notOk(deepEqual(objA, objC));
     });
   });
 });

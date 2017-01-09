@@ -87,7 +87,7 @@ manipulating plain HTML and are thus compatible with A-Frame.
 
 ### Entity-Component-System
 
-[ecs]: http://www.gamedev.net/page/resources/_/technical/game-programming/understanding-component-entity-systems-r3013
+[ecs]: http://www.gamedev.net/resources/_/technical/game-programming/understanding-component-entity-systems-r3013
 
 A-Frame at its core is an **entity-component-system framework**.
 [Entity-component-system][ecs] (ECS) is a pattern popular in game development

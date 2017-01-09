@@ -24,7 +24,10 @@ module.exports.Component = registerComponent('material', {
     shader: {default: 'standard', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    visible: {default: true}
+    visible: {default: true},
+    offset: {default: {x: 0, y: 0}},
+    repeat: {default: {x: 1, y: 1}},
+    npot: {default: false}
   },
 
   init: function () {

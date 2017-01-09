@@ -20,7 +20,7 @@
     "prerelease": "npm run dist && node scripts/release.js 0.3.2 0.4.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
-    "test:docs": "node scripts/docs-lint.js",
+    "test:docs": "node scripts/docsLint.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
     "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
     "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
@@ -37,7 +37,7 @@
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "three": "^0.82.1",
+    "three": "^0.83.0",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "^0.9.23"
   },

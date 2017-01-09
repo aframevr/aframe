@@ -264,17 +264,27 @@ function loadImageTexture (src, data) {
 function setTextureProperties (texture, data) {
   var offset = data.offset || {x: 0, y: 0};
   var repeat = data.repeat || {x: 1, y: 1};
+  var npot = data.npot || false;
+
+  // To support NPOT textures, wrap must be ClampToEdge (not Repeat),
+  // and filters must not use mipmaps (i.e. Nearest or Linear).
+  if (npot) {
+    texture.wrapS = THREE.ClampToEdgeWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.magFilter = THREE.LinearFilter;
+    texture.minFilter = THREE.LinearFilter;
+  }
 
   // Don't bother setting repeat if it is 1/1. Power-of-two is required to repeat.
-  if (repeat.x === 1 && repeat.y === 1) { return; }
-
-  texture.wrapS = THREE.RepeatWrapping;
-  texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(repeat.x, repeat.y);
-
+  if (repeat.x !== 1 || repeat.y !== 1) {
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set(repeat.x, repeat.y);
+  }
   // Don't bother setting offset if it is 0/0.
-  if (offset.x === 0 && offset.y === 0) { return; }
-  texture.offset.set(offset.x, offset.y);
+  if (offset.x !== 0 || offset.y !== 0) {
+    texture.offset.set(offset.x, offset.y);
+  }
 }
 
 /**

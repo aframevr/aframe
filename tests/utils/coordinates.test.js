@@ -3,12 +3,16 @@ var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
   suite('isCoordinate', function () {
-    test('verifies valid coordinate', function () {
+    test('verifies valid vec3 coordinate', function () {
       assert.ok(coordinates.isCoordinate(' 1 2.5  -3'));
     });
 
-    test('rejects invalid coordinate', function () {
+    test('verifies valid vec4 coordinate', function () {
       assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
+    });
+
+    test('rejects invalid coordinate', function () {
+      assert.notOk(coordinates.isCoordinate('1 1 2.5 -3 0.1'));
     });
   });
 
@@ -36,6 +40,12 @@ suite('utils.coordinates', function () {
     test('returns already-parsed object', function () {
       assert.shallowDeepEqual(coordinates.parse({x: 1, y: 2, z: -3}),
                               {x: 1, y: 2, z: -3});
+    });
+
+    test('zero value of object won\'t be overriden by defaults', function () {
+      assert.shallowDeepEqual(
+        coordinates.parse({x: 0, y: 1}, {x: 4, y: 5, z: 6}),
+        {x: 0, y: 1, z: 6});
     });
 
     test('parses object with strings', function () {

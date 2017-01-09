@@ -1,7 +1,7 @@
 /* global THREE */
 var extend = require('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
+var regex = /^\s*((-?\d*\.{0,1}\d+)\s+){2,3}(-?\d*\.{0,1}\d+)\s*$/;
 module.exports.regex = regex;
 
 /**
@@ -18,10 +18,10 @@ function parse (value, defaultVec) {
 
   if (value && typeof value === 'object') {
     return vecParseFloat({
-      x: value.x || defaultVec && defaultVec.x,
-      y: value.y || defaultVec && defaultVec.y,
-      z: value.z || defaultVec && defaultVec.z,
-      w: value.w || defaultVec && defaultVec.w
+      x: value.x !== undefined ? value.x : (defaultVec && defaultVec.x),
+      y: value.y !== undefined ? value.y : (defaultVec && defaultVec.y),
+      z: value.z !== undefined ? value.z : (defaultVec && defaultVec.z),
+      w: value.w !== undefined ? value.w : (defaultVec && defaultVec.w)
     });
   }
 

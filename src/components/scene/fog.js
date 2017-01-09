@@ -47,11 +47,9 @@ module.exports.Component = register('fog', {
    */
   remove: function () {
     var fog = this.el.object3D.fog;
-    if (fog) {
-      fog.density = 0;
-      fog.far = 0;
-      fog.near = 0;
-    }
+    if (!fog) { return; }
+    fog.far = 0;
+    fog.near = 0.1;
   }
 });
 
