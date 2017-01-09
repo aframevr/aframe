@@ -5,6 +5,15 @@
     <title>360 Video</title>
     <meta name="description" content="360 Video — A-Frame">
     <script src="../../../dist/aframe.js"></script>
+    <script "text/javascript">
+    var cityvideo = document.getElementById("video");
+		if( /iPhone|iPad|iPod/i.test(navigator.userAgent) ) {
+			//src to be changed to the low bitrate one.
+			cityvideo.src = "https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/";
+			cityvideo.load();
+			cityvideo.play();
+		}
+    </script>
   </head>
   <body>
     <a-scene>
