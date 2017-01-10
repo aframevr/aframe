@@ -65898,6 +65898,8 @@ module.exports = registerElement('a-scene', {
         // Don't exit VR if not in VR.
         if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
 
+        exitFullscreen();
+
         if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
@@ -66170,6 +66172,16 @@ function requestFullscreen (canvas) {
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
   requestFullscreen.apply(canvas);
+}
+
+function exitFullscreen () {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
 }
 
 },{"../../lib/three":106,"../../utils/":124,"../a-entity":59,"../a-node":61,"../a-register-element":62,"../system":72,"./metaTags":67,"./postMessage":68,"./wakelock":69,"tween.js":18}],67:[function(_dereq_,module,exports){
