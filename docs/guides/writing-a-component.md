@@ -250,11 +250,12 @@ AFRAME.registerComponent('log', {
   },
 
   init: function () {
-    var data = this.data;
+    // Closure to access fresh `this.data` from event handler context.
+    var self = this;
 
     // .init() is a good place to set up initial state and variables.
     // Store a reference to the handler so we can later remove it.
-    this.eventHandlerFn = function () { console.log(data.message); };
+    this.eventHandlerFn = function () { console.log(self.data.message); };
   },
 
   update: function () {
@@ -271,12 +272,9 @@ AFRAME.registerComponent('log', {
 ```
 
 Now that we have the event handler function stored. We can remove the event
-listener whenever the `event` property type changes. We don't need to touch the
-event listener whenever just the `message` property type changes because the
-handler has a reference to the actual `this.data` object. We want to only
-update the event listener when the `event` property type changes. We do this by
-checking `this.data` against the `oldData` argument provided by the `.update()`
-handler:
+listener whenever the `event` property type changes. We want to only update the
+event listener when the `event` property type changes. We do this by checking
+`this.data` against the `oldData` argument provided by the `.update()` handler:
 
 ```js
 AFRAME.registerComponent('log', {
@@ -286,8 +284,8 @@ AFRAME.registerComponent('log', {
   },
 
   init: function () {
-    var data = this.data;
-    this.eventHandlerFn = function () { console.log(data.message); };
+    var self = this;
+    this.eventHandlerFn = function () { console.log(self.data.message); };
   },
 
   update: function (oldData) {
@@ -350,8 +348,8 @@ AFRAME.registerComponent('log', {
   },
 
   init: function () {
-    var data = this.data;
-    this.eventHandlerFn = function () { console.log(data.message); };
+    var self = this;
+    this.eventHandlerFn = function () { console.log(self.data.message); };
   },
 
   update: function (oldData) {
