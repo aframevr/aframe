@@ -45,6 +45,15 @@ We should develop with a local server so that files are properly served. We can 
   and open it from the same directory as your HTML file.
 - Or use Node and npm to start the local server with `npm install && npm run start`.
 
+[angle]: https://www.npmjs.com/package/angle
+
+If you have npm, you can get started with scene template right from the command
+line with [`angle`][angle], a command line interface for A-Frame:
+
+```sh
+npm install -g angle && angle initscene
+```
+
 ## Include the JS Build
 
 If we want to just include the JS build from the CDN, we can drop a `<script>` tag straight into our HTML:

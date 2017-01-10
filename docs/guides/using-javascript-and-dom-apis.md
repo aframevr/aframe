@@ -304,7 +304,7 @@ entityEl.setAttribute('geometry', {primitive: 'torusKnot', p: 1, q: 3, radiusTub
 // <a-entity geometry="primitive: torusKnot; p: 1; q: 3; radiusTubular: 4"></a-entity>
 ```
 
-### Removing Components with `.removeAttribute()`
+### Removing a Component with `.removeAttribute()`
 
 To remove or detach a component from an entity, we can use
 `.removeAttribute(componentName)`. Let's remove the default `wasd-controls`

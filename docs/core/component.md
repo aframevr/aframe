@@ -127,6 +127,10 @@ AFRAME.registerComponent('bar', {
 </a-scene>
 ```
 
+[propsimage]: https://cloud.githubusercontent.com/assets/674727/20326452/b7f94966-ab3d-11e6-95e1-47cabf425278.jpg
+![propsimage]
+<small class="image-caption"><i>Image by Ruben Mueller from vrjump.de</i></small>
+
 ### Property Types
 
 Property types primarily define how the schema parses incoming data from the
@@ -216,6 +220,10 @@ With the schema being the anatomy, the lifecycle methods are the physiology;
 the schema defines the shape of the data, the lifecycle handler methods *use*
 the data to modify the entity. The handlers will usually interact with the
 [Entity API][entity].
+
+[methodsimage]: https://cloud.githubusercontent.com/assets/674727/21803913/2966ba7e-d6e1-11e6-9179-8acafc87540c.jpg
+![methodsimage]
+<small class="image-caption"><i>Lifecycle method handlers. Image by Ruben Mueller from vrjump.de</i></small>
 
 ### Overview of Methods
 
