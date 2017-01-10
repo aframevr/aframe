@@ -483,7 +483,8 @@ Later, when we use this component via HTML, the syntax will look like:
 
 ```html
 <a-scene>
-  <a-entity box="width: 0.5; height: 0.25; depth: 1; color: orange"></a-entity>
+  <a-entity box="width: 0.5; height: 0.25; depth: 1; color: orange"
+            position="0 0 -5"></a-entity>
 </a-scene>
 ```
 
