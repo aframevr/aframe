@@ -735,3 +735,33 @@ are a few places to look:
 - [A-Frame core components][corecomponents] - Source code of A-Frame's standard components.
 - [awesome-aframe components][awesomecomponents] - Giant list of community components.
 - [A-Painter components][paintercomponents] - Application-specific components for A-Painter.
+
+## Publishing a Component
+
+[angle]: https://www.npmjs.com/package/angle
+[awesome]: https://github.com/aframevr/awesome-aframe
+[registry]: https://aframe.io/registry/
+
+Many components in practice will be application-specific or one-off components.
+But if you wrote a component that could be useful to the community and is
+generalized enough to work in other applications, you should publish it to the
+ecosystem via [the A-Frame Registry][registry] and [`awesome-aframe`][awesome]!
+
+For a component template, we recommend using [`angle`][angle].  `angle` is a
+command-line interface for A-Frame; one of its features is to set up a
+component template for publishing to GitHub and npm and also to be consistent
+with all the other components in the ecosystem. To install the template:
+
+```sh
+npm install -g angle && angle initcomponent
+```
+
+[guidelines]: https://github.com/aframevr/aframe-registry#submitting-a-component
+[pr]: https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github
+
+`initcomponent` will ask for some information like the component name to get
+the template set up. Write some code, examples, and documentation, and [send a
+pull request][pr] to the [A-Frame Registry][registry] to get it featured! Follow the
+[Registry guidelnes][guidelines], we'll do a quick code review, and then the
+community will be able to use your component, and hopefully send some helpful
+pull requests back if needed!
