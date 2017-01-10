@@ -216,6 +216,8 @@ module.exports = registerElement('a-scene', {
         // Don't exit VR if not in VR.
         if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
 
+        exitFullscreen();
+
         if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
@@ -488,4 +490,14 @@ function requestFullscreen (canvas) {
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
   requestFullscreen.apply(canvas);
+}
+
+function exitFullscreen () {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
 }
