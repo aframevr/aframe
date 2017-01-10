@@ -104,12 +104,10 @@ suite(componentName, function () {
 
     teardown(function (done) {
       var el = this.el;
+      if (el.components.material) { el.components.material.remove(); }
+      if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
       process.nextTick(function () {
-        if (el.components.material) { el.components.material.remove(); }
-        if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
-        process.nextTick(function () {
-          done();
-        });
+        done();
       });
     });
 
@@ -121,18 +119,16 @@ suite(componentName, function () {
       assert.notOk(initSpy.called);
       assert.notOk(updateSpy.called);
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        assert.ok(instance.uniforms['map']);
-        // the value won't be assigned until the texture loads
-        assert.notOk(instance.uniforms['src']);
-        assert.notOk(instance.attributes && instance.attributes['map']);
-        done();
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.ok(instance.uniforms['map']);
+      // the value won't be assigned until the texture loads
+      assert.notOk(instance.uniforms['src']);
+      assert.notOk(instance.attributes && instance.attributes['map']);
+      done();
     });
 
     test('src --> map loads inline video', function (done) {
@@ -153,17 +149,15 @@ suite(componentName, function () {
         done();
       });
       el.setAttribute('material', 'shader:test-shader; src:' + VIDEO);
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        assert.ok(instance.uniforms['map']);
-        // the value won't be assigned until the texture loads
-        assert.notOk(instance.uniforms['src']);
-        assert.notOk(instance.attributes && instance.attributes['map']);
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.ok(instance.uniforms['map']);
+      // the value won't be assigned until the texture loads
+      assert.notOk(instance.uniforms['src']);
+      assert.notOk(instance.attributes && instance.attributes['map']);
     });
 
     test('otherMap loads inline video', function (done) {
@@ -184,16 +178,14 @@ suite(componentName, function () {
         done();
       });
       el.setAttribute('material', 'shader:test-shader; otherMap:' + VIDEO);
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        assert.ok(instance.uniforms['otherMap']);
-        // the value won't be assigned until the texture loads
-        assert.notOk(instance.attributes && instance.attributes['otherMap']);
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.ok(instance.uniforms['otherMap']);
+      // the value won't be assigned until the texture loads
+      assert.notOk(instance.attributes && instance.attributes['otherMap']);
     });
 
     test('vec2Uniform parameter --> uniform vec2Uniform, not attribute', function (done) {
