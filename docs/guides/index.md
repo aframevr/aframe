@@ -555,7 +555,7 @@ running on the page:
 
     init: function () {
       var data = this.data;
-      this.el.addEventListener('click', function () {
+      this.el.addEventListener('mouseenter', function () {
         this.setAttribute('scale', data.to);
       });
     }
