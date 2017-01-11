@@ -84,7 +84,7 @@ suite('shader', function () {
       if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
     });
 
-    test('src parameter of type map --> uniform map, not attribute', function () {
+    test('src parameter of type map --> uniform src, not attribute', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -97,13 +97,12 @@ suite('shader', function () {
       assert.ok(instance);
       assert.ok(initSpy.calledOnce);
       assert.ok(updateSpy.calledOnce);
-      assert.ok(instance.uniforms['map']);
       // the value won't be assigned until the texture loads
-      assert.notOk(instance.uniforms['src']);
-      assert.notOk(instance.attributes && instance.attributes['map']);
+      assert.ok(instance.uniforms['src']);
+      assert.notOk(instance.attributes && (instance.attributes['map'] || instance.attributes['src']));
     });
 
-    test('src --> map loads inline video', function (done) {
+    test('src loads inline video', function (done) {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -116,7 +115,7 @@ suite('shader', function () {
       el.addEventListener('materialtextureloaded', function () {
         var material = el.components.material;
         var instance = material.shader;
-        assert.equal(instance.material.map.image.getAttribute('src'), VIDEO);
+        assert.equal(instance.material['_texture_src'].image.getAttribute('src'), VIDEO);
         done();
       });
       el.setAttribute('material', 'shader:test-shader; src:' + VIDEO);
@@ -125,10 +124,9 @@ suite('shader', function () {
       assert.ok(instance);
       assert.ok(initSpy.calledOnce);
       assert.ok(updateSpy.calledOnce);
-      assert.ok(instance.uniforms['map']);
       // the value won't be assigned until the texture loads
-      assert.notOk(instance.uniforms['src']);
-      assert.notOk(instance.attributes && instance.attributes['map']);
+      assert.ok(instance.uniforms['src']);
+      assert.notOk(instance.attributes && (instance.attributes['map'] || instance.attributes['src']));
     });
 
     test('otherMap loads inline video', function (done) {

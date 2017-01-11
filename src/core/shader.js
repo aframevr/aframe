@@ -69,12 +69,9 @@ Shader.prototype = {
     function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
-      var varKey = key;
-      // For textures, by convention data.src becomes uniform sampler2D map.
-      if (varKey === 'src' && type === 'uniform' && varType === 't') { varKey = 'map'; }
-      variables[varKey] = {
+      variables[key] = {
         type: varType,
-        value: undefined // let updateVariables handle setting these
+        value: undefined  // let updateVariables handle setting these
       };
     }
     return variables;
@@ -98,32 +95,22 @@ Shader.prototype = {
     var schema = this.schema;
     dataKeys.forEach(processData);
     function processData (key) {
-      var varKey;
       var materialKey;
       if (!schema[key] || schema[key].is !== type) { return; }
       if (schema[key].type === 'map') {
         // Special handling is needed for textures.
-        // For textures, by convention data.src becomes uniform sampler2D map.
-        if (key === 'src' && type === 'uniform') {
-          varKey = 'map';
-          materialKey = 'map';
-        } else {
-          varKey = key;
-          materialKey = '_texture_' + key;
-        }
+        materialKey = '_texture_' + key;
         // If data unchanged, get out early.
-        if (!variables[varKey] || variables[varKey].value === data[key]) { return; }
+        if (!variables[key] || variables[key].value === data[key]) { return; }
         // We can't actually set the variable correctly until we've loaded the texture.
         self.el.addEventListener('materialtextureloaded', function (e) {
-          variables[varKey].value = self.material[materialKey];
-          variables[varKey].needsUpdate = true;
+          variables[key].value = self.material[materialKey];
+          variables[key].needsUpdate = true;
         });
         // Kick off the texture update now that handler is added.
         utils.material.updateMapMaterialFromData(materialKey, key, self, data);
         return;
       }
-
-      // if (variables[key].value === data[key]) { return; }
       variables[key].value = self.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
     }
