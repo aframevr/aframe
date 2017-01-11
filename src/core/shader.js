@@ -71,7 +71,7 @@ Shader.prototype = {
       var varType = propertyToThreeMapping[schema[key].type];
       variables[key] = {
         type: varType,
-        value: undefined  // let updateVariables handle setting these
+        value: undefined  // Let updateVariables handle setting these.
       };
     }
     return variables;
