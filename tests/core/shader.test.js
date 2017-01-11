@@ -1,38 +1,23 @@
-/* global AFRAME */
-/* global assert, process, setup, suite, test, teardown */
+/* global AFRAME, assert, process, setup, suite, test, teardown */
 var entityFactory = require('../helpers').entityFactory;
-var componentName = 'shader';
 
-var VIDEO = 'https://ucarecdn.com/bcece0a8-86ce-460e-856b-40dac4875f15/'; // 'base/tests/assets/test.mp4';
+var VIDEO = 'base/tests/assets/test.mp4';
 
-function isEmpty (map) {
-  for (var key in map) {
-    return !map.hasOwnProperty(key);
-  }
-  return true;
-}
-
-suite(componentName, function () {
+suite('shader', function () {
   setup(function (done) {
     this.el = entityFactory();
-    done();
+    if (this.el.hasLoaded) { done(); } else { this.el.addEventListener('loaded', function () { done(); }); }
   });
 
-  teardown(function (done) {
+  teardown(function () {
     var el = this.el;
-    process.nextTick(function () {
-      if (el.components.material) { el.components.material.remove(); }
-      if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
-      process.nextTick(function () {
-        done();
-      });
-    });
+    if (el.components.material) { el.components.material.remove(); }
+    if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
   });
 
   suite('registerShader', function () {
-    setup(function (done) {
+    setup(function () {
       this.shader = AFRAME.registerShader('test-shader', {});
-      done();
     });
 
     test('shader prototype default methods and properties', function () {
@@ -46,41 +31,35 @@ suite(componentName, function () {
       assert.notOk(shader.prototype.attributes);
     });
 
-    test('shader instance receives methods and properties', function (done) {
+    test('shader instance receives methods and properties', function () {
       var shader = this.shader;
       var el = this.el;
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(material);
-        assert.ok(instance);
-        assert.equal(instance.init, shader.prototype.init);
-        assert.equal(instance.update, shader.prototype.update);
-        assert.equal(instance.vertexShader, shader.prototype.vertexShader);
-        assert.equal(instance.fragmentShader, shader.prototype.fragmentShader);
-        assert.ok(isEmpty(instance.uniforms));
-        assert.ok(isEmpty(instance.attributes));
-        assert.ok(instance.material);
-        done();
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(material);
+      assert.ok(instance);
+      assert.equal(instance.init, shader.prototype.init);
+      assert.equal(instance.update, shader.prototype.update);
+      assert.equal(instance.vertexShader, shader.prototype.vertexShader);
+      assert.equal(instance.fragmentShader, shader.prototype.fragmentShader);
+      assert.equal(Object.keys(instance.uniforms).length, 0);
+      assert.equal(Object.keys(instance.attributes).length, 0);
+      assert.ok(instance.material);
     });
 
-    test('shader instance called init and update', function (done) {
+    test('shader instance called init and update', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
       var updateSpy = this.sinon.spy(shader.prototype, 'update');
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(material);
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        done();
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(material);
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
     });
   });
 
@@ -96,22 +75,16 @@ suite(componentName, function () {
           vec2Neither: {type: 'vec2', default: {x: 5, y: 6}}
         }
       });
-      if (el.hasLoaded) { done(); }
-      el.addEventListener('loaded', function () {
-        done();
-      });
+      if (el.hasLoaded) { done(); } else { el.addEventListener('loaded', function () { done(); }); }
     });
 
-    teardown(function (done) {
+    teardown(function () {
       var el = this.el;
       if (el.components.material) { el.components.material.remove(); }
       if (AFRAME.shaders['test-shader']) delete AFRAME.shaders['test-shader'];
-      process.nextTick(function () {
-        done();
-      });
     });
 
-    test('src parameter of type map --> uniform map, not attribute', function (done) {
+    test('src parameter of type map --> uniform map, not attribute', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -128,7 +101,6 @@ suite(componentName, function () {
       // the value won't be assigned until the texture loads
       assert.notOk(instance.uniforms['src']);
       assert.notOk(instance.attributes && instance.attributes['map']);
-      done();
     });
 
     test('src --> map loads inline video', function (done) {
@@ -144,7 +116,6 @@ suite(componentName, function () {
       el.addEventListener('materialtextureloaded', function () {
         var material = el.components.material;
         var instance = material.shader;
-        // assert.ok(instance.uniforms['map'].value);
         assert.equal(instance.material.map.image.getAttribute('src'), VIDEO);
         done();
       });
@@ -173,7 +144,6 @@ suite(componentName, function () {
       el.addEventListener('materialtextureloaded', function () {
         var material = el.components.material;
         var instance = material.shader;
-        // assert.ok(instance.uniforms['otherMap'].value);
         assert.equal(instance.material['_texture_' + 'otherMap'].image.getAttribute('src'), VIDEO);
         done();
       });
@@ -188,7 +158,7 @@ suite(componentName, function () {
       assert.notOk(instance.attributes && instance.attributes['otherMap']);
     });
 
-    test('vec2Uniform parameter --> uniform vec2Uniform, not attribute', function (done) {
+    test('vec2Uniform parameter --> uniform vec2Uniform, not attribute', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -196,23 +166,18 @@ suite(componentName, function () {
       assert.notOk(initSpy.called);
       assert.notOk(updateSpy.called);
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        process.nextTick(function () {
-          assert.ok(instance.uniforms['vec2Uniform']);
-          assert.equal(instance.uniforms['vec2Uniform'].value.x, 1); // fails, why?
-          assert.equal(instance.uniforms['vec2Uniform'].value.y, 2); // fails, why?
-          assert.notOk(instance.attributes['vec2Uniform']);
-          done();
-        });
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.ok(instance.uniforms['vec2Uniform']);
+      assert.equal(instance.uniforms['vec2Uniform'].value.x, 1); // fails, why?
+      assert.equal(instance.uniforms['vec2Uniform'].value.y, 2); // fails, why?
+      assert.notOk(instance.attributes['vec2Uniform']);
     });
 
-    test('vec2Attribute parameter --> attribute vec2Attribute, not uniform', function (done) {
+    test('vec2Attribute parameter --> attribute vec2Attribute, not uniform', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -220,23 +185,18 @@ suite(componentName, function () {
       assert.notOk(initSpy.called);
       assert.notOk(updateSpy.called);
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        process.nextTick(function () {
-          assert.ok(instance.attributes['vec2Attribute']);
-          assert.equal(instance.attributes['vec2Attribute'].value.x, 3);
-          assert.equal(instance.attributes['vec2Attribute'].value.y, 4);
-          assert.notOk(instance.uniforms['vec2Attribute']);
-          done();
-        });
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.ok(instance.attributes['vec2Attribute']);
+      assert.equal(instance.attributes['vec2Attribute'].value.x, 3);
+      assert.equal(instance.attributes['vec2Attribute'].value.y, 4);
+      assert.notOk(instance.uniforms['vec2Attribute']);
     });
 
-    test('vec2Neither parameter --> neither uniform nor attribute', function (done) {
+    test('vec2Neither parameter --> neither uniform nor attribute', function () {
       var shader = this.shader;
       var el = this.el;
       var initSpy = this.sinon.spy(shader.prototype, 'init');
@@ -244,18 +204,13 @@ suite(componentName, function () {
       assert.notOk(initSpy.called);
       assert.notOk(updateSpy.called);
       el.setAttribute('material', 'shader:test-shader');
-      process.nextTick(function () {
-        var material = el.components.material;
-        var instance = material.shader;
-        assert.ok(instance);
-        assert.ok(initSpy.calledOnce);
-        assert.ok(updateSpy.calledOnce);
-        process.nextTick(function () {
-          assert.notOk(instance.attributes['vec2Neither']);
-          assert.notOk(instance.uniforms['vec2Neither']);
-          done();
-        });
-      });
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      assert.notOk(instance.attributes['vec2Neither']);
+      assert.notOk(instance.uniforms['vec2Neither']);
     });
   });
 });
