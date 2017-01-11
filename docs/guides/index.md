@@ -533,9 +533,9 @@ a full `{x, y, z}` object as the second argument.
 
 ```js
 <script>
-  var boxEl = document.querySelector('a-box')
+  var boxEl = document.querySelector('a-box');
   boxEl.addEventListener('mouseenter', function () {
-    boxEl.setAttribute('scale', {x: 2, y: 2: z: 2});
+    boxEl.setAttribute('scale', {x: 2, y: 2, z: 2});
   });
 </script>
 ```
