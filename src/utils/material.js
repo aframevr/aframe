@@ -4,28 +4,41 @@
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMap = function (shader, data) {
+module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
-  var src = data.src;
+  var src = data[dataName];
+  var shadowSrcName = '_texture_' + dataName;
 
   if (src) {
-    if (src === shader.textureSrc) { return; }
+    if (src === shader[shadowSrcName]) { return; }
     // Texture added or changed.
-    shader.textureSrc = src;
+    shader[shadowSrcName] = src;
     el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
   }
 
   // Texture removed.
-  if (!material.map) { return; }
+  if (!material[materialName]) { return; }
+  shader[shadowSrcName] = null;
   setMap(null);
 
   function setMap (texture) {
-    material.map = texture;
+    if (shader[shadowSrcName] !== src) { return; }
+    material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
+};
+
+/**
+ * Update `material.map` given `data.src`. For standard and flat shaders.
+ *
+ * @param {object} shader - A-Frame shader instance.
+ * @param {object} data
+ */
+module.exports.updateMap = function (shader, data) {
+  return module.exports.updateMapMaterialFromData('map', 'src', shader, data);
 };
 
 /**

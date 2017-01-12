@@ -72,6 +72,9 @@ function assetParse (value) {
   var el;
   var parsedUrl;
 
+  // If an element was provided (e.g. canvas or video), just return it.
+  if (typeof value !== 'string') { return value; }
+
   // Wrapped `url()` in case of data URI.
   parsedUrl = value.match(/\url\((.+)\)/);
   if (parsedUrl) { return parsedUrl[1]; }
