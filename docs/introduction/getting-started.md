@@ -23,6 +23,8 @@ download or install anything. Check out the [official MozVR
 CodePens](http://codepen.io/mozvr/) and the [A-Frame Hello World
 CodePen][codepen]:
 
+**Note:** VR mode currently won't work until the `allowvr` attribute is added to CodePen's I-Frames.
+
 <p data-height="300" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
 ## Grab the Boilerplate
