@@ -65602,6 +65602,9 @@ function assetParse (value) {
   var el;
   var parsedUrl;
 
+  // If an element was provided (e.g. canvas or video), just return it.
+  if (typeof value !== 'string') { return value; }
+
   // Wrapped `url()` in case of data URI.
   parsedUrl = value.match(/\url\((.+)\)/);
   if (parsedUrl) { return parsedUrl[1]; }
@@ -66480,6 +66483,7 @@ var processSchema = schema.process;
 var shaders = module.exports.shaders = {};  // Keep track of registered shaders.
 var shaderNames = module.exports.shaderNames = [];  // Keep track of the names of registered shaders.
 var THREE = _dereq_('../lib/three');
+var utils = _dereq_('../utils');
 
 // A-Frame properties to three.js uniform types.
 var propertyToThreeMapping = {
@@ -66537,7 +66541,6 @@ Shader.prototype = {
   },
 
   initVariables: function (data, type) {
-    var self = this;
     var variables = {};
     var schema = this.schema;
     var schemaKeys = Object.keys(schema);
@@ -66545,10 +66548,9 @@ Shader.prototype = {
     function processSchema (key) {
       if (schema[key].is !== type) { return; }
       var varType = propertyToThreeMapping[schema[key].type];
-      var varValue = schema[key].parse(data[key] || schema[key].default);
       variables[key] = {
         type: varType,
-        value: self.parseValue(schema[key].type, varValue)
+        value: undefined  // Let updateVariables handle setting these.
       };
     }
     return variables;
@@ -66572,8 +66574,22 @@ Shader.prototype = {
     var schema = this.schema;
     dataKeys.forEach(processData);
     function processData (key) {
+      var materialKey;
       if (!schema[key] || schema[key].is !== type) { return; }
-      if (variables[key].value === data[key]) { return; }
+      if (schema[key].type === 'map') {
+        // Special handling is needed for textures.
+        materialKey = '_texture_' + key;
+        // If data unchanged, get out early.
+        if (!variables[key] || variables[key].value === data[key]) { return; }
+        // We can't actually set the variable correctly until we've loaded the texture.
+        self.el.addEventListener('materialtextureloaded', function (e) {
+          variables[key].value = self.material[materialKey];
+          variables[key].needsUpdate = true;
+        });
+        // Kick off the texture update now that handler is added.
+        utils.material.updateMapMaterialFromData(materialKey, key, self, data);
+        return;
+      }
       variables[key].value = self.parseValue(schema[key].type, data[key]);
       variables[key].needsUpdate = true;
     }
@@ -66636,7 +66652,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":106,"./schema":70}],72:[function(_dereq_,module,exports){
+},{"../lib/three":106,"../utils":124,"./schema":70}],72:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -69324,28 +69340,41 @@ module.exports.srcLoader = _dereq_('./src-loader');
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
  */
-module.exports.updateMap = function (shader, data) {
+module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
   var material = shader.material;
-  var src = data.src;
+  var src = data[dataName];
+  var shadowSrcName = '_texture_' + dataName;
 
   if (src) {
-    if (src === shader.textureSrc) { return; }
+    if (src === shader[shadowSrcName]) { return; }
     // Texture added or changed.
-    shader.textureSrc = src;
+    shader[shadowSrcName] = src;
     el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
   }
 
   // Texture removed.
-  if (!material.map) { return; }
+  if (!material[materialName]) { return; }
+  shader[shadowSrcName] = null;
   setMap(null);
 
   function setMap (texture) {
-    material.map = texture;
+    if (shader[shadowSrcName] !== src) { return; }
+    material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
   }
+};
+
+/**
+ * Update `material.map` given `data.src`. For standard and flat shaders.
+ *
+ * @param {object} shader - A-Frame shader instance.
+ * @param {object} data
+ */
+module.exports.updateMap = function (shader, data) {
+  return module.exports.updateMapMaterialFromData('map', 'src', shader, data);
 };
 
 /**
