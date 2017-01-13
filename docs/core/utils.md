@@ -3,7 +3,7 @@ title: Utils
 type: core
 layout: docs
 parent_section: core
-order: 10
+order: 11
 ---
 
 A-Frame's utility modules are public through `AFRAME.utils`.
