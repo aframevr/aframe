@@ -97,3 +97,4 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
+
