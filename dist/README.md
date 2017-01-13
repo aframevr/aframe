@@ -1,25 +1,21 @@
 ## A-Frame Builds
 
-> The `aframe.js` group of builds are deprecated and will be removed. Use the
-> `aframe-master.js` group of builds instead.
+To include these builds, you can download and serve them locally.
 
-To include these files, you can either download and serve them locally. Or
-serve directly from `rawgit.com` CDN.
+To include the latest [master build](#master-builds) from a CDN, include the
+script below from the [rawgit CDN](https://rawgit.com/):
 
 ```html
 <html>
   <head>
-    <script src="https://rawgit.com/aframevr/aframe/master/dist/FILENAME"></script>
+    <script src="https://rawgit.com/aframevr/aframe/9c461f9/dist/aframe-master.min.js"></script>
   </head>
-  <!-- ... -->
+  <body>
+    <a-scene>
+      <!-- ... -->
+    </a-scene>
+  </body>
 </html>
-```
-
-If serving from `rawgit.com`, we recommend locking the file to a specific hash
-rather than tracking the master branch to prevent regressions:
-
-```html
-<script src="https://rawgit.com/aframevr/aframe/HASH/dist/FILENAME"></script>
 ```
 
 ### Release Builds
@@ -38,13 +34,11 @@ These master builds are unstable **bleeding-edge unstable builds** that contain
 newer fixes or features from the **master branch** on GitHub, but may contain
 regressions or breaking changes.
 
+If you're pointing to these builds via the [rawgit CDN](https://rawgit.com/),
+we recommend locking it down to a commit hash rather than pointing directly at
+master such that your scene does not break unexpectedly.
+
 - [`aframe-master.min.js`](aframe-master.min.js) - Minified production build.
 - [`aframe-master.min.js.map`](aframe-master.min.js.map) - Source maps for minified production build.
 - [`aframe-master.js`](aframe-master.js) - Unminified build, for development or debugging.
 - [`aframe-master.js.map`](aframe-master.js.map) - Source maps for unminified build.
-
-### Deprecated Builds
-
-The builds such as `aframe.js` or `aframe.min.js` are deprecated. They will be
-removed in time. We are currently allowing time for people to switch pointing
-their scenes to these builds through `rawgit.com`.
