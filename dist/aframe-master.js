@@ -58732,7 +58732,7 @@ module.exports={
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
     "precommit": "npm run lint",
-    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
+    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/ -r --silent",
     "prerelease": "npm run dist && node scripts/release.js 0.3.2 0.4.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -67650,7 +67650,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 13-01-2017, Commit #3b3cf0e)');
+console.log('A-Frame Version: 0.4.0 (Date 13-01-2017, Commit #9abc5d5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
