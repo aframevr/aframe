@@ -15,8 +15,8 @@ function execCmd (cmd) {
 var consts = {
   NAME: 'AFRAME',
   ENTRY: './src/index.js',
-  DIST: 'dist/aframe.js',
-  BUILD: 'build/aframe.js',
+  DIST: 'dist/aframe-master.js',
+  BUILD: 'build/aframe-master.js',
   WATCH: 'examples/**/*',  // Additional files to watch for LiveReload
   PORT: 9000
 };
@@ -31,7 +31,7 @@ var opts = {
   watchGlob: consts.WATCH,
   browserifyArgs: ['-s', consts.NAME],
   middleware: function (req, res, next) {
-    // Route `dist/aframe.js` to `build/aframe.js` so we can
+    // Route `dist/aframe-master.js` to `build/aframe-master.js` so we can
     // dev against the examples :)
     var path = urlParse(req.url).pathname;
     if (path.indexOf('/' + consts.DIST) !== -1) {
