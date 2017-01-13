@@ -58725,7 +58725,7 @@ module.exports={
     "build": "mkdirp build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
-    "dist": "npm run dist:min && npm run dist:max",
+    "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
     "dist:min": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
@@ -58769,6 +58769,7 @@ module.exports={
     "cross-env": "^3.1.3",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
+    "git-rev": "^0.2.1",
     "glob": "^7.1.1",
     "husky": "^0.11.7",
     "istanbul": "^0.4.5",
@@ -67649,7 +67650,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version:', pkg.version);
+console.log('A-Frame Version: 0.4.0 (Date 13-01-2017, Commit #9c461f9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
