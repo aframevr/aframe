@@ -237,7 +237,7 @@ entityEl.setAttribute('dynamic-body', {
 });
 ```
 
-[setattr]:  ./core/entity.md#setattribute-attr-value-componentAttrValue
+[setattr]:  ../core/entity.md#setattribute-attr-value-componentattrvalue
 
 Unlike a normal HTML `.setAttribute()`, an entity's `.setAttribute()` is
 improved to take a variety of types of arguments such as objects, or to be able
