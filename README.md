@@ -77,7 +77,7 @@ To use the latest stable build of A-Frame, include [`aframe.min.js`](https://afr
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script.
+  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
 </head>
 ```
 
