@@ -1045,6 +1045,19 @@ suite('a-entity', function () {
       assert.equal(el.getAttribute('sound__2').src, soundUrl);
       assert.equal(el.getAttribute('sound__2').autoplay, true);
     });
+
+    test('clear mixin', function () {
+      var el = this.el;
+      mixinFactory('material', {material: 'shader: flat'});
+      mixinFactory('position', {position: '1 2 3'});
+      el.setAttribute('mixin', 'material position');
+      el.setAttribute('material', 'color: red');
+      assert.shallowDeepEqual(el.getAttribute('material'), {shader: 'flat', color: 'red'});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+      el.setAttribute('mixin', '');
+      assert.shallowDeepEqual(el.getAttribute('material'), {color: 'red'});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
+    });
   });
 });
 

@@ -129,7 +129,7 @@ module.exports = registerElement('a-node', {
 
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins.split(' ');
+        var newMixinsIds = newMixins ? newMixins.split(' ') : [];
         var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
         // To determine what listeners will be removed
         var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
