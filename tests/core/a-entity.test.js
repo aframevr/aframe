@@ -1054,9 +1054,11 @@ suite('a-entity', function () {
       el.setAttribute('material', 'color: red');
       assert.shallowDeepEqual(el.getAttribute('material'), {shader: 'flat', color: 'red'});
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+      assert.equal(el.mixinEls.length, 2);
       el.setAttribute('mixin', '');
       assert.shallowDeepEqual(el.getAttribute('material'), {color: 'red'});
       assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
+      assert.equal(el.mixinEls.length, 0);
     });
   });
 });
