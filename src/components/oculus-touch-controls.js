@@ -232,14 +232,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'buttonHand_oculus-touch-controller-left.004' : 'buttonHand_oculus-touch-controller-right.005');
     buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'stick_oculus-touch-controller-left.007' : 'stick_oculus-touch-controller-right.004');
     buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'buttonTrigger_oculus-touch-controller-left.005' : 'buttonTrigger_oculus-touch-controller-right.006');
-    buttonMeshes['X'] = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
-    buttonMeshes['A'] = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
-    buttonMeshes['Y'] = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
-    buttonMeshes['B'] = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
-    // this changes entire body color...
-    // buttonMeshes.surface = controllerObject3D.getObjectByName(leftHand ? 'body_oculus-touch-controller-left.006' : 'body_oculus-touch-controller-right');
-    // this is not passed on from browser...
-    // buttonMeshes.menu = controllerObject3D.getObjectByName(leftHand ? 'buttonMenu_oculus-touch-controller-left.003' : 'buttonHome_oculus-touch-controller-right.001');
+    buttonMeshes.X = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
+    buttonMeshes.A = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
+    buttonMeshes.Y = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
+    buttonMeshes.B = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
 
     // Offset pivot point
     controllerObject3D.position = PIVOT_OFFSET;
