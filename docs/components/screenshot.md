@@ -15,6 +15,14 @@ To take a normal (perspective) screenshot, use the keyboard shortcut (`<ctrl> + 
 To take a 360&deg; (equirectangular) screenshot, use the keyboard shortcut
 (`<ctrl> + <alt> + <shift> +s`).
 
+To take a screenshot programmatically, call the component
+
+```javascript
+// assuming your current scene is represented by sceneEl
+sceneEl.components.screenshot.capture('perspective')
+// projection property can be perspective or equirectangular
+```
+
 ## Example
 
 Unless we wish to customize the screenshot, explicitly setting the screenshot
