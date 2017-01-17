@@ -567,6 +567,11 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
 
+      if (attr === 'mixin') {
+        this.updateMixins();
+        return;
+      }
+
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },

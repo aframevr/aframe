@@ -131,6 +131,16 @@ module.exports = registerElement('a-node', {
       value: function (newMixins, oldMixins) {
         var newMixinsIds = newMixins ? newMixins.trim().split(/\s+/) : [];
         var oldMixinsIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+
+        if (!newMixins) {
+          var mixinEls = this.mixinEls;
+          for (var i = 0; i < mixinEls.length; i++) {
+            this.unregisterMixin(mixinEls[i].id);
+          }
+          HTMLElement.prototype.removeAttribute.call(this, 'mixin');
+          return;
+        }
+
         // To determine what listeners will be removed
         var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
         this.mixinEls = [];
