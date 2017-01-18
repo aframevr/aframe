@@ -60459,9 +60459,10 @@ var EMULATED_TOUCH_THRESHOLD = 0.001;
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},          // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'}, // Light blue.
-    model: {default: true},
+    buttonColor: {default: '#999'},          // Off-white.
+    buttonTouchColor: {default: '#8AB'},
+    buttonHighlightColor: {default: '#2DF'}, // Light blue.
+    model: { default: true },
     rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
 
@@ -60645,8 +60646,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
       (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
     }
-    if (button !== 'trigger' || !buttonMeshes || !buttonMeshes.trigger) { return; }
-    buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+    if (!buttonMeshes) { return; }
+    if (button === 'trigger' && buttonMeshes.trigger) {
+      buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 24);
+    }
+    if (button === 'grip' && buttonMeshes.grip) {
+      buttonMeshes.grip.rotation.y = (this.data.hand === 'left' ? -1 : 1) * analogValue * (Math.PI / 60);
+    }
   },
 
   onModelLoaded: function (evt) {
@@ -60657,14 +60663,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var leftHand = this.data.hand === 'left';
     buttonMeshes = this.buttonMeshes = {};
 
-    buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'grip tooche1 group3' : 'grip tooche group4');
-    buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 control_surface group2 thumb_stick' : 'tooche group4 control_surface group2 thumb_stick');
-    buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 trigger' : 'tooche group4 trigger');
-    buttonMeshes['X'] = controllerObject3D.getObjectByName('tooche1 group3 control_surface group2 button2');
-    buttonMeshes['A'] = controllerObject3D.getObjectByName('tooche group4 control_surface group2 button2');
-    buttonMeshes['Y'] = controllerObject3D.getObjectByName('tooche1 group3 control_surface group2 button3');
-    buttonMeshes['B'] = controllerObject3D.getObjectByName('tooche group4 control_surface group2 button3');
-    buttonMeshes.surface = controllerObject3D.getObjectByName(leftHand ? 'tooche1 group3 face control_surface group2' : 'tooche group4 face control_surface group2');
+    buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'buttonHand_oculus-touch-controller-left.004' : 'buttonHand_oculus-touch-controller-right.005');
+    buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'stick_oculus-touch-controller-left.007' : 'stick_oculus-touch-controller-right.004');
+    buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'buttonTrigger_oculus-touch-controller-left.005' : 'buttonTrigger_oculus-touch-controller-right.006');
+    buttonMeshes.X = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
+    buttonMeshes.A = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
+    buttonMeshes.Y = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
+    buttonMeshes.B = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
 
     // Offset pivot point
     controllerObject3D.position = PIVOT_OFFSET;
@@ -60695,7 +60700,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   updateButtonModel: function (buttonName, state) {
-    var color = state === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
+    var color = (state === 'up' || state === 'touchend') ? this.data.buttonColor : state === 'touchstart' ? this.data.buttonTouchColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
     if (!this.data.model) { return; }
     if (buttonMeshes && buttonMeshes[buttonName]) {
@@ -64738,8 +64743,8 @@ module.exports = registerElement('a-node', {
 
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins.split(' ');
-        var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
+        var newMixinsIds = newMixins ? newMixins.trim().split(/\s+/) : [];
+        var oldMixinsIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
         // To determine what listeners will be removed
         var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
         this.mixinEls = [];
@@ -67650,7 +67655,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 14-01-2017, Commit #a1e0116)');
+console.log('A-Frame Version: 0.4.0 (Date 18-01-2017, Commit #1b9bea1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
