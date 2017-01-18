@@ -668,8 +668,8 @@ into it:
 
 Traditionally, we would use a browser's development tools and DOM inspector to
 debug web pages. A-Frame comes with its own development tools and inspector
-designed for 3D and VR. The A-Frame Inspector can be opened by pressing `<ctrl>
-+ <alt> + i` on our keyboard. The A-Frame scene at the top of this page will be
+designed for 3D and VR. The A-Frame Inspector can be opened by pressing **`<ctrl> + <alt> + i`**
+on our keyboard. The A-Frame scene at the top of this page will be
 opened in a visual tool, where we can inspect objects and change values live.
 And we can do this for any A-Frame scene we find on the Web.
 
