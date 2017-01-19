@@ -399,6 +399,7 @@ AFRAME.registerComponent('tracked-controls', {
 `.pause ()` is called when the entity or scene pauses. The entity can call a
 component's `pause` handler:
 
+- Before the component is removed, before the `remove` handler is called.
 - When the entity is paused with `Entity.pause ()`.
 - When the scene is paused with `Scene.pause ()` (e.g., the Inspector is opened).
 
