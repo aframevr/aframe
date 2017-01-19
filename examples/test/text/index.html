@@ -11,54 +11,54 @@
 
       <a-entity position="-2.5 0.7 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity id="opacity" position="-2.5 0.7 0"
-                bmfont-text="color: white; align: center; text: Animate opacity; width: 1.5">
+                text="color: white; align: center; value: Animate opacity; width: 1.5">
       </a-entity>
       <a-entity position="0 0.7 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity id="color" position="0 0.7 0"
-                bmfont-text="color: white; align: center; text: Animate color; width: 1.5">
+                text="color: white; align: center; value: Animate color; width: 1.5">
       </a-entity>
       <a-entity position="2.5 0.7 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity id="size" position="2.5 0.7 0"
-                bmfont-text="color: white; align: center; text: Animate size; width: 1.5">
+                text="color: white; align: center; value: Animate size; width: 1.5">
       </a-entity>
 
 
       <a-entity position="-2.5 1 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity position="-2.5 1 0"
-                bmfont-text="anchor: left; width: 1.5; color: white; text: (left anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                text="font: kelsonsans; anchor: left; width: 1.5; color: white; value: (left anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
       </a-entity>
       <a-entity position="0 1 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity position="0 1 0"
-                bmfont-text="anchor: center; width: 1.5; color: white; text: (center anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                text="font: kelsonsans; anchor: center; width: 1.5; color: white; value: (center anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
       </a-entity>
       <a-entity position="2.5 1 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity position="2.5 1 0"
-                bmfont-text="anchor: right; width: 1.5; color: white; text: (right anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                text="font: kelsonsans; anchor: right; width: 1.5; color: white; value: (right anchor) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
       </a-entity>
 
 
       <a-entity position="-1 2.5 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity position="-1 2.5 0"
-                bmfont-text="width: 2; color: white; text: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                text="width: 2; color: white; value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
       </a-entity>
 
       <a-entity position="-1 2 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
       <a-entity position="-1 2 0"
-                bmfont-text="width: 2; lineHeight: 50; letterSpacing: 5; color: white; text: (line and letter spacing) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+                text="width: 2; lineHeight: 50; letterSpacing: 5; color: white; value: (line and letter spacing) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
       </a-entity>
 
       <a-entity position="2 2 0">
         <a-entity position="0 0 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
         <a-entity position="0 0 0" geometry="primitive: plane; width:auto; height:auto" material="color: #333"
-                  bmfont-text="color: yellow; align: left; text: left aligned; width: 2; ">
+                  text="color: yellow; align: left; value: left aligned; width: 2; ">
         </a-entity>
         <a-entity position="0 0.2 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
         <a-entity position="0 0.2 0" geometry="primitive: plane; width:auto; height:auto" material="color: #333"
-                  bmfont-text="color: red; align: right; text: right aligned; width: 2; ">
+                  text="color: red; align: right; value: right aligned; width: 2; ">
         </a-entity>
         <a-entity position="0 0.4 0.01" geometry="primitive: plane; width:0.02; height: 0.02" material="color: red"></a-entity>
         <a-entity position="0 0.4 0" geometry="primitive: plane; width:auto; height:auto" material="color: #eee"
-                  bmfont-text="color: blue; align: center; text: center aligned; width: 2; ">
+                  text="color: blue; align: center; value: center aligned; width: 2; ">
         </a-entity>
       </a-entity>
       <a-sky color="black"></a-sky>
@@ -72,7 +72,7 @@
         .repeat( Infinity )
         .yoyo( true )
         .onUpdate(function () {
-          opacity.setAttribute('bmfont-text', 'opacity', obj.opacity);
+          opacity.setAttribute('text', 'opacity', obj.opacity);
         })
         .start();
 
@@ -80,7 +80,7 @@
       var color = document.getElementById('color');
       setInterval(function() {
         var randomHexColor = '#'+Math.floor(Math.random()*16777215).toString(16);
-        color.setAttribute('bmfont-text', 'color', randomHexColor);
+        color.setAttribute('text', 'color', randomHexColor);
       }, 1000);
 
       // Animate size
@@ -91,7 +91,7 @@
         .repeat( Infinity )
         .yoyo( true )
         .onUpdate(function () {
-          size.setAttribute('bmfont-text', 'wrapcount', objsize.scale);
+          size.setAttribute('text', 'wrapCount', objsize.scale);
         })
         .start();
 

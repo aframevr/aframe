@@ -1,5 +1,4 @@
 require('./blend-character-model');
-require('./bmfont-text');
 require('./camera');
 require('./collada-model');
 require('./cursor');
@@ -15,6 +14,7 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
+require('./text');
 require('./tracked-controls');
 require('./visible');
 require('./vive-controls');
