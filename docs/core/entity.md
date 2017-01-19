@@ -425,11 +425,12 @@ entity.is('selected');  // >> false
 
 | Event Name       | Description                                                         |
 |------------------|---------------------------------------------------------------------|
-| child-attached   | A child was attached to the entity.                                 |
+| child-attached   | A child entity was attached to the entity.                          |
+| child-detached   | A child entity was detached from the entity.                        |
 | componentchanged | One of the entity's components was modified.                        |
 | componentinit    | One of the entity's components was initialized.                     |
 | componentremoved | One of the entity's components was removed.                         |
-| loaded           | The entity has attached and initialized its components.      |
+| loaded           | The entity has attached and initialized its components.             |
 | pause            | The entity is now inactive and paused in terms of dynamic behavior. |
 | play             | The entity is now active and playing in terms of dynamic behavior.  |
 | stateadded       | The entity received a new state.                                    |
