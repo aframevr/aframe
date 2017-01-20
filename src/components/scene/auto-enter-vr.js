@@ -45,7 +45,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     if (!data.enabled) { return false; }
     // if we have a data string to match against display name, try and get it;
     // if we can't get display name, or it doesn't match, we should not auto-enter VR
-    if (data.display) {
+    if (data.display && data.display !== 'all') {
       var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
       if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) { return false; }
     }
