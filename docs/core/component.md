@@ -566,14 +566,29 @@ document.querySelector('[geometry]').components.geometry.flushToDOM();
 
 Read more about [component-to-DOM serialization][componentserialization].
 
-## Accessing a Component's Methods and Properties
+## Accessing a Component's Members and Methods
 
-A component's methods and properties can be access through the entity from the
+A component's members and methods can be accessed through the entity from the
 `.components` object. Look up the component from the entity's map of
-components, and we'll have access to the component's public API:
+components, and we'll have access to the component's internals. Consider this
+example component:
+
+```js
+AFRAME.registerComponent('foo', {
+  init: function () {
+    this.bar = 'baz';
+  },
+
+  qux: function () {
+    // ...
+  }
+});
+```
+
+Let's access the `bar` member and `qux` method:
 
 ```js
 var fooComponent = document.querySelector('[foo]').components.foo;
-console.log(fooComponent.barProperty);
-fooComponent.bazMethod();
+console.log(fooComponent.bar);
+fooComponent.baz();
 ```
