@@ -327,6 +327,30 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
       });
     });
 
+    test('calls component pause handlers', function (done) {
+      var el = this.el;
+      AFRAME.registerComponent('foo', {
+        pause: function () {
+          delete AFRAME.components.foo;
+          done();
+        }
+      });
+      el.setAttribute('foo', '');
+      document.body.removeChild(el);
+    });
+
+    test('calls component remove handlers', function (done) {
+      var el = this.el;
+      AFRAME.registerComponent('foo', {
+        remove: function () {
+          delete AFRAME.components.foo;
+          done();
+        }
+      });
+      el.setAttribute('foo', '');
+      document.body.removeChild(el);
+    });
+
     test('does not destroy document.body', function (done) {
       var el = this.el;
       document.body.removeChild(el);

@@ -38,6 +38,7 @@ module.exports.Component = registerComponent('stats', {
   remove: function () {
     this.el.removeEventListener('enter-vr', this.hideBound);
     this.el.removeEventListener('exit-vr', this.showBound);
+    if (!this.statsEl) { return; }  // Scene detached.
     this.statsEl.parentNode.removeChild(this.statsEl);
   },
 
