@@ -3,8 +3,10 @@ var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene');
 var components = require('core/component').components;
-var helpers = require('../../helpers');
+var scenes = require('core/scene/scenes');
 var systems = require('core/system').systems;
+
+var helpers = require('../../helpers');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -406,5 +408,35 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
+  });
+});
+
+suite('scenes', function () {
+  var sceneEl;
+
+  setup(function () {
+    scenes.length = 0;
+    sceneEl = document.createElement('a-scene');
+  });
+
+  test('is appended with scene attach', function (done) {
+    assert.notOk(scenes.length);
+    sceneEl.addEventListener('loaded', () => {
+      assert.ok(scenes.length);
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
+  test('is popped with scene detached', function (done) {
+    sceneEl.addEventListener('loaded', () => {
+      assert.ok(scenes.length);
+      document.body.removeChild(sceneEl);
+      setTimeout(() => {
+        assert.notOk(scenes.length);
+        done();
+      });
+    });
+    document.body.appendChild(sceneEl);
   });
 });

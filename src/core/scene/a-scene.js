@@ -2,6 +2,7 @@
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
+var scenes = require('./scenes');
 var systems = require('../system').systems;
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
@@ -56,7 +57,6 @@ module.exports = registerElement('a-scene', {
         this.render = bind(this.render, this);
         this.systems = {};
         this.time = 0;
-
         this.init();
       }
     },
@@ -105,6 +105,9 @@ module.exports = registerElement('a-scene', {
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
         this.play();
+
+        // Add to scene index.
+        scenes.push(this);
       },
       writable: window.debug
     },
@@ -129,8 +132,12 @@ module.exports = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
+        var sceneIndex;
         window.cancelAnimationFrame(this.animationFrameID);
         this.animationFrameID = null;
+        // Remove from scene index.
+        sceneIndex = scenes.indexOf(this);
+        scenes.splice(sceneIndex, 1);
       }
     },
 

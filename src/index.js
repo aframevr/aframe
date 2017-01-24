@@ -1,12 +1,13 @@
 var utils = require('./utils/');
 
 var debug = utils.debug;
-var error = debug('A-Frame:warn');
-var info = debug('A-Frame:info');
+var warn = debug('A-Frame:warn');
 
-if (document.currentScript && document.currentScript.parentNode !== document.head) {
-  error('Put the A-Frame <script> tag in the <head> of the HTML before <a-scene> to ensure everything for A-Frame is properly registered before they are used in the <body>.');
-  info('Also make sure that any component <script> tags are included after A-Frame, but still before <a-scene>.');
+if (document.currentScript && document.currentScript.parentNode !== document.head &&
+    !window.debug) {
+  warn('Put the A-Frame <script> tag in the <head> of the HTML *before* the scene to ' +
+       'ensure everything for A-Frame is properly registered before they are used from ' +
+       'HTML.');
 }
 
 // Polyfill `Promise`.
@@ -90,6 +91,7 @@ module.exports = window.AFRAME = {
     getMeshMixin: require('./extras/primitives/getMeshMixin'),
     primitives: require('./extras/primitives/primitives').primitives
   },
+  scenes: require('./core/scene/scenes'),
   schema: require('./core/schema'),
   shaders: shaders,
   systems: systems,
