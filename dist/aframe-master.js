@@ -61655,6 +61655,7 @@ module.exports.Component = registerComponent('stats', {
   remove: function () {
     this.el.removeEventListener('enter-vr', this.hideBound);
     this.el.removeEventListener('exit-vr', this.showBound);
+    if (!this.statsEl) { return; }  // Scene detached.
     this.statsEl.parentNode.removeChild(this.statsEl);
   },
 
@@ -63707,9 +63708,13 @@ var proto = Object.create(ANode.prototype, {
    */
   detachedCallback: {
     value: function () {
-      if (!this.parentEl || this.isScene) { return; }
+      if (!this.parentEl) { return; }
+
       // Remove components.
       Object.keys(this.components).forEach(bind(this.removeComponent, this));
+
+      if (this.isScene) { return; }
+
       this.removeFromParent();
       ANode.prototype.detachedCallback.call(this);
     }
@@ -67655,7 +67660,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 24-01-2017, Commit #8fa704d)');
+console.log('A-Frame Version: 0.4.0 (Date 24-01-2017, Commit #95af5b8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
