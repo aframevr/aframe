@@ -60972,7 +60972,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     if (!data.enabled) { return false; }
     // if we have a data string to match against display name, try and get it;
     // if we can't get display name, or it doesn't match, we should not auto-enter VR
-    if (data.display) {
+    if (data.display && data.display !== 'all') {
       var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
       if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) { return false; }
     }
@@ -67655,7 +67655,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 18-01-2017, Commit #1b9bea1)');
+console.log('A-Frame Version: 0.4.0 (Date 24-01-2017, Commit #8fa704d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
