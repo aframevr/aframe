@@ -100,9 +100,13 @@ var proto = Object.create(ANode.prototype, {
    */
   detachedCallback: {
     value: function () {
-      if (!this.parentEl || this.isScene) { return; }
+      if (!this.parentEl) { return; }
+
       // Remove components.
       Object.keys(this.components).forEach(bind(this.removeComponent, this));
+
+      if (this.isScene) { return; }
+
       this.removeFromParent();
       ANode.prototype.detachedCallback.call(this);
     }
