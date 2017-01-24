@@ -1,5 +1,5 @@
 ---
-title: <a-octahedron>
+title: <a-isocahedron>
 type: primitives
 layout: docs
 parent_section: primitives
