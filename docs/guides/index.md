@@ -266,6 +266,9 @@ image, or a 360&deg; video. For example, a dark gray background would be:
 
 ## Applying an Image Texture
 
+> Make sure you're [serving your HTML using a local server](../introduction/getting-started.md#using-a-local-server)
+> for textures to load properly.
+
 We can apply an image texture to the box with an image, video, or `<canvas>`
 using the `src` attribute, just like we would with a normal `<img>` element.
 We also should remove the `color="red"` that we set so that the color doesn't
