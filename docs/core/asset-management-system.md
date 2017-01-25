@@ -66,7 +66,7 @@ headers][cors] if the asset is on a different domain. Otherwise, we'd have
 to host assets on the same origin as the scene.
 
 [ghpages]: https://pages.github.com/
-[uploader]: https://aframe.io/aframe/examples/_uploader/
+[uploader]: https://cdn.aframe.io
 
 For some options, [GitHub Pages][ghpages] serves everything with CORS headers.
 We recommend GitHub Pages as a simple deployment platform.  Or you could also
