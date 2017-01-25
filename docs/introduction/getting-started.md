@@ -41,7 +41,8 @@ We can grab the boilerplate in one of two ways:
 
 <a class="btn btn-download" href="https://github.com/aframevr/aframe-boilerplate/archive/master.zip" download="aframe-boilerplate.zip">Download .ZIP<span></span></a>
 
-In either case, it is important to [serve the boilerplate from a local server](#using-a-local-server) so that assets load correctly.
+In either case, it is important to [serve the project using a local
+server](#using-a-local-server) so that assets load properly.
 
 ## Include the JS Build
 
@@ -60,7 +61,8 @@ If we want to serve it locally, we can download the JS build:
 <a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.min.js" download>Production Version <span>0.4.0</span></a> <em class="install-note">Minified</em>
 <a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.js" download>Development Version <span>0.4.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
-It is important to [serve the HTML from a local server](#using-a-local-server) so that assets load correctly.
+Note it is important to [serve the project using a local
+server](#using-a-local-server) so that assets load correctly.
 
 ## Install from npm
 
@@ -82,7 +84,8 @@ require('aframe');
 
 ## Using a Local Server
 
-We should develop with a local server so that files are properly served. We can either:
+We should develop projects using a local server so that files are properly
+served. We can either:
 
 - Download the [Mongoose](https://www.cesanta.com/products/binary) application
   and open it from the same directory as your HTML file.
