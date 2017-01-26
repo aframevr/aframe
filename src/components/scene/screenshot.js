@@ -135,8 +135,7 @@ module.exports.Component = registerComponent('screenshot', {
    * @param {string} projection - Screenshot projection (equirectangular | perspective)
    */
 
-  setCapture : function (projection) {
-
+  setCapture: function (projection) {
     var el = this.el;
     var renderer = el.renderer;
     var size;
@@ -168,10 +167,10 @@ module.exports.Component = registerComponent('screenshot', {
       this.quad.visible = true;
     }
     return {
-      camera : camera,
-      size : size,
-      projection : projection
-    }
+      camera: camera,
+      size: size,
+      projection: projection
+    };
   },
 
   // maintained for backwards compat
@@ -183,7 +182,7 @@ module.exports.Component = registerComponent('screenshot', {
   },
 
   // return canvas instead of triggering download
-  getCanvas : function (projection) {
+  getCanvas: function (projection) {
     var params = this.setCapture(projection);
     this.renderCapture(params.camera, params.size, params.projection);
     return this.canvas;
