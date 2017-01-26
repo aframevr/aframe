@@ -10,6 +10,7 @@ var coreShader = require('../core/shader');
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
+var error = utils.debug('components:text:error');
 var shaders = coreShader.shaders;
 var warn = utils.debug('components:text:warn');
 
@@ -31,6 +32,7 @@ var FONTS = {
   mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
   sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
 };
+module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
 var fontWidthFactors = {};
@@ -74,7 +76,9 @@ module.exports.Component = registerComponent('text', {
     // `wrapCount` units are about one default font character. Wrap roughly at this number.
     wrapCount: {type: 'number', default: 40},
     // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
-    wrapPixels: {type: 'number'}
+    wrapPixels: {type: 'number'},
+    // `zOffset` will provide a small z offset to avoid z-fighting
+    zOffset: {type: 'number', default: 0.001}
   },
 
   init: function () {
@@ -85,7 +89,7 @@ module.exports.Component = registerComponent('text', {
 
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.el.setObject3D('text', this.mesh);
+    this.el.setObject3D(this.attrName, this.mesh);
   },
 
   update: function (oldData) {
@@ -105,12 +109,7 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry and layout.
     if (font) {
-      this.geometry.update(utils.extend({}, data, {
-        font: font,
-        lineHeight: data.lineHeight || font.common.lineHeight,
-        text: data.value,
-        width: data.wrapPixels || ((0.5 + data.wrapCount) * font.widthFactor)
-      }));
+      updateGeometry(this.geometry, data, font);
       this.updateLayout(data);
     }
   },
@@ -121,7 +120,7 @@ module.exports.Component = registerComponent('text', {
   remove: function () {
     this.geometry.dispose();
     this.geometry = null;
-    this.el.removeObject3D('text');
+    this.el.removeObject3D(this.attrName);
     this.material.dispose();
     this.material = null;
     this.texture.dispose();
@@ -192,21 +191,23 @@ module.exports.Component = registerComponent('text', {
   },
 
   /**
-   * Fetch and apply font.
+   * Load font for geometry, load font image for material, and apply.
    */
   updateFont: function () {
+    var el = this.el;
     var fontSrc;
     var geometry = this.geometry;
     var self = this;
 
-    if (!this.data.font) {
-      warn('No font specified for `text`. Using the default font.');
-    }
+    if (!this.data.font) { warn('No font specified. Using the default font.'); }
+
+    // Make invisible during font swap.
     this.mesh.visible = false;
 
     // Look up font URL to use, and perform cached load.
-    fontSrc = lookupFont(this.data.font || 'default');
+    fontSrc = this.lookupFont(this.data.font || 'default');
     cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
+      var data;
       var fontImgSrc;
 
       if (font.pages.length !== 1) {
@@ -214,38 +215,16 @@ module.exports.Component = registerComponent('text', {
       }
 
       if (!fontWidthFactors[fontSrc]) {
-        // Compute default font width factor to use.
-        var sum = 0;
-        var digitsum = 0;
-        var digits = 0;
-        font.chars.map(function (ch) {
-          sum += ch.xadvance;
-          if (ch.id >= 48 && ch.id <= 57) {
-            digits++;
-            digitsum += ch.xadvance;
-          }
-        });
-        font.widthFactor = fontWidthFactors[font] = digits ? digitsum / digits : sum / font.chars.length;
+        font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
       }
 
       // Update geometry given font metrics.
-      var data = coerceData(self.data);
-      var textRenderWidth = data.wrapPixels || ((0.5 + data.wrapCount) * font.widthFactor);
-      var options = utils.extend({}, data, {
-        text: data.value,
-        font: font,
-        width: textRenderWidth,
-        lineHeight: data.lineHeight || font.common.lineHeight
-      });
-      var object3D;
-      geometry.update(options);
-      self.mesh.geometry = geometry;
+      data = coerceData(self.data);
+      updateGeometry(geometry, data, font);
 
-      // Add mesh if not already there.
-      object3D = self.el.object3D;
-      if (object3D.children.indexOf(self.mesh) === -1) {
-        object3D.add(self.mesh);
-      }
+      // Set font and update layout.
+      self.currentFont = font;
+      self.updateLayout(data);
 
       // Look up font image URL to use, and perform cached load.
       fontImgSrc = self.data.fontImage || fontSrc.replace('.fnt', '.png') ||
@@ -255,83 +234,96 @@ module.exports.Component = registerComponent('text', {
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
         self.mesh.visible = true;
-        if (!image) { return; }
         self.texture.image = image;
         self.texture.needsUpdate = true;
-      }).catch(function () {
-        console.error('Could not load font texture "' + fontImgSrc +
-          '"\nMake sure it is correctly defined in the bitmap .fnt file.');
+        el.emit('textfontset', {font: self.data.font, fontObj: font});
+      }).catch(function (err) {
+        error(err);
+        throw err;
       });
-
-      self.currentFont = font;
-      self.updateLayout(data);
-    }).catch(function (error) {
-      throw new Error('Error loading font ' + self.data.font +
-          '\nMake sure the path is correct and that it points' +
-          ' to a valid BMFont file (xml, json, fnt).\n' + error.message);
+    }).catch(function (err) {
+      error(err);
+      throw err;
     });
   },
 
+  /**
+   * Update layout with anchor, alignment, baseline, and considering any meshes.
+   */
   updateLayout: function (data) {
-    var el = this.el;
-    var font = this.currentFont;
-    var geometry = this.geometry;
-    var layout = geometry.layout;
-    var elGeo = el.getAttribute('geometry');
-    var width;
-    var textRenderWidth;
-    var textScale;
-    var height;
-    var x;
-    var y;
     var anchor;
     var baseline;
+    var el = this.el;
+    var geometry = this.geometry;
+    var geometryComponent;
+    var height;
+    var layout = geometry.layout;
+    var mesh = this.mesh;
+    var textRenderWidth;
+    var textScale;
+    var width;
+    var x;
+    var y;
 
-    // Determine width to use.
-    width = data.width || (elGeo && elGeo.width) || DEFAULT_WIDTH;
-    // Determine wrap pixel count, either as specified or by experimentally determined fudge factor.
-    // (Note that experimentally determined factor will never be correct for variable width fonts.)
-    textRenderWidth = data.wrapPixels || ((0.5 + data.wrapCount) * font.widthFactor);
+    // Determine width to use (defined width, geometry's width, or default width).
+    width = data.width || (geometryComponent && geometryComponent.width) || DEFAULT_WIDTH;
+
+    // Determine wrap pixel count. Either specified or by experimental fudge factor.
+    // Note that experimental factor will never be correct for variable width fonts.
+    textRenderWidth = computeWidth(data.wrapPixels, data.wrapCount,
+                                   this.currentFont.widthFactor);
     textScale = width / textRenderWidth;
-    // Determine height to use.
-    height = textScale * (geometry.layout.height + geometry.layout.descender);
 
-    // update geometry dimensions to match layout, if not specified
-    if (elGeo) {
-      if (!elGeo.width) { el.setAttribute('geometry', 'width', width); }
-      if (!elGeo.height) { el.setAttribute('geometry', 'height', height); }
+    // Determine height to use.
+    height = textScale * (layout.height + layout.descender);
+
+    // Update geometry dimensions to match text layout if width and height are set to 0.
+    // For example, scales a plane to fit text.
+    geometryComponent = el.getAttribute('geometry');
+    if (geometryComponent) {
+      if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
+      if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
     }
 
-    // anchors text left/center/right
+    // Calculate X position to anchor text left, center, or right.
     anchor = data.anchor === 'align' ? data.align : data.anchor;
     if (anchor === 'left') {
       x = 0;
     } else if (anchor === 'right') {
-      x = -layout.width;
+      x = -1 * layout.width;
     } else if (anchor === 'center') {
-      x = -layout.width / 2;
+      x = -1 * layout.width / 2;
     } else {
-      throw new TypeError('invalid anchor ' + anchor);
+      throw new TypeError('Invalid text.anchor property value', anchor);
     }
 
-    // anchors text to top/center/bottom
+    // Calculate Y position to anchor text top, center, or bottom.
     baseline = data.baseline;
     if (baseline === 'bottom') {
       y = 0;
     } else if (baseline === 'top') {
-      y = -layout.height + layout.ascender;
+      y = -1 * layout.height + layout.ascender;
     } else if (baseline === 'center') {
-      y = -layout.height / 2;
+      y = -1 * layout.height / 2;
     } else {
-      throw new TypeError('invalid baseline ' + baseline);
+      throw new TypeError('Invalid text.baseline property value', baseline);
     }
 
-    // Position and scale mesh.
-    this.mesh.position.x = x * textScale;
-    this.mesh.position.y = y * textScale;
-    this.mesh.position.z = 0.001; // put text slightly in front in case there is a plane or other geometry
-    this.mesh.scale.set(textScale, -textScale, textScale);
+    // Position and scale mesh to apply layout.
+    mesh.position.x = x * textScale;
+    mesh.position.y = y * textScale;
+    // Place text slightly in front to avoid Z-fighting.
+    mesh.position.z = data.zOffset;
+    mesh.scale.set(textScale, -1 * textScale, textScale);
     this.geometry.computeBoundingSphere();
+  },
+
+  /**
+   * Grab font from the constant.
+   * Set as a method for test stubbing purposes.
+   */
+  lookupFont: function (key) {
+    return FONTS[key];
   }
 });
 
@@ -344,10 +336,6 @@ function unregisterFont (key) {
   delete FONTS[key];
 }
 module.exports.unregisterFont = unregisterFont;
-
-function lookupFont (keyOrUrl) {
-  return FONTS[keyOrUrl] || keyOrUrl;
-}
 
 function parseSide (side) {
   switch (side) {
@@ -363,9 +351,11 @@ function parseSide (side) {
   }
 }
 
+/**
+ * Coerce some data to numbers.
+ * as they will be passed directly into text creation and update
+ */
 function coerceData (data) {
-  // We have to coerce some data to numbers/booleans,
-  // as they will be passed directly into text creation and update
   data = utils.clone(data);
   if (data.lineHeight !== undefined) {
     data.lineHeight = parseFloat(data.lineHeight);
@@ -385,6 +375,7 @@ function loadFont (src) {
   return new Promise(function (resolve, reject) {
     loadBMFont(src, function (err, font) {
       if (err) {
+        error('Error loading font', src);
         reject(err);
         return;
       }
@@ -401,6 +392,7 @@ function loadTexture (src) {
     new THREE.ImageLoader().load(src, function (image) {
       resolve(image);
     }, undefined, function () {
+      error('Error loading font image', src);
       reject(null);
     });
   });
@@ -432,6 +424,43 @@ function createModifiedSDFShader (el, data) {
  */
 function updateBaseMaterial (material, data) {
   material.side = data.side;
+}
+
+/**
+ * Update the text geometry using `three-bmfont-text.update`.
+ */
+function updateGeometry (geometry, data, font) {
+  geometry.update(utils.extend({}, data, {
+    font: font,
+    width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
+    text: data.value.replace(/\\n/g, '\n'),
+    lineHeight: data.lineHeight || font.common.lineHeight
+  }));
+}
+
+/**
+ * Determine wrap pixel count. Either specified or by experimental fudge factor.
+ * Note that experimental factor will never be correct for variable width fonts.
+ */
+function computeWidth (wrapPixels, wrapCount, widthFactor) {
+  return wrapPixels || ((0.5 + wrapCount) * widthFactor);
+}
+
+/**
+ * Compute default font width factor to use.
+ */
+function computeFontWidthFactor (font) {
+  var sum = 0;
+  var digitsum = 0;
+  var digits = 0;
+  font.chars.map(function (ch) {
+    sum += ch.xadvance;
+    if (ch.id >= 48 && ch.id <= 57) {
+      digits++;
+      digitsum += ch.xadvance;
+    }
+  });
+  return digits ? digitsum / digits : sum / font.chars.length;
 }
 
 /**

@@ -22,7 +22,7 @@ The text component renders bitmap and signed distance field font text.
 | letterSpacing | The letter spacing, in pixels.                          | 0                     |
 | lineHeight    | The line height, in pixels.                             | undefined (from font) |
 | opacity       | Opacity (0 = fully transparent, 1 = fully opaque)       | 1.0                   |
-| shader        | Shader to render text. (modified-sdf, sdf, basic, msdf) | modified-sdf          |
+| shader        | Shader to render text. (modifiedsdf, sdf, basic, msdf)  | modifiedsdf           |
 | side          | Side to render. (front, back, double)                   | front                 |
 | tabSize       | Tab size, in spaces.                                    | 4                     |
 | transparent   | Should text be transparent?                             | true                  |
@@ -31,6 +31,7 @@ The text component renders bitmap and signed distance field font text.
 | width         | Width (default = geometry width, DEFAULT_WIDTH if none) |                       |
 | wrapCount     | Wrap after this many font characters (more or less).    | 40                    |
 | wrapPixels    | Wrap after this many pixels.                            | undefined (wrapCount) |
+| zOffset       | Z offset to apply to avoid Z-fighting.                  | 0.001                 |
 
 More details on these properties [here](https://github.com/Jam3/three-bmfont-text#usage).
 
