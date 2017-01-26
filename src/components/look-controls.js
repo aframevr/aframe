@@ -275,12 +275,24 @@ module.exports.Component = registerComponent('look-controls', {
 
   onTouchMove: function (e) {
     var deltaY;
+    var deltaX;
+    var sceneEl = this.el.sceneEl;
     var yawObject = this.yawObject;
+    var pitchObject = this.pitchObject;
+
     if (!this.touchStarted) { return; }
     deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
             this.el.sceneEl.canvas.clientWidth;
-    // Limits touch orientaion to to yaw (y axis)
+    
+    // Limits touch orientaion to to yaw (y axis) only if 
+    // vr mode is actived
     yawObject.rotation.y -= deltaY * 0.5;
+	if(!sceneEl.is('vr-mode')){
+    	deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
+            this.el.sceneEl.canvas.clientHeight;
+		pitchObject.rotation.x -= deltaX * 0.5;
+	}
+
     this.touchStart = {
       x: e.touches[0].pageX,
       y: e.touches[0].pageY
