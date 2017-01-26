@@ -549,6 +549,22 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+If we're doing a `setObject3D()`, we'll usually want to use `this.attrName`. If
+a component instance is set with `foo__bar`, then `this.attrName` would be
+`foo__bar`. This gives us a namespace and an ID to set an `object3D` on the
+entity's `object3DMap`:
+
+```js
+AFRAME.registerComponent('foo', {
+  multiple: true,
+
+  update: function () {
+    // An object3D will be set using `foo__bar` as the key.
+    this.el.setObject3D(this.attrName, new THREE.Mesh());
+  }
+});
+```
+
 ## Component Prototype Methods
 
 ### `.flushToDOM ()`

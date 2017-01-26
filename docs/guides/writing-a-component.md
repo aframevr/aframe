@@ -438,11 +438,15 @@ el.setAttribute('log__helloworld', {message: 'Hello, World!'});
 el.setAttribute('log__metaverse', {message: 'Hello, Metaverse!'});
 ```
 
-[usingthree]: ./using-with-threejs.md
+Within the component, if we wanted, we can tell between different instances
+using `this.id` and `this.attrName`. Given `log__helloworld`, `this.id` would
+be `helloworld` and `this.attrName` would be the full `log__helloworld`.
 
 And there we have our basic `log` component!
 
 ## Example: `box` Component
+
+[usingthree]: ./using-with-threejs.md
 
 For a less trivial example, let's find out how we can add 3D objects and affect
 the scene graph by writing a component that [uses three.js][usingthree]. To get
