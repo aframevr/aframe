@@ -19,13 +19,15 @@ go, there are multiple ways of getting started.
 [CodePen][codepen] is a playground for front-end web development. We can edit
 HTML and JavaScript directly in the browser with its text editor, see changes
 live, and share code snippets. This is a fast way to dive in without having to
-download or install anything. Check out the [official MozVR
-CodePens](http://codepen.io/mozvr/) and the [A-Frame Hello World
-CodePen][codepen]:
-
-**Note:** VR mode currently won't work until the `allowvr` attribute is added to CodePen's I-Frames.
+download or install anything. Just add a `<script>` tag to load the latest
+version of A-Frame, then create your scene:
 
 <p data-height="300" data-theme-id="0" data-slug-hash="BjygdO" data-default-tab="html" data-user="mozvr" class="codepen">See the Pen <a href="http://codepen.io/team/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by Mozilla VR (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+
+**Note:** VR mode currently won't work until the `allowvr` attribute is added to CodePen's I-Frames. Make sure the A-Frame `<script>` tag is located in the HTML panel above the `<a-scene>` tag.
+
+Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the
+[A-Frame Hello World CodePen][codepen]:
 
 ## Grab the Boilerplate
 
