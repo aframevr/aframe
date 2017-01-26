@@ -75,7 +75,7 @@ module.exports.Component = registerComponent('screenshot', {
 			self.canvas = document.createElement('canvas');
 			self.ctx = self.canvas.getContext('2d');
 			if (el.camera) { el.camera.add(self.quad); }
-			//self.onKeyDown = self.onKeyDown.bind(self);
+			self.onKeyDown = self.onKeyDown.bind(self);
 			self.onCameraActive = self.onCameraActive.bind(self);
 			el.addEventListener('camera-set-active', self.onCameraActive);
 		}
