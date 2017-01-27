@@ -9,12 +9,16 @@ installation: true
 
 <script async src="//assets.codepen.io/assets/embed/ei.js"></script>
 
+[introduction]: ./index.md
+
 Welcome! Make sure to read the [introduction][introduction]. If you're ready to
 go, there are multiple ways of getting started.
 
 <!--toc-->
 
 ## Play with CodePen
+
+[codepen]: http://codepen.io/team/mozvr/pen/BjygdO
 
 [CodePen][codepen] is a playground for front-end web development. We can edit
 HTML and JavaScript directly in the browser with its text editor, see changes
@@ -30,6 +34,8 @@ Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the
 [A-Frame Hello World CodePen][codepen]:
 
 ## Grab the Boilerplate
+
+[ghpages]: https://pages.github.com/
 
 The boilerplate contains:
 
@@ -48,7 +54,8 @@ server](#using-a-local-server) so that assets load properly.
 
 ## Include the JS Build
 
-If we want to just include the JS build from the CDN, we can drop a `<script>` tag straight into our HTML:
+If we want to include the JS build from the CDN, we can drop a `<script>` tag
+straight into our HTML:
 
 ```html
 <!-- Production Version, Minified -->
@@ -63,12 +70,13 @@ If we want to serve it locally, we can download the JS build:
 <a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.min.js" download>Production Version <span>0.4.0</span></a> <em class="install-note">Minified</em>
 <a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.js" download>Development Version <span>0.4.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
-Note it is important to [serve the project using a local
-server](#using-a-local-server) so that assets load correctly.
+Note we should [serve the project using a local server](#using-a-local-server)
+so that assets load properly.
 
 ## Install from npm
 
-For more advanced users who want to use their own build steps, we can install through npm:
+For more advanced users who want to use their own build steps, we can install
+through npm:
 
 ```bash
 # Latest stable version (https://www.npmjs.com/package/aframe)
@@ -78,13 +86,14 @@ $ npm install aframe
 $ npm install aframevr/aframe
 ```
 
-Then we can just require A-Frame from our app, perhaps built with Browserify or Webpack:
+Then we can just require A-Frame from our app, perhaps built with Browserify or
+Webpack:
 
 ```js
 require('aframe');
 ```
 
-## Using a Local Server
+### Using a Local Server
 
 We should develop projects using a local server so that files are properly
 served. We can either:
@@ -101,7 +110,3 @@ line with [`angle`][angle], a command line interface for A-Frame:
 ```sh
 npm install -g angle && angle initscene
 ```
-
-[codepen]: http://codepen.io/team/mozvr/pen/BjygdO
-[introduction]: ./index.md
-[ghpages]: https://pages.github.com/
