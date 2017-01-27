@@ -1,5 +1,5 @@
 ---
-title: <a-isocahedron>
+title: <a-icosahedron>
 type: primitives
 layout: docs
 parent_section: primitives
@@ -8,7 +8,7 @@ parent_section: primitives
 ## Example
 
 ```html
-<a-isoacahedron color="#FF926B" radius="5"></a-isocahedron>
+<a-icosahedron color="#FF926B" radius="5"></a-icosahedron>
 ```
 
 ## Attributes
