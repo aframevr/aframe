@@ -66343,7 +66343,7 @@ module.exports.Component = registerComponent('text', {
     this.mesh.visible = false;
 
     // Look up font URL to use, and perform cached load.
-    fontSrc = this.lookupFont(this.data.font || 'default');
+    fontSrc = this.lookupFont(this.data.font || 'default') || this.data.font;
     cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
       var data;
       var fontImgSrc;
@@ -72280,7 +72280,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 27-01-2017, Commit #5d87ccc)');
+console.log('A-Frame Version: 0.4.0 (Date 27-01-2017, Commit #dd9e073)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
