@@ -15,9 +15,13 @@ suite('text', function () {
     });
 
     el = entityFactory();
-    el.addEventListener('componentinitialized', function (evt) {
+
+    this.doneCalled = false;
+    el.addEventListener('componentinitialized', evt => {
+      if (this.doneCalled) { return; }
       if (evt.detail.name !== 'text') { return; }
       component = el.components.text;
+      this.doneCalled = true;
       done();
     });
     el.setAttribute('text', '');
@@ -29,6 +33,18 @@ suite('text', function () {
       assert.ok(el.getObject3D('text') instanceof THREE.Mesh);
       assert.ok(el.getObject3D('text').geometry);
       assert.ok(el.getObject3D('text').material);
+    });
+  });
+
+  suite('multiple', function () {
+    test('can have multiple instances', function () {
+      el.setAttribute('text__foo', {value: 'foo'});
+      el.setAttribute('text__bar', {value: 'bar'});
+      el.setAttribute('text__baz', {value: 'baz'});
+      assert.ok(el.getObject3D('text') instanceof THREE.Mesh);
+      assert.ok(el.getObject3D('text__foo') instanceof THREE.Mesh);
+      assert.ok(el.getObject3D('text__bar') instanceof THREE.Mesh);
+      assert.ok(el.getObject3D('text__baz') instanceof THREE.Mesh);
     });
   });
 
@@ -82,17 +98,17 @@ suite('text', function () {
 
     test('calls createOrUpdateMaterial if shader changes', function () {
       var updateMaterialSpy = this.sinon.spy(component, 'createOrUpdateMaterial');
-      el.setAttribute('text', 'shader', 'sdf');
+      el.setAttribute('text', 'shader', 'standard');
       assert.shallowDeepEqual(updateMaterialSpy.getCalls()[0].args[0],
-                              {shader: 'modifiedsdf'});
-      el.setAttribute('text', 'shader', 'msdf');
-      assert.shallowDeepEqual(updateMaterialSpy.getCalls()[1].args[0],
                               {shader: 'sdf'});
+      el.setAttribute('text', 'shader', 'sdf');
+      assert.shallowDeepEqual(updateMaterialSpy.getCalls()[1].args[0],
+                              {shader: 'standard'});
     });
   });
 
   suite('createOrUpdateMaterial', function () {
-    suite('modifiedsdf', function () {
+    suite('sdf', function () {
       test('updates material color', function () {
         var value;
         value = el.getObject3D('text').material.uniforms.color.value;
@@ -100,39 +116,6 @@ suite('text', function () {
         el.setAttribute('text', 'color', '#123456');
         value = el.getObject3D('text').material.uniforms.color.value;
         assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), '123456');
-      });
-
-      test('updates material opacity', function () {
-        var value;
-        value = el.getObject3D('text').material.uniforms.opacity.value;
-        assert.equal(value, 1);
-        el.setAttribute('text', 'opacity', '0.55');
-        value = el.getObject3D('text').material.uniforms.opacity.value;
-        assert.equal(value, 0.55);
-      });
-
-      test('updates material side', function () {
-        var value;
-        value = el.getObject3D('text').material.side;
-        assert.equal(value, THREE.FrontSide);
-        el.setAttribute('text', 'side', 'double');
-        value = el.getObject3D('text').material.side;
-        assert.equal(value, THREE.DoubleSide);
-      });
-    });
-
-    suite('msdf', function () {
-      setup(function () {
-        el.setAttribute('text', 'shader', 'msdf');
-      });
-
-      test('updates material color', function () {
-        var value;
-        value = el.getObject3D('text').material.uniforms.color.value;
-        assert.equal(new THREE.Color(value.r, value.g, value.b).getHexString(), 'ffffff');
-        el.setAttribute('text', 'color', '#123456');
-        value = el.getObject3D('text').material.uniforms.color.value;
-        assert.equal(new THREE.Color(value.r, value.g, value.b).getHexString(), '123456');
       });
 
       test('updates material opacity', function () {
@@ -229,7 +212,7 @@ suite('text', function () {
       assert.notEqual(el.getObject3D('text').scale.z, 1);
     });
 
-    test('autoscales mesh', function () {
+    test('autoscales mesh to text', function () {
       el.setAttribute('geometry', {primitive: 'plane', height: 0, width: 0});
       assert.equal(el.getAttribute('geometry').width, 0);
       assert.equal(el.getAttribute('geometry').height, 0);
@@ -237,6 +220,14 @@ suite('text', function () {
       el.setAttribute('text', {width: 10, value: 'a'});
       assert.equal(el.getAttribute('geometry').width, 10);
       assert.ok(el.getAttribute('geometry').height);
+    });
+
+    test('autoscales text to mesh', function () {
+      el.setAttribute('geometry', {primitive: 'plane', height: 1, width: 50000});
+      el.setAttribute('text', {value: 'a', width: 0});
+      assert.ok(el.getObject3D('text').scale.x > 10);
+      assert.ok(el.getObject3D('text').scale.y < 10);
+      assert.ok(el.getObject3D('text').scale.z > 10);
     });
   });
 

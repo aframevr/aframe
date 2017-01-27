@@ -1,3 +1,3 @@
 require('./flat');
 require('./standard');
-require('./modifiedsdf');
+require('./sdf');

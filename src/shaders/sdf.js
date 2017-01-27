@@ -3,7 +3,7 @@ var registerShader = require('../core/shader').registerShader;
 /**
  * Used by text component.
  */
-module.exports.Shader = registerShader('modifiedsdf', {
+module.exports.Shader = registerShader('sdf', {
   schema: {
     alphaTest: {type: 'number', is: 'uniform', default: 0.5},
     color: {type: 'color', is: 'uniform', default: 'white'},

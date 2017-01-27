@@ -1,9 +1,6 @@
 var createTextGeometry = require('three-bmfont-text');
 var loadBMFont = require('load-bmfont');
 var path = require('path');
-var createBasic = require('three-bmfont-text/shaders/basic');
-var createMSDF = require('three-bmfont-text/shaders/msdf');
-var createSDF = require('three-bmfont-text/shaders/sdf');
 
 var registerComponent = require('../core/component').registerComponent;
 var coreShader = require('../core/shader');
@@ -41,10 +38,7 @@ var fontWidthFactors = {};
  * SDF-based text component.
  * Based on https://github.com/Jam3/three-bmfont-text.
  *
- * Comes with several shaders:
- *   All the stock fonts are for `sdf` and `modifiedsdf`. We added `modifiedsdf` shader to
- *   improve jam3's original `sdf` shader. `msdf` and `basic` are available for the fonts that
- *   use those.
+ * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's original `sdf` shader.
  */
 module.exports.Component = registerComponent('text', {
   multiple: true,
@@ -65,7 +59,7 @@ module.exports.Component = registerComponent('text', {
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
     opacity: {type: 'number', default: '1.0'},
-    shader: {default: 'modifiedsdf', oneOf: ['modifiedsdf', 'sdf', 'basic', 'msdf']},
+    shader: {default: 'sdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     tabSize: {default: 4},
     transparent: {default: true},
@@ -141,7 +135,7 @@ module.exports.Component = registerComponent('text', {
   createOrUpdateMaterial: function (oldShader) {
     var data = this.data;
     var hasChangedShader;
-    var ModifiedSDFShader;
+    var NewShader;
     var material = this.material;
     var shaderData;
 
@@ -157,33 +151,18 @@ module.exports.Component = registerComponent('text', {
 
     // Shader has not changed, do an update.
     if (!hasChangedShader) {
-      if (data.shader === 'modifiedsdf') {
-        // Update modifiedsdf shader material.
-        this.shaderObject.update(shaderData);
-        // Apparently, was not set on `init` nor `update`.
-        material.transparent = shaderData.transparent;
-      } else {
-        // Update other shader materials.
-        material.uniforms.opacity.value = data.opacity;
-        material.uniforms.color.value.set(data.color);
-        material.uniforms.map.value = this.texture;
-      }
+      // Update shader material.
+      this.shaderObject.update(shaderData);
+      // Apparently, was not set on `init` nor `update`.
+      material.transparent = shaderData.transparent;
       updateBaseMaterial(material, shaderData);
       return;
     }
 
     // Shader has changed. Create a shader material.
-    if (data.shader === 'modifiedsdf') {
-      ModifiedSDFShader = createModifiedSDFShader(this.el, shaderData);
-      this.material = ModifiedSDFShader.material;
-      this.shaderObject = ModifiedSDFShader.shader;
-    } else if (data.shader === 'sdf') {
-      this.material = new THREE.RawShaderMaterial(createSDF(shaderData));
-    } else if (data.shader === 'msdf') {
-      this.material = new THREE.RawShaderMaterial(createMSDF(shaderData));
-    } else {
-      this.material = new THREE.RawShaderMaterial(createBasic(shaderData));
-    }
+    NewShader = createShader(this.el, data.shader, shaderData);
+    this.material = NewShader.material;
+    this.shaderObject = NewShader.shader;
 
     // Set new shader material.
     updateBaseMaterial(this.material, shaderData);
@@ -255,7 +234,7 @@ module.exports.Component = registerComponent('text', {
     var baseline;
     var el = this.el;
     var geometry = this.geometry;
-    var geometryComponent;
+    var geometryComponent = el.getAttribute('geometry');
     var height;
     var layout = geometry.layout;
     var mesh = this.mesh;
@@ -266,6 +245,7 @@ module.exports.Component = registerComponent('text', {
     var y;
 
     // Determine width to use (defined width, geometry's width, or default width).
+    geometryComponent = el.getAttribute('geometry');
     width = data.width || (geometryComponent && geometryComponent.width) || DEFAULT_WIDTH;
 
     // Determine wrap pixel count. Either specified or by experimental fudge factor.
@@ -279,7 +259,6 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry dimensions to match text layout if width and height are set to 0.
     // For example, scales a plane to fit text.
-    geometryComponent = el.getAttribute('geometry');
     if (geometryComponent) {
       if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
       if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
@@ -398,12 +377,12 @@ function loadTexture (src) {
   });
 }
 
-function createModifiedSDFShader (el, data) {
+function createShader (el, shaderName, data) {
   var shader;
   var shaderObject;
 
   // Set up Shader.
-  shaderObject = new shaders.modifiedsdf.Shader();
+  shaderObject = new shaders[shaderName].Shader();
   shaderObject.el = el;
   shaderObject.init(data);
   shaderObject.update(data);
