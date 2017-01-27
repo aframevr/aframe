@@ -150,6 +150,17 @@ suite('text', function () {
       el.setAttribute('text', 'font', 'mozillavr');
     });
 
+    test('loads external font', function (done) {
+      el.addEventListener('textfontset', evt => {
+        assert.equal(evt.detail.font, '/base/tests/assets/test.fnt');
+        assert.equal(component.texture.image.getAttribute('src'),
+                     '/base/tests/assets/test.png');
+        assert.ok(el.getObject3D('text').visible);
+        done();
+      });
+      el.setAttribute('text', 'font', '/base/tests/assets/test.fnt');
+    });
+
     test('updates geometry', function (done) {
       var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
 
