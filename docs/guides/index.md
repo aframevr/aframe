@@ -33,7 +33,6 @@ conflict with the A-Frame site styles, so visuals may look ugly.
 
 <div>
   <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-bmfont-text-component@0.1.4/dist/aframe-bmfont-text-component.min.js"></script>
   <a-scene embedded style="height: 320px; width: 100%">
     <a-assets>
       <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
@@ -56,8 +55,8 @@ conflict with the A-Frame site styles, so visuals may look ugly.
 
     <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
 
-    <a-entity bmfont-text="text: Hello, A-Frame!; color: #BBB"
-      position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-entity>
+    <a-text value="Hello, A-Frame!" color="#BBB"
+            position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
 
     <a-camera>
       <a-cursor color="#FAFAFA">
@@ -642,39 +641,40 @@ the sound in our scene using `position`.
 
 ### Adding Text
 
-Text doesn't come core with A-Frame yet, but we can easily include community
-text components. In WebGL, there are different components in A-Frame's
-ecosystem to handle text, each with their advantages and disadvantages:
+[text]: ../components/text.md
+[three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
-[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text
-[bitmapfont]: https://github.com/bryik/aframe-bmfont-text-component
-[htmlshader]: https://github.com/mayognaise/aframe-html-shader
-[Kevin Ngo]: https://twitter.com/andgokevin
-[Ben Pyrik]: https://twitter.com/bryik_ws
-[Mayo Tobita]: https://twitter.com/mayognaise
+A-Frame comes out of the box with a [text component][text]. Though text in
+WebGL is hard, and there are many ways to do text, each with their advantages
+and disadvantages, A-Frame comes with an SDF text implementation using
+[`three-bmfont-text`] that is relatively clear and performant.
 
-- [Bitmap Font Text][bitmapfont] by [Ben Pyrik] - Signed distance field font for flat and clear text.
-- [Text Geometry][textgeometry] by [Kevin Ngo] - 3D text that we can apply materials to, but more expensive to draw.
-- [HTML to Canvas to Texture][htmlshader] by [Mayo Tobita] - Render HTML as a texture, but can be slow to compute.
-
-Let's try using Ben's bitmap font text component. We include the component via
-a `<script>` tag and then add the text to our HTML. We'll be using `<a-entity>`
-which is the base of all objects in A-Frame, and then plug the text component
-into it:
+For this guide, let's use the primitive form of the text component, `<a-text>`:
 
 ```html
-<a-entity bmfont-text="text: Hello, A-Frame!; color: #BBB" position="-0.9 0.2 -3"
-  scale="1.5 1.5 1.5"></a-entity>
+<a-text value="Hello, A-Frame!" color="#BBB"
+        position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
 ```
+
+There are also a few other ways to handle text:
+
+[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text
+[htmlshader]: https://github.com/mayognaise/aframe-html-shader
+[Kevin Ngo]: https://twitter.com/andgokevin
+[Mayo Tobita]: https://twitter.com/mayognaise
+
+- [Text Geometry][textgeometry] by [Kevin Ngo] - 3D text. More expensive to draw.
+- [HTML Shader][htmlshader] by [Mayo Tobita] - Render HTML as a texture. Easy
+  to style, but can be slow to compute.
 
 ## Opening the A-Frame Inspector
 
 Traditionally, we would use a browser's development tools and DOM inspector to
 debug web pages. A-Frame comes with its own development tools and inspector
-designed for 3D and VR. The A-Frame Inspector can be opened by pressing **`<ctrl> + <alt> + i`**
-on our keyboard. The A-Frame scene at the top of this page will be
-opened in a visual tool, where we can inspect objects and change values live.
-And we can do this for any A-Frame scene we find on the Web.
+designed for 3D and VR. The A-Frame Inspector can be opened by pressing
+**`<ctrl> + <alt> + i`** on our keyboard. The A-Frame scene at the top of this
+page will be opened in a visual tool, where we can inspect objects and change
+values live. And we can do this for any A-Frame scene we find on the Web.
 
 Alternatively, press the button below:
 
@@ -682,7 +682,8 @@ Alternatively, press the button below:
 
 [inspectorguide]: ../guides/using-the-aframe-inspector.md
 
-[Read more about using the A-Frame Inspector][inspectorguide].
+Try opening the Inspector and playing around with the values of the `<a-text>`
+entity. [Read more about using the A-Frame Inspector][inspectorguide].
 
 ## What's Next?
 

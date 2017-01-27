@@ -14,6 +14,7 @@ require('./raycaster');
 require('./rotation');
 require('./scale');
 require('./sound');
+require('./text');
 require('./tracked-controls');
 require('./visible');
 require('./vive-controls');

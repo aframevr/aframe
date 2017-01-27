@@ -136,20 +136,6 @@ texture. There are some components in the ecosystem that enable this:
 
 - [HTML Shader][html-shader]
 
-## How do I display text in A-Frame?
-
-[bmfont-text-component]: https://github.com/bryik/aframe-bmfont-text-component
-[text-geometry-component]: https://github.com/ngokevin/aframe-text-component
-[text-wrap-component]: https://github.com/maxkrieger/aframe-textwrap-component
-
-There are several possible solutions:
-
-- [Bitmap Font Text Component (recommended)][bmfont-text-component]
-- [Text Geometry Component][text-geometry-component]
-- [HTML Shader][html-shader]
-- [Text Wrap Component][text-wrap-component]
-- Use images
-
 ## Where can I find assets?
 
 [archive3d]: http://archive3d.net/

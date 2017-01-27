@@ -7,6 +7,7 @@ require('./primitives/a-light');
 require('./primitives/a-obj-model');
 require('./primitives/a-sky');
 require('./primitives/a-sound');
+require('./primitives/a-text');
 require('./primitives/a-video');
 require('./primitives/a-videosphere');
 require('./primitives/meshPrimitives');

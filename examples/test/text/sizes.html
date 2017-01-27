@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <title>Text Sizes</title>
+    <meta name="description" content="Text Sizes - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="text"
+          text="align: center; width: 6;
+               value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"
+        ></a-mixin>
+      </a-assets>
+
+      <a-text mixin="text" position="-3 0 0" wrap-count="20"></a-text>
+      <a-text mixin="text" position="-3 2 0" wrap-count="30"></a-text>
+      <a-text mixin="text" position="-3 3 0" wrap-count="40"></a-text>
+      <a-text mixin="text" position="-3 3.5 0" wrap-count="50"></a-text>
+      <a-text mixin="text" position="-3 4 0" wrap-count="60"></a-text>
+      <a-text mixin="text" position="-3 4.5 0" wrap-count="70"></a-text>
+      <a-text mixin="text" position="-3 5 0" wrap-count="80"></a-text>
+
+      <a-text mixin="text" font="kelsonsans" position="3 0 0" wrap-count="20"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 2 0" wrap-count="30"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 3 0" wrap-count="40"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 3.5 0" wrap-count="50"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 4 0" wrap-count="60"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 4.5 0" wrap-count="70"></a-text>
+      <a-text mixin="text" font="kelsonsans" position="3 5 0" wrap-count="80"></a-text>
+
+      <a-sky color="#3CF"></a-sky>
+      <a-entity position="0 2 3.7">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
