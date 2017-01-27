@@ -21,10 +21,7 @@
       -->
       <a-box opacity="0.1" color="blue" width="1" height="1" depth="0.001"
              position="0 1.5 -1.5"
-             text="align: center; color: black; value:
-                   (Centered) default
-                   (dejavu) font
-                   with line break">
+             text="align: center; color: black; value: (Centered) default\n(dejavu) font\nwith line break">
 
         <!-- Reference marks, so we can see where the label is aligning.  -->
         <a-entity mixin="marker" position="-0.5 0 0"></a-entity>
@@ -41,9 +38,7 @@
         -->
         <a-text color="red" align="center" baseline="top" width="1" position="0 0.5 0"
                 font="aileronsemibold"
-                value="Top of box
-                       (even when multi-line)
-                       aileronsemibold font" ></a-text>
+                value="Top of box\n(even when multi-line)\naileronsemibold font" ></a-text>
 
         <!--
           Label the bottom of the box,
@@ -52,8 +47,7 @@
           NOTE: attribute collision makes the text property text-text
         -->
         <a-text color="red" align="center" baseline="bottom" width="1" position="0 -0.5 0"
-                value="Bottom of box
-                       (even when multi-line)" ></a-text>
+                value="Bottom of box\n(even when multi-line)" ></a-text>
 
         <!--
           Label the left of the box,

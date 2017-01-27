@@ -38,7 +38,8 @@ var fontWidthFactors = {};
  * SDF-based text component.
  * Based on https://github.com/Jam3/three-bmfont-text.
  *
- * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's original `sdf` shader.
+ * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's
+ * original `sdf` shader.
  */
 module.exports.Component = registerComponent('text', {
   multiple: true,
@@ -135,8 +136,8 @@ module.exports.Component = registerComponent('text', {
   createOrUpdateMaterial: function (oldShader) {
     var data = this.data;
     var hasChangedShader;
-    var NewShader;
     var material = this.material;
+    var NewShader;
     var shaderData;
 
     hasChangedShader = (oldShader && oldShader.shader) !== data.shader;
@@ -306,16 +307,6 @@ module.exports.Component = registerComponent('text', {
   }
 });
 
-function registerFont (key, url) {
-  FONTS[key] = url;
-}
-module.exports.registerFont = registerFont;
-
-function unregisterFont (key) {
-  delete FONTS[key];
-}
-module.exports.unregisterFont = unregisterFont;
-
 function parseSide (side) {
   switch (side) {
     case 'back': {
@@ -412,7 +403,7 @@ function updateGeometry (geometry, data, font) {
   geometry.update(utils.extend({}, data, {
     font: font,
     width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-    text: data.value.replace(/\\n/g, '\n'),
+    text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
     lineHeight: data.lineHeight || font.common.lineHeight
   }));
 }

@@ -82,7 +82,7 @@ Inspector, and play with all the possible values to see the effects instantly!
 | side          | Side to render. (front, back, double)                                                                                                                 | front                             |
 | tabSize       | Tab size in spaces.                                                                                                                                   | 4                                 |
 | transparent   | Whether text is transparent.                                                                                                                          | true                              |
-| **value**     | The actual content of the text.                                                                                                                       | ''                                |
+| **value**     | The actual content of the text. Line breaks and tabs are supported with `\n` and `\t`.                                                                | ''                                |
 | whitespace    | How whitespace should be handled (i.e., normal, pre, nowrap). [Read more about whitespace][whitespace].                                               | normal                            |
 | width         | Width in meters.                                                                                                                                      | *derived from geometry if exists* |
 | wrapCount     | Number of characters before wrapping text (more or less).                                                                                             | 40                                |
@@ -148,10 +148,10 @@ To change the size of the text, we can:
 
 Text can be wrapped by specifying width in A-Frame units.
 
-### Geometry Component Auto-Scaling
+### Auto-Scaling
 
 The text component introduces special behavior when using alongside the
-geometry component (e.g., a background plane). Note this only works with
+geometry component (e.g., a background plane) to fit. Note this only works with
 2D-friendly geometries that define a width and height (i.e., `box`, `plane`).
 The text can either be scaled, bounded, or aligned in relation to the geometry,
 or the text can auto-scale the geometry to fit the text.
@@ -159,36 +159,39 @@ or the text can auto-scale the geometry to fit the text.
 [geometryimg]: https://cloud.githubusercontent.com/assets/674727/22358470/218689d6-e3f4-11e6-9e00-62c9cb7867da.png
 ![Geometry Alignments][geometryimg]
 
-To have the text component's `width` property automatically scale
-to match the geometry component's `width`, do not specify a `width`
-for the text component:
+#### Scaling Text to Fit Geometry
+
+To have the text component's `width` property automatically scale to match the
+geometry component's `width`, do not specify a `width` for the text component:
 
 ```html
-<a-entity position="0 1 -2"
+<a-entity
   geometry="primitive: plane; width: 4; height: auto"
   material="color: blue"
   text="value: This text will be 4 units wide."></a-entity>
 ```
 
-To have the geometry automatically scale with the text,
-set the geometry component's `width` and `height` properties to `auto`,
-and set the text component's `width` as desired.
-In this example, the plane's `width` will be set to 4 units,
-and its `height` will be set to match the actual height of the text:
+#### Scaling Geometry to Fit Text
+
+To have the geometry automatically scale with the text, set the geometry
+component's `width` and `height` properties to `auto`, and set the text
+component's `width` as desired. In this example, the plane's `width` will be
+set to 4 units, and its `height` will be set to match the actual height of the
+text:
 
 ```html
-<a-entity position="0 1 -2"
+<a-entity
   geometry="primitive: plane; height: auto; width: auto"
   material="color: blue"
   text="width: 4; value: This text will be 4 units wide."></a-entity>
 ```
 
-Note that if neither `geometry` nor `text` specify a width,
-the text `width` property will default to 1 unit (meter),
-and the geometry `width` property will then become 1 unit as well.
+Note that if neither `geometry` nor `text` specify a width, the text `width`
+property will default to 1 unit (meter), and the geometry `width` property will
+then become 1 unit as well.
 
 ```html
-<a-entity position="0 1 -2"
+<a-entity
   geometry="primitive: plane"
   material="color: blue"
   text="value: 1-wide\ndefault."></a-entity>

@@ -1,9 +1,3 @@
-/* Experimental text primitive.
- */
+// <a-text> using `definePrimitive` helper.
 var definePrimitive = require('../primitives').definePrimitive;
-
-definePrimitive('a-text',
-  // default component(s) and defaults
-  { text: { anchor: 'align', width: 5 } }
-  // no other mappings
-);
+definePrimitive('a-text', {text: {anchor: 'align', width: 5}});

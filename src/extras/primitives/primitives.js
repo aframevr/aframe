@@ -128,29 +128,36 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
   return primitive;
 };
 
-function addComponentMapping (srcComponent, dstMap) {
-  // FIXME: need to get from component name to schema
-  var srcComponentSchema = components[srcComponent].schema;
-  Object.keys(srcComponentSchema).map(function (prop) {
+/**
+ * Add component mappings using schema.
+ */
+function addComponentMapping (componentName, mappings) {
+  var schema = components[componentName].schema;
+  Object.keys(schema).map(function (prop) {
     // Hyphenate where there is camelCase.
-    var htmlAttrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
     // If there is a mapping collision, prefix with component name and hyphen.
-    if (dstMap[htmlAttrName] !== undefined) { htmlAttrName = srcComponent + '-' + prop; }
-    dstMap[htmlAttrName] = srcComponent + '.' + prop;
+    if (mappings[attrName] !== undefined) { attrName = componentName + '-' + prop; }
+    mappings[attrName] = componentName + '.' + prop;
   });
 }
 
-module.exports.definePrimitive = function definePrimitive (primitiveName, defaultComponents, /* optional */ mappings) {
+/**
+ * Helper to define a primitive, building mappings using a component schema.
+ */
+function definePrimitive (tagName, defaultComponents, mappings) {
   // If no initial mappings provided, start from empty map.
   mappings = mappings || {};
 
   // From the default components, add mapping automagically.
-  Object.keys(defaultComponents).map(function (componentName) { addComponentMapping(componentName, mappings); });
+  Object.keys(defaultComponents).map(function buildMappings (componentName) {
+    addComponentMapping(componentName, mappings);
+  });
 
   // Register the primitive.
-  module.exports.registerPrimitive(primitiveName, utils.extendDeep({}, null, {
+  module.exports.registerPrimitive(tagName, utils.extendDeep({}, null, {
     defaultComponents: defaultComponents,
     mappings: mappings
   }));
-};
-
+}
+module.exports.definePrimitive = definePrimitive;

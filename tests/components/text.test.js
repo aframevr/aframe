@@ -232,25 +232,30 @@ suite('text', function () {
   });
 
   suite('remove', function () {
-    test('removes mesh', function () {
+    test('removes mesh', function (done) {
       el.parentNode.removeChild(el);
-      assert.notOk(el.getObject3D('text'));
+      setTimeout(() => {
+        assert.notOk(el.getObject3D('text'));
+        done();
+      });
     });
 
-    test('cleans up', function () {
+    test('cleans up', function (done) {
       var geometryDisposeSpy = this.sinon.spy(component.material, 'dispose');
       var materialDisposeSpy = this.sinon.spy(component.geometry, 'dispose');
       var textureDisposeSpy = this.sinon.spy(component.texture, 'dispose');
 
       el.parentNode.removeChild(el);
 
-      assert.notOk(component.geometry);
-      assert.notOk(component.material);
-      assert.notOk(component.texture);
-
-      assert.ok(geometryDisposeSpy.called);
-      assert.ok(materialDisposeSpy.called);
-      assert.ok(textureDisposeSpy.called);
+      setTimeout(() => {
+        assert.notOk(component.geometry);
+        assert.notOk(component.material);
+        assert.notOk(component.texture);
+        assert.ok(geometryDisposeSpy.called);
+        assert.ok(materialDisposeSpy.called);
+        assert.ok(textureDisposeSpy.called);
+        done();
+      });
     });
   });
 });
