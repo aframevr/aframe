@@ -185,7 +185,7 @@ module.exports.Component = registerComponent('text', {
     this.mesh.visible = false;
 
     // Look up font URL to use, and perform cached load.
-    fontSrc = this.lookupFont(this.data.font || 'default');
+    fontSrc = this.lookupFont(this.data.font || 'default') || this.data.font;
     cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
       var data;
       var fontImgSrc;
