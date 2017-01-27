@@ -121,13 +121,13 @@ module.exports.Component = registerComponent('screenshot', {
   /**
    * <ctrl> + <alt> + s = regular screenshot
    * <ctrl> + <alt> + <shift> + s = equirectangular screenshot
-   //  */
-  // onKeyDown: function (evt) {
-  //  var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
-  //  if (!this.data || !shortcutPressed) { return; }
-  //  var projection = evt.shiftKey ? 'equirectangular' : 'perspective';
-  //  this.capture(projection);
-  // },
+  */
+  onKeyDown: function (evt) {
+    var shortcutPressed = evt.keyCode === 83 && evt.ctrlKey && evt.altKey;
+    if (!this.data || !shortcutPressed) { return; }
+    var projection = evt.shiftKey ? 'equirectangular' : 'perspective';
+    this.capture(projection);
+  },
 
   /**
    * Captures a screenshot of the scene
