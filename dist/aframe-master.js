@@ -1,4 +1,139 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.AFRAME = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+var str = Object.prototype.toString
+
+module.exports = anArray
+
+function anArray(arr) {
+  return (
+       arr.BYTES_PER_ELEMENT
+    && str.call(arr.buffer) === '[object ArrayBuffer]'
+    || Array.isArray(arr)
+  )
+}
+
+},{}],2:[function(_dereq_,module,exports){
+module.exports = function numtype(num, def) {
+	return typeof num === 'number'
+		? num 
+		: (typeof def === 'number' ? def : 0)
+}
+},{}],3:[function(_dereq_,module,exports){
+'use strict'
+
+exports.byteLength = byteLength
+exports.toByteArray = toByteArray
+exports.fromByteArray = fromByteArray
+
+var lookup = []
+var revLookup = []
+var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+
+var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+for (var i = 0, len = code.length; i < len; ++i) {
+  lookup[i] = code[i]
+  revLookup[code.charCodeAt(i)] = i
+}
+
+revLookup['-'.charCodeAt(0)] = 62
+revLookup['_'.charCodeAt(0)] = 63
+
+function placeHoldersCount (b64) {
+  var len = b64.length
+  if (len % 4 > 0) {
+    throw new Error('Invalid string. Length must be a multiple of 4')
+  }
+
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+}
+
+function byteLength (b64) {
+  // base64 is 4/3 + up to two characters of the original data
+  return b64.length * 3 / 4 - placeHoldersCount(b64)
+}
+
+function toByteArray (b64) {
+  var i, j, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
+
+  arr = new Arr(len * 3 / 4 - placeHolders)
+
+  // if there are placeholders, only get up to the last complete 4 chars
+  l = placeHolders > 0 ? len - 4 : len
+
+  var L = 0
+
+  for (i = 0, j = 0; i < l; i += 4, j += 3) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
+  }
+
+  return arr
+}
+
+function tripletToBase64 (num) {
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+}
+
+function encodeChunk (uint8, start, end) {
+  var tmp
+  var output = []
+  for (var i = start; i < end; i += 3) {
+    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+    output.push(tripletToBase64(tmp))
+  }
+  return output.join('')
+}
+
+function fromByteArray (uint8) {
+  var tmp
+  var len = uint8.length
+  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
+  var parts = []
+  var maxChunkLength = 16383 // must be multiple of 3
+
+  // go through the array every three bytes, we'll deal with trailing stuff later
+  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+  }
+
+  // pad the end with zeros, but make sure to not forget the extra bytes
+  if (extraBytes === 1) {
+    tmp = uint8[len - 1]
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
+  } else if (extraBytes === 2) {
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
+  }
+
+  parts.push(output)
+
+  return parts.join('')
+}
+
+},{}],4:[function(_dereq_,module,exports){
 'use strict';
 // For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
 
@@ -50,7 +185,1817 @@ module.exports = {
     }
 };
 
-},{}],2:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
+var Buffer = _dereq_('buffer').Buffer; // for use with browserify
+
+module.exports = function (a, b) {
+    if (!Buffer.isBuffer(a)) return undefined;
+    if (!Buffer.isBuffer(b)) return undefined;
+    if (typeof a.equals === 'function') return a.equals(b);
+    if (a.length !== b.length) return false;
+    
+    for (var i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+    }
+    
+    return true;
+};
+
+},{"buffer":6}],6:[function(_dereq_,module,exports){
+(function (global){
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+/* eslint-disable no-proto */
+
+'use strict'
+
+var base64 = _dereq_('base64-js')
+var ieee754 = _dereq_('ieee754')
+var isArray = _dereq_('isarray')
+
+exports.Buffer = Buffer
+exports.SlowBuffer = SlowBuffer
+exports.INSPECT_MAX_BYTES = 50
+
+/**
+ * If `Buffer.TYPED_ARRAY_SUPPORT`:
+ *   === true    Use Uint8Array implementation (fastest)
+ *   === false   Use Object implementation (most compatible, even IE6)
+ *
+ * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+ * Opera 11.6+, iOS 4.2+.
+ *
+ * Due to various browser bugs, sometimes the Object implementation will be used even
+ * when the browser supports typed arrays.
+ *
+ * Note:
+ *
+ *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+ *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+ *
+ *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+ *
+ *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+ *     incorrect length in some situations.
+
+ * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+ * get the Object implementation, which is slower but behaves correctly.
+ */
+Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+  ? global.TYPED_ARRAY_SUPPORT
+  : typedArraySupport()
+
+/*
+ * Export kMaxLength after typed array support is determined.
+ */
+exports.kMaxLength = kMaxLength()
+
+function typedArraySupport () {
+  try {
+    var arr = new Uint8Array(1)
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+    return arr.foo() === 42 && // typed array instances can be augmented
+        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+  } catch (e) {
+    return false
+  }
+}
+
+function kMaxLength () {
+  return Buffer.TYPED_ARRAY_SUPPORT
+    ? 0x7fffffff
+    : 0x3fffffff
+}
+
+function createBuffer (that, length) {
+  if (kMaxLength() < length) {
+    throw new RangeError('Invalid typed array length')
+  }
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = new Uint8Array(length)
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    if (that === null) {
+      that = new Buffer(length)
+    }
+    that.length = length
+  }
+
+  return that
+}
+
+/**
+ * The Buffer constructor returns instances of `Uint8Array` that have their
+ * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+ * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+ * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+ * returns a single octet.
+ *
+ * The `Uint8Array` prototype remains unmodified.
+ */
+
+function Buffer (arg, encodingOrOffset, length) {
+  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+    return new Buffer(arg, encodingOrOffset, length)
+  }
+
+  // Common case.
+  if (typeof arg === 'number') {
+    if (typeof encodingOrOffset === 'string') {
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
+      )
+    }
+    return allocUnsafe(this, arg)
+  }
+  return from(this, arg, encodingOrOffset, length)
+}
+
+Buffer.poolSize = 8192 // not used by this implementation
+
+// TODO: Legacy, not needed anymore. Remove in next major version.
+Buffer._augment = function (arr) {
+  arr.__proto__ = Buffer.prototype
+  return arr
+}
+
+function from (that, value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+    return fromArrayBuffer(that, value, encodingOrOffset, length)
+  }
+
+  if (typeof value === 'string') {
+    return fromString(that, value, encodingOrOffset)
+  }
+
+  return fromObject(that, value)
+}
+
+/**
+ * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+ * if value is a number.
+ * Buffer.from(str[, encoding])
+ * Buffer.from(array)
+ * Buffer.from(buffer)
+ * Buffer.from(arrayBuffer[, byteOffset[, length]])
+ **/
+Buffer.from = function (value, encodingOrOffset, length) {
+  return from(null, value, encodingOrOffset, length)
+}
+
+if (Buffer.TYPED_ARRAY_SUPPORT) {
+  Buffer.prototype.__proto__ = Uint8Array.prototype
+  Buffer.__proto__ = Uint8Array
+  if (typeof Symbol !== 'undefined' && Symbol.species &&
+      Buffer[Symbol.species] === Buffer) {
+    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
+    Object.defineProperty(Buffer, Symbol.species, {
+      value: null,
+      configurable: true
+    })
+  }
+}
+
+function assertSize (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('"size" argument must be a number')
+  } else if (size < 0) {
+    throw new RangeError('"size" argument must not be negative')
+  }
+}
+
+function alloc (that, size, fill, encoding) {
+  assertSize(size)
+  if (size <= 0) {
+    return createBuffer(that, size)
+  }
+  if (fill !== undefined) {
+    // Only pay attention to encoding if it's a string. This
+    // prevents accidentally sending in a number that would
+    // be interpretted as a start offset.
+    return typeof encoding === 'string'
+      ? createBuffer(that, size).fill(fill, encoding)
+      : createBuffer(that, size).fill(fill)
+  }
+  return createBuffer(that, size)
+}
+
+/**
+ * Creates a new filled Buffer instance.
+ * alloc(size[, fill[, encoding]])
+ **/
+Buffer.alloc = function (size, fill, encoding) {
+  return alloc(null, size, fill, encoding)
+}
+
+function allocUnsafe (that, size) {
+  assertSize(size)
+  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+    for (var i = 0; i < size; ++i) {
+      that[i] = 0
+    }
+  }
+  return that
+}
+
+/**
+ * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+ * */
+Buffer.allocUnsafe = function (size) {
+  return allocUnsafe(null, size)
+}
+/**
+ * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+ */
+Buffer.allocUnsafeSlow = function (size) {
+  return allocUnsafe(null, size)
+}
+
+function fromString (that, string, encoding) {
+  if (typeof encoding !== 'string' || encoding === '') {
+    encoding = 'utf8'
+  }
+
+  if (!Buffer.isEncoding(encoding)) {
+    throw new TypeError('"encoding" must be a valid string encoding')
+  }
+
+  var length = byteLength(string, encoding) | 0
+  that = createBuffer(that, length)
+
+  var actual = that.write(string, encoding)
+
+  if (actual !== length) {
+    // Writing a hex string, for example, that contains invalid characters will
+    // cause everything after the first invalid character to be ignored. (e.g.
+    // 'abxxcd' will be treated as 'ab')
+    that = that.slice(0, actual)
+  }
+
+  return that
+}
+
+function fromArrayLike (that, array) {
+  var length = array.length < 0 ? 0 : checked(array.length) | 0
+  that = createBuffer(that, length)
+  for (var i = 0; i < length; i += 1) {
+    that[i] = array[i] & 255
+  }
+  return that
+}
+
+function fromArrayBuffer (that, array, byteOffset, length) {
+  array.byteLength // this throws if `array` is not a valid ArrayBuffer
+
+  if (byteOffset < 0 || array.byteLength < byteOffset) {
+    throw new RangeError('\'offset\' is out of bounds')
+  }
+
+  if (array.byteLength < byteOffset + (length || 0)) {
+    throw new RangeError('\'length\' is out of bounds')
+  }
+
+  if (byteOffset === undefined && length === undefined) {
+    array = new Uint8Array(array)
+  } else if (length === undefined) {
+    array = new Uint8Array(array, byteOffset)
+  } else {
+    array = new Uint8Array(array, byteOffset, length)
+  }
+
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    // Return an augmented `Uint8Array` instance, for best performance
+    that = array
+    that.__proto__ = Buffer.prototype
+  } else {
+    // Fallback: Return an object instance of the Buffer class
+    that = fromArrayLike(that, array)
+  }
+  return that
+}
+
+function fromObject (that, obj) {
+  if (Buffer.isBuffer(obj)) {
+    var len = checked(obj.length) | 0
+    that = createBuffer(that, len)
+
+    if (that.length === 0) {
+      return that
+    }
+
+    obj.copy(that, 0, 0, len)
+    return that
+  }
+
+  if (obj) {
+    if ((typeof ArrayBuffer !== 'undefined' &&
+        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+        return createBuffer(that, 0)
+      }
+      return fromArrayLike(that, obj)
+    }
+
+    if (obj.type === 'Buffer' && isArray(obj.data)) {
+      return fromArrayLike(that, obj.data)
+    }
+  }
+
+  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+}
+
+function checked (length) {
+  // Note: cannot use `length < kMaxLength()` here because that fails when
+  // length is NaN (which is otherwise coerced to zero.)
+  if (length >= kMaxLength()) {
+    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+  }
+  return length | 0
+}
+
+function SlowBuffer (length) {
+  if (+length != length) { // eslint-disable-line eqeqeq
+    length = 0
+  }
+  return Buffer.alloc(+length)
+}
+
+Buffer.isBuffer = function isBuffer (b) {
+  return !!(b != null && b._isBuffer)
+}
+
+Buffer.compare = function compare (a, b) {
+  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+    throw new TypeError('Arguments must be Buffers')
+  }
+
+  if (a === b) return 0
+
+  var x = a.length
+  var y = b.length
+
+  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+    if (a[i] !== b[i]) {
+      x = a[i]
+      y = b[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+Buffer.isEncoding = function isEncoding (encoding) {
+  switch (String(encoding).toLowerCase()) {
+    case 'hex':
+    case 'utf8':
+    case 'utf-8':
+    case 'ascii':
+    case 'latin1':
+    case 'binary':
+    case 'base64':
+    case 'ucs2':
+    case 'ucs-2':
+    case 'utf16le':
+    case 'utf-16le':
+      return true
+    default:
+      return false
+  }
+}
+
+Buffer.concat = function concat (list, length) {
+  if (!isArray(list)) {
+    throw new TypeError('"list" argument must be an Array of Buffers')
+  }
+
+  if (list.length === 0) {
+    return Buffer.alloc(0)
+  }
+
+  var i
+  if (length === undefined) {
+    length = 0
+    for (i = 0; i < list.length; ++i) {
+      length += list[i].length
+    }
+  }
+
+  var buffer = Buffer.allocUnsafe(length)
+  var pos = 0
+  for (i = 0; i < list.length; ++i) {
+    var buf = list[i]
+    if (!Buffer.isBuffer(buf)) {
+      throw new TypeError('"list" argument must be an Array of Buffers')
+    }
+    buf.copy(buffer, pos)
+    pos += buf.length
+  }
+  return buffer
+}
+
+function byteLength (string, encoding) {
+  if (Buffer.isBuffer(string)) {
+    return string.length
+  }
+  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+    return string.byteLength
+  }
+  if (typeof string !== 'string') {
+    string = '' + string
+  }
+
+  var len = string.length
+  if (len === 0) return 0
+
+  // Use a for loop to avoid recursion
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'ascii':
+      case 'latin1':
+      case 'binary':
+        return len
+      case 'utf8':
+      case 'utf-8':
+      case undefined:
+        return utf8ToBytes(string).length
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return len * 2
+      case 'hex':
+        return len >>> 1
+      case 'base64':
+        return base64ToBytes(string).length
+      default:
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+Buffer.byteLength = byteLength
+
+function slowToString (encoding, start, end) {
+  var loweredCase = false
+
+  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+  // property of a typed array.
+
+  // This behaves neither like String nor Uint8Array in that we set start/end
+  // to their upper/lower bounds if the value passed is out of range.
+  // undefined is handled specially as per ECMA-262 6th Edition,
+  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+  if (start === undefined || start < 0) {
+    start = 0
+  }
+  // Return early if start > this.length. Done here to prevent potential uint32
+  // coercion fail below.
+  if (start > this.length) {
+    return ''
+  }
+
+  if (end === undefined || end > this.length) {
+    end = this.length
+  }
+
+  if (end <= 0) {
+    return ''
+  }
+
+  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+  end >>>= 0
+  start >>>= 0
+
+  if (end <= start) {
+    return ''
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  while (true) {
+    switch (encoding) {
+      case 'hex':
+        return hexSlice(this, start, end)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Slice(this, start, end)
+
+      case 'ascii':
+        return asciiSlice(this, start, end)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Slice(this, start, end)
+
+      case 'base64':
+        return base64Slice(this, start, end)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return utf16leSlice(this, start, end)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = (encoding + '').toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+// Buffer instances.
+Buffer.prototype._isBuffer = true
+
+function swap (b, n, m) {
+  var i = b[n]
+  b[n] = b[m]
+  b[m] = i
+}
+
+Buffer.prototype.swap16 = function swap16 () {
+  var len = this.length
+  if (len % 2 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 16-bits')
+  }
+  for (var i = 0; i < len; i += 2) {
+    swap(this, i, i + 1)
+  }
+  return this
+}
+
+Buffer.prototype.swap32 = function swap32 () {
+  var len = this.length
+  if (len % 4 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 32-bits')
+  }
+  for (var i = 0; i < len; i += 4) {
+    swap(this, i, i + 3)
+    swap(this, i + 1, i + 2)
+  }
+  return this
+}
+
+Buffer.prototype.swap64 = function swap64 () {
+  var len = this.length
+  if (len % 8 !== 0) {
+    throw new RangeError('Buffer size must be a multiple of 64-bits')
+  }
+  for (var i = 0; i < len; i += 8) {
+    swap(this, i, i + 7)
+    swap(this, i + 1, i + 6)
+    swap(this, i + 2, i + 5)
+    swap(this, i + 3, i + 4)
+  }
+  return this
+}
+
+Buffer.prototype.toString = function toString () {
+  var length = this.length | 0
+  if (length === 0) return ''
+  if (arguments.length === 0) return utf8Slice(this, 0, length)
+  return slowToString.apply(this, arguments)
+}
+
+Buffer.prototype.equals = function equals (b) {
+  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+  if (this === b) return true
+  return Buffer.compare(this, b) === 0
+}
+
+Buffer.prototype.inspect = function inspect () {
+  var str = ''
+  var max = exports.INSPECT_MAX_BYTES
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max) str += ' ... '
+  }
+  return '<Buffer ' + str + '>'
+}
+
+Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+  if (!Buffer.isBuffer(target)) {
+    throw new TypeError('Argument must be a Buffer')
+  }
+
+  if (start === undefined) {
+    start = 0
+  }
+  if (end === undefined) {
+    end = target ? target.length : 0
+  }
+  if (thisStart === undefined) {
+    thisStart = 0
+  }
+  if (thisEnd === undefined) {
+    thisEnd = this.length
+  }
+
+  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+    throw new RangeError('out of range index')
+  }
+
+  if (thisStart >= thisEnd && start >= end) {
+    return 0
+  }
+  if (thisStart >= thisEnd) {
+    return -1
+  }
+  if (start >= end) {
+    return 1
+  }
+
+  start >>>= 0
+  end >>>= 0
+  thisStart >>>= 0
+  thisEnd >>>= 0
+
+  if (this === target) return 0
+
+  var x = thisEnd - thisStart
+  var y = end - start
+  var len = Math.min(x, y)
+
+  var thisCopy = this.slice(thisStart, thisEnd)
+  var targetCopy = target.slice(start, end)
+
+  for (var i = 0; i < len; ++i) {
+    if (thisCopy[i] !== targetCopy[i]) {
+      x = thisCopy[i]
+      y = targetCopy[i]
+      break
+    }
+  }
+
+  if (x < y) return -1
+  if (y < x) return 1
+  return 0
+}
+
+// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+//
+// Arguments:
+// - buffer - a Buffer to search
+// - val - a string, Buffer, or number
+// - byteOffset - an index into `buffer`; will be clamped to an int32
+// - encoding - an optional encoding, relevant is val is a string
+// - dir - true for indexOf, false for lastIndexOf
+function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+  // Empty buffer means no match
+  if (buffer.length === 0) return -1
+
+  // Normalize byteOffset
+  if (typeof byteOffset === 'string') {
+    encoding = byteOffset
+    byteOffset = 0
+  } else if (byteOffset > 0x7fffffff) {
+    byteOffset = 0x7fffffff
+  } else if (byteOffset < -0x80000000) {
+    byteOffset = -0x80000000
+  }
+  byteOffset = +byteOffset  // Coerce to Number.
+  if (isNaN(byteOffset)) {
+    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+    byteOffset = dir ? 0 : (buffer.length - 1)
+  }
+
+  // Normalize byteOffset: negative offsets start from the end of the buffer
+  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+  if (byteOffset >= buffer.length) {
+    if (dir) return -1
+    else byteOffset = buffer.length - 1
+  } else if (byteOffset < 0) {
+    if (dir) byteOffset = 0
+    else return -1
+  }
+
+  // Normalize val
+  if (typeof val === 'string') {
+    val = Buffer.from(val, encoding)
+  }
+
+  // Finally, search either indexOf (if dir is true) or lastIndexOf
+  if (Buffer.isBuffer(val)) {
+    // Special case: looking for empty string/buffer always fails
+    if (val.length === 0) {
+      return -1
+    }
+    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+  } else if (typeof val === 'number') {
+    val = val & 0xFF // Search for a byte value [0-255]
+    if (Buffer.TYPED_ARRAY_SUPPORT &&
+        typeof Uint8Array.prototype.indexOf === 'function') {
+      if (dir) {
+        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+      } else {
+        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+      }
+    }
+    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+  }
+
+  throw new TypeError('val must be string, number or Buffer')
+}
+
+function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+  var indexSize = 1
+  var arrLength = arr.length
+  var valLength = val.length
+
+  if (encoding !== undefined) {
+    encoding = String(encoding).toLowerCase()
+    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+        encoding === 'utf16le' || encoding === 'utf-16le') {
+      if (arr.length < 2 || val.length < 2) {
+        return -1
+      }
+      indexSize = 2
+      arrLength /= 2
+      valLength /= 2
+      byteOffset /= 2
+    }
+  }
+
+  function read (buf, i) {
+    if (indexSize === 1) {
+      return buf[i]
+    } else {
+      return buf.readUInt16BE(i * indexSize)
+    }
+  }
+
+  var i
+  if (dir) {
+    var foundIndex = -1
+    for (i = byteOffset; i < arrLength; i++) {
+      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+        if (foundIndex === -1) foundIndex = i
+        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+      } else {
+        if (foundIndex !== -1) i -= i - foundIndex
+        foundIndex = -1
+      }
+    }
+  } else {
+    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+    for (i = byteOffset; i >= 0; i--) {
+      var found = true
+      for (var j = 0; j < valLength; j++) {
+        if (read(arr, i + j) !== read(val, j)) {
+          found = false
+          break
+        }
+      }
+      if (found) return i
+    }
+  }
+
+  return -1
+}
+
+Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+  return this.indexOf(val, byteOffset, encoding) !== -1
+}
+
+Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+}
+
+Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+}
+
+function hexWrite (buf, string, offset, length) {
+  offset = Number(offset) || 0
+  var remaining = buf.length - offset
+  if (!length) {
+    length = remaining
+  } else {
+    length = Number(length)
+    if (length > remaining) {
+      length = remaining
+    }
+  }
+
+  // must be an even number of digits
+  var strLen = string.length
+  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+  if (length > strLen / 2) {
+    length = strLen / 2
+  }
+  for (var i = 0; i < length; ++i) {
+    var parsed = parseInt(string.substr(i * 2, 2), 16)
+    if (isNaN(parsed)) return i
+    buf[offset + i] = parsed
+  }
+  return i
+}
+
+function utf8Write (buf, string, offset, length) {
+  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+function asciiWrite (buf, string, offset, length) {
+  return blitBuffer(asciiToBytes(string), buf, offset, length)
+}
+
+function latin1Write (buf, string, offset, length) {
+  return asciiWrite(buf, string, offset, length)
+}
+
+function base64Write (buf, string, offset, length) {
+  return blitBuffer(base64ToBytes(string), buf, offset, length)
+}
+
+function ucs2Write (buf, string, offset, length) {
+  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+}
+
+Buffer.prototype.write = function write (string, offset, length, encoding) {
+  // Buffer#write(string)
+  if (offset === undefined) {
+    encoding = 'utf8'
+    length = this.length
+    offset = 0
+  // Buffer#write(string, encoding)
+  } else if (length === undefined && typeof offset === 'string') {
+    encoding = offset
+    length = this.length
+    offset = 0
+  // Buffer#write(string, offset[, length][, encoding])
+  } else if (isFinite(offset)) {
+    offset = offset | 0
+    if (isFinite(length)) {
+      length = length | 0
+      if (encoding === undefined) encoding = 'utf8'
+    } else {
+      encoding = length
+      length = undefined
+    }
+  // legacy write(string, encoding, offset, length) - remove in v0.13
+  } else {
+    throw new Error(
+      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+    )
+  }
+
+  var remaining = this.length - offset
+  if (length === undefined || length > remaining) length = remaining
+
+  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+    throw new RangeError('Attempt to write outside buffer bounds')
+  }
+
+  if (!encoding) encoding = 'utf8'
+
+  var loweredCase = false
+  for (;;) {
+    switch (encoding) {
+      case 'hex':
+        return hexWrite(this, string, offset, length)
+
+      case 'utf8':
+      case 'utf-8':
+        return utf8Write(this, string, offset, length)
+
+      case 'ascii':
+        return asciiWrite(this, string, offset, length)
+
+      case 'latin1':
+      case 'binary':
+        return latin1Write(this, string, offset, length)
+
+      case 'base64':
+        // Warning: maxLength not taken into account in base64Write
+        return base64Write(this, string, offset, length)
+
+      case 'ucs2':
+      case 'ucs-2':
+      case 'utf16le':
+      case 'utf-16le':
+        return ucs2Write(this, string, offset, length)
+
+      default:
+        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+        encoding = ('' + encoding).toLowerCase()
+        loweredCase = true
+    }
+  }
+}
+
+Buffer.prototype.toJSON = function toJSON () {
+  return {
+    type: 'Buffer',
+    data: Array.prototype.slice.call(this._arr || this, 0)
+  }
+}
+
+function base64Slice (buf, start, end) {
+  if (start === 0 && end === buf.length) {
+    return base64.fromByteArray(buf)
+  } else {
+    return base64.fromByteArray(buf.slice(start, end))
+  }
+}
+
+function utf8Slice (buf, start, end) {
+  end = Math.min(buf.length, end)
+  var res = []
+
+  var i = start
+  while (i < end) {
+    var firstByte = buf[i]
+    var codePoint = null
+    var bytesPerSequence = (firstByte > 0xEF) ? 4
+      : (firstByte > 0xDF) ? 3
+      : (firstByte > 0xBF) ? 2
+      : 1
+
+    if (i + bytesPerSequence <= end) {
+      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+      switch (bytesPerSequence) {
+        case 1:
+          if (firstByte < 0x80) {
+            codePoint = firstByte
+          }
+          break
+        case 2:
+          secondByte = buf[i + 1]
+          if ((secondByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+            if (tempCodePoint > 0x7F) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 3:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+              codePoint = tempCodePoint
+            }
+          }
+          break
+        case 4:
+          secondByte = buf[i + 1]
+          thirdByte = buf[i + 2]
+          fourthByte = buf[i + 3]
+          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+              codePoint = tempCodePoint
+            }
+          }
+      }
+    }
+
+    if (codePoint === null) {
+      // we did not generate a valid codePoint so insert a
+      // replacement char (U+FFFD) and advance only 1 byte
+      codePoint = 0xFFFD
+      bytesPerSequence = 1
+    } else if (codePoint > 0xFFFF) {
+      // encode to utf16 (surrogate pair dance)
+      codePoint -= 0x10000
+      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+      codePoint = 0xDC00 | codePoint & 0x3FF
+    }
+
+    res.push(codePoint)
+    i += bytesPerSequence
+  }
+
+  return decodeCodePointsArray(res)
+}
+
+// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+// the lowest limit is Chrome, with 0x10000 args.
+// We go 1 magnitude less, for safety
+var MAX_ARGUMENTS_LENGTH = 0x1000
+
+function decodeCodePointsArray (codePoints) {
+  var len = codePoints.length
+  if (len <= MAX_ARGUMENTS_LENGTH) {
+    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+  }
+
+  // Decode in chunks to avoid "call stack size exceeded".
+  var res = ''
+  var i = 0
+  while (i < len) {
+    res += String.fromCharCode.apply(
+      String,
+      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+    )
+  }
+  return res
+}
+
+function asciiSlice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i] & 0x7F)
+  }
+  return ret
+}
+
+function latin1Slice (buf, start, end) {
+  var ret = ''
+  end = Math.min(buf.length, end)
+
+  for (var i = start; i < end; ++i) {
+    ret += String.fromCharCode(buf[i])
+  }
+  return ret
+}
+
+function hexSlice (buf, start, end) {
+  var len = buf.length
+
+  if (!start || start < 0) start = 0
+  if (!end || end < 0 || end > len) end = len
+
+  var out = ''
+  for (var i = start; i < end; ++i) {
+    out += toHex(buf[i])
+  }
+  return out
+}
+
+function utf16leSlice (buf, start, end) {
+  var bytes = buf.slice(start, end)
+  var res = ''
+  for (var i = 0; i < bytes.length; i += 2) {
+    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+  }
+  return res
+}
+
+Buffer.prototype.slice = function slice (start, end) {
+  var len = this.length
+  start = ~~start
+  end = end === undefined ? len : ~~end
+
+  if (start < 0) {
+    start += len
+    if (start < 0) start = 0
+  } else if (start > len) {
+    start = len
+  }
+
+  if (end < 0) {
+    end += len
+    if (end < 0) end = 0
+  } else if (end > len) {
+    end = len
+  }
+
+  if (end < start) end = start
+
+  var newBuf
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    newBuf = this.subarray(start, end)
+    newBuf.__proto__ = Buffer.prototype
+  } else {
+    var sliceLen = end - start
+    newBuf = new Buffer(sliceLen, undefined)
+    for (var i = 0; i < sliceLen; ++i) {
+      newBuf[i] = this[i + start]
+    }
+  }
+
+  return newBuf
+}
+
+/*
+ * Need to make sure that buffer isn't trying to write out of bounds.
+ */
+function checkOffset (offset, ext, length) {
+  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+}
+
+Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    checkOffset(offset, byteLength, this.length)
+  }
+
+  var val = this[offset + --byteLength]
+  var mul = 1
+  while (byteLength > 0 && (mul *= 0x100)) {
+    val += this[offset + --byteLength] * mul
+  }
+
+  return val
+}
+
+Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  return this[offset]
+}
+
+Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return this[offset] | (this[offset + 1] << 8)
+}
+
+Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  return (this[offset] << 8) | this[offset + 1]
+}
+
+Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return ((this[offset]) |
+      (this[offset + 1] << 8) |
+      (this[offset + 2] << 16)) +
+      (this[offset + 3] * 0x1000000)
+}
+
+Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] * 0x1000000) +
+    ((this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    this[offset + 3])
+}
+
+Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var val = this[offset]
+  var mul = 1
+  var i = 0
+  while (++i < byteLength && (mul *= 0x100)) {
+    val += this[offset + i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+  var i = byteLength
+  var mul = 1
+  var val = this[offset + --i]
+  while (i > 0 && (mul *= 0x100)) {
+    val += this[offset + --i] * mul
+  }
+  mul *= 0x80
+
+  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+  return val
+}
+
+Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 1, this.length)
+  if (!(this[offset] & 0x80)) return (this[offset])
+  return ((0xff - this[offset] + 1) * -1)
+}
+
+Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset] | (this[offset + 1] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 2, this.length)
+  var val = this[offset + 1] | (this[offset] << 8)
+  return (val & 0x8000) ? val | 0xFFFF0000 : val
+}
+
+Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset]) |
+    (this[offset + 1] << 8) |
+    (this[offset + 2] << 16) |
+    (this[offset + 3] << 24)
+}
+
+Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+
+  return (this[offset] << 24) |
+    (this[offset + 1] << 16) |
+    (this[offset + 2] << 8) |
+    (this[offset + 3])
+}
+
+Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, true, 23, 4)
+}
+
+Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 4, this.length)
+  return ieee754.read(this, offset, false, 23, 4)
+}
+
+Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, true, 52, 8)
+}
+
+Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+  if (!noAssert) checkOffset(offset, 8, this.length)
+  return ieee754.read(this, offset, false, 52, 8)
+}
+
+function checkInt (buf, value, offset, ext, max, min) {
+  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+}
+
+Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var mul = 1
+  var i = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  byteLength = byteLength | 0
+  if (!noAssert) {
+    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+    checkInt(this, value, offset, byteLength, maxBytes, 0)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    this[offset + i] = (value / mul) & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+function objectWriteUInt16 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+      (littleEndian ? i : 1 - i) * 8
+  }
+}
+
+Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+function objectWriteUInt32 (buf, value, offset, littleEndian) {
+  if (value < 0) value = 0xffffffff + value + 1
+  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+  }
+}
+
+Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset + 3] = (value >>> 24)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 1] = (value >>> 8)
+    this[offset] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = 0
+  var mul = 1
+  var sub = 0
+  this[offset] = value & 0xFF
+  while (++i < byteLength && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) {
+    var limit = Math.pow(2, 8 * byteLength - 1)
+
+    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+  }
+
+  var i = byteLength - 1
+  var mul = 1
+  var sub = 0
+  this[offset + i] = value & 0xFF
+  while (--i >= 0 && (mul *= 0x100)) {
+    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+      sub = 1
+    }
+    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+  }
+
+  return offset + byteLength
+}
+
+Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+  if (value < 0) value = 0xff + value + 1
+  this[offset] = (value & 0xff)
+  return offset + 1
+}
+
+Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+  } else {
+    objectWriteUInt16(this, value, offset, true)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 8)
+    this[offset + 1] = (value & 0xff)
+  } else {
+    objectWriteUInt16(this, value, offset, false)
+  }
+  return offset + 2
+}
+
+Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value & 0xff)
+    this[offset + 1] = (value >>> 8)
+    this[offset + 2] = (value >>> 16)
+    this[offset + 3] = (value >>> 24)
+  } else {
+    objectWriteUInt32(this, value, offset, true)
+  }
+  return offset + 4
+}
+
+Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+  value = +value
+  offset = offset | 0
+  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+  if (value < 0) value = 0xffffffff + value + 1
+  if (Buffer.TYPED_ARRAY_SUPPORT) {
+    this[offset] = (value >>> 24)
+    this[offset + 1] = (value >>> 16)
+    this[offset + 2] = (value >>> 8)
+    this[offset + 3] = (value & 0xff)
+  } else {
+    objectWriteUInt32(this, value, offset, false)
+  }
+  return offset + 4
+}
+
+function checkIEEE754 (buf, value, offset, ext, max, min) {
+  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+  if (offset < 0) throw new RangeError('Index out of range')
+}
+
+function writeFloat (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+  return offset + 4
+}
+
+Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+  return writeFloat(this, value, offset, false, noAssert)
+}
+
+function writeDouble (buf, value, offset, littleEndian, noAssert) {
+  if (!noAssert) {
+    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+  }
+  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+  return offset + 8
+}
+
+Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, true, noAssert)
+}
+
+Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+  return writeDouble(this, value, offset, false, noAssert)
+}
+
+// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+  if (!start) start = 0
+  if (!end && end !== 0) end = this.length
+  if (targetStart >= target.length) targetStart = target.length
+  if (!targetStart) targetStart = 0
+  if (end > 0 && end < start) end = start
+
+  // Copy 0 bytes; we're done
+  if (end === start) return 0
+  if (target.length === 0 || this.length === 0) return 0
+
+  // Fatal error conditions
+  if (targetStart < 0) {
+    throw new RangeError('targetStart out of bounds')
+  }
+  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+  // Are we oob?
+  if (end > this.length) end = this.length
+  if (target.length - targetStart < end - start) {
+    end = target.length - targetStart + start
+  }
+
+  var len = end - start
+  var i
+
+  if (this === target && start < targetStart && targetStart < end) {
+    // descending copy from end
+    for (i = len - 1; i >= 0; --i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+    // ascending copy from start
+    for (i = 0; i < len; ++i) {
+      target[i + targetStart] = this[i + start]
+    }
+  } else {
+    Uint8Array.prototype.set.call(
+      target,
+      this.subarray(start, start + len),
+      targetStart
+    )
+  }
+
+  return len
+}
+
+// Usage:
+//    buffer.fill(number[, offset[, end]])
+//    buffer.fill(buffer[, offset[, end]])
+//    buffer.fill(string[, offset[, end]][, encoding])
+Buffer.prototype.fill = function fill (val, start, end, encoding) {
+  // Handle string cases:
+  if (typeof val === 'string') {
+    if (typeof start === 'string') {
+      encoding = start
+      start = 0
+      end = this.length
+    } else if (typeof end === 'string') {
+      encoding = end
+      end = this.length
+    }
+    if (val.length === 1) {
+      var code = val.charCodeAt(0)
+      if (code < 256) {
+        val = code
+      }
+    }
+    if (encoding !== undefined && typeof encoding !== 'string') {
+      throw new TypeError('encoding must be a string')
+    }
+    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+      throw new TypeError('Unknown encoding: ' + encoding)
+    }
+  } else if (typeof val === 'number') {
+    val = val & 255
+  }
+
+  // Invalid ranges are not set to a default, so can range check early.
+  if (start < 0 || this.length < start || this.length < end) {
+    throw new RangeError('Out of range index')
+  }
+
+  if (end <= start) {
+    return this
+  }
+
+  start = start >>> 0
+  end = end === undefined ? this.length : end >>> 0
+
+  if (!val) val = 0
+
+  var i
+  if (typeof val === 'number') {
+    for (i = start; i < end; ++i) {
+      this[i] = val
+    }
+  } else {
+    var bytes = Buffer.isBuffer(val)
+      ? val
+      : utf8ToBytes(new Buffer(val, encoding).toString())
+    var len = bytes.length
+    for (i = 0; i < end - start; ++i) {
+      this[i + start] = bytes[i % len]
+    }
+  }
+
+  return this
+}
+
+// HELPER FUNCTIONS
+// ================
+
+var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+function base64clean (str) {
+  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+  // Node converts strings with length < 2 to ''
+  if (str.length < 2) return ''
+  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+  while (str.length % 4 !== 0) {
+    str = str + '='
+  }
+  return str
+}
+
+function stringtrim (str) {
+  if (str.trim) return str.trim()
+  return str.replace(/^\s+|\s+$/g, '')
+}
+
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
+}
+
+function utf8ToBytes (string, units) {
+  units = units || Infinity
+  var codePoint
+  var length = string.length
+  var leadSurrogate = null
+  var bytes = []
+
+  for (var i = 0; i < length; ++i) {
+    codePoint = string.charCodeAt(i)
+
+    // is surrogate component
+    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+      // last char was a lead
+      if (!leadSurrogate) {
+        // no lead yet
+        if (codePoint > 0xDBFF) {
+          // unexpected trail
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        } else if (i + 1 === length) {
+          // unpaired lead
+          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+          continue
+        }
+
+        // valid lead
+        leadSurrogate = codePoint
+
+        continue
+      }
+
+      // 2 leads in a row
+      if (codePoint < 0xDC00) {
+        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+        leadSurrogate = codePoint
+        continue
+      }
+
+      // valid surrogate pair
+      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+    } else if (leadSurrogate) {
+      // valid bmp char, but last char was a lead
+      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+    }
+
+    leadSurrogate = null
+
+    // encode utf8
+    if (codePoint < 0x80) {
+      if ((units -= 1) < 0) break
+      bytes.push(codePoint)
+    } else if (codePoint < 0x800) {
+      if ((units -= 2) < 0) break
+      bytes.push(
+        codePoint >> 0x6 | 0xC0,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x10000) {
+      if ((units -= 3) < 0) break
+      bytes.push(
+        codePoint >> 0xC | 0xE0,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else if (codePoint < 0x110000) {
+      if ((units -= 4) < 0) break
+      bytes.push(
+        codePoint >> 0x12 | 0xF0,
+        codePoint >> 0xC & 0x3F | 0x80,
+        codePoint >> 0x6 & 0x3F | 0x80,
+        codePoint & 0x3F | 0x80
+      )
+    } else {
+      throw new Error('Invalid code point')
+    }
+  }
+
+  return bytes
+}
+
+function asciiToBytes (str) {
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    // Node's code seems to be doing this and not & 0x7F..
+    byteArray.push(str.charCodeAt(i) & 0xFF)
+  }
+  return byteArray
+}
+
+function utf16leToBytes (str, units) {
+  var c, hi, lo
+  var byteArray = []
+  for (var i = 0; i < str.length; ++i) {
+    if ((units -= 2) < 0) break
+
+    c = str.charCodeAt(i)
+    hi = c >> 8
+    lo = c % 256
+    byteArray.push(lo)
+    byteArray.push(hi)
+  }
+
+  return byteArray
+}
+
+function base64ToBytes (str) {
+  return base64.toByteArray(base64clean(str))
+}
+
+function blitBuffer (src, dst, offset, length) {
+  for (var i = 0; i < length; ++i) {
+    if ((i + offset >= dst.length) || (i >= src.length)) break
+    dst[i + offset] = src[i]
+  }
+  return i
+}
+
+function isnan (val) {
+  return val !== val // eslint-disable-line no-self-compare
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{"base64-js":3,"ieee754":15,"isarray":21}],7:[function(_dereq_,module,exports){
 (function (process){
 /**
  * This is the web browser implementation of `debug()`.
@@ -237,7 +2182,7 @@ function localstorage() {
 
 }).call(this,_dereq_('_process'))
 
-},{"./debug":3,"_process":10}],3:[function(_dereq_,module,exports){
+},{"./debug":8,"_process":34}],8:[function(_dereq_,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -438,7 +2383,7 @@ function coerce(val) {
   return val;
 }
 
-},{"ms":7}],4:[function(_dereq_,module,exports){
+},{"ms":25}],9:[function(_dereq_,module,exports){
 'use strict';
 var isObj = _dereq_('is-obj');
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -508,17 +2453,727 @@ module.exports = function deepAssign(target) {
 	return target;
 };
 
-},{"is-obj":6}],5:[function(_dereq_,module,exports){
+},{"is-obj":20}],10:[function(_dereq_,module,exports){
 /*! (C) WebReflection Mit Style License */
 (function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
-},{}],6:[function(_dereq_,module,exports){
+},{}],11:[function(_dereq_,module,exports){
+module.exports = function(dtype) {
+  switch (dtype) {
+    case 'int8':
+      return Int8Array
+    case 'int16':
+      return Int16Array
+    case 'int32':
+      return Int32Array
+    case 'uint8':
+      return Uint8Array
+    case 'uint16':
+      return Uint16Array
+    case 'uint32':
+      return Uint32Array
+    case 'float32':
+      return Float32Array
+    case 'float64':
+      return Float64Array
+    case 'array':
+      return Array
+    case 'uint8_clamped':
+      return Uint8ClampedArray
+  }
+}
+
+},{}],12:[function(_dereq_,module,exports){
+/*eslint new-cap:0*/
+var dtype = _dereq_('dtype')
+module.exports = flattenVertexData
+function flattenVertexData (data, output, offset) {
+  if (!data) throw new TypeError('must specify data as first parameter')
+  offset = +(offset || 0) | 0
+
+  if (Array.isArray(data) && Array.isArray(data[0])) {
+    var dim = data[0].length
+    var length = data.length * dim
+
+    // no output specified, create a new typed array
+    if (!output || typeof output === 'string') {
+      output = new (dtype(output || 'float32'))(length + offset)
+    }
+
+    var dstLength = output.length - offset
+    if (length !== dstLength) {
+      throw new Error('source length ' + length + ' (' + dim + 'x' + data.length + ')' +
+        ' does not match destination length ' + dstLength)
+    }
+
+    for (var i = 0, k = offset; i < data.length; i++) {
+      for (var j = 0; j < dim; j++) {
+        output[k++] = data[i][j]
+      }
+    }
+  } else {
+    if (!output || typeof output === 'string') {
+      // no output, create a new one
+      var Ctor = dtype(output || 'float32')
+      if (offset === 0) {
+        output = new Ctor(data)
+      } else {
+        output = new Ctor(data.length + offset)
+        output.set(data, offset)
+      }
+    } else {
+      // store output in existing array
+      output.set(data, offset)
+    }
+  }
+
+  return output
+}
+
+},{"dtype":11}],13:[function(_dereq_,module,exports){
+var isFunction = _dereq_('is-function')
+
+module.exports = forEach
+
+var toString = Object.prototype.toString
+var hasOwnProperty = Object.prototype.hasOwnProperty
+
+function forEach(list, iterator, context) {
+    if (!isFunction(iterator)) {
+        throw new TypeError('iterator must be a function')
+    }
+
+    if (arguments.length < 3) {
+        context = this
+    }
+    
+    if (toString.call(list) === '[object Array]')
+        forEachArray(list, iterator, context)
+    else if (typeof list === 'string')
+        forEachString(list, iterator, context)
+    else
+        forEachObject(list, iterator, context)
+}
+
+function forEachArray(array, iterator, context) {
+    for (var i = 0, len = array.length; i < len; i++) {
+        if (hasOwnProperty.call(array, i)) {
+            iterator.call(context, array[i], i, array)
+        }
+    }
+}
+
+function forEachString(string, iterator, context) {
+    for (var i = 0, len = string.length; i < len; i++) {
+        // no such thing as a sparse string.
+        iterator.call(context, string.charAt(i), i, string)
+    }
+}
+
+function forEachObject(object, iterator, context) {
+    for (var k in object) {
+        if (hasOwnProperty.call(object, k)) {
+            iterator.call(context, object[k], k, object)
+        }
+    }
+}
+
+},{"is-function":19}],14:[function(_dereq_,module,exports){
+(function (global){
+if (typeof window !== "undefined") {
+    module.exports = window;
+} else if (typeof global !== "undefined") {
+    module.exports = global;
+} else if (typeof self !== "undefined"){
+    module.exports = self;
+} else {
+    module.exports = {};
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+
+},{}],15:[function(_dereq_,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = nBytes * 8 - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = (value * c - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],16:[function(_dereq_,module,exports){
+module.exports = function compile(property) {
+	if (!property || typeof property !== 'string')
+		throw new Error('must specify property for indexof search')
+
+	return new Function('array', 'value', 'start', [
+		'start = start || 0',
+		'for (var i=start; i<array.length; i++)',
+		'  if (array[i]["' + property +'"] === value)',
+		'      return i',
+		'return -1'
+	].join('\n'))
+}
+},{}],17:[function(_dereq_,module,exports){
+if (typeof Object.create === 'function') {
+  // implementation from standard node.js 'util' module
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    ctor.prototype = Object.create(superCtor.prototype, {
+      constructor: {
+        value: ctor,
+        enumerable: false,
+        writable: true,
+        configurable: true
+      }
+    });
+  };
+} else {
+  // old school shim for old browsers
+  module.exports = function inherits(ctor, superCtor) {
+    ctor.super_ = superCtor
+    var TempCtor = function () {}
+    TempCtor.prototype = superCtor.prototype
+    ctor.prototype = new TempCtor()
+    ctor.prototype.constructor = ctor
+  }
+}
+
+},{}],18:[function(_dereq_,module,exports){
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+},{}],19:[function(_dereq_,module,exports){
+module.exports = isFunction
+
+var toString = Object.prototype.toString
+
+function isFunction (fn) {
+  var string = toString.call(fn)
+  return string === '[object Function]' ||
+    (typeof fn === 'function' && string !== '[object RegExp]') ||
+    (typeof window !== 'undefined' &&
+     // IE8 and below
+     (fn === window.setTimeout ||
+      fn === window.alert ||
+      fn === window.confirm ||
+      fn === window.prompt))
+};
+
+},{}],20:[function(_dereq_,module,exports){
 'use strict';
 module.exports = function (x) {
 	var type = typeof x;
 	return x !== null && (type === 'object' || type === 'function');
 };
 
-},{}],7:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+},{}],22:[function(_dereq_,module,exports){
+var wordWrap = _dereq_('word-wrapper')
+var xtend = _dereq_('xtend')
+var findChar = _dereq_('indexof-property')('id')
+var number = _dereq_('as-number')
+
+var X_HEIGHTS = ['x', 'e', 'a', 'o', 'n', 's', 'r', 'c', 'u', 'm', 'v', 'w', 'z']
+var M_WIDTHS = ['m', 'w']
+var CAP_HEIGHTS = ['H', 'I', 'N', 'E', 'F', 'K', 'L', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+
+var TAB_ID = '\t'.charCodeAt(0)
+var SPACE_ID = ' '.charCodeAt(0)
+var ALIGN_LEFT = 0, 
+    ALIGN_CENTER = 1, 
+    ALIGN_RIGHT = 2
+
+module.exports = function createLayout(opt) {
+  return new TextLayout(opt)
+}
+
+function TextLayout(opt) {
+  this.glyphs = []
+  this._measure = this.computeMetrics.bind(this)
+  this.update(opt)
+}
+
+TextLayout.prototype.update = function(opt) {
+  opt = xtend({
+    measure: this._measure
+  }, opt)
+  this._opt = opt
+  this._opt.tabSize = number(this._opt.tabSize, 4)
+
+  if (!opt.font)
+    throw new Error('must provide a valid bitmap font')
+
+  var glyphs = this.glyphs
+  var text = opt.text||'' 
+  var font = opt.font
+  this._setupSpaceGlyphs(font)
+  
+  var lines = wordWrap.lines(text, opt)
+  var minWidth = opt.width || 0
+
+  //clear glyphs
+  glyphs.length = 0
+
+  //get max line width
+  var maxLineWidth = lines.reduce(function(prev, line) {
+    return Math.max(prev, line.width, minWidth)
+  }, 0)
+
+  //the pen position
+  var x = 0
+  var y = 0
+  var lineHeight = number(opt.lineHeight, font.common.lineHeight)
+  var baseline = font.common.base
+  var descender = lineHeight-baseline
+  var letterSpacing = opt.letterSpacing || 0
+  var height = lineHeight * lines.length - descender
+  var align = getAlignType(this._opt.align)
+
+  //draw text along baseline
+  y -= height
+  
+  //the metrics for this text layout
+  this._width = maxLineWidth
+  this._height = height
+  this._descender = lineHeight - baseline
+  this._baseline = baseline
+  this._xHeight = getXHeight(font)
+  this._capHeight = getCapHeight(font)
+  this._lineHeight = lineHeight
+  this._ascender = lineHeight - descender - this._xHeight
+    
+  //layout each glyph
+  var self = this
+  lines.forEach(function(line, lineIndex) {
+    var start = line.start
+    var end = line.end
+    var lineWidth = line.width
+    var lastGlyph
+    
+    //for each glyph in that line...
+    for (var i=start; i<end; i++) {
+      var id = text.charCodeAt(i)
+      var glyph = self.getGlyph(font, id)
+      if (glyph) {
+        if (lastGlyph) 
+          x += getKerning(font, lastGlyph.id, glyph.id)
+
+        var tx = x
+        if (align === ALIGN_CENTER) 
+          tx += (maxLineWidth-lineWidth)/2
+        else if (align === ALIGN_RIGHT)
+          tx += (maxLineWidth-lineWidth)
+
+        glyphs.push({
+          position: [tx, y],
+          data: glyph,
+          index: i,
+          line: lineIndex
+        })  
+
+        //move pen forward
+        x += glyph.xadvance + letterSpacing
+        lastGlyph = glyph
+      }
+    }
+
+    //next line down
+    y += lineHeight
+    x = 0
+  })
+  this._linesTotal = lines.length;
+}
+
+TextLayout.prototype._setupSpaceGlyphs = function(font) {
+  //These are fallbacks, when the font doesn't include
+  //' ' or '\t' glyphs
+  this._fallbackSpaceGlyph = null
+  this._fallbackTabGlyph = null
+
+  if (!font.chars || font.chars.length === 0)
+    return
+
+  //try to get space glyph
+  //then fall back to the 'm' or 'w' glyphs
+  //then fall back to the first glyph available
+  var space = getGlyphById(font, SPACE_ID) 
+          || getMGlyph(font) 
+          || font.chars[0]
+
+  //and create a fallback for tab
+  var tabWidth = this._opt.tabSize * space.xadvance
+  this._fallbackSpaceGlyph = space
+  this._fallbackTabGlyph = xtend(space, {
+    x: 0, y: 0, xadvance: tabWidth, id: TAB_ID, 
+    xoffset: 0, yoffset: 0, width: 0, height: 0
+  })
+}
+
+TextLayout.prototype.getGlyph = function(font, id) {
+  var glyph = getGlyphById(font, id)
+  if (glyph)
+    return glyph
+  else if (id === TAB_ID) 
+    return this._fallbackTabGlyph
+  else if (id === SPACE_ID) 
+    return this._fallbackSpaceGlyph
+  return null
+}
+
+TextLayout.prototype.computeMetrics = function(text, start, end, width) {
+  var letterSpacing = this._opt.letterSpacing || 0
+  var font = this._opt.font
+  var curPen = 0
+  var curWidth = 0
+  var count = 0
+  var glyph
+  var lastGlyph
+
+  if (!font.chars || font.chars.length === 0) {
+    return {
+      start: start,
+      end: start,
+      width: 0
+    }
+  }
+
+  end = Math.min(text.length, end)
+  for (var i=start; i < end; i++) {
+    var id = text.charCodeAt(i)
+    var glyph = this.getGlyph(font, id)
+
+    if (glyph) {
+      //move pen forward
+      var xoff = glyph.xoffset
+      var kern = lastGlyph ? getKerning(font, lastGlyph.id, glyph.id) : 0
+      curPen += kern
+
+      var nextPen = curPen + glyph.xadvance + letterSpacing
+      var nextWidth = curPen + glyph.width
+
+      //we've hit our limit; we can't move onto the next glyph
+      if (nextWidth >= width || nextPen >= width)
+        break
+
+      //otherwise continue along our line
+      curPen = nextPen
+      curWidth = nextWidth
+      lastGlyph = glyph
+    }
+    count++
+  }
+  
+  //make sure rightmost edge lines up with rendered glyphs
+  if (lastGlyph)
+    curWidth += lastGlyph.xoffset
+
+  return {
+    start: start,
+    end: start + count,
+    width: curWidth
+  }
+}
+
+//getters for the private vars
+;['width', 'height', 
+  'descender', 'ascender',
+  'xHeight', 'baseline',
+  'capHeight',
+  'lineHeight' ].forEach(addGetter)
+
+function addGetter(name) {
+  Object.defineProperty(TextLayout.prototype, name, {
+    get: wrapper(name),
+    configurable: true
+  })
+}
+
+//create lookups for private vars
+function wrapper(name) {
+  return (new Function([
+    'return function '+name+'() {',
+    '  return this._'+name,
+    '}'
+  ].join('\n')))()
+}
+
+function getGlyphById(font, id) {
+  if (!font.chars || font.chars.length === 0)
+    return null
+
+  var glyphIdx = findChar(font.chars, id)
+  if (glyphIdx >= 0)
+    return font.chars[glyphIdx]
+  return null
+}
+
+function getXHeight(font) {
+  for (var i=0; i<X_HEIGHTS.length; i++) {
+    var id = X_HEIGHTS[i].charCodeAt(0)
+    var idx = findChar(font.chars, id)
+    if (idx >= 0) 
+      return font.chars[idx].height
+  }
+  return 0
+}
+
+function getMGlyph(font) {
+  for (var i=0; i<M_WIDTHS.length; i++) {
+    var id = M_WIDTHS[i].charCodeAt(0)
+    var idx = findChar(font.chars, id)
+    if (idx >= 0) 
+      return font.chars[idx]
+  }
+  return 0
+}
+
+function getCapHeight(font) {
+  for (var i=0; i<CAP_HEIGHTS.length; i++) {
+    var id = CAP_HEIGHTS[i].charCodeAt(0)
+    var idx = findChar(font.chars, id)
+    if (idx >= 0) 
+      return font.chars[idx].height
+  }
+  return 0
+}
+
+function getKerning(font, left, right) {
+  if (!font.kernings || font.kernings.length === 0)
+    return 0
+
+  var table = font.kernings
+  for (var i=0; i<table.length; i++) {
+    var kern = table[i]
+    if (kern.first === left && kern.second === right)
+      return kern.amount
+  }
+  return 0
+}
+
+function getAlignType(align) {
+  if (align === 'center')
+    return ALIGN_CENTER
+  else if (align === 'right')
+    return ALIGN_RIGHT
+  return ALIGN_LEFT
+}
+},{"as-number":2,"indexof-property":16,"word-wrapper":50,"xtend":53}],23:[function(_dereq_,module,exports){
+(function (Buffer){
+var xhr = _dereq_('xhr')
+var noop = function(){}
+var parseASCII = _dereq_('parse-bmfont-ascii')
+var parseXML = _dereq_('parse-bmfont-xml')
+var readBinary = _dereq_('parse-bmfont-binary')
+var isBinaryFormat = _dereq_('./lib/is-binary')
+var xtend = _dereq_('xtend')
+
+var xml2 = (function hasXML2() {
+  return window.XMLHttpRequest && "withCredentials" in new XMLHttpRequest
+})()
+
+module.exports = function(opt, cb) {
+  cb = typeof cb === 'function' ? cb : noop
+
+  if (typeof opt === 'string')
+    opt = { uri: opt }
+  else if (!opt)
+    opt = {}
+
+  var expectBinary = opt.binary
+  if (expectBinary)
+    opt = getBinaryOpts(opt)
+
+  xhr(opt, function(err, res, body) {
+    if (err)
+      return cb(err)
+    if (!/^2/.test(res.statusCode))
+      return cb(new Error('http status code: '+res.statusCode))
+    if (!body)
+      return cb(new Error('no body result'))
+
+    var binary = false 
+
+    //if the response type is an array buffer,
+    //we need to convert it into a regular Buffer object
+    if (isArrayBuffer(body)) {
+      var array = new Uint8Array(body)
+      body = new Buffer(array, 'binary')
+    }
+
+    //now check the string/Buffer response
+    //and see if it has a binary BMF header
+    if (isBinaryFormat(body)) {
+      binary = true
+      //if we have a string, turn it into a Buffer
+      if (typeof body === 'string') 
+        body = new Buffer(body, 'binary')
+    } 
+
+    //we are not parsing a binary format, just ASCII/XML/etc
+    if (!binary) {
+      //might still be a buffer if responseType is 'arraybuffer'
+      if (Buffer.isBuffer(body))
+        body = body.toString(opt.encoding)
+      body = body.trim()
+    }
+
+    var result
+    try {
+      var type = res.headers['content-type']
+      if (binary)
+        result = readBinary(body)
+      else if (/json/.test(type) || body.charAt(0) === '{')
+        result = JSON.parse(body)
+      else if (/xml/.test(type)  || body.charAt(0) === '<')
+        result = parseXML(body)
+      else
+        result = parseASCII(body)
+    } catch (e) {
+      cb(new Error('error parsing font '+e.message))
+      cb = noop
+    }
+    cb(null, result)
+  })
+}
+
+function isArrayBuffer(arr) {
+  var str = Object.prototype.toString
+  return str.call(arr) === '[object ArrayBuffer]'
+}
+
+function getBinaryOpts(opt) {
+  //IE10+ and other modern browsers support array buffers
+  if (xml2)
+    return xtend(opt, { responseType: 'arraybuffer' })
+  
+  if (typeof window.XMLHttpRequest === 'undefined')
+    throw new Error('your browser does not support XHR loading')
+
+  //IE9 and XML1 browsers could still use an override
+  var req = new window.XMLHttpRequest()
+  req.overrideMimeType('text/plain; charset=x-user-defined')
+  return xtend({
+    xhr: req
+  }, opt)
+}
+}).call(this,_dereq_("buffer").Buffer)
+
+},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":51,"xtend":53}],24:[function(_dereq_,module,exports){
+(function (Buffer){
+var equal = _dereq_('buffer-equal')
+var HEADER = new Buffer([66, 77, 70, 3])
+
+module.exports = function(buf) {
+  if (typeof buf === 'string')
+    return buf.substring(0, 3) === 'BMF'
+  return buf.length > 4 && equal(buf.slice(0, 4), HEADER)
+}
+}).call(this,_dereq_("buffer").Buffer)
+
+},{"buffer":6,"buffer-equal":5}],25:[function(_dereq_,module,exports){
 /**
  * Helpers.
  */
@@ -669,7 +3324,7 @@ function plural(ms, n, name) {
   return Math.ceil(ms / n) + ' ' + name + 's'
 }
 
-},{}],8:[function(_dereq_,module,exports){
+},{}],26:[function(_dereq_,module,exports){
 'use strict';
 /* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -754,7 +3409,653 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
+module.exports = function parseBMFontAscii(data) {
+  if (!data)
+    throw new Error('no data provided')
+  data = data.toString().trim()
+
+  var output = {
+    pages: [],
+    chars: [],
+    kernings: []
+  }
+
+  var lines = data.split(/\r\n?|\n/g)
+
+  if (lines.length === 0)
+    throw new Error('no data in BMFont file')
+
+  for (var i = 0; i < lines.length; i++) {
+    var lineData = splitLine(lines[i], i)
+    if (!lineData) //skip empty lines
+      continue
+
+    if (lineData.key === 'page') {
+      if (typeof lineData.data.id !== 'number')
+        throw new Error('malformed file at line ' + i + ' -- needs page id=N')
+      if (typeof lineData.data.file !== 'string')
+        throw new Error('malformed file at line ' + i + ' -- needs page file="path"')
+      output.pages[lineData.data.id] = lineData.data.file
+    } else if (lineData.key === 'chars' || lineData.key === 'kernings') {
+      //... do nothing for these two ...
+    } else if (lineData.key === 'char') {
+      output.chars.push(lineData.data)
+    } else if (lineData.key === 'kerning') {
+      output.kernings.push(lineData.data)
+    } else {
+      output[lineData.key] = lineData.data
+    }
+  }
+
+  return output
+}
+
+function splitLine(line, idx) {
+  line = line.replace(/\t+/g, ' ').trim()
+  if (!line)
+    return null
+
+  var space = line.indexOf(' ')
+  if (space === -1) 
+    throw new Error("no named row at line " + idx)
+
+  var key = line.substring(0, space)
+
+  line = line.substring(space + 1)
+  //clear "letter" field as it is non-standard and
+  //requires additional complexity to parse " / = symbols
+  line = line.replace(/letter=[\'\"]\S+[\'\"]/gi, '')  
+  line = line.split("=")
+  line = line.map(function(str) {
+    return str.trim().match((/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g))
+  })
+
+  var data = []
+  for (var i = 0; i < line.length; i++) {
+    var dt = line[i]
+    if (i === 0) {
+      data.push({
+        key: dt[0],
+        data: ""
+      })
+    } else if (i === line.length - 1) {
+      data[data.length - 1].data = parseData(dt[0])
+    } else {
+      data[data.length - 1].data = parseData(dt[0])
+      data.push({
+        key: dt[1],
+        data: ""
+      })
+    }
+  }
+
+  var out = {
+    key: key,
+    data: {}
+  }
+
+  data.forEach(function(v) {
+    out.data[v.key] = v.data;
+  })
+
+  return out
+}
+
+function parseData(data) {
+  if (!data || data.length === 0)
+    return ""
+
+  if (data.indexOf('"') === 0 || data.indexOf("'") === 0)
+    return data.substring(1, data.length - 1)
+  if (data.indexOf(',') !== -1)
+    return parseIntList(data)
+  return parseInt(data, 10)
+}
+
+function parseIntList(data) {
+  return data.split(',').map(function(val) {
+    return parseInt(val, 10)
+  })
+}
+},{}],28:[function(_dereq_,module,exports){
+var HEADER = [66, 77, 70]
+
+module.exports = function readBMFontBinary(buf) {
+  if (buf.length < 6)
+    throw new Error('invalid buffer length for BMFont')
+
+  var header = HEADER.every(function(byte, i) {
+    return buf.readUInt8(i) === byte
+  })
+
+  if (!header)
+    throw new Error('BMFont missing BMF byte header')
+
+  var i = 3
+  var vers = buf.readUInt8(i++)
+  if (vers > 3)
+    throw new Error('Only supports BMFont Binary v3 (BMFont App v1.10)')
+  
+  var target = { kernings: [], chars: [] }
+  for (var b=0; b<5; b++)
+    i += readBlock(target, buf, i)
+  return target
+}
+
+function readBlock(target, buf, i) {
+  if (i > buf.length-1)
+    return 0
+
+  var blockID = buf.readUInt8(i++)
+  var blockSize = buf.readInt32LE(i)
+  i += 4
+
+  switch(blockID) {
+    case 1: 
+      target.info = readInfo(buf, i)
+      break
+    case 2:
+      target.common = readCommon(buf, i)
+      break
+    case 3:
+      target.pages = readPages(buf, i, blockSize)
+      break
+    case 4:
+      target.chars = readChars(buf, i, blockSize)
+      break
+    case 5:
+      target.kernings = readKernings(buf, i, blockSize)
+      break
+  }
+  return 5 + blockSize
+}
+
+function readInfo(buf, i) {
+  var info = {}
+  info.size = buf.readInt16LE(i)
+
+  var bitField = buf.readUInt8(i+2)
+  info.smooth = (bitField >> 7) & 1
+  info.unicode = (bitField >> 6) & 1
+  info.italic = (bitField >> 5) & 1
+  info.bold = (bitField >> 4) & 1
+  
+  //fixedHeight is only mentioned in binary spec 
+  if ((bitField >> 3) & 1)
+    info.fixedHeight = 1
+  
+  info.charset = buf.readUInt8(i+3) || ''
+  info.stretchH = buf.readUInt16LE(i+4)
+  info.aa = buf.readUInt8(i+6)
+  info.padding = [
+    buf.readInt8(i+7),
+    buf.readInt8(i+8),
+    buf.readInt8(i+9),
+    buf.readInt8(i+10)
+  ]
+  info.spacing = [
+    buf.readInt8(i+11),
+    buf.readInt8(i+12)
+  ]
+  info.outline = buf.readUInt8(i+13)
+  info.face = readStringNT(buf, i+14)
+  return info
+}
+
+function readCommon(buf, i) {
+  var common = {}
+  common.lineHeight = buf.readUInt16LE(i)
+  common.base = buf.readUInt16LE(i+2)
+  common.scaleW = buf.readUInt16LE(i+4)
+  common.scaleH = buf.readUInt16LE(i+6)
+  common.pages = buf.readUInt16LE(i+8)
+  var bitField = buf.readUInt8(i+10)
+  common.packed = 0
+  common.alphaChnl = buf.readUInt8(i+11)
+  common.redChnl = buf.readUInt8(i+12)
+  common.greenChnl = buf.readUInt8(i+13)
+  common.blueChnl = buf.readUInt8(i+14)
+  return common
+}
+
+function readPages(buf, i, size) {
+  var pages = []
+  var text = readNameNT(buf, i)
+  var len = text.length+1
+  var count = size / len
+  for (var c=0; c<count; c++) {
+    pages[c] = buf.slice(i, i+text.length).toString('utf8')
+    i += len
+  }
+  return pages
+}
+
+function readChars(buf, i, blockSize) {
+  var chars = []
+
+  var count = blockSize / 20
+  for (var c=0; c<count; c++) {
+    var char = {}
+    var off = c*20
+    char.id = buf.readUInt32LE(i + 0 + off)
+    char.x = buf.readUInt16LE(i + 4 + off)
+    char.y = buf.readUInt16LE(i + 6 + off)
+    char.width = buf.readUInt16LE(i + 8 + off)
+    char.height = buf.readUInt16LE(i + 10 + off)
+    char.xoffset = buf.readInt16LE(i + 12 + off)
+    char.yoffset = buf.readInt16LE(i + 14 + off)
+    char.xadvance = buf.readInt16LE(i + 16 + off)
+    char.page = buf.readUInt8(i + 18 + off)
+    char.chnl = buf.readUInt8(i + 19 + off)
+    chars[c] = char
+  }
+  return chars
+}
+
+function readKernings(buf, i, blockSize) {
+  var kernings = []
+  var count = blockSize / 10
+  for (var c=0; c<count; c++) {
+    var kern = {}
+    var off = c*10
+    kern.first = buf.readUInt32LE(i + 0 + off)
+    kern.second = buf.readUInt32LE(i + 4 + off)
+    kern.amount = buf.readInt16LE(i + 8 + off)
+    kernings[c] = kern
+  }
+  return kernings
+}
+
+function readNameNT(buf, offset) {
+  var pos=offset
+  for (; pos<buf.length; pos++) {
+    if (buf[pos] === 0x00) 
+      break
+  }
+  return buf.slice(offset, pos)
+}
+
+function readStringNT(buf, offset) {
+  return readNameNT(buf, offset).toString('utf8')
+}
+},{}],29:[function(_dereq_,module,exports){
+var parseAttributes = _dereq_('./parse-attribs')
+var parseFromString = _dereq_('xml-parse-from-string')
+
+//In some cases element.attribute.nodeName can return
+//all lowercase values.. so we need to map them to the correct 
+//case
+var NAME_MAP = {
+  scaleh: 'scaleH',
+  scalew: 'scaleW',
+  stretchh: 'stretchH',
+  lineheight: 'lineHeight',
+  alphachnl: 'alphaChnl',
+  redchnl: 'redChnl',
+  greenchnl: 'greenChnl',
+  bluechnl: 'blueChnl'
+}
+
+module.exports = function parse(data) {
+  data = data.toString()
+  
+  var xmlRoot = parseFromString(data)
+  var output = {
+    pages: [],
+    chars: [],
+    kernings: []
+  }
+
+  //get config settings
+  ;['info', 'common'].forEach(function(key) {
+    var element = xmlRoot.getElementsByTagName(key)[0]
+    if (element)
+      output[key] = parseAttributes(getAttribs(element))
+  })
+
+  //get page info
+  var pageRoot = xmlRoot.getElementsByTagName('pages')[0]
+  if (!pageRoot)
+    throw new Error('malformed file -- no <pages> element')
+  var pages = pageRoot.getElementsByTagName('page')
+  for (var i=0; i<pages.length; i++) {
+    var p = pages[i]
+    var id = parseInt(p.getAttribute('id'), 10)
+    var file = p.getAttribute('file')
+    if (isNaN(id))
+      throw new Error('malformed file -- page "id" attribute is NaN')
+    if (!file)
+      throw new Error('malformed file -- needs page "file" attribute')
+    output.pages[parseInt(id, 10)] = file
+  }
+
+  //get kernings / chars
+  ;['chars', 'kernings'].forEach(function(key) {
+    var element = xmlRoot.getElementsByTagName(key)[0]
+    if (!element)
+      return
+    var childTag = key.substring(0, key.length-1)
+    var children = element.getElementsByTagName(childTag)
+    for (var i=0; i<children.length; i++) {      
+      var child = children[i]
+      output[key].push(parseAttributes(getAttribs(child)))
+    }
+  })
+  return output
+}
+
+function getAttribs(element) {
+  var attribs = getAttribList(element)
+  return attribs.reduce(function(dict, attrib) {
+    var key = mapName(attrib.nodeName)
+    dict[key] = attrib.nodeValue
+    return dict
+  }, {})
+}
+
+function getAttribList(element) {
+  //IE8+ and modern browsers
+  var attribs = []
+  for (var i=0; i<element.attributes.length; i++)
+    attribs.push(element.attributes[i])
+  return attribs
+}
+
+function mapName(nodeName) {
+  return NAME_MAP[nodeName.toLowerCase()] || nodeName
+}
+},{"./parse-attribs":30,"xml-parse-from-string":52}],30:[function(_dereq_,module,exports){
+//Some versions of GlyphDesigner have a typo
+//that causes some bugs with parsing. 
+//Need to confirm with recent version of the software
+//to see whether this is still an issue or not.
+var GLYPH_DESIGNER_ERROR = 'chasrset'
+
+module.exports = function parseAttributes(obj) {
+  if (GLYPH_DESIGNER_ERROR in obj) {
+    obj['charset'] = obj[GLYPH_DESIGNER_ERROR]
+    delete obj[GLYPH_DESIGNER_ERROR]
+  }
+
+  for (var k in obj) {
+    if (k === 'face' || k === 'charset') 
+      continue
+    else if (k === 'padding' || k === 'spacing')
+      obj[k] = parseIntList(obj[k])
+    else
+      obj[k] = parseInt(obj[k], 10) 
+  }
+  return obj
+}
+
+function parseIntList(data) {
+  return data.split(',').map(function(val) {
+    return parseInt(val, 10)
+  })
+}
+},{}],31:[function(_dereq_,module,exports){
+var trim = _dereq_('trim')
+  , forEach = _dereq_('for-each')
+  , isArray = function(arg) {
+      return Object.prototype.toString.call(arg) === '[object Array]';
+    }
+
+module.exports = function (headers) {
+  if (!headers)
+    return {}
+
+  var result = {}
+
+  forEach(
+      trim(headers).split('\n')
+    , function (row) {
+        var index = row.indexOf(':')
+          , key = trim(row.slice(0, index)).toLowerCase()
+          , value = trim(row.slice(index + 1))
+
+        if (typeof(result[key]) === 'undefined') {
+          result[key] = value
+        } else if (isArray(result[key])) {
+          result[key].push(value)
+        } else {
+          result[key] = [ result[key], value ]
+        }
+      }
+  )
+
+  return result
+}
+},{"for-each":13,"trim":47}],32:[function(_dereq_,module,exports){
+(function (process){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+}).call(this,_dereq_('_process'))
+
+},{"_process":34}],33:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -787,7 +4088,7 @@ module.exports = present;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],10:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -969,7 +4270,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],11:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 (function(root) {
 
 	// Store setTimeout reference so promise-polyfill will be unaffected by
@@ -1165,7 +4466,50 @@ process.umask = function() { return 0; };
 
 })(this);
 
-},{}],12:[function(_dereq_,module,exports){
+},{}],36:[function(_dereq_,module,exports){
+var dtype = _dereq_('dtype')
+var anArray = _dereq_('an-array')
+var isBuffer = _dereq_('is-buffer')
+
+var CW = [0, 2, 3]
+var CCW = [2, 1, 3]
+
+module.exports = function createQuadElements(array, opt) {
+    //if user didn't specify an output array
+    if (!array || !(anArray(array) || isBuffer(array))) {
+        opt = array || {}
+        array = null
+    }
+
+    if (typeof opt === 'number') //backwards-compatible
+        opt = { count: opt }
+    else
+        opt = opt || {}
+
+    var type = typeof opt.type === 'string' ? opt.type : 'uint16'
+    var count = typeof opt.count === 'number' ? opt.count : 1
+    var start = (opt.start || 0) 
+
+    var dir = opt.clockwise !== false ? CW : CCW,
+        a = dir[0], 
+        b = dir[1],
+        c = dir[2]
+
+    var numIndices = count * 6
+
+    var indices = array || new (dtype(type))(numIndices)
+    for (var i = 0, j = 0; i < numIndices; i += 6, j += 4) {
+        var x = i + start
+        indices[x + 0] = j + 0
+        indices[x + 1] = j + 1
+        indices[x + 2] = j + 2
+        indices[x + 3] = j + a
+        indices[x + 4] = j + b
+        indices[x + 5] = j + c
+    }
+    return indices
+}
+},{"an-array":1,"dtype":11,"is-buffer":18}],37:[function(_dereq_,module,exports){
 
 
 /*:: type Attr = { [key: string]: string } */
@@ -1273,7 +4617,352 @@ function normalize(str) {
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-},{}],13:[function(_dereq_,module,exports){
+},{}],38:[function(_dereq_,module,exports){
+var createLayout = _dereq_('layout-bmfont-text')
+var inherits = _dereq_('inherits')
+var createIndices = _dereq_('quad-indices')
+var buffer = _dereq_('three-buffer-vertex-data')
+var assign = _dereq_('object-assign')
+
+var vertices = _dereq_('./lib/vertices')
+var utils = _dereq_('./lib/utils')
+
+var Base = THREE.BufferGeometry
+
+module.exports = function createTextGeometry (opt) {
+  return new TextGeometry(opt)
+}
+
+function TextGeometry (opt) {
+  Base.call(this)
+
+  if (typeof opt === 'string') {
+    opt = { text: opt }
+  }
+
+  // use these as default values for any subsequent
+  // calls to update()
+  this._opt = assign({}, opt)
+
+  // also do an initial setup...
+  if (opt) this.update(opt)
+}
+
+inherits(TextGeometry, Base)
+
+TextGeometry.prototype.update = function (opt) {
+  if (typeof opt === 'string') {
+    opt = { text: opt }
+  }
+
+  // use constructor defaults
+  opt = assign({}, this._opt, opt)
+
+  if (!opt.font) {
+    throw new TypeError('must specify a { font } in options')
+  }
+
+  this.layout = createLayout(opt)
+
+  // get vec2 texcoords
+  var flipY = opt.flipY !== false
+
+  // the desired BMFont data
+  var font = opt.font
+
+  // determine texture size from font file
+  var texWidth = font.common.scaleW
+  var texHeight = font.common.scaleH
+
+  // get visible glyphs
+  var glyphs = this.layout.glyphs.filter(function (glyph) {
+    var bitmap = glyph.data
+    return bitmap.width * bitmap.height > 0
+  })
+
+  // provide visible glyphs for convenience
+  this.visibleGlyphs = glyphs
+
+  // get common vertex data
+  var positions = vertices.positions(glyphs)
+  var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY)
+  var indices = createIndices({
+    clockwise: true,
+    type: 'uint16',
+    count: glyphs.length
+  })
+
+  // update vertex data
+  buffer.index(this, indices, 1, 'uint16')
+  buffer.attr(this, 'position', positions, 2)
+  buffer.attr(this, 'uv', uvs, 2)
+
+  // update multipage data
+  if (!opt.multipage && 'page' in this.attributes) {
+    // disable multipage rendering
+    this.removeAttribute('page')
+  } else if (opt.multipage) {
+    var pages = vertices.pages(glyphs)
+    // enable multipage rendering
+    buffer.attr(this, 'page', pages, 1)
+  }
+}
+
+TextGeometry.prototype.computeBoundingSphere = function () {
+  if (this.boundingSphere === null) {
+    this.boundingSphere = new THREE.Sphere()
+  }
+
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
+    this.boundingSphere.radius = 0
+    this.boundingSphere.center.set(0, 0, 0)
+    return
+  }
+  utils.computeSphere(positions, this.boundingSphere)
+  if (isNaN(this.boundingSphere.radius)) {
+    console.error('THREE.BufferGeometry.computeBoundingSphere(): ' +
+      'Computed radius is NaN. The ' +
+      '"position" attribute is likely to have NaN values.')
+  }
+}
+
+TextGeometry.prototype.computeBoundingBox = function () {
+  if (this.boundingBox === null) {
+    this.boundingBox = new THREE.Box3()
+  }
+
+  var bbox = this.boundingBox
+  var positions = this.attributes.position.array
+  var itemSize = this.attributes.position.itemSize
+  if (!positions || !itemSize || positions.length < 2) {
+    bbox.makeEmpty()
+    return
+  }
+  utils.computeBox(positions, bbox)
+}
+
+},{"./lib/utils":39,"./lib/vertices":40,"inherits":17,"layout-bmfont-text":22,"object-assign":26,"quad-indices":36,"three-buffer-vertex-data":41}],39:[function(_dereq_,module,exports){
+var itemSize = 2
+var box = { min: [0, 0], max: [0, 0] }
+
+function bounds (positions) {
+  var count = positions.length / itemSize
+  box.min[0] = positions[0]
+  box.min[1] = positions[1]
+  box.max[0] = positions[0]
+  box.max[1] = positions[1]
+
+  for (var i = 0; i < count; i++) {
+    var x = positions[i * itemSize + 0]
+    var y = positions[i * itemSize + 1]
+    box.min[0] = Math.min(x, box.min[0])
+    box.min[1] = Math.min(y, box.min[1])
+    box.max[0] = Math.max(x, box.max[0])
+    box.max[1] = Math.max(y, box.max[1])
+  }
+}
+
+module.exports.computeBox = function (positions, output) {
+  bounds(positions)
+  output.min.set(box.min[0], box.min[1], 0)
+  output.max.set(box.max[0], box.max[1], 0)
+}
+
+module.exports.computeSphere = function (positions, output) {
+  bounds(positions)
+  var minX = box.min[0]
+  var minY = box.min[1]
+  var maxX = box.max[0]
+  var maxY = box.max[1]
+  var width = maxX - minX
+  var height = maxY - minY
+  var length = Math.sqrt(width * width + height * height)
+  output.center.set(minX + width / 2, minY + height / 2, 0)
+  output.radius = length / 2
+}
+
+},{}],40:[function(_dereq_,module,exports){
+module.exports.pages = function pages (glyphs) {
+  var pages = new Float32Array(glyphs.length * 4 * 1)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var id = glyph.data.page || 0
+    pages[i++] = id
+    pages[i++] = id
+    pages[i++] = id
+    pages[i++] = id
+  })
+  return pages
+}
+
+module.exports.uvs = function uvs (glyphs, texWidth, texHeight, flipY) {
+  var uvs = new Float32Array(glyphs.length * 4 * 2)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var bitmap = glyph.data
+    var bw = (bitmap.x + bitmap.width)
+    var bh = (bitmap.y + bitmap.height)
+
+    // top left position
+    var u0 = bitmap.x / texWidth
+    var v1 = bitmap.y / texHeight
+    var u1 = bw / texWidth
+    var v0 = bh / texHeight
+
+    if (flipY) {
+      v1 = (texHeight - bitmap.y) / texHeight
+      v0 = (texHeight - bh) / texHeight
+    }
+
+    // BL
+    uvs[i++] = u0
+    uvs[i++] = v1
+    // TL
+    uvs[i++] = u0
+    uvs[i++] = v0
+    // TR
+    uvs[i++] = u1
+    uvs[i++] = v0
+    // BR
+    uvs[i++] = u1
+    uvs[i++] = v1
+  })
+  return uvs
+}
+
+module.exports.positions = function positions (glyphs) {
+  var positions = new Float32Array(glyphs.length * 4 * 2)
+  var i = 0
+  glyphs.forEach(function (glyph) {
+    var bitmap = glyph.data
+
+    // bottom left position
+    var x = glyph.position[0] + bitmap.xoffset
+    var y = glyph.position[1] + bitmap.yoffset
+
+    // quad size
+    var w = bitmap.width
+    var h = bitmap.height
+
+    // BL
+    positions[i++] = x
+    positions[i++] = y
+    // TL
+    positions[i++] = x
+    positions[i++] = y + h
+    // TR
+    positions[i++] = x + w
+    positions[i++] = y + h
+    // BR
+    positions[i++] = x + w
+    positions[i++] = y
+  })
+  return positions
+}
+
+},{}],41:[function(_dereq_,module,exports){
+var flatten = _dereq_('flatten-vertex-data')
+var warned = false;
+
+module.exports.attr = setAttribute
+module.exports.index = setIndex
+
+function setIndex (geometry, data, itemSize, dtype) {
+  if (typeof itemSize !== 'number') itemSize = 1
+  if (typeof dtype !== 'string') dtype = 'uint16'
+
+  var isR69 = !geometry.index && typeof geometry.setIndex !== 'function'
+  var attrib = isR69 ? geometry.getAttribute('index') : geometry.index
+  var newAttrib = updateAttribute(attrib, data, itemSize, dtype)
+  if (newAttrib) {
+    if (isR69) geometry.addAttribute('index', newAttrib)
+    else geometry.index = newAttrib
+  }
+}
+
+function setAttribute (geometry, key, data, itemSize, dtype) {
+  if (typeof itemSize !== 'number') itemSize = 3
+  if (typeof dtype !== 'string') dtype = 'float32'
+  if (Array.isArray(data) &&
+    Array.isArray(data[0]) &&
+    data[0].length !== itemSize) {
+    throw new Error('Nested vertex array has unexpected size; expected ' +
+      itemSize + ' but found ' + data[0].length)
+  }
+
+  var attrib = geometry.getAttribute(key)
+  var newAttrib = updateAttribute(attrib, data, itemSize, dtype)
+  if (newAttrib) {
+    geometry.addAttribute(key, newAttrib)
+  }
+}
+
+function updateAttribute (attrib, data, itemSize, dtype) {
+  data = data || []
+  if (!attrib || rebuildAttribute(attrib, data, itemSize)) {
+    // create a new array with desired type
+    data = flatten(data, dtype)
+
+    var needsNewBuffer = attrib && typeof attrib.setArray !== 'function'
+    if (!attrib || needsNewBuffer) {
+      // We are on an old version of ThreeJS which can't
+      // support growing / shrinking buffers, so we need
+      // to build a new buffer
+      if (needsNewBuffer && !warned) {
+        warned = true
+        console.warn([
+          'A WebGL buffer is being updated with a new size or itemSize, ',
+          'however this version of ThreeJS only supports fixed-size buffers.',
+          '\nThe old buffer may still be kept in memory.\n',
+          'To avoid memory leaks, it is recommended that you dispose ',
+          'your geometries and create new ones, or update to ThreeJS r82 or newer.\n',
+          'See here for discussion:\n',
+          'https://github.com/mrdoob/three.js/pull/9631'
+        ].join(''))
+      }
+
+      // Build a new attribute
+      attrib = new THREE.BufferAttribute(data, itemSize);
+    }
+
+    attrib.itemSize = itemSize
+    attrib.needsUpdate = true
+
+    // New versions of ThreeJS suggest using setArray
+    // to change the data. It will use bufferData internally,
+    // so you can change the array size without any issues
+    if (typeof attrib.setArray === 'function') {
+      attrib.setArray(data)
+    }
+
+    return attrib
+  } else {
+    // copy data into the existing array
+    flatten(data, attrib.array)
+    attrib.needsUpdate = true
+    return null
+  }
+}
+
+// Test whether the attribute needs to be re-created,
+// returns false if we can re-use it as-is.
+function rebuildAttribute (attrib, data, itemSize) {
+  if (attrib.itemSize !== itemSize) return true
+  if (!attrib.array) return true
+  var attribLength = attrib.array.length
+  if (Array.isArray(data) && Array.isArray(data[0])) {
+    // [ [ x, y, z ] ]
+    return attribLength !== data.length * itemSize
+  } else {
+    // [ x, y, z ]
+    return attribLength !== data.length
+  }
+  return false
+}
+
+},{"flatten-vertex-data":12}],42:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -44619,7 +48308,7 @@ module.exports.normalize = normalize;
 
 })));
 
-},{}],14:[function(_dereq_,module,exports){
+},{}],43:[function(_dereq_,module,exports){
 /**
  * @author Michael Guerrero / http://realitymeltdown.com
  */
@@ -44803,7 +48492,7 @@ THREE.BlendCharacter.prototype.getForward = function() {
 };
 
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 /**
 * @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
 * @author Tony Parisi / http://www.tonyparisi.com/
@@ -50324,7 +54013,7 @@ THREE.ColladaLoader = function () {
 
 };
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -50859,7 +54548,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],17:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -51604,7 +55293,23 @@ THREE.OBJLoader.prototype = {
 
 };
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
+
+exports = module.exports = trim;
+
+function trim(str){
+  return str.replace(/^\s*|\s*$/g, '');
+}
+
+exports.left = function(str){
+  return str.replace(/^\s*/, '');
+};
+
+exports.right = function(str){
+  return str.replace(/\s*$/, '');
+};
+
+},{}],48:[function(_dereq_,module,exports){
 /**
  * Tween.js - Licensed under the MIT license
  * https://github.com/sole/tween.js
@@ -52397,7 +56102,7 @@ TWEEN.Interpolation = {
 
 } )( this );
 
-},{}],19:[function(_dereq_,module,exports){
+},{}],49:[function(_dereq_,module,exports){
 (function (global){
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebVRPolyfill = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
@@ -58713,7 +62418,427 @@ module.exports.WebVRPolyfill = WebVRPolyfill;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],20:[function(_dereq_,module,exports){
+},{}],50:[function(_dereq_,module,exports){
+var newline = /\n/
+var newlineChar = '\n'
+var whitespace = /\s/
+
+module.exports = function(text, opt) {
+    var lines = module.exports.lines(text, opt)
+    return lines.map(function(line) {
+        return text.substring(line.start, line.end)
+    }).join('\n')
+}
+
+module.exports.lines = function wordwrap(text, opt) {
+    opt = opt||{}
+
+    //zero width results in nothing visible
+    if (opt.width === 0 && opt.mode !== 'nowrap') 
+        return []
+
+    text = text||''
+    var width = typeof opt.width === 'number' ? opt.width : Number.MAX_VALUE
+    var start = Math.max(0, opt.start||0)
+    var end = typeof opt.end === 'number' ? opt.end : text.length
+    var mode = opt.mode
+
+    var measure = opt.measure || monospace
+    if (mode === 'pre')
+        return pre(measure, text, start, end, width)
+    else
+        return greedy(measure, text, start, end, width, mode)
+}
+
+function idxOf(text, chr, start, end) {
+    var idx = text.indexOf(chr, start)
+    if (idx === -1 || idx > end)
+        return end
+    return idx
+}
+
+function isWhitespace(chr) {
+    return whitespace.test(chr)
+}
+
+function pre(measure, text, start, end, width) {
+    var lines = []
+    var lineStart = start
+    for (var i=start; i<end && i<text.length; i++) {
+        var chr = text.charAt(i)
+        var isNewline = newline.test(chr)
+
+        //If we've reached a newline, then step down a line
+        //Or if we've reached the EOF
+        if (isNewline || i===end-1) {
+            var lineEnd = isNewline ? i : i+1
+            var measured = measure(text, lineStart, lineEnd, width)
+            lines.push(measured)
+            
+            lineStart = i+1
+        }
+    }
+    return lines
+}
+
+function greedy(measure, text, start, end, width, mode) {
+    //A greedy word wrapper based on LibGDX algorithm
+    //https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFontCache.java
+    var lines = []
+
+    var testWidth = width
+    //if 'nowrap' is specified, we only wrap on newline chars
+    if (mode === 'nowrap')
+        testWidth = Number.MAX_VALUE
+
+    while (start < end && start < text.length) {
+        //get next newline position
+        var newLine = idxOf(text, newlineChar, start, end)
+
+        //eat whitespace at start of line
+        while (start < newLine) {
+            if (!isWhitespace( text.charAt(start) ))
+                break
+            start++
+        }
+
+        //determine visible # of glyphs for the available width
+        var measured = measure(text, start, newLine, testWidth)
+
+        var lineEnd = start + (measured.end-measured.start)
+        var nextStart = lineEnd + newlineChar.length
+
+        //if we had to cut the line before the next newline...
+        if (lineEnd < newLine) {
+            //find char to break on
+            while (lineEnd > start) {
+                if (isWhitespace(text.charAt(lineEnd)))
+                    break
+                lineEnd--
+            }
+            if (lineEnd === start) {
+                if (nextStart > start + newlineChar.length) nextStart--
+                lineEnd = nextStart // If no characters to break, show all.
+            } else {
+                nextStart = lineEnd
+                //eat whitespace at end of line
+                while (lineEnd > start) {
+                    if (!isWhitespace(text.charAt(lineEnd - newlineChar.length)))
+                        break
+                    lineEnd--
+                }
+            }
+        }
+        if (lineEnd >= start) {
+            var result = measure(text, start, lineEnd, testWidth)
+            lines.push(result)
+        }
+        start = nextStart
+    }
+    return lines
+}
+
+//determines the visible number of glyphs within a given width
+function monospace(text, start, end, width) {
+    var glyphs = Math.min(width, end-start)
+    return {
+        start: start,
+        end: start+glyphs
+    }
+}
+},{}],51:[function(_dereq_,module,exports){
+"use strict";
+var window = _dereq_("global/window")
+var isFunction = _dereq_("is-function")
+var parseHeaders = _dereq_("parse-headers")
+var xtend = _dereq_("xtend")
+
+module.exports = createXHR
+createXHR.XMLHttpRequest = window.XMLHttpRequest || noop
+createXHR.XDomainRequest = "withCredentials" in (new createXHR.XMLHttpRequest()) ? createXHR.XMLHttpRequest : window.XDomainRequest
+
+forEachArray(["get", "put", "post", "patch", "head", "delete"], function(method) {
+    createXHR[method === "delete" ? "del" : method] = function(uri, options, callback) {
+        options = initParams(uri, options, callback)
+        options.method = method.toUpperCase()
+        return _createXHR(options)
+    }
+})
+
+function forEachArray(array, iterator) {
+    for (var i = 0; i < array.length; i++) {
+        iterator(array[i])
+    }
+}
+
+function isEmpty(obj){
+    for(var i in obj){
+        if(obj.hasOwnProperty(i)) return false
+    }
+    return true
+}
+
+function initParams(uri, options, callback) {
+    var params = uri
+
+    if (isFunction(options)) {
+        callback = options
+        if (typeof uri === "string") {
+            params = {uri:uri}
+        }
+    } else {
+        params = xtend(options, {uri: uri})
+    }
+
+    params.callback = callback
+    return params
+}
+
+function createXHR(uri, options, callback) {
+    options = initParams(uri, options, callback)
+    return _createXHR(options)
+}
+
+function _createXHR(options) {
+    if(typeof options.callback === "undefined"){
+        throw new Error("callback argument missing")
+    }
+
+    var called = false
+    var callback = function cbOnce(err, response, body){
+        if(!called){
+            called = true
+            options.callback(err, response, body)
+        }
+    }
+
+    function readystatechange() {
+        if (xhr.readyState === 4) {
+            loadFunc()
+        }
+    }
+
+    function getBody() {
+        // Chrome with requestType=blob throws errors arround when even testing access to responseText
+        var body = undefined
+
+        if (xhr.response) {
+            body = xhr.response
+        } else {
+            body = xhr.responseText || getXml(xhr)
+        }
+
+        if (isJson) {
+            try {
+                body = JSON.parse(body)
+            } catch (e) {}
+        }
+
+        return body
+    }
+
+    function errorFunc(evt) {
+        clearTimeout(timeoutTimer)
+        if(!(evt instanceof Error)){
+            evt = new Error("" + (evt || "Unknown XMLHttpRequest Error") )
+        }
+        evt.statusCode = 0
+        return callback(evt, failureResponse)
+    }
+
+    // will load the data & process the response in a special response object
+    function loadFunc() {
+        if (aborted) return
+        var status
+        clearTimeout(timeoutTimer)
+        if(options.useXDR && xhr.status===undefined) {
+            //IE8 CORS GET successful response doesn't have a status field, but body is fine
+            status = 200
+        } else {
+            status = (xhr.status === 1223 ? 204 : xhr.status)
+        }
+        var response = failureResponse
+        var err = null
+
+        if (status !== 0){
+            response = {
+                body: getBody(),
+                statusCode: status,
+                method: method,
+                headers: {},
+                url: uri,
+                rawRequest: xhr
+            }
+            if(xhr.getAllResponseHeaders){ //remember xhr can in fact be XDR for CORS in IE
+                response.headers = parseHeaders(xhr.getAllResponseHeaders())
+            }
+        } else {
+            err = new Error("Internal XMLHttpRequest Error")
+        }
+        return callback(err, response, response.body)
+    }
+
+    var xhr = options.xhr || null
+
+    if (!xhr) {
+        if (options.cors || options.useXDR) {
+            xhr = new createXHR.XDomainRequest()
+        }else{
+            xhr = new createXHR.XMLHttpRequest()
+        }
+    }
+
+    var key
+    var aborted
+    var uri = xhr.url = options.uri || options.url
+    var method = xhr.method = options.method || "GET"
+    var body = options.body || options.data
+    var headers = xhr.headers = options.headers || {}
+    var sync = !!options.sync
+    var isJson = false
+    var timeoutTimer
+    var failureResponse = {
+        body: undefined,
+        headers: {},
+        statusCode: 0,
+        method: method,
+        url: uri,
+        rawRequest: xhr
+    }
+
+    if ("json" in options && options.json !== false) {
+        isJson = true
+        headers["accept"] || headers["Accept"] || (headers["Accept"] = "application/json") //Don't override existing accept header declared by user
+        if (method !== "GET" && method !== "HEAD") {
+            headers["content-type"] || headers["Content-Type"] || (headers["Content-Type"] = "application/json") //Don't override existing accept header declared by user
+            body = JSON.stringify(options.json === true ? body : options.json)
+        }
+    }
+
+    xhr.onreadystatechange = readystatechange
+    xhr.onload = loadFunc
+    xhr.onerror = errorFunc
+    // IE9 must have onprogress be set to a unique function.
+    xhr.onprogress = function () {
+        // IE must die
+    }
+    xhr.onabort = function(){
+        aborted = true;
+    }
+    xhr.ontimeout = errorFunc
+    xhr.open(method, uri, !sync, options.username, options.password)
+    //has to be after open
+    if(!sync) {
+        xhr.withCredentials = !!options.withCredentials
+    }
+    // Cannot set timeout with sync request
+    // not setting timeout on the xhr object, because of old webkits etc. not handling that correctly
+    // both npm's request and jquery 1.x use this kind of timeout, so this is being consistent
+    if (!sync && options.timeout > 0 ) {
+        timeoutTimer = setTimeout(function(){
+            if (aborted) return
+            aborted = true//IE9 may still call readystatechange
+            xhr.abort("timeout")
+            var e = new Error("XMLHttpRequest timeout")
+            e.code = "ETIMEDOUT"
+            errorFunc(e)
+        }, options.timeout )
+    }
+
+    if (xhr.setRequestHeader) {
+        for(key in headers){
+            if(headers.hasOwnProperty(key)){
+                xhr.setRequestHeader(key, headers[key])
+            }
+        }
+    } else if (options.headers && !isEmpty(options.headers)) {
+        throw new Error("Headers cannot be set on an XDomainRequest object")
+    }
+
+    if ("responseType" in options) {
+        xhr.responseType = options.responseType
+    }
+
+    if ("beforeSend" in options &&
+        typeof options.beforeSend === "function"
+    ) {
+        options.beforeSend(xhr)
+    }
+
+    // Microsoft Edge browser sends "undefined" when send is called with undefined value.
+    // XMLHttpRequest spec says to pass null as body to indicate no body
+    // See https://github.com/naugtur/xhr/issues/100.
+    xhr.send(body || null)
+
+    return xhr
+
+
+}
+
+function getXml(xhr) {
+    if (xhr.responseType === "document") {
+        return xhr.responseXML
+    }
+    var firefoxBugTakenEffect = xhr.status === 204 && xhr.responseXML && xhr.responseXML.documentElement.nodeName === "parsererror"
+    if (xhr.responseType === "" && !firefoxBugTakenEffect) {
+        return xhr.responseXML
+    }
+
+    return null
+}
+
+function noop() {}
+
+},{"global/window":14,"is-function":19,"parse-headers":31,"xtend":53}],52:[function(_dereq_,module,exports){
+module.exports = (function xmlparser() {
+  //common browsers
+  if (typeof window.DOMParser !== 'undefined') {
+    return function(str) {
+      var parser = new window.DOMParser()
+      return parser.parseFromString(str, 'application/xml')
+    }
+  } 
+
+  //IE8 fallback
+  if (typeof window.ActiveXObject !== 'undefined'
+      && new window.ActiveXObject('Microsoft.XMLDOM')) {
+    return function(str) {
+      var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM")
+      xmlDoc.async = "false"
+      xmlDoc.loadXML(str)
+      return xmlDoc
+    }
+  }
+
+  //last resort fallback
+  return function(str) {
+    var div = document.createElement('div')
+    div.innerHTML = str
+    return div
+  }
+})()
+},{}],53:[function(_dereq_,module,exports){
+module.exports = extend
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+function extend() {
+    var target = {}
+
+    for (var i = 0; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (hasOwnProperty.call(source, key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],54:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.4.0",
@@ -58749,11 +62874,13 @@ module.exports={
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
     "envify": "^3.4.1",
+    "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
     "three": "^0.83.0",
+    "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
     "webvr-polyfill": "^0.9.23"
   },
@@ -58838,7 +62965,7 @@ module.exports={
   }
 }
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],55:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -58879,7 +63006,7 @@ module.exports.Component = registerComponent('blend-character-model', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106}],22:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -59056,7 +63183,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106,"../utils/":124}],23:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":161}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -59091,7 +63218,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106}],24:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142}],58:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
@@ -59268,7 +63395,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":63,"../utils/":124}],25:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/":161}],59:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -59392,7 +63519,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":63,"../core/geometry":64,"../lib/three":106,"../utils/debug":120}],26:[function(_dereq_,module,exports){
+},{"../core/component":98,"../core/geometry":99,"../lib/three":142,"../utils/debug":157}],60:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/leftHand.json';
@@ -59651,7 +63778,7 @@ module.exports.Component = registerComponent('hand-controls', {
   }
 });
 
-},{"../core/component":63}],27:[function(_dereq_,module,exports){
+},{"../core/component":98}],61:[function(_dereq_,module,exports){
 _dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
@@ -59668,6 +63795,7 @@ _dereq_('./raycaster');
 _dereq_('./rotation');
 _dereq_('./scale');
 _dereq_('./sound');
+_dereq_('./text');
 _dereq_('./tracked-controls');
 _dereq_('./visible');
 _dereq_('./vive-controls');
@@ -59685,7 +63813,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":21,"./camera":22,"./collada-model":23,"./cursor":24,"./geometry":25,"./hand-controls":26,"./light":28,"./look-controls":29,"./material":30,"./obj-model":31,"./oculus-touch-controls":32,"./position":33,"./raycaster":34,"./rotation":35,"./scale":36,"./scene/auto-enter-vr":37,"./scene/canvas":38,"./scene/debug":39,"./scene/embedded":40,"./scene/fog":41,"./scene/inspector":42,"./scene/keyboard-shortcuts":43,"./scene/pool":44,"./scene/screenshot":45,"./scene/stats":46,"./scene/vr-mode-ui":47,"./sound":48,"./tracked-controls":49,"./visible":50,"./vive-controls":51,"./wasd-controls":52}],28:[function(_dereq_,module,exports){
+},{"./blend-character-model":55,"./camera":56,"./collada-model":57,"./cursor":58,"./geometry":59,"./hand-controls":60,"./light":62,"./look-controls":63,"./material":64,"./obj-model":65,"./oculus-touch-controls":66,"./position":67,"./raycaster":68,"./rotation":69,"./scale":70,"./scene/auto-enter-vr":71,"./scene/canvas":72,"./scene/debug":73,"./scene/embedded":74,"./scene/fog":75,"./scene/inspector":76,"./scene/keyboard-shortcuts":77,"./scene/pool":78,"./scene/screenshot":79,"./scene/stats":80,"./scene/vr-mode-ui":81,"./sound":82,"./text":83,"./tracked-controls":84,"./visible":85,"./vive-controls":86,"./wasd-controls":87}],62:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -59880,7 +64008,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106,"../utils":124,"../utils/bind":118,"../utils/debug":120}],29:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils":161,"../utils/bind":155,"../utils/debug":157}],63:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').device.isMobile();
@@ -60179,7 +64307,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":63,"../lib/three":106,"../utils/":124,"../utils/bind":118}],30:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":161,"../utils/bind":155}],64:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -60353,7 +64481,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":63,"../core/shader":71,"../lib/three":106,"../utils/":124}],31:[function(_dereq_,module,exports){
+},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":161}],65:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -60431,7 +64559,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106,"../utils/debug":120}],32:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/debug":157}],66:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -60709,7 +64837,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":63,"../utils/bind":118,"../utils/tracked-controls":128}],33:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/bind":155,"../utils/tracked-controls":165}],67:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -60722,7 +64850,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":63}],34:[function(_dereq_,module,exports){
+},{"../core/component":98}],68:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/').bind;
@@ -60884,7 +65012,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":63,"../lib/three":106,"../utils/":124}],35:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":161}],69:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -60902,7 +65030,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106}],36:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142}],70:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -60924,7 +65052,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":63}],37:[function(_dereq_,module,exports){
+},{"../core/component":98}],71:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils');
 
@@ -60982,7 +65110,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
 });
 
 
-},{"../../core/component":63,"../../utils":124}],38:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils":161}],72:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -61027,14 +65155,14 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":63,"../../utils/bind":118}],39:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils/bind":155}],73:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":63}],40:[function(_dereq_,module,exports){
+},{"../../core/component":98}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -61059,7 +65187,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":63}],41:[function(_dereq_,module,exports){
+},{"../../core/component":98}],75:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -61132,7 +65260,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":63,"../../lib/three":106,"../../utils/debug":120}],42:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142,"../../utils/debug":157}],76:[function(_dereq_,module,exports){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
 var bind = _dereq_('../../utils/bind');
@@ -61230,7 +65358,7 @@ module.exports.Component = registerComponent('inspector', {
   }
 });
 
-},{"../../../package":20,"../../constants":54,"../../core/component":63,"../../utils/bind":118}],43:[function(_dereq_,module,exports){
+},{"../../../package":54,"../../constants":89,"../../core/component":98,"../../utils/bind":155}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -61273,7 +65401,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":63,"../../lib/three":106,"../../utils/":124}],44:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142,"../../utils/":161}],78:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -61382,7 +65510,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":63,"../../utils/debug":120}],45:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils/debug":157}],79:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -61614,7 +65742,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":63,"../../lib/three":106}],46:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -61694,7 +65822,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":132,"../../../vendor/rStats.extras":131,"../../core/component":63,"../../lib/rStatsAframe":105,"../../utils":124}],47:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":169,"../../../vendor/rStats.extras":168,"../../core/component":98,"../../lib/rStatsAframe":141,"../../utils":161}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -61843,7 +65971,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":54,"../../core/component":63,"../../utils/":124}],48:[function(_dereq_,module,exports){
+},{"../../constants/":89,"../../core/component":98,"../../utils/":161}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -62027,7 +66155,459 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106,"../utils/bind":118,"../utils/debug":120}],49:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/bind":155,"../utils/debug":157}],83:[function(_dereq_,module,exports){
+var createTextGeometry = _dereq_('three-bmfont-text');
+var loadBMFont = _dereq_('load-bmfont');
+var path = _dereq_('path');
+
+var registerComponent = _dereq_('../core/component').registerComponent;
+var coreShader = _dereq_('../core/shader');
+var THREE = _dereq_('../lib/three');
+var utils = _dereq_('../utils/');
+
+var error = utils.debug('components:text:error');
+var shaders = coreShader.shaders;
+var warn = utils.debug('components:text:warn');
+
+// 1 to match other A-Frame default widths.
+var DEFAULT_WIDTH = 1;
+
+// @bryik set anisotropy to 16. Improves look of large amounts of text when viewed from angle.
+var MAX_ANISOTROPY = 16;
+
+var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
+var FONTS = {
+  aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
+  default: FONT_BASE_URL + 'DejaVu-sdf.fnt',
+  dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
+  exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
+  exo2semibold: FONT_BASE_URL + 'Exo2SemiBold.fnt',
+  kelsonsans: FONT_BASE_URL + 'KelsonSans.fnt',
+  monoid: FONT_BASE_URL + 'Monoid.fnt',
+  mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
+  sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
+};
+module.exports.FONTS = FONTS;
+
+var cache = new PromiseCache();
+var fontWidthFactors = {};
+
+/**
+ * SDF-based text component.
+ * Based on https://github.com/Jam3/three-bmfont-text.
+ *
+ * All the stock fonts are for the `sdf` registered shader, an improved version of jam3's
+ * original `sdf` shader.
+ */
+module.exports.Component = registerComponent('text', {
+  multiple: true,
+
+  schema: {
+    align: {type: 'string', default: 'left', oneOf: ['left', 'right', 'center']},
+    alphaTest: {default: 0.5},
+    // `anchor` defaults to center to match geometries.
+    anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
+    baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
+    color: {type: 'color', default: '#FFF'},
+    font: {type: 'string', default: 'default'},
+    // `fontImage` defaults to the font name as a .png (e.g., mozillavr.fnt -> mozillavr.png).
+    fontImage: {type: 'string'},
+    // `height` has no default, will be populated at layout.
+    height: {type: 'number'},
+    letterSpacing: {type: 'number', default: 0},
+    // `lineHeight` defaults to font's `lineHeight` value.
+    lineHeight: {type: 'number'},
+    opacity: {type: 'number', default: '1.0'},
+    shader: {default: 'sdf', oneOf: shaders},
+    side: {default: 'front', oneOf: ['front', 'back', 'double']},
+    tabSize: {default: 4},
+    transparent: {default: true},
+    value: {type: 'string'},
+    whiteSpace: {default: 'normal', oneOf: ['normal', 'pre', 'nowrap']},
+    // `width` defaults to geometry width if present, else `DEFAULT_WIDTH`.
+    width: {type: 'number'},
+    // `wrapCount` units are about one default font character. Wrap roughly at this number.
+    wrapCount: {type: 'number', default: 40},
+    // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
+    wrapPixels: {type: 'number'},
+    // `zOffset` will provide a small z offset to avoid z-fighting
+    zOffset: {type: 'number', default: 0.001}
+  },
+
+  init: function () {
+    this.texture = new THREE.Texture();
+    this.texture.anisotropy = MAX_ANISOTROPY;
+
+    this.geometry = createTextGeometry();
+
+    this.createOrUpdateMaterial();
+    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.el.setObject3D(this.attrName, this.mesh);
+  },
+
+  update: function (oldData) {
+    var data = coerceData(this.data);
+    var font = this.currentFont;
+
+    // Update material.
+    if (Object.keys(oldData).length) {
+      this.createOrUpdateMaterial(oldData && {shader: oldData.shader});
+    }
+
+    // New font. `updateFont` will later change data and layout.
+    if (oldData.font !== data.font) {
+      this.updateFont();
+      return;
+    }
+
+    // Update geometry and layout.
+    if (font) {
+      updateGeometry(this.geometry, data, font);
+      this.updateLayout(data);
+    }
+  },
+
+  /**
+   * Clean up geometry, material, texture, mesh, objects.
+   */
+  remove: function () {
+    this.geometry.dispose();
+    this.geometry = null;
+    this.el.removeObject3D(this.attrName);
+    this.material.dispose();
+    this.material = null;
+    this.texture.dispose();
+    this.texture = null;
+    if (this.shaderObject) {
+      delete this.shaderObject;
+    }
+  },
+
+  /**
+   * Update the shader of the material.
+   *
+   * @param {object} oldShader - Object describing the previous properties of the shader.
+   *   Currently only contains the shader name, but other properties could be introduced
+   *   in order to provide heuristics to select the most appropriate type of shader based
+   *   on the text component properties.
+   */
+  createOrUpdateMaterial: function (oldShader) {
+    var data = this.data;
+    var hasChangedShader;
+    var material = this.material;
+    var NewShader;
+    var shaderData;
+
+    hasChangedShader = (oldShader && oldShader.shader) !== data.shader;
+    shaderData = {
+      alphaTest: data.alphaTest,
+      color: data.color,
+      map: this.texture,
+      opacity: data.opacity,
+      side: parseSide(data.side),
+      transparent: data.transparent
+    };
+
+    // Shader has not changed, do an update.
+    if (!hasChangedShader) {
+      // Update shader material.
+      this.shaderObject.update(shaderData);
+      // Apparently, was not set on `init` nor `update`.
+      material.transparent = shaderData.transparent;
+      updateBaseMaterial(material, shaderData);
+      return;
+    }
+
+    // Shader has changed. Create a shader material.
+    NewShader = createShader(this.el, data.shader, shaderData);
+    this.material = NewShader.material;
+    this.shaderObject = NewShader.shader;
+
+    // Set new shader material.
+    updateBaseMaterial(this.material, shaderData);
+    if (this.mesh) { this.mesh.material = this.material; }
+  },
+
+  /**
+   * Load font for geometry, load font image for material, and apply.
+   */
+  updateFont: function () {
+    var el = this.el;
+    var fontSrc;
+    var geometry = this.geometry;
+    var self = this;
+
+    if (!this.data.font) { warn('No font specified. Using the default font.'); }
+
+    // Make invisible during font swap.
+    this.mesh.visible = false;
+
+    // Look up font URL to use, and perform cached load.
+    fontSrc = this.lookupFont(this.data.font || 'default');
+    cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
+      var data;
+      var fontImgSrc;
+
+      if (font.pages.length !== 1) {
+        throw new Error('Currently only single-page bitmap fonts are supported.');
+      }
+
+      if (!fontWidthFactors[fontSrc]) {
+        font.widthFactor = fontWidthFactors[font] = computeFontWidthFactor(font);
+      }
+
+      // Update geometry given font metrics.
+      data = coerceData(self.data);
+      updateGeometry(geometry, data, font);
+
+      // Set font and update layout.
+      self.currentFont = font;
+      self.updateLayout(data);
+
+      // Look up font image URL to use, and perform cached load.
+      fontImgSrc = self.data.fontImage || fontSrc.replace('.fnt', '.png') ||
+                   path.dirname(data.font) + '/' + font.pages[0];
+      cache.get(fontImgSrc, function () {
+        return loadTexture(fontImgSrc);
+      }).then(function (image) {
+        // Make mesh visible and apply font image as texture.
+        self.mesh.visible = true;
+        self.texture.image = image;
+        self.texture.needsUpdate = true;
+        el.emit('textfontset', {font: self.data.font, fontObj: font});
+      }).catch(function (err) {
+        error(err);
+        throw err;
+      });
+    }).catch(function (err) {
+      error(err);
+      throw err;
+    });
+  },
+
+  /**
+   * Update layout with anchor, alignment, baseline, and considering any meshes.
+   */
+  updateLayout: function (data) {
+    var anchor;
+    var baseline;
+    var el = this.el;
+    var geometry = this.geometry;
+    var geometryComponent = el.getAttribute('geometry');
+    var height;
+    var layout = geometry.layout;
+    var mesh = this.mesh;
+    var textRenderWidth;
+    var textScale;
+    var width;
+    var x;
+    var y;
+
+    // Determine width to use (defined width, geometry's width, or default width).
+    geometryComponent = el.getAttribute('geometry');
+    width = data.width || (geometryComponent && geometryComponent.width) || DEFAULT_WIDTH;
+
+    // Determine wrap pixel count. Either specified or by experimental fudge factor.
+    // Note that experimental factor will never be correct for variable width fonts.
+    textRenderWidth = computeWidth(data.wrapPixels, data.wrapCount,
+                                   this.currentFont.widthFactor);
+    textScale = width / textRenderWidth;
+
+    // Determine height to use.
+    height = textScale * (layout.height + layout.descender);
+
+    // Update geometry dimensions to match text layout if width and height are set to 0.
+    // For example, scales a plane to fit text.
+    if (geometryComponent) {
+      if (!geometryComponent.width) { el.setAttribute('geometry', 'width', width); }
+      if (!geometryComponent.height) { el.setAttribute('geometry', 'height', height); }
+    }
+
+    // Calculate X position to anchor text left, center, or right.
+    anchor = data.anchor === 'align' ? data.align : data.anchor;
+    if (anchor === 'left') {
+      x = 0;
+    } else if (anchor === 'right') {
+      x = -1 * layout.width;
+    } else if (anchor === 'center') {
+      x = -1 * layout.width / 2;
+    } else {
+      throw new TypeError('Invalid text.anchor property value', anchor);
+    }
+
+    // Calculate Y position to anchor text top, center, or bottom.
+    baseline = data.baseline;
+    if (baseline === 'bottom') {
+      y = 0;
+    } else if (baseline === 'top') {
+      y = -1 * layout.height + layout.ascender;
+    } else if (baseline === 'center') {
+      y = -1 * layout.height / 2;
+    } else {
+      throw new TypeError('Invalid text.baseline property value', baseline);
+    }
+
+    // Position and scale mesh to apply layout.
+    mesh.position.x = x * textScale;
+    mesh.position.y = y * textScale;
+    // Place text slightly in front to avoid Z-fighting.
+    mesh.position.z = data.zOffset;
+    mesh.scale.set(textScale, -1 * textScale, textScale);
+    this.geometry.computeBoundingSphere();
+  },
+
+  /**
+   * Grab font from the constant.
+   * Set as a method for test stubbing purposes.
+   */
+  lookupFont: function (key) {
+    return FONTS[key];
+  }
+});
+
+function parseSide (side) {
+  switch (side) {
+    case 'back': {
+      return THREE.BackSide;
+    }
+    case 'double': {
+      return THREE.DoubleSide;
+    }
+    default: {
+      return THREE.FrontSide;
+    }
+  }
+}
+
+/**
+ * Coerce some data to numbers.
+ * as they will be passed directly into text creation and update
+ */
+function coerceData (data) {
+  data = utils.clone(data);
+  if (data.lineHeight !== undefined) {
+    data.lineHeight = parseFloat(data.lineHeight);
+    if (!isFinite(data.lineHeight)) { data.lineHeight = undefined; }
+  }
+  if (data.width !== undefined) {
+    data.width = parseFloat(data.width);
+    if (!isFinite(data.width)) { data.width = undefined; }
+  }
+  return data;
+}
+
+/**
+ * @returns {Promise}
+ */
+function loadFont (src) {
+  return new Promise(function (resolve, reject) {
+    loadBMFont(src, function (err, font) {
+      if (err) {
+        error('Error loading font', src);
+        reject(err);
+        return;
+      }
+      resolve(font);
+    });
+  });
+}
+
+/**
+ * @returns {Promise}
+ */
+function loadTexture (src) {
+  return new Promise(function (resolve, reject) {
+    new THREE.ImageLoader().load(src, function (image) {
+      resolve(image);
+    }, undefined, function () {
+      error('Error loading font image', src);
+      reject(null);
+    });
+  });
+}
+
+function createShader (el, shaderName, data) {
+  var shader;
+  var shaderObject;
+
+  // Set up Shader.
+  shaderObject = new shaders[shaderName].Shader();
+  shaderObject.el = el;
+  shaderObject.init(data);
+  shaderObject.update(data);
+
+  // Get material.
+  shader = shaderObject.material;
+  // Apparently, was not set on `init` nor `update`.
+  shader.transparent = data.transparent;
+
+  return {
+    material: shader,
+    shader: shaderObject
+  };
+}
+
+/**
+ * @todo Add more supported material properties (e.g., `visible`).
+ */
+function updateBaseMaterial (material, data) {
+  material.side = data.side;
+}
+
+/**
+ * Update the text geometry using `three-bmfont-text.update`.
+ */
+function updateGeometry (geometry, data, font) {
+  geometry.update(utils.extend({}, data, {
+    font: font,
+    width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
+    text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+    lineHeight: data.lineHeight || font.common.lineHeight
+  }));
+}
+
+/**
+ * Determine wrap pixel count. Either specified or by experimental fudge factor.
+ * Note that experimental factor will never be correct for variable width fonts.
+ */
+function computeWidth (wrapPixels, wrapCount, widthFactor) {
+  return wrapPixels || ((0.5 + wrapCount) * widthFactor);
+}
+
+/**
+ * Compute default font width factor to use.
+ */
+function computeFontWidthFactor (font) {
+  var sum = 0;
+  var digitsum = 0;
+  var digits = 0;
+  font.chars.map(function (ch) {
+    sum += ch.xadvance;
+    if (ch.id >= 48 && ch.id <= 57) {
+      digits++;
+      digitsum += ch.xadvance;
+    }
+  });
+  return digits ? digitsum / digits : sum / font.chars.length;
+}
+
+/**
+ * Get or create a promise given a key and promise generator.
+ * @todo Move to a utility and use in other parts of A-Frame.
+ */
+function PromiseCache () {
+  var cache = this.cache = {};
+
+  this.get = function (key, promiseGenerator) {
+    if (key in cache) {
+      return cache[key];
+    }
+    cache[key] = promiseGenerator();
+    return cache[key];
+  };
+}
+
+},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":161,"load-bmfont":23,"path":32,"three-bmfont-text":38}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -62215,7 +66795,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":63,"../lib/three":106}],50:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142}],85:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -62229,7 +66809,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":63}],51:[function(_dereq_,module,exports){
+},{"../core/component":98}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -62449,7 +67029,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":63,"../utils/bind":118,"../utils/tracked-controls":128}],52:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/bind":155,"../utils/tracked-controls":165}],87:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -62654,7 +67234,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":54,"../core/component":63,"../lib/three":106,"../utils/":124}],53:[function(_dereq_,module,exports){
+},{"../constants":89,"../core/component":98,"../lib/three":142,"../utils/":161}],88:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -62758,7 +67338,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":18}],54:[function(_dereq_,module,exports){
+},{"tween.js":48}],89:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -62766,7 +67346,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":53,"./keyboardevent":55}],55:[function(_dereq_,module,exports){
+},{"./animation":88,"./keyboardevent":90}],90:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -62781,7 +67361,7 @@ module.exports = {
   }
 };
 
-},{}],56:[function(_dereq_,module,exports){
+},{}],91:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -63325,7 +67905,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":53,"../lib/three":106,"../utils/":124,"./a-node":61,"./a-register-element":62,"./schema":70,"tween.js":18}],57:[function(_dereq_,module,exports){
+},{"../constants/animation":88,"../lib/three":142,"../utils/":161,"./a-node":96,"./a-register-element":97,"./schema":105,"tween.js":48}],92:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -63554,7 +68134,7 @@ function extractDomain (url) {
   return domain.split(':')[0];
 }
 
-},{"../lib/three":106,"../utils/bind":118,"../utils/debug":120,"./a-node":61,"./a-register-element":62}],58:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils/bind":155,"../utils/debug":157,"./a-node":96,"./a-register-element":97}],93:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -63605,7 +68185,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":120,"./a-register-element":62}],59:[function(_dereq_,module,exports){
+},{"../utils/debug":157,"./a-register-element":97}],94:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
@@ -64508,7 +69088,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":106,"../utils/":124,"./a-node":61,"./a-register-element":62,"./component":63}],60:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils/":161,"./a-node":96,"./a-register-element":97,"./component":98}],95:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -64616,7 +69196,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":61,"./a-register-element":62,"./component":63}],61:[function(_dereq_,module,exports){
+},{"./a-node":96,"./a-register-element":97,"./component":98}],96:[function(_dereq_,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
@@ -64865,7 +69445,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":124,"./a-register-element":62}],62:[function(_dereq_,module,exports){
+},{"../utils/":161,"./a-register-element":97}],97:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -65042,7 +69622,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":59,"./a-node":61,"document-register-element":5}],63:[function(_dereq_,module,exports){
+},{"./a-entity":94,"./a-node":96,"document-register-element":10}],98:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
 var systems = _dereq_('./system');
@@ -65464,7 +70044,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":124,"./schema":70,"./system":72}],64:[function(_dereq_,module,exports){
+},{"../utils/":161,"./schema":105,"./system":107}],99:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -65538,7 +70118,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":106,"./schema":70}],65:[function(_dereq_,module,exports){
+},{"../lib/three":142,"./schema":105}],100:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -65693,7 +70273,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":119,"debug":2}],66:[function(_dereq_,module,exports){
+},{"../utils/coordinates":156,"debug":7}],101:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -66198,7 +70778,7 @@ function exitFullscreen () {
   }
 }
 
-},{"../../lib/three":106,"../../utils/":124,"../a-entity":59,"../a-node":61,"../a-register-element":62,"../system":72,"./metaTags":67,"./postMessage":68,"./wakelock":69,"tween.js":18}],67:[function(_dereq_,module,exports){
+},{"../../lib/three":142,"../../utils/":161,"../a-entity":94,"../a-node":96,"../a-register-element":97,"../system":107,"./metaTags":102,"./postMessage":103,"./wakelock":104,"tween.js":48}],102:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -66279,7 +70859,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":54,"../../utils":124}],68:[function(_dereq_,module,exports){
+},{"../../constants/":89,"../../utils":161}],103:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -66312,7 +70892,7 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":124,"../../utils/bind":118}],69:[function(_dereq_,module,exports){
+},{"../../utils/":161,"../../utils/bind":155}],104:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -66323,7 +70903,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":134}],70:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":171}],105:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -66487,7 +71067,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":120,"./propertyTypes":65}],71:[function(_dereq_,module,exports){
+},{"../utils/debug":157,"./propertyTypes":100}],106:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -66663,7 +71243,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":106,"../utils":124,"./schema":70}],72:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils":161,"./schema":105}],107:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -66780,10 +71360,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":124,"./component":63,"./schema":70}],73:[function(_dereq_,module,exports){
+},{"../utils/":161,"./component":98,"./schema":105}],108:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":74}],74:[function(_dereq_,module,exports){
+},{"./pivot":109}],109:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -66832,7 +71412,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":63,"../../lib/three":106}],75:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142}],110:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -66859,7 +71439,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":63,"../../core/shader":71,"../../utils/":124}],76:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../core/shader":106,"../../utils/":161}],111:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -66869,11 +71449,12 @@ _dereq_('./primitives/a-light');
 _dereq_('./primitives/a-obj-model');
 _dereq_('./primitives/a-sky');
 _dereq_('./primitives/a-sound');
+_dereq_('./primitives/a-text');
 _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":78,"./primitives/a-collada-model":79,"./primitives/a-cursor":80,"./primitives/a-curvedimage":81,"./primitives/a-image":82,"./primitives/a-light":83,"./primitives/a-obj-model":84,"./primitives/a-sky":85,"./primitives/a-sound":86,"./primitives/a-video":87,"./primitives/a-videosphere":88,"./primitives/meshPrimitives":89}],77:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":113,"./primitives/a-collada-model":114,"./primitives/a-cursor":115,"./primitives/a-curvedimage":116,"./primitives/a-image":117,"./primitives/a-light":118,"./primitives/a-obj-model":119,"./primitives/a-sky":120,"./primitives/a-sound":121,"./primitives/a-text":122,"./primitives/a-video":123,"./primitives/a-videosphere":124,"./primitives/meshPrimitives":125}],112:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -67004,7 +71585,41 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
   return primitive;
 };
 
-},{"../../core/a-entity":59,"../../core/a-register-element":62,"../../core/component":63,"../../utils/":124}],78:[function(_dereq_,module,exports){
+/**
+ * Add component mappings using schema.
+ */
+function addComponentMapping (componentName, mappings) {
+  var schema = components[componentName].schema;
+  Object.keys(schema).map(function (prop) {
+    // Hyphenate where there is camelCase.
+    var attrName = prop.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    // If there is a mapping collision, prefix with component name and hyphen.
+    if (mappings[attrName] !== undefined) { attrName = componentName + '-' + prop; }
+    mappings[attrName] = componentName + '.' + prop;
+  });
+}
+
+/**
+ * Helper to define a primitive, building mappings using a component schema.
+ */
+function definePrimitive (tagName, defaultComponents, mappings) {
+  // If no initial mappings provided, start from empty map.
+  mappings = mappings || {};
+
+  // From the default components, add mapping automagically.
+  Object.keys(defaultComponents).map(function buildMappings (componentName) {
+    addComponentMapping(componentName, mappings);
+  });
+
+  // Register the primitive.
+  module.exports.registerPrimitive(tagName, utils.extendDeep({}, null, {
+    defaultComponents: defaultComponents,
+    mappings: mappings
+  }));
+}
+module.exports.definePrimitive = definePrimitive;
+
+},{"../../core/a-entity":94,"../../core/a-register-element":97,"../../core/component":98,"../../utils/":161}],113:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -67039,7 +71654,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":54,"../primitives":77}],79:[function(_dereq_,module,exports){
+},{"../../../constants/":89,"../primitives":112}],114:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67050,7 +71665,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],80:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],115:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67088,7 +71703,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],81:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],116:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67125,7 +71740,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],82:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],117:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67149,7 +71764,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],83:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],118:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -67170,7 +71785,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":77}],84:[function(_dereq_,module,exports){
+},{"../primitives":112}],119:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67186,7 +71801,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],85:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67210,7 +71825,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77,"./meshPrimitives":89}],86:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112,"./meshPrimitives":125}],121:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -67227,7 +71842,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":77}],87:[function(_dereq_,module,exports){
+},{"../primitives":112}],122:[function(_dereq_,module,exports){
+// <a-text> using `definePrimitive` helper.
+var definePrimitive = _dereq_('../primitives').definePrimitive;
+definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
+
+},{"../primitives":112}],123:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67251,7 +71871,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],88:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],124:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -67278,7 +71898,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],89:[function(_dereq_,module,exports){
+},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],125:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -67318,7 +71938,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":64,"../../../utils/":124,"../getMeshMixin":75,"../primitives":77}],90:[function(_dereq_,module,exports){
+},{"../../../core/geometry":99,"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],126:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67337,7 +71957,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],91:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],127:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67357,7 +71977,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],92:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],128:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67383,7 +72003,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],93:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],129:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67407,7 +72027,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],94:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],130:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67422,7 +72042,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],95:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],131:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67437,7 +72057,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],96:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],132:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -67452,7 +72072,7 @@ _dereq_('./tetrahedron.js');
 _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 
-},{"./box.js":90,"./circle.js":91,"./cone.js":92,"./cylinder.js":93,"./dodecahedron.js":94,"./icosahedron.js":95,"./octahedron.js":97,"./plane.js":98,"./ring.js":99,"./sphere.js":100,"./tetrahedron.js":101,"./torus.js":102,"./torusKnot.js":103}],97:[function(_dereq_,module,exports){
+},{"./box.js":126,"./circle.js":127,"./cone.js":128,"./cylinder.js":129,"./dodecahedron.js":130,"./icosahedron.js":131,"./octahedron.js":133,"./plane.js":134,"./ring.js":135,"./sphere.js":136,"./tetrahedron.js":137,"./torus.js":138,"./torusKnot.js":139}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67467,7 +72087,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],98:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67484,7 +72104,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],99:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],135:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67507,7 +72127,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],100:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67531,7 +72151,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],101:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],137:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67546,7 +72166,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],102:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],138:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67568,7 +72188,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],103:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],139:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -67589,7 +72209,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":64,"../lib/three":106}],104:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../lib/three":142}],140:[function(_dereq_,module,exports){
 var debug = _dereq_('./utils/debug');
 var error = debug('A-Frame:warn');
 var info = debug('A-Frame:info');
@@ -67660,7 +72280,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 25-01-2017, Commit #5dba9e8)');
+console.log('A-Frame Version: 0.4.0 (Date 27-01-2017, Commit #5d87ccc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -67690,7 +72310,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":20,"./components/index":27,"./core/a-animation":56,"./core/a-assets":57,"./core/a-cubemap":58,"./core/a-entity":59,"./core/a-mixin":60,"./core/a-node":61,"./core/a-register-element":62,"./core/component":63,"./core/geometry":64,"./core/scene/a-scene":66,"./core/schema":70,"./core/shader":71,"./core/system":72,"./extras/components/":73,"./extras/primitives/":76,"./extras/primitives/getMeshMixin":75,"./extras/primitives/primitives":77,"./geometries/index":96,"./lib/three":106,"./shaders/index":108,"./style/aframe.css":110,"./style/rStats.css":111,"./systems/index":114,"./utils/":124,"./utils/debug":120,"present":9,"promise-polyfill":11,"tween.js":18,"webvr-polyfill":19}],105:[function(_dereq_,module,exports){
+},{"../package":54,"./components/index":61,"./core/a-animation":91,"./core/a-assets":92,"./core/a-cubemap":93,"./core/a-entity":94,"./core/a-mixin":95,"./core/a-node":96,"./core/a-register-element":97,"./core/component":98,"./core/geometry":99,"./core/scene/a-scene":101,"./core/schema":105,"./core/shader":106,"./core/system":107,"./extras/components/":108,"./extras/primitives/":111,"./extras/primitives/getMeshMixin":110,"./extras/primitives/primitives":112,"./geometries/index":132,"./lib/three":142,"./shaders/index":144,"./style/aframe.css":147,"./style/rStats.css":148,"./systems/index":151,"./utils/":161,"./utils/debug":157,"present":33,"promise-polyfill":35,"tween.js":48,"webvr-polyfill":49}],141:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -67747,7 +72367,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],106:[function(_dereq_,module,exports){
+},{}],142:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -67785,7 +72405,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":129,"../../vendor/VREffect":130,"three":13,"three/examples/js/BlendCharacter":14,"three/examples/js/loaders/ColladaLoader":15,"three/examples/js/loaders/MTLLoader":16,"three/examples/js/loaders/OBJLoader":17}],107:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":166,"../../vendor/VREffect":167,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],143:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -67850,11 +72470,113 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":71,"../lib/three":106,"../utils/":124}],108:[function(_dereq_,module,exports){
+},{"../core/shader":106,"../lib/three":142,"../utils/":161}],144:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
+_dereq_('./sdf');
 
-},{"./flat":107,"./standard":109}],109:[function(_dereq_,module,exports){
+},{"./flat":143,"./sdf":145,"./standard":146}],145:[function(_dereq_,module,exports){
+var registerShader = _dereq_('../core/shader').registerShader;
+
+/**
+ * Used by text component.
+ */
+module.exports.Shader = registerShader('sdf', {
+  schema: {
+    alphaTest: {type: 'number', is: 'uniform', default: 0.5},
+    color: {type: 'color', is: 'uniform', default: 'white'},
+    map: {type: 'map', is: 'uniform'},
+    opacity: {type: 'number', is: 'uniform', default: 1.0}
+  },
+
+  vertexShader: [
+    'varying vec2 vUV;',
+    'void main(void) {',
+    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+    '  vUV = uv;',
+    '}'
+  ].join('\n'),
+
+  fragmentShader: [
+    '#ifdef GL_OES_standard_derivatives',
+    '#extension GL_OES_standard_derivatives: enable',
+    '#endif',
+    // FIXME: experimentally determined constants
+    '#define BIG_ENOUGH 0.001',
+    '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+    '#define ALL_SMOOTH 0.4',
+    '#define ALL_ROUGH 0.02',
+    '#define DISCARD_ALPHA (alphaTest / (2.2 - 1.2 * ratio))',
+    'uniform sampler2D map;',
+    'uniform vec3 color;',
+    'uniform float opacity;',
+    'uniform float alphaTest;',
+    'varying vec2 vUV;',
+    '#ifdef GL_OES_standard_derivatives',
+    'float contour(float width, float value) {',
+    '  return smoothstep(0.5 - value, 0.5 + value, width);',
+    '}',
+    '#else',
+    'float aastep(float value, float afwidth) {',
+    '  return smoothstep(0.5 - afwidth, 0.5 + afwidth, value);',
+    '}',
+    '#endif',
+    'void main() {',
+    '#ifdef GL_OES_standard_derivatives',
+    // when we have derivatives and can get texel size etc., that allows supersampling etc.
+    '  vec2 uv = vUV;',
+    '  vec4 texColor = texture2D(map, uv);',
+    '  float dist = texColor.a;',
+    '  float width = fwidth(dist);',
+    '  float alpha = contour(dist, width);',
+    '  float dscale = 0.353505;',
+    '  vec2 duv = dscale * (dFdx(uv) + dFdy(uv));',
+    '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+    // when texel is too small, blend raw alpha value rather than supersampling etc.
+    // FIXME: experimentally determined constant
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * dist;',
+    '  }',
+    // otherwise do weighted supersampling
+    // FIXME: why this weighting?
+    '  else if (isBigEnough <= BIG_ENOUGH) {',
+    '    vec4 box = vec4 (uv - duv, uv + duv);',
+    '    alpha = (alpha + 0.5 * (',
+    '      contour(texture2D(map, box.xy).a, width)',
+    '      + contour(texture2D(map, box.zw).a, width)',
+    '      + contour(texture2D(map, box.xw).a, width)',
+    '      + contour(texture2D(map, box.zy).a, width)',
+    '    )) / 3.0;',
+    '  }',
+    // when texel is big enough, do standard alpha test
+    // FIXME: experimentally determined constant
+    // looks much better if we DON'T do this, but do we get Z fighting etc.?
+    '  if (isBigEnough <= BIG_ENOUGH && alpha < alphaTest) { discard; return; }',
+    // else do modified alpha test
+    // FIXME: experimentally determined constant
+    '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+    '#else',
+    '  vec4 texColor = texture2D(map, vUV);',
+    '  float value = texColor.a;',
+    // when we don't have derivatives, use approximations
+    // FIXME: if we understood font pixel dimensions, this could probably be improved
+    '  float afwidth = (1.0 / 32.0) * (1.4142135623730951 / (2.0 * gl_FragCoord.w));',
+    '  float alpha = aastep(value, afwidth);',
+    // use gl_FragCoord.w to guess when we should blend
+    // FIXME: if we understood font pixel dimensions, this could probably be improved
+    '  float ratio = (gl_FragCoord.w >= ALL_SMOOTH) ? 1.0 : (gl_FragCoord.w < ALL_ROUGH) ? 0.0 : (gl_FragCoord.w - ALL_ROUGH) / (ALL_SMOOTH - ALL_ROUGH);',
+    '  if (alpha < alphaTest) { if (ratio >= 1.0) { discard; return; } alpha = 0.0; }',
+    '  alpha = alpha * ratio + (1.0 - ratio) * value;',
+    '  if (ratio < 1.0)',
+    '    if (alpha <= DISCARD_ALPHA) { discard; return; }',
+    '#endif',
+    '  gl_FragColor = vec4(color, opacity * alpha);',
+    '}'
+  ].join('\n')
+});
+
+},{"../core/shader":106}],146:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -68019,11 +72741,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":71,"../lib/three":106,"../utils/":124}],110:[function(_dereq_,module,exports){
+},{"../core/shader":106,"../lib/three":142,"../utils/":161}],147:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grabbing;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:174px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;height:10%;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":1}],111:[function(_dereq_,module,exports){
+},{"browserify-css":4}],148:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":1}],112:[function(_dereq_,module,exports){
+},{"browserify-css":4}],149:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -68150,7 +72872,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":54,"../core/system":72,"../utils/bind":118}],113:[function(_dereq_,module,exports){
+},{"../constants/":89,"../core/system":107,"../utils/bind":155}],150:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -68290,7 +73012,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":64,"../core/system":72,"../lib/three":106}],114:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../core/system":107,"../lib/three":142}],151:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./light');
@@ -68298,7 +73020,7 @@ _dereq_('./material');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":112,"./geometry":113,"./light":115,"./material":116,"./tracked-controls":117}],115:[function(_dereq_,module,exports){
+},{"./camera":149,"./geometry":150,"./light":152,"./material":153,"./tracked-controls":154}],152:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -68377,7 +73099,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":54,"../core/system":72,"../utils/bind":118}],116:[function(_dereq_,module,exports){
+},{"../constants/":89,"../core/system":107,"../utils/bind":155}],153:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -68718,7 +73440,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":72,"../lib/three":106,"../utils/":124}],117:[function(_dereq_,module,exports){
+},{"../core/system":107,"../lib/three":142,"../utils/":161}],154:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -68760,7 +73482,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":72,"../utils":124,"../utils/tracked-controls":128}],118:[function(_dereq_,module,exports){
+},{"../core/system":107,"../utils":161,"../utils/tracked-controls":165}],155:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -68777,7 +73499,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],119:[function(_dereq_,module,exports){
+},{}],156:[function(_dereq_,module,exports){
 /* global THREE */
 var extend = _dereq_('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -68856,7 +73578,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":8}],120:[function(_dereq_,module,exports){
+},{"object-assign":26}],157:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -68953,7 +73675,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":10,"debug":2,"object-assign":8}],121:[function(_dereq_,module,exports){
+},{"_process":34,"debug":7,"object-assign":26}],158:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
@@ -69032,7 +73754,7 @@ module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
 };
 
-},{"../lib/three":106}],122:[function(_dereq_,module,exports){
+},{"../lib/three":142}],159:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -69073,7 +73795,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],123:[function(_dereq_,module,exports){
+},{}],160:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -69089,7 +73811,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],124:[function(_dereq_,module,exports){
+},{}],161:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -69344,7 +74066,9 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":118,"./coordinates":119,"./debug":120,"./device":121,"./entity":122,"./forceCanvasResizeSafariMobile":123,"./material":125,"./src-loader":126,"./styleParser":127,"./tracked-controls":128,"deep-assign":4,"object-assign":8}],125:[function(_dereq_,module,exports){
+},{"./bind":155,"./coordinates":156,"./debug":157,"./device":158,"./entity":159,"./forceCanvasResizeSafariMobile":160,"./material":162,"./src-loader":163,"./styleParser":164,"./tracked-controls":165,"deep-assign":9,"object-assign":26}],162:[function(_dereq_,module,exports){
+var THREE = _dereq_('../lib/three');
+
 /**
  * Update `material.map` given `data.src`. For standard and flat shaders.
  *
@@ -69361,6 +74085,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
     if (src === shader[shadowSrcName]) { return; }
     // Texture added or changed.
     shader[shadowSrcName] = src;
+    if (src instanceof THREE.Texture) { setMap(src); return; }
     el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
   }
@@ -69441,7 +74166,7 @@ function handleTextureEvents (el, texture) {
   el.emit('materialtextureloaded', {src: texture.image, texture: texture});
 
   // Video events.
-  if (texture.image.tagName !== 'VIDEO') { return; }
+  if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
@@ -69452,7 +74177,7 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-},{}],126:[function(_dereq_,module,exports){
+},{"../lib/three":142}],163:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -69579,7 +74304,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":120}],127:[function(_dereq_,module,exports){
+},{"./debug":157}],164:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -69639,7 +74364,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":12}],128:[function(_dereq_,module,exports){
+},{"style-attr":37}],165:[function(_dereq_,module,exports){
 /**
  * Return enumerated gamepads matching id prefix.
  *
@@ -69702,7 +74427,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
 };
 
 
-},{}],129:[function(_dereq_,module,exports){
+},{}],166:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -69877,7 +74602,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],130:[function(_dereq_,module,exports){
+},{}],167:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -70359,7 +75084,7 @@ THREE.VREffect = function ( renderer, onError ) {
 
 };
 
-},{}],131:[function(_dereq_,module,exports){
+},{}],168:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -70624,7 +75349,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],132:[function(_dereq_,module,exports){
+},{}],169:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -71078,7 +75803,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],133:[function(_dereq_,module,exports){
+},{}],170:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71140,7 +75865,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],134:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -71216,6 +75941,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":133}]},{},[104])(104)
+},{"./util.js":170}]},{},[140])(140)
 });
 //# sourceMappingURL=aframe-master.js.map
