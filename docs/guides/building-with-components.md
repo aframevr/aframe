@@ -38,12 +38,12 @@ This is the starting point for our scene:
     <audio id="click-sound" src="audio/click.ogg"></audio>
 
     <!-- Images. -->
-    <img id="city" src="img/city.jpg">
-    <img id="city-thumb" src="img/thumb-city.png">
-    <img id="cubes" src="img/cubes.jpg">
-    <img id="cubes-thumb" src="img/thumb-cubes.png">
-    <img id="sechelt" src="img/sechelt.jpg">
-    <img id="sechelt-thumb" src="img/thumb-sechelt.png">
+    <img id="city" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg">
+    <img id="city-thumb" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-city.png">
+    <img id="cubes" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/cubes.jpg">
+    <img id="cubes-thumb" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-cubes.png">
+    <img id="sechelt" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg">
+    <img id="sechelt-thumb" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/thumb-sechelt.png">
   </a-assets>
 
   <!-- 360-degree image. -->
