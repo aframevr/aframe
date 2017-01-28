@@ -10,6 +10,8 @@ The text component renders signed distance field (SDF) font text.
 [exampleimage]: https://cloud.githubusercontent.com/assets/674727/22357731/f704544a-e3ee-11e6-8e6e-96c3c4e84958.png
 ![Example Image][exampleimage]
 
+<!--toc-->
+
 ## Introduction
 
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
@@ -130,6 +132,21 @@ fonts locally and point to them via a URL.
 | mozillavr       | https://cdn.aframe.io/fonts/mozillavr.fnt        |
 | sourcecodepro   | https://cdn.aframe.io/fonts/SourceCodePro.fnt    |
 
+### Generating SDF Fonts
+
+[hiero]: https://github.com/libgdx/libgdx/wiki/Hiero
+[sdffonts]: https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
+
+On top of the stock fonts, we can generate our own custom SDF fonts using
+[Hiero][hiero], a bitmap font packing tool. [See this guide for generating SDF
+fonts][sdffonts].
+
+Below is an example comparing a font generated with Hiero, Arial Black, with this
+component's default font, DejaVu:
+
+[fontexampleimage]: http://i.imgur.com/iWtXHm5.png
+![Arial Black vs. Deja Vu][fontexampleimage]
+
 ## Sizing
 
 [position]: ./position.md
@@ -196,21 +213,6 @@ then become 1 unit as well.
   material="color: blue"
   text="value: 1-wide\ndefault."></a-entity>
 ```
-
-### Generating SDF Fonts
-
-[hiero]: https://github.com/libgdx/libgdx/wiki/Hiero
-[sdffonts]: https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
-
-On top of the stock fonts, we can generate our own custom SDF fonts using
-[Hiero][hiero], a bitmap font packing tool. [See this guide for generating SDF
-fonts][sdffonts].
-
-Below is an example comparing a font generated with Hiero, Arial Black, with this
-component's default font, DejaVu:
-
-[fontexampleimage]: http://i.imgur.com/iWtXHm5.png
-![Arial Black vs. Deja Vu][fontexampleimage]
 
 ## Limitations
 
