@@ -197,10 +197,10 @@ then become 1 unit as well.
   text="value: 1-wide\ndefault."></a-entity>
 ```
 
-### Custom Fonts
+### Generating SDF Fonts
 
 [hiero]: https://github.com/libgdx/libgdx/wiki/Hiero
-[sdffonts]: https://github.com/libgdx/libgdx/wiki/Distance-field-fonts)
+[sdffonts]: https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
 
 On top of the stock fonts, we can generate our own custom SDF fonts using
 [Hiero][hiero], a bitmap font packing tool. [See this guide for generating SDF
@@ -216,12 +216,15 @@ component's default font, DejaVu:
 
 The text component does not make use of all of the features of the
 [`three-bmfont-text` library][three-bmfont-text] nor its sister modules.
+Notably, we left out MSDF text to keep the API simple, and because Hiero
+generates SDF fonts, although we did have MSDF support in an older
+implementation.
 
 [sdfsmooth]: https://lambdacube3d.wordpress.com/2014/11/12/playing-around-with-font-rendering/
 
 Bitmap font rendering limits you to the characters included in the font
-(*Unicode this is not*). SDF font rendering tends to smooth sharp edges [though
-there are ways around this][sdfsmooth].
+(*Unicode this is not*). SDF font rendering tends to produce smooth sharp edges
+[though there are ways around this][sdfsmooth].
 
 ## Further Reading
 
