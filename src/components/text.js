@@ -20,13 +20,14 @@ var MAX_ANISOTROPY = 16;
 var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
-  default: FONT_BASE_URL + 'DejaVu-sdf.fnt',
+  default: FONT_BASE_URL + 'Roboto-msdf.json',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
   exo2semibold: FONT_BASE_URL + 'Exo2SemiBold.fnt',
   kelsonsans: FONT_BASE_URL + 'KelsonSans.fnt',
   monoid: FONT_BASE_URL + 'Monoid.fnt',
   mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
+  roboto: FONT_BASE_URL + 'Roboto-msdf.json',
   sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
 };
 module.exports.FONTS = FONTS;
@@ -139,6 +140,7 @@ module.exports.Component = registerComponent('text', {
     var material = this.material;
     var NewShader;
     var shaderData;
+    var shaderName;
 
     hasChangedShader = (oldShader && oldShader.shader) !== data.shader;
     shaderData = {
@@ -161,7 +163,10 @@ module.exports.Component = registerComponent('text', {
     }
 
     // Shader has changed. Create a shader material.
-    NewShader = createShader(this.el, data.shader, shaderData);
+    // For convenience, if font matches MSDF naming convention, change sdf to msdf.
+    shaderName = data.shader;
+    if (data.shader === 'sdf' && (data.font === 'default' || data.font.indexOf('-msdf.') >= 0)) { shaderName = 'msdf'; }
+    NewShader = createShader(this.el, shaderName, shaderData);
     this.material = NewShader.material;
     this.shaderObject = NewShader.shader;
 
@@ -207,7 +212,7 @@ module.exports.Component = registerComponent('text', {
       self.updateLayout(data);
 
       // Look up font image URL to use, and perform cached load.
-      fontImgSrc = self.data.fontImage || fontSrc.replace('.fnt', '.png') ||
+      fontImgSrc = self.data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png') ||
                    path.dirname(data.font) + '/' + font.pages[0];
       cache.get(fontImgSrc, function () {
         return loadTexture(fontImgSrc);
@@ -349,6 +354,12 @@ function loadFont (src) {
         reject(err);
         return;
       }
+      // Fix up negative y offsets for Roboto MSDF font.
+      // FIXME: experimentally determined shot
+      if (src.indexOf('/Roboto-msdf.json') >= 0) {
+        font.chars.map(function (ch) { ch.yoffset += 30; });
+      }
+
       resolve(font);
     });
   });

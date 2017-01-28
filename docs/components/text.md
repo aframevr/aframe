@@ -123,14 +123,17 @@ fonts locally and point to them via a URL.
 | Stock Fonts     | URL                                              |
 |-----------------|--------------------------------------------------|
 | aileronsemibold | https://cdn.aframe.io/fonts/Aileron-Semibold.fnt |
-| default         | https://cdn.aframe.io/fonts/DejaVu-sdf.fnt       |
+| default         | https://cdn.aframe.io/fonts/Roboto-msdf.json     |
 | dejavu          | https://cdn.aframe.io/fonts/DejaVu-sdf.fnt       |
 | exo2bold        | https://cdn.aframe.io/fonts/Exo2Bold.fnt         |
 | exo2semibold    | https://cdn.aframe.io/fonts/Exo2SemiBold.fnt     |
 | kelsonsans      | https://cdn.aframe.io/fonts/KelsonSans.fnt       |
 | monoid          | https://cdn.aframe.io/fonts/Monoid.fnt           |
 | mozillavr       | https://cdn.aframe.io/fonts/mozillavr.fnt        |
+| roboto          | https://cdn.aframe.io/fonts/Roboto-msdf.json     |
 | sourcecodepro   | https://cdn.aframe.io/fonts/SourceCodePro.fnt    |
+
+Note that Roboto is a multi-channel signed distance font (MSDF) which helps to preserve sharp corners and edges.
 
 ### Generating SDF Fonts
 
@@ -218,9 +221,6 @@ then become 1 unit as well.
 
 The text component does not make use of all of the features of the
 [`three-bmfont-text` library][three-bmfont-text] nor its sister modules.
-Notably, we left out MSDF text to keep the API simple, and because Hiero
-generates SDF fonts, although we did have MSDF support in an older
-implementation.
 
 [sdfsmooth]: https://lambdacube3d.wordpress.com/2014/11/12/playing-around-with-font-rendering/
 
