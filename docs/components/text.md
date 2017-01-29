@@ -43,19 +43,19 @@ configuration.
 See more examples to see configuration of alignments, anchors, baselines,
 scaling, and auto-sizing.
 
-[exampletext]: https://a-frobot.github.io/examples/test/text/index.html
-[codetext]: https://github.com/chenzlabs/aframe/blob/3e8f7a85fe90b4c05857ea8618ef8b0cdda89276/examples/test/text/index.html
-[exampleanchors]: https://a-frobot.github.io/examples/test/text/index.html
-[codeanchors]: https://github.com/chenzlabs/aframe/blob/3e8f7a85fe90b4c05857ea8618ef8b0cdda89276/examples/test/text/anchors.html
-[examplescenarios]: https://a-frobot.github.io/examples/test/text/index.html
-[codescenarios]: https://github.com/chenzlabs/aframe/blob/3e8f7a85fe90b4c05857ea8618ef8b0cdda89276/examples/test/text/scenarios.html
-[examplesizes]: https://a-frobot.github.io/examples/test/text/index.html
-[codesizes]: https://github.com/chenzlabs/aframe/blob/3e8f7a85fe90b4c05857ea8618ef8b0cdda89276/examples/test/text/sizes.html
+[exampletext]: https://a-frobot.github.io/aframe/examples/test/text/index.html
+[codetext]: https://github.com/aframevr/aframe/blob/master/examples/test/text/index.html
+[exampleanchors]: https://a-frobot.github.io/aframe/examples/test/text/anchors.html
+[codeanchors]: https://github.com/aframevr/aframe/blob/master/examples/test/text/anchors.html
+[examplescenarios]: https://a-frobot.github.io/aframe/examples/test/text/scenarios.html
+[codescenarios]: https://github.com/aframevr/aframe/blob/master/examples/test/text/scenarios.html
+[examplesizes]: https://a-frobot.github.io/aframe/examples/test/text/sizes.html
+[codesizes]: https://github.com/aframevr/aframe/blob/master/examples/test/text/sizes.html
 
-[Text Example][exampletext] ([code][codetext])
-[Text Anchors][exampleanchors] ([code][codeanchors])
-[Text Scenarios][examplescenarios] ([code][codescenarios])
-[Text Sizes][examplesizes] ([code][codesizes])
+- [Text Example][exampletext] ([code][codetext])
+- [Text Anchors][exampleanchors] ([code][codeanchors])
+- [Text Scenarios][examplescenarios] ([code][codescenarios])
+- [Text Sizes][examplesizes] ([code][codesizes])
 
 Open any of these example scenes, hit **`<ctrl> + <alt> + i`** to open the
 Inspector, and play with all the possible values to see the effects instantly!
