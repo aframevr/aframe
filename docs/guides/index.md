@@ -618,7 +618,7 @@ HTML (preferably under `<a-assets>`) to play an audio file:
 ```html
 <a-scene>
   <a-assets>
-    <audio src="https://cdn.aframe.io/basis-guide/backgroundnoise.wav" autoplay
+    <audio src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay
       preload></audio>
   </a-assets>
 
@@ -633,7 +633,7 @@ the sound in our scene using `position`.
 ```html
 <a-scene>
   <!-- ... -->
-  <a-sound src="https://cdn.aframe.io/basis-guide/backgroundnoise.wav" autoplay="true"
+  <a-sound src="https://cdn.aframe.io/basic-guide/audio/backgroundnoise.wav" autoplay="true"
     position="-3 1 -4"></a-sound>
   <!-- ... -->
 </a-scene>
