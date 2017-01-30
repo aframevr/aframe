@@ -63,22 +63,63 @@ module.exports.Component = registerComponent('raycaster', {
    * Update list of objects to test for intersection.
    */
   refreshObjects: function () {
+    var children;
     var data = this.data;
     var i;
-    var objectEls;
+    var j;
+    var object;
+    var objects;
+    var objectsAreEls = !!data.objects;
 
     // Push meshes onto list of objects to intersect.
-    if (data.objects) {
-      objectEls = this.el.sceneEl.querySelectorAll(data.objects);
-      this.objects = [];
-      for (i = 0; i < objectEls.length; i++) {
-        this.objects.push(objectEls[i].object3D);
-      }
-      return;
+    // If objects not defined, intersect with everything.
+    if (objectsAreEls) {
+      objects = this.el.sceneEl.querySelectorAll(data.objects);
+    } else {
+      objects = this.el.sceneEl.object3D.children;
     }
 
-    // If objects not defined, intersect with everything.
-    this.objects = this.el.sceneEl.object3D.children;
+    this.objects = [];
+    for (i = 0; i < objects.length; i++) {
+      // If we were given elements, get the object3D.
+      object = objectsAreEls ? objects[i].object3D : objects[i];
+      // A-Frame wraps everything (e.g. in a Group) so we want children.
+      children = object.children;
+      if (children && children.length) {
+        // Add the object3D's children so non-recursive raycasting will work correctly.
+        for (j = 0; j < children.length; j++) { this.objects.push(children[j]); }
+      } else {
+        // If there aren't any children, then at least add the object3D itself;
+        // in that case, only recursive raycasting will function properly.
+        // Unhappily, this is the default case :-/
+        object.needsRefresh = true;
+        this.objects.push(object);
+      }
+    }
+  },
+
+  /**
+   * Update Groups in list of objects to test for intersection.
+   */
+  refreshGroupObjects: function () {
+    var object3D;
+    if (!this.objects) { return; }
+    for (var i = 0; i < this.objects.length; i++) {
+      object3D = this.objects[i];
+      if (!object3D.needsRefresh) { continue; }
+
+      // If the object is linked to an element and its object3D changed, use that
+      if (object3D.el && object3D.el.object3D !== object3D) {
+        object3D = object3D.el.object3D;
+      }
+
+      // If the object is a Group, and has one child, use that instead.
+      if (object3D.type === 'Group' && object3D.children.length === 1) {
+        this.objects[i] = object3D = object3D.children[0];
+        // Only do this check once (if it works).
+        object3D.needsRefresh = false;
+      }
+    }
   },
 
   /**
@@ -103,6 +144,7 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Raycast.
     this.updateOriginDirection();
+    this.refreshGroupObjects();
     intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
     // Only keep intersections against objects that have a reference to an entity.
