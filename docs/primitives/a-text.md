@@ -12,7 +12,7 @@ Wraps the [text component][text].
 ## Example
 
 ```html
-<a-text value="Hello, World!"></a-tex>
+<a-text value="Hello, World!"></a-text>
 ```
 
 ## Attributes
