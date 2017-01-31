@@ -33,15 +33,18 @@ module.exports.Component = registerComponent('raycaster', {
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.refreshObjects = bind(this.refreshObjects, this);
+    this.refreshOnceChildLoaded = bind(this.refreshOnceChildLoaded, this);
   },
 
   play: function () {
-    this.el.sceneEl.addEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.addEventListener('loaded', this.refreshObjects);
+    this.el.sceneEl.addEventListener('child-attached', this.refreshOnceChildLoaded);
     this.el.sceneEl.addEventListener('child-detached', this.refreshObjects);
   },
 
   pause: function () {
-    this.el.sceneEl.removeEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.removeEventListener('loaded', this.refreshObjects);
+    this.el.sceneEl.removeEventListener('child-attached', this.refreshOnceChildLoaded);
     this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
   },
 
@@ -57,6 +60,21 @@ module.exports.Component = registerComponent('raycaster', {
     raycaster.near = data.near;
 
     this.refreshObjects();
+  },
+
+  /**
+   * Update list of objects to test for intersection once child is loaded.
+   */
+  refreshOnceChildLoaded: function (evt) {
+    var self = this;
+    var el = evt.detail.el;
+    if (!el) { return; }
+    if (el.hasLoaded) { this.refreshObjects(); } else {
+      el.addEventListener('loaded', function nowRefresh (evt) {
+        el.removeEventListener('loaded', nowRefresh);
+        self.refreshObjects();
+      });
+    }
   },
 
   /**
@@ -89,35 +107,8 @@ module.exports.Component = registerComponent('raycaster', {
         // Add the object3D's children so non-recursive raycasting will work correctly.
         for (j = 0; j < children.length; j++) { this.objects.push(children[j]); }
       } else {
-        // If there aren't any children, then at least add the object3D itself;
-        // in that case, only recursive raycasting will function properly.
-        // Unhappily, this is the default case :-/
-        object.needsRefresh = true;
-        this.objects.push(object);
-      }
-    }
-  },
-
-  /**
-   * Update Groups in list of objects to test for intersection.
-   */
-  refreshGroupObjects: function () {
-    var object3D;
-    if (!this.objects) { return; }
-    for (var i = 0; i < this.objects.length; i++) {
-      object3D = this.objects[i];
-      if (!object3D.needsRefresh) { continue; }
-
-      // If the object is linked to an element and its object3D changed, use that
-      if (object3D.el && object3D.el.object3D !== object3D) {
-        object3D = object3D.el.object3D;
-      }
-
-      // If the object is a Group, and has one child, use that instead.
-      if (object3D.type === 'Group' && object3D.children.length === 1) {
-        this.objects[i] = object3D = object3D.children[0];
-        // Only do this check once (if it works).
-        object3D.needsRefresh = false;
+        // If there aren't any children, then until a refresh after geometry loads,
+        // raycast won't see this object... but that should happen automatically.
       }
     }
   },
@@ -144,7 +135,6 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Raycast.
     this.updateOriginDirection();
-    this.refreshGroupObjects();
     intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
     // Only keep intersections against objects that have a reference to an entity.

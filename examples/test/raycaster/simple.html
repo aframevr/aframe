@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Raycaster</title>
+    <meta name="description" content="Raycaster - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-entity camera look-controls wasd-controls raycaster="recursive: false; interval: 1000"></a-entity>
+    </a-scene>
+
+    <script>
+      var el = document.createElement('a-entity');
+      el.setAttribute('geometry', 'primitive: box');
+      el.setAttribute('material', 'color: #000');
+      el.setAttribute('position', '0 0 -2');
+      document.querySelector('a-scene').appendChild(el);
+
+      document.querySelector('a-entity[geometry]').addEventListener('raycaster-intersected', function (evt) {
+	// getting two intersection events per tick; same element, different faces...
+        console.log('raycaster-intersected ' + evt.detail.el.outerHTML);
+        this.setAttribute('material', 'color: #7f7');
+      });
+
+      document.querySelector('a-entity[geometry]').addEventListener('raycaster-intersected-cleared', function (evt) {
+	// getting two intersection events per tick; same element, different faces...
+        console.log('raycaster-intersected-cleared ' + evt.detail.el.outerHTML);
+        this.setAttribute('material', 'color: #f77');
+      });
+    </script>
+  </body>
+</html>

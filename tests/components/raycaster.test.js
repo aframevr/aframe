@@ -104,6 +104,8 @@ suite('raycaster', function () {
       var newEl = document.createElement('a-entity');
       var numObjects = el.components.raycaster.objects.length;
       var sceneEl = this.el.sceneEl;
+      // add some geometry so raycast will actually work
+      newEl.setAttribute('geometry', 'primitive: box');
       sceneEl.addEventListener('child-attached', eventuallyDoAssert);
       sceneEl.appendChild(newEl);
 
@@ -111,11 +113,9 @@ suite('raycaster', function () {
         if (newEl.hasLoaded) { doAssert(); } else { newEl.addEventListener('loaded', doAssert); }
       }
       function doAssert () {
-        // FIXME: getting 5 not equaling 2
-        // I think the extra 3 are default injection of camera and two lights
-        assert.equal(el.components.raycaster.objects.length, numObjects + 1);
         sceneEl.removeEventListener('child-attached', eventuallyDoAssert);
         newEl.removeEventListener('loaded', doAssert);
+        assert.equal(el.components.raycaster.objects.length, numObjects + 1);
         done();
       }
     });
@@ -125,6 +125,8 @@ suite('raycaster', function () {
       var newEl = document.createElement('a-entity');
       var numObjects = el.components.raycaster.objects.length;
       var sceneEl = this.el.sceneEl;
+      // add some geometry so raycast will actually work
+      newEl.setAttribute('geometry', 'primitive: box');
       sceneEl.addEventListener('child-detached', doAssert);
       sceneEl.addEventListener('child-attached', eventuallyDoRemove);
       sceneEl.appendChild(newEl);
@@ -134,8 +136,6 @@ suite('raycaster', function () {
       }
       function doRemove () { sceneEl.removeChild(newEl); }
       function doAssert () {
-        // FIXME: getting 4 not equaling 1
-        // I think the extra 3 are default injection of camera and two lights
         assert.equal(el.components.raycaster.objects.length, numObjects);
         sceneEl.removeEventListener('child-attached', eventuallyDoRemove);
         sceneEl.removeEventListener('child-detached', doAssert);
@@ -156,17 +156,15 @@ suite('raycaster', function () {
       });
 
       targetEl.setAttribute('geometry', 'primitive: box; depth: 1; height: 1; width: 1;');
-      targetEl.setAttribute('material', '');
       targetEl.setAttribute('position', '0 0 -1');
-      targetEl.addEventListener('loaded', function finishSetup () {
-        done();
-      });
       el.sceneEl.appendChild(targetEl);
+      // `npm run test:forefox` needs the timeout for the tests to succeed.
+      function finishSetup () { setTimeout(function () { done(); }, 0); }
+      if (targetEl.hasLoaded) { finishSetup(); } else { targetEl.addEventListener('loaded', finishSetup); }
     });
 
     test('can catch basic intersection', function (done) {
       this.targetEl.addEventListener('raycaster-intersected', function () { done(); });
-      this.el.sceneEl.tick();
       this.el.sceneEl.tick();
     });
 
@@ -246,14 +244,17 @@ suite('raycaster', function () {
       });
 
       targetEl.setAttribute('geometry', 'primitive: box; depth: 1; height: 1; width: 1;');
-      targetEl.setAttribute('material', '');
       targetEl.setAttribute('position', '0 0 -1');
-      targetEl.addEventListener('loaded', function finishSetup () {
-        // The object to check raycast against should reference the entity.
-        assert.equal(targetEl, targetEl.object3D.children[0].el);
-        done();
-      });
       el.sceneEl.appendChild(targetEl);
+      // `npm run test:forefox` needs the timeout for the tests to succeed.
+      function finishSetup () {
+        setTimeout(function () {
+          // The object to check raycast against should reference the entity.
+          assert.equal(targetEl, targetEl.object3D.children[0].el);
+          done();
+        }, 0);
+      }
+      if (targetEl.hasLoaded) { finishSetup(); } else { targetEl.addEventListener('loaded', finishSetup); }
     });
 
     test('can catch basic intersection', function (done) {
