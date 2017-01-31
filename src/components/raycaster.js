@@ -95,6 +95,9 @@ module.exports.Component = registerComponent('raycaster', {
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
 
+    // Update check time.
+    this.prevCheckTime = time;
+
     // Store old previously intersected entities.
     prevIntersectedEls = this.intersectedEls.slice();
 
