@@ -1,0 +1,5201 @@
+{
+    "accessors": {
+        "IBM_Poser_scene_root_Figure_2_node-skin": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 18,
+            "type": "MAT4"
+        },
+        "accessor_1281": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 0,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2778,
+            "type": "SCALAR"
+        },
+        "accessor_1284": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 5556,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 5928,
+            "type": "SCALAR"
+        },
+        "accessor_1287": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 17412,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1134,
+            "type": "SCALAR"
+        },
+        "accessor_1290": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 19680,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 6240,
+            "type": "SCALAR"
+        },
+        "accessor_1293": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 32160,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 312,
+            "type": "SCALAR"
+        },
+        "accessor_1296": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 32784,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1512,
+            "type": "SCALAR"
+        },
+        "accessor_1299": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 35808,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 4740,
+            "type": "SCALAR"
+        },
+        "accessor_1302": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 45288,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 912,
+            "type": "SCALAR"
+        },
+        "accessor_1305": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 47112,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 216,
+            "type": "SCALAR"
+        },
+        "accessor_1308": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 47544,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2136,
+            "type": "SCALAR"
+        },
+        "accessor_1311": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 51816,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3696,
+            "type": "SCALAR"
+        },
+        "accessor_1314": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 59208,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2286,
+            "type": "SCALAR"
+        },
+        "accessor_1317": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 63780,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2160,
+            "type": "SCALAR"
+        },
+        "accessor_1320": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 68100,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2400,
+            "type": "SCALAR"
+        },
+        "accessor_1323": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 72900,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 192,
+            "type": "SCALAR"
+        },
+        "accessor_1326": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 73284,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2772,
+            "type": "SCALAR"
+        },
+        "accessor_1329": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 78828,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 312,
+            "type": "SCALAR"
+        },
+        "accessor_1332": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 79452,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2280,
+            "type": "SCALAR"
+        },
+        "accessor_1335": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 84012,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1680,
+            "type": "SCALAR"
+        },
+        "accessor_1338": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 87372,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1080,
+            "type": "SCALAR"
+        },
+        "accessor_1341": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 89532,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1296,
+            "type": "SCALAR"
+        },
+        "accessor_1344": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 92124,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3456,
+            "type": "SCALAR"
+        },
+        "accessor_1347": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 99036,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 6996,
+            "type": "SCALAR"
+        },
+        "accessor_1350": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 113028,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 9018,
+            "type": "SCALAR"
+        },
+        "accessor_1352": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 0,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                1.16252,
+                0.183102,
+                1.70408
+            ],
+            "min": [
+                -0.709078,
+                -0.25572,
+                -0.000540296
+            ],
+            "type": "VEC3"
+        },
+        "accessor_1354": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 786384,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": "VEC3"
+        },
+        "accessor_1358": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 2621280,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "accessor_1360": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 1572768,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                17,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                0,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "accessor_1594": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 131064,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 435,
+            "type": "SCALAR"
+        },
+        "accessor_1607": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 131934,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 7077,
+            "type": "SCALAR"
+        },
+        "accessor_1620": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 146088,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 19842,
+            "type": "SCALAR"
+        },
+        "accessor_1633": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 185772,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 8064,
+            "type": "SCALAR"
+        },
+        "accessor_1646": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 201900,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 5736,
+            "type": "SCALAR"
+        },
+        "accessor_1659": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 213372,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3318,
+            "type": "SCALAR"
+        },
+        "accessor_1672": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 220008,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2928,
+            "type": "SCALAR"
+        },
+        "accessor_1685": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 225864,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1584,
+            "type": "SCALAR"
+        },
+        "accessor_1698": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 229032,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 7209,
+            "type": "SCALAR"
+        },
+        "accessor_1711": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 243450,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3531,
+            "type": "SCALAR"
+        },
+        "accessor_1724": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 250512,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1344,
+            "type": "SCALAR"
+        },
+        "accessor_1737": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 253200,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 4464,
+            "type": "SCALAR"
+        },
+        "accessor_1739": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 3669792,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                0.93961,
+                0.341388,
+                1.71747
+            ],
+            "min": [
+                -1.07043,
+                -0.192558,
+                1.00563
+            ],
+            "type": "VEC3"
+        },
+        "accessor_1741": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 4456176,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": "VEC3"
+        },
+        "accessor_1745": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 6291072,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "accessor_1747": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 5242560,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 65532,
+            "max": [
+                6,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "accessor_2091": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 262128,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 942,
+            "type": "SCALAR"
+        },
+        "accessor_2104": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 264012,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1098,
+            "type": "SCALAR"
+        },
+        "accessor_2117": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 266208,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 954,
+            "type": "SCALAR"
+        },
+        "accessor_2130": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 268116,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1842,
+            "type": "SCALAR"
+        },
+        "accessor_2143": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 271800,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1260,
+            "type": "SCALAR"
+        },
+        "accessor_2156": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 274320,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 471,
+            "type": "SCALAR"
+        },
+        "accessor_2169": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 275262,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 5925,
+            "type": "SCALAR"
+        },
+        "accessor_2182": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 287112,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 1482,
+            "type": "SCALAR"
+        },
+        "accessor_2195": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 290076,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 8688,
+            "type": "SCALAR"
+        },
+        "accessor_2208": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 307452,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 768,
+            "type": "SCALAR"
+        },
+        "accessor_2221": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 308988,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 294,
+            "type": "SCALAR"
+        },
+        "accessor_2234": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 309576,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 2286,
+            "type": "SCALAR"
+        },
+        "accessor_2247": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 314148,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 231,
+            "type": "SCALAR"
+        },
+        "accessor_2260": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 314610,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 249,
+            "type": "SCALAR"
+        },
+        "accessor_2273": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 315108,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 132,
+            "type": "SCALAR"
+        },
+        "accessor_2286": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 315372,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 903,
+            "type": "SCALAR"
+        },
+        "accessor_2299": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 317178,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 4497,
+            "type": "SCALAR"
+        },
+        "accessor_2312": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 326172,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 480,
+            "type": "SCALAR"
+        },
+        "accessor_2325": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 327132,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 426,
+            "type": "SCALAR"
+        },
+        "accessor_2338": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 327984,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3156,
+            "type": "SCALAR"
+        },
+        "accessor_2351": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 334296,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 4626,
+            "type": "SCALAR"
+        },
+        "accessor_2364": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 343548,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 8925,
+            "type": "SCALAR"
+        },
+        "accessor_2377": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 361398,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 3069,
+            "type": "SCALAR"
+        },
+        "accessor_2390": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 367536,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 576,
+            "type": "SCALAR"
+        },
+        "accessor_2403": {
+            "bufferView": "bufferView_2415",
+            "byteOffset": 368688,
+            "byteStride": 0,
+            "componentType": 5123,
+            "count": 654,
+            "type": "SCALAR"
+        },
+        "accessor_2405": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 7339584,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 53934,
+            "max": [
+                1.05821,
+                0.216116,
+                1.83436
+            ],
+            "min": [
+                -1.25214,
+                -0.161801,
+                1.01051
+            ],
+            "type": "VEC3"
+        },
+        "accessor_2407": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 7986792,
+            "byteStride": 12,
+            "componentType": 5126,
+            "count": 53934,
+            "max": [
+                1,
+                1,
+                1
+            ],
+            "min": [
+                -1,
+                -1,
+                -1
+            ],
+            "type": "VEC3"
+        },
+        "accessor_2411": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 9496944,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 53934,
+            "max": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "accessor_2413": {
+            "bufferView": "bufferView_2416",
+            "byteOffset": 8634000,
+            "byteStride": 16,
+            "componentType": 5126,
+            "count": 53934,
+            "max": [
+                6,
+                0,
+                0,
+                0
+            ],
+            "min": [
+                1,
+                0,
+                0,
+                0
+            ],
+            "type": "VEC4"
+        },
+        "animAccessor_0": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 1152,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "SCALAR"
+        },
+        "animAccessor_1": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 6388,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_10": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 163468,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_11": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 179176,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_12": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 194884,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_13": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 215828,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_14": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 231536,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_15": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 247244,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_16": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 268188,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_17": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 283896,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_18": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 299604,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_19": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 320548,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_2": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 22096,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_20": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 336256,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_21": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 351964,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_22": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 372908,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_23": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 388616,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_24": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 404324,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_25": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 425268,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_26": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 440976,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_27": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 456684,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_28": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 477628,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_29": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 493336,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_3": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 37804,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_30": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 509044,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_31": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 529988,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_32": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 545696,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_33": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 561404,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_34": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 582348,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_35": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 598056,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_36": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 613764,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_37": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 634708,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_38": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 650416,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_39": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 666124,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_4": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 58748,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_40": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 687068,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_41": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 702776,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_42": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 718484,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_43": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 739428,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_44": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 755136,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_45": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 770844,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_46": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 791788,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_47": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 807496,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_48": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 823204,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_49": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 844148,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_5": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 74456,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_50": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 859856,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_51": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 875564,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_52": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 896508,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_53": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 912216,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_54": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 927924,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_55": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 948868,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_56": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 964576,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_57": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 980284,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_6": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 90164,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        },
+        "animAccessor_7": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 111108,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_8": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 126816,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC3"
+        },
+        "animAccessor_9": {
+            "bufferView": "bufferView_2414",
+            "byteOffset": 142524,
+            "componentType": 5126,
+            "count": 1309,
+            "type": "VEC4"
+        }
+    },
+    "animations": {
+        "animation_0": {
+            "channels": [
+                {
+                    "sampler": "animation_0_scale_sampler",
+                    "target": {
+                        "id": "Body",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_0_translation_sampler",
+                    "target": {
+                        "id": "Body",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_0_rotation_sampler",
+                    "target": {
+                        "id": "Body",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_3",
+                "scale": "animAccessor_1",
+                "translation": "animAccessor_2"
+            },
+            "samplers": {
+                "animation_0_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_0_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_0_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_1": {
+            "channels": [
+                {
+                    "sampler": "animation_1_scale_sampler",
+                    "target": {
+                        "id": "Hip",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_1_translation_sampler",
+                    "target": {
+                        "id": "Hip",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_1_rotation_sampler",
+                    "target": {
+                        "id": "Hip",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_6",
+                "scale": "animAccessor_4",
+                "translation": "animAccessor_5"
+            },
+            "samplers": {
+                "animation_1_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_1_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_1_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_10": {
+            "channels": [
+                {
+                    "sampler": "animation_10_scale_sampler",
+                    "target": {
+                        "id": "lThumb1",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_10_translation_sampler",
+                    "target": {
+                        "id": "lThumb1",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_10_rotation_sampler",
+                    "target": {
+                        "id": "lThumb1",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_9",
+                "scale": "animAccessor_7",
+                "translation": "animAccessor_8"
+            },
+            "samplers": {
+                "animation_10_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_10_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_10_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_11": {
+            "channels": [
+                {
+                    "sampler": "animation_11_scale_sampler",
+                    "target": {
+                        "id": "Right_Thigh",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_11_translation_sampler",
+                    "target": {
+                        "id": "Right_Thigh",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_11_rotation_sampler",
+                    "target": {
+                        "id": "Right_Thigh",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_12",
+                "scale": "animAccessor_10",
+                "translation": "animAccessor_11"
+            },
+            "samplers": {
+                "animation_11_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_11_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_11_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_12": {
+            "channels": [
+                {
+                    "sampler": "animation_12_scale_sampler",
+                    "target": {
+                        "id": "Right_Shin",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_12_translation_sampler",
+                    "target": {
+                        "id": "Right_Shin",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_12_rotation_sampler",
+                    "target": {
+                        "id": "Right_Shin",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_15",
+                "scale": "animAccessor_13",
+                "translation": "animAccessor_14"
+            },
+            "samplers": {
+                "animation_12_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_12_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_12_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_13": {
+            "channels": [
+                {
+                    "sampler": "animation_13_scale_sampler",
+                    "target": {
+                        "id": "Right_Foot",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_13_translation_sampler",
+                    "target": {
+                        "id": "Right_Foot",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_13_rotation_sampler",
+                    "target": {
+                        "id": "Right_Foot",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_18",
+                "scale": "animAccessor_16",
+                "translation": "animAccessor_17"
+            },
+            "samplers": {
+                "animation_13_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_13_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_13_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_14": {
+            "channels": [
+                {
+                    "sampler": "animation_14_scale_sampler",
+                    "target": {
+                        "id": "rToe",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_14_translation_sampler",
+                    "target": {
+                        "id": "rToe",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_14_rotation_sampler",
+                    "target": {
+                        "id": "rToe",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_21",
+                "scale": "animAccessor_19",
+                "translation": "animAccessor_20"
+            },
+            "samplers": {
+                "animation_14_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_14_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_14_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_15": {
+            "channels": [
+                {
+                    "sampler": "animation_15_scale_sampler",
+                    "target": {
+                        "id": "Left_Thigh",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_15_translation_sampler",
+                    "target": {
+                        "id": "Left_Thigh",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_15_rotation_sampler",
+                    "target": {
+                        "id": "Left_Thigh",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_24",
+                "scale": "animAccessor_22",
+                "translation": "animAccessor_23"
+            },
+            "samplers": {
+                "animation_15_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_15_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_15_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_16": {
+            "channels": [
+                {
+                    "sampler": "animation_16_scale_sampler",
+                    "target": {
+                        "id": "Left_Shin",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_16_translation_sampler",
+                    "target": {
+                        "id": "Left_Shin",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_16_rotation_sampler",
+                    "target": {
+                        "id": "Left_Shin",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_27",
+                "scale": "animAccessor_25",
+                "translation": "animAccessor_26"
+            },
+            "samplers": {
+                "animation_16_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_16_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_16_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_17": {
+            "channels": [
+                {
+                    "sampler": "animation_17_scale_sampler",
+                    "target": {
+                        "id": "Left_Foot",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_17_translation_sampler",
+                    "target": {
+                        "id": "Left_Foot",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_17_rotation_sampler",
+                    "target": {
+                        "id": "Left_Foot",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_30",
+                "scale": "animAccessor_28",
+                "translation": "animAccessor_29"
+            },
+            "samplers": {
+                "animation_17_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_17_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_17_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_18": {
+            "channels": [
+                {
+                    "sampler": "animation_18_scale_sampler",
+                    "target": {
+                        "id": "lToe",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_18_translation_sampler",
+                    "target": {
+                        "id": "lToe",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_18_rotation_sampler",
+                    "target": {
+                        "id": "lToe",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_33",
+                "scale": "animAccessor_31",
+                "translation": "animAccessor_32"
+            },
+            "samplers": {
+                "animation_18_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_18_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_18_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_2": {
+            "channels": [
+                {
+                    "sampler": "animation_2_scale_sampler",
+                    "target": {
+                        "id": "Chest",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_2_translation_sampler",
+                    "target": {
+                        "id": "Chest",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_2_rotation_sampler",
+                    "target": {
+                        "id": "Chest",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_36",
+                "scale": "animAccessor_34",
+                "translation": "animAccessor_35"
+            },
+            "samplers": {
+                "animation_2_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_2_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_2_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_3": {
+            "channels": [
+                {
+                    "sampler": "animation_3_scale_sampler",
+                    "target": {
+                        "id": "Head",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_3_translation_sampler",
+                    "target": {
+                        "id": "Head",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_3_rotation_sampler",
+                    "target": {
+                        "id": "Head",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_39",
+                "scale": "animAccessor_37",
+                "translation": "animAccessor_38"
+            },
+            "samplers": {
+                "animation_3_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_3_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_3_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_4": {
+            "channels": [
+                {
+                    "sampler": "animation_4_scale_sampler",
+                    "target": {
+                        "id": "Right_Shoulder",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_4_translation_sampler",
+                    "target": {
+                        "id": "Right_Shoulder",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_4_rotation_sampler",
+                    "target": {
+                        "id": "Right_Shoulder",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_42",
+                "scale": "animAccessor_40",
+                "translation": "animAccessor_41"
+            },
+            "samplers": {
+                "animation_4_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_4_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_4_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_5": {
+            "channels": [
+                {
+                    "sampler": "animation_5_scale_sampler",
+                    "target": {
+                        "id": "Right_Forearm",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_5_translation_sampler",
+                    "target": {
+                        "id": "Right_Forearm",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_5_rotation_sampler",
+                    "target": {
+                        "id": "Right_Forearm",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_45",
+                "scale": "animAccessor_43",
+                "translation": "animAccessor_44"
+            },
+            "samplers": {
+                "animation_5_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_5_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_5_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_6": {
+            "channels": [
+                {
+                    "sampler": "animation_6_scale_sampler",
+                    "target": {
+                        "id": "Left_Shoulder",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_6_translation_sampler",
+                    "target": {
+                        "id": "Left_Shoulder",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_6_rotation_sampler",
+                    "target": {
+                        "id": "Left_Shoulder",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_48",
+                "scale": "animAccessor_46",
+                "translation": "animAccessor_47"
+            },
+            "samplers": {
+                "animation_6_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_6_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_6_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_7": {
+            "channels": [
+                {
+                    "sampler": "animation_7_scale_sampler",
+                    "target": {
+                        "id": "Left_Forearm",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_7_translation_sampler",
+                    "target": {
+                        "id": "Left_Forearm",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_7_rotation_sampler",
+                    "target": {
+                        "id": "Left_Forearm",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_51",
+                "scale": "animAccessor_49",
+                "translation": "animAccessor_50"
+            },
+            "samplers": {
+                "animation_7_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_7_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_7_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_8": {
+            "channels": [
+                {
+                    "sampler": "animation_8_scale_sampler",
+                    "target": {
+                        "id": "lMid1",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_8_translation_sampler",
+                    "target": {
+                        "id": "lMid1",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_8_rotation_sampler",
+                    "target": {
+                        "id": "lMid1",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_54",
+                "scale": "animAccessor_52",
+                "translation": "animAccessor_53"
+            },
+            "samplers": {
+                "animation_8_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_8_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_8_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        },
+        "animation_9": {
+            "channels": [
+                {
+                    "sampler": "animation_9_scale_sampler",
+                    "target": {
+                        "id": "lPinky1",
+                        "path": "scale"
+                    }
+                },
+                {
+                    "sampler": "animation_9_translation_sampler",
+                    "target": {
+                        "id": "lPinky1",
+                        "path": "translation"
+                    }
+                },
+                {
+                    "sampler": "animation_9_rotation_sampler",
+                    "target": {
+                        "id": "lPinky1",
+                        "path": "rotation"
+                    }
+                }
+            ],
+            "parameters": {
+                "TIME": "animAccessor_0",
+                "rotation": "animAccessor_57",
+                "scale": "animAccessor_55",
+                "translation": "animAccessor_56"
+            },
+            "samplers": {
+                "animation_9_rotation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "rotation"
+                },
+                "animation_9_scale_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "scale"
+                },
+                "animation_9_translation_sampler": {
+                    "input": "TIME",
+                    "interpolation": "LINEAR",
+                    "output": "translation"
+                }
+            }
+        }
+    },
+    "asset": {
+        "generator": "collada2gltf@027f74366341d569dea42e9a68b7104cc3892054",
+        "premultipliedAlpha": true,
+        "profile": {
+            "api": "WebGL",
+            "version": "1.0.2"
+        },
+        "version": "1.0"
+    },
+    "bufferViews": {
+        "bufferView_2414": {
+            "buffer": "BrainStem",
+            "byteLength": 1001228,
+            "byteOffset": 0
+        },
+        "bufferView_2415": {
+            "buffer": "BrainStem",
+            "byteLength": 369996,
+            "byteOffset": 1001228,
+            "target": 34963
+        },
+        "bufferView_2416": {
+            "buffer": "BrainStem",
+            "byteLength": 10359888,
+            "byteOffset": 1371224,
+            "target": 34962
+        }
+    },
+    "buffers": {
+        "BrainStem": {
+            "byteLength": 11731112,
+            "type": "arraybuffer",
+            "uri": "BrainStem.bin"
+        }
+    },
+    "materials": {
+        "Stem-effect": {
+            "name": "Stem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.541176,
+                    0.541176,
+                    0.541176,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "TubeStem-effect": {
+            "name": "TubeStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.0784314,
+                    0.184314,
+                    0.207843,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "ankleBracketStem-effect": {
+            "name": "ankleBracketStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.482353,
+                    0.435294,
+                    0.360784,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "ankleStem-effect": {
+            "name": "ankleStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "armBoltStem-effect": {
+            "name": "armBoltStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.2,
+                    0.2,
+                    0.2,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "armFilletStem-effect": {
+            "name": "armFilletStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "armPlateStem-effect": {
+            "name": "armPlateStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.509804,
+                    0.458824,
+                    0.376471,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "armTrussStem-effect": {
+            "name": "armTrussStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.513726,
+                    0.454902,
+                    0.372549,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "bStem-effect": {
+            "name": "bStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.0196078,
+                    0.164706,
+                    0.2,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "barStem-effect": {
+            "name": "barStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0,
+                    0.192157,
+                    0.243137,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "barrel1Stem-effect": {
+            "name": "barrel1Stem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.352941,
+                    0.352941,
+                    0.352941,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "barrel2Stem-effect": {
+            "name": "barrel2Stem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.12549,
+                    0.12549,
+                    0.12549,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "bayonetStem-effect": {
+            "name": "bayonetStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.988235,
+                    0.988235,
+                    0.988235,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "boltStem-effect": {
+            "name": "boltStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.290196,
+                    0.290196,
+                    0.290196,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174991,
+                    0.174991,
+                    0.174991,
+                    1
+                ]
+            }
+        },
+        "bracketStem-effect": {
+            "name": "bracketStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.384314,
+                    0.34902,
+                    0.282353,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "calfCoverStem-effect": {
+            "name": "calfCoverStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.356863,
+                    0.32549,
+                    0.278431,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "calfStem-effect": {
+            "name": "calfStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.682353,
+                    0.635294,
+                    0.533333,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "canInnerStem-effect": {
+            "name": "canInnerStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.360784,
+                    0.360784,
+                    0.360784,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "canisterInStem-effect": {
+            "name": "canisterInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.498039,
+                    0.498039,
+                    0.498039,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "canisterOutStem-effect": {
+            "name": "canisterOutStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.537255,
+                    0.537255,
+                    0.537255,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "componentStem-effect": {
+            "name": "componentStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.521569,
+                    0.462745,
+                    0.376471,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "componentsStem-effect": {
+            "name": "componentsStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.745098,
+                    0.45098,
+                    0,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174991,
+                    0.174991,
+                    0.174991,
+                    1
+                ]
+            }
+        },
+        "coverStem-effect": {
+            "name": "coverStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.482353,
+                    0.435294,
+                    0.360784,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.25,
+                    0.25,
+                    0.25,
+                    1
+                ]
+            }
+        },
+        "discInStem-effect": {
+            "name": "discInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.462745,
+                    0.407843,
+                    0.329412,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "discStem-effect": {
+            "name": "discStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.188235,
+                    0.156863,
+                    0.121569,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "exhaustGunStem-effect": {
+            "name": "exhaustGunStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.505882,
+                    0.505882,
+                    0.505882,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "eyeRimStem-effect": {
+            "name": "eyeRimStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "eyeStem-effect": {
+            "name": "eyeStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.988235,
+                    0.988235,
+                    0.988235,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.25,
+                    0.25,
+                    0.25,
+                    1
+                ]
+            }
+        },
+        "filletStem-effect": {
+            "name": "filletStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.988235,
+                    0.988235,
+                    0.988235,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "filterInStem-effect": {
+            "name": "filterInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.359991,
+                    0.359991,
+                    0.359991,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "filterOutStem-effect": {
+            "name": "filterOutStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.419608,
+                    0.419608,
+                    0.411765,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "footFlangeStem-effect": {
+            "name": "footFlangeStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.968628,
+                    0.968628,
+                    0.968628,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "footStem-effect": {
+            "name": "footStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.0196078,
+                    0.145098,
+                    0.176471,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "frameInStem-effect": {
+            "name": "frameInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.168627,
+                    0.141176,
+                    0.109804,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.17451,
+                    0.17451,
+                    0.17451,
+                    1
+                ]
+            }
+        },
+        "headCaseStem-effect": {
+            "name": "headCaseStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.862745,
+                    0.65098,
+                    0.243137,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "headFilletStem-effect": {
+            "name": "headFilletStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.254902,
+                    0.254902,
+                    0.254902,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "headGrillStem-effect": {
+            "name": "headGrillStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.709804,
+                    0.541176,
+                    0.254902,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "headHornStem-effect": {
+            "name": "headHornStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.827451,
+                    0.517647,
+                    0.0627451,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "hexStem-effect": {
+            "name": "hexStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.243137,
+                    0.196078,
+                    0.156863,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "hipSphereStem-effect": {
+            "name": "hipSphereStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.262745,
+                    0.262745,
+                    0.262745,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "intestineInStem-effect": {
+            "name": "intestineInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.207294,
+                    0.19881,
+                    0.709987,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "intestineOutStem-effect": {
+            "name": "intestineOutStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.431373,
+                    0.2,
+                    0,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "knee2Stem-effect": {
+            "name": "knee2Stem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "kneeGuardStem-effect": {
+            "name": "kneeGuardStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.498039,
+                    0.45098,
+                    0.380392,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "kneeStem-effect": {
+            "name": "kneeStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.482353,
+                    0.435294,
+                    0.360784,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "neckSinkStem-effect": {
+            "name": "neckSinkStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.917647,
+                    0.686275,
+                    0.270588,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "off-effect": {
+            "name": "off",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.670588,
+                    0.407843,
+                    0.0588235,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "pinStem-effect": {
+            "name": "pinStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.268193,
+                    0.258503,
+                    0.549996,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "pipeStem-effect": {
+            "name": "pipeStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.454902,
+                    0.219608,
+                    0.0196078,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "plugStem-effect": {
+            "name": "plugStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.458824,
+                    0.458824,
+                    0.458824,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "radiatorStem-effect": {
+            "name": "radiatorStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.764706,
+                    0.486275,
+                    0.0784314,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "rpgStem-effect": {
+            "name": "rpgStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "shockInStem-effect": {
+            "name": "shockInStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0,
+                    0.482353,
+                    0.870588,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        },
+        "shockOutStem-effect": {
+            "name": "shockOutStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0,
+                    0.266667,
+                    0.337255,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "shoulderBStem-effect": {
+            "name": "shoulderBStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.0235294,
+                    0.117647,
+                    0.141176,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "shoulderPodStem-effect": {
+            "name": "shoulderPodStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.175,
+                    0.175,
+                    0.175,
+                    1
+                ]
+            }
+        },
+        "skeletonStem-effect": {
+            "name": "skeletonStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0,
+                    0.270588,
+                    0.243137,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174975,
+                    0.174975,
+                    0.174975,
+                    1
+                ]
+            }
+        },
+        "thighPadStem-effect": {
+            "name": "thighPadStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.498039,
+                    0.45098,
+                    0.380392,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174998,
+                    0.174998,
+                    0.174998,
+                    1
+                ]
+            }
+        },
+        "thighStem-effect": {
+            "name": "thighStem",
+            "technique": "technique0",
+            "values": {
+                "ambient": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "diffuse": [
+                    0.898039,
+                    0.898039,
+                    0.898039,
+                    1
+                ],
+                "emission": [
+                    0,
+                    0,
+                    0,
+                    1
+                ],
+                "specular": [
+                    0.174994,
+                    0.174994,
+                    0.174994,
+                    1
+                ]
+            }
+        }
+    },
+    "meshes": {
+        "Figure_2_geometry-mesh": {
+            "name": "Figure_2_geometry",
+            "primitives": [
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1281",
+                    "material": "frameInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1284",
+                    "material": "componentsStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1287",
+                    "material": "Stem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1290",
+                    "material": "footStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1293",
+                    "material": "footFlangeStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1296",
+                    "material": "kneeStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1299",
+                    "material": "hipSphereStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1302",
+                    "material": "filletStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1305",
+                    "material": "thighStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1308",
+                    "material": "thighPadStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1311",
+                    "material": "plugStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1314",
+                    "material": "discInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1317",
+                    "material": "TubeStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1320",
+                    "material": "componentStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1323",
+                    "material": "hexStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1326",
+                    "material": "kneeGuardStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1329",
+                    "material": "calfStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1332",
+                    "material": "ankleBracketStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1335",
+                    "material": "ankleStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1338",
+                    "material": "calfCoverStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1341",
+                    "material": "knee2Stem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1344",
+                    "material": "skeletonStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1347",
+                    "material": "bracketStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1360",
+                        "NORMAL": "accessor_1354",
+                        "POSITION": "accessor_1352",
+                        "WEIGHT": "accessor_1358"
+                    },
+                    "indices": "accessor_1350",
+                    "material": "coverStem-effect",
+                    "mode": 4
+                }
+            ]
+        },
+        "Figure_2_geometry-meshsplit_0": {
+            "name": "Figure_2_geometry1",
+            "primitives": [
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1594",
+                    "material": "coverStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1607",
+                    "material": "barStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1620",
+                    "material": "intestineOutStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1633",
+                    "material": "neckSinkStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1646",
+                    "material": "shockOutStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1659",
+                    "material": "shockInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1672",
+                    "material": "discStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1685",
+                    "material": "canisterInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1698",
+                    "material": "canisterOutStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1711",
+                    "material": "canInnerStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1724",
+                    "material": "pipeStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_1747",
+                        "NORMAL": "accessor_1741",
+                        "POSITION": "accessor_1739",
+                        "WEIGHT": "accessor_1745"
+                    },
+                    "indices": "accessor_1737",
+                    "material": "off-effect",
+                    "mode": 4
+                }
+            ]
+        },
+        "Figure_2_geometry-meshsplit_1": {
+            "name": "Figure_2_geometry2",
+            "primitives": [
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2091",
+                    "material": "off-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2104",
+                    "material": "boltStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2117",
+                    "material": "intestineInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2130",
+                    "material": "armPlateStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2143",
+                    "material": "shoulderPodStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2156",
+                    "material": "armFilletStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2169",
+                    "material": "bStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2182",
+                    "material": "armBoltStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2195",
+                    "material": "shoulderBStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2208",
+                    "material": "armTrussStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2221",
+                    "material": "pinStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2234",
+                    "material": "radiatorStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2247",
+                    "material": "rpgStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2260",
+                    "material": "bayonetStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2273",
+                    "material": "barrel2Stem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2286",
+                    "material": "barrel1Stem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2299",
+                    "material": "filterOutStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2312",
+                    "material": "filterInStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2325",
+                    "material": "exhaustGunStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2338",
+                    "material": "headFilletStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2351",
+                    "material": "headCaseStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2364",
+                    "material": "headGrillStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2377",
+                    "material": "headHornStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2390",
+                    "material": "eyeStem-effect",
+                    "mode": 4
+                },
+                {
+                    "attributes": {
+                        "JOINT": "accessor_2413",
+                        "NORMAL": "accessor_2407",
+                        "POSITION": "accessor_2405",
+                        "WEIGHT": "accessor_2411"
+                    },
+                    "indices": "accessor_2403",
+                    "material": "eyeRimStem-effect",
+                    "mode": 4
+                }
+            ]
+        }
+    },
+    "nodes": {
+        "Body": {
+            "children": [
+                "Hip"
+            ],
+            "jointName": "Body",
+            "name": "Body",
+            "rotation": [
+                0.707107,
+                -0.00048056,
+                -0.000480561,
+                0.707107
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0,
+                0,
+                0
+            ]
+        },
+        "Chest": {
+            "children": [
+                "Head",
+                "Right_Shoulder",
+                "Left_Shoulder"
+            ],
+            "jointName": "Chest",
+            "name": "Chest",
+            "rotation": [
+                1.69284e-008,
+                1.16416e-010,
+                0,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                -5.49282e-012,
+                0.107472,
+                -0.0235915
+            ]
+        },
+        "Figure_2_node": {
+            "children": [],
+            "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "meshes": [
+                "Figure_2_geometry-mesh",
+                "Figure_2_geometry-meshsplit_0",
+                "Figure_2_geometry-meshsplit_1"
+            ],
+            "name": "Figure_2_node",
+            "skeletons": [
+                "Body"
+            ],
+            "skin": "Poser_scene_root_Figure_2_node-skin"
+        },
+        "Head": {
+            "children": [],
+            "jointName": "Head",
+            "name": "Head",
+            "rotation": [
+                -1.66284e-008,
+                0,
+                0,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0,
+                0.524256,
+                -0.0157277
+            ]
+        },
+        "Hip": {
+            "children": [
+                "Chest",
+                "Right_Thigh",
+                "Left_Thigh"
+            ],
+            "jointName": "Hip",
+            "name": "Hip",
+            "rotation": [
+                -1.42109e-014,
+                0.000679615,
+                0,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0,
+                0.914827,
+                0
+            ]
+        },
+        "Left_Foot": {
+            "children": [
+                "lToe"
+            ],
+            "jointName": "Left_Foot",
+            "name": "Left_Foot",
+            "rotation": [
+                -0.455043,
+                0.161508,
+                0.0766779,
+                0.872337
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                -7.45058e-009,
+                0.396897,
+                -5.58794e-009
+            ]
+        },
+        "Left_Forearm": {
+            "children": [
+                "lMid1",
+                "lPinky1",
+                "lThumb1"
+            ],
+            "jointName": "Left_Forearm",
+            "name": "Left_Forearm",
+            "rotation": [
+                0.00977802,
+                4.71648e-007,
+                0.692072,
+                0.721762
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                1.19209e-007,
+                0.185723,
+                2.79397e-009
+            ]
+        },
+        "Left_Shin": {
+            "children": [
+                "Left_Foot"
+            ],
+            "jointName": "Left_Shin",
+            "name": "Left_Shin",
+            "rotation": [
+                -0.0262006,
+                0.528301,
+                -0.015088,
+                0.848519
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                -7.45058e-009,
+                0.358618,
+                0
+            ]
+        },
+        "Left_Shoulder": {
+            "children": [
+                "Left_Forearm"
+            ],
+            "jointName": "Left_Shoulder",
+            "name": "Left_Shoulder",
+            "rotation": [
+                -0.00977804,
+                -4.90602e-007,
+                -0.692072,
+                0.721762
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0.419405,
+                0.340767,
+                -0.0131064
+            ]
+        },
+        "Left_Thigh": {
+            "children": [
+                "Left_Shin"
+            ],
+            "jointName": "Left_Thigh",
+            "name": "Left_Thigh",
+            "rotation": [
+                0.738841,
+                -6.59991e-008,
+                -0.671679,
+                -0.0544113
+            ],
+            "scale": [
+                1.00001,
+                1,
+                1.00001
+            ],
+            "translation": [
+                0.141549,
+                -0.0393192,
+                -1.22864e-008
+            ]
+        },
+        "Poser_scene_root": {
+            "children": [
+                "Body"
+            ],
+            "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "name": "Poser_scene_root"
+        },
+        "Right_Foot": {
+            "children": [
+                "rToe"
+            ],
+            "jointName": "Right_Foot",
+            "name": "Right_Foot",
+            "rotation": [
+                -0.455043,
+                -0.161508,
+                -0.0766779,
+                0.872337
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                7.45058e-009,
+                0.396897,
+                -5.58794e-009
+            ]
+        },
+        "Right_Forearm": {
+            "children": [],
+            "jointName": "Right_Forearm",
+            "name": "Right_Forearm",
+            "rotation": [
+                0.00934914,
+                -3.37382e-008,
+                -0.682458,
+                0.730865
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                1.19209e-007,
+                0.19182,
+                9.31323e-010
+            ]
+        },
+        "Right_Shin": {
+            "children": [
+                "Right_Foot"
+            ],
+            "jointName": "Right_Shin",
+            "name": "Right_Shin",
+            "rotation": [
+                -0.0262006,
+                -0.528301,
+                0.015088,
+                0.848519
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                7.45058e-009,
+                0.358618,
+                0
+            ]
+        },
+        "Right_Shoulder": {
+            "children": [
+                "Right_Forearm"
+            ],
+            "jointName": "Right_Shoulder",
+            "name": "Right_Shoulder",
+            "rotation": [
+                -0.00934915,
+                4.46241e-008,
+                0.682458,
+                0.730865
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                -0.419405,
+                0.340766,
+                -0.0131063
+            ]
+        },
+        "Right_Thigh": {
+            "children": [
+                "Right_Shin"
+            ],
+            "jointName": "Right_Thigh",
+            "name": "Right_Thigh",
+            "rotation": [
+                0.738841,
+                6.59991e-008,
+                0.671679,
+                -0.0544113
+            ],
+            "scale": [
+                1.00001,
+                1,
+                1.00001
+            ],
+            "translation": [
+                -0.141549,
+                -0.0393192,
+                -1.22205e-008
+            ]
+        },
+        "lMid1": {
+            "children": [],
+            "jointName": "lMid1",
+            "name": "lMid1",
+            "rotation": [
+                0,
+                0,
+                3.16505e-010,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0.409489,
+                0.00270677,
+                0.0157277
+            ]
+        },
+        "lPinky1": {
+            "children": [],
+            "jointName": "lPinky1",
+            "name": "lPinky1",
+            "rotation": [
+                1.69284e-008,
+                0,
+                3.16505e-010,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0.411934,
+                0.0215858,
+                0.0576437
+            ]
+        },
+        "lThumb1": {
+            "children": [],
+            "jointName": "lThumb1",
+            "name": "lThumb1",
+            "rotation": [
+                0,
+                0,
+                3.16505e-010,
+                1
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                0.412571,
+                -0.0216771,
+                0.055015
+            ]
+        },
+        "lToe": {
+            "children": [],
+            "jointName": "lToe",
+            "name": "lToe",
+            "rotation": [
+                0.903363,
+                5.50001e-008,
+                8.1107e-008,
+                -0.428876
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                7.45058e-009,
+                0.128549,
+                0
+            ]
+        },
+        "node_21": {
+            "children": [
+                "Poser_scene_root",
+                "Figure_2_node"
+            ],
+            "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                -1,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "name": "Y_UP_Transform"
+        },
+        "rToe": {
+            "children": [],
+            "jointName": "rToe",
+            "name": "rToe",
+            "rotation": [
+                0.903363,
+                -5.50001e-008,
+                -8.1107e-008,
+                -0.428876
+            ],
+            "scale": [
+                1,
+                1,
+                1
+            ],
+            "translation": [
+                -7.45058e-009,
+                0.128549,
+                0
+            ]
+        }
+    },
+    "programs": {
+        "program_0": {
+            "attributes": [
+                "a_joint",
+                "a_normal",
+                "a_position",
+                "a_weight"
+            ],
+            "fragmentShader": "BrainStem0FS",
+            "vertexShader": "BrainStem0VS"
+        }
+    },
+    "scene": "defaultScene",
+    "scenes": {
+        "defaultScene": {
+            "nodes": [
+                "node_21"
+            ]
+        }
+    },
+    "shaders": {
+        "BrainStem0FS": {
+            "type": 35632,
+            "uri": "BrainStem0FS.glsl"
+        },
+        "BrainStem0VS": {
+            "type": 35633,
+            "uri": "BrainStem0VS.glsl"
+        }
+    },
+    "skins": {
+        "Poser_scene_root_Figure_2_node-skin": {
+            "bindShapeMatrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+            ],
+            "inverseBindMatrices": "IBM_Poser_scene_root_Figure_2_node-skin",
+            "jointNames": [
+                "Hip",
+                "Chest",
+                "Head",
+                "Right_Shoulder",
+                "Right_Forearm",
+                "Left_Shoulder",
+                "Left_Forearm",
+                "lMid1",
+                "lPinky1",
+                "lThumb1",
+                "Right_Thigh",
+                "Right_Shin",
+                "Right_Foot",
+                "rToe",
+                "Left_Thigh",
+                "Left_Shin",
+                "Left_Foot",
+                "lToe"
+            ],
+            "name": "Poser_scene_root"
+        }
+    },
+    "techniques": {
+        "technique0": {
+            "attributes": {
+                "a_joint": "joint",
+                "a_normal": "normal",
+                "a_position": "position",
+                "a_weight": "weight"
+            },
+            "parameters": {
+                "ambient": {
+                    "type": 35666
+                },
+                "diffuse": {
+                    "type": 35666
+                },
+                "emission": {
+                    "type": 35666
+                },
+                "joint": {
+                    "semantic": "JOINT",
+                    "type": 35666
+                },
+                "jointMat": {
+                    "count": 18,
+                    "semantic": "JOINTMATRIX",
+                    "type": 35676
+                },
+                "modelViewMatrix": {
+                    "semantic": "MODELVIEW",
+                    "type": 35676
+                },
+                "normal": {
+                    "semantic": "NORMAL",
+                    "type": 35665
+                },
+                "normalMatrix": {
+                    "semantic": "MODELVIEWINVERSETRANSPOSE",
+                    "type": 35675
+                },
+                "position": {
+                    "semantic": "POSITION",
+                    "type": 35665
+                },
+                "projectionMatrix": {
+                    "semantic": "PROJECTION",
+                    "type": 35676
+                },
+                "specular": {
+                    "type": 35666
+                },
+                "weight": {
+                    "semantic": "WEIGHT",
+                    "type": 35666
+                }
+            },
+            "program": "program_0",
+            "states": {
+                "enable": [
+                    2929,
+                    2884
+                ]
+            },
+            "uniforms": {
+                "u_ambient": "ambient",
+                "u_diffuse": "diffuse",
+                "u_emission": "emission",
+                "u_jointMat": "jointMat",
+                "u_modelViewMatrix": "modelViewMatrix",
+                "u_normalMatrix": "normalMatrix",
+                "u_projectionMatrix": "projectionMatrix",
+                "u_specular": "specular"
+            }
+        }
+    }
+}
