@@ -1,6 +1,7 @@
 var registerShader = require('../core/shader').registerShader;
 
 /**
+ * Multi-channel signed distance field.
  * Used by text component.
  */
 module.exports.Shader = registerShader('msdf', {
@@ -11,7 +12,13 @@ module.exports.Shader = registerShader('msdf', {
     opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
+  raw: true,
+
   vertexShader: [
+    'attribute vec2 uv;',
+    'attribute vec3 position;',
+    'uniform mat4 projectionMatrix;',
+    'uniform mat4 modelViewMatrix;',
     'varying vec2 vUV;',
     'void main(void) {',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
@@ -24,7 +31,8 @@ module.exports.Shader = registerShader('msdf', {
     '#extension GL_OES_standard_derivatives: enable',
     '#endif',
 
-    // FIXME: experimentally determined constants
+    'precision highp float;',
+    // FIXME: Experimentally determined constants.
     '#define BIG_ENOUGH 0.001',
     '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
     '#define ALL_SMOOTH 0.4',
@@ -46,20 +54,20 @@ module.exports.Shader = registerShader('msdf', {
     '  float dscale = 0.353505;',
     '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
     '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
-    // when texel is too small, blend raw alpha value rather than supersampling etc.
-    // FIXME: experimentally determined constant
+    // When texel is too small, blend raw alpha value rather than supersampling.
+    // FIXME: Experimentally determined constant.
     '  if (isBigEnough > BIG_ENOUGH) {',
     '    float ratio = BIG_ENOUGH / isBigEnough;',
     '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
     '  }',
 
     '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
-    // when texel is big enough, do standard alpha test
-    // FIXME: experimentally determined constant
-    // looks much better if we DON'T do this, but do we get Z fighting etc.?
+    // When texel is big enough, do standard alpha test.
+    // FIXME: Experimentally determined constant.
+    // Looks much better if we *don't* do this, but do we get Z fighting?
     '  if (isBigEnough <= BIG_ENOUGH && gl_FragColor.a < alphaTest) { discard; return; }',
-    // else do modified alpha test
-    // FIXME: experimentally determined constant
+    // Else, do modified alpha test.
+    // FIXME: Experimentally determined constant.
     '  if (gl_FragColor.a < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
     '}'
   ].join('\n')

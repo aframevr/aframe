@@ -1,6 +1,7 @@
 /* global AFRAME, assert, process, setup, suite, test, teardown */
 var entityFactory = require('../helpers').entityFactory;
 
+var THREE = require('lib/three');
 var VIDEO = 'base/tests/assets/test.mp4';
 
 suite('shader', function () {
@@ -43,6 +44,8 @@ suite('shader', function () {
       var instance = material.shader;
       assert.ok(material);
       assert.ok(instance);
+      assert.ok(instance.material instanceof THREE.ShaderMaterial);
+      assert.notOk(instance.material instanceof THREE.RawShaderMaterial);
       assert.equal(instance.init, shader.prototype.init);
       assert.equal(instance.update, shader.prototype.update);
       assert.equal(instance.vertexShader, shader.prototype.vertexShader);
@@ -64,6 +67,22 @@ suite('shader', function () {
       assert.ok(instance);
       assert.ok(initSpy.calledOnce);
       assert.ok(updateSpy.calledOnce);
+    });
+  });
+
+  suite('raw shader support', function () {
+    setup(function () {
+      this.shader = AFRAME.registerShader('testShader', {raw: true});
+    });
+
+    test('shader instance receives methods and properties', function () {
+      var el = this.el;
+      el.setAttribute('material', 'shader: testShader');
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(material);
+      assert.ok(instance);
+      assert.ok(instance.material instanceof THREE.RawShaderMaterial);
     });
   });
 
