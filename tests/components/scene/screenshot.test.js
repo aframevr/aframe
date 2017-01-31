@@ -1,5 +1,5 @@
 /* global assert, setup, suite, test */
-suite.only('screenshot', function () {
+suite('screenshot', function () {
   var component;
   var sceneEl;
 
