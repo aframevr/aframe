@@ -5,38 +5,44 @@ layout: docs
 parent_section: components
 ---
 
-The screenshot component lets us take different types of screenshots by using
+The screenshot component lets us take different types of screenshots with
 keyboard shortcuts. A-Frame attaches this component to the scene by default so
-it's automatically available.
+we don't have to do anything to use the component.
 
-To take a normal (perspective) screenshot, use the keyboard shortcut (`<ctrl> + <alt>
-+s`).
+## Shortcuts
 
-To take a 360&deg; (equirectangular) screenshot, use the keyboard shortcut
-(`<ctrl> + <alt> + <shift> +s`).
+### Equirectangular Screenshot
 
-To take a screenshot programmatically, call the component
+To take a 360&deg; (equirectangular) screenshot, press `<ctrl> + <alt> + <shift> + s`
+on the keyboard.
 
-```javascript
-// assuming your current scene is represented by sceneEl
-sceneEl.components.screenshot.capture('perspective')
-// projection property can be perspective or equirectangular
-```
+![Equirectangular Screenshot](https://cloud.githubusercontent.com/assets/674727/22461640/ea408ea4-e75e-11e6-9f8e-7566c4542587.png)
 
-## Example
+### Perspective Screenshot
 
-Unless we wish to customize the screenshot, explicitly setting the screenshot
-component is not needed since it's already attached to the scene by default.
-Otherwise, here's an example:
+To take a normal (perspective) screenshot, press `<ctrl> + <alt> + s` on the
+keyboard.
 
-```html
-<a-scene screenshot="projection: perspective"></a-scene>
-```
+![Perspective Screenshot](https://cloud.githubusercontent.com/assets/674727/22461641/ea43c218-e75e-11e6-8c5e-84c0bd2d691b.png)
 
 ## Properties
 
-| Property   | Description                                                    | Default Value   |
-|------------|----------------------------------------------------------------|-----------------|
-| width      | The width in pixels of the screenshot taken.                   | 4096            |
-| height     | The height in pixels of the screenshot taken.                  | 2048            |
-| projection | The screenshot type: `perspective` or `equirectangular`.       | equirectangular |
+| Property   | Description                                               | Default Value   |
+|------------|-----------------------------------------------------------|-----------------|
+| width      | The width in pixels of the screenshot taken.              | 4096            |
+| height     | The height in pixels of the screenshot taken.             | 2048            |
+
+## Methods
+
+To take a screenshot programatically and get a canvas, call `getCanvas()`:
+
+```js
+// `screenshot.projection` property can be `equirectangular` or `perspective`.
+document.querySelector('a-scene').components.screenshot.getCanvas('equirectangular');
+```
+
+To take a screenshot programmatically and automatically save the file, call `capture()`:
+
+```js
+document.querySelector('a-scene').components.screenshot.capture('perspective')
+```
