@@ -41,4 +41,11 @@ Make sure that this component is not active in production.
 [eftd]: ../core/entity.md#flushtodom-recursive
 
 To manually serialize to DOM, use [`Entity.flushToDOM`][eftd] or
-[`Component.flushToDOM`][cftd].
+[`Component.flushToDOM`][cftd]:
+
+```js
+document.querySelector('a-entity').components.position.flushToDOM();  // Flush a component.
+document.querySelector('a-entity').flushToDOM();  // Flush an entity.
+document.querySelector('a-entity').flushToDOM(true);  // Flush an entity and its children.
+document.querySelector('a-scene').flushToDOM(true);  // Flush every entity.
+```
