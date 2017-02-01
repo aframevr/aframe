@@ -63183,7 +63183,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/":161}],57:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":162}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -63395,7 +63395,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":98,"../utils/":161}],59:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/":162}],59:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -63519,7 +63519,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":98,"../core/geometry":99,"../lib/three":142,"../utils/debug":157}],60:[function(_dereq_,module,exports){
+},{"../core/component":98,"../core/geometry":99,"../lib/three":142,"../utils/debug":158}],60:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/leftHand.json';
@@ -64008,7 +64008,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils":161,"../utils/bind":155,"../utils/debug":157}],63:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils":162,"../utils/bind":156,"../utils/debug":158}],63:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').device.isMobile();
@@ -64307,7 +64307,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":98,"../lib/three":142,"../utils/":161,"../utils/bind":155}],64:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":162,"../utils/bind":156}],64:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -64481,7 +64481,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":161}],65:[function(_dereq_,module,exports){
+},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":162}],65:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -64559,7 +64559,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/debug":157}],66:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/debug":158}],66:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -64837,7 +64837,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":98,"../utils/bind":155,"../utils/tracked-controls":165}],67:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/bind":156,"../utils/tracked-controls":166}],67:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -65012,7 +65012,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/":161}],69:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/":162}],69:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -65110,7 +65110,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
 });
 
 
-},{"../../core/component":98,"../../utils":161}],72:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils":162}],72:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -65155,7 +65155,7 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":98,"../../utils/bind":155}],73:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils/bind":156}],73:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
@@ -65260,7 +65260,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":98,"../../lib/three":142,"../../utils/debug":157}],76:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142,"../../utils/debug":158}],76:[function(_dereq_,module,exports){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
 var bind = _dereq_('../../utils/bind');
@@ -65358,7 +65358,7 @@ module.exports.Component = registerComponent('inspector', {
   }
 });
 
-},{"../../../package":54,"../../constants":89,"../../core/component":98,"../../utils/bind":155}],77:[function(_dereq_,module,exports){
+},{"../../../package":54,"../../constants":89,"../../core/component":98,"../../utils/bind":156}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -65401,7 +65401,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":98,"../../lib/three":142,"../../utils/":161}],78:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../lib/three":142,"../../utils/":162}],78:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -65510,7 +65510,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":98,"../../utils/debug":157}],79:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../utils/debug":158}],79:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -65848,7 +65848,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":169,"../../../vendor/rStats.extras":168,"../../core/component":98,"../../lib/rStatsAframe":141,"../../utils":161}],81:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":170,"../../../vendor/rStats.extras":169,"../../core/component":98,"../../lib/rStatsAframe":141,"../../utils":162}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -65997,7 +65997,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":89,"../../core/component":98,"../../utils/":161}],82:[function(_dereq_,module,exports){
+},{"../../constants/":89,"../../core/component":98,"../../utils/":162}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -66181,7 +66181,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/bind":155,"../utils/debug":157}],83:[function(_dereq_,module,exports){
+},{"../core/component":98,"../lib/three":142,"../utils/bind":156,"../utils/debug":158}],83:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 var path = _dereq_('path');
@@ -66204,15 +66204,17 @@ var MAX_ANISOTROPY = 16;
 var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
-  default: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
   exo2semibold: FONT_BASE_URL + 'Exo2SemiBold.fnt',
   kelsonsans: FONT_BASE_URL + 'KelsonSans.fnt',
   monoid: FONT_BASE_URL + 'Monoid.fnt',
   mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
+  roboto: FONT_BASE_URL + 'Roboto-msdf.json',
   sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
 };
+var MSDF_FONTS = ['roboto'];
+var DEFAULT_FONT = 'roboto';
 module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
@@ -66235,7 +66237,7 @@ module.exports.Component = registerComponent('text', {
     anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
     baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
     color: {type: 'color', default: '#FFF'},
-    font: {type: 'string', default: 'default'},
+    font: {type: 'string', default: DEFAULT_FONT},
     // `fontImage` defaults to the font name as a .png (e.g., mozillavr.fnt -> mozillavr.png).
     fontImage: {type: 'string'},
     // `height` has no default, will be populated at layout.
@@ -66244,7 +66246,7 @@ module.exports.Component = registerComponent('text', {
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
     opacity: {type: 'number', default: '1.0'},
-    shader: {default: 'sdf', oneOf: shaders},
+    shader: {default: 'msdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     tabSize: {default: 4},
     transparent: {default: true},
@@ -66256,7 +66258,9 @@ module.exports.Component = registerComponent('text', {
     wrapCount: {type: 'number', default: 40},
     // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
     wrapPixels: {type: 'number'},
-    // `zOffset` will provide a small z offset to avoid z-fighting
+    // `yOffset` to adjust generated fonts from tools that may have incorrect metrics.
+    yOffset: {type: 'number', default: 0},
+    // `zOffset` will provide a small z offset to avoid z-fighting.
     zOffset: {type: 'number', default: 0.001}
   },
 
@@ -66276,9 +66280,7 @@ module.exports.Component = registerComponent('text', {
     var font = this.currentFont;
 
     // Update material.
-    if (Object.keys(oldData).length) {
-      this.createOrUpdateMaterial(oldData && {shader: oldData.shader});
-    }
+    this.createOrUpdateMaterial();
 
     // New font. `updateFont` will later change data and layout.
     if (oldData.font !== data.font) {
@@ -66311,20 +66313,24 @@ module.exports.Component = registerComponent('text', {
 
   /**
    * Update the shader of the material.
-   *
-   * @param {object} oldShader - Object describing the previous properties of the shader.
-   *   Currently only contains the shader name, but other properties could be introduced
-   *   in order to provide heuristics to select the most appropriate type of shader based
-   *   on the text component properties.
    */
-  createOrUpdateMaterial: function (oldShader) {
+  createOrUpdateMaterial: function () {
     var data = this.data;
     var hasChangedShader;
     var material = this.material;
     var NewShader;
     var shaderData;
+    var shaderName;
 
-    hasChangedShader = (oldShader && oldShader.shader) !== data.shader;
+    // Infer shader if using a stock font (or from `-msdf` filename convention).
+    shaderName = data.shader;
+    if (MSDF_FONTS.indexOf(data.font) !== -1 || data.font.indexOf('-msdf.') >= 0) {
+      shaderName = 'msdf';
+    } else if (data.font in FONTS && MSDF_FONTS.indexOf(data.font) === -1) {
+      shaderName = 'sdf';
+    }
+
+    hasChangedShader = (this.shaderObject && this.shaderObject.name) !== shaderName;
     shaderData = {
       alphaTest: data.alphaTest,
       color: data.color,
@@ -66345,7 +66351,7 @@ module.exports.Component = registerComponent('text', {
     }
 
     // Shader has changed. Create a shader material.
-    NewShader = createShader(this.el, data.shader, shaderData);
+    NewShader = createShader(this.el, shaderName, shaderData);
     this.material = NewShader.material;
     this.shaderObject = NewShader.shader;
 
@@ -66358,20 +66364,23 @@ module.exports.Component = registerComponent('text', {
    * Load font for geometry, load font image for material, and apply.
    */
   updateFont: function () {
+    var data = this.data;
     var el = this.el;
     var fontSrc;
     var geometry = this.geometry;
     var self = this;
 
-    if (!this.data.font) { warn('No font specified. Using the default font.'); }
+    if (!data.font) { warn('No font specified. Using the default font.'); }
 
     // Make invisible during font swap.
     this.mesh.visible = false;
 
     // Look up font URL to use, and perform cached load.
-    fontSrc = this.lookupFont(this.data.font || 'default') || this.data.font;
-    cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
-      var data;
+    fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
+    cache.get(fontSrc, function doLoadFont () {
+      return loadFont(fontSrc, data.yOffset);
+    }).then(function setFont (font) {
+      var coercedData;
       var fontImgSrc;
 
       if (font.pages.length !== 1) {
@@ -66383,15 +66392,15 @@ module.exports.Component = registerComponent('text', {
       }
 
       // Update geometry given font metrics.
-      data = coerceData(self.data);
+      coercedData = coerceData(data);
       updateGeometry(geometry, data, font);
 
       // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout(data);
+      self.updateLayout(coercedData);
 
       // Look up font image URL to use, and perform cached load.
-      fontImgSrc = self.data.fontImage || fontSrc.replace('.fnt', '.png') ||
+      fontImgSrc = data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png') ||
                    path.dirname(data.font) + '/' + font.pages[0];
       cache.get(fontImgSrc, function () {
         return loadTexture(fontImgSrc);
@@ -66400,7 +66409,7 @@ module.exports.Component = registerComponent('text', {
         self.mesh.visible = true;
         self.texture.image = image;
         self.texture.needsUpdate = true;
-        el.emit('textfontset', {font: self.data.font, fontObj: font});
+        el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
         error(err);
         throw err;
@@ -66525,7 +66534,7 @@ function coerceData (data) {
 /**
  * @returns {Promise}
  */
-function loadFont (src) {
+function loadFont (src, yOffset) {
   return new Promise(function (resolve, reject) {
     loadBMFont(src, function (err, font) {
       if (err) {
@@ -66533,6 +66542,11 @@ function loadFont (src) {
         reject(err);
         return;
       }
+
+      // Fix negative Y offsets for Roboto MSDF font from tool. Experimentally determined.
+      if (src.indexOf('/Roboto-msdf.json') >= 0) { yOffset = 30; }
+      if (yOffset) { font.chars.map(function doOffset (ch) { ch.yoffset += yOffset; }); }
+
       resolve(font);
     });
   });
@@ -66633,7 +66647,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":161,"load-bmfont":23,"path":32,"three-bmfont-text":38}],84:[function(_dereq_,module,exports){
+},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":162,"load-bmfont":23,"path":32,"three-bmfont-text":38}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -67055,7 +67069,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":98,"../utils/bind":155,"../utils/tracked-controls":165}],87:[function(_dereq_,module,exports){
+},{"../core/component":98,"../utils/bind":156,"../utils/tracked-controls":166}],87:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -67260,7 +67274,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":89,"../core/component":98,"../lib/three":142,"../utils/":161}],88:[function(_dereq_,module,exports){
+},{"../constants":89,"../core/component":98,"../lib/three":142,"../utils/":162}],88:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -67931,7 +67945,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":88,"../lib/three":142,"../utils/":161,"./a-node":96,"./a-register-element":97,"./schema":105,"tween.js":48}],92:[function(_dereq_,module,exports){
+},{"../constants/animation":88,"../lib/three":142,"../utils/":162,"./a-node":96,"./a-register-element":97,"./schema":105,"tween.js":48}],92:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -68160,7 +68174,7 @@ function extractDomain (url) {
   return domain.split(':')[0];
 }
 
-},{"../lib/three":142,"../utils/bind":155,"../utils/debug":157,"./a-node":96,"./a-register-element":97}],93:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils/bind":156,"../utils/debug":158,"./a-node":96,"./a-register-element":97}],93:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -68211,7 +68225,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":157,"./a-register-element":97}],94:[function(_dereq_,module,exports){
+},{"../utils/debug":158,"./a-register-element":97}],94:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
@@ -69114,7 +69128,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":142,"../utils/":161,"./a-node":96,"./a-register-element":97,"./component":98}],95:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils/":162,"./a-node":96,"./a-register-element":97,"./component":98}],95:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -69471,7 +69485,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":161,"./a-register-element":97}],97:[function(_dereq_,module,exports){
+},{"../utils/":162,"./a-register-element":97}],97:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -70070,7 +70084,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":161,"./schema":105,"./system":107}],99:[function(_dereq_,module,exports){
+},{"../utils/":162,"./schema":105,"./system":107}],99:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -70299,7 +70313,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":156,"debug":7}],101:[function(_dereq_,module,exports){
+},{"../utils/coordinates":157,"debug":7}],101:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -70804,7 +70818,7 @@ function exitFullscreen () {
   }
 }
 
-},{"../../lib/three":142,"../../utils/":161,"../a-entity":94,"../a-node":96,"../a-register-element":97,"../system":107,"./metaTags":102,"./postMessage":103,"./wakelock":104,"tween.js":48}],102:[function(_dereq_,module,exports){
+},{"../../lib/three":142,"../../utils/":162,"../a-entity":94,"../a-node":96,"../a-register-element":97,"../system":107,"./metaTags":102,"./postMessage":103,"./wakelock":104,"tween.js":48}],102:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -70885,7 +70899,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":89,"../../utils":161}],103:[function(_dereq_,module,exports){
+},{"../../constants/":89,"../../utils":162}],103:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -70918,7 +70932,7 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":161,"../../utils/bind":155}],104:[function(_dereq_,module,exports){
+},{"../../utils/":162,"../../utils/bind":156}],104:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -70929,7 +70943,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":171}],105:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":172}],105:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -71093,7 +71107,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":157,"./propertyTypes":100}],106:[function(_dereq_,module,exports){
+},{"../utils/debug":158,"./propertyTypes":100}],106:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -71148,7 +71162,7 @@ Shader.prototype = {
   init: function (data) {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
-    this.material = new THREE.ShaderMaterial({
+    this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,
@@ -71269,7 +71283,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":142,"../utils":161,"./schema":105}],107:[function(_dereq_,module,exports){
+},{"../lib/three":142,"../utils":162,"./schema":105}],107:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -71386,7 +71400,7 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":161,"./component":98,"./schema":105}],108:[function(_dereq_,module,exports){
+},{"../utils/":162,"./component":98,"./schema":105}],108:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
 },{"./pivot":109}],109:[function(_dereq_,module,exports){
@@ -71465,7 +71479,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":98,"../../core/shader":106,"../../utils/":161}],111:[function(_dereq_,module,exports){
+},{"../../core/component":98,"../../core/shader":106,"../../utils/":162}],111:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -71645,7 +71659,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":94,"../../core/a-register-element":97,"../../core/component":98,"../../utils/":161}],113:[function(_dereq_,module,exports){
+},{"../../core/a-entity":94,"../../core/a-register-element":97,"../../core/component":98,"../../utils/":162}],113:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -71691,7 +71705,7 @@ registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],115:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],115:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71729,7 +71743,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],116:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],116:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71766,7 +71780,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],117:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],117:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71790,7 +71804,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],118:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],118:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -71827,7 +71841,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],120:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71851,7 +71865,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112,"./meshPrimitives":125}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112,"./meshPrimitives":125}],121:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -71897,7 +71911,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],124:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],124:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71924,7 +71938,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],125:[function(_dereq_,module,exports){
+},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],125:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -71964,7 +71978,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":99,"../../../utils/":161,"../getMeshMixin":110,"../primitives":112}],126:[function(_dereq_,module,exports){
+},{"../../../core/geometry":99,"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],126:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72306,7 +72320,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 31-01-2017, Commit #f467223)');
+console.log('A-Frame Version: 0.4.0 (Date 01-02-2017, Commit #f676798)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -72336,7 +72350,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":54,"./components/index":61,"./core/a-animation":91,"./core/a-assets":92,"./core/a-cubemap":93,"./core/a-entity":94,"./core/a-mixin":95,"./core/a-node":96,"./core/a-register-element":97,"./core/component":98,"./core/geometry":99,"./core/scene/a-scene":101,"./core/schema":105,"./core/shader":106,"./core/system":107,"./extras/components/":108,"./extras/primitives/":111,"./extras/primitives/getMeshMixin":110,"./extras/primitives/primitives":112,"./geometries/index":132,"./lib/three":142,"./shaders/index":144,"./style/aframe.css":147,"./style/rStats.css":148,"./systems/index":151,"./utils/":161,"./utils/debug":157,"present":33,"promise-polyfill":35,"tween.js":48,"webvr-polyfill":49}],141:[function(_dereq_,module,exports){
+},{"../package":54,"./components/index":61,"./core/a-animation":91,"./core/a-assets":92,"./core/a-cubemap":93,"./core/a-entity":94,"./core/a-mixin":95,"./core/a-node":96,"./core/a-register-element":97,"./core/component":98,"./core/geometry":99,"./core/scene/a-scene":101,"./core/schema":105,"./core/shader":106,"./core/system":107,"./extras/components/":108,"./extras/primitives/":111,"./extras/primitives/getMeshMixin":110,"./extras/primitives/primitives":112,"./geometries/index":132,"./lib/three":142,"./shaders/index":144,"./style/aframe.css":148,"./style/rStats.css":149,"./systems/index":152,"./utils/":162,"./utils/debug":158,"present":33,"promise-polyfill":35,"tween.js":48,"webvr-polyfill":49}],141:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -72431,7 +72445,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":166,"../../vendor/VREffect":167,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],143:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":167,"../../vendor/VREffect":168,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],143:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -72496,18 +72510,20 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":106,"../lib/three":142,"../utils/":161}],144:[function(_dereq_,module,exports){
+},{"../core/shader":106,"../lib/three":142,"../utils/":162}],144:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
+_dereq_('./msdf');
 
-},{"./flat":143,"./sdf":145,"./standard":146}],145:[function(_dereq_,module,exports){
+},{"./flat":143,"./msdf":145,"./sdf":146,"./standard":147}],145:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
+ * Multi-channel signed distance field.
  * Used by text component.
  */
-module.exports.Shader = registerShader('sdf', {
+module.exports.Shader = registerShader('msdf', {
   schema: {
     alphaTest: {type: 'number', is: 'uniform', default: 0.5},
     color: {type: 'color', is: 'uniform', default: 'white'},
@@ -72515,7 +72531,13 @@ module.exports.Shader = registerShader('sdf', {
     opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
+  raw: true,
+
   vertexShader: [
+    'attribute vec2 uv;',
+    'attribute vec3 position;',
+    'uniform mat4 projectionMatrix;',
+    'uniform mat4 modelViewMatrix;',
     'varying vec2 vUV;',
     'void main(void) {',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
@@ -72527,6 +72549,84 @@ module.exports.Shader = registerShader('sdf', {
     '#ifdef GL_OES_standard_derivatives',
     '#extension GL_OES_standard_derivatives: enable',
     '#endif',
+
+    'precision highp float;',
+    // FIXME: Experimentally determined constants.
+    '#define BIG_ENOUGH 0.001',
+    '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
+    '#define ALL_SMOOTH 0.4',
+    '#define ALL_ROUGH 0.02',
+    '#define DISCARD_ALPHA (alphaTest / (2.2 - 1.2 * ratio))',
+    'uniform sampler2D map;',
+    'uniform vec3 color;',
+    'uniform float opacity;',
+    'uniform float alphaTest;',
+    'varying vec2 vUV;',
+
+    'float median(float r, float g, float b) {',
+    '  return max(min(r, g), min(max(r, g), b));',
+    '}',
+    'void main() {',
+    '  vec3 sample = 1.0 - texture2D(map, vUV).rgb;',
+    '  float sigDist = median(sample.r, sample.g, sample.b) - 0.5;',
+    '  float alpha = clamp(sigDist/fwidth(sigDist) + 0.5, 0.0, 1.0);',
+    '  float dscale = 0.353505;',
+    '  vec2 duv = dscale * (dFdx(vUV) + dFdy(vUV));',
+    '  float isBigEnough = max(abs(duv.x), abs(duv.y));',
+    // When texel is too small, blend raw alpha value rather than supersampling.
+    // FIXME: Experimentally determined constant.
+    '  if (isBigEnough > BIG_ENOUGH) {',
+    '    float ratio = BIG_ENOUGH / isBigEnough;',
+    '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
+    '  }',
+
+    '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
+    // When texel is big enough, do standard alpha test.
+    // FIXME: Experimentally determined constant.
+    // Looks much better if we *don't* do this, but do we get Z fighting?
+    '  if (isBigEnough <= BIG_ENOUGH && gl_FragColor.a < alphaTest) { discard; return; }',
+    // Else, do modified alpha test.
+    // FIXME: Experimentally determined constant.
+    '  if (gl_FragColor.a < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+    '}'
+  ].join('\n')
+});
+
+},{"../core/shader":106}],146:[function(_dereq_,module,exports){
+var registerShader = _dereq_('../core/shader').registerShader;
+
+/**
+ * Signed distance field.
+ * Used by text component.
+ */
+module.exports.Shader = registerShader('sdf', {
+  schema: {
+    alphaTest: {type: 'number', is: 'uniform', default: 0.5},
+    color: {type: 'color', is: 'uniform', default: 'white'},
+    map: {type: 'map', is: 'uniform'},
+    opacity: {type: 'number', is: 'uniform', default: 1.0}
+  },
+
+  raw: true,
+
+  vertexShader: [
+    'attribute vec2 uv;',
+    'attribute vec3 position;',
+    'uniform mat4 projectionMatrix;',
+    'uniform mat4 modelViewMatrix;',
+    'varying vec2 vUV;',
+    'void main(void) {',
+    '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+    '  vUV = uv;',
+    '}'
+  ].join('\n'),
+
+  fragmentShader: [
+    '#ifdef GL_OES_standard_derivatives',
+    '#extension GL_OES_standard_derivatives: enable',
+    '#endif',
+
+    'precision highp float;',
     // FIXME: experimentally determined constants
     '#define BIG_ENOUGH 0.001',
     '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',
@@ -72602,7 +72702,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":106}],146:[function(_dereq_,module,exports){
+},{"../core/shader":106}],147:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -72767,11 +72867,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":106,"../lib/three":142,"../utils/":161}],147:[function(_dereq_,module,exports){
+},{"../core/shader":106,"../lib/three":142,"../utils/":162}],148:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grabbing;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:174px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;height:10%;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],148:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":4}],149:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":4}],150:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -72898,7 +72998,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":89,"../core/system":107,"../utils/bind":155}],150:[function(_dereq_,module,exports){
+},{"../constants/":89,"../core/system":107,"../utils/bind":156}],151:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -73038,7 +73138,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":99,"../core/system":107,"../lib/three":142}],151:[function(_dereq_,module,exports){
+},{"../core/geometry":99,"../core/system":107,"../lib/three":142}],152:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./light');
@@ -73046,7 +73146,7 @@ _dereq_('./material');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":149,"./geometry":150,"./light":152,"./material":153,"./tracked-controls":154}],152:[function(_dereq_,module,exports){
+},{"./camera":150,"./geometry":151,"./light":153,"./material":154,"./tracked-controls":155}],153:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -73125,7 +73225,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":89,"../core/system":107,"../utils/bind":155}],153:[function(_dereq_,module,exports){
+},{"../constants/":89,"../core/system":107,"../utils/bind":156}],154:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -73466,7 +73566,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":107,"../lib/three":142,"../utils/":161}],154:[function(_dereq_,module,exports){
+},{"../core/system":107,"../lib/three":142,"../utils/":162}],155:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -73508,7 +73608,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":107,"../utils":161,"../utils/tracked-controls":165}],155:[function(_dereq_,module,exports){
+},{"../core/system":107,"../utils":162,"../utils/tracked-controls":166}],156:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -73525,7 +73625,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],156:[function(_dereq_,module,exports){
+},{}],157:[function(_dereq_,module,exports){
 /* global THREE */
 var extend = _dereq_('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -73604,7 +73704,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":26}],157:[function(_dereq_,module,exports){
+},{"object-assign":26}],158:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -73701,7 +73801,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":34,"debug":7,"object-assign":26}],158:[function(_dereq_,module,exports){
+},{"_process":34,"debug":7,"object-assign":26}],159:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
@@ -73780,7 +73880,7 @@ module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
 };
 
-},{"../lib/three":142}],159:[function(_dereq_,module,exports){
+},{"../lib/three":142}],160:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -73821,7 +73921,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],160:[function(_dereq_,module,exports){
+},{}],161:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -73837,7 +73937,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],161:[function(_dereq_,module,exports){
+},{}],162:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -74092,7 +74192,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":155,"./coordinates":156,"./debug":157,"./device":158,"./entity":159,"./forceCanvasResizeSafariMobile":160,"./material":162,"./src-loader":163,"./styleParser":164,"./tracked-controls":165,"deep-assign":9,"object-assign":26}],162:[function(_dereq_,module,exports){
+},{"./bind":156,"./coordinates":157,"./debug":158,"./device":159,"./entity":160,"./forceCanvasResizeSafariMobile":161,"./material":163,"./src-loader":164,"./styleParser":165,"./tracked-controls":166,"deep-assign":9,"object-assign":26}],163:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 /**
@@ -74203,7 +74303,7 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-},{"../lib/three":142}],163:[function(_dereq_,module,exports){
+},{"../lib/three":142}],164:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -74330,7 +74430,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":157}],164:[function(_dereq_,module,exports){
+},{"./debug":158}],165:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -74390,7 +74490,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":37}],165:[function(_dereq_,module,exports){
+},{"style-attr":37}],166:[function(_dereq_,module,exports){
 /**
  * Return enumerated gamepads matching id prefix.
  *
@@ -74453,7 +74553,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
 };
 
 
-},{}],166:[function(_dereq_,module,exports){
+},{}],167:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -74628,7 +74728,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],167:[function(_dereq_,module,exports){
+},{}],168:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -75107,7 +75207,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],168:[function(_dereq_,module,exports){
+},{}],169:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -75372,7 +75472,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],169:[function(_dereq_,module,exports){
+},{}],170:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -75826,7 +75926,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],170:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75888,7 +75988,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],171:[function(_dereq_,module,exports){
+},{}],172:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75964,6 +76064,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":170}]},{},[140])(140)
+},{"./util.js":171}]},{},[140])(140)
 });
 //# sourceMappingURL=aframe-master.js.map
