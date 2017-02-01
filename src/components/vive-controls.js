@@ -88,12 +88,7 @@ module.exports.Component = registerComponent('vive-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls(); // inject track-controls
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
+    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
   },
 
   onGamepadConnected: function (evt) {
@@ -117,6 +112,7 @@ module.exports.Component = registerComponent('vive-controls', {
     window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
     window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
     this.addControllersUpdateListener();
+    this.addEventListeners();
   },
 
   pause: function () {
@@ -129,16 +125,15 @@ module.exports.Component = registerComponent('vive-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    var objUrl = VIVE_CONTROLLER_MODEL_OBJ_URL;
-    var mtlUrl = VIVE_CONTROLLER_MODEL_OBJ_MTL;
-
     // handId: 0 - right, 1 - left, 2 - anything else...
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
     // if we have an OpenVR Gamepad, use the fixed mapping
     el.setAttribute('tracked-controls', {id: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
-
-    if (!data.model) { return; }
-    el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+    if (!this.data.model) { return; }
+    this.el.setAttribute('obj-model', {
+      obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
+      mtl: VIVE_CONTROLLER_MODEL_OBJ_MTL
+    });
   },
 
   addControllersUpdateListener: function () {
