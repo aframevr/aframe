@@ -3,7 +3,7 @@ var entityFactory = require('../helpers').entityFactory;
 
 var SRC = '/base/tests/assets/box/Box.gltf';
 
-suite.only('gltf-model', function () {
+suite('gltf-model', function () {
   setup(function (done) {
     var el;
     var asset = document.createElement('a-asset-item');
