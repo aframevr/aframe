@@ -62,7 +62,7 @@ module.exports.Component = registerComponent('text', {
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
     opacity: {type: 'number', default: '1.0'},
-    shader: {default: 'msdf', oneOf: shaders},
+    shader: {default: 'sdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     tabSize: {default: 4},
     transparent: {default: true},
