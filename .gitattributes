@@ -21,6 +21,8 @@
 .travis.yml text
 LICENSE text
 
+# *.bin eol=crlf
+
 # Avoid creation of unnecessary big commit objects
 # For these files we do not want to see text diff for
 
@@ -33,3 +35,4 @@ LICENSE text
 *.jpeg binary
 *.png binary
 *.wav binary
+*.bin binary
