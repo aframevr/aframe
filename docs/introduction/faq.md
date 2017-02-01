@@ -136,6 +136,10 @@ texture. There are some components in the ecosystem that enable this:
 
 - [HTML Shader][html-shader]
 
+## What 3D Model format works best?
+
+The ThreeJS JSON format works best, since it is the generic loader for the underlying ThreeJS. OBJ and DAE formats can work also, albeit with some limitations (for example, OBJ is not able to hold vectice colors).
+
 ## Where can I find assets?
 
 [archive3d]: http://archive3d.net/
