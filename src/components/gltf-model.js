@@ -21,9 +21,9 @@ module.exports.Component = registerComponent('gltf-model', {
 
     this.remove();
 
-    this.loader.load(src, function (gltfModel) {
+    this.loader.load(src, function gltfLoaded (gltfModel) {
       self.model = gltfModel.scene;
-      self.system.addModel(self.model);
+      self.system.registerModel(self.model);
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
     });
@@ -32,6 +32,6 @@ module.exports.Component = registerComponent('gltf-model', {
   remove: function () {
     if (!this.model) { return; }
     this.el.removeObject3D('mesh');
-    this.system.removeModel(this.model);
+    this.system.unregisterModel(this.model);
   }
 });

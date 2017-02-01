@@ -23,7 +23,7 @@ module.exports.System = registerSystem('gltf-model', {
    * Registers a glTF asset.
    * @param {object} gltf Asset containing a scene and (optional) animations and cameras.
    */
-  addModel: function (gltf) {
+  registerModel: function (gltf) {
     this.models.push(gltf);
   },
 
@@ -31,7 +31,7 @@ module.exports.System = registerSystem('gltf-model', {
    * Unregisters a glTF asset.
    * @param  {object} gltf Asset containing a scene and (optional) animations and cameras.
    */
-  removeModel: function (gltf) {
+  unregisterModel: function (gltf) {
     var models = this.models;
     var index = models.indexOf(gltf);
     if (index >= 0) {
