@@ -52,7 +52,7 @@ Shader.prototype = {
   init: function (data) {
     this.attributes = this.initVariables(data, 'attribute');
     this.uniforms = this.initVariables(data, 'uniform');
-    this.material = new THREE.ShaderMaterial({
+    this.material = new (this.raw ? THREE.RawShaderMaterial : THREE.ShaderMaterial)({
       // attributes: this.attributes,
       uniforms: this.uniforms,
       vertexShader: this.vertexShader,

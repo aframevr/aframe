@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Text Fonts (MSDF vs. SDF)</title>
+    <meta name="description" content="Text Fonts (MSDF vs. SDF) - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin id="text"
+          text="align: center; width: 6;
+                value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"
+        ></a-mixin>
+        <a-mixin id="msdf-text"
+          text="align: center; width: 6;
+                font: https://rawgit.com/Jam3/three-bmfont-text/master/test/fnt/Roboto-msdf.json;
+                value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam"
+        ></a-mixin>
+        <a-mixin id="marker"
+          geometry="primitive: box"
+          material="color: red"
+          scale="0.05 0.05 0.001"
+        ></a-mixin>
+      </a-assets>
+
+      <a-entity position="0 0 -3.7">
+        <a-text mixin="msdf-text" position="-3 -2 0" wrap-count="20"></a-text>
+        <a-entity mixin="marker" position="-3 -2 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 0 0" wrap-count="30"></a-text>
+        <a-entity mixin="marker" position="-3 0 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 1 0" wrap-count="40"></a-text>
+        <a-entity mixin="marker" position="-3 1 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 1.5 0" wrap-count="50"></a-text>
+        <a-entity mixin="marker" position="-3 1.5 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 2 0" wrap-count="60"></a-text>
+        <a-entity mixin="marker" position="-3 2 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 2.5 0" wrap-count="70"></a-text>
+        <a-entity mixin="marker" position="-3 2.5 -0.1"></a-entity>
+        <a-text mixin="msdf-text" position="-3 3 0" wrap-count="80"></a-text>
+        <a-entity mixin="marker" position="-3 3 -0.1"></a-entity>
+
+        <a-text mixin="text" font="kelsonsans" position="3 -2 0" wrap-count="20"></a-text>
+        <a-entity mixin="marker" position="3 -2 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 0 0" wrap-count="30"></a-text>
+        <a-entity mixin="marker" position="3 0 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 1 0" wrap-count="40"></a-text>
+        <a-entity mixin="marker" position="3 1 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 1.5 0" wrap-count="50"></a-text>
+        <a-entity mixin="marker" position="3 1.5 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 2 0" wrap-count="60"></a-text>
+        <a-entity mixin="marker" position="3 2 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 2.5 0" wrap-count="70"></a-text>
+        <a-entity mixin="marker" position="3 2.5 -0.1"></a-entity>
+        <a-text mixin="text" font="kelsonsans" position="3 3 0" wrap-count="80"></a-text>
+        <a-entity mixin="marker" position="3 3 -0.1"></a-entity>
+      </a-entity>
+
+      <a-sky color="#3CF"></a-sky>
+    </a-scene>
+  </body>
+</html>

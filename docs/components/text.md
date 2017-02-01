@@ -99,7 +99,31 @@ The implementation is based on [mattdesl's three-bmfont-text][three-bmfont-text]
 ## Fonts
 
 We can specify different fonts, although the process is not as simple as Web
-Fonts.
+Fonts. The text component defaults to `roboto` which uses a multi-channel
+signed distance (MSDF) font. MSDF helps to preserve sharp corners and edges.
+
+### Stock Fonts
+
+Select from one of A-Frame's built-in fonts. These fonts will be loaded in from
+over a CDN. If you want your application to work better offline, download these
+fonts locally and point to them via a URL.
+
+| Stock MSDF Fonts | URL                                          |
+|------------------|----------------------------------------------|
+| **roboto**       | https://cdn.aframe.io/fonts/Roboto-msdf.json |
+
+| Stock SDF Fonts | URL                                              |
+|-----------------|--------------------------------------------------|
+| aileronsemibold | https://cdn.aframe.io/fonts/Aileron-Semibold.fnt |
+| dejavu          | https://cdn.aframe.io/fonts/DejaVu-sdf.fnt       |
+| exo2bold        | https://cdn.aframe.io/fonts/Exo2Bold.fnt         |
+| exo2semibold    | https://cdn.aframe.io/fonts/Exo2SemiBold.fnt     |
+| kelsonsans      | https://cdn.aframe.io/fonts/KelsonSans.fnt       |
+| monoid          | https://cdn.aframe.io/fonts/Monoid.fnt           |
+| mozillavr       | https://cdn.aframe.io/fonts/mozillavr.fnt        |
+| sourcecodepro   | https://cdn.aframe.io/fonts/SourceCodePro.fnt    |
+
+### Custom Fonts
 
 Different fonts can be specified using the `font` and `fontImage` properties.
 
@@ -113,36 +137,23 @@ If not specified, `fontImage` will be the `font`'s name, but with the extension
 replaced to `.png`. For example, if the `font` path ends with `mozillavr.fnt`,
 then the `fontImage` texture will default to `mozillavr.png`.
 
-### Stock Fonts
-
-Select from one of A-Frame's built-in fonts. These fonts will be loaded in from
-over a CDN. If you want your application to work better offline, download these
-fonts locally and point to them via a URL.
-
-
-| Stock Fonts     | URL                                              |
-|-----------------|--------------------------------------------------|
-| aileronsemibold | https://cdn.aframe.io/fonts/Aileron-Semibold.fnt |
-| default         | https://cdn.aframe.io/fonts/DejaVu-sdf.fnt       |
-| dejavu          | https://cdn.aframe.io/fonts/DejaVu-sdf.fnt       |
-| exo2bold        | https://cdn.aframe.io/fonts/Exo2Bold.fnt         |
-| exo2semibold    | https://cdn.aframe.io/fonts/Exo2SemiBold.fnt     |
-| kelsonsans      | https://cdn.aframe.io/fonts/KelsonSans.fnt       |
-| monoid          | https://cdn.aframe.io/fonts/Monoid.fnt           |
-| mozillavr       | https://cdn.aframe.io/fonts/mozillavr.fnt        |
-| sourcecodepro   | https://cdn.aframe.io/fonts/SourceCodePro.fnt    |
-
 ### Generating SDF Fonts
 
 [hiero]: https://github.com/libgdx/libgdx/wiki/Hiero
 [sdffonts]: https://github.com/libgdx/libgdx/wiki/Distance-field-fonts
 
-On top of the stock fonts, we can generate our own custom SDF fonts using
-[Hiero][hiero], a bitmap font packing tool. [See this guide for generating SDF
-fonts][sdffonts].
+On top of the stock fonts, we can generate SDF fonts using [Hiero][hiero], a
+bitmap font packing tool. [See this guide for generating SDF fonts][sdffonts].
 
-Below is an example comparing a font generated with Hiero, Arial Black, with this
-component's default font, DejaVu:
+[msdfgen]: https://github.com/Chlumsky/msdfgen
+[msdf-bmfont]: https://github.com/Jam3/msdf-bmfont
+
+We can also generate MSDF fonts using [msdfgen] or [msdf-bmfont], although
+these tools may be less mature. msdf-bmfont provides a friendlier wrapper
+around that tool to generate MSDF font files from scalable TTF fonts
+
+Below is an example comparing a font generated with Hiero, Arial Black, with
+the SDF font, DejaVu:
 
 [fontexampleimage]: http://i.imgur.com/iWtXHm5.png
 ![Arial Black vs. Deja Vu][fontexampleimage]
@@ -218,9 +229,6 @@ then become 1 unit as well.
 
 The text component does not make use of all of the features of the
 [`three-bmfont-text` library][three-bmfont-text] nor its sister modules.
-Notably, we left out MSDF text to keep the API simple, and because Hiero
-generates SDF fonts, although we did have MSDF support in an older
-implementation.
 
 [sdfsmooth]: https://lambdacube3d.wordpress.com/2014/11/12/playing-around-with-font-rendering/
 

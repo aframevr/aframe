@@ -20,15 +20,17 @@ var MAX_ANISOTROPY = 16;
 var FONT_BASE_URL = 'https://cdn.aframe.io/fonts/';
 var FONTS = {
   aileronsemibold: FONT_BASE_URL + 'Aileron-Semibold.fnt',
-  default: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   dejavu: FONT_BASE_URL + 'DejaVu-sdf.fnt',
   exo2bold: FONT_BASE_URL + 'Exo2Bold.fnt',
   exo2semibold: FONT_BASE_URL + 'Exo2SemiBold.fnt',
   kelsonsans: FONT_BASE_URL + 'KelsonSans.fnt',
   monoid: FONT_BASE_URL + 'Monoid.fnt',
   mozillavr: FONT_BASE_URL + 'mozillavr.fnt',
+  roboto: FONT_BASE_URL + 'Roboto-msdf.json',
   sourcecodepro: FONT_BASE_URL + 'SourceCodePro.fnt'
 };
+var MSDF_FONTS = ['roboto'];
+var DEFAULT_FONT = 'roboto';
 module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
@@ -51,7 +53,7 @@ module.exports.Component = registerComponent('text', {
     anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
     baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
     color: {type: 'color', default: '#FFF'},
-    font: {type: 'string', default: 'default'},
+    font: {type: 'string', default: DEFAULT_FONT},
     // `fontImage` defaults to the font name as a .png (e.g., mozillavr.fnt -> mozillavr.png).
     fontImage: {type: 'string'},
     // `height` has no default, will be populated at layout.
@@ -60,7 +62,7 @@ module.exports.Component = registerComponent('text', {
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
     opacity: {type: 'number', default: '1.0'},
-    shader: {default: 'sdf', oneOf: shaders},
+    shader: {default: 'msdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     tabSize: {default: 4},
     transparent: {default: true},
@@ -72,7 +74,9 @@ module.exports.Component = registerComponent('text', {
     wrapCount: {type: 'number', default: 40},
     // `wrapPixels` will wrap using bmfont pixel units (e.g., dejavu's is 32 pixels).
     wrapPixels: {type: 'number'},
-    // `zOffset` will provide a small z offset to avoid z-fighting
+    // `yOffset` to adjust generated fonts from tools that may have incorrect metrics.
+    yOffset: {type: 'number', default: 0},
+    // `zOffset` will provide a small z offset to avoid z-fighting.
     zOffset: {type: 'number', default: 0.001}
   },
 
@@ -92,9 +96,7 @@ module.exports.Component = registerComponent('text', {
     var font = this.currentFont;
 
     // Update material.
-    if (Object.keys(oldData).length) {
-      this.createOrUpdateMaterial(oldData && {shader: oldData.shader});
-    }
+    this.createOrUpdateMaterial();
 
     // New font. `updateFont` will later change data and layout.
     if (oldData.font !== data.font) {
@@ -127,20 +129,24 @@ module.exports.Component = registerComponent('text', {
 
   /**
    * Update the shader of the material.
-   *
-   * @param {object} oldShader - Object describing the previous properties of the shader.
-   *   Currently only contains the shader name, but other properties could be introduced
-   *   in order to provide heuristics to select the most appropriate type of shader based
-   *   on the text component properties.
    */
-  createOrUpdateMaterial: function (oldShader) {
+  createOrUpdateMaterial: function () {
     var data = this.data;
     var hasChangedShader;
     var material = this.material;
     var NewShader;
     var shaderData;
+    var shaderName;
 
-    hasChangedShader = (oldShader && oldShader.shader) !== data.shader;
+    // Infer shader if using a stock font (or from `-msdf` filename convention).
+    shaderName = data.shader;
+    if (MSDF_FONTS.indexOf(data.font) !== -1 || data.font.indexOf('-msdf.') >= 0) {
+      shaderName = 'msdf';
+    } else if (data.font in FONTS && MSDF_FONTS.indexOf(data.font) === -1) {
+      shaderName = 'sdf';
+    }
+
+    hasChangedShader = (this.shaderObject && this.shaderObject.name) !== shaderName;
     shaderData = {
       alphaTest: data.alphaTest,
       color: data.color,
@@ -161,7 +167,7 @@ module.exports.Component = registerComponent('text', {
     }
 
     // Shader has changed. Create a shader material.
-    NewShader = createShader(this.el, data.shader, shaderData);
+    NewShader = createShader(this.el, shaderName, shaderData);
     this.material = NewShader.material;
     this.shaderObject = NewShader.shader;
 
@@ -174,20 +180,23 @@ module.exports.Component = registerComponent('text', {
    * Load font for geometry, load font image for material, and apply.
    */
   updateFont: function () {
+    var data = this.data;
     var el = this.el;
     var fontSrc;
     var geometry = this.geometry;
     var self = this;
 
-    if (!this.data.font) { warn('No font specified. Using the default font.'); }
+    if (!data.font) { warn('No font specified. Using the default font.'); }
 
     // Make invisible during font swap.
     this.mesh.visible = false;
 
     // Look up font URL to use, and perform cached load.
-    fontSrc = this.lookupFont(this.data.font || 'default') || this.data.font;
-    cache.get(fontSrc, function () { return loadFont(fontSrc); }).then(function (font) {
-      var data;
+    fontSrc = this.lookupFont(data.font || DEFAULT_FONT) || data.font;
+    cache.get(fontSrc, function doLoadFont () {
+      return loadFont(fontSrc, data.yOffset);
+    }).then(function setFont (font) {
+      var coercedData;
       var fontImgSrc;
 
       if (font.pages.length !== 1) {
@@ -199,15 +208,15 @@ module.exports.Component = registerComponent('text', {
       }
 
       // Update geometry given font metrics.
-      data = coerceData(self.data);
+      coercedData = coerceData(data);
       updateGeometry(geometry, data, font);
 
       // Set font and update layout.
       self.currentFont = font;
-      self.updateLayout(data);
+      self.updateLayout(coercedData);
 
       // Look up font image URL to use, and perform cached load.
-      fontImgSrc = self.data.fontImage || fontSrc.replace('.fnt', '.png') ||
+      fontImgSrc = data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png') ||
                    path.dirname(data.font) + '/' + font.pages[0];
       cache.get(fontImgSrc, function () {
         return loadTexture(fontImgSrc);
@@ -216,7 +225,7 @@ module.exports.Component = registerComponent('text', {
         self.mesh.visible = true;
         self.texture.image = image;
         self.texture.needsUpdate = true;
-        el.emit('textfontset', {font: self.data.font, fontObj: font});
+        el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
         error(err);
         throw err;
@@ -341,7 +350,7 @@ function coerceData (data) {
 /**
  * @returns {Promise}
  */
-function loadFont (src) {
+function loadFont (src, yOffset) {
   return new Promise(function (resolve, reject) {
     loadBMFont(src, function (err, font) {
       if (err) {
@@ -349,6 +358,11 @@ function loadFont (src) {
         reject(err);
         return;
       }
+
+      // Fix negative Y offsets for Roboto MSDF font from tool. Experimentally determined.
+      if (src.indexOf('/Roboto-msdf.json') >= 0) { yOffset = 30; }
+      if (yOffset) { font.chars.map(function doOffset (ch) { ch.yoffset += yOffset; }); }
+
       resolve(font);
     });
   });

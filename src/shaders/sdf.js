@@ -1,6 +1,7 @@
 var registerShader = require('../core/shader').registerShader;
 
 /**
+ * Signed distance field.
  * Used by text component.
  */
 module.exports.Shader = registerShader('sdf', {
@@ -11,7 +12,13 @@ module.exports.Shader = registerShader('sdf', {
     opacity: {type: 'number', is: 'uniform', default: 1.0}
   },
 
+  raw: true,
+
   vertexShader: [
+    'attribute vec2 uv;',
+    'attribute vec3 position;',
+    'uniform mat4 projectionMatrix;',
+    'uniform mat4 modelViewMatrix;',
     'varying vec2 vUV;',
     'void main(void) {',
     '  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
@@ -23,6 +30,8 @@ module.exports.Shader = registerShader('sdf', {
     '#ifdef GL_OES_standard_derivatives',
     '#extension GL_OES_standard_derivatives: enable',
     '#endif',
+
+    'precision highp float;',
     // FIXME: experimentally determined constants
     '#define BIG_ENOUGH 0.001',
     '#define MODIFIED_ALPHATEST (0.02 * isBigEnough / BIG_ENOUGH)',

@@ -9,8 +9,9 @@ suite('text', function () {
   setup(function (done) {
     this.sinon.stub(Component.prototype, 'lookupFont', function (key) {
       return {
-        default: '/base/tests/assets/test.fnt',
-        mozillavr: '/base/tests/assets/test.fnt?foo'
+        default: '/base/tests/assets/test.fnt?foo',
+        mozillavr: '/base/tests/assets/test.fnt?bar',
+        roboto: '/base/tests/assets/test.fnt?baz'
       }[key];
     });
 
@@ -99,42 +100,54 @@ suite('text', function () {
     test('calls createOrUpdateMaterial if shader changes', function () {
       var updateMaterialSpy = this.sinon.spy(component, 'createOrUpdateMaterial');
       el.setAttribute('text', 'shader', 'standard');
-      assert.shallowDeepEqual(updateMaterialSpy.getCalls()[0].args[0],
-                              {shader: 'sdf'});
       el.setAttribute('text', 'shader', 'sdf');
-      assert.shallowDeepEqual(updateMaterialSpy.getCalls()[1].args[0],
-                              {shader: 'standard'});
+      assert.equal(updateMaterialSpy.getCalls().length, 2);
     });
   });
 
   suite('createOrUpdateMaterial', function () {
-    suite('sdf', function () {
-      test('updates material color', function () {
-        var value;
-        value = el.getObject3D('text').material.uniforms.color.value;
-        assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), 'ffffff');
-        el.setAttribute('text', 'color', '#123456');
-        value = el.getObject3D('text').material.uniforms.color.value;
-        assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), '123456');
-      });
+    test('defaults to msdf font', function () {
+      assert.equal(component.shaderObject.name, 'msdf');
+    });
 
-      test('updates material opacity', function () {
-        var value;
-        value = el.getObject3D('text').material.uniforms.opacity.value;
-        assert.equal(value, 1);
-        el.setAttribute('text', 'opacity', '0.55');
-        value = el.getObject3D('text').material.uniforms.opacity.value;
-        assert.equal(value, 0.55);
-      });
+    test('switches to sdf font if sdf font', function () {
+      el.setAttribute('text', 'font', 'mozillavr');
+      assert.equal(component.shaderObject.name, 'sdf');
+    });
 
-      test('updates material side', function () {
-        var value;
-        value = el.getObject3D('text').material.side;
-        assert.equal(value, THREE.FrontSide);
-        el.setAttribute('text', 'side', 'double');
-        value = el.getObject3D('text').material.side;
-        assert.equal(value, THREE.DoubleSide);
-      });
+    test('switches back to msdf font if msdf font', function () {
+      assert.equal(component.shaderObject.name, 'msdf');
+      el.setAttribute('text', 'font', 'mozillavr');
+      assert.equal(component.shaderObject.name, 'sdf');
+      el.setAttribute('text', 'font', 'roboto');
+      assert.equal(component.shaderObject.name, 'msdf');
+    });
+
+    test('updates material color', function () {
+      var value;
+      value = el.getObject3D('text').material.uniforms.color.value;
+      assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), 'ffffff');
+      el.setAttribute('text', 'color', '#123456');
+      value = el.getObject3D('text').material.uniforms.color.value;
+      assert.equal(new THREE.Color(value.x, value.y, value.z).getHexString(), '123456');
+    });
+
+    test('updates material opacity', function () {
+      var value;
+      value = el.getObject3D('text').material.uniforms.opacity.value;
+      assert.equal(value, 1);
+      el.setAttribute('text', 'opacity', '0.55');
+      value = el.getObject3D('text').material.uniforms.opacity.value;
+      assert.equal(value, 0.55);
+    });
+
+    test('updates material side', function () {
+      var value;
+      value = el.getObject3D('text').material.side;
+      assert.equal(value, THREE.FrontSide);
+      el.setAttribute('text', 'side', 'double');
+      value = el.getObject3D('text').material.side;
+      assert.equal(value, THREE.DoubleSide);
     });
   });
 
@@ -143,7 +156,7 @@ suite('text', function () {
       el.addEventListener('textfontset', evt => {
         assert.equal(evt.detail.font, 'mozillavr');
         assert.equal(component.texture.image.getAttribute('src'),
-                     '/base/tests/assets/test.png?foo');
+                     '/base/tests/assets/test.png?bar');
         assert.ok(el.getObject3D('text').visible);
         done();
       });
@@ -165,7 +178,8 @@ suite('text', function () {
       var updateGeometrySpy = this.sinon.spy(component.geometry, 'update');
 
       el.addEventListener('textfontset', evt => {
-        assert.equal(updateGeometrySpy.getCalls()[0].args[0].font, evt.detail.fontObj);
+        assert.shallowDeepEqual(updateGeometrySpy.getCalls()[0].args[0].font,
+                                evt.detail.fontObj);
         done();
       });
       el.setAttribute('text', 'font', 'mozillavr');
