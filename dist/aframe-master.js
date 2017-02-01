@@ -66211,7 +66211,7 @@ module.exports.Component = registerComponent('text', {
     // `lineHeight` defaults to font's `lineHeight` value.
     lineHeight: {type: 'number'},
     opacity: {type: 'number', default: '1.0'},
-    shader: {default: 'msdf', oneOf: shaders},
+    shader: {default: 'sdf', oneOf: shaders},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     tabSize: {default: 4},
     transparent: {default: true},
@@ -72280,7 +72280,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 01-02-2017, Commit #d4e609a)');
+console.log('A-Frame Version: 0.4.0 (Date 01-02-2017, Commit #6e86041)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
