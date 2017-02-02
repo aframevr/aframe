@@ -1,7 +1,7 @@
 var registerPrimitive = require('../primitives').registerPrimitive;
 
-registerPrimitive('a-collada-model', {
+registerPrimitive('a-gltf-model', {
   mappings: {
-    src: 'collada-model'
+    src: 'gltf-model'
   }
 });

@@ -3,6 +3,7 @@ require('./camera');
 require('./collada-model');
 require('./cursor');
 require('./geometry');
+require('./gltf-model');
 require('./hand-controls');
 require('./light');
 require('./look-controls');
