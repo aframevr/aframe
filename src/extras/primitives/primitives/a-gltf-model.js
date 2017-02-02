@@ -1,9 +1,7 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
-var utils = require('../../../utils/');
 
-registerPrimitive('a-gltf-model', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-gltf-model', {
   mappings: {
     src: 'gltf-model'
   }
-}));
+});
