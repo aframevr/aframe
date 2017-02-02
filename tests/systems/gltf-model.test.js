@@ -1,7 +1,7 @@
 /* global process, setup, suite, test, sinon, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
-suite.only('glTF system', function () {
+suite('glTF system', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
     this.sinon.spy(THREE.GLTFLoader.Shaders, 'update');
