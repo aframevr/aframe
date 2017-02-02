@@ -16,7 +16,7 @@ The `gltf-model` component loads a 3D model using a glTF (.gltf or .glb) file.
 [obj-model]: ./obj-model.md
 [collada-model]: ./collada-model.md
 
-In comparison to the older [OBJ][obj-model] format, which supports only vertices, normals, texture coords, and optional materials, glTF provides a more powerful set of features. In addition to all of the above, glTF offers:
+In comparison to the older [OBJ][obj-model] format, which supports only vertices, normals, texture coords, and basic materials, glTF provides a more powerful set of features. In addition to all of the above, glTF offers:
 
 - Hierarchical objects
 - Scene information (light sources, cameras)
