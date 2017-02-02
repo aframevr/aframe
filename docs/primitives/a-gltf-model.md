@@ -1,5 +1,5 @@
 ---
-title: <a-collada-model>
+title: <a-gltf-model>
 type: primitives
 layout: docs
 parent_section: primitives
