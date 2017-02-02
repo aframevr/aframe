@@ -22,8 +22,7 @@
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
-    "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
+    "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
