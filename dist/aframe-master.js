@@ -3060,7 +3060,7 @@ function getAlignType(align) {
     return ALIGN_RIGHT
   return ALIGN_LEFT
 }
-},{"as-number":2,"indexof-property":16,"word-wrapper":50,"xtend":53}],23:[function(_dereq_,module,exports){
+},{"as-number":2,"indexof-property":16,"word-wrapper":51,"xtend":54}],23:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -3161,7 +3161,7 @@ function getBinaryOpts(opt) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":51,"xtend":53}],24:[function(_dereq_,module,exports){
+},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":52,"xtend":54}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -3765,7 +3765,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":30,"xml-parse-from-string":52}],30:[function(_dereq_,module,exports){
+},{"./parse-attribs":30,"xml-parse-from-string":53}],30:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -3826,7 +3826,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":13,"trim":47}],32:[function(_dereq_,module,exports){
+},{"for-each":13,"trim":48}],32:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -54015,6 +54015,1709 @@ THREE.ColladaLoader = function () {
 
 },{}],45:[function(_dereq_,module,exports){
 /**
+ * @author Rich Tibbett / https://github.com/richtr
+ * @author mrdoob / http://mrdoob.com/
+ * @author Tony Parisi / http://www.tonyparisi.com/
+ */
+
+THREE.GLTFLoader = ( function () {
+
+	function GLTFLoader( manager ) {
+
+		this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+
+	}
+
+	GLTFLoader.prototype = {
+
+		constructor: GLTFLoader,
+
+		load: function ( url, onLoad, onProgress, onError ) {
+
+			var scope = this;
+
+			var path = this.path && ( typeof this.path === "string" ) ? this.path : THREE.Loader.prototype.extractUrlBase( url );
+
+			var loader = new THREE.FileLoader( scope.manager );
+			loader.load( url, function ( text ) {
+
+				scope.parse( JSON.parse( text ), onLoad, path );
+
+			}, onProgress, onError );
+
+		},
+
+		setCrossOrigin: function ( value ) {
+
+			this.crossOrigin = value;
+
+		},
+
+		setPath: function ( value ) {
+
+			this.path = value;
+
+		},
+
+		parse: function ( json, callback, path ) {
+
+			console.time( 'GLTFLoader' );
+
+			var parser = new GLTFParser( json, {
+
+				path: path || this.path,
+				crossOrigin: !! this.crossOrigin
+
+			} );
+
+			parser.parse( function ( scene, cameras, animations ) {
+
+				console.timeEnd( 'GLTFLoader' );
+
+				var glTF = {
+					"scene": scene,
+					"cameras": cameras,
+					"animations": animations
+				};
+
+				callback( glTF );
+
+			} );
+
+		}
+
+	};
+
+	/* GLTFREGISTRY */
+
+	function GLTFRegistry() {
+
+		var objects = {};
+
+		return	{
+
+			get: function ( key ) {
+
+				return objects[ key ];
+
+			},
+
+			add: function ( key, object ) {
+
+				objects[ key ] = object;
+
+			},
+
+			remove: function ( key ) {
+
+				delete objects[ key ];
+
+			},
+
+			removeAll: function () {
+
+				objects = {};
+
+			},
+
+			update: function ( scene, camera ) {
+
+				for ( var name in objects ) {
+
+					var object = objects[ name ];
+
+					if ( object.update ) {
+
+						object.update( scene, camera );
+
+					}
+
+				}
+
+			}
+
+		};
+
+	}
+
+	/* GLTFSHADERS */
+
+	GLTFLoader.Shaders = new GLTFRegistry();
+
+	/* GLTFSHADER */
+
+	function GLTFShader( targetNode, allNodes ) {
+
+		var boundUniforms = {};
+
+		// bind each uniform to its source node
+
+		var uniforms = targetNode.material.uniforms;
+
+		for ( var uniformId in uniforms ) {
+
+			var uniform = uniforms[ uniformId ];
+
+			if ( uniform.semantic ) {
+
+				var sourceNodeRef = uniform.node;
+
+				var sourceNode = targetNode;
+
+				if ( sourceNodeRef ) {
+
+					sourceNode = allNodes[ sourceNodeRef ];
+
+				}
+
+				boundUniforms[ uniformId ] = {
+					semantic: uniform.semantic,
+					sourceNode: sourceNode,
+					targetNode: targetNode,
+					uniform: uniform
+				};
+
+			}
+
+		}
+
+		this.boundUniforms = boundUniforms;
+		this._m4 = new THREE.Matrix4();
+
+	}
+
+	// Update - update all the uniform values
+	GLTFShader.prototype.update = function ( scene, camera ) {
+
+		// update scene graph
+
+		scene.updateMatrixWorld();
+
+		// update camera matrices and frustum
+
+		camera.updateMatrixWorld();
+		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
+
+		var boundUniforms = this.boundUniforms;
+
+		for ( var name in boundUniforms ) {
+
+			var boundUniform = boundUniforms[ name ];
+
+			switch ( boundUniform.semantic ) {
+
+				case "MODELVIEW":
+
+					var m4 = boundUniform.uniform.value;
+					m4.multiplyMatrices( camera.matrixWorldInverse, boundUniform.sourceNode.matrixWorld );
+					break;
+
+				case "MODELVIEWINVERSETRANSPOSE":
+
+					var m3 = boundUniform.uniform.value;
+					this._m4.multiplyMatrices( camera.matrixWorldInverse, boundUniform.sourceNode.matrixWorld );
+					m3.getNormalMatrix( this._m4 );
+					break;
+
+				case "PROJECTION":
+
+					var m4 = boundUniform.uniform.value;
+					m4.copy( camera.projectionMatrix );
+					break;
+
+				case "JOINTMATRIX":
+
+					var m4v = boundUniform.uniform.value;
+
+					for ( var mi = 0; mi < m4v.length; mi ++ ) {
+
+						// So it goes like this:
+						// SkinnedMesh world matrix is already baked into MODELVIEW;
+						// transform joints to local space,
+						// then transform using joint's inverse
+						m4v[ mi ]
+							.getInverse( boundUniform.sourceNode.matrixWorld )
+							.multiply( boundUniform.targetNode.skeleton.bones[ mi ].matrixWorld )
+							.multiply( boundUniform.targetNode.skeleton.boneInverses[ mi ] )
+							.multiply( boundUniform.targetNode.bindMatrix );
+
+					}
+
+					break;
+
+				default :
+
+					console.warn( "Unhandled shader semantic: " + boundUniform.semantic );
+					break;
+
+			}
+
+		}
+
+	};
+
+
+	/* ANIMATION */
+
+	GLTFLoader.Animations = {
+
+		update: function () {
+
+			console.warn( 'THREE.GLTFLoader.Animation has been deprecated. Use THREE.AnimationMixer instead.' );
+
+		}
+
+	};
+
+	function createAnimation( name, interps ) {
+
+		var tracks = [];
+
+		for ( var i = 0, len = interps.length; i < len; i ++ ) {
+
+			var interp = interps[ i ];
+
+			// KeyframeTrack.optimize() will modify given 'times' and 'values'
+			// buffers before creating a truncated copy to keep. Because buffers may
+			// be reused by other tracks, make copies here.
+			interp.times = THREE.AnimationUtils.arraySlice( interp.times, 0 );
+			interp.values = THREE.AnimationUtils.arraySlice( interp.values, 0 );
+
+			interp.target.updateMatrix();
+			interp.target.matrixAutoUpdate = true;
+
+			tracks.push( new THREE.KeyframeTrack(
+				interp.name,
+				interp.times,
+				interp.values,
+				interp.type
+			) );
+
+		}
+
+		return new THREE.AnimationClip( name, undefined, tracks );
+
+	}
+
+	/*********************************/
+	/********** INTERNALS ************/
+	/*********************************/
+
+	/* CONSTANTS */
+
+	var WEBGL_CONSTANTS = {
+		FLOAT: 5126,
+		//FLOAT_MAT2: 35674,
+		FLOAT_MAT3: 35675,
+		FLOAT_MAT4: 35676,
+		FLOAT_VEC2: 35664,
+		FLOAT_VEC3: 35665,
+		FLOAT_VEC4: 35666,
+		LINEAR: 9729,
+		REPEAT: 10497,
+		SAMPLER_2D: 35678,
+		TRIANGLES: 4,
+		UNSIGNED_BYTE: 5121,
+		UNSIGNED_SHORT: 5123,
+
+		VERTEX_SHADER: 35633,
+		FRAGMENT_SHADER: 35632
+	};
+
+	var WEBGL_TYPE = {
+		5126: Number,
+		//35674: THREE.Matrix2,
+		35675: THREE.Matrix3,
+		35676: THREE.Matrix4,
+		35664: THREE.Vector2,
+		35665: THREE.Vector3,
+		35666: THREE.Vector4,
+		35678: THREE.Texture
+	};
+
+	var WEBGL_COMPONENT_TYPES = {
+		5120: Int8Array,
+		5121: Uint8Array,
+		5122: Int16Array,
+		5123: Uint16Array,
+		5125: Uint32Array,
+		5126: Float32Array
+	};
+
+	var WEBGL_FILTERS = {
+		9728: THREE.NearestFilter,
+		9729: THREE.LinearFilter,
+		9984: THREE.NearestMipMapNearestFilter,
+		9985: THREE.LinearMipMapNearestFilter,
+		9986: THREE.NearestMipMapLinearFilter,
+		9987: THREE.LinearMipMapLinearFilter
+	};
+
+	var WEBGL_WRAPPINGS = {
+		33071: THREE.ClampToEdgeWrapping,
+		33648: THREE.MirroredRepeatWrapping,
+		10497: THREE.RepeatWrapping
+	};
+
+	var WEBGL_TYPE_SIZES = {
+		'SCALAR': 1,
+		'VEC2': 2,
+		'VEC3': 3,
+		'VEC4': 4,
+		'MAT2': 4,
+		'MAT3': 9,
+		'MAT4': 16
+	};
+
+	var PATH_PROPERTIES = {
+		scale: 'scale',
+		translation: 'position',
+		rotation: 'quaternion'
+	};
+
+	var INTERPOLATION = {
+		LINEAR: THREE.InterpolateLinear,
+		STEP: THREE.InterpolateDiscrete
+	};
+
+	/* UTILITY FUNCTIONS */
+
+	function _each( object, callback, thisObj ) {
+
+		if ( !object ) {
+			return Promise.resolve();
+		}
+
+		var results;
+		var fns = [];
+
+		if ( Object.prototype.toString.call( object ) === '[object Array]' ) {
+
+			results = [];
+
+			var length = object.length;
+			for ( var idx = 0; idx < length; idx ++ ) {
+				var value = callback.call( thisObj || this, object[ idx ], idx );
+				if ( value ) {
+					fns.push( value );
+					if ( value instanceof Promise ) {
+						value.then( function( key, value ) {
+							results[ idx ] = value;
+						}.bind( this, key ));
+					} else {
+						results[ idx ] = value;
+					}
+				}
+			}
+
+		} else {
+
+			results = {};
+
+			for ( var key in object ) {
+				if ( object.hasOwnProperty( key ) ) {
+					var value = callback.call( thisObj || this, object[ key ], key );
+					if ( value ) {
+						fns.push( value );
+						if ( value instanceof Promise ) {
+							value.then( function( key, value ) {
+								results[ key ] = value;
+							}.bind( this, key ));
+						} else {
+							results[ key ] = value;
+						}
+					}
+				}
+			}
+
+		}
+
+		return Promise.all( fns ).then( function() {
+			return results;
+		});
+
+	}
+
+	function resolveURL( url, path ) {
+
+		// Invalid URL
+		if ( typeof url !== 'string' || url === '' )
+			return '';
+
+		// Absolute URL
+		if ( /^https?:\/\//i.test( url ) ) {
+
+			return url;
+
+		}
+
+		// Data URI
+		if ( /^data:.*,.*$/i.test( url ) ) {
+
+			return url;
+
+		}
+
+		// Relative URL
+		return ( path || '' ) + url;
+
+	}
+
+	// Three.js seems too dependent on attribute names so globally
+	// replace those in the shader code
+	function replaceTHREEShaderAttributes( shaderText, technique ) {
+
+		// Expected technique attributes
+		var attributes = {};
+
+		for ( var attributeId in technique.attributes ) {
+
+			var pname = technique.attributes[ attributeId ];
+
+			var param = technique.parameters[ pname ];
+			var atype = param.type;
+			var semantic = param.semantic;
+
+			attributes[ attributeId ] = {
+				type: atype,
+				semantic: semantic
+			};
+
+		}
+
+		// Figure out which attributes to change in technique
+
+		var shaderParams = technique.parameters;
+		var shaderAttributes = technique.attributes;
+		var params = {};
+
+		for ( var attributeId in attributes ) {
+
+			var pname = shaderAttributes[ attributeId ];
+			var shaderParam = shaderParams[ pname ];
+			var semantic = shaderParam.semantic;
+			if ( semantic ) {
+
+				params[ attributeId ] = shaderParam;
+
+			}
+
+		}
+
+		for ( var pname in params ) {
+
+			var param = params[ pname ];
+			var semantic = param.semantic;
+
+			var regEx = new RegExp( "\\b" + pname + "\\b", "g" );
+
+			switch ( semantic ) {
+
+				case "POSITION":
+
+					shaderText = shaderText.replace( regEx, 'position' );
+					break;
+
+				case "NORMAL":
+
+					shaderText = shaderText.replace( regEx, 'normal' );
+					break;
+
+				case 'TEXCOORD_0':
+				case 'TEXCOORD0':
+				case 'TEXCOORD':
+
+					shaderText = shaderText.replace( regEx, 'uv' );
+					break;
+
+				case "WEIGHT":
+
+					shaderText = shaderText.replace( regEx, 'skinWeight' );
+					break;
+
+				case "JOINT":
+
+					shaderText = shaderText.replace( regEx, 'skinIndex' );
+					break;
+
+			}
+
+		}
+
+		return shaderText;
+
+	}
+
+	// Deferred constructor for RawShaderMaterial types
+	function DeferredShaderMaterial( params ) {
+
+		this.isDeferredShaderMaterial = true;
+
+		this.params = params;
+
+	}
+
+	DeferredShaderMaterial.prototype.create = function () {
+
+		var uniforms = THREE.UniformsUtils.clone( this.params.uniforms );
+
+		for ( var uniformId in this.params.uniforms ) {
+
+			var originalUniform = this.params.uniforms[ uniformId ];
+
+			if ( originalUniform.value instanceof THREE.Texture ) {
+
+				uniforms[ uniformId ].value = originalUniform.value;
+				uniforms[ uniformId ].value.needsUpdate = true;
+
+			}
+
+			uniforms[ uniformId ].semantic = originalUniform.semantic;
+			uniforms[ uniformId ].node = originalUniform.node;
+
+		}
+
+		this.params.uniforms = uniforms;
+
+		return new THREE.RawShaderMaterial( this.params );
+
+	};
+
+	/* GLTF PARSER */
+
+	function GLTFParser( json, options ) {
+
+		this.json = json || {};
+		this.options = options || {};
+
+		// loader object cache
+		this.cache = new GLTFRegistry();
+
+	}
+
+	GLTFParser.prototype._withDependencies = function ( dependencies ) {
+
+		var _dependencies = {};
+
+		for ( var i = 0; i < dependencies.length; i ++ ) {
+
+			var dependency = dependencies[ i ];
+			var fnName = "load" + dependency.charAt( 0 ).toUpperCase() + dependency.slice( 1 );
+
+			var cached = this.cache.get( dependency );
+
+			if ( cached !== undefined ) {
+
+				_dependencies[ dependency ] = cached;
+
+			} else if ( this[ fnName ] ) {
+
+				var fn = this[ fnName ]();
+				this.cache.add( dependency, fn );
+
+				_dependencies[ dependency ] = fn;
+
+			}
+
+		}
+
+		return _each( _dependencies, function ( dependency ) {
+
+			return dependency;
+
+		} );
+
+	};
+
+	GLTFParser.prototype.parse = function ( callback ) {
+
+		var json = this.json;
+
+		// Clear the loader cache
+		this.cache.removeAll();
+
+		// Fire the callback on complete
+		this._withDependencies( [
+
+			"scenes",
+			"cameras",
+			"animations"
+
+		] ).then( function ( dependencies ) {
+
+			var scene = dependencies.scenes[ json.scene ];
+
+			var cameras = [];
+
+			for ( var name in dependencies.cameras ) {
+
+				var camera = dependencies.cameras[ name ];
+				cameras.push( camera );
+
+			}
+
+			var animations = [];
+
+			for ( var name in dependencies.animations ) {
+
+				animations.push( dependencies.animations[ name ] );
+
+			}
+
+			callback( scene, cameras, animations );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadShaders = function () {
+
+		var json = this.json;
+		var options = this.options;
+
+		return _each( json.shaders, function ( shader ) {
+
+			return new Promise( function ( resolve ) {
+
+				var loader = new THREE.FileLoader();
+				loader.responseType = 'text';
+				loader.load( resolveURL( shader.uri, options.path ), function ( shaderText ) {
+
+					resolve( shaderText );
+
+				} );
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadBuffers = function () {
+
+		var json = this.json;
+		var options = this.options;
+
+		return _each( json.buffers, function ( buffer ) {
+
+			if ( buffer.type === 'arraybuffer' ) {
+
+				return new Promise( function ( resolve ) {
+
+					var loader = new THREE.FileLoader();
+					loader.responseType = 'arraybuffer';
+					loader.load( resolveURL( buffer.uri, options.path ), function ( buffer ) {
+
+						resolve( buffer );
+
+					} );
+
+				} );
+
+			}
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadBufferViews = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"buffers"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.bufferViews, function ( bufferView ) {
+
+				var arraybuffer = dependencies.buffers[ bufferView.buffer ];
+
+				return arraybuffer.slice( bufferView.byteOffset, bufferView.byteOffset + bufferView.byteLength );
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadAccessors = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"bufferViews"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.accessors, function ( accessor ) {
+
+				var arraybuffer = dependencies.bufferViews[ accessor.bufferView ];
+				var itemSize = WEBGL_TYPE_SIZES[ accessor.type ];
+				var TypedArray = WEBGL_COMPONENT_TYPES[ accessor.componentType ];
+
+				// For VEC3: itemSize is 3, elementBytes is 4, itemBytes is 12.
+				var elementBytes = TypedArray.BYTES_PER_ELEMENT;
+				var itemBytes = elementBytes * itemSize;
+
+				// The buffer is not interleaved if the stride is the item size in bytes.
+				if ( accessor.byteStride && accessor.byteStride !== itemBytes ) {
+
+					// Use the full buffer if it's interleaved.
+					var array = new TypedArray( arraybuffer );
+
+					// Integer parameters to IB/IBA are in array elements, not bytes.
+					var ib = new THREE.InterleavedBuffer( array, accessor.byteStride / elementBytes );
+
+					return new THREE.InterleavedBufferAttribute( ib, itemSize, accessor.byteOffset / elementBytes );
+
+				} else {
+
+					array = new TypedArray( arraybuffer, accessor.byteOffset, accessor.count * itemSize );
+
+					return new THREE.BufferAttribute( array, itemSize );
+
+				}
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadTextures = function () {
+
+		var json = this.json;
+		var options = this.options;
+
+		return _each( json.textures, function ( texture ) {
+
+			if ( texture.source ) {
+
+				return new Promise( function ( resolve ) {
+
+					var source = json.images[ texture.source ];
+
+					var textureLoader = THREE.Loader.Handlers.get( source.uri );
+
+					if ( textureLoader === null ) {
+
+						textureLoader = new THREE.TextureLoader();
+
+					}
+
+					textureLoader.crossOrigin = options.crossOrigin || false;
+
+					textureLoader.load( resolveURL( source.uri, options.path ), function ( _texture ) {
+
+						_texture.flipY = false;
+
+						if ( texture.sampler ) {
+
+							var sampler = json.samplers[ texture.sampler ];
+
+							_texture.magFilter = WEBGL_FILTERS[ sampler.magFilter ];
+							_texture.minFilter = WEBGL_FILTERS[ sampler.minFilter ];
+							_texture.wrapS = WEBGL_WRAPPINGS[ sampler.wrapS ];
+							_texture.wrapT = WEBGL_WRAPPINGS[ sampler.wrapT ];
+
+						}
+
+						resolve( _texture );
+
+					}, undefined, function () {
+
+						resolve();
+
+					} );
+
+				} );
+
+			}
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadMaterials = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"shaders",
+			"textures"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.materials, function ( material ) {
+
+				var materialType;
+				var materialValues = {};
+				var materialParams = {};
+
+				var khr_material;
+
+				if ( material.extensions && material.extensions.KHR_materials_common ) {
+
+					khr_material = material.extensions.KHR_materials_common;
+
+				} else if ( json.extensions && json.extensions.KHR_materials_common ) {
+
+					khr_material = json.extensions.KHR_materials_common;
+
+				}
+
+				if ( khr_material ) {
+
+					switch ( khr_material.technique ) {
+
+						case 'BLINN' :
+						case 'PHONG' :
+							materialType = THREE.MeshPhongMaterial;
+							break;
+
+						case 'LAMBERT' :
+							materialType = THREE.MeshLambertMaterial;
+							break;
+
+						case 'CONSTANT' :
+						default :
+							materialType = THREE.MeshBasicMaterial;
+							break;
+
+					}
+
+					Object.assign( materialValues, khr_material.values );
+
+					if ( khr_material.doubleSided || materialValues.doubleSided ) {
+
+						materialParams.side = THREE.DoubleSide;
+
+					}
+
+					if ( khr_material.transparent || materialValues.transparent ) {
+
+						materialParams.transparent = true;
+						materialParams.opacity = ( materialValues.transparency !== undefined ) ? materialValues.transparency : 1;
+
+					}
+
+				} else if ( material.technique === undefined ) {
+
+					materialType = THREE.MeshPhongMaterial;
+
+					Object.assign( materialValues, material.values );
+
+				} else {
+
+					materialType = DeferredShaderMaterial;
+
+					var technique = json.techniques[ material.technique ];
+
+					materialParams.uniforms = {};
+
+					var program = json.programs[ technique.program ];
+
+					if ( program ) {
+
+						materialParams.fragmentShader = dependencies.shaders[ program.fragmentShader ];
+
+						if ( ! materialParams.fragmentShader ) {
+
+							console.warn( "ERROR: Missing fragment shader definition:", program.fragmentShader );
+							materialType = THREE.MeshPhongMaterial;
+
+						}
+
+						var vertexShader = dependencies.shaders[ program.vertexShader ];
+
+						if ( ! vertexShader ) {
+
+							console.warn( "ERROR: Missing vertex shader definition:", program.vertexShader );
+							materialType = THREE.MeshPhongMaterial;
+
+						}
+
+						// IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
+						materialParams.vertexShader = replaceTHREEShaderAttributes( vertexShader, technique );
+
+						var uniforms = technique.uniforms;
+
+						for ( var uniformId in uniforms ) {
+
+							var pname = uniforms[ uniformId ];
+							var shaderParam = technique.parameters[ pname ];
+
+							var ptype = shaderParam.type;
+
+							if ( WEBGL_TYPE[ ptype ] ) {
+
+								var pcount = shaderParam.count;
+								var value = material.values[ pname ];
+
+								var uvalue = new WEBGL_TYPE[ ptype ]();
+								var usemantic = shaderParam.semantic;
+								var unode = shaderParam.node;
+
+								switch ( ptype ) {
+
+									case WEBGL_CONSTANTS.FLOAT:
+
+										uvalue = shaderParam.value;
+
+										if ( pname == "transparency" ) {
+
+											materialParams.transparent = true;
+
+										}
+
+										if ( value !== undefined ) {
+
+											uvalue = value;
+
+										}
+
+										break;
+
+									case WEBGL_CONSTANTS.FLOAT_VEC2:
+									case WEBGL_CONSTANTS.FLOAT_VEC3:
+									case WEBGL_CONSTANTS.FLOAT_VEC4:
+									case WEBGL_CONSTANTS.FLOAT_MAT3:
+
+										if ( shaderParam && shaderParam.value ) {
+
+											uvalue.fromArray( shaderParam.value );
+
+										}
+
+										if ( value ) {
+
+											uvalue.fromArray( value );
+
+										}
+
+										break;
+
+									case WEBGL_CONSTANTS.FLOAT_MAT2:
+
+										// what to do?
+										console.warn( "FLOAT_MAT2 is not a supported uniform type" );
+										break;
+
+									case WEBGL_CONSTANTS.FLOAT_MAT4:
+
+										if ( pcount ) {
+
+											uvalue = new Array( pcount );
+
+											for ( var mi = 0; mi < pcount; mi ++ ) {
+
+												uvalue[ mi ] = new WEBGL_TYPE[ ptype ]();
+
+											}
+
+											if ( shaderParam && shaderParam.value ) {
+
+												var m4v = shaderParam.value;
+												uvalue.fromArray( m4v );
+
+											}
+
+											if ( value ) {
+
+												uvalue.fromArray( value );
+
+											}
+
+										}	else {
+
+											if ( shaderParam && shaderParam.value ) {
+
+												var m4 = shaderParam.value;
+												uvalue.fromArray( m4 );
+
+											}
+
+											if ( value ) {
+
+												uvalue.fromArray( value );
+
+											}
+
+										}
+
+										break;
+
+									case WEBGL_CONSTANTS.SAMPLER_2D:
+
+										uvalue = value ? dependencies.textures[ value ] : null;
+
+										break;
+
+								}
+
+								materialParams.uniforms[ uniformId ] = {
+									value: uvalue,
+									semantic: usemantic,
+									node: unode
+								};
+
+							} else {
+
+								throw new Error( "Unknown shader uniform param type: " + ptype );
+
+							}
+
+						}
+
+					}
+
+				}
+
+				if ( Array.isArray( materialValues.diffuse ) ) {
+
+					materialParams.color = new THREE.Color().fromArray( materialValues.diffuse );
+
+				} else if ( typeof( materialValues.diffuse ) === 'string' ) {
+
+					materialParams.map = dependencies.textures[ materialValues.diffuse ];
+
+				}
+
+				delete materialParams.diffuse;
+
+				if ( typeof( materialValues.reflective ) === 'string' ) {
+
+					materialParams.envMap = dependencies.textures[ materialValues.reflective ];
+
+				}
+
+				if ( typeof( materialValues.bump ) === 'string' ) {
+
+					materialParams.bumpMap = dependencies.textures[ materialValues.bump ];
+
+				}
+
+				if ( Array.isArray( materialValues.emission ) ) {
+
+					if ( materialType === THREE.MeshBasicMaterial ) {
+
+						materialParams.color = new THREE.Color().fromArray( materialValues.emission );
+
+					} else {
+
+						materialParams.emissive = new THREE.Color().fromArray( materialValues.emission );
+
+					}
+
+				} else if ( typeof( materialValues.emission ) === 'string' ) {
+
+					if ( materialType === THREE.MeshBasicMaterial ) {
+
+						materialParams.map = dependencies.textures[ materialValues.emission ];
+
+					} else {
+
+						materialParams.emissiveMap = dependencies.textures[ materialValues.emission ];
+
+					}
+
+				}
+
+				if ( Array.isArray( materialValues.specular ) ) {
+
+					materialParams.specular = new THREE.Color().fromArray( materialValues.specular );
+
+				} else if ( typeof( materialValues.specular ) === 'string' ) {
+
+					materialParams.specularMap = dependencies.textures[ materialValues.specular ];
+
+				}
+
+				if ( materialValues.shininess !== undefined ) {
+
+					materialParams.shininess = materialValues.shininess;
+
+				}
+
+				var _material = new materialType( materialParams );
+				_material.name = material.name;
+
+				return _material;
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadMeshes = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"accessors",
+			"materials"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.meshes, function ( mesh ) {
+
+				var group = new THREE.Object3D();
+				group.name = mesh.name;
+
+				var primitives = mesh.primitives;
+
+				for ( var name in primitives ) {
+
+					var primitive = primitives[ name ];
+
+					if ( primitive.mode === WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined ) {
+
+						var geometry = new THREE.BufferGeometry();
+
+						var attributes = primitive.attributes;
+
+						for ( var attributeId in attributes ) {
+
+							var attributeEntry = attributes[ attributeId ];
+
+							if ( ! attributeEntry ) return;
+
+							var bufferAttribute = dependencies.accessors[ attributeEntry ];
+
+							switch ( attributeId ) {
+
+								case 'POSITION':
+									geometry.addAttribute( 'position', bufferAttribute );
+									break;
+
+								case 'NORMAL':
+									geometry.addAttribute( 'normal', bufferAttribute );
+									break;
+
+								case 'TEXCOORD_0':
+								case 'TEXCOORD0':
+								case 'TEXCOORD':
+									geometry.addAttribute( 'uv', bufferAttribute );
+									break;
+
+								case 'WEIGHT':
+									geometry.addAttribute( 'skinWeight', bufferAttribute );
+									break;
+
+								case 'JOINT':
+									geometry.addAttribute( 'skinIndex', bufferAttribute );
+									break;
+
+							}
+
+						}
+
+						if ( primitive.indices ) {
+
+							var indexArray = dependencies.accessors[ primitive.indices ];
+
+							geometry.setIndex( indexArray );
+
+							var offset = {
+								start: 0,
+								index: 0,
+								count: indexArray.count
+							};
+
+							geometry.groups.push( offset );
+
+							geometry.computeBoundingSphere();
+
+						}
+
+
+						var material = dependencies.materials[ primitive.material ];
+
+						var meshNode = new THREE.Mesh( geometry, material );
+						meshNode.castShadow = true;
+
+						group.add( meshNode );
+
+					} else {
+
+						console.warn( "Non-triangular primitives are not supported" );
+
+					}
+
+				}
+
+				return group;
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadCameras = function () {
+
+		var json = this.json;
+
+		return _each( json.cameras, function ( camera ) {
+
+			if ( camera.type == "perspective" && camera.perspective ) {
+
+				var yfov = camera.perspective.yfov;
+				var xfov = camera.perspective.xfov;
+				var aspect_ratio = camera.perspective.aspect_ratio || 1;
+
+				// According to COLLADA spec...
+				// aspect_ratio = xfov / yfov
+				xfov = ( xfov === undefined && yfov ) ? yfov * aspect_ratio : xfov;
+
+				// According to COLLADA spec...
+				// aspect_ratio = xfov / yfov
+				// yfov = ( yfov === undefined && xfov ) ? xfov / aspect_ratio : yfov;
+
+				var _camera = new THREE.PerspectiveCamera( THREE.Math.radToDeg( xfov ), aspect_ratio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6 );
+				_camera.name = camera.name;
+
+				return _camera;
+
+			} else if ( camera.type == "orthographic" && camera.orthographic ) {
+
+				var _camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, camera.orthographic.znear, camera.orthographic.zfar );
+				_camera.name = camera.name;
+
+				return _camera;
+
+			}
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadSkins = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"accessors"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.skins, function ( skin ) {
+
+				var _skin = {
+					bindShapeMatrix: new THREE.Matrix4().fromArray( skin.bindShapeMatrix ),
+					jointNames: skin.jointNames,
+					inverseBindMatrices: dependencies.accessors[ skin.inverseBindMatrices ]
+				};
+
+				return _skin;
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadAnimations = function () {
+
+		var json = this.json;
+
+		return this._withDependencies( [
+
+			"accessors",
+			"nodes"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.animations, function ( animation, animationId ) {
+
+				var interps = [];
+
+				for ( var channelId in animation.channels ) {
+
+					var channel = animation.channels[ channelId ];
+					var sampler = animation.samplers[ channel.sampler ];
+
+					if ( sampler && animation.parameters ) {
+
+						var target = channel.target;
+						var name = target.id;
+						var input = animation.parameters[ sampler.input ];
+						var output = animation.parameters[ sampler.output ];
+
+						var inputAccessor = dependencies.accessors[ input ];
+						var outputAccessor = dependencies.accessors[ output ];
+
+						var node = dependencies.nodes[ name ];
+
+						if ( node ) {
+
+							var interp = {
+								times: inputAccessor.array,
+								values: outputAccessor.array,
+								target: node,
+								type: INTERPOLATION[ sampler.interpolation ],
+								name: node.name + '.' + PATH_PROPERTIES[ target.path ]
+							};
+
+							interps.push( interp );
+
+						}
+
+					}
+
+				}
+
+				return createAnimation( "animation_" + animationId, interps );
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadNodes = function () {
+
+		var json = this.json;
+		var scope = this;
+
+		return _each( json.nodes, function ( node ) {
+
+			var matrix = new THREE.Matrix4();
+
+			var _node;
+
+			if ( node.jointName ) {
+
+				_node = new THREE.Bone();
+				_node.jointName = node.jointName;
+
+			} else {
+
+				_node = new THREE.Object3D();
+
+			}
+
+			_node.name = node.name;
+
+			_node.matrixAutoUpdate = false;
+
+			if ( node.matrix !== undefined ) {
+
+				matrix.fromArray( node.matrix );
+				_node.applyMatrix( matrix );
+
+			} else {
+
+				if ( node.translation !== undefined ) {
+
+					_node.position.fromArray( node.translation );
+
+				}
+
+				if ( node.rotation !== undefined ) {
+
+					_node.quaternion.fromArray( node.rotation );
+
+				}
+
+				if ( node.scale !== undefined ) {
+
+					_node.scale.fromArray( node.scale );
+
+				}
+
+			}
+
+			return _node;
+
+		} ).then( function ( __nodes ) {
+
+			return scope._withDependencies( [
+
+				"meshes",
+				"skins",
+				"cameras",
+				"extensions"
+
+			] ).then( function ( dependencies ) {
+
+				return _each( __nodes, function ( _node, nodeId ) {
+
+					var node = json.nodes[ nodeId ];
+
+					if ( node.meshes !== undefined ) {
+
+						for ( var meshId in node.meshes ) {
+
+							var mesh = node.meshes[ meshId ];
+							var group = dependencies.meshes[ mesh ];
+
+							for ( var childrenId in group.children ) {
+
+								var child = group.children[ childrenId ];
+
+								// clone Mesh to add to _node
+
+								var originalMaterial = child.material;
+								var originalGeometry = child.geometry;
+
+								var material;
+
+								if ( originalMaterial.isDeferredShaderMaterial ) {
+
+									originalMaterial = material = originalMaterial.create();
+
+								} else {
+
+									material = originalMaterial;
+
+								}
+
+								child = new THREE.Mesh( originalGeometry, material );
+								child.castShadow = true;
+
+								var skinEntry;
+
+								if ( node.skin ) {
+
+									skinEntry = dependencies.skins[ node.skin ];
+
+								}
+
+								// Replace Mesh with SkinnedMesh in library
+								if ( skinEntry ) {
+
+									var geometry = originalGeometry;
+									var material = originalMaterial;
+									material.skinning = true;
+
+									child = new THREE.SkinnedMesh( geometry, material, false );
+									child.castShadow = true;
+
+									var bones = [];
+									var boneInverses = [];
+
+									var keys = Object.keys( __nodes );
+
+									for ( var i = 0, l = skinEntry.jointNames.length; i < l; i ++ ) {
+
+										var jointId = skinEntry.jointNames[ i ];
+
+										var jointNode;
+
+										for ( var j = 0, jl = keys.length; j < jl; j ++ ) {
+
+											var n = __nodes[ keys[ j ] ];
+
+											if ( n.jointName === jointId ) {
+
+												jointNode = n;
+												break;
+
+											}
+
+										}
+
+										if ( jointNode ) {
+
+											jointNode.skin = child;
+											bones.push( jointNode );
+
+											var m = skinEntry.inverseBindMatrices.array;
+											var mat = new THREE.Matrix4().fromArray( m, i * 16 );
+											boneInverses.push( mat );
+
+										} else {
+
+											console.warn( "WARNING: joint: ''" + jointId + "' could not be found" );
+
+										}
+
+									}
+
+									child.bind( new THREE.Skeleton( bones, boneInverses, false ), skinEntry.bindShapeMatrix );
+
+								}
+
+								_node.add( child );
+
+							}
+
+						}
+
+					}
+
+					if ( node.camera !== undefined ) {
+
+						var camera = dependencies.cameras[ node.camera ];
+
+						_node.add( camera );
+
+					}
+
+					if ( node.extensions && node.extensions.KHR_materials_common && node.extensions.KHR_materials_common.light ) {
+
+						var light = dependencies.extensions.KHR_materials_common.lights[ node.extensions.KHR_materials_common.light ];
+
+						_node.add( light );
+
+					}
+
+					return _node;
+
+				} );
+
+			} );
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadExtensions = function () {
+
+		var json = this.json;
+
+		return _each( json.extensions, function ( extension, extensionId ) {
+
+			switch ( extensionId ) {
+
+				case "KHR_materials_common":
+
+					var extensionNode = {
+						lights: {}
+					};
+
+					var lights = extension.lights;
+
+					for ( var lightId in lights ) {
+
+						var light = lights[ lightId ];
+						var lightNode;
+
+						var lightParams = light[ light.type ];
+						var color = new THREE.Color().fromArray( lightParams.color );
+
+						switch ( light.type ) {
+
+							case "directional":
+								lightNode = new THREE.DirectionalLight( color );
+								lightNode.position.set( 0, 0, 1 );
+								break;
+
+							case "point":
+								lightNode = new THREE.PointLight( color );
+								break;
+
+							case "spot ":
+								lightNode = new THREE.SpotLight( color );
+								lightNode.position.set( 0, 0, 1 );
+								break;
+
+							case "ambient":
+								lightNode = new THREE.AmbientLight( color );
+								break;
+
+						}
+
+						if ( lightNode ) {
+
+							extensionNode.lights[ lightId ] = lightNode;
+
+						}
+
+					}
+
+					return extensionNode;
+
+					break;
+
+			}
+
+		} );
+
+	};
+
+	GLTFParser.prototype.loadScenes = function () {
+
+		var json = this.json;
+
+		// scene node hierachy builder
+
+		function buildNodeHierachy( nodeId, parentObject, allNodes ) {
+
+			var _node = allNodes[ nodeId ];
+			parentObject.add( _node );
+
+			var node = json.nodes[ nodeId ];
+
+			if ( node.children ) {
+
+				var children = node.children;
+
+				for ( var i = 0, l = children.length; i < l; i ++ ) {
+
+					var child = children[ i ];
+					buildNodeHierachy( child, _node, allNodes );
+
+				}
+
+			}
+
+		}
+
+		return this._withDependencies( [
+
+			"nodes"
+
+		] ).then( function ( dependencies ) {
+
+			return _each( json.scenes, function ( scene ) {
+
+				var _scene = new THREE.Scene();
+				_scene.name = scene.name;
+
+				var nodes = scene.nodes;
+
+				for ( var i = 0, l = nodes.length; i < l; i ++ ) {
+
+					var nodeId = nodes[ i ];
+					buildNodeHierachy( nodeId, _scene, dependencies.nodes );
+
+				}
+
+				_scene.traverse( function ( child ) {
+
+					// Register raw material meshes with GLTFLoader.Shaders
+					if ( child.material && child.material.isRawShaderMaterial ) {
+
+						var xshader = new GLTFShader( child, dependencies.nodes );
+						GLTFLoader.Shaders.add( child.uuid, xshader );
+
+					}
+
+				} );
+
+				return _scene;
+
+			} );
+
+		} );
+
+	};
+
+	return GLTFLoader;
+
+} )();
+
+},{}],46:[function(_dereq_,module,exports){
+/**
  * Loads a Wavefront .mtl file specifying materials
  *
  * @author angelxuanchang
@@ -54548,7 +56251,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],46:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -55293,7 +56996,7 @@ THREE.OBJLoader.prototype = {
 
 };
 
-},{}],47:[function(_dereq_,module,exports){
+},{}],48:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -55309,7 +57012,7 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],48:[function(_dereq_,module,exports){
+},{}],49:[function(_dereq_,module,exports){
 /**
  * Tween.js - Licensed under the MIT license
  * https://github.com/sole/tween.js
@@ -56102,7 +57805,7 @@ TWEEN.Interpolation = {
 
 } )( this );
 
-},{}],49:[function(_dereq_,module,exports){
+},{}],50:[function(_dereq_,module,exports){
 (function (global){
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WebVRPolyfill = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
@@ -62418,7 +64121,7 @@ module.exports.WebVRPolyfill = WebVRPolyfill;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],50:[function(_dereq_,module,exports){
+},{}],51:[function(_dereq_,module,exports){
 var newline = /\n/
 var newlineChar = '\n'
 var whitespace = /\s/
@@ -62546,7 +64249,7 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
-},{}],51:[function(_dereq_,module,exports){
+},{}],52:[function(_dereq_,module,exports){
 "use strict";
 var window = _dereq_("global/window")
 var isFunction = _dereq_("is-function")
@@ -62789,7 +64492,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":14,"is-function":19,"parse-headers":31,"xtend":53}],52:[function(_dereq_,module,exports){
+},{"global/window":14,"is-function":19,"parse-headers":31,"xtend":54}],53:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof window.DOMParser !== 'undefined') {
@@ -62817,7 +64520,7 @@ module.exports = (function xmlparser() {
     return div
   }
 })()
-},{}],53:[function(_dereq_,module,exports){
+},{}],54:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -62838,7 +64541,7 @@ function extend() {
     return target
 }
 
-},{}],54:[function(_dereq_,module,exports){
+},{}],55:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.4.0",
@@ -62965,7 +64668,7 @@ module.exports={
   }
 }
 
-},{}],55:[function(_dereq_,module,exports){
+},{}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -63006,7 +64709,7 @@ module.exports.Component = registerComponent('blend-character-model', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142}],56:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -63183,7 +64886,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/":162}],57:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils/":166}],58:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -63218,7 +64921,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142}],58:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145}],59:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
@@ -63395,7 +65098,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":98,"../utils/":162}],59:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/":166}],60:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -63519,7 +65222,46 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":98,"../core/geometry":99,"../lib/three":142,"../utils/debug":158}],60:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/geometry":101,"../lib/three":145,"../utils/debug":162}],61:[function(_dereq_,module,exports){
+var registerComponent = _dereq_('../core/component').registerComponent;
+var THREE = _dereq_('../lib/three');
+
+/**
+ * glTF model loader.
+ */
+module.exports.Component = registerComponent('gltf-model', {
+  schema: {type: 'model'},
+
+  init: function () {
+    this.model = null;
+    this.loader = new THREE.GLTFLoader();
+  },
+
+  update: function () {
+    var self = this;
+    var el = this.el;
+    var src = this.data;
+
+    if (!src) { return; }
+
+    this.remove();
+
+    this.loader.load(src, function gltfLoaded (gltfModel) {
+      self.model = gltfModel.scene;
+      self.system.registerModel(self.model);
+      el.setObject3D('mesh', self.model);
+      el.emit('model-loaded', {format: 'gltf', model: self.model});
+    });
+  },
+
+  remove: function () {
+    if (!this.model) { return; }
+    this.el.removeObject3D('mesh');
+    this.system.unregisterModel(this.model);
+  }
+});
+
+},{"../core/component":100,"../lib/three":145}],62:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/leftHand.json';
@@ -63778,12 +65520,13 @@ module.exports.Component = registerComponent('hand-controls', {
   }
 });
 
-},{"../core/component":98}],61:[function(_dereq_,module,exports){
+},{"../core/component":100}],63:[function(_dereq_,module,exports){
 _dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
 _dereq_('./geometry');
+_dereq_('./gltf-model');
 _dereq_('./hand-controls');
 _dereq_('./light');
 _dereq_('./look-controls');
@@ -63813,7 +65556,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":55,"./camera":56,"./collada-model":57,"./cursor":58,"./geometry":59,"./hand-controls":60,"./light":62,"./look-controls":63,"./material":64,"./obj-model":65,"./oculus-touch-controls":66,"./position":67,"./raycaster":68,"./rotation":69,"./scale":70,"./scene/auto-enter-vr":71,"./scene/canvas":72,"./scene/debug":73,"./scene/embedded":74,"./scene/fog":75,"./scene/inspector":76,"./scene/keyboard-shortcuts":77,"./scene/pool":78,"./scene/screenshot":79,"./scene/stats":80,"./scene/vr-mode-ui":81,"./sound":82,"./text":83,"./tracked-controls":84,"./visible":85,"./vive-controls":86,"./wasd-controls":87}],62:[function(_dereq_,module,exports){
+},{"./blend-character-model":56,"./camera":57,"./collada-model":58,"./cursor":59,"./geometry":60,"./gltf-model":61,"./hand-controls":62,"./light":64,"./look-controls":65,"./material":66,"./obj-model":67,"./oculus-touch-controls":68,"./position":69,"./raycaster":70,"./rotation":71,"./scale":72,"./scene/auto-enter-vr":73,"./scene/canvas":74,"./scene/debug":75,"./scene/embedded":76,"./scene/fog":77,"./scene/inspector":78,"./scene/keyboard-shortcuts":79,"./scene/pool":80,"./scene/screenshot":81,"./scene/stats":82,"./scene/vr-mode-ui":83,"./sound":84,"./text":85,"./tracked-controls":86,"./visible":87,"./vive-controls":88,"./wasd-controls":89}],64:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -64008,7 +65751,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils":162,"../utils/bind":156,"../utils/debug":158}],63:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils":166,"../utils/bind":160,"../utils/debug":162}],65:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').device.isMobile();
@@ -64303,7 +66046,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":98,"../lib/three":142,"../utils/":162,"../utils/bind":156}],64:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils/":166,"../utils/bind":160}],66:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -64477,7 +66220,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":162}],65:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/shader":108,"../lib/three":145,"../utils/":166}],67:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -64555,7 +66298,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/debug":158}],66:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils/debug":162}],68:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -64802,7 +66545,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":98,"../utils/bind":156,"../utils/tracked-controls":166}],67:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/bind":160,"../utils/tracked-controls":170}],69:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -64815,7 +66558,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":98}],68:[function(_dereq_,module,exports){
+},{"../core/component":100}],70:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/').bind;
@@ -64977,7 +66720,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/":162}],69:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils/":166}],71:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -64995,7 +66738,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142}],70:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145}],72:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -65017,7 +66760,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":98}],71:[function(_dereq_,module,exports){
+},{"../core/component":100}],73:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils');
 
@@ -65075,7 +66818,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
 });
 
 
-},{"../../core/component":98,"../../utils":162}],72:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../utils":166}],74:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -65120,14 +66863,14 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":98,"../../utils/bind":156}],73:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../utils/bind":160}],75:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":98}],74:[function(_dereq_,module,exports){
+},{"../../core/component":100}],76:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -65152,7 +66895,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":98}],75:[function(_dereq_,module,exports){
+},{"../../core/component":100}],77:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -65225,7 +66968,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":98,"../../lib/three":142,"../../utils/debug":158}],76:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":145,"../../utils/debug":162}],78:[function(_dereq_,module,exports){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
 var bind = _dereq_('../../utils/bind');
@@ -65323,7 +67066,7 @@ module.exports.Component = registerComponent('inspector', {
   }
 });
 
-},{"../../../package":54,"../../constants":89,"../../core/component":98,"../../utils/bind":156}],77:[function(_dereq_,module,exports){
+},{"../../../package":55,"../../constants":91,"../../core/component":100,"../../utils/bind":160}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -65366,7 +67109,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":98,"../../lib/three":142,"../../utils/":162}],78:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":145,"../../utils/":166}],80:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -65475,7 +67218,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":98,"../../utils/debug":158}],79:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../utils/debug":162}],81:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -65733,7 +67476,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":98,"../../lib/three":142}],80:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":145}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -65813,7 +67556,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":170,"../../../vendor/rStats.extras":169,"../../core/component":98,"../../lib/rStatsAframe":141,"../../utils":162}],81:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":174,"../../../vendor/rStats.extras":173,"../../core/component":100,"../../lib/rStatsAframe":144,"../../utils":166}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -65962,7 +67705,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":89,"../../core/component":98,"../../utils/":162}],82:[function(_dereq_,module,exports){
+},{"../../constants/":91,"../../core/component":100,"../../utils/":166}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -66146,7 +67889,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142,"../utils/bind":156,"../utils/debug":158}],83:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145,"../utils/bind":160,"../utils/debug":162}],85:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 var path = _dereq_('path');
@@ -66612,7 +68355,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":98,"../core/shader":106,"../lib/three":142,"../utils/":162,"load-bmfont":23,"path":32,"three-bmfont-text":38}],84:[function(_dereq_,module,exports){
+},{"../core/component":100,"../core/shader":108,"../lib/three":145,"../utils/":166,"load-bmfont":23,"path":32,"three-bmfont-text":38}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66800,7 +68543,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../core/component":98,"../lib/three":142}],85:[function(_dereq_,module,exports){
+},{"../core/component":100,"../lib/three":145}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -66814,7 +68557,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":98}],86:[function(_dereq_,module,exports){
+},{"../core/component":100}],88:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -67029,7 +68772,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":98,"../utils/bind":156,"../utils/tracked-controls":166}],87:[function(_dereq_,module,exports){
+},{"../core/component":100,"../utils/bind":160,"../utils/tracked-controls":170}],89:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -67234,7 +68977,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":89,"../core/component":98,"../lib/three":142,"../utils/":162}],88:[function(_dereq_,module,exports){
+},{"../constants":91,"../core/component":100,"../lib/three":145,"../utils/":166}],90:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -67338,7 +69081,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":48}],89:[function(_dereq_,module,exports){
+},{"tween.js":49}],91:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -67346,7 +69089,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":88,"./keyboardevent":90}],90:[function(_dereq_,module,exports){
+},{"./animation":90,"./keyboardevent":92}],92:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -67361,7 +69104,7 @@ module.exports = {
   }
 };
 
-},{}],91:[function(_dereq_,module,exports){
+},{}],93:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -67905,7 +69648,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":88,"../lib/three":142,"../utils/":162,"./a-node":96,"./a-register-element":97,"./schema":105,"tween.js":48}],92:[function(_dereq_,module,exports){
+},{"../constants/animation":90,"../lib/three":145,"../utils/":166,"./a-node":98,"./a-register-element":99,"./schema":107,"tween.js":49}],94:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -68134,7 +69877,7 @@ function extractDomain (url) {
   return domain.split(':')[0];
 }
 
-},{"../lib/three":142,"../utils/bind":156,"../utils/debug":158,"./a-node":96,"./a-register-element":97}],93:[function(_dereq_,module,exports){
+},{"../lib/three":145,"../utils/bind":160,"../utils/debug":162,"./a-node":98,"./a-register-element":99}],95:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -68185,7 +69928,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":158,"./a-register-element":97}],94:[function(_dereq_,module,exports){
+},{"../utils/debug":162,"./a-register-element":99}],96:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
@@ -69088,7 +70831,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":142,"../utils/":162,"./a-node":96,"./a-register-element":97,"./component":98}],95:[function(_dereq_,module,exports){
+},{"../lib/three":145,"../utils/":166,"./a-node":98,"./a-register-element":99,"./component":100}],97:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -69196,7 +70939,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":96,"./a-register-element":97,"./component":98}],96:[function(_dereq_,module,exports){
+},{"./a-node":98,"./a-register-element":99,"./component":100}],98:[function(_dereq_,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
@@ -69445,7 +71188,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":162,"./a-register-element":97}],97:[function(_dereq_,module,exports){
+},{"../utils/":166,"./a-register-element":99}],99:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -69622,7 +71365,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":94,"./a-node":96,"document-register-element":10}],98:[function(_dereq_,module,exports){
+},{"./a-entity":96,"./a-node":98,"document-register-element":10}],100:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var schema = _dereq_('./schema');
 var systems = _dereq_('./system');
@@ -70044,7 +71787,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":162,"./schema":105,"./system":107}],99:[function(_dereq_,module,exports){
+},{"../utils/":166,"./schema":107,"./system":109}],101:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -70118,7 +71861,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":142,"./schema":105}],100:[function(_dereq_,module,exports){
+},{"../lib/three":145,"./schema":107}],102:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -70273,7 +72016,7 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
-},{"../utils/coordinates":157,"debug":7}],101:[function(_dereq_,module,exports){
+},{"../utils/coordinates":161,"debug":7}],103:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -70778,7 +72521,7 @@ function exitFullscreen () {
   }
 }
 
-},{"../../lib/three":142,"../../utils/":162,"../a-entity":94,"../a-node":96,"../a-register-element":97,"../system":107,"./metaTags":102,"./postMessage":103,"./wakelock":104,"tween.js":48}],102:[function(_dereq_,module,exports){
+},{"../../lib/three":145,"../../utils/":166,"../a-entity":96,"../a-node":98,"../a-register-element":99,"../system":109,"./metaTags":104,"./postMessage":105,"./wakelock":106,"tween.js":49}],104:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -70859,7 +72602,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":89,"../../utils":162}],103:[function(_dereq_,module,exports){
+},{"../../constants/":91,"../../utils":166}],105:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -70892,7 +72635,7 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":162,"../../utils/bind":156}],104:[function(_dereq_,module,exports){
+},{"../../utils/":166,"../../utils/bind":160}],106:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -70903,7 +72646,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":172}],105:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":176}],107:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
@@ -71067,7 +72810,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/debug":158,"./propertyTypes":100}],106:[function(_dereq_,module,exports){
+},{"../utils/debug":162,"./propertyTypes":102}],108:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -71243,7 +72986,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":142,"../utils":162,"./schema":105}],107:[function(_dereq_,module,exports){
+},{"../lib/three":145,"../utils":166,"./schema":107}],109:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -71360,10 +73103,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":162,"./component":98,"./schema":105}],108:[function(_dereq_,module,exports){
+},{"../utils/":166,"./component":100,"./schema":107}],110:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":109}],109:[function(_dereq_,module,exports){
+},{"./pivot":111}],111:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -71412,7 +73155,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":98,"../../lib/three":142}],110:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../lib/three":145}],112:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -71439,11 +73182,12 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":98,"../../core/shader":106,"../../utils/":162}],111:[function(_dereq_,module,exports){
+},{"../../core/component":100,"../../core/shader":108,"../../utils/":166}],113:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
 _dereq_('./primitives/a-curvedimage');
+_dereq_('./primitives/a-gltf-model');
 _dereq_('./primitives/a-image');
 _dereq_('./primitives/a-light');
 _dereq_('./primitives/a-obj-model');
@@ -71454,7 +73198,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":113,"./primitives/a-collada-model":114,"./primitives/a-cursor":115,"./primitives/a-curvedimage":116,"./primitives/a-image":117,"./primitives/a-light":118,"./primitives/a-obj-model":119,"./primitives/a-sky":120,"./primitives/a-sound":121,"./primitives/a-text":122,"./primitives/a-video":123,"./primitives/a-videosphere":124,"./primitives/meshPrimitives":125}],112:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":115,"./primitives/a-collada-model":116,"./primitives/a-cursor":117,"./primitives/a-curvedimage":118,"./primitives/a-gltf-model":119,"./primitives/a-image":120,"./primitives/a-light":121,"./primitives/a-obj-model":122,"./primitives/a-sky":123,"./primitives/a-sound":124,"./primitives/a-text":125,"./primitives/a-video":126,"./primitives/a-videosphere":127,"./primitives/meshPrimitives":128}],114:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -71619,7 +73363,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":94,"../../core/a-register-element":97,"../../core/component":98,"../../utils/":162}],113:[function(_dereq_,module,exports){
+},{"../../core/a-entity":96,"../../core/a-register-element":99,"../../core/component":100,"../../utils/":166}],115:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -71654,18 +73398,16 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":89,"../primitives":112}],114:[function(_dereq_,module,exports){
-var getMeshMixin = _dereq_('../getMeshMixin');
+},{"../../../constants/":91,"../primitives":114}],116:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
-var utils = _dereq_('../../../utils/');
 
-registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-collada-model', {
   mappings: {
     src: 'collada-model'
   }
-}));
+});
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],115:[function(_dereq_,module,exports){
+},{"../primitives":114}],117:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71703,7 +73445,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],116:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],118:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71740,7 +73482,16 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],117:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],119:[function(_dereq_,module,exports){
+var registerPrimitive = _dereq_('../primitives').registerPrimitive;
+
+registerPrimitive('a-gltf-model', {
+  mappings: {
+    src: 'gltf-model'
+  }
+});
+
+},{"../primitives":114}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71764,7 +73515,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],118:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],121:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -71785,7 +73536,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":112}],119:[function(_dereq_,module,exports){
+},{"../primitives":114}],122:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71801,7 +73552,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],120:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],123:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71825,7 +73576,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112,"./meshPrimitives":125}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114,"./meshPrimitives":128}],124:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -71842,12 +73593,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":112}],122:[function(_dereq_,module,exports){
+},{"../primitives":114}],125:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":112}],123:[function(_dereq_,module,exports){
+},{"../primitives":114}],126:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71871,7 +73622,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],124:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],127:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -71898,7 +73649,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],125:[function(_dereq_,module,exports){
+},{"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],128:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -71938,7 +73689,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":99,"../../../utils/":162,"../getMeshMixin":110,"../primitives":112}],126:[function(_dereq_,module,exports){
+},{"../../../core/geometry":101,"../../../utils/":166,"../getMeshMixin":112,"../primitives":114}],129:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -71957,7 +73708,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],127:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],130:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -71977,7 +73728,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],128:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],131:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72003,7 +73754,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],129:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],132:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72027,7 +73778,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],130:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72042,7 +73793,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],131:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72057,7 +73808,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],132:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],135:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -72072,7 +73823,7 @@ _dereq_('./tetrahedron.js');
 _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 
-},{"./box.js":126,"./circle.js":127,"./cone.js":128,"./cylinder.js":129,"./dodecahedron.js":130,"./icosahedron.js":131,"./octahedron.js":133,"./plane.js":134,"./ring.js":135,"./sphere.js":136,"./tetrahedron.js":137,"./torus.js":138,"./torusKnot.js":139}],133:[function(_dereq_,module,exports){
+},{"./box.js":129,"./circle.js":130,"./cone.js":131,"./cylinder.js":132,"./dodecahedron.js":133,"./icosahedron.js":134,"./octahedron.js":136,"./plane.js":137,"./ring.js":138,"./sphere.js":139,"./tetrahedron.js":140,"./torus.js":141,"./torusKnot.js":142}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72087,7 +73838,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],134:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],137:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72104,7 +73855,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],138:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72127,7 +73878,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],139:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72151,7 +73902,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],140:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72166,7 +73917,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],138:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],141:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72188,7 +73939,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],139:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],142:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -72209,7 +73960,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":99,"../lib/three":142}],140:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../lib/three":145}],143:[function(_dereq_,module,exports){
 var debug = _dereq_('./utils/debug');
 var error = debug('A-Frame:warn');
 var info = debug('A-Frame:info');
@@ -72280,7 +74031,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 01-02-2017, Commit #6e86041)');
+console.log('A-Frame Version: 0.4.0 (Date 02-02-2017, Commit #6306459)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -72310,7 +74061,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":54,"./components/index":61,"./core/a-animation":91,"./core/a-assets":92,"./core/a-cubemap":93,"./core/a-entity":94,"./core/a-mixin":95,"./core/a-node":96,"./core/a-register-element":97,"./core/component":98,"./core/geometry":99,"./core/scene/a-scene":101,"./core/schema":105,"./core/shader":106,"./core/system":107,"./extras/components/":108,"./extras/primitives/":111,"./extras/primitives/getMeshMixin":110,"./extras/primitives/primitives":112,"./geometries/index":132,"./lib/three":142,"./shaders/index":144,"./style/aframe.css":148,"./style/rStats.css":149,"./systems/index":152,"./utils/":162,"./utils/debug":158,"present":33,"promise-polyfill":35,"tween.js":48,"webvr-polyfill":49}],141:[function(_dereq_,module,exports){
+},{"../package":55,"./components/index":63,"./core/a-animation":93,"./core/a-assets":94,"./core/a-cubemap":95,"./core/a-entity":96,"./core/a-mixin":97,"./core/a-node":98,"./core/a-register-element":99,"./core/component":100,"./core/geometry":101,"./core/scene/a-scene":103,"./core/schema":107,"./core/shader":108,"./core/system":109,"./extras/components/":110,"./extras/primitives/":113,"./extras/primitives/getMeshMixin":112,"./extras/primitives/primitives":114,"./geometries/index":135,"./lib/three":145,"./shaders/index":147,"./style/aframe.css":151,"./style/rStats.css":152,"./systems/index":156,"./utils/":166,"./utils/debug":162,"present":33,"promise-polyfill":35,"tween.js":49,"webvr-polyfill":50}],144:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -72367,7 +74118,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],142:[function(_dereq_,module,exports){
+},{}],145:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -72390,6 +74141,7 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
+_dereq_('three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 _dereq_('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 _dereq_('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 _dereq_('three/examples/js/BlendCharacter');  // THREE.BlendCharacter
@@ -72398,6 +74150,7 @@ _dereq_('../../vendor/VRControls');  // THREE.VRControls
 _dereq_('../../vendor/VREffect');  // THREE.VREffect
 
 THREE.ColladaLoader.prototype.crossOrigin = 'anonymous';
+THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';
 THREE.MTLLoader.prototype.crossOrigin = 'anonymous';
 THREE.OBJLoader.prototype.crossOrigin = 'anonymous';
 
@@ -72405,7 +74158,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":167,"../../vendor/VREffect":168,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],143:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":171,"../../vendor/VREffect":172,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/GLTFLoader":45,"three/examples/js/loaders/MTLLoader":46,"three/examples/js/loaders/OBJLoader":47}],146:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -72470,13 +74223,13 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":106,"../lib/three":142,"../utils/":162}],144:[function(_dereq_,module,exports){
+},{"../core/shader":108,"../lib/three":145,"../utils/":166}],147:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 
-},{"./flat":143,"./msdf":145,"./sdf":146,"./standard":147}],145:[function(_dereq_,module,exports){
+},{"./flat":146,"./msdf":148,"./sdf":149,"./standard":150}],148:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -72552,7 +74305,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":106}],146:[function(_dereq_,module,exports){
+},{"../core/shader":108}],149:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -72662,7 +74415,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":106}],147:[function(_dereq_,module,exports){
+},{"../core/shader":108}],150:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -72827,11 +74580,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":106,"../lib/three":142,"../utils/":162}],148:[function(_dereq_,module,exports){
+},{"../core/shader":108,"../lib/three":145,"../utils/":166}],151:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grabbing;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:174px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;height:10%;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],149:[function(_dereq_,module,exports){
+},{"browserify-css":4}],152:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":4}],150:[function(_dereq_,module,exports){
+},{"browserify-css":4}],153:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -72958,7 +74711,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":89,"../core/system":107,"../utils/bind":156}],151:[function(_dereq_,module,exports){
+},{"../constants/":91,"../core/system":109,"../utils/bind":160}],154:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -73098,15 +74851,59 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":99,"../core/system":107,"../lib/three":142}],152:[function(_dereq_,module,exports){
+},{"../core/geometry":101,"../core/system":109,"../lib/three":145}],155:[function(_dereq_,module,exports){
+var registerSystem = _dereq_('../core/system').registerSystem;
+var THREE = _dereq_('../lib/three');
+
+/**
+ * glTF model system.
+ */
+module.exports.System = registerSystem('gltf-model', {
+  init: function () {
+    this.models = [];
+  },
+
+  /**
+   * Updates shaders for all glTF models in the system.
+   */
+  tick: function () {
+    var sceneEl = this.sceneEl;
+    if (sceneEl.hasLoaded && this.models.length) {
+      THREE.GLTFLoader.Shaders.update(sceneEl.object3D, sceneEl.camera);
+    }
+  },
+
+  /**
+   * Registers a glTF asset.
+   * @param {object} gltf Asset containing a scene and (optional) animations and cameras.
+   */
+  registerModel: function (gltf) {
+    this.models.push(gltf);
+  },
+
+  /**
+   * Unregisters a glTF asset.
+   * @param  {object} gltf Asset containing a scene and (optional) animations and cameras.
+   */
+  unregisterModel: function (gltf) {
+    var models = this.models;
+    var index = models.indexOf(gltf);
+    if (index >= 0) {
+      models.splice(index, 1);
+    }
+  }
+});
+
+},{"../core/system":109,"../lib/three":145}],156:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
+_dereq_('./gltf-model');
 _dereq_('./light');
 _dereq_('./material');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":150,"./geometry":151,"./light":153,"./material":154,"./tracked-controls":155}],153:[function(_dereq_,module,exports){
+},{"./camera":153,"./geometry":154,"./gltf-model":155,"./light":157,"./material":158,"./tracked-controls":159}],157:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -73185,7 +74982,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":89,"../core/system":107,"../utils/bind":156}],154:[function(_dereq_,module,exports){
+},{"../constants/":91,"../core/system":109,"../utils/bind":160}],158:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -73526,7 +75323,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":107,"../lib/three":142,"../utils/":162}],155:[function(_dereq_,module,exports){
+},{"../core/system":109,"../lib/three":145,"../utils/":166}],159:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -73568,7 +75365,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":107,"../utils":162,"../utils/tracked-controls":166}],156:[function(_dereq_,module,exports){
+},{"../core/system":109,"../utils":166,"../utils/tracked-controls":170}],160:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -73585,7 +75382,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],157:[function(_dereq_,module,exports){
+},{}],161:[function(_dereq_,module,exports){
 /* global THREE */
 var extend = _dereq_('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -73664,7 +75461,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":26}],158:[function(_dereq_,module,exports){
+},{"object-assign":26}],162:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -73761,7 +75558,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":34,"debug":7,"object-assign":26}],159:[function(_dereq_,module,exports){
+},{"_process":34,"debug":7,"object-assign":26}],163:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
@@ -73840,7 +75637,7 @@ module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
 };
 
-},{"../lib/three":142}],160:[function(_dereq_,module,exports){
+},{"../lib/three":145}],164:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -73881,7 +75678,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],161:[function(_dereq_,module,exports){
+},{}],165:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -73897,7 +75694,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],162:[function(_dereq_,module,exports){
+},{}],166:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -74152,7 +75949,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":156,"./coordinates":157,"./debug":158,"./device":159,"./entity":160,"./forceCanvasResizeSafariMobile":161,"./material":163,"./src-loader":164,"./styleParser":165,"./tracked-controls":166,"deep-assign":9,"object-assign":26}],163:[function(_dereq_,module,exports){
+},{"./bind":160,"./coordinates":161,"./debug":162,"./device":163,"./entity":164,"./forceCanvasResizeSafariMobile":165,"./material":167,"./src-loader":168,"./styleParser":169,"./tracked-controls":170,"deep-assign":9,"object-assign":26}],167:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 /**
@@ -74263,7 +76060,7 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-},{"../lib/three":142}],164:[function(_dereq_,module,exports){
+},{"../lib/three":145}],168:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -74390,7 +76187,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":158}],165:[function(_dereq_,module,exports){
+},{"./debug":162}],169:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -74450,7 +76247,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":37}],166:[function(_dereq_,module,exports){
+},{"style-attr":37}],170:[function(_dereq_,module,exports){
 /**
  * Return enumerated gamepads matching id prefix.
  *
@@ -74513,7 +76310,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
 };
 
 
-},{}],167:[function(_dereq_,module,exports){
+},{}],171:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -74688,7 +76485,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],168:[function(_dereq_,module,exports){
+},{}],172:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -75167,7 +76964,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],169:[function(_dereq_,module,exports){
+},{}],173:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -75432,7 +77229,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],170:[function(_dereq_,module,exports){
+},{}],174:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -75886,7 +77683,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],171:[function(_dereq_,module,exports){
+},{}],175:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75948,7 +77745,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],172:[function(_dereq_,module,exports){
+},{}],176:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -76024,6 +77821,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":171}]},{},[140])(140)
+},{"./util.js":175}]},{},[143])(143)
 });
 //# sourceMappingURL=aframe-master.js.map
