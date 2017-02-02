@@ -123,7 +123,7 @@ AFRAME.registerComponent('bar', {
 
 ```html
 <a-scene>
-  <a-entity foo="color: red; size: 20"></a-entity>
+  <a-entity bar="color: red; size: 20"></a-entity>
 </a-scene>
 ```
 
