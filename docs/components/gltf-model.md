@@ -7,13 +7,31 @@ parent_section: components
 
 [about-gltf]: https://www.khronos.org/gltf
 
-[glTF][about-gltf] is an open project by Khronos providing a common, extensible format for 3D assets that is both efficient and highly interoperable with modern web technologies.
+[glTF][about-gltf] (GL Transmission Format) is an open project by Khronos providing a common, extensible format for 3D assets that is both efficient and highly interoperable with modern web technologies.
 
-The gltf-model component loads a 3D model using a glTF (.gltf or .glb) file.
+The `gltf-model` component loads a 3D model using a glTF (.gltf or .glb) file.
+
+## Why use glTF?
+
+[obj-model]: ./obj-model.md
+[collada-model]: ./collada-model.md
+
+In comparison to the older [OBJ][obj-model] format, which supports only vertices, normals, texture coords, and optional materials, glTF provides a more powerful set of features. In addition to all of the above, glTF offers:
+
+- Hierarchical objects
+- Scene information (light sources, cameras)
+- Skeletal structure and animation
+- More robust materials and shaders
+
+For simple models with no animation, OBJ is nevertheless a common and reliable choice.
+
+In comparison to [COLLADA][collada-model], the supported features are very similar. However, because glTF focuses on providing a "transmission format" rather than an editor format, it is more interoperable with web technologies. By analogy, the .PSD (Adobe Photoshop) format is helpful for editing 2D images, but images are converted to .JPG for use on the web. In the same way, glTF is a simpler way of transmitting 3D assets while rendering the same result.
+
+In short, expect glTF models to work with A-Frame more reliably than COLLADA models.
 
 ## Example
 
-We can load a glTF model by pointing to an asset that specifies the `src` to a glTF file.
+Load a glTF model by pointing to an asset that specifies the `src` for a glTF file.
 
 ```html
 <a-scene>
@@ -40,7 +58,7 @@ We can load a glTF model by pointing to an asset that specifies the `src` to a g
 
 ## Loading Inline
 
-We can also load a glTF model by specifying the path directly within `url()`. Note this is less performant than going through the asset management system.
+Alternatively, load a glTF model by specifying the path directly within `url()`. This is less performant than using the asset management system.
 
 ```html
 <a-entity gltf-model="url(/path/to/tree.gltf)"></a-entity>
@@ -48,7 +66,7 @@ We can also load a glTF model by specifying the path directly within `url()`. No
 
 ## More Resources
 
-Converters:
+The glTF format is fairly new, and few editors will export a `.gltf` file directly. Instead, various converters are available or in progress:
 
 [fbx-converter]: http://gltf.autodesk.io/
 [collada-converter]: http://cesiumjs.org/convertmodel.html
