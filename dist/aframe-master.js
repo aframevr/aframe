@@ -64566,8 +64566,7 @@ module.exports={
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
-    "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox"
+    "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
@@ -74031,7 +74030,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 02-02-2017, Commit #6306459)');
+console.log('A-Frame Version: 0.4.0 (Date 03-02-2017, Commit #1145053)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
