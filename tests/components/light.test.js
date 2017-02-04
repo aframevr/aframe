@@ -48,6 +48,16 @@ suite('light', function () {
       el.setAttribute('light', 'angle', 180);
       assert.equal(el.getObject3D('light').angle, Math.PI);
     });
+
+    test('can update light shadow', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowBias: 0.25
+      });
+      assert.ok(el.getObject3D('light').castShadow);
+      assert.equal(el.getObject3D('light').shadow.bias, 0.25);
+    });
   });
 
   suite('getLight', function () {
@@ -95,6 +105,17 @@ suite('light', function () {
   suite('remove', function () {
     test('removes light', function () {
       var el = this.el;
+      el.removeAttribute('light');
+      assert.equal(el.object3D.children.length, 0);
+    });
+
+    test('removes shadow camera helper', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowCameraVisible: true
+      });
+      assert.ok(el.getObject3D('cameraHelper'));
       el.removeAttribute('light');
       assert.equal(el.object3D.children.length, 0);
     });

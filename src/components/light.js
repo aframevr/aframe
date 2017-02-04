@@ -20,7 +20,21 @@ module.exports.Component = registerComponent('light', {
     intensity: {default: 1.0, min: 0, if: {type: ['ambient', 'directional', 'hemisphere', 'point', 'spot']}},
     penumbra: {default: 0, min: 0, max: 1, if: {type: ['spot']}},
     type: {default: 'directional', oneOf: ['ambient', 'directional', 'hemisphere', 'point', 'spot']},
-    target: {type: 'selector', if: {type: ['spot', 'directional']}}
+    target: {type: 'selector', if: {type: ['spot', 'directional']}},
+
+    // Shadows.
+    castShadow: {default: false, if: {type: ['point', 'spot', 'directional']}},
+    shadowBias: {default: 0, if: {castShadow: true}},
+    shadowCameraFar: {default: 500, if: {castShadow: true}},
+    shadowCameraFov: {default: 50, if: {castShadow: true}},
+    shadowCameraNear: {default: 0.5, if: {castShadow: true}},
+    shadowCameraTop: {default: 5, if: {castShadow: true}},
+    shadowCameraRight: {default: 5, if: {castShadow: true}},
+    shadowCameraBottom: {default: -5, if: {castShadow: true}},
+    shadowCameraLeft: {default: -5, if: {castShadow: true}},
+    shadowCameraVisible: {default: false, if: {castShadow: true}},
+    shadowMapHeight: {default: 512, if: {castShadow: true}},
+    shadowMapWidth: {default: 512, if: {castShadow: true}}
   },
 
   /**
@@ -44,6 +58,7 @@ module.exports.Component = registerComponent('light', {
 
     // Existing light.
     if (light && !('type' in diffData)) {
+      var shadowsLoaded = false;
       // Light type has not changed. Update light.
       Object.keys(diffData).forEach(function (key) {
         var value = data[key];
@@ -81,6 +96,24 @@ module.exports.Component = registerComponent('light', {
             break;
           }
 
+          case 'castShadow':
+          case 'shadowBias':
+          case 'shadowCameraFar':
+          case 'shadowCameraFov':
+          case 'shadowCameraNear':
+          case 'shadowCameraTop':
+          case 'shadowCameraRight':
+          case 'shadowCameraBottom':
+          case 'shadowCameraLeft':
+          case 'shadowCameraVisible':
+          case 'shadowMapHeight':
+          case 'shadowMapWidth':
+            if (!shadowsLoaded) {
+              self.updateShadow();
+              shadowsLoaded = true;
+            }
+            break;
+
           default: {
             light[key] = value;
           }
@@ -91,6 +124,7 @@ module.exports.Component = registerComponent('light', {
 
     // No light yet or light type has changed. Create and add light.
     this.setLight(this.data);
+    this.updateShadow();
   },
 
   setLight: function (data) {
@@ -116,6 +150,47 @@ module.exports.Component = registerComponent('light', {
         el.getObject3D('light-target').position.set(0, 0, -1);
       }
     }
+  },
+
+  /**
+   * Updates shadow-related properties on the current light.
+   */
+  updateShadow: function () {
+    var el = this.el;
+    var data = this.data;
+    var light = this.light;
+
+    light.castShadow = data.castShadow;
+
+    // Shadow camera helper.
+    var cameraHelper = el.getObject3D('cameraHelper');
+    if (data.shadowCameraVisible && !cameraHelper) {
+      el.setObject3D('cameraHelper', new THREE.CameraHelper(light.shadow.camera));
+    } else if (!data.shadowCameraVisible && cameraHelper) {
+      el.removeObject3D('cameraHelper');
+    }
+
+    if (!data.castShadow) { return light; }
+
+    // Shadow appearance.
+    light.shadow.bias = data.shadowBias;
+    light.shadow.mapSize.height = data.shadowMapHeight;
+    light.shadow.mapSize.width = data.shadowMapWidth;
+
+    // Shadow camera.
+    light.shadow.camera.near = data.shadowCameraNear;
+    light.shadow.camera.far = data.shadowCameraFar;
+    if (light.shadow.camera instanceof THREE.OrthographicCamera) {
+      light.shadow.camera.top = data.shadowCameraTop;
+      light.shadow.camera.right = data.shadowCameraRight;
+      light.shadow.camera.bottom = data.shadowCameraBottom;
+      light.shadow.camera.left = data.shadowCameraLeft;
+    } else {
+      light.shadow.camera.fov = data.shadowCameraFov;
+    }
+    light.shadow.camera.updateProjectionMatrix();
+
+    if (cameraHelper) { cameraHelper.update(); }
   },
 
   /**
@@ -188,6 +263,10 @@ module.exports.Component = registerComponent('light', {
    * Remove light on remove (callback).
    */
   remove: function () {
-    this.el.removeObject3D('light');
+    var el = this.el;
+    el.removeObject3D('light');
+    if (el.getObject3D('cameraHelper')) {
+      el.removeObject3D('cameraHelper');
+    }
   }
 });
