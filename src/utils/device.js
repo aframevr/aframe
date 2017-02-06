@@ -75,3 +75,10 @@ module.exports.isGearVR = isGearVR;
 module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
 };
+
+/**
+ * Check if device is iOS and older than version 10.
+ */
+module.exports.isIOSOlderThan10 = function (userAgent) {
+  return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
+};
