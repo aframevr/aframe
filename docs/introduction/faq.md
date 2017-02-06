@@ -136,9 +136,9 @@ texture. There are some components in the ecosystem that enable this:
 
 - [HTML Shader][html-shader]
 
-## What 3D Model format works best?
+## Which 3D model formats work?
 
-The ThreeJS JSON format works best, since it is the generic loader for the underlying ThreeJS. OBJ and DAE formats can work also, albeit with some limitations (for example, OBJ is not able to hold vectice colors).
+The [ThreeJS JSON format](https://threejs.org/examples/?q=webgl_loader_json) works best, since it is the default loader. [Wavefront (`.obj`)](https://en.wikipedia.org/wiki/Wavefront_.obj_file) and [COLLADA (`.dae`)](https://en.wikipedia.org/wiki/COLLADA)formats can work also, albeit with some limitations (for example, OBJ is not able to store vertice colors).
 
 ## Where can I find assets?
 
