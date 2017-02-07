@@ -58494,7 +58494,7 @@ VRDisplay.prototype.requestPresent = function(layers) {
       if (Util.requestFullscreen(fullscreenElement)) {
         self.wakelock_.request();
         self.waitingForPresent_ = true;
-      } else if (Util.isIOS()) {
+      } else if (Util.isIOS() || Util.isWebViewAndroid()) {
         // *sigh* Just fake it.
         self.wakelock_.request();
         self.isPresenting = true;
@@ -58521,6 +58521,13 @@ VRDisplay.prototype.exitPresent = function() {
   return new Promise(function(resolve, reject) {
     if (wasPresenting) {
       if (!Util.exitFullscreen() && Util.isIOS()) {
+        self.endPresent_();
+        self.fireVRDisplayPresentChange_();
+      }
+
+      if(Util.isWebViewAndroid()) {
+        self.removeFullscreenWrapper();
+        self.removeFullscreenListeners_();
         self.endPresent_();
         self.fireVRDisplayPresentChange_();
       }
@@ -58654,7 +58661,7 @@ module.exports.VRDevice = VRDevice;
 module.exports.HMDVRDevice = HMDVRDevice;
 module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
 
-},{"./util.js":22,"./wakelock.js":24}],4:[function(_dereq_,module,exports){
+},{"./util.js":23,"./wakelock.js":25}],4:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59304,7 +59311,7 @@ CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrNam
 
 module.exports = CardboardDistorter;
 
-},{"./cardboard-ui.js":5,"./deps/wglu-preserve-state.js":7,"./util.js":22}],5:[function(_dereq_,module,exports){
+},{"./cardboard-ui.js":5,"./deps/wglu-preserve-state.js":7,"./util.js":23}],5:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59592,7 +59599,7 @@ CardboardUI.prototype.renderNoState = function() {
 
 module.exports = CardboardUI;
 
-},{"./deps/wglu-preserve-state.js":7,"./util.js":22}],6:[function(_dereq_,module,exports){
+},{"./deps/wglu-preserve-state.js":7,"./util.js":23}],6:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59872,7 +59879,7 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
 
 module.exports = CardboardVRDisplay;
 
-},{"./base.js":3,"./cardboard-distorter.js":4,"./cardboard-ui.js":5,"./device-info.js":8,"./dpdb/dpdb.js":12,"./rotate-instructions.js":16,"./sensor-fusion/fusion-pose-sensor.js":18,"./util.js":22,"./viewer-selector.js":23}],7:[function(_dereq_,module,exports){
+},{"./base.js":3,"./cardboard-distorter.js":4,"./cardboard-ui.js":5,"./device-info.js":8,"./dpdb/dpdb.js":13,"./rotate-instructions.js":17,"./sensor-fusion/fusion-pose-sensor.js":19,"./util.js":23,"./viewer-selector.js":24}],7:[function(_dereq_,module,exports){
 /*
 Copyright (c) 2016, Brandon Jones.
 
@@ -60404,7 +60411,7 @@ function CardboardViewer(params) {
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
 
-},{"./distortion/distortion.js":10,"./math-util.js":14,"./util.js":22}],9:[function(_dereq_,module,exports){
+},{"./distortion/distortion.js":10,"./math-util.js":15,"./util.js":23}],9:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60721,6 +60728,17 @@ var DPDB_CACHE = {
       { "ua": "ASUS_Z00AD" }
     ],
     "dpi": [ 403.0, 404.6 ],
+    "bw": 3,
+    "ac": 1000
+  },
+
+  {
+    "type": "android",
+    "rules": [
+      { "mdmh": "Google//Pixel XL/" },
+      { "ua": "Pixel XL" }
+    ],
+    "dpi": [537.9, 533],
     "bw": 3,
     "ac": 1000
   },
@@ -61085,6 +61103,17 @@ var DPDB_CACHE = {
     ],
     "dpi": [ 422.0, 423.4 ],
     "bw": 3,
+    "ac": 1000
+  },
+
+  {
+    "type": "android",
+    "rules": [
+      { "mdmh": "motorola/*/G4/*" },
+      { "ua": "Moto G (4)" }
+    ],
+    "dpi": 401.0,
+    "bw": 4,
     "ac": 1000
   },
 
@@ -61498,6 +61527,17 @@ var DPDB_CACHE = {
   {
     "type": "android",
     "rules": [
+      { "mdmh": "samsung/*/SM-G935F/*" },
+      { "ua": "SM-G935F" }
+    ],
+    "dpi": 534,
+    "bw": 3,
+    "ac": 500
+  },
+
+  {
+    "type": "android",
+    "rules": [
       { "mdmh": "Sony/*/C6903/*" },
       { "ua": "C6903" }
     ],
@@ -61593,33 +61633,9 @@ var DPDB_CACHE = {
 
   {
     "type": "ios",
-    "rules": [ { "res": [ 640, 960 ] } ],
-    "dpi": [ 325.1, 328.4 ],
-    "bw": 4,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
     "rules": [ { "res": [ 640, 1136 ] } ],
     "dpi": [ 317.1, 320.2 ],
     "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 640, 1136 ] } ],
-    "dpi": [ 317.1, 320.2 ],
-    "bw": 3,
-    "ac": 1000
-  },
-
-  {
-    "type": "ios",
-    "rules": [ { "res": [ 750, 1334 ] } ],
-    "dpi": 326.4,
-    "bw": 4,
     "ac": 1000
   },
 
@@ -61641,8 +61657,8 @@ var DPDB_CACHE = {
 
   {
     "type": "ios",
-    "rules": [ { "res": [ 1242, 2208 ] } ],
-    "dpi": [ 453.6, 458.4 ],
+    "rules": [ { "res": [ 1125, 2001 ] } ],
+    "dpi": [ 410.9, 415.4 ],
     "bw": 4,
     "ac": 1000
   }
@@ -61651,6 +61667,1496 @@ var DPDB_CACHE = {
 module.exports = DPDB_CACHE;
 
 },{}],12:[function(_dereq_,module,exports){
+module.exports={
+  "format":1,
+  "last_updated":"2017-01-12T08:41:55Z",
+  "devices":[
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"asus/*/Nexus 7/*"
+        },
+        {
+          "ua":"Nexus 7"
+        }
+      ],
+      "dpi":[
+        320.8,
+        323
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"asus/*/ASUS_Z00AD/*"
+        },
+        {
+          "ua":"ASUS_Z00AD"
+        }
+      ],
+      "dpi":[
+        403,
+        404.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "Google//Pixel XL/"
+        },
+        {
+          "ua": "Pixel XL"
+        }
+      ],
+      "dpi": [
+        537.9,
+        533
+      ],
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"HTC/*/HTC6435LVW/*"
+        },
+        {
+          "ua":"HTC6435LVW"
+        }
+      ],
+      "dpi":[
+        449.7,
+        443.3
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"HTC/*/HTC One XL/*"
+        },
+        {
+          "ua":"HTC One XL"
+        }
+      ],
+      "dpi":[
+        315.3,
+        314.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"htc/*/Nexus 9/*"
+        },
+        {
+          "ua":"Nexus 9"
+        }
+      ],
+      "dpi":289,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"HTC/*/HTC One M9/*"
+        },
+        {
+          "ua":"HTC One M9"
+        }
+      ],
+      "dpi":[
+        442.5,
+        443.3
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"HTC/*/HTC One_M8/*"
+        },
+        {
+          "ua":"HTC One_M8"
+        }
+      ],
+      "dpi":[
+        449.7,
+        447.4
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"HTC/*/HTC One/*"
+        },
+        {
+          "ua":"HTC One"
+        }
+      ],
+      "dpi":472.8,
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Huawei/*/Nexus 6P/*"
+        },
+        {
+          "ua":"Nexus 6P"
+        }
+      ],
+      "dpi":[
+        515.1,
+        518
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/Nexus 5X/*"
+        },
+        {
+          "ua":"Nexus 5X"
+        }
+      ],
+      "dpi":[
+        422,
+        419.9
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LGMS345/*"
+        },
+        {
+          "ua":"LGMS345"
+        }
+      ],
+      "dpi":[
+        221.7,
+        219.1
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LG-D800/*"
+        },
+        {
+          "ua":"LG-D800"
+        }
+      ],
+      "dpi":[
+        422,
+        424.1
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LG-D850/*"
+        },
+        {
+          "ua":"LG-D850"
+        }
+      ],
+      "dpi":[
+        537.9,
+        541.9
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/VS985 4G/*"
+        },
+        {
+          "ua":"VS985 4G"
+        }
+      ],
+      "dpi":[
+        537.9,
+        535.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/Nexus 5/*"
+        },
+        {
+          "ua":"Nexus 5 B"
+        }
+      ],
+      "dpi":[
+        442.4,
+        444.8
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/Nexus 4/*"
+        },
+        {
+          "ua":"Nexus 4"
+        }
+      ],
+      "dpi":[
+        319.8,
+        318.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LG-P769/*"
+        },
+        {
+          "ua":"LG-P769"
+        }
+      ],
+      "dpi":[
+        240.6,
+        247.5
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LGMS323/*"
+        },
+        {
+          "ua":"LGMS323"
+        }
+      ],
+      "dpi":[
+        206.6,
+        204.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"LGE/*/LGLS996/*"
+        },
+        {
+          "ua":"LGLS996"
+        }
+      ],
+      "dpi":[
+        403.4,
+        401.5
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Micromax/*/4560MMX/*"
+        },
+        {
+          "ua":"4560MMX"
+        }
+      ],
+      "dpi":[
+        240,
+        219.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Micromax/*/A250/*"
+        },
+        {
+          "ua":"Micromax A250"
+        }
+      ],
+      "dpi":[
+        480,
+        446.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Micromax/*/Micromax AQ4501/*"
+        },
+        {
+          "ua":"Micromax AQ4501"
+        }
+      ],
+      "dpi":240,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/DROID RAZR/*"
+        },
+        {
+          "ua":"DROID RAZR"
+        }
+      ],
+      "dpi":[
+        368.1,
+        256.7
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT830C/*"
+        },
+        {
+          "ua":"XT830C"
+        }
+      ],
+      "dpi":[
+        254,
+        255.9
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1021/*"
+        },
+        {
+          "ua":"XT1021"
+        }
+      ],
+      "dpi":[
+        254,
+        256.7
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1023/*"
+        },
+        {
+          "ua":"XT1023"
+        }
+      ],
+      "dpi":[
+        254,
+        256.7
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1028/*"
+        },
+        {
+          "ua":"XT1028"
+        }
+      ],
+      "dpi":[
+        326.6,
+        327.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1034/*"
+        },
+        {
+          "ua":"XT1034"
+        }
+      ],
+      "dpi":[
+        326.6,
+        328.4
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1053/*"
+        },
+        {
+          "ua":"XT1053"
+        }
+      ],
+      "dpi":[
+        315.3,
+        316.1
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1562/*"
+        },
+        {
+          "ua":"XT1562"
+        }
+      ],
+      "dpi":[
+        403.4,
+        402.7
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/Nexus 6/*"
+        },
+        {
+          "ua":"Nexus 6 B"
+        }
+      ],
+      "dpi":[
+        494.3,
+        489.7
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1063/*"
+        },
+        {
+          "ua":"XT1063"
+        }
+      ],
+      "dpi":[
+        295,
+        296.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1064/*"
+        },
+        {
+          "ua":"XT1064"
+        }
+      ],
+      "dpi":[
+        295,
+        295.6
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1092/*"
+        },
+        {
+          "ua":"XT1092"
+        }
+      ],
+      "dpi":[
+        422,
+        424.1
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"motorola/*/XT1095/*"
+        },
+        {
+          "ua":"XT1095"
+        }
+      ],
+      "dpi":[
+        422,
+        423.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "motorola/*/G4/*"
+        },
+        {
+          "ua": "Moto G (4)"
+        }
+      ],
+      "dpi": 401.0,
+      "bw": 4,
+      "ac": 1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"OnePlus/*/A0001/*"
+        },
+        {
+          "ua":"A0001"
+        }
+      ],
+      "dpi":[
+        403.4,
+        401
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"OnePlus/*/ONE E1005/*"
+        },
+        {
+          "ua":"ONE E1005"
+        }
+      ],
+      "dpi":[
+        442.4,
+        441.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"OnePlus/*/ONE A2005/*"
+        },
+        {
+          "ua":"ONE A2005"
+        }
+      ],
+      "dpi":[
+        391.9,
+        405.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"OPPO/*/X909/*"
+        },
+        {
+          "ua":"X909"
+        }
+      ],
+      "dpi":[
+        442.4,
+        444.1
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9082/*"
+        },
+        {
+          "ua":"GT-I9082"
+        }
+      ],
+      "dpi":[
+        184.7,
+        185.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G360P/*"
+        },
+        {
+          "ua":"SM-G360P"
+        }
+      ],
+      "dpi":[
+        196.7,
+        205.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/Nexus S/*"
+        },
+        {
+          "ua":"Nexus S"
+        }
+      ],
+      "dpi":[
+        234.5,
+        229.8
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9300/*"
+        },
+        {
+          "ua":"GT-I9300"
+        }
+      ],
+      "dpi":[
+        304.8,
+        303.9
+      ],
+      "bw":5,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-T230NU/*"
+        },
+        {
+          "ua":"SM-T230NU"
+        }
+      ],
+      "dpi":216,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SGH-T399/*"
+        },
+        {
+          "ua":"SGH-T399"
+        }
+      ],
+      "dpi":[
+        217.7,
+        231.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-N9005/*"
+        },
+        {
+          "ua":"SM-N9005"
+        }
+      ],
+      "dpi":[
+        386.4,
+        387
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SAMSUNG-SM-N900A/*"
+        },
+        {
+          "ua":"SAMSUNG-SM-N900A"
+        }
+      ],
+      "dpi":[
+        386.4,
+        387.7
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9500/*"
+        },
+        {
+          "ua":"GT-I9500"
+        }
+      ],
+      "dpi":[
+        442.5,
+        443.3
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9505/*"
+        },
+        {
+          "ua":"GT-I9505"
+        }
+      ],
+      "dpi":439.4,
+      "bw":4,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G900F/*"
+        },
+        {
+          "ua":"SM-G900F"
+        }
+      ],
+      "dpi":[
+        415.6,
+        431.6
+      ],
+      "bw":5,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G900M/*"
+        },
+        {
+          "ua":"SM-G900M"
+        }
+      ],
+      "dpi":[
+        415.6,
+        431.6
+      ],
+      "bw":5,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G800F/*"
+        },
+        {
+          "ua":"SM-G800F"
+        }
+      ],
+      "dpi":326.8,
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G906S/*"
+        },
+        {
+          "ua":"SM-G906S"
+        }
+      ],
+      "dpi":[
+        562.7,
+        572.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9300/*"
+        },
+        {
+          "ua":"GT-I9300"
+        }
+      ],
+      "dpi":[
+        306.7,
+        304.8
+      ],
+      "bw":5,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-T535/*"
+        },
+        {
+          "ua":"SM-T535"
+        }
+      ],
+      "dpi":[
+        142.6,
+        136.4
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-N920C/*"
+        },
+        {
+          "ua":"SM-N920C"
+        }
+      ],
+      "dpi":[
+        515.1,
+        518.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+       "type": "android",
+       "rules": [
+         {
+           "mdmh": "samsung/*/SM-N920W8/*"
+         },
+         {
+           "ua": "SM-N920W8"
+         }
+       ],
+       "dpi": [
+         515.1,
+         518.4
+       ],
+       "bw": 3,
+       "ac": 1000
+     },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9300I/*"
+        },
+        {
+          "ua":"GT-I9300I"
+        }
+      ],
+      "dpi":[
+        304.8,
+        305.8
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-I9195/*"
+        },
+        {
+          "ua":"GT-I9195"
+        }
+      ],
+      "dpi":[
+        249.4,
+        256.7
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SPH-L520/*"
+        },
+        {
+          "ua":"SPH-L520"
+        }
+      ],
+      "dpi":[
+        249.4,
+        255.9
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SAMSUNG-SGH-I717/*"
+        },
+        {
+          "ua":"SAMSUNG-SGH-I717"
+        }
+      ],
+      "dpi":285.8,
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SPH-D710/*"
+        },
+        {
+          "ua":"SPH-D710"
+        }
+      ],
+      "dpi":[
+        217.7,
+        204.2
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/GT-N7100/*"
+        },
+        {
+          "ua":"GT-N7100"
+        }
+      ],
+      "dpi":265.1,
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SCH-I605/*"
+        },
+        {
+          "ua":"SCH-I605"
+        }
+      ],
+      "dpi":265.1,
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/Galaxy Nexus/*"
+        },
+        {
+          "ua":"Galaxy Nexus"
+        }
+      ],
+      "dpi":[
+        315.3,
+        314.2
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-N910H/*"
+        },
+        {
+          "ua":"SM-N910H"
+        }
+      ],
+      "dpi":[
+        515.1,
+        518
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-N910C/*"
+        },
+        {
+          "ua":"SM-N910C"
+        }
+      ],
+      "dpi":[
+        515.2,
+        520.2
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G130M/*"
+        },
+        {
+          "ua":"SM-G130M"
+        }
+      ],
+      "dpi":[
+        165.9,
+        164.8
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G928I/*"
+        },
+        {
+          "ua":"SM-G928I"
+        }
+      ],
+      "dpi":[
+        515.1,
+        518.4
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G920F/*"
+        },
+        {
+          "ua":"SM-G920F"
+        }
+      ],
+      "dpi":580.6,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G920P/*"
+        },
+        {
+          "ua":"SM-G920P"
+        }
+      ],
+      "dpi":[
+        522.5,
+        577
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G925F/*"
+        },
+        {
+          "ua":"SM-G925F"
+        }
+      ],
+      "dpi":580.6,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G925V/*"
+        },
+        {
+          "ua":"SM-G925V"
+        }
+      ],
+      "dpi":[
+        522.5,
+        576.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/SM-G930F/*"
+        },
+        {
+          "ua": "SM-G930F"
+        }
+      ],
+      "dpi": 576.6,
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"samsung/*/SM-G935F/*"
+        },
+        {
+          "ua":"SM-G935F"
+        }
+      ],
+      "dpi":533,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Sony/*/C6903/*"
+        },
+        {
+          "ua":"C6903"
+        }
+      ],
+      "dpi":[
+        442.5,
+        443.3
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Sony/*/D6653/*"
+        },
+        {
+          "ua":"D6653"
+        }
+      ],
+      "dpi":[
+        428.6,
+        427.6
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Sony/*/E6653/*"
+        },
+        {
+          "ua":"E6653"
+        }
+      ],
+      "dpi":[
+        428.6,
+        425.7
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Sony/*/E6853/*"
+        },
+        {
+          "ua":"E6853"
+        }
+      ],
+      "dpi":[
+        403.4,
+        401.9
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"Sony/*/SGP321/*"
+        },
+        {
+          "ua":"SGP321"
+        }
+      ],
+      "dpi":[
+        224.7,
+        224.1
+      ],
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"TCT/*/ALCATEL ONE TOUCH Fierce/*"
+        },
+        {
+          "ua":"ALCATEL ONE TOUCH Fierce"
+        }
+      ],
+      "dpi":[
+        240,
+        247.5
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"THL/*/thl 5000/*"
+        },
+        {
+          "ua":"thl 5000"
+        }
+      ],
+      "dpi":[
+        480,
+        443.3
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"android",
+      "rules":[
+        {
+          "mdmh":"ZTE/*/ZTE Blade L2/*"
+        },
+        {
+          "ua":"ZTE Blade L2"
+        }
+      ],
+      "dpi":240,
+      "bw":3,
+      "ac":500
+    },
+    {
+      "type":"ios",
+      "rules":[
+        {
+          "res":[
+            640,
+            960
+          ]
+        }
+      ],
+      "dpi":[
+        325.1,
+        328.4
+      ],
+      "bw":4,
+      "ac":1000
+    },
+    {
+      "type":"ios",
+      "rules":[
+        {
+          "res":[
+            640,
+            1136
+          ]
+        }
+      ],
+      "dpi":[
+        317.1,
+        320.2
+      ],
+      "bw":3,
+      "ac":1000
+    },
+    {
+      "type":"ios",
+      "rules":[
+        {
+          "res":[
+            750,
+            1334
+          ]
+        }
+      ],
+      "dpi":326.4,
+      "bw":4,
+      "ac":1000
+    },
+    {
+      "type":"ios",
+      "rules":[
+        {
+          "res":[
+            1242,
+            2208
+          ]
+        }
+      ],
+      "dpi":[
+        453.6,
+        458.4
+      ],
+      "bw":4,
+      "ac":1000
+    },
+    {
+      "type":"ios",
+      "rules":[
+        {
+          "res":[
+            1125,
+            2001
+          ]
+        }
+      ],
+      "dpi":[
+        410.9,
+        415.4
+      ],
+      "bw":4,
+      "ac":1000
+    }
+  ]
+}
+
+},{}],13:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61672,7 +63178,7 @@ var DPDB_CACHE = _dereq_('./dpdb-cache.js');
 var Util = _dereq_('../util.js');
 
 // Online DPDB URL.
-var ONLINE_DPDB_URL = 'https://storage.googleapis.com/cardboard-dpdb/dpdb.json';
+var ONLINE_DPDB_URL = _dereq_('./dpdb.json');
 
 /**
  * Calculates device parameters based on the DPDB (Device Parameter Database).
@@ -61831,7 +63337,7 @@ function DeviceParams(params) {
 
 module.exports = Dpdb;
 
-},{"../util.js":22,"./dpdb-cache.js":11}],13:[function(_dereq_,module,exports){
+},{"../util.js":23,"./dpdb-cache.js":11,"./dpdb.json":12}],14:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61913,7 +63419,7 @@ if (!window.WebVRConfig.DEFER_INITIALIZATION) {
   }
 }
 
-},{"./util.js":22,"./webvr-polyfill.js":25}],14:[function(_dereq_,module,exports){
+},{"./util.js":23,"./webvr-polyfill.js":26}],15:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62272,7 +63778,7 @@ MathUtil.Quaternion.prototype = {
 
 module.exports = MathUtil;
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62451,7 +63957,7 @@ MouseKeyboardVRDisplay.prototype.resetPose = function() {
 
 module.exports = MouseKeyboardVRDisplay;
 
-},{"./base.js":3,"./math-util.js":14,"./util.js":22}],16:[function(_dereq_,module,exports){
+},{"./base.js":3,"./math-util.js":15,"./util.js":23}],17:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62597,7 +64103,7 @@ RotateInstructions.prototype.loadIcon_ = function() {
 
 module.exports = RotateInstructions;
 
-},{"./util.js":22}],17:[function(_dereq_,module,exports){
+},{"./util.js":23}],18:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62765,7 +64271,7 @@ ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
 
 module.exports = ComplementaryFilter;
 
-},{"../math-util.js":14,"../util.js":22,"./sensor-sample.js":20}],18:[function(_dereq_,module,exports){
+},{"../math-util.js":15,"../util.js":23,"./sensor-sample.js":21}],19:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62996,7 +64502,7 @@ FusionPoseSensor.prototype.stop = function() {
 
 module.exports = FusionPoseSensor;
 
-},{"../math-util.js":14,"../touch-panner.js":21,"../util.js":22,"./complementary-filter.js":17,"./pose-predictor.js":19}],19:[function(_dereq_,module,exports){
+},{"../math-util.js":15,"../touch-panner.js":22,"../util.js":23,"./complementary-filter.js":18,"./pose-predictor.js":20}],20:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63079,7 +64585,7 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
 
 module.exports = PosePredictor;
 
-},{"../math-util":14,"../util":22}],20:[function(_dereq_,module,exports){
+},{"../math-util":15,"../util":23}],21:[function(_dereq_,module,exports){
 function SensorSample(sample, timestampS) {
   this.set(sample, timestampS);
 };
@@ -63095,7 +64601,7 @@ SensorSample.prototype.copy = function(sensorSample) {
 
 module.exports = SensorSample;
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],22:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63173,7 +64679,7 @@ TouchPanner.prototype.onTouchEnd_ = function(e) {
 
 module.exports = TouchPanner;
 
-},{"./math-util.js":14,"./util.js":22}],22:[function(_dereq_,module,exports){
+},{"./math-util.js":15,"./util.js":23}],23:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63212,6 +64718,15 @@ Util.isIOS = (function() {
   var isIOS = /iPad|iPhone|iPod/.test(navigator.platform);
   return function() {
     return isIOS;
+  };
+})();
+
+Util.isWebViewAndroid = (function() {
+  var isWebViewAndroid = navigator.userAgent.indexOf('Version') !== -1 &&
+      navigator.userAgent.indexOf('Android') !== -1 &&
+      navigator.userAgent.indexOf('Chrome') !== -1;
+  return function() {
+    return isWebViewAndroid;
   };
 })();
 
@@ -63259,6 +64774,9 @@ Util.getScreenHeight = function() {
 };
 
 Util.requestFullscreen = function(element) {
+  if (Util.isWebViewAndroid()) {
+      return false;
+  }
   if (element.requestFullscreen) {
     element.requestFullscreen();
   } else if (element.webkitRequestFullscreen) {
@@ -63275,6 +64793,7 @@ Util.requestFullscreen = function(element) {
 };
 
 Util.exitFullscreen = function() {
+
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.webkitExitFullscreen) {
@@ -63605,7 +65124,7 @@ Util.getDomainFromUrl = function(url) {
 
 module.exports = Util;
 
-},{"object-assign":2}],23:[function(_dereq_,module,exports){
+},{"object-assign":2}],24:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63804,7 +65323,7 @@ ViewerSelector.prototype.createButton_ = function(label, onclick) {
 
 module.exports = ViewerSelector;
 
-},{"./device-info.js":8,"./util.js":22,"eventemitter3":1}],24:[function(_dereq_,module,exports){
+},{"./device-info.js":8,"./util.js":23,"eventemitter3":1}],25:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63879,7 +65398,7 @@ function getWakeLock() {
 }
 
 module.exports = getWakeLock();
-},{"./util.js":22}],25:[function(_dereq_,module,exports){
+},{"./util.js":23}],26:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64117,7 +65636,7 @@ function InstallWebVRSpecShim() {
 
 module.exports.WebVRPolyfill = WebVRPolyfill;
 
-},{"./base.js":3,"./cardboard-vr-display.js":6,"./display-wrappers.js":9,"./mouse-keyboard-vr-display.js":15,"./util.js":22}]},{},[13])(13)
+},{"./base.js":3,"./cardboard-vr-display.js":6,"./display-wrappers.js":9,"./mouse-keyboard-vr-display.js":16,"./util.js":23}]},{},[14])(14)
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
@@ -64584,7 +66103,7 @@ module.exports={
     "three": "^0.83.0",
     "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "^0.9.23"
+    "webvr-polyfill": "dmarcos/webvr-polyfill#a02a8089b"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -74031,7 +75550,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #8d283ee)');
+console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #130356e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
