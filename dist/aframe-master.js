@@ -73084,10 +73084,8 @@ Component.prototype = {
     }
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
-    // Don't update if properties haven't changed
-    if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
-
     if (!this.initialized) {
+      // Initialize component.
       this.init();
       this.initialized = true;
       // Play the component if the entity is playing.
@@ -73099,6 +73097,10 @@ Component.prototype = {
         data: this.getData()
       }, false);
     } else {
+      // Don't update if properties haven't changed
+      if (utils.deepEqual(oldData, this.data)) { return; }
+
+      // Update component.
       this.update(oldData);
       el.emit('componentchanged', {
         id: this.id,
@@ -75550,7 +75552,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #130356e)');
+console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #733c42f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77333,25 +77335,38 @@ module.exports.clone = function (obj) {
 };
 
 /**
- * Checks if two objects have the same attributes and values, including nested objects.
+ * Checks if two values are equal.
+ * Includes objects and arrays and nested objects and arrays.
+ * Try to keep this function performant as it will be called often to see if a component
+ * should be updated.
  *
  * @param {object} a - First object.
  * @param {object} b - Second object.
  * @returns {boolean} Whether two objects are deeply equal.
  */
 function deepEqual (a, b) {
-  var keysA = Object.keys(a);
-  var keysB = Object.keys(b);
+  var i;
+  var keysA;
+  var keysB;
   var valA;
   var valB;
-  var i;
+
+  // If not objects, compare as values.
+  if (typeof a !== 'object' || typeof b !== 'object' ||
+      a === null || b === null) { return a === b; }
+
+  // Different number of keys, not equal.
+  keysA = Object.keys(a);
+  keysB = Object.keys(b);
   if (keysA.length !== keysB.length) { return false; }
-  // If there are no keys, compare the objects.
-  if (keysA.length === 0) { return a === b; }
+
+  // Return `false` at the first sign of inequality.
   for (i = 0; i < keysA.length; ++i) {
     valA = a[keysA[i]];
     valB = b[keysA[i]];
-    if ((Array.isArray(valA) && Array.isArray(valB))) {
+    // Check nested array and object.
+    if ((typeof valA === 'object' || typeof valB === 'object') ||
+        (Array.isArray(valA) && Array.isArray(valB))) {
       if (!deepEqual(valA, valB)) { return false; }
     } else if (valA !== valB) {
       return false;
