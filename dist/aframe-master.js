@@ -67592,8 +67592,8 @@ module.exports.Component = registerComponent('material', {
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     visible: {default: true},
-    offset: {default: {x: 0, y: 0}},
-    repeat: {default: {x: 1, y: 1}},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     npot: {default: false}
   },
 
@@ -67844,9 +67844,9 @@ var EMULATED_TOUCH_THRESHOLD = 0.001;
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#999'},          // Off-white.
-    buttonTouchColor: {default: '#8AB'},
-    buttonHighlightColor: {default: '#2DF'}, // Light blue.
+    buttonColor: {type: 'color', default: '#999'},          // Off-white.
+    buttonTouchColor: {type: 'color', default: '#8AB'},
+    buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
     model: { default: true },
     rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
@@ -68426,7 +68426,7 @@ var warn = debug('components:fog:warn');
  */
 module.exports.Component = register('fog', {
   schema: {
-    color: {default: '#000'},
+    color: {type: 'color', default: '#000'},
     density: {default: 0.00025},
     far: {default: 1000, min: 0},
     near: {default: 1, min: 0},
@@ -70094,8 +70094,8 @@ var GAMEPAD_ID_PREFIX = 'OpenVR Gamepad';
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
+    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
     rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
@@ -75552,7 +75552,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #733c42f)');
+console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #691f1ea)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
