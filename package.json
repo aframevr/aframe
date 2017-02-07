@@ -40,7 +40,7 @@
     "three": "^0.83.0",
     "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "^0.9.23"
+    "webvr-polyfill": "dmarcos/webvr-polyfill#a02a8089b"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
