@@ -369,14 +369,23 @@ AFRAME.registerComponent('example-orthogonal-camera', {
 });
 ```
 
-### `removeAttribute (attr)`
+### `removeAttribute (attr, propertyName)`
 
 If `attr` is the name of a registered component, along with removing the
 attribute from the DOM, `removeAttribute` will also detach the component from
 the entity, invoking the component's `remove` lifecycle method.
 
 ```js
-entity.removeAttribute('sound');  // The entity will no longer play sound.
+entity.removeAttribute('goemetry');  // Detach the geometry component.
+entity.removeAttribute('sound');  // Detach the sound component.
+```
+
+If `propertyName` is given, `removeAttribute` will reset the property value of
+that property specified by `propertyName` to the property's default value:
+
+```js
+entity.setAttribute('material', 'color', 'blue');  // The color is blue.
+entity.removeAttribute('material', 'color');  // Reset the color to the default value, white.
 ```
 
 ### `removeObject3D (type)`

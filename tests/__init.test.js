@@ -1,4 +1,4 @@
-/* global sinon, setup, teardown */
+/* global AFRAME, sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
@@ -34,4 +34,5 @@ teardown(function () {
     els[i].parentNode.removeChild(els[i]);
   }
   this.sinon.restore();
+  delete AFRAME.components.test;
 });

@@ -1,4 +1,4 @@
-/* global assert, process, suite, test, setup, sinon, HTMLElement */
+/* global AFRAME, assert, process, suite, test, setup, sinon, HTMLElement */
 var buildData = require('core/component').buildData;
 var components = require('index').components;
 var helpers = require('../helpers');
@@ -290,6 +290,37 @@ suite('Component', function () {
         done();
       });
       el.setAttribute('material', '');
+    });
+  });
+
+  suite('resetProperty', function () {
+    var el;
+
+    setup(function (done) {
+      el = entityFactory();
+      el.addEventListener('loaded', () => { done(); });
+    });
+
+    test('resets property to default value', function () {
+      AFRAME.registerComponent('test', {
+        schema: {
+          bar: {default: 5},
+          foo: {default: 5}
+        }
+      });
+      el.setAttribute('test', {bar: 10, foo: 10});
+      el.components.test.resetProperty('bar');
+      assert.equal(el.getAttribute('test').bar, 5);
+      assert.equal(el.getAttribute('test').foo, 10);
+    });
+
+    test('resets property to default value for single-prop', function () {
+      AFRAME.registerComponent('test', {
+        schema: {default: 5}
+      });
+      el.setAttribute('test', 10);
+      el.components.test.resetProperty();
+      assert.equal(el.getAttribute('test'), 5);
     });
   });
 
