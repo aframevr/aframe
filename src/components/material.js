@@ -25,8 +25,8 @@ module.exports.Component = registerComponent('material', {
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
     visible: {default: true},
-    offset: {default: {x: 0, y: 0}},
-    repeat: {default: {x: 1, y: 1}},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     npot: {default: false}
   },
 

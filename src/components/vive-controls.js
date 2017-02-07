@@ -16,8 +16,8 @@ var GAMEPAD_ID_PREFIX = 'OpenVR Gamepad';
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
+    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
     rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
