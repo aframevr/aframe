@@ -155,8 +155,10 @@ suite('Component', function () {
       el.addEventListener('loaded', function () {
         el.setAttribute('dummy', '');
         data = el.getAttribute('dummy');
-        assert.shallowDeepEqual(data.direction, TestComponent.prototype.schema.direction.default);
-        assert.shallowDeepEqual(data.position, TestComponent.prototype.schema.position.default);
+        assert.shallowDeepEqual(data.direction,
+                                TestComponent.prototype.schema.direction.default);
+        assert.shallowDeepEqual(data.position,
+                                TestComponent.prototype.schema.position.default);
         assert.notEqual(data.direction, data.position);
         done();
       });
@@ -164,8 +166,13 @@ suite('Component', function () {
   });
 
   suite('updateProperties', function () {
-    test('emits componentchanged', function (done) {
-      var el = entityFactory();
+    var el;
+
+    setup(function () {
+      el = entityFactory();
+    });
+
+    test('emits componentchanged for multi-prop', function (done) {
       el.setAttribute('material', 'color: red');
       el.addEventListener('componentchanged', function (evt) {
         if (evt.detail.name !== 'material') { return; }
@@ -175,13 +182,106 @@ suite('Component', function () {
         assert.ok('id' in evt.detail);
         done();
       });
-      process.nextTick(function () {
+      setTimeout(() => {
         el.setAttribute('material', 'color: blue');
       });
     });
 
+    test('emits componentchanged for single-prop', function (done) {
+      el.setAttribute('position', {x: 0, y: 0, z: 0});
+      el.addEventListener('componentchanged', function (evt) {
+        if (evt.detail.name !== 'position') { return; }
+        assert.shallowDeepEqual(evt.detail.oldData, {x: 0, y: 0, z: 0});
+        assert.shallowDeepEqual(evt.detail.newData, {x: 1, y: 2, z: 3});
+        assert.equal(evt.detail.name, 'position');
+        assert.ok('id' in evt.detail);
+        done();
+      });
+      setTimeout(() => {
+        el.setAttribute('position', {x: 1, y: 2, z: 3});
+      });
+    });
+
+    test('emits componentchanged for value', function (done) {
+      el.addEventListener('componentchanged', function (evt) {
+        if (evt.detail.name !== 'visible') { return; }
+        assert.shallowDeepEqual(evt.detail.oldData, true);
+        assert.shallowDeepEqual(evt.detail.newData, false);
+        assert.equal(evt.detail.name, 'visible');
+        done();
+      });
+      setTimeout(() => {
+        el.setAttribute('visible', false);
+      });
+    });
+
+    test('does not emit componentchanged for multi-prop if not changed', function (done) {
+      el.addEventListener('componentinitialized', function (evt) {
+        if (evt.detail.name !== 'material') { return; }
+
+        el.addEventListener('componentchanged', function (evt) {
+          if (evt.detail.name !== 'material') { return; }
+          // Should not reach here.
+          assert.equal(true, false, 'Component should not have emitted changed.');
+        });
+
+        // Update.
+        el.setAttribute('material', 'color', 'red');
+
+        // Have `done()` race with the failing assertion in the event handler.
+        setTimeout(() => {
+          done();
+        }, 100);
+      });
+      // Initialization.
+      el.setAttribute('material', 'color', 'red');
+    });
+
+    test('does not emit componentchanged for single-prop if not changed', function (done) {
+      el.addEventListener('componentinitialized', function (evt) {
+        if (evt.detail.name !== 'position') { return; }
+
+        el.addEventListener('componentchanged', function (evt) {
+          if (evt.detail.name !== 'position') { return; }
+          // Should not reach here.
+          assert.equal(true, false, 'Component should not have emitted changed.');
+        });
+
+        // Update.
+        el.setAttribute('position', {x: 1, y: 2, z: 3});
+
+        // Have `done()` race with the failing assertion in the event handler.
+        setTimeout(() => {
+          done();
+        }, 100);
+      });
+      // Initialization.
+      el.setAttribute('position', {x: 1, y: 2, z: 3});
+    });
+
+    test('does not emit componentchanged for value if not changed', function (done) {
+      el.addEventListener('componentinitialized', function (evt) {
+        if (evt.detail.name !== 'visible') { return; }
+
+        el.addEventListener('componentchanged', function (evt) {
+          if (evt.detail.name !== 'visible') { return; }
+          // Should not reach here.
+          assert.equal(true, false, 'Component should not have emitted changed.');
+        });
+
+        // Update.
+        el.setAttribute('visible', false);
+
+        // Have `done()` race with the failing assertion in the event handler.
+        setTimeout(() => {
+          done();
+        }, 100);
+      });
+      // Initialization.
+      el.setAttribute('visible', false);
+    });
+
     test('emits componentinitialized', function (done) {
-      var el = entityFactory();
       el.addEventListener('componentinitialized', function (evt) {
         if (evt.detail.name !== 'material') { return; }
         assert.ok(evt.detail.data);
@@ -194,7 +294,9 @@ suite('Component', function () {
   });
 
   suite('third-party components', function () {
+    var el;
     setup(function () {
+      el = entityFactory();
       delete components.clone;
     });
 
@@ -205,7 +307,6 @@ suite('Component', function () {
     });
 
     test('can change behavior of entity', function (done) {
-      var el = entityFactory();
       registerComponent('clone', CloneComponent);
 
       el.addEventListener('loaded', function () {

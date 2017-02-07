@@ -198,10 +198,8 @@ Component.prototype = {
     }
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
-    // Don't update if properties haven't changed
-    if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
-
     if (!this.initialized) {
+      // Initialize component.
       this.init();
       this.initialized = true;
       // Play the component if the entity is playing.
@@ -213,6 +211,10 @@ Component.prototype = {
         data: this.getData()
       }, false);
     } else {
+      // Don't update if properties haven't changed
+      if (utils.deepEqual(oldData, this.data)) { return; }
+
+      // Update component.
       this.update(oldData);
       el.emit('componentchanged', {
         id: this.id,

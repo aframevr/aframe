@@ -110,25 +110,38 @@ module.exports.clone = function (obj) {
 };
 
 /**
- * Checks if two objects have the same attributes and values, including nested objects.
+ * Checks if two values are equal.
+ * Includes objects and arrays and nested objects and arrays.
+ * Try to keep this function performant as it will be called often to see if a component
+ * should be updated.
  *
  * @param {object} a - First object.
  * @param {object} b - Second object.
  * @returns {boolean} Whether two objects are deeply equal.
  */
 function deepEqual (a, b) {
-  var keysA = Object.keys(a);
-  var keysB = Object.keys(b);
+  var i;
+  var keysA;
+  var keysB;
   var valA;
   var valB;
-  var i;
+
+  // If not objects, compare as values.
+  if (typeof a !== 'object' || typeof b !== 'object' ||
+      a === null || b === null) { return a === b; }
+
+  // Different number of keys, not equal.
+  keysA = Object.keys(a);
+  keysB = Object.keys(b);
   if (keysA.length !== keysB.length) { return false; }
-  // If there are no keys, compare the objects.
-  if (keysA.length === 0) { return a === b; }
+
+  // Return `false` at the first sign of inequality.
   for (i = 0; i < keysA.length; ++i) {
     valA = a[keysA[i]];
     valB = b[keysA[i]];
-    if ((Array.isArray(valA) && Array.isArray(valB))) {
+    // Check nested array and object.
+    if ((typeof valA === 'object' || typeof valB === 'object') ||
+        (Array.isArray(valA) && Array.isArray(valB))) {
       if (!deepEqual(valA, valB)) { return false; }
     } else if (valA !== valB) {
       return false;
