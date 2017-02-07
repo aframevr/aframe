@@ -1,4 +1,6 @@
-var debug = require('./utils/debug');
+var utils = require('./utils/');
+
+var debug = utils.debug;
 var error = debug('A-Frame:warn');
 var info = debug('A-Frame:info');
 
@@ -22,8 +24,8 @@ window.WebVRConfig = window.WebVRConfig || {
 };
 
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-// Should be fixed in iOS 10.
-if (/(iphone|ipod|ipad).*os.*(7|8|9)/i.test(navigator.userAgent)) {
+// Only for iOS on versions older than 10.
+if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
   window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
 
@@ -50,7 +52,6 @@ var THREE = window.THREE = require('./lib/three');
 var TWEEN = window.TWEEN = require('tween.js');
 
 var pkg = require('../package');
-var utils = require('./utils/');
 
 require('./components/index'); // Register standard components.
 require('./geometries/index'); // Register standard geometries.
