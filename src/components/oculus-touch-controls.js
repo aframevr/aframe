@@ -25,9 +25,9 @@ var EMULATED_TOUCH_THRESHOLD = 0.001;
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#999'},          // Off-white.
-    buttonTouchColor: {default: '#8AB'},
-    buttonHighlightColor: {default: '#2DF'}, // Light blue.
+    buttonColor: {type: 'color', default: '#999'},          // Off-white.
+    buttonTouchColor: {type: 'color', default: '#8AB'},
+    buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
     model: { default: true },
     rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
