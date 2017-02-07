@@ -73960,7 +73960,9 @@ registerGeometry('torusKnot', {
 });
 
 },{"../core/geometry":101,"../lib/three":145}],143:[function(_dereq_,module,exports){
-var debug = _dereq_('./utils/debug');
+var utils = _dereq_('./utils/');
+
+var debug = utils.debug;
 var error = debug('A-Frame:warn');
 var info = debug('A-Frame:info');
 
@@ -73984,8 +73986,8 @@ window.WebVRConfig = window.WebVRConfig || {
 };
 
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
-// Should be fixed in iOS 10.
-if (/(iphone|ipod|ipad).*os.*(7|8|9)/i.test(navigator.userAgent)) {
+// Only for iOS on versions older than 10.
+if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
   window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
 
@@ -74012,7 +74014,6 @@ var THREE = window.THREE = _dereq_('./lib/three');
 var TWEEN = window.TWEEN = _dereq_('tween.js');
 
 var pkg = _dereq_('../package');
-var utils = _dereq_('./utils/');
 
 _dereq_('./components/index'); // Register standard components.
 _dereq_('./geometries/index'); // Register standard geometries.
@@ -74030,7 +74031,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 03-02-2017, Commit #1145053)');
+console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #8d283ee)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -74060,7 +74061,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":55,"./components/index":63,"./core/a-animation":93,"./core/a-assets":94,"./core/a-cubemap":95,"./core/a-entity":96,"./core/a-mixin":97,"./core/a-node":98,"./core/a-register-element":99,"./core/component":100,"./core/geometry":101,"./core/scene/a-scene":103,"./core/schema":107,"./core/shader":108,"./core/system":109,"./extras/components/":110,"./extras/primitives/":113,"./extras/primitives/getMeshMixin":112,"./extras/primitives/primitives":114,"./geometries/index":135,"./lib/three":145,"./shaders/index":147,"./style/aframe.css":151,"./style/rStats.css":152,"./systems/index":156,"./utils/":166,"./utils/debug":162,"present":33,"promise-polyfill":35,"tween.js":49,"webvr-polyfill":50}],144:[function(_dereq_,module,exports){
+},{"../package":55,"./components/index":63,"./core/a-animation":93,"./core/a-assets":94,"./core/a-cubemap":95,"./core/a-entity":96,"./core/a-mixin":97,"./core/a-node":98,"./core/a-register-element":99,"./core/component":100,"./core/geometry":101,"./core/scene/a-scene":103,"./core/schema":107,"./core/shader":108,"./core/system":109,"./extras/components/":110,"./extras/primitives/":113,"./extras/primitives/getMeshMixin":112,"./extras/primitives/primitives":114,"./geometries/index":135,"./lib/three":145,"./shaders/index":147,"./style/aframe.css":151,"./style/rStats.css":152,"./systems/index":156,"./utils/":166,"present":33,"promise-polyfill":35,"tween.js":49,"webvr-polyfill":50}],144:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -75634,6 +75635,13 @@ module.exports.isGearVR = isGearVR;
  */
 module.exports.isLandscape = function () {
   return window.orientation === 90 || window.orientation === -90;
+};
+
+/**
+ * Check if device is iOS and older than version 10.
+ */
+module.exports.isIOSOlderThan10 = function (userAgent) {
+  return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
 };
 
 },{"../lib/three":145}],164:[function(_dereq_,module,exports){
