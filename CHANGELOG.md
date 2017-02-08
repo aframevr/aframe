@@ -1,4 +1,67 @@
-## 0.4.0
+## 0.5.0 (February 09, 2017)
+
+0.5.0 contains text, glTF support, patches to enable WebVR record-and-replay
+tools, WebVR polyfill updates, enhancements, and bug fixes.
+
+### Major Changes
+
+- Bumped three.js to r83. (#2214)
+
+### Deprecations
+
+- N/A.
+
+### Enhancements
+
+- Added `text` component for SDF and MSDF text. (#2289)
+- Added `gltf-model` component for loading glTF 3D models. (#2333)
+- Added new hand poses for Oculus Touch controls. (#2191)
+- Attach `tracked-controls` event listeners even if no physical controllers are
+  present. (#2314)
+- Made `Entity.removeAttribute(component, property)` reset a property value to its default. (#2353)
+- Added `AFRAME.utils.throttleTick` and `AFRAME.utils.throttle` utils. (#2189)
+- Changed `hand-controls` to check for "not Oculus Touch" rather than "is Vive"
+  to make `hand-controls` be compatible with community control components
+  (e.g., GearVR). (#2192)
+- Don't cache geometry if merging. (#2255)
+- Allow unsetting of mixins with `setAttribute(mixinId, '')`. (#2291)
+- Allow access to the `screenshot` component canvas (#2316).
+- Made `stats` component UI more readable. (#2313)
+- Added warning of registered components contain uppercase characters. (#2233)
+- Added warning if entity is appended outside of a scene. (#2240)
+- Added warning if geometry merge target is not an entity. (#2243)
+- Removed unneeded object equality check getting called on component initialization. (#2322)
+- Updated `VREffect` to allow player scaling. (#2328)
+- Added guides to documentation for *Using JavaScript and DOM APIs*, *Using
+  with three.js*, and *Writing a Component* (58555a, 982f66, 09a606).
+
+### Fixes
+
+- Fixed low iOS resolution and blur issues. (#2352)
+- Fixed mobile resolution and canvas sizing issues by using WebVR polyfill with
+  updated device database. (#2345)
+- Fixed potential Vive controller issues across browsers by loosening the
+  Gamepad ID check to only check for prefix. (#2370)
+- Fixed `raycaster.interval` not being applied. (#2363)
+- Fixed system initialization affecting component updates. (#2367)
+- Fixed unstable version of Inspector being injected on shortcut. (#2364)
+- Fixed `vive-controls` not tracking. (#2194)
+- Fixed component updates getting called even if data did not change. (#2322)
+- Fixed `envify` causing issues when installing from npm with a bundler. (c62690)
+- Fixed component updates with `setAttribute` using `data` instead of `attrValue`. (#2184)
+- Fixed coordinate parser when passed `null` and when trying to override. (#2209)
+- Fixed error when `vr-mode-ui` is disabled and `embedded` is enabled. (4607e2)
+- Fixed array property type updates through `AFRAME.utils.deepEqual`. (#2229)
+- Fixed `init` and `update` handlers being called when doing `flushToDOM` on
+  non-loaded entity. (#2250).
+- Fixed disabling of `fog`. (#2251)
+- Fixed texture offset and repeats. (#2253)
+- Fixed fullscreen not exiting when exiting VR. (#2264)
+- Fixed component `pause` and `remove` handlers not getting called on scene detach. (#2302)
+- Fixed multiple `look-controls` instances colliding. (#2335)
+- Fixed several component properties missing property types. (#2357)
+
+## 0.4.0 (December 16, 2016)
 
 0.4.0 contains Oculus Touch controller support, integration with the Registry
 by means of the Inspector, API polish, and bug fixes.
@@ -66,9 +129,9 @@ by means of the Inspector, API polish, and bug fixes.
 - Fixed `raycaster` component passing its actual intersection objects through events. (#1978)
 - Fixed `stats` component for Safari. (#1865)
 - Normalized Git-tracked files to Unix-style line feeds. (#1825)
-- Fix stringifying default `null` values for object property types. (#2138)
-- Fix material update referencing `sceneEl` when the scene has not yet loaded. (#2137)
-- Fix default values of a schema property getting changed to weird values. (#2140)
+- Fixed stringifying default `null` values for object property types. (#2138)
+- Fixed material update referencing `sceneEl` when the scene has not yet loaded. (#2137)
+- Fixed default values of a schema property getting changed to weird values. (#2140)
 
 ### Known Issues
 
@@ -82,7 +145,7 @@ by means of the Inspector, API polish, and bug fixes.
 
 ### 0.3.1 (August 25, 2016)
 
-- Fix requiring A-Frame with Browserify from npm. (#1824)
+- Fixed requiring A-Frame with Browserify from npm. (#1824)
 
 ## 0.3.0 (August 17, 2016)
 
