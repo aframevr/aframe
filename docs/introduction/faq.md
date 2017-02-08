@@ -138,7 +138,13 @@ texture. There are some components in the ecosystem that enable this:
 
 ## Which 3D model formats work?
 
-The [ThreeJS JSON format](https://threejs.org/examples/?q=webgl_loader_json) works best, since it is the default loader. [Wavefront (`.obj`)](https://en.wikipedia.org/wiki/Wavefront_.obj_file) and [COLLADA (`.dae`)](https://en.wikipedia.org/wiki/COLLADA)formats can work also, albeit with some limitations (for example, OBJ is not able to store vertice colors).
+The [ThreeJS JSON format](https://threejs.org/examples/?q=webgl_loader_json) works best, since it is the default loader ([example](http://curious-electric.com/aframe/json/)).
+
+[Wavefront (`.obj`)](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is an old, established and well known format, but has some limitations like the lack of vertice colors support ([example](http://curious-electric.com/aframe/obj/)).
+
+[COLLADA (`.dae`)](https://en.wikipedia.org/wiki/COLLADA) is an XML based format with a very rich feature set ([example](http://curious-electric.com/aframe/collada/)).
+
+In comparison to COLLADA, the supported features of [glTF (`.gltf`)](https://en.wikipedia.org/wiki/GlTF) are very similar. However, because glTF focuses on providing a “transmission format” rather than an editor format, it is more interoperable with web technologies ([example](http://curious-electric.com/aframe/gltf/), [more information](https://aframe.io/docs/master/components/gltf-model.html#why-use-gltf)).
 
 ## Where can I find assets?
 
