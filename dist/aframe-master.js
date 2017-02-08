@@ -71990,19 +71990,30 @@ var proto = Object.create(ANode.prototype, {
   },
 
   /**
-   * If `attr` is a component name, removeAttribute detaches the component from the
-   * entity.
+   * If `attr` is a component name, detach the component from the entity.
+   *
+   * If `propertyName` is given, reset the component property value to its default.
    *
    * @param {string} attr - Attribute name, which could also be a component name.
+   * @param {string} propertyName - Component prop name, if resetting an individual prop.
    */
   removeAttribute: {
-    value: function (attr) {
+    value: function (attr, propertyName) {
       var component = this.components[attr];
-      if (component) {
+
+      // Remove component.
+      if (component && propertyName === undefined) {
         this.setEntityAttribute(attr, undefined, null);
-        // The component might not be removed if it's a default one
+        // Do not remove the component from the DOM if default component.
         if (this.components[attr]) { return; }
       }
+
+      // Reset component property value.
+      if (component && propertyName !== undefined) {
+        component.resetProperty(propertyName);
+        return;
+      }
+
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
@@ -73083,7 +73094,8 @@ Component.prototype = {
     if (!el.hasLoaded) { return; }
 
     if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue, true));
+      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue,
+                                  true));
     }
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
@@ -73112,6 +73124,22 @@ Component.prototype = {
         oldData: oldData
       }, false);
     }
+  },
+
+  /**
+   * Reset value of a property to the property's default value.
+   * If single-prop component, reset value to component's default value.
+   *
+   * @param {string} propertyName - Name of property to reset.
+   */
+  resetProperty: function (propertyName) {
+    if (isSingleProp(this.schema)) {
+      this.attrValue = undefined;
+    } else {
+      if (!(propertyName in this.attrValue)) { return; }
+      delete this.attrValue[propertyName];
+    }
+    this.updateProperties(this.attrValue);
   },
 
   /**
@@ -75555,7 +75583,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #a770b64)');
+console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #1e2a92d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
