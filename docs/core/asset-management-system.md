@@ -135,7 +135,7 @@ the `loaded` event when they say they have finished loading.
 ### `<a-asset-item>`
 
 `<a-asset-item>` invokes the [three.js
-XHRLoader](https://threejs.org/docs/#Reference/Loaders/XHRLoader).  We can use
+FileLoader](https://threejs.org/docs/#Reference/Loaders/FileLoader).  We can use
 `<a-asset-item>` for any file type. When finished, it will set its `data`
 member with the text response.
 
@@ -183,9 +183,9 @@ effectively must wait for all assets to load. We also added extra load logic to
 `<a-entity>` such that they explicitly wait for `<a-assets>` to load if we have
 defined `<a-assets>`.
 
-`<a-asset-item>` uses `THREE.XHRLoader` to fetch files. three.js stores the
+`<a-asset-item>` uses `THREE.FileLoader` to fetch files. three.js stores the
 returned data in `THREE.Cache`. Every three.js loader inherits from
-`THREE.XHRLoader`, whether they are a `ColladaLoader`, `OBJLoader`,
+`THREE.FileLoader`, whether they are a `ColladaLoader`, `OBJLoader`,
 `ImageLoader`, etc. And they all have access and are aware of the central
 `THREE.Cache`. If A-Frame already fetched a file, A-Frame won't try to fetch it
 again.
@@ -193,11 +193,11 @@ again.
 Thus, since we block entity initialization on assets, by the time entities
 load, all assets will have been already fetched. As long as we define
 `<a-asset-item>`s, and the entity is fetching files using some form
-`THREE.XHRLoader`, then caching will automatically work.
+`THREE.FileLoader`, then caching will automatically work.
 
-## Accessing the `XHRLoader` and Cache
+## Accessing the `FileLoader` and Cache
 
-To access the three.js `XHRLoader` if we want to listen more closely:
+To access the three.js `FileLoader` if we want to listen more closely:
 
 ```js
 console.log(document.querySelector('a-assets').fileLoader);
