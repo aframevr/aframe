@@ -40,18 +40,18 @@ textures mapped to the inside of the cylinder.
 | height          | geometry.height         | 1             |
 | metalness       | material.metalness      | 0             |
 | opacity         | material.opacity        | 1             |
-| open-ended      | geometry.openEnded      | false         |
-| radius          | geometry.radius         | 1             |
+| open-ended      | geometry.openEnded      | true          |
+| radius          | geometry.radius         | 2             |
 | repeat          | material.repeat         | None          |
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 18            |
-| segments-radial | geometry.segmentsRadial | 36            |
+| segments-radial | geometry.segmentsRadial | 48            |
 | shader          | material.shader         | flat          |
-| side            | material.side           | front         |
+| side            | material.side           | double        |
 | src             | material.src            | None          |
-| theta-length    | geometry.thetaLength    | 360           |
+| theta-length    | geometry.thetaLength    | 270           |
 | theta-start     | geometry.thetaStart     | 0             |
-| transparent     | material.transparent    | false         |
+| transparent     | material.transparent    | true          |
 
 ## Fine-Tuning
 
