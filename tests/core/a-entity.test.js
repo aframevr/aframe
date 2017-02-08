@@ -773,6 +773,14 @@ suite('a-entity', function () {
       // Geometry still exists since it is mixed in.
       assert.ok('geometry' in el.components);
     });
+
+    test('resets a component property', function () {
+      var el = this.el;
+      el.setAttribute('material', 'color: #F0F');
+      assert.equal(el.getAttribute('material').color, '#F0F');
+      el.removeAttribute('material', 'color');
+      assert.equal(el.getAttribute('material').color, '#FFF');
+    });
   });
 
   suite('initComponent', function () {

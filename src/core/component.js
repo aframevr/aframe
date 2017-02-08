@@ -194,7 +194,8 @@ Component.prototype = {
     if (!el.hasLoaded) { return; }
 
     if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue, true));
+      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue,
+                                  true));
     }
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
@@ -223,6 +224,22 @@ Component.prototype = {
         oldData: oldData
       }, false);
     }
+  },
+
+  /**
+   * Reset value of a property to the property's default value.
+   * If single-prop component, reset value to component's default value.
+   *
+   * @param {string} propertyName - Name of property to reset.
+   */
+  resetProperty: function (propertyName) {
+    if (isSingleProp(this.schema)) {
+      this.attrValue = undefined;
+    } else {
+      if (!(propertyName in this.attrValue)) { return; }
+      delete this.attrValue[propertyName];
+    }
+    this.updateProperties(this.attrValue);
   },
 
   /**
