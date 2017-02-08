@@ -66073,8 +66073,8 @@ module.exports={
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
-    "dist:min": "npm run browserify -s -- --debug -t [envify --INSPECTOR_VERSION dev] -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
+    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
+    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
@@ -68490,6 +68490,7 @@ function getFog (data) {
 }
 
 },{"../../core/component":100,"../../lib/three":145,"../../utils/debug":162}],78:[function(_dereq_,module,exports){
+(function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
 var bind = _dereq_('../../utils/bind');
@@ -68508,7 +68509,7 @@ function getFuzzyPatchVersion (version) {
 
 var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspector.js';
 var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
-var INSPECTOR_URL = "dev" === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
+var INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
 var LOADING_MESSAGE = 'Loading Inspector';
 
 module.exports.Component = registerComponent('inspector', {
@@ -68587,7 +68588,9 @@ module.exports.Component = registerComponent('inspector', {
   }
 });
 
-},{"../../../package":55,"../../constants":91,"../../core/component":100,"../../utils/bind":160}],79:[function(_dereq_,module,exports){
+}).call(this,_dereq_('_process'))
+
+},{"../../../package":55,"../../constants":91,"../../core/component":100,"../../utils/bind":160,"_process":34}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 var THREE = _dereq_('../../lib/three');
@@ -75583,7 +75586,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #1e2a92d)');
+console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #8f1b9d9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
