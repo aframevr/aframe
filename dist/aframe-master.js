@@ -68174,6 +68174,9 @@ module.exports.Component = registerComponent('raycaster', {
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
 
+    // Update check time.
+    this.prevCheckTime = time;
+
     // Store old previously intersected entities.
     prevIntersectedEls = this.intersectedEls.slice();
 
@@ -75552,7 +75555,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 07-02-2017, Commit #691f1ea)');
+console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #a770b64)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
