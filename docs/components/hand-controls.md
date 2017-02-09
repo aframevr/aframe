@@ -46,5 +46,5 @@ handles hand animations and poses.
 
 ## Assets
 
-- [Left hand model](https://cdn.aframe.io/controllers/oculus-hands/leftHand.json)
-- [Right hand model](https://cdn.aframe.io/controllers/oculus-hands/rightHand.json)
+- [Left hand model](https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json)
+- [Right hand model](https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json)
