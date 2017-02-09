@@ -13,7 +13,8 @@ var THREE = require('../lib/three');
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: {default: 0},
-    id: {default: 'Match none by default!'},
+    id: {type: 'string', default: ''},
+    idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0}
   },
 
@@ -26,10 +27,10 @@ module.exports.Component = registerComponent('tracked-controls', {
   update: function () {
     var controllers = this.system.controllers;
     var data = this.data;
-    controllers = controllers.filter(hasId);
+    controllers = controllers.filter(hasIdOrPrefix);
     // handId: 0 - right, 1 - left
     this.controller = controllers[data.controller];
-    function hasId (controller) { return controller.id === data.id; }
+    function hasIdOrPrefix (controller) { return data.idPrefix ? controller.id.indexOf(data.idPrefix) === 0 : controller.id === data.id; }
   },
 
   tick: function (time, delta) {

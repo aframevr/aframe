@@ -18,16 +18,21 @@ the entity, observes buttons state and emits appropriate events.
 
 ## Example
 
+Note that due to recent browser-specific changes, Vive controllers may be returned
+by the Gamepad API with id values of either "OpenVR Gamepad" or "OpenVR Controller", 
+so using idPrefix for Vive / OpenVR controllers is recommended.
+
 ```html
-<a-entity tracked-controls="controller: 0; id: OpenVR Gamepad"></a-entity>
+<a-entity tracked-controls="controller: 0; idPrefix: OpenVR"></a-entity>
 ```
 
 ## Value
 
-| Property    | Description                                                    | Default Value    |
-|-------------|----------------------------------------------------------------|------------------|
-| controller  | Index of the controller in array returned by the Gamepad API.  | 0                |
-| id          | Selects the controller returned by the Gamepad API.            | OpenVR Gamepad   |
+| Property    | Description                                                     | Default Value |
+|-------------|-------------------------------------------------------------- --|---------------|
+| controller  | Index of the controller in array returned by the Gamepad API.   | 0             |
+| id          | Selects the controller from the Gamepad API using exact match.  |               |
+| idPrefix    | Selects the controller from the Gamepad API using prefix match. |               |
 
 ## Events
 
