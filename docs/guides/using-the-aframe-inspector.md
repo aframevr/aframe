@@ -84,3 +84,7 @@ visually tweaking and finding the desired value of a component and then syncing
 it back to source code.
 
 ![Inspector Components](https://cloud.githubusercontent.com/assets/674727/18565449/aa63a7b6-7b44-11e6-999c-450c88812293.gif)
+
+### Shortcuts
+
+You can press **`h`** key to see a list of all the shortcuts available.
