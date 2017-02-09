@@ -69895,7 +69895,8 @@ var THREE = _dereq_('../lib/three');
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: {default: 0},
-    id: {default: 'Match none by default!'},
+    id: {type: 'string', default: ''},
+    idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0}
   },
 
@@ -69908,10 +69909,10 @@ module.exports.Component = registerComponent('tracked-controls', {
   update: function () {
     var controllers = this.system.controllers;
     var data = this.data;
-    controllers = controllers.filter(hasId);
+    controllers = controllers.filter(hasIdOrPrefix);
     // handId: 0 - right, 1 - left
     this.controller = controllers[data.controller];
-    function hasId (controller) { return controller.id === data.id; }
+    function hasIdOrPrefix (controller) { return data.idPrefix ? controller.id.indexOf(data.idPrefix) === 0 : controller.id === data.id; }
   },
 
   tick: function (time, delta) {
@@ -70089,7 +70090,7 @@ var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPrese
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
-var GAMEPAD_ID_PREFIX = 'OpenVR Gamepad';
+var GAMEPAD_ID_PREFIX = 'OpenVR ';
 
 /**
  * Vive Controls Component
@@ -70212,7 +70213,7 @@ module.exports.Component = registerComponent('vive-controls', {
     // handId: 0 - right, 1 - left, 2 - anything else...
     var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
     // if we have an OpenVR Gamepad, use the fixed mapping
-    el.setAttribute('tracked-controls', {id: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
@@ -75597,7 +75598,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 09-02-2017, Commit #27713c2)');
+console.log('A-Frame Version: 0.4.0 (Date 09-02-2017, Commit #c28ceeb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
