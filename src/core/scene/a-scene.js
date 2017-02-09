@@ -416,6 +416,17 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
+     * Wrap `updateComponent` to not initialize the component if the component has a system
+     * (aframevr/aframe#2365).
+     */
+    updateComponent: {
+      value: function (componentName) {
+        if (componentName in systems) { return; }
+        AEntity.prototype.updateComponent.apply(this, arguments);
+      }
+    },
+
+    /**
      * Behavior-updater meant to be called from scene render.
      * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
      * needing to render.
