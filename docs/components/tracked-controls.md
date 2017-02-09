@@ -28,11 +28,11 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 ## Value
 
-| Property    | Description                                                     | Default Value          |
-|-------------|-------------------------------------------------------------- --|------------------------|
-| controller  | Index of the controller in array returned by the Gamepad API.   | 0                      |
-| id          | Selects the controller from the Gamepad API using exact match.  | Match none by default! |
-| idPrefix    | Selects the controller from the Gamepad API using prefix match. | undefined              |
+| Property    | Description                                                     | Default Value |
+|-------------|-------------------------------------------------------------- --|---------------|
+| controller  | Index of the controller in array returned by the Gamepad API.   | 0             |
+| id          | Selects the controller from the Gamepad API using exact match.  |               |
+| idPrefix    | Selects the controller from the Gamepad API using prefix match. |               |
 
 ## Events
 

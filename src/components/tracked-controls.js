@@ -13,8 +13,8 @@ var THREE = require('../lib/three');
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: {default: 0},
-    id: {default: 'Match none by default!'},
-    idPrefix: {default: undefined},
+    id: {type: 'string', default: ''},
+    idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0}
   },
 
