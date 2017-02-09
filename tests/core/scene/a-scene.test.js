@@ -257,7 +257,7 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('system', function () {
-    setup(function () {
+    teardown(function () {
       delete components.test;
       delete systems.test;
     });
@@ -273,16 +273,47 @@ suite('a-scene (without renderer)', function () {
       assert.equal(sceneEl.getAttribute('test'), 'system');
     });
 
-    test('does not initialize component on setAttribute', function () {
+    test('does not initialize component on setAttribute', function (done) {
       var sceneEl = document.createElement('a-scene');
       var stub = sinon.stub();
 
       AFRAME.registerComponent('test', {init: stub});
       AFRAME.registerSystem('test', {});
 
-      sceneEl.initSystem('test');
       sceneEl.setAttribute('test', '');
-      assert.notOk(stub.called);
+
+      sceneEl.addEventListener('loaded', () => {
+        assert.notOk(stub.called);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('does not update component', function (done) {
+      var childEl;
+      var componentUpdateStub = sinon.stub();
+      var sceneEl;
+
+      AFRAME.registerComponent('test', {
+        schema: {componentProp: {default: 'foo'}},
+        update: componentUpdateStub
+      });
+      AFRAME.registerSystem('test', {
+        schema: {systemProp: {default: 'foo'}}
+      });
+
+      childEl = document.createElement('a-entity');
+      sceneEl = document.createElement('a-scene');
+      childEl.setAttribute('test', '');
+      sceneEl.setAttribute('test', '');
+      sceneEl.appendChild(childEl);
+
+      sceneEl.addEventListener('loaded', () => {
+        assert.notOk('systemProp' in childEl.components.test.data);
+        assert.equal(componentUpdateStub.callCount, 1);
+        done();
+      });
+      document.body.appendChild(sceneEl);
     });
   });
 });
