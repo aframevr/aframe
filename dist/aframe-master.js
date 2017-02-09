@@ -73989,6 +73989,17 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
+     * Wrap `updateComponent` to not initialize the component if the component has a system
+     * (aframevr/aframe#2365).
+     */
+    updateComponent: {
+      value: function (componentName) {
+        if (componentName in systems) { return; }
+        AEntity.prototype.updateComponent.apply(this, arguments);
+      }
+    },
+
+    /**
      * Behavior-updater meant to be called from scene render.
      * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
      * needing to render.
@@ -75586,7 +75597,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.4.0 (Date 08-02-2017, Commit #8f1b9d9)');
+console.log('A-Frame Version: 0.4.0 (Date 09-02-2017, Commit #27713c2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
