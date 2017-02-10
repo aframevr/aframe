@@ -66076,10 +66076,10 @@ module.exports={
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
     "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
-    "ghpages": "ghpages -p gh-pages/",
+    "ghpages": "npm run preghpages && ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
     "precommit": "npm run lint",
-    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/ -r --silent",
+    "preghpages": "rimraf gh-pages && mkdirp gh-pages && cp -r .nojekyll dist examples index.html gh-pages && replace -r 'dist/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/",
     "prerelease": "npm run dist && node scripts/release.js 0.4.0 0.5.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -75646,7 +75646,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 10-02-2017, Commit #110055d)');
+console.log('A-Frame Version: 0.5.0 (Date 10-02-2017, Commit #5425acc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
