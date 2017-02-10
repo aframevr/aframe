@@ -57,7 +57,7 @@ scene**](http://codepen.io/team/mozvr/pen/BjygdO?editors=100).
 <html>
   <head>
     <title>My A-Frame Scene</title>
-    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
@@ -73,11 +73,11 @@ scene**](http://codepen.io/team/mozvr/pen/BjygdO?editors=100).
 
 ### Builds
 
-To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.4.0/aframe.min.js):
+To use the latest stable build of A-Frame, include [`aframe.min.js`](https://aframe.io/releases/0.5.0/aframe.min.js):
 
 ```js
 <head>
-  <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
 </head>
 ```
 

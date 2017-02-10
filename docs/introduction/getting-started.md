@@ -59,16 +59,16 @@ straight into our HTML:
 
 ```html
 <!-- Production Version, Minified -->
-<script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
 
 <!-- Development Version, Uncompressed with Source Maps -->
-<script src="https://aframe.io/releases/0.4.0/aframe.js"></script>
+<script src="https://aframe.io/releases/0.5.0/aframe.js"></script>
 ```
 
 If we want to serve it locally, we can download the JS build:
 
-<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.min.js" download>Production Version <span>0.4.0</span></a> <em class="install-note">Minified</em>
-<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.4.0/aframe.js" download>Development Version <span>0.4.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
+<a id="builds-prod" class="btn btn-download" href="https://aframe.io/releases/0.5.0/aframe.min.js" download>Production Version <span>0.5.0</span></a> <em class="install-note">Minified</em>
+<a id="builds-dev" class="btn btn-download" href="https://aframe.io/releases/0.5.0/aframe.js" download>Development Version <span>0.5.0</span></a> <em class="install-note">Uncompressed with Source Maps</em>
 
 Note we should [serve the project using a local server](#using-a-local-server)
 so that assets load properly.

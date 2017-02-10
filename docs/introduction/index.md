@@ -31,7 +31,7 @@ to install; all we need is an HTML file:
 ```html
 <html>
   <head>
-    <script src="https://aframe.io/releases/0.4.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
   </head>
   <body>
     <a-scene>
