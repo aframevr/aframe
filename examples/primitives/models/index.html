@@ -2,8 +2,8 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Models</title>
-    <meta name="description" content="Models — A-Frame">
+    <title>Models (glTF, OBJ, COLLADA)</title>
+    <meta name="description" content="Models (glTF, OBJ, COLLADA) — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
@@ -13,12 +13,15 @@
         <a-asset-item id="tree2" src="../../assets/models/tree2/tree2.dae"></a-asset-item>
         <a-asset-item id="crate-mtl" src="../../assets/models/crate/crate.mtl"></a-asset-item>
         <a-asset-item id="crate-obj" src="../../assets/models/crate/crate.obj"></a-asset-item>
+        <a-asset-item id="brainstem" src="https://cdn.aframe.io/test-models/models/brainstem/BrainStem.gltf"></a-asset-item>
         <img id="sky" src="peach-gradient.jpg">
       </a-assets>
 
       <a-entity position="0 0 4">
       	<a-camera></a-camera>
       </a-entity>
+
+      <a-gltf-model src="#brainstem" position="-2 0 -1" scale="1.6 1.6 1.6"></a-gltf-model>
 
       <a-obj-model src="#crate-obj" mtl="#crate-mtl"></a-obj-model>
 
