@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('inspector', {
   },
 
   hideLoader: function () {
-    this.el.removeChild(this.loadingMessageEl);
+    document.body.removeChild(this.loadingMessageEl);
   },
 
   /**
