@@ -11,9 +11,14 @@ var warn = debug('components:sound:warn');
 module.exports.Component = registerComponent('sound', {
   schema: {
     autoplay: {default: false},
+    distanceModel: {default: 'inverse',
+      oneOf: ['linear', 'inverse', 'exponential']},
     loop: {default: false},
+    maxDistance: {default: 10000},
     on: {default: ''},
     poolSize: {default: 1},
+    refDistance: {default: 1},
+    rolloffFactor: {default: 1},
     src: {type: 'audio'},
     volume: {default: 1}
   },
@@ -41,7 +46,11 @@ module.exports.Component = registerComponent('sound', {
 
     this.pool.children.forEach(function (sound) {
       sound.autoplay = data.autoplay;
+      sound.setDistanceModel(data.distanceModel);
       sound.setLoop(data.loop);
+      sound.setMaxDistance(data.maxDistance);
+      sound.setRefDistance(data.refDistance);
+      sound.setRolloffFactor(data.rolloffFactor);
       sound.setVolume(data.volume);
     });
 
