@@ -8,6 +8,10 @@ suite('sound', function () {
       autoplay: true,
       src: 'url(mysoundfile.mp3)',
       loop: true,
+      distanceModel: 'exponential',
+      maxDistance: 20000,
+      refDistance: 2,
+      rolloffFactor: 4,
       poolSize: 3
     });
     el.addEventListener('loaded', function () {
@@ -22,6 +26,10 @@ suite('sound', function () {
       for (var i = 0; i < audioPool.children.length; i++) {
         var audio = audioPool.children[i];
         assert.equal(audio.type, 'Audio');
+        assert.equal(audio.getDistanceModel(), 'exponential');
+        assert.equal(audio.getMaxDistance(), 20000);
+        assert.equal(audio.getRefDistance(), 2);
+        assert.equal(audio.getRolloffFactor(), 4);
         assert.ok(audio.autoplay);
         assert.ok(audio.getLoop());
       }
