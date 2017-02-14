@@ -25,6 +25,14 @@ removes the default lights from the scene.
 <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
 ```
 
+To manually disable the defaults, without adding other lights:
+
+```html
+<a-scene light="defaultLightsEnabled: false">
+  <!-- ... -->
+</a-scene>
+```
+
 ## Properties
 
 We will go through the different types of lights and their respective properties one by one.

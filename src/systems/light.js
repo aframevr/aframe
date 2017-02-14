@@ -14,13 +14,19 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
 module.exports.System = registerSystem('light', {
+  schema: {
+    defaultLightsEnabled: {default: true}
+  },
+
   init: function () {
     this.defaultLights = false;
     this.userDefinedLights = false;
     // Wait for all entities to fully load before checking for existence of lights.
     // Since entities wait for <a-assets> to load, any lights attaching to the scene
     // will do so asynchronously.
-    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
+    if (this.data.defaultLightsEnabled) {
+      this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
+    }
   },
 
   /**
