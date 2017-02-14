@@ -59,8 +59,8 @@ suite('light system', function () {
 
     assert.notOk(document.querySelectorAll('[light]').length);
 
-    sceneEl.addEventListener('loaded', function () {
-      el.sceneEl.systems.light.setupDefaultLights();
+    el.sceneEl.systems.light.setupDefaultLights();
+    process.nextTick(function () {
       assert.notOk(document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']').length);
       done();
     });
