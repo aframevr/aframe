@@ -24,9 +24,7 @@ module.exports.System = registerSystem('light', {
     // Wait for all entities to fully load before checking for existence of lights.
     // Since entities wait for <a-assets> to load, any lights attaching to the scene
     // will do so asynchronously.
-    if (this.data.defaultLightsEnabled) {
-      this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
-    }
+    this.sceneEl.addEventListener('loaded', bind(this.setupDefaultLights, this));
   },
 
   /**
@@ -64,7 +62,9 @@ module.exports.System = registerSystem('light', {
     var ambientLight;
     var directionalLight;
 
-    if (this.userDefinedLights || this.defaultLights) { return; }
+    if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
+      return;
+    }
     ambientLight = document.createElement('a-entity');
     directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
