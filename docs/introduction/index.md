@@ -35,8 +35,8 @@ to install; all we need is an HTML file:
   </head>
   <body>
     <a-scene>
-      <a-box color="#6173F4" opacity="0.8" depth="2"></a-box>
-      <a-sphere radius="2" src="texture.png" position="1 1 0"></a-sphere>
+      <a-box color="#6173F4" opacity="0.8" depth="2" position="0 0 -2"></a-box>
+      <a-sphere radius="2" position="1 1 -2"></a-sphere>
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
   </body>
