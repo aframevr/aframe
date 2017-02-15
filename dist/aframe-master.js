@@ -75655,7 +75655,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 13-02-2017, Commit #0d4dfe8)');
+console.log('A-Frame Version: 0.5.0 (Date 15-02-2017, Commit #8df196b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76545,6 +76545,10 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
 module.exports.System = registerSystem('light', {
+  schema: {
+    defaultLightsEnabled: {default: true}
+  },
+
   init: function () {
     this.defaultLights = false;
     this.userDefinedLights = false;
@@ -76589,7 +76593,9 @@ module.exports.System = registerSystem('light', {
     var ambientLight;
     var directionalLight;
 
-    if (this.userDefinedLights || this.defaultLights) { return; }
+    if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
+      return;
+    }
     ambientLight = document.createElement('a-entity');
     directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
