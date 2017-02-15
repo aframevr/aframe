@@ -50,6 +50,22 @@ suite('light system', function () {
     el.appendChild(lightEl);
   });
 
+  test('it does not add default lights to scene if they are disabled', function (done) {
+    var el = this.el;
+    var sceneEl = el.sceneEl;
+
+    // Systems cannot yet be updated via setAttribute().
+    sceneEl.systems.light.data.defaultLightsEnabled = false;
+
+    assert.notOk(document.querySelectorAll('[light]').length);
+
+    el.sceneEl.systems.light.setupDefaultLights();
+    process.nextTick(function () {
+      assert.notOk(document.querySelectorAll('[' + DEFAULT_LIGHT_ATTR + ']').length);
+      done();
+    });
+  });
+
   test('removes default lights when more lights are added', function (done) {
     var el = this.el;
     var lightEl = document.createElement('a-entity');
