@@ -89,6 +89,20 @@ suite('material', function () {
       el.setAttribute('material', 'shader', 'test');
       assert.equal(el.getObject3D('mesh').material.type, 'ShaderMaterial');
     });
+
+    test('resets texture when passed an empty string as src', function (done) {
+      var el = this.el;
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        assert.ok(el.components.material.shader._texture_src === imageUrl);
+        el.setAttribute('material', 'src', '');
+        assert.ok(el.components.material.shader._texture_src === null);
+        done();
+      });
+    });
   });
 
   suite('updateSchema', function () {
