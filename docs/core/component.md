@@ -606,5 +606,5 @@ Let's access the `bar` member and `qux` method:
 ```js
 var fooComponent = document.querySelector('[foo]').components.foo;
 console.log(fooComponent.bar);
-fooComponent.baz();
+fooComponent.qux();
 ```
