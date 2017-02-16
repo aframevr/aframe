@@ -12,25 +12,36 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   var src = data[dataName];
   var shadowSrcName = '_texture_' + dataName;
 
-  if (src) {
-    if (src === shader[shadowSrcName]) { return; }
-    // Texture added or changed.
-    shader[shadowSrcName] = src;
-    if (src instanceof THREE.Texture) {
-      setMap(src);
-      return;
-    }
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
+  if (!src) {
+    // Forget the prior material src.
+    shader[shadowSrcName] = null;
+    // Remove the texture.
+    setMap(null);
     return;
   }
 
-  // Texture removed.
-  if (!material[materialName]) { return; }
-  shader[shadowSrcName] = null;
-  setMap(null);
+  // Don't process if material src hasn't changed.
+  if (src === shader[shadowSrcName]) { return; }
+
+  // Remember the new src for this texture (there may be multiple).
+  shader[shadowSrcName] = src;
+
+  // If the new material src is already a texture, just use it.
+  if (src instanceof THREE.Texture) { setMap(src); } else {
+    // Load texture for the new material src.
+    // (And check if we should still use it once available in callback.)
+    el.sceneEl.systems.material.loadTexture(src,
+      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      checkSetMap);
+  }
+
+  function checkSetMap (texture) {
+    // If the source has been changed, don't use loaded texture.
+    if (shader[shadowSrcName] !== src) { return; }
+    setMap(texture);
+  }
 
   function setMap (texture) {
-    if ((shader[shadowSrcName] !== src) && (shader[shadowSrcName] || src)) { return; }
     material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
