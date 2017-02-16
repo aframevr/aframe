@@ -69902,11 +69902,11 @@ var THREE = _dereq_('../lib/three');
 
 /**
  * Tracked controls component.
- * Interface with the gamepad API to handled tracked controllers.
+ * Wrap the gamepad API for pose and button states.
  * Select the appropriate controller and apply pose to the entity.
- * Observe buttons state and emit appropriate events.
+ * Observe button states and emit appropriate events.
  *
- * @property {number} controller - Index of the controller in array returned by Gamepad API.
+ * @property {number} controller - Index of controller in array returned by Gamepad API.
  * @property {string} id - Selected controller among those returned by Gamepad API.
  */
 module.exports.Component = registerComponent('tracked-controls', {
@@ -69918,28 +69918,41 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   init: function () {
+    this.axis = [0, 0, 0];
     this.buttonStates = {};
-    this.previousAxis = [];
     this.previousControllerPosition = new THREE.Vector3();
-  },
-
-  update: function () {
-    var controllers = this.system.controllers;
-    var data = this.data;
-    controllers = controllers.filter(hasIdOrPrefix);
-    // handId: 0 - right, 1 - left
-    this.controller = controllers[data.controller];
-    function hasIdOrPrefix (controller) { return data.idPrefix ? controller.id.indexOf(data.idPrefix) === 0 : controller.id === data.id; }
+    this.updateGamepad();
   },
 
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
     if (mesh && mesh.update) { mesh.update(delta / 1000); }
+    this.updateGamepad();
     this.updatePose();
     this.updateButtons();
   },
 
+  /**
+   * Handle update to `id` or `idPrefix.
+   */
+  updateGamepad: function () {
+    var controllers = this.system.controllers;
+    var data = this.data;
+    var matchingControllers;
+
+    // Hand IDs: 0 is right, 1 is left.
+    matchingControllers = controllers.filter(function hasIdOrPrefix (controller) {
+      if (data.idPrefix) { return controller.id.indexOf(data.idPrefix) === 0; }
+      return controller.id === data.id;
+    });
+
+    this.controller = matchingControllers[data.controller];
+  },
+
+  /**
+   * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
+   */
   updatePose: (function () {
     var controllerEuler = new THREE.Euler();
     var controllerPosition = new THREE.Vector3();
@@ -69948,16 +69961,19 @@ module.exports.Component = registerComponent('tracked-controls', {
     var dolly = new THREE.Object3D();
     var standingMatrix = new THREE.Matrix4();
     controllerEuler.order = 'YXZ';
+
     return function () {
-      var controller;
-      var pose;
-      var orientation;
-      var position;
+      var controller = this.controller;
+      var currentPosition;
       var el = this.el;
+      var orientation;
+      var pose;
+      var position;
       var vrDisplay = this.system.vrDisplay;
-      this.update();
-      controller = this.controller;
+
       if (!controller) { return; }
+
+      // Compose pose from Gamepad.
       pose = controller.pose;
       orientation = pose.orientation || [0, 0, 0, 1];
       position = pose.position || [0, 0, 0];
@@ -69965,22 +69981,28 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.quaternion.fromArray(orientation);
       dolly.position.fromArray(position);
       dolly.updateMatrix();
+
+      // Apply transforms.
       if (vrDisplay && vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
         dolly.applyMatrix(standingMatrix);
       }
+
+      // Decompose.
       controllerEuler.setFromRotationMatrix(dolly.matrix);
       controllerPosition.setFromMatrixPosition(dolly.matrix);
+
+      // Apply rotation (as absolute, with rotation offset).
       el.setAttribute('rotation', {
         x: THREE.Math.radToDeg(controllerEuler.x),
         y: THREE.Math.radToDeg(controllerEuler.y),
         z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
       });
 
+      // Apply position (as delta from previous Gamepad rotation).
       deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
       this.previousControllerPosition.copy(controllerPosition);
-      var currentPosition = el.getAttribute('position');
-
+      currentPosition = el.getAttribute('position');
       el.setAttribute('position', {
         x: currentPosition.x + deltaControllerPosition.x,
         y: currentPosition.y + deltaControllerPosition.y,
@@ -69989,60 +70011,88 @@ module.exports.Component = registerComponent('tracked-controls', {
     };
   })(),
 
+  /**
+   * Handle button changes including axes, presses, touches, values.
+   */
   updateButtons: function () {
-    var i;
     var buttonState;
     var controller = this.controller;
-    if (!this.controller) { return; }
-    for (i = 0; i < controller.buttons.length; ++i) {
-      buttonState = controller.buttons[i];
-      this.handleButton(i, buttonState);
+    var id;
+
+    if (!controller) { return; }
+
+    // Check every button.
+    for (id = 0; id < controller.buttons.length; ++id) {
+      // Initialize button state.
+      if (!this.buttonStates[id]) {
+        this.buttonStates[id] = {pressed: false, touched: false, value: 0};
+      }
+
+      buttonState = controller.buttons[id];
+      this.handleButton(id, buttonState);
     }
-    this.handleAxes(controller.axes);
+    // Check axes.
+    this.handleAxes();
   },
 
-  handleAxes: function (controllerAxes) {
-    var previousAxis = this.previousAxis;
+  /**
+   * Handle presses and touches for a single button.
+   *
+   * @param {number} id - Index of button in Gamepad button array.
+   * @param {number} buttonState - Value of button state from 0 to 1.
+   * @returns {boolean} Whether button has changed in any way.
+   */
+  handleButton: function (id, buttonState) {
+    var changed = this.handlePress(id, buttonState) ||
+                  this.handleTouch(id, buttonState) ||
+                  this.handleValue(id, buttonState);
+    if (!changed) { return false; }
+    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    return true;
+  },
+
+  /**
+   * An axis is an array of values from -1 (up, left) to 1 (down, right).
+   * Compare each component of the axis to the previous value to determine change.
+   *
+   * @returns {boolean} Whether axes changed.
+   */
+  handleAxes: function () {
     var changed = false;
+    var controllerAxes = this.controller.axes;
     var i;
+    var previousAxis = this.axis;
+
+    // Check if axis changed.
     for (i = 0; i < controllerAxes.length; ++i) {
       if (previousAxis[i] !== controllerAxes[i]) {
         changed = true;
         break;
       }
     }
-    if (!changed) { return; }
-    this.previousAxis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: this.previousAxis});
-  },
+    if (!changed) { return false; }
 
-  handleButton: function (id, buttonState) {
-    var changed = false;
-    changed = changed || this.handlePress(id, buttonState);
-    changed = changed || this.handleTouch(id, buttonState);
-    changed = changed || this.handleValue(id, buttonState);
-    if (!changed) { return; }
-    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    this.axis = controllerAxes.slice();
+    this.el.emit('axismove', {axis: this.axis});
+    return true;
   },
 
   /**
    * Determine whether a button press has occured and emit events as appropriate.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button press state changed, false otherwise.
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button press state changed.
    */
   handlePress: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
     var evtName;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.pressed === previousButtonState.pressed) { return false; }
-    if (buttonState.pressed) {
-      evtName = 'down';
-    } else {
-      evtName = 'up';
-    }
-    this.el.emit('button' + evtName, {id: id});
+
+    evtName = buttonState.pressed ? 'down' : 'up';
+    this.el.emit('button' + evtName, {id: id, state: buttonState});
     previousButtonState.pressed = buttonState.pressed;
     return true;
   },
@@ -70050,36 +70100,36 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Determine whether a button touch has occured and emit events as appropriate.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button touch state changed, false otherwise.
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button touch state changed.
    */
   handleTouch: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
     var evtName;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.touched === previousButtonState.touched) { return false; }
-    if (buttonState.touched) {
-      evtName = 'start';
-    } else {
-      evtName = 'end';
-    }
+
+    evtName = buttonState.touched ? 'start' : 'end';
+    this.el.emit('touch' + evtName, {id: id, state: buttonState});
     previousButtonState.touched = buttonState.touched;
-    this.el.emit('touch' + evtName, {id: id, state: previousButtonState});
     return true;
   },
 
   /**
    * Determine whether a button value has changed.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button value changed, false otherwise.
+   * @param {string} id - Id of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button value changed.
    */
   handleValue: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.value === previousButtonState.value) { return false; }
+
     previousButtonState.value = buttonState.value;
     return true;
   }
@@ -72716,7 +72766,8 @@ module.exports = registerElement('a-node', {
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -75655,7 +75706,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 15-02-2017, Commit #8df196b)');
+console.log('A-Frame Version: 0.5.0 (Date 16-02-2017, Commit #9e8dfcd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
