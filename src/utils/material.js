@@ -11,25 +11,26 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   var el = shader.el;
   var material = shader.material;
   var src = data[dataName];
+
   // Because a single material / shader may have multiple textures,
   // we need to remember the source value for this data property
   // to avoid redundant operations which can be expensive otherwise
   // (e.g. video texture loads).
-  var shadowSrcName = '_texture_' + dataName;
+  if (!shader.materialSrcs) { shader.materialSrcs = {}; }
 
   if (!src) {
     // Forget the prior material src.
-    shader[shadowSrcName] = null;
+    delete shader.materialSrcs[materialName];
     // Remove the texture.
     setMap(null);
     return;
   }
 
   // Don't process if material src hasn't changed.
-  if (src === shader[shadowSrcName]) { return; }
+  if (src === shader.materialSrcs[materialName]) { return; }
 
   // Remember the new src for this texture (there may be multiple).
-  shader[shadowSrcName] = src;
+  shader.materialSrcs[materialName] = src;
 
   // If the new material src is already a texture, just use it.
   if (src instanceof THREE.Texture) { setMap(src); } else {
@@ -42,7 +43,7 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
 
   function checkSetMap (texture) {
     // If the source has been changed, don't use loaded texture.
-    if (shader[shadowSrcName] !== src) { return; }
+    if (shader.materialSrcs[materialName] !== src) { return; }
     setMap(texture);
   }
 
