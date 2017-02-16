@@ -75706,7 +75706,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-02-2017, Commit #9e8dfcd)');
+console.log('A-Frame Version: 0.5.0 (Date 16-02-2017, Commit #6160cb5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77655,7 +77655,8 @@ module.exports.srcLoader = _dereq_('./src-loader');
 var THREE = _dereq_('../lib/three');
 
 /**
- * Update `material.map` given `data.src`. For standard and flat shaders.
+ * Update `material` texture property (usually but not always `map`)
+ * from `data` property (usually but not always `src`)
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
@@ -77664,24 +77665,43 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   var el = shader.el;
   var material = shader.material;
   var src = data[dataName];
-  var shadowSrcName = '_texture_' + dataName;
 
-  if (src) {
-    if (src === shader[shadowSrcName]) { return; }
-    // Texture added or changed.
-    shader[shadowSrcName] = src;
-    if (src instanceof THREE.Texture) { setMap(src); return; }
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
+  // Because a single material / shader may have multiple textures,
+  // we need to remember the source value for this data property
+  // to avoid redundant operations which can be expensive otherwise
+  // (e.g. video texture loads).
+  if (!shader.materialSrcs) { shader.materialSrcs = {}; }
+
+  if (!src) {
+    // Forget the prior material src.
+    delete shader.materialSrcs[materialName];
+    // Remove the texture.
+    setMap(null);
     return;
   }
 
-  // Texture removed.
-  if (!material[materialName]) { return; }
-  shader[shadowSrcName] = null;
-  setMap(null);
+  // Don't process if material src hasn't changed.
+  if (src === shader.materialSrcs[materialName]) { return; }
+
+  // Remember the new src for this texture (there may be multiple).
+  shader.materialSrcs[materialName] = src;
+
+  // If the new material src is already a texture, just use it.
+  if (src instanceof THREE.Texture) { setMap(src); } else {
+    // Load texture for the new material src.
+    // (And check if we should still use it once available in callback.)
+    el.sceneEl.systems.material.loadTexture(src,
+      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      checkSetMap);
+  }
+
+  function checkSetMap (texture) {
+    // If the source has been changed, don't use loaded texture.
+    if (shader.materialSrcs[materialName] !== src) { return; }
+    setMap(texture);
+  }
 
   function setMap (texture) {
-    if (shader[shadowSrcName] !== src) { return; }
     material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
