@@ -84,7 +84,7 @@ To create a wide red box using the primitives API, we could write:
 Which ends up expanding to:
 
 ```html
-<a-entity geometry="primitive: box; width: 3" material="color: red"></a-box>
+<a-entity geometry="primitive: box; width: 3" material="color: red"></a-entity>
 ```
 
 Under the hood, we see that primitives *extend* `<a-entity>` as a custom
