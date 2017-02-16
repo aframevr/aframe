@@ -39,6 +39,10 @@ module.exports.Component = registerComponent('cursor', {
 
   init: function () {
     var cursorEl = this.el;
+    if (cursorEl.sceneEl === null) {
+      console.warn('There is no scene element for the cursor.');
+      return;
+    }
     var canvas = cursorEl.sceneEl.canvas;
     this.fuseTimeout = undefined;
     this.mouseDownEl = null;
