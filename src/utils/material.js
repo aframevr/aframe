@@ -1,7 +1,8 @@
 var THREE = require('../lib/three');
 
 /**
- * Update `material.map` given `data.src`. For standard and flat shaders.
+ * Update `material` texture property (usually but not always `map`)
+ * from `data` property (usually but not always `src`)
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
@@ -10,6 +11,10 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   var el = shader.el;
   var material = shader.material;
   var src = data[dataName];
+  // Because a single material / shader may have multiple textures,
+  // we need to remember the source value for this data property
+  // to avoid redundant operations which can be expensive otherwise
+  // (e.g. video texture loads).
   var shadowSrcName = '_texture_' + dataName;
 
   if (!src) {
