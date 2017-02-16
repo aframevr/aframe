@@ -221,7 +221,8 @@ module.exports = registerElement('a-node', {
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
-      }
+      },
+      writable: window.debug
     },
 
     /**

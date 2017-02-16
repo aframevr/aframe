@@ -1,158 +1,409 @@
-/* global assert, process, setup, suite, test */
-var entityFactory = require('../helpers').entityFactory;
+/* global assert, process, setup, suite, test, THREE */
+const entityFactory = require('../helpers').entityFactory;
+
+const PI = Math.PI;
 
 suite('tracked-controls', function () {
+  var component;
+  var controller;
+  var el;
+  var system;
+
   setup(function (done) {
-    var el = this.el = entityFactory();
+    el = entityFactory();
     el.setAttribute('position', '');
     el.setAttribute('tracked-controls', '');
     el.addEventListener('loaded', function () {
-      var trackedControls = el.components['tracked-controls'];
-      trackedControls.system.controllers = [
-        { id: 'OpenVR Gamepad', pose: { position: [0, 0, 0] }, buttons: [], axes: [] }
-      ];
+      component = el.components['tracked-controls'];
+      system = component.system;
+      controller = {
+        id: 'OpenVR Gamepad',
+        pose: {
+          position: [0, 0, 0],
+          orientation: [0, 0, 0, 1]
+        },
+        buttons: [
+          {pressed: false, touched: false, value: 0},
+          {pressed: false, touched: false, value: 0}
+        ],
+        axes: [0, 0, 0]
+      };
+      system.controllers = [controller];
+      el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
       done();
     });
   });
 
-  suite('id', function () {
-    test('do not match controller by default', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      assert.notOk(trackedControls.controller);
+  suite('updateGamepad', function () {
+    test('matches controller with same id', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
+      component.tick();
+      assert.equal(component.controller, controller);
     });
 
-    test('do not match controller with different id', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      assert.notEqual(trackedControls.data.id, trackedControls.system.controllers[0].id);
-      assert.notOk(trackedControls.controller);
+    test('matches controller with prefix', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', 'idPrefix', 'OpenVR');
+      component.tick();
+      assert.equal(component.controller, controller);
     });
 
-    test('match controller with same id', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      assert.notOk(trackedControls.controller);
-      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
-      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
+    test('does not match controller by default', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', {}, true);
+      component.tick();
+      assert.notOk(component.controller);
+    });
+
+    test('does not match controller with different id', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', 'id', 'foo');
+      component.tick();
+      assert.notOk(component.controller);
+    });
+
+    test('does not match controller with different prefix', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', 'idPrefix', 'foo');
+      component.tick();
+      assert.notOk(component.controller);
     });
   });
 
   suite('tick', function () {
-    setup(function (done) {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
-      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
-      done();
-    });
-
-    test('pose and buttons update if mesh is not defined', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      var updateButtonsSpy = this.sinon.spy(trackedControls, 'updateButtons');
-      var updatePoseSpy = this.sinon.spy(trackedControls, 'updatePose');
-      assert.equal(el.getObject3D('mesh'), undefined);
-      trackedControls.tick();
+    test('updates pose and buttons even if mesh is not defined', function () {
+      var updateButtonsSpy = this.sinon.spy(component, 'updateButtons');
+      var updatePoseSpy = this.sinon.spy(component, 'updatePose');
+      assert.notOk(el.getObject3D('mesh'));
+      component.tick();
       assert.ok(updatePoseSpy.called);
       assert.ok(updateButtonsSpy.called);
     });
   });
 
-  suite('position', function () {
-    setup(function (done) {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      el.setAttribute('tracked-controls', 'id', trackedControls.system.controllers[0].id);
-      assert.equal(trackedControls.controller, trackedControls.system.controllers[0]);
-      done();
-    });
-
-    test('defaults position and pose to [0 0 0]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-
-      trackedControls.system.controllers[0].pose.position = [0, 0, 0];
+  suite('updatePose (position)', function () {
+    test('defaults position to zero vector', function () {
+      controller.pose.position = [0, 0, 0];
       el.setAttribute('position', '0 0 0');
-      trackedControls.tick();
-
-      var previousControllerPos = trackedControls.previousControllerPosition;
-      assert.equal(previousControllerPos.x, 0);
-      assert.equal(previousControllerPos.y, 0);
-      assert.equal(previousControllerPos.z, 0);
-      assert.deepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
+      component.tick();
+      assertVec3(component.previousControllerPosition, [0, 0, 0]);
+      assertVec3(el.getAttribute('position'), [0, 0, 0]);
     });
 
-    test('position: [0 0 0] and pose: [1 2 3]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-      var previousControllerPos = trackedControls.previousControllerPosition;
-
-      trackedControls.system.controllers[0].pose.position = [1, 2, 3];
-      trackedControls.tick();
-
-      assert.equal(previousControllerPos.x, 1);
-      assert.equal(previousControllerPos.y, 2);
-      assert.equal(previousControllerPos.z, 3);
-      assert.deepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+    test('applies position from gamepad pose', function () {
+      controller.pose.position = [1, 2, 3];
+      component.tick();
+      assertVec3(component.previousControllerPosition, [1, 2, 3]);
+      assertVec3(el.getAttribute('position'), [1, 2, 3]);
     });
 
-    test('position: [-1 2 -3] and pose: [0 0 0]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
+    test('applies position using deltas', function () {
+      controller.pose.position = [0, 0, 0];
+      el.setAttribute('position', '1 2 3');
+      component.tick();
+      assertVec3(el.getAttribute('position'), [1, 2, 3]);
 
-      trackedControls.system.controllers[0].pose.position = [0, 0, 0];
+      assertVec3(component.previousControllerPosition, [0, 0, 0]);
+      controller.pose.position = [1, 1, 1];
+      component.tick();
+      assertVec3(el.getAttribute('position'), [2, 3, 4]);
+    });
+
+    test('applies position using deltas with non-zero pose', function () {
+      assertVec3(component.previousControllerPosition, [0, 0, 0]);
+      controller.pose.position = [4, 5, -6];
       el.setAttribute('position', '-1 2 -3');
-      trackedControls.tick();
-      assert.deepEqual(el.getAttribute('position'), {x: -1, y: 2, z: -3});
+      component.tick();
+      // A-Frame position + (Gamepad position - previous Gamepad position).
+      // [-1, 2, -3] + ([4, 5, -6] - [0, 0, 0]).
+      assertVec3(el.getAttribute('position'), [3, 7, -9]);
     });
 
-    test('position: [-1 2 -3] and pose: [4 5 -6]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
-
-      trackedControls.system.controllers[0].pose.position = [4, 5, -6];
+    test('handles unchanged Gamepad position', function () {
+      controller.pose.position = [4, 5, -6];
+      component.tick();
       el.setAttribute('position', '-1 2 -3');
-      trackedControls.tick();
-      assert.deepEqual(el.getAttribute('position'), {x: 3, y: 7, z: -9});
+      component.tick();
+      assertVec3(component.previousControllerPosition, [4, 5, -6]);
+      // A-Frame position + (Gamepad position - previous Gamepad position).
+      // [-1, 2, -3] + ([4, 5, -6] - [4, 5, -6]).
+      assertVec3(el.getAttribute('position'), [-1, 2, -3]);
     });
 
-    test('position: [-1 2 -3] and current and previous pose: [4 5 -6]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
+    test('applies new Gamepad position to manually positioned entity', function () {
+      controller.pose.position = [1, 2, 3];
+      component.tick();
+      assertVec3(component.previousControllerPosition, [1, 2, 3]);
+      assertVec3(el.getAttribute('position'), [1, 2, 3]);
 
-      trackedControls.system.controllers[0].pose.position = [4, 5, -6];
-      trackedControls.tick();
-      // Previous pose = [4 5 -6] diff with current pose = 0
+      el.setAttribute('position', '10 10 10');
+      controller.pose.position = [2, 4, 6];
+      component.tick();
+      assertVec3(component.previousControllerPosition, [2, 4, 6]);
 
-      el.setAttribute('position', '-1 2 -3');
-      trackedControls.tick();
+      // A-Frame position + (Gamepad position - previous Gamepad position).
+      // [10, 10, 10] + ([2, 4, 6] - [1, 2, 3]).
+      assertVec3(el.getAttribute('position'), [11, 12, 13]);
+    });
+  });
 
-      assert.deepEqual(el.getAttribute('position'), {x: -1, y: 2, z: -3});
+  suite('updatePose (rotation)', function () {
+    test('defaults rotation to zero', function () {
+      controller.pose.orientation = toQuaternion(0, 0, 0);
+      el.setAttribute('rotation', '0 0 0');
+      component.tick();
+      assert.shallowDeepEqual(el.object3D.quaternion.toArray(), [0, 0, 0, 1]);
     });
 
-    test('position: [-1 2 -3] and current [7 -8 9] and previous pose: [4 5 -6]', function () {
-      var el = this.el;
-      var trackedControls = el.components['tracked-controls'];
+    test('applies rotation from Gamepad pose', function () {
+      controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      component.tick();
+      assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
+    });
 
-      trackedControls.system.controllers[0].pose.position = [4, 5, -6];
-      console.log('tick1');
-      trackedControls.tick();
+    test('applies rotation absolutely', function () {
+      controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      el.setAttribute('rotation', '180 90 60');
+      component.tick();
+      assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
 
-      var previousControllerPos = trackedControls.previousControllerPosition;
-      assert.equal(previousControllerPos.x, 4);
-      assert.equal(previousControllerPos.y, 5);
-      assert.equal(previousControllerPos.z, -6);
+      controller.pose.orientation = toQuaternion(PI / 2, PI / 3, PI / 4);
+      component.tick();
+      assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
+    });
 
-      trackedControls.system.controllers[0].pose.position = [7, -8, 9];
-      // diff prev & current pos = [3 -13 15]
-      el.setAttribute('position', '-1 2 -3');
-      trackedControls.tick();
+    test('handles unchanged Gamepad rotation', function () {
+      controller.pose.orientation = toQuaternion(PI, PI / 2, PI / 3);
+      component.tick();
+      component.tick();
+      assertQuaternion(el.object3D.quaternion, controller.pose.orientation);
+    });
 
-      assert.equal(previousControllerPos.x, 7);
-      assert.equal(previousControllerPos.y, -8);
-      assert.equal(previousControllerPos.z, 9);
-      assert.deepEqual(el.getAttribute('position'), {x: 2, y: -11, z: 12});
+    test('applies rotation Z-offset', function () {
+      assertVec3(el.getAttribute('rotation'), [0, 0, 0]);
+      el.setAttribute('tracked-controls', 'rotationOffset', 10);
+      component.tick();
+      assertVec3(el.getAttribute('rotation'), [0, 0, 10]);
+    });
+  });
+
+  suite('handleAxes', function () {
+    test('does not emit on initial state', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.tick();
+      assert.notOk(component.handleAxes());
+      assert.notOk(emitSpy.called);
+    });
+
+    test('emits axismove on first touch', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.axes = [0.5, 0.5, 0.5];
+      assert.deepEqual(component.axis, [0, 0, 0]);
+      component.tick();
+      assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'axismove');
+      assert.deepEqual(emitSpy.getCalls()[0].args[1].axis, [0.5, 0.5, 0.5]);
+    });
+
+    test('emits axismove if axis changed', function () {
+      controller.axes = [0.5, 0.5, 0.5];
+      component.tick();
+      assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
+
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.axes = [1, 1, 1];
+      component.tick();
+      const emitCall = emitSpy.getCalls()[0];
+      assert.equal(emitCall.args[0], 'axismove');
+      assert.deepEqual(emitCall.args[1].axis, [1, 1, 1]);
+    });
+  });
+
+  suite('handleButton', function () {
+    test('does not emit if button not pressed', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.tick();
+      assert.notOk(emitSpy.called);
+    });
+
+    test('emits buttonchanged if button pressed', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.buttons[0].pressed = true;
+      component.tick();
+
+      const emitChangedCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttonchanged');
+      assert.equal(emitChangedCalls.length, 1);
+
+      const emitCall = emitChangedCalls[0];
+      assert.equal(emitCall.args[0], 'buttonchanged');
+      assert.deepEqual(emitCall.args[1].id, 0);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[0]);
+    });
+
+    test('emits buttonchanged if button touched', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.buttons[0].touched = true;
+      component.tick();
+
+      const emitChangedCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttonchanged');
+      assert.equal(emitChangedCalls.length, 1);
+
+      const emitCall = emitChangedCalls[0];
+      assert.equal(emitCall.args[0], 'buttonchanged');
+      assert.deepEqual(emitCall.args[1].id, 0);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[0]);
+    });
+  });
+
+  suite('handlePress', function () {
+    test('does not emit anything if button not pressed', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.tick();
+      assert.notOk(emitSpy.called);
+      assert.notOk(component.handlePress(0, {pressed: false, touched: false, value: 0}));
+    });
+
+    test('emits buttondown if button pressed', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.buttons[0].pressed = true;
+      component.tick();
+
+      const emitDownCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttondown');
+      assert.equal(emitDownCalls.length, 1);
+
+      const emitCall = emitDownCalls[0];
+      assert.equal(emitCall.args[0], 'buttondown');
+      assert.deepEqual(emitCall.args[1].id, 0);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[0]);
+    });
+
+    test('emits buttonup if button released', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.buttonStates[1] = {pressed: true, touched: false, value: 1};
+      controller.buttons[1].pressed = false;
+      controller.buttons[1].value = 0;
+      component.tick();
+
+      const emitUpCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttonup');
+      assert.equal(emitUpCalls.length, 1);
+
+      const emitCall = emitUpCalls[0];
+      assert.equal(emitCall.args[0], 'buttonup');
+      assert.deepEqual(emitCall.args[1].id, 1);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[1]);
+    });
+
+    test('does not emit buttonup if button pressed', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.buttons[0].pressed = true;
+      component.tick();
+      const emitUpCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttonup');
+      assert.notOk(emitUpCalls.length);
+    });
+
+    test('does not emit buttondown if button released', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.buttonStates[1] = {pressed: true, touched: false, value: 1};
+      controller.buttons[1].pressed = false;
+      controller.buttons[1].value = 0;
+      component.tick();
+
+      const emitDownCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'buttondown');
+      assert.notOk(emitDownCalls.length);
+    });
+  });
+
+  suite('handleTouch', function () {
+    test('does not do anything if button not touched', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.tick();
+      assert.notOk(emitSpy.called);
+      assert.notOk(component.handleTouch(0, {pressed: false, touched: false, value: 0}));
+    });
+
+    test('emits touchstart if button touched', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.buttons[0].touched = true;
+      component.tick();
+
+      const emitStartCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'touchstart');
+      assert.equal(emitStartCalls.length, 1);
+
+      const emitCall = emitStartCalls[0];
+      assert.equal(emitCall.args[0], 'touchstart');
+      assert.deepEqual(emitCall.args[1].id, 0);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[0]);
+    });
+
+    test('emits touchend if button no longer touched', function () {
+      const emitSpy = this.sinon.spy(el, 'emit');
+      component.buttonStates[1] = {pressed: false, touched: true, value: 1};
+      controller.buttons[1].touched = false;
+      controller.buttons[1].value = 0;
+      component.tick();
+
+      const emitEndCalls = emitSpy.getCalls().filter(
+        call => call.args[0] === 'touchend');
+      assert.equal(emitEndCalls.length, 1);
+
+      const emitCall = emitEndCalls[0];
+      assert.equal(emitCall.args[0], 'touchend');
+      assert.deepEqual(emitCall.args[1].id, 1);
+      assert.deepEqual(emitCall.args[1].state, controller.buttons[1]);
+    });
+  });
+
+  suite('handleValue', function () {
+    test('stores default button value in button states', function () {
+      component.tick();
+      assert.equal(component.buttonStates[0].value, 0);
+      assert.equal(component.buttonStates[1].value, 0);
+    });
+
+    test('stores changed button value in button states', function () {
+      controller.buttons[0].value = 0.25;
+      controller.buttons[1].value = 0.75;
+      component.tick();
+      assert.equal(component.buttonStates[0].value, 0.25);
+      assert.equal(component.buttonStates[1].value, 0.75);
     });
   });
 });
+
+function assertVec3 (vec3, arr) {
+  assert.equal(vec3.x, arr[0]);
+  assert.equal(vec3.y, arr[1]);
+  assert.equal(vec3.z, arr[2]);
+}
+
+function assertQuaternion (quaternion, arr) {
+  quaternion = quaternion.toArray();
+  // Compute negative quaternion if necessary. Equivalent rotations.
+  // eslint-disable-next-line eqeqeq
+  if (quaternion[0].toFixed(5) * -1 == arr[0].toFixed(5)) {
+    quaternion = quaternion.map(n => -1 * n);
+  }
+  // Round.
+  quaternion = quaternion.map(n => n.toFixed(5));
+  arr = arr.map(n => n.toFixed(5));
+
+  assert.shallowDeepEqual(quaternion, arr);
+}
+
+function toQuaternion (x, y, z) {
+  var euler = new THREE.Euler();
+  var quaternion = new THREE.Quaternion();
+  return (function () {
+    euler.fromArray([x, y, z]);
+    quaternion.setFromEuler(euler);
+    return quaternion.toArray();
+  })();
+}
