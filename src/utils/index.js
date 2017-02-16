@@ -142,6 +142,7 @@ function deepEqual (a, b) {
     // Check nested array and object.
     if ((typeof valA === 'object' || typeof valB === 'object') ||
         (Array.isArray(valA) && Array.isArray(valB))) {
+      if (valA === valB) { continue; }
       if (!deepEqual(valA, valB)) { return false; }
     } else if (valA !== valB) {
       return false;
