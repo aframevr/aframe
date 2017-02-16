@@ -8,26 +8,28 @@ var THREE = require('../lib/three');
  */
 module.exports.updateMapMaterialFromData = function (materialName, dataName, shader, data) {
   var el = shader.el;
+  var self = this;
   var material = shader.material;
   var src = data[dataName];
   var shadowSrcName = '_texture_' + dataName;
 
   if (src) {
+    // Return if material has not changed
     if (src === shader[shadowSrcName]) { return; }
-    // Texture added or changed.
-    shader[shadowSrcName] = src;
+    this.lastTextureRequestSrc = src;
     if (src instanceof THREE.Texture) { setMap(src); return; }
     el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
     return;
+  } else {
+    src = null;
+    setMap(src);
   }
 
-  // Texture removed.
-  if (!material[materialName]) { return; }
-  shader[shadowSrcName] = null;
-  setMap(null);
-
   function setMap (texture) {
-    if (shader[shadowSrcName] !== src) { return; }
+    // If multiple requests are in flight we make sure
+    // that only the last one is applied.
+    if (src && self.lastTextureRequestSrc !== src) { return; }
+    shader[shadowSrcName] = src;
     material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);
