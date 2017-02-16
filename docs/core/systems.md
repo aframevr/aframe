@@ -96,7 +96,7 @@ AFRAME.registerComponent('my-component', {
 
   update: function () {
     // Do stuff with `this.data`.
-    this.myObject = this.system.createComplexObject(data);
+    this.myObject = this.system.createComplexObject(this.data);
   }
 });
 ```
