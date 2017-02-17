@@ -27,6 +27,58 @@ suite('cursor', function () {
     });
   });
 
+  suite('remove', function () {
+    test('removes hover state', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [intersectedEl]
+      });
+      assert.ok(cursorEl.is('cursor-hovering'));
+      assert.ok(intersectedEl.is('cursor-hovered'));
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        assert.notOk(cursorEl.is('cursor-hovering'));
+        assert.notOk(intersectedEl.is('cursor-hovered'));
+        done();
+      });
+    });
+
+    test('removes fuse state', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.setAttribute('cursor', 'fuse', true);
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [intersectedEl]
+      });
+      assert.ok(cursorEl.is('cursor-fusing'));
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        assert.notOk(cursorEl.is('cursor-fusing'));
+        done();
+      });
+    });
+
+    test('removes intersection listener', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        cursorEl.emit('raycaster-intersection', {
+          intersections: [intersection],
+          els: [intersectedEl]
+        });
+        assert.notOk(cursorEl.is('cursor-hovering'));
+        done();
+      });
+    });
+  });
+
   suite('onMouseDown', function () {
     test('emits mousedown event on cursorEl', function (done) {
       var cursorEl = this.cursorEl;
