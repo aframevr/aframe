@@ -66480,8 +66480,8 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
-    var cursorEl = this.el;
-    var canvas = cursorEl.sceneEl.canvas;
+    var el = this.el;
+    var canvas = el.sceneEl.canvas;
     this.fuseTimeout = undefined;
     this.mouseDownEl = null;
     this.intersection = null;
@@ -66489,16 +66489,40 @@ module.exports.Component = registerComponent('cursor', {
 
     // Wait for canvas to load.
     if (!canvas) {
-      cursorEl.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
+      el.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
       return;
     }
 
+    // Bind methods.
+    this.onMouseDown = bind(this.onMouseDown, this);
+    this.onMouseUp = bind(this.onMouseUp, this);
+    this.onIntersection = bind(this.onIntersection, this);
+    this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
+
     // Attach event listeners.
-    canvas.addEventListener('mousedown', bind(this.onMouseDown, this));
-    canvas.addEventListener('mouseup', bind(this.onMouseUp, this));
-    cursorEl.addEventListener('raycaster-intersection', bind(this.onIntersection, this));
-    cursorEl.addEventListener('raycaster-intersection-cleared',
-                              bind(this.onIntersectionCleared, this));
+    canvas.addEventListener('mousedown', this.onMouseDown);
+    canvas.addEventListener('mouseup', this.onMouseUp);
+    el.addEventListener('raycaster-intersection', this.onIntersection);
+    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  },
+
+  remove: function () {
+    var el = this.el;
+    var canvas = el.sceneEl.canvas;
+
+    el.removeState(STATES.HOVERING);
+    el.removeState(STATES.FUSING);
+    el.removeEventListener('raycaster-intersection', this.onIntersection);
+    el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+
+    clearTimeout(this.fuseTimeout);
+
+    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
+
+    if (canvas) {
+      canvas.removeEventListener('mousedown', this.onMouseDown);
+      canvas.removeEventListener('mouseup', this.onMouseUp);
+    }
   },
 
   /**
@@ -75706,7 +75730,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-02-2017, Commit #6160cb5)');
+console.log('A-Frame Version: 0.5.0 (Date 17-02-2017, Commit #709ebbc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
