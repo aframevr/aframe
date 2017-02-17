@@ -75730,7 +75730,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-02-2017, Commit #709ebbc)');
+console.log('A-Frame Version: 0.5.0 (Date 17-02-2017, Commit #0d39119)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76147,7 +76147,7 @@ module.exports.Shader = registerShader('standard', {
     metalness: {default: 0.0, min: 0.0, max: 1.0},
 
     normalMap: {type: 'map'},
-    normalScale: {type: 'vec2', default: '1 1'},
+    normalScale: {type: 'vec2', default: {x: 1, y: 1}},
     normalTextureOffset: {type: 'vec2'},
     normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
