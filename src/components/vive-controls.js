@@ -55,6 +55,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
@@ -180,7 +181,7 @@ module.exports.Component = registerComponent('vive-controls', {
     if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) {
       return;
     }
-    this.el.emit('trackpadmoved', evt);
+    this.el.emit('trackpadmoved', evt.detail);
   },
 
   onButtonEvent: function (id, evtName) {
