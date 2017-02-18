@@ -70,6 +70,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
   },
 
   removeEventListeners: function () {
@@ -80,6 +81,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
   },
 
   checkIfControllerPresent: function () {
@@ -172,6 +174,13 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
     // Offset pivot point
     controllerObject3D.position.set(0, -0.015, 0.04);
+  },
+
+  onAxisMoved: function (evt) {
+    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) {
+      return;
+    }
+    this.el.emit('trackpadmoved', evt);
   },
 
   onButtonEvent: function (id, evtName) {
