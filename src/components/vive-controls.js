@@ -178,10 +178,8 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onAxisMoved: function (evt) {
-    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) {
-      return;
-    }
-    this.el.emit('trackpadmoved', evt.detail);
+    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) { return; }
+    this.el.emit('trackpadmoved', { x: evt.detail.axis[0], y: evt.detail.axis[1] });
   },
 
   onButtonEvent: function (id, evtName) {
