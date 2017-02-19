@@ -80,6 +80,7 @@ module.exports = window.AFRAME = {
   ANode: ANode,
   AScene: AScene,
   components: components,
+  constants: require('./constants'),
   geometries: require('./core/geometry').geometries,
   registerComponent: registerComponent,
   registerElement: require('./core/a-register-element').registerElement,
