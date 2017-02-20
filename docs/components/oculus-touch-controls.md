@@ -22,6 +22,7 @@ mappings, events, and a Touch controller model.
 
 | Property             | Description                                        | Default Value        |
 |----------------------|----------------------------------------------------|----------------------|
+| emulated             | Whether to emulate (treat as present regardless).  | false                |
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | model                | Whether the Touch controller model is loaded.      | true                 |
 | rotationOffset       | Offset to apply to model rotation.                 | 0                    |
