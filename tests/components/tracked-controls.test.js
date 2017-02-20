@@ -228,6 +228,7 @@ suite('tracked-controls', function () {
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
       assert.equal(emitSpy.getCalls()[0].args[0], 'axismove');
       assert.deepEqual(emitSpy.getCalls()[0].args[1].axis, [0.5, 0.5, 0.5]);
+      assert.deepEqual(emitSpy.getCalls()[0].args[1].changed, [true, true, true]);
     });
 
     test('emits axismove if axis changed', function () {
@@ -241,6 +242,21 @@ suite('tracked-controls', function () {
       const emitCall = emitSpy.getCalls()[0];
       assert.equal(emitCall.args[0], 'axismove');
       assert.deepEqual(emitCall.args[1].axis, [1, 1, 1]);
+      assert.deepEqual(emitCall.args[1].changed, [true, true, true]);
+    });
+
+    test('emits axismove with correct axis changed flags', function () {
+      controller.axes = [0.5, 0.5, 0.5];
+      component.tick();
+      assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
+
+      const emitSpy = this.sinon.spy(el, 'emit');
+      controller.axes = [1, 0.5, 0.5];
+      component.tick();
+      const emitCall = emitSpy.getCalls()[0];
+      assert.equal(emitCall.args[0], 'axismove');
+      assert.deepEqual(emitCall.args[1].axis, [1, 0.5, 0.5]);
+      assert.deepEqual(emitCall.args[1].changed, [true, false, false]);
     });
   });
 
