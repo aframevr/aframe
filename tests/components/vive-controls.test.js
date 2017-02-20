@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, CustomEvent, Event */
 var entityFactory = require('../helpers').entityFactory;
 var controllerComponentName = 'vive-controls';
 
@@ -10,6 +10,46 @@ suite(controllerComponentName, function () {
       var controllerComponent = el.components[controllerComponentName];
       controllerComponent.isControllerPresent = function () { return controllerComponent.isControllerPresentMockValue; };
       done();
+    });
+  });
+
+  suite('emulated', function () {
+    test('when emulated, if no controllers, add event listeners but do not inject tracked-controls', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
+      // mock isControllerPresent to return false
+      controllerComponent.isControllerPresentMockValue = false;
+      // pretend we haven't looked before
+      delete controllerComponent.controllerPresent;
+      // set the emulated flag directly, to avoid having to wait for DOM update
+      controllerComponent.data.emulated = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // check assertions
+      assert.ok(controllerComponent.data.emulated);
+      assert.notOk(injectTrackedControlsSpy.called);
+      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.ok(addEventListenersSpy.called);
+    });
+
+    test('when not emulated by default, if no controllers, do not add event listeners or inject tracked-controls', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
+      // mock isControllerPresent to return false
+      controllerComponent.isControllerPresentMockValue = false;
+      // pretend we haven't looked before
+      delete controllerComponent.controllerPresent;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // check assertions
+      assert.notOk(controllerComponent.data.emulated);
+      assert.notOk(injectTrackedControlsSpy.called);
+      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.notOk(addEventListenersSpy.called);
     });
   });
 
@@ -96,26 +136,62 @@ suite(controllerComponentName, function () {
     });
   });
 
-  suite.skip('onGamepadConnected / Disconnected', function () {
-    test('if we get onGamepadConnected or onGamepadDisconnected, remove periodic change listener and check if present', function () {
+  suite('axismove', function () {
+    var name = 'trackpad';
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
+    test('if we get axismove, emit ' + name + 'moved', function (done) {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
-      var removeControllersUpdateListenerSpy = this.sinon.spy(controllerComponent, 'removeControllersUpdateListener');
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for thumbstickmoved
+      this.el.addEventListener(name + 'moved', function (evt) {
+        assert.equal(evt.detail.x, 0.1);
+        assert.equal(evt.detail.y, 0.2);
+        assert.ok(evt.detail);
+        done();
+      });
+      // emit axismove
+      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2]}});
+      this.el.dispatchEvent(evt);
+    });
+  });
+
+  suite('gamepadconnected / disconnected', function () {
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
+    test('if we get gamepadconnected or gamepaddisconnected, check if present', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
       var checkIfControllerPresentSpy = this.sinon.spy(controllerComponent, 'checkIfControllerPresent');
+      // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
+      controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
+      controllerComponent.pause();
+      controllerComponent.play();
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
       // reset everGotGamepadEvent so we don't think we've looked before
       delete controllerComponent.everGotGamepadEvent;
-      // do the call
-      controllerComponent.onGamepadConnected();
+      // fire emulated gamepadconnected event
+      window.dispatchEvent(new Event('gamepadconnected'));
       // check assertions
-      assert.ok(removeControllersUpdateListenerSpy.called);
       assert.ok(checkIfControllerPresentSpy.called);
       assert.ok(controllerComponent.everGotGamepadEvent);
+      // mock isControllerPresent to return false
+      controllerComponent.isControllerPresentMockValue = false;
       // reset everGotGamepadEvent so we don't think we've looked before
       delete controllerComponent.everGotGamepadEvent;
-      // do the call
-      controllerComponent.onGamepadDisconnected();
+      // fire emulated gamepaddisconnected event
+      window.dispatchEvent(new Event('gamepaddisconnected'));
       // check assertions
-      assert.ok(removeControllersUpdateListenerSpy.called);
       assert.ok(checkIfControllerPresentSpy.called);
       assert.ok(controllerComponent.everGotGamepadEvent);
     });

@@ -25,23 +25,24 @@ var EMULATED_TOUCH_THRESHOLD = 0.001;
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
+    emulated: {default: false},
     buttonColor: {type: 'color', default: '#999'},          // Off-white.
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
-    model: { default: true },
+    model: {default: true},
     rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
 
   // buttonId
-  // 0 - thumbstick
-  // 1 - trigger ( intensity value from 0.5 to 1 )
+  // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+  // 1 - trigger (with analog value, which goes up to 1)
   // 2 - grip
-  // 3 - menu ( dispatch but better for menu options )
-  // 4 - system ( never dispatched on this layer )
+  // 3 - X (left) or A (right)
+  // 4 - Y (left) or B (right)
+  // 5 - surface (touch only)
   mapping: {
     'left': {
-      axis0: 'thumbstick',
-      axis1: 'thumbstick',
+      axes: {'thumbstick': [0, 1]},
       button0: 'thumbstick',
       button1: 'trigger',
       button2: 'grip',
@@ -50,8 +51,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       button5: 'surface'
     },
     'right': {
-      axis0: 'thumbstick',
-      axis1: 'thumbstick',
+      axes: {'thumbstick': [0, 1]},
       button0: 'thumbstick',
       button1: 'trigger',
       button2: 'grip',
@@ -61,10 +61,16 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     }
   },
 
+  // Use these labels for detail on axis events such as thumbstickmoved.
+  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
+  axisLabels: ['x', 'y', 'z', 'w'],
+
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -83,6 +89,12 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.isControllerPresent = isControllerPresent; // to allow mock
   },
 
+  update: function (oldData) {
+    if ((oldData.emulated !== undefined) && (this.data.emulated !== oldData.emulated)) {
+      this.checkIfControllersPresent();
+    }
+  },
+
   addEventListeners: function () {
     var el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
@@ -90,10 +102,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('axismove', this.onAxisMoved);
     el.addEventListener('model-loaded', this.onModelLoaded);
-    el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
-    window.addEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   removeEventListeners: function () {
@@ -103,27 +113,40 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('axismove', this.onAxisMoved);
     el.removeEventListener('model-loaded', this.onModelLoaded);
-    el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
-    window.removeEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   checkIfControllerPresent: function () {
     var data = this.data;
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
-    if (isPresent === this.controllerPresent) { return; }
+    if ((isPresent || data.emulated) === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent || data.emulated) { this.addEventListeners(); } else { this.removeEventListeners(); }
+  },
+
+  onGamepadConnectionEvent: function (evt) {
+    this.everGotGamepadEvent = true;
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
+    this.checkIfControllerPresent();
   },
 
   play: function () {
     this.checkIfControllerPresent();
-    this.addEventListeners();
+    this.addControllersUpdateListener();
+    window.addEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.addEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
+    this.removeControllersUpdateListener();
+    window.removeEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.removeEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   updateControllerModel: function () {
@@ -151,6 +174,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : isRightHand ? -90 : 90
     });
     this.updateControllerModel();
+  },
+
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
   onControllersUpdate: function () {
@@ -221,6 +252,21 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       this.el.emit(buttonName + evtName);
     }
     this.updateModel(buttonName, evtName);
+  },
+
+  onAxisMoved: function (evt) {
+    var self = this;
+    var axesMapping = this.mapping[this.data.hand].axes;
+    // In theory, it might be better to use mapping from axis to control.
+    // In practice, it is not clear whether the additional overhead is worthwhile,
+    // and if we did grouping of axes, we really need de-duplication there.
+    Object.keys(axesMapping).map(function (key) {
+      var value = axesMapping[key];
+      var detail = {};
+      value.map(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
+      self.el.emit(key + 'moved', detail);
+    });
+    // If we updated the model based on axis values, that call would go here.
   },
 
   updateModel: function (buttonName, evtName) {
