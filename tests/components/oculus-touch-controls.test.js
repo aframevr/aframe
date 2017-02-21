@@ -2,6 +2,8 @@
 var entityFactory = require('../helpers').entityFactory;
 var controllerComponentName = 'oculus-touch-controls';
 
+var emulatedControllers = [{id: 'Oculus Touch (Left)', hand: 'left'}, {id: 'Oculus Touch (right)', hand: 'right'}];
+
 suite(controllerComponentName, function () {
   setup(function (done) {
     var el = this.el = entityFactory();
@@ -9,6 +11,9 @@ suite(controllerComponentName, function () {
     el.addEventListener('loaded', function () {
       var controllerComponent = el.components[controllerComponentName];
       controllerComponent.isControllerPresent = function () { return controllerComponent.isControllerPresentMockValue; };
+      controllerComponent.getGamepadsByPrefix = function () {
+        return controllerComponent.isControllerPresentMockValue ? emulatedControllers : null;
+      };
       done();
     });
   });
@@ -30,8 +35,8 @@ suite(controllerComponentName, function () {
       // check assertions
       assert.ok(controllerComponent.data.emulated);
       assert.notOk(injectTrackedControlsSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
       assert.ok(addEventListenersSpy.called);
+      assert.ok(controllerComponent.controllerPresent === false); // not undefined
     });
 
     test('when not emulated by default, if no controllers, do not add event listeners or inject tracked-controls', function () {
@@ -48,8 +53,8 @@ suite(controllerComponentName, function () {
       // check assertions
       assert.notOk(controllerComponent.data.emulated);
       assert.notOk(injectTrackedControlsSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
       assert.notOk(addEventListenersSpy.called);
+      assert.ok(controllerComponent.controllerPresent === false); // not undefined
     });
   });
 

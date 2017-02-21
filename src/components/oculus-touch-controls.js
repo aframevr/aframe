@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var getGamepadsByPrefix = require('../utils/tracked-controls').getGamepadsByPrefix;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -36,7 +37,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   // buttonId
   // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
   // 1 - trigger (with analog value, which goes up to 1)
-  // 2 - grip
+  // 2 - grip (with analog value, which goes up to 1)
   // 3 - X (left) or A (right)
   // 4 - Y (left) or B (right)
   // 5 - surface (touch only)
@@ -87,6 +88,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
+    this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
   },
 
   update: function (oldData) {
@@ -119,10 +121,19 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
+    var isPresent = false;
+    var whichControllers;
+    // Find which controller matches both prefix and hand.
+    whichControllers = (this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX) || [])
+      .filter(function (gamepad) { return gamepad.hand === data.hand; });
+    if (whichControllers && whichControllers.length) { isPresent = true; }
     if ((isPresent || data.emulated) === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      // Inject with specific gamepad id, if provided. This works around a temporary issue
+      // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
+      this.injectTrackedControls(whichControllers[0]);
+    }
     if (isPresent || data.emulated) { this.addEventListeners(); } else { this.removeEventListeners(); }
   },
 
@@ -162,14 +173,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
   },
 
-  injectTrackedControls: function () {
+  injectTrackedControls: function (gamepad) {
     var el = this.el;
     var data = this.data;
     var isRightHand = data.hand === 'right';
-
-    // since each hand is named differently, avoid enumeration
+    // Inject with specific gamepad id, if provided. This works around a temporary issue
+    // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
     el.setAttribute('tracked-controls', {
-      id: isRightHand ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+      id: gamepad ? gamepad.id : isRightHand ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
       controller: 0,
       rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : isRightHand ? -90 : 90
     });
@@ -185,7 +196,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onControllersUpdate: function () {
-    if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener when we get a gamepad event.
+    this.checkIfControllerPresent();
   },
 
   // currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
