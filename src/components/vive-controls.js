@@ -157,9 +157,16 @@ module.exports.Component = registerComponent('vive-controls', {
     var button = this.mapping['button' + evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var value;
-    if (!button || !buttonMeshes || button !== 'trigger') { return; }
-    value = evt.detail.state.value;
-    buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    if (!button) { return; }
+
+    // Update button mesh, if any.
+    if (buttonMeshes && button === 'trigger') {
+      value = evt.detail.state.value;
+      buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onModelLoaded: function (evt) {

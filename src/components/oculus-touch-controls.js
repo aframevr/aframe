@@ -203,8 +203,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.checkIfControllerPresent();
   },
 
-  // currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
-  // however those have analog values, and this (below button-down values) can be used to fake them
+  // Currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
+  // however those have analog values, and this (below button-down values) can be used to fake them.
   isEmulatedTouchEvent: function (analogValue) {
     return analogValue && (analogValue >= EMULATED_TOUCH_THRESHOLD);
   },
@@ -216,24 +216,33 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var analogValue;
     var isEmulatedTouch;
 
-    // at the moment, if trigger or grip,
-    // touch events aren't happening (touched is stuck true);
-    // synthesize touch events from very low analog values
-    if (button !== 'trigger' && button !== 'grip') { return; }
-    analogValue = evt.detail.state.value;
-    isPreviousValueEmulatedTouch = this.isEmulatedTouchEvent(this.previousButtonValues[button]);
-    this.previousButtonValues[button] = analogValue;
-    isEmulatedTouch = this.isEmulatedTouchEvent(analogValue);
-    if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
-      (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
+    if (!button) { return; }
+
+    if (button === 'trigger' || button === 'grip') {
+      // At the moment, if trigger or grip,
+      // touch events aren't happening (touched is stuck true);
+      // synthesize touch events from very low analog values.
+      analogValue = evt.detail.state.value;
+      isPreviousValueEmulatedTouch = this.isEmulatedTouchEvent(this.previousButtonValues[button]);
+      this.previousButtonValues[button] = analogValue;
+      isEmulatedTouch = this.isEmulatedTouchEvent(analogValue);
+      if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
+        (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
+      }
     }
-    if (!buttonMeshes) { return; }
-    if (button === 'trigger' && buttonMeshes.trigger) {
-      buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 24);
+
+    // Update trigger and/or grip meshes, if any.
+    if (buttonMeshes) {
+      if (button === 'trigger' && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 24);
+      }
+      if (button === 'grip' && buttonMeshes.grip) {
+        buttonMeshes.grip.rotation.y = (this.data.hand === 'left' ? -1 : 1) * analogValue * (Math.PI / 60);
+      }
     }
-    if (button === 'grip' && buttonMeshes.grip) {
-      buttonMeshes.grip.rotation.y = (this.data.hand === 'left' ? -1 : 1) * analogValue * (Math.PI / 60);
-    }
+
+    // Pass along changed event with button state, using the buttom mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onModelLoaded: function (evt) {

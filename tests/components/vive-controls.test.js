@@ -138,10 +138,6 @@ suite(controllerComponentName, function () {
 
   suite('axismove', function () {
     var name = 'trackpad';
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener as a result.
     test('if we get axismove, emit ' + name + 'moved', function (done) {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
@@ -159,6 +155,28 @@ suite(controllerComponentName, function () {
       });
       // emit axismove
       evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2]}});
+      this.el.dispatchEvent(evt);
+    });
+  });
+
+  suite('buttonchanged', function () {
+    var name = 'trigger';
+    var id = 1;
+    test('if we get buttonchanged, emit ' + name + 'changed', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for thumbstickmoved
+      this.el.addEventListener(name + 'changed', function (evt) {
+        assert.ok(evt.detail);
+        done();
+      });
+      // emit axismove
+      evt = new CustomEvent('buttonchanged', {'detail': {id: id, state: {value: 0.5, pressed: true, touched: true}}});
       this.el.dispatchEvent(evt);
     });
   });
