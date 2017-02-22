@@ -29,7 +29,7 @@ module.exports.Shader = registerShader('standard', {
     metalness: {default: 0.0, min: 0.0, max: 1.0},
 
     normalMap: {type: 'map'},
-    normalScale: {type: 'vec2', default: '1 1'},
+    normalScale: {type: 'vec2', default: {x: 1, y: 1}},
     normalTextureOffset: {type: 'vec2'},
     normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 

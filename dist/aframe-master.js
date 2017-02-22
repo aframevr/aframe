@@ -66480,8 +66480,8 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
-    var cursorEl = this.el;
-    var canvas = cursorEl.sceneEl.canvas;
+    var el = this.el;
+    var canvas = el.sceneEl.canvas;
     this.fuseTimeout = undefined;
     this.mouseDownEl = null;
     this.intersection = null;
@@ -66489,16 +66489,40 @@ module.exports.Component = registerComponent('cursor', {
 
     // Wait for canvas to load.
     if (!canvas) {
-      cursorEl.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
+      el.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
       return;
     }
 
+    // Bind methods.
+    this.onMouseDown = bind(this.onMouseDown, this);
+    this.onMouseUp = bind(this.onMouseUp, this);
+    this.onIntersection = bind(this.onIntersection, this);
+    this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
+
     // Attach event listeners.
-    canvas.addEventListener('mousedown', bind(this.onMouseDown, this));
-    canvas.addEventListener('mouseup', bind(this.onMouseUp, this));
-    cursorEl.addEventListener('raycaster-intersection', bind(this.onIntersection, this));
-    cursorEl.addEventListener('raycaster-intersection-cleared',
-                              bind(this.onIntersectionCleared, this));
+    canvas.addEventListener('mousedown', this.onMouseDown);
+    canvas.addEventListener('mouseup', this.onMouseUp);
+    el.addEventListener('raycaster-intersection', this.onIntersection);
+    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  },
+
+  remove: function () {
+    var el = this.el;
+    var canvas = el.sceneEl.canvas;
+
+    el.removeState(STATES.HOVERING);
+    el.removeState(STATES.FUSING);
+    el.removeEventListener('raycaster-intersection', this.onIntersection);
+    el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+
+    clearTimeout(this.fuseTimeout);
+
+    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
+
+    if (canvas) {
+      canvas.removeEventListener('mousedown', this.onMouseDown);
+      canvas.removeEventListener('mouseup', this.onMouseUp);
+    }
   },
 
   /**
@@ -69902,11 +69926,11 @@ var THREE = _dereq_('../lib/three');
 
 /**
  * Tracked controls component.
- * Interface with the gamepad API to handled tracked controllers.
+ * Wrap the gamepad API for pose and button states.
  * Select the appropriate controller and apply pose to the entity.
- * Observe buttons state and emit appropriate events.
+ * Observe button states and emit appropriate events.
  *
- * @property {number} controller - Index of the controller in array returned by Gamepad API.
+ * @property {number} controller - Index of controller in array returned by Gamepad API.
  * @property {string} id - Selected controller among those returned by Gamepad API.
  */
 module.exports.Component = registerComponent('tracked-controls', {
@@ -69918,28 +69942,41 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   init: function () {
+    this.axis = [0, 0, 0];
     this.buttonStates = {};
-    this.previousAxis = [];
     this.previousControllerPosition = new THREE.Vector3();
-  },
-
-  update: function () {
-    var controllers = this.system.controllers;
-    var data = this.data;
-    controllers = controllers.filter(hasIdOrPrefix);
-    // handId: 0 - right, 1 - left
-    this.controller = controllers[data.controller];
-    function hasIdOrPrefix (controller) { return data.idPrefix ? controller.id.indexOf(data.idPrefix) === 0 : controller.id === data.id; }
+    this.updateGamepad();
   },
 
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
     if (mesh && mesh.update) { mesh.update(delta / 1000); }
+    this.updateGamepad();
     this.updatePose();
     this.updateButtons();
   },
 
+  /**
+   * Handle update to `id` or `idPrefix.
+   */
+  updateGamepad: function () {
+    var controllers = this.system.controllers;
+    var data = this.data;
+    var matchingControllers;
+
+    // Hand IDs: 0 is right, 1 is left.
+    matchingControllers = controllers.filter(function hasIdOrPrefix (controller) {
+      if (data.idPrefix) { return controller.id.indexOf(data.idPrefix) === 0; }
+      return controller.id === data.id;
+    });
+
+    this.controller = matchingControllers[data.controller];
+  },
+
+  /**
+   * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
+   */
   updatePose: (function () {
     var controllerEuler = new THREE.Euler();
     var controllerPosition = new THREE.Vector3();
@@ -69948,16 +69985,19 @@ module.exports.Component = registerComponent('tracked-controls', {
     var dolly = new THREE.Object3D();
     var standingMatrix = new THREE.Matrix4();
     controllerEuler.order = 'YXZ';
+
     return function () {
-      var controller;
-      var pose;
-      var orientation;
-      var position;
+      var controller = this.controller;
+      var currentPosition;
       var el = this.el;
+      var orientation;
+      var pose;
+      var position;
       var vrDisplay = this.system.vrDisplay;
-      this.update();
-      controller = this.controller;
+
       if (!controller) { return; }
+
+      // Compose pose from Gamepad.
       pose = controller.pose;
       orientation = pose.orientation || [0, 0, 0, 1];
       position = pose.position || [0, 0, 0];
@@ -69965,22 +70005,28 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.quaternion.fromArray(orientation);
       dolly.position.fromArray(position);
       dolly.updateMatrix();
+
+      // Apply transforms.
       if (vrDisplay && vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
         dolly.applyMatrix(standingMatrix);
       }
+
+      // Decompose.
       controllerEuler.setFromRotationMatrix(dolly.matrix);
       controllerPosition.setFromMatrixPosition(dolly.matrix);
+
+      // Apply rotation (as absolute, with rotation offset).
       el.setAttribute('rotation', {
         x: THREE.Math.radToDeg(controllerEuler.x),
         y: THREE.Math.radToDeg(controllerEuler.y),
         z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
       });
 
+      // Apply position (as delta from previous Gamepad rotation).
       deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
       this.previousControllerPosition.copy(controllerPosition);
-      var currentPosition = el.getAttribute('position');
-
+      currentPosition = el.getAttribute('position');
       el.setAttribute('position', {
         x: currentPosition.x + deltaControllerPosition.x,
         y: currentPosition.y + deltaControllerPosition.y,
@@ -69989,60 +70035,88 @@ module.exports.Component = registerComponent('tracked-controls', {
     };
   })(),
 
+  /**
+   * Handle button changes including axes, presses, touches, values.
+   */
   updateButtons: function () {
-    var i;
     var buttonState;
     var controller = this.controller;
-    if (!this.controller) { return; }
-    for (i = 0; i < controller.buttons.length; ++i) {
-      buttonState = controller.buttons[i];
-      this.handleButton(i, buttonState);
+    var id;
+
+    if (!controller) { return; }
+
+    // Check every button.
+    for (id = 0; id < controller.buttons.length; ++id) {
+      // Initialize button state.
+      if (!this.buttonStates[id]) {
+        this.buttonStates[id] = {pressed: false, touched: false, value: 0};
+      }
+
+      buttonState = controller.buttons[id];
+      this.handleButton(id, buttonState);
     }
-    this.handleAxes(controller.axes);
+    // Check axes.
+    this.handleAxes();
   },
 
-  handleAxes: function (controllerAxes) {
-    var previousAxis = this.previousAxis;
+  /**
+   * Handle presses and touches for a single button.
+   *
+   * @param {number} id - Index of button in Gamepad button array.
+   * @param {number} buttonState - Value of button state from 0 to 1.
+   * @returns {boolean} Whether button has changed in any way.
+   */
+  handleButton: function (id, buttonState) {
+    var changed = this.handlePress(id, buttonState) ||
+                  this.handleTouch(id, buttonState) ||
+                  this.handleValue(id, buttonState);
+    if (!changed) { return false; }
+    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    return true;
+  },
+
+  /**
+   * An axis is an array of values from -1 (up, left) to 1 (down, right).
+   * Compare each component of the axis to the previous value to determine change.
+   *
+   * @returns {boolean} Whether axes changed.
+   */
+  handleAxes: function () {
     var changed = false;
+    var controllerAxes = this.controller.axes;
     var i;
+    var previousAxis = this.axis;
+
+    // Check if axis changed.
     for (i = 0; i < controllerAxes.length; ++i) {
       if (previousAxis[i] !== controllerAxes[i]) {
         changed = true;
         break;
       }
     }
-    if (!changed) { return; }
-    this.previousAxis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: this.previousAxis});
-  },
+    if (!changed) { return false; }
 
-  handleButton: function (id, buttonState) {
-    var changed = false;
-    changed = changed || this.handlePress(id, buttonState);
-    changed = changed || this.handleTouch(id, buttonState);
-    changed = changed || this.handleValue(id, buttonState);
-    if (!changed) { return; }
-    this.el.emit('buttonchanged', {id: id, state: buttonState});
+    this.axis = controllerAxes.slice();
+    this.el.emit('axismove', {axis: this.axis});
+    return true;
   },
 
   /**
    * Determine whether a button press has occured and emit events as appropriate.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button press state changed, false otherwise.
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button press state changed.
    */
   handlePress: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
     var evtName;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.pressed === previousButtonState.pressed) { return false; }
-    if (buttonState.pressed) {
-      evtName = 'down';
-    } else {
-      evtName = 'up';
-    }
-    this.el.emit('button' + evtName, {id: id});
+
+    evtName = buttonState.pressed ? 'down' : 'up';
+    this.el.emit('button' + evtName, {id: id, state: buttonState});
     previousButtonState.pressed = buttonState.pressed;
     return true;
   },
@@ -70050,36 +70124,36 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Determine whether a button touch has occured and emit events as appropriate.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button touch state changed, false otherwise.
+   * @param {string} id - ID of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button touch state changed.
    */
   handleTouch: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
     var evtName;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.touched === previousButtonState.touched) { return false; }
-    if (buttonState.touched) {
-      evtName = 'start';
-    } else {
-      evtName = 'end';
-    }
+
+    evtName = buttonState.touched ? 'start' : 'end';
+    this.el.emit('touch' + evtName, {id: id, state: buttonState});
     previousButtonState.touched = buttonState.touched;
-    this.el.emit('touch' + evtName, {id: id, state: previousButtonState});
     return true;
   },
 
   /**
    * Determine whether a button value has changed.
    *
-   * @param {string} id - id of the button to check.
-   * @param {object} buttonState - state of the button to check.
-   * @returns {boolean} true if button value changed, false otherwise.
+   * @param {string} id - Id of the button to check.
+   * @param {object} buttonState - State of the button to check.
+   * @returns {boolean} Whether button value changed.
    */
   handleValue: function (id, buttonState) {
-    var buttonStates = this.buttonStates;
-    var previousButtonState = buttonStates[id] = buttonStates[id] || {};
+    var previousButtonState = this.buttonStates[id];
+
+    // Not changed.
     if (buttonState.value === previousButtonState.value) { return false; }
+
     previousButtonState.value = buttonState.value;
     return true;
   }
@@ -70157,6 +70231,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
@@ -70172,6 +70247,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
   },
 
   removeEventListeners: function () {
@@ -70182,6 +70258,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
   },
 
   checkIfControllerPresent: function () {
@@ -70274,6 +70351,11 @@ module.exports.Component = registerComponent('vive-controls', {
     buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
     // Offset pivot point
     controllerObject3D.position.set(0, -0.015, 0.04);
+  },
+
+  onAxisMoved: function (evt) {
+    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) { return; }
+    this.el.emit('trackpadmoved', { x: evt.detail.axis[0], y: evt.detail.axis[1] });
   },
 
   onButtonEvent: function (id, evtName) {
@@ -72716,7 +72798,8 @@ module.exports = registerElement('a-node', {
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -75655,7 +75738,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 15-02-2017, Commit #8df196b)');
+console.log('A-Frame Version: 0.5.0 (Date 19-02-2017, Commit #7c011bd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76072,7 +76155,7 @@ module.exports.Shader = registerShader('standard', {
     metalness: {default: 0.0, min: 0.0, max: 1.0},
 
     normalMap: {type: 'map'},
-    normalScale: {type: 'vec2', default: '1 1'},
+    normalScale: {type: 'vec2', default: {x: 1, y: 1}},
     normalTextureOffset: {type: 'vec2'},
     normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
@@ -77604,7 +77687,8 @@ module.exports.srcLoader = _dereq_('./src-loader');
 var THREE = _dereq_('../lib/three');
 
 /**
- * Update `material.map` given `data.src`. For standard and flat shaders.
+ * Update `material` texture property (usually but not always `map`)
+ * from `data` property (usually but not always `src`)
  *
  * @param {object} shader - A-Frame shader instance.
  * @param {object} data
@@ -77613,24 +77697,43 @@ module.exports.updateMapMaterialFromData = function (materialName, dataName, sha
   var el = shader.el;
   var material = shader.material;
   var src = data[dataName];
-  var shadowSrcName = '_texture_' + dataName;
 
-  if (src) {
-    if (src === shader[shadowSrcName]) { return; }
-    // Texture added or changed.
-    shader[shadowSrcName] = src;
-    if (src instanceof THREE.Texture) { setMap(src); return; }
-    el.sceneEl.systems.material.loadTexture(src, {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot}, setMap);
+  // Because a single material / shader may have multiple textures,
+  // we need to remember the source value for this data property
+  // to avoid redundant operations which can be expensive otherwise
+  // (e.g. video texture loads).
+  if (!shader.materialSrcs) { shader.materialSrcs = {}; }
+
+  if (!src) {
+    // Forget the prior material src.
+    delete shader.materialSrcs[materialName];
+    // Remove the texture.
+    setMap(null);
     return;
   }
 
-  // Texture removed.
-  if (!material[materialName]) { return; }
-  shader[shadowSrcName] = null;
-  setMap(null);
+  // Don't process if material src hasn't changed.
+  if (src === shader.materialSrcs[materialName]) { return; }
+
+  // Remember the new src for this texture (there may be multiple).
+  shader.materialSrcs[materialName] = src;
+
+  // If the new material src is already a texture, just use it.
+  if (src instanceof THREE.Texture) { setMap(src); } else {
+    // Load texture for the new material src.
+    // (And check if we should still use it once available in callback.)
+    el.sceneEl.systems.material.loadTexture(src,
+      {src: src, repeat: data.repeat, offset: data.offset, npot: data.npot},
+      checkSetMap);
+  }
+
+  function checkSetMap (texture) {
+    // If the source has been changed, don't use loaded texture.
+    if (shader.materialSrcs[materialName] !== src) { return; }
+    setMap(texture);
+  }
 
   function setMap (texture) {
-    if (shader[shadowSrcName] !== src) { return; }
     material[materialName] = texture;
     material.needsUpdate = true;
     handleTextureEvents(el, texture);

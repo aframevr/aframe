@@ -81,6 +81,36 @@ suite('material', function () {
       });
     });
 
+    test('removes texture when src attribute removed', function (done) {
+      var el = this.el;
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
+        el.removeAttribute('material', 'src');
+        assert.notOk(el.components.material.material.map);
+        done();
+      });
+    });
+
+    test('removes texture when src attribute is empty string', function (done) {
+      var el = this.el;
+      var imageUrl = 'base/tests/assets/test.png';
+      el.setAttribute('material', '');
+      assert.notOk(el.components.material.material.texture);
+      el.setAttribute('material', 'src: url(' + imageUrl + ')');
+      el.addEventListener('materialtextureloaded', function (evt) {
+        var loadedTexture = evt.detail.texture;
+        assert.ok(el.components.material.material.map === loadedTexture);
+        el.setAttribute('material', 'src', '');
+        assert.notOk(el.components.material.material.map);
+        done();
+      });
+    });
+
     test('sets material to MeshShaderMaterial for custom shaders', function () {
       var el = this.el;
       delete shaders.test;
