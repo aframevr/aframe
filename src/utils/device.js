@@ -7,6 +7,8 @@ var controls = new THREE.VRControls(dolly);
  * orientation is available
  */
 function checkHeadsetConnected () {
+  var vrDisplay = controls.getVRDisplay();
+  if (vrDisplay && 'isConnected' in vrDisplay) { return vrDisplay.isConnected; }
   var orientation;
   controls.update();
   orientation = dolly.quaternion;
