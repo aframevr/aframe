@@ -36,6 +36,9 @@ module.exports.Component = registerComponent('look-controls', {
     } else {
       enableGrabCursor();
     }
+
+    // Reset previous HMD position when we exit VR.
+    sceneEl.addEventListener('exit-vr', this.onExitVR);
   },
 
   update: function (oldData) {
@@ -75,6 +78,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.onTouchStart = bind(this.onTouchStart, this);
     this.onTouchMove = bind(this.onTouchMove, this);
     this.onTouchEnd = bind(this.onTouchEnd, this);
+    this.onExitVR = bind(this.onExitVR, this);
   },
 
   setupMouseControls: function () {
@@ -285,6 +289,10 @@ module.exports.Component = registerComponent('look-controls', {
 
   onTouchEnd: function () {
     this.touchStarted = false;
+  },
+
+  onExitVR: function () {
+    this.previousHMDPosition.set(0, 0, 0);
   }
 });
 

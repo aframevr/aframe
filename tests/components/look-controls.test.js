@@ -12,6 +12,19 @@ suite('look-controls', function () {
     });
   });
 
+  suite('exit-vr', function () {
+    test('reset previous HMD position upon exit-vr event', function (done) {
+      var el = this.sceneEl;
+      var lookControls = el.camera.el.components['look-controls'];
+      lookControls.previousHMDPosition.set(1, 2, 3);
+      process.nextTick(function () {
+        assert.ok(lookControls.previousHMDPosition.length() === 0);
+        done();
+      });
+      el.dispatchEvent(new Event('exit-vr'));
+    });
+  });
+
   suite('grabbing', function () {
     test('enables grab cursor on canvas', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
