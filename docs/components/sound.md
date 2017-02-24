@@ -63,7 +63,7 @@ and cache. We can do so through the asset management system:
 ```html
 <a-scene>
   <a-assets>
-    <audio id="river" src="river.mp3" preload="auto">
+    <audio id="river" src="river.mp3" preload="auto"></audio>
   </a-assets>
 
   <a-entity sound="src: #river"></a-entity>
