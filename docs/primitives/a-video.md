@@ -12,7 +12,7 @@ The video primitive plays a video as a texture on a flat plane.
 ```html
 <a-scene>
   <a-assets>
-    <video id="penguin-sledding" autoplay loop="true" src="penguin-sledding.mp4">
+    <video id="penguin-sledding" autoplay loop="true" src="penguin-sledding.mp4"></video>
   </a-assets>
 
   <!-- Using the asset management system. -->
