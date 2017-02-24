@@ -259,7 +259,7 @@ slightly preferred to pass an object so A-Frame doesn't have to parse the
 string.
 
 ```js
-entityEl.setAttribute('position', {x: 1, y: 2: z: -3});
+entityEl.setAttribute('position', {x: 1, y: 2, z: -3});
 // Or entityEl.setAttribute('position', '1 2 -3');
 ```
 
