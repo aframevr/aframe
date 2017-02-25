@@ -23,10 +23,6 @@ module.exports.Component = registerComponent('pool', {
 
   multiple: true,
 
-  init: function () {
-    this.initPool();
-  },
-
   initPool: function () {
     var i;
     var mixin = this.data.mixin;
