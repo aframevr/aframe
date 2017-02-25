@@ -122,5 +122,10 @@ suite('utils.objects', function () {
       assert.ok(deepEqual({}, {}));
       assert.notOk(deepEqual({}, {a: 1}));
     });
+
+    test('can compare the same object with self reference', function () {
+      var objA = {x: 0, y: 0, z: 0, self: objA};
+      assert.ok(deepEqual(objA, objA));
+    });
   });
 });
