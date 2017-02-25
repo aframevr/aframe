@@ -68691,10 +68691,6 @@ module.exports.Component = registerComponent('pool', {
 
   multiple: true,
 
-  init: function () {
-    this.initPool();
-  },
-
   initPool: function () {
     var i;
     var mixin = this.data.mixin;
@@ -75738,7 +75734,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 25-02-2017, Commit #d8e3977)');
+console.log('A-Frame Version: 0.5.0 (Date 25-02-2017, Commit #0ec8ede)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
