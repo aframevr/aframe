@@ -336,13 +336,23 @@ the name of a registered component as the `attr`, and pass an object of
 properties as the `value`:
 
 ```js
-// All previous properties for the light component will be removed and overwritten.
+// Only the properties passed in the object will be overwritten.
 entity.setAttribute('light', {
   type: 'spot',
   distance: 30,
   intensity: 2.0
 });
 ```
+
+Alternatively, including `true` as a third argument will reset all other
+properties for the component to their defaults. 
+Array-type properties behave uniquely when set this way. First, the component 
+data will be assigned by reference to the new array, so later changes to an
+array variable that was passed to `setAttribute` will also be  reflected in the 
+component data. Second, unlike other property types, updates to an array 
+property with this method do not automatically trigger the component's 
+`update` method. 
+
 
 #### Updating Multi-Property Component Data
 

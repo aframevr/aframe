@@ -337,6 +337,29 @@ suite('a-entity', function () {
       assert.equal(geometry.width, 3);
     });
 
+    test('partial updates of array properties assign by reference', function () {
+      var sourceArray = [1, 2, 3];
+      registerComponent('array-comp', {
+        schema: { arr: { type: 'array' } }
+      });
+      this.el.setAttribute('array-comp', { arr: sourceArray });
+      assert.strictEqual(this.el.getAttribute('array-comp').arr, sourceArray);
+    });
+    test('partial updates of array-type properties do not trigger update', function () {
+      var updateSpy;
+      registerComponent('array-comp2', {
+        schema: { arr: { type: 'array' } },
+        update: function (oldData) { }
+      });
+      this.el.setAttribute('array-comp2', { arr: [1, 2, 3] });
+      updateSpy = this.sinon.spy(this.el.components['array-comp2'], 'update');
+      // setAttribute does not trigger update because utils.extendDeep
+      // called by componentUpdate assigns the new value directly into the
+      // component data
+      this.el.setAttribute('array-comp2', { arr: [4, 5, 6] });
+      assert.isFalse(updateSpy.called);
+    });
+
     test('can partially update vec3', function () {
       var el = this.el;
       el.setAttribute('position', {y: 20});
