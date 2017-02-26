@@ -1,5 +1,6 @@
 /* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
+var THREE = require('index').THREE;
 
 var SRC = '/base/tests/assets/box/Box.gltf';
 
@@ -54,5 +55,34 @@ suite('gltf-model', function () {
       el2.setAttribute('gltf-model', '#gltf');
     });
     el.sceneEl.appendChild(el2);
+  });
+
+  test('attaches animation clips to model', function (done) {
+    var el = this.el;
+    var sceneMock = new THREE.Object3D();
+    var animations = [
+      new THREE.AnimationClip('run', 1.0, []),
+      new THREE.AnimationClip('jump', 1.0, [])
+    ];
+    var gltfMock = {
+      scene: sceneMock,
+      scenes: [sceneMock],
+      animations: animations
+    };
+
+    this.sinon.stub(THREE, 'GLTFLoader', function MockGLTFLoader () {
+      this.load = function (url, onLoad) {
+        process.nextTick(onLoad.bind(null, gltfMock));
+      };
+    });
+
+    el.addEventListener('model-loaded', function () {
+      var model = el.components['gltf-model'].model;
+      assert.ok(model);
+      assert.equal(model.animations, animations);
+      done();
+    });
+
+    el.setAttribute('gltf-model', '#gltf');
   });
 });
