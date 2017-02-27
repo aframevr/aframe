@@ -49,7 +49,7 @@ depending on the material type applied.
 | Property    | Description                                                                                                                                       | Default Value |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | depthTest   | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
-| flatShading | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | true          |
+| flatShading | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false          |
 | opacity     | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | transparent | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
 | shader      | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
