@@ -138,17 +138,23 @@ texture. There are some components in the ecosystem that enable this:
 
 ## Where can I find assets?
 
-[archive3d]: http://archive3d.net/
+[archive3d]: http://archive3d.net
 [awesomestock]: https://github.com/neutraltone/awesome-stock-resources
 [clara]: http://clara.io
-[sketchup]: https://3dwarehouse.sketchup.com/
+[sketchfab]: https://sketchfab.com
+[sketchup]: https://3dwarehouse.sketchup.com
 [turbosquid]: http://www.turbosquid.com/Search/3D-Models/free
 
 In general, [awesome-stock-resources][awesomestock] is a great collection of
 free assets.
 
+[flickr]: https://www.flickr.com/groups/equirectangular/
+
+For 360&deg; images, search for [equirectangular images on Flickr][flickr].
+
 For 3D models, also check out:
 
+- [Sketchfab][sketchfab]
 - [Clara.io][clara]
 - [Sketchup's 3D Warehouse][sketchup]
 - [Archive3D][archive3d]
