@@ -26,7 +26,7 @@ module.exports.Component = registerComponent('light', {
     castShadow: {default: false, if: {type: ['point', 'spot', 'directional']}},
     shadowBias: {default: 0, if: {castShadow: true}},
     shadowCameraFar: {default: 500, if: {castShadow: true}},
-    shadowCameraFov: {default: 50, if: {castShadow: true}},
+    shadowCameraFov: {default: 90, if: {castShadow: true}},
     shadowCameraNear: {default: 0.5, if: {castShadow: true}},
     shadowCameraTop: {default: 5, if: {castShadow: true}},
     shadowCameraRight: {default: 5, if: {castShadow: true}},
