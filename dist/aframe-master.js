@@ -71505,7 +71505,6 @@ registerElement('a-asset-item', {
         var self = this;
         var src = this.getAttribute('src');
         fileLoader.load(src, function handleOnLoad (textResponse) {
-          THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
@@ -75869,7 +75868,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 28-02-2017, Commit #6f61d2f)');
+console.log('A-Frame Version: 0.5.0 (Date 28-02-2017, Commit #5e65afa)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
