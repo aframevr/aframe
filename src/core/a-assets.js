@@ -99,7 +99,6 @@ registerElement('a-asset-item', {
         var self = this;
         var src = this.getAttribute('src');
         fileLoader.load(src, function handleOnLoad (textResponse) {
-          THREE.Cache.files[src] = textResponse;
           self.data = textResponse;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the

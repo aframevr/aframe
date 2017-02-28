@@ -5,7 +5,7 @@ var THREE = require('lib/three');
 // Use data URI where a load event is needed.
 var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-var XHR_SRC = 'base/src/README.md';
+var XHR_SRC = '/base/tests/assets/dummy.txt';
 
 suite('a-assets', function () {
   setup(function () {
