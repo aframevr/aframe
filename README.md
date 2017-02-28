@@ -29,7 +29,7 @@
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
   &mdash;
-  <a href="https://github.com/aframevr/aframe">awesome-aframe</a>
+  <a href="https://github.com/aframevr/awesome-aframe">awesome-aframe</a>
 </div>
 
 ## Features
