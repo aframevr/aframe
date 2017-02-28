@@ -61,7 +61,7 @@ rotate, pan, or zoom the viewport to change the view of the scene:
 
 From the viewport, we can also select entities and transform them:
 
-- **Select**: left-click on an entity
+- **Select**: left-click on an entity, double-click to focus the camera on it
 - **Transform**: select a helper tool on the upper-right corner of the
   viewport, drag the red/blue/green helpers surrounding an entity to transform
   it
