@@ -69,6 +69,13 @@ module.exports.Component = registerComponent('vive-controls', {
     this.isControllerPresent = isControllerPresent; // to allow mock
   },
 
+  update: function (oldData) {
+    // Check for emulated flag setting, not just change, to avoid spurious check after init(),
+    if (('emulated' in oldData) && (this.data.emulated !== oldData.emulated)) {
+      this.checkIfControllersPresent();
+    }
+  },
+
   addEventListeners: function () {
     var el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
