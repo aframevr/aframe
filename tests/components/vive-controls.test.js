@@ -154,8 +154,27 @@ suite(controllerComponentName, function () {
         done();
       });
       // emit axismove
-      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2]}});
+      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [true, false]}});
       this.el.dispatchEvent(evt);
+    });
+
+    test('if we get axismove with no changes, do not emit ' + name + 'moved', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for thumbstickmoved
+      this.el.addEventListener(name + 'moved', function (evt) {
+        assert.notOk(evt.detail);
+      });
+      // emit axismove
+      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [false, false]}});
+      this.el.dispatchEvent(evt);
+      // finish next tick
+      setTimeout(function () { done(); }, 0);
     });
   });
 
@@ -170,12 +189,12 @@ suite(controllerComponentName, function () {
       controllerComponent.isControllerPresentMockValue = true;
       // do the check
       controllerComponent.checkIfControllerPresent();
-      // install event handler listening for thumbstickmoved
+      // install event handler listening for triggerchanged
       this.el.addEventListener(name + 'changed', function (evt) {
         assert.ok(evt.detail);
         done();
       });
-      // emit axismove
+      // emit buttonchanged
       evt = new CustomEvent('buttonchanged', {'detail': {id: id, state: {value: 0.5, pressed: true, touched: true}}});
       this.el.dispatchEvent(evt);
     });

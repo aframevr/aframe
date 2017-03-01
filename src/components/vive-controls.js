@@ -195,10 +195,14 @@ module.exports.Component = registerComponent('vive-controls', {
     Object.keys(axesMapping).map(function (key) {
       var value = axesMapping[key];
       var detail = {};
-      value.map(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
-      self.el.emit(key + 'moved', detail);
+      var changed = false;
+      value.map(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; });
+      if (changed) {
+        value.map(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
+        self.el.emit(key + 'moved', detail);
+        // If we updated the model based on axis values, that call would go here.
+      }
     });
-    // If we updated the model based on axis values, that call would go here.
   },
 
   onButtonEvent: function (id, evtName) {
