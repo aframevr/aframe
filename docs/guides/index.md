@@ -692,6 +692,4 @@ entity. [Read more about using the A-Frame Inspector][inspectorguide].
 The core value proposition of A-Frame is its extensible entity-component
 architecture that allows for a declarative structure to define and compose
 reusable JavaScript modules. We'll see more about components and the ecosystem
-in the upcoming sections.  We will release a *Writing an A-Frame Component*
-guide soon, for now the [component documentation][component] serves as a rough
-guide.
+in the upcoming sections.
