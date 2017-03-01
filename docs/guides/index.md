@@ -658,8 +658,8 @@ For this guide, let's use the primitive form of the text component, `<a-text>`:
 
 There are also a few other ways to handle text:
 
-[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text
-[htmlshader]: https://github.com/mayognaise/aframe-html-shader
+[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text-geometry/
+[htmlshader]: https://github.com/mayognaise/aframe-html-shader/
 [Kevin Ngo]: https://twitter.com/andgokevin
 [Mayo Tobita]: https://twitter.com/mayognaise
 
