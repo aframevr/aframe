@@ -98,6 +98,9 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
+        var responseType = this.getAttribute('responseType');
+        if (responseType === null) responseType = 'text';
+        fileLoader.setResponseType(responseType);
         fileLoader.load(src, function handleOnLoad (textResponse) {
           self.data = textResponse;
           /*
