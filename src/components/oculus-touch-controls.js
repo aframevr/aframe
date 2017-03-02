@@ -44,6 +44,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
           gamepad.buttons && gamepad.buttons.length >= 6 &&
           gamepad.axes && gamepad.axes.length === 2;
       },
+      // axes
+      // 0, 1 - thumbstick (which has separate button events)
       // buttonId
       // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
       // 1 - trigger (with analog value, which goes up to 1)
@@ -74,7 +76,15 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
           gamepad.buttons && gamepad.buttons.length === 3 &&
           gamepad.axes && gamepad.axes.length === 4;
       },
-      // need to verify these against Nightly
+      // NOTE: currently no capacitive touch events!
+      // axes
+      // 0, 1 - thumbstick (which has separate button events)
+      // 2 - trigger (with analog value, which goes up to 1)
+      // 3 - grip (with analog value, which goes up to 1)
+      // buttonId
+      // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+      // 1 - X (left) or A (right)
+      // 2 - Y (left) or B (right)
       mapping: {
         'left': {
           name: 'firefox-nightly-left',
