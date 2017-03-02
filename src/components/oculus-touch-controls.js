@@ -13,9 +13,12 @@ var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 
 var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
-// currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
-// however those have analog values, and this (below button-down values) can be used to fake them
+// Currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
+// however those have analog values, and this (below button-down values) can be used to fake them.
 var EMULATED_TOUCH_THRESHOLD = 0.001;
+
+// When an analog button is represented only as an axis, use threshold to determine whether pressed.
+var ANALOG_PRESSED_THRESHOLD = 0.1;
 
 /**
  * Oculus Touch Controls Component
@@ -33,23 +36,65 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
   },
 
-  // buttonId
-  // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-  // 1 - trigger (with analog value, which goes up to 1)
-  // 2 - grip (with analog value, which goes up to 1)
-  // 3 - X (left) or A (right)
-  // 4 - Y (left) or B (right)
-  // 5 - surface (touch only)
-  mapping: {
-    'left': {
-      axes: {'thumbstick': [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
+  potentialMappings: [
+    {
+      name: 'experimental-chromium',
+      filter: function (gamepad) {
+        return gamepad &&
+          gamepad.buttons && gamepad.buttons.length >= 6 &&
+          gamepad.axes && gamepad.axes.length === 2;
+      },
+      // buttonId
+      // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+      // 1 - trigger (with analog value, which goes up to 1)
+      // 2 - grip (with analog value, which goes up to 1)
+      // 3 - X (left) or A (right)
+      // 4 - Y (left) or B (right)
+      // 5 - surface (touch only)
+      mapping: {
+        'left': {
+          name: 'experimental-chromium-left',
+          analog: {},
+          axes: {'thumbstick': [0, 1]},
+          buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'abutton', 'surface']
+        },
+        'right': {
+          name: 'experimental-chromium-right',
+          analog: {},
+          axes: {'thumbstick': [0, 1]},
+          buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'abutton', 'surface']
+        }
+      }
     },
-    'right': {
-      axes: {'thumbstick': [0, 1]},
-      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'abutton', 'surface']
+
+    {
+      name: 'firefox-nightly',
+      filter: function (gamepad) {
+        return gamepad &&
+          gamepad.buttons && gamepad.buttons.length === 3 &&
+          gamepad.axes && gamepad.axes.length === 4;
+      },
+      // need to verify these against Nightly
+      mapping: {
+        'left': {
+          name: 'firefox-nightly-left',
+          analog: {'trigger': 2, 'grip': 3},
+          axes: {'thumbstick': [0, 1]},
+          button0: 'thumbstick',
+          button1: 'xbutton',
+          button2: 'ybutton'
+        },
+        'right': {
+          name: 'firefox-nightly-right',
+          analog: {'trigger': 2, 'grip': 3},
+          axes: {'thumbstick': [0, 1]},
+          button0: 'thumbstick',
+          button1: 'abutton',
+          button2: 'bbutton'
+        }
+      }
     }
-  },
+  ],
 
   // Use these labels for detail on axis events such as thumbstickmoved.
   // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
@@ -78,6 +123,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
     this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
+    this.mapping = this.potentialMappings[0].mapping; // default to first potential mapping
   },
 
   addEventListeners: function () {
@@ -112,6 +158,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
+      // Determine which potential mapping to use.
+      for (var i = 0; i < this.potentialMappings.length; i++) {
+        if (this.potentialMappings[i].filter(whichControllers[0])) {
+          this.mapping = this.potentialMappings[i].mapping;
+          break;
+        }
+      }
       // Inject with specific gamepad id, if provided. This works around a temporary issue
       // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
       this.injectTrackedControls(whichControllers[0]);
@@ -262,10 +315,36 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   onAxisMoved: function (evt) {
     var self = this;
+    var analogMapping = this.mapping[this.data.hand].analog;
     var axesMapping = this.mapping[this.data.hand].axes;
-    // In theory, it might be better to use mapping from axis to control.
-    // In practice, it is not clear whether the additional overhead is worthwhile,
-    // and if we did grouping of axes, we really need de-duplication there.
+    var buttonMeshes = this.buttonMeshes;
+    self.previousAnalogPressed = self.previousAnalogPressed || {};
+    Object.keys(analogMapping).forEach(function (key) {
+      var axisNumber = analogMapping[key];
+      var value = evt.detail.axis[axisNumber];
+      var detail = {};
+      var changed = !evt.detail.changed || evt.detail.changed[axisNumber];
+      if (changed) {
+        // Two separate button events are possible -- up/down, and changed (up/down/analog value).
+        detail.pressed = value >= ANALOG_PRESSED_THRESHOLD;
+        detail.value = value;
+        if (detail.pressed !== self.previousAnalogPressed[key]) {
+          self.previousAnalogPressed[key] = detail.pressed;
+          self.el.emit(key + (detail.pressed ? 'down' : 'up'), detail);
+        }
+        self.el.emit(key + 'changed', detail);
+        // Update trigger and/or grip meshes, if any.
+        if (buttonMeshes) {
+          if (key === 'trigger' && buttonMeshes.trigger) {
+            buttonMeshes.trigger.rotation.x = -value * (Math.PI / 24);
+          }
+          if (key === 'grip' && buttonMeshes.grip) {
+            buttonMeshes.grip.rotation.y = (self.data.hand === 'left' ? -1 : 1) * value * (Math.PI / 60);
+          }
+        }
+      }
+    });
+
     Object.keys(axesMapping).forEach(function (key) {
       var value = axesMapping[key];
       var detail = {};

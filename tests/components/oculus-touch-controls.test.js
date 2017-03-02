@@ -194,4 +194,104 @@ suite(controllerComponentName, function () {
       assert.ok(controllerComponent.everGotGamepadEvent);
     });
   });
+
+  suite('potentialMappings', function () {
+    test('by default, use first potential mapping', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      // check assertions
+      assert.equal(controllerComponent.mapping, controllerComponent.potentialMappings[0].mapping);
+    });
+    test('if gamepad button and axis count matches Chromium, use matching mapping', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      // Nightly exposes Touch controllers as 6+ buttons and 2 axes
+      emulatedControllers[0].buttons = [{}, {}, {}, {}, {}, {}];
+      emulatedControllers[0].axes = [0, 0];
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // reset everGotGamepadEvent so we don't think we've looked before
+      delete controllerComponent.everGotGamepadEvent;
+      // fire emulated gamepadconnected event
+      window.dispatchEvent(new Event('gamepadconnected'));
+      // check assertions
+      assert.equal(controllerComponent.mapping['left'].name, 'experimental-chromium-left');
+      assert.equal(controllerComponent.mapping['right'].name, 'experimental-chromium-right');
+    });
+    test('if gamepad button and axis count matches Nightly, use matching mapping', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      // Nightly exposes Touch controllers as 3 buttons and 4 axes
+      emulatedControllers[0].buttons = [{}, {}, {}];
+      emulatedControllers[0].axes = [0, 0, 0, 0];
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // reset everGotGamepadEvent so we don't think we've looked before
+      delete controllerComponent.everGotGamepadEvent;
+      // fire emulated gamepadconnected event
+      window.dispatchEvent(new Event('gamepadconnected'));
+      // check assertions
+      assert.equal(controllerComponent.mapping['left'].name, 'firefox-nightly-left');
+      assert.equal(controllerComponent.mapping['right'].name, 'firefox-nightly-right');
+    });
+  });
+
+  suite('analog', function () {
+    test('if gamepad axis is analog button e.g. trigger for Nightly, 0.01 emits button up', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      // Nightly exposes Touch controllers as 3 buttons and 4 axes
+      emulatedControllers[0].buttons = [{}, {}, {}];
+      emulatedControllers[0].axes = [0, 0, 0, 0];
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // reset everGotGamepadEvent so we don't think we've looked before
+      delete controllerComponent.everGotGamepadEvent;
+      // fire emulated gamepadconnected event
+      window.dispatchEvent(new Event('gamepadconnected'));
+      // check assertions
+      assert.equal(controllerComponent.mapping['left'].name, 'firefox-nightly-left');
+      assert.equal(controllerComponent.mapping['right'].name, 'firefox-nightly-right');
+      // make sure there is no previous analog pressed state so event will fire
+      delete controllerComponent.previousAnalogPressed;
+      // set up axismove event
+      var detail = { axis: [0, 0, 0, 0], changed: [false, false, false, false] };
+      var triggerAxis = controllerComponent.mapping['left'].analog['trigger'];
+      detail.axis[triggerAxis] = 0.01;
+      detail.changed[triggerAxis] = true;
+      // set up listener for trigger up event
+      el.addEventListener('triggerup', function () { done(); });
+      el.addEventListener('triggerdown', function () { assert.notOk('triggerdown, but up expected'); done(); });
+      // emit axismove
+      el.emit('axismove', detail);
+    });
+    test('if gamepad axis is analog button e.g. trigger for Nightly, 1 emits button down', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      // Nightly exposes Touch controllers as 3 buttons and 4 axes
+      emulatedControllers[0].buttons = [{}, {}, {}];
+      emulatedControllers[0].axes = [0, 0, 0, 0];
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // reset everGotGamepadEvent so we don't think we've looked before
+      delete controllerComponent.everGotGamepadEvent;
+      // fire emulated gamepadconnected event
+      window.dispatchEvent(new Event('gamepadconnected'));
+      // check assertions
+      assert.equal(controllerComponent.mapping['left'].name, 'firefox-nightly-left');
+      assert.equal(controllerComponent.mapping['right'].name, 'firefox-nightly-right');
+      // make sure there is no previous analog pressed state so event will fire
+      delete controllerComponent.previousAnalogPressed;
+      // set up axismove event
+      var detail = { axis: [0, 0, 0, 0], changed: [false, false, false, false] };
+      var triggerAxis = controllerComponent.mapping['left'].analog['trigger'];
+      detail.axis[triggerAxis] = 1;
+      detail.changed[triggerAxis] = true;
+      // set up listener for trigger up event
+      el.addEventListener('triggerdown', function () { done(); });
+      el.addEventListener('triggerup', function () { assert.notOk('triggerup, but down expected'); done(); });
+      // emit axismove
+      el.emit('axismove', detail);
+    });
+  });
 });
