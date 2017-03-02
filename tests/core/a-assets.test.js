@@ -231,4 +231,57 @@ suite('a-asset-item', function () {
     this.assetsEl.appendChild(assetItem);
     document.body.appendChild(this.sceneEl);
   });
+
+  test('loads as text without responseType attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    // Remove cache data to not load from it.
+    THREE.Cache.remove(XHR_SRC);
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads as arraybuffer', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    THREE.Cache.remove(XHR_SRC);
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.setAttribute('response-type', 'arraybuffer');
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads from cache as arraybuffer without response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('reloads as text', function (done) {
+    THREE.Cache.remove(XHR_SRC);
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
 });
