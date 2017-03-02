@@ -199,13 +199,13 @@ module.exports.Component = registerComponent('vive-controls', {
     // In theory, it might be better to use mapping from axis to control.
     // In practice, it is not clear whether the additional overhead is worthwhile,
     // and if we did grouping of axes, we really need de-duplication there.
-    Object.keys(axesMapping).map(function (key) {
+    Object.keys(axesMapping).forEach(function (key) {
       var value = axesMapping[key];
       var detail = {};
       var changed = !evt.detail.changed;
-      if (!changed) { value.map(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; }); }
+      if (!changed) { value.forEach(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; }); }
       if (changed) {
-        value.map(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
+        value.forEach(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
         self.el.emit(key + 'moved', detail);
         // If we updated the model based on axis values, that call would go here.
       }
