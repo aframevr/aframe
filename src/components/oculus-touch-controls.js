@@ -94,7 +94,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   update: function (oldData) {
     // Check for emulated flag setting, not just change, to avoid spurious check after init(),
     if (('emulated' in oldData) && (this.data.emulated !== oldData.emulated)) {
-      this.checkIfControllersPresent();
+      this.checkIfControllerPresent();
     }
   },
 
