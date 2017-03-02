@@ -202,8 +202,8 @@ module.exports.Component = registerComponent('vive-controls', {
     Object.keys(axesMapping).map(function (key) {
       var value = axesMapping[key];
       var detail = {};
-      var changed = false;
-      value.map(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; });
+      var changed = !evt.detail.changed;
+      if (!changed) { value.map(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; }); }
       if (changed) {
         value.map(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
         self.el.emit(key + 'moved', detail);
