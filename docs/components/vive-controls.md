@@ -30,6 +30,9 @@ buttons (trigger, grip, menu, system) and trackpad.
 | model                | Whether the Vive controller model is loaded.       | true                 |
 | rotationOffset       | Offset to apply to model rotation.                 | 0                    |
 
+The emulated property is rarely needed, but is provided for use cases that must force controller
+event listeners to be added despite no controllers actually being present, e.g. motion / event capture replays.
+
 ## Events
 
 | Event Name   | Description             |
