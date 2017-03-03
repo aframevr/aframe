@@ -99,8 +99,8 @@ registerElement('a-asset-item', {
         var self = this;
         var src = this.getAttribute('src');
         fileLoader.setResponseType(this.getAttribute('response-type' || 'text'));
-        fileLoader.load(src, function handleOnLoad (textResponse) {
-          self.data = textResponse;
+        fileLoader.load(src, function handleOnLoad (response) {
+          self.data = response;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
