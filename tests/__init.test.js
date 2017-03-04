@@ -16,7 +16,7 @@ navigator.getVRDisplays = function () {
   return Promise.resolve([mockVRDisplay]);
 };
 
-var AScene = require('core/scene/a-scene');
+var AScene = require('core/scene/a-scene').AScene;
 
 setup(function () {
   this.sinon = sinon.sandbox.create();

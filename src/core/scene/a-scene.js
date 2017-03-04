@@ -35,7 +35,7 @@ var warn = utils.debug('core:a-scene:warn');
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
-module.exports = registerElement('a-scene', {
+module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
@@ -340,13 +340,9 @@ module.exports = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
-        var canvas = this.canvas;
-        // Set at startup. To enable/disable antialias
-        // at runttime we would have to recreate the whole context
-        var antialias = this.getAttribute('antialias') === 'true';
         var renderer = this.renderer = new THREE.WebGLRenderer({
-          canvas: canvas,
-          antialias: antialias || window.hasNativeWebVRImplementation,
+          canvas: this.canvas,
+          antialias: shouldAntiAlias(this),
           alpha: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -517,3 +513,20 @@ function exitFullscreen () {
     document.webkitExitFullscreen();
   }
 }
+
+/**
+ * Determines if renderer anti-aliasing should be enabled.
+ * Enabled by default if has native WebVR or is desktop.
+ *
+ * @returns {bool}
+ */
+function shouldAntiAlias (sceneEl) {
+  // Explicitly set.
+  if (sceneEl.getAttribute('antialias') !== null) {
+    return sceneEl.getAttribute('antialias') === 'true';
+  }
+
+  // Default not AA for mobile.
+  return !sceneEl.isMobile;
+}
+module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
