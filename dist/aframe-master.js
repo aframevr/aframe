@@ -71512,8 +71512,9 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        fileLoader.load(src, function handleOnLoad (textResponse) {
-          self.data = textResponse;
+        fileLoader.setResponseType(this.getAttribute('response-type') || 'text');
+        fileLoader.load(src, function handleOnLoad (response) {
+          self.data = response;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
@@ -71729,6 +71730,8 @@ var proto = Object.create(ANode.prototype, {
   createdCallback: {
     value: function () {
       this.components = {};
+      // to avoid double initializations and infinite loops
+      this.initializingComponents = {};
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -72056,8 +72059,7 @@ var proto = Object.create(ANode.prototype, {
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new COMPONENTS[componentName].Component(
-        this, data, componentId);
+      component = new COMPONENTS[componentName].Component(this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown
@@ -73176,6 +73178,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.el.components[this.attrName] = this;
   this.updateProperties(attrValue);
 };
 
@@ -73347,9 +73350,16 @@ Component.prototype = {
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
     if (!this.initialized) {
+      // Component is being already initialized
+      if (el.initializingComponents[this.name]) { return; }
+      // Prevent infinite loop in the case of
+      // the init method setting the same component
+      // on the entity
+      el.initializingComponents[this.name] = true;
       // Initialize component.
       this.init();
       this.initialized = true;
+      delete el.initializingComponents[this.name];
       // Play the component if the entity is playing.
       this.update(oldData);
       if (el.isPlaying) { this.play(); }
@@ -75876,7 +75886,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 28-02-2017, Commit #9938ed4)');
+console.log('A-Frame Version: 0.5.0 (Date 04-03-2017, Commit #0935b8d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
