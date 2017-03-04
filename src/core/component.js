@@ -34,6 +34,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.el.components[this.attrName] = this;
   this.updateProperties(attrValue);
 };
 
@@ -205,9 +206,16 @@ Component.prototype = {
     this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
     if (!this.initialized) {
+      // Component is being already initialized
+      if (el.initializingComponents[this.name]) { return; }
+      // Prevent infinite loop in the case of
+      // the init method setting the same component
+      // on the entity
+      el.initializingComponents[this.name] = true;
       // Initialize component.
       this.init();
       this.initialized = true;
+      delete el.initializingComponents[this.name];
       // Play the component if the entity is playing.
       this.update(oldData);
       if (el.isPlaying) { this.play(); }

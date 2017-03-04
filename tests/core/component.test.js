@@ -523,6 +523,31 @@ suite('Component', function () {
     });
   });
 
+  suite('init', function () {
+    setup(function (done) {
+      components.dummy = undefined;
+      var el = this.el = entityFactory();
+      if (el.hasLoaded) { done(); }
+      el.addEventListener('loaded', function () { done(); });
+    });
+
+    test('init is only called once if the init routine sets the component', function () {
+      var initCanaryStub = sinon.stub();
+      var el = this.el;
+      registerComponent('dummy', {
+        schema: {color: {default: 'red'}},
+        init: function () {
+          this.initCanary();
+          this.el.setAttribute('dummy', {color: 'green'});
+        },
+        initCanary: initCanaryStub
+      });
+      el.setAttribute('dummy', {color: 'blue'});
+      assert.equal(el.getAttribute('dummy').color, 'green');
+      sinon.assert.calledOnce(initCanaryStub);
+    });
+  });
+
   suite('update', function () {
     setup(function (done) {
       components.dummy = undefined;
