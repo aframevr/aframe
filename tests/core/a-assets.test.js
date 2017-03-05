@@ -5,7 +5,9 @@ var THREE = require('lib/three');
 // Use data URI where a load event is needed.
 var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-var XHR_SRC = '/base/tests/assets/dummy.txt';
+var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
+var XHR_SRC_GLTF = '/base/tests/assets/dummy/dummy.gltf';
+var XHR_SRC_GLB = '/base/tests/assets/dummy/dummy.glb';
 
 suite('a-assets', function () {
   setup(function () {
@@ -276,6 +278,58 @@ suite('a-asset-item', function () {
     THREE.Cache.remove(XHR_SRC);
     var assetItem = document.createElement('a-asset-item');
     assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads .gltf file as arraybuffer without response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC_GLTF);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads .gltf file as text with response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    THREE.Cache.remove(XHR_SRC_GLTF);
+    assetItem.setAttribute('src', XHR_SRC_GLTF);
+    assetItem.setAttribute('response-type', 'text');
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads .glb file as arraybuffer without response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC_GLB);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads .glb file as text with response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    THREE.Cache.remove(XHR_SRC_GLB);
+    assetItem.setAttribute('src', XHR_SRC_GLB);
+    assetItem.setAttribute('response-type', 'text');
     assetItem.addEventListener('loaded', function (evt) {
       assert.ok(assetItem.data !== null);
       assert.ok(typeof assetItem.data === 'string');

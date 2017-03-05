@@ -10,7 +10,6 @@ suite('gltf-model', function () {
     var asset = document.createElement('a-asset-item');
     asset.setAttribute('id', 'gltf');
     asset.setAttribute('src', SRC);
-    asset.setAttribute('response-type', 'arraybuffer');
     el = this.el = entityFactory({assets: [asset]});
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () { done(); });

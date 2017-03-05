@@ -98,7 +98,26 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        fileLoader.setResponseType(this.getAttribute('response-type') || 'text');
+        var responseType = this.getAttribute('response-type');
+        /*
+          If response-type isn't set, we load files as text
+          (default XMLHttpRequest.responseType).
+          But we load .gltf and .glb files as arraybuffer
+          because of THREE.GLTFLoader specification.
+        */
+        if (!responseType) {
+          var extension = '';
+          var dotLastIndex = src.lastIndexOf('.');
+          if (dotLastIndex >= 0) {
+            extension = src.slice(dotLastIndex, src.length);
+          }
+          if (extension === '.gltf' || extension === '.glb') {
+            responseType = 'arraybuffer';
+          } else {
+            responseType = 'text';
+          }
+        }
+        fileLoader.setResponseType(responseType);
         fileLoader.load(src, function handleOnLoad (response) {
           self.data = response;
           /*
