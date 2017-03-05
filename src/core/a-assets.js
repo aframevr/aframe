@@ -98,26 +98,8 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        var responseType = this.getAttribute('response-type');
-        /*
-          If response-type isn't set, we load files as text
-          (default XMLHttpRequest.responseType).
-          But we load .gltf and .glb files as arraybuffer
-          because of THREE.GLTFLoader specification.
-        */
-        if (!responseType) {
-          var extension = '';
-          var dotLastIndex = src.lastIndexOf('.');
-          if (dotLastIndex >= 0) {
-            extension = src.slice(dotLastIndex, src.length);
-          }
-          if (extension === '.gltf' || extension === '.glb') {
-            responseType = 'arraybuffer';
-          } else {
-            responseType = 'text';
-          }
-        }
-        fileLoader.setResponseType(responseType);
+        fileLoader.setResponseType(
+          this.getAttribute('response-type') || inferResponseType(src));
         fileLoader.load(src, function handleOnLoad (response) {
           self.data = response;
           /*
@@ -243,4 +225,24 @@ function extractDomain (url) {
 
   // Find and remove port number.
   return domain.split(':')[0];
+}
+
+/**
+ * Infer response-type attribute from src.
+ * Default is text(default XMLHttpRequest.responseType)
+ * but we use arraybuffer for .gltf and .glb files
+ * because of THREE.GLTFLoader specification.
+ *
+ * @param {string} src
+ * @returns {string}
+ */
+function inferResponseType (src) {
+  var dotLastIndex = src.lastIndexOf('.');
+  if (dotLastIndex >= 0) {
+    var extension = src.slice(dotLastIndex, src.length);
+    if (extension === '.gltf' || extension === '.glb') {
+      return 'arraybuffer';
+    }
+  }
+  return 'text';
 }
