@@ -76,6 +76,7 @@ module.exports.Component = registerComponent('sound', {
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
         if (self.data.autoplay || self.mustPlay) { self.playSound(); }
+        self.el.emit('sound-loaded');
       });
     }
   },
@@ -163,6 +164,7 @@ module.exports.Component = registerComponent('sound', {
    * Pause all the sounds in the pool.
    */
   pauseSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.source || !sound.source.buffer || !sound.isPlaying || sound.isPaused) { return; }
       sound.isPaused = true;
@@ -181,6 +183,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     var found = false;
+    this.isPlaying = true;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
@@ -203,6 +206,7 @@ module.exports.Component = registerComponent('sound', {
    * Stop all the sounds in the pool.
    */
   stopSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.source || !sound.source.buffer) { return; }
       sound.stop();
