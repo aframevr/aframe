@@ -32,7 +32,7 @@ suite('a-assets', function () {
   });
 
   test('has fileLoader', function () {
-    assert.ok(this.el.fileLoader.constructor, THREE.XHRLoader);
+    assert.equal(this.el.fileLoader.constructor, THREE.FileLoader);
   });
 
   test('waits for images to load', function (done) {
