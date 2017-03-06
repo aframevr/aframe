@@ -1,6 +1,8 @@
 /* global assert, setup, suite, test */
 var THREE = require('lib/three');
 
+var inferResponseType = require('core/a-assets').inferResponseType;
+
 // Empty src will not trigger load events in Chrome.
 // Use data URI where a load event is needed.
 var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
@@ -299,43 +301,17 @@ suite('a-asset-item', function () {
     document.body.appendChild(this.sceneEl);
   });
 
-  test('loads .gltf file as text with response-type attribute', function (done) {
-    var assetItem = document.createElement('a-asset-item');
-    THREE.Cache.remove(XHR_SRC_GLTF);
-    assetItem.setAttribute('src', XHR_SRC_GLTF);
-    assetItem.setAttribute('response-type', 'text');
-    assetItem.addEventListener('loaded', function (evt) {
-      assert.ok(assetItem.data !== null);
-      assert.ok(typeof assetItem.data === 'string');
-      done();
+  suite('inferResponseType', function () {
+    test('returns text as default', function () {
+      assert.equal(inferResponseType(XHR_SRC), 'text');
     });
-    this.assetsEl.appendChild(assetItem);
-    document.body.appendChild(this.sceneEl);
-  });
 
-  test('loads .glb file as arraybuffer without response-type attribute', function (done) {
-    var assetItem = document.createElement('a-asset-item');
-    assetItem.setAttribute('src', XHR_SRC_GLB);
-    assetItem.addEventListener('loaded', function (evt) {
-      assert.ok(assetItem.data !== null);
-      assert.ok(assetItem.data instanceof ArrayBuffer);
-      done();
+    test('returns arraybuffer for .gltf file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLTF), 'arraybuffer');
     });
-    this.assetsEl.appendChild(assetItem);
-    document.body.appendChild(this.sceneEl);
-  });
 
-  test('loads .glb file as text with response-type attribute', function (done) {
-    var assetItem = document.createElement('a-asset-item');
-    THREE.Cache.remove(XHR_SRC_GLB);
-    assetItem.setAttribute('src', XHR_SRC_GLB);
-    assetItem.setAttribute('response-type', 'text');
-    assetItem.addEventListener('loaded', function (evt) {
-      assert.ok(assetItem.data !== null);
-      assert.ok(typeof assetItem.data === 'string');
-      done();
+    test('returns arraybuffer for .glb file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLB), 'arraybuffer');
     });
-    this.assetsEl.appendChild(assetItem);
-    document.body.appendChild(this.sceneEl);
   });
 });

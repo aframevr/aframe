@@ -246,3 +246,4 @@ function inferResponseType (src) {
   }
   return 'text';
 }
+module.exports.inferResponseType = inferResponseType;
