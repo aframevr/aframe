@@ -432,19 +432,20 @@ entity.is('selected');  // >> false
 
 ## Events
 
-| Event Name       | Description                                                         |
-|------------------|---------------------------------------------------------------------|
-| child-attached   | A child entity was attached to the entity.                          |
-| child-detached   | A child entity was detached from the entity.                        |
-| componentchanged | One of the entity's components was modified.                        |
-| componentinit    | One of the entity's components was initialized.                     |
-| componentremoved | One of the entity's components was removed.                         |
-| loaded           | The entity has attached and initialized its components.             |
-| pause            | The entity is now inactive and paused in terms of dynamic behavior. |
-| play             | The entity is now active and playing in terms of dynamic behavior.  |
-| stateadded       | The entity received a new state.                                    |
-| stateremoved     | The entity no longer has a certain state.                           |
-| schemachanged    | The schema of a component was changed.                              |
+| Event Name       | Description                                                                                                                      |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| child-attached   | A child entity was attached to the entity.                                                                                       |
+| child-detached   | A child entity was detached from the entity.                                                                                     |
+| componentchanged | One of the entity's components was modified.                                                                                     |
+| componentinit    | One of the entity's components was initialized.                                                                                  |
+| componentremoved | One of the entity's components was removed.                                                                                      |
+| loaded           | The entity has attached and initialized its components.                                                                          |
+| object3dset      | `THREE.Object3D` was set on entity using `setObject3D(name)`. Event detail will contain `name` used to set on the `object3DMap`. |
+| pause            | The entity is now inactive and paused in terms of dynamic behavior.                                                              |
+| play             | The entity is now active and playing in terms of dynamic behavior.                                                               |
+| stateadded       | The entity received a new state.                                                                                                 |
+| stateremoved     | The entity no longer has a certain state.                                                                                        |
+| schemachanged    | The schema of a component was changed.                                                                                           |
 
 ### Event Detail
 
