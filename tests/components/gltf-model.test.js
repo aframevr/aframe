@@ -3,6 +3,7 @@ var entityFactory = require('../helpers').entityFactory;
 var THREE = require('index').THREE;
 
 var SRC = '/base/tests/assets/box/Box.gltf';
+var SRC_NO_DEFAULT_SCENE = '/base/tests/assets/box/Box_no_default_scene.gltf';
 
 suite('gltf-model', function () {
   setup(function (done) {
@@ -84,5 +85,14 @@ suite('gltf-model', function () {
     });
 
     el.setAttribute('gltf-model', '#gltf');
+  });
+
+  test('can load data not including default scene', function (done) {
+    var el = this.el;
+    el.addEventListener('model-loaded', function () {
+      assert.ok(el.components['gltf-model'].model);
+      done();
+    });
+    el.setAttribute('gltf-model', `url(${SRC_NO_DEFAULT_SCENE})`);
   });
 });
