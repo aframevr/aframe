@@ -67227,7 +67227,7 @@ module.exports.Component = registerComponent('gltf-model', {
     this.remove();
 
     this.loader.load(src, function gltfLoaded (gltfModel) {
-      self.model = gltfModel.scene;
+      self.model = gltfModel.scene || gltfModel.scenes[0];
       self.model.animations = gltfModel.animations;
       self.system.registerModel(self.model);
       el.setObject3D('mesh', self.model);
@@ -76346,7 +76346,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 06-03-2017, Commit #9d0e015)');
+console.log('A-Frame Version: 0.5.0 (Date 07-03-2017, Commit #b3946b5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
