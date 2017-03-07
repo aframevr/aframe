@@ -7,7 +7,7 @@ order: 2
 ---
 
 [ecs]: ./index.md
-               .
+
 A-Frame represents an entity via the `<a-entity>` element. As defined in the
 [entity-component-system pattern][ecs], entities are placeholder objects to
 which we plug in components to provide them appearance, behavior, and
