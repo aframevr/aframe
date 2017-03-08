@@ -3,11 +3,15 @@ var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
 
 /**
- * Determine if a headset is connected by checking if the
- * orientation is available
+ * Determine if a headset is connected by checking if the orientation is available.
  */
 function checkHeadsetConnected () {
   var orientation;
+  var vrDisplay = controls.getVRDisplay();
+
+  // If `isConnected` is available, just use that.
+  if (vrDisplay && 'isConnected' in vrDisplay) { return vrDisplay.isConnected; }
+
   controls.update();
   orientation = dolly.quaternion;
   if (orientation._x !== 0 || orientation._y !== 0 || orientation._z !== 0) {
