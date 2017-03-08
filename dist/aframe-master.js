@@ -76346,7 +76346,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 07-03-2017, Commit #b3946b5)');
+console.log('A-Frame Version: 0.5.0 (Date 08-03-2017, Commit #08f2bfd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77940,11 +77940,15 @@ var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
 
 /**
- * Determine if a headset is connected by checking if the
- * orientation is available
+ * Determine if a headset is connected by checking if the orientation is available.
  */
 function checkHeadsetConnected () {
   var orientation;
+  var vrDisplay = controls.getVRDisplay();
+
+  // If `isConnected` is available, just use that.
+  if (vrDisplay && 'isConnected' in vrDisplay) { return vrDisplay.isConnected; }
+
   controls.update();
   orientation = dolly.quaternion;
   if (orientation._x !== 0 || orientation._y !== 0 || orientation._z !== 0) {
