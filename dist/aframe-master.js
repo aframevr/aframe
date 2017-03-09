@@ -74751,7 +74751,8 @@ module.exports = registerElement('a-scene', {
       value: function (time, timeDelta) {
         var systems = this.systems;
         // Animations.
-        TWEEN.update(time);
+        TWEEN.update();
+
         // Components.
         this.behaviors.forEach(function (component) {
           if (!component.el.isPlaying) { return; }
@@ -76344,7 +76345,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 09-03-2017, Commit #6a4bd10)');
+console.log('A-Frame Version: 0.5.0 (Date 09-03-2017, Commit #673d72a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
