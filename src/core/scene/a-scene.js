@@ -389,7 +389,8 @@ module.exports = registerElement('a-scene', {
               if (window.performance) {
                 window.performance.mark('render-started');
               }
-              sceneEl.render(0);
+              sceneEl.clock = new THREE.Clock();
+              sceneEl.render();
               sceneEl.renderStarted = true;
               sceneEl.emit('renderstart');
             }
@@ -441,7 +442,6 @@ module.exports = registerElement('a-scene', {
     tick: {
       value: function (time, timeDelta) {
         var systems = this.systems;
-
         // Animations.
         TWEEN.update(time);
         // Components.
@@ -465,15 +465,13 @@ module.exports = registerElement('a-scene', {
      * Renders with request animation frame.
      */
     render: {
-      value: function (time) {
+      value: function () {
         var effect = this.effect;
-        var timeDelta = time - this.time;
-
-        if (this.isPlaying) { this.tick(time, timeDelta); }
-
+        var delta = this.clock.getDelta() * 1000;
+        this.time = this.clock.elapsedTime * 1000;
+        if (this.isPlaying) { this.tick(this.time, delta); }
         this.animationFrameID = effect.requestAnimationFrame(this.render);
         effect.render(this.object3D, this.camera);
-        this.time = time;
       },
       writable: true
     }

@@ -409,6 +409,20 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
   });
+
+  test('clock', function () {
+    var scene = this.el;
+
+    assert.isAbove(scene.time, 0);
+    var prevTime = scene.time;
+    assert.ok(scene.time, scene.clock.elapsedTime);
+    for (var i = 0; i < 10; i++) {
+      scene.render();
+      assert.isAbove(scene.time, prevTime);
+      assert.ok(scene.time, scene.clock.elapsedTime);
+      prevTime = scene.time;
+    }
+  });
 });
 
 suite('scenes', function () {
