@@ -148,7 +148,7 @@ module.exports.Component = registerComponent('screenshot', {
       this.quad.visible = false;
       // Use scene camera.
       camera = el.camera;
-      size = renderer.getSize();
+      size = {width: this.data.width, height: this.data.height};
     } else {
       // Use ortho camera.
       camera = this.camera;
