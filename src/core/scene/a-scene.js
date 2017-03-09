@@ -443,7 +443,8 @@ module.exports = registerElement('a-scene', {
       value: function (time, timeDelta) {
         var systems = this.systems;
         // Animations.
-        TWEEN.update(time);
+        TWEEN.update();
+
         // Components.
         this.behaviors.forEach(function (component) {
           if (!component.el.isPlaying) { return; }
