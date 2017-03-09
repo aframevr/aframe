@@ -76345,7 +76345,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 09-03-2017, Commit #673d72a)');
+console.log('A-Frame Version: 0.5.0 (Date 09-03-2017, Commit #fd764d0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77761,7 +77761,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
 /* global THREE */
 var extend = _dereq_('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /^\s*((-?\d*\.{0,1}\d+)\s+){2,3}(-?\d*\.{0,1}\d+)\s*$/;
+var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
 /**
