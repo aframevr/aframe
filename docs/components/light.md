@@ -33,15 +33,22 @@ To manually disable the defaults, without adding other lights:
 </a-scene>
 ```
 
+<!--toc-->
+
 ## Properties
 
-We will go through the different types of lights and their respective properties one by one.
+All light types support a few basic properties:
 
 | Property  | Description                                                     | Default Value |
 |-----------|-----------------------------------------------------------------|---------------|
 | type      | One of `ambient`, `directional`, `hemisphere`, `point`, `spot`. | directional   |
 | color     | Light color.                                                    | #fff          |
 | intensity | Light strength.                                                 | 1.0           |
+
+## Light Types
+
+Different types of lights include unique properties. We will go through each
+type, including its properties and when it may be the right choice.
 
 ### Ambient
 
@@ -80,6 +87,8 @@ creating a child entity it targets. For example, pointing down its -Z axis:
 </a-light>
 ```
 
+Directional lights are the most efficient type for adding realtime shadows to a scene.
+
 ### Hemisphere
 
 Hemisphere lights are like an ambient light, but with two different colors, one
@@ -114,7 +123,10 @@ lit.
 
 ### Spot
 
-Spot lights are like point lights in the sense that they affect materials depending on its position and distance, but spot lights are not omni-directional. They mainly cast light in one direction, like the [Bat-Signal](https://en.wikipedia.org/wiki/Bat-Signal).
+Spot lights are like point lights in the sense that they affect materials
+depending on its position and distance, but spot lights are not
+omni-directional. They mainly cast light in one direction, like the
+[Bat-Signal](https://en.wikipedia.org/wiki/Bat-Signal).
 
 ```html
 <a-entity light="type: spot; angle: 45"></a-entity>
@@ -127,3 +139,98 @@ Spot lights are like point lights in the sense that they affect materials depend
 | distance    | Distance where intensity becomes 0. If `distance` is `0`, then the point light does not decay with distance.   | 0.0           |
 | penumbra    | Percent of the spotlight cone that is attenuated due to penumbra.                                              | 0.0           |
 | target      | element the spot should point to. set to null to transform spotlight by orientation, pointing to it's -Z axis. | null          |
+
+## Configuring Shadows
+
+[inspector]: ../guides/using-the-aframe-inspector.md
+
+A-Frame includes support for realtime shadow rendering. With proper
+configuration, objects (both moving or stationary) will cast shadows adding
+depth and realism to a scene. Since shadows come with many properties, it
+is very helpful to **[use the A-Frame Inspector to configure shadows][inspector]**
+
+Light types that support shadows (`point`, `spot`, and `directional`) include
+additional properties:
+
+| Property            | Light type      | Description                                                                                                                                | Default Value |
+|---------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| castShadow          |                 | Whether this light casts shadows on the scene.                                                                                             | false         |
+| shadowBias          |                 | Offset depth when deciding whether a surface is in shadow. Tiny adjustments here (in the order of 0.0001) may reduce artifacts in shadows. | 0             |
+| shadowCameraBottom  | `directional`   | Bottom plane of shadow camera frustum.                                                                                                     | -5            |
+| shadowCameraFar     |                 | Far plane of shadow camera frustum.                                                                                                        | 500           |
+| shadowCameraFov     | `point`, `spot` | Shadow camera's FOV.                                                                                                                       | 50            |
+| shadowCameraLeft    | `directional`   | Left plane of shadow camera frustum.                                                                                                       | -5            |
+| shadowCameraNear    |                 | Near plane of shadow camera frustum.                                                                                                       | 0.5           |
+| shadowCameraRight   | `directional`   | Right plane of shadow camera frustum.                                                                                                      | 5             |
+| shadowCameraTop     | `directional`   | Top plane of shadow camera frustum.                                                                                                        | 5             |
+| shadowCameraVisible |                 | Displays a visual aid showing the shadow camera's position and frustum. This is the light's view of the scene, used to project shadows.    | false         |
+| shadowMapHeight     |                 | Shadow map's vertical resolution. Larger shadow maps display more crisp shadows, at the cost of performance.                               | 512           |
+| shadowMapWidth      |                 | Shadow map's horizontal resolution.                                                                                                        | 512           |
+
+### Adding Real-Time Shadows
+
+[light-baking]: #todo
+
+> NOTE: Real-time shadows add performance overhead. When objects in a scene are
+> stationary, or especially when optimizing for mobile devices, be aware of
+> other techniques for realistic shadows, such as [baking light and shadow
+> information into a texture][light-baking] before importing assets into
+> A-Frame.
+
+- **1. Create at least one light** with `castShadows: true`. Three light types
+  support shadows (`point`, `spot`, and `directional`). Of the three,
+  `directional` lights will have the best performance. Combining an ambient
+  light (without shadows) and a directional light (with shadows) is a good
+  place to start.
+
+```html
+<a-scene>
+  <a-entity light="type: ambient; intensity: 0.5;"></a-entity>
+  <a-entity light="type: directional;
+                   castShadow: true;
+                   intensity: 0.4;
+                   shadowCameraVisible: true;"
+            position="-5 3 1.5"></a-entity>
+</a-scene>
+```
+
+In the example above, the directional light has lower intensity than the
+ambient light, for slightly softer shadows. Adding `shadowCameraVisible: true`
+creates a visual aid for debugging: objects outside the camera's view cannot
+cast or receive shadows.
+
+- **2. Add the shadow component** to objects in the scene that should cast or
+  receive shadows.
+
+```html
+<a-gltf-model src="tree.gltf" shadow="receive: false"></a-gltf-model>
+```
+
+- **3. Adjust the shadow camera** position and frustum (`shadowCameraTop`,
+  `shadowCameraRight`, ...) of the directional light, until it envelops the
+  scene tightly. If the frustum is too small, shadows will be missing or
+  partially clipped. If the frustum is too large, shadows will appear coarse or
+  pixelated. The size of the shadow map (`shadowMapHeight: 512`, `shadowMapWidth:
+  512`) determines the resolution at which shadows are computed, so tightly
+  sizing the shadow camera around your scene will make the best use of this
+  resolution and device performance.
+
+- **4. Refine** shadow appearance. Scene-wide options, affecting all lights,
+  may be configured on the scene's shadow system.
+
+## Shadow System Properties
+
+These global options affect the entire scene, and are set using the `shadow`
+system on the `<a-scene>` root element.
+
+```html
+<a-scene shadow="type: pcfsoft">
+  <!-- ... -->
+</a-scene>
+```
+
+| Property           | Description                                                                                                                                                                                                                                                                                      | Default Value |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| type               | Defines shadow map type (`basic`, `pcf`, `pcfsoft`) with varying appearance and perforance characteristics.                                                                                                                                                                                     | `pcf`         |
+| renderReverseSided | Whether to render the opposite side as specified by the material into the shadow map. When disabled, an appropriate shadow.bias must be set on the light source for surfaces that can both cast and receive shadows at the same time to render correctly.                                        | true          |
+| renderSingleSided  | Whether to treat materials specified as double-sided as if they were specified as front-sided when rendering the shadow map. When disabled, an appropriate shadow.bias must be set on the light source for surfaces that can both cast and receive shadows at the same time to render correctly. | true          |

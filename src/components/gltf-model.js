@@ -22,7 +22,8 @@ module.exports.Component = registerComponent('gltf-model', {
     this.remove();
 
     this.loader.load(src, function gltfLoaded (gltfModel) {
-      self.model = gltfModel.scene;
+      self.model = gltfModel.scene || gltfModel.scenes[0];
+      self.model.animations = gltfModel.animations;
       self.system.registerModel(self.model);
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});

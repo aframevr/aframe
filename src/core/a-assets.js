@@ -98,9 +98,10 @@ registerElement('a-asset-item', {
       value: function () {
         var self = this;
         var src = this.getAttribute('src');
-        fileLoader.load(src, function handleOnLoad (textResponse) {
-          THREE.Cache.files[src] = textResponse;
-          self.data = textResponse;
+        fileLoader.setResponseType(
+          this.getAttribute('response-type') || inferResponseType(src));
+        fileLoader.load(src, function handleOnLoad (response) {
+          self.data = response;
           /*
             Workaround for a Chrome bug. If another XHR is sent to the same url before the
             previous one closes, the second request never finishes.
@@ -225,3 +226,24 @@ function extractDomain (url) {
   // Find and remove port number.
   return domain.split(':')[0];
 }
+
+/**
+ * Infer response-type attribute from src.
+ * Default is text(default XMLHttpRequest.responseType)
+ * but we use arraybuffer for .gltf and .glb files
+ * because of THREE.GLTFLoader specification.
+ *
+ * @param {string} src
+ * @returns {string}
+ */
+function inferResponseType (src) {
+  var dotLastIndex = src.lastIndexOf('.');
+  if (dotLastIndex >= 0) {
+    var extension = src.slice(dotLastIndex, src.length);
+    if (extension === '.gltf' || extension === '.glb') {
+      return 'arraybuffer';
+    }
+  }
+  return 'text';
+}
+module.exports.inferResponseType = inferResponseType;

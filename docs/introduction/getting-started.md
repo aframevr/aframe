@@ -39,7 +39,7 @@ Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the
 
 The boilerplate contains:
 
-- A simple HTML file that links to the [current version of A-Frame](#builds-prod) of A-Frame
+- A simple HTML file that links to the [current version of A-Frame](#builds-prod)
 - An optional local development server
 - An easy deployment workflow for [GitHub Pages][ghpages] to share with the world
 

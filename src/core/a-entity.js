@@ -36,6 +36,8 @@ var proto = Object.create(ANode.prototype, {
   createdCallback: {
     value: function () {
       this.components = {};
+      // to avoid double initializations and infinite loops
+      this.initializingComponents = {};
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -363,8 +365,7 @@ var proto = Object.create(ANode.prototype, {
                         'components of type `' + componentName +
                         '`. There can only be one component of this type per entity.');
       }
-      component = this.components[attrName] = new COMPONENTS[componentName].Component(
-        this, data, componentId);
+      component = new COMPONENTS[componentName].Component(this, data, componentId);
       if (this.isPlaying) { component.play(); }
 
       // Components are reflected in the DOM as attributes but the state is not shown

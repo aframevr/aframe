@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Shadows</title>
+    <meta name="description" content="Shadows - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene light="shadowMapType: basic" stats>
+      <a-assets>
+        <a-mixin id="wall"
+                 geometry="primitive: box; height: 30; width: 30; depth: 2"
+                 material="color: #333; metalness: 0; roughness: 1"
+                 shadow="cast: false; receive: true"></a-mixin>
+      </a-assets>
+
+      <a-entity position="0 8.4 -8">
+        <a-entity light="color: #AAA; type: ambient"></a-entity>
+
+        <!-- Center point light. -->
+        <a-entity geometry="primitive: sphere; radius: 0.15"
+                  material="color: #FAFAFA; shader: flat"
+                  light="castShadow: true; color: #FAFAFA; intensity: 0.5; shadowBias: 0.01
+                         shadowCameraNear: 1; shadowCameraBias: 0.01;
+                         type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
+                  position="0 -1 1">
+          <a-animation attribute="scale" to="2 2 2" dur="3000" direction="alternate"
+                       repeat="indefinite"></a-animation>
+          <a-animation attribute="intensity" to="1" dur="3000" direction="alternate"
+                       repeat="indefinite"></a-animation>
+        </a-entity>
+
+        <!-- Animating point light. -->
+        <a-entity>
+          <a-entity geometry="primitive: sphere; radius: 0.25"
+                    material="color: #EF2D5E; shader: flat"
+                    light="castShadow: true; color: #EF2D5E; intensity: 1; shadowBias: 0.01
+                           shadowCameraNear: 1; shadowCameraBias: 0.01;
+                           type: point; shadowMapWidth: 1024; shadowMapHeight: 1024"
+                    position="0 5 5"></a-entity>
+          <a-animation attribute="rotation" to="0 360 360" dur="5000" easing="linear"
+                       repeat="indefinite"></a-animation>
+        </a-entity>
+
+        <!-- Torus. -->
+        <a-entity geometry="primitive: torusKnot; radius: 4; radiusTubular: 0.1;
+                            segmentsRadial: 150; segmentsTubular: 20; p: 17; q: 4; side: back"
+                  material="color: #EF2D5E; metalness: 0.75"
+                  shadow="cast: true; receive: true"
+                  position="0 -1 2">
+          <a-animation attribute="rotation" dur="36000" to="0 360 0" repeat="indefinite"
+                       easing="linear"></a-animation>
+        </a-entity>
+
+        <!-- Walls. -->
+        <a-entity mixin="wall" position="0 0 -10"></a-entity>
+        <a-entity mixin="wall" position="-10 0 0" rotation="0 90 0"></a-entity>
+        <a-entity mixin="wall" position="10 0 0" rotation="0 90 0"></a-entity>
+        <a-entity mixin="wall" position="0 10 0" rotation="90 0 0"></a-entity>
+        <a-entity mixin="wall" position="0 -10 0" rotation="90 0 0"></a-entity>
+      </a-entity>
+
+      <!-- Meshes -->
+      <a-entity geometry="primitive: box" material="color: #EF2D5E; metalness: 0" shadow
+                position="0 0 -4"></a-entity>
+      <a-entity geometry="primitive: sphere" material="color: #EF2D5E; metalness: 0" shadow
+                position="-2 0 -4"></a-entity>
+      <a-entity geometry="primitive: cylinder" material="color: #EF2D5E; metalness: 0" shadow
+                position="2 0 -4"></a-entity>
+
+      <a-sky color="#111"></a-sky>
+    </a-scene>
+  </body>
+</html>

@@ -658,8 +658,8 @@ For this guide, let's use the primitive form of the text component, `<a-text>`:
 
 There are also a few other ways to handle text:
 
-[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text
-[htmlshader]: https://github.com/mayognaise/aframe-html-shader
+[textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text-geometry/
+[htmlshader]: https://github.com/mayognaise/aframe-html-shader/
 [Kevin Ngo]: https://twitter.com/andgokevin
 [Mayo Tobita]: https://twitter.com/mayognaise
 
@@ -692,6 +692,4 @@ entity. [Read more about using the A-Frame Inspector][inspectorguide].
 The core value proposition of A-Frame is its extensible entity-component
 architecture that allows for a declarative structure to define and compose
 reusable JavaScript modules. We'll see more about components and the ecosystem
-in the upcoming sections.  We will release a *Writing an A-Frame Component*
-guide soon, for now the [component documentation][component] serves as a rough
-guide.
+in the upcoming sections.

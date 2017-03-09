@@ -1,11 +1,15 @@
 /* global assert, setup, suite, test */
 var THREE = require('lib/three');
 
+var inferResponseType = require('core/a-assets').inferResponseType;
+
 // Empty src will not trigger load events in Chrome.
 // Use data URI where a load event is needed.
 var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
-var XHR_SRC = 'base/src/README.md';
+var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
+var XHR_SRC_GLTF = '/base/tests/assets/dummy/dummy.gltf';
+var XHR_SRC_GLB = '/base/tests/assets/dummy/dummy.glb';
 
 suite('a-assets', function () {
   setup(function () {
@@ -32,7 +36,7 @@ suite('a-assets', function () {
   });
 
   test('has fileLoader', function () {
-    assert.ok(this.el.fileLoader.constructor, THREE.XHRLoader);
+    assert.equal(this.el.fileLoader.constructor, THREE.FileLoader);
   });
 
   test('waits for images to load', function (done) {
@@ -230,5 +234,84 @@ suite('a-asset-item', function () {
     });
     this.assetsEl.appendChild(assetItem);
     document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads as text without responseType attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    // Remove cache data to not load from it.
+    THREE.Cache.remove(XHR_SRC);
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads as arraybuffer', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    THREE.Cache.remove(XHR_SRC);
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.setAttribute('response-type', 'arraybuffer');
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads from cache as arraybuffer without response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('reloads as text', function (done) {
+    THREE.Cache.remove(XHR_SRC);
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(typeof assetItem.data === 'string');
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  test('loads .gltf file as arraybuffer without response-type attribute', function (done) {
+    var assetItem = document.createElement('a-asset-item');
+    assetItem.setAttribute('src', XHR_SRC_GLTF);
+    assetItem.addEventListener('loaded', function (evt) {
+      assert.ok(assetItem.data !== null);
+      assert.ok(assetItem.data instanceof ArrayBuffer);
+      done();
+    });
+    this.assetsEl.appendChild(assetItem);
+    document.body.appendChild(this.sceneEl);
+  });
+
+  suite('inferResponseType', function () {
+    test('returns text as default', function () {
+      assert.equal(inferResponseType(XHR_SRC), 'text');
+    });
+
+    test('returns arraybuffer for .gltf file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLTF), 'arraybuffer');
+    });
+
+    test('returns arraybuffer for .glb file', function () {
+      assert.equal(inferResponseType(XHR_SRC_GLB), 'arraybuffer');
+    });
   });
 });

@@ -169,6 +169,16 @@ particular events on these elements; noted here for convenience:
 A-Frame uses these progress events, comparing how much time the browser
 buffered with the duration of the asset, to detect when the asset becomes loaded.
 
+## Specifying Response Type
+
+Content fetched by `<a-asset-item>` will be returned as plain text. If we want
+to use a different response type such as `arraybuffer`, use `<a-asset-item>`'s
+`response-type` attribute:
+
+```html
+<a-asset-item response-type="arraybuffer" src="model.gltf"></a-asset-item>
+```
+
 ## How It Works Internally
 
 Every element in A-Frame inherits from `<a-node>`, the `AFRAME.ANode`
