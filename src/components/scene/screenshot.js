@@ -138,7 +138,7 @@ module.exports.Component = registerComponent('screenshot', {
    */
   setCapture: function (projection) {
     var el = this.el;
-    var renderer = el.renderer;
+    //var renderer = el.renderer;
     var size;
     var camera;
     var cubeCamera;
