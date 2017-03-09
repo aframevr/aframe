@@ -1,7 +1,7 @@
 /* global THREE */
 var extend = require('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /^\s*((-?\d*\.{0,1}\d+)\s+){2,3}(-?\d*\.{0,1}\d+)\s*$/;
+var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
 /**

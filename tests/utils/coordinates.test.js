@@ -7,6 +7,10 @@ suite('utils.coordinates', function () {
       assert.ok(coordinates.isCoordinate(' 1 2.5  -3'));
     });
 
+    test('verifies valid vec3 coordinate with e-notation', function () {
+      assert.ok(coordinates.isCoordinate('1.2e3 2.5 3.4e-5'));
+    });
+
     test('verifies valid vec4 coordinate', function () {
       assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
     });
