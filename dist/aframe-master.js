@@ -76345,7 +76345,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 10-03-2017, Commit #06f957d)');
+console.log('A-Frame Version: 0.5.0 (Date 10-03-2017, Commit #113d0dd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79665,12 +79665,13 @@ if (typeof module === 'object') {
 
 ( function () {
 
-    // prepare base perf object
-    if ( typeof window.performance === 'undefined' ) {
+    if ( 'performance' in window == false ) {
         window.performance = {};
     }
 
-    if ( !window.performance.now ) {
+    var performance = window.performance;
+
+    if ( 'now' in performance == false ) {
 
         var nowOffset = Date.now();
 
@@ -79678,18 +79679,18 @@ if (typeof module === 'object') {
             nowOffset = performance.timing.navigationStart;
         }
 
-        window.performance.now = function now () {
+        performance.now = function now () {
             return Date.now() - nowOffset;
         };
 
     }
 
-    if( !window.performance.mark ) {
-        window.performance.mark = function(){}
+    if( !performance.mark ) {
+        performance.mark = function(){}
     }
 
-    if( !window.performance.measure ) {
-        window.performance.measure = function(){}
+    if( !performance.measure ) {
+        performance.measure = function(){}
     }
 
 } )();
