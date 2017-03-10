@@ -54,7 +54,7 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinate = function (value) {
+module.exports.areCoordinates = function (value) {
   return regex.test(value);
 };
 
