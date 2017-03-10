@@ -14,7 +14,7 @@ var DIRECTIONS = animationConstants.directions;
 var EASING_FUNCTIONS = animationConstants.easingFunctions;
 var FILLS = animationConstants.fills;
 var REPEATS = animationConstants.repeats;
-var isCoordinate = coordinates.isCoordinate;
+var areCoordinates = coordinates.areCoordinates;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
@@ -375,7 +375,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     } else {
       getForComponentAttribute();
     }
-  } else if (dataTo && isCoordinate(dataTo)) {
+  } else if (dataTo && areCoordinates(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
