@@ -76345,7 +76345,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 09-03-2017, Commit #fd764d0)');
+console.log('A-Frame Version: 0.5.0 (Date 10-03-2017, Commit #06f957d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78758,7 +78758,7 @@ THREE.VRControls = function ( object, onError ) {
 
 	if ( 'VRFrameData' in window ) {
 
-		frameData = new VRFrameData();
+		frameData = new window.VRFrameData();
 
 	}
 
