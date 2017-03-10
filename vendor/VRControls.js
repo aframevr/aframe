@@ -15,7 +15,7 @@ THREE.VRControls = function ( object, onError ) {
 
 	if ( 'VRFrameData' in window ) {
 
-		frameData = new VRFrameData();
+		frameData = new window.VRFrameData();
 
 	}
 
