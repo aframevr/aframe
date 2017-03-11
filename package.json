@@ -15,6 +15,7 @@
     "docs": "markserv --dir docs --port 9001",
     "ghpages": "npm run preghpages && ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
+    "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "preghpages": "rimraf gh-pages && mkdirp gh-pages && cp -r .nojekyll dist examples index.html gh-pages && replace -r 'dist/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/",
     "prerelease": "npm run dist && node scripts/release.js 0.4.0 0.5.0",
