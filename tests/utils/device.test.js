@@ -36,3 +36,13 @@ suite('isIOSOlderThan10', function () {
     assert.notOk(device.isIOSOlderThan10(v12));
   });
 });
+
+suite('environment', function () {
+  test('isNodeEnvironment is false for browser tests', function () {
+    assert.strictEqual(device.isNodeEnvironment, false);
+  });
+
+  test('isBrowserEnvironment is true for browser tests', function () {
+    assert.strictEqual(device.isBrowserEnvironment, true);
+  });
+});
