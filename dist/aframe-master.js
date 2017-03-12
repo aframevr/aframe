@@ -66517,6 +66517,7 @@ module.exports={
     "preghpages": "rimraf gh-pages && mkdirp gh-pages && cp -r .nojekyll dist examples index.html gh-pages && replace -r 'dist/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/",
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
+    "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
     "prerelease": "npm run dist && node scripts/release.js 0.4.0 0.5.0",
     "start": "npm run dev",
@@ -76345,7 +76346,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-03-2017, Commit #6ec8696)');
+console.log('A-Frame Version: 0.5.0 (Date 12-03-2017, Commit #f1870d8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
