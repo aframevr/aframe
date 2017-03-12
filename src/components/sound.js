@@ -17,6 +17,7 @@ module.exports.Component = registerComponent('sound', {
     maxDistance: {default: 10000},
     on: {default: ''},
     poolSize: {default: 1},
+    positional: {default: true},
     refDistance: {default: 1},
     rolloffFactor: {default: 1},
     src: {type: 'audio'},
@@ -137,7 +138,7 @@ module.exports.Component = registerComponent('sound', {
     // Create [poolSize] audio instances and attach them to pool
     this.pool = new THREE.Group();
     for (var i = 0; i < this.data.poolSize; i++) {
-      var sound = new THREE.PositionalAudio(listener);
+      var sound = this.data.positional ? new THREE.PositionalAudio(listener) : new THREE.Audio(listener);
       this.pool.add(sound);
     }
     el.setObject3D(this.attrName, this.pool);
