@@ -30,6 +30,8 @@ module.exports.Component = registerComponent('sound', {
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
     this.pool = new THREE.Group();
+    this.loaded = false;
+    this.mustPlay = false;
     this.playSound = bind(this.playSound, this);
   },
 
@@ -46,7 +48,6 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.pool.children.forEach(function (sound) {
-      sound.autoplay = data.autoplay;
       sound.setDistanceModel(data.distanceModel);
       sound.setLoop(data.loop);
       sound.setMaxDistance(data.maxDistance);
@@ -58,16 +59,20 @@ module.exports.Component = registerComponent('sound', {
     if (data.on !== oldData.on) {
       this.updateEventListener(oldData.on);
     }
-
     // All sound values set. Load in `src`.
     if (srcChanged) {
       var self = this;
+
+      this.loaded = false;
       this.audioLoader.load(data.src, function (buffer) {
         self.pool.children.forEach(function (sound) {
           sound.setBuffer(buffer);
         });
+        self.loaded = true;
+
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
+        if (self.data.autoplay || self.mustPlay) { self.playSound(); }
       });
     }
   },
@@ -157,6 +162,7 @@ module.exports.Component = registerComponent('sound', {
   pauseSound: function () {
     this.pool.children.forEach(function (sound) {
       if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      sound.isPaused = true;
       sound.pause();
     });
   },
@@ -165,6 +171,12 @@ module.exports.Component = registerComponent('sound', {
    * Look for an unused sound in the pool and play it if found.
    */
   playSound: function () {
+    if (!this.loaded) {
+      warn('Sound not loaded yet. It will be played once it finished loading');
+      this.mustPlay = true;
+      return;
+    }
+
     var found = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.buffer && !found) {
@@ -177,7 +189,10 @@ module.exports.Component = registerComponent('sound', {
     if (!found) {
       warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
            'consider increasing the size of pool with the `poolSize` attribute.');
+      return;
     }
+
+    this.mustPlay = false;
   },
 
   /**
