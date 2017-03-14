@@ -69890,11 +69890,13 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.pool.children.forEach(function (sound) {
-      sound.setDistanceModel(data.distanceModel);
+      if (data.positional) {
+        sound.setDistanceModel(data.distanceModel);
+        sound.setMaxDistance(data.maxDistance);
+        sound.setRefDistance(data.refDistance);
+        sound.setRolloffFactor(data.rolloffFactor);
+      }
       sound.setLoop(data.loop);
-      sound.setMaxDistance(data.maxDistance);
-      sound.setRefDistance(data.refDistance);
-      sound.setRolloffFactor(data.rolloffFactor);
       sound.setVolume(data.volume);
       sound.isPaused = false;
     });
@@ -76364,7 +76366,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 14-03-2017, Commit #b5fbf76)');
+console.log('A-Frame Version: 0.5.0 (Date 14-03-2017, Commit #aafb244)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
