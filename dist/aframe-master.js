@@ -69859,6 +69859,7 @@ module.exports.Component = registerComponent('sound', {
     maxDistance: {default: 10000},
     on: {default: ''},
     poolSize: {default: 1},
+    positional: {default: true},
     refDistance: {default: 1},
     rolloffFactor: {default: 1},
     src: {type: 'audio'},
@@ -69871,6 +69872,8 @@ module.exports.Component = registerComponent('sound', {
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
     this.pool = new THREE.Group();
+    this.loaded = false;
+    this.mustPlay = false;
     this.playSound = bind(this.playSound, this);
   },
 
@@ -69887,34 +69890,38 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.pool.children.forEach(function (sound) {
-      sound.autoplay = data.autoplay;
       sound.setDistanceModel(data.distanceModel);
       sound.setLoop(data.loop);
       sound.setMaxDistance(data.maxDistance);
       sound.setRefDistance(data.refDistance);
       sound.setRolloffFactor(data.rolloffFactor);
       sound.setVolume(data.volume);
+      sound.isPaused = false;
     });
 
     if (data.on !== oldData.on) {
       this.updateEventListener(oldData.on);
     }
-
     // All sound values set. Load in `src`.
     if (srcChanged) {
       var self = this;
+
+      this.loaded = false;
       this.audioLoader.load(data.src, function (buffer) {
         self.pool.children.forEach(function (sound) {
           sound.setBuffer(buffer);
         });
+        self.loaded = true;
+
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
+        if (self.data.autoplay || self.mustPlay) { self.playSound(); }
       });
     }
   },
 
   pause: function () {
-    this.pauseSound();
+    this.stopSound();
     this.removeEventListener();
   },
 
@@ -69979,7 +69986,7 @@ module.exports.Component = registerComponent('sound', {
     // Create [poolSize] audio instances and attach them to pool
     this.pool = new THREE.Group();
     for (var i = 0; i < this.data.poolSize; i++) {
-      var sound = new THREE.PositionalAudio(listener);
+      var sound = this.data.positional ? new THREE.PositionalAudio(listener) : new THREE.Audio(listener);
       this.pool.add(sound);
     }
     el.setObject3D(this.attrName, this.pool);
@@ -69997,7 +70004,8 @@ module.exports.Component = registerComponent('sound', {
    */
   pauseSound: function () {
     this.pool.children.forEach(function (sound) {
-      if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      if (!sound.source || !sound.source.buffer || !sound.isPlaying || sound.isPaused) { return; }
+      sound.isPaused = true;
       sound.pause();
     });
   },
@@ -70006,10 +70014,17 @@ module.exports.Component = registerComponent('sound', {
    * Look for an unused sound in the pool and play it if found.
    */
   playSound: function () {
+    if (!this.loaded) {
+      warn('Sound not loaded yet. It will be played once it finished loading');
+      this.mustPlay = true;
+      return;
+    }
+
     var found = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
+        sound.isPaused = false;
         found = true;
         return;
       }
@@ -70018,7 +70033,10 @@ module.exports.Component = registerComponent('sound', {
     if (!found) {
       warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
            'consider increasing the size of pool with the `poolSize` attribute.');
+      return;
     }
+
+    this.mustPlay = false;
   },
 
   /**
@@ -76346,7 +76364,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-03-2017, Commit #f1870d8)');
+console.log('A-Frame Version: 0.5.0 (Date 14-03-2017, Commit #b5fbf76)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
