@@ -78,7 +78,7 @@ module.exports.Component = registerComponent('sound', {
   },
 
   pause: function () {
-    this.pauseSound();
+    this.stopSound();
     this.removeEventListener();
   },
 
@@ -161,7 +161,7 @@ module.exports.Component = registerComponent('sound', {
    */
   pauseSound: function () {
     this.pool.children.forEach(function (sound) {
-      if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.pause) { return; }
+      if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.isPaused) { return; }
       sound.isPaused = true;
       sound.pause();
     });
