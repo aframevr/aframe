@@ -30,7 +30,8 @@ suite('sound', function () {
         assert.equal(audio.getMaxDistance(), 20000);
         assert.equal(audio.getRefDistance(), 2);
         assert.equal(audio.getRolloffFactor(), 4);
-        assert.ok(audio.autoplay);
+        console.log(audio.autoplay);
+        assert.notOk(audio.autoplay);
         assert.ok(audio.getLoop());
       }
     });
@@ -50,7 +51,7 @@ suite('sound', function () {
       for (var i = 0; i < audioPool.children.length; i++) {
         var audio = audioPool.children[i];
         assert.equal(audio.type, 'Audio');
-        assert.ok(audio.autoplay);
+        assert.notOk(audio.autoplay);
         assert.ok(audio.getLoop());
       }
     });
@@ -73,6 +74,7 @@ suite('sound', function () {
       var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
+        stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
         source: {buffer: true}
@@ -86,13 +88,18 @@ suite('sound', function () {
       var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         pause: sinon.stub(),
+        stop: sinon.stub(),
         isPlaying: true,
         buffer: true,
         source: {buffer: true}
       };
       el.components.sound.isPlaying = true;
       el.pause();
-      assert.ok(sound.pause.called);
+
+      // Currently we're calling stop when the component is paused as we reset
+      // the state on `play` instad of resuming it
+      assert.notOk(sound.pause.called);
+      assert.ok(sound.stop.called);
     });
   });
 
@@ -102,6 +109,7 @@ suite('sound', function () {
       var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
+        stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
         source: {buffer: true}
@@ -118,25 +126,47 @@ suite('sound', function () {
       var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         isPlaying: true,
+        isPaused: false,
+        stop: sinon.stub(),
         pause: sinon.stub(),
         buffer: true,
         source: {buffer: true}
       };
       el.components.sound.pauseSound();
       assert.ok(sound.pause.called);
+      assert.ok(sound.isPaused);
     });
   });
 
   suite('playSound', function () {
-    test('plays sound', function () {
+    test('plays sound when not loaded', function () {
       var el = this.el;
       var sound = el.components.sound.pool.children[0] = {
         disconnect: sinon.stub(),
         play: sinon.stub(),
+        stop: sinon.stub(),
         isPlaying: false,
         buffer: true,
         source: {buffer: true}
       };
+      el.components.sound.loaded = false;
+
+      el.components.sound.playSound();
+      assert.notOk(sound.play.called);
+    });
+
+    test('plays sound when loaded', function () {
+      var el = this.el;
+      var sound = el.components.sound.pool.children[0] = {
+        disconnect: sinon.stub(),
+        play: sinon.stub(),
+        stop: sinon.stub(),
+        isPlaying: false,
+        buffer: true,
+        source: {buffer: true}
+      };
+      el.components.sound.loaded = true;
+
       el.components.sound.playSound();
       assert.ok(sound.play.called);
     });

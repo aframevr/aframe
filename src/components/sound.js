@@ -54,6 +54,7 @@ module.exports.Component = registerComponent('sound', {
       sound.setRefDistance(data.refDistance);
       sound.setRolloffFactor(data.rolloffFactor);
       sound.setVolume(data.volume);
+      sound.isPaused = false;
     });
 
     if (data.on !== oldData.on) {
@@ -161,7 +162,7 @@ module.exports.Component = registerComponent('sound', {
    */
   pauseSound: function () {
     this.pool.children.forEach(function (sound) {
-      if (!sound.source || !sound.source.buffer || !sound.isPlaying || !sound.isPaused) { return; }
+      if (!sound.source || !sound.source.buffer || !sound.isPlaying || sound.isPaused) { return; }
       sound.isPaused = true;
       sound.pause();
     });
@@ -181,6 +182,7 @@ module.exports.Component = registerComponent('sound', {
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
+        sound.isPaused = false;
         found = true;
         return;
       }
