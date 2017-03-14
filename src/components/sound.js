@@ -48,11 +48,13 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.pool.children.forEach(function (sound) {
-      sound.setDistanceModel(data.distanceModel);
+      if (data.positional) {
+        sound.setDistanceModel(data.distanceModel);
+        sound.setMaxDistance(data.maxDistance);
+        sound.setRefDistance(data.refDistance);
+        sound.setRolloffFactor(data.rolloffFactor);
+      }
       sound.setLoop(data.loop);
-      sound.setMaxDistance(data.maxDistance);
-      sound.setRefDistance(data.refDistance);
-      sound.setRolloffFactor(data.rolloffFactor);
       sound.setVolume(data.volume);
       sound.isPaused = false;
     });
