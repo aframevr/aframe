@@ -24,6 +24,17 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
+registerPropertyType('mat3', [
+  1, 0, 0,
+  0, 1, 0,
+  0, 0, 1
+], matParse, matStringify);
+registerPropertyType('mat4', [
+  1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1
+], matParse, matStringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -150,4 +161,46 @@ function srcParse (value) {
 
 function vecParse (value) {
   return coordinates.parse(value, this.default);
+}
+
+/**
+ * Parses a string of the form "n1 n2, n3 n4", returning an array in column-major format.
+ * @param  {string} value
+ * @return {Array<Number>}
+ */
+function matParse (value) {
+  if (!value) { return this.default; }
+  var rows = arrayParse(value).map(function (row) {
+    return row.trim().replace(/\s+/g, ' ').split(' ').map(Number);
+  });
+
+  // Convert to column-major format.
+  var elements = [];
+  for (var i = 0; i < rows.length; i++) {
+    for (var j = 0; j < rows[i].length; j++) {
+      elements.push(rows[j][i]);
+    }
+  }
+  return elements;
+}
+
+function matStringify (value) {
+  var n = Math.sqrt(value.length);
+  if (n % 1 !== 0) {
+    warn('Invalid matrix dimensions.');
+    return '';
+  }
+
+  // Group matrix values into rows.
+  var rows = [];
+  for (var i = 0; i < n; i++) {
+    var row = [];
+    for (var j = 0; j < n; j++) {
+      row.push(value[i + j * n]);
+    }
+    rows.push(row.join(' '));
+  }
+
+  // Add comma-delimiter to rows.
+  return arrayStringify(rows);
 }
