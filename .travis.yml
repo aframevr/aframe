@@ -34,6 +34,7 @@ env:
   matrix:
     - CI_ACTION="npm run test:firefox -- --single-run"
     - CI_ACTION="npm run test:chrome -- --single-run"
+    - CI_ACTION="npm run test:node"
     - CI_ACTION="npm run lint"
     - CI_ACTION="npm run build"
     - CI_ACTION="npm run test:docs"
