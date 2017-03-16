@@ -71344,7 +71344,7 @@ var DIRECTIONS = animationConstants.directions;
 var EASING_FUNCTIONS = animationConstants.easingFunctions;
 var FILLS = animationConstants.fills;
 var REPEATS = animationConstants.repeats;
-var isCoordinate = coordinates.isCoordinate;
+var isCoordinates = coordinates.isCoordinates;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
@@ -71705,7 +71705,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     } else {
       getForComponentAttribute();
     }
-  } else if (dataTo && isCoordinate(dataTo)) {
+  } else if (dataTo && isCoordinates(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
@@ -76367,7 +76367,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #78e54fd)');
+console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #af3f890)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77836,7 +77836,7 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinate = function (value) {
+module.exports.isCoordinates = function (value) {
   return regex.test(value);
 };
 
