@@ -520,7 +520,7 @@ If we check the [documentation of the cursor component][cursor component] that
 [addeventlistener]: https://developer.mozilla.org/docs/Web/API/EventTarget/addEventListener
 [animatingonevents]: #animating-on-events
 [queryselector]: https://developer.mozilla.org/docs/Web/API/Document/querySelector
-[setattribute]: ../core/entity.md#setattribute-attr-value-componentattrvalue
+[setattribute]: ../core/entity.md#setattribute-componentname-value-propertyvalue-clobber
 
 One way to manually handle the cursor events is to [add an event listener with
 JavaScript][addeventlistener] just like we would with a normal DOM element. If

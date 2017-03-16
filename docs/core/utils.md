@@ -69,7 +69,7 @@ multi-property component.
 
 ### `.setComponentProperty (entity, componentName, value, delimiter)`
 
-[setattr]: ./entity.md#setattribute-attr-value-componentattrvalue
+[setattr]: ./entity.md#setattribute-componentname-value-propertyvalue-clobber
 
 Performs like [`Entity.setAttribute`][setattr], but with support for setting an
 individual property for a multi-property component. `componentName` is a string
