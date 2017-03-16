@@ -69441,7 +69441,6 @@ module.exports.Component = registerComponent('screenshot', {
    */
   setCapture: function (projection) {
     var el = this.el;
-    var renderer = el.renderer;
     var size;
     var camera;
     var cubeCamera;
@@ -69451,7 +69450,7 @@ module.exports.Component = registerComponent('screenshot', {
       this.quad.visible = false;
       // Use scene camera.
       camera = el.camera;
-      size = renderer.getSize();
+      size = {width: this.data.width, height: this.data.height};
     } else {
       // Use ortho camera.
       camera = this.camera;
@@ -76368,7 +76367,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 15-03-2017, Commit #226f1fd)');
+console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #990e927)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
