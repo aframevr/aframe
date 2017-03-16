@@ -66525,7 +66525,7 @@ module.exports={
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
     "test:chrome": "npm test -- --browsers Chrome",
-    "test:node": "mocha tests/node"
+    "test:node": "mocha --ui tdd tests/node"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
@@ -76367,7 +76367,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #af3f890)');
+console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #bffccda)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
