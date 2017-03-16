@@ -311,16 +311,16 @@ entity.play();
 
 For example, the [sound component][sound] on play will begin playing the sound.
 
-### `setAttribute (attr, value, componentAttrValue)`
+### `setAttribute (componentName, value, [propertyValue | clobber])`
 
-If `attr` is not the name of a registered component or the component is a
+If `componentName` is not the name of a registered component or the component is a
 single-property component, `setAttribute` behaves as it normally would:
 
 ```js
 entity.setAttribute('visible', false);
 ```
 
-Though if `attr` is the name of a registered component, it may handle special
+Though if `componentName` is the name of a registered component, it may handle special
 parsing for the value. For example, the [position component][position] is a
 single-property component, but its property type parser allows it to take an
 object:
@@ -329,14 +329,15 @@ object:
 entity.setAttribute('position', { x: 1, y: 2, z: 3 });
 ```
 
-#### Putting Multi-Property Component Data
+#### Updating Multi-Property Component Data
 
-To set or replace component data for a multi-property component, we can pass
-the name of a registered component as the `attr`, and pass an object of
-properties as the `value`:
+To update component data for a multi-property component, we can pass the name
+of a registered component as the `componentName`, and pass an object of
+properties as the `value`. A string is also acceptable (e.g., `type: spot;
+distance: 30`), but objects will save A-Frame some work in parsing:
 
 ```js
-// All previous properties for the light component will be removed and overwritten.
+// Only the properties passed in the object will be overwritten.
 entity.setAttribute('light', {
   type: 'spot',
   distance: 30,
@@ -344,15 +345,34 @@ entity.setAttribute('light', {
 });
 ```
 
-#### Updating Multi-Property Component Data
-
-To update individual properties for a multi-property component, we can pass the
-name of registered component as the `attr`, a property name as the second
+Or to update individual properties for a multi-property component, we can pass
+the name of registered component as the `componentName`, a property name as the second
 argument, and the property value to set as the third argument:
 
 ```js
 // All previous properties for the material component (besides the color)  will be unaffected.
 entity.setAttribute('material', 'color', 'crimson');
+```
+
+Note that array property types behave uniquely:
+
+- Arrays are mutable. They are assigned by reference so changes to arrays will
+  be visible by the component.
+- Updates to array type properties will not trigger the component's `update` method
+  nor emit events.
+
+#### Putting Multi-Property Component Data
+
+If `true` is passed as the third argument to `.setAttribute`, then
+non-specified properties will be reset and clobbered:
+
+```js
+// All previous properties for the light component will be removed and overwritten.
+entity.setAttribute('light', {
+  type: 'spot',
+  distance: 30,
+  intensity: 2.0
+}, true);
 ```
 
 ### `setObject3D (type, obj)`
@@ -369,9 +389,9 @@ AFRAME.registerComponent('example-orthogonal-camera', {
 });
 ```
 
-### `removeAttribute (attr, propertyName)`
+### `removeAttribute (componentName, propertyName)`
 
-If `attr` is the name of a registered component, along with removing the
+If `componentName` is the name of a registered component, along with removing the
 attribute from the DOM, `removeAttribute` will also detach the component from
 the entity, invoking the component's `remove` lifecycle method.
 
