@@ -136,6 +136,37 @@ texture. There are some components in the ecosystem that enable this:
 
 - [HTML Shader][html-shader]
 
+## Which 3D model formats work?
+
+The ideal format is the GL Transmission Format [glTF
+(`.gltf`)](https://en.wikipedia.org/wiki/GlTF) since glTF is feature-rich,
+compact, and efficient. glTF focuses on providing a *transmission format*
+rather than an editor format and is more interoperable with web technologies.
+[Read more about glTF and A-Frame's glTF
+component](../components/gltf-model.md#why-use-gltf).
+
+[COLLADA (`.dae`)](https://en.wikipedia.org/wiki/COLLADA) is an XML-based
+format with a rich feature set. COLLADA is more common in comparison to glTF
+since it is older, but more suited to native applications that package all
+their contents together. COLLADA is not recommended since they're like the
+`.PSD` files of 3D models whereas glTF are like the `.JPG` of 3D models.
+They're heavy because they contain complete subscenes.
+
+[Wavefront (`.obj`)](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is also
+a well-known format but has some limitations like the lack of animation and
+vertex color support.
+
+There are also components in the ecosystem for loading:
+
+- [`.PLY` models](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/ply-model.js)
+- [three.js `.JSON` Object](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/json-model.js)
+- [three.js `.JSON` Scene](https://github.com/donmccurdy/aframe-extras/blob/master/src/loaders/object-model.js)
+
+Below are a couple basic example scenes for using models:
+
+- [Model Example 1](https://aframe.io/aframe/examples/test/model/)
+- [Model Example 2](https://aframe.io/aframe/examples/primitives/models/)
+
 ## Where can I find assets?
 
 [archive3d]: http://archive3d.net
