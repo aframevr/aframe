@@ -338,25 +338,28 @@ suite('a-entity', function () {
     });
 
     test('partial updates of array properties assign by reference', function () {
+      // Arrays are assigned by reference and mutable.
       var sourceArray = [1, 2, 3];
-      registerComponent('array-comp', {
-        schema: { arr: { type: 'array' } }
+      registerComponent('test', {
+        schema: {array: {type: 'array'}}
       });
-      this.el.setAttribute('array-comp', { arr: sourceArray });
-      assert.strictEqual(this.el.getAttribute('array-comp').arr, sourceArray);
+      this.el.setAttribute('test', {array: sourceArray});
+      assert.strictEqual(this.el.getAttribute('test').array, sourceArray);
     });
+
     test('partial updates of array-type properties do not trigger update', function () {
+      // Updates to array do not trigger update handler.
       var updateSpy;
-      registerComponent('array-comp2', {
-        schema: { arr: { type: 'array' } },
-        update: function (oldData) { }
+      registerComponent('test', {
+        schema: {array: {type: 'array'}},
+        update: function () { /* no-op */ }
       });
-      this.el.setAttribute('array-comp2', { arr: [1, 2, 3] });
-      updateSpy = this.sinon.spy(this.el.components['array-comp2'], 'update');
+      this.el.setAttribute('test', {arr: [1, 2, 3]});
+      updateSpy = this.sinon.spy(this.el.components.test, 'update');
       // setAttribute does not trigger update because utils.extendDeep
       // called by componentUpdate assigns the new value directly into the
       // component data
-      this.el.setAttribute('array-comp2', { arr: [4, 5, 6] });
+      this.el.setAttribute('test', {arr: [4, 5, 6]});
       assert.isFalse(updateSpy.called);
     });
 
