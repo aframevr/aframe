@@ -2,17 +2,17 @@
 'use strict';
 
 const path = require('path');
-const expect = require('chai').expect;
+const assert = require('chai').assert;
 const jsdom = require('jsdom');
 const Module = require('module');
 const sinon = require('sinon');
 
 const _require = Module.prototype.require;
 
-describe('node acceptance tests', function () {
+suite('node acceptance tests', function () {
   let sandbox;
 
-  before(function () {
+  suiteSetup(function () {
     sandbox = sinon.sandbox.create();
     sandbox.stub(Module.prototype, 'require', function () {
       if (arguments[0].indexOf('.css') === -1) {
@@ -21,7 +21,7 @@ describe('node acceptance tests', function () {
     });
   });
 
-  beforeEach(function () {
+  setup(function () {
     let _window = global.window = jsdom.jsdom().defaultView;
     global.navigator = _window.navigator;
     global.document = _window.document;
@@ -36,20 +36,20 @@ describe('node acceptance tests', function () {
     });
   });
 
-  afterEach(function () {
+  teardown(function () {
     delete global.window;
     delete global.document;
     delete global.HTMLElement;
     delete global.WebVRConfig;
   });
 
-  after(function () {
+  suiteTeardown(function () {
     sandbox.restore();
   });
 
-  it('can run in node', function () {
+  test('can run in node', function () {
     let aframe = require(path.join(process.cwd(), 'src'));
 
-    expect(aframe.version).to.be.ok;
+    assert.ok(aframe.version);
   });
 });

@@ -24,7 +24,7 @@
     "test:docs": "node scripts/docsLint.js",
     "test:firefox": "npm test -- --browsers Firefox",
     "test:chrome": "npm test -- --browsers Chrome",
-    "test:node": "mocha tests/node"
+    "test:node": "mocha --ui tdd tests/node"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
