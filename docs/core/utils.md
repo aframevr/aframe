@@ -14,12 +14,12 @@ A-Frame's utility modules are public through `AFRAME.utils`.
 
 Module for handling vec3 and vec4 types.
 
-### `.isCoordinate (value)`
+### `.isCoordinates (value)`
 
 Tests whether a string is a vec3.
 
 ```js
-AFRAME.utils.coordinates.isCoordinate('1 2 3')
+AFRAME.utils.coordinates.isCoordinates('1 2 3')
 // >> true
 ```
 

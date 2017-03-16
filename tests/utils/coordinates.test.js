@@ -2,21 +2,21 @@
 var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
-  suite('isCoordinate', function () {
+  suite('isCoordinates', function () {
     test('verifies valid vec3 coordinate', function () {
-      assert.ok(coordinates.isCoordinate(' 1 2.5  -3'));
+      assert.ok(coordinates.isCoordinates(' 1 2.5  -3'));
     });
 
     test('verifies valid vec3 coordinate with e-notation', function () {
-      assert.ok(coordinates.isCoordinate('1.2e3 2.5 3.4e-5'));
+      assert.ok(coordinates.isCoordinates('1.2e3 2.5 3.4e-5'));
     });
 
     test('verifies valid vec4 coordinate', function () {
-      assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
+      assert.ok(coordinates.isCoordinates('1 1 2.5 -3'));
     });
 
     test('rejects invalid coordinate', function () {
-      assert.notOk(coordinates.isCoordinate('1 1 2.5 -3 0.1'));
+      assert.notOk(coordinates.isCoordinates('1 1 2.5 -3 0.1'));
     });
   });
 
