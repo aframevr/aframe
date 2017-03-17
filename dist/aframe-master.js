@@ -76185,7 +76185,7 @@ registerGeometry('plane', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.PlaneGeometry(data.width, data.height);
+    this.geometry = new THREE.PlaneGeometry(data.width, data.height, data.segmentsWidth, data.segmentsHeight);
   }
 });
 
@@ -76370,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #79ba625)');
+console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #4dc928f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
