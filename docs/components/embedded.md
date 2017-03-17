@@ -5,56 +5,67 @@ layout: docs
 parent_section: components
 ---
 
-The embedded component removes fullscreen CSS styles from A-Frame's `<canvas>`
-element, making it easier to embed within the layout of an existing webpage. It
-removes fixed positioning from the canvas and makes the Enter VR / Fullscreen
-UI smaller.
+The embedded component removes fullscreen CSS styles from A-Frame's
+`<canvas>` element, making it easier to embed within the layout of an
+existing webpage.  Embedding removes the default fixed positioning from
+the canvas and makes the Enter VR button smaller.
 
 ## Example
 
+Add the `embedded` component, then style the `<a-scene>` element with CSS as if
+it were an empty `<div>`. Within `<a-scene>` is the `<canvas>` element.
+
 ```html
-<a-scene embedded></a-scene>
+a-scene {
+  height: 300px;
+  width: 600px;
+}
+
+<body>
+  <div id="myEmbeddedScene">
+    <a-scene embedded>
+      <!-- ... -->
+    </a-scene>
+  </div>
+</body>
 ```
 
-<script src="/aframe/dist/aframe-master.min.js"></script>
-<div id="myEmbeddedScene">
-<a-scene embedded>
-  <a-entity position="0 0 3.8"><a-camera></a-camera></a-entity>
-  <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
-  <a-box position="-1 0.5 1" rotation="0 45 0" width="1" height="1" depth="1"  color="#4CC3D9">
-    <a-animation attribute="rotation" dur="10000" fill="forwards" to="0 360 0" repeat="indefinite"></a-animation>
-  </a-box>
-  <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-  <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-</a-scene>
-</div>
+An example of an embedded scene:
+
+<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+
 <style>
-#myEmbeddedScene {
-  width:100%;
-  height:200px;
-}
+  #myEmbeddedScene {
+    width:100%;
+    height:200px;
+  }
 </style>
-AFrame scene embedded as on your page page. You can use your mouse 
 
-## Example of CSS integration
-Using CSS on the above example allows for betting integration of the scene with the rest of the content.
-```css
-#myEmbeddedScene {
-  width:100%;
-  height:200px;
-}
-```
+<div id="myEmbeddedScene">
+  <a-scene embedded>
+    <a-entity position="0 0 3.8"><a-camera></a-camera></a-entity>
+    <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+    <a-box position="-1 0.5 1" rotation="0 45 0" width="1" height="1" depth="1"  color="#4CC3D9">
+      <a-animation attribute="rotation" dur="10000" fill="forwards" to="0 360 0" repeat="indefinite"></a-animation>
+    </a-box>
+    <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+    <a-plane rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+  </a-scene>
+</div>
 
-## Better integration
-Embedded scenes make AFrame content visually and programmatically available to the rest of the page.
+## Integration with the 2D Page
 
-Amongst other things you can:
-* use CSS z-index to put element above or under the scene
-* use a transparent `<a-sky>` to overlay on top of an existing page, background and HTML elements includued
-* use HTML elements to control entities based on interactions with the content on your page
-* use `look-controls="enabled:false"` on the camera to prevent the user from freely looking in the scene
+Embedded scenes can be visually integrated and can interact with the rest of
+the 2D page. Some things we could do:
 
+- Use CSS `z-index` to put an HTML element above or under the scene
+- Use a transparent `<a-sky>` or no background to overlay `<a-scene>` on top of the page, with underlying HTML elements visible
+- Use interaction with HTML elements (e.g., buttons, forms) to affect the scene
 
-## Known limitations
-* only one a-scene can exist on a page. Alternatively you can use `<iframe>` with ```allowvr="yes"```, preferably from the same origin, and display several scenes on the same page.
-* because of limited fullscreen capabilities of mobile browsers proper positionning on mobile can be problematic. It should be tested thoroughly. As a partial solution you can put the embedded scene at the top of the page.
+## Using I-Frames
+
+Only one `<a-scene>` can exist on a page. Alternatively, we can use an
+`<iframe>` with `allowfullscreen="yes"` and `allowvr="yes"` to display multiple
+scenes. For now, if the I-Frame is not on the same origin as the page, the
+WebVR polyfill for mobile won't work and there won't be any tracked rotation of
+the device.
