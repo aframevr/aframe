@@ -36,7 +36,7 @@ require('webvr-polyfill');
 require('present'); // Polyfill `performance.now()`.
 
 // CSS.
-if (utils.device.isBrowserLikeEnvironment) {
+if (utils.device.isBrowserEnvironment) {
   require('./style/aframe.css');
   require('./style/rStats.css');
 }
