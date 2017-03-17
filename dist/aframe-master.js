@@ -76331,9 +76331,12 @@ if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
 _dereq_('webvr-polyfill');
 
 _dereq_('present'); // Polyfill `performance.now()`.
+
 // CSS.
-_dereq_('./style/aframe.css');
-_dereq_('./style/rStats.css');
+if (utils.device.isBrowserLikeEnvironment) {
+  _dereq_('./style/aframe.css');
+  _dereq_('./style/rStats.css');
+}
 
 // Required before `AEntity` so that all components are registered.
 var AScene = _dereq_('./core/scene/a-scene');
@@ -76367,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-03-2017, Commit #bffccda)');
+console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #cafbadc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77956,6 +77959,7 @@ module.exports = debug;
 }).call(this,_dereq_('_process'))
 
 },{"_process":34,"debug":7,"object-assign":26}],166:[function(_dereq_,module,exports){
+(function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
 var controls = new THREE.VRControls(dolly);
@@ -78055,7 +78059,23 @@ module.exports.isIOSOlderThan10 = function (userAgent) {
   return /(iphone|ipod|ipad).*os.(7|8|9)/i.test(userAgent);
 };
 
-},{"../lib/three":147}],167:[function(_dereq_,module,exports){
+/**
+ * Check if running in a browser or spoofed browser (bundler).
+ * We need to check a node api that isn't mocked on either side.
+ * `require` and `module.exports` are mocked in browser by bundlers.
+ * `window` is mocked in node.
+ * `process` is also mocked by browserify, but has custom properties.
+ */
+module.exports.isBrowserEnvironment = !!(!process || process.browser);
+
+/**
+ * Check if running in node on the server.
+ */
+module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
+
+}).call(this,_dereq_('_process'))
+
+},{"../lib/three":147,"_process":34}],167:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
