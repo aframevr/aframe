@@ -166,7 +166,7 @@ suite('Component', function () {
       });
     });
 
-    test.only('vec2 and vec3 default string values are converted to coordinate objects', function (done) {
+    test('vec2 and vec3 default string values are converted to coordinate objects', function (done) {
       var schemaVec2 = processSchema({
         v: {type: 'vec2', default: '1 1'}
       });
