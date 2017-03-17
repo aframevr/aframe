@@ -76333,7 +76333,7 @@ _dereq_('webvr-polyfill');
 _dereq_('present'); // Polyfill `performance.now()`.
 
 // CSS.
-if (utils.device.isBrowserLikeEnvironment) {
+if (utils.device.isBrowserEnvironment) {
   _dereq_('./style/aframe.css');
   _dereq_('./style/rStats.css');
 }
@@ -76370,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #cafbadc)');
+console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #79ba625)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
