@@ -192,8 +192,9 @@ we want to add it to our scene. We grab the scene, create the entity, and
 append the entity to our scene.
 
 ```js
-var sceneEl = document.createElement('a-scene');
+var sceneEl = document.querySelector('a-scene');
 var entityEl = document.createElement('a-entity');
+// Do `.setAttribute()`s to initialize the entity.
 sceneEl.appendChild(entityEl);
 ```
 
