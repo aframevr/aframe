@@ -685,40 +685,10 @@ Alternatively, press the button below:
 Try opening the Inspector and playing around with the values of the `<a-text>`
 entity. [Read more about using the A-Frame Inspector][inspectorguide].
 
-## Final Code
+## Play With It!
 
-```html
-<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-<a-scene embedded style="height: 320px; width: 100%">
-  <a-assets>
-    <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
-    <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
-    <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
-  </a-assets>
-
-  <a-box position="0 2 -5" rotation="0 45 45" scale="2 2 2" src="#boxTexture">
-    <a-animation attribute="position" direction="alternate" dur="2000" repeat="indefinite"
-      to="0 2.2 -5"></a-animation>
-    <a-animation attribute="rotation" begin="click" dur="2000" to="360 405 45"></a-animation>
-    <a-animation attribute="scale" begin="mouseenter" dur="300" to="2.3 2.3 2.3"></a-animation>
-    <a-animation attribute="scale" begin="mouseleave" dur="300" to="2 2 2"></a-animation>
-  </a-box>
-
-  <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
-
-  <a-light type="ambient" color="#445451"></a-light>
-  <a-light type="point" intensity="2" position="2 4 4"></a-light>
-
-  <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
-
-  <a-text value="Hello, A-Frame!" color="#BBB"
-          position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
-
-  <a-camera>
-    <a-cursor color="#FAFAFA">
-  </a-camera>
-</a-scene>
-```
+<p data-height="400" data-theme-id="19139" data-slug-hash="wJyEzP" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Building a Basic Scene â A-Frame" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/wJyEzP/">Building a Basic Scene â A-Frame</a> by mozillavr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
+<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
 
 ## What's Next?
 
