@@ -148,6 +148,10 @@ texture. There are some components in the ecosystem that enable this:
 In general, [awesome-stock-resources][awesomestock] is a great collection of
 free assets.
 
+[textures]: https://www.textures.com/
+
+For images, check out [textures.com](https://www.textures.com/).
+
 [flickr]: https://www.flickr.com/groups/equirectangular/
 
 For 360&deg; images, search for [equirectangular images on Flickr][flickr].
