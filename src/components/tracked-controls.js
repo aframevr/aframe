@@ -84,9 +84,16 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.updateMatrix();
 
       // Apply transforms.
-      if (vrDisplay && vrDisplay.stageParameters) {
-        standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-        dolly.applyMatrix(standingMatrix);
+      if (vrDisplay) {
+        if (vrDisplay.stageParameters) {
+          standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
+          dolly.applyMatrix(standingMatrix);
+        } else {
+          // Apply default camera height
+          var userHeight = this.el.sceneEl.camera.el.components.camera.data.userHeight;
+          dolly.position.y += userHeight;
+          dolly.updateMatrix();
+        }
       }
 
       // Decompose.
