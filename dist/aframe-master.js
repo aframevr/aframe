@@ -76073,7 +76073,7 @@ registerGeometry('cone', {
     height: {default: 1, min: 0},
     openEnded: {default: false},
     radiusBottom: {default: 1, min: 0},
-    radiusTop: {default: 0.8, min: 0},
+    radiusTop: {default: 0.01, min: 0},
     segmentsHeight: {default: 18, min: 1, type: 'int'},
     segmentsRadial: {default: 36, min: 3, type: 'int'},
     thetaLength: {default: 360, min: 0},
@@ -76370,7 +76370,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-03-2017, Commit #4dc928f)');
+console.log('A-Frame Version: 0.5.0 (Date 21-03-2017, Commit #33ce1c1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
