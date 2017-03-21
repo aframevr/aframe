@@ -1,33 +1,75 @@
 // /**
-//  * Faster version of Function.prototype.bind
+//  * Checks if is valid default coordinates
+//  * @param unknown
+//  * @param {number} schema - Component schema
+//  * @returns {boolean} A boolean determining if coordinates are parsed correctly.
+//  */
+function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
+  if (typeof possibleCoordinates !== 'object' || possibleCoordinates === null) {
+    return false;
+  } else {
+    if (dimensions === 2) {
+      if (Object.keys(possibleCoordinates).length !== 2) {
+        return false;
+      }
+      if (possibleCoordinates.x && possibleCoordinates.y) {
+        if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number') {
+          return true;
+        }
+      }
+    } else if (dimensions === 3) {
+      if (Object.keys(possibleCoordinates).length !== 3) {
+        return false;
+      }
+      if (possibleCoordinates.x && possibleCoordinates.y && possibleCoordinates.z) {
+        if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number' && typeof possibleCoordinates.z === 'number') {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
+
+// /**
+//  * Validates the schema passed in if type is specified
 //  * @param {object} schema - Component schema
 //  * @returns {boolean} A boolean determining if schema is valid.
 //  */
-// module.exports = function validateSchema (schema) {
-//   var bool = true;
-//   var validTypes = { string: true, boolean: true, array: true, vec2: true, vec3: true, number: true };
+function isValidSchema (schema) {
+  var validTypes = {
+    string: true,
+    boolean: true,
+    number: true,
+    array: true,
+    vec2: true,
+    vec3: true
+  };
 
-//   // can have other valid types
+  var properties = Object.keys(schema);
 
-//   Object.keys(schema).forEach(function(key) {
-//     var type = schema[key].type;
-//     var defaultVal = schema[key].default;
+  for (var i = 0; i < properties.length; i++) {
+    var type = schema[properties[i]].type;
+    var defaultVal = schema[properties[i]].default;
 
-//     // if there's no type we don't need to check the default
-//     // if (!type) {
-//     //   break;
-//     // }
+    if (validTypes[type] && defaultVal) {
+      if (type === 'vec2') {
+        return isValidDefaultCoordinate(defaultVal, 2);
+      } else if (type === 'vec3') {
+        return isValidDefaultCoordinate(defaultVal, 3);
+      } else if (type === 'array' && !Array.isArray(defaultVal)) {
+        return false;
+      } else if (type !== typeof defaultVal) {
+        return false;
+      }
+    }
+  }
 
-//     if (!validTypes[type]) {
-//       bool = false;
-//       break;
-//     } else if (defaultVal && typeof defaultVal !== type) {
-//       // defaultVal is the same ds as type
+  return true;
+}
 
-//       bool = false;
-//       break;
-//     }
-//   });
+module.exports.isValidSchema = isValidSchema;
 
-//   return bool;
-// };
