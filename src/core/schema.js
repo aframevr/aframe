@@ -1,6 +1,7 @@
 var debug = require('../utils/debug');
 var propertyTypes = require('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
+var isValidDefaultValue = require('../utils/validate').isValidDefaultValue;
 
 /**
  * A schema is classified as a schema for a single property if:
@@ -75,6 +76,11 @@ function processPropertyDefinition (propDefinition) {
   // Fill in default value.
   if (!('default' in propDefinition)) {
     propDefinition.default = propType.default;
+  } else {
+    // check if valid default value
+    if (!isValidDefaultValue(typeName, defaultVal)) {
+      warn('The default value: ' + defaultVal + 'does not match the type: ' + typeName);
+    }
   }
 
   return propDefinition;
