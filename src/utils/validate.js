@@ -73,3 +73,52 @@ function isValidSchema (schema) {
 
 module.exports.isValidSchema = isValidSchema;
 
+// console.log(isValidSchema({
+//   v: {
+//     type: 'vec2',
+//     default: '5'
+//   }
+// }), false)
+
+// console.log(isValidSchema({
+//   v: {
+//     type: 'vec2',
+//     default: {
+//       x: 1,
+//       y: 1
+//     }
+//   }
+// }), true)
+
+// console.log(isValidSchema({
+//   v: {
+//     type: 'vec2',
+//     default: {
+//       x: 1,
+//       y: 1,
+//       z: 1
+//     }
+//   }
+// }), false)
+
+// console.log(isValidSchema({
+//   v: {
+//     type: 'vec3',
+//     default: {
+//       x: 1,
+//       y: 1,
+//       z: 1
+//     }
+//   }
+// }), true)
+
+// console.log(isValidSchema({
+//   v: {
+//     type: 'vec3',
+//     default: {
+//       x: 1,
+//       y: 1,
+//       z: '1'
+//     }
+//   }
+// }), false)
