@@ -55,15 +55,17 @@ function isValidSchema (schema) {
     var type = schema[properties[i]].type;
     var defaultVal = schema[properties[i]].default;
 
-    if (validTypes[type] && defaultVal) {
-      if (type === 'vec2') {
-        return isValidDefaultCoordinate(defaultVal, 2);
-      } else if (type === 'vec3') {
-        return isValidDefaultCoordinate(defaultVal, 3);
-      } else if (type === 'array' && !Array.isArray(defaultVal)) {
-        return false;
-      } else if (type !== typeof defaultVal) {
-        return false;
+    if (type) {
+      if (validTypes[type] && defaultVal) {
+        if (type === 'vec2') {
+          return isValidDefaultCoordinate(defaultVal, 2);
+        } else if (type === 'vec3') {
+          return isValidDefaultCoordinate(defaultVal, 3);
+        } else if (type === 'array' && !Array.isArray(defaultVal)) {
+          return false;
+        } else if (type !== typeof defaultVal) {
+          return false;
+        }
       }
     }
   }
