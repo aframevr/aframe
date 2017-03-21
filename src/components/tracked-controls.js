@@ -90,8 +90,7 @@ module.exports.Component = registerComponent('tracked-controls', {
           dolly.applyMatrix(standingMatrix);
         } else {
           // Apply default camera height
-          var userHeight = this.el.sceneEl.camera.el.components.camera.data.userHeight;
-          dolly.position.y += userHeight;
+          dolly.position.y += el.sceneEl.camera.el.getAttribute('camera').userHeight;
           dolly.updateMatrix();
         }
       }
