@@ -16,6 +16,7 @@ var GAMEPAD_ID_PREFIX = 'OpenVR ';
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
     hand: {default: 'left'},
+    emulated: {default: false},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
@@ -45,6 +46,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onGamepadConnected = bind(this.onGamepadConnected, this);
     this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -87,42 +89,38 @@ module.exports.Component = registerComponent('vive-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
-    if (isPresent === this.controllerPresent) { return; }
+    // Once OpenVR / SteamVR return correct hand data in the supporting browsers, we can use hand property.
+    // var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
+    // Until then, use hardcoded index.
+    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controllerIndex });
+    if ((isPresent || data.emulated) === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent || data.emulated) { this.addEventListeners(); } else { this.removeEventListeners(); }
   },
 
-  onGamepadConnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
-    this.checkIfControllerPresent();
-  },
-
-  onGamepadDisconnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
+  onGamepadConnectionEvent: function (evt) {
+    this.everGotGamepadEvent = true;
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
     this.checkIfControllerPresent();
   },
 
   play: function () {
     this.checkIfControllerPresent();
-    window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
     this.addControllersUpdateListener();
-    this.addEventListeners();
+    window.addEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.addEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   pause: function () {
-    window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
+    this.removeControllersUpdateListener();
+    window.removeEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.removeEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   injectTrackedControls: function () {
