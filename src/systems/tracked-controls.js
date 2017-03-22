@@ -14,10 +14,10 @@ module.exports.System = registerSystem('tracked-controls', {
     // Throttle the (renamed) tick handler to minimum 10ms interval.
     this.tick = utils.throttle(this.throttledTick, 10, this);
     if (!navigator.getVRDisplays) { return; }
-    navigator.getVRDisplays().then(function (displays) {
-      if (displays.length > 0) {
-        self.vrDisplay = displays[0];
-      }
+    this.sceneEl.addEventListener('enter-vr', function () {
+      navigator.getVRDisplays().then(function (displays) {
+        if (displays.length) { self.vrDisplay = displays[0]; }
+      });
     });
   },
 
