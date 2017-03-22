@@ -174,29 +174,23 @@ module.exports.stringifyProperty = stringifyProperty;
  * @returns {boolean} A boolean determining if coordinates are parsed correctly.
  */
 function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
-  if (typeof possibleCoordinates !== 'object' || possibleCoordinates === null) {
-    return false;
-  } else if (Object.keys(possibleCoordinates).length !== dimensions) {
+  if (possibleCoordinates === null) { return true; }
+  if (typeof possibleCoordinates !== 'object') { return false; }
+
+  if (Object.keys(possibleCoordinates).length !== dimensions) {
     return false;
   } else {
-    if (dimensions === 2 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y)) {
-      if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number') {
-        return true;
-      }
-    }
-    if (dimensions === 3 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y) && (possibleCoordinates.z === 0 || possibleCoordinates.z)) {
-      if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number' && typeof possibleCoordinates.z === 'number') {
-        return true;
-      }
-    }
-    if (dimensions === 4 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y) && (possibleCoordinates.z === 0 || possibleCoordinates.z) && (possibleCoordinates.w === 0 || possibleCoordinates.w)) {
-      if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number' && typeof possibleCoordinates.z === 'number' && typeof possibleCoordinates.w === 'number') {
-        return true;
-      }
-    }
+    var x = possibleCoordinates.x;
+    var y = possibleCoordinates.y;
+    var z = possibleCoordinates.z;
+    var w = possibleCoordinates.w;
+
+    if (typeof x !== 'number' || typeof y !== 'number') { return false; }
+    if (dimensions > 2 && typeof z !== 'number') { return false; }
+    if (dimensions > 3 && typeof w !== 'number') { return false; }
   }
 
-  return false;
+  return true;
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
