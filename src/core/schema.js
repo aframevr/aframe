@@ -1,7 +1,7 @@
 var debug = require('../utils/debug');
 var propertyTypes = require('./propertyTypes').propertyTypes;
 var warn = debug('core:schema:warn');
-var isValidDefaultValue = require('../utils/validate').isValidDefaultValue;
+var isValidDefaultValue = require('../utils/validate-schema').isValidDefaultValue;
 
 /**
  * A schema is classified as a schema for a single property if:
