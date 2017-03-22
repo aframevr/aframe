@@ -7,6 +7,7 @@ var parseProperties = Schema.parseProperties;
 var parseProperty = Schema.parseProperty;
 var processSchema = Schema.process;
 var stringifyProperty = Schema.stringifyProperty;
+var isValidDefaultCoordinate = Schema.isValidDefaultCoordinate;
 
 suite('schema', function () {
   suite('isSingleProperty', function () {
@@ -203,6 +204,40 @@ suite('schema', function () {
     test('returns parsed input if input is null', function () {
       var parsedValue = stringifyProperty(null, {stringify: JSON.stringify});
       assert.equal(parsedValue, 'null');
+    });
+  });
+
+  suite('isValidDefaultCoordinate', function () {
+    test('is true for vec2 if { x: num, y:num } or null', function () {
+      var validCoordinates = { x: 1, y: 2 };
+      assert.equal(isValidDefaultCoordinate(validCoordinates, 2), true);
+    });
+
+    test('is true for vec3 if { x: num, y:num z: num } or null', function () {
+      var validCoordinates = { x: 1, y: 2, z: 3 };
+      assert.equal(isValidDefaultCoordinate(validCoordinates, 3), true);
+    });
+
+    test('is true for vec4 if { x: num, y:num z: num w: num } or null', function () {
+      var validCoordinates = { x: 1, y: 2, z: 3, w: 4 };
+      assert.equal(isValidDefaultCoordinate(validCoordinates, 4), true);
+    });
+
+    test('is false for everything else', function () {
+      var invalidCoordinates1 = { notX: 1 };
+      var invalidCoordinates2 = { x: '' };
+      var invalidCoordinates3 = { x: 0, z: 5 };
+      var invalidCoordinates4 = { x: 5, y: {} };
+      var invalidCoordinates5 = { x: 1, y: [] };
+      var invalidCoordinates6 = { notX: 'not coordinates at all' };
+      var invalidCoordinates7 = { x: 5, y: 1, z: 2 }; // Invalid for vec4
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates1, 2), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates2, 2), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates3, 2), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates4, 3), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates5, 4), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates6, 4), false);
+      assert.equal(isValidDefaultCoordinate(invalidCoordinates7, 4), false);
     });
   });
 });
