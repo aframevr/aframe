@@ -1,9 +1,9 @@
-// /**
-//  * Checks if Valid default coordinates
-//  * @param unknown
-//  * @param {number} 2 for 2D Vector or 3 for 3D vector
-//  * @returns {boolean} A boolean determining if coordinates are parsed correctly.
-//  */
+/**
+ * Checks if Valid default coordinates
+ * @param unknown
+ * @param {number} 2 for 2D Vector or 3 for 3D vector
+ * @returns {boolean} A boolean determining if coordinates are parsed correctly.
+ */
 function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
   if (typeof possibleCoordinates !== 'object' || possibleCoordinates === null) {
     return false;
@@ -29,15 +29,14 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 
   return false;
 }
-
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-// /**
-//  * Validates the default values in a schema
-//  * @param {string} type - type in a prop
-//  * @param {unknown} defaultVal - default in a prop
-//  * @returns {boolean} A boolean determining if defaults are valid.
-//  */
+/**
+ * Validates the default values in a schema
+ * @param {string} type - type in a prop
+ * @param {unknown} defaultVal - default in a prop
+ * @returns {boolean} A boolean determining if defaults are valid.
+ */
 function isValidDefaultValue (type, defaultVal) {
   if (type === 'audio' && typeof defaultVal !== 'string') return false;
   if (type === 'array' && !Array.isArray(defaultVal)) return false;
@@ -59,5 +58,4 @@ function isValidDefaultValue (type, defaultVal) {
 
   return true;
 }
-
 module.exports.isValidDefaultValue = isValidDefaultValue;
