@@ -1,6 +1,9 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
+var ZERO_ORIENTATION = [0, 0, 0, 1];
+var ZERO_POSITION = [0, 0, 0];
+
 /**
  * Tracked controls component.
  * Wrap the gamepad API for pose and button states.
@@ -21,6 +24,15 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.axis = [0, 0, 0];
     this.buttonStates = {};
+
+    this.dolly = new THREE.Object3D();
+    this.controllerEuler = new THREE.Euler();
+    this.controllerEuler.order = 'YXZ';
+    this.controllerPosition = new THREE.Vector3();
+    this.controllerQuaternion = new THREE.Quaternion();
+    this.deltaControllerPosition = new THREE.Vector3();
+    this.standingMatrix = new THREE.Matrix4();
+
     this.previousControllerPosition = new THREE.Vector3();
     this.updateGamepad();
   },
@@ -54,69 +66,65 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
    */
-  updatePose: (function () {
-    var controllerEuler = new THREE.Euler();
-    var controllerPosition = new THREE.Vector3();
-    var controllerQuaternion = new THREE.Quaternion();
-    var deltaControllerPosition = new THREE.Vector3();
-    var dolly = new THREE.Object3D();
-    var standingMatrix = new THREE.Matrix4();
-    controllerEuler.order = 'YXZ';
+  updatePose: function () {
+    var controller = this.controller;
+    var controllerEuler = this.controllerEuler;
+    var controllerPosition = this.controllerPosition;
+    var controllerQuaternion = this.controllerQuaternion;
+    var currentPosition;
+    var deltaControllerPosition = this.deltaControllerPosition;
+    var dolly = this.dolly;
+    var el = this.el;
+    var orientation;
+    var pose;
+    var position;
+    var standingMatrix = this.standingMatrix;
+    var vrDisplay = this.system.vrDisplay;
 
-    return function () {
-      var controller = this.controller;
-      var currentPosition;
-      var el = this.el;
-      var orientation;
-      var pose;
-      var position;
-      var vrDisplay = this.system.vrDisplay;
+    if (!controller) { return; }
 
-      if (!controller) { return; }
+    // Compose pose from Gamepad.
+    pose = controller.pose;
+    orientation = pose.orientation || ZERO_ORIENTATION;
+    position = pose.position || ZERO_POSITION;
+    controllerQuaternion.fromArray(orientation);
+    dolly.quaternion.fromArray(orientation);
+    dolly.position.fromArray(position);
+    dolly.updateMatrix();
 
-      // Compose pose from Gamepad.
-      pose = controller.pose;
-      orientation = pose.orientation || [0, 0, 0, 1];
-      position = pose.position || [0, 0, 0];
-      controllerQuaternion.fromArray(orientation);
-      dolly.quaternion.fromArray(orientation);
-      dolly.position.fromArray(position);
-      dolly.updateMatrix();
-
-      // Apply transforms.
-      if (vrDisplay) {
-        if (vrDisplay.stageParameters) {
-          standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-          dolly.applyMatrix(standingMatrix);
-        } else {
-          // Apply default camera height
-          dolly.position.y += el.sceneEl.camera.el.getAttribute('camera').userHeight;
-          dolly.updateMatrix();
-        }
+    // Apply transforms.
+    if (vrDisplay) {
+      if (vrDisplay.stageParameters) {
+        standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
+        dolly.applyMatrix(standingMatrix);
+      } else {
+        // Apply default camera height
+        dolly.position.y += el.sceneEl.camera.el.getAttribute('camera').userHeight;
+        dolly.updateMatrix();
       }
+    }
 
-      // Decompose.
-      controllerEuler.setFromRotationMatrix(dolly.matrix);
-      controllerPosition.setFromMatrixPosition(dolly.matrix);
+    // Decompose.
+    controllerEuler.setFromRotationMatrix(dolly.matrix);
+    controllerPosition.setFromMatrixPosition(dolly.matrix);
 
-      // Apply rotation (as absolute, with rotation offset).
-      el.setAttribute('rotation', {
-        x: THREE.Math.radToDeg(controllerEuler.x),
-        y: THREE.Math.radToDeg(controllerEuler.y),
-        z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
-      });
+    // Apply rotation (as absolute, with rotation offset).
+    el.setAttribute('rotation', {
+      x: THREE.Math.radToDeg(controllerEuler.x),
+      y: THREE.Math.radToDeg(controllerEuler.y),
+      z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
+    });
 
-      // Apply position (as delta from previous Gamepad rotation).
-      deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
-      this.previousControllerPosition.copy(controllerPosition);
-      currentPosition = el.getAttribute('position');
-      el.setAttribute('position', {
-        x: currentPosition.x + deltaControllerPosition.x,
-        y: currentPosition.y + deltaControllerPosition.y,
-        z: currentPosition.z + deltaControllerPosition.z
-      });
-    };
-  })(),
+    // Apply position (as delta from previous Gamepad rotation).
+    deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
+    this.previousControllerPosition.copy(controllerPosition);
+    currentPosition = el.getAttribute('position');
+    el.setAttribute('position', {
+      x: currentPosition.x + deltaControllerPosition.x,
+      y: currentPosition.y + deltaControllerPosition.y,
+      z: currentPosition.z + deltaControllerPosition.z
+    });
+  },
 
   /**
    * Handle button changes including axes, presses, touches, values.
