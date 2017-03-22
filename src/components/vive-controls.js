@@ -16,7 +16,6 @@ var GAMEPAD_ID_PREFIX = 'OpenVR ';
 module.exports.Component = registerComponent('vive-controls', {
   schema: {
     hand: {default: 'left'},
-    emulated: {default: false},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
@@ -69,13 +68,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.isControllerPresent = isControllerPresent; // to allow mock
   },
 
-  update: function (oldData) {
-    // Check for emulated flag setting, not just change, to avoid spurious check after init(),
-    if (('emulated' in oldData) && (this.data.emulated !== oldData.emulated)) {
-      this.checkIfControllerPresent();
-    }
-  },
-
   addEventListeners: function () {
     var el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
@@ -105,10 +97,12 @@ module.exports.Component = registerComponent('vive-controls', {
     // Until then, use hardcoded index.
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controllerIndex });
-    if ((isPresent || data.emulated) === this.controllerPresent) { return; }
+    if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
-    if (isPresent || data.emulated) { this.addEventListeners(); } else { this.removeEventListeners(); }
+    if (isPresent) {
+      this.injectTrackedControls();
+      this.addEventListeners();
+    } else { this.removeEventListeners(); }
   },
 
   onGamepadConnectionEvent: function (evt) {

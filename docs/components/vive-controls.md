@@ -25,7 +25,6 @@ buttons (trigger, grip, menu, system) and trackpad.
 |----------------------|----------------------------------------------------|----------------------|
 | buttonColor          | Button colors when not pressed.                    | #FAFAFA (off-white)  |
 | buttonHighlightColor | Button colors when pressed and active.             | #22D1EE (light blue) |
-| emulated             | Whether to emulate (treat as present regardless).  | false                |
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | model                | Whether the Vive controller model is loaded.       | true                 |
 | rotationOffset       | Offset to apply to model rotation.                 | 0                    |

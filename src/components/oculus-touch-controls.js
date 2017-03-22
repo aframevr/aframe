@@ -26,7 +26,6 @@ var EMULATED_TOUCH_THRESHOLD = 0.001;
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    emulated: {default: false},
     buttonColor: {type: 'color', default: '#999'},          // Off-white.
     buttonTouchColor: {type: 'color', default: '#8AB'},
     buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
@@ -91,13 +90,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
   },
 
-  update: function (oldData) {
-    // Check for emulated flag setting, not just change, to avoid spurious check after init(),
-    if (('emulated' in oldData) && (this.data.emulated !== oldData.emulated)) {
-      this.checkIfControllerPresent();
-    }
-  },
-
   addEventListeners: function () {
     var el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
@@ -128,14 +120,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     whichControllers = (this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX) || [])
       .filter(function (gamepad) { return gamepad.hand === data.hand; });
     if (whichControllers && whichControllers.length) { isPresent = true; }
-    if ((isPresent || data.emulated) === this.controllerPresent) { return; }
+    if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
       // Inject with specific gamepad id, if provided. This works around a temporary issue
       // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
       this.injectTrackedControls(whichControllers[0]);
-    }
-    if (isPresent || data.emulated) { this.addEventListeners(); } else { this.removeEventListeners(); }
+      this.addEventListeners();
+    } else { this.removeEventListeners(); }
   },
 
   onGamepadConnectionEvent: function (evt) {

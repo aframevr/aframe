@@ -13,46 +13,6 @@ suite(controllerComponentName, function () {
     });
   });
 
-  suite('emulated', function () {
-    test('when emulated, if no controllers, add event listeners but do not inject tracked-controls', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // pretend we haven't looked before
-      delete controllerComponent.controllerPresent;
-      // set the emulated flag directly, to avoid having to wait for DOM update
-      controllerComponent.data.emulated = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
-      assert.ok(controllerComponent.data.emulated);
-      assert.notOk(injectTrackedControlsSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
-      assert.ok(addEventListenersSpy.called);
-    });
-
-    test('when not emulated by default, if no controllers, do not add event listeners or inject tracked-controls', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // pretend we haven't looked before
-      delete controllerComponent.controllerPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
-      assert.notOk(controllerComponent.data.emulated);
-      assert.notOk(injectTrackedControlsSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
-      assert.notOk(addEventListenersSpy.called);
-    });
-  });
-
   suite('checkIfControllerPresent', function () {
     test('first-time, if no controllers, remove event listeners and remember not present', function () {
       var el = this.el;
