@@ -34,6 +34,21 @@ version of A-Frame, then create your scene:
 Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the
 [A-Frame Hello World CodePen][codepen]:
 
+## Remix on Glitch
+
+[glitch]: https://glitch.com/~aframe
+
+[Glitch][glitch] is a collaborative coding site that provides a full code
+editor for both frontend and backend code and support for multiple files.
+Glitch lets you remix existing projects and make them your own, and instantly
+host and deploy changes for everyone to see.
+
+[Hit **Remix** on this A-Frame project][glitch], start coding A-Frame in
+`views/index.html`, and see your site published live on each change! The base
+A-Frame Glitch for example is published at `aframe.glitch.me`.
+
+![Glitch](https://cloud.githubusercontent.com/assets/674727/24219261/68c6b3f4-0f03-11e7-9fb5-1bb4ecca568b.png)
+
 ## Grab the Boilerplate
 
 [ghpages]: https://pages.github.com/
@@ -101,6 +116,8 @@ served. We can either:
 
 - Download the [Mongoose](https://www.cesanta.com/products/binary) application
   and open it from the same directory as your HTML file.
+- Run `python -m SimpleHTTPServer` in a terminal in the same directory as your
+  HTML file.
 - Use Node and npm to start the local server with `npm install && npm run start`.
 
 [angle]: https://www.npmjs.com/package/angle
