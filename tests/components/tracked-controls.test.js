@@ -146,6 +146,30 @@ suite('tracked-controls', function () {
       // [10, 10, 10] + ([2, 4, 6] - [1, 2, 3]).
       assertVec3(el.getAttribute('position'), [11, 12, 13]);
     });
+
+    test('adds camera userHeight if no stageParameters (e.g., 3DOF)', function () {
+      system.vrDisplay = {stageParameters: null};
+      el.sceneEl.camera.el.setAttribute('camera', 'userHeight', 2.5);
+      component.tick();
+      component.updatePose();
+      assert.equal(el.getAttribute('position').y, 2.5);
+      system.vrDisplay = undefined;
+    });
+
+    test('applies sittingToStandingTransform', function () {
+      var mockDisplay = Object.assign({}, system.vrDisplay);
+      system.vrDisplay = {
+        stageParameters: {
+          sittingToStandingTransform: [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8]
+        }
+      };
+      component.tick();
+      component.updatePose();
+      assert.notEqual(el.getAttribute('position').x, 0);
+      assert.notEqual(el.getAttribute('position').y, 0);
+      assert.notEqual(el.getAttribute('position').z, 0);
+      system.vrDisplay = mockDisplay;
+    });
   });
 
   suite('updatePose (rotation)', function () {
