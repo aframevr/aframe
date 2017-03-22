@@ -70606,9 +70606,15 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.updateMatrix();
 
       // Apply transforms.
-      if (vrDisplay && vrDisplay.stageParameters) {
-        standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-        dolly.applyMatrix(standingMatrix);
+      if (vrDisplay) {
+        if (vrDisplay.stageParameters) {
+          standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
+          dolly.applyMatrix(standingMatrix);
+        } else {
+          // Apply default camera height
+          dolly.position.y += el.sceneEl.camera.el.getAttribute('camera').userHeight;
+          dolly.updateMatrix();
+        }
       }
 
       // Decompose.
@@ -76370,7 +76376,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 21-03-2017, Commit #33ce1c1)');
+console.log('A-Frame Version: 0.5.0 (Date 22-03-2017, Commit #3178d75)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77740,10 +77746,10 @@ module.exports.System = registerSystem('tracked-controls', {
     // Throttle the (renamed) tick handler to minimum 10ms interval.
     this.tick = utils.throttle(this.throttledTick, 10, this);
     if (!navigator.getVRDisplays) { return; }
-    navigator.getVRDisplays().then(function (displays) {
-      if (displays.length > 0) {
-        self.vrDisplay = displays[0];
-      }
+    this.sceneEl.addEventListener('enter-vr', function () {
+      navigator.getVRDisplays().then(function (displays) {
+        if (displays.length) { self.vrDisplay = displays[0]; }
+      });
     });
   },
 
