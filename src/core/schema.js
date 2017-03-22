@@ -79,7 +79,7 @@ function processPropertyDefinition (propDefinition) {
   } else {
     // check if valid default value
     if (!isValidDefaultValue(typeName, defaultVal)) {
-      warn('The default value: ' + defaultVal + 'does not match the type: ' + typeName);
+      warn('The default value: ' + '"' + defaultVal + '"' + ' does not match the type: ' + typeName);
     }
   }
 

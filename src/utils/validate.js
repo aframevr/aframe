@@ -7,18 +7,20 @@
 function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
   if (typeof possibleCoordinates !== 'object' || possibleCoordinates === null) {
     return false;
+  } else if (Object.keys(possibleCoordinates).length !== dimensions) {
+    return false;
   } else {
-    if (dimensions === 2 && possibleCoordinates.x && possibleCoordinates.y) {
+    if (dimensions === 2 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y)) {
       if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number') {
         return true;
       }
     }
-    if (dimensions === 3 && possibleCoordinates.x && possibleCoordinates.y && possibleCoordinates.z) {
+    if (dimensions === 3 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y) && (possibleCoordinates.z === 0 || possibleCoordinates.z)) {
       if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number' && typeof possibleCoordinates.z === 'number') {
         return true;
       }
     }
-    if (dimensions === 4 && possibleCoordinates.x && possibleCoordinates.y && possibleCoordinates.z && possibleCoordinates.w) {
+    if (dimensions === 4 && (possibleCoordinates.x === 0 || possibleCoordinates.x) && (possibleCoordinates.y === 0 || possibleCoordinates.y) && (possibleCoordinates.z === 0 || possibleCoordinates.z) && (possibleCoordinates.w === 0 || possibleCoordinates.w)) {
       if (typeof possibleCoordinates.x === 'number' && typeof possibleCoordinates.y === 'number' && typeof possibleCoordinates.z === 'number' && typeof possibleCoordinates.w === 'number') {
         return true;
       }
@@ -59,53 +61,3 @@ function isValidDefaultValue (type, defaultVal) {
 }
 
 module.exports.isValidDefaultValue = isValidDefaultValue;
-
-// console.log(isValidDefaultValue({
-//   v: {
-//     type: 'vec2',
-//     default: '5'
-//   }
-// }), false)
-
-// console.log(isValidDefaultValue({
-//   v: {
-//     type: 'vec2',
-//     default: {
-//       x: 1,
-//       y: 1
-//     }
-//   }
-// }), true)
-
-// console.log(isValidDefaultValue({
-//   v: {
-//     type: 'vec2',
-//     default: {
-//       x: 1,
-//       y: 1,
-//       z: 1
-//     }
-//   }
-// }), false)
-
-// console.log(isValidDefaultValue({
-//   v: {
-//     type: 'vec3',
-//     default: {
-//       x: 1,
-//       y: 1,
-//       z: 1
-//     }
-//   }
-// }), true)
-
-// console.log(isValidDefaultValue({
-//   v: {
-//     type: 'vec3',
-//     default: {
-//       x: 1,
-//       y: 1,
-//       z: '1'
-//     }
-//   }
-// }), false)
