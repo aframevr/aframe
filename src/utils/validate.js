@@ -1,7 +1,7 @@
 /**
  * Checks if Valid default coordinates
- * @param unknown
- * @param {number} 2 for 2D Vector or 3 for 3D vector
+ * @param {unknown} possibleCoordinates
+ * @param {number} dimensions - 2 for 2D Vector or 3 for 3D vector
  * @returns {boolean} A boolean determining if coordinates are parsed correctly.
  */
 function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
