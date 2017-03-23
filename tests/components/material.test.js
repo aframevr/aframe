@@ -231,6 +231,33 @@ suite('material', function () {
     });
   });
 
+  suite('depthWrite', function () {
+    test('can be set to false', function () {
+      var el = this.el;
+      assert.ok(el.getObject3D('mesh').material.depthWrite);
+      el.setAttribute('material', 'depthWrite: false');
+      assert.equal(el.getObject3D('mesh').material.depthWrite, 0);
+    });
+  });
+
+  suite('alphaTest', function () {
+    test('can be updated', function () {
+      var el = this.el;
+      assert.equal(el.getObject3D('mesh').material.alphaTest, 0);
+      el.setAttribute('material', 'alphaTest: 1.0');
+      assert.equal(el.getObject3D('mesh').material.alphaTest, 1);
+    });
+
+    test('sets material.needsUpdate true if alphaTest is updated', function () {
+      var el = this.el;
+      el.setAttribute('material', 'alphaTest: 0.0');
+      el.getObject3D('mesh').material.needsUpdate = false;
+      assert.equal(el.getObject3D('mesh').material.needsUpdate, 0);
+      el.setAttribute('material', 'alphaTest: 1.0');
+      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
+    });
+  });
+
   test('can set visible to false', function () {
     var el = this.el;
     assert.ok(el.getObject3D('mesh').material.visible);
