@@ -113,7 +113,6 @@ module.exports.Component = registerComponent('material', {
     material.depthWrite = data.depthWrite !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
     material.visible = data.visible;
-
     if (data.alphaTest !== material.alphaTest) { material.needsUpdate = true; }
     material.alphaTest = data.alphaTest;
   },
