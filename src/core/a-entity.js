@@ -295,7 +295,7 @@ var proto = Object.create(ANode.prototype, {
 
       ANode.prototype.load.call(this, function entityLoadCallback () {
         self.updateComponents();
-        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
+        if (self.isScene || (self.parentEl && self.parentEl.isPlaying)) { self.play(); }
       });
     },
     writable: window.debug
