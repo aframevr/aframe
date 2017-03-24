@@ -46,8 +46,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       button0: 'thumbstick',
       button1: 'trigger',
       button2: 'grip',
-      button3: 'X',
-      button4: 'Y',
+      button3: 'xbutton',
+      button4: 'ybutton',
       button5: 'surface'
     },
     'right': {
@@ -55,8 +55,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       button0: 'thumbstick',
       button1: 'trigger',
       button2: 'grip',
-      button3: 'A',
-      button4: 'B',
+      button3: 'abutton',
+      button4: 'bbutton',
       button5: 'surface'
     }
   },
@@ -249,10 +249,10 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     buttonMeshes.grip = controllerObject3D.getObjectByName(leftHand ? 'buttonHand_oculus-touch-controller-left.004' : 'buttonHand_oculus-touch-controller-right.005');
     buttonMeshes.thumbstick = controllerObject3D.getObjectByName(leftHand ? 'stick_oculus-touch-controller-left.007' : 'stick_oculus-touch-controller-right.004');
     buttonMeshes.trigger = controllerObject3D.getObjectByName(leftHand ? 'buttonTrigger_oculus-touch-controller-left.005' : 'buttonTrigger_oculus-touch-controller-right.006');
-    buttonMeshes.X = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
-    buttonMeshes.A = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
-    buttonMeshes.Y = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
-    buttonMeshes.B = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
+    buttonMeshes.xbutton = controllerObject3D.getObjectByName('buttonX_oculus-touch-controller-left.002');
+    buttonMeshes.abutton = controllerObject3D.getObjectByName('buttonA_oculus-touch-controller-right.002');
+    buttonMeshes.ybutton = controllerObject3D.getObjectByName('buttonY_oculus-touch-controller-left.001');
+    buttonMeshes.bbutton = controllerObject3D.getObjectByName('buttonB_oculus-touch-controller-right.003');
 
     // Offset pivot point
     controllerObject3D.position = PIVOT_OFFSET;
