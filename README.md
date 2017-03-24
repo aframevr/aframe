@@ -50,8 +50,8 @@
 
 ### Basic Example
 
-To get started playing now, open this [**CodePen example
-scene**](http://codepen.io/team/mozvr/pen/BjygdO?editors=100).
+To start playing and publishing now, [remix this *Hello, WebVR!* example on
+Glitch](http://glitch.com/~aframe).
 
 ```html
 <html>
