@@ -43,21 +43,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   mapping: {
     'left': {
       axes: {'thumbstick': [0, 1]},
-      button0: 'thumbstick',
-      button1: 'trigger',
-      button2: 'grip',
-      button3: 'xbutton',
-      button4: 'ybutton',
-      button5: 'surface'
+      buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
     },
     'right': {
       axes: {'thumbstick': [0, 1]},
-      button0: 'thumbstick',
-      button1: 'trigger',
-      button2: 'grip',
-      button3: 'abutton',
-      button4: 'bbutton',
-      button5: 'surface'
+      buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'abutton', 'surface']
     }
   },
 
@@ -206,7 +196,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping[this.data.hand]['button' + evt.detail.id];
+    var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var isPreviousValueEmulatedTouch;
     var analogValue;
@@ -262,7 +252,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping[this.data.hand]['button' + id];
+    var buttonName = this.mapping[this.data.hand].buttons[id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {

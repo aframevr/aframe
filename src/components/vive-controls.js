@@ -30,11 +30,7 @@ module.exports.Component = registerComponent('vive-controls', {
   // 4 - system ( never dispatched on this layer )
   mapping: {
     axes: {'trackpad': [0, 1]},
-    button0: 'trackpad',
-    button1: 'trigger',
-    button2: 'grip',
-    button3: 'menu',
-    button4: 'system'
+    buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
 
   // Use these labels for detail on axis events such as thumbstickmoved.
@@ -155,7 +151,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping['button' + evt.detail.id];
+    var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var value;
     if (!button) { return; }
@@ -207,7 +203,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
+    var buttonName = this.mapping.buttons[id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
