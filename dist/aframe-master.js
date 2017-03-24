@@ -68148,6 +68148,8 @@ var shaderNames = shader.shaderNames;
 module.exports.Component = registerComponent('material', {
   schema: {
     depthTest: {default: true},
+    depthWrite: {default: true},
+    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     flatShading: {default: false},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
     shader: {default: 'standard', oneOf: shaderNames},
@@ -68237,8 +68239,11 @@ module.exports.Component = registerComponent('material', {
     material.opacity = data.opacity;
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
+    material.depthWrite = data.depthWrite !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
     material.visible = data.visible;
+    if (data.alphaTest !== material.alphaTest) { material.needsUpdate = true; }
+    material.alphaTest = data.alphaTest;
   },
 
   /**
@@ -76384,7 +76389,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 22-03-2017, Commit #bc6be7c)');
+console.log('A-Frame Version: 0.5.0 (Date 24-03-2017, Commit #0c556fe)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
