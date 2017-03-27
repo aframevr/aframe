@@ -21,7 +21,7 @@ basic thing because the browser's renderer and layout engine handles
 everything. In a 3D context, we don't have those luxuries. There are several
 other different ways to render text in A-Frame including:
 
-- [3D Text Geometry](https://www.npmjs.com/package/aframe-text-component)
+- [3D Text Geometry](https://www.npmjs.com/package/aframe-text-geometry-component)
 - [HTML Materials (DOM-to-Canvas-to-Texture)](https://github.com/mayognaise/aframe-html-shader)
 - Image Textures
 
