@@ -105,9 +105,8 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     var isPresent = false;
-    var whichControllers;
     // Find which controller matches both prefix and hand.
-    whichControllers = (this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX) || [])
+    var whichControllers = (this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX) || [])
       .filter(function (gamepad) { return gamepad.hand === data.hand; });
     if (whichControllers && whichControllers.length) { isPresent = true; }
     if (isPresent === this.controllerPresent) { return; }
