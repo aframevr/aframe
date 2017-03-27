@@ -1,7 +1,5 @@
 /* global assert, suite, test */
-// var entityFactory = require('../helpers').entityFactory;
 var utils = require('index').utils;
-var entityFactory = require('../helpers').entityFactory;
 
 var diff = utils.diff;
 var deepEqual = utils.deepEqual;
@@ -131,13 +129,9 @@ suite('utils.objects', function () {
     });
 
     test('avoid deep equal of object that are not instantiated' +
-         'with the Object constructor in order to avoid infinite loops', function (done) {
-      var el1 = entityFactory();
-      var el2 = entityFactory();
-      el2.addEventListener('loaded', function () {
-        assert.notOk(deepEqual(el1, el2));
-        done();
-      });
+         'with the Object constructor in order to avoid infinite loops', function () {
+      assert.notOk(deepEqual(document.createElement('a-entity'),
+                             document.createElement('a-entity')));
     });
   });
 });

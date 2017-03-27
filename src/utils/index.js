@@ -125,11 +125,11 @@ function deepEqual (a, b) {
   var keysB;
   var valA;
   var valB;
-  var areBothObjects = a && b && a.constructor === Object && b.constructor === Object;
-  var areBothArrays = a && b && a.constructor === Array && b.constructor === Array;
 
   // If not objects or arrays, compare as values.
-  if (!(areBothObjects || areBothArrays) || a === null || b === null) {
+  if (a === null || b === null ||
+      !(a && b && (a.constructor === Object && b.constructor === Object) ||
+                  (a.constructor === Array && b.constructor === Array))) {
     return a === b;
   }
 
