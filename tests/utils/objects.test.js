@@ -127,5 +127,11 @@ suite('utils.objects', function () {
       var objA = {x: 0, y: 0, z: 0, self: objA};
       assert.ok(deepEqual(objA, objA));
     });
+
+    test('avoid deep equal of object that are not instantiated' +
+         'with the Object constructor in order to avoid infinite loops', function () {
+      assert.notOk(deepEqual(document.createElement('a-entity'),
+                             document.createElement('a-entity')));
+    });
   });
 });

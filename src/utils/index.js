@@ -126,9 +126,12 @@ function deepEqual (a, b) {
   var valA;
   var valB;
 
-  // If not objects, compare as values.
-  if (typeof a !== 'object' || typeof b !== 'object' ||
-      a === null || b === null) { return a === b; }
+  // If not objects or arrays, compare as values.
+  if (a === null || b === null ||
+      !(a && b && (a.constructor === Object && b.constructor === Object) ||
+                  (a.constructor === Array && b.constructor === Array))) {
+    return a === b;
+  }
 
   // Different number of keys, not equal.
   keysA = Object.keys(a);
