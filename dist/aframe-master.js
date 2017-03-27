@@ -76389,7 +76389,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 24-03-2017, Commit #0c556fe)');
+console.log('A-Frame Version: 0.5.0 (Date 27-03-2017, Commit #fe8df9f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78280,9 +78280,12 @@ function deepEqual (a, b) {
   var valA;
   var valB;
 
-  // If not objects, compare as values.
-  if (typeof a !== 'object' || typeof b !== 'object' ||
-      a === null || b === null) { return a === b; }
+  // If not objects or arrays, compare as values.
+  if (a === null || b === null ||
+      !(a && b && (a.constructor === Object && b.constructor === Object) ||
+                  (a.constructor === Array && b.constructor === Array))) {
+    return a === b;
+  }
 
   // Different number of keys, not equal.
   keysA = Object.keys(a);
