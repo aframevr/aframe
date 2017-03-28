@@ -1,4 +1,5 @@
 var coordinates = require('../utils/coordinates');
+var matrices = require('../utils/matrices');
 var debug = require('debug');
 
 var error = debug('core:propertyTypes:warn');
@@ -24,6 +25,17 @@ registerPropertyType('time', 0, intParse);
 registerPropertyType('vec2', {x: 0, y: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec3', {x: 0, y: 0, z: 0}, vecParse, coordinates.stringify);
 registerPropertyType('vec4', {x: 0, y: 0, z: 0, w: 0}, vecParse, coordinates.stringify);
+registerPropertyType('mat3', [
+  1, 0, 0,
+  0, 1, 0,
+  0, 0, 1
+], matrix3Parse, matrices.stringify);
+registerPropertyType('mat4', [
+  1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
+  0, 0, 0, 1
+], matrix4Parse, matrices.stringify);
 
 /**
  * Register a parser for re-use such that when someone uses `type` in the schema,
@@ -150,4 +162,12 @@ function srcParse (value) {
 
 function vecParse (value) {
   return coordinates.parse(value, this.default);
+}
+
+function matrix3Parse (value) {
+  return matrices.parseMatrix3(value, this.default);
+}
+
+function matrix4Parse (value) {
+  return matrices.parseMatrix4(value, this.default);
 }

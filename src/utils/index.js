@@ -14,6 +14,7 @@ module.exports.device = device;
 module.exports.entity = require('./entity');
 module.exports.forceCanvasResizeSafariMobile = require('./forceCanvasResizeSafariMobile');
 module.exports.material = require('./material');
+module.exports.matrices = require('./matrices');
 module.exports.styleParser = require('./styleParser');
 module.exports.trackedControls = require('./tracked-controls');
 
