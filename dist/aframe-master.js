@@ -69078,6 +69078,7 @@ var INSPECTOR_DEV_URL = 'https://aframe.io/aframe-inspector/dist/aframe-inspecto
 var INSPECTOR_RELEASE_URL = 'https://unpkg.com/aframe-inspector@' + getFuzzyPatchVersion(pkg.version) + '/dist/aframe-inspector.min.js';
 var INSPECTOR_URL = process.env.INSPECTOR_VERSION === 'dev' ? INSPECTOR_DEV_URL : INSPECTOR_RELEASE_URL;
 var LOADING_MESSAGE = 'Loading Inspector';
+var LOADING_ERROR_MESSAGE = 'Could not load Inspector';
 
 module.exports.Component = registerComponent('inspector', {
   schema: {
@@ -69144,6 +69145,9 @@ module.exports.Component = registerComponent('inspector', {
       AFRAME.INSPECTOR.open();
       self.hideLoader();
       self.removeEventListeners();
+    };
+    script.onerror = function () {
+      self.loadingMessageEl.innerHTML = LOADING_ERROR_MESSAGE;
     };
     document.head.appendChild(script);
     AFRAME.inspectorInjected = true;
@@ -76389,7 +76393,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 27-03-2017, Commit #fe8df9f)');
+console.log('A-Frame Version: 0.5.0 (Date 28-03-2017, Commit #40f1be6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
