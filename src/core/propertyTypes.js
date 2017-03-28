@@ -151,3 +151,60 @@ function srcParse (value) {
 function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
+
+/**
+ * Validate the default values in a schema to match their type.
+ *
+ * @param {string} type - Property type name.
+ * @param defaultVal - Property type default value.
+ * @returns {boolean} Whether default value is accurate given the type.
+ */
+function isValidDefaultValue (type, defaultVal) {
+  if (type === 'audio' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'array' && !Array.isArray(defaultVal)) { return false; }
+  if (type === 'asset' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'boolean' && typeof defaultVal !== 'boolean') { return false; }
+  if (type === 'color' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'int' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'number' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'map' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'model' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selector' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selectorAll' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'src' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'string' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'time' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'vec2') { return isValidDefaultCoordinate(defaultVal, 2); }
+  if (type === 'vec3') { return isValidDefaultCoordinate(defaultVal, 3); }
+  if (type === 'vec4') { return isValidDefaultCoordinate(defaultVal, 4); }
+  return true;
+}
+module.exports.isValidDefaultValue = isValidDefaultValue;
+
+/**
+ * Checks if default coordinates are valid.
+ *
+ * @param possibleCoordinates
+ * @param {number} dimensions - 2 for 2D Vector, 3 for 3D vector.
+ * @returns {boolean} Whether coordinates are parsed correctly.
+ */
+function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
+  if (possibleCoordinates === null) { return true; }
+  if (typeof possibleCoordinates !== 'object') { return false; }
+
+  if (Object.keys(possibleCoordinates).length !== dimensions) {
+    return false;
+  } else {
+    var x = possibleCoordinates.x;
+    var y = possibleCoordinates.y;
+    var z = possibleCoordinates.z;
+    var w = possibleCoordinates.w;
+
+    if (typeof x !== 'number' || typeof y !== 'number') { return false; }
+    if (dimensions > 2 && typeof z !== 'number') { return false; }
+    if (dimensions > 3 && typeof w !== 'number') { return false; }
+  }
+
+  return true;
+}
+module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
