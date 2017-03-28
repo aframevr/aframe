@@ -352,7 +352,7 @@ module.exports.registerComponent = function (name, definition) {
     multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };

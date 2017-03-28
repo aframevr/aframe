@@ -25,25 +25,29 @@ module.exports.isSingleProperty = isSingleProperty;
  * Build step to schema to use `type` to inject default value, parser, and stringifier.
  *
  * @param {object} schema
+ * @param {string} componentName
  * @returns {object} Schema.
  */
-module.exports.process = function (schema) {
+module.exports.process = function (schema, componentName) {
   // For single property schema, run processPropDefinition over the whole schema.
   if (isSingleProperty(schema)) {
-    return processPropertyDefinition(schema);
+    return processPropertyDefinition(schema, componentName);
   }
 
   // For multi-property schema, run processPropDefinition over each property definition.
   Object.keys(schema).forEach(function (propName) {
-    schema[propName] = processPropertyDefinition(schema[propName]);
+    schema[propName] = processPropertyDefinition(schema[propName], componentName);
   });
   return schema;
 };
 
 /**
  * Inject default value, parser, stringifier for single property.
+ *
+ * @param {object} propDefinition
+ * @param {string} componentName
  */
-function processPropertyDefinition (propDefinition) {
+function processPropertyDefinition (propDefinition, componentName) {
   var defaultVal = propDefinition.default;
   var propType;
   var typeName = propDefinition.type;
@@ -81,7 +85,7 @@ function processPropertyDefinition (propDefinition) {
   if ('default' in propDefinition) {
     // Check that default values are valid.
     if (!isValidDefaultValue(typeName, defaultVal)) {
-      warn('Default value `', defaultVal, '`, does not match type `', typeName, '`');
+      warn('Default value `', defaultVal, '`, does not match type `', typeName, '`', 'in Component `', componentName, '`');
     }
   } else {
     // Fill in default value.
