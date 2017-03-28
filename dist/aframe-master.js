@@ -74350,6 +74350,63 @@ function vecParse (value) {
   return coordinates.parse(value, this.default);
 }
 
+/**
+ * Validate the default values in a schema to match their type.
+ *
+ * @param {string} type - Property type name.
+ * @param defaultVal - Property type default value.
+ * @returns {boolean} Whether default value is accurate given the type.
+ */
+function isValidDefaultValue (type, defaultVal) {
+  if (type === 'audio' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'array' && !Array.isArray(defaultVal)) { return false; }
+  if (type === 'asset' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'boolean' && typeof defaultVal !== 'boolean') { return false; }
+  if (type === 'color' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'int' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'number' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'map' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'model' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selector' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selectorAll' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'src' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'string' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'time' && typeof defaultVal !== 'number') { return false; }
+  if (type === 'vec2') { return isValidDefaultCoordinate(defaultVal, 2); }
+  if (type === 'vec3') { return isValidDefaultCoordinate(defaultVal, 3); }
+  if (type === 'vec4') { return isValidDefaultCoordinate(defaultVal, 4); }
+  return true;
+}
+module.exports.isValidDefaultValue = isValidDefaultValue;
+
+/**
+ * Checks if default coordinates are valid.
+ *
+ * @param possibleCoordinates
+ * @param {number} dimensions - 2 for 2D Vector, 3 for 3D vector.
+ * @returns {boolean} Whether coordinates are parsed correctly.
+ */
+function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
+  if (possibleCoordinates === null) { return true; }
+  if (typeof possibleCoordinates !== 'object') { return false; }
+
+  if (Object.keys(possibleCoordinates).length !== dimensions) {
+    return false;
+  } else {
+    var x = possibleCoordinates.x;
+    var y = possibleCoordinates.y;
+    var z = possibleCoordinates.z;
+    var w = possibleCoordinates.w;
+
+    if (typeof x !== 'number' || typeof y !== 'number') { return false; }
+    if (dimensions > 2 && typeof z !== 'number') { return false; }
+    if (dimensions > 3 && typeof w !== 'number') { return false; }
+  }
+
+  return true;
+}
+module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
+
 },{"../utils/coordinates":164,"debug":7}],104:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
@@ -75004,8 +75061,13 @@ module.exports = function initWakelock (scene) {
 };
 
 },{"../../../vendor/wakelock/wakelock":179}],109:[function(_dereq_,module,exports){
-var debug = _dereq_('../utils/debug');
-var propertyTypes = _dereq_('./propertyTypes').propertyTypes;
+var utils = _dereq_('../utils/');
+var PropertyTypes = _dereq_('./propertyTypes');
+
+var debug = utils.debug;
+var isValidDefaultValue = PropertyTypes.isValidDefaultValue;
+var propertyTypes = PropertyTypes.propertyTypes;
+
 var warn = debug('core:schema:warn');
 
 /**
@@ -75078,11 +75140,11 @@ function processPropertyDefinition (propDefinition) {
   // Fill in type name.
   propDefinition.type = typeName;
 
-  // Check if default value exists.
+  // Check that default value exists.
   if ('default' in propDefinition) {
-    // Check if default values are valid
+    // Check that default values are valid.
     if (!isValidDefaultValue(typeName, defaultVal)) {
-      warn('The default value: ' + '"' + defaultVal + '"' + ' does not match the type: ' + typeName);
+      warn('Default value `', defaultVal, '`, does not match type `', typeName, '`');
     }
   } else {
     // Fill in default value.
@@ -75173,63 +75235,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-/**
- * Checks if Valid default coordinates
- * @param {unknown} possibleCoordinates
- * @param {number} dimensions - 2 for 2D Vector or 3 for 3D vector
- * @returns {boolean} A boolean determining if coordinates are parsed correctly.
- */
-function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
-  if (possibleCoordinates === null) { return true; }
-  if (typeof possibleCoordinates !== 'object') { return false; }
-
-  if (Object.keys(possibleCoordinates).length !== dimensions) {
-    return false;
-  } else {
-    var x = possibleCoordinates.x;
-    var y = possibleCoordinates.y;
-    var z = possibleCoordinates.z;
-    var w = possibleCoordinates.w;
-
-    if (typeof x !== 'number' || typeof y !== 'number') { return false; }
-    if (dimensions > 2 && typeof z !== 'number') { return false; }
-    if (dimensions > 3 && typeof w !== 'number') { return false; }
-  }
-
-  return true;
-}
-module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
-
-/**
- * Validates the default values in a schema
- * @param {string} type - type in a prop
- * @param {unknown} defaultVal - default in a prop
- * @returns {boolean} A boolean determining if defaults are valid.
- */
-function isValidDefaultValue (type, defaultVal) {
-  if (type === 'audio' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'array' && !Array.isArray(defaultVal)) { return false; }
-  if (type === 'asset' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'boolean' && typeof defaultVal !== 'boolean') { return false; }
-  if (type === 'color' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'int' && typeof defaultVal !== 'number') { return false; }
-  if (type === 'number' && typeof defaultVal !== 'number') { return false; }
-  if (type === 'map' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'model' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selector' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selectorAll' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'src' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'string' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'time' && typeof defaultVal !== 'number') { return false; }
-  if (type === 'vec2') { return isValidDefaultCoordinate(defaultVal, 2); }
-  if (type === 'vec3') { return isValidDefaultCoordinate(defaultVal, 3); }
-  if (type === 'vec4') { return isValidDefaultCoordinate(defaultVal, 4); }
-
-  return true;
-}
-module.exports.isValidDefaultValue = isValidDefaultValue;
-
-},{"../utils/debug":165,"./propertyTypes":103}],110:[function(_dereq_,module,exports){
+},{"../utils/":169,"./propertyTypes":103}],110:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -76455,7 +76461,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 28-03-2017, Commit #57c314b)');
+console.log('A-Frame Version: 0.5.0 (Date 28-03-2017, Commit #f639a59)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
