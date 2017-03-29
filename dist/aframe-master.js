@@ -68235,15 +68235,22 @@ module.exports.Component = registerComponent('material', {
   updateMaterial: function () {
     var data = this.data;
     var material = this.material;
-    material.side = parseSide(data.side);
+    var needsUpdate = false;
+    var side = parseSide(data.side);
+    if (material.side === THREE.DoubleSide && side !== THREE.DoubleSide ||
+      material.side !== THREE.DoubleSide && side === THREE.DoubleSide) {
+      needsUpdate = true;
+    }
+    material.side = side;
     material.opacity = data.opacity;
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
     material.visible = data.visible;
-    if (data.alphaTest !== material.alphaTest) { material.needsUpdate = true; }
+    if (data.alphaTest !== material.alphaTest) { needsUpdate = true; }
     material.alphaTest = data.alphaTest;
+    if (needsUpdate) { material.needsUpdate = true; }
   },
 
   /**
@@ -76466,7 +76473,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 29-03-2017, Commit #23d7299)');
+console.log('A-Frame Version: 0.5.0 (Date 29-03-2017, Commit #79e82fd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
