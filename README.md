@@ -25,6 +25,8 @@
   &mdash;
   <a href="https://aframe.io/docs/">Docs</a>
   &mdash;
+  <a href="https://aframe.io/school/">School</a>
+  &mdash;
   <a href="https://aframevr-slack.herokuapp.com">Slack</a>
   &mdash;
   <a href="https://aframe.io/blog/">Blog</a>
