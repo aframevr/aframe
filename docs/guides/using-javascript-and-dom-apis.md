@@ -198,10 +198,10 @@ var entityEl = document.createElement('a-entity');
 sceneEl.appendChild(entityEl);
 ```
 
-### Removing an Entity with `.remove()`
+### Removing an Entity with `.removeChild()`
 
 To remove an entity from the DOM and thus from the scene, we call
-`.remove(element)` from the parent element. If we have an entity, we have to
+`.removeChild(element)` from the parent element. If we have an entity, we have to
 ask its parent (`parentNode`) to remove the entity.
 
 ```js
