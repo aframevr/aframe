@@ -16,6 +16,29 @@ go, there are multiple ways of getting started.
 
 <!--toc-->
 
+## A-Frame School
+
+Head to the [A-Frame School](https://aframe.io/school/) for interactive
+step-by-step lessons and getting into and learning WebVR!
+
+![School](https://cloud.githubusercontent.com/assets/674727/24431825/1a2c83de-13d3-11e7-9739-dd5004891684.png)
+
+## Remix on Glitch
+
+[glitch]: https://glitch.com/~aframe
+
+[Glitch][glitch] is a collaborative coding site that provides a full code
+editor for both frontend and backend code and support for multiple files.
+Glitch lets you remix existing projects and make them your own, and instantly
+host and deploy changes for everyone to see.
+
+[Hit **Remix** on this A-Frame project][glitch], mess with the HTML in
+`index.html`, and see your site published live on each change! The base A-Frame
+Glitch for example is published at `aframe.glitch.me`, but you will provide
+your own custom URL name.
+
+![Glitch](https://cloud.githubusercontent.com/assets/674727/24219261/68c6b3f4-0f03-11e7-9fb5-1bb4ecca568b.png)
+
 ## Play with CodePen
 
 [codepen]: http://codepen.io/team/mozvr/pen/BjygdO
@@ -28,26 +51,8 @@ version of A-Frame, then create your scene:
 
 <p data-height="300" data-theme-id="19139" data-slug-hash="BjygdO" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Hello World â A-Frame" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/BjygdO/">Hello World â A-Frame</a> by mozillavr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
 
-**Note:** VR mode from CodePen might not work. Also, make sure the A-Frame
-`<script>` tag is located in the HTML panel above the `<a-scene>` tag.
-
 Check out the [official MozVR CodePens](http://codepen.io/mozvr/) and the
 [A-Frame Hello World CodePen][codepen]:
-
-## Remix on Glitch
-
-[glitch]: https://glitch.com/~aframe
-
-[Glitch][glitch] is a collaborative coding site that provides a full code
-editor for both frontend and backend code and support for multiple files.
-Glitch lets you remix existing projects and make them your own, and instantly
-host and deploy changes for everyone to see.
-
-[Hit **Remix** on this A-Frame project][glitch], start coding A-Frame in
-`views/index.html`, and see your site published live on each change! The base
-A-Frame Glitch for example is published at `aframe.glitch.me`.
-
-![Glitch](https://cloud.githubusercontent.com/assets/674727/24219261/68c6b3f4-0f03-11e7-9fb5-1bb4ecca568b.png)
 
 ## Grab the Boilerplate
 
