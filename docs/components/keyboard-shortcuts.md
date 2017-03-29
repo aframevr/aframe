@@ -18,6 +18,5 @@ The keyboard-shortcuts component toggles global keyboard shortcuts. The keyboard
 | Property    | Description                                           | Default Value |
 |-------------|-------------------------------------------------------|---------------|
 | enterVR     | Enables the shortcut to press 'F' to enter VR.        | true          |
-| resetSensor | Enables to shortcut to press 'Z' to reset the sensor. | true          |
 
 [scene]: ../core/scene.md
