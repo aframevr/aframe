@@ -74001,7 +74001,7 @@ module.exports.registerComponent = function (name, definition) {
     multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
@@ -75088,25 +75088,29 @@ module.exports.isSingleProperty = isSingleProperty;
  * Build step to schema to use `type` to inject default value, parser, and stringifier.
  *
  * @param {object} schema
+ * @param {string} componentName
  * @returns {object} Schema.
  */
-module.exports.process = function (schema) {
+module.exports.process = function (schema, componentName) {
   // For single property schema, run processPropDefinition over the whole schema.
   if (isSingleProperty(schema)) {
-    return processPropertyDefinition(schema);
+    return processPropertyDefinition(schema, componentName);
   }
 
   // For multi-property schema, run processPropDefinition over each property definition.
   Object.keys(schema).forEach(function (propName) {
-    schema[propName] = processPropertyDefinition(schema[propName]);
+    schema[propName] = processPropertyDefinition(schema[propName], componentName);
   });
   return schema;
 };
 
 /**
  * Inject default value, parser, stringifier for single property.
+ *
+ * @param {object} propDefinition
+ * @param {string} componentName
  */
-function processPropertyDefinition (propDefinition) {
+function processPropertyDefinition (propDefinition, componentName) {
   var defaultVal = propDefinition.default;
   var propType;
   var typeName = propDefinition.type;
@@ -75144,7 +75148,8 @@ function processPropertyDefinition (propDefinition) {
   if ('default' in propDefinition) {
     // Check that default values are valid.
     if (!isValidDefaultValue(typeName, defaultVal)) {
-      warn('Default value `', defaultVal, '`, does not match type `', typeName, '`');
+      warn('Default value `' + defaultVal + '` does not match type `' + typeName +
+           '` in Component `' + componentName + '`');
     }
   } else {
     // Fill in default value.
@@ -76461,7 +76466,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 28-03-2017, Commit #f639a59)');
+console.log('A-Frame Version: 0.5.0 (Date 29-03-2017, Commit #23d7299)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
