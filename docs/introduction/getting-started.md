@@ -11,8 +11,8 @@ installation: true
 
 [introduction]: ./index.md
 
-Welcome! Make sure to read the [introduction][introduction]. If you're ready to
-go, there are multiple ways of getting started.
+Welcome to A-Frame! [Read the introduction][introduction] if you haven't. Once
+you're ready to go, it's easy to get started!
 
 <!--toc-->
 
@@ -21,7 +21,7 @@ go, there are multiple ways of getting started.
 Head to the [A-Frame School](https://aframe.io/school/) for interactive
 step-by-step lessons and getting into and learning WebVR!
 
-![School](https://cloud.githubusercontent.com/assets/674727/24431825/1a2c83de-13d3-11e7-9739-dd5004891684.png)
+![School](https://cloud.githubusercontent.com/assets/674727/24480570/fd498fd8-1499-11e7-833f-652ce3f3f8b5.jpg)
 
 ## Remix on Glitch
 
@@ -37,7 +37,7 @@ host and deploy changes for everyone to see.
 Glitch for example is published at `aframe.glitch.me`, but you will provide
 your own custom URL name.
 
-![Glitch](https://cloud.githubusercontent.com/assets/674727/24219261/68c6b3f4-0f03-11e7-9fb5-1bb4ecca568b.png)
+![Glitch](https://cloud.githubusercontent.com/assets/674727/24480466/54b17d22-1499-11e7-8a18-d4f76b49ad07.jpg)
 
 ## Play with CodePen
 
