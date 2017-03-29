@@ -195,6 +195,17 @@ suite('material', function () {
       el.setAttribute('material', 'side: double');
       assert.equal(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
+
+    test('sets material.needsUpdate true if side switchs from/to double', function () {
+      var el = this.el;
+      el.setAttribute('material', 'side: front');
+      el.getObject3D('mesh').material.needsUpdate = false;
+      el.setAttribute('material', 'side: double');
+      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
+      el.getObject3D('mesh').material.needsUpdate = false;
+      el.setAttribute('material', 'side: front');
+      assert.equal(el.getObject3D('mesh').material.needsUpdate, 1);
+    });
   });
 
   suite('transparent', function () {
