@@ -198,6 +198,21 @@ var entityEl = document.createElement('a-entity');
 sceneEl.appendChild(entityEl);
 ```
 
+Note that `.appendChild()` is an **asynchronous** operation, and until its appending to the DOM has been completed, its attributes cannot be queried (i.e. `.getAttribute()` will return `undefined`). If you need to query an attribute on an entity that has just been appended, you can listen to the `loaded` event on that entity:
+
+```js
+var sceneEl = document.querySelector('a-scene');
+var entityEl = document.createElement('a-entity');
+entityEl.setAttribute('position', {x: 0, y: 1, z: 2});
+sceneEl.appendChild(entityEl);
+
+// calling entity.getAttribute would return undefined now, so we
+// listen to the loaded event instead
+entityEl.addEventListener('loaded', function () {
+    console.log(entityEl.getAttribute('position'));
+});
+```
+
 ### Removing an Entity with `.removeChild()`
 
 To remove an entity from the DOM and thus from the scene, we call
