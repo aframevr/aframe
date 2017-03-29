@@ -31,7 +31,7 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   /**
-   * Update controller list every 10 millseconds.
+   * Update controller list every 10 miliseconds.
    */
   throttledTick: function () {
     this.updateControllerList();
