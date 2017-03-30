@@ -1,12 +1,15 @@
 ---
-title: Building with Components
+title: Building a 360&deg; Image Gallery
 type: guides
 layout: docs
 parent_section: guides
 order: 3
 ---
 
-> Fork the [360&deg; Image Gallery Boilerplate on GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
+> Remix the [360&deg; Image Gallery on
+> Glitch](https://glitch.com/~aframe-gallery). Or Fork the [360&deg; Image
+> Gallery Boilerplate on
+> GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
