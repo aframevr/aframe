@@ -69927,6 +69927,7 @@ module.exports.Component = registerComponent('sound', {
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
         if (self.data.autoplay || self.mustPlay) { self.playSound(); }
+        self.el.emit('sound-loaded');
       });
     }
   },
@@ -70014,6 +70015,7 @@ module.exports.Component = registerComponent('sound', {
    * Pause all the sounds in the pool.
    */
   pauseSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.source || !sound.source.buffer || !sound.isPlaying || sound.isPaused) { return; }
       sound.isPaused = true;
@@ -70032,6 +70034,7 @@ module.exports.Component = registerComponent('sound', {
     }
 
     var found = false;
+    this.isPlaying = true;
     this.pool.children.forEach(function (sound) {
       if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
@@ -70054,6 +70057,7 @@ module.exports.Component = registerComponent('sound', {
    * Stop all the sounds in the pool.
    */
   stopSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
       if (!sound.source || !sound.source.buffer) { return; }
       sound.stop();
@@ -76469,7 +76473,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #4b3e33f)');
+console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #75e40cf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
