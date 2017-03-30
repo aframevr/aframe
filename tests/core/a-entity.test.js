@@ -543,6 +543,33 @@ suite('a-entity', function () {
     });
   });
 
+  suite('load', function () {
+    test('does not try to load if not attached', function () {
+      var el = document.createElement('a-entity');
+      var nodeLoadSpy = this.sinon.spy(ANode.prototype, 'load');
+      el.load();
+      assert.notOk(nodeLoadSpy.called);
+    });
+
+    test('does not try to initialized during load callback if not attached', function (done) {
+      var childEl = document.createElement('a-entity');
+      var el = document.createElement('a-entity');
+      var nodeLoadSpy;
+
+      el.parentEl = true;
+      el.appendChild(childEl);
+      el.load();
+      el.parentEl = null;
+      childEl.emit('loaded');
+
+      nodeLoadSpy = this.sinon.spy(AEntity.prototype, 'updateComponents');
+      setTimeout(function () {
+        assert.notOk(nodeLoadSpy.called);
+        done();
+      });
+    });
+  });
+
   suite('getDOMAttribute', function () {
     test('returns parsed component data', function () {
       var componentData;
