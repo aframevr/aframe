@@ -69171,15 +69171,11 @@ module.exports.Component = registerComponent('inspector', {
 },{"../../../package":55,"../../constants":92,"../../core/component":101,"../../utils/bind":163,"_process":34}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
-var THREE = _dereq_('../../lib/three');
-
-var controls = new THREE.VRControls(new THREE.Object3D());
 
 module.exports.Component = registerComponent('keyboard-shortcuts', {
   schema: {
     enterVR: {default: true},
-    exitVR: {default: true},
-    resetSensor: {default: true}
+    exitVR: {default: true}
   },
 
   init: function () {
@@ -69194,16 +69190,12 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
       if (self.enterVREnabled && event.keyCode === 27) {  // escape.
         scene.exitVR();
       }
-      if (self.resetSensorEnabled && event.keyCode === 90) {  // z.
-        controls.resetSensor();
-      }
     }, false);
   },
 
   update: function (oldData) {
     var data = this.data;
     this.enterVREnabled = data.enterVR;
-    this.resetSensorEnabled = data.resetSensor;
   },
 
   remove: function () {
@@ -69211,7 +69203,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":101,"../../lib/three":147,"../../utils/":169}],80:[function(_dereq_,module,exports){
+},{"../../core/component":101,"../../utils/":169}],80:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -76473,7 +76465,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 29-03-2017, Commit #5a52cee)');
+console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #346d0e6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
