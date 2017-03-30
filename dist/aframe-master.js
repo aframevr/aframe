@@ -72489,9 +72489,12 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var self = this;
 
-      if (this.hasLoaded) { return; }
+      if (this.hasLoaded || !this.parentEl) { return; }
 
       ANode.prototype.load.call(this, function entityLoadCallback () {
+        // Check if entity was detached while it was waiting to load.
+        if (!self.parentEl) { return; }
+
         self.updateComponents();
         if (self.isScene || self.parentEl.isPlaying) { self.play(); }
       });
@@ -72688,7 +72691,8 @@ var proto = Object.create(ANode.prototype, {
         delete componentsToUpdate[name];
         self.updateComponent(name, data);
       }
-    }
+    },
+    writable: window.debug
   },
 
   /**
@@ -76465,7 +76469,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #346d0e6)');
+console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #4b3e33f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
