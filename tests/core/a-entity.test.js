@@ -543,6 +543,15 @@ suite('a-entity', function () {
     });
   });
 
+  suite.only('load', function () {
+    test('does not try to load if not attached', function () {
+      var el = document.createElement('a-entity');
+      var nodeLoadSpy = this.sinon.spy(ANode.prototype, 'load');
+      el.load();
+      assert.notOk(nodeLoadSpy.called);
+    });
+  });
+
   suite('getDOMAttribute', function () {
     test('returns parsed component data', function () {
       var componentData;

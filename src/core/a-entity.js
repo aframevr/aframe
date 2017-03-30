@@ -291,7 +291,7 @@ var proto = Object.create(ANode.prototype, {
     value: function () {
       var self = this;
 
-      if (this.hasLoaded) { return; }
+      if (this.hasLoaded || !this.parentEl) { return; }
 
       ANode.prototype.load.call(this, function entityLoadCallback () {
         self.updateComponents();
