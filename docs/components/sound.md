@@ -39,9 +39,10 @@ component is positional and is thus affected by the
 
 ## Events
 
-| Event Name  | Description                           |
-|-------------|---------------------------------------|
-| sound-ended | triggered when sound finishes playing |
+| Event Name   | Description                            |
+|--------------|----------------------------------------|
+| sound-loaded | Triggered when sound file is loaded.   |
+| sound-ended  | Triggered when sound finishes playing. |
 
 ## Playing on an Event
 
