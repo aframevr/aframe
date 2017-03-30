@@ -170,6 +170,18 @@ suite('sound', function () {
       el.components.sound.playSound();
       assert.ok(sound.play.called);
     });
+
+    test('plays sound if sound already playing when changing src', function (done) {
+      var el = this.el;
+      var playSoundStub = el.components.sound.playSound = sinon.stub();
+      el.components.sound.stopSound = sinon.stub();
+      el.addEventListener('sound-loaded', function () {
+        assert.ok(playSoundStub.called);
+        done();
+      });
+      el.setAttribute('sound', 'src', 'url(base/tests/assets/test.ogg)');
+      el.components.sound.isPlaying = true;
+    });
   });
 
   suite('stopSound', function () {
