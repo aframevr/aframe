@@ -198,19 +198,26 @@ var entityEl = document.createElement('a-entity');
 sceneEl.appendChild(entityEl);
 ```
 
-Note that `.appendChild()` is an **asynchronous** operation, and until its appending to the DOM has been completed, its attributes cannot be queried (i.e. `.getAttribute()` will return `undefined`). If you need to query an attribute on an entity that has just been appended, you can listen to the `loaded` event on that entity:
+Note that `.appendChild()` is an *asynchronous* operation in the browser. Until
+the entity has finished appending to the DOM, we can't do many operations on
+the entity (such as calling `.getAttribute()`). If we need to query an
+attribute on an entity that has just been appended, we can listen to the
+`loaded` event on the entity, or place logic in an A-Frame component so that
+it is executed once it is ready:
 
 ```js
 var sceneEl = document.querySelector('a-scene');
-var entityEl = document.createElement('a-entity');
-entityEl.setAttribute('position', {x: 0, y: 1, z: 2});
-sceneEl.appendChild(entityEl);
 
-// calling entity.getAttribute would return undefined now, so we
-// listen to the loaded event instead
-entityEl.addEventListener('loaded', function () {
-    console.log(entityEl.getAttribute('position'));
+AFRAME.registerComponent('do-something-once-loaded', {
+  init: function () {
+    // This will be called after the entity has properly attached and loaded.
+    console.log('I am ready'!);
+  }
 });
+
+var entityEl = document.createElement('a-entity');
+entityEl.setAttribute('do-something-once-loaded', '');
+sceneEl.appendChild(entityEl);
 ```
 
 ### Removing an Entity with `.removeChild()`
