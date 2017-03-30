@@ -294,8 +294,11 @@ var proto = Object.create(ANode.prototype, {
       if (this.hasLoaded || !this.parentEl) { return; }
 
       ANode.prototype.load.call(this, function entityLoadCallback () {
+        // Check if entity was detached while it was waiting to load.
+        if (!self.parentEl) { return; }
+
         self.updateComponents();
-        if (self.isScene || (self.parentEl && self.parentEl.isPlaying)) { self.play(); }
+        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
       });
     },
     writable: window.debug
@@ -490,7 +493,8 @@ var proto = Object.create(ANode.prototype, {
         delete componentsToUpdate[name];
         self.updateComponent(name, data);
       }
-    }
+    },
+    writable: window.debug
   },
 
   /**
