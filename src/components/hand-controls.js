@@ -20,6 +20,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
   init: function () {
     var self = this;
+    this.singleHand = 'right';
     this.touchedButtons = {};
     this.pressedButtons = {};
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
@@ -124,6 +125,7 @@ module.exports.Component = registerComponent('hand-controls', {
     }
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
+    if (hand === this.singleHand) { el.setAttribute('daydream-controls', controlConfiguration); }
     el.setAttribute('blend-character-model', modelUrl);
   },
 
