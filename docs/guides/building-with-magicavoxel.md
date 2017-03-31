@@ -27,7 +27,7 @@ On macOS, open the MagicVoxel app file. Initially, you will see a message noting
 that you cannot open applications from unidentified developers. After dismissing
 that message, open the *Security & Privacy* settings pane and click "Open Anyway" on the MagicVoxel app:
 
-![osx security](http://imgur.com/yNZuJUo)
+![osx security](http://i.imgur.com/DAsjv4F.png)
 
 ## Tutorial
 
