@@ -2,6 +2,7 @@ require('./blend-character-model');
 require('./camera');
 require('./collada-model');
 require('./cursor');
+require('./daydream-controls');
 require('./geometry');
 require('./gltf-model');
 require('./hand-controls');
