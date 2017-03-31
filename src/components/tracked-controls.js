@@ -1,8 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
-var ZERO_ORIENTATION = [0, 0, 0, 1];
-
 /**
  * Tracked controls component.
  * Wrap the gamepad API for pose and button states.
@@ -19,6 +17,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
     // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    headElement: {type: 'selector'},
     hand: {type: 'string', default: 'right'},
     eyesToElbow: {default: {x: 0.175, y: -0.3, z: -0.03}}, // vector from eyes to elbow (divided by user height)
     forearm: {default: {x: 0, y: 0, z: -0.175}}, // vector from eyes to elbow (divided by user height)
@@ -51,6 +50,11 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   /**
+   * Return head element to use for non-6DOF arm model.
+   */
+  getHeadElement: function () { return this.data.headElement || this.el.sceneEl.camera.el; },
+
+  /**
    * Handle update to `id` or `idPrefix.
    */
   updateGamepad: function () {
@@ -79,21 +83,25 @@ module.exports.Component = registerComponent('tracked-controls', {
     var deltaControllerPosition = this.deltaControllerPosition;
     var dolly = this.dolly;
     var el = this.el;
-    var orientation;
     var pose;
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
-    var cameraEl = el.sceneEl.camera.el;
     var data = this.data;
-    var userHeight = cameraEl.components.camera.data.userHeight || data.defaultUserHeight;
+    var headEl = this.getHeadElement();
+    var headObject3D = headEl.object3D;
+    var headCamera = headEl.components.camera;
+    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || data.defaultUserHeight;
 
     if (!controller) { return; }
 
     // Compose pose from Gamepad.
     pose = controller.pose;
     // If no orientation, use camera.
-    orientation = pose.orientation || cameraEl.object3D.orientation;
-    dolly.quaternion.fromArray(orientation);
+    if (pose.orientation) {
+      dolly.quaternion.fromArray(pose.orientation);
+    } else {
+      dolly.quaternion.copy(headObject3D.quaternion);
+    }
     if (pose.position) {
       dolly.position.fromArray(pose.position);
     } else {
@@ -101,7 +109,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       // Use controllerPosition and deltaControllerPosition to avoid creating yet more variables...
 
       // Use camera position as head position.
-      controllerPosition.copy(cameraEl.object3D.position);
+      controllerPosition.copy(headObject3D.position);
       // Set offset for degenerate "arm model" to elbow.
       deltaControllerPosition.set(
         data.eyesToElbow.x * (data.hand === 'left' ? -1 : data.hand === 'right' ? 1 : 0),
@@ -110,7 +118,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       // Scale offset by user height.
       deltaControllerPosition.multiplyScalar(userHeight);
       // Apply camera Y rotation (not X or Z, so you can look down at your hand).
-      deltaControllerPosition.applyAxisAngle(cameraEl.object3D.up, cameraEl.object3D.rotation.y);
+      deltaControllerPosition.applyAxisAngle(headObject3D.up, headObject3D.rotation.y);
       // Apply rotated offset to position.
       controllerPosition.add(deltaControllerPosition);
 
@@ -119,7 +127,11 @@ module.exports.Component = registerComponent('tracked-controls', {
       // Scale offset by user height.
       deltaControllerPosition.multiplyScalar(userHeight);
       // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
-      controllerQuaternion.fromArray(pose.orientation || ZERO_ORIENTATION);
+      if (pose.orientation) {
+        controllerQuaternion.fromArray(pose.orientation);
+      } else {
+        controllerQuaternion.copy(headObject3D.quaternion);
+      }
       controllerEuler.setFromQuaternion(controllerQuaternion);
       controllerEuler.set(controllerEuler.x, controllerEuler.y, 0);
       deltaControllerPosition.applyEuler(controllerEuler);
