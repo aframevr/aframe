@@ -127,25 +127,23 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    /**
+     * Remove old mixins and mixin listeners.
+     * Add new mixins and mixin listeners.
+     */
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins ? newMixins.trim().split(/\s+/) : [];
-        var oldMixinsIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
+        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
 
-        if (!newMixins) {
-          var mixinEls = this.mixinEls;
-          for (var i = 0; i < mixinEls.length; i++) {
-            this.unregisterMixin(mixinEls[i].id);
-          }
-          HTMLElement.prototype.removeAttribute.call(this, 'mixin');
-          return;
-        }
+        // Unregister old mixins.
+        oldMixinIds.filter(function (i) {
+          return newMixinIds.indexOf(i) < 0;
+        }).forEach(bind(this.unregisterMixin, this));
 
-        // To determine what listeners will be removed
-        var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+        // Register new mixins.
         this.mixinEls = [];
-        diff.forEach(bind(this.unregisterMixin, this));
-        newMixinsIds.forEach(bind(this.registerMixin, this));
+        newMixinIds.forEach(bind(this.registerMixin, this));
       }
     },
 

@@ -141,23 +141,30 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
+   * `hovered` is the entity state.
+   */
   updateStateMixins: {
     value: function (newMixins, oldMixins) {
-      var self = this;
-      oldMixins = oldMixins || '';
+      var diff;
       var newMixinsIds = newMixins.split(' ');
-      var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-      // The list of mixins that might have been removed on update
-      var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
-      // Remove the mixins that are gone on update
+      var oldMixinsIds = (oldMixins || '') ? oldMixins.split(' ') : [];
+      var self = this;
+
+      // List of mixins that might have been removed on update.
+      diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+
+      // Remove removed mixins.
       diff.forEach(function (mixinId) {
-        var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        forEach.call(stateMixinsEls, function (el) {
+        Array.prototype.forEach.call(stateMixinsEls, function (el) {
           self.unregisterMixin(el.id);
         });
       });
+
+      // Add new mixins.
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
           var mixinId = id + '-' + state;
@@ -567,9 +574,9 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
 
+      // Remove mixins.
       if (attr === 'mixin') {
-        this.updateMixins();
-        return;
+        this.mixinUpdate('');
       }
 
       HTMLElement.prototype.removeAttribute.call(this, attr);
@@ -654,6 +661,7 @@ var proto = Object.create(ANode.prototype, {
   mixinUpdate: {
     value: function (newMixins, oldMixins) {
       oldMixins = oldMixins || this.getAttribute('mixin');
+      this.updateMixins(newMixins, oldMixins);
       this.updateStateMixins(newMixins, oldMixins);
       this.updateComponents();
     }

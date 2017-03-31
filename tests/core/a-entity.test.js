@@ -834,6 +834,18 @@ suite('a-entity', function () {
       el.removeAttribute('material', 'color');
       assert.equal(el.getAttribute('material').color, '#FFF');
     });
+
+    test('can clear mixins', function () {
+      var el = this.el;
+      mixinFactory('foo', {position: '1 2 3'});
+      mixinFactory('bar', {scale: '1 2 3'});
+      el.setAttribute('mixin', 'foo bar');
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3});
+      el.removeAttribute('mixin');
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
+    });
   });
 
   suite('initComponent', function () {
