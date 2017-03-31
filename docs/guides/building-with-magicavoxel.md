@@ -23,10 +23,11 @@ homepage][magicavoxel], click the *Download* button and install the application:
 
 ![magicavoxel install](https://i.imgur.com/GmgdyHs.jpg)
 
-On OS X, make sure to allow third-party applications that have not been installed
-from the App Store in the *Security & Privacy* settings:
+On macOS, open the MagicVoxel app file. Initially, you will see a message noting
+that you cannot open applications from unidentified developers. After dismissing
+that message, open the *Security & Privacy* settings pane and click "Open Anyway" on the MagicVoxel app:
 
-![osx security](https://i.imgur.com/iaa4pSO.jpg)
+![osx security](http://imgur.com/yNZuJUo)
 
 ## Tutorial
 
