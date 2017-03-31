@@ -91,7 +91,8 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     // Compose pose from Gamepad.
     pose = controller.pose;
-    orientation = pose.orientation || ZERO_ORIENTATION;
+    // If no orientation, use camera.
+    orientation = pose.orientation || cameraEl.object3D.orientation;
     dolly.quaternion.fromArray(orientation);
     if (pose.position) {
       dolly.position.fromArray(pose.position);
