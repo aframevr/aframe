@@ -2,7 +2,6 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 var ZERO_ORIENTATION = [0, 0, 0, 1];
-var ZERO_POSITION = [0, 0, 0];
 
 /**
  * Tracked controls component.
@@ -18,7 +17,12 @@ module.exports.Component = registerComponent('tracked-controls', {
     controller: {default: 0},
     id: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    hand: {type: 'string', default: 'right'},
+    eyesToElbow: {default: {x: 0.175, y: -0.3, z: -0.03}}, // vector from eyes to elbow (divided by user height)
+    forearm: {default: {x: 0, y: 0, z: -0.175}}, // vector from eyes to elbow (divided by user height)
+    defaultUserHeight: {type: 'number', default: 1.6} // default user height (for cameras with zero)
   },
 
   init: function () {
@@ -77,29 +81,62 @@ module.exports.Component = registerComponent('tracked-controls', {
     var el = this.el;
     var orientation;
     var pose;
-    var position;
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
+    var cameraEl = el.sceneEl.camera.el;
+    var data = this.data;
+    var userHeight = cameraEl.components.camera.data.userHeight || data.defaultUserHeight;
 
     if (!controller) { return; }
 
     // Compose pose from Gamepad.
     pose = controller.pose;
     orientation = pose.orientation || ZERO_ORIENTATION;
-    position = pose.position || ZERO_POSITION;
-    controllerQuaternion.fromArray(orientation);
     dolly.quaternion.fromArray(orientation);
-    dolly.position.fromArray(position);
+    if (pose.position) {
+      dolly.position.fromArray(pose.position);
+    } else {
+      // The controller is not 6DOF, so apply arm model.
+      // Use controllerPosition and deltaControllerPosition to avoid creating yet more variables...
+
+      // Use camera position as head position.
+      controllerPosition.copy(cameraEl.object3D.position);
+      // Set offset for degenerate "arm model" to elbow.
+      deltaControllerPosition.set(
+        data.eyesToElbow.x * (data.hand === 'left' ? -1 : data.hand === 'right' ? 1 : 0),
+        data.eyesToElbow.y, // lower than your eyes
+        data.eyesToElbow.z); // slightly out in front
+      // Scale offset by user height.
+      deltaControllerPosition.multiplyScalar(userHeight);
+      // Apply camera Y rotation (not X or Z, so you can look down at your hand).
+      deltaControllerPosition.applyAxisAngle(cameraEl.object3D.up, cameraEl.object3D.rotation.y);
+      // Apply rotated offset to position.
+      controllerPosition.add(deltaControllerPosition);
+
+      // Set offset for degenerate "arm model" forearm.
+      deltaControllerPosition.set(data.forearm.x, data.forearm.y, data.forearm.z); // forearm sticking out from elbow
+      // Scale offset by user height.
+      deltaControllerPosition.multiplyScalar(userHeight);
+      // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
+      controllerQuaternion.fromArray(pose.orientation || ZERO_ORIENTATION);
+      controllerEuler.setFromQuaternion(controllerQuaternion);
+      controllerEuler.set(controllerEuler.x, controllerEuler.y, 0);
+      deltaControllerPosition.applyEuler(controllerEuler);
+      // Apply rotated offset to position.
+      controllerPosition.add(deltaControllerPosition);
+
+      dolly.position.copy(controllerPosition);
+    }
     dolly.updateMatrix();
 
-    // Apply transforms.
-    if (vrDisplay) {
+    // Apply transforms, if 6DOF and in VR.
+    if (pose.position && vrDisplay) {
       if (vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
         dolly.applyMatrix(standingMatrix);
       } else {
         // Apply default camera height
-        dolly.position.y += el.sceneEl.camera.el.getAttribute('camera').userHeight;
+        dolly.position.y += userHeight;
         dolly.updateMatrix();
       }
     }
@@ -115,7 +152,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
     });
 
-    // Apply position (as delta from previous Gamepad rotation).
+    // Apply position (as delta from previous Gamepad position).
     deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
     this.previousControllerPosition.copy(controllerPosition);
     currentPosition = el.getAttribute('position');
