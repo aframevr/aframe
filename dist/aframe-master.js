@@ -76422,6 +76422,7 @@ registerGeometry('torusKnot', {
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
+var error = debug('A-Frame:error');
 var warn = debug('A-Frame:warn');
 
 if (document.currentScript && document.currentScript.parentNode !== document.head &&
@@ -76431,16 +76432,19 @@ if (document.currentScript && document.currentScript.parentNode !== document.hea
        'HTML.');
 }
 
+// Error if not using a server.
 if (window.location.protocol === 'file:') {
-  warn('This HTML file is currently served via the file:// protocol. This does not ' +
-       'work well with assets or files fetched in the A-Frame scene. Consider serving ' +
-       'this file from a hosted or local server with a http:// or https:// protocol.');
+  error(
+    'This HTML file is currently being served via the file:// protocol. ' +
+    'Assets, textures, and models WILL NOT WORK due to cross-origin policy! ' +
+    'Please use a local or hosted server: ' +
+    'https://aframe.io/docs/0.5.0/introduction/getting-started.html#using-a-local-server.');
 }
 
 // Polyfill `Promise`.
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
-// Check before the polyfill runs
+// Check before the polyfill runs.
 window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
@@ -76500,7 +76504,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 01-04-2017, Commit #21ebd37)');
+console.log('A-Frame Version: 0.5.0 (Date 01-04-2017, Commit #b831017)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
