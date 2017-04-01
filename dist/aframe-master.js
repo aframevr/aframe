@@ -72343,23 +72343,30 @@ var proto = Object.create(ANode.prototype, {
     }
   },
 
+  /**
+   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
+   * `hovered` is the entity state.
+   */
   updateStateMixins: {
     value: function (newMixins, oldMixins) {
-      var self = this;
-      oldMixins = oldMixins || '';
+      var diff;
       var newMixinsIds = newMixins.split(' ');
-      var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-      // The list of mixins that might have been removed on update
-      var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
-      // Remove the mixins that are gone on update
+      var oldMixinsIds = (oldMixins || '') ? oldMixins.split(' ') : [];
+      var self = this;
+
+      // List of mixins that might have been removed on update.
+      diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+
+      // Remove removed mixins.
       diff.forEach(function (mixinId) {
-        var forEach = Array.prototype.forEach;
         // State Mixins
         var stateMixinsEls = document.querySelectorAll('[id^=' + mixinId + '-]');
-        forEach.call(stateMixinsEls, function (el) {
+        Array.prototype.forEach.call(stateMixinsEls, function (el) {
           self.unregisterMixin(el.id);
         });
       });
+
+      // Add new mixins.
       this.states.forEach(function (state) {
         newMixinsIds.forEach(function (id) {
           var mixinId = id + '-' + state;
@@ -72769,6 +72776,11 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
 
+      // Remove mixins.
+      if (attr === 'mixin') {
+        this.mixinUpdate('');
+      }
+
       HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
@@ -72851,6 +72863,7 @@ var proto = Object.create(ANode.prototype, {
   mixinUpdate: {
     value: function (newMixins, oldMixins) {
       oldMixins = oldMixins || this.getAttribute('mixin');
+      this.updateMixins(newMixins, oldMixins);
       this.updateStateMixins(newMixins, oldMixins);
       this.updateComponents();
     }
@@ -73356,15 +73369,23 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    /**
+     * Remove old mixins and mixin listeners.
+     * Add new mixins and mixin listeners.
+     */
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins ? newMixins.trim().split(/\s+/) : [];
-        var oldMixinsIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
-        // To determine what listeners will be removed
-        var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
+        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+
+        // Unregister old mixins.
+        oldMixinIds.filter(function (i) {
+          return newMixinIds.indexOf(i) < 0;
+        }).forEach(bind(this.unregisterMixin, this));
+
+        // Register new mixins.
         this.mixinEls = [];
-        diff.forEach(bind(this.unregisterMixin, this));
-        newMixinsIds.forEach(bind(this.registerMixin, this));
+        newMixinIds.forEach(bind(this.registerMixin, this));
       }
     },
 
@@ -76473,7 +76494,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 30-03-2017, Commit #75e40cf)');
+console.log('A-Frame Version: 0.5.0 (Date 01-04-2017, Commit #22c9ddb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
