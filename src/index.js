@@ -10,6 +10,12 @@ if (document.currentScript && document.currentScript.parentNode !== document.hea
        'HTML.');
 }
 
+if (window.location.protocol === 'file:') {
+  warn('This HTML file is currently served via the file:// protocol. This does not ' +
+       'work well with assets or files fetched in the A-Frame scene. Consider serving ' +
+       'this file from a hosted or local server with a http:// or https:// protocol.');
+}
+
 // Polyfill `Promise`.
 window.Promise = window.Promise || require('promise-polyfill');
 
