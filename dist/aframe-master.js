@@ -71940,6 +71940,9 @@ module.exports = registerElement('a-assets', {
         for (i = 0; i < imgEls.length; i++) {
           imgEl = fixUpMediaElement(imgEls[i]);
           loaded.push(new Promise(function (resolve, reject) {
+            // Set in cache because we won't be needing to call three.js loader if we have.
+            // a loaded media element.
+            THREE.Cache.files[imgEls[i].getAttribute('src')] = imgEl;
             imgEl.onload = resolve;
             imgEl.onerror = reject;
           }));
@@ -72054,6 +72057,9 @@ function mediaElementLoaded (el) {
 
       // Compare seconds buffered to media duration.
       if (secondsBuffered >= el.duration) {
+        // Set in cache because we won't be needing to call three.js loader if we have.
+        // a loaded media element.
+        THREE.Cache.files[el.getAttribute('src')] = el;
         resolve();
       }
     }
@@ -72106,8 +72112,9 @@ function setCrossOrigin (mediaEl) {
     if (extractDomain(src) === window.location.host) { return mediaEl; }
   }
 
-  warn('Cross-origin element was requested without `crossorigin` set. ' +
-       'A-Frame will re-request the asset with `crossorigin` attribute set.', src);
+  warn('Cross-origin element (e.g., <img>) was requested without `crossorigin` set. ' +
+       'A-Frame will re-request the asset with `crossorigin` attribute set. ' +
+       'Please set `crossorigin` on the element (e.g., <img crossorigin="anonymous">)', src);
   mediaEl.crossOrigin = 'anonymous';
   newMediaEl = mediaEl.cloneNode(true);
   return newMediaEl;
@@ -74309,7 +74316,11 @@ function assetParse (value) {
   if (value.charAt(0) === '#') {
     el = selectorParse(value);
     if (el) {
-      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO') { return el; }
+      // Pass through media elements. If we have the elements, we don't have to call
+      // three.js loaders which would re-request the assets.
+      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO' || el.tagName === 'IMG') {
+        return el;
+      }
       return el.getAttribute('src');
     }
     warn('"' + value + '" asset not found.');
@@ -76504,7 +76515,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 04-04-2017, Commit #09ff77e)');
+console.log('A-Frame Version: 0.5.0 (Date 04-04-2017, Commit #16679ab)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77473,6 +77484,8 @@ var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
 var warn = debug('components:texture:warn');
 
+TextureLoader.setCrossOrigin('anonymous');
+
 /**
  * System for material component.
  * Handle material registration, updates (for fog), and texture caching.
@@ -77529,9 +77542,8 @@ module.exports.System = registerSystem('material', {
    * @param {object} data - Texture data.
    * @param {function} cb - Callback to pass texture to.
    */
-  loadImage: function (src, data, cb) {
+  loadImage: function (src, data, handleImageTextureLoaded) {
     var hash = this.hash(data);
-    var handleImageTextureLoaded = cb;
     var textureCache = this.textureCache;
 
     // Texture already being loaded or already loaded. Wait on promise.
@@ -77615,7 +77627,15 @@ module.exports.System = registerSystem('material', {
     handleVideoTextureLoaded(videoTextureResult);
   },
 
+  /**
+   * Create a hash of the material properties for texture cache key.
+   */
   hash: function (data) {
+    if (data.src.tagName) {
+      // Since `data.src` can be an element, parse out the string if necessary for the hash.
+      data = utils.extendDeep({}, data);
+      data.src = data.src.getAttribute('src');
+    }
     return JSON.stringify(data);
   },
 
@@ -77708,7 +77728,7 @@ function loadImageTexture (src, data) {
       return;
     }
 
-    // Load texture from src string. THREE will create underlying element.
+    // Request and load texture from src string. THREE will create underlying element.
     // Use THREE.TextureLoader (src, onLoad, onProgress, onError) to load texture.
     TextureLoader.load(
       src,
@@ -78676,18 +78696,18 @@ var debug = _dereq_('./debug');
 var warn = debug('utils:src-loader:warn');
 
 /**
- * Validates a texture, either as a selector or as a URL.
+ * Validate a texture, either as a selector or as a URL.
  * Detects whether `src` is pointing to an image or video and invokes the appropriate
  * callback.
  *
- * The src will be returned on the callback
+ * `src` will be passed into the callback
  *
- * @params {string} src - URL.
+ * @params {string|Element} src - URL or media element.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
  */
 function validateSrc (src, isImageCb, isVideoCb) {
-  validateImageUrl(src, function isAnImageUrl (isImage) {
+  checkIsImage(src, function isAnImageUrl (isImage) {
     if (isImage) {
       isImageCb(src);
       return;
@@ -78728,7 +78748,6 @@ function validateCubemapSrc (src, cb) {
   }
   if (urls) {
     for (i = 1; i < 7; i++) {
-      // TODO: cubemap property type.
       validateSrc(parseUrl(urls[i]), isImageCb);
     }
     return;
@@ -78756,11 +78775,17 @@ function parseUrl (src) {
 }
 
 /**
- * Validate src is a valid image url
- * @param  {string} src - url that will be tested
- * @param  {function} onResult - callback with the test result
+ * Call back whether `src` is an image.
+ *
+ * @param {string|Element} src - URL or element that will be tested.
+ * @param {function} onResult - Callback with whether `src` is an image.
  */
-function validateImageUrl (src, onResult) {
+function checkIsImage (src, onResult) {
+  if (src.tagName) {
+    onResult(src.tagName === 'IMG');
+    return;
+  }
+
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
