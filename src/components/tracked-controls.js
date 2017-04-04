@@ -1,5 +1,9 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var DEFAULT_USER_HEIGHT = require('../constants').DEFAULT_USER_HEIGHT;
+
+var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
+var FOREARM = {x: 0, y: 0, z: -0.175}; // vector from eyes to elbow (divided by user height)
 
 /**
  * Tracked controls component.
@@ -18,10 +22,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     rotationOffset: {default: 0},
     // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
     headElement: {type: 'selector'},
-    hand: {type: 'string', default: 'right'},
-    eyesToElbow: {default: {x: 0.175, y: -0.3, z: -0.03}}, // vector from eyes to elbow (divided by user height)
-    forearm: {default: {x: 0, y: 0, z: -0.175}}, // vector from eyes to elbow (divided by user height)
-    defaultUserHeight: {type: 'number', default: 1.6} // default user height (for cameras with zero)
+    defaultHand: {type: 'string', default: 'right'}
   },
 
   init: function () {
@@ -48,6 +49,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.updatePose();
     this.updateButtons();
   },
+
+  /**
+   * Return default user height to use for non-6DOF arm model.
+   */
+  defaultUserHeight: function () { return DEFAULT_USER_HEIGHT; }, // default user height (for cameras with zero)
 
   /**
    * Return head element to use for non-6DOF arm model.
@@ -87,10 +93,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
     var data = this.data;
+    var hand = controller.hand || data.defaultHand;
     var headEl = this.getHeadElement();
     var headObject3D = headEl.object3D;
     var headCamera = headEl.components.camera;
-    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || data.defaultUserHeight;
+    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
 
     if (!controller) { return; }
 
@@ -112,9 +119,9 @@ module.exports.Component = registerComponent('tracked-controls', {
       controllerPosition.copy(headObject3D.position);
       // Set offset for degenerate "arm model" to elbow.
       deltaControllerPosition.set(
-        data.eyesToElbow.x * (data.hand === 'left' ? -1 : data.hand === 'right' ? 1 : 0),
-        data.eyesToElbow.y, // lower than your eyes
-        data.eyesToElbow.z); // slightly out in front
+        EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
+        EYES_TO_ELBOW.y, // lower than your eyes
+        EYES_TO_ELBOW.z); // slightly out in front
       // Scale offset by user height.
       deltaControllerPosition.multiplyScalar(userHeight);
       // Apply camera Y rotation (not X or Z, so you can look down at your hand).
@@ -123,7 +130,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       controllerPosition.add(deltaControllerPosition);
 
       // Set offset for degenerate "arm model" forearm.
-      deltaControllerPosition.set(data.forearm.x, data.forearm.y, data.forearm.z); // forearm sticking out from elbow
+      deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z); // forearm sticking out from elbow
       // Scale offset by user height.
       deltaControllerPosition.multiplyScalar(userHeight);
       // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
