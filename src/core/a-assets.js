@@ -40,6 +40,9 @@ module.exports = registerElement('a-assets', {
         for (i = 0; i < imgEls.length; i++) {
           imgEl = fixUpMediaElement(imgEls[i]);
           loaded.push(new Promise(function (resolve, reject) {
+            // Set in cache because we won't be needing to call three.js loader if we have.
+            // a loaded media element.
+            THREE.Cache.files[imgEls[i].getAttribute('src')] = imgEl;
             imgEl.onload = resolve;
             imgEl.onerror = reject;
           }));
@@ -154,6 +157,9 @@ function mediaElementLoaded (el) {
 
       // Compare seconds buffered to media duration.
       if (secondsBuffered >= el.duration) {
+        // Set in cache because we won't be needing to call three.js loader if we have.
+        // a loaded media element.
+        THREE.Cache.files[el.getAttribute('src')] = el;
         resolve();
       }
     }
@@ -206,8 +212,9 @@ function setCrossOrigin (mediaEl) {
     if (extractDomain(src) === window.location.host) { return mediaEl; }
   }
 
-  warn('Cross-origin element was requested without `crossorigin` set. ' +
-       'A-Frame will re-request the asset with `crossorigin` attribute set.', src);
+  warn('Cross-origin element (e.g., <img>) was requested without `crossorigin` set. ' +
+       'A-Frame will re-request the asset with `crossorigin` attribute set. ' +
+       'Please set `crossorigin` on the element (e.g., <img crossorigin="anonymous">)', src);
   mediaEl.crossOrigin = 'anonymous';
   newMediaEl = mediaEl.cloneNode(true);
   return newMediaEl;

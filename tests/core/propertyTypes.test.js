@@ -12,8 +12,6 @@ suite('propertyTypes', function () {
 
     setup(function () {
       var el = this.el = document.createElement('div');
-      el.setAttribute('id', 'hello');
-      el.setAttribute('src', 'file2.jpg');
       document.body.appendChild(el);
     });
 
@@ -21,11 +19,38 @@ suite('propertyTypes', function () {
       this.el.parentNode.removeChild(this.el);
     });
 
-    test('parses asset', function () {
+    test('parses asset as string', function () {
       assert.equal(parse('url(file.jpg)'), 'file.jpg');
       assert.equal(parse('file.jpg'), 'file.jpg');
-      assert.equal(parse('#hello'), 'file2.jpg');
-      assert.equal(parse('#where'), null);
+    });
+
+    test('parses <a-asset-item> asset', function () {
+      var asset = document.createElement('a-asset-item');
+      asset.setAttribute('id', 'foo');
+      asset.setAttribute('src', 'bar.gltf');
+      this.el.appendChild(asset);
+      assert.equal(parse('#foo'), 'bar.gltf');
+    });
+
+    test('parses <img> asset', function () {
+      var img = document.createElement('img');
+      img.setAttribute('id', 'foo');
+      this.el.appendChild(img);
+      assert.equal(parse('#foo'), img);
+    });
+
+    test('parses <canvas> asset', function () {
+      var canvas = document.createElement('canvas');
+      canvas.setAttribute('id', 'foo');
+      this.el.appendChild(canvas);
+      assert.equal(parse('#foo'), canvas);
+    });
+
+    test('parses <video> asset', function () {
+      var video = document.createElement('video');
+      video.setAttribute('id', 'foo');
+      this.el.appendChild(video);
+      assert.equal(parse('#foo'), video);
     });
   });
 
