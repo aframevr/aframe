@@ -3,10 +3,7 @@ var THREE = require('lib/three');
 
 var inferResponseType = require('core/a-assets').inferResponseType;
 
-// Empty src will not trigger load events in Chrome.
-// Use data URI where a load event is needed.
-var IMG_SRC = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-
+var IMG_SRC = '/base/tests/assets/test.png';
 var XHR_SRC = '/base/tests/assets/dummy/dummy.txt';
 var XHR_SRC_GLTF = '/base/tests/assets/dummy/dummy.gltf';
 var XHR_SRC_GLB = '/base/tests/assets/dummy/dummy.glb';
@@ -24,6 +21,7 @@ suite('a-assets', function () {
       done();
     });
     document.body.appendChild(scene);
+    THREE.Cache.files = {};
   });
 
   test('throws error if not in a-scene', function () {
@@ -57,6 +55,23 @@ suite('a-assets', function () {
     process.nextTick(function () {
       img.onload();
     });
+  });
+
+  test('caches image in three.js', function (done) {
+    var assetsEl = this.el;
+    var sceneEl = this.scene;
+
+    // Create image.
+    var img = document.createElement('img');
+    img.setAttribute('src', IMG_SRC);
+    assetsEl.appendChild(img);
+
+    img.addEventListener('load', function () {
+      assert.equal(THREE.Cache.files[IMG_SRC], img);
+      done();
+    });
+
+    document.body.appendChild(sceneEl);
   });
 
   test('does not wait for media element without preload attribute', function (done) {

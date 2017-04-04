@@ -3,6 +3,8 @@ var entityFactory = require('../helpers').entityFactory;
 var shaders = require('core/shader').shaders;
 var THREE = require('index').THREE;
 
+var IMG_SRC = '/base/tests/assets/test.png';
+
 suite('material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
@@ -109,6 +111,40 @@ suite('material', function () {
         assert.notOk(el.components.material.material.map);
         done();
       });
+    });
+
+    test('does not invoke XHR if passing <img>', function (done) {
+      var el = this.el;
+      var assetsEl = document.createElement('a-assets');
+      var img = document.createElement('img');
+      var imageLoaderSpy = this.sinon.spy(THREE.ImageLoader.prototype, 'load');
+      var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
+      img.setAttribute('src', IMG_SRC);
+      img.setAttribute('id', 'foo');
+      THREE.Cache.files[IMG_SRC] = img;
+      assetsEl.appendChild(img);
+      el.sceneEl.appendChild(assetsEl);
+      el.addEventListener('materialtextureloaded', function () {
+        assert.notOk(imageLoaderSpy.called);
+        assert.notOk(textureLoaderSpy.called);
+        delete THREE.Cache.files[IMG_SRC];
+        THREE.ImageLoader.prototype.load.restore();
+        THREE.TextureLoader.prototype.load.restore();
+        done();
+      });
+      el.setAttribute('material', 'src', '#foo');
+    });
+
+    test('invokes XHR if <img> not cached', function (done) {
+      var el = this.el;
+      var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
+      el.addEventListener('materialtextureloaded', function () {
+        assert.ok(textureLoaderSpy.called);
+        assert.ok(IMG_SRC in THREE.Cache.files);
+        THREE.TextureLoader.prototype.load.restore();
+        done();
+      });
+      el.setAttribute('material', 'src', IMG_SRC);
     });
 
     test('sets material to MeshShaderMaterial for custom shaders', function () {
