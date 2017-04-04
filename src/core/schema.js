@@ -71,7 +71,7 @@ function processPropertyDefinition (propDefinition, componentName) {
 
   propType = propertyTypes[typeName];
   if (!propType) {
-    warn('Unknown property type: ' + typeName);
+    warn('Unknown property type for component `' + componentName + '`: ' + typeName);
   }
 
   // Fill in parse and stringify using property types.
@@ -86,7 +86,7 @@ function processPropertyDefinition (propDefinition, componentName) {
     // Check that default values are valid.
     if (!isValidDefaultValue(typeName, defaultVal)) {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
-           '` in Component `' + componentName + '`');
+           '` in component `' + componentName + '`');
     }
   } else {
     // Fill in default value.
