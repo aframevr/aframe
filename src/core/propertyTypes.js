@@ -83,7 +83,11 @@ function assetParse (value) {
   if (value.charAt(0) === '#') {
     el = selectorParse(value);
     if (el) {
-      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO') { return el; }
+      // Pass through media elements. If we have the elements, we don't have to call
+      // three.js loaders which would re-request the assets.
+      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO' || el.tagName === 'IMG') {
+        return el;
+      }
       return el.getAttribute('src');
     }
     warn('"' + value + '" asset not found.');

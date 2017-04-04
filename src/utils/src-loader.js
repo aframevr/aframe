@@ -4,18 +4,18 @@ var debug = require('./debug');
 var warn = debug('utils:src-loader:warn');
 
 /**
- * Validates a texture, either as a selector or as a URL.
+ * Validate a texture, either as a selector or as a URL.
  * Detects whether `src` is pointing to an image or video and invokes the appropriate
  * callback.
  *
- * The src will be returned on the callback
+ * `src` will be passed into the callback
  *
- * @params {string} src - URL.
+ * @params {string|Element} src - URL or media element.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
  */
 function validateSrc (src, isImageCb, isVideoCb) {
-  validateImageUrl(src, function isAnImageUrl (isImage) {
+  checkIsImage(src, function isAnImageUrl (isImage) {
     if (isImage) {
       isImageCb(src);
       return;
@@ -56,7 +56,6 @@ function validateCubemapSrc (src, cb) {
   }
   if (urls) {
     for (i = 1; i < 7; i++) {
-      // TODO: cubemap property type.
       validateSrc(parseUrl(urls[i]), isImageCb);
     }
     return;
@@ -84,11 +83,17 @@ function parseUrl (src) {
 }
 
 /**
- * Validate src is a valid image url
- * @param  {string} src - url that will be tested
- * @param  {function} onResult - callback with the test result
+ * Call back whether `src` is an image.
+ *
+ * @param {string|Element} src - URL or element that will be tested.
+ * @param {function} onResult - Callback with whether `src` is an image.
  */
-function validateImageUrl (src, onResult) {
+function checkIsImage (src, onResult) {
+  if (src.tagName) {
+    onResult(src.tagName === 'IMG');
+    return;
+  }
+
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }

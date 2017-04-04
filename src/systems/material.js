@@ -7,6 +7,8 @@ var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
 var warn = debug('components:texture:warn');
 
+TextureLoader.setCrossOrigin('anonymous');
+
 /**
  * System for material component.
  * Handle material registration, updates (for fog), and texture caching.
@@ -63,9 +65,8 @@ module.exports.System = registerSystem('material', {
    * @param {object} data - Texture data.
    * @param {function} cb - Callback to pass texture to.
    */
-  loadImage: function (src, data, cb) {
+  loadImage: function (src, data, handleImageTextureLoaded) {
     var hash = this.hash(data);
-    var handleImageTextureLoaded = cb;
     var textureCache = this.textureCache;
 
     // Texture already being loaded or already loaded. Wait on promise.
@@ -149,7 +150,15 @@ module.exports.System = registerSystem('material', {
     handleVideoTextureLoaded(videoTextureResult);
   },
 
+  /**
+   * Create a hash of the material properties for texture cache key.
+   */
   hash: function (data) {
+    if (data.src.tagName) {
+      // Since `data.src` can be an element, parse out the string if necessary for the hash.
+      data = utils.extendDeep({}, data);
+      data.src = data.src.getAttribute('src');
+    }
     return JSON.stringify(data);
   },
 
@@ -242,7 +251,7 @@ function loadImageTexture (src, data) {
       return;
     }
 
-    // Load texture from src string. THREE will create underlying element.
+    // Request and load texture from src string. THREE will create underlying element.
     // Use THREE.TextureLoader (src, onLoad, onProgress, onError) to load texture.
     TextureLoader.load(
       src,
