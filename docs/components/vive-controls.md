@@ -25,9 +25,13 @@ buttons (trigger, grip, menu, system) and trackpad.
 |----------------------|----------------------------------------------------|----------------------|
 | buttonColor          | Button colors when not pressed.                    | #FAFAFA (off-white)  |
 | buttonHighlightColor | Button colors when pressed and active.             | #22D1EE (light blue) |
+| emulated             | Whether to emulate (treat as present regardless).  | false                |
 | hand                 | The hand that will be tracked (i.e., right, left). | left                 |
 | model                | Whether the Vive controller model is loaded.       | true                 |
 | rotationOffset       | Offset to apply to model rotation.                 | 0                    |
+
+The emulated property is rarely needed, but is provided for use cases that must force controller
+event listeners to be added despite no controllers actually being present, e.g. motion / event capture replays.
 
 ## Events
 
