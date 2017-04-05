@@ -36,8 +36,14 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onGripTouchEnd = function () { self.handleButton('grip', 'touchend'); };
     this.onThumbstickDown = function () { self.handleButton('thumbstick', 'down'); };
     this.onThumbstickUp = function () { self.handleButton('thumbstick', 'up'); };
+    this.onThumbstickTouchStart = function () { self.handleButton('thumbstick', 'touchstart'); };
+    this.onThumbstickTouchEnd = function () { self.handleButton('thumbstick', 'touchend'); };
+    this.onAorXDown = function () { self.handleButton('AorX', 'down'); };
+    this.onAorXUp = function () { self.handleButton('AorX', 'up'); };
     this.onAorXTouchStart = function () { self.handleButton('AorX', 'touchstart'); };
     this.onAorXTouchEnd = function () { self.handleButton('AorX', 'touchend'); };
+    this.onBorYDown = function () { self.handleButton('BorY', 'down'); };
+    this.onBorYUp = function () { self.handleButton('BorY', 'up'); };
     this.onBorYTouchStart = function () { self.handleButton('BorY', 'touchstart'); };
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
@@ -68,14 +74,24 @@ module.exports.Component = registerComponent('hand-controls', {
     el.addEventListener('griptouchend', this.onGripTouchEnd);
     el.addEventListener('thumbstickdown', this.onThumbstickDown);
     el.addEventListener('thumbstickup', this.onThumbstickUp);
-    el.addEventListener('Atouchstart', this.onAorXTouchStart);
-    el.addEventListener('Atouchend', this.onAorXTouchEnd);
-    el.addEventListener('Btouchstart', this.onBorYTouchStart);
-    el.addEventListener('Btouchend', this.onBorYTouchEnd);
-    el.addEventListener('Xtouchstart', this.onAorXTouchStart);
-    el.addEventListener('Xtouchend', this.onAorXTouchEnd);
-    el.addEventListener('Ytouchstart', this.onBorYTouchStart);
-    el.addEventListener('Ytouchend', this.onBorYTouchEnd);
+    el.addEventListener('thumbsticktouchstart', this.onThumbstickTouchStart);
+    el.addEventListener('thumbstickthouchend', this.onThumbstickTouchEnd);
+    el.addEventListener('abuttondown', this.onAorXDown);
+    el.addEventListener('abuttonup', this.onAorXUp);
+    el.addEventListener('abuttontouchstart', this.onAorXTouchStart);
+    el.addEventListener('abuttontouchend', this.onAorXTouchEnd);
+    el.addEventListener('bbuttondown', this.onBorYDown);
+    el.addEventListener('bbuttonup', this.onBorYUp);
+    el.addEventListener('bbuttontouchstart', this.onBorYTouchStart);
+    el.addEventListener('bbuttontouchend', this.onBorYTouchEnd);
+    el.addEventListener('xbuttondown', this.onAorXDown);
+    el.addEventListener('xbuttonup', this.onAorXUp);
+    el.addEventListener('xbuttontouchstart', this.onAorXTouchStart);
+    el.addEventListener('xbuttontouchend', this.onAorXTouchEnd);
+    el.addEventListener('ybuttondown', this.onBorYDown);
+    el.addEventListener('ybuttonup', this.onBorYUp);
+    el.addEventListener('ybuttontouchstart', this.onBorYTouchStart);
+    el.addEventListener('ybuttontouchend', this.onBorYTouchEnd);
     el.addEventListener('surfacetouchstart', this.onSurfaceTouchStart);
     el.addEventListener('surfacetouchend', this.onSurfaceTouchEnd);
   },
@@ -96,14 +112,24 @@ module.exports.Component = registerComponent('hand-controls', {
     el.removeEventListener('griptouchend', this.onGripTouchEnd);
     el.removeEventListener('thumbstickdown', this.onThumbstickDown);
     el.removeEventListener('thumbstickup', this.onThumbstickUp);
-    el.removeEventListener('Atouchstart', this.onAorXTouchStart);
-    el.removeEventListener('Atouchend', this.onAorXTouchEnd);
-    el.removeEventListener('Btouchstart', this.onBorYTouchStart);
-    el.removeEventListener('Btouchend', this.onBorYTouchEnd);
-    el.removeEventListener('Xtouchstart', this.onAorXTouchStart);
-    el.removeEventListener('Xtouchend', this.onAorXTouchEnd);
-    el.removeEventListener('Ytouchstart', this.onBorYTouchStart);
-    el.removeEventListener('Ytouchend', this.onBorYTouchEnd);
+    el.removeEventListener('thumbsticktouchstart', this.onThumbstickTouchStart);
+    el.removeEventListener('thumbstickthouchend', this.onThumbstickTouchEnd);
+    el.removeEventListener('abuttondown', this.onAorXDown);
+    el.removeEventListener('abuttonup', this.onAorXUp);
+    el.removeEventListener('abuttontouchstart', this.onAorXTouchStart);
+    el.removeEventListener('abuttontouchend', this.onAorXTouchEnd);
+    el.removeEventListener('bbuttontouchstart', this.onBorYTouchStart);
+    el.removeEventListener('bbuttondown', this.onBorYDown);
+    el.removeEventListener('bbuttonup', this.onBorYUp);
+    el.removeEventListener('bbuttontouchend', this.onBorYTouchEnd);
+    el.removeEventListener('xbuttondown', this.onAorXDown);
+    el.removeEventListener('xbuttonup', this.onAorXUp);
+    el.removeEventListener('xbuttontouchstart', this.onAorXTouchStart);
+    el.removeEventListener('xbuttontouchend', this.onAorXTouchEnd);
+    el.removeEventListener('ybuttondown', this.onBorYDown);
+    el.removeEventListener('ybuttonup', this.onBorYUp);
+    el.removeEventListener('ybuttontouchstart', this.onBorYTouchStart);
+    el.removeEventListener('ybuttontouchend', this.onBorYTouchEnd);
     el.removeEventListener('surfacetouchstart', this.onSurfaceTouchStart);
     el.removeEventListener('surfacetouchend', this.onSurfaceTouchEnd);
   },
@@ -161,15 +187,16 @@ module.exports.Component = registerComponent('hand-controls', {
     var isGripActive = this.pressedButtons['grip'];
     var isSurfaceActive = this.pressedButtons['surface'] || this.touchedButtons['surface'];
     var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
+    var isThumbstickActive = this.pressedButtons['thumbstick'] || this.touchedButtons['thumbstick'];
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
-    var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
+    var isABXYActive = this.pressedButtons['AorX'] || this.pressedButtons['BorY'] || this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
     var isOculusTouch = this.isOculusTouchController();
     // this works well with Oculus Touch, but Vive needs tweaks
     if (isGripActive) {
       if (!isOculusTouch) {
         gesture = 'fist';
       } else
-      if (isSurfaceActive || isABXYActive || isTrackpadActive) {
+      if (isSurfaceActive || isABXYActive || isTrackpadActive || isThumbstickActive) {
         gesture = isTriggerActive ? 'fist' : 'pointing';
       } else {
         gesture = isTriggerActive ? 'thumb' : 'pistol';
