@@ -147,11 +147,19 @@ module.exports.Component = registerComponent('look-controls', {
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
     if (isMobile) {
       // In mobile we allow camera rotation with touch events and sensors
-      rotation = {
-        x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
-        y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
-        z: radToDeg(hmdEuler.z)
-      };
+      if (this.data.reverseMouseDrag) {
+        rotation = {
+          x: radToDeg(hmdEuler.x) - radToDeg(pitchObject.rotation.x),
+          y: radToDeg(hmdEuler.y) - radToDeg(yawObject.rotation.y),
+          z: radToDeg(hmdEuler.z)
+        };
+      } else {
+        rotation = {
+          x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
+          y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
+          z: radToDeg(hmdEuler.z)
+        };
+      }
     } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
