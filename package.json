@@ -30,7 +30,7 @@
   "license": "MIT",
   "dependencies": {
     "browserify-css": "^0.8.2",
-    "debug": "^2.2.0",
+    "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
     "envify": "^3.4.1",
