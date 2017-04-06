@@ -91,7 +91,12 @@ module.exports.Component = registerComponent('vive-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.injectTrackedControls(); // inject track-controls
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   onGamepadConnected: function (evt) {
@@ -115,7 +120,6 @@ module.exports.Component = registerComponent('vive-controls', {
     window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
     window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
     this.addControllersUpdateListener();
-    this.addEventListeners();
   },
 
   pause: function () {

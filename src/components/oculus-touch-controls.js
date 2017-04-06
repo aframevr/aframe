@@ -65,6 +65,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onGamepadConnected = bind(this.onGamepadConnected, this);
+    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
   },
 
   init: function () {
@@ -91,9 +94,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
-    el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
-    window.addEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   removeEventListeners: function () {
@@ -104,9 +104,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
-    el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
-    window.removeEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   checkIfControllerPresent: function () {
@@ -114,15 +111,41 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.injectTrackedControls(); // inject track-controls
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
+    }
+  },
+
+  onGamepadConnected: function (evt) {
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
+    this.checkIfControllerPresent();
+  },
+
+  onGamepadDisconnected: function (evt) {
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
+    this.checkIfControllerPresent();
   },
 
   play: function () {
     this.checkIfControllerPresent();
-    this.addEventListeners();
+    window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
+    window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
+    this.addControllersUpdateListener();
   },
 
   pause: function () {
+    window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
+    window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
+    this.removeControllersUpdateListener();
     this.removeEventListeners();
   },
 
@@ -151,6 +174,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : isRightHand ? -90 : 90
     });
     this.updateControllerModel();
+  },
+
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
   onControllersUpdate: function () {
