@@ -320,7 +320,30 @@ To work around this issue, try changing the order of the entities in the HTML.
 
 ## Register a Custom Material
 
-We can register custom materials for appearances and effects using `AFRAME.registerShader`.
+We can register custom materials for appearances and effects using
+`AFRAME.registerShader`. However, the `registerShader` API is not yet fully
+featured and fairly limiting (e.g., no `tick` handler, some missing uniform
+types). For most cases for now, we recommend creating a custom material by
+creating three.js materials (e.g., `RawShaderMaterial`, `ShaderMaterial`) in a
+component:
+
+```js
+AFRAME.registerComponent('custom-material', {
+  schema: {
+    // Add properties.
+  },
+
+  init: function () {
+    this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShaderMaterial({
+      // ...
+    });
+  },
+
+  update: function () {
+    // Update `this.material`.
+  }
+});
+```
 
 ### `registerShader`
 
