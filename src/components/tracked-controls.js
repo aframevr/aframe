@@ -1,5 +1,3 @@
-/* global CustomEvent */
-
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
@@ -230,9 +228,7 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     evtName = buttonState.touched ? 'start' : 'end';
     // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
-    // this.el.emit doesn't allow changes to event outside detail...
-    // this.el.emit('touch' + evtName, {id: id, state: buttonState, touches: []});
-    this.el.dispatchEvent(new CustomEvent('touch' + evtName, {touches: [], detail: {id: id, state: buttonState}}));
+    this.el.emit('touch' + evtName, {id: id, state: buttonState}, true, {touches: []});
     previousButtonState.touched = buttonState.touched;
     return true;
   },

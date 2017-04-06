@@ -219,13 +219,16 @@ module.exports = registerElement('a-node', {
      *   Custom data to pass as `detail` to the event.
      * @param {Boolean=} [bubbles=true]
      *   Whether the event should bubble.
+     * @param {Object=} [extraData]
+     *   Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles) {
+      value: function (name, detail, bubbles, extraData) {
         var self = this;
         detail = detail || {};
         if (bubbles === undefined) { bubbles = true; }
         var data = { bubbles: !!bubbles, detail: detail };
+        if (extraData) { utils.extend(data, extraData); }
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
