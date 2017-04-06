@@ -69891,7 +69891,7 @@ module.exports.Component = registerComponent('sound', {
 
     if (!found) {
       warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
-           'consider increasing the size of pool with the `poolSize` attribute.');
+           'consider increasing the size of pool with the `poolSize` attribute.', this.el);
       return;
     }
 
@@ -76364,7 +76364,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 06-04-2017, Commit #682520c)');
+console.log('A-Frame Version: 0.5.0 (Date 06-04-2017, Commit #df86beb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
