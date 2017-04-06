@@ -33,8 +33,8 @@ handles hand animations and poses.
 
 | Event Name    | Description                                                    |
 | ----------    | -----------                                                    |
-| gripclose     | The hand is closed into a fist without thumb raised.           |
-| gripopen      | The hand is no longer closed into a fist without thumb raised. |
+| gripdown      | The hand is closed into a fist without thumb raised.           |
+| gripup        | The hand is no longer closed into a fist without thumb raised. |
 | pointup       | The hand is touching or pressing the trigger only.             |
 | pointdown     | The hand is no longer touching or pressing the trigger only.   |
 | thumbup       | The hand is closed into a fist with thumb raised.              |
