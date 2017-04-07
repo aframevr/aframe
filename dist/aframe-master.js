@@ -70883,7 +70883,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     if (buttonState.touched === previousButtonState.touched) { return false; }
 
     evtName = buttonState.touched ? 'start' : 'end';
-    this.el.emit('touch' + evtName, {id: id, state: buttonState});
+    // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
+    this.el.emit('touch' + evtName, {id: id, state: buttonState}, true, {touches: []});
     previousButtonState.touched = buttonState.touched;
     return true;
   },
@@ -73595,13 +73596,16 @@ module.exports = registerElement('a-node', {
      *   Custom data to pass as `detail` to the event.
      * @param {Boolean=} [bubbles=true]
      *   Whether the event should bubble.
+     * @param {Object=} [extraData]
+     *   Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles) {
+      value: function (name, detail, bubbles, extraData) {
         var self = this;
         detail = detail || {};
         if (bubbles === undefined) { bubbles = true; }
         var data = { bubbles: !!bubbles, detail: detail };
+        if (extraData) { utils.extend(data, extraData); }
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
@@ -76642,7 +76646,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 07-04-2017, Commit #cb1399e)');
+console.log('A-Frame Version: 0.5.0 (Date 07-04-2017, Commit #2471a61)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
