@@ -67928,18 +67928,18 @@ module.exports.Component = registerComponent('look-controls', {
 
   onTouchMove: function (e) {
     if (!this.touchStarted) { return; }
-    var deltaY = 0;
+    var deltaY, deltaX;
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject || {};
-    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) / // eslint-disable-line
+    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
             this.el.sceneEl.canvas.clientWidth;
     if (!this.data.gyroEnabled) {
-      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) / // eslint-disable-line
+      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
               this.el.sceneEl.canvas.clientHeight;
     }
     // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
-    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; } // eslint-disable-line
+    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; }
 
     this.touchStart = {
       x: e.touches[0].pageX,
@@ -76385,7 +76385,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 07-04-2017, Commit #ffcc7d9a)');
+console.log('A-Frame Version: 0.5.0 (Date 07-04-2017, Commit #2173ae3e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 

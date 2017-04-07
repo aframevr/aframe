@@ -284,18 +284,18 @@ module.exports.Component = registerComponent('look-controls', {
 
   onTouchMove: function (e) {
     if (!this.touchStarted) { return; }
-    var deltaY = 0;
+    var deltaY, deltaX;
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject || {};
-    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) / // eslint-disable-line
+    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
             this.el.sceneEl.canvas.clientWidth;
     if (!this.data.gyroEnabled) {
-      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) / // eslint-disable-line
+      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
               this.el.sceneEl.canvas.clientHeight;
     }
     // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
-    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; } // eslint-disable-line
+    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; }
 
     this.touchStart = {
       x: e.touches[0].pageX,
