@@ -188,7 +188,7 @@ module.exports.Component = registerComponent('look-controls', {
       };
     }
     this.el.setAttribute('rotation', rotation);
-  }
+  },
 
   calculateDeltaRotation: function () {
     var currentRotationX = radToDeg(this.pitchObject.rotation.x);
@@ -283,18 +283,19 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onTouchMove: function (e) {
-    var deltaY;
-    var yawObject = this.yawObject;
     if (!this.touchStarted) { return; }
-    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
+    var deltaY = 0;
+    var pitchObject = this.pitchObject;
+    var yawObject = this.yawObject || {};
+    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) / // eslint-disable-line
             this.el.sceneEl.canvas.clientWidth;
     if (!this.data.gyroEnabled) {
-      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
+      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) / // eslint-disable-line
               this.el.sceneEl.canvas.clientHeight;
     }
     // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
-    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; }
+    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; } // eslint-disable-line
 
     this.touchStart = {
       x: e.touches[0].pageX,
