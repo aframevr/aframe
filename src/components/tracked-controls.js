@@ -77,6 +77,50 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controller = matchingControllers[data.controller];
   },
 
+  applyArmModel: function (controllerPosition) {
+      // Use controllerPosition and deltaControllerPosition to avoid creating yet more variables...
+    var controller = this.controller;
+    var pose = controller.pose;
+    var controllerQuaternion = this.controllerQuaternion;
+    var controllerEuler = this.controllerEuler;
+    var deltaControllerPosition = this.deltaControllerPosition;
+    var hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
+    var headEl = this.getHeadElement();
+    var headObject3D = headEl.object3D;
+    var headCamera = headEl.components.camera;
+    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
+
+    // Use camera position as head position.
+    controllerPosition.copy(headObject3D.position);
+    // Set offset for degenerate "arm model" to elbow.
+    deltaControllerPosition.set(
+      EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
+      EYES_TO_ELBOW.y, // lower than your eyes
+      EYES_TO_ELBOW.z); // slightly out in front
+    // Scale offset by user height.
+    deltaControllerPosition.multiplyScalar(userHeight);
+    // Apply camera Y rotation (not X or Z, so you can look down at your hand).
+    deltaControllerPosition.applyAxisAngle(headObject3D.up, headObject3D.rotation.y);
+    // Apply rotated offset to position.
+    controllerPosition.add(deltaControllerPosition);
+
+    // Set offset for degenerate "arm model" forearm.
+    deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z); // forearm sticking out from elbow
+    // Scale offset by user height.
+    deltaControllerPosition.multiplyScalar(userHeight);
+    // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
+    if (pose.orientation) {
+      controllerQuaternion.fromArray(pose.orientation);
+    } else {
+      controllerQuaternion.copy(headObject3D.quaternion);
+    }
+    controllerEuler.setFromQuaternion(controllerQuaternion);
+    controllerEuler.set(controllerEuler.x, controllerEuler.y, 0);
+    deltaControllerPosition.applyEuler(controllerEuler);
+    // Apply rotated offset to position.
+    controllerPosition.add(deltaControllerPosition);
+  },
+
   /**
    * Read pose from controller (from Gamepad API), apply transforms, apply to entity.
    */
@@ -84,7 +128,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controller = this.controller;
     var controllerEuler = this.controllerEuler;
     var controllerPosition = this.controllerPosition;
-    var controllerQuaternion = this.controllerQuaternion;
     var currentPosition;
     var deltaControllerPosition = this.deltaControllerPosition;
     var dolly = this.dolly;
@@ -92,7 +135,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var pose;
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
-    var hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
     var headEl = this.getHeadElement();
     var headObject3D = headEl.object3D;
     var headCamera = headEl.components.camera;
@@ -112,38 +154,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.position.fromArray(pose.position);
     } else {
       // The controller is not 6DOF, so apply arm model.
-      // Use controllerPosition and deltaControllerPosition to avoid creating yet more variables...
-
-      // Use camera position as head position.
-      controllerPosition.copy(headObject3D.position);
-      // Set offset for degenerate "arm model" to elbow.
-      deltaControllerPosition.set(
-        EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
-        EYES_TO_ELBOW.y, // lower than your eyes
-        EYES_TO_ELBOW.z); // slightly out in front
-      // Scale offset by user height.
-      deltaControllerPosition.multiplyScalar(userHeight);
-      // Apply camera Y rotation (not X or Z, so you can look down at your hand).
-      deltaControllerPosition.applyAxisAngle(headObject3D.up, headObject3D.rotation.y);
-      // Apply rotated offset to position.
-      controllerPosition.add(deltaControllerPosition);
-
-      // Set offset for degenerate "arm model" forearm.
-      deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z); // forearm sticking out from elbow
-      // Scale offset by user height.
-      deltaControllerPosition.multiplyScalar(userHeight);
-      // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
-      if (pose.orientation) {
-        controllerQuaternion.fromArray(pose.orientation);
-      } else {
-        controllerQuaternion.copy(headObject3D.quaternion);
-      }
-      controllerEuler.setFromQuaternion(controllerQuaternion);
-      controllerEuler.set(controllerEuler.x, controllerEuler.y, 0);
-      deltaControllerPosition.applyEuler(controllerEuler);
-      // Apply rotated offset to position.
-      controllerPosition.add(deltaControllerPosition);
-
+      this.applyArmModel(controllerPosition);
       dolly.position.copy(controllerPosition);
     }
     dolly.updateMatrix();
