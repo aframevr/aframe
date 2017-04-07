@@ -2,7 +2,7 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var DEFAULT_USER_HEIGHT = require('../constants').DEFAULT_USER_HEIGHT;
 
-var DEFAULT_HAND = require('../constants').DEFAULT_HAND;
+var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
 var FOREARM = {x: 0, y: 0, z: -0.175}; // vector from eyes to elbow (divided by user height)
 
@@ -92,7 +92,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     var pose;
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
-    var hand = (controller ? controller.hand : undefined) || DEFAULT_HAND;
+    var hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
     var headEl = this.getHeadElement();
     var headObject3D = headEl.object3D;
     var headCamera = headEl.components.camera;
