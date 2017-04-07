@@ -294,7 +294,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     if (buttonState.touched === previousButtonState.touched) { return false; }
 
     evtName = buttonState.touched ? 'start' : 'end';
-    this.el.emit('touch' + evtName, {id: id, state: buttonState});
+    // Due to unfortunate name collision, add empty touches array to avoid Daydream error.
+    this.el.emit('touch' + evtName, {id: id, state: buttonState}, true, {touches: []});
     previousButtonState.touched = buttonState.touched;
     return true;
   },
