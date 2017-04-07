@@ -109,7 +109,6 @@ suite(controllerComponentName, function () {
       // check assertions
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
-      assert.ok(removeEventListenersSpy.called);
       assert.notOk(controllerComponent.controllerPresent);
     });
   });

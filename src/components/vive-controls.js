@@ -42,8 +42,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onGamepadConnected = bind(this.onGamepadConnected, this);
-    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
