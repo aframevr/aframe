@@ -8,10 +8,11 @@ parent_section: components
 [tracked]: ./tracked-controls.md
 [vive]: ./vive-controls.md
 [oculustouch]: ./oculus-touch-controls.md
+[daydream]: ./daydream-controls.md
 
 The hand-controls gives tracked hands (using a prescribed model) with animated
-gestures. hand-controls wraps the [vive-controls][vive] and
-[oculus-touch-controls][oculustouch] components, which in turn wrap the
+gestures. hand-controls wraps the [vive-controls][vive], [oculus-touch-controls][oculustouch],
+and [daydream-controls][daydream] components, which in turn wrap the
 [tracked-controls component][tracked]. The component gives extra events and
 handles hand animations and poses.
 
