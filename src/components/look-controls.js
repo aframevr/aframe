@@ -14,6 +14,7 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
+    gyroEnabled: {default: true},
     standing: {default: true}
   },
 
@@ -147,11 +148,19 @@ module.exports.Component = registerComponent('look-controls', {
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
     if (isMobile) {
       // In mobile we allow camera rotation with touch events and sensors
-      rotation = {
-        x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
-        y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
-        z: radToDeg(hmdEuler.z)
-      };
+      if (this.data.gyroEnabled) {
+        pitchObject.rotation.x = 0;
+        rotation = {
+          x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
+          y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
+          z: radToDeg(hmdEuler.z)
+        };
+      } else {
+        rotation = {
+          x: radToDeg(pitchObject.rotation.x),
+          y: radToDeg(yawObject.rotation.y)
+        };
+      }
     } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
@@ -179,7 +188,7 @@ module.exports.Component = registerComponent('look-controls', {
       };
     }
     this.el.setAttribute('rotation', rotation);
-  },
+  }
 
   calculateDeltaRotation: function () {
     var currentRotationX = radToDeg(this.pitchObject.rotation.x);
@@ -279,8 +288,14 @@ module.exports.Component = registerComponent('look-controls', {
     if (!this.touchStarted) { return; }
     deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
             this.el.sceneEl.canvas.clientWidth;
+    if (!this.data.gyroEnabled) {
+      deltaX = 2 * Math.PI * (e.touches[0].pageY - this.touchStart.y) /
+              this.el.sceneEl.canvas.clientHeight;
+    }
     // Limits touch orientaion to to yaw (y axis)
     yawObject.rotation.y -= deltaY * 0.5;
+    if (!this.data.gyroEnabled) { pitchObject.rotation.x -= deltaX * 0.5; }
+
     this.touchStart = {
       x: e.touches[0].pageX,
       y: e.touches[0].pageY
