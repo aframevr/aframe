@@ -369,7 +369,7 @@ AFRAME.registerShader('custom', {
 });
 ```
 
-### Example
+### Example — Basic Materials
 
 [line-dashed]: http://threejs.org/docs/index.html#Reference/Materials/LineDashedMaterial
 
@@ -401,3 +401,132 @@ AFRAME.registerShader('line-dashed', {
   }
 });
 ```
+
+### Example — GLSL and Shaders
+
+For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. We'll do this using [THREE.ShaderMaterial](https://threejs.org/docs/#Reference/Materials/ShaderMaterial) and a custom component. GLSL shaders can also be used with the `registerShader` API, but for many cases — here, we need a `tick()` handler to update the shader's clock — using a component can be easier.
+
+> NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
+
+Component:
+
+```js
+// material-grid-glitch.js
+
+const vertexShader = `
+  /// PLACEHOLDER ///
+`;
+const fragmentShader = `
+  /// PLACEHOLDER ///
+`;
+
+AFRAME.registerComponent('material-grid-glitch', {
+  schema: {color: {type: 'color'}},
+
+  /**
+   * Creates a new THREE.ShaderMaterial using the two shaders defined
+   * in vertex.glsl and fragment.glsl.
+   */
+  init: function () {
+    const data = this.data;
+  
+    this.material  = new THREE.ShaderMaterial({
+      uniforms: {
+        time: { value: 0.0 },
+        color: { value: new THREE.Color(data.color) }
+      },
+      vertexShader,
+      fragmentShader
+    });
+
+    this.applyToMesh();
+    this.el.addEventListener('model-loaded', () => this.applyToMesh());
+  },
+
+
+  /**
+   * Update the ShaderMaterial when component data changes.
+   */
+  update: function () {
+    this.material.uniforms.color.value.set(this.data.color);
+  },
+    
+  /**
+   * Apply the material to the current entity.
+   */
+  applyToMesh: function() {
+    const mesh = this.el.getObject3D('mesh');
+    if (mesh) {
+      mesh.material = this.material;
+    }
+  },
+
+  /**
+   * On each frame, update the 'time' uniform in the shaders.
+   */
+  tick: function (t) {
+    this.material.uniforms.time.value = t / 1000;
+  }
+  
+})
+```
+
+Next, we can put our shaders into the placeholders above. Every material will have two shaders: a vertex and a fragment shader.
+
+```glsl
+// vertex.glsl
+
+varying vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+```
+
+```glsl
+// fragment.glsl
+
+varying vec2 vUv;
+uniform vec3 color;
+uniform float time;
+
+void main() {
+  // Use sin(time), which curves between 0 and 1 over time,
+  // to determine the mix of two colors:
+  //    (a) Dynamic color where 'R' and 'B' channels come
+  //        from a modulus of the UV coordinates.
+  //    (b) Base color.
+  // 
+  // The color itself is a vec4 containing RGBA values 0-1.
+  gl_FragColor = mix(
+    vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
+    vec4(color, 1.0),
+    sin(time)
+  );
+}
+```
+
+Finally, here is the HTML markup to put it all together:
+
+```html
+<!-- index.html -->
+
+<a-scene>
+  <a-sphere material-grid-glitch="color: blue;"
+            radius="0.5"
+            position="0 1.5 -2">
+  </a-sphere>
+</a-scene>
+```
+
+* [Live demo](https://aframe-simple-shader.glitch.me/)
+* [Remix this on Glitch](https://glitch.com/edit/#!/aframe-simple-shader)
+
+![5093034e-97f2-40dc-8cb9-28ca75bfd75b-8043-00000dbc2e00268d](https://cloud.githubusercontent.com/assets/1848368/24825516/abb98abe-1bd4-11e7-8262-93d3efb6056f.gif)
+
+***
+
+For a more advanced example, [try realtime vertex displacement](https://glitch.com/edit/#!/aframe-displacement-shader).
+
+![b19320eb-802a-462a-afcd-3d0dd9480aee-861-000004c2a8504498](https://cloud.githubusercontent.com/assets/1848368/24825518/b52e5bf6-1bd4-11e7-8eb2-9a9c1ff82ce9.gif)
