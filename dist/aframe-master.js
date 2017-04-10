@@ -75618,6 +75618,7 @@ var System = module.exports.System = function (sceneEl) {
   var rawData;
 
   // Set reference to scene.
+  this.el = sceneEl;
   this.sceneEl = sceneEl;
 
   // Set reference to matching component (if exists).
@@ -76646,7 +76647,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 07-04-2017, Commit #2471a61)');
+console.log('A-Frame Version: 0.5.0 (Date 10-04-2017, Commit #5b4a316)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
