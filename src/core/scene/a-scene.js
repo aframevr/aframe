@@ -120,10 +120,8 @@ module.exports = registerElement('a-scene', {
 
     initSystem: {
       value: function (name) {
-        var system;
         if (this.systems[name]) { return; }
-        system = this.systems[name] = new systems[name](this);
-        system.init();
+        this.systems[name] = new systems[name](this);
       }
     },
 
@@ -290,7 +288,7 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Wraps Entity.setAttribute to take into account for systems.
+     * Wrap Entity.setAttribute to take into account for systems.
      * If system exists, then skip component initialization checks and do a normal
      * setAttribute.
      */
@@ -299,6 +297,7 @@ module.exports = registerElement('a-scene', {
         var system = this.systems[attr];
         if (system) {
           ANode.prototype.setAttribute.call(this, attr, value);
+          system.updateProperties(value);
           return;
         }
         AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);

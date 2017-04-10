@@ -4,7 +4,8 @@ var systems = require('core/system').systems;
 var registerSystem = require('core/system').registerSystem;
 
 var TestSystem = {
-  init: function () {}
+  init: function () {},
+  update: function () {}
 };
 
 suite('System', function () {
@@ -108,6 +109,76 @@ suite('System', function () {
 
       system = new TestSystem(sceneEl);
       assert.notOk(system.data);
+    });
+  });
+
+  test('can update system with setAttribute', function (done) {
+    var sceneEl;
+    var system;
+    AFRAME.registerSystem('test', {
+      schema: {
+        foo: {type: 'string'},
+        bar: {type: 'number'}
+      }
+    });
+    sceneEl = document.createElement('a-scene');
+    document.body.appendChild(sceneEl);
+
+    setTimeout(() => {
+      system = sceneEl.systems.test;
+
+      sceneEl.setAttribute('test', {foo: 'foo', bar: 10});
+      assert.equal(sceneEl.getAttribute('test').foo, 'foo');
+      assert.equal(sceneEl.getAttribute('test').bar, 10);
+      assert.equal(system.data.foo, 'foo');
+      assert.equal(system.data.bar, 10);
+
+      delete AFRAME.systems.test;
+      done();
+    });
+  });
+
+  test('calls update handler on init', function (done) {
+    var sceneEl;
+    AFRAME.registerSystem('test', {
+      schema: {
+        foo: {type: 'string', default: 'qaz'},
+        bar: {type: 'number', default: 50}
+      },
+
+      update: function () {
+        assert.equal(this.data.foo, 'qaz');
+        assert.equal(this.data.bar, 50);
+        delete AFRAME.systems.test;
+        done();
+      }
+    });
+    sceneEl = document.createElement('a-scene');
+    document.body.appendChild(sceneEl);
+  });
+
+  test('calls update handler on update', function (done) {
+    var sceneEl;
+    AFRAME.registerSystem('test', {
+      schema: {
+        foo: {type: 'string', default: 'default'},
+        bar: {type: 'number', default: 0}
+      },
+
+      update: function (oldData) {
+        if (!Object.keys(oldData).length) { return; }
+        assert.equal(oldData.foo, 'default');
+        assert.equal(oldData.bar, 0);
+        assert.equal(this.data.foo, 'foo');
+        assert.equal(this.data.bar, 10);
+        delete AFRAME.systems.test;
+        done();
+      }
+    });
+    sceneEl = document.createElement('a-scene');
+    document.body.appendChild(sceneEl);
+    setTimeout(() => {
+      sceneEl.setAttribute('test', {foo: 'foo', bar: 10});
     });
   });
 });

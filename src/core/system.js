@@ -17,16 +17,19 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * Systems provide global scope and services to a group of instantiated components of the
  * same class. They can also help abstract logic away from components such that components
  * only have to worry about data.
+ *
  * For example, a physics component that creates a physics world that oversees
  * all entities with a physics or rigid body component.
+ *
+ * TODO: Have the System prototype reuse the Component prototype. Most code is copied
+ * and some pieces are missing from the Component facilities (e.g., attribute caching,
+ * setAttribute behavior).
  *
  * @member {string} name - Name that system is registered under.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
 var System = module.exports.System = function (sceneEl) {
   var component = components && components.components[this.name];
-  var schema = this.schema;
-  var rawData;
 
   // Set reference to scene.
   this.el = sceneEl;
@@ -36,13 +39,9 @@ var System = module.exports.System = function (sceneEl) {
   if (component) { component.Component.prototype.system = this; }
 
   // Process system configuration.
-  if (!Object.keys(schema).length) { return; }
-  rawData = HTMLElement.prototype.getAttribute.call(sceneEl, this.name);
-  if (isSingleProp(schema)) {
-    this.data = parseProperty(rawData, schema);
-    return;
-  }
-  this.data = parseProperties(styleParser.parse(rawData) || {}, schema, false, this.name);
+  this.buildData();
+  this.init();
+  this.update({});
 };
 
 System.prototype = {
@@ -56,6 +55,38 @@ System.prototype = {
    * Systems can use this to set initial state.
    */
   init: function () { /* no-op */ },
+
+  /**
+   * Update handler. Called during scene attribute updates.
+   * Systems can use this to dynamically update their state.
+   */
+  update: function (oldData) { /* no-op */ },
+
+  /**
+   * Build data and call update handler.
+   *
+   * @private
+   */
+  updateProperties: function (rawData) {
+    var oldData = this.data;
+    if (!Object.keys(schema).length) { return; }
+    this.buildData(rawData);
+    this.update(oldData);
+  },
+
+  /**
+   * Parse data.
+   */
+  buildData: function (rawData) {
+    var schema = this.schema;
+    if (!Object.keys(schema).length) { return; }
+    rawData = rawData || HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
+    if (isSingleProp(schema)) {
+      this.data = parseProperty(rawData, schema);
+    } else {
+      this.data = parseProperties(styleParser.parse(rawData) || {}, schema);
+    }
+  },
 
   /**
    * Tick handler.
