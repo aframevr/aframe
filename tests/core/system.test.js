@@ -26,6 +26,20 @@ suite('System', function () {
     });
   });
 
+  suite('constructor', function () {
+    test('sets reference to scene', function (done) {
+      var sceneEl;
+      AFRAME.registerSystem('test', {});
+      sceneEl = document.createElement('a-scene');
+      document.body.appendChild(sceneEl);
+      setTimeout(() => {
+        assert.equal(sceneEl.systems.test.el, sceneEl);
+        assert.equal(sceneEl.systems.test.sceneEl, sceneEl);
+        done();
+      });
+    });
+  });
+
   suite('schema', function () {
     setup(function () {
       delete components.test;

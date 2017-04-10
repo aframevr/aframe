@@ -35,4 +35,5 @@ teardown(function () {
   }
   this.sinon.restore();
   delete AFRAME.components.test;
+  delete AFRAME.systems.test;
 });

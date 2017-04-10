@@ -29,6 +29,7 @@ var System = module.exports.System = function (sceneEl) {
   var rawData;
 
   // Set reference to scene.
+  this.el = sceneEl;
   this.sceneEl = sceneEl;
 
   // Set reference to matching component (if exists).
