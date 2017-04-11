@@ -3,9 +3,9 @@ var THREE = require('../lib/three');
 
 registerGeometry('triangle', {
   schema: {
-    vertexA: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-    vertexB: {type: 'vec3', default: {x: 1, y: 0, z: 0}},
-    vertexC: {type: 'vec3', default: {x: 0, y: 1, z: 0}}
+    vertexA: {type: 'vec3', default: {x: 0, y: 0.5, z: 0}},
+    vertexB: {type: 'vec3', default: {x: -0.5, y: -0.5, z: 0}},
+    vertexC: {type: 'vec3', default: {x: 0.5, y: -0.5, z: 0}}
   },
 
   init: function (data) {
