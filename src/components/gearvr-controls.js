@@ -2,8 +2,6 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
 var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.mtl';
@@ -18,7 +16,7 @@ var GAMEPAD_ID_PREFIX = 'Gear VR';
  */
 module.exports.Component = registerComponent('gearvr-controls', {
   schema: {
-    hand: {default: DEFAULT_HANDEDNESS}, // This informs the degenerate arm model.
+    hand: {default: ''}, // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
@@ -81,7 +79,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) { this.injectTrackedControls(); } // inject track-controls
@@ -121,7 +119,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
