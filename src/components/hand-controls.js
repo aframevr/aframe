@@ -1,27 +1,58 @@
+/* global THREE */
 var registerComponent = require('../core/component').registerComponent;
 
-var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json';
-var OCULUS_RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json';
+// Found at https://github.com/aframevr/assets.
+var MODEL_URLS = {
+  left: 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json',
+  right: 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json'
+};
+
+// Poses.
+var ANIMATIONS = {
+  open: 'Open',
+  // point: grip active, trackpad surface active, trigger inactive.
+  point: 'Point',
+  // pointThumb: grip active, trigger inactive, trackpad surface inactive.
+  pointThumb: 'Point + Thumb',
+  // fist: grip active, trigger active, trackpad surface active.
+  fist: 'Fist',
+  // hold: trigger active, grip inactive.
+  hold: 'Hold',
+  // thumbUp: grip active, trigger active, trackpad surface inactive.
+  thumbUp: 'Thumb Up'
+};
+
+// Map animation to public events for the API.
+var EVENTS = {};
+EVENTS[ANIMATIONS.fist] = 'grip';
+EVENTS[ANIMATIONS.thumbUp] = 'pistol';
+EVENTS[ANIMATIONS.point] = 'pointing';
+EVENTS[ANIMATIONS.thumb] = 'thumb';
 
 /**
-*
-* Hand Controls component
-* Auto-detect appropriate controllers
-* Handle common events coming from the detected vendor-specific controls
-* Translate button events to hand related actions:
-* gripclose, gripopen, thumbup, thumbdown, pointup, pointdown
-* Load a hand model with gestures that are applied based
-* on the button pressed.
-*
-* @property {left/right} Hand mapping
-*/
+ * Hand controls component that abstracts 6DoF controls: oculus-touch-controls, vive-controls.
+ * Originally meant to be a sample implementation of applications-specific controls that
+ * abstracts multiple types of controllers.
+ *
+ * Auto-detect appropriate controller.
+ * Handle common events coming from the detected vendor-specific controls.
+ * Translate button events to semantic hand-related event names:
+ *   (gripclose, gripopen, thumbup, thumbdown, pointup, pointdown)
+ * Load hand model with gestures that are applied based on the button pressed.
+ *
+ * @property {string} Hand mapping (`left`, `right`).
+ */
 module.exports.Component = registerComponent('hand-controls', {
   schema: {default: 'left'},
 
   init: function () {
     var self = this;
-    this.touchedButtons = {};
+    // Current pose.
+    this.gesture = ANIMATIONS.open;
+    // Active buttons populated by events provided by oculus-touch-controls and vive-controls.
     this.pressedButtons = {};
+    this.touchedButtons = {};
+
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
     this.onGripUp = function () { self.handleButton('grip', 'up'); };
     this.onTrackpadDown = function () { self.handleButton('trackpad', 'down'); };
@@ -108,55 +139,73 @@ module.exports.Component = registerComponent('hand-controls', {
     el.removeEventListener('surfacetouchend', this.onSurfaceTouchEnd);
   },
 
+  /**
+   * Update handler. More like the `init` handler since the only property is the hand, and
+   * that won't be changing much.
+   */
   update: function () {
+    var controlConfiguration;
     var el = this.el;
     var hand = this.data;
-    var controlConfiguration = {
+
+    // Get common configuration to abstract Vive and Oculus.
+    controlConfiguration = {
       hand: hand,
       model: false,
       rotationOffset: hand === 'left' ? 90 : -90
     };
-    var modelUrl;
-    if (hand === 'left') {
-      modelUrl = 'url(' + OCULUS_LEFT_HAND_MODEL_URL + ')';
-    } else {
-      modelUrl = 'url(' + OCULUS_RIGHT_HAND_MODEL_URL + ')';
-    }
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
     el.setAttribute('daydream-controls', controlConfiguration);
-    el.setAttribute('blend-character-model', modelUrl);
+
+    // Set model.
+    el.setAttribute('blend-character-model', MODEL_URLS[hand]);
   },
 
- /** Play the model animations based on the pressed button and kind of event.
+  /**
+   * Play model animation, based on which button was pressed and which kind of event.
    *
-   * @param {string} button the name of the button
-   * @param {string} evt the event associated to the button
+   * 1. Process buttons.
+   * 2. Determine gesture (this.determineGesture()).
+   * 3. Animation gesture (this.animationGesture()).
+   * 4. Emit gesture events (this.emitGestureEvents()).
+   *
+   * @param {string} button - Name of the button.
+   * @param {string} evt - Type of event for the button (i.e., down/up/touchstart/touchend).
    */
   handleButton: function (button, evt) {
+    var lastGesture;
     var isPressed = evt === 'down';
     var isTouched = evt === 'touchstart';
-    var lastGesture;
+
+    // Update objects.
     if (evt.indexOf('touch') === 0) {
+      // Update touch object.
       if (isTouched === this.touchedButtons[button]) { return; }
       this.touchedButtons[button] = isTouched;
     } else {
+      // Update button object.
       if (isPressed === this.pressedButtons[button]) { return; }
       this.pressedButtons[button] = isPressed;
     }
+
+    // Determine the gesture.
     lastGesture = this.gesture;
     this.gesture = this.determineGesture();
+
+    // Same gesture.
     if (this.gesture === lastGesture) { return; }
-    this.animateGesture(this.gesture);
+
+    // Animate gesture.
+    this.animateGesture(this.gesture, lastGesture);
+
+    // Emit events.
     this.emitGestureEvents(this.gesture, lastGesture);
   },
 
-  isOculusTouchController: function () {
-    var trackedControls = this.el.components['tracked-controls'];
-    var controllerId = trackedControls && trackedControls.controller && trackedControls.controller.id;
-    return controllerId && controllerId.indexOf('Oculus Touch') === 0;
-  },
-
+  /**
+   * Determine which pose hand should be in considering active and touched buttons.
+   */
   determineGesture: function () {
     var gesture;
     var isGripActive = this.pressedButtons['grip'];
@@ -164,103 +213,128 @@ module.exports.Component = registerComponent('hand-controls', {
     var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
     var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
-    var isOculusTouch = this.isOculusTouchController();
-    // this works well with Oculus Touch, but Vive needs tweaks
+    var isOculusTouch = isOculusTouchController(this.el.components['tracked-controls']);
+
+    // Works well with Oculus Touch but Vive needs tweaks.
     if (isGripActive) {
       if (!isOculusTouch) {
-        gesture = 'fist';
+        gesture = ANIMATIONS.fist;
       } else
       if (isSurfaceActive || isABXYActive || isTrackpadActive) {
-        gesture = isTriggerActive ? 'fist' : 'pointing';
+        gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
       } else {
-        gesture = isTriggerActive ? 'thumb' : 'pistol';
+        gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
       }
-    } else
-    if (isTriggerActive) {
-      gesture = isOculusTouch ? 'touch' : 'fist';
-    } else
-    if (!isOculusTouch && isTrackpadActive) { gesture = 'pointing'; }
+    } else {
+      if (isTriggerActive) {
+        gesture = isOculusTouch ? ANIMATIONS.hold : ANIMATIONS.fist;
+      } else if (!isOculusTouch && isTrackpadActive) {
+        gesture = ANIMATIONS.point;
+      }
+    }
+
     return gesture;
   },
 
-  gestureAnimationMapping: {
-    default: 'Open',
-    pointing: 'Point',
-    pistol: 'Point + Thumb',
-    fist: 'Fist',
-    touch: 'Hold',
-    thumb: 'Thumb Up'
-  },
-
-  animateGesture: function (gesture) {
-    var isOculusTouch = this.isOculusTouchController();
-    if (!gesture && !isOculusTouch) {
-      // for Vive (and other non-Oculus Touch), change rest pose to be thumb down
-      this.playAnimation('Open', true);
+  /**
+   * Play gesture animation.
+   *
+   * @param {string} gesture - Which pose to animate to. If absent, then animate to open.
+   * @param {string} lastGesture - Previous gesture, to reverse back to open if needed.
+   */
+  animateGesture: function (gesture, lastGesture) {
+    if (gesture) {
+      this.playAnimation(gesture || ANIMATIONS.open, lastGesture, false);
       return;
     }
-    var animation = this.gestureAnimationMapping[gesture || 'default'];
-    this.playAnimation(animation || 'Open', !animation && isOculusTouch);
+    // If no gesture, then reverse the current gesture back to open pose.
+    this.playAnimation(lastGesture, lastGesture, true);
   },
 
-  // map to old vive-specific event names for now
-  gestureEventMapping: {
-    fist: 'grip',         // fist: e.g. grip active, trigger active, trackpad / surface active
-    touch: 'point',       // 'touch' e.g. trigger active, grip not active
-    thumb: 'thumb',       // thumbs up: e.g. grip active, trigger active, trackpad / surface not active
-    pointing: 'pointing', // pointing: e.g. grip active, trackpad / surface active, trigger not active
-    pistol: 'pistol'      // pistol: e.g. grip active, trigger not active, trackpad / surface not active
-  },
-
-  gestureEventName: function (gesture, active) {
-    if (!gesture) return 0;
-    var eventName = this.gestureEventMapping[gesture];
-    if (eventName === 'grip') { return eventName + (active ? 'close' : 'open'); }
-    if (eventName === 'point' || eventName === 'thumb') { return eventName + (active ? 'up' : 'down'); }
-    if (eventName === 'pointing' || eventName === 'pistol') { return eventName + (active ? 'start' : 'end'); }
-    return 0;
-  },
-
+  /**
+   * Emit `hand-controls`-specific events.
+   */
   emitGestureEvents: function (gesture, lastGesture) {
     var el = this.el;
     var eventName;
-    if (lastGesture !== gesture) {
-      eventName = this.gestureEventName(lastGesture, false);
-      if (eventName) { el.emit(eventName); }
-      eventName = this.gestureEventName(gesture, true);
-      if (eventName) { el.emit(eventName); }
-    }
+
+    if (lastGesture === gesture) { return; }
+
+    // Emit event for lastGesture not inactive.
+    eventName = getGestureEventName(lastGesture, false);
+    if (eventName) { el.emit(eventName); }
+
+    // Emit event for current gesture now active.
+    eventName = getGestureEventName(gesture, true);
+    if (eventName) { el.emit(eventName); }
   },
 
 /**
-  * Play the hand animations based on button state.
+  * Play hand animation based on button state.
   *
-  * @param {string} animation - the name of the animation.
-  * @param {string} reverse - It the animation has to play in reverse.
+  * @param {string} gesture - Name of the animation as specified by the model.
+  * @param {string} lastGesture - Previous pose.
+  * @param {boolean} reverse - Whether animation should play in reverse.
   */
-  playAnimation: function (animation, reverse) {
-    var animationActive = this.animationActive;
-    var timeScale = 1;
+  playAnimation: function (gesture, lastGesture, reverse) {
+    var fromAction;
     var mesh = this.el.getObject3D('mesh');
-    var clipAction;
+    var toAction;
+
     if (!mesh) { return; }
 
-    // determine direction of the animation.
-    if (reverse) { timeScale = -1; }
+    // Grab clip action.
+    toAction = mesh.mixer.clipAction(gesture);
+    toAction.clampWhenFinished = true;
+    toAction.loop = THREE.PingPong;
+    toAction.repetitions = 0;
+    toAction.timeScale = reverse ? -1 : 1;
 
-    // stop current animation.
-    if (animationActive) { mesh.play(animationActive, 0); }
+    // No gesture to gesture or gesture to no gesture.
+    if (!lastGesture || gesture === lastGesture) {
+      // Stop all current animations.
+      mesh.stopAll();
 
-    // play new animation.
-    clipAction = mesh.mixer.clipAction(animation);
-    // returning when no clipAction will prevent further issues
-    // (e.g. controllers no longer updating pose)
-    // but per https://github.com/aframevr/aframe/pull/2191#discussion_r93121878
-    // the preference is to NOT prevent the issues to catch bugs earlier in QA.
-    clipAction.loop = 2200;
-    clipAction.clampWhenFinished = true;
-    clipAction.timeScale = timeScale;
-    mesh.play(animation, 1);
-    this.animationActive = animation;
+      // Play animation.
+      mesh.play(gesture, 1);
+      return;
+    }
+
+    // Animate or crossfade from gesture to gesture.
+    fromAction = mesh.mixer.clipAction(lastGesture);
+    mesh.mixer.stopAllAction();
+    mesh.play(lastGesture, 0.15);
+    mesh.play(gesture, 1);
+    fromAction.crossFadeTo(toAction, 0.15, true);
   }
 });
+
+/**
+ * Suffix gestures based on toggle state (e.g., open/close, up/down, start/end).
+ *
+ * @param {string} gesture
+ * @param {boolean} active
+ */
+function getGestureEventName (gesture, active) {
+  var eventName;
+
+  if (!gesture) { return; }
+
+  eventName = EVENTS[gesture];
+  if (eventName === 'grip') {
+    return eventName + (active ? 'close' : 'open');
+  }
+  if (eventName === 'point' || eventName === 'thumb') {
+    return eventName + (active ? 'up' : 'down');
+  }
+  if (eventName === 'pointing' || eventName === 'pistol') {
+    return eventName + (active ? 'start' : 'end');
+  }
+  return;
+}
+
+function isOculusTouchController (trackedControls) {
+  var controllerId = trackedControls && trackedControls.controller &&
+                     trackedControls.controller.id;
+  return controllerId && controllerId.indexOf('Oculus Touch') === 0;
+}
