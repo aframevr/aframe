@@ -486,7 +486,6 @@ to actual controllers.
 
 To have a visible cursor fixed to the [camera], we place the cursor as a child
 of the camera as explained above in [Parent and Child Transforms][parentchild].
-A-Frame
 
 [camera]: ../components/camera.md
 
