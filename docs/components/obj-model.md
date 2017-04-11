@@ -61,4 +61,4 @@ We can find and download models on the web to drop into our scenes:
 [clara]: https://clara.io
 [material]: ./material.md
 [sketchup]: https://3dwarehouse.sketchup.com
-[wavefront-wiki]: https://en.wikipedia.org/wiki/Wavefront
+[wavefront-wiki]: https://en.wikipedia.org/wiki/Wavefront_.obj_file
