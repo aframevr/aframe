@@ -1,3 +1,4 @@
+var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 /**
  * Return enumerated gamepads matching id prefix.
  *
@@ -48,7 +49,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     isPrefixMatch = (!idPrefix || idPrefix === '' || gamepad.id.indexOf(idPrefix) === 0);
     isPresent = isPrefixMatch;
     if (isPresent && queryObject.hand) {
-      isPresent = gamepad.hand === queryObject.hand;
+      isPresent = (gamepad.hand || DEFAULT_HANDEDNESS) === queryObject.hand;
     }
     if (isPresent && queryObject.index) {
       isPresent = index === queryObject.index; // need to use count of gamepads with idPrefix
