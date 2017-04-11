@@ -15,6 +15,10 @@ and/or pressed buttons (trackpad, trigger).
 ## Example
 
 ```html
+<!-- Match Gear VR controller if present, regardless of hand. -->
+<a-entity gearvr-controls></a-entity>
+
+<!-- Match Gear VR controller if present and for specified hand. -->
 <a-entity gearvr-controls="hand: left"></a-entity>
 <a-entity gearvr-controls="hand: right"></a-entity>
 ```
@@ -26,7 +30,7 @@ and/or pressed buttons (trackpad, trigger).
 | buttonColor          | Button colors when not pressed.                    | #000000 |
 | buttonTouchedColor   | Button colors when touched.                        | #777777 |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF |
-| hand                 | The hand that will be tracked (i.e., right, left). | right   |
+| hand                 | The hand that will be tracked (e.g., right, left). |         |
 | model                | Whether the Daydream controller model is loaded.   | true    |
 | rotationOffset       | Offset to apply to model rotation.                 | 0       |
 
