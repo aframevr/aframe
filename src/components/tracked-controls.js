@@ -109,7 +109,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Scale offset by user height.
     deltaControllerPosition.multiplyScalar(userHeight);
     // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
-    if (pose.orientation) {
+    if (pose && pose.orientation) {
       controllerQuaternion.fromArray(pose.orientation);
     } else {
       controllerQuaternion.copy(headObject3D.quaternion);
@@ -145,12 +145,12 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Compose pose from Gamepad.
     pose = controller.pose;
     // If no orientation, use camera.
-    if (pose.orientation) {
+    if (pose && pose.orientation) {
       dolly.quaternion.fromArray(pose.orientation);
     } else {
       dolly.quaternion.copy(headObject3D.quaternion);
     }
-    if (pose.position) {
+    if (pose && pose.position) {
       dolly.position.fromArray(pose.position);
     } else {
       // The controller is not 6DOF, so apply arm model.
@@ -160,7 +160,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     dolly.updateMatrix();
 
     // Apply transforms, if 6DOF and in VR.
-    if (pose.position && vrDisplay) {
+    if (pose && pose.position && vrDisplay) {
       if (vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
         dolly.applyMatrix(standingMatrix);

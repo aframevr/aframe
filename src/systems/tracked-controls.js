@@ -7,6 +7,7 @@ var utils = require('../utils');
  * It maintains a list with the available tracked controllers
  */
 module.exports.System = registerSystem('tracked-controls', {
+  schema: {alwaysAllowIdPrefixes: {type: 'array'}},
   init: function () {
     var self = this;
     this.controllers = [];
@@ -26,7 +27,12 @@ module.exports.System = registerSystem('tracked-controls', {
     var gamepads = trackedControlsUtils.getGamepadsByPrefix('');
     for (var i = 0; i < gamepads.length; i++) {
       var gamepad = gamepads[i];
-      if (gamepad && gamepad.pose) { controllers.push(gamepad); }
+      if (gamepad && gamepad.pose) { controllers.push(gamepad); } else
+      if (gamepad && this.data.alwaysAllowIdPrefixes) {
+        this.data.alwaysAllowIdPrefixes.forEach(function (idPrefix) {
+          if (gamepad.id.indexOf(idPrefix) === 0) { controllers.push(gamepad); }
+        });
+      }
     }
   },
 
