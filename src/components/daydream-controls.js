@@ -2,8 +2,6 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 
-var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_MTL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.mtl';
@@ -18,7 +16,7 @@ var GAMEPAD_ID_PREFIX = 'Daydream Controller';
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: DEFAULT_HANDEDNESS}, // This informs the degenerate arm model.
+    hand: {default: ''}, // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
