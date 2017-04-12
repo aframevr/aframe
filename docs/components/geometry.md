@@ -290,6 +290,23 @@ not coprime the result will be a torus link:
 | p               | How many times the geometry winds around its axis of rotational symmetry.                                       | 2             |
 | q               | How many times the geometry winds around a circle in the interior of the torus.                                 | 3             |
 
+### `triangle`
+
+The triangle geometry creates a flat two-dimensional triangle. Because triangles are flat,
+A-Frame will render only a single face, which is the one with `vertexA`, `vertexB`, and
+`vertexC` appear in counterclockwise order on the screen, unless we specify `side: double` on
+the `material` component.
+
+```html
+<a-entity geometry="primitive: triangle" material="side: double"></a-entity>
+```
+
+| Property | Description                                | Default Value |
+|----------|--------------------------------------------|---------------|
+| vertexA  | Coordinates of one of the three vertices   |    0  0.5 0   |
+| vertexB  | Coordinates of one of the three vertices   | -0.5 -0.5 0   |
+| vertexC  | Coordinates of one of the three vertices   |  0.5 -0.5 0   |
+
 ## Register a Custom Geometry
 
 We can register our own geometries using `AFRAME.registerGeometry` and creating
