@@ -63,7 +63,7 @@ component with the type set to `circle`.
 To make a circle parallel to the ground, rotate it around the X-axis:
 
 ```html
-<a-plane rotation="-90 0 0"></a-plane>
+<a-circle rotation="-90 0 0"></a-circle>
 ```
 
 [geometry]: ../components/geometry.md
