@@ -43,7 +43,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -56,7 +55,6 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
-    this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
@@ -99,27 +97,18 @@ module.exports.Component = registerComponent('vive-controls', {
     } else { this.removeEventListeners(); }
   },
 
-  onGamepadConnectionEvent: function (evt) {
-    this.everGotGamepadEvent = true;
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener as a result.
-    this.checkIfControllerPresent();
-  },
-
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    window.addEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
-    window.addEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    window.removeEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
-    window.removeEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   injectTrackedControls: function () {
@@ -144,9 +133,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
-  onControllersUpdate: function () {
-    if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
-  },
+  onControllersUpdate: function () { this.checkIfControllerPresent(); },
 
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];

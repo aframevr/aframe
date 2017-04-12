@@ -60,7 +60,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -72,7 +71,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
     this.controllerPresent = false;
-    this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
@@ -119,28 +117,19 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     } else { this.removeEventListeners(); }
   },
 
-  onGamepadConnectionEvent: function (evt) {
-    this.everGotGamepadEvent = true;
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener as a result.
-    this.checkIfControllerPresent();
-  },
-
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    window.addEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
-    window.addEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeControllersUpdateListener();
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    window.removeEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
-    window.removeEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
@@ -179,10 +168,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   onControllersUpdate: function () {
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener when we get a gamepad event.
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 

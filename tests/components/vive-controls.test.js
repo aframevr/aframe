@@ -174,12 +174,12 @@ suite(controllerComponentName, function () {
     });
   });
 
-  suite('gamepadconnected / disconnected', function () {
+  suite('gamepaddisconnected', function () {
     // Due to an apparent bug in FF Nightly
     // where only one gamepadconnected / disconnected event is fired,
     // which makes it difficult to handle in individual controller entities,
     // we no longer remove the controllersupdate listener as a result.
-    test('if we get gamepadconnected or gamepaddisconnected, check if present', function () {
+    test('if we get gamepaddisconnected, check if present', function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var checkIfControllerPresentSpy = this.sinon.spy(controllerComponent, 'checkIfControllerPresent');
@@ -187,15 +187,6 @@ suite(controllerComponentName, function () {
       controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
       controllerComponent.pause();
       controllerComponent.play();
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // reset everGotGamepadEvent so we don't think we've looked before
-      delete controllerComponent.everGotGamepadEvent;
-      // fire emulated gamepadconnected event
-      window.dispatchEvent(new Event('gamepadconnected'));
-      // check assertions
-      assert.ok(checkIfControllerPresentSpy.called);
-      assert.ok(controllerComponent.everGotGamepadEvent);
       // mock isControllerPresent to return false
       controllerComponent.isControllerPresentMockValue = false;
       // reset everGotGamepadEvent so we don't think we've looked before
@@ -204,7 +195,6 @@ suite(controllerComponentName, function () {
       window.dispatchEvent(new Event('gamepaddisconnected'));
       // check assertions
       assert.ok(checkIfControllerPresentSpy.called);
-      assert.ok(controllerComponent.everGotGamepadEvent);
     });
   });
 });
