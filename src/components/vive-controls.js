@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var isEmulatedTouchEvent = require('../utils/tracked-controls').isEmulatedTouchEvent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -56,6 +57,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
+    this.previousButtonValues = {};
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
   },
@@ -138,13 +140,27 @@ module.exports.Component = registerComponent('vive-controls', {
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
-    var value;
+    var analogValue;
+    var isEmulatedTouch;
+    var isPreviousValueEmulatedTouch;
     if (!button) { return; }
 
-    // Update button mesh, if any.
-    if (buttonMeshes && button === 'trigger') {
-      value = evt.detail.state.value;
-      buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    if (button === 'trigger') {
+      // At the moment, if trigger,
+      // touch events aren't happening;
+      // synthesize touch events from very low analog values.
+      analogValue = evt.detail.state.value;
+      isPreviousValueEmulatedTouch = isEmulatedTouchEvent(this.previousButtonValues[button]);
+      this.previousButtonValues[button] = analogValue;
+      isEmulatedTouch = isEmulatedTouchEvent(analogValue);
+      if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
+        (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
+      }
+
+      // Update button mesh, if any.
+      if (buttonMeshes && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+      }
     }
 
     // Pass along changed event with button state, using button mapping for convenience.
