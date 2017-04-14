@@ -2,9 +2,9 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 
-var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
-var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
-var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.mtl';
+var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
+var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
+var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
 
 var GAMEPAD_ID_PREFIX = 'Gear VR';
 
@@ -146,10 +146,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var buttonMeshes;
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('AppButton_AppButton_Cylinder.004');
-    buttonMeshes.trackpad = controllerObject3D.getObjectByName('TouchPad_TouchPad_Cylinder.003');
-    // Offset pivot point
-    controllerObject3D.position.set(0, 0, -0.04);
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
+    buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
   },
 
   onAxisMoved: function (evt) {
