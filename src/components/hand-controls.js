@@ -157,6 +157,7 @@ module.exports.Component = registerComponent('hand-controls', {
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
     el.setAttribute('daydream-controls', controlConfiguration);
+    el.setAttribute('gearvr-controls', controlConfiguration);
 
     // Set model.
     el.setAttribute('blend-character-model', MODEL_URLS[hand]);
