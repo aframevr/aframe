@@ -52,8 +52,14 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonTouchStart = function (evt) {
+      // we're emulating trigger touch, so suppress real events
+      if (evt.detail.id !== 'trigger') { self.onButtonEvent(evt.detail.id, 'touchstart'); }
+    };
+    this.onButtonTouchEnd = function (evt) {
+      // we're emulating trigger touch, so suppress real events
+      if (evt.detail.id !== 'trigger') { self.onButtonEvent(evt.detail.id, 'touchend'); }
+    };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
@@ -154,7 +160,7 @@ module.exports.Component = registerComponent('vive-controls', {
       this.previousButtonValues[button] = analogValue;
       isEmulatedTouch = isEmulatedTouchEvent(analogValue);
       if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
-        (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
+        this.onButtonEvent(evt.detail.id, isEmulatedTouch ? 'touchstart' : 'touchend');
       }
 
       // Update button mesh, if any.
