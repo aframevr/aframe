@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -59,6 +60,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.previousButtonValues = {};
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
+    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
   addEventListeners: function () {
@@ -171,24 +173,7 @@ module.exports.Component = registerComponent('vive-controls', {
     controllerObject3D.position.set(0, -0.015, 0.04);
   },
 
-  onAxisMoved: function (evt) {
-    var self = this;
-    var axesMapping = this.mapping.axes;
-    // In theory, it might be better to use mapping from axis to control.
-    // In practice, it is not clear whether the additional overhead is worthwhile,
-    // and if we did grouping of axes, we really need de-duplication there.
-    Object.keys(axesMapping).forEach(function (key) {
-      var value = axesMapping[key];
-      var detail = {};
-      var changed = !evt.detail.changed;
-      if (!changed) { value.forEach(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; }); }
-      if (changed) {
-        value.forEach(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
-        self.el.emit(key + 'moved', detail);
-        // If we updated the model based on axis values, that call would go here.
-      }
-    });
-  },
+  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
 
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];
