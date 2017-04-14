@@ -66482,7 +66482,7 @@ module.exports.Component = registerComponent('blend-character-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147}],56:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148}],56:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -66659,7 +66659,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils/":169}],57:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/":170}],57:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66694,7 +66694,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147}],58:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148}],58:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
@@ -66895,12 +66895,10 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":101,"../utils/":169}],59:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/":170}],59:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
-
-var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
@@ -66909,25 +66907,23 @@ var DAYDREAM_CONTROLLER_MODEL_OBJ_MTL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr
 var GAMEPAD_ID_PREFIX = 'Daydream Controller';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Daydream controls.
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: DEFAULT_HANDEDNESS}, // This informs the degenerate arm model.
+    hand: {default: ''},  // Informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    // Use -999 as sentinel value to auto-determine based on hand.
+    rotationOffset: {default: 0}
   },
 
   // buttonId
   // 0 - trackpad
-  // 1 - menu ( never dispatched on this layer )
-  // 2 - system ( never dispatched on this layer )
+  // 1 - menu (never dispatched on this layer)
+  // 2 - system (never dispatched on this layer)
   mapping: {
     axis0: 'trackpad',
     axis1: 'trackpad',
@@ -67103,7 +67099,208 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../constants":92,"../core/component":101,"../utils/bind":163,"../utils/tracked-controls":173}],60:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":164,"../utils/tracked-controls":174}],60:[function(_dereq_,module,exports){
+var registerComponent = _dereq_('../core/component').registerComponent;
+var bind = _dereq_('../utils/bind');
+var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
+
+var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
+var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
+var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.mtl';
+
+var GAMEPAD_ID_PREFIX = 'Gear VR';
+
+/**
+ * Vive Controls Component
+ * Interfaces with vive controllers and maps Gamepad events to
+ * common controller buttons: trackpad, trigger, grip, menu and system
+ * It loads a controller model and highlights the pressed buttons
+ */
+module.exports.Component = registerComponent('gearvr-controls', {
+  schema: {
+    hand: {default: ''}, // This informs the degenerate arm model.
+    buttonColor: {type: 'color', default: '#000000'},
+    buttonTouchedColor: {type: 'color', default: '#777777'},
+    buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
+    model: {default: true},
+    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+  },
+
+  // buttonId
+  // 0 - trackpad
+  // 1 - triggeri
+  mapping: {
+    axis0: 'trackpad',
+    axis1: 'trackpad',
+    button0: 'trackpad',
+    button1: 'trigger'
+  },
+
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onGamepadConnected = bind(this.onGamepadConnected, this);
+    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+  },
+
+  init: function () {
+    var self = this;
+    this.animationActive = 'pointing';
+    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
+    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.controllerPresent = false;
+    this.everGotGamepadEvent = false;
+    this.lastControllerCheck = 0;
+    this.bindMethods();
+    this.isControllerPresent = isControllerPresent; // to allow mock
+  },
+
+  addEventListeners: function () {
+    var el = this.el;
+    el.addEventListener('buttondown', this.onButtonDown);
+    el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
+  },
+
+  removeEventListeners: function () {
+    var el = this.el;
+    el.removeEventListener('buttondown', this.onButtonDown);
+    el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
+  },
+
+  checkIfControllerPresent: function () {
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
+    if (isPresent === this.controllerPresent) { return; }
+    this.controllerPresent = isPresent;
+    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+  },
+
+  onGamepadConnected: function (evt) {
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
+    this.checkIfControllerPresent();
+  },
+
+  onGamepadDisconnected: function (evt) {
+    // for now, don't disable controller update listening, due to
+    // apparent issue with FF Nightly only sending one event and seeing one controller;
+    // this.everGotGamepadEvent = true;
+    // this.removeControllersUpdateListener();
+    this.checkIfControllerPresent();
+  },
+
+  play: function () {
+    this.checkIfControllerPresent();
+    window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
+    window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
+    this.addControllersUpdateListener();
+    this.addEventListeners();
+  },
+
+  pause: function () {
+    window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
+    window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
+    this.removeControllersUpdateListener();
+    this.removeEventListeners();
+  },
+
+  injectTrackedControls: function () {
+    var el = this.el;
+    var data = this.data;
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset});
+    if (!this.data.model) { return; }
+    this.el.setAttribute('obj-model', {
+      obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
+      mtl: GEARVR_CONTROLLER_MODEL_OBJ_MTL
+    });
+  },
+
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  onControllersUpdate: function () {
+    if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
+  },
+
+  // No need for onButtonChanged, since Daydream controller has no analog buttons.
+
+  onModelLoaded: function (evt) {
+    var controllerObject3D = evt.detail.model;
+    var buttonMeshes;
+    if (!this.data.model) { return; }
+    buttonMeshes = this.buttonMeshes = {};
+    buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
+    buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
+  },
+
+  onAxisMoved: function (evt) {
+    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) { return; }
+    this.el.emit('trackpadmoved', { x: evt.detail.axis[0], y: evt.detail.axis[1] });
+  },
+
+  onButtonEvent: function (id, evtName) {
+    var buttonName = this.mapping['button' + id];
+    var i;
+    if (Array.isArray(buttonName)) {
+      for (i = 0; i < buttonName.length; i++) {
+        this.el.emit(buttonName[i] + evtName);
+      }
+    } else {
+      this.el.emit(buttonName + evtName);
+    }
+    this.updateModel(buttonName, evtName);
+  },
+
+  updateModel: function (buttonName, evtName) {
+    var i;
+    if (!this.data.model) { return; }
+    if (Array.isArray(buttonName)) {
+      for (i = 0; i < buttonName.length; i++) {
+        this.updateButtonModel(buttonName[i], evtName);
+      }
+    } else {
+      this.updateButtonModel(buttonName, evtName);
+    }
+  },
+
+  updateButtonModel: function (buttonName, state) {
+    var buttonMeshes = this.buttonMeshes;
+    if (!buttonMeshes || !buttonMeshes[buttonName]) { return; }
+    var color;
+    switch (state) {
+      case 'down':
+        color = this.data.buttonHighlightColor;
+        break;
+      case 'touchstart':
+        color = this.data.buttonTouchedColor;
+        break;
+      default:
+        color = this.data.buttonColor;
+    }
+    buttonMeshes[buttonName].material.color.set(color);
+  }
+});
+
+},{"../core/component":102,"../utils/bind":164,"../utils/tracked-controls":174}],61:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -67227,7 +67424,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":101,"../core/geometry":102,"../lib/three":147,"../utils/debug":165}],61:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/geometry":103,"../lib/three":148,"../utils/debug":166}],62:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -67267,31 +67464,62 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147}],62:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148}],63:[function(_dereq_,module,exports){
+/* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
-var OCULUS_LEFT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json';
-var OCULUS_RIGHT_HAND_MODEL_URL = 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json';
+// Found at https://github.com/aframevr/assets.
+var MODEL_URLS = {
+  left: 'https://cdn.aframe.io/controllers/oculus-hands/v2/leftHand.json',
+  right: 'https://cdn.aframe.io/controllers/oculus-hands/v2/rightHand.json'
+};
+
+// Poses.
+var ANIMATIONS = {
+  open: 'Open',
+  // point: grip active, trackpad surface active, trigger inactive.
+  point: 'Point',
+  // pointThumb: grip active, trigger inactive, trackpad surface inactive.
+  pointThumb: 'Point + Thumb',
+  // fist: grip active, trigger active, trackpad surface active.
+  fist: 'Fist',
+  // hold: trigger active, grip inactive.
+  hold: 'Hold',
+  // thumbUp: grip active, trigger active, trackpad surface inactive.
+  thumbUp: 'Thumb Up'
+};
+
+// Map animation to public events for the API.
+var EVENTS = {};
+EVENTS[ANIMATIONS.fist] = 'grip';
+EVENTS[ANIMATIONS.thumbUp] = 'pistol';
+EVENTS[ANIMATIONS.point] = 'pointing';
+EVENTS[ANIMATIONS.thumb] = 'thumb';
 
 /**
-*
-* Hand Controls component
-* Auto-detect appropriate controllers
-* Handle common events coming from the detected vendor-specific controls
-* Translate button events to hand related actions:
-* gripclose, gripopen, thumbup, thumbdown, pointup, pointdown
-* Load a hand model with gestures that are applied based
-* on the button pressed.
-*
-* @property {left/right} Hand mapping
-*/
+ * Hand controls component that abstracts 6DoF controls: oculus-touch-controls, vive-controls.
+ * Originally meant to be a sample implementation of applications-specific controls that
+ * abstracts multiple types of controllers.
+ *
+ * Auto-detect appropriate controller.
+ * Handle common events coming from the detected vendor-specific controls.
+ * Translate button events to semantic hand-related event names:
+ *   (gripclose, gripopen, thumbup, thumbdown, pointup, pointdown)
+ * Load hand model with gestures that are applied based on the button pressed.
+ *
+ * @property {string} Hand mapping (`left`, `right`).
+ */
 module.exports.Component = registerComponent('hand-controls', {
   schema: {default: 'left'},
 
   init: function () {
     var self = this;
-    this.touchedButtons = {};
+    // Current pose.
+    this.gesture = ANIMATIONS.open;
+    // Active buttons populated by events provided by oculus-touch-controls and vive-controls.
     this.pressedButtons = {};
+    this.touchedButtons = {};
+
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
     this.onGripUp = function () { self.handleButton('grip', 'up'); };
     this.onTrackpadDown = function () { self.handleButton('trackpad', 'down'); };
@@ -67378,55 +67606,74 @@ module.exports.Component = registerComponent('hand-controls', {
     el.removeEventListener('surfacetouchend', this.onSurfaceTouchEnd);
   },
 
+  /**
+   * Update handler. More like the `init` handler since the only property is the hand, and
+   * that won't be changing much.
+   */
   update: function () {
+    var controlConfiguration;
     var el = this.el;
     var hand = this.data;
-    var controlConfiguration = {
+
+    // Get common configuration to abstract Vive and Oculus.
+    controlConfiguration = {
       hand: hand,
       model: false,
       rotationOffset: hand === 'left' ? 90 : -90
     };
-    var modelUrl;
-    if (hand === 'left') {
-      modelUrl = 'url(' + OCULUS_LEFT_HAND_MODEL_URL + ')';
-    } else {
-      modelUrl = 'url(' + OCULUS_RIGHT_HAND_MODEL_URL + ')';
-    }
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
     el.setAttribute('daydream-controls', controlConfiguration);
-    el.setAttribute('blend-character-model', modelUrl);
+    el.setAttribute('gearvr-controls', controlConfiguration);
+
+    // Set model.
+    el.setAttribute('blend-character-model', MODEL_URLS[hand]);
   },
 
- /** Play the model animations based on the pressed button and kind of event.
+  /**
+   * Play model animation, based on which button was pressed and which kind of event.
    *
-   * @param {string} button the name of the button
-   * @param {string} evt the event associated to the button
+   * 1. Process buttons.
+   * 2. Determine gesture (this.determineGesture()).
+   * 3. Animation gesture (this.animationGesture()).
+   * 4. Emit gesture events (this.emitGestureEvents()).
+   *
+   * @param {string} button - Name of the button.
+   * @param {string} evt - Type of event for the button (i.e., down/up/touchstart/touchend).
    */
   handleButton: function (button, evt) {
+    var lastGesture;
     var isPressed = evt === 'down';
     var isTouched = evt === 'touchstart';
-    var lastGesture;
+
+    // Update objects.
     if (evt.indexOf('touch') === 0) {
+      // Update touch object.
       if (isTouched === this.touchedButtons[button]) { return; }
       this.touchedButtons[button] = isTouched;
     } else {
+      // Update button object.
       if (isPressed === this.pressedButtons[button]) { return; }
       this.pressedButtons[button] = isPressed;
     }
+
+    // Determine the gesture.
     lastGesture = this.gesture;
     this.gesture = this.determineGesture();
+
+    // Same gesture.
     if (this.gesture === lastGesture) { return; }
-    this.animateGesture(this.gesture);
+
+    // Animate gesture.
+    this.animateGesture(this.gesture, lastGesture);
+
+    // Emit events.
     this.emitGestureEvents(this.gesture, lastGesture);
   },
 
-  isOculusTouchController: function () {
-    var trackedControls = this.el.components['tracked-controls'];
-    var controllerId = trackedControls && trackedControls.controller && trackedControls.controller.id;
-    return controllerId && controllerId.indexOf('Oculus Touch') === 0;
-  },
-
+  /**
+   * Determine which pose hand should be in considering active and touched buttons.
+   */
   determineGesture: function () {
     var gesture;
     var isGripActive = this.pressedButtons['grip'];
@@ -67434,113 +67681,139 @@ module.exports.Component = registerComponent('hand-controls', {
     var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
     var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
-    var isOculusTouch = this.isOculusTouchController();
-    // this works well with Oculus Touch, but Vive needs tweaks
+    var isOculusTouch = isOculusTouchController(this.el.components['tracked-controls']);
+
+    // Works well with Oculus Touch but Vive needs tweaks.
     if (isGripActive) {
       if (!isOculusTouch) {
-        gesture = 'fist';
+        gesture = ANIMATIONS.fist;
       } else
       if (isSurfaceActive || isABXYActive || isTrackpadActive) {
-        gesture = isTriggerActive ? 'fist' : 'pointing';
+        gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
       } else {
-        gesture = isTriggerActive ? 'thumb' : 'pistol';
+        gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
       }
-    } else
-    if (isTriggerActive) {
-      gesture = isOculusTouch ? 'touch' : 'fist';
-    } else
-    if (!isOculusTouch && isTrackpadActive) { gesture = 'pointing'; }
+    } else {
+      if (isTriggerActive) {
+        gesture = isOculusTouch ? ANIMATIONS.hold : ANIMATIONS.fist;
+      } else if (!isOculusTouch && isTrackpadActive) {
+        gesture = ANIMATIONS.point;
+      }
+    }
+
     return gesture;
   },
 
-  gestureAnimationMapping: {
-    default: 'Open',
-    pointing: 'Point',
-    pistol: 'Point + Thumb',
-    fist: 'Fist',
-    touch: 'Hold',
-    thumb: 'Thumb Up'
-  },
-
-  animateGesture: function (gesture) {
-    var isOculusTouch = this.isOculusTouchController();
-    if (!gesture && !isOculusTouch) {
-      // for Vive (and other non-Oculus Touch), change rest pose to be thumb down
-      this.playAnimation('Open', true);
+  /**
+   * Play gesture animation.
+   *
+   * @param {string} gesture - Which pose to animate to. If absent, then animate to open.
+   * @param {string} lastGesture - Previous gesture, to reverse back to open if needed.
+   */
+  animateGesture: function (gesture, lastGesture) {
+    if (gesture) {
+      this.playAnimation(gesture || ANIMATIONS.open, lastGesture, false);
       return;
     }
-    var animation = this.gestureAnimationMapping[gesture || 'default'];
-    this.playAnimation(animation || 'Open', !animation && isOculusTouch);
+    // If no gesture, then reverse the current gesture back to open pose.
+    this.playAnimation(lastGesture, lastGesture, true);
   },
 
-  // map to old vive-specific event names for now
-  gestureEventMapping: {
-    fist: 'grip',         // fist: e.g. grip active, trigger active, trackpad / surface active
-    touch: 'point',       // 'touch' e.g. trigger active, grip not active
-    thumb: 'thumb',       // thumbs up: e.g. grip active, trigger active, trackpad / surface not active
-    pointing: 'pointing', // pointing: e.g. grip active, trackpad / surface active, trigger not active
-    pistol: 'pistol'      // pistol: e.g. grip active, trigger not active, trackpad / surface not active
-  },
-
-  gestureEventName: function (gesture, active) {
-    if (!gesture) return 0;
-    var eventName = this.gestureEventMapping[gesture];
-    if (eventName === 'grip') { return eventName + (active ? 'close' : 'open'); }
-    if (eventName === 'point' || eventName === 'thumb') { return eventName + (active ? 'up' : 'down'); }
-    if (eventName === 'pointing' || eventName === 'pistol') { return eventName + (active ? 'start' : 'end'); }
-    return 0;
-  },
-
+  /**
+   * Emit `hand-controls`-specific events.
+   */
   emitGestureEvents: function (gesture, lastGesture) {
     var el = this.el;
     var eventName;
-    if (lastGesture !== gesture) {
-      eventName = this.gestureEventName(lastGesture, false);
-      if (eventName) { el.emit(eventName); }
-      eventName = this.gestureEventName(gesture, true);
-      if (eventName) { el.emit(eventName); }
-    }
+
+    if (lastGesture === gesture) { return; }
+
+    // Emit event for lastGesture not inactive.
+    eventName = getGestureEventName(lastGesture, false);
+    if (eventName) { el.emit(eventName); }
+
+    // Emit event for current gesture now active.
+    eventName = getGestureEventName(gesture, true);
+    if (eventName) { el.emit(eventName); }
   },
 
 /**
-  * Play the hand animations based on button state.
+  * Play hand animation based on button state.
   *
-  * @param {string} animation - the name of the animation.
-  * @param {string} reverse - It the animation has to play in reverse.
+  * @param {string} gesture - Name of the animation as specified by the model.
+  * @param {string} lastGesture - Previous pose.
+  * @param {boolean} reverse - Whether animation should play in reverse.
   */
-  playAnimation: function (animation, reverse) {
-    var animationActive = this.animationActive;
-    var timeScale = 1;
+  playAnimation: function (gesture, lastGesture, reverse) {
+    var fromAction;
     var mesh = this.el.getObject3D('mesh');
-    var clipAction;
+    var toAction;
+
     if (!mesh) { return; }
 
-    // determine direction of the animation.
-    if (reverse) { timeScale = -1; }
+    // Grab clip action.
+    toAction = mesh.mixer.clipAction(gesture);
+    toAction.clampWhenFinished = true;
+    toAction.loop = THREE.PingPong;
+    toAction.repetitions = 0;
+    toAction.timeScale = reverse ? -1 : 1;
 
-    // stop current animation.
-    if (animationActive) { mesh.play(animationActive, 0); }
+    // No gesture to gesture or gesture to no gesture.
+    if (!lastGesture || gesture === lastGesture) {
+      // Stop all current animations.
+      mesh.stopAll();
 
-    // play new animation.
-    clipAction = mesh.mixer.clipAction(animation);
-    // returning when no clipAction will prevent further issues
-    // (e.g. controllers no longer updating pose)
-    // but per https://github.com/aframevr/aframe/pull/2191#discussion_r93121878
-    // the preference is to NOT prevent the issues to catch bugs earlier in QA.
-    clipAction.loop = 2200;
-    clipAction.clampWhenFinished = true;
-    clipAction.timeScale = timeScale;
-    mesh.play(animation, 1);
-    this.animationActive = animation;
+      // Play animation.
+      mesh.play(gesture, 1);
+      return;
+    }
+
+    // Animate or crossfade from gesture to gesture.
+    fromAction = mesh.mixer.clipAction(lastGesture);
+    mesh.mixer.stopAllAction();
+    mesh.play(lastGesture, 0.15);
+    mesh.play(gesture, 1);
+    fromAction.crossFadeTo(toAction, 0.15, true);
   }
 });
 
-},{"../core/component":101}],63:[function(_dereq_,module,exports){
+/**
+ * Suffix gestures based on toggle state (e.g., open/close, up/down, start/end).
+ *
+ * @param {string} gesture
+ * @param {boolean} active
+ */
+function getGestureEventName (gesture, active) {
+  var eventName;
+
+  if (!gesture) { return; }
+
+  eventName = EVENTS[gesture];
+  if (eventName === 'grip') {
+    return eventName + (active ? 'close' : 'open');
+  }
+  if (eventName === 'point' || eventName === 'thumb') {
+    return eventName + (active ? 'up' : 'down');
+  }
+  if (eventName === 'pointing' || eventName === 'pistol') {
+    return eventName + (active ? 'start' : 'end');
+  }
+  return;
+}
+
+function isOculusTouchController (trackedControls) {
+  var controllerId = trackedControls && trackedControls.controller &&
+                     trackedControls.controller.id;
+  return controllerId && controllerId.indexOf('Oculus Touch') === 0;
+}
+
+},{"../core/component":102}],64:[function(_dereq_,module,exports){
 _dereq_('./blend-character-model');
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
 _dereq_('./daydream-controls');
+_dereq_('./gearvr-controls');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
 _dereq_('./hand-controls');
@@ -67573,7 +67846,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":55,"./camera":56,"./collada-model":57,"./cursor":58,"./daydream-controls":59,"./geometry":60,"./gltf-model":61,"./hand-controls":62,"./light":64,"./look-controls":65,"./material":66,"./obj-model":67,"./oculus-touch-controls":68,"./position":69,"./raycaster":70,"./rotation":71,"./scale":72,"./scene/auto-enter-vr":73,"./scene/canvas":74,"./scene/debug":75,"./scene/embedded":76,"./scene/fog":77,"./scene/inspector":78,"./scene/keyboard-shortcuts":79,"./scene/pool":80,"./scene/screenshot":81,"./scene/stats":82,"./scene/vr-mode-ui":83,"./shadow":84,"./sound":85,"./text":86,"./tracked-controls":87,"./visible":88,"./vive-controls":89,"./wasd-controls":90}],64:[function(_dereq_,module,exports){
+},{"./blend-character-model":55,"./camera":56,"./collada-model":57,"./cursor":58,"./daydream-controls":59,"./gearvr-controls":60,"./geometry":61,"./gltf-model":62,"./hand-controls":63,"./light":65,"./look-controls":66,"./material":67,"./obj-model":68,"./oculus-touch-controls":69,"./position":70,"./raycaster":71,"./rotation":72,"./scale":73,"./scene/auto-enter-vr":74,"./scene/canvas":75,"./scene/debug":76,"./scene/embedded":77,"./scene/fog":78,"./scene/inspector":79,"./scene/keyboard-shortcuts":80,"./scene/pool":81,"./scene/screenshot":82,"./scene/stats":83,"./scene/vr-mode-ui":84,"./shadow":85,"./sound":86,"./text":87,"./tracked-controls":88,"./visible":89,"./vive-controls":90,"./wasd-controls":91}],65:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -67847,7 +68120,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils":169,"../utils/bind":163,"../utils/debug":165}],65:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils":170,"../utils/bind":164,"../utils/debug":166}],66:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var isMobile = _dereq_('../utils/').device.isMobile();
@@ -68150,7 +68423,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":101,"../lib/three":147,"../utils/":169,"../utils/bind":163}],66:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/":170,"../utils/bind":164}],67:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -68220,14 +68493,13 @@ module.exports.Component = registerComponent('material', {
     var sceneEl = this.el.sceneEl;
     var tickProperties = {};
     var tick = function (time, delta) {
-      var keys = Object.keys(tickProperties);
-      keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+      Object.keys(tickProperties).forEach(function update (key) {
+        tickProperties[key] = time;
+      });
       self.shader.update(tickProperties);
     };
-    var keys = Object.keys(schema);
     this.tick = undefined;
-    keys.forEach(function (key) {
+    Object.keys(schema).forEach(function (key) {
       if (schema[key].type === 'time') {
         self.tick = tick;
         tickProperties[key] = true;
@@ -68336,7 +68608,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":101,"../core/shader":110,"../lib/three":147,"../utils/":169}],67:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/shader":111,"../lib/three":148,"../utils/":170}],68:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -68414,7 +68686,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils/debug":165}],68:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/debug":166}],69:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -68692,7 +68964,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":163,"../utils/tracked-controls":173}],69:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":164,"../utils/tracked-controls":174}],70:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -68705,7 +68977,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":101}],70:[function(_dereq_,module,exports){
+},{"../core/component":102}],71:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/').bind;
@@ -68870,7 +69142,7 @@ module.exports.Component = registerComponent('raycaster', {
   })()
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils/":169}],71:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/":170}],72:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -68888,7 +69160,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147}],72:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148}],73:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -68910,7 +69182,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":101}],73:[function(_dereq_,module,exports){
+},{"../core/component":102}],74:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils');
 
@@ -68968,7 +69240,7 @@ module.exports.Component = registerComponent('auto-enter-vr', {
 });
 
 
-},{"../../core/component":101,"../../utils":169}],74:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils":170}],75:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69013,14 +69285,14 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":101,"../../utils/bind":163}],75:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/bind":164}],76:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":101}],76:[function(_dereq_,module,exports){
+},{"../../core/component":102}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -69045,7 +69317,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":101}],77:[function(_dereq_,module,exports){
+},{"../../core/component":102}],78:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -69118,7 +69390,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":101,"../../lib/three":147,"../../utils/debug":165}],78:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":148,"../../utils/debug":166}],79:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -69223,7 +69495,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":54,"../../constants":92,"../../core/component":101,"../../utils/bind":163,"_process":33}],79:[function(_dereq_,module,exports){
+},{"../../../package":54,"../../constants":93,"../../core/component":102,"../../utils/bind":164,"_process":33}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -69258,7 +69530,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":101,"../../utils/":169}],80:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/":170}],81:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69363,7 +69635,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":101,"../../utils/debug":165}],81:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../utils/debug":166}],82:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -69620,7 +69892,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":101,"../../lib/three":147}],82:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":148}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -69700,7 +69972,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":177,"../../../vendor/rStats.extras":176,"../../core/component":101,"../../lib/rStatsAframe":146,"../../utils":169}],83:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":178,"../../../vendor/rStats.extras":177,"../../core/component":102,"../../lib/rStatsAframe":147,"../../utils":170}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -69849,7 +70121,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":92,"../../core/component":101,"../../utils/":169}],84:[function(_dereq_,module,exports){
+},{"../../constants/":93,"../../core/component":102,"../../utils/":170}],85:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -69903,7 +70175,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils/bind":163}],85:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/bind":164}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -70120,7 +70392,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":101,"../lib/three":147,"../utils/bind":163,"../utils/debug":165}],86:[function(_dereq_,module,exports){
+},{"../core/component":102,"../lib/three":148,"../utils/bind":164,"../utils/debug":166}],87:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 var path = _dereq_('path');
@@ -70586,7 +70858,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":101,"../core/shader":110,"../lib/three":147,"../utils/":169,"load-bmfont":23,"path":31,"three-bmfont-text":37}],87:[function(_dereq_,module,exports){
+},{"../core/component":102,"../core/shader":111,"../lib/three":148,"../utils/":170,"load-bmfont":23,"path":31,"three-bmfont-text":37}],88:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
@@ -70907,7 +71179,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":92,"../core/component":101,"../lib/three":147}],88:[function(_dereq_,module,exports){
+},{"../constants":93,"../core/component":102,"../lib/three":148}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -70921,7 +71193,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":101}],89:[function(_dereq_,module,exports){
+},{"../core/component":102}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
@@ -71148,7 +71420,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":101,"../utils/bind":163,"../utils/tracked-controls":173}],90:[function(_dereq_,module,exports){
+},{"../core/component":102,"../utils/bind":164,"../utils/tracked-controls":174}],91:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71353,7 +71625,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":92,"../core/component":101,"../lib/three":147,"../utils/":169}],91:[function(_dereq_,module,exports){
+},{"../constants":93,"../core/component":102,"../lib/three":148,"../utils/":170}],92:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -71457,7 +71729,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":48}],92:[function(_dereq_,module,exports){
+},{"tween.js":48}],93:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -71466,7 +71738,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":91,"./keyboardevent":93}],93:[function(_dereq_,module,exports){
+},{"./animation":92,"./keyboardevent":94}],94:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -71481,7 +71753,7 @@ module.exports = {
   }
 };
 
-},{}],94:[function(_dereq_,module,exports){
+},{}],95:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -72025,7 +72297,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":91,"../lib/three":147,"../utils/":169,"./a-node":99,"./a-register-element":100,"./schema":109,"tween.js":48}],95:[function(_dereq_,module,exports){
+},{"../constants/animation":92,"../lib/three":148,"../utils/":170,"./a-node":100,"./a-register-element":101,"./schema":110,"tween.js":48}],96:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -72283,7 +72555,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":147,"../utils/bind":163,"../utils/debug":165,"./a-node":99,"./a-register-element":100}],96:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils/bind":164,"../utils/debug":166,"./a-node":100,"./a-register-element":101}],97:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -72334,7 +72606,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":165,"./a-register-element":100}],97:[function(_dereq_,module,exports){
+},{"../utils/debug":166,"./a-register-element":101}],98:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
@@ -73266,7 +73538,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":147,"../utils/":169,"./a-node":99,"./a-register-element":100,"./component":101}],98:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils/":170,"./a-node":100,"./a-register-element":101,"./component":102}],99:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -73374,7 +73646,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":99,"./a-register-element":100,"./component":101}],99:[function(_dereq_,module,exports){
+},{"./a-node":100,"./a-register-element":101,"./component":102}],100:[function(_dereq_,module,exports){
 /* global HTMLElement, MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
@@ -73635,7 +73907,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":169,"./a-register-element":100}],100:[function(_dereq_,module,exports){
+},{"../utils/":170,"./a-register-element":101}],101:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -73812,7 +74084,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":97,"./a-node":99,"document-register-element":10}],101:[function(_dereq_,module,exports){
+},{"./a-entity":98,"./a-node":100,"document-register-element":10}],102:[function(_dereq_,module,exports){
 /* global HTMLElement, Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -74287,7 +74559,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":169,"./scene/scenes":107,"./schema":109,"./system":111}],102:[function(_dereq_,module,exports){
+},{"../utils/":170,"./scene/scenes":108,"./schema":110,"./system":112}],103:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -74361,7 +74633,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":147,"./schema":109}],103:[function(_dereq_,module,exports){
+},{"../lib/three":148,"./schema":110}],104:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -74577,7 +74849,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":164,"debug":7}],104:[function(_dereq_,module,exports){
+},{"../utils/coordinates":165,"debug":7}],105:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -75098,7 +75370,7 @@ function exitFullscreen () {
   }
 }
 
-},{"../../lib/three":147,"../../utils/":169,"../a-entity":97,"../a-node":99,"../a-register-element":100,"../system":111,"./metaTags":105,"./postMessage":106,"./scenes":107,"./wakelock":108,"tween.js":48}],105:[function(_dereq_,module,exports){
+},{"../../lib/three":148,"../../utils/":170,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":112,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109,"tween.js":48}],106:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -75179,7 +75451,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":92,"../../utils":169}],106:[function(_dereq_,module,exports){
+},{"../../constants/":93,"../../utils":170}],107:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -75212,13 +75484,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":169,"../../utils/bind":163}],107:[function(_dereq_,module,exports){
+},{"../../utils/":170,"../../utils/bind":164}],108:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],108:[function(_dereq_,module,exports){
+},{}],109:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -75229,7 +75501,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":179}],109:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":180}],110:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -75409,7 +75681,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":169,"./propertyTypes":103}],110:[function(_dereq_,module,exports){
+},{"../utils/":170,"./propertyTypes":104}],111:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -75585,7 +75857,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":147,"../utils":169,"./schema":109}],111:[function(_dereq_,module,exports){
+},{"../lib/three":148,"../utils":170,"./schema":110}],112:[function(_dereq_,module,exports){
 /* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
@@ -75734,10 +76006,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":169,"./component":101,"./schema":109}],112:[function(_dereq_,module,exports){
+},{"../utils/":170,"./component":102,"./schema":110}],113:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":113}],113:[function(_dereq_,module,exports){
+},{"./pivot":114}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -75786,7 +76058,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":101,"../../lib/three":147}],114:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../lib/three":148}],115:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -75813,7 +76085,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":101,"../../core/shader":110,"../../utils/":169}],115:[function(_dereq_,module,exports){
+},{"../../core/component":102,"../../core/shader":111,"../../utils/":170}],116:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -75829,7 +76101,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":117,"./primitives/a-collada-model":118,"./primitives/a-cursor":119,"./primitives/a-curvedimage":120,"./primitives/a-gltf-model":121,"./primitives/a-image":122,"./primitives/a-light":123,"./primitives/a-obj-model":124,"./primitives/a-sky":125,"./primitives/a-sound":126,"./primitives/a-text":127,"./primitives/a-video":128,"./primitives/a-videosphere":129,"./primitives/meshPrimitives":130}],116:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":118,"./primitives/a-collada-model":119,"./primitives/a-cursor":120,"./primitives/a-curvedimage":121,"./primitives/a-gltf-model":122,"./primitives/a-image":123,"./primitives/a-light":124,"./primitives/a-obj-model":125,"./primitives/a-sky":126,"./primitives/a-sound":127,"./primitives/a-text":128,"./primitives/a-video":129,"./primitives/a-videosphere":130,"./primitives/meshPrimitives":131}],117:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -75994,7 +76266,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":97,"../../core/a-register-element":100,"../../core/component":101,"../../utils/":169}],117:[function(_dereq_,module,exports){
+},{"../../core/a-entity":98,"../../core/a-register-element":101,"../../core/component":102,"../../utils/":170}],118:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -76029,7 +76301,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":92,"../primitives":116}],118:[function(_dereq_,module,exports){
+},{"../../../constants/":93,"../primitives":117}],119:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -76038,7 +76310,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":116}],119:[function(_dereq_,module,exports){
+},{"../primitives":117}],120:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76076,7 +76348,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],120:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],121:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76113,7 +76385,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],121:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],122:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -76122,7 +76394,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":116}],122:[function(_dereq_,module,exports){
+},{"../primitives":117}],123:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76146,7 +76418,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],123:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],124:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -76167,7 +76439,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":116}],124:[function(_dereq_,module,exports){
+},{"../primitives":117}],125:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76183,7 +76455,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],125:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],126:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76207,7 +76479,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116,"./meshPrimitives":130}],126:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117,"./meshPrimitives":131}],127:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -76224,12 +76496,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":116}],127:[function(_dereq_,module,exports){
+},{"../primitives":117}],128:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":116}],128:[function(_dereq_,module,exports){
+},{"../primitives":117}],129:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76253,7 +76525,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],129:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],130:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76280,7 +76552,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],130:[function(_dereq_,module,exports){
+},{"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],131:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -76320,7 +76592,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":102,"../../../utils/":169,"../getMeshMixin":114,"../primitives":116}],131:[function(_dereq_,module,exports){
+},{"../../../core/geometry":103,"../../../utils/":170,"../getMeshMixin":115,"../primitives":117}],132:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76339,7 +76611,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],132:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],133:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76359,7 +76631,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],133:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],134:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76385,7 +76657,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],134:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],135:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76409,7 +76681,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],135:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],136:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76424,7 +76696,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],136:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],137:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76439,7 +76711,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],137:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],138:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -76454,7 +76726,7 @@ _dereq_('./tetrahedron.js');
 _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 
-},{"./box.js":131,"./circle.js":132,"./cone.js":133,"./cylinder.js":134,"./dodecahedron.js":135,"./icosahedron.js":136,"./octahedron.js":138,"./plane.js":139,"./ring.js":140,"./sphere.js":141,"./tetrahedron.js":142,"./torus.js":143,"./torusKnot.js":144}],138:[function(_dereq_,module,exports){
+},{"./box.js":132,"./circle.js":133,"./cone.js":134,"./cylinder.js":135,"./dodecahedron.js":136,"./icosahedron.js":137,"./octahedron.js":139,"./plane.js":140,"./ring.js":141,"./sphere.js":142,"./tetrahedron.js":143,"./torus.js":144,"./torusKnot.js":145}],139:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76469,7 +76741,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],139:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],140:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76486,7 +76758,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],140:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],141:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76509,7 +76781,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],141:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],142:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76533,7 +76805,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],142:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],143:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76548,7 +76820,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],143:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],144:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76570,7 +76842,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],144:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],145:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76591,7 +76863,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":102,"../lib/three":147}],145:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../lib/three":148}],146:[function(_dereq_,module,exports){
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
@@ -76677,7 +76949,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 10-04-2017, Commit #eec29a1)');
+console.log('A-Frame Version: 0.5.0 (Date 14-04-2017, Commit #417e890)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76708,7 +76980,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":54,"./components/index":63,"./core/a-animation":94,"./core/a-assets":95,"./core/a-cubemap":96,"./core/a-entity":97,"./core/a-mixin":98,"./core/a-node":99,"./core/a-register-element":100,"./core/component":101,"./core/geometry":102,"./core/scene/a-scene":104,"./core/scene/scenes":107,"./core/schema":109,"./core/shader":110,"./core/system":111,"./extras/components/":112,"./extras/primitives/":115,"./extras/primitives/getMeshMixin":114,"./extras/primitives/primitives":116,"./geometries/index":137,"./lib/three":147,"./shaders/index":149,"./style/aframe.css":153,"./style/rStats.css":154,"./systems/index":158,"./utils/":169,"present":32,"promise-polyfill":34,"tween.js":48,"webvr-polyfill":49}],146:[function(_dereq_,module,exports){
+},{"../package":54,"./components/index":64,"./core/a-animation":95,"./core/a-assets":96,"./core/a-cubemap":97,"./core/a-entity":98,"./core/a-mixin":99,"./core/a-node":100,"./core/a-register-element":101,"./core/component":102,"./core/geometry":103,"./core/scene/a-scene":105,"./core/scene/scenes":108,"./core/schema":110,"./core/shader":111,"./core/system":112,"./extras/components/":113,"./extras/primitives/":116,"./extras/primitives/getMeshMixin":115,"./extras/primitives/primitives":117,"./geometries/index":138,"./lib/three":148,"./shaders/index":150,"./style/aframe.css":154,"./style/rStats.css":155,"./systems/index":159,"./utils/":170,"present":32,"promise-polyfill":34,"tween.js":48,"webvr-polyfill":49}],147:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -76765,7 +77037,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],147:[function(_dereq_,module,exports){
+},{}],148:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -76805,7 +77077,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":174,"../../vendor/VREffect":175,"three":41,"three/examples/js/BlendCharacter":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],148:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":175,"../../vendor/VREffect":176,"three":41,"three/examples/js/BlendCharacter":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],149:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -76870,13 +77142,13 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":110,"../lib/three":147,"../utils/":169}],149:[function(_dereq_,module,exports){
+},{"../core/shader":111,"../lib/three":148,"../utils/":170}],150:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 
-},{"./flat":148,"./msdf":150,"./sdf":151,"./standard":152}],150:[function(_dereq_,module,exports){
+},{"./flat":149,"./msdf":151,"./sdf":152,"./standard":153}],151:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -76952,7 +77224,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":110}],151:[function(_dereq_,module,exports){
+},{"../core/shader":111}],152:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77062,7 +77334,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":110}],152:[function(_dereq_,module,exports){
+},{"../core/shader":111}],153:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77227,11 +77499,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":110,"../lib/three":147,"../utils/":169}],153:[function(_dereq_,module,exports){
+},{"../core/shader":111,"../lib/three":148,"../utils/":170}],154:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grabbing;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],154:[function(_dereq_,module,exports){
-var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
 },{"browserify-css":4}],155:[function(_dereq_,module,exports){
+var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
+},{"browserify-css":4}],156:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -77358,7 +77630,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":92,"../core/system":111,"../utils/bind":163}],156:[function(_dereq_,module,exports){
+},{"../constants/":93,"../core/system":112,"../utils/bind":164}],157:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -77498,7 +77770,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":102,"../core/system":111,"../lib/three":147}],157:[function(_dereq_,module,exports){
+},{"../core/geometry":103,"../core/system":112,"../lib/three":148}],158:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -77541,7 +77813,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":111,"../lib/three":147}],158:[function(_dereq_,module,exports){
+},{"../core/system":112,"../lib/three":148}],159:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -77551,7 +77823,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":155,"./geometry":156,"./gltf-model":157,"./light":159,"./material":160,"./shadow":161,"./tracked-controls":162}],159:[function(_dereq_,module,exports){
+},{"./camera":156,"./geometry":157,"./gltf-model":158,"./light":160,"./material":161,"./shadow":162,"./tracked-controls":163}],160:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -77636,7 +77908,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":92,"../core/system":111,"../utils/bind":163}],160:[function(_dereq_,module,exports){
+},{"../constants/":93,"../core/system":112,"../utils/bind":164}],161:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77986,7 +78258,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":111,"../lib/three":147,"../utils/":169}],161:[function(_dereq_,module,exports){
+},{"../core/system":112,"../lib/three":148,"../utils/":170}],162:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
@@ -78039,7 +78311,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":111,"../lib/three":147,"../utils/bind":163}],162:[function(_dereq_,module,exports){
+},{"../core/system":112,"../lib/three":148,"../utils/bind":164}],163:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -78081,7 +78353,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":111,"../utils":169,"../utils/tracked-controls":173}],163:[function(_dereq_,module,exports){
+},{"../core/system":112,"../utils":170,"../utils/tracked-controls":174}],164:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -78098,7 +78370,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],164:[function(_dereq_,module,exports){
+},{}],165:[function(_dereq_,module,exports){
 /* global THREE */
 var extend = _dereq_('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
@@ -78177,7 +78449,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":25}],165:[function(_dereq_,module,exports){
+},{"object-assign":25}],166:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -78274,7 +78546,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":33,"debug":7,"object-assign":25}],166:[function(_dereq_,module,exports){
+},{"_process":33,"debug":7,"object-assign":25}],167:[function(_dereq_,module,exports){
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
@@ -78391,7 +78663,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"../lib/three":147,"_process":33}],167:[function(_dereq_,module,exports){
+},{"../lib/three":148,"_process":33}],168:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -78432,7 +78704,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],168:[function(_dereq_,module,exports){
+},{}],169:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -78448,7 +78720,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],169:[function(_dereq_,module,exports){
+},{}],170:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -78720,7 +78992,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":163,"./coordinates":164,"./debug":165,"./device":166,"./entity":167,"./forceCanvasResizeSafariMobile":168,"./material":170,"./src-loader":171,"./styleParser":172,"./tracked-controls":173,"deep-assign":9,"object-assign":25}],170:[function(_dereq_,module,exports){
+},{"./bind":164,"./coordinates":165,"./debug":166,"./device":167,"./entity":168,"./forceCanvasResizeSafariMobile":169,"./material":171,"./src-loader":172,"./styleParser":173,"./tracked-controls":174,"deep-assign":9,"object-assign":25}],171:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 /**
@@ -78851,7 +79123,7 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-},{"../lib/three":147}],171:[function(_dereq_,module,exports){
+},{"../lib/three":148}],172:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -78983,7 +79255,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":165}],172:[function(_dereq_,module,exports){
+},{"./debug":166}],173:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -79043,7 +79315,9 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":36}],173:[function(_dereq_,module,exports){
+},{"style-attr":36}],174:[function(_dereq_,module,exports){
+var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
+
 /**
  * Return enumerated gamepads matching id prefix.
  *
@@ -79094,7 +79368,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     isPrefixMatch = (!idPrefix || idPrefix === '' || gamepad.id.indexOf(idPrefix) === 0);
     isPresent = isPrefixMatch;
     if (isPresent && queryObject.hand) {
-      isPresent = gamepad.hand === queryObject.hand;
+      isPresent = (gamepad.hand || DEFAULT_HANDEDNESS) === queryObject.hand;
     }
     if (isPresent && queryObject.index) {
       isPresent = index === queryObject.index; // need to use count of gamepads with idPrefix
@@ -79106,7 +79380,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
 };
 
 
-},{}],174:[function(_dereq_,module,exports){
+},{"../constants":93}],175:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -79281,7 +79555,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],175:[function(_dereq_,module,exports){
+},{}],176:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -79760,7 +80034,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],176:[function(_dereq_,module,exports){
+},{}],177:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -80025,7 +80299,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],177:[function(_dereq_,module,exports){
+},{}],178:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -80480,7 +80754,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],178:[function(_dereq_,module,exports){
+},{}],179:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80542,7 +80816,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],179:[function(_dereq_,module,exports){
+},{}],180:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80618,6 +80892,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":178}]},{},[145])(145)
+},{"./util.js":179}]},{},[146])(146)
 });
 //# sourceMappingURL=aframe-master.js.map
