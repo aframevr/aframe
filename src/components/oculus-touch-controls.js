@@ -2,7 +2,6 @@ var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
 var getGamepadsByPrefix = require('../utils/tracked-controls').getGamepadsByPrefix;
-var isEmulatedTouchEvent = require('../utils/tracked-controls').isEmulatedTouchEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -172,24 +171,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   onButtonChanged: function (evt) {
     var button = this.mapping[this.data.hand].buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
-    var isPreviousValueEmulatedTouch;
     var analogValue;
-    var isEmulatedTouch;
 
     if (!button) { return; }
 
-    if (button === 'trigger' || button === 'grip') {
-      // At the moment, if trigger or grip,
-      // touch events aren't happening (touched is stuck true);
-      // synthesize touch events from very low analog values.
-      analogValue = evt.detail.state.value;
-      isPreviousValueEmulatedTouch = isEmulatedTouchEvent(this.previousButtonValues[button]);
-      this.previousButtonValues[button] = analogValue;
-      isEmulatedTouch = isEmulatedTouchEvent(analogValue);
-      if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
-        (isEmulatedTouch ? this.onButtonTouchStart : this.onButtonTouchEnd)(evt);
-      }
-    }
+    if (button === 'trigger' || button === 'grip') { analogValue = evt.detail.state.value; }
 
     // Update trigger and/or grip meshes, if any.
     if (buttonMeshes) {
