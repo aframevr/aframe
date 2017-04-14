@@ -38,7 +38,7 @@ A-Frame currently supports [`6DoF`][6dof] controllers using Brandon Jones' 4/24/
 
 For the Oculus Rift and HTC Vive, we defer to the [Rift recommended
 requirements](https://www.oculus.com/en-us/oculus-ready-pcs/) and the [Vive
-recommended requirements](https://www.htcvive.com/us/product-optimized/).
+recommended requirements](https://www.vive.com/us/ready/).
 
 For mobile, we recommend at least an *iPhone 6 for iOS* and at least a *Galaxy
 S6 for Android*.
