@@ -60,4 +60,3 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
   }
   return isPresent;
 };
-
