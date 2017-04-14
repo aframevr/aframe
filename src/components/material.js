@@ -67,14 +67,13 @@ module.exports.Component = registerComponent('material', {
     var sceneEl = this.el.sceneEl;
     var tickProperties = {};
     var tick = function (time, delta) {
-      var keys = Object.keys(tickProperties);
-      keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+      Object.keys(tickProperties).forEach(function update (key) {
+        tickProperties[key] = time;
+      });
       self.shader.update(tickProperties);
     };
-    var keys = Object.keys(schema);
     this.tick = undefined;
-    keys.forEach(function (key) {
+    Object.keys(schema).forEach(function (key) {
       if (schema[key].type === 'time') {
         self.tick = tick;
         tickProperties[key] = true;
