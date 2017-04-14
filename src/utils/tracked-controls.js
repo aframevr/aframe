@@ -1,7 +1,4 @@
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-// Currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
-// however those have analog values, and this (below button-down values) can be used to fake them.
-var EMULATED_TOUCH_THRESHOLD = 0.001;
 
 /**
  * Return enumerated gamepads matching id prefix.
@@ -62,10 +59,4 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     if (isPrefixMatch) { index++; } // update count of gamepads with idPrefix
   }
   return isPresent;
-};
-
-module.exports.isEmulatedTouchEvent = function (analogValue) {
-  // Currently, browser bugs prevent capacitive touch events from firing on trigger and grip;
-  // however those have analog values, and this (below button-down values) can be used to fake them.
-  return analogValue && (analogValue >= EMULATED_TOUCH_THRESHOLD);
 };
