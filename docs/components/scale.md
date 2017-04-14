@@ -48,3 +48,7 @@ or invert, the sphere in the Z-direction.
           material="src: sky.png"
           scale="1 1 -1"></a-entity>
 ```
+
+## Relative scale
+
+Similar to the rotation and position component, scales are applied in the local coordinate system and multiply in nested entities.
