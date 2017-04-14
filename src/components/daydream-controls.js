@@ -9,25 +9,23 @@ var DAYDREAM_CONTROLLER_MODEL_OBJ_MTL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr
 var GAMEPAD_ID_PREFIX = 'Daydream Controller';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Daydream controls.
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: ''}, // This informs the degenerate arm model.
+    hand: {default: ''},  // Informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    // Use -999 as sentinel value to auto-determine based on hand.
+    rotationOffset: {default: 0}
   },
 
   // buttonId
   // 0 - trackpad
-  // 1 - menu ( never dispatched on this layer )
-  // 2 - system ( never dispatched on this layer )
+  // 1 - menu (never dispatched on this layer)
+  // 2 - system (never dispatched on this layer)
   mapping: {
     axis0: 'trackpad',
     axis1: 'trackpad',
