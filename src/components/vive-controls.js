@@ -1,7 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
-var isEmulatedTouchEvent = require('../utils/tracked-controls').isEmulatedTouchEvent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -52,14 +51,8 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) {
-      // we're emulating trigger touch, so suppress real events
-      if (evt.detail.id !== 'trigger') { self.onButtonEvent(evt.detail.id, 'touchstart'); }
-    };
-    this.onButtonTouchEnd = function (evt) {
-      // we're emulating trigger touch, so suppress real events
-      if (evt.detail.id !== 'trigger') { self.onButtonEvent(evt.detail.id, 'touchend'); }
-    };
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
@@ -147,22 +140,10 @@ module.exports.Component = registerComponent('vive-controls', {
     var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
     var analogValue;
-    var isEmulatedTouch;
-    var isPreviousValueEmulatedTouch;
     if (!button) { return; }
 
     if (button === 'trigger') {
-      // At the moment, if trigger,
-      // touch events aren't happening;
-      // synthesize touch events from very low analog values.
       analogValue = evt.detail.state.value;
-      isPreviousValueEmulatedTouch = isEmulatedTouchEvent(this.previousButtonValues[button]);
-      this.previousButtonValues[button] = analogValue;
-      isEmulatedTouch = isEmulatedTouchEvent(analogValue);
-      if (isEmulatedTouch !== isPreviousValueEmulatedTouch) {
-        this.onButtonEvent(evt.detail.id, isEmulatedTouch ? 'touchstart' : 'touchend');
-      }
-
       // Update button mesh, if any.
       if (buttonMeshes && buttonMeshes.trigger) {
         buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
