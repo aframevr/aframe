@@ -234,7 +234,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
       var value = axesMapping[key];
       var detail = {};
       var changed = !evt.detail.changed;
-      if (!changed) { value.forEach(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; }); }
+      if (!changed) {
+        value.forEach(function (axisNumber) { changed |= evt.detail.changed[axisNumber]; });
+      }
       if (changed) {
         value.forEach(function (axisNumber) { detail[self.axisLabels[axisNumber]] = evt.detail.axis[axisNumber]; });
         self.el.emit(key + 'moved', detail);
