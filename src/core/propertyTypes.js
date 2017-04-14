@@ -80,7 +80,7 @@ function assetParse (value) {
   if (parsedUrl) { return parsedUrl[1]; }
 
   // ID.
-  if (value.charAt(0) === '#') {
+  if ('#.'.indexOf(value.charAt(0)) >= 0) {
     el = selectorParse(value);
     if (el) {
       // Pass through media elements. If we have the elements, we don't have to call
@@ -91,7 +91,8 @@ function assetParse (value) {
       return el.getAttribute('src');
     }
     warn('"' + value + '" asset not found.');
-    return;
+    // if first character is period, it might be a relative URL, so fall through
+    if (value.charAt(0) !== '.') { return; }
   }
 
   // Non-wrapped url().
