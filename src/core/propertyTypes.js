@@ -81,7 +81,7 @@ function assetParse (value) {
 
   // ID.
   if (value.charAt(0) === '#') {
-    el = selectorParse(value);
+    el = document.getElementById(value.substring(1));
     if (el) {
       // Pass through media elements. If we have the elements, we don't have to call
       // three.js loaders which would re-request the assets.
