@@ -74717,7 +74717,7 @@ function assetParse (value) {
 
   // ID.
   if (value.charAt(0) === '#') {
-    el = selectorParse(value);
+    el = document.getElementById(value.substring(1));
     if (el) {
       // Pass through media elements. If we have the elements, we don't have to call
       // three.js loaders which would re-request the assets.
@@ -76949,7 +76949,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 14-04-2017, Commit #417e890)');
+console.log('A-Frame Version: 0.5.0 (Date 16-04-2017, Commit #9575291)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
