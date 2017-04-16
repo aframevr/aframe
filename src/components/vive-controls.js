@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -29,22 +30,20 @@ module.exports.Component = registerComponent('vive-controls', {
   // 3 - menu ( dispatch but better for menu options )
   // 4 - system ( never dispatched on this layer )
   mapping: {
-    axis0: 'trackpad',
-    axis1: 'trackpad',
-    button0: 'trackpad',
-    button1: 'trigger',
-    button2: 'grip',
-    button3: 'menu',
-    button4: 'system'
+    axes: {'trackpad': [0, 1]},
+    buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
+
+  // Use these labels for detail on axis events such as thumbstickmoved.
+  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
+  axisLabels: ['x', 'y', 'z', 'w'],
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onGamepadConnected = bind(this.onGamepadConnected, this);
-    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
   },
 
   init: function () {
@@ -57,10 +56,11 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
-    this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
+    this.previousButtonValues = {};
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
+    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
   addEventListeners: function () {
@@ -87,46 +87,31 @@ module.exports.Component = registerComponent('vive-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controller });
+    // Once OpenVR / SteamVR return correct hand data in the supporting browsers, we can use hand property.
+    // var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
+    // Until then, use hardcoded index.
+    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controllerIndex });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
-      this.injectTrackedControls(); // inject track-controls
+      this.injectTrackedControls();
       this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
-  },
-
-  onGamepadConnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
-    this.checkIfControllerPresent();
-  },
-
-  onGamepadDisconnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
-    this.checkIfControllerPresent();
+    } else { this.removeEventListeners(); }
   },
 
   play: function () {
     this.checkIfControllerPresent();
-    window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
     this.addControllersUpdateListener();
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
-    window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
+    this.removeControllersUpdateListener();
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   injectTrackedControls: function () {
@@ -151,17 +136,24 @@ module.exports.Component = registerComponent('vive-controls', {
     this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
   },
 
-  onControllersUpdate: function () {
-    if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
-  },
+  onControllersUpdate: function () { this.checkIfControllerPresent(); },
 
   onButtonChanged: function (evt) {
-    var button = this.mapping['button' + evt.detail.id];
+    var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
-    var value;
-    if (!button || !buttonMeshes || button !== 'trigger') { return; }
-    value = evt.detail.state.value;
-    buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    var analogValue;
+    if (!button) { return; }
+
+    if (button === 'trigger') {
+      analogValue = evt.detail.state.value;
+      // Update button mesh, if any.
+      if (buttonMeshes && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+      }
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onModelLoaded: function (evt) {
@@ -181,13 +173,10 @@ module.exports.Component = registerComponent('vive-controls', {
     controllerObject3D.position.set(0, -0.015, 0.04);
   },
 
-  onAxisMoved: function (evt) {
-    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) { return; }
-    this.el.emit('trackpadmoved', { x: evt.detail.axis[0], y: evt.detail.axis[1] });
-  },
+  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
+    var buttonName = this.mapping.buttons[id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {

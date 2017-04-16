@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, CustomEvent, Event */
 var entityFactory = require('../helpers').entityFactory;
 var controllerComponentName = 'vive-controls';
 
@@ -110,28 +110,91 @@ suite(controllerComponentName, function () {
     });
   });
 
-  suite.skip('onGamepadConnected / Disconnected', function () {
-    test('if we get onGamepadConnected or onGamepadDisconnected, remove periodic change listener and check if present', function () {
+  suite('axismove', function () {
+    var name = 'trackpad';
+    test('if we get axismove, emit ' + name + 'moved', function (done) {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
-      var removeControllersUpdateListenerSpy = this.sinon.spy(controllerComponent, 'removeControllersUpdateListener');
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for thumbstickmoved
+      this.el.addEventListener(name + 'moved', function (evt) {
+        assert.equal(evt.detail.x, 0.1);
+        assert.equal(evt.detail.y, 0.2);
+        assert.ok(evt.detail);
+        done();
+      });
+      // emit axismove
+      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [true, false]}});
+      this.el.dispatchEvent(evt);
+    });
+
+    test('if we get axismove with no changes, do not emit ' + name + 'moved', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for thumbstickmoved
+      this.el.addEventListener(name + 'moved', function (evt) {
+        assert.notOk(evt.detail);
+      });
+      // emit axismove
+      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [false, false]}});
+      this.el.dispatchEvent(evt);
+      // finish next tick
+      setTimeout(function () { done(); }, 0);
+    });
+  });
+
+  suite('buttonchanged', function () {
+    var name = 'trigger';
+    var id = 1;
+    test('if we get buttonchanged, emit ' + name + 'changed', function (done) {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
+      var evt;
+      // mock isControllerPresent to return true
+      controllerComponent.isControllerPresentMockValue = true;
+      // do the check
+      controllerComponent.checkIfControllerPresent();
+      // install event handler listening for triggerchanged
+      this.el.addEventListener(name + 'changed', function (evt) {
+        assert.ok(evt.detail);
+        done();
+      });
+      // emit buttonchanged
+      evt = new CustomEvent('buttonchanged', {'detail': {id: id, state: {value: 0.5, pressed: true, touched: true}}});
+      this.el.dispatchEvent(evt);
+    });
+  });
+
+  suite('gamepaddisconnected', function () {
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
+    test('if we get gamepaddisconnected, check if present', function () {
+      var el = this.el;
+      var controllerComponent = el.components[controllerComponentName];
       var checkIfControllerPresentSpy = this.sinon.spy(controllerComponent, 'checkIfControllerPresent');
+      // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
+      controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
+      controllerComponent.pause();
+      controllerComponent.play();
+      // mock isControllerPresent to return false
+      controllerComponent.isControllerPresentMockValue = false;
       // reset everGotGamepadEvent so we don't think we've looked before
       delete controllerComponent.everGotGamepadEvent;
-      // do the call
-      controllerComponent.onGamepadConnected();
+      // fire emulated gamepaddisconnected event
+      window.dispatchEvent(new Event('gamepaddisconnected'));
       // check assertions
-      assert.ok(removeControllersUpdateListenerSpy.called);
       assert.ok(checkIfControllerPresentSpy.called);
-      assert.ok(controllerComponent.everGotGamepadEvent);
-      // reset everGotGamepadEvent so we don't think we've looked before
-      delete controllerComponent.everGotGamepadEvent;
-      // do the call
-      controllerComponent.onGamepadDisconnected();
-      // check assertions
-      assert.ok(removeControllersUpdateListenerSpy.called);
-      assert.ok(checkIfControllerPresentSpy.called);
-      assert.ok(controllerComponent.everGotGamepadEvent);
     });
   });
 });

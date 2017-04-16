@@ -244,18 +244,17 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerAxes = this.controller.axes;
     var i;
     var previousAxis = this.axis;
+    var changedAxes = [];
 
     // Check if axis changed.
     for (i = 0; i < controllerAxes.length; ++i) {
-      if (previousAxis[i] !== controllerAxes[i]) {
-        changed = true;
-        break;
-      }
+      changedAxes.push(previousAxis[i] !== controllerAxes[i]);
+      if (changedAxes[i]) { changed = true; }
     }
     if (!changed) { return false; }
 
     this.axis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: this.axis});
+    this.el.emit('axismove', {axis: this.axis, changed: changedAxes});
     return true;
   },
 

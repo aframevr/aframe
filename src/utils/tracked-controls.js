@@ -1,4 +1,5 @@
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
+var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 
 /**
  * Return enumerated gamepads matching id prefix.
@@ -61,3 +62,24 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
   return isPresent;
 };
 
+/**
+ * Emit specific moved event(s) if axes changed, based on original axismoved event.
+ *
+ * @param {object} self - the component in use (e.g. oculus-touch-controls, vive-controls...)
+ * @param {array} axesMapping - the axes mapping to process
+ * @param {object} evt - the event to process
+ */
+module.exports.emitIfAxesChanged = function (self, axesMapping, evt) {
+  Object.keys(axesMapping).forEach(function (key) {
+    var axes = axesMapping[key];
+    var changed = evt.detail.changed;
+    // If no changed axes given at all, or at least one changed value is true in the array,
+    if (axes.reduce(function (b, axis) { return b || changed[axis]; }, !changed)) {
+      // An axis has changed, so emit the specific moved event, detailing axis values.
+      var detail = {};
+      axes.forEach(function (axis) { detail[AXIS_LABELS[axis]] = evt.detail.axis[axis]; });
+      self.el.emit(key + 'moved', detail);
+      // If we updated the model based on axis values, that call would go here.
+    }
+  });
+};

@@ -38,7 +38,7 @@ suite(controllerComponentName, function () {
       assert.notOk(controllerComponent.determineGesture());
     });
 
-    test('if non-Oculus Touch and only trackpad. pointing gesture', function () {
+    test('if non-Oculus Touch and only trackpad. Point gesture', function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var trackedControls;
@@ -59,7 +59,7 @@ suite(controllerComponentName, function () {
       assert.equal(controllerComponent.determineGesture(), 'Point');
     });
 
-    test('if non-Oculus Touch and grip or trigger, gesture = fist', function () {
+    test('if non-Oculus Touch and grip or trigger, gesture = Fist', function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var trackedControls;

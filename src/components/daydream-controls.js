@@ -1,6 +1,7 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
 var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
@@ -27,20 +28,21 @@ module.exports.Component = registerComponent('daydream-controls', {
   // 1 - menu (never dispatched on this layer)
   // 2 - system (never dispatched on this layer)
   mapping: {
-    axis0: 'trackpad',
-    axis1: 'trackpad',
-    button0: 'trackpad',
-    button1: 'menu',
-    button2: 'system'
+    axes: {'trackpad': [0, 1]},
+    buttons: ['trackpad', 'menu', 'system']
   },
+
+  // Use these labels for detail on axis events such as thumbstickmoved.
+  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
+  axisLabels: ['x', 'y', 'z', 'w'],
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
     this.onControllersUpdate = bind(this.onControllersUpdate, this);
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
-    this.onGamepadConnected = bind(this.onGamepadConnected, this);
-    this.onGamepadDisconnected = bind(this.onGamepadDisconnected, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -56,6 +58,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.lastControllerCheck = 0;
     this.bindMethods();
     this.isControllerPresent = isControllerPresent; // to allow mock
+    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
   addEventListeners: function () {
@@ -85,40 +88,33 @@ module.exports.Component = registerComponent('daydream-controls', {
     if (isPresent) { this.injectTrackedControls(); } // inject track-controls
   },
 
-  onGamepadConnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
-    this.checkIfControllerPresent();
-  },
-
-  onGamepadDisconnected: function (evt) {
-    // for now, don't disable controller update listening, due to
-    // apparent issue with FF Nightly only sending one event and seeing one controller;
-    // this.everGotGamepadEvent = true;
-    // this.removeControllersUpdateListener();
+  onGamepadConnectionEvent: function (evt) {
+    this.everGotGamepadEvent = true;
+    // Due to an apparent bug in FF Nightly
+    // where only one gamepadconnected / disconnected event is fired,
+    // which makes it difficult to handle in individual controller entities,
+    // we no longer remove the controllersupdate listener as a result.
     this.checkIfControllerPresent();
   },
 
   play: function () {
     this.checkIfControllerPresent();
-    window.addEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.addEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
     this.addControllersUpdateListener();
-    this.addEventListeners();
+    window.addEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.addEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   pause: function () {
-    window.removeEventListener('gamepadconnected', this.onGamepadConnected, false);
-    window.removeEventListener('gamepaddisconnected', this.onGamepadDisconnected, false);
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
+    this.removeControllersUpdateListener();
+    window.removeEventListener('gamepadconnected', this.onGamepadConnectionEvent, false);
+    window.removeEventListener('gamepaddisconnected', this.onGamepadConnectionEvent, false);
   },
 
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
+    this.addEventListeners();
     el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
@@ -153,13 +149,10 @@ module.exports.Component = registerComponent('daydream-controls', {
     controllerObject3D.position.set(0, 0, -0.04);
   },
 
-  onAxisMoved: function (evt) {
-    if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0) { return; }
-    this.el.emit('trackpadmoved', { x: evt.detail.axis[0], y: evt.detail.axis[1] });
-  },
+  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
 
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
+    var buttonName = this.mapping.buttons[id];
     var i;
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
