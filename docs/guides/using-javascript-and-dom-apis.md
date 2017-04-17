@@ -35,7 +35,7 @@ the APIs discussed below.
 Before we go over the different ways to use JavaScript and DOM APIs, we
 recommend encapsulating your JavaScript code within [A-Frame components].
 Components modularize code, make logic and behavior visible from HTML, and
-ensure that code at the correct time (e.g., after the scene and entities have
+ensure that code is executed at the correct time (e.g., after the scene and entities have
 attached and initialized). As the most basic example, to register a
 `console.log` component:
 
