@@ -216,8 +216,9 @@ navigate your scene. For most VR experiences, follow best practices and only
 move the camera proportionately to the user's motion. If the user steps
 forward in roomscale space and the camera is "blocked," this is a very bad 
 experience. For most VR applications it's better to do locomotion with 
-teleportation, design your scene to keep obstacles out of the way, or explore
-other ways of moving users through the world.
+[teleportation](https://github.com/fernandojsg/aframe-teleport-controls),
+design your scene to keep obstacles out of the way, or explore more creative
+ways of moving users through the world.
 
 For non-VR desktop experiences with a gamepad or
 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> controls, or for VR scenes
