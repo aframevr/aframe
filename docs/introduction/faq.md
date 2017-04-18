@@ -209,6 +209,22 @@ We (Mozilla) are currently improving the link traversal user experience within
 the browser as well as helping iterate the API. Once link traversal gets into a
 good state on the platform side, A-Frame should have a link component ready.
 
+## Can I prevent the camera from going through obstacles?
+
+This depends on what devices you plan to support, and how you allow users to
+navigate your scene. For most VR experiences, follow best practices and only
+move the camera proportionately to the user's motion. If the user steps
+forward in roomscale space and the camera is "blocked," this is a very bad 
+experience. For most VR applications it's better to do locomotion with 
+[teleportation](https://github.com/fernandojsg/aframe-teleport-controls),
+design your scene to keep obstacles out of the way, or explore more creative
+ways of moving users through the world.
+
+For non-VR desktop experiences with a gamepad or WASD controls, or for VR scenes
+where the camera is inside a vehicle, you can add a
+[physics engine](https://github.com/donmccurdy/aframe-physics-system) to 
+prevent movement through obstacles.
+
 ## What type of units does A-Frame use?
 
 A-Frame uses life-like meters. It maintains a 1:1 ratio. 5 units in A-Frame is
