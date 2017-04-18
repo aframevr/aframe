@@ -220,8 +220,7 @@ experience. For most VR applications it's better to do locomotion with
 design your scene to keep obstacles out of the way, or explore more creative
 ways of moving users through the world.
 
-For non-VR desktop experiences with a gamepad or
-<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> controls, or for VR scenes
+For non-VR desktop experiences with a gamepad or WASD controls, or for VR scenes
 where the camera is inside a vehicle, you can add a
 [physics engine](https://github.com/donmccurdy/aframe-physics-system) to 
 prevent movement through obstacles.
