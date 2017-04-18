@@ -247,7 +247,7 @@ collection of components][awesome-components].
 [aframe-react]: https://github.com/ngokevin/aframe-react
 [d3]: https://www.youtube.com/watch?v=Tb2b5nFmmsM
 [meteor]: https://github.com/vladbalan/meteor-aframe
-[popmotion]: https://github.com/Popmotion/aframe-role
+[popmotion]: https://github.com/cvan/aframe-role
 [template]: https://github.com/ngokevin/aframe-template-component
 
 A-Frame is built on top of the DOM so most libraries and frameworks work out
