@@ -48,8 +48,8 @@
 <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
   <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
 </a>
-<a href="https://aframe.io/examples/animation/">
-  <img alt="Animation by @processprocess" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531805/6f44072c-1570-11e7-8956-8df2fb88523e.gif" height="190" width="32%">
+<a href="https://github.com/googlecreativelab/webvr-musicalforest">
+  <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
 </a>
 <a href="https://aframe-gallery.glitch.me">
   <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
