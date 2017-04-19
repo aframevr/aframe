@@ -84,32 +84,28 @@ module.exports.Component = registerComponent('raycaster', {
     var children;
     var data = this.data;
     var i;
-    var j;
-    var object;
+    var len;
     var objects;
-    var objectsAreEls = !!data.objects;
+    var objectsAreEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
 
     // Push meshes onto list of objects to intersect.
-    // If objects not defined, intersect with everything.
     if (objectsAreEls) {
-      objects = this.el.sceneEl.querySelectorAll(data.objects);
+      for (objects = [], i = 0, len = objectsAreEls.length; i < len; i++) {
+        objects.push(objectsAreEls[i].object3D);
+      }
     } else {
+      // If objects not defined, intersect with everything.
       objects = this.el.sceneEl.object3D.children;
     }
 
-    this.objects = [];
-    for (i = 0; i < objects.length; i++) {
-      // If we were given elements, get the object3D.
-      object = objectsAreEls ? objects[i].object3D : objects[i];
+    for (this.objects = [], i = 0, len = objects.length; i < len; i++) {
       // A-Frame wraps everything (e.g. in a Group) so we want children.
-      children = object.children;
-      if (children && children.length) {
-        // Add the object3D's children so non-recursive raycasting will work correctly.
-        for (j = 0; j < children.length; j++) { this.objects.push(children[j]); }
-      } else {
-        // If there aren't any children, then until a refresh after geometry loads,
-        // raycast won't see this object... but that should happen automatically.
-      }
+      children = objects[i].children;
+
+      // Add the object3D's children so non-recursive raycasting will work correctly.
+      // If there aren't any children, then until a refresh after geometry loads,
+      // raycast won't see this object... but that should happen automatically.
+      if (children) { this.objects.push.apply(this.objects, children); }
     }
   },
 
