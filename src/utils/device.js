@@ -25,17 +25,9 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  * Check for positional tracking.
  */
 function checkHasPositionalTracking () {
-  var position = new THREE.Vector3();
-  return (function () {
-    if (isMobile() || isGearVR()) { return false; }
-    controls.update();
-    dolly.updateMatrix();
-    position.setFromMatrixPosition(dolly.matrix);
-    if (position.x !== 0 || position.y !== 0 || position.z !== 0) {
-      return true;
-    }
-    return false;
-  })();
+  var vrDisplay = controls.getVRDisplay();
+  if (isMobile() || isGearVR()) { return false; }
+  return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
 module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
 
