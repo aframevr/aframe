@@ -66616,7 +66616,8 @@ module.exports.Component = registerComponent('camera', {
     // Remove the offset if there is positional tracking when entering VR.
     // Necessary for fullscreen mode with no headset.
     // Checking this.hasPositionalTracking to make the value injectable for unit tests.
-    hasPositionalTracking = this.hasPositionalTracking || checkHasPositionalTracking();
+    hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+
     if (!userHeightOffset || !hasPositionalTracking) { return; }
 
     currentPosition = el.getAttribute('position') || {x: 0, y: 0, z: 0};
@@ -66632,7 +66633,7 @@ module.exports.Component = registerComponent('camera', {
    */
   saveCameraPose: function () {
     var el = this.el;
-    var hasPositionalTracking = this.hasPositionalTracking || checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
 
     if (this.savedPose || !hasPositionalTracking) { return; }
 
@@ -66648,7 +66649,7 @@ module.exports.Component = registerComponent('camera', {
   restoreCameraPose: function () {
     var el = this.el;
     var savedPose = this.savedPose;
-    var hasPositionalTracking = this.hasPositionalTracking || checkHasPositionalTracking();
+    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
 
     if (!savedPose || !hasPositionalTracking) { return; }
 
@@ -76892,7 +76893,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-04-2017, Commit #2827f9c)');
+console.log('A-Frame Version: 0.5.0 (Date 20-04-2017, Commit #38ad515)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78518,17 +78519,9 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  * Check for positional tracking.
  */
 function checkHasPositionalTracking () {
-  var position = new THREE.Vector3();
-  return (function () {
-    if (isMobile() || isGearVR()) { return false; }
-    controls.update();
-    dolly.updateMatrix();
-    position.setFromMatrixPosition(dolly.matrix);
-    if (position.x !== 0 || position.y !== 0 || position.z !== 0) {
-      return true;
-    }
-    return false;
-  })();
+  var vrDisplay = controls.getVRDisplay();
+  if (isMobile() || isGearVR()) { return false; }
+  return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
 module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
 
