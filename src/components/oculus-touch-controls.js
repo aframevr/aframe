@@ -1,7 +1,6 @@
-var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
-var getGamepadsByPrefix = require('../utils/tracked-controls').getGamepadsByPrefix;
-var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
+var registerComponent = require('../core/component').registerComponent;
+var controllerUtils = require('../utils/tracked-controls');
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -37,11 +36,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   // 4 - Y (left) or B (right)
   // 5 - surface (touch only)
   mapping: {
-    'left': {
+    left: {
       axes: {'thumbstick': [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
     },
-    'right': {
+    right: {
       axes: {'thumbstick': [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
     }
@@ -60,7 +59,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   init: function () {
     var self = this;
-    this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
@@ -70,8 +68,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
-    this.getGamepadsByPrefix = getGamepadsByPrefix; // to allow mock
-    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
+
+    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;   // Allow mock.
+    this.isControllerPresent = controllerUtils.isControllerPresent;  // Allow mock.
   },
 
   addEventListeners: function () {
@@ -98,19 +97,24 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
 
   checkIfControllerPresent: function () {
     var data = this.data;
-    var isPresent = false;
+    var isPresent;
+
     // Find which controller matches both prefix and hand.
-    var whichControllers = (this.getGamepadsByPrefix(GAMEPAD_ID_PREFIX) || [])
-      .filter(function (gamepad) { return gamepad.hand === data.hand; });
-    if (whichControllers && whichControllers.length) { isPresent = true; }
+    isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {
+      hand: data.hand
+    });
+
+    // Nothing changed, no need to do anything.
     if (isPresent === this.controllerPresent) { return; }
+
+    // Update controller presence.
     this.controllerPresent = isPresent;
     if (isPresent) {
-      // Inject with specific gamepad id, if provided. This works around a temporary issue
-      // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
-      this.injectTrackedControls(whichControllers[0]);
+      this.injectTrackedControls();
       this.addEventListeners();
-    } else { this.removeEventListeners(); }
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   play: function () {
@@ -141,16 +145,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
   },
 
-  injectTrackedControls: function (gamepad) {
-    var el = this.el;
+  injectTrackedControls: function () {
     var data = this.data;
-    var isRightHand = data.hand === 'right';
-    // Inject with specific gamepad id, if provided. This works around a temporary issue
-    // where Chromium uses `Oculus Touch (Right)` but Firefox uses `Oculus Touch (right)`.
-    el.setAttribute('tracked-controls', {
-      id: gamepad ? gamepad.id : isRightHand ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
+    var offset = data.hand === 'right' ? -90 : 90;
+    this.el.setAttribute('tracked-controls', {
+      id: data.hand === 'right' ? 'Oculus Touch (Right)' : 'Oculus Touch (Left)',
       controller: 0,
-      rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : isRightHand ? -90 : 90
+      rotationOffset: data.rotationOffset !== -999 ? data.rotationOffset : offset
     });
     this.updateControllerModel();
   },
@@ -224,7 +225,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.updateModel(buttonName, evtName);
   },
 
-  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt); },
+  onAxisMoved: function (evt) {
+    this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
+  },
 
   updateModel: function (buttonName, evtName) {
     var i;

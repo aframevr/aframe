@@ -1,202 +1,189 @@
 /* global assert, process, setup, suite, test, CustomEvent, Event */
 var entityFactory = require('../helpers').entityFactory;
-var controllerComponentName = 'oculus-touch-controls';
 
-var emulatedControllers = [{id: 'Oculus Touch (Left)', hand: 'left'}, {id: 'Oculus Touch (right)', hand: 'right'}];
+suite('oculus-touch-controls', function () {
+  var el;
+  var component;
 
-suite(controllerComponentName, function () {
   setup(function (done) {
-    var el = this.el = entityFactory();
-    el.setAttribute(controllerComponentName, '');
+    el = this.el = entityFactory();
+    el.setAttribute('oculus-touch-controls', '');
     el.addEventListener('loaded', function () {
-      var controllerComponent = el.components[controllerComponentName];
-      controllerComponent.isControllerPresent = function () { return controllerComponent.isControllerPresentMockValue; };
-      controllerComponent.getGamepadsByPrefix = function () {
-        return controllerComponent.isControllerPresentMockValue ? emulatedControllers : null;
-      };
+      component = el.components['oculus-touch-controls'];
       done();
     });
   });
 
   suite('checkIfControllerPresent', function () {
-    test('first-time, if no controllers, remove event listeners and remember not present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // reset so we don't think we've looked before
-      delete controllerComponent.controllerPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+    test('removes event listeners if controllers not present', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+
+      // Mock isControllerPresent to return false.
+      this.sinon.stub(component, 'isControllerPresent', () => false);
+
+      // Mock has not been checked previously.
+      delete component.controllerPresent;
+
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.ok(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.strictEqual(component.controllerPresent, false);
     });
 
-    test('if no controllers again, do not remove event listeners', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // pretend we've looked before
-      controllerComponent.controllerPresent = false;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+    test('does not call removeEventListeners multiple times', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+
+      // Mock isControllerPresent to return false.
+      this.sinon.stub(component, 'isControllerPresent', () => false);
+
+      // Mock that it's been checked previously.
+      component.controllerPresent = false;
+
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.strictEqual(component.controllerPresent, false);
     });
 
     test('attach events if controller is newly present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // reset so we don't think we've looked before
-      delete controllerComponent.controllerPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
-      assert.ok(injectTrackedControlsSpy.called);
-      assert.ok(addEventListenersSpy.called);
-      assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent);
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => true);
+
+      // Mock that it's never been checked previously.
+      delete component.controllerPresent;
+
+      component.checkIfControllerPresent();
+
+      assert.ok(injectTrackedControlsSpy.called, 'Inject');
+      assert.ok(addEventListenersSpy.called, 'Add');
+      assert.notOk(removeEventListenersSpy.called, 'Remove');
+      assert.ok(component.controllerPresent);
     });
 
-    test('do not inject or attach events again if controller is already present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // pretend we've looked before
-      controllerComponent.controllerPresent = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+    test('does not add or remove event listeners if presence doe not change', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => true);
+
+      // Mock that it's was currently present.
+      component.controllerPresent = true;
+
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent);
+      assert.ok(component.controllerPresent);
     });
 
-    test('if controller disappears, remove event listeners', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // pretend we've looked before
-      controllerComponent.controllerPresent = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+    test('removes event listeners if controller disappears', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => false);
+
+      // Mock that it's was currently present.
+      component.controllerPresent = true;
+
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
-      assert.notOk(controllerComponent.controllerPresent);
+      assert.notOk(component.controllerPresent);
     });
   });
 
   suite('axismove', function () {
-    var name = 'thumbstick';
-    test('if we get axismove, emit ' + name + 'moved', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+    test('can emit thumbstick moved', function (done) {
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for thumbstickmoved
-      this.el.addEventListener(name + 'moved', function (evt) {
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => true);
+      // Do the check.
+      component.checkIfControllerPresent();
+      // Install event handler listening for thumbstickmoved.
+      this.el.addEventListener('thumbstickmoved', function (evt) {
         assert.equal(evt.detail.x, 0.1);
         assert.equal(evt.detail.y, 0.2);
         assert.ok(evt.detail);
         done();
       });
-      // emit axismove
-      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [true, false]}});
+      // Emit axismove.
+      evt = new CustomEvent('axismove', {detail: {axis: [0.1, 0.2], changed: [true, false]}});
       this.el.dispatchEvent(evt);
     });
 
-    test('if we get axismove with no changes, do not emit ' + name + 'moved', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+    test('does not emit thumbstickmoved if axismove has no changes', function (done) {
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for thumbstickmoved
-      this.el.addEventListener(name + 'moved', function (evt) {
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => true);
+      // Do the check.
+      component.checkIfControllerPresent();
+      // Install event handler listening for thumbstickmoved.
+      this.el.addEventListener('thumbstickmoved', function (evt) {
         assert.notOk(evt.detail);
       });
-      // emit axismove with no changes
-      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [false, false]}});
+      // Emit axismove with no changes.
+      evt = new CustomEvent('axismove', {detail: {axis: [0.1, 0.2], changed: [false, false]}});
       this.el.dispatchEvent(evt);
-      // finish next tick
-      setTimeout(function () { done(); }, 0);
+      setTimeout(function () { done(); });
     });
   });
 
   suite('buttonchanged', function () {
-    var name = 'trigger';
-    var id = 1;
-    test('if we get buttonchanged, emit ' + name + 'changed', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
+    test('can emit triggerchanged', function (done) {
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for triggerchanged
-      this.el.addEventListener(name + 'changed', function (evt) {
+      // Mock isControllerPresent to return true.
+      this.sinon.stub(component, 'isControllerPresent', () => true);
+      // Do the check.
+      component.checkIfControllerPresent();
+      // Install event handler listening for triggerchanged.
+      this.el.addEventListener('triggerchanged', function (evt) {
         assert.ok(evt.detail);
         done();
       });
-      // emit buttonchanged
-      evt = new CustomEvent('buttonchanged', {'detail': {id: id, state: {value: 0.5, pressed: true, touched: true}}});
+      // Emit buttonchanged.
+      evt = new CustomEvent('buttonchanged', {
+        detail: {id: 1, state: {value: 0.5, pressed: true, touched: true}}
+      });
       this.el.dispatchEvent(evt);
     });
   });
 
   suite('gamepaddisconnected', function () {
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener as a result.
+    /**
+     * In FF Nightly, only one gamepadconnected/disconnected event is fired,
+     * which makes it difficult to handle in individual controller entities.
+     * We no longer remove the controllersupdate listener as a result.
+     */
     test('if we get gamepaddisconnected, check if present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var checkIfControllerPresentSpy = this.sinon.spy(controllerComponent, 'checkIfControllerPresent');
+      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
       // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
-      controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
-      controllerComponent.pause();
-      controllerComponent.play();
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
-      // reset everGotGamepadEvent so we don't think we've looked before
-      delete controllerComponent.everGotGamepadEvent;
-      // fire emulated gamepaddisconnected event
+      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
+      component.pause();
+      component.play();
+      // Mock isControllerPresent to return false.
+      this.sinon.stub(component, 'isControllerPresent', () => false);
+      // Reset everGotGamepadEvent so we don't think we've looked before.
+      delete component.everGotGamepadEvent;
+      // Fire emulated gamepaddisconnected event.
       window.dispatchEvent(new Event('gamepaddisconnected'));
-      // check assertions
+
       assert.ok(checkIfControllerPresentSpy.called);
     });
   });
