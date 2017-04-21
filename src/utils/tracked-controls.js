@@ -27,16 +27,19 @@ module.exports.getGamepadsByPrefix = function (idPrefix) {
 /**
  * Enumerate controllers (as built by system tick, e.g. that have pose) and check if they match parameters.
  *
- * @param {object} sceneEl - the scene element.
+ * @param {object} component - the tracked controls component.
  * @param {object} idPrefix - prefix to match in gamepad id, if any.
  * @param {object} queryObject - map of values to match (hand; index among controllers with idPrefix)
  */
-module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
+module.exports.isControllerPresent = function (component, idPrefix, queryObject) {
   var isPresent = false;
   var index = 0;
   var gamepad;
   var isPrefixMatch;
   var gamepads;
+  var el = component.el;
+  var sceneEl = el.sceneEl;
+
   var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) { return isPresent; }
   gamepads = trackedControlsSystem.controllers;
@@ -58,6 +61,10 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     }
     if (isPresent) { break; }
     if (isPrefixMatch) { index++; } // update count of gamepads with idPrefix
+  }
+
+  if (isPresent) {
+    el.emit('controllerconnected', {name: component.name, component: component});
   }
   return isPresent;
 };

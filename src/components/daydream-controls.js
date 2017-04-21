@@ -82,7 +82,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    var isPresent = this.isControllerPresent(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {

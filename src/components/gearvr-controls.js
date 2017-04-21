@@ -83,7 +83,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
+    var isPresent = this.isControllerPresent(this, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {

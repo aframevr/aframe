@@ -91,7 +91,7 @@ module.exports.Component = registerComponent('vive-controls', {
     // var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
     // Until then, use hardcoded index.
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controllerIndex });
+    var isPresent = this.isControllerPresent(this, GAMEPAD_ID_PREFIX, { index: controllerIndex });
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
     if (isPresent) {
