@@ -37,7 +37,7 @@ suite('raycaster', function () {
       var el3 = document.createElement('a-entity');
       var i;
       var objects;
-      // add some geometry so raycast will actually work, and wait for it to be loaded
+      // Add some geometry so raycast will actually work, and wait for it to be loaded.
       el2.setAttribute('geometry', 'primitive: box');
       el3.setAttribute('geometry', 'primitive: box');
       el3.addEventListener('loaded', function finishSetup () {
@@ -95,7 +95,7 @@ suite('raycaster', function () {
       // Define camera and light before tests to avoid injection.
       this.el.sceneEl.appendChild(document.createElement('a-camera'));
       var waitForMe = document.createElement('a-light');
-      waitForMe.addEventListener('loaded', function finishSetup () { setTimeout(function () { done(); }, 0); });
+      waitForMe.addEventListener('loaded', function finishSetup () { setTimeout(function () { done(); }); });
       this.el.sceneEl.appendChild(waitForMe);
     });
 
@@ -110,7 +110,11 @@ suite('raycaster', function () {
       sceneEl.appendChild(newEl);
 
       function eventuallyDoAssert () {
-        if (newEl.hasLoaded) { doAssert(); } else { newEl.addEventListener('loaded', doAssert); }
+        if (newEl.hasLoaded) {
+          doAssert();
+        } else {
+          newEl.addEventListener('loaded', doAssert);
+        }
       }
       function doAssert () {
         sceneEl.removeEventListener('child-attached', eventuallyDoAssert);
@@ -158,7 +162,6 @@ suite('raycaster', function () {
       targetEl.setAttribute('geometry', 'primitive: box; depth: 1; height: 1; width: 1;');
       targetEl.setAttribute('position', '0 0 -1');
       el.sceneEl.appendChild(targetEl);
-      // `npm run test:forefox` needs the timeout for the tests to succeed.
       function finishSetup () { setTimeout(function () { done(); }, 0); }
       if (targetEl.hasLoaded) { finishSetup(); } else { targetEl.addEventListener('loaded', finishSetup); }
     });

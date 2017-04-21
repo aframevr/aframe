@@ -7,28 +7,33 @@
     <script src="../../../dist/aframe-master.js"></script>
   </head>
   <body>
+
+<script>
+
+  AFRAME.registerComponent('raycast-blab', {
+    init: function () {
+      this.el.addEventListener('raycaster-intersected', function (evt) {
+        var el = evt.detail.target;
+	// May get two intersection events per tick; same element, different faces.
+        console.log('raycaster-intersected ' + el.outerHTML);
+        el.setAttribute('material', 'color', '#7f7');
+      });
+
+      this.el.addEventListener('raycaster-intersected-cleared', function (evt) {
+        var el = evt.detail.target;
+	// May get two intersection events per tick; same element, different faces.
+        console.log('raycaster-intersected-cleared ' + el.outerHTML);
+        el.setAttribute('material', 'color', '#f77');
+      });
+    }
+  });
+
+</script>
+
     <a-scene>
       <a-entity camera look-controls wasd-controls raycaster="recursive: false; interval: 1000"></a-entity>
+      <a-entity geometry="primitive: box" material="color: #000" position="0 0 -2" raycast-blab></a-entity>
     </a-scene>
 
-    <script>
-      var el = document.createElement('a-entity');
-      el.setAttribute('geometry', 'primitive: box');
-      el.setAttribute('material', 'color: #000');
-      el.setAttribute('position', '0 0 -2');
-      document.querySelector('a-scene').appendChild(el);
-
-      document.querySelector('a-entity[geometry]').addEventListener('raycaster-intersected', function (evt) {
-	// getting two intersection events per tick; same element, different faces...
-        console.log('raycaster-intersected ' + evt.detail.el.outerHTML);
-        this.setAttribute('material', 'color: #7f7');
-      });
-
-      document.querySelector('a-entity[geometry]').addEventListener('raycaster-intersected-cleared', function (evt) {
-	// getting two intersection events per tick; same element, different faces...
-        console.log('raycaster-intersected-cleared ' + evt.detail.el.outerHTML);
-        this.setAttribute('material', 'color: #f77');
-      });
-    </script>
   </body>
 </html>

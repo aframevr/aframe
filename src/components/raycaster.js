@@ -67,11 +67,13 @@ module.exports.Component = registerComponent('raycaster', {
    */
   refreshOnceChildLoaded: function (evt) {
     var self = this;
-    var el = evt.detail.el;
-    if (!el) { return; }
-    if (el.hasLoaded) { this.refreshObjects(); } else {
-      el.addEventListener('loaded', function nowRefresh (evt) {
-        el.removeEventListener('loaded', nowRefresh);
+    var childEl = evt.detail.el;
+    if (!childEl) { return; }
+    if (childEl.hasLoaded) {
+      this.refreshObjects();
+    } else {
+      childEl.addEventListener('loaded', function nowRefresh (evt) {
+        childEl.removeEventListener('loaded', nowRefresh);
         self.refreshObjects();
       });
     }
@@ -84,13 +86,13 @@ module.exports.Component = registerComponent('raycaster', {
     var children;
     var data = this.data;
     var i;
-    var len;
     var objects;
     var objectsAreEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
 
     // Push meshes onto list of objects to intersect.
     if (objectsAreEls) {
-      for (objects = [], i = 0, len = objectsAreEls.length; i < len; i++) {
+      objects = [];
+      for (i = 0; i < objectsAreEls.length; i++) {
         objects.push(objectsAreEls[i].object3D);
       }
     } else {
@@ -98,7 +100,8 @@ module.exports.Component = registerComponent('raycaster', {
       objects = this.el.sceneEl.object3D.children;
     }
 
-    for (this.objects = [], i = 0, len = objects.length; i < len; i++) {
+    this.objects = [];
+    for (i = 0; i < objects.length; i++) {
       // A-Frame wraps everything (e.g. in a Group) so we want children.
       children = objects[i].children;
 
