@@ -1,7 +1,7 @@
 /* global assert, process, setup, suite, test, CustomEvent, Event */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('oculus-touch-controls', function () {
+suite.only('oculus-touch-controls', function () {
   var el;
   var component;
 

@@ -1,6 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
-var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var checkControllerPresentAndSetup = require('../utils/tracked-controls').checkControllerPresentAndSetup;
 var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
@@ -58,7 +58,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.isControllerPresent = isControllerPresent; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
@@ -70,6 +70,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+
+    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -80,18 +82,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+
+    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
-    if (isPresent === this.controllerPresent) { return; }
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls();
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -102,14 +98,11 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
-    this.addControllersUpdateListener();
   },
 
   pause: function () {
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
-    this.removeControllersUpdateListener();
-    this.removeEventListeners();
   },
 
   injectTrackedControls: function () {
