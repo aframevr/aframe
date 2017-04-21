@@ -175,7 +175,7 @@ function fixUpMediaElement (mediaEl) {
   var newMediaEl = setCrossOrigin(mediaEl);
 
   // Plays inline for mobile.
-  if (newMediaEl.tagName === 'VIDEO') {
+  if (newMediaEl.tagName && newMediaEl.tagName.toLowerCase() === 'video') {
     newMediaEl.setAttribute('playsinline', '');
     newMediaEl.setAttribute('webkit-playsinline', '');
   }

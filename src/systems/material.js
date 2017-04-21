@@ -308,7 +308,9 @@ function createVideoEl (src, width, height) {
   var videoEl = document.createElement('video');
   videoEl.width = width;
   videoEl.height = height;
-  videoEl.setAttribute('webkit-playsinline', '');  // Support inline videos for iOS webviews.
+  // Support inline videos for iOS webviews.
+  videoEl.setAttribute('playsinline', '');
+  videoEl.setAttribute('webkit-playsinline', '');
   videoEl.autoplay = true;
   videoEl.loop = true;
   videoEl.crossOrigin = 'anonymous';
@@ -333,8 +335,8 @@ function createVideoEl (src, width, height) {
  * @returns {Element} Video element with the correct properties updated.
  */
 function fixVideoAttributes (videoEl) {
-  videoEl.autoplay = videoEl.getAttribute('autoplay') !== 'false';
-  videoEl.controls = videoEl.getAttribute('controls') !== 'false';
+  videoEl.autoplay = videoEl.hasAttribute('autoplay') && videoEl.getAttribute('autoplay') !== 'false';
+  videoEl.controls = videoEl.hasAttribute('controls') && videoEl.getAttribute('controls') !== 'false';
   if (videoEl.getAttribute('loop') === 'false') {
     videoEl.removeAttribute('loop');
   }
@@ -343,6 +345,7 @@ function fixVideoAttributes (videoEl) {
   }
   videoEl.crossOrigin = videoEl.crossOrigin || 'anonymous';
   // To support inline videos in iOS webviews.
+  videoEl.setAttribute('playsinline', '');
   videoEl.setAttribute('webkit-playsinline', '');
   return videoEl;
 }
