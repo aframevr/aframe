@@ -97,7 +97,9 @@ module.exports.Component = registerComponent('vive-controls', {
     if (isPresent) {
       this.injectTrackedControls();
       this.addEventListeners();
-    } else { this.removeEventListeners(); }
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   play: function () {

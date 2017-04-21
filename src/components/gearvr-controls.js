@@ -86,7 +86,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.injectTrackedControls();
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -98,7 +103,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
     this.addControllersUpdateListener();
-    this.addEventListeners();
   },
 
   pause: function () {

@@ -85,7 +85,12 @@ module.exports.Component = registerComponent('daydream-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.addEventListeners();
+      this.injectTrackedControls();
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -114,7 +119,6 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    this.addEventListeners();
     el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
