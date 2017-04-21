@@ -96,6 +96,12 @@ Inspector, and play with all the possible values to see the effects instantly!
 The implementation is based on [mattdesl's three-bmfont-text][three-bmfont-text].
 [Read more about the text properties][threetextusage].
 
+## Events
+
+| Event Name  | Description                                  |
+|--- --- --- -|--- --- --- --- --- --- --- --- --- --- --- --|
+| textfontset | Emitted when the font source has been loaded |
+
 ## Fonts
 
 We can specify different fonts, although the process is not as simple as Web
