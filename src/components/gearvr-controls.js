@@ -98,9 +98,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
+    this.addControllersUpdateListener();
   },
 
   pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },

@@ -5,31 +5,30 @@ var controllerComponentName = 'vive-controls';
 suite(controllerComponentName, function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.setAttribute(controllerComponentName, '');
+    el.setAttribute(controllerComponentName, 'hand: right'); // to ensure index = 0
     el.addEventListener('loaded', function () {
       var controllerComponent = el.components[controllerComponentName];
-      controllerComponent.isControllerPresent = function () { return controllerComponent.isControllerPresentMockValue; };
+      controllerComponent.controllersWhenPresent = [{id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {}}];
       done();
     });
   });
 
   suite('checkIfControllerPresent', function () {
-    test('first-time, if no controllers, remove event listeners and remember not present', function () {
+    test('first-time, if no controllers, remember not present', function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
+
+      el.sceneEl.systems['tracked-controls'].controllers = [];
+
       // reset so we don't think we've looked before
-      delete controllerComponent.controllerPresent;
+      controllerComponent.controllerPresent = false;
       // do the check
       controllerComponent.checkIfControllerPresent();
       // check assertions
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
-      assert.ok(removeEventListenersSpy.called);
       assert.ok(controllerComponent.controllerPresent === false); // not undefined
     });
 
@@ -39,8 +38,9 @@ suite(controllerComponentName, function () {
       var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
+
+      el.sceneEl.systems['tracked-controls'].controllers = [];
+
       // pretend we've looked before
       controllerComponent.controllerPresent = false;
       // do the check
@@ -58,10 +58,11 @@ suite(controllerComponentName, function () {
       var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
+
+      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
+
       // reset so we don't think we've looked before
-      delete controllerComponent.controllerPresent;
+      controllerComponent.controllerPresent = false;
       // do the check
       controllerComponent.checkIfControllerPresent();
       // check assertions
@@ -77,8 +78,9 @@ suite(controllerComponentName, function () {
       var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
+
+      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
+
       // pretend we've looked before
       controllerComponent.controllerPresent = true;
       // do the check
@@ -96,8 +98,9 @@ suite(controllerComponentName, function () {
       var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = false;
+
+      el.sceneEl.systems['tracked-controls'].controllers = [];
+
       // pretend we've looked before
       controllerComponent.controllerPresent = true;
       // do the check
@@ -116,8 +119,8 @@ suite(controllerComponentName, function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
+
+      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
       // do the check
       controllerComponent.checkIfControllerPresent();
       // install event handler listening for thumbstickmoved
@@ -136,8 +139,8 @@ suite(controllerComponentName, function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
+
+      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
       // do the check
       controllerComponent.checkIfControllerPresent();
       // install event handler listening for thumbstickmoved
@@ -159,8 +162,8 @@ suite(controllerComponentName, function () {
       var el = this.el;
       var controllerComponent = el.components[controllerComponentName];
       var evt;
-      // mock isControllerPresent to return true
-      controllerComponent.isControllerPresentMockValue = true;
+
+      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
       // do the check
       controllerComponent.checkIfControllerPresent();
       // install event handler listening for triggerchanged
@@ -187,8 +190,8 @@ suite(controllerComponentName, function () {
       controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
       controllerComponent.pause();
       controllerComponent.play();
-      // mock isControllerPresent to return false
-      controllerComponent.isControllerPresentMockValue = false;
+
+      el.sceneEl.systems['tracked-controls'].controllers = [];
       // reset everGotGamepadEvent so we don't think we've looked before
       delete controllerComponent.everGotGamepadEvent;
       // fire emulated gamepaddisconnected event

@@ -109,7 +109,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   pause: function () {
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
     this.removeControllersUpdateListener();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.

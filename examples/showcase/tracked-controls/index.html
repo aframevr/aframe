@@ -22,8 +22,8 @@
                  material="color: #F2E646;"></a-mixin>
       </a-assets>
       <!-- Hands -->
-      <a-entity id="left" oculus-touch-controls="hand: left" vive-controls="hand: left" aabb-collider="objects: .cube;" grab></a-entity>
-      <a-entity id="right" oculus-touch-controls="hand: right" vive-controls="hand: right" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity hand-controls="left" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity hand-controls="right" aabb-collider="objects: .cube;" grab></a-entity>
 
       <!-- A-Frame cubes -->
       <a-entity position="0 0 -0.5">
@@ -57,13 +57,5 @@
          <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.4;" position="-8 10 -18"></a-entity>
       </a-entity>
     </a-scene>
-    <script>
-      document.getElementById('left').addEventListener('controllerconnected', function(evt){
-        console.log('left', evt);
-      })
-      document.getElementById('right').addEventListener('controllerconnected', function(evt){
-        console.log('right',evt);
-      });
-    </script>
   </body>
 </html>
