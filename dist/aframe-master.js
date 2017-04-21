@@ -66984,7 +66984,12 @@ module.exports.Component = registerComponent('daydream-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.addEventListeners();
+      this.injectTrackedControls();
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -67013,7 +67018,6 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    this.addEventListeners();
     el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
@@ -67182,7 +67186,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
     if (isPresent === this.controllerPresent) { return; }
     this.controllerPresent = isPresent;
-    if (isPresent) { this.injectTrackedControls(); } // inject track-controls
+    if (isPresent) {
+      this.injectTrackedControls();
+      this.addEventListeners();
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -67194,7 +67203,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
     this.addControllersUpdateListener();
-    this.addEventListeners();
   },
 
   pause: function () {
@@ -71251,7 +71259,9 @@ module.exports.Component = registerComponent('vive-controls', {
     if (isPresent) {
       this.injectTrackedControls();
       this.addEventListeners();
-    } else { this.removeEventListeners(); }
+    } else {
+      this.removeEventListeners();
+    }
   },
 
   play: function () {
@@ -76896,7 +76906,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 20-04-2017, Commit #7d0314c)');
+console.log('A-Frame Version: 0.5.0 (Date 21-04-2017, Commit #34b1e61)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
