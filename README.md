@@ -100,7 +100,7 @@ components right from HTML.
 :runner: **Features**: Hit the ground running with A-Frame's built-in
 components such as geometries, materials, lights, animations, models,
 raycasters, shadows, positional audio, Vive / Touch / Cardboard controls. Get
-even father with community components such as particle systems, physics,
+even further with community components such as particle systems, physics,
 multiuser, oceans, mountains, speech recognition, or teleportation!
 
 ## Usage
