@@ -1,6 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
-var isControllerPresent = require('../utils/tracked-controls').isControllerPresent;
+var checkControllerPresentAndSetup = require('../utils/tracked-controls').checkControllerPresentAndSetup;
 var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
@@ -57,7 +57,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.isControllerPresent = isControllerPresent; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
@@ -82,15 +82,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
-    if (isPresent === this.controllerPresent) { return; }
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.addEventListeners();
-      this.injectTrackedControls();
-    } else {
-      this.removeEventListeners();
-    }
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
   },
 
   onGamepadConnectionEvent: function (evt) {

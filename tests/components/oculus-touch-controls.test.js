@@ -10,6 +10,7 @@ suite('oculus-touch-controls', function () {
     el.setAttribute('oculus-touch-controls', '');
     el.addEventListener('loaded', function () {
       component = el.components['oculus-touch-controls'];
+      component.controllersWhenPresent = [{id: 'Oculus Touch', index: 0, hand: 'left', pose: {}}];
       done();
     });
   });
@@ -19,9 +20,6 @@ suite('oculus-touch-controls', function () {
       var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
-
-      // Mock isControllerPresent to return false.
-      this.sinon.stub(component, 'isControllerPresent', () => false);
 
       // Mock has not been checked previously.
       delete component.controllerPresent;
@@ -38,9 +36,6 @@ suite('oculus-touch-controls', function () {
       var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
-
-      // Mock isControllerPresent to return false.
-      this.sinon.stub(component, 'isControllerPresent', () => false);
 
       // Mock that it's been checked previously.
       component.controllerPresent = false;
@@ -59,7 +54,7 @@ suite('oculus-touch-controls', function () {
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => true);
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
       // Mock that it's never been checked previously.
       delete component.controllerPresent;
@@ -78,7 +73,7 @@ suite('oculus-touch-controls', function () {
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
 
       // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => true);
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
       // Mock that it's was currently present.
       component.controllerPresent = true;
@@ -96,7 +91,6 @@ suite('oculus-touch-controls', function () {
       var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
 
       // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => false);
 
       // Mock that it's was currently present.
       component.controllerPresent = true;
@@ -112,8 +106,7 @@ suite('oculus-touch-controls', function () {
   suite('axismove', function () {
     test('can emit thumbstick moved', function (done) {
       var evt;
-      // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => true);
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for thumbstickmoved.
@@ -130,8 +123,7 @@ suite('oculus-touch-controls', function () {
 
     test('does not emit thumbstickmoved if axismove has no changes', function (done) {
       var evt;
-      // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => true);
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for thumbstickmoved.
@@ -148,8 +140,7 @@ suite('oculus-touch-controls', function () {
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
       var evt;
-      // Mock isControllerPresent to return true.
-      this.sinon.stub(component, 'isControllerPresent', () => true);
+      el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for triggerchanged.
@@ -178,7 +169,6 @@ suite('oculus-touch-controls', function () {
       component.pause();
       component.play();
       // Mock isControllerPresent to return false.
-      this.sinon.stub(component, 'isControllerPresent', () => false);
       // Reset everGotGamepadEvent so we don't think we've looked before.
       delete component.everGotGamepadEvent;
       // Fire emulated gamepaddisconnected event.

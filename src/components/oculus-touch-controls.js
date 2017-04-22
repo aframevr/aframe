@@ -70,7 +70,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.bindMethods();
 
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;   // Allow mock.
-    this.isControllerPresent = controllerUtils.isControllerPresent;  // Allow mock.
+    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;  // Allow mock.
   },
 
   addEventListeners: function () {
@@ -96,25 +96,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
-    var isPresent;
-
-    // Find which controller matches both prefix and hand.
-    isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {
-      hand: data.hand
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+      hand: this.data.hand
     });
-
-    // Nothing changed, no need to do anything.
-    if (isPresent === this.controllerPresent) { return; }
-
-    // Update controller presence.
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls();
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
   },
 
   play: function () {
@@ -125,7 +109,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   pause: function () {
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
     this.removeControllersUpdateListener();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
