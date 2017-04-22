@@ -66899,7 +66899,7 @@ module.exports.Component = registerComponent('cursor', {
 },{"../core/component":102,"../utils/":170}],59:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
+var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
 var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
@@ -66956,7 +66956,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.isControllerPresent = isControllerPresent; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
@@ -66981,15 +66981,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
-    if (isPresent === this.controllerPresent) { return; }
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.addEventListeners();
-      this.injectTrackedControls();
-    } else {
-      this.removeEventListeners();
-    }
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -67100,7 +67092,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 },{"../core/component":102,"../utils/bind":164,"../utils/tracked-controls":174}],60:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
+var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
 var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
 
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
@@ -67158,7 +67150,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.isControllerPresent = isControllerPresent; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
@@ -67170,6 +67162,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+
+    this.addControllersUpdateListener();
   },
 
   removeEventListeners: function () {
@@ -67180,18 +67174,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+
+    this.removeControllersUpdateListener();
   },
 
   checkIfControllerPresent: function () {
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
-    if (isPresent === this.controllerPresent) { return; }
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls();
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, this.data.hand ? {hand: this.data.hand} : {});
   },
 
   onGamepadConnectionEvent: function (evt) {
@@ -67206,10 +67194,10 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
-    this.removeControllersUpdateListener();
-    this.removeEventListeners();
   },
 
   injectTrackedControls: function () {
@@ -68751,7 +68739,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.bindMethods();
 
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;   // Allow mock.
-    this.isControllerPresent = controllerUtils.isControllerPresent;  // Allow mock.
+    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;  // Allow mock.
   },
 
   addEventListeners: function () {
@@ -68777,25 +68765,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   checkIfControllerPresent: function () {
-    var data = this.data;
-    var isPresent;
-
-    // Find which controller matches both prefix and hand.
-    isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, {
-      hand: data.hand
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
+      hand: this.data.hand
     });
-
-    // Nothing changed, no need to do anything.
-    if (isPresent === this.controllerPresent) { return; }
-
-    // Update controller presence.
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls();
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
   },
 
   play: function () {
@@ -68806,7 +68778,6 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   },
 
   pause: function () {
-    this.removeControllersUpdateListener();
     this.removeEventListeners();
     this.removeControllersUpdateListener();
     // Note that due to gamepadconnected event propagation issues, we don't rely on events.
@@ -71162,7 +71133,7 @@ module.exports.Component = registerComponent('visible', {
 },{"../core/component":102}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var isControllerPresent = _dereq_('../utils/tracked-controls').isControllerPresent;
+var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
 var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
@@ -71221,7 +71192,7 @@ module.exports.Component = registerComponent('vive-controls', {
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
-    this.isControllerPresent = isControllerPresent; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
@@ -71250,18 +71221,10 @@ module.exports.Component = registerComponent('vive-controls', {
   checkIfControllerPresent: function () {
     var data = this.data;
     // Once OpenVR / SteamVR return correct hand data in the supporting browsers, we can use hand property.
-    // var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
+    // var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
     // Until then, use hardcoded index.
     var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
-    var isPresent = this.isControllerPresent(this.el.sceneEl, GAMEPAD_ID_PREFIX, { index: controllerIndex });
-    if (isPresent === this.controllerPresent) { return; }
-    this.controllerPresent = isPresent;
-    if (isPresent) {
-      this.injectTrackedControls();
-      this.addEventListeners();
-    } else {
-      this.removeEventListeners();
-    }
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, { index: controllerIndex });
   },
 
   play: function () {
@@ -76906,7 +76869,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 21-04-2017, Commit #fe5e4c0)');
+console.log('A-Frame Version: 0.5.0 (Date 22-04-2017, Commit #bca9bdf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79295,18 +79258,48 @@ module.exports.getGamepadsByPrefix = function (idPrefix) {
 };
 
 /**
- * Enumerate controllers (as built by system tick, e.g. that have pose) and check if they match parameters.
+ * Check if the controller match the parameters and inject the tracked-controls component
+ * and add eventlistener, otherwise it will just remove the listener.
+ * It will also generate a controllerconnected or controllerdisconnected.
  *
- * @param {object} sceneEl - the scene element.
+ * @param {object} component - the tracked controls component.
  * @param {object} idPrefix - prefix to match in gamepad id, if any.
  * @param {object} queryObject - map of values to match (hand; index among controllers with idPrefix)
  */
-module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
+module.exports.checkControllerPresentAndSetup = function (component, idPrefix, queryObject) {
+  var el = component.el;
+  var isPresent = isControllerPresent(component, idPrefix, queryObject);
+
+  // Nothing changed, no need to do anything.
+  if (isPresent === component.controllerPresent) { return isPresent; }
+  component.controllerPresent = isPresent;
+
+  // Update controller presence.
+  if (isPresent) {
+    component.injectTrackedControls();
+    component.addEventListeners();
+    el.emit('controllerconnected', {name: component.name, component: component});
+  } else {
+    component.removeEventListeners();
+    el.emit('controllerdisconnected', {name: component.name, component: component});
+  }
+};
+
+/**
+ * Enumerate controllers (as built by system tick, e.g. that have pose) and check if they match parameters.
+ *
+ * @param {object} component - the tracked controls component.
+ * @param {object} idPrefix - prefix to match in gamepad id, if any.
+ * @param {object} queryObject - map of values to match (hand; index among controllers with idPrefix)
+ */
+function isControllerPresent (component, idPrefix, queryObject) {
   var isPresent = false;
   var index = 0;
   var gamepad;
   var isPrefixMatch;
   var gamepads;
+  var sceneEl = component.el.sceneEl;
+
   var trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) { return isPresent; }
   gamepads = trackedControlsSystem.controllers;
@@ -79314,6 +79307,7 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     trackedControlsSystem.updateControllerList();
     gamepads = trackedControlsSystem.controllers;
   }
+
   if (!gamepads) { return isPresent; }
 
   for (var i = 0; i < gamepads.length; ++i) {
@@ -79329,8 +79323,11 @@ module.exports.isControllerPresent = function (sceneEl, idPrefix, queryObject) {
     if (isPresent) { break; }
     if (isPrefixMatch) { index++; } // update count of gamepads with idPrefix
   }
+
   return isPresent;
-};
+}
+
+module.exports.isControllerPresent = isControllerPresent;
 
 /**
  * Emit specific moved event(s) if axes changed, based on original axismoved event.
