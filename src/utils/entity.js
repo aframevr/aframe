@@ -28,11 +28,13 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
  * delimiter.
  */
 module.exports.setComponentProperty = function (el, name, value, delimiter) {
+  var data = {};
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = name.split(delimiter);
-    el.setAttribute(splitName[0], splitName[1], value);
+    data[splitName[1]] = value;
+    el.setAttribute(splitName[0], data);
     return;
   }
   el.setAttribute(name, value);
