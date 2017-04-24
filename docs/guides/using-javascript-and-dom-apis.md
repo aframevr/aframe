@@ -122,7 +122,7 @@ console.log(sceneEl.querySelector('#redBox'));
 
 ### With `.querySelectorAll()`
 
-If we want to grab a group of elements, we use `.querySelector()` which returns
+If we want to grab a group of elements, we use `.querySelectorAll()` which returns
 an array of elements. We can query across element names:
 
 ```js
