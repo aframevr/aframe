@@ -318,12 +318,11 @@ entityEl.setAttribute('light', {color: '#ACC', intensity: 0.75});
 Let's replace all the properties of the [geometry component][geometry], a
 multi-property component. We do this by providing the component name, an object
 of properties to `.setAttribute()`, and a flag that specifies to clobber the
-existing properties. We'll change the light's color and intensity but leave the
-type the same:
+existing properties. We'll replace all of the geometry's existing properties with new properties:
 
 ```js
 // <a-entity geometry="primitive: cylinder; height: 4; radius: 2"></a-entity>
-entityEl.setAttribute('geometry', {primitive: 'torusKnot', p: 1, q: 3, radiusTubular: 4});
+entityEl.setAttribute('geometry', {primitive: 'torusKnot', p: 1, q: 3, radiusTubular: 4}, true);
 // <a-entity geometry="primitive: torusKnot; p: 1; q: 3; radiusTubular: 4"></a-entity>
 ```
 
