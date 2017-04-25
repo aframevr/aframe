@@ -122,6 +122,8 @@ AFRAME.registerPrimitive('a-box', extendDeep({}, meshMixin, {
 }));
 ```
 
+Note that the keys in the mappings (e.g. 'depth','height') must be lower case, since this is how the DOM knows them. The values (e.g. 'geometry.depth') should match the case used in the component. 
+
 [aframe-extras]: https://github.com/donmccurdy/aframe-extras
 
 For example, Don McCurdy's [aframe-extras][aframe-extras] creates `<a-ocean>`
