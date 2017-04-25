@@ -75562,6 +75562,7 @@ function parseProperty (value, propDefinition) {
   // Use default value if value is falsy.
   if (value === undefined || value === null || value === '') {
     value = propDefinition.default;
+    if (Array.isArray(value)) { value = value.slice(); }
   }
   // Invoke property type parser.
   return propDefinition.parse(value, propDefinition.default);
@@ -76869,7 +76870,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 25-04-2017, Commit #5a8e2ab)');
+console.log('A-Frame Version: 0.5.0 (Date 25-04-2017, Commit #f3789b0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
