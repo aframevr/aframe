@@ -7,7 +7,7 @@ order: 3
 ---
 
 [componentguide]: ../guides/writing-an-aframe-component.md
-[ecs]: ./index.md
+[ecs]: ../introduction/entity-component-system.md
 [entity]: ./entity.md
 [multiple]: #multiple
 [three]: http://threejs.org/

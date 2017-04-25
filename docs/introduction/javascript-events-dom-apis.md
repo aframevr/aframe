@@ -1,9 +1,9 @@
 ---
-title: Using JavaScript and DOM APIs
-type: guides
+title: JavaScript, Events, DOM APIs
+type: introduction
 layout: docs
-parent_section: guides
-order: 4
+parent_section: introduction
+order: 6
 ---
 
 [geometry]: ../components/geometry.md

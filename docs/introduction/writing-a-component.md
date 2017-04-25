@@ -1,13 +1,13 @@
 ---
 title: Writing a Component
-type: guides
+type: introduction
 layout: docs
-parent_section: guides
-order: 6
+parent_section: introduction
+order: 8
 ---
 
 [component]: ../core/component.md
-[ecs]: ../core/index.md
+[ecs]: ../introduction/entity-component-system.md
 [emit]: ./using-javascript-and-dom-apis.md#emitting-an-event-with-emit
 
 Components of A-Frame's [entity-component framework][ecs] are JavaScript
@@ -446,7 +446,7 @@ And there we have our basic `log` component!
 
 ## Example: `box` Component
 
-[usingthree]: ./using-with-threejs.md
+[usingthree]: ./developing-with-threejs.md
 
 For a less trivial example, let's find out how we can add 3D objects and affect
 the scene graph by writing a component that [uses three.js][usingthree]. To get
@@ -497,7 +497,7 @@ Later, when we use this component via HTML, the syntax will look like:
 [mesh]: https://threejs.org/docs/index.html#Reference/Objects/Mesh
 [threegeometry]: https://threejs.org/docs/index.html#Reference/Geometries/BoxBufferGeometry
 [threematerial]: https://threejs.org/docs/index.html#Reference/Materials/MeshStandardMaterial
-[setobject3d]: ./using-with-threejs.md#setting-an-object3d-on-an-entity
+[setobject3d]: ./developing-with-threejs.md#setting-an-object3d-on-an-entity
 
 Let's create our three.js box mesh from the `.init()`, and we'll later let the
 `.update()` handler handle all the property updates. To create a box in
