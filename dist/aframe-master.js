@@ -76869,7 +76869,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-04-2017, Commit #48af057)');
+console.log('A-Frame Version: 0.5.0 (Date 25-04-2017, Commit #5a8e2ab)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77131,15 +77131,14 @@ module.exports.Shader = registerShader('msdf', {
     '    float ratio = BIG_ENOUGH / isBigEnough;',
     '    alpha = ratio * alpha + (1.0 - ratio) * (sigDist + 0.5);',
     '  }',
-
-    '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
     // When texel is big enough, do standard alpha test.
     // FIXME: Experimentally determined constant.
     // Looks much better if we *don't* do this, but do we get Z fighting?
-    '  if (isBigEnough <= BIG_ENOUGH && gl_FragColor.a < alphaTest) { discard; return; }',
+    '  if (isBigEnough <= BIG_ENOUGH && alpha < alphaTest) { discard; return; }',
     // Else, do modified alpha test.
     // FIXME: Experimentally determined constant.
-    '  if (gl_FragColor.a < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+    '  if (alpha < alphaTest * MODIFIED_ALPHATEST) { discard; return; }',
+    '  gl_FragColor = vec4(color.xyz, alpha * opacity);',
     '}'
   ].join('\n')
 });
