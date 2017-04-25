@@ -119,6 +119,16 @@ suite('schema', function () {
         scale: {x: 0, y: 0, z: 0}
       });
     });
+
+    test('does not share the reference to an array without default values specification', function () {
+      var schema = processSchema({
+        foo: {type: 'array'},
+        bar: {type: 'array'}
+      });
+      var parsed = parseProperties({}, schema);
+
+      assert.ok(parsed.foo !== parsed.bar);
+    });
   });
 
   suite('processPropertyDefinition', function () {
