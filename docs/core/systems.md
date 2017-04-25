@@ -6,11 +6,15 @@ parent_section: core
 order: 4
 ---
 
+[ecs]: ../introduction/entity-component-system.md
+
 A system, of the [entity-component-system pattern][ecs], provides global scope,
 services, and management to classes of components. It provides public APIs
 (methods and properties) for classes of components. A system can be accessed
 through the scene element, and can help components interface with the global
 scene.
+
+[camera]: ../components/camera.md
 
 For example, the camera system manages all entities with the [camera
 component][camera], controlling which camera is the active camera.
@@ -18,6 +22,8 @@ component][camera], controlling which camera is the active camera.
 <!--toc-->
 
 ## Registering a System
+
+[components]: ./component.md
 
 A system is registered similarly to a [component][components].
 
@@ -134,7 +140,3 @@ AFRAME.registerComponent('my-component', {
   }
 });
 ```
-
-[camera]: ../components/camera.md
-[components]: ./component.md
-[ecs]: ./index.md

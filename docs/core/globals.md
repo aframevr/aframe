@@ -1,5 +1,5 @@
 ---
-title: AFRAME Globals
+title: Globals
 type: core
 layout: docs
 parent_section: core
@@ -17,7 +17,7 @@ global. This same interface is also exposed if requiring with CommonJS
 [entity]: ./entity.md
 [geometryregister]: ../components/geometry.md#register-a-custom-geometry
 [materialregister]: ../components/material.md#register-a-custom-material
-[primitiveregister]: ../primitives/index.md#register-a-primitive
+[primitiveregister]: ../introduction/html-and-primitives.md#registering-a-primitive
 [scene]: ./scene.md
 [three.js]: http://threejs.org
 [tween.js]: https://github.com/tweenjs/tween.js

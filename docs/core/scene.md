@@ -83,7 +83,7 @@ Components can be attached to the scene as well as entities:
 [embedded]: ../components/embedded.md
 [fog]: ../components/fog.md
 [keyboard-shortcuts]: ../components/keyboard-shortcuts.md
-[inspector]: ../guides/using-the-aframe-inspector.md
+[inspector]: ../introduction/visual-inspector-and-dev-tools.md
 [stats]: ../components/stats.md
 [vr-mode-ui]: ../components/vr-mode-ui.md
 

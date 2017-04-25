@@ -6,27 +6,64 @@ layout: docs
 order: 1
 parent_section: docs
 section_order: 1
+installation: true
 ---
 
 [mozvr]: https://mozvr.com
+[three.js]: https://threejs.org
 [webvr]: https://iswebvrready.com
-[vrjump]: http://vrjump.de
 
-A-Frame is a web framework for building virtual reality experiences. It was
-started by [Mozilla VR][mozvr] to make [WebVR][webvr] content creation easier,
-faster, and more accessible.
+![A-Frame](https://cloud.githubusercontent.com/assets/674727/25392020/6f011d10-298c-11e7-845e-c3c5baebd14d.jpg)
 
-A-Frame lets you build scenes with just **HTML** while having unlimited access
-to JavaScript, [three.js](https://threejs.org), and all existing Web APIs.
-A-Frame uses an **entity-component-system** pattern that promotes composition
-and extensibility. It is free and open source with a welcoming community and a
-thriving **ecosystem of tools and components**.
+## What is A-Frame?
 
-### HTML
+:a:-Frame is a web framework for building virtual reality (VR) experiences. As
+originators of WebVR, the [Mozilla VR team][mozvr] developed A-Frame to be the
+easiest as well as the most powerful way to develop WebVR content. As a [fully
+open project](https://github.com/aframevr/), A-Frame has grown to be one of the
+[largest and welcoming VR communities](https://aframe.io/community/).
 
-HTML is one of the easiest languages to understand, and many of us are already
-familiar with it. There are no build steps or boilerplate required nor anything
-to install; all we need is an HTML file:
+A-Frame is based on top of HTML, making it simple to get started. But A-Frame
+is not just a 3D scene graph nor a markup language; the core is a powerful
+entity-component framework that provides an declarative, extensible, and
+composable structure to [three.js].
+
+A-Frame supports most VR headsets such as Vive, Rift, Daydream, GearVR,
+Cardboard, and can even be used for augmented reality. Although A-Frame
+supports the whole spectrum, A-Frame aims to define fully immersive and
+interactive VR experiences with positional tracking and controllers that goes
+beyond basic 360&deg; content. The Mozilla VR team is currently using A-Frame
+as the foundations for a Metaverse-in-progress.
+
+<div class="docs-introduction-examples">
+  <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
+    <img alt="A-Painter" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531388/acfc3dda-156d-11e7-8563-5bd75252f70f.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe.io/a-blast/">
+    <img alt="A-Blast" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531440/0336e66e-156e-11e7-95c2-f2e6ebc0393d.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe.io/a-saturday-night/">
+    <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
+  </a>
+  <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
+    <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
+  </a>
+  <a href="https://github.com/googlecreativelab/webvr-musicalforest">
+    <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe-gallery.glitch.me">
+    <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
+  </a>
+</div>
+
+## Getting Started
+
+[glitch]: http://glitch.com/~aframe
+
+A-Frame can be developed from a plain HTML file without having to install
+anything! A great way to try out A-Frame to **[remix the starter example on
+Glitch][glitch]**, an online code editor that instantly hosts and deploys for
+free. Or create an `.html` file and include A-Frame in the `<head>`:
 
 ```html
 <html>
@@ -35,181 +72,122 @@ to install; all we need is an HTML file:
   </head>
   <body>
     <a-scene>
-      <a-box color="#6173F4" opacity="0.8" depth="2" position="0 0 -2"></a-box>
-      <a-sphere radius="2" position="1 1 -2"></a-sphere>
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
       <a-sky color="#ECECEC"></a-sky>
     </a-scene>
   </body>
 </html>
 ```
 
-`<a-scene>` contains all of the objects in our 3D scene. It also handles all of
-the setup that is traditionally required for 3D: setting up WebGL, the canvas,
-camera, lights, renderer, render loop as well as out of the box VR support on
-platforms such as HTC Vive, Oculus Rift, Samsung GearVR, and smartphones
-(Google Cardboard). Tons of repeated code eliminated with one clean line of
-HTML.
+[Installation]: ./installation.md
+[school]: https://aframe.io/school/
 
-[asceneimage]: https://cloud.githubusercontent.com/assets/674727/20290104/e155c380-aa92-11e6-9507-f19403783a7b.jpg
-![<a-scene>][asceneimage]
-<small class="image-caption"><i>Image by Ruben Mueller from [The VR Jump][vrjump].</i></small>
+The [Installation] page provides more options for getting started with A-Frame.
+To get started learning A-Frame, check out [A-Frame School][school] for
+visual step-by-step lessons to complement the documentation.
 
-Then we can place objects within our scene using assorted primitive elements
-that come with A-Frame such as `<a-box>` or `<a-sphere>`. This is extremely
-readable, and we could **copy and paste** this HTML to any other scene and it
-would behave the same. And we can use the browser's DOM Inspector just as we
-would with for any other web site.
+## Features
 
-### JavaScript
+:eyeglasses: **VR Made Simple**: Just drop in a `<script>` tag and `<a-scene>`.
+A-Frame will handle 3D boilerplate, VR setup, and default controls. Nothing to
+install, no build steps.
 
-We can use traditional JavaScript DOM APIs to manipulate A-Frame scenes to add
-logic, behavior, and functionality:
+:heart: **Declarative HTML**: HTML is easy to read, understand, and
+copy-and-paste. Being based on top of HTML, A-Frame is accessible to everyone:
+web developers, VR enthusiasts, artists, designers, educators, makers, kids.
 
-[jsimage]: https://cloud.githubusercontent.com/assets/674727/20290105/e1573210-aa92-11e6-8f1a-8a31fb6dad52.jpg
-![With JavaScript][jsimage]
-<small class="image-caption"><i>Image by Ruben Mueller from [The VR Jump][vrjump].</i></small>
+:globe_with_meridians: **Cross-Platform VR**: Build VR applications for Vive,
+Rift, Daydream, GearVR, and Cardboard with support for all respective
+controllers. Don't have a headset or controllers? No problem! A-Frame still
+works on standard desktop and smartphones.
 
-```js
-var box = document.querySelector('a-box');
-box.getAttribute('position');
-box.addEventListener('click', function () {
-  box.setAttribute('color', 'red');
-});
-```
+[ecs]: ./entity-component-system.md
 
-And being based on the DOM, most existing libraries and frameworks work
-beautifully on top of A-Frame such as React, Vue.js, d3.js, jQuery, or Angular.
-The existing web ecosystem of tools were built on top of the notion of
-manipulating plain HTML and are thus compatible with A-Frame.
+:electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
+[three.js] framework, providing a declarative, composable, reusable
+[entity-component structure][ecs].js. HTML is just the tip of the iceberg;
+developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
+WebGL.
 
-[integrationimage]: https://cloud.githubusercontent.com/assets/674727/20290346/5f3f10b6-aa94-11e6-9d71-94c3e4350d08.png
-![Works with Everything][integrationimage]
+[A-Painter]: https://github.com/aframevr/a-painter
+[Tilt Brush]: https://www.tiltbrush.com/
 
-### Entity-Component-System
+:zap: **Performance**: A-Frame is optimized from the ground up for WebVR. While
+A-Frame uses the DOM, its elements don't touch the browser layout engine. 3D
+object updates are all done in memory with little overhead under a single
+`requestAnimationFrame` call. For reference, see [A-Painter], a [Tilt Brush]
+clone built in A-Frame that runs like native (90+ FPS).
 
-[ecs]: http://www.gamedev.net/resources/_/technical/game-programming/understanding-component-entity-systems-r3013
+[React]: https://github.com/aframevr/aframe-react/
+[Preact]: https://github.com/aframevr/aframe-react#using-with-preact
+[Vue.js]: https://vuejs.org/
+[Angular]: https://angularjs.org/
+[d3.js]: http://blockbuilder.org/search#text=aframe
+[Ember.js]: https://www.emberjs.com/
+[jQuery]: http://jquery.com/download/
 
-A-Frame at its core is an **entity-component-system framework**.
-[Entity-component-system][ecs] (ECS) is a pattern popular in game development
-and is prominent in game engines like Unity. ECS favors composition over
-inheritance. Every single object in the scene is an entity. An **entity** is an
-empty placeholder object that by itself does nothing. We plug in reusable
-**components** to attach appearance, behavior, functionality. And we can
-mix-and-match different components and configure them in order to define
-different types of objects.
+:hammer: **Tool Agnostic**: Since the Web was built on the notion of the HTML,
+A-Frame is compatible with most libraries, frameworks, and tools including
+[React], [Preact], [Vue.js], [Angular], [d3.js], [Ember.js], [jQuery].
 
-[ecsimage]: https://cloud.githubusercontent.com/assets/674727/20289898/71f7fea0-aa91-11e6-8307-d8dc68dff285.png
-![Entity-Component Minecraft Analogy][ecsimage]
+[inspector]: ./visual-inspector-and-dev-tools.md
 
-Object-oriented and hierarchical patterns have well-suited the 2D web, where we
-lay out elements and components that have fixed behavior on a web page. 3D and
-VR is different; there are infinite types of objects with endless complexity.
-We need an easy way to build up different kinds of objects without having to
-create a special class for each one.
+:mag: **Visual Inspector**: A-Frame provides a handy built-in [visual 3D
+inspector][inspector]. Open up *any* A-Frame scene, hit `<ctrl> + <alt> + i`,
+and fly around to peek behind the hood!
 
-In A-Frame, an entity is simply:
-
-```html
-<a-entity></a-entity>
-```
-
-A-Frame components (not to be confused with Web Components) are reusable
-modules that can be plugged into any entity. They are allowed to do *anything*
-and have full access to JavaScript, three.js, and Web APIs. The structure of a
-basic component may look like:
-
-```js
-AFRAME.registerComponent('foo', {
-  schema: {
-    bar: {type: 'number'},
-    baz: {type: 'string'}
-  },
-
-  init: function () {
-    // Do something when component is plugged in.
-  },
-
-  update: function () {
-    // Do something when component's data is updated.
-  }
-});
-```
-
-Then once defined, we can plug this bundle of appearance, behavior, or
-functionality into an entity straight from an HTML attribute.
-
-```html
-<a-entity foo="bar: 5; baz: qux"></a-entity>
-```
-
-### Component Ecosystem
-
-A-Frame ships with several components, but since A-Frame is fully extensible at
-its core, the community has filled the ecosystem with tons of components such
-as physics, particle systems, audio visualizations, and Leap Motion controls. This
-ecosystem is the lifeblood of A-Frame. A developer can build a component and
-publish it, and then someone else can take that component and use it straight
-from HTML without even having to know any JavaScript.
+![Inspector](https://cloud.githubusercontent.com/assets/674727/25377018/27be9cce-295b-11e7-9098-3e85ac1fe172.gif)
 
 [registry]: https://aframe.io/aframe-registry
 
-These components are curated and collected into the **[A-Frame
-Registry][registry]**. This is similar to the collection of components and
-modules on the Unity Asset Store, but free and open source. We make sure they
-work well and from there they are easily searchable and installable through
-multiple channels. One of which is through the A-Frame Inspector.
+:package: **Registry**: Take powerful components that developers have published
+and plug them in straight from HTML. Similar to the Unity Asset Store, [the
+A-Frame Registry][registry] collects and curates these components for easy
+discovery.
 
-[aframeregistryimage]: https://cloud.githubusercontent.com/assets/674727/20289850/13a4b42e-aa91-11e6-84bc-c5aa8ea6fe6c.png
-![A-Frame Registry][aframeregistryimage]
+[augmented reality]: https://github.com/jeromeetienne/AR.js#augmented-reality-for-the-web-in-less-than-10-lines-of-html
+[motion capture]: https://github.com/dmarcos/aframe-motion-capture
+[mountains]: https://github.com/ngokevin/kframe/tree/master/components/mountain/
+[multiuser]: https://github.com/haydenjameslee/networked-aframe
+[oceans]: https://github.com/donmccurdy/aframe-extras/tree/master/src/primitives
+[particle systems]: https://github.com/IdeaSpaceVR/aframe-particle-system-component
+[physics]: https://github.com/donmccurdy/aframe-physics-system
+[speech recognition]: https://github.com/lmalave/aframe-speech-command-component
+[super hands]: https://github.com/wmurphyrd/aframe-super-hands-component
+[teleportation]: https://github.com/fernandojsg/aframe-teleport-controls
 
-### A-Frame Inspector
+:runner: **Components**: Hit the ground running with A-Frame's core components
+such as geometries, materials, lights, animations, models, raycasters, shadows,
+positional audio, text, and Vive / Touch / Daydream / GearVR / Cardboard
+controls. Get even further with community components such as [particle systems],
+[physics], [multiuser], [oceans], [mountains], [speech recognition], [motion capture],
+[teleportation], [super hands], and [augmented reality].
 
-The A-Frame Inspector is a visual tool for inspecting and editing A-Frame
-scenes. Similar to the browser's DOM Inspector, you can go to any A-Frame
-scene, local or on the Web, and hit `<ctrl> + <alt> + i` on your keyboard.
+## Off You Go!
 
-This will open the visual Inspector where you can make changes and return to
-the scene with the reflected changes. You can visually move and place objects,
-poke around with properties of the components, or pan the camera around to see
-a different view of the scene. It's like viewing the source in an interactive
-way.
+If it's your first time here, here's a plan for success for getting into
+A-Frame:
 
-[inspectorimage]: https://cloud.githubusercontent.com/assets/674727/18565454/ad047c84-7b44-11e6-8c4a-0f1fe55c6682.gif
-![A-Frame Inspector][inspectorimage]
+1. For inspiration, check out what other people have built with A-Frame on the
+[Weekly Blog](https://aframe.io/blog/) and
+[awesome-aframe](https://github.com/aframevr/awesome-aframe/). Users of A-Frame
+have included The Washington Post, Amnesty International, Google Creative Labs,
+Al Jazeera, NPR, Shopify, iStaging, and IDEO.
 
-The A-Frame Inspector is integrated with the A-Frame Registry. From the
-Inspector, you can install components from the Registry and attach them to
-objects in the scene with a couple of clicks.
+2. Read through the basic documentation and guides to get a grasp.
 
-### A-Painter
+3. Run through [A-Frame School](https://aframe.io/school/), a brief
+step-by-step visual tutorial.
 
-[painter]: https://aframe.io/a-painter
+4. [Join us on Slack](https://aframevr-slack.herokuapp.com) and if you have any
+questions, [search and ask on
+StackOverflow](http://stackoverflow.com/questions/ask/?tags=aframe), and
+someone will get right to you!
 
-A-Frame is powerful and performant enough to create compelling experiences.
-The Mozilla VR team built [A-Painter][painter], a room scale Vive experience
-where you can paint with both of your hands right within the browser. It was
-built on the order of weeks and runs well at over 90 frames per second.
+5. When you build something, share your project online and we'll feature it on
+[*A Week of A-Frame*](https://aframe.io/blog/)!
 
-[apainterimage]: https://cloud.githubusercontent.com/assets/674727/20289823/ce653262-aa90-11e6-83a5-89c25cbb42ee.gif
-![A-Painter][apainterimage]
-
-### Community
-
-In the manner of other open source projects such as Rust and Servo, while it is
-primarily maintained by Mozilla, A-Frame is an open-source community project.
-We work together to realize the vision of an open, connected, and immersive
-WebVR platform and ecosystem not owned by any one corporation.
-
-[scenesimage]: https://cloud.githubusercontent.com/assets/674727/20292171/4f960d0c-aaa0-11e6-99c2-6e89ec83d37e.jpg
-![Community Scenes][scenesimage]
-
-[blog]: /blog/
-[slack]: https://aframevr-slack.herokuapp.com
-[stackoverflow]: https://stackoverflow.com/questions/ask/?tags=aframe
-[twitter]: https://twitter.com/aframevr
-
-Join us on [Slack][slack] to hang out or share projects. Check out recent
-projects that people have been working on in the weekly [A-Frame Blog][blog].
-Ask questions and seek help on [Stack Overflow][stackoverflow]. And if you have
-something to share, just tweet it [@aframevr][twitter], and we'll try to share
-it. Now let's get started!
+Have fun!

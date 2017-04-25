@@ -142,7 +142,7 @@ omni-directional. They mainly cast light in one direction, like the
 
 ## Configuring Shadows
 
-[inspector]: ../guides/using-the-aframe-inspector.md
+[inspector]: ../introduction/visual-inspector-and-dev-tools.md
 
 A-Frame includes support for realtime shadow rendering. With proper
 configuration, objects (both moving or stationary) will cast shadows adding

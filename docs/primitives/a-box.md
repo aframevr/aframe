@@ -1,8 +1,11 @@
 ---
 title: <a-box>
+section_title: Primitives
 type: primitives
 layout: docs
-parent_section: primitives
+parent_section: docs
+order: 1
+section_order: 5
 ---
 
 The box primitive creates shapes such as boxes, cubes, or walls.
