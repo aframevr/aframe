@@ -76070,6 +76070,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
           var self = this;
           Object.keys(mappings).forEach(function resolveCollision (key) {
             var newAttribute;
+            if (key !== key.toLowerCase()) { warn('Mapping keys should be specified in lower case. The mapping key ' + key + ' may not be recognized'); }
             if (components[key]) {
               newAttribute = mappings[key].replace('.', '-');
               mappings[newAttribute] = mappings[key];
@@ -76870,7 +76871,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 25-04-2017, Commit #f3789b0)');
+console.log('A-Frame Version: 0.5.0 (Date 26-04-2017, Commit #8abc9d5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
