@@ -309,7 +309,6 @@ module.exports = registerElement('a-scene', {
         if (system) {
           ANode.prototype.setAttribute.call(this, attr, value);
           system.updateProperties(value);
->>>>>>> upstream/master
           return;
         }
         AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
