@@ -8,8 +8,8 @@ module.exports.Component = registerComponent('obj-model', {
   dependencies: ['material'],
 
   schema: {
-    mtl: {type: 'src'},
-    obj: {type: 'src'}
+    mtl: {type: 'model'},
+    obj: {type: 'model'}
   },
 
   init: function () {
@@ -43,7 +43,7 @@ module.exports.Component = registerComponent('obj-model', {
       if (el.hasAttribute('material')) {
         warn('Material component properties are ignored when a .MTL is provided');
       }
-      mtlLoader.setBaseUrl(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
+      mtlLoader.setTexturePath(mtlUrl.substr(0, mtlUrl.lastIndexOf('/') + 1));
       mtlLoader.load(mtlUrl, function (materials) {
         materials.preload();
         objLoader.setMaterials(materials);

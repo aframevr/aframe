@@ -22,8 +22,60 @@ suite('cursor', function () {
   });
 
   suite('init', function () {
-    test('initializes raycasters as dependency', function () {
+    test('initializes raycaster as a dependency', function () {
       assert.ok(this.cursorEl.components.raycaster);
+    });
+  });
+
+  suite('remove', function () {
+    test('removes hover state', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [intersectedEl]
+      });
+      assert.ok(cursorEl.is('cursor-hovering'));
+      assert.ok(intersectedEl.is('cursor-hovered'));
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        assert.notOk(cursorEl.is('cursor-hovering'));
+        assert.notOk(intersectedEl.is('cursor-hovered'));
+        done();
+      });
+    });
+
+    test('removes fuse state', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.setAttribute('cursor', 'fuse', true);
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection],
+        els: [intersectedEl]
+      });
+      assert.ok(cursorEl.is('cursor-fusing'));
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        assert.notOk(cursorEl.is('cursor-fusing'));
+        done();
+      });
+    });
+
+    test('removes intersection listener', function (done) {
+      var cursorEl = this.cursorEl;
+      var intersection = this.intersection;
+      var intersectedEl = this.intersectedEl;
+      cursorEl.removeAttribute('cursor');
+      process.nextTick(function () {
+        cursorEl.emit('raycaster-intersection', {
+          intersections: [intersection],
+          els: [intersectedEl]
+        });
+        assert.notOk(cursorEl.is('cursor-hovering'));
+        done();
+      });
     });
   });
 
@@ -195,6 +247,36 @@ suite('cursor', function () {
       });
     });
 
+    test('updates existing intersections for intersected entities', function (done, fail) {
+      var cursorEl = this.cursorEl;
+      var intersection1 = {distance: 10.5};
+      var intersection2 = {distance: 12.0};
+      var intersectedEl = this.intersectedEl;
+
+      intersectedEl.addEventListener('mouseenter', function onMouseenter (evt) {
+        assert.equal(evt.detail.intersection, intersection1);
+
+        intersectedEl.removeEventListener('mouseenter', onMouseenter);
+        intersectedEl.addEventListener('mouseenter', fail);
+        cursorEl.addEventListener('mouseenter', fail);
+
+        cursorEl.emit('raycaster-intersection', {
+          intersections: [intersection2],
+          els: [intersectedEl]
+        });
+
+        process.nextTick(function () {
+          assert.equal(cursorEl.components.cursor.intersection, intersection2);
+          done();
+        });
+      });
+
+      cursorEl.emit('raycaster-intersection', {
+        intersections: [intersection1],
+        els: [intersectedEl]
+      });
+    });
+
     test('sets hovering state on cursor', function () {
       var cursorEl = this.cursorEl;
       var intersection = this.intersection;
@@ -353,5 +435,19 @@ suite('cursor', function () {
       assert.notOk(cursorEl.is('cursor-fusing'));
       assert.notOk(cursorEl.is('cursor-hovering'));
     });
+  });
+});
+
+suite('cursor + raycaster', function () {
+  test('can use HTML-configured raycaster', function (done) {
+    var parentEl = entityFactory();
+    parentEl.addEventListener('child-attached', function (evt) {
+      var el = evt.detail.el;
+      el.addEventListener('loaded', function () {
+        assert.equal(el.components.raycaster.data.objects, '.clickable');
+        done();
+      });
+    });
+    parentEl.innerHTML = '<a-entity cursor raycaster="objects: .clickable"></a-entity>';
   });
 });

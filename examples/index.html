@@ -36,7 +36,7 @@
       }
 
       .resources a {
-        color: rgba(0,0,0,0.5);
+        color: rgba(0,0,0,.5);
         display: inline-block;
         font-size: 1.2rem;
         margin: -0.25rem -0.5rem;
@@ -50,7 +50,8 @@
         color: #fff;
       }
 
-      h1, h2 {
+      h1,
+      h2 {
         line-height: 100%;
       }
 
@@ -92,6 +93,12 @@
         transition: opacity 0.075s ease-in-out;
       }
 
+      .links a em {
+        font-size: .9rem;
+        font-style: normal;
+        opacity: .6;
+      }
+
       .links a:hover {
         background-color: rgba(0,0,0,0.15);
         box-shadow: inset 0 0 0 0.15rem rgba(0,0,0,0.15);
@@ -115,7 +122,7 @@
 
       .moz-link {
         display: block;
-        margin: -2rem;
+        margin: -2.4rem;
         padding: 2rem;
         opacity: 0.5;
         position: absolute;
@@ -131,7 +138,7 @@
 
       .moz-logo {
         display: block;
-        height: 1.4rem;
+        height: 1.7rem;
       }
 
       @media only screen and (min-width: 1000px) {
@@ -152,8 +159,8 @@
         }
 
         .moz-link {
-          top: 1.1rem;
-          height: 1.5rem;
+          top: 1.2rem;
+          height: 1.8rem;
         }
       }
     </style>
@@ -161,13 +168,13 @@
   <body>
     <header class="header">
       <h1>A-Frame Examples</h1>
-      <a href="https://mozilla.org/" class="moz-link"><img src="assets/img/logo-mozilla-white.svg" class="moz-logo" alt="Mozilla" title="Mozilla"></a>
+      <a href="https://mozilla.org/" class="moz-link"><img src="assets/img/moz-logo-one-color-white-rgb.svg" class="moz-logo" alt="Mozilla" title="Mozilla"></a>
       <ul id="resources" class="resources">
         <li><a href="https://aframe.io">aframe.io</a></li>
         <li><a href="https://github.com/aframevr">GitHub</a></li>
         <li><a href="https://aframevr-slack.herokuapp.com/">Slack</a></li>
         <li><a href="https://twitter.com/aframevr">Twitter</a></li>
-        <li><a href="uploader/">Upload Assets</a></li>
+        <li><a href="https://cdn.aframe.io">Asset Uploader</a></li>
       </ul>
     </header>
 
@@ -190,9 +197,9 @@
 
     <ul class="links">
       <li><a href="boilerplate/hello-world/">Hello World</a></li>
+      <li><a href="boilerplate/panorama/">360&deg; Image</a></li>
       <li><a href="boilerplate/360-video/">360&deg; Video</a></li>
-      <li><a href="boilerplate/panorama/">Panorama</a></li>
-      <li><a href="boilerplate/3d-model/">3D Model</a></li>
+      <li><a href="boilerplate/3d-model/">3D Model (COLLADA)</a></li>
     </ul>
 
     <h2>Animations</h2>
@@ -216,17 +223,25 @@
       <li><a href="test/cube/">Cube</a></li>
       <li><a href="test/cursor/">Cursor</a></li>
       <li><a href="test/cylinders/">Cylinders</a></li>
+      <li><a href="test/embedded/">Embedded</a></li>
       <li><a href="test/fog/">Fog</a></li>
       <li><a href="test/geometry/">Geometry</a></li>
       <li><a href="test/geometry-gallery/">Geometry Gallery</a></li>
       <li><a href="test/geometry-merging/">Geometry Merging</a></li>
+      <li><a href="test/gltf-model/">glTF Model</a></li>
       <li><a href="test/mixin/">Mixin</a></li>
-      <li><a href="test/model/">Model</a></li>
+      <li><a href="test/model/">Model <em>(glTF, OBJ, COLLADA)</em></a></li>
       <li><a href="test/opacity/">Opacity</a></li>
       <li><a href="test/physical/">Physically-Based Materials</a></li>
       <li><a href="test/pivot/">Pivot</a></li>
       <li><a href="test/raycaster/">Raycaster</a></li>
       <li><a href="test/shaders/">Shaders</a></li>
+      <li><a href="test/shadows/">Shadows</a></li>
+      <li><a href="test/text/">Text</a></li>
+      <li><a href="test/text/anchors.html">Text Anchors</a></li>
+      <li><a href="test/text/msdf.html">Text Fonts <em>(MSDF vs. SDF)</em></a></li>
+      <li><a href="test/text/scenarios.html">Text Scenarios</a></li>
+      <li><a href="test/text/sizes.html">Text Sizes</a></li>
       <li><a href="test/towers/">Towers</a></li>
       <li><a href="test/video/">Video</a></li>
       <li><a href="test/videosphere/">Video 360&deg;</a></li>
@@ -240,7 +255,7 @@
       <li><a href="primitives/cylinders/">Cylinders</a></li>
       <li><a href="primitives/defaults/">Defaults</a></li>
       <li><a href="primitives/images/">Images</a></li>
-      <li><a href="primitives/models/">Models</a></li>
+      <li><a href="primitives/models/">Models <em>(glTF, OBJ, COLLADA)</em></a></li>
       <li><a href="primitives/planes/">Planes</a></li>
       <li><a href="primitives/ring/">Ring</a></li>
       <li><a href="primitives/torus/">Torus</a></li>

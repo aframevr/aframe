@@ -38,7 +38,7 @@ A-Frame currently supports [`6DoF`][6dof] controllers using Brandon Jones' 4/24/
 
 For the Oculus Rift and HTC Vive, we defer to the [Rift recommended
 requirements](https://www.oculus.com/en-us/oculus-ready-pcs/) and the [Vive
-recommended requirements](https://www.htcvive.com/us/product-optimized/).
+recommended requirements](https://www.vive.com/us/ready/).
 
 For mobile, we recommend at least an *iPhone 6 for iOS* and at least a *Galaxy
 S6 for Android*.
@@ -46,7 +46,6 @@ S6 for Android*.
 [6dof]: https://en.wikipedia.org/wiki/Six_degrees_of_freedom
 [caniusewebgl]: http://caniuse.com/#feat=webgl
 [chrome]: https://webvr.info/get-chrome/
-[components]: ./components.md
 [iswebvrready]: https://iswebvrready.org
 [webvr-1.0]: https://w3c.github.io/webvr/
 [webvr-polyfill]: https://github.com/borismus/webvr-polyfill

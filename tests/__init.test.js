@@ -1,4 +1,4 @@
-/* global sinon, setup, teardown */
+/* global AFRAME, sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
@@ -10,9 +10,10 @@ navigator.getVRDisplays = function () {
   var mockVRDisplay = {
     requestPresent: resolvePromise,
     exitPresent: resolvePromise,
+    submitFrame: function () { return; },
+    getPose: function () { return { orientation: null, position: null }; },
     requestAnimationFrame: function () { return 1; },
-    cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); },
-    submitFrame: function () { return; }
+    cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); }
   };
   return Promise.resolve([mockVRDisplay]);
 };
@@ -35,4 +36,6 @@ teardown(function () {
     els[i].parentNode.removeChild(els[i]);
   }
   this.sinon.restore();
+  delete AFRAME.components.test;
+  delete AFRAME.systems.test;
 });

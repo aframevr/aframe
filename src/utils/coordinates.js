@@ -1,7 +1,7 @@
 /* global THREE */
-
+var extend = require('object-assign');
 // Coordinate string regex. Handles negative, positive, and decimals.
-var regex = /\s*(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s+(-?\d*\.{0,1}\d+)\s*/;
+var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
 
 /**
@@ -17,11 +17,16 @@ function parse (value, defaultVec) {
   var vec = {};
 
   if (value && typeof value === 'object') {
-    return vecParseFloat(value);
+    return vecParseFloat({
+      x: value.x !== undefined ? value.x : (defaultVec && defaultVec.x),
+      y: value.y !== undefined ? value.y : (defaultVec && defaultVec.y),
+      z: value.z !== undefined ? value.z : (defaultVec && defaultVec.z),
+      w: value.w !== undefined ? value.w : (defaultVec && defaultVec.w)
+    });
   }
 
   if (typeof value !== 'string' || value === null) {
-    return defaultVec;
+    return typeof defaultVec === 'object' ? extend({}, defaultVec) : defaultVec;
   }
 
   coordinate = value.trim().replace(/\s+/g, ' ').split(' ');
@@ -49,7 +54,7 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinate = function (value) {
+module.exports.isCoordinates = function (value) {
   return regex.test(value);
 };
 

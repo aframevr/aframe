@@ -11,10 +11,16 @@ var warn = debug('components:sound:warn');
 module.exports.Component = registerComponent('sound', {
   schema: {
     autoplay: {default: false},
+    distanceModel: {default: 'inverse',
+      oneOf: ['linear', 'inverse', 'exponential']},
     loop: {default: false},
+    maxDistance: {default: 10000},
     on: {default: ''},
     poolSize: {default: 1},
-    src: {type: 'src'},
+    positional: {default: true},
+    refDistance: {default: 1},
+    rolloffFactor: {default: 1},
+    src: {type: 'audio'},
     volume: {default: 1}
   },
 
@@ -24,6 +30,8 @@ module.exports.Component = registerComponent('sound', {
     this.listener = null;
     this.audioLoader = new THREE.AudioLoader();
     this.pool = new THREE.Group();
+    this.loaded = false;
+    this.mustPlay = false;
     this.playSound = bind(this.playSound, this);
   },
 
@@ -40,25 +48,59 @@ module.exports.Component = registerComponent('sound', {
     }
 
     this.pool.children.forEach(function (sound) {
-      sound.autoplay = data.autoplay;
+      if (data.positional) {
+        sound.setDistanceModel(data.distanceModel);
+        sound.setMaxDistance(data.maxDistance);
+        sound.setRefDistance(data.refDistance);
+        sound.setRolloffFactor(data.rolloffFactor);
+      }
       sound.setLoop(data.loop);
       sound.setVolume(data.volume);
+      sound.isPaused = false;
     });
 
     if (data.on !== oldData.on) {
       this.updateEventListener(oldData.on);
     }
-
     // All sound values set. Load in `src`.
     if (srcChanged) {
       var self = this;
+
+      this.loaded = false;
       this.audioLoader.load(data.src, function (buffer) {
         self.pool.children.forEach(function (sound) {
           sound.setBuffer(buffer);
         });
+        self.loaded = true;
+
         // Remove this key from cache, otherwise we can't play it again
         THREE.Cache.remove(data.src);
+        if (self.data.autoplay || self.mustPlay) { self.playSound(); }
+        self.el.emit('sound-loaded');
       });
+    }
+  },
+
+  pause: function () {
+    this.stopSound();
+    this.removeEventListener();
+  },
+
+  play: function () {
+    if (this.data.autoplay) { this.playSound(); }
+    this.updateEventListener();
+  },
+
+  remove: function () {
+    this.removeEventListener();
+    this.el.removeObject3D(this.attrName);
+    try {
+      this.pool.children.forEach(function (sound) {
+        sound.disconnect();
+      });
+    } catch (e) {
+      // disconnect() will throw if it was never connected initially.
+      warn('Audio source not properly disconnected');
     }
   },
 
@@ -75,27 +117,6 @@ module.exports.Component = registerComponent('sound', {
     this.el.removeEventListener(this.data.on, this.playSound);
   },
 
-  remove: function () {
-    this.removeEventListener();
-    this.el.removeObject3D(this.attrName);
-    try {
-      this.pool.children.forEach(function (sound) {
-        sound.disconnect();
-      });
-    } catch (e) {
-      // disconnect() will throw if it was never connected initially.
-      warn('Audio source not properly disconnected');
-    }
-  },
-
-  play: function () {
-    // Look for an unused sound in the pool and play it if found.
-    if (this.data.autoplay) {
-      this.playSound();
-    }
-    this.updateEventListener();
-  },
-
   /**
    * Removes current sound object, creates new sound object, adds to entity.
    *
@@ -106,7 +127,7 @@ module.exports.Component = registerComponent('sound', {
     var sceneEl = el.sceneEl;
 
     if (this.pool.children.length > 0) {
-      this.stop();
+      this.stopSound();
       el.removeObject3D('sound');
     }
 
@@ -126,49 +147,69 @@ module.exports.Component = registerComponent('sound', {
     // Create [poolSize] audio instances and attach them to pool
     this.pool = new THREE.Group();
     for (var i = 0; i < this.data.poolSize; i++) {
-      var sound = new THREE.PositionalAudio(listener);
+      var sound = this.data.positional ? new THREE.PositionalAudio(listener) : new THREE.Audio(listener);
       this.pool.add(sound);
     }
     el.setObject3D(this.attrName, this.pool);
 
     this.pool.children.forEach(function (sound) {
-      sound.source.onended = function () {
-        sound.onEnded();
+      sound.onEnded = function () {
+        sound.isPlaying = false;
         el.emit('sound-ended', {index: i});
       };
     });
   },
 
-  playSound: function () {
-    // Look for an unused sound in the pool and play it if found.
-    var found = false;
+  /**
+   * Pause all the sounds in the pool.
+   */
+  pauseSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
-      if (!sound.isPlaying && sound.source.buffer && !found) {
+      if (!sound.source || !sound.source.buffer || !sound.isPlaying || sound.isPaused) { return; }
+      sound.isPaused = true;
+      sound.pause();
+    });
+  },
+
+  /**
+   * Look for an unused sound in the pool and play it if found.
+   */
+  playSound: function () {
+    if (!this.loaded) {
+      warn('Sound not loaded yet. It will be played once it finished loading');
+      this.mustPlay = true;
+      return;
+    }
+
+    var found = false;
+    this.isPlaying = true;
+    this.pool.children.forEach(function (sound) {
+      if (!sound.isPlaying && sound.buffer && !found) {
         sound.play();
+        sound.isPaused = false;
         found = true;
         return;
       }
     });
 
     if (!found) {
-      warn('All the sounds are playing. If you need to play more sounds simultaneously consider increasing the size of pool with the `poolSize` attribute.');
+      warn('All the sounds are playing. If you need to play more sounds simultaneously ' +
+           'consider increasing the size of pool with the `poolSize` attribute.', this.el);
+      return;
     }
+
+    this.mustPlay = false;
   },
 
-  stop: function () {
-    // Stop all the sounds in the pool
+  /**
+   * Stop all the sounds in the pool.
+   */
+  stopSound: function () {
+    this.isPlaying = false;
     this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer) { return; }
+      if (!sound.source || !sound.source.buffer) { return; }
       sound.stop();
     });
-  },
-
-  pause: function () {
-    // Pause all the sounds in the pool
-    this.pool.children.forEach(function (sound) {
-      if (!sound.source.buffer || !sound.isPlaying) { return; }
-      sound.pause();
-    });
-    this.removeEventListener();
   }
 });

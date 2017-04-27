@@ -2,13 +2,21 @@
 var coordinates = require('index').utils.coordinates;
 
 suite('utils.coordinates', function () {
-  suite('isCoordinate', function () {
-    test('verifies valid coordinate', function () {
-      assert.ok(coordinates.isCoordinate(' 1 2.5  -3'));
+  suite('isCoordinates', function () {
+    test('verifies valid vec3 coordinate', function () {
+      assert.ok(coordinates.isCoordinates(' 1 2.5  -3'));
+    });
+
+    test('verifies valid vec3 coordinate with e-notation', function () {
+      assert.ok(coordinates.isCoordinates('1.2e3 2.5 3.4e-5'));
+    });
+
+    test('verifies valid vec4 coordinate', function () {
+      assert.ok(coordinates.isCoordinates('1 1 2.5 -3'));
     });
 
     test('rejects invalid coordinate', function () {
-      assert.ok(coordinates.isCoordinate('1 1 2.5 -3'));
+      assert.notOk(coordinates.isCoordinates('1 1 2.5 -3 0.1'));
     });
   });
 
@@ -16,6 +24,11 @@ suite('utils.coordinates', function () {
     test('parses string', function () {
       assert.shallowDeepEqual(
         coordinates.parse('1 2.5 -3'), {x: 1, y: 2.5, z: -3});
+    });
+
+    test('applies defaults to the missing values', function () {
+      assert.deepEqual(
+        coordinates.parse({x: 1}, {x: 0, y: 0, z: 0}), {x: 1, y: 0, z: 0});
     });
 
     test('parses null', function () {
@@ -31,6 +44,12 @@ suite('utils.coordinates', function () {
     test('returns already-parsed object', function () {
       assert.shallowDeepEqual(coordinates.parse({x: 1, y: 2, z: -3}),
                               {x: 1, y: 2, z: -3});
+    });
+
+    test('zero value of object won\'t be overriden by defaults', function () {
+      assert.shallowDeepEqual(
+        coordinates.parse({x: 0, y: 1}, {x: 4, y: 5, z: 6}),
+        {x: 0, y: 1, z: 6});
     });
 
     test('parses object with strings', function () {

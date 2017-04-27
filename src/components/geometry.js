@@ -55,7 +55,7 @@ module.exports.Component = registerComponent('geometry', {
     var mesh = el.getObject3D('mesh');
     var toMesh;
 
-    if (!toEl) {
+    if (!toEl || !toEl.isEntity) {
       warn('There is not a valid entity to merge the geometry to');
       return;
     }

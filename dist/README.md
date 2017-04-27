@@ -1,18 +1,24 @@
 ## A-Frame Builds
 
-To include these files, you can either download and serve them locally. Or
-serve directly from `rawgit.com` CDN:
+To include these builds, you can download and serve them locally.
+
+To include the latest [master build](#master-builds) from a CDN, include the
+script below from the [rawgit CDN](https://rawgit.com/):
 
 ```html
 <html>
   <head>
-    <script src="https://rawgit.com/aframevr/aframe/master/dist/FILENAME"></script>
+    <script src="https://rawgit.com/aframevr/aframe/320bc14/dist/aframe-master.min.js"></script>
   </head>
-  <!-- ... -->
+  <body>
+    <a-scene>
+      <!-- ... -->
+    </a-scene>
+  </body>
 </html>
 ```
 
-### Stable Builds
+### Release Builds
 
 These builds are available via `https://aframe.io/releases/x.x.x/<filename>`
 where `x.x.x` is the latest stable version.
@@ -24,10 +30,15 @@ where `x.x.x` is the latest stable version.
 
 ### Master Builds
 
-These builds are bleeding-edge **unstable builds** that contain newer fixes or
-features, but may contain regressions or breaking changes.
+These master builds are unstable **bleeding-edge unstable builds** that contain
+newer fixes or features from the **master branch** on GitHub, but may contain
+regressions or breaking changes.
 
-- `aframe.min.js` - Minified production build.
-- `aframe.min.js.map` - Source maps for minified production build.
-- `aframe.js` - Unminified build, for development or debugging.
-- `aframe.js.map` - Source maps for unminified build.
+If you're pointing to these builds via the [rawgit CDN](https://rawgit.com/),
+we recommend locking it down to a commit hash rather than pointing directly at
+master such that your scene does not break unexpectedly.
+
+- [`aframe-master.min.js`](aframe-master.min.js) - Minified production build.
+- [`aframe-master.min.js.map`](aframe-master.min.js.map) - Source maps for minified production build.
+- [`aframe-master.js`](aframe-master.js) - Unminified build, for development or debugging.
+- [`aframe-master.js.map`](aframe-master.js.map) - Source maps for unminified build.

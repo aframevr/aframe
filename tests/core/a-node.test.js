@@ -24,6 +24,17 @@ suite('a-node', function () {
       el.emit('hadouken', {power: 10});
     });
 
+    test('can emit event with extraData', function (done) {
+      var el = this.el;
+      el.addEventListener('hadouken', function (event) {
+        assert.equal(event.cancelable, true);
+        assert.equal(event.detail.power, 10);
+        assert.equal(event.detail.target, el);
+        done();
+      });
+      el.emit('hadouken', {power: 10}, true, {cancelable: true});
+    });
+
     test('bubbles', function (done) {
       var el = this.el;
       var child = document.createElement('a-node');

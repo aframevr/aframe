@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Shaders</title>
     <meta name="description" content="Shaders">
-    <script src="../../../dist/aframe.js"></script>
+    <script src="../../../dist/aframe-master.js"></script>
     <script src="shaders/noise.js"></script>
     <script src="shaders/sky.js"></script>
   </head>
@@ -22,7 +22,7 @@
 
             if (evt.detail.name !== 'rotation') { return; }
 
-            sunPosition = orbitEl.getComputedAttribute('rotation');
+            sunPosition = orbitEl.getAttribute('rotation');
 
             if(sunPosition === null) { return; }
 

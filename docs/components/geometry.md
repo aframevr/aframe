@@ -8,12 +8,10 @@ section_title: Components
 section_order: 4
 ---
 
-The geometry component provides a basic shape for an entity. The general
-geometry is defined by the `primitive` property. Geometric primitives, in
-computer graphics, means an extremely basic shape. With the primitive defined,
-additional properties are used to further define the geometry. A material
-component is usually defined to provide a appearance alongside the
-shape to create a complete mesh.
+The geometry component provides a basic shape for an entity. The `primitive`
+property defines the general shape. Geometric primitives, in computer graphics,
+are irreducible basic shapes. A material component is commonly defined to
+provide a appearance alongside the shape to create a complete mesh.
 
 <!--toc-->
 
@@ -31,12 +29,11 @@ Every geometry type will have these properties:
 ### `mergeTo`
 
 Merging geometries reduces the number of draw calls, greatly improving
-performance under certain circumstances. Geometries that are merged will
-inherit the material of the target geometry. Thus, it's useful when we have
-entities that share the same material.
+performance under certain circumstances. Merged geometries will inherit the
+material of the target geometry. Thus, it's useful when we have entities that
+share the same material.
 
-Once merged, the individual geometry can no longer be manipulated
-independently.
+Once merged, we can no longer manipulate the individual geometry independently.
 
 For geometry merging to be able to work, we will have to turn off `buffer` and
 turn on `skipCache`.
@@ -66,9 +63,9 @@ The box geometry defines boxes (i.e., any quadilateral, not just cubes).
 ### `circle`
 
 The circle geometry creates flat two-dimensional circles. These can be complete
-circles or partial circles (like Pac-Man). Note that because it is flat, only a
-single side of the circle will be rendered if "side: double" is not specified
-on the `material` component.
+circles or partial circles (like Pac-Man). Note that because circles are flat,
+A-Frame will only render a single face of the circle if we don't specify `side:
+double` on the `material` component.
 
 ```html
 <a-entity geometry="primitive: circle; radius: 1" material="side: double"></a-entity>
@@ -125,8 +122,8 @@ We can create a basic cylinder using height and radius:
 ```
 
 We can create a tube by making the cylinder open-ended, which removes the top
-and bottom surfaces of the cylinder such that the inside is visible. Then a
-double-sided material will be needed to render properly:
+and bottom surfaces of the cylinder such that the inside is visible. Then we
+need a double-sided material to render properly:
 
 ```html
 <!-- Tube -->
@@ -187,9 +184,9 @@ The octahedron geometry creates a polygon with eight equilateral triangular face
 
 ### `plane`
 
-The plane geometry creates a flat surface. Because it is flat, only a single
-side of the plane will be rendered unless `side: double` is specified on the
-`material` component.
+The plane geometry creates a flat surface. Because planes are flat, A-Frame
+will render only a single face of the plane unless we specify `side: double` on
+the `material` component.
 
 ```html
 <a-entity geometry="primitive: plane; height: 10; width: 10" material="side: double"></a-entity>
@@ -202,9 +199,9 @@ side of the plane will be rendered unless `side: double` is specified on the
 
 ### `ring`
 
-The ring geometry creates a flat ring, like a [CD][cd]. Because it is flat,
-only a single side of the ring will be rendered unless `side: double` is
-specified on the `material` component.
+The ring geometry creates a flat ring, like a [CD][cd]. Because the ring is
+flat, A-Frame will only render a single face of the ring we specify `side:
+double` the `material` component.
 
 ```html
 <a-entity geometry="primitive: ring; radiusInner: 0.5; radiusOuter: 1"
@@ -228,8 +225,8 @@ The sphere geometry creates spheres (e.g., balls). We can create a basic sphere:
 <a-entity geometry="primitive: sphere; radius: 2"></a-entity>
 ```
 
-We can create various polyhedrons and abstract shapes by specifying the number
-of horizontal angles and faces:
+We can create polyhedrons and abstract shapes by specifying the number of
+horizontal angles and faces:
 
 ```html
 <a-entity geometry="primitive: sphere; segmentsWidth: 2; segmentsHeight: 8"></a-entity>
@@ -276,9 +273,9 @@ The torus geometry creates a donut or curved tube shape:
 
 ### `torusKnot`
 
-The torus knot geometry creates a pretzel shape, the particular shape of which
-is defined by a pair of coprime integers, `p` and `q`. If `p` and `q` are not
-coprime the result will be a torus link:
+The torus knot geometry creates a pretzel shape. A pair of coprime integers,
+`p` and `q`, defines the particular shape of the pretzel. If `p` and `q` are
+not coprime the result will be a torus link:
 
 ```html
 <a-entity geometry="primitive: torusKnot; p: 3; q:7"></a-entity>
@@ -296,10 +293,9 @@ coprime the result will be a torus link:
 ## Register a Custom Geometry
 
 We can register our own geometries using `AFRAME.registerGeometry` and creating
-an object that is an instance of [`THREE.Geometry`][three-geometry]. All
-built-in geometries in A-Frame are registered using this API.
-
-Here is how the `box` geometry is registered.
+an object that is an instance of [`THREE.Geometry`][three-geometry]. A-Frame
+registers all built-in geometries using this API. Here is how A-Frame registers
+the `box` geometry:
 
 ```js
 AFRAME.registerGeometry('box', {
@@ -320,11 +316,11 @@ AFRAME.registerGeometry('box', {
 
 Like with registering components, we provide a name, a
 [schema][component-schema] that will expose the properties of the geometry, and
-lifecycle methods. Then the geometry needs to be created and set on
+lifecycle methods. Then we need to create the geometry and set on
 `this.geometry` through the `init` and `update` lifecycle methods.
 
 When a geometry component sets its `primitive` property to the custom geometry
-name, the properties of the custom geometry can be set on the geometry
+name, we can set the properties of the custom geometry on the geometry
 component. Say we registered a custom geometry:
 
 ```js

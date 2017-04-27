@@ -1,7 +1,9 @@
 /* global HTMLElement, MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
 var utils = require('../utils/');
+
 var bind = utils.bind;
+var warn = utils.debug('core:a-node:warn');
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -24,9 +26,14 @@ module.exports = registerElement('a-node', {
     attachedCallback: {
       value: function () {
         var mixins;
+        this.sceneEl = this.closestScene();
+
+        if (!this.sceneEl) {
+          warn('You are attempting to attach <' + this.tagName + '> outside of an A-Frame ' +
+               'scene. Append this element to `<a-scene>` instead.');
+        }
 
         this.hasLoaded = false;
-        this.sceneEl = this.closestScene();
         this.emit('nodeready', {}, false);
 
         mixins = this.getAttribute('mixin');
@@ -120,15 +127,23 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    /**
+     * Remove old mixins and mixin listeners.
+     * Add new mixins and mixin listeners.
+     */
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins.split(' ');
-        var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-        // To determine what listeners will be removed
-        var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
+        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+
+        // Unregister old mixins.
+        oldMixinIds.filter(function (i) {
+          return newMixinIds.indexOf(i) < 0;
+        }).forEach(bind(this.unregisterMixin, this));
+
+        // Register new mixins.
         this.mixinEls = [];
-        diff.forEach(bind(this.unregisterMixin, this));
-        newMixinsIds.forEach(bind(this.registerMixin, this));
+        newMixinIds.forEach(bind(this.registerMixin, this));
       }
     },
 
@@ -204,17 +219,21 @@ module.exports = registerElement('a-node', {
      *   Custom data to pass as `detail` to the event.
      * @param {Boolean=} [bubbles=true]
      *   Whether the event should bubble.
+     * @param {Object=} [extraData]
+     *   Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles) {
+      value: function (name, detail, bubbles, extraData) {
         var self = this;
         detail = detail || {};
         if (bubbles === undefined) { bubbles = true; }
         var data = { bubbles: !!bubbles, detail: detail };
+        if (extraData) { utils.extend(data, extraData); }
         return name.split(' ').map(function (eventName) {
           return utils.fireEvent(self, eventName, data);
         });
-      }
+      },
+      writable: window.debug
     },
 
     /**

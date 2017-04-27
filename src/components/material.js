@@ -19,12 +19,17 @@ var shaderNames = shader.shaderNames;
 module.exports.Component = registerComponent('material', {
   schema: {
     depthTest: {default: true},
+    depthWrite: {default: true},
+    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     flatShading: {default: false},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
     shader: {default: 'standard', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    visible: {default: true}
+    visible: {default: true},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
+    npot: {default: false}
   },
 
   init: function () {
@@ -57,26 +62,28 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
-    var scene = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
+    var sceneEl = this.el.sceneEl;
     var tickProperties = {};
     var tick = function (time, delta) {
-      var keys = Object.keys(tickProperties);
-      keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+      Object.keys(tickProperties).forEach(function update (key) {
+        tickProperties[key] = time;
+      });
       self.shader.update(tickProperties);
     };
-    var keys = Object.keys(schema);
-    keys.forEach(function (key) {
+    this.tick = undefined;
+    Object.keys(schema).forEach(function (key) {
       if (schema[key].type === 'time') {
         self.tick = tick;
         tickProperties[key] = true;
-        scene.addBehavior(self);
       }
     });
-    if (Object.keys(tickProperties).length === 0) {
-      scene.removeBehavior(this);
+    if (!sceneEl) { return; }
+    if (!this.tick) {
+      sceneEl.removeBehavior(this);
+    } else {
+      sceneEl.addBehavior(this);
     }
   },
 
@@ -98,12 +105,22 @@ module.exports.Component = registerComponent('material', {
   updateMaterial: function () {
     var data = this.data;
     var material = this.material;
-    material.side = parseSide(data.side);
+    var needsUpdate = false;
+    var side = parseSide(data.side);
+    if (material.side === THREE.DoubleSide && side !== THREE.DoubleSide ||
+      material.side !== THREE.DoubleSide && side === THREE.DoubleSide) {
+      needsUpdate = true;
+    }
+    material.side = side;
     material.opacity = data.opacity;
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.depthTest = data.depthTest !== false;
+    material.depthWrite = data.depthWrite !== false;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
     material.visible = data.visible;
+    if (data.alphaTest !== material.alphaTest) { needsUpdate = true; }
+    material.alphaTest = data.alphaTest;
+    if (needsUpdate) { material.needsUpdate = true; }
   },
 
   /**

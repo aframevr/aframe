@@ -5,7 +5,10 @@ layout: docs
 parent_section: primitives
 ---
 
-The cursor primitive places a reticle or crosshair to add clicking and interactivity with the scene. It is an entity that prescribes the [cursor component](../components/cursor.md) and a default ring-shaped geometry. The cursor is usually placed as a child of the camera.
+The cursor primitive is a reticle that allows for clicking and basic
+interactivity with a scene on devices that do not have a hand controller. The
+default appearance is a ring geometry. The cursor is usually placed as a child
+of the camera.
 
 Read the [cursor component documentation](../components/cursor.md) for detailed information about how the cursor works and how to use the cursor.
 

@@ -1,4 +1,15 @@
 /**
+ * Split a delimited component property string (e.g., `material.color`) to an object
+ * containing `component` name and `property` name. If there is no delimiter, just return the
+ * string back.
+ */
+module.exports.getComponentPropertyPath = function (str, delimiter) {
+  delimiter = delimiter || '.';
+  if (str.indexOf(delimiter) === -1) { return str; }
+  return str.split(delimiter);
+};
+
+/**
  * Get component property using encoded component name + component property name with a
  * delimiter.
  */
@@ -17,11 +28,13 @@ module.exports.getComponentProperty = function (el, name, delimiter) {
  * delimiter.
  */
 module.exports.setComponentProperty = function (el, name, value, delimiter) {
+  var data = {};
   var splitName;
   delimiter = delimiter || '.';
   if (name.indexOf(delimiter) !== -1) {
     splitName = name.split(delimiter);
-    el.setAttribute(splitName[0], splitName[1], value);
+    data[splitName[1]] = value;
+    el.setAttribute(splitName[0], data);
     return;
   }
   el.setAttribute(name, value);

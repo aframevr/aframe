@@ -5,9 +5,8 @@ layout: docs
 parent_section: primitives
 ---
 
-The sky primitive adds a background to a scene or display a 360-degree photo.
-It is an entity that prescribes a large sphere with the material mapped to the
-inside.
+The sky primitive adds a background color or 360&deg; image to a scene.  A sky
+is a large sphere with a color or texture mapped to the inside.
 
 ## Example
 
@@ -19,7 +18,7 @@ An equirectangular image as a background:
     <img id="sky" src="sky.png">
   </a-assets>
   <a-sky src="#sky"></a-sky>
-</a-scene
+</a-scene>
 ```
 
 A plain color as a background:
@@ -42,7 +41,7 @@ A plain color as a background:
 | roughness       | material.roughness      | 0.5           |
 | segments-height | geometry.segmentsHeight | 20            |
 | segments-width  | geometry.segmentsWidth  | 64            |
-| shader          | material.shader         | standard      |
+| shader          | material.shader         | flat          |
 | side            | material.side           | front         |
 | src             | material.src            | None          |
 | theta-length    | geometry.thetaLength    | 180           |
@@ -51,7 +50,7 @@ A plain color as a background:
 
 ## Equirectangular Image
 
-In order to be seamless, images should be
+To be seamless, images should be
 [equirectangular](https://en.wikipedia.org/wiki/Equirectangular_projection). We
 can find some sample equirectangular images on
 [Flickr](https://www.flickr.com/groups/equirectangular/). To take an

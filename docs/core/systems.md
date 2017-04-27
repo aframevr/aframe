@@ -48,8 +48,9 @@ AFRAME.registerComponent('my-component', {
 
 | Property | Description                                                        |
 | -------- | -------------                                                      |
-| schema   | Behaves the same as [component schemas][schema]. Parses to `data`. |
 | data     | Data provided by the schema available across handlers and methods. |
+| el       | Reference to `<a-scene>`.                                          |
+| schema   | Behaves the same as [component schemas][schema]. Parses to `data`. |
 
 ## Methods
 
@@ -96,7 +97,7 @@ AFRAME.registerComponent('my-component', {
 
   update: function () {
     // Do stuff with `this.data`.
-    this.myObject = this.system.createComplexObject(data);
+    this.myObject = this.system.createComplexObject(this.data);
   }
 });
 ```

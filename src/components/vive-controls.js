@@ -1,23 +1,26 @@
 var registerComponent = require('../core/component').registerComponent;
 var bind = require('../utils/bind');
+var checkControllerPresentAndSetup = require('../utils/tracked-controls').checkControllerPresentAndSetup;
+var emitIfAxesChanged = require('../utils/tracked-controls').emitIfAxesChanged;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
 
+var GAMEPAD_ID_PREFIX = 'OpenVR ';
+
 /**
  * Vive Controls Component
- * Interfaces with vive controls and maps Gamepad events to
- * vive controller buttons: trackpad, trigger, grip, menu and system
- * It loads a vive controller model and highlights the pressed buttons
+ * Interfaces with vive controllers and maps Gamepad events to
+ * common controller buttons: trackpad, trigger, grip, menu and system
+ * It loads a controller model and highlights the pressed buttons
  */
 module.exports.Component = registerComponent('vive-controls', {
-  dependencies: ['tracked-controls'],
-
   schema: {
     hand: {default: 'left'},
-    buttonColor: {default: '#FAFAFA'},  // Off-white.
-    buttonHighlightColor: {default: '#22D1EE'},  // Light blue.
-    model: {default: true}
+    buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
+    buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
+    model: {default: true},
+    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
   },
 
   // buttonId
@@ -27,13 +30,20 @@ module.exports.Component = registerComponent('vive-controls', {
   // 3 - menu ( dispatch but better for menu options )
   // 4 - system ( never dispatched on this layer )
   mapping: {
-    axis0: 'trackpad',
-    axis1: 'trackpad',
-    button0: 'trackpad',
-    button1: 'trigger',
-    button2: 'grip',
-    button3: 'menu',
-    button4: 'system'
+    axes: {'trackpad': [0, 1]},
+    buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
+  },
+
+  // Use these labels for detail on axis events such as thumbstickmoved.
+  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
+  axisLabels: ['x', 'y', 'z', 'w'],
+
+  bindMethods: function () {
+    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onControllersUpdate = bind(this.onControllersUpdate, this);
+    this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
+    this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
+    this.onAxisMoved = bind(this.onAxisMoved, this);
   },
 
   init: function () {
@@ -42,44 +52,102 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onModelLoaded = bind(this.onModelLoaded, this);
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onAxisMoved = bind(this.onAxisMoved, this);
+    this.controllerPresent = false;
+    this.lastControllerCheck = 0;
+    this.previousButtonValues = {};
+    this.bindMethods();
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
+    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
   },
 
-  play: function () {
+  addEventListeners: function () {
     var el = this.el;
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    el.addEventListener('axismove', this.onAxisMoved);
   },
 
-  pause: function () {
+  removeEventListeners: function () {
     var el = this.el;
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    el.removeEventListener('axismove', this.onAxisMoved);
   },
 
-  update: function () {
+  checkIfControllerPresent: function () {
+    var data = this.data;
+    // Once OpenVR / SteamVR return correct hand data in the supporting browsers, we can use hand property.
+    // var isPresent = this.checkControllerPresentAndSetup(this.el.sceneEl, GAMEPAD_ID_PREFIX, { hand: data.hand });
+    // Until then, use hardcoded index.
+    var controllerIndex = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, { index: controllerIndex });
+  },
+
+  play: function () {
+    this.checkIfControllerPresent();
+    this.addControllersUpdateListener();
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
+  },
+
+  pause: function () {
+    this.removeEventListeners();
+    this.removeControllersUpdateListener();
+    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
+    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
+  },
+
+  injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    var objUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_URL + ')';
-    var mtlUrl = 'url(' + VIVE_CONTROLLER_MODEL_OBJ_MTL + ')';
-    // handId: 0 - right, 1 - left
-    var controller = data.hand === 'right' ? 0 : 1;
-    el.setAttribute('tracked-controls', 'controller', controller);
-    if (!data.model) { return; }
-    el.setAttribute('obj-model', {obj: objUrl, mtl: mtlUrl});
+    // handId: 0 - right, 1 - left, 2 - anything else...
+    var controller = data.hand === 'right' ? 0 : data.hand === 'left' ? 1 : 2;
+    // if we have an OpenVR Gamepad, use the fixed mapping
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, controller: controller, rotationOffset: data.rotationOffset});
+    if (!this.data.model) { return; }
+    this.el.setAttribute('obj-model', {
+      obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
+      mtl: VIVE_CONTROLLER_MODEL_OBJ_MTL
+    });
   },
 
+  addControllersUpdateListener: function () {
+    this.el.sceneEl.addEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  removeControllersUpdateListener: function () {
+    this.el.sceneEl.removeEventListener('controllersupdated', this.onControllersUpdate, false);
+  },
+
+  onControllersUpdate: function () { this.checkIfControllerPresent(); },
+
   onButtonChanged: function (evt) {
-    var button = this.mapping['button' + evt.detail.id];
+    var button = this.mapping.buttons[evt.detail.id];
     var buttonMeshes = this.buttonMeshes;
-    var value;
-    if (button !== 'trigger' || !buttonMeshes) { return; }
-    value = evt.detail.state.value;
-    buttonMeshes.trigger.rotation.x = -value * (Math.PI / 12);
+    var analogValue;
+    if (!button) { return; }
+
+    if (button === 'trigger') {
+      analogValue = evt.detail.state.value;
+      // Update button mesh, if any.
+      if (buttonMeshes && buttonMeshes.trigger) {
+        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
+      }
+    }
+
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onModelLoaded: function (evt) {
@@ -99,14 +167,34 @@ module.exports.Component = registerComponent('vive-controls', {
     controllerObject3D.position.set(0, -0.015, 0.04);
   },
 
+  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
+
   onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping['button' + id];
-    this.el.emit(buttonName + evtName);
-    if (!this.data.model) { return; }
+    var buttonName = this.mapping.buttons[id];
+    var i;
+    if (Array.isArray(buttonName)) {
+      for (i = 0; i < buttonName.length; i++) {
+        this.el.emit(buttonName[i] + evtName);
+      }
+    } else {
+      this.el.emit(buttonName + evtName);
+    }
     this.updateModel(buttonName, evtName);
   },
 
-  updateModel: function (buttonName, state) {
+  updateModel: function (buttonName, evtName) {
+    var i;
+    if (!this.data.model) { return; }
+    if (Array.isArray(buttonName)) {
+      for (i = 0; i < buttonName.length; i++) {
+        this.updateButtonModel(buttonName[i], evtName);
+      }
+    } else {
+      this.updateButtonModel(buttonName, evtName);
+    }
+  },
+
+  updateButtonModel: function (buttonName, state) {
     var color = state === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
     var buttonMeshes = this.buttonMeshes;
     if (!buttonMeshes) { return; }

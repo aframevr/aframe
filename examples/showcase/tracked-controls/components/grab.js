@@ -64,7 +64,7 @@ AFRAME.registerComponent('grab', {
     var position;
     if (!hitEl) { return; }
     this.updateDelta();
-    position = hitEl.getComputedAttribute('position');
+    position = hitEl.getAttribute('position');
     hitEl.setAttribute('position', {
       x: position.x + this.deltaPosition.x,
       y: position.y + this.deltaPosition.y,
@@ -73,7 +73,7 @@ AFRAME.registerComponent('grab', {
   },
 
   updateDelta: function () {
-    var currentPosition = this.el.getComputedAttribute('position');
+    var currentPosition = this.el.getAttribute('position');
     var previousPosition = this.previousPosition || currentPosition;
     var deltaPosition = {
       x: currentPosition.x - previousPosition.x,

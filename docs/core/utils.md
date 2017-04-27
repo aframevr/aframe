@@ -3,7 +3,7 @@ title: Utils
 type: core
 layout: docs
 parent_section: core
-order: 10
+order: 11
 ---
 
 A-Frame's utility modules are public through `AFRAME.utils`.
@@ -14,25 +14,25 @@ A-Frame's utility modules are public through `AFRAME.utils`.
 
 Module for handling vec3 and vec4 types.
 
-### `.isCoordinate(value)`
+### `.isCoordinates (value)`
 
 Tests whether a string is a vec3.
 
 ```js
-AFRAME.utils.coordinates.isCoordinate('1 2 3')
+AFRAME.utils.coordinates.isCoordinates('1 2 3')
 // >> true
 ```
 
-### `.parse(value)`
+### `.parse (value)`
 
-Parses an "x y z" string to an `{x, y, z}` vec3 object. Or parses an "x y z w" string to an {x, y, z w} vec3 object.
+Parses an "x y z" string to an `{x, y, z}` vec3 object. Or parses an "x y z w" string to an {x, y, z, w} vec4 object.
 
 ```js
 AFRAME.utils.coordinates.parse('1 2 -3')
 // >> {x: 1, y: 2, z: -3}
 ```
 
-### `.stringify(data)`
+### `.stringify (data)`
 
 Stringifies an `{x, y, z}` vec3 object to an "x y z" string.
 
@@ -43,11 +43,11 @@ AFRAME.utils.coordinates.stringify({x: 1, y: 2, z: -3})
 
 ## `AFRAME.utils.entity`
 
-[getattr]: ./entity.md#getcomputedattribute
+[getattr]: ./entity.md#getattribute-componentname
 
 ### `.getComponentProperty(entity, componentName, delimiter='.')`
 
-Performs like [`Entity.getComputedAttribute`][getattr], but with support for
+Performs like [`Entity.getAttribute`][getattr], but with support for
 return an individual property for a multi-property component. `componentName`
 is a string that can either be a component name, or a component name delimited
 with a property name.
@@ -67,9 +67,9 @@ AFRAME.utils.entity.getComponentProperty(entity, 'geometry');
 This is useful for components that need a way to reference a property of a
 multi-property component.
 
-### `.setComponentProperty(entity, componentName, value, delimiter)`
+### `.setComponentProperty (entity, componentName, value, delimiter)`
 
-[setattr]: ./entity.md#setattribute
+[setattr]: ./entity.md#setattribute-componentname-value-propertyvalue-clobber
 
 Performs like [`Entity.setAttribute`][setattr], but with support for setting an
 individual property for a multi-property component. `componentName` is a string
@@ -87,7 +87,7 @@ AFRAME.utils.entity.setComponentProperty(entity, 'geometry', {depth: 3});
 
 ## AFRAME.utils.styleParser
 
-### `.parse(value)`
+### `.parse (value)`
 
 Parses a CSS style-like string to an object.
 
@@ -96,7 +96,7 @@ AFRAME.utils.styleParser.parse('attribute: color; dur: 5000;')
 // >> {"attribute": "color", "dur": "5000"}
 ```
 
-### `.stringify(data)`
+### `.stringify (data)`
 
 Stringifies an object to a CSS style-like string.
 
@@ -107,7 +107,7 @@ AFRAME.utils.styleParser.stringify({height: 10, width: 5})
 
 ## Object Utils
 
-### `AFRAME.utils.deepEqual(a, b)`
+### `AFRAME.utils.deepEqual (a, b)`
 
 Checks if two objects have the same attributes and values, including nested objects.
 
@@ -116,7 +116,7 @@ deepEqual({a: 1, b: {c: 3}}, {a: 1, b: {c: 3}})
 // >> true
 ```
 
-### `AFRAME.utils.diff(a, b)`
+### `AFRAME.utils.diff (a, b)`
 
 Returns difference between two objects. The returned object's set of keys denote which values were not equal, and the set of values are `b`'s values.
 
@@ -129,6 +129,56 @@ diff({a: 1, b: 2, c: 3}, {b: 2, c: 4})
 
 [Object Assign polyfill](https://www.npmjs.com/package/object-assign)
 
-### `AFRAME.utils.extendDeep(target, source, [source, ...])`
+### `AFRAME.utils.extendDeep (target, source, [source, ...])`
 
 [Deep Assign](https://www.npmjs.com/package/deep-assign)
+
+## `AFRAME.utils.device`
+
+### `AFRAME.utils.device.checkHasPositionalTracking ()`
+
+Checks if there is positional tracking available. Returns a `boolean`.
+
+### `AFRAME.utils.device.checkHeadsetConnected ()`
+
+Checks if a VR headset is connected by looking for orientation data. Returns a `boolean`.
+
+### `AFRAME.utils.device.isGearVR ()`
+
+Checks if device is Gear VR. Returns a `boolean`.
+
+### `AFRAME.utils.device.isMobile ()`
+
+Checks if device is a smartphone. Returns a `boolean`.
+
+## Function Utils
+
+### `AFRAME.utils.throttle (function, interval [, optionalContext])`
+
+Returns a throttled function that is called at most once every
+`minimumInterval` milliseconds. A context such as `this` can be provided to
+handle function binding for convenience.
+
+### `AFRAME.utils.throttleTick (function (t, dt) {...}, interval [, optionalContext])`
+
+Returns a throttled function that is called at most once every
+`minimumInterval` milliseconds. A context such as `this` can be provided to
+handle function binding for convenience.
+
+This variant of `.throttle()` is slightly more performant and tailored for
+`tick` handlers as it uses the `t` and `dt` timestamps passed by the global
+render loop.
+
+```js
+AFRAME.registerComponent('foo', {
+  init: function () {
+    // Set up the tick throttling.
+    this.tick = AFRAME.utils.throttleTick(this.throttledTick, 500, this);
+  },
+
+  /**
+   * Tick function that will be wrapped to be throttled.
+   */
+  throttledTick: function (t, dt) {}
+});
+```

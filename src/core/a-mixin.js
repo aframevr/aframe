@@ -3,6 +3,8 @@ var ANode = require('./a-node');
 var registerElement = require('./a-register-element').registerElement;
 var components = require('./component').components;
 
+var MULTIPLE_COMPONENT_DELIMITER = '__';
+
 /**
  * @member {object} componentCache - Cache of pre-parsed values. An object where the keys
  *         are component names and the values are already parsed by the component.
@@ -46,7 +48,8 @@ module.exports = registerElement('a-mixin', {
      */
     cacheAttribute: {
       value: function (attr, value) {
-        var component = components[attr];
+        var componentName = attr.split(MULTIPLE_COMPONENT_DELIMITER)[0];
+        var component = components[componentName];
         if (!component) { return; }
         if (value === undefined) {
           value = HTMLElement.prototype.getAttribute.call(this, attr);

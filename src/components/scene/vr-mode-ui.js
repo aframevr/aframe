@@ -90,7 +90,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     var sceneEl = this.el;
     var orientationModalEl = this.orientationModalEl;
     if (!orientationModalEl || !sceneEl.isMobile) { return; }
-    if (!utils.isLandscape() && sceneEl.is('vr-mode')) {
+    if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
       // Show if in VR mode on portrait.
       orientationModalEl.classList.remove(HIDDEN_CLASS);
     } else {

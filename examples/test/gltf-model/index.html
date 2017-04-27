@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>glTF Model</title>
+    <meta name="description" content="glTF Model - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="play-all-model-animations.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <a-asset-item id="cityModel" src="https://cdn.aframe.io/test-models/models/virtualcity/VC.gltf"></a-asset-item>
+      </a-assets>
+
+      <a-entity gltf-model="#cityModel" play-all-model-animations></a-entity>
+    </a-scene>
+  </body>
+</html>

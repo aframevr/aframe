@@ -12,10 +12,10 @@ module.exports.Component = registerComponent('embedded', {
     var sceneEl = this.el;
     var enterVREl = sceneEl.querySelector('.a-enter-vr');
     if (this.data === true) {
-      enterVREl.classList.add('embedded');
+      if (enterVREl) { enterVREl.classList.add('embedded'); }
       sceneEl.removeFullScreenStyles();
     } else {
-      enterVREl.classList.remove('embedded');
+      if (enterVREl) { enterVREl.classList.remove('embedded'); }
       sceneEl.addFullScreenStyles();
     }
   }

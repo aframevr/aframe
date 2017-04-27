@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <title>Text Anchors</title>
+    <meta name="description" content="Text Anchors - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene auto-enter-vr="display:all">
+      <a-assets>
+        <a-mixin
+          id="marker"
+          geometry="primitive: plane; width: 0.057; height: 0.057"
+          material="color: #C03546"
+        ></a-mixin>
+      </a-assets>
+
+      <a-entity id="marker0" mixin="marker" position="0 0 -3.99"></a-entity>
+      <a-entity id="marker1" mixin="marker" position="0 1 -3.99"></a-entity>
+      <a-entity id="marker2" mixin="marker" position="0 2 -3.99"></a-entity>
+      <a-entity id="marker3" mixin="marker" position="0 3 -3.99"></a-entity>
+      <a-entity id="marker4" mixin="marker" position="0 4 -3.99"></a-entity>
+      <a-entity id="marker5" mixin="marker" position="0 5 -3.99"></a-entity>
+      <a-entity id="marker6" mixin="marker" position="0 6 -3.99"></a-entity>
+      <a-entity id="marker7" mixin="marker" position="0 7 -3.99"></a-entity>
+
+      <a-entity
+        position="0 0 -4"
+        geometry="primitive: plane; width: 2"
+        material="color: #0000FF"
+        text="color: white; align: center; font: dejavu;
+              value: a-text align='center' (anchor='align') DejaVu width 2 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-text
+        id="textPrimitive"
+        position="0 1 -4"
+        align="left" anchor="left" width="5"
+        value="anchor='left' (default align) 123456789012345678901234567890123456789012345678901234567890">
+      </a-text>
+
+      <a-entity
+        position="0 2 -4"
+        geometry="primitive: plane; width: 5"
+        material="color: #333333"
+        text="color: white; anchor: center; font: sourcecodepro;
+              value: anchor='center' (default align) SourceCodePro 123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-entity
+        position="0 3 -4"
+        text="color: white; baseline: top; anchor: right; width: 5; font: aileronsemibold;
+              value: anchor='right' baseline='top' (default align) Aileron-Semibold 123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-entity
+        position="0 4 -4"
+        text="color: white; align: left; width: 5; font: exo2semibold;
+              value: align='left' (default anchor) Exo2SemiBold 123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-entity
+        position="0 5 -4"
+        text="color: white; align: center; width: 5; font: kelsonsans;
+              value: align='center' (default anchor) KelsonSans 123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-entity
+        position="0 6 -4"
+        text="color: white; align: right; width: 5; font: monoid;
+              value: align='right' (default anchor) Monoid 123456789012345678901234567890123456789012345678901234567890"
+      ></a-entity>
+
+      <a-entity
+        position="0 7 -4"
+        geometry="primitive: plane; width: 8; height: auto"
+        material="color: #0000FF"
+        text="color: white; align: center; font: https://cdn.aframe.io/fonts/DejaVu-sdf.fnt;
+              value: a-plane align:center (anchor:align) DejaVu width 8 1234567890123456789012345678901234567890">
+      </a-entity>
+
+      <a-sky color="#222"></a-sky>
+      <a-entity position="0.0 3.8 1.5">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

@@ -1,47 +1,48 @@
 {
   "name": "aframe",
-  "version": "0.3.2",
-  "description": "Building blocks for the VR Web",
+  "version": "0.5.0",
+  "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
-  "main": "dist/aframe.js",
+  "main": "dist/aframe-master.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
-    "build": "mkdirp build/ && npm run browserify -- --debug -o build/aframe.js",
+    "build": "mkdirp build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
     "codecov": "codecov",
-    "dev": "npm run build && node ./scripts/budo",
-    "dist": "npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe.js.map > dist/aframe.js",
-    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe.min.js.map --output dist/aframe.min.js.map] -o dist/aframe.min.js",
-    "dist:release": "npm run dist:release:min && npm run dist:release:max",
-    "dist:release:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.3.0.js.map > dist/aframe-v0.3.0.js",
-    "dist:release:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.3.0.min.js.map --output dist/aframe-v0.3.0.min.js.map] -o dist/aframe-v0.3.0.min.js",
+    "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
+    "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
+    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
+    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
+    "docs": "markserv --dir docs --port 9001",
+    "preghpages": "rimraf gh-pages && mkdirp gh-pages && cp -r .nojekyll dist examples index.html gh-pages && replace -r 'dist/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/",
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
+    "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
-    "preghpages": "npm run dist && rimraf gh-pages && mkdirp gh-pages && cp -r {.nojekyll,dist,lib,examples,index.html,style} gh-pages/. 2>/dev/null || : && git checkout dist/ && replace 'build/aframe.js' 'dist/aframe.min.js' gh-pages/ -r --silent",
-    "release:bump": "npm run dist && git commit -am 'bump dist' && npm version patch --preminor",
-    "release:push": "npm login && npm publish && git push --follow-tags",
+    "prerelease": "npm run dist && node scripts/release.js 0.4.0 0.5.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
-    "test:firefox": "karma start ./tests/karma.conf.js --browsers Firefox",
-    "test:chrome": "karma start ./tests/karma.conf.js --browsers Chrome",
-    "test:ci": "TEST_ENV=ci karma start ./tests/karma.conf.js --single-run --browsers Firefox",
-    "version": "npm run dist"
+    "test:docs": "node scripts/docsLint.js",
+    "test:firefox": "npm test -- --browsers Firefox",
+    "test:chrome": "npm test -- --browsers Chrome",
+    "test:node": "mocha --ui tdd tests/node"
   },
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
     "browserify-css": "^0.8.2",
-    "debug": "^2.2.0",
+    "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
     "document-register-element": "dmarcos/document-register-element#8ccc532b7",
+    "envify": "^3.4.1",
+    "load-bmfont": "^1.2.3",
     "object-assign": "^4.0.1",
     "present": "0.0.6",
     "promise-polyfill": "^3.1.0",
     "style-attr": "^1.0.2",
-    "three": "^0.76.1",
+    "three": "^0.84.0",
+    "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "0.9.15"
+    "webvr-polyfill": "dmarcos/webvr-polyfill#a02a8089b"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -50,12 +51,17 @@
     "budo": "^9.2.0",
     "chai": "^3.5.0",
     "chai-shallow-deep-equal": "^1.4.0",
+    "chalk": "^1.1.3",
     "codecov": "^1.0.1",
+    "cross-env": "^4.0.0",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
+    "git-rev": "^0.2.1",
+    "glob": "^7.1.1",
     "husky": "^0.11.7",
     "istanbul": "^0.4.5",
-    "karma": "^1.3.0",
+    "jsdom": "^9.11.0",
+    "karma": "1.4.1",
     "karma-browserify": "^5.1.0",
     "karma-chai-shallow-deep-equal": "0.0.4",
     "karma-chrome-launcher": "^2.0.0",
@@ -66,6 +72,7 @@
     "karma-mocha-reporter": "^2.1.0",
     "karma-sinon-chai": "^1.2.4",
     "lolex": "^1.5.1",
+    "markserv": "0.0.20",
     "minifyify": "^7.3.3",
     "mkdirp": "^0.5.1",
     "mocha": "^3.0.2",
@@ -77,12 +84,15 @@
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
     "snazzy": "^5.0.0",
-    "uglifyjs": "^2.4.10"
+    "too-wordy": "ngokevin/too-wordy",
+    "uglifyjs": "^2.4.10",
+    "write-good": "^0.9.1"
   },
   "link": true,
   "browserify": {
     "transform": [
-      "browserify-css"
+      "browserify-css",
+      "envify"
     ]
   },
   "semistandard": {
@@ -111,7 +121,7 @@
     "minify": true
   },
   "engines": {
-    "node": ">= 0.12.7",
-    "npm": "^2.12.1"
+    "node": ">= 4.6.0",
+    "npm": "^2.15.9"
   }
 }

@@ -1,2 +1,4 @@
 examples
 tests
+dist/aframe-v*
+dist/*min*

@@ -3,8 +3,10 @@ var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene');
 var components = require('core/component').components;
-var helpers = require('../../helpers');
+var scenes = require('core/scene/scenes');
 var systems = require('core/system').systems;
+
+var helpers = require('../../helpers');
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -15,8 +17,9 @@ var systems = require('core/system').systems;
  * environment.
  */
 suite('a-scene (without renderer)', function () {
-  setup(function () {
+  setup(function (done) {
     var el = this.el = document.createElement('a-scene');
+    el.addEventListener('nodeready', function () { done(); });
     document.body.appendChild(el);
   });
 
@@ -56,6 +59,187 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('enterVR', function () {
+    setup(function () {
+      var sceneEl = this.el;
+
+      // Stub canvas.
+      sceneEl.canvas = document.createElement('canvas');
+
+      // Stub requestPresent.
+      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
+      this.requestSpy = this.sinon.spy(sceneEl.effect, 'requestPresent');
+    });
+
+    test('does not try to enter VR if already in VR', function (done) {
+      var sceneEl = this.el;
+      var requestSpy = this.requestSpy;
+      sceneEl.addState('vr-mode');
+      sceneEl.enterVR().then(function (val) {
+        assert.equal(val, 'Already in VR.');
+        assert.notOk(requestSpy.called);
+        done();
+      });
+    });
+
+    test('calls requestPresent if headset connected', function (done) {
+      var sceneEl = this.el;
+      var requestSpy = this.requestSpy;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.enterVR().then(function () {
+        assert.ok(requestSpy.called);
+        done();
+      });
+    });
+
+    test('calls requestPresent on mobile', function (done) {
+      var sceneEl = this.el;
+      var requestSpy = this.requestSpy;
+      sceneEl.isMobile = true;
+      sceneEl.enterVR().then(function () {
+        assert.ok(requestSpy.called);
+        done();
+      });
+    });
+
+    test('does not call requestPresent if flat desktop', function (done) {
+      var sceneEl = this.el;
+      var requestSpy = this.requestSpy;
+      sceneEl.enterVR().then(function () {
+        assert.notOk(requestSpy.called);
+        done();
+      });
+    });
+
+    test('adds VR mode state', function (done) {
+      var sceneEl = this.el;
+      sceneEl.enterVR().then(function () {
+        assert.ok(sceneEl.is('vr-mode'));
+        done();
+      });
+    });
+
+    test('adds fullscreen styles', function (done) {
+      var sceneEl = this.el;
+      sceneEl.enterVR().then(function () {
+        assert.ok(sceneEl.classList.contains('fullscreen'));
+        done();
+      });
+    });
+
+    test('requests fullscreen on flat desktop', function (done) {
+      var sceneEl = this.el;
+      var fullscreenSpy;
+
+      if (sceneEl.canvas.mozRequestFullScreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'mozRequestFullScreen');
+      } else if (sceneEl.canvas.webkitRequestFullScreen) {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'webkitRequestFullscreen');
+      } else {
+        fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
+      }
+
+      sceneEl.enterVR().then(function () {
+        assert.ok(fullscreenSpy.called);
+        done();
+      });
+    });
+
+    test('emits enter-vr', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('enter-vr', function () { done(); });
+      sceneEl.enterVR();
+    });
+  });
+
+  suite('exitVR', function () {
+    setup(function () {
+      var sceneEl = this.el;
+
+      // Stub canvas.
+      sceneEl.canvas = document.createElement('canvas');
+
+      // Stub exitPresent.
+      sceneEl.effect = {exitPresent: function () { return Promise.resolve(); }};
+      this.exitSpy = this.sinon.spy(sceneEl.effect, 'exitPresent');
+
+      sceneEl.addState('vr-mode');
+    });
+
+    test('does not try to exit VR if not in VR', function (done) {
+      var sceneEl = this.el;
+      var exitSpy = this.exitSpy;
+      sceneEl.removeState('vr-mode');
+      sceneEl.exitVR().then(function (val) {
+        assert.equal(val, 'Not in VR.');
+        assert.notOk(exitSpy.called);
+        done();
+      });
+    });
+
+    test('calls exitPresent if headset connected', function (done) {
+      var sceneEl = this.el;
+      var exitSpy = this.exitSpy;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.exitVR().then(function () {
+        assert.ok(exitSpy.called);
+        done();
+      });
+    });
+
+    test('calls exitPresent on mobile', function (done) {
+      var sceneEl = this.el;
+      var exitSpy = this.exitSpy;
+      sceneEl.isMobile = true;
+      sceneEl.exitVR().then(function () {
+        assert.ok(exitSpy.called);
+        done();
+      });
+    });
+
+    test('does not call exitPresent if flat desktop', function (done) {
+      var sceneEl = this.el;
+      var exitSpy = this.exitSpy;
+      sceneEl.exitVR().then(function () {
+        assert.notOk(exitSpy.called);
+        done();
+      });
+    });
+
+    test('removes VR mode state', function (done) {
+      var sceneEl = this.el;
+      sceneEl.exitVR().then(function () {
+        assert.notOk(sceneEl.is('vr-mode'));
+        done();
+      });
+    });
+
+    test('removes fullscreen styles if embedded', function (done) {
+      var sceneEl = this.el;
+      sceneEl.setAttribute('embedded', 'true');
+      sceneEl.classList.add('fullscreen');
+      sceneEl.exitVR().then(function () {
+        assert.notOk(sceneEl.classList.contains('fullscreen'));
+        done();
+      });
+    });
+
+    test('does not remove fullscreen styles if not embedded', function (done) {
+      var sceneEl = this.el;
+      sceneEl.classList.add('fullscreen');
+      sceneEl.exitVR().then(function () {
+        assert.ok(sceneEl.classList.contains('fullscreen'));
+        done();
+      });
+    });
+
+    test('emits exit-vr', function (done) {
+      var sceneEl = this.el;
+      sceneEl.addEventListener('exit-vr', function () { done(); });
+      sceneEl.exitVR();
+    });
+  });
+
   suite('reload', function () {
     test('reload scene innerHTML to original value', function () {
       var sceneEl = this.el;
@@ -75,7 +259,7 @@ suite('a-scene (without renderer)', function () {
   });
 
   suite('system', function () {
-    setup(function () {
+    teardown(function () {
       delete components.test;
       delete systems.test;
     });
@@ -91,16 +275,47 @@ suite('a-scene (without renderer)', function () {
       assert.equal(sceneEl.getAttribute('test'), 'system');
     });
 
-    test('does not initialize component on setAttribute', function () {
+    test('does not initialize component on setAttribute', function (done) {
       var sceneEl = document.createElement('a-scene');
       var stub = sinon.stub();
 
       AFRAME.registerComponent('test', {init: stub});
       AFRAME.registerSystem('test', {});
 
-      sceneEl.initSystem('test');
       sceneEl.setAttribute('test', '');
-      assert.notOk(stub.called);
+
+      sceneEl.addEventListener('loaded', () => {
+        assert.notOk(stub.called);
+        done();
+      });
+      document.body.appendChild(sceneEl);
+    });
+
+    test('does not update component', function (done) {
+      var childEl;
+      var componentUpdateStub = sinon.stub();
+      var sceneEl;
+
+      AFRAME.registerComponent('test', {
+        schema: {componentProp: {default: 'foo'}},
+        update: componentUpdateStub
+      });
+      AFRAME.registerSystem('test', {
+        schema: {systemProp: {default: 'foo'}}
+      });
+
+      childEl = document.createElement('a-entity');
+      sceneEl = document.createElement('a-scene');
+      childEl.setAttribute('test', '');
+      sceneEl.setAttribute('test', '');
+      sceneEl.appendChild(childEl);
+
+      sceneEl.addEventListener('loaded', () => {
+        assert.notOk('systemProp' in childEl.components.test.data);
+        assert.equal(componentUpdateStub.callCount, 1);
+        done();
+      });
+      document.body.appendChild(sceneEl);
     });
   });
 });
@@ -145,6 +360,30 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
       });
     });
 
+    test('calls component pause handlers', function (done) {
+      var el = this.el;
+      AFRAME.registerComponent('foo', {
+        pause: function () {
+          delete AFRAME.components.foo;
+          done();
+        }
+      });
+      el.setAttribute('foo', '');
+      document.body.removeChild(el);
+    });
+
+    test('calls component remove handlers', function (done) {
+      var el = this.el;
+      AFRAME.registerComponent('foo', {
+        remove: function () {
+          delete AFRAME.components.foo;
+          done();
+        }
+      });
+      el.setAttribute('foo', '');
+      document.body.removeChild(el);
+    });
+
     test('does not destroy document.body', function (done) {
       var el = this.el;
       document.body.removeChild(el);
@@ -183,5 +422,49 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     scene.render(0);
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
+  });
+
+  test('clock', function () {
+    var scene = this.el;
+
+    assert.isAbove(scene.time, 0);
+    var prevTime = scene.time;
+    assert.ok(scene.time, scene.clock.elapsedTime);
+    for (var i = 0; i < 10; i++) {
+      scene.render();
+      assert.isAbove(scene.time, prevTime);
+      assert.ok(scene.time, scene.clock.elapsedTime);
+      prevTime = scene.time;
+    }
+  });
+});
+
+suite('scenes', function () {
+  var sceneEl;
+
+  setup(function () {
+    scenes.length = 0;
+    sceneEl = document.createElement('a-scene');
+  });
+
+  test('is appended with scene attach', function (done) {
+    assert.notOk(scenes.length);
+    sceneEl.addEventListener('loaded', () => {
+      assert.ok(scenes.length);
+      done();
+    });
+    document.body.appendChild(sceneEl);
+  });
+
+  test('is popped with scene detached', function (done) {
+    sceneEl.addEventListener('loaded', () => {
+      assert.ok(scenes.length);
+      document.body.removeChild(sceneEl);
+      setTimeout(() => {
+        assert.notOk(scenes.length);
+        done();
+      });
+    });
+    document.body.appendChild(sceneEl);
   });
 });

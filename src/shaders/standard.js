@@ -8,35 +8,36 @@ var texturePromises = {};
 /**
  * Standard (physically-based) shader using THREE.MeshStandardMaterial.
  */
-module.exports.Component = registerShader('standard', {
+module.exports.Shader = registerShader('standard', {
   schema: {
-    ambientOcclusionMap: {default: ''},
+    ambientOcclusionMap: {type: 'map'},
     ambientOcclusionMapIntensity: {default: 1},
-    ambientOcclusionTextureOffset: {default: ''},
-    ambientOcclusionTextureRepeat: {default: ''},
+    ambientOcclusionTextureOffset: {type: 'vec2'},
+    ambientOcclusionTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
     color: {type: 'color'},
 
-    displacementMap: {default: ''},
+    displacementMap: {type: 'map'},
     displacementScale: {default: 1},
     displacementBias: {default: 0.5},
-    displacementTextureOffset: {default: ''},
-    displacementTextureRepeat: {default: ''},
+    displacementTextureOffset: {type: 'vec2'},
+    displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
     envMap: {default: ''},
 
     fog: {default: true},
     height: {default: 256},
     metalness: {default: 0.0, min: 0.0, max: 1.0},
 
-    normalMap: {default: ''},
-    normalScale: {type: 'vec2', default: '1 1'},
-    normalTextureOffset: {default: ''},
-    normalTextureRepeat: {default: ''},
+    normalMap: {type: 'map'},
+    normalScale: {type: 'vec2', default: {x: 1, y: 1}},
+    normalTextureOffset: {type: 'vec2'},
+    normalTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
 
-    repeat: {default: ''},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     roughness: {default: 0.5, min: 0.0, max: 1.0},
-    sphericalEnvMap: {default: ''},
-    src: {default: ''},
+    sphericalEnvMap: {type: 'map'},
+    src: {type: 'map'},
     width: {default: 512},
     wireframe: {default: false},
     wireframeLinewidth: {default: 2}
@@ -97,7 +98,7 @@ module.exports.Component = registerShader('standard', {
 
     // if a spherical env map is defined then use it.
     if (sphericalEnvMap) {
-      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, { src: sphericalEnvMap }, function textureLoaded (texture) {
+      this.el.sceneEl.systems.material.loadTexture(sphericalEnvMap, {src: sphericalEnvMap}, function textureLoaded (texture) {
         self.isLoadingEnvMap = false;
         texture.mapping = THREE.SphericalReflectionMapping;
         material.envMap = texture;

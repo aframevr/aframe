@@ -8,6 +8,9 @@ order: 1
 section_order: 5
 ---
 
+[component]: ../core/component.md
+[entity]: ../core/entity.md
+
 Primitives are [entities][entity] that:
 
 - Have a semantic name (e.g., `<a-box>`)
@@ -15,11 +18,13 @@ Primitives are [entities][entity] that:
 - Have default component property values
 - Map HTML attributes to [component][component] properties
 
-They are a convenience layer on top of the core API and are meant to:
+Primitives abstract the core API to:
 
 - Pre-compose useful components together with prescribed defaults
 - Act as a shorthand for complex-but-common types of entities (e.g., `<a-sky>`)
 - Provide a familiar interface with HTML attributes mapping to only a single value
+
+[prefab]: http://docs.unity3d.com/Manual/Prefabs.html
 
 They are sort of like [Prefabs in Unity][prefab]. Some literature on the
 entity-component-system pattern refer to these as *assemblages*.
@@ -28,7 +33,7 @@ entity-component-system pattern refer to these as *assemblages*.
 
 ## Example
 
-Here is an assortment of various primitives in use:
+Below is an assortment of primitives in use:
 
 ```html
 <a-scene>
@@ -50,12 +55,15 @@ Here is an assortment of various primitives in use:
 
 ## Primitives are Entities
 
-Since every primitive extends `<a-entity>`s, things that can be done with
-entities can be done with primitives:
+[animations]: ../core/animations.md
+[mixins]: ../core/mixins.md
+
+Since every primitive extends `<a-entity>`s, primitives can do the same things
+as entities such as:
 
 - Positioning, rotating, and scaling
-- Attaching [components][component] and [mixins][mixin]
-- Applying [animations][animation]
+- Attaching [components][component] and [mixins][mixins]
+- Applying [animations][animations]
 
 For example, let's take `<a-box>` primitive, and say someone writes a
 third-party physics component. We can attach it to `<a-box>` just as we would
@@ -76,7 +84,7 @@ To create a wide red box using the primitives API, we could write:
 Which ends up expanding to:
 
 ```html
-<a-box color="red" width="3" geometry="primitive: box; width: 3" material="color: red"></a-box>
+<a-entity geometry="primitive: box; width: 3" material="color: red"></a-entity>
 ```
 
 Under the hood, we see that primitives *extend* `<a-entity>` as a custom
@@ -87,7 +95,8 @@ underlying `material.color` property.
 
 ## Register a Primitive
 
-We can compose and register our own primitives for other people to consume.
+We can compose and register our own primitives (i.e., register an element) for
+other people to easily use.
 
 For example, here is what the registration looks like for `<a-box>` primitive:
 
@@ -98,7 +107,7 @@ var extendDeep = AFRAME.utils.extendDeep;
 // This makes the material component a default component and maps all the base material properties.
 var meshMixin = AFRAME.primitives.getMeshMixin();
 
-AFRAME.registerPrimitive('a-box', extend({}, meshMixin, {
+AFRAME.registerPrimitive('a-box', extendDeep({}, meshMixin, {
   // Preset default components. These components and component properties will be attached to the entity out-of-the-box.
   defaultComponents: {
     geometry: {primitive: 'box'}
@@ -112,6 +121,10 @@ AFRAME.registerPrimitive('a-box', extend({}, meshMixin, {
   }
 }));
 ```
+
+Note that the keys in the mappings (e.g. 'depth','height') must be lower case, since this is how the DOM knows them. The values (e.g. 'geometry.depth') should match the case used in the component. 
+
+[aframe-extras]: https://github.com/donmccurdy/aframe-extras
 
 For example, Don McCurdy's [aframe-extras][aframe-extras] creates `<a-ocean>`
 primitive using his ocean component:
@@ -139,15 +152,5 @@ AFRAME.registerPrimitive('a-ocean', {
 Then we'd be able to create oceans using basic HTML syntax with little configuration needed:
 
 ```html
-<a-ocean color="aqua" height="100" width="100"></a-ocean>
+<a-ocean color="aqua" depth="100" width="100"></a-ocean>
 ```
-
-[a-box]: ./a-box.md
-[a-plane]: ./a-plane.md
-[aframe-extras]: https://github.com/donmccurdy/aframe-extras
-[animation]: ../core/animation.md
-[component]: ../core/component.md
-[entity]: ../core/entity.md
-[material]: ../components/material.md
-[mixin]: ../core/mixin.md
-[prefab]: http://docs.unity3d.com/Manual/Prefabs.html

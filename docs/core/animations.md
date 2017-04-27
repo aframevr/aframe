@@ -6,12 +6,11 @@ parent_section: core
 order: 6
 ---
 
-> Check out the
-> [aframe-animation-component](https://github.com/ngokevin/aframe-animation-component).
+> Also Check out the
+> [aframe-animation-component](https://github.com/ngokevin/kframe/tree/master/components/animation/)
 
-Animations in A-Frame are defined by attaching an `<a-animation>` element as a
-child of the entity to animate. The API is roughly based after the [Web
-Animations](http://www.w3.org/TR/web-animations/) specification.
+We can add animations in A-Frame attaching an `<a-animation>` element as a
+child of the entity to animate.
 
 As an introductory example, to define a 5-meter orbit on an entity about the
 Y-axis that takes 10 seconds, we can offset its position and animate the
@@ -51,13 +50,13 @@ Here is an overview of animation attributes. We'll go into more detail below.
 | repeat    | Repeat count or `indefinite`.                                                                                          | 0              |
 | to        | Ending value. Must be specified.                                                                                       | None           |
 
-## Animating Different Types of Attributes
+## Animating Different Types of Properties
 
-A-Frame's animation system can animate several possible categories of attributes.
+A-Frame's animation system can animate different types of properties.
 
-### vec3 Attributes
+### vec3 Properties
 
-A-Frame has several standard `vec3` components (i.e., `position`, `rotation`,
+A-Frame has standard `vec3` components (i.e., `position`, `rotation`,
 and `scale`). These components consist of three factors: X, Y, and Z. We can
 pass three space-delimited numbers to the `from` and `to` attributes just as we
 would define them on an entity. In this case, the animation system will assume
@@ -72,11 +71,11 @@ can animate the `position` component.
 </a-entity>
 ```
 
-### Boolean Attributes
+### Boolean Properties
 
-A-Frame has several standard components that accept a single boolean value.
-Boolean values can be "animated" as well by flipping the boolean at the end of
-each animation cycle.
+A-Frame has standard components that accept a single boolean value.  Boolean
+values can be "animated" as well by flipping the boolean at the end of each
+animation cycle.
 
 For example, we can define an animation that toggles off the visibility of an
 entity after 5 seconds.
@@ -87,7 +86,7 @@ entity after 5 seconds.
 </a-entity>
 ```
 
-### Numeric Attributes
+### Numeric Properties
 
 We can animate numeric attributes as well. For example, we can animate the
 intensity of the light primitive.
@@ -98,7 +97,7 @@ intensity of the light primitive.
 </a-light>
 ```
 
-### Color Attributes
+### Color Properties
 
 We can animate any component property that has a color type. For example, we
 can animate a box from white to red.
@@ -130,7 +129,7 @@ The `begin` attribute defines when the animation should start playing.
 
 This can either be a *number*, representing milliseconds to wait, or an *event
 name* to wait for. For example, we can define an animation that waits 2 seconds
-from when the animation is attached before scaling an entity.
+before scaling an entity.
 
 ```html
 <a-entity>
@@ -157,9 +156,9 @@ document.querySelector('#fading-cube').emit('fade');
 The `direction` attribute defines which way to animate between the starting
 value and the final value.
 
-When an alternating direction is defined, the animation will go back and forth
+When we define an alternating direction, the animation will go back and forth
 between the `from` and `to` values like a yo-yo. Alternating directions only
-take affect when the animation is set to repeat.
+take affect when we repeat the animation.
 
 | Value             | Description                                                                                                 |
 |-------------------|-------------------------------------------------------------------------------------------------------------|
@@ -172,15 +171,15 @@ take affect when the animation is set to repeat.
 
 The `easing` attribute defines the easing function of the animation, which
 defaults to `ease`. There are too many easing functions to list, but we can
-implicitly explain what all of them are.
+implicitly explain them.
 
 One possible value is `linear`. And the basic easing functions are `ease`,
 `ease-in`, `ease-out`, and `ease-in-out`.
 
-Then there are additional groups of easing functions. Each group of easing
-functions are prefixed by the above basic easing functions. The groups of
-easing functions are `cubic`, `quad`, `quart`, `quint`, `sine`, `expo`, `circ`,
-`elastic`, `back`, and `bounce`.
+Then there are more groups of easing functions. The above basic easing
+functions prefix each group of easing functions. The groups of easing functions
+are `cubic`, `quad`, `quart`, `quint`, `sine`, `expo`, `circ`, `elastic`,
+`back`, and `bounce`.
 
 For example, the `cubic` group of easing functions would consist of
 `ease-cubic`, `ease-in-cubic`, `ease-out-cubic`, `ease-in-out-cubic`.
@@ -204,8 +203,8 @@ their effects.
 The `repeat` attribute defines how often the animation repeats. We call each
 repeat of the animation a cycle. Repeat can either be a number that counts down
 on each animation cycle until it reaches `0` at which point the animation will
-end, or it can be set to `indefinite` and the animation will loop continuously
-until the animation is manually removed or stopped.
+end, or we can set `repeat` to `indefinite` and the animation will loop
+continuously until the animation is manually removed or stopped.
 
 ## Events
 

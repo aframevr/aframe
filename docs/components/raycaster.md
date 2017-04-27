@@ -5,9 +5,22 @@ layout: docs
 parent_section: components
 ---
 
-The raycaster component does general intersection testing with a [raycaster][wiki-raycasting]. Raycasting is the method of extending a line from an origin towards a direction, and checking whether that line intersects with other entites. The raycaster component is a wrapper on top of the [three.js raycaster][3ray]. It checks for intersections at a certain interval against a list of objects, and will emit events on the entity when it detects intersections or clearing of intersections (i.e., when the raycaster is no longer intersecting an entity).
+[3ray]: http://threejs.org/docs/#Reference/Core/Raycaster
+[wiki-raycasting]: https://en.wikipedia.org/wiki/Ray_casting
 
-The raycaster component is what the [cursor component][components-cursor] is built upon.
+The raycaster component does general intersection testing with a
+[raycaster][wiki-raycasting]. Raycasting is the method of extending a line from
+an origin towards a direction, and checking whether that line intersects with
+other entites. The raycaster component is a wrapper on top of the [three.js
+raycaster][3ray]. It checks for intersections at a certain interval against a
+list of objects, and will emit events on the entity when it detects
+intersections or clearing of intersections (i.e., when the raycaster is no
+longer intersecting an entity).
+
+[components-cursor]: ./cursor.md
+
+The [cursor component][components-cursor] builds on top of the raycaster
+component.
 
 ## Example
 
@@ -67,11 +80,22 @@ The raycaster component is useful because of the events it emits on entities. It
 
 ## Setting the Origin and Direction of the Raycaster
 
-The raycaster has an *origin*, where its ray starts, and a *direction*, where the ray goes.
+The raycaster has an *origin*, where its ray starts, and a *direction*, where
+the ray goes.
 
-The origin of the raycaster is at the raycaster entity's position. The origin of the raycaster can be changed by setting the [position component][position] of the raycaster entity (or parent entities of the raycaster entity).
+[position]: ./position.md
 
-The direction of the raycaster is in "front" of the raycaster entity (i.e., `0 0 -1`, on the negative Z-axis). The direction of the raycaster can be changed by setting the [rotation component][rotation] of the raycaster entity (or parent entities of the raycaster entity).
+The origin of the raycaster is at the raycaster entity's position. We can
+change the origin of the raycaster by setting the [position
+component][position] of the raycaster entity (or parent entities of the
+raycaster entity).
+
+[rotation]: ./rotation.md
+
+The direction of the raycaster is in "front" of the raycaster entity (i.e., `0
+0 -1`, on the negative Z-axis). We can change the direction of the raycaster by
+setting the [rotation component][rotation] of the raycaster entity (or parent
+entities of the raycaster entity).
 
 For example, here is applying a raycaster along the length of a rotated bullet:
 
@@ -85,26 +109,18 @@ For example, here is applying a raycaster along the length of a rotated bullet:
 
 ## Whitelisting Entities to Test for Intersection
 
-We usually don't want everything in the scene to be tested for intersections
-(e.g., for collisions or for clicks). It is also good for performance to limit
-the number of entities to test for intersection since it is an operation that
-will usually run many times per second.
+We usually don't want to test everything in the scene for intersections (e.g.,
+for collisions or for clicks). Selective intersections are good for performance
+to limit the number of entities to test for intersection since intersection
+testing is an operation that will run over 60 times per second.
 
 To select or pick the entities we want to test for intersection, we can use the
-`objects` property. If this property is not defined, then every object in the
-scene will be tested for intersection. `objects` takes a query selector value:
+`objects` property. If this property is not defined, then the raycaster will
+test every object in the scene for intersection. `objects` takes a query
+selector value:
 
 ```html
 <a-entity raycaster="objects: .clickable" cursor></a-entity>
 <a-entity class="clickable" geometry="primitive: box" position="1 0 0"></a-entity>
 <a-entity class="not-clickable" geometry="primitive: sphere" position="-1 0 0"></a-entity>
 ```
-
-When using with the cursor, note there is currently a bug that requires the
-raycaster component be defined before the cursor component.
-
-[3ray]: http://threejs.org/docs/#Reference/Core/Raycaster
-[components-cursor]: ./cursor.md
-[position]: ./position.md
-[rotation]: ./rotation.md
-[wiki-raycasting]: https://en.wikipedia.org/wiki/Ray_casting

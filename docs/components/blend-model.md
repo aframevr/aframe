@@ -35,4 +35,4 @@ specifies the `src` to a file:
 
 | Event Name   | Description                                                                                 |
 | ----------   | ------------------------------------------------------------------------------------------- |
-| model-loaded | JSON model has been loaded into the scene.                                                  |
+| model-loaded | JSON model was loaded into the scene.                                                  |

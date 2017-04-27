@@ -5,9 +5,8 @@ layout: docs
 parent_section: primitives
 ---
 
-The camera primitive places the user somewhere within the scene. It is an
-entity that prescribes the [camera component](../components/) with mappings to
-controls-related components.
+The camera primitive determines what the user sees. We can change the viewport
+by modifying the camera entity's position and rotation.
 
 [userheight]: ../components/camera.md#vr-behavior
 
@@ -25,14 +24,15 @@ and `0 0 0` in VR mode. Read about the [`camera.userHeight` property][userheight
 
 ## Attributes
 
-| Attribute             | Component Mapping     | Default Value |
-|-----------------------|-----------------------|---------------|
-| far                   | camera.far            | 10000         |
-| fov                   | camera.fov            | 80            |
-| look-controls-enabled | look-controls.enabled | true          |
-| near                  | camera.near           | 0.5           |
-| user-height           | camera.userHeight     | 1.6           |
-| wasd-controls-enabled | wasd-controls.enabled | true          |
+| Attribute             | Component Mapping              | Default Value |
+|-----------------------|--------------------------------|---------------|
+| far                   | camera.far                     | 10000         |
+| fov                   | camera.fov                     | 80            |
+| look-controls-enabled | look-controls.enabled          | true          |
+| near                  | camera.near                    | 0.5           |
+| user-height           | camera.userHeight              | 1.6           |
+| reverse-mouse-drag    | look-controls.reverseMouseDrag | false         |
+| wasd-controls-enabled | wasd-controls.enabled          | true          |
 
 ## Manually Positioning the Camera
 

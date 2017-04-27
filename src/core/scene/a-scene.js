@@ -2,6 +2,7 @@
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
+var scenes = require('./scenes');
 var systems = require('../system').systems;
 var THREE = require('../../lib/three');
 var TWEEN = require('tween.js');
@@ -12,10 +13,9 @@ var ANode = require('../a-node');
 var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
-var checkHeadsetConnected = utils.checkHeadsetConnected;
+var isIOS = utils.device.isIOS();
+var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
-var isIOS = utils.isIOS();
-var isMobile = utils.isMobile();
 var warn = utils.debug('core:a-scene:warn');
 
 /**
@@ -42,7 +42,9 @@ module.exports = registerElement('a-scene', {
         'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
-        'vr-mode-ui': ''
+        'screenshot': '',
+        'vr-mode-ui': '',
+        'auto-enter-vr': ''
       }
     },
 
@@ -55,7 +57,6 @@ module.exports = registerElement('a-scene', {
         this.render = bind(this.render, this);
         this.systems = {};
         this.time = 0;
-
         this.init();
       }
     },
@@ -104,6 +105,9 @@ module.exports = registerElement('a-scene', {
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
         this.play();
+
+        // Add to scene index.
+        scenes.push(this);
       },
       writable: window.debug
     },
@@ -116,11 +120,8 @@ module.exports = registerElement('a-scene', {
 
     initSystem: {
       value: function (name) {
-        var system;
         if (this.systems[name]) { return; }
-        system = this.systems[name] = new systems[name](this);
-        system.init();
-        system.update();
+        this.systems[name] = new systems[name](this);
       }
     },
 
@@ -134,7 +135,11 @@ module.exports = registerElement('a-scene', {
         } else {
           window.cancelAnimationFrame(this.animationFrameID);
         }
+        var sceneIndex;
         this.animationFrameID = null;
+        // Remove from scene index.
+        sceneIndex = scenes.indexOf(this);
+        scenes.splice(sceneIndex, 1);
       }
     },
 
@@ -157,14 +162,33 @@ module.exports = registerElement('a-scene', {
       }
     },
 
+    /**
+     * For tests.
+     */
+    checkHeadsetConnected: {
+      value: utils.device.checkHeadsetConnected,
+      writable: window.debug
+    },
+
+    /**
+     * Call `requestPresent` if WebVR or WebVR polyfill.
+     * Call `requestFullscreen` on desktop.
+     * Handle events, states, fullscreen styles.
+     *
+     * @returns {Promise}
+     */
     enterVR: {
       value: function (event) {
         var self = this;
-        if (this.is('vr-mode')) { return; }
-        if (checkHeadsetConnected() || this.isMobile) {
+
+        // Don't enter VR if already in VR.
+        if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
+
+        if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
         enterVRSuccess();
+        return Promise.resolve();
 
         function enterVRSuccess () {
           self.addState('vr-mode');
@@ -180,7 +204,9 @@ module.exports = registerElement('a-scene', {
           // TODO: 07/16 Chromium builds break when `requestFullscreen`ing on a canvas
           // that we are also `requestPresent`ing. Until then, don't fullscreen if headset
           // connected.
-          if (!self.isMobile && !checkHeadsetConnected()) { requestFullscreen(self.canvas); }
+          if (!self.isMobile && !self.checkHeadsetConnected()) {
+            requestFullscreen(self.canvas);
+          }
           self.resize();
         }
 
@@ -193,28 +219,40 @@ module.exports = registerElement('a-scene', {
         }
       }
     },
-
+     /**
+     * Call `exitPresent` if WebVR or WebVR polyfill.
+     * Handle events, states, fullscreen styles.
+     *
+     * @returns {Promise}
+     */
     exitVR: {
       value: function () {
         var self = this;
-        if (!this.is('vr-mode')) { return Promise.resolve(); }
-        if (checkHeadsetConnected() || this.isMobile) {
+
+        // Don't exit VR if not in VR.
+        if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
+
+        exitFullscreen();
+
+        if (this.checkHeadsetConnected() || this.isMobile) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
         exitVRSuccess();
+        return Promise.resolve();
+
         function exitVRSuccess () {
-          var embedded = self.getAttribute('embedded');
           self.removeState('vr-mode');
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
           }
           // Exiting VR in embedded mode, no longer need fullscreen styles.
-          if (embedded) { self.removeFullScreenStyles(); }
+          if (self.hasAttribute('embedded')) { self.removeFullScreenStyles(); }
           self.resize();
           if (self.isIOS) { utils.forceCanvasResizeSafariMobile(this.canvas); }
           self.emit('exit-vr', {target: self});
         }
+
         function exitVRFailure (err) {
           if (err && err.message) {
             throw new Error('Failed to exit VR mode (`exitPresent`): ' + err.message);
@@ -261,7 +299,7 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Wraps Entity.setAttribute to take into account for systems.
+     * Wrap Entity.setAttribute to take into account for systems.
      * If system exists, then skip component initialization checks and do a normal
      * setAttribute.
      */
@@ -270,7 +308,8 @@ module.exports = registerElement('a-scene', {
         var system = this.systems[attr];
         if (system) {
           ANode.prototype.setAttribute.call(this, attr, value);
-          system.update(system.updateProperties(value));
+          system.updateProperties(value);
+>>>>>>> upstream/master
           return;
         }
         AEntity.prototype.setAttribute.call(this, attr, value, componentPropValue);
@@ -384,6 +423,8 @@ module.exports = registerElement('a-scene', {
               if (window.performance) {
                 window.performance.mark('render-started');
               }
+              sceneEl.clock = new THREE.Clock();
+              sceneEl.render();
               sceneEl.renderStarted = true;
               sceneEl.emit('renderstart');
               sceneEl.render(0);
@@ -418,16 +459,27 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Behavior-updater meant to be called before scene render.
+     * Wrap `updateComponent` to not initialize the component if the component has a system
+     * (aframevr/aframe#2365).
+     */
+    updateComponent: {
+      value: function (componentName) {
+        if (componentName in systems) { return; }
+        AEntity.prototype.updateComponent.apply(this, arguments);
+      }
+    },
+
+    /**
+     * Behavior-updater meant to be called from scene render.
      * Abstracted to a different function to facilitate unit testing (`scene.tick()`) without
      * needing to render.
      */
     tick: {
       value: function (time, timeDelta) {
         var systems = this.systems;
-
         // Animations.
-        TWEEN.update(time);
+        TWEEN.update();
+
         // Components.
         this.behaviors.tick.forEach(function (component) {
           if (!component.el.isPlaying) { return; }
@@ -471,12 +523,15 @@ module.exports = registerElement('a-scene', {
      * Renders with request animation frame.
      */
     render: {
-      value: function (time) {
+      value: function () {
         var effect = this.effect;
         var camera = this.camera;
-        var timeDelta = time - this.time;
+        var delta = this.clock.getDelta() * 1000;
+        this.time = this.clock.elapsedTime * 1000;
 
-        if (this.isPlaying) { this.tick(time, timeDelta); }
+        if (this.isPlaying) { this.tick(this.time, delta); }
+
+        this.animationFrameID = effect.requestAnimationFrame(this.render.bind(this));
 
         window.performance.mark('render-iteration-started');
         if (this.getAttribute('postprocessing')) {
@@ -487,14 +542,12 @@ module.exports = registerElement('a-scene', {
           }
           effect.render(this.object3D, camera, renderTarget);
           window.performance.mark('post-processing-started');
-          this.tock(time, timeDelta);
+          this.tock(this.time, delta);
         } else {
           effect.render(this.object3D, camera, null);
         }
         this.effect.submitFrame();
         window.performance.mark('render-iteration-finished');
-
-        this.animationFrameID = effect.requestAnimationFrame(this.render.bind(this));
       },
       writable: true
     }
@@ -529,4 +582,14 @@ function requestFullscreen (canvas) {
     canvas.mozRequestFullScreen ||  // The capitalized `S` is not a typo.
     canvas.msRequestFullscreen;
   requestFullscreen.apply(canvas);
+}
+
+function exitFullscreen () {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  }
 }

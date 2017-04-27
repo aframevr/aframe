@@ -1,5 +1,6 @@
-/* global HTMLElement */
+/* global HTMLElement, Node */
 var schema = require('./schema');
+var scenes = require('./scene/scenes');
 var systems = require('./system');
 var utils = require('../utils/');
 
@@ -11,6 +12,10 @@ var isSingleProp = schema.isSingleProperty;
 var stringifyProperties = schema.stringifyProperties;
 var stringifyProperty = schema.stringifyProperty;
 var styleParser = utils.styleParser;
+var warn = utils.debug('core:component:warn');
+
+var aframeScript = document.currentScript;
+var upperCaseRegExp = new RegExp('[A-Z]+');
 
 /**
  * Component class definition.
@@ -21,15 +26,16 @@ var styleParser = utils.styleParser;
  * of components.
  *
  * @member {object} el - Reference to the entity element.
- * @member {string} attr - Component name exposed as an HTML attribute.
+ * @member {string} attrValue - Value of the corresponding HTML attribute.
  * @member {object} data - Component data populated by parsing the
  *         mapped attribute of the component plus applying defaults and mixins.
  */
-var Component = module.exports.Component = function (el, attr, id) {
+var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
-  this.updateCachedAttrValue(attr);
+  this.el.components[this.attrName] = this;
+  this.updateProperties(attrValue);
 };
 
 Component.prototype = {
@@ -176,38 +182,50 @@ Component.prototype = {
   },
 
   /**
-   * Writes cached attribute data to the entity DOM element.
+   * Write cached attribute data to the entity DOM element.
+   *
+   * @param {bool} isDefault - Whether component is a default component. Always flush for
+   *   default components.
    */
-  flushToDOM: function () {
-    var attrValue = this.attrValue;
+  flushToDOM: function (isDefault) {
+    var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName, this.stringify(attrValue));
+    HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+                                            this.stringify(attrValue));
   },
 
   /**
    * Apply new component data if data has changed.
    *
-   * @param {string} value - HTML attribute value.
+   * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
    */
-  updateProperties: function (value) {
+  updateProperties: function (attrValue) {
     var el = this.el;
     var isSinglePropSchema = isSingleProp(this.schema);
     var oldData = extendProperties({}, this.data, isSinglePropSchema);
 
-    if (value !== undefined) { this.updateCachedAttrValue(value); }
+    if (attrValue !== undefined) { this.updateCachedAttrValue(attrValue); }
+
+    if (!el.hasLoaded) { return; }
 
     if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.schema, this.attrValue, true));
+      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue,
+                                  true));
     }
-    this.data = buildData(el, this.name, this.schema, this.attrValue);
-
-    // Don't update if properties haven't changed
-    if (!isSinglePropSchema && utils.deepEqual(oldData, this.data)) { return; }
+    this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
 
     if (!this.initialized) {
+      // Component is being already initialized
+      if (el.initializingComponents[this.name]) { return; }
+      // Prevent infinite loop in the case of
+      // the init method setting the same component
+      // on the entity
+      el.initializingComponents[this.name] = true;
+      // Initialize component.
       this.init();
       this.initialized = true;
+      delete el.initializingComponents[this.name];
       // Play the component if the entity is playing.
       this.update(oldData);
       if (el.isPlaying) { this.play(); }
@@ -217,6 +235,10 @@ Component.prototype = {
         data: this.getData()
       }, false);
     } else {
+      // Don't update if properties haven't changed
+      if (utils.deepEqual(oldData, this.data)) { return; }
+
+      // Update component.
       this.update(oldData);
       el.emit('componentchanged', {
         id: this.id,
@@ -225,6 +247,22 @@ Component.prototype = {
         oldData: oldData
       }, false);
     }
+  },
+
+  /**
+   * Reset value of a property to the property's default value.
+   * If single-prop component, reset value to component's default value.
+   *
+   * @param {string} propertyName - Name of property to reset.
+   */
+  resetProperty: function (propertyName) {
+    if (isSingleProp(this.schema)) {
+      this.attrValue = undefined;
+    } else {
+      if (!(propertyName in this.attrValue)) { return; }
+      delete this.attrValue[propertyName];
+    }
+    this.updateProperties(this.attrValue);
   },
 
   /**
@@ -246,6 +284,11 @@ Component.prototype = {
   }
 };
 
+// For testing.
+if (window.debug) {
+  var registrationOrderWarnings = module.exports.registrationOrderWarnings = {};
+}
+
 /**
  * Registers a component to A-Frame.
  *
@@ -256,6 +299,31 @@ Component.prototype = {
 module.exports.registerComponent = function (name, definition) {
   var NewComponent;
   var proto = {};
+
+  // Warning if component is statically registered after the scene.
+  if (document.currentScript && document.currentScript !== aframeScript) {
+    scenes.forEach(function checkPosition (sceneEl) {
+      // Okay to register component after the scene at runtime.
+      if (sceneEl.hasLoaded) { return; }
+
+      // Check that component is declared before the scene.
+      if (document.currentScript.compareDocumentPosition(sceneEl) ===
+          Node.DOCUMENT_POSITION_FOLLOWING) { return; }
+
+      warn('The component `' + name + '` was registered in a <script> tag after the scene. ' +
+           'Component <script> tags in an HTML file should be declared *before* the scene ' +
+           'such that the component is available to entities during scene initialization.');
+
+      // For testing.
+      if (window.debug) { registrationOrderWarnings[name] = true; }
+    });
+  }
+
+  if (upperCaseRegExp.test(name) === true) {
+    warn('The component name `' + name + '` contains uppercase characters, but ' +
+         'HTML will ignore the capitalization of attribute names. ' +
+         'Change the name to be lowercase: `' + name.toLowerCase() + '`');
+  }
 
   if (name.indexOf('__') !== -1) {
     throw new Error('The component name `' + name + '` is not allowed. ' +
@@ -278,8 +346,6 @@ module.exports.registerComponent = function (name, definition) {
   }
   NewComponent = function (el, attr, id) {
     Component.call(this, el, attr, id);
-    if (!el.hasLoaded) { return; }
-    this.updateProperties(this.attrValue);
   };
 
   NewComponent.prototype = Object.create(Component.prototype, proto);
@@ -292,10 +358,11 @@ module.exports.registerComponent = function (name, definition) {
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
+    isSingleProp: isSingleProp(NewComponent.prototype.schema),
     multiple: NewComponent.prototype.multiple,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
-    schema: utils.extend(processSchema(NewComponent.prototype.schema)),
+    schema: utils.extend(processSchema(NewComponent.prototype.schema, NewComponent.prototype.name)),
     stringify: NewComponent.prototype.stringify,
     type: NewComponent.prototype.type
   };
@@ -317,12 +384,13 @@ module.exports.registerComponent = function (name, definition) {
  *
  * @param {object} el - Element to build data from.
  * @param {object} name - Component name.
+ * @param {object} attrName - Attribute name associated to the component.
  * @param {object} schema - Component schema.
  * @param {object} elData - Element current data.
  * @param {boolean} silent - Suppress warning messages.
  * @return {object} The component data
  */
-function buildData (el, name, schema, elData, silent) {
+function buildData (el, name, attrName, schema, elData, silent) {
   var componentDefined = elData !== undefined && elData !== null;
   var data;
   var isSinglePropSchema = isSingleProp(schema);
@@ -334,14 +402,17 @@ function buildData (el, name, schema, elData, silent) {
   } else {
     data = {};
     Object.keys(schema).forEach(function applyDefault (key) {
-      data[key] = schema[key].default;
+      var defaultValue = schema[key].default;
+      data[key] = defaultValue && defaultValue.constructor === Object
+        ? utils.extend({}, defaultValue)
+        : defaultValue;
     });
   }
 
   // 2. Mixin values.
   mixinEls.forEach(handleMixinUpdate);
   function handleMixinUpdate (mixinEl) {
-    var mixinData = mixinEl.getAttribute(name);
+    var mixinData = mixinEl.getAttribute(attrName);
     if (mixinData) {
       data = extendProperties(data, mixinData, isSinglePropSchema);
     }

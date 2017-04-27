@@ -30,7 +30,7 @@ Some things to note:
 ## Performance
 
 [asm]: ../core/asset-management-system.md
-[hardware]: ../guide/device-and-platform-support.md#hardware-specifications
+[hardware]: ./device-and-platform-support.md#hardware-specifications
 [merge]: ../components/geometry.md#mergeto
 [stats]: ../components/stats.md
 
@@ -40,7 +40,7 @@ A-Frame scene:
 
 - Use [recommended hardware specifications][hardware].
 - Use the **[stats component][stats]** to keep an eye on various metrics (FPS,
-  vertex and face count, geometry and material count, draw calls, number of entities.  We
+  vertex and face count, geometry and material count, draw calls, number of entities). We
   want to maximize FPS and minimize everything else.
 - Make use of the **[asset management system][asm]** to benefit from browser
   caching and preloading. Trying to fetch assets while rendering is slower than
