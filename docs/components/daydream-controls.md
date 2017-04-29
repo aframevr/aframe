@@ -21,8 +21,8 @@ and/or pressed buttons (trackpad).
 
 ```html
 <!-- Match Daydream controller if present and for specified hand. -->
- <a-entity gearvr-controls="hand: left"></a-entity>
- <a-entity gearvr-controls="hand: right"></a-entity>
+ <a-entity daydream-controls="hand: left"></a-entity>
+ <a-entity daydream-controls="hand: right"></a-entity>
 ```
 
 ## Value
