@@ -33,7 +33,7 @@ module.exports.Component = registerComponent('look-controls', {
     function enableGrabCursor () { sceneEl.canvas.classList.add('a-grab-cursor'); }
     if (!sceneEl.canvas) {
       sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
-    } else {
+    } else if (this.data.enabled) {
       enableGrabCursor();
     }
 
@@ -254,6 +254,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onMouseDown: function (event) {
+    if (!this.data.enabled) { return; }
     this.mouseDown = true;
     this.previousMouseEvent = event;
     document.body.classList.add('a-grabbing');
