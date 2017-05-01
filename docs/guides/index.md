@@ -528,7 +528,8 @@ Events][animatingonevents] below.
 
 In JavaScript, we grab the box with [`querySelector`][queryselector], use
 [`addEventListener`][addeventlistener], and then [`setAttribute`][setattribute]
-to make the box grow its scale when its hovered over. Note that A-Frame adds
+to make the box grow its scale when its hovered over. The code must appear after
+the scene so that the box has loaded when the script runs. Note that A-Frame adds
 features to `setAttribute` to work with multi-property components. We can pass
 a full `{x, y, z}` object as the second argument.
 
