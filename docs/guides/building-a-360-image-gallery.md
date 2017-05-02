@@ -314,7 +314,7 @@ instances][multiple]:
 ```html
 <a-assets>
   <!-- ... -->
-  <script id="link" type="text/nunjucks">
+  <script id="link" type="text/html">
     <a-entity class="link"
       geometry="primitive: plane; height: 1; width: 1"
       material="shader: flat; src: ${thumb}"
