@@ -68121,6 +68121,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
+    var self = this;
     var sceneEl = this.el.sceneEl;
 
     // Aux variables
@@ -68133,7 +68134,10 @@ module.exports.Component = registerComponent('look-controls', {
     this.bindMethods();
 
     // Enable grab cursor class on canvas.
-    function enableGrabCursor () { sceneEl.canvas.classList.add('a-grab-cursor'); }
+    function enableGrabCursor () {
+      if (!self.data.enabled) { return; }
+      sceneEl.canvas.classList.add('a-grab-cursor');
+    }
     if (!sceneEl.canvas) {
       sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
     } else {
@@ -68357,6 +68361,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onMouseDown: function (event) {
+    if (!this.data.enabled) { return; }
     this.mouseDown = true;
     this.previousMouseEvent = event;
     document.body.classList.add('a-grabbing');
@@ -76927,7 +76932,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 03-05-2017, Commit #43f6b26)');
+console.log('A-Frame Version: 0.5.0 (Date 03-05-2017, Commit #31d05b0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
