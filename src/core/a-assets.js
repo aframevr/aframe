@@ -1,3 +1,4 @@
+/* global URL */
 var ANode = require('./a-node');
 var bind = require('../utils/bind');
 var debug = require('../utils/debug');
@@ -58,7 +59,7 @@ module.exports = registerElement('a-assets', {
         // Trigger loaded for scene to start rendering.
         Promise.all(loaded).then(bind(this.load, this));
 
-        // Timeout to start loading anyways.
+        // Timeout to start loading anyway.
         timeout = parseInt(this.getAttribute('timeout'), 10) || 3000;
         this.timeout = setTimeout(function () {
           if (self.hasLoaded) { return; }
@@ -106,12 +107,12 @@ registerElement('a-asset-item', {
         fileLoader.load(src, function handleOnLoad (response) {
           self.data = response;
           /*
-            Workaround for a Chrome bug. If another XHR is sent to the same url before the
+            Workaround for a Chrome bug. If another XHR is sent to the same URL before the
             previous one closes, the second request never finishes.
             setTimeout finishes the first request and lets the logic triggered by load open
             subsequent requests.
             setTimeout can be removed once the fix for the bug below ships:
-            https://bugs.chromium.org/p/chromium/issues/detail?id=633696&q=component%3ABlink%3ENetwork%3EXHR%20&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
+            https://crbug.com/633696
           */
           setTimeout(function load () { ANode.prototype.load.call(self); });
         }, function handleOnProgress (xhr) {
@@ -144,9 +145,14 @@ function mediaElementLoaded (el) {
     if (el.readyState === 4) { return resolve(); }  // Already loaded.
     if (el.error) { return reject(); }  // Error.
 
-    el.addEventListener('loadeddata', checkProgress, false);
+    el.addEventListener('loadeddata', loadedData, false);
     el.addEventListener('progress', checkProgress, false);
     el.addEventListener('error', reject, false);
+
+    function loadedData () {
+      checkProgress();
+      removeHandleFirstClick();
+    }
 
     function checkProgress () {
       // Add up the seconds buffered.
@@ -163,18 +169,44 @@ function mediaElementLoaded (el) {
         resolve();
       }
     }
+
+    // Respect user-gestures requirement for auto-playback of video.
+    // For more info:
+    // https://webkit.org/blog/6784/new-video-policies-for-ios/
+    //
+    // Notes on varying platform policies:
+    // - iOS + Firefox for Android can play `<video autoplay muted>` w/o gesture
+    //   (that is, `el.paused` will be `false`, skipping this check).
+    // - iOS `<video>` could have an audio track that isn't explicitly muted
+    //   (that is, `el.muted` is `false`), so this *does* require a gesture.
+    // - Chrome for Android requires a gesture in every case.
+    if (el.paused) {
+      window.addEventListener('click', handleFirstClick);
+    }
+
+    function handleFirstClick () {
+      try {
+        if (el.paused) { el.play(); }
+      } catch (e) {
+      }
+      removeHandleFirstClick();
+    }
+
+    function removeHandleFirstClick () {
+      window.removeEventListener('click', handleFirstClick);
+    }
   });
 }
 
 /**
- * Automatically add attributes to media elements where convenient.
+ * Automatically add attributes to media elements when needed:
  * crossorigin, playsinline.
  */
 function fixUpMediaElement (mediaEl) {
   // Cross-origin.
   var newMediaEl = setCrossOrigin(mediaEl);
 
-  // Plays inline for mobile.
+  // Plays inline on iOS mobile.
   if (newMediaEl.tagName && newMediaEl.tagName.toLowerCase() === 'video') {
     newMediaEl.setAttribute('playsinline', '');
     newMediaEl.setAttribute('webkit-playsinline', '');
@@ -221,22 +253,21 @@ function setCrossOrigin (mediaEl) {
 }
 
 /**
- * Extract domain out of URL.
+ * Extract domain (without port) out of URL.
  *
  * @param {string} url
  * @returns {string}
  */
 function extractDomain (url) {
-  // Find and remove protocol (e.g., http, ftp, etc.) to get domain.
-  var domain = url.indexOf('://') > -1 ? url.split('/')[2] : url.split('/')[0];
-
-  // Find and remove port number.
-  return domain.split(':')[0];
+  if ('URL' in window) { return new URL(url).host; }
+  var a = document.createElement('a');
+  a.href = url;
+  return a.host;
 }
 
 /**
  * Infer response-type attribute from src.
- * Default is text(default XMLHttpRequest.responseType)
+ * Default is text (default XMLHttpRequest.responseType),
  * but we use arraybuffer for .gltf and .glb files
  * because of THREE.GLTFLoader specification.
  *
