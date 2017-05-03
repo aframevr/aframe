@@ -313,4 +313,30 @@ suite('standard geometries', function () {
     assert.equal(geometry.parameters.p, 5);
     assert.equal(geometry.parameters.q, 6);
   });
+
+  test('triangle', function () {
+    var el = this.el;
+    var geometry;
+    el.setAttribute('geometry', {
+      buffer: false,
+      primitive: 'triangle',
+      vertexA: {x: 1, y: 2, z: 3},
+      vertexB: {x: 4, y: 5, z: 6},
+      vertexC: {x: 7, y: 8, z: 9}
+    });
+
+    geometry = el.getObject3D('mesh').geometry;
+    assert.equal(geometry.type, 'Geometry');
+    var vertices = geometry.vertices;
+    assert.equal(vertices.length, 3);
+    assert.equal(vertices[0].x, 1);
+    assert.equal(vertices[0].y, 2);
+    assert.equal(vertices[0].z, 3);
+    assert.equal(vertices[1].x, 4);
+    assert.equal(vertices[1].y, 5);
+    assert.equal(vertices[1].z, 6);
+    assert.equal(vertices[2].x, 7);
+    assert.equal(vertices[2].y, 8);
+    assert.equal(vertices[2].z, 9);
+  });
 });
