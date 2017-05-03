@@ -18,7 +18,6 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
-    var self = this;
     var sceneEl = this.el.sceneEl;
 
     // Aux variables
@@ -30,16 +29,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.setupHMDControls();
     this.bindMethods();
 
-    // Enable grab cursor class on canvas.
-    function enableGrabCursor () {
-      if (!self.data.enabled) { return; }
-      sceneEl.canvas.classList.add('a-grab-cursor');
-    }
-    if (!sceneEl.canvas) {
-      sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
-    } else {
-      enableGrabCursor();
-    }
+    this.setEnabled(this.data.enabled);
 
     // Reset previous HMD position when we exit VR.
     sceneEl.addEventListener('exit-vr', this.onExitVR);
@@ -48,6 +38,9 @@ module.exports.Component = registerComponent('look-controls', {
   update: function (oldData) {
     var data = this.data;
     var hmdEnabled = data.hmdEnabled;
+    if (oldData && data.enabled !== oldData.enabled) {
+      this.setEnabled(data.enabled);
+    }
     if (!data.enabled) { return; }
     if (!hmdEnabled && oldData && hmdEnabled !== oldData.hmdEnabled) {
       this.pitchObject.rotation.set(0, 0, 0);
@@ -57,6 +50,31 @@ module.exports.Component = registerComponent('look-controls', {
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
+  },
+
+  setEnabled: function (enabled) {
+    var sceneEl = this.el.sceneEl;
+
+    function enableGrabCursor () {
+      sceneEl.canvas.classList.add('a-grab-cursor');
+    }
+    function disableGrabCursor () {
+      sceneEl.canvas.classList.remove('a-grab-cursor');
+    }
+
+    if (!sceneEl.canvas) {
+      if (enabled) {
+        sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
+      } else {
+        sceneEl.addEventListener('render-target-loaded', disableGrabCursor);
+      }
+    } else {
+      if (enabled) {
+        enableGrabCursor();
+      } else {
+        disableGrabCursor();
+      }
+    }
   },
 
   play: function () {
@@ -259,6 +277,8 @@ module.exports.Component = registerComponent('look-controls', {
 
   onMouseDown: function (event) {
     if (!this.data.enabled) { return; }
+    // Handle only primary button.
+    if (event.button !== 0) { return; }
     this.mouseDown = true;
     this.previousMouseEvent = event;
     document.body.classList.add('a-grabbing');
