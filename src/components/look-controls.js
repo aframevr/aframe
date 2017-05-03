@@ -18,6 +18,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   init: function () {
+    var self = this;
     var sceneEl = this.el.sceneEl;
 
     // Aux variables
@@ -30,10 +31,13 @@ module.exports.Component = registerComponent('look-controls', {
     this.bindMethods();
 
     // Enable grab cursor class on canvas.
-    function enableGrabCursor () { sceneEl.canvas.classList.add('a-grab-cursor'); }
+    function enableGrabCursor () {
+      if (!self.data.enabled) { return; }
+      sceneEl.canvas.classList.add('a-grab-cursor');
+    }
     if (!sceneEl.canvas) {
       sceneEl.addEventListener('render-target-loaded', enableGrabCursor);
-    } else if (this.data.enabled) {
+    } else {
       enableGrabCursor();
     }
 
