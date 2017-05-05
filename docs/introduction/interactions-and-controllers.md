@@ -41,10 +41,10 @@ document.querySelector('p').addEventListener('click', function (evt) {
 
 [synthetic]: https://developer.mozilla.org/docs/Web/Guide/Events/Creating_and_triggering_events
 
-Just like the 2D Web, A-Frame relies on events and event listeners. However
-because A-Frame is a JavaScript framework and everything is done in WebGL,
-**A-Frame's events are [synthetic custom events][synthetic]** that can be
-emitted by any component describing any event:
+Just like the 2D Web, A-Frame relies on events and event listeners for
+interactivity and dynamicity. However because A-Frame is a JavaScript framework
+and everything is done in WebGL, **A-Frame's events are [synthetic custom
+events][synthetic]** that can be emitted by any component describing any event:
 
 ```js
 // `collide` event emitted by a component such as some collider or physics component.
@@ -193,15 +193,121 @@ properties using A-Frame component dot syntax (i.e.,
 
 [Remix this cursor handler example on Glitch](https://glitch.com/~aframe-school-cursor-handler/)
 
+[writingcomponent]: ./writing-a-component.md
+
+The event set component is good for basic setting operations, but it is
+important to know how to handle events in JavaScript. We might want to do more
+complex operations (e.g., make API calls, store data, affect the application
+state) in response to events. For those cases, we'll need to use JavaScript,
+and for A-Frame, we prescribe that code be placed within [A-Frame
+components][writingcomponent].
+
+To demonstrate what the event set component does under the hood, let's have a
+box change color on hover and on leaving hover with JavaScript:
+
+```html
+<script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+<script>
+  AFRAME.registerComponent('change-color-on-hover', {
+    schema: {
+      color: {default: 'red'}
+    },
+
+    init: function () {
+      var data = this.data;
+      var el = this.el;  // <a-box>
+      var defaultColor = el.getAttribute('material').color;
+
+      el.addEventListener('mouseenter', function () {
+        el.setAttribute('color', data.color);
+      });
+
+      el.addEventListener('mouseleave', function () {
+        el.setAttribute('color', defaultColor);
+      });
+    }
+  });
+</script>
+<body>
+  <a-scene>
+    <a-box color="#EF2D5E" position="0 1 -4" change-color-on-hover="color: blue"></a-box>
+
+    <a-camera><a-cursor></a-cursor></a-camera>
+  </a-scene>
+</body>
+```
+
+While we do a simple `.setAttribute`, we could technically do anything within
+the component in response to the event since we have full access to JavaScript,
+three.js, and Web APIs.
+
+We'll move onto describing and implementing interactivity for VR controllers,
+but the concepts of events and event listeners will still apply.
+
 ## VR Controllers
 
-### Tracked Controls
+Controllers are vital for immersing people into a VR application. The potential
+of VR is not met without them, namely controllers that provide six degrees of
+freedom (6DoF). With controllers, people can reach out and around the scene and
+interact with objects with their hands.
 
-### 3DoF (Daydream, GearVR)
+[gamepad]: https://developer.mozilla.org/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
 
-### 6DoF (Vive, Oculus Touch)
+A-Frame provides components for controllers across the spectrum as supported by
+their respective WebVR browsers through the [Gamepad Web API][gamepad]. There
+are components for Vive, Oculus Touch, Daydream, and GearVR controllers.
 
-### Supporting Multiple Controllers (Hand Controls)
+To inspect the Gamepad object for poking around or to get the Gamepad ID, we
+can call `navigator.getGamepads()` in the browser console. This will return a
+`GamepadList` array with all of the connected controllers.
+
+For advanced applications, controllers are built and tailored for the
+application (i.e., custom 3D models, animations, mappings, gestures). For
+example, a medieval knight might have metal gauntlets, or a robot might have a
+robot hand that can shoot lasers or display information on the wrist.
+
+The controller components that A-Frame provide primarily act as defaults,
+starter components, or a base from which to derive more custom controller
+components.
+
+### tracked-controls Component
+
+[trackedcontrols]: ../components/tracked-controls.md
+[vivecontrols]: ../components/vive-controls.md
+
+The [tracked-controls component][trackedcontrols] is A-Frame's base controller
+component that provides the foundation for all of A-Frame's controller
+components. The tracked-controls component:
+
+- Grabs a Gamepad object from the Gamepad API given an ID or prefix.
+- Applies pose (position and orientation) from the Gamepad API to read controller motion.
+- Looks for changes in the Gamepad object's button values to provide events
+  when buttons are pressed or touched and when axis and touchpads are changed
+  (i.e., `axischanged`, `buttonchanged`, `buttondown`, `buttonup`,
+  `touchstart`, `touchend`).
+
+All of A-Frame's controller components build on top of the tracked-controls
+component by:
+
+- Setting the tracked-controls component on the entity with the appropriate
+  Gamepad ID (e.g., `Oculus Touch (Right)`). For example, the [vive-controls
+  component][vivecontrols] does `el.setAttribute('tracked-controls', {idPrefix:
+  'OpenVR'})`. tracked-controls will then connect to the appropriate Gamepad
+  object to provide pose and events for the entity.
+- Abstracting the events provided by tracked-controls. tracked-controls events are
+  low-level; it'd difficult for us to tell which buttons were pressed based
+  off of those events alone because we'd have to know the button mappings beforehand.
+  Controller components can know the mappings beforehand for their respective
+  controllers and provide more semantic events such as `triggerdown` or `xbuttonup`.
+- Providing a model. tracked-controls alone does not provide any appearance.
+  Controller components can provide a model that shows visual feedback,
+  gestures, and animations when buttons are pressed or touched.
+
+### 3DoF Controller Components (Daydream, GearVR)
+
+### 6DoF Controller Components (Vive, Oculus Touch)
+
+### Abstracted Controller Components (hand-controls)
 
 ## Laser Interactions for Controllers
 
