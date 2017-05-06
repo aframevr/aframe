@@ -316,17 +316,6 @@ module.exports = registerElement('a-scene', {
     },
 
     /**
-     * Wraps Entity.setEntityAttribute to take into account for systems.
-     */
-    setEntityAttribute: {
-      value: function (attr, oldVal, newVal) {
-        var system = this.systems[attr];
-        if (system) { system.update(system.updateProperties(newVal)); }
-        AEntity.prototype.setEntityAttribute.call(this, attr, oldVal, newVal);
-      }
-    },
-
-    /**
      * @param {object} behavior - Generally a component. Has registered itself to behaviors.
      */
     removeBehavior: {
@@ -423,10 +412,9 @@ module.exports = registerElement('a-scene', {
                 window.performance.mark('render-started');
               }
               sceneEl.clock = new THREE.Clock();
-              sceneEl.render();
               sceneEl.renderStarted = true;
               sceneEl.emit('renderstart');
-              sceneEl.render(0);
+              sceneEl.render();
             }
           }
         });
@@ -530,7 +518,7 @@ module.exports = registerElement('a-scene', {
 
         if (this.isPlaying) { this.tick(this.time, delta); }
 
-        this.animationFrameID = effect.requestAnimationFrame(this.render.bind(this));
+        this.animationFrameID = effect.requestAnimationFrame(this.render);
 
         window.performance.mark('render-iteration-started');
         if (this.getAttribute('postprocessing')) {
