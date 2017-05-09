@@ -66321,14 +66321,14 @@ module.exports={
   "main": "dist/aframe-master.js",
   "scripts": {
     "browserify": "browserify src/index.js -s 'AFRAME' -p browserify-derequire",
-    "build": "mkdirp build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
+    "build": "shx mkdir -p build/ && npm run browserify -- --debug -t [envify --INSPECTOR_VERSION dev] -o build/aframe.js",
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
     "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
     "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
     "docs": "markserv --dir docs --port 9001",
-    "preghpages": "rimraf gh-pages && mkdirp gh-pages && cp -r .nojekyll dist examples index.html gh-pages && replace -r 'dist/aframe-master.js' 'dist/aframe-master.min.js' gh-pages/",
+    "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
@@ -66389,13 +66389,12 @@ module.exports={
     "lolex": "^1.5.1",
     "markserv": "0.0.20",
     "minifyify": "^7.3.3",
-    "mkdirp": "^0.5.1",
     "mocha": "^3.0.2",
     "mozilla-download": "^1.1.1",
-    "open": "0.0.5",
     "replace": "^0.3.0",
-    "rimraf": "^2.5.4",
     "semistandard": "^9.0.0",
+    "shelljs": "^0.7.7",
+    "shx": "^0.2.2",
     "sinon": "^1.17.5",
     "sinon-chai": "^2.8.0",
     "snazzy": "^5.0.0",
@@ -76932,7 +76931,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 05-05-2017, Commit #04d94a5)');
+console.log('A-Frame Version: 0.5.0 (Date 09-05-2017, Commit #42ceee1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
