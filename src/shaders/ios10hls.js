@@ -1,7 +1,8 @@
 var registerShader = require('../core/shader').registerShader;
 
 /**
- * Custom shader for iOS 10 HLS.
+ * Custom shader for iOS 10 HTTP Live Streaming (HLS).
+ * For more information on HLS, see https://datatracker.ietf.org/doc/draft-pantos-http-live-streaming/
  */
 module.exports.Shader = registerShader('ios10hls', {
   schema: {

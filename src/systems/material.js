@@ -206,8 +206,8 @@ module.exports.System = registerSystem('material', {
 });
 
 function isHLS (videoEl) {
-  if (videoEl.type === 'application/x-mpegurl') return true;
-  if (videoEl.src && videoEl.src.indexOf('.m3u8') > 0) return true;
+  if (videoEl.type.toLowerCase() === 'application/x-mpegurl') { return true; }
+  if (videoEl.src && videoEl.src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
   return false;
 }
 
