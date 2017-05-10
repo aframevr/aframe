@@ -8,7 +8,7 @@ order: 8
 
 [component]: ../core/component.md
 [ecs]: ../introduction/entity-component-system.md
-[emit]: ./using-javascript-and-dom-apis.md#emitting-an-event-with-emit
+[emit]: ./javascript-events-dom-apis.md#emitting-an-event-with-emit
 
 Components of A-Frame's [entity-component framework][ecs] are JavaScript
 modules that can be mixed, matched, and composed onto entities to build
@@ -194,7 +194,7 @@ schema: {
 // ...
 ```
 
-[addeventlistener]: ./using-javascript-and-dom-apis.md#adding-an-event-listener-with-addeventlistener
+[addeventlistener]: ./javascript-events-dom-apis.md#adding-an-event-listener-with-addeventlistener
 
 Then we'll actually move everything from our `.init()` handler to our
 `.update()` handler. The `.update()` handler is also called right after
@@ -230,7 +230,7 @@ AFRAME.registerComponent('log', {
 });
 ```
 
-[remove an event listener]: ./using-javascript-and-dom-apis.md#removing-an-event-listener-with-removeeventlistener
+[remove an event listener]: ./javascript-events-dom-apis.md#removing-an-event-listener-with-removeeventlistener
 
 Now that we've added our event listener property, let's handle an actual
 property update. When the `event` property type changes (e.g., as a result of
@@ -333,7 +333,7 @@ el.emit('anotherEvent');
 
 ### Handling Component Removal
 
-[remove]: ./using-javascript-and-dom-apis.md#removing-a-component-with-removeattribute
+[remove]: ./javascript-events-dom-apis.md#removing-a-component-with-removeattribute
 
 Let's handle the case where the [component unplugs from the entity][remove]
 (i.e., `.removeAttribute('log')`). We can implement the `.remove()` handler
