@@ -254,8 +254,8 @@ and include it before the scene:
 </a-scene>
 ```
 
-Components can be plugged into on any entity without having to create or extend
-a class like we'd have to in traditional inheritance. If we wanted to attach it
+Components can be plugged into any entity without having to create or extend a
+class like we'd have to in traditional inheritance. If we wanted to attach it
 to say, `<a-sphere>` or `<a-obj-model>`, we could!
 
 ```html

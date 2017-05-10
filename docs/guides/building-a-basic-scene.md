@@ -606,10 +606,10 @@ the sound in our scene using `position`.
 [text]: ../components/text.md
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
-A-Frame comes with a [text component][text]. There are several ways to do
-render text, each with their advantages and disadvantages, A-Frame comes with
-an SDF text implementation using [`three-bmfont-text`] that is relatively sharp
-and performant.
+A-Frame comes with a [text component][text]. There are several ways to render
+text, each with their advantages and disadvantages, A-Frame comes with an SDF
+text implementation using [`three-bmfont-text`] that is relatively sharp and
+performant.
 
 For this guide, let's use the primitive form of the text component, `<a-text>`:
 

@@ -188,9 +188,11 @@ gifpardy in.mp4 out.gif
 gifpardy -r 320x240 --delay 8 in.mp4
 ```
 
-Alternatively, we can capture straight to GIF using
-[LICECap](https://licecap.en.softonic.com/), but `gifpardy` is easy to produce
-smaller file sizes and sped-up GIFs.
+[brewery]: https://itunes.apple.com/us/app/gif-brewery-by-gfycat-capture-make-video-gifs/id1081413713?mt=12
+
+Alternatively, we can use [GIF Brewery][brewery] which has UI to trim, resize,
+crop, and preview a GIF before exporting. Or capture straight to GIF using
+[LICECap](https://licecap.en.softonic.com/).
 
 ### Sharing Media
 
