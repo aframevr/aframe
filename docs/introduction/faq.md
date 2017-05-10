@@ -7,7 +7,7 @@ order: 5
 ---
 
 [awesome]: https://github.com/aframevr/awesome-aframe
-[ecs]: ../core/index.md
+[ecs]: https://en.wikipedia.org/wiki/Entity%E2%80%93component%E2%80%93system
 [github]: http://github.com/aframevr/aframe
 [html-shader]: https://github.com/mayognaise/aframe-html-shader
 [three]: http://threejs.org
@@ -33,9 +33,9 @@ a vehicle in which to make WebVR successful.
 
 ## How can I get started?
 
-[intro]: ../introduction/index.md
-[gettingstarted]: ../introduction/getting-started.md
-[guides]: ../guides/index.md
+[intro]: ../introduction/index
+[gettingstarted]: ../introduction/getting-started
+[guides]: ../guides/index
 
 Read the [Introduction][intro] to get a deeper feel of what A-Frame is.
 
@@ -68,7 +68,7 @@ reduces the DOM overhead and most modifications are done directly in memory,
 similar to Virtual DOM.
 - HTML attributes explicitly set from an HTML file are cached in memory.
 
-[bestpractices]: ../introduction/best-practices.md
+[bestpractices]: ../introduction/best-practices
 
 A-Frame provides reasonable defaults that yield good performance for the most
 common use cases. However, performance is ultimately determined by the
@@ -288,7 +288,7 @@ features Leap Motion controls code.
 
 ## Which devices, headsets, platforms does A-Frame support?
 
-[deviceplatform]: ./device-and-platform-support.md
+[deviceplatform]: ./device-and-platform-support
 
 See *[Device and Platform Support][deviceplatform]*.
 
