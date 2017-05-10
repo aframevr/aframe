@@ -577,7 +577,7 @@ collision is detected.
 [superhandsdocs]: https://github.com/wmurphyrd/aframe-super-hands-component#description
 [superhandsex]: https://wmurphyrd.github.io/aframe-super-hands-component/examples/
 
-The [super-hands component by @wmurphyrd][superhands] provides all-in-one
+The [super-hands component by William Murphy][superhands] provides all-in-one
 natural hand controller interaction. The component interprets input from
 tracked controllers and collision detection components into interaction
 gestures and communicates those gestures to target entities for them to
