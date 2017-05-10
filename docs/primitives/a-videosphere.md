@@ -13,7 +13,7 @@ Videospheres are a large sphere with the video texture mapped to the inside.
 ```html
 <a-scene>
   <a-assets>
-    <video id="antarctica" autoplay loop="true" src="antarctica.mp4">
+    <video id="antarctica" autoplay="true" loop="true" src="antarctica.mp4">
   </a-assets>
 
   <!-- Using the asset management system. -->
