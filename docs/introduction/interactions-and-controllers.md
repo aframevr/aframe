@@ -60,10 +60,10 @@ entity and expect it to work by directly clicking on the entity with our mouse.
 In WebGL, we must provide the input and interaction that provides such `click`
 events. For example, A-Frame's `cursor` component creates a synthetic `click`
 event on gaze using a raycaster. Or as another example, Mayo Tobita's
-[`mouse-cursor` component][mousecursor] creates a synthetic `click` event when
+[mouse-cursor component][mousecursor] creates a synthetic `click` event when
 clicking directly on the entity using a raycaster.
 
-## Gaze-Based Interactions
+## Gaze-Based Interactions with cursor Component
 
 [Remix this cursor example on Glitch](https://glitch.com/~aframe-school-cursor-handler/).
 
@@ -74,6 +74,7 @@ controller (Daydream, GearVR), the interaction is still similar. Since A-Frame
 provides mouse-drag controls by default, gaze-based can sort of be used on
 desktop to preview the interaction by dragging the camera rotation.
 
+[configureraycaster]: ../components/cursor.md#configuring-the-cursor-through-the-raycaster-component
 [cursor]: ../components/cursor.md
 
 To add gaze-based interaction, we need to add or implement a component. A-Frame
@@ -83,6 +84,7 @@ attached to the camera:
 1. Explicitly define [`<a-camera>`](../components/camera.md) entity.
    Previously, A-Frame was providing the default camera.
 2. Add [`<a-cursor>`][cursor] entity as a child element underneath the camera entity.
+3. Optionally, [configure the raycaster used by the cursor][configureraycaster].
 
 ```html
 <a-scene>
@@ -303,12 +305,311 @@ component by:
   Controller components can provide a model that shows visual feedback,
   gestures, and animations when buttons are pressed or touched.
 
-### 3DoF Controller Components (Daydream, GearVR)
+The controller components following are only activated if they detect the
+controller is found and seen as connected in the Gamepad API.
 
-### 6DoF Controller Components (Vive, Oculus Touch)
+### Adding 3DoF Controllers (aydream-controls, gearvr-controls)
 
-### Abstracted Controller Components (hand-controls)
+[dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
-## Laser Interactions for Controllers
+Controllers with *3 degrees of freedom* (3DoF) are limited to rotational
+tracking. 3DoF controllers have no positional tracking meaning we can't reach
+out nor move our hand back-and-forth or up-and-down. Having a controller with
+only 3DoF is like having a hand and wrist without an arm. [Read more about
+degrees of freedom for VR][dof].
 
-## Room Scale Interactions for Controllers
+The 3DoF controller components provide rotational tracking, a default model
+matching the real-life hardware, and events to abstract the button mappings.
+The controllers for Google Daydream and Samsung GearVR have 3DoF, and both
+support only one controller for one hand.
+
+[daydreamcomponent]: ../components/daydream-controls.md
+
+To add a controller for Google Daydream, use the [daydream-controls
+component][daydreamcomponent]. Then try it out on Chrome for Android on a
+Daydream smartphone:
+
+```html
+<a-entity daydream-controls></a-entity>
+```
+
+[gearvrcomponent]: ../components/gearvr-controls.md
+
+To add a controller for Samsung GearVR, use the [gearvr-controls
+component][gearvrcomponent]. Then try it out on Oculus Carmel or Samsung
+Internet on a smartphone with GearVR:
+
+```html
+<a-entity gearvr-controls></a-entity>
+```
+
+### Adding 6DoF Controllers (vive-controls, oculus-touch-controls)
+
+Controllers with *6 degrees of freedom* (6DoF) have both rotational and
+positional tracking. Unlike controllers with 3DoF which are constrained to
+orientation, controllers with 6DoF are able to move freely in 3D space. 6DoF
+allows us to reach forward, behind our backs, move our hands across our body or
+close to our face. Having 6DoF is like reality where we have both hands and
+arms. 6DoF also applies to the headset and additional trackers (e.g., feet,
+props). Having 6DoF is a minimum for providing a truly immersive VR experience.
+
+The 6DoF controller components provide full tracking, a default model matching
+the real-life hardware, and events to abstract the button mappings.  HTC Vive
+and Oculus Rift with Touch provide 6DoF and controllers for both hands. HTC
+Vive also provides trackers for tracking additional objects in the real world
+into VR.
+
+[rocks]: https://webvr.rocks
+[vivecomponent]: ../components/vive-controls.md
+
+To add controllers for HTC Vive, use the [vive-controls
+component][vivecomponent] for both hands. Then try it out on a [WebVR-enabled
+desktop browser][rocks]:
+
+```html
+<a-entity vive-controls="hand: left"></a-entity>
+<a-entity vive-controls="hand: right"></a-entity>
+```
+
+[riftcomponent]: ../components/oculus-touch-controls.md
+
+To add controllers for Oculus Touch, use the [oculus-touch-controls
+component][riftcomponent] for both hands. Then try it out on a [WebVR-enabled
+desktop browser][rocks]:
+
+```html
+<a-entity oculus-touch-controls="hand: left"></a-entity>
+<a-entity oculus-touch-controls="hand: right"></a-entity>
+```
+
+## Supporting Multiple Types of Controllers
+
+The Web has the benefit of being able to support multiple platforms. Though
+it's less clear in VR what supporting multiple platforms entails since a 3DoF
+platform versus a 6DoF platform provide different interactions and require
+different user experience treatent. It will be up to the application what
+"responsive" means for VR on the Web. What we can show are several different
+methods, but none that are truly one-size-fits-all.
+
+### hand-controls Component
+
+[handcontrols]: ../components/hand-controls.md
+
+A-Frame provides an implementation for supporting multiple types of 6DoF
+controllers (Vive, Oculus Touch) via the [hand-controls
+component][handcontrols]. The hand-controls component is primarily for 6DoF
+controllers since it's geared towards room scale interactions such as grabbing
+objects.  The hand-controls component works on top of both Vive and Oculus
+Touch controllers by:
+
+- Setting both the vive-controls and oculus-touch-controls component
+- Overriding the controller models with a simple hand model
+- Mapping Vive-specific and Oculus Touch-specific events to hand events and
+  gestures (e.g., `gripdown` and `triggerdown` to `thumbup`)
+
+To add the hand-controls component:
+
+```html
+<a-entity hand-controls="left"></a-entity>
+<a-entity hand-controls="right"></a-entity>
+```
+
+Unfortunately, there is not yet a 3DoF controller component that abstracts well
+all the types of 3DoF controllers (i.e., Daydream, GearVR). We could create a
+custom controller that works with both controllers. It would be fairly easy to
+cover since 3DoF controllers do not offer much potential for interaction (i.e.,
+only rotational tracking with a touchpad).
+
+### Creating Custom Controllers
+
+[handcontrolssource]: https://github.com/aframevr/aframe/blob/master/src/components/hand-controls.js
+
+As mentioned previously, applications are best when controllers are
+custom-tailored to the experience. Most VR applications have their own distinct
+controllers. This means different models, animations, gestures, visual
+feedback, and states.
+
+Looking at the [hand-controls source code][handcontrolssource] is a decent way
+to understand how to do a custom controller without having to do everything
+from scratch:
+
+- The tracked-controls component will provide pose and events
+- The vive-controls, oculus-touch-controls, daydream-controls, or
+  gearvr-controls components provide button mappings controller-specific events
+- Our custom controller component will build on all of the above, plus
+  overriding the model, animations, visual feedback, states, etc.,
+
+The first piece is to set which controller components will be supported. The
+controller components will inject the tracked-control components as well. For
+example, to support all controllers, set all of the controller components while
+providing the hand and overriding the model:
+
+```js
+AFRAME.registerComponent('custom-controls', {
+  schema: {
+    hand: {default: ''},
+    model: {default: 'customControllerModel.gltf'}
+  },
+
+  update: function () {
+    var controlConfiguration = {
+      hand: this.data.hand,
+      model: false,
+      rotationOffset: hand === 'left' ? 90 : -90
+    };
+
+    // Build on top of controller components.
+    el.setAttribute('vive-controls', controlConfiguration);
+    el.setAttribute('oculus-touch-controls', controlConfiguration);
+    el.setAttribute('daydream-controls', controlConfiguration);
+    el.setAttribute('gearvr-controls', controlConfiguration);
+
+    // Set a model.
+    el.setAttribute('gltf-model', this.data.model);
+  }
+});
+```
+
+[a-blast]: https://github.com/aframevr/a-blast/blob/master/src/components/shoot-controls.js
+[a-painter]: https://github.com/aframevr/a-painter/blob/master/src/components/paint-controls.js
+
+For advanced examples on real applications, see the [paint-controls component
+for A-Painter][a-painter] or the [shoot-controls component for
+A-Blast][a-blast].
+
+## Listening for Button and Axis Events
+
+Controllers have many buttons and emit many events. For each button, every time
+a button is pressed down, released, or for some cases, even touched. And for
+each axis (e.g., trackpad, thumbstick), an event is emitted every time it is
+touched. To handle buttons, look for the event name in the respective
+controller component documentation pages at the event tables, then register
+event handlers how we want:
+
+- [daydream-controls events](../components/daydream-controls.md#events)
+- [gearvr-controls events](../components/gearvr-controls.md#events)
+- [hand-controls events](../components/hand-controls.md#events)
+- [oculus-touch-controls events](../components/oculus-touch-controls.md#events)
+- [vive-controls events](../components/vive-controls.md#events)
+
+For example, we can listen to the Oculus Touch X button press, and toggle
+visibility of an entity. In component form:
+
+```js
+AFRAME.registerComponent('x-button-listener', {
+  init: function () {
+    var el = this.el;
+    el.addEventListener('xbuttondown', function (evt) {
+      el.setAttribute('visible', !el.getAttribute('visible'));
+    });
+  }
+});
+```
+
+Then attach the component:
+
+```html
+<a-entity oculus-touch-controls x-button-listener></a-entity>
+```
+
+## Adding Laser Interactions for Controllers
+
+[controllercursor]: https://github.com/bryik/aframe-controller-cursor-component
+
+Laser interactions refer to placing a visible raycaster (line) shooting out of
+the controller. Interactions occur when entities intersect the line, a
+controller button changes during intersection, and/or when entities no longer
+intersect the line. This interaction is very similar to gaze-based interaction,
+except the raycaster is now affixed to the controller rather than the headset.
+
+The community [controller-cursor component][controllercursor] component
+provides laser interactions for controllers. We expect this functionality to be
+merged into A-Frame's [cursor component][cursor] in the future. The usage is
+almost exactly similar to the cursor component, but attach the component to the
+controller rather than under the camera:
+
+```html
+<a-entity hand-controls controller-cursor></a-entity>
+```
+
+[raycasterfar]: ../components/raycaster.html#properties_far
+
+Then length of the cursor is configured by [adjusting the length of the
+raycaster][raycasterfar]:
+
+```html
+<a-entity hand-controls controller-cursor raycaster="far: 2"></a-entity>
+```
+
+By default, the controller-cursor component as is works for button mappings for
+6DoF controllers (`triggerdown`, `triggerup`). Since most 3DoF controllers have
+different types of buttons, we can configure it to 3DoF controller events or
+any event in general with `downEvents` and `upEvents`:
+
+```html
+<a-entity hand-controls controller-cursor="downEvents: triggerdown, trackpaddown; upEvents: triggerup, trackpadup"></a-entity>
+```
+
+[gaze]: #gaze-based-interactions-with-cursor-component
+
+Then handling events and interactions is the exact same as [gaze-based
+interactions with the cursor component]. Refer to the section above!
+
+## Adding Room Scale Interactions for Controllers
+
+Room scale interactions are harder. These include interactions in 3D space and
+two-handed interactions such as grabbing, throwing, stretching, hitting,
+turning, pulling, or pushing. The number or complexity of room scale
+interactions is not something we can completely cover. This is unlike the 2D
+Web where there is just mouse and touchscreen or 3DoF VR where there is only
+wiggling the controller. But we can show various implementations that can be
+used as is or as a reference.
+
+Rather than using raycasters to detect for intersections with objects, room
+scale and 3D interactions involve *colliders*. Whereas raycasters are 2D lines,
+colliders are 3D volumes. There are different shapes of colliders (AABB/box,
+sphere, mesh) that wrap around objects, and when those shapes intersect, a
+collision is detected.
+
+### super-hands Component
+
+[superhands]: https://github.com/wmurphyrd/aframe-super-hands-component
+[superhandsdocs]: https://github.com/wmurphyrd/aframe-super-hands-component#description
+[superhandsex]: https://wmurphyrd.github.io/aframe-super-hands-component/examples/
+
+The [super-hands component by @wmurphyrd][superhands] provides all-in-one
+natural hand controller interaction. The component interprets input from
+tracked controllers and collision detection components into interaction
+gestures and communicates those gestures to target entities for them to
+respond.
+
+The currently implemented gestures are:
+
+- Hover: Holding a controller in the collision space of an entity
+- Grab: Pressing a button while hovering an entity, potentially also moving it
+- Stretch: Grabbing an entity with two hands and resizing
+- Drag-drop: Dragging an entity onto another entity
+
+For an entity to respond to the super-hands gestures, the entity needs to have
+components attached to translate the gestures into actions. super-hands
+includes components for typical reactions to the implemented gestures:
+hoverable, grabbable, stretchable, and drag-droppable.
+
+The [documentation for super-hands][superhandsdocs] and
+[examples][superhandsex] are excellent for getting started. We defer to those.
+
+### Other Examples
+
+[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+[aframe-physics]: https://github.com/donmccurdy/aframe-physics-system
+
+Other examples to look at include:
+
+- [tracked-controls](https://github.com/aframevr/aframe/tree/master/examples/showcase/tracked-controls)
+  - Interaction through sphere-collider and grab components.
+- [ball-throw](https://github.com/bryik/aframe-ball-throw) - Grab and throw
+  using [aframe-extras] and [aframe-physics].
+- [architect](https://github.com/ngokevin/architect) - Interaction through
+  cloner, deleter, mover, placer, and scaler components.
+- [vr-editor](https://github.com/caseyyee/aframe-vreditor-component) - Interaction through
+  a single vr-editor component for cloning, moving, deleting, placing, and scaling.
