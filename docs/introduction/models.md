@@ -6,9 +6,9 @@ parent_section: introduction
 order: 8.75
 ---
 
-[ecsfind]: ../components/entity-component-system.md
 [3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
 [COLLADA]: ../components/collada-model.md
+[ecsfind]: ./entity-component-system.md#where-to-find-components
 [glTF]: ../components/gltf-model.md
 [OBJ]: ../components/obj-model.md
 [recommend using glTF]: ../components/gltf-model.md#why-use-gltf
@@ -32,7 +32,14 @@ three.js loaders.
 
 We can use [Don McCurdy's animation-mixer component][mixer] to play a model's
 built-in animations. Animations usually come in the model built via animation
-tools or programs rather than being provided at the A-Frame level.
+tools or programs rather than being provided at the A-Frame level. The
+animation-mixer component may be merged into A-Frame's core in the future.
+
+For starting material on creating animations, see:
+
+- [Blender Tutorial - Creating and Editing Actions for Re-use in Animations and
+  Games](https://www.youtube.com/watch?v=Gb152Qncn2s)
+- [Workflow: Animation from Blender to three.js by Arturo Paracuellos](http://unboring.net/workflows/animation.html)
 
 ## Where to Find Models
 
@@ -85,8 +92,11 @@ exporters use absolute paths for textures, which won't work on the Web:
 
 ### My Model Isn't Animating
 
-Don McCurdy has written the animation-mixer component in his aframe-extras
-repository to provide an API for running model animations.
+[aframe-extras]: https://github.com/donmccurdy/aframe-extras
+
+The [animation-mixer component][mixer], part of [aframe-extras] by Don McCurdy,
+provides controls for playing animations in three.js (.json) and glTF (.gltf)
+models.
 
 ### My Model Looks Distorted
 

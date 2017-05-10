@@ -390,7 +390,7 @@ to get the most up-to-date CDN link is to use [unpkg.com].
 
 unpkg is a CDN that automatically hosts everything that is published to npm.
 unpkg can resolve semantic versioning and provide us the version of the
-component we want. An URL takes them form of:
+component we want. A URL takes the form of:
 
 ```
 https://unpkg.com/<npm package name>@<version>/<path to file>

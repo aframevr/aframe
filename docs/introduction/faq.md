@@ -183,13 +183,18 @@ For images, check out [textures.com][textures].
 
 For 360&deg; images, search for [equirectangular images on Flickr][flickr].
 
-For 3D models, also check out:
+For 3D models, check out:
 
 - [Sketchfab](https://sketchfab.com)
 - [Clara.io](http://clara.io)
 - [Archive3D](http://archive3d.net)
 - [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
 - [TurboSquid](http://www.turbosquid.com/Search/3D-Models/free)
+
+For sounds, check out:
+
+- [Freesound.org](http://www.freesound.org/)
+- [Annual GDC Game Audio Bundles by Sonniss](http://www.sonniss.com/gameaudiogdc2016/)
 
 ## Can I render YouTube videos as a texture?
 
