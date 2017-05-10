@@ -183,19 +183,13 @@ For images, check out [textures.com][textures].
 
 For 360&deg; images, search for [equirectangular images on Flickr][flickr].
 
-[archive3d]: http://archive3d.net
-[clara]: http://clara.io
-[sketchfab]: https://sketchfab.com
-[sketchup]: https://3dwarehouse.sketchup.com
-[turbosquid]: http://www.turbosquid.com/Search/3D-Models/free
-
 For 3D models, also check out:
 
-- [Sketchfab][sketchfab]
-- [Clara.io][clara]
-- [Sketchup's 3D Warehouse][sketchup]
-- [Archive3D][archive3d]
-- [TurboSquid][turbosquid]
+- [Sketchfab](https://sketchfab.com)
+- [Clara.io](http://clara.io)
+- [Archive3D](http://archive3d.net)
+- [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
+- [TurboSquid](http://www.turbosquid.com/Search/3D-Models/free)
 
 ## Can I render YouTube videos as a texture?
 

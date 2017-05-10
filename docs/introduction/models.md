@@ -6,23 +6,57 @@ parent_section: introduction
 order: 8.75
 ---
 
-*work in progress*
+[ecsfind]: ../components/entity-component-system.md
+[3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders
+[COLLADA]: ../components/collada-model.md
+[glTF]: ../components/gltf-model.md
+[OBJ]: ../components/obj-model.md
+[recommend using glTF]: ../components/gltf-model.md#why-use-gltf
 
-## Model File Formats
+A-Frame provides components for loading [glTF], [OBJ], [COLLADA]. We [recommend
+using glTF] if possible as glTF gains adoption as the standard for transmitting
+3D models over the Web. Components can be written to handle any file format,
+specifically any format that has a [three.js loader][3loaders]. We can also try
+to [find components in the ecosystem][ecsfind] that have already been written
+to handle other formats (e.g., PLY, FBX, JSON, three.js).
 
-*work in progress*
+Models come in the format of plain text files containing vertices, faces, UVs,
+textures, materials, and animations. They also come with images for textures,
+usually alongside the model file. three.js loaders parse these files to render
+them within a three.js scene as meshes. A-Frame model components wrap these
+three.js loaders.
 
 ## Animating Models
 
-*work in progress*
+[mixer]: https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders#animation
+
+We can use [Don McCurdy's animation-mixer component][mixer] to play a model's
+built-in animations. Animations usually come in the model built via animation
+tools or programs rather than being provided at the A-Frame level.
 
 ## Where to Find Models
 
-*work in progress*
+Places to find 3D models include:
+
+- [Sketchfab](https://sketchfab.com)
+- [Clara.io](http://clara.io)
+- [Archive3D](http://archive3d.net)
+- [Sketchup's 3D Warehouse](https://3dwarehouse.sketchup.com)
+- [TurboSquid](http://www.turbosquid.com/Search/3D-Models/free)
 
 ## How to Create Models
 
-*work in progress*
+Programs to create models include:
+
+- [Blender](https://www.blender.org/)
+- [MagicaVoxel](https://ephtracy.github.io/)
+- [Autodesk Maya](https://www.autodesk.com/products/maya/overview)
+- [Maxon Cinema4D](https://www.maxon.net/en-us/)
+
+## Hosting Models
+
+Refer to [Hosting and Publishing &mdash; Hosting
+Models](./hosting-and-publishing.md#hosting-models).
 
 ## Troubleshooting
 
