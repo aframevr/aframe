@@ -74831,7 +74831,7 @@ var warn = utils.debug('core:a-scene:warn');
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
-module.exports = registerElement('a-scene', {
+module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
@@ -75136,13 +75136,9 @@ module.exports = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
-        var canvas = this.canvas;
-        // Set at startup. To enable/disable antialias
-        // at runttime we would have to recreate the whole context
-        var antialias = this.getAttribute('antialias') === 'true';
         var renderer = this.renderer = new THREE.WebGLRenderer({
-          canvas: canvas,
-          antialias: antialias || window.hasNativeWebVRImplementation,
+          canvas: this.canvas,
+          antialias: shouldAntiAlias(this),
           alpha: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -75313,6 +75309,23 @@ function exitFullscreen () {
     document.webkitExitFullscreen();
   }
 }
+
+/**
+ * Determines if renderer anti-aliasing should be enabled.
+ * Enabled by default if has native WebVR or is desktop.
+ *
+ * @returns {bool}
+ */
+function shouldAntiAlias (sceneEl) {
+  // Explicitly set.
+  if (sceneEl.getAttribute('antialias') !== null) {
+    return sceneEl.getAttribute('antialias') === 'true';
+  }
+
+  // Default not AA for mobile.
+  return !sceneEl.isMobile;
+}
+module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
 },{"../../lib/three":149,"../../utils/":171,"../a-entity":98,"../a-node":100,"../a-register-element":101,"../system":112,"./metaTags":106,"./postMessage":107,"./scenes":108,"./wakelock":109,"tween.js":48}],106:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
@@ -76920,7 +76933,7 @@ if (utils.device.isBrowserEnvironment) {
 }
 
 // Required before `AEntity` so that all components are registered.
-var AScene = _dereq_('./core/scene/a-scene');
+var AScene = _dereq_('./core/scene/a-scene').AScene;
 var components = _dereq_('./core/component').components;
 var registerComponent = _dereq_('./core/component').registerComponent;
 var registerGeometry = _dereq_('./core/geometry').registerGeometry;
@@ -76951,7 +76964,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 11-05-2017, Commit #78eb40e)');
+console.log('A-Frame Version: 0.5.0 (Date 11-05-2017, Commit #1476fda)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
