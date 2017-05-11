@@ -310,6 +310,9 @@ controller is found and seen as connected in the Gamepad API.
 
 ### Adding 3DoF Controllers (aydream-controls, gearvr-controls)
 
+> daydream-controls and gearvr-controls will release with v0.6.0. They are
+> currently accessible on the master branch of A-Frame.
+
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
 Controllers with *3 degrees of freedom* (3DoF) are limited to rotational
