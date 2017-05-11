@@ -605,8 +605,8 @@ The [documentation for super-hands][superhandsdocs] and
 
 Other examples to look at include:
 
-- [tracked-controls](https://github.com/aframevr/aframe/tree/master/examples/showcase/tracked-controls)
-  - Interaction through sphere-collider and grab components.
+- [tracked-controls](https://github.com/aframevr/aframe/tree/master/examples/showcase/tracked-controls) -
+  Interaction through sphere-collider and grab components.
 - [ball-throw](https://github.com/bryik/aframe-ball-throw) - Grab and throw
   using [aframe-extras] and [aframe-physics].
 - [architect](https://github.com/ngokevin/architect) - Interaction through
