@@ -38,7 +38,9 @@ suite('look-controls', function () {
         document.body.classList.remove(GRABBING_CLASS);
         done();
       });
-      el.canvas.dispatchEvent(new Event('mousedown'));
+      var event = new Event('mousedown');
+      event.button = 0;
+      el.canvas.dispatchEvent(event);
     });
 
     test('removes grabbing class from document body on document body mouseup', function (done) {
