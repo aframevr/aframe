@@ -5,8 +5,6 @@ layout: docs
 order: 5
 ---
 
-![A-Frame](https://cloud.githubusercontent.com/assets/674727/21375108/2c10b308-c6e0-11e6-945e-2394beb9a8ed.png)
-
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
 
 A-Frame is a three.js framework with an [entity-component-system][ecs] (ECS)
@@ -163,7 +161,7 @@ attaching superpowers or augmentations for VR! Each of the components below
 have no knowledge of each other, but can be combined to define a complex
 entity:
 
-```
+```html
 <a-entity
   tracked-controls  <!-- Hook into the Gamepad API for pose. -->
   vive-controls  <!-- Vive button mappings. -->
