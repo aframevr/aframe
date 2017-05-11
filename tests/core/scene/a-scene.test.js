@@ -1,9 +1,10 @@
 /* global AFRAME, assert, process, sinon, setup, suite, teardown, test */
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
-var AScene = require('core/scene/a-scene');
+var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
+var shouldAntiAlias = require('core/scene/a-scene').shouldAntiAlias;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
@@ -452,5 +453,32 @@ suite('scenes', function () {
       });
     });
     document.body.appendChild(sceneEl);
+  });
+});
+
+suite('shouldAntiAlias', function () {
+  var sceneEl;
+
+  setup(function () {
+    sceneEl = document.createElement('a-scene');
+  });
+
+  test('is true if set to true', function () {
+    sceneEl.setAttribute('antialias', 'true');
+    assert.ok(shouldAntiAlias(sceneEl));
+  });
+
+  test('is false if set to false', function () {
+    sceneEl.setAttribute('antialias', 'false');
+    assert.notOk(shouldAntiAlias(sceneEl));
+  });
+
+  test('is true on desktop by default', function () {
+    assert.ok(shouldAntiAlias(sceneEl));
+  });
+
+  test('is false on mobile with no native webvr by default', function () {
+    sceneEl.isMobile = true;
+    assert.notOk(shouldAntiAlias(sceneEl));
   });
 });

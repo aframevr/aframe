@@ -52,7 +52,7 @@ if (utils.device.isBrowserEnvironment) {
 }
 
 // Required before `AEntity` so that all components are registered.
-var AScene = require('./core/scene/a-scene');
+var AScene = require('./core/scene/a-scene').AScene;
 var components = require('./core/component').components;
 var registerComponent = require('./core/component').registerComponent;
 var registerGeometry = require('./core/geometry').registerGeometry;
