@@ -1,5 +1,5 @@
 ---
-title: "Hosting and Publishing"
+title: "Hosting & Publishing"
 type: introduction
 layout: docs
 parent_section: introduction
