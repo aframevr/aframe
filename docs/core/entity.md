@@ -1,12 +1,14 @@
 ---
 title: Entity
+section_title: Core API
 type: core
 layout: docs
-parent_section: core
-order: 2
+parent_section: docs
+order: 1
+section_order: 3
 ---
 
-[ecs]: ./index.md
+[ecs]: ../introduction/entity-component-system.md
 
 A-Frame represents an entity via the `<a-entity>` element. As defined in the
 [entity-component-system pattern][ecs], entities are placeholder objects to

@@ -15,60 +15,23 @@ nav_expand_sections: true
 [rotation]: ../components/rotation.md
 [scale]: ../components/scale.md
 
-Let's start building a basic A-Frame scene. For this, you will need to have a
-simple understanding of HTML. You will learn how to add 3D **entities** (i.e.,
-objects) with [primitives][primitives], transform them in 3D space, apply image
-textures, add interactivity using animations and events, modify appearance by
-tweaking lighting and adding a background, and add text by using A-Frame's
-entity-component ecosystem.
+Let's start by building a basic A-Frame scene. For this, we will need a basic
+understanding of HTML. We will learn how to:
 
-As A-Frame is accessible to people that may have not had experience with 3D or
-VR (or even programming), we'll take this guide slowly step-by-step.
+- Add 3D entities (i.e., objects) with [primitives][primitives]
+- Transform to transform entities in 3D space with position, rotation, scale
+- Add textures
+- Add basic interactivity using animations and events
+- Modify the environment by tweaking lighting and adding a background
+- Add text
 
-[A-Frame Inspector]: ./using-the-aframe-inspector.md
-
-Below is the finished scene running live, you can open the [A-Frame Inspector]
-by pressing `<ctrl> + <alt> + i`. **Note:** the CSS for the Inspector currently
-conflict with the A-Frame site styles, so visuals may look ugly.
-
-<div>
-  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-  <a-scene embedded style="height: 320px; width: 100%">
-    <a-assets>
-      <img id="boxTexture" src="https://i.imgur.com/mYmmbrp.jpg">
-      <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
-      <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
-    </a-assets>
-
-    <a-box position="0 2 -5" rotation="0 45 45" scale="2 2 2" src="#boxTexture">
-      <a-animation attribute="position" direction="alternate" dur="2000" repeat="indefinite"
-        to="0 2.2 -5"></a-animation>
-      <a-animation attribute="rotation" begin="click" dur="2000" to="360 405 45"></a-animation>
-      <a-animation attribute="scale" begin="mouseenter" dur="300" to="2.3 2.3 2.3"></a-animation>
-      <a-animation attribute="scale" begin="mouseleave" dur="300" to="2 2 2"></a-animation>
-    </a-box>
-
-    <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
-
-    <a-light type="ambient" color="#445451"></a-light>
-    <a-light type="point" intensity="2" position="2 4 4"></a-light>
-
-    <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
-
-    <a-text value="Hello, A-Frame!" color="#BBB"
-            position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
-
-    <a-camera>
-      <a-cursor color="#FAFAFA">
-    </a-camera>
-  </a-scene>
-</div>
+[Remix the Basic Guide example on Glitch](https://glitch.com/~aframe-basic-guide).
 
 <!--toc-->
 
 ## Starting with HTML
 
-We start out with the minimum required HTML structure:
+We start out with a minimal HTML structure:
 
 ```html
 <html>
@@ -643,10 +606,10 @@ the sound in our scene using `position`.
 [text]: ../components/text.md
 [three-bmfont-text]: https://github.com/Jam3/three-bmfont-text
 
-A-Frame comes out of the box with a [text component][text]. Though text in
-WebGL is hard, and there are many ways to do text, each with their advantages
-and disadvantages, A-Frame comes with an SDF text implementation using
-[`three-bmfont-text`] that is relatively clear and performant.
+A-Frame comes with a [text component][text]. There are several ways to render
+text, each with their advantages and disadvantages, A-Frame comes with an SDF
+text implementation using [`three-bmfont-text`] that is relatively sharp and
+performant.
 
 For this guide, let's use the primitive form of the text component, `<a-text>`:
 
@@ -655,7 +618,7 @@ For this guide, let's use the primitive form of the text component, `<a-text>`:
         position="-0.9 0.2 -3" scale="1.5 1.5 1.5"></a-text>
 ```
 
-There are also a few other ways to handle text:
+Other ways to do text include:
 
 [textgeometry]: https://github.com/ngokevin/kframe/tree/master/components/text-geometry/
 [htmlshader]: https://github.com/mayognaise/aframe-html-shader/
@@ -666,34 +629,10 @@ There are also a few other ways to handle text:
 - [HTML Shader][htmlshader] by [Mayo Tobita] - Render HTML as a texture. Easy
   to style, but can be slow to compute.
 
-## Opening the A-Frame Inspector
-
-Traditionally, we would use a browser's development tools and DOM inspector to
-debug web pages. A-Frame comes with its own development tools and inspector
-designed for 3D and VR. The A-Frame Inspector can be opened by pressing
-**`<ctrl> + <alt> + i`** on our keyboard. The A-Frame scene at the top of this
-page will be opened in a visual tool, where we can inspect objects and change
-values live. And we can do this for any A-Frame scene we find on the Web.
-
-Alternatively, press the button below:
-
-<button style="background: #24CAFF; color: #FAFAFA; cursor: pointer; padding: 10px" onclick="document.querySelector('a-scene').components.inspector.injectInspector();">Open the A-Frame Inspector</button>
-
-[inspectorguide]: ../guides/using-the-aframe-inspector.md
-
-Try opening the Inspector and playing around with the values of the `<a-text>`
-entity. [Read more about using the A-Frame Inspector][inspectorguide].
-
 ## Play With It!
 
-<p data-height="400" data-theme-id="19139" data-slug-hash="wJyEzP" data-default-tab="html,result" data-user="mozvr" data-embed-version="2" data-pen-title="Building a Basic Scene â A-Frame" data-editable="true" class="codepen">See the Pen <a href="http://codepen.io/mozvr/pen/wJyEzP/">Building a Basic Scene â A-Frame</a> by mozillavr (<a href="http://codepen.io/mozvr">@mozvr</a>) on <a href="http://codepen.io">CodePen</a>.</p>
-<script async src="https://production-assets.codepen.io/assets/embed/ei.js"></script>
+And that's the basic example!
 
-## What's Next?
+[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide).
 
-[component]: ../core/component.md
-
-The core value proposition of A-Frame is its extensible entity-component
-architecture that allows for a declarative structure to define and compose
-reusable JavaScript modules. We'll see more about components and the ecosystem
-in the upcoming sections.
+[View the example on Glitch](https://aframe-basic-guide.glitch.me).

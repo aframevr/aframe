@@ -1,14 +1,14 @@
 ---
 title: Writing a Component
-type: guides
+type: introduction
 layout: docs
-parent_section: guides
-order: 6
+parent_section: introduction
+order: 8
 ---
 
 [component]: ../core/component.md
-[ecs]: ../core/index.md
-[emit]: ./using-javascript-and-dom-apis.md#emitting-an-event-with-emit
+[ecs]: ../introduction/entity-component-system.md
+[emit]: ./javascript-events-dom-apis.md#emitting-an-event-with-emit
 
 Components of A-Frame's [entity-component framework][ecs] are JavaScript
 modules that can be mixed, matched, and composed onto entities to build
@@ -194,7 +194,7 @@ schema: {
 // ...
 ```
 
-[addeventlistener]: ./using-javascript-and-dom-apis.md#adding-an-event-listener-with-addeventlistener
+[addeventlistener]: ./javascript-events-dom-apis.md#adding-an-event-listener-with-addeventlistener
 
 Then we'll actually move everything from our `.init()` handler to our
 `.update()` handler. The `.update()` handler is also called right after
@@ -230,7 +230,7 @@ AFRAME.registerComponent('log', {
 });
 ```
 
-[remove an event listener]: ./using-javascript-and-dom-apis.md#removing-an-event-listener-with-removeeventlistener
+[remove an event listener]: ./javascript-events-dom-apis.md#removing-an-event-listener-with-removeeventlistener
 
 Now that we've added our event listener property, let's handle an actual
 property update. When the `event` property type changes (e.g., as a result of
@@ -333,7 +333,7 @@ el.emit('anotherEvent');
 
 ### Handling Component Removal
 
-[remove]: ./using-javascript-and-dom-apis.md#removing-a-component-with-removeattribute
+[remove]: ./javascript-events-dom-apis.md#removing-a-component-with-removeattribute
 
 Let's handle the case where the [component unplugs from the entity][remove]
 (i.e., `.removeAttribute('log')`). We can implement the `.remove()` handler
@@ -446,7 +446,7 @@ And there we have our basic `log` component!
 
 ## Example: `box` Component
 
-[usingthree]: ./using-with-threejs.md
+[usingthree]: ./developing-with-threejs.md
 
 For a less trivial example, let's find out how we can add 3D objects and affect
 the scene graph by writing a component that [uses three.js][usingthree]. To get
@@ -497,7 +497,7 @@ Later, when we use this component via HTML, the syntax will look like:
 [mesh]: https://threejs.org/docs/index.html#Reference/Objects/Mesh
 [threegeometry]: https://threejs.org/docs/index.html#Reference/Geometries/BoxBufferGeometry
 [threematerial]: https://threejs.org/docs/index.html#Reference/Materials/MeshStandardMaterial
-[setobject3d]: ./using-with-threejs.md#setting-an-object3d-on-an-entity
+[setobject3d]: ./developing-with-threejs.md#setting-an-object3d-on-an-entity
 
 Let's create our three.js box mesh from the `.init()`, and we'll later let the
 `.update()` handler handle all the property updates. To create a box in

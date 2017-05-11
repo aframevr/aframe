@@ -13,21 +13,19 @@ order: 3
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
-[components]: ../core/component.md
-[ecs]: ../core/index.md
 [registry]: https://aframe.io/registry/
 
-Let's create an example of building a scene using an
-[entity-component-system][ecs] workflow. This guide will introduce three
-concepts:
+Let's build an interactive gaze-based **360&deg; image gallery**. There will be
+three panels which the user can click on. Once clicked, the background will
+fade and swap the 360&deg; images.
 
-1. Using the standard [components][components] that ship with A-Frame.
+[ecs]: ../introduction/entity-component-system.md
+
+This guide will practice three concepts related to [entity-component][ecs]:
+
+1. Using the standard components that come with A-Frame.
 2. Using community components from the ecosystem.
 3. Writing custom components to accomplish whatever we want.
-
-The scene we will build is a **360&deg; image gallery**. There will be three
-panels which the user can click on. Once clicked, the background will fade and
-swap the 360&deg; images.
 
 <!--toc-->
 
@@ -412,4 +410,4 @@ wait the appropriate amount of time, and swap the image:
 
 And that concludes our 360&deg; image gallery.
 
-> **[Try it out!](https://aframe.io/360-image-gallery-boilerplate/)**
+> **[Try it out!](https://aframe-gallery.glitch.me)**

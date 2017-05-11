@@ -1,9 +1,9 @@
 ---
-title: Using with three.js
-type: guides
+title: Developing with three.js
+type: introduction
 layout: docs
-parent_section: guides
-order: 5
+parent_section: introduction
+order: 7
 ---
 
 [three.js]: http://threejs.org
