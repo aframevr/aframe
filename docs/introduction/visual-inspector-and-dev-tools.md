@@ -266,6 +266,14 @@ there.  Design impressive VR scenes for phone and desktop browsers."*
 
 ![WebVR Studio](https://cloud.githubusercontent.com/assets/674727/25638463/5cc90a3e-2f3d-11e7-987e-d8d299773f67.jpg)
 
+### [IdeaSpaceVR](https://www.ideaspacevr.org/)
+
+*"Manage your virtual reality spaces and assets like you would manage blog
+posts. Run it on your own server. All you need is PHP and a database (eg.
+MySQL, MariaDB)."*
+
+![IdeaSpaceVR]((https://cloud.githubusercontent.com/assets/674727/26017126/ed464306-371c-11e7-9554-2848b2773d71.jpg)
+
 ### [Fader](https://fader.vragments.com/)
 
 *"Create your own VR story now. Fader allows you to create and publish VR
