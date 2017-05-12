@@ -308,7 +308,7 @@ component by:
 The controller components following are only activated if they detect the
 controller is found and seen as connected in the Gamepad API.
 
-### Adding 3DoF Controllers (aydream-controls, gearvr-controls)
+### Adding 3DoF Controllers (daydream-controls, gearvr-controls)
 
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/
 
