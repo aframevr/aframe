@@ -1,6 +1,7 @@
 var registerSystem = require('../core/system').registerSystem;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
+var isHLS = require('../utils/material').isHLS;
 
 var debug = utils.debug;
 var error = debug('components:texture:error');
@@ -143,6 +144,16 @@ module.exports.System = registerSystem('material', {
     texture = new THREE.VideoTexture(videoEl);
     texture.minFilter = THREE.LinearFilter;
     setTextureProperties(texture, data);
+
+    // if we're on iOS, and the video is HLS, we currently need to do some hacks
+    if (utils.device.isIOS() && isHLS(videoEl)) {
+      // really it's BGRA, so this needs correction in shader
+      texture.format = THREE.RGBAFormat;
+      texture.needsCorrectionBGRA = true;
+      // apparently this is needed for HLS, so this needs correction in shader
+      texture.flipY = false;
+      texture.needsCorrectionFlipY = true;
+    }
 
     // Cache as promise to be consistent with image texture caching.
     videoTextureResult = {texture: texture, videoEl: videoEl};
