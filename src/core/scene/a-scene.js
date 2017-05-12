@@ -509,16 +509,15 @@ module.exports = registerElement('a-scene', {
     render: {
       value: function () {
         var effect = this.effect;
-        var camera = this.camera;
         var delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
 
         if (this.isPlaying) { this.tick(this.time, delta); }
 
         this.animationFrameID = effect.requestAnimationFrame(this.render);
+        effect.render(this.object3D, this.camera, this.renderTarget);
 
-        effect.render(this.object3D, camera, this.renderTarget);
-        this.tock(this.time, delta);
+        if (this.isPlaying) { this.tock(this.time, delta); }
 
         this.effect.submitFrame();
       },
