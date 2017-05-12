@@ -185,3 +185,67 @@ AFRAME.registerComponent('pointlight', {
   }
 });
 ```
+
+## Transforming Between Coordinate Spaces
+
+Every object and the scene (world) in general has their own coordinate space. A
+parent object's position, rotation, and scale transformations are applied to
+its children's position, rotation, and scale transformations. Consider this scene:
+
+```html
+<a-entity id="foo" position="1 2 3">
+  <a-entity id="bar" position="2 3 4"></a-entity>
+</a-entity>
+```
+
+From the world's reference point, foo has position (1,2,3) and bar has position
+(3, 5, 7) since foo's transformations apply onto bar's. From foo's reference
+point, foo has position (0, 0, 0) and bar has position (2, 3, 4).
+
+Often we will want to transform between these reference points and coordinate
+spaces. Above was a simple example, but we might want to do operations such as
+finding the world-space coordinate of bar's position, or translate an arbitrary
+coordinate into foo's coordinate space. In 3D programming, these operations are
+accomplished with matrices, but three.js provides helpers to make them easier.
+
+### Local to World Transforms
+
+Normally, we'd need to call `.updateMatrixWorld ()` on parent `Object3D`s, but
+three.js defaults `Object3D.matrixAutoUpdate` to `true`. We can use three.js's
+`.getWorldPosition ()` and `.getWorldRotation ()`.
+
+To get the world position of an `Object3D`:
+
+```js
+entityEl.object3D.getWorldPosition();
+```
+
+To get the world rotation of an `Object3D`:
+
+```js
+entityEl.object3D.getWorldRotation();
+```
+
+[object3d]: https://threejs.org/docs/#api/core/Object3D
+
+three.js `Object3D` has [more functions available for local-to-world transforms][object3d]:
+
+- `.localToWorld (vector)`
+- `.getWorldDirection ()`
+- `.getWorldQuaternion ()`
+- `.getWorldScale ()`
+
+### World to Local Transforms
+
+To obtain a matrix that transforms from world to an object's local space, get
+the inverse of the object's world matrix.
+
+```js
+var worldToLocal = new THREE.Matrix4().getInverse(object3D.matrixWorld)
+```
+
+Then we can apply that `worldToLocal` matrix to anything we want to transform:
+
+```js
+anotherObject3D.applyMatrix(worldToLocal);
+```
