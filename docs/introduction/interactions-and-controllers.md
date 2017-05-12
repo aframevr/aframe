@@ -308,7 +308,7 @@ component by:
 The controller components following are only activated if they detect the
 controller is found and seen as connected in the Gamepad API.
 
-### Adding 3DoF Controllers (aydream-controls, gearvr-controls)
+### Adding 3DoF Controllers (daydream-controls, gearvr-controls)
 
 > daydream-controls and gearvr-controls will release with v0.6.0. They are
 > currently accessible on the master branch of A-Frame.
