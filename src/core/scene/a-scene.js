@@ -66,6 +66,7 @@ module.exports = registerElement('a-scene', {
         this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
+        this.renderTarget = null;
         this.originalHTML = this.innerHTML;
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
@@ -371,10 +372,6 @@ module.exports = registerElement('a-scene', {
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
         this.effect.autoSubmitFrame = false;
-
-        // Create a render target for post processing.
-        this.renderTarget = new THREE.WebGLRenderTarget(1, 1, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat });
-        this.renderTarget.texture.generateMipmaps = false;
       },
       writable: window.debug
     },
@@ -412,9 +409,9 @@ module.exports = registerElement('a-scene', {
                 window.performance.mark('render-started');
               }
               sceneEl.clock = new THREE.Clock();
+              sceneEl.render();
               sceneEl.renderStarted = true;
               sceneEl.emit('renderstart');
-              sceneEl.render();
             }
           }
         });
@@ -520,21 +517,10 @@ module.exports = registerElement('a-scene', {
 
         this.animationFrameID = effect.requestAnimationFrame(this.render);
 
-        window.performance.mark('render-iteration-started');
-        if (this.getAttribute('postprocessing')) {
-          var size = this.renderer.getSize();
-          var renderTarget = this.renderTarget;
-          if (size.width !== renderTarget.width || size.height !== renderTarget.height) {
-            renderTarget.setSize(size.width, size.height);
-          }
-          effect.render(this.object3D, camera, renderTarget);
-          window.performance.mark('post-processing-started');
-          this.tock(this.time, delta);
-        } else {
-          effect.render(this.object3D, camera, null);
-        }
+        effect.render(this.object3D, camera, this.renderTarget);
+        this.tock(this.time, delta);
+
         this.effect.submitFrame();
-        window.performance.mark('render-iteration-finished');
       },
       writable: true
     }
