@@ -152,6 +152,61 @@ suite('shader', function () {
                                            instance.attributes['src']));
     });
 
+    test('iOS HLS video uses appropriate shader', function (done) {
+      var shader = this.shader;
+      var el = this.el;
+      var initSpy = this.sinon.spy(shader.prototype, 'init');
+      var updateSpy = this.sinon.spy(shader.prototype, 'update');
+      assert.notOk(initSpy.called);
+      assert.notOk(updateSpy.called);
+
+      // Mock iOS.  NOTE: this doesn't work... el.sceneEl.isIOS = true;
+      var realIsIOS = AFRAME.utils.device.isIOS;
+      AFRAME.utils.device.isIOS = function () { return true; };
+      assert.equal(AFRAME.utils.device.isIOS(), true);
+
+      // Set up and verify video element to be treated as HLS.
+      var videoEl = document.createElement('video');
+      videoEl.setAttribute('src', VIDEO);
+      videoEl.setAttribute('type', 'application/x-mpegurl');
+      assert.equal(AFRAME.utils.material.isHLS(videoEl.getAttribute('src'), videoEl.getAttribute('type')), true);
+
+      // With Travis CI, the actual videos are never loaded,
+      // so check for materialtextureloaded not materialvideoloadeddata,
+      // and don't try to assert the uniform values
+      el.addEventListener('materialtextureloaded', function () {
+        var material = el.components.material;
+        if (!material) { return; }
+        var instance = material.shader;
+        assert.equal(instance.material['_texture_src'].image.getAttribute('src'), VIDEO);
+
+        // Verify system thought this was iOS HLS.
+        assert.equal(AFRAME.utils.device.isIOS(), true);
+        assert.equal(AFRAME.utils.material.isHLS(videoEl.getAttribute('src'), videoEl.getAttribute('type')), true);
+
+        // Wait for other handlers to fire.
+        setTimeout(function () {
+          // Undo mock of iOS.
+          AFRAME.utils.device.isIOS = realIsIOS;
+
+          // Verify shader was substituted.
+          assert.equal(material.data.shader, 'ios10hls');
+
+          done();
+        });
+      });
+      el.setAttribute('material', {shader: 'testShader', src: videoEl});
+      var material = el.components.material;
+      var instance = material.shader;
+      assert.ok(instance);
+      assert.ok(initSpy.calledOnce);
+      assert.ok(updateSpy.calledOnce);
+      // The value won't be assigned until the texture loads.
+      assert.ok(instance.uniforms['src']);
+      assert.notOk(instance.attributes && (instance.attributes['map'] ||
+                                           instance.attributes['src']));
+    });
+
     test('otherMap loads inline video', function (done) {
       var shader = this.shader;
       var el = this.el;
