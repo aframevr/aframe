@@ -121,16 +121,15 @@ function handleTextureEvents (el, texture) {
   // Video events.
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
 
-  // With Travis CI, the actual videos are never loaded,
-  // so for the iOS HLS shader adaptation to be testable,
-  // it needs to be done on materialtextureloaded not materialvideoloadeddata!
-
-  // Check to see if we need to use iOS 10 HLS shader.
-  if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
-    el.setAttribute('material', 'shader', 'ios10hls');
-  }
-
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
+    // Check to see if we need to use iOS 10 HLS shader.
+    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
+      // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
+      if (['standard', 'flat', 'testShader'].includes(el.components.material.data.shader)) {
+        el.setAttribute('material', 'shader', 'ios10hls');
+      }
+    }
+
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
