@@ -1,5 +1,7 @@
 var THREE = require('../lib/three');
 
+var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
+
 /**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
@@ -118,11 +120,17 @@ function handleTextureEvents (el, texture) {
 
   // Video events.
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
+
+  // With Travis CI, the actual videos are never loaded,
+  // so for the iOS HLS shader adaptation to be testable,
+  // it needs to be done on materialtextureloaded not materialvideoloadeddata!
+
+  // Check to see if we need to use iOS 10 HLS shader.
+  if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
+    el.setAttribute('material', 'shader', 'ios10hls');
+  }
+
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
-    // Check to see if we need to use iOS 10 HLS shader.
-    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
-      el.setAttribute('material', 'shader', 'ios10hls');
-    }
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
@@ -132,8 +140,14 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-module.exports.isHLS = function (videoEl) {
-  if (videoEl.type && videoEl.type.toLowerCase() in ['application/x-mpegurl', 'application/vnd.apple.mpegurl']) { return true; }
-  if (videoEl.src && videoEl.src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
+/**
+ * Given video element src and type, guess whether stream is HLS.
+ *
+ * @param {string} src - src from video element (generally URL to content).
+ * @param {string} type - type from video element (generally MIME type if present).
+ */
+module.exports.isHLS = function (src, type) {
+  if (type && HLS_MIMETYPES.includes(type.toLowerCase())) { return true; }
+  if (src && src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
   return false;
 };
