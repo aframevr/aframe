@@ -305,7 +305,7 @@ var proto = Object.create(ANode.prototype, {
         if (!self.parentEl) { return; }
 
         self.updateComponents();
-        if (self.isScene || self.parentEl.isPlaying) { self.play(); }
+        if (self.isScene || (self.parentEl && self.parentEl.isPlaying)) { self.play(); }
       });
     },
     writable: window.debug
