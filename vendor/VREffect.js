@@ -266,8 +266,8 @@ THREE.VREffect = function( renderer, onError ) {
 
 				var layer = layers[ 0 ];
 
-				leftBounds = layer.leftBounds  && layer.leftBounds.length === 4 ? layer.leftBounds : defaultLeftBounds;
-				rightBounds = layer.rightBounds  && layer.rightBounds.length === 4 ? layer.rightBounds : defaultRightBounds;
+				leftBounds = layer.leftBounds !== null && layer.leftBounds.length === 4 ? layer.leftBounds : defaultLeftBounds;
+				rightBounds = layer.rightBounds !== null && layer.rightBounds.length === 4 ? layer.rightBounds : defaultRightBounds;
 
 			} else {
 
