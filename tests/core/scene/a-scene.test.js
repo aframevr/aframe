@@ -405,7 +405,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
-    scene.render(0);
+    scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
   });
@@ -415,11 +415,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
-    scene.setAttribute('postprocessing', false);
-    scene.render(0);
-    sinon.assert.notCalled(Component.tock);
-    scene.setAttribute('postprocessing', true);
-    scene.render(0);
+    scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
   });
