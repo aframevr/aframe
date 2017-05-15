@@ -74,6 +74,16 @@ Component.prototype = {
   tick: undefined,
 
   /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
+  /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
   play: function () { /* no-op */ },
@@ -435,6 +445,13 @@ function extendProperties (dest, source, isSinglePropSchema) {
 }
 
 /**
+ * Checks if a component has defined a method that needs to run every frame.
+ */
+function hasBehavior (component) {
+  return component.tick || component.tock;
+}
+
+/**
  * Wrapper for user defined pause method
  * Pause component by removing tick behavior and calling user's pause method.
  *
@@ -447,7 +464,7 @@ function wrapPause (pauseMethod) {
     pauseMethod.call(this);
     this.isPlaying = false;
     // Remove tick behavior.
-    if (!this.tick) { return; }
+    if (!hasBehavior(this)) { return; }
     sceneEl.removeBehavior(this);
   };
 }
@@ -467,7 +484,7 @@ function wrapPlay (playMethod) {
     playMethod.call(this);
     this.isPlaying = true;
     // Add tick behavior.
-    if (!this.tick) { return; }
+    if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
   };
 }
