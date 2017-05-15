@@ -96,6 +96,7 @@ directly. Instead, various converters are available or in progress:
 [collada-converter]: http://cesiumjs.org/convertmodel.html
 [obj-converter]: https://github.com/AnalyticalGraphicsInc/obj2gltf
 
+- [glTF Workflow for A Saturday Night](https://blog.mozvr.com/a-saturday-night-gltf-workflow/)
 - [FBX &rarr; glTF][fbx-converter] - Coming soon.
 - [COLLADA &rarr; glTF][collada-converter]
 - [OBJ &rarr; glTF][obj-converter]
