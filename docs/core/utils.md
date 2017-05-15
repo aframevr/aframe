@@ -151,13 +151,6 @@ Checks if device is Gear VR. Returns a `boolean`.
 
 Checks if device is a smartphone. Returns a `boolean`.
 
-## `AFRAME.utils.material`
-
-### `AFRAME.utils.material.isHLS (src, type)`
-
-Given video element src and type, guess whether stream is HLS.
-This is used internally to make special accommodations for HLS playback on iOS 10+ using Mobile Safari.
-
 ## Function Utils
 
 ### `AFRAME.utils.throttle (function, interval [, optionalContext])`
