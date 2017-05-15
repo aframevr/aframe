@@ -99,6 +99,16 @@ System.prototype = {
   tick: undefined,
 
   /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
+  /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
   play: function () { /* no-op */ },

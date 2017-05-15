@@ -74105,6 +74105,16 @@ Component.prototype = {
   tick: undefined,
 
   /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
+
+  /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
    */
   play: function () { /* no-op */ },
@@ -74466,6 +74476,13 @@ function extendProperties (dest, source, isSinglePropSchema) {
 }
 
 /**
+ * Checks if a component has defined a method that needs to run every frame.
+ */
+function hasBehavior (component) {
+  return component.tick || component.tock;
+}
+
+/**
  * Wrapper for user defined pause method
  * Pause component by removing tick behavior and calling user's pause method.
  *
@@ -74478,7 +74495,7 @@ function wrapPause (pauseMethod) {
     pauseMethod.call(this);
     this.isPlaying = false;
     // Remove tick behavior.
-    if (!this.tick) { return; }
+    if (!hasBehavior(this)) { return; }
     sceneEl.removeBehavior(this);
   };
 }
@@ -74498,7 +74515,7 @@ function wrapPlay (playMethod) {
     playMethod.call(this);
     this.isPlaying = true;
     // Add tick behavior.
-    if (!this.tick) { return; }
+    if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
   };
 }
@@ -74859,9 +74876,10 @@ module.exports.AScene = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.behaviors = [];
+        this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
+        this.renderTarget = null;
         this.originalHTML = this.innerHTML;
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
@@ -74926,8 +74944,12 @@ module.exports.AScene = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
+        if (this.effect && this.effect.cancelAnimationFrame) {
+          this.effect.cancelAnimationFrame(this.animationFrameID);
+        } else {
+          window.cancelAnimationFrame(this.animationFrameID);
+        }
         var sceneIndex;
-        window.cancelAnimationFrame(this.animationFrameID);
         this.animationFrameID = null;
         // Remove from scene index.
         sceneIndex = scenes.indexOf(this);
@@ -74941,9 +74963,16 @@ module.exports.AScene = registerElement('a-scene', {
      */
     addBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        if (behaviors.indexOf(behavior) !== -1) { return; }
-        behaviors.push(behavior);
+        // Check if behavior has tick and/or tock and add the behavior to the appropriate list.
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          if (!behavior[behaviorType]) { return; }
+          var behaviorArr = self.behaviors[behaviorType];
+          if (behaviorArr.indexOf(behavior) === -1) {
+            behaviorArr.push(behavior);
+          }
+        });
       }
     },
 
@@ -75105,10 +75134,17 @@ module.exports.AScene = registerElement('a-scene', {
      */
     removeBehavior: {
       value: function (behavior) {
+        var self = this;
         var behaviors = this.behaviors;
-        var index = behaviors.indexOf(behavior);
-        if (index === -1) { return; }
-        behaviors.splice(index, 1);
+        // Check if behavior has tick and/or tock and remove the behavior from the appropriate array.
+        Object.keys(behaviors).forEach(function (behaviorType) {
+          if (!behavior[behaviorType]) { return; }
+          var behaviorArr = self.behaviors[behaviorType];
+          var index = behaviorArr.indexOf(behavior);
+          if (index !== -1) {
+            behaviorArr.splice(index, 1);
+          }
+        });
       }
     },
 
@@ -75144,6 +75180,7 @@ module.exports.AScene = registerElement('a-scene', {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
+        this.effect.autoSubmitFrame = false;
       },
       writable: window.debug
     },
@@ -75237,7 +75274,7 @@ module.exports.AScene = registerElement('a-scene', {
         TWEEN.update();
 
         // Components.
-        this.behaviors.forEach(function (component) {
+        this.behaviors.tick.forEach(function (component) {
           if (!component.el.isPlaying) { return; }
           component.tick(time, timeDelta);
         });
@@ -75245,6 +75282,28 @@ module.exports.AScene = registerElement('a-scene', {
         Object.keys(systems).forEach(function (key) {
           if (!systems[key].tick) { return; }
           systems[key].tick(time, timeDelta);
+        });
+      }
+    },
+
+    /**
+     * Behavior-updater meant to be called after scene render for post processing purposes.
+     * Abstracted to a different function to facilitate unit testing (`scene.tock()`) without
+     * needing to render.
+     */
+    tock: {
+      value: function (time, timeDelta) {
+        var systems = this.systems;
+
+        // Components.
+        this.behaviors.tock.forEach(function (component) {
+          if (!component.el.isPlaying) { return; }
+          component.tock(time, timeDelta);
+        });
+        // Systems.
+        Object.keys(systems).forEach(function (key) {
+          if (!systems[key].tock) { return; }
+          systems[key].tock(time, timeDelta);
         });
       }
     },
@@ -75261,9 +75320,15 @@ module.exports.AScene = registerElement('a-scene', {
         var effect = this.effect;
         var delta = this.clock.getDelta() * 1000;
         this.time = this.clock.elapsedTime * 1000;
+
         if (this.isPlaying) { this.tick(this.time, delta); }
+
         this.animationFrameID = effect.requestAnimationFrame(this.render);
-        effect.render(this.object3D, this.camera);
+        effect.render(this.object3D, this.camera, this.renderTarget);
+
+        if (this.isPlaying) { this.tock(this.time, delta); }
+
+        this.effect.submitFrame();
       },
       writable: true
     }
@@ -75915,6 +75980,16 @@ System.prototype = {
    * @param {number} timeDelta - Difference in current render time and previous render time.
    */
   tick: undefined,
+
+  /**
+   * Tock handler.
+   * Called on each tock of the scene render loop.
+   * Affected by play and pause.
+   *
+   * @param {number} time - Scene tick time.
+   * @param {number} timeDelta - Difference in current render time and previous render time.
+   */
+  tock: undefined,
 
   /**
    * Called to start any dynamic behavior (e.g., animation, AI, events, physics).
@@ -76966,7 +77041,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-05-2017, Commit #bb2fa5a)');
+console.log('A-Frame Version: 0.5.0 (Date 15-05-2017, Commit #71d4ded)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
