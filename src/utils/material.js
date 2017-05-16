@@ -123,11 +123,10 @@ function handleTextureEvents (el, texture) {
 
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
     // Check to see if we need to use iOS 10 HLS shader.
-    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
-      // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
-      if (['standard', 'flat', 'testShader'].includes(el.components.material.data.shader)) {
-        el.setAttribute('material', 'shader', 'ios10hls');
-      }
+    // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
+    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY &&
+      ['standard', 'flat', 'testShader'].indexOf(el.components.material.data.shader) !== -1) {
+      el.setAttribute('material', 'shader', 'ios10hls');
     }
 
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
