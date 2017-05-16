@@ -87,13 +87,14 @@ module.exports.Component = registerComponent('raycaster', {
     var data = this.data;
     var i;
     var objects;
-    var objectsAreEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
+    // Target entitie .
+    var objectEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
 
     // Push meshes onto list of objects to intersect.
-    if (objectsAreEls) {
+    if (objectEls) {
       objects = [];
-      for (i = 0; i < objectsAreEls.length; i++) {
-        objects.push(objectsAreEls[i].object3D);
+      for (i = 0; i < objectEls.length; i++) {
+        objects.push(objectEls[i].object3D);
       }
     } else {
       // If objects not defined, intersect with everything.
