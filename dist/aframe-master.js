@@ -68975,15 +68975,18 @@ module.exports.Component = registerComponent('raycaster', {
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.refreshObjects = bind(this.refreshObjects, this);
+    this.refreshOnceChildLoaded = bind(this.refreshOnceChildLoaded, this);
   },
 
   play: function () {
-    this.el.sceneEl.addEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.addEventListener('loaded', this.refreshObjects);
+    this.el.sceneEl.addEventListener('child-attached', this.refreshOnceChildLoaded);
     this.el.sceneEl.addEventListener('child-detached', this.refreshObjects);
   },
 
   pause: function () {
-    this.el.sceneEl.removeEventListener('child-attached', this.refreshObjects);
+    this.el.sceneEl.removeEventListener('loaded', this.refreshObjects);
+    this.el.sceneEl.removeEventListener('child-attached', this.refreshOnceChildLoaded);
     this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
   },
 
@@ -69002,25 +69005,53 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
+   * Update list of objects to test for intersection once child is loaded.
+   */
+  refreshOnceChildLoaded: function (evt) {
+    var self = this;
+    var childEl = evt.detail.el;
+    if (!childEl) { return; }
+    if (childEl.hasLoaded) {
+      this.refreshObjects();
+    } else {
+      childEl.addEventListener('loaded', function nowRefresh (evt) {
+        childEl.removeEventListener('loaded', nowRefresh);
+        self.refreshObjects();
+      });
+    }
+  },
+
+  /**
    * Update list of objects to test for intersection.
    */
   refreshObjects: function () {
+    var children;
     var data = this.data;
     var i;
-    var objectEls;
+    var objects;
+    var objectsAreEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
 
     // Push meshes onto list of objects to intersect.
-    if (data.objects) {
-      objectEls = this.el.sceneEl.querySelectorAll(data.objects);
-      this.objects = [];
-      for (i = 0; i < objectEls.length; i++) {
-        this.objects.push(objectEls[i].object3D);
+    if (objectsAreEls) {
+      objects = [];
+      for (i = 0; i < objectsAreEls.length; i++) {
+        objects.push(objectsAreEls[i].object3D);
       }
-      return;
+    } else {
+      // If objects not defined, intersect with everything.
+      objects = this.el.sceneEl.object3D.children;
     }
 
-    // If objects not defined, intersect with everything.
-    this.objects = this.el.sceneEl.object3D.children;
+    this.objects = [];
+    for (i = 0; i < objects.length; i++) {
+      // A-Frame wraps everything (e.g. in a Group) so we want children.
+      children = objects[i].children;
+
+      // Add the object3D's children so non-recursive raycasting will work correctly.
+      // If there aren't any children, then until a refresh after geometry loads,
+      // raycast won't see this object... but that should happen automatically.
+      if (children) { this.objects.push.apply(this.objects, children); }
+    }
   },
 
   /**
@@ -77041,7 +77072,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 15-05-2017, Commit #71d4ded)');
+console.log('A-Frame Version: 0.5.0 (Date 16-05-2017, Commit #59b3cf0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
