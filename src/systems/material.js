@@ -145,12 +145,14 @@ module.exports.System = registerSystem('material', {
     texture.minFilter = THREE.LinearFilter;
     setTextureProperties(texture, data);
 
-    // if we're on iOS, and the video is HLS, we currently need to do some hacks
-    if (this.sceneEl.isIOS && isHLS(videoEl.src || videoEl.getAttribute('src'), videoEl.type || videoEl.getAttribute('type'))) {
-      // really it's BGRA, so this needs correction in shader
+    // If iOS and video is HLS, do some hacks.
+    if (this.sceneEl.isIOS &&
+        isHLS(videoEl.src || videoEl.getAttribute('src'),
+              videoEl.type || videoEl.getAttribute('type'))) {
+      // Actually BGRA. Tell shader to correct later.
       texture.format = THREE.RGBAFormat;
       texture.needsCorrectionBGRA = true;
-      // apparently this is needed for HLS, so this needs correction in shader
+      // Apparently needed for HLS. Tell shader to correct later.
       texture.flipY = false;
       texture.needsCorrectionFlipY = true;
     }

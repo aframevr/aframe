@@ -125,7 +125,7 @@ function handleTextureEvents (el, texture) {
     // Check to see if we need to use iOS 10 HLS shader.
     // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
     if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY &&
-      ['standard', 'flat', 'testShader'].indexOf(el.components.material.data.shader) !== -1) {
+        ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
       el.setAttribute('material', 'shader', 'ios10hls');
     }
 
