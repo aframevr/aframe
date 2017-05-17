@@ -77073,7 +77073,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-05-2017, Commit #da71c5f)');
+console.log('A-Frame Version: 0.5.0 (Date 17-05-2017, Commit #5a84a7c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78215,12 +78215,14 @@ module.exports.System = registerSystem('material', {
     texture.minFilter = THREE.LinearFilter;
     setTextureProperties(texture, data);
 
-    // if we're on iOS, and the video is HLS, we currently need to do some hacks
-    if (this.sceneEl.isIOS && isHLS(videoEl.src || videoEl.getAttribute('src'), videoEl.type || videoEl.getAttribute('type'))) {
-      // really it's BGRA, so this needs correction in shader
+    // If iOS and video is HLS, do some hacks.
+    if (this.sceneEl.isIOS &&
+        isHLS(videoEl.src || videoEl.getAttribute('src'),
+              videoEl.type || videoEl.getAttribute('type'))) {
+      // Actually BGRA. Tell shader to correct later.
       texture.format = THREE.RGBAFormat;
       texture.needsCorrectionBGRA = true;
-      // apparently this is needed for HLS, so this needs correction in shader
+      // Apparently needed for HLS. Tell shader to correct later.
       texture.flipY = false;
       texture.needsCorrectionFlipY = true;
     }
@@ -79287,7 +79289,7 @@ function handleTextureEvents (el, texture) {
     // Check to see if we need to use iOS 10 HLS shader.
     // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
     if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY &&
-      ['standard', 'flat', 'testShader'].indexOf(el.components.material.data.shader) !== -1) {
+        ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
       el.setAttribute('material', 'shader', 'ios10hls');
     }
 
