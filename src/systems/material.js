@@ -146,7 +146,7 @@ module.exports.System = registerSystem('material', {
     setTextureProperties(texture, data);
 
     // if we're on iOS, and the video is HLS, we currently need to do some hacks
-    if (utils.device.isIOS() && isHLS(videoEl)) {
+    if (this.sceneEl.isIOS && isHLS(videoEl.src || videoEl.getAttribute('src'), videoEl.type || videoEl.getAttribute('type'))) {
       // really it's BGRA, so this needs correction in shader
       texture.format = THREE.RGBAFormat;
       texture.needsCorrectionBGRA = true;
