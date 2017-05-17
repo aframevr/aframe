@@ -77073,7 +77073,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-05-2017, Commit #6511a23)');
+console.log('A-Frame Version: 0.5.0 (Date 17-05-2017, Commit #da71c5f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78216,7 +78216,7 @@ module.exports.System = registerSystem('material', {
     setTextureProperties(texture, data);
 
     // if we're on iOS, and the video is HLS, we currently need to do some hacks
-    if (utils.device.isIOS() && isHLS(videoEl)) {
+    if (this.sceneEl.isIOS && isHLS(videoEl.src || videoEl.getAttribute('src'), videoEl.type || videoEl.getAttribute('type'))) {
       // really it's BGRA, so this needs correction in shader
       texture.format = THREE.RGBAFormat;
       texture.needsCorrectionBGRA = true;
@@ -79162,6 +79162,8 @@ module.exports.srcLoader = _dereq_('./src-loader');
 },{"./bind":166,"./coordinates":167,"./debug":168,"./device":169,"./entity":170,"./forceCanvasResizeSafariMobile":171,"./material":173,"./src-loader":174,"./styleParser":175,"./tracked-controls":176,"deep-assign":9,"object-assign":25}],173:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
+var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
+
 /**
  * Update `material` texture property (usually but not always `map`)
  * from `data` property (usually but not always `src`)
@@ -79280,11 +79282,15 @@ function handleTextureEvents (el, texture) {
 
   // Video events.
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
+
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
     // Check to see if we need to use iOS 10 HLS shader.
-    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY) {
+    // Only override the shader if it is a stock (or test) shader that we know doesn't correct.
+    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY &&
+      ['standard', 'flat', 'testShader'].indexOf(el.components.material.data.shader) !== -1) {
       el.setAttribute('material', 'shader', 'ios10hls');
     }
+
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
@@ -79294,9 +79300,15 @@ function handleTextureEvents (el, texture) {
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 
-module.exports.isHLS = function (videoEl) {
-  if (videoEl.type && videoEl.type.toLowerCase() in ['application/x-mpegurl', 'application/vnd.apple.mpegurl']) { return true; }
-  if (videoEl.src && videoEl.src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
+/**
+ * Given video element src and type, guess whether stream is HLS.
+ *
+ * @param {string} src - src from video element (generally URL to content).
+ * @param {string} type - type from video element (generally MIME type if present).
+ */
+module.exports.isHLS = function (src, type) {
+  if (type && HLS_MIMETYPES.includes(type.toLowerCase())) { return true; }
+  if (src && src.toLowerCase().indexOf('.m3u8') > 0) { return true; }
   return false;
 };
 
