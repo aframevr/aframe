@@ -685,8 +685,10 @@ var proto = Object.create(ANode.prototype, {
       var componentName;
       var isDebugMode;
 
+      var pos = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+      componentName = pos > 0 ? attrName.substring(0, pos) : attrName;
+
       // Determine which type of setAttribute to call based on the types of the arguments.
-      componentName = attrName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
         if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
           singlePropertyUpdate(this, attrName, arg1, arg2);
