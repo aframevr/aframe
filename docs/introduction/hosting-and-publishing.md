@@ -14,7 +14,7 @@ site and its assets onto the Web for the world to see.
 ## Publishing a Site
 
 There are many free services to deploy and host a site. We'll go over some of
-the more easier or popular options, but there are certainly other options such
+the more easy or popular options, but there are certainly other options such
 as AWS, Heroku, or self-hosting. An important note is that these sites should
 be served with SSL/HTTPS due to a common security restriction of the browser's
 WebVR API. All the options below serve with SSL/HTTPS.
@@ -179,7 +179,7 @@ headset in reality (even with mixed reality).
 Then, we can possibly want to trim the video. On OS X, we can use QuickTime
 Player's trim tool (`<cmd> + t`).
 
-To convert to a GIF with one command, use [`gifpardy`]. `gifpardy` uses ffmpeg
+To convert to a GIF with one command, use [gifpardy][gifpardy]. `gifpardy` uses ffmpeg
 and gifsicle under the hood:
 
 ```
