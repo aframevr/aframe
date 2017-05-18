@@ -73270,8 +73270,10 @@ var proto = Object.create(ANode.prototype, {
       var componentName;
       var isDebugMode;
 
+      var pos = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+      componentName = pos > 0 ? attrName.substring(0, pos) : attrName;
+
       // Determine which type of setAttribute to call based on the types of the arguments.
-      componentName = attrName.split(MULTIPLE_COMPONENT_DELIMITER)[0];
       if (COMPONENTS[componentName]) {
         if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
           singlePropertyUpdate(this, attrName, arg1, arg2);
@@ -77073,7 +77075,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 17-05-2017, Commit #5a84a7c)');
+console.log('A-Frame Version: 0.5.0 (Date 18-05-2017, Commit #92e5b2a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
