@@ -348,20 +348,17 @@ suite('a-entity', function () {
       assert.strictEqual(this.el.getAttribute('test').array, sourceArray);
     });
 
-    test('partial updates of array-type properties do not trigger update', function () {
+    test('partial updates of array-type properties do trigger update', function () {
       // Updates to array do not trigger update handler.
       var updateSpy;
       registerComponent('test', {
         schema: {array: {type: 'array'}},
         update: function () { /* no-op */ }
       });
-      this.el.setAttribute('test', {arr: [1, 2, 3]});
+      this.el.setAttribute('test', {array: [1, 2, 3]});
       updateSpy = this.sinon.spy(this.el.components.test, 'update');
-      // setAttribute does not trigger update because utils.extendDeep
-      // called by componentUpdate assigns the new value directly into the
-      // component data
-      this.el.setAttribute('test', {arr: [4, 5, 6]});
-      assert.isFalse(updateSpy.called);
+      this.el.setAttribute('test', {array: [4, 5, 6]});
+      assert.ok(updateSpy.called);
     });
 
     test('can partially update vec3', function () {
@@ -1214,6 +1211,19 @@ suite('a-entity component lifecycle management', function () {
     sinon.assert.calledOnce(TestComponent.update);
     el.setAttribute('test', 'a: 3');
     sinon.assert.calledOnce(TestComponent.update);
+  });
+
+  test('does not check types if the same object is passed again', function () {
+    var el = this.el;
+    var componentData;
+    var attrValue = {a: 3};
+    el.setAttribute('test', attrValue);
+    componentData = el.getAttribute('test');
+    assert.ok(componentData.a === 3);
+    attrValue.a = '3';
+    el.setAttribute('test', attrValue);
+    componentData = el.getAttribute('test');
+    assert.ok(componentData.a === '3');
   });
 
   test('calls remove on removeAttribute', function () {
