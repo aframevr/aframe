@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
+
 var bind = utils.bind;
 
 var EVENTS = {
@@ -12,9 +13,9 @@ var EVENTS = {
 };
 
 var STATES = {
-  FUSING: 'cursor-fusing',
-  HOVERING: 'cursor-hovering',
-  HOVERED: 'cursor-hovered'
+  FUSING: 'fusing',
+  HOVERING: 'hovering',
+  HOVERED: 'hovered'
 };
 
 /**
@@ -23,7 +24,7 @@ var STATES = {
  * closest intersection. Cursor can be fine-tuned by setting raycaster properties.
  *
  * @member {object} fuseTimeout - Timeout to trigger fuse-click.
- * @member {Element} mouseDownEl - Entity that was last mousedowned during current click.
+ * @member {Element} cursorDownEl - Entity that was last mousedowned during current click.
  * @member {object} intersection - Attributes of the current intersection event, including
  *         3D- and 2D-space coordinates. See: http://threejs.org/docs/api/core/Raycaster.html
  * @member {Element} intersectedEl - Currently-intersected entity. Used to keep track to
@@ -33,62 +34,92 @@ module.exports.Component = registerComponent('cursor', {
   dependencies: ['raycaster'],
 
   schema: {
+    downEvents: {default: []},
     fuse: {default: utils.device.isMobile()},
-    fuseTimeout: {default: 1500, min: 0}
+    fuseTimeout: {default: 1500, min: 0},
+    upEvents: {default: []}
   },
 
   init: function () {
-    var el = this.el;
-    var canvas = el.sceneEl.canvas;
     this.fuseTimeout = undefined;
-    this.mouseDownEl = null;
+    this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
 
-    // Wait for canvas to load.
-    if (!canvas) {
-      el.sceneEl.addEventListener('render-target-loaded', bind(this.init, this));
-      return;
-    }
-
     // Bind methods.
-    this.onMouseDown = bind(this.onMouseDown, this);
-    this.onMouseUp = bind(this.onMouseUp, this);
+    this.onCursorDown = bind(this.onCursorDown, this);
+    this.onCursorUp = bind(this.onCursorUp, this);
     this.onIntersection = bind(this.onIntersection, this);
     this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
+  },
 
-    // Attach event listeners.
-    canvas.addEventListener('mousedown', this.onMouseDown);
-    canvas.addEventListener('mouseup', this.onMouseUp);
-    el.addEventListener('raycaster-intersection', this.onIntersection);
-    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  play: function () {
+    this.addEventListeners();
+  },
+
+  pause: function () {
+    this.removeEventListeners();
   },
 
   remove: function () {
     var el = this.el;
-    var canvas = el.sceneEl.canvas;
-
     el.removeState(STATES.HOVERING);
     el.removeState(STATES.FUSING);
+    clearTimeout(this.fuseTimeout);
+    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
+    this.removeEventListeners();
+  },
+
+  addEventListeners: function () {
+    var canvas;
+    var data = this.data;
+    var el = this.el;
+    var self = this;
+
+    canvas = el.sceneEl.canvas;
+    if (canvas) {
+      canvas.addEventListener('mousedown', this.onCursorDown);
+      canvas.addEventListener('mouseup', this.onCursorUp);
+    }
+
+    data.downEvents.forEach(function (downEvent) {
+      el.addEventListener(downEvent, self.onCursorDown);
+    });
+    data.upEvents.forEach(function (upEvent) {
+      el.addEventListener(upEvent, self.onCursorUp);
+    });
+    el.addEventListener('raycaster-intersection', this.onIntersection);
+    el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+  },
+
+  removeEventListeners: function () {
+    var canvas;
+    var data = this.data;
+    var el = this.el;
+    var self = this;
+
+    canvas = el.sceneEl.canvas;
+    if (canvas) {
+      canvas.removeEventListener('mousedown', this.onCursorDown);
+      canvas.removeEventListener('mouseup', this.onCursorUp);
+    }
+
+    data.downEvents.forEach(function (downEvent) {
+      el.removeEventListener(downEvent, self.onCursorDown);
+    });
+    data.upEvents.forEach(function (upEvent) {
+      el.removeEventListener(upEvent, self.onCursorUp);
+    });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
-
-    clearTimeout(this.fuseTimeout);
-
-    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
-
-    if (canvas) {
-      canvas.removeEventListener('mousedown', this.onMouseDown);
-      canvas.removeEventListener('mouseup', this.onMouseUp);
-    }
   },
 
   /**
    * Trigger mousedown and keep track of the mousedowned entity.
    */
-  onMouseDown: function (evt) {
+  onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
-    this.mouseDownEl = this.intersectedEl;
+    this.cursorDownEl = this.intersectedEl;
   },
 
   /**
@@ -98,11 +129,20 @@ module.exports.Component = registerComponent('cursor', {
    * - Currently-intersected entity is the same as the one when mousedown was triggered,
    *   in case user mousedowned one entity, dragged to another, and mouseupped.
    */
-  onMouseUp: function (evt) {
+  onCursorUp: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEUP);
-    if (this.data.fuse || !this.intersectedEl ||
-        this.mouseDownEl !== this.intersectedEl) { return; }
-    this.twoWayEmit(EVENTS.CLICK);
+
+    // If intersected entity has changed since the cursorDown, still emit mouseUp on the
+    // previously cursorUp entity.
+    if (this.cursorDownEl && this.cursorDownEl !== this.intersectedEl) {
+      this.cursorDownEl.emit(EVENTS.MOUSEUP, {cursorEl: this.el, intersection: null});
+    }
+
+    if (!this.data.fuse && this.intersectedEl && this.cursorDownEl === this.intersectedEl) {
+      this.twoWayEmit(EVENTS.CLICK);
+    }
+
+    this.cursorDownEl = null;
   },
 
   /**

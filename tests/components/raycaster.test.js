@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('raycaster', function () {
@@ -88,6 +88,15 @@ suite('raycaster', function () {
       el.setAttribute('raycaster', 'interval', 499);
       component.tick(1500);
       assert.ok(intersectSpy.called);
+    });
+  });
+
+  suite('remove', function () {
+    test('removes line', function () {
+      el.setAttribute('raycaster', 'showLine', true);
+      assert.ok(el.getObject3D('line'));
+      el.removeAttribute('raycaster');
+      assert.notOk(el.getObject3D('line'));
     });
   });
 
@@ -281,12 +290,111 @@ suite('raycaster', function () {
     test('updates ray direction if parent rotation changes', function () {
       var direction;
       parentEl.setAttribute('rotation', '180 0 0');
-      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      sceneEl.object3D.updateMatrixWorld();
       component.tick();
       direction = raycaster.ray.direction;
       assert.equal(Math.floor(direction.x), 0);
       assert.equal(Math.floor(direction.y), 0);
       assert.equal(direction.z, 1);
+    });
+
+    test('can specify origin', function () {
+      var origin;
+      el.setAttribute('position', '5 5 5');
+      el.setAttribute('raycaster', 'origin', '0 -1 1');
+      sceneEl.object3D.updateMatrixWorld();
+      component.tick();
+      origin = raycaster.ray.origin;
+      assert.equal(origin.x, 5);
+      assert.equal(origin.y, 4);
+      assert.equal(origin.z, 6);
+
+      el.setAttribute('rotation', '180 0 0');
+      sceneEl.object3D.updateMatrixWorld();
+      component.tick();
+      assert.equal(origin.x, 5);
+      assert.equal(origin.y, 6);
+      assert.equal(origin.z, 4);
+    });
+
+    test('can specify direction', function () {
+      var direction;
+      el.setAttribute('raycaster', 'direction', '0 -1 0');
+      sceneEl.object3D.updateMatrixWorld();
+      component.tick();
+      direction = raycaster.ray.direction;
+      assert.equal(direction.x, 0);
+      assert.equal(direction.y, -1);
+      assert.equal(direction.z, 0);
+
+      el.setAttribute('rotation', '0 0 180');
+      component.tick();
+      direction = raycaster.ray.direction;
+      assert.equal(direction.y, 1);
+    });
+  });
+
+  suite('line', function () {
+    setup(function () {
+      el.setAttribute('raycaster', 'showLine', true);
+    });
+
+    test('creates line', function () {
+      var lineData;
+      assert.ok(el.getObject3D('line'));
+      lineData = el.getAttribute('line');
+      assert.shallowDeepEqual(lineData.start, {x: 0, y: 0, z: 0});
+      assert.shallowDeepEqual(lineData.end, {x: 0, y: 0, z: -1000});
+    });
+
+    test('can remove line', function () {
+      el.setAttribute('raycaster', 'showLine', false);
+      assert.notOk(el.getObject3D('line'));
+    });
+
+    test('matches direction', function () {
+      var lineData;
+      el.setAttribute('raycaster', 'direction', '0 -1 -1');
+      lineData = el.getAttribute('line');
+      assert.equal(Math.round(lineData.end.y), -707);
+      assert.equal(Math.round(lineData.end.z), -707);
+    });
+
+    test('matches origin', function () {
+      var lineData;
+      el.setAttribute('raycaster', 'origin', '5 10 -20');
+      lineData = el.getAttribute('line');
+      assert.shallowDeepEqual(lineData.start, {x: 5, y: 10, z: -20});
+    });
+
+    test('truncates length to point of intersection', function (done) {
+      var box;
+      var line;
+
+      el.setAttribute('raycaster', {direction: '0 0 -1', origin: '0 0 0'});
+      line = el.getAttribute('line');
+      assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+
+      box = document.createElement('a-entity');
+      box.setAttribute('geometry', {primitive: 'box', width: 1, height: 1, depth: 1});
+      box.setAttribute('position', '0 0 -25');
+      sceneEl.appendChild(box);
+
+      box.addEventListener('loaded', function () {
+        el.sceneEl.object3D.updateMatrixWorld();
+        component.refreshObjects();
+        component.tick();
+        line = el.getAttribute('line');
+        assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 24.5);
+
+        box.parentNode.removeChild(box);
+        setTimeout(() => {
+          component.tick();
+          line = el.getAttribute('line');
+          assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+          done();
+        });
+      });
     });
   });
 });
