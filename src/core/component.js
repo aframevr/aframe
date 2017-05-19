@@ -31,11 +31,20 @@ var upperCaseRegExp = new RegExp('[A-Z]+');
  *         mapped attribute of the component plus applying defaults and mixins.
  */
 var Component = module.exports.Component = function (el, attrValue, id) {
+  var self = this;
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
   this.el.components[this.attrName] = this;
   this.updateProperties(attrValue);
+  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChanged (oldData) {
+    el.emit('componentchanged', {
+      id: self.id,
+      name: self.name,
+      newData: self.data,
+      oldData: oldData
+    }, false);
+  }, 200);
 };
 
 Component.prototype = {
@@ -240,12 +249,8 @@ Component.prototype = {
 
       // Update component.
       this.update(oldData);
-      el.emit('componentchanged', {
-        id: this.id,
-        name: this.name,
-        newData: this.getData(),
-        oldData: oldData
-      }, false);
+      // Limit event to fire once every 200ms.
+      this.throttledEmitComponentChanged(oldData);
     }
   },
 
