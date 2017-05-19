@@ -42,7 +42,7 @@
 .a-grabbing,
 .a-canvas.a-grab-cursor:active {
   cursor: grabbing;
-  cursor: -moz-grab;
+  cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
 }
 
