@@ -69,6 +69,7 @@ This is the starting point for our scene:
 [ams]: ../core/asset-management-system.md
 [animation-begin]: ../core/animations.md#begin
 [camera]: ../primitives/a-camera.md
+[component]: ../core/component.md
 [cursor]: ../components/cursor.md
 
 We have predefined:
@@ -335,7 +336,7 @@ require us to write application-specific components.
 
 We want to write the component that fades the sky into a new 360&deg; image
 once one of the links are clicked. We'll call it `set-image`. The [component
-API documentation][components] provides a detailed reference for writing a
+API documentation][component] provides a detailed reference for writing a
 component. A basic component skeleton might look like:
 
 Here is the skeleton for our set-image component.
