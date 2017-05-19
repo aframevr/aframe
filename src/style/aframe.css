@@ -35,14 +35,14 @@
 
 .a-canvas.a-grab-cursor:hover {
   cursor: grab;
-  cursor: -moz-grabbing;
+  cursor: -moz-grab;
   cursor: -webkit-grab;
 }
 
 .a-grabbing,
 .a-canvas.a-grab-cursor:active {
   cursor: grabbing;
-  cursor: -moz-grabbing;
+  cursor: -moz-grab;
   cursor: -webkit-grabbing;
 }
 
