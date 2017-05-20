@@ -3,6 +3,7 @@ var THREE = require('../lib/three');
 var utils = require('../utils/');
 var isHLS = require('../utils/material').isHLS;
 
+var bind = utils.bind;
 var debug = utils.debug;
 var error = debug('components:texture:error');
 var TextureLoader = new THREE.TextureLoader();
@@ -14,15 +15,24 @@ TextureLoader.setCrossOrigin('anonymous');
  * System for material component.
  * Handle material registration, updates (for fog), and texture caching.
  *
- * @member materials {object} - Registered materials.
- * @member textureCache {object} - Texture cache for:
+ * @member {object} materials - Registered materials.
+ * @member {object} textureCounts - Number of times each texture is used. Tracked
+ *         separately from textureCache, because the cache (1) is populated in
+ *         multiple places, and (2) may be cleared at any time.
+ * @member {object} textureCache - Texture cache for:
  *   - Images: textureCache has mapping of src -> repeat -> cached three.js texture.
  *   - Videos: textureCache has mapping of videoElement -> cached three.js texture.
  */
 module.exports.System = registerSystem('material', {
   init: function () {
     this.materials = {};
+    this.textureCounts = {};
     this.textureCache = {};
+
+    this.sceneEl.addEventListener(
+      'materialtextureloaded',
+      bind(this.onMaterialTextureLoaded, this)
+    );
   },
 
   clearTextureCache: function () {
@@ -189,12 +199,26 @@ module.exports.System = registerSystem('material', {
   },
 
   /**
-   * Stop tracking material.
+   * Stop tracking material, and dispose of any textures not being used by
+   * another material component.
    *
    * @param {object} material
    */
   unregisterMaterial: function (material) {
     delete this.materials[material.uuid];
+
+    // If any textures on this material are no longer in use, dispose of them.
+    var textureCounts = this.textureCounts;
+    Object.keys(material)
+      .filter(function (propName) {
+        return material[propName] && material[propName].isTexture;
+      })
+      .forEach(function (mapName) {
+        textureCounts[material[mapName].uuid]--;
+        if (textureCounts[material[mapName].uuid] <= 0) {
+          material[mapName].dispose();
+        }
+      });
   },
 
   /**
@@ -205,6 +229,21 @@ module.exports.System = registerSystem('material', {
     Object.keys(materials).forEach(function (uuid) {
       materials[uuid].needsUpdate = true;
     });
+  },
+
+  /**
+   * Track textures used by material components, so that they can be safely
+   * disposed when no longer in use. Textures must be registered here, and not
+   * through registerMaterial(), because textures may not be attached at the
+   * time the material is registered.
+   *
+   * @param {Event} e
+   */
+  onMaterialTextureLoaded: function (e) {
+    if (!this.textureCounts[e.detail.texture.uuid]) {
+      this.textureCounts[e.detail.texture.uuid] = 0;
+    }
+    this.textureCounts[e.detail.texture.uuid]++;
   }
 });
 
