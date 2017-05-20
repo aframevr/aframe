@@ -42,6 +42,30 @@ suite('material system', function () {
     });
   });
 
+  suite('unregisterMaterial', function () {
+    test('disposes of unused textures', function () {
+      var el = this.el;
+      var sinon = this.sinon;
+      var system = el.sceneEl.systems.material;
+      var texture1 = {uuid: 'tex1', isTexture: true, dispose: sinon.spy()};
+      var texture2 = {uuid: 'tex2', isTexture: true, dispose: sinon.spy()};
+      var material1 = {fooMap: texture1, barMap: texture2, dispose: sinon.spy()};
+      var material2 = {fooMap: texture1, dispose: sinon.spy()};
+
+      el.emit('materialtextureloaded', {texture: texture1});
+      el.emit('materialtextureloaded', {texture: texture1});
+      el.emit('materialtextureloaded', {texture: texture2});
+
+      system.unregisterMaterial(material1);
+      assert.notOk(texture1.dispose.called);
+      assert.ok(texture2.dispose.called);
+
+      system.unregisterMaterial(material2);
+      assert.ok(texture1.dispose.called);
+      assert.equal(texture2.dispose.callCount, 1);
+    });
+  });
+
   suite('texture caching', function () {
     setup(function () {
       this.system.clearTextureCache();
