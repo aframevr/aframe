@@ -780,6 +780,14 @@ suite('a-entity', function () {
       el.setAttribute('class', 'pied piper');
       assert.equal(el.getAttribute('class'), 'pied piper');
     });
+
+    test('returns the component data object', function () {
+      var el = this.el;
+      var data;
+      el.setAttribute('geometry', {primitive: 'sphere', radius: 10});
+      data = el.getAttribute('geometry');
+      assert.ok(el.components.geometry.data === data);
+    });
   });
 
   suite('removeAttribute', function () {

@@ -789,7 +789,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr) {
       // If component, return component data.
       var component = this.components[attr];
-      if (component) { return component.getData(); }
+      if (component) { return component.data; }
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
