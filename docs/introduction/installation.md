@@ -63,6 +63,12 @@ files are properly served. Options of local servers include:
 - Running `npm install -g live-server && live-server` in a terminal in the same
   directory as your HTML file.
 
+Once we are running our server, we can open our project in the browser using
+the local URL and port which the server is running on (e.g.,
+`http://localhost:8000`). Try *not* to open the project using the `file://`
+protocol which does not provide a domain; absolute and relative URLs may not
+work.
+
 ### Download the Boilerplate on GitHub
 
 [ghpages]: https://pages.github.com/
