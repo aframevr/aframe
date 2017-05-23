@@ -55,19 +55,6 @@ ways to help improve performance of an A-Frame scene:
   handlers to hook into the global render loop. Use utilities such as
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
-- Avoid instantiating variables in the `tick` handler to minimize garbage collection cycles. If you are going to continously modify a component in the tick, make sure to pass the same object with updated properties. A-Frame will keep track of the latest passed object and disable type checking on subsequent calls for an extra speed boost. This is an example of a recommended tick function that modifies the rotation on every tick:
-```js
-AFRAME.registerComponent('foo', {
-  tick: function () {
-    var rotationTmp = this.rotationTmp = this.rotationTmp || {x: 0, y: 0, z: 0};
-    var rotation = el.getAttribute('rotation');
-    rotationTmp.x = rotation.x + 0.1;
-    rotationTmp.y = rotation.y + 0.1;
-    rotationTmp.z = rotation.z + 0.1;
-    el.setAttribute('rotation', rotationTmp);
-  }
-});
-```
 
 ### `tick` Handlers
 
@@ -92,6 +79,26 @@ AFRAME.registerComponent('foo', {
       helperVector.copy(this.el.object3D.position);
       helperQuaternion.copy(this.el.object3D.quaternion);
     })();
+  }
+});
+```
+
+Also if we continuously modify a component in the tick, make sure we pass the
+same object for updating properties. A-Frame will keep track of the latest
+passed object and disable type checking on subsequent calls for an extra speed
+boost. Here is an example of a recommended tick function that modifies the
+rotation on every tick:
+
+```js
+AFRAME.registerComponent('foo', {
+  tick: function () {
+    var el = this.el;
+    var rotationTmp = this.rotationTmp = this.rotationTmp || {x: 0, y: 0, z: 0};
+    var rotation = el.getAttribute('rotation');
+    rotationTmp.x = rotation.x + 0.1;
+    rotationTmp.y = rotation.y + 0.1;
+    rotationTmp.z = rotation.z + 0.1;
+    el.setAttribute('rotation', rotationTmp);
   }
 });
 ```
