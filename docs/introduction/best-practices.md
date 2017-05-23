@@ -83,6 +83,26 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+Also if we continuously modify a component in the tick, make sure we pass the
+same object for updating properties. A-Frame will keep track of the latest
+passed object and disable type checking on subsequent calls for an extra speed
+boost. Here is an example of a recommended tick function that modifies the
+rotation on every tick:
+
+```js
+AFRAME.registerComponent('foo', {
+  tick: function () {
+    var el = this.el;
+    var rotationTmp = this.rotationTmp = this.rotationTmp || {x: 0, y: 0, z: 0};
+    var rotation = el.getAttribute('rotation');
+    rotationTmp.x = rotation.x + 0.1;
+    rotationTmp.y = rotation.y + 0.1;
+    rotationTmp.z = rotation.z + 0.1;
+    el.setAttribute('rotation', rotationTmp);
+  }
+});
+```
+
 ## VR Design
 
 [leapmotion]: https://developer.leapmotion.com/assets/Leap%20Motion%20VR%20Best%20Practices%20Guidelines.pdf
