@@ -71541,7 +71541,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       // Absolute.
       if (!rotation) { return directionVector; }
 
-      xRotation = this.data.fly ? 0 : rotation.x;
+      xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
       rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
@@ -77081,7 +77081,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #5cda7d6)');
+console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #50430dd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
