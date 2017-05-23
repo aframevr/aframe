@@ -1,3 +1,97 @@
+## 0.6.0 (TBD)
+
+Navigate from world to world without leaving VR. Support for VR controllers
+across the board with the addition of Daydream and GearVR controller
+components. Large performance improvements around `.getAttribute` and
+`.setAttribute`.
+
+### Major Changes
+
+- Added support for link traversal. (#1575)
+- Bumped three.js to r84. (#2456)
+
+### Deprecations
+
+- Removed reset sensor keyboard shortcut due to being removed from WebVR API. (#2531)
+
+### Enhancements
+
+- Daydream controller support with daydream-controls, 3DoF support to tracked-controls with head/arm model. (#2538)
+- GearVR controller support with gearvr-controls. (#2545)
+- laser-controls component for responsive controls across 6DoF and 3DoF. (#2678)
+- Added support for cursor component to draw a visible ray or project a mesh onto the intersection point. (#2678)
+- Added `origin` and `direction` properties to configure raycaster component. (#2678)
+- Shadow support via shadow component and light properties. (#2350)
+- Implement `thumbstickmoved` and `axismoved` for oculus-touch-controls. (#2513)
+- Implement system `.update` handler. (#2548, #2613)
+- Added `controllerconnected` and `controllerdisconnected` events. (#2505)
+- Exposed `material.alphaTest` and `material.depthWrite` properties. (#2516)
+- Exposed glTF animations. (#2417)
+- Implemented `Component.tock` handler called after scene render for future post-processing support. (#1564)
+- Added support for A-Frame being required in a Node environment. (#2476, #2477, #2484, #2492, #2498)
+- Implemented `trackpadmoved` event for vive-controls component. (#2415)
+- Added `response-type` attribute to `<a-asset-item>` to support array buffer responses. (#2442)
+- Automatically set glTF response types to array buffer. (63d2f8)
+- Apply `camera.userHeight` to controller when no stage parameters (e.g., Daydream). (#2448)
+- Allow unsetting of mixin with `.setAttribute('mixin', '')` and `.removeAttribute('mixin')`. (a173509)
+- Allow default lights to be disabled with `<a-scene light="defaultLightsEnabled: false">`. (#2376)
+- Added panner properties to sound component. (#2374)
+- Added non-positional audio support to sound component. (#2490)
+- Refactored and unit test tracked-controls component. (#2396)
+- Added triangle geometry. (#2573)
+- Cleaned up cursor component when removed. (#2391)
+- Normalized default component values to proper types rather than strings. (#2411)
+- Removed unnecessary touching of `THREE.Cache` for asset responses. (#2435)
+- Throw error for developer if HTML is opened with `file://` protocol. (#2540)
+- Set `System.el` to the scene element. (#2566)
+- Use `isControllerPresent` utility rather than checking `navigator.getGamepads` in order to fake oculus-touch-controls for motion capture. (#2604)
+- Check WebVR API rather than using a dolly to check for positional tracking capabilities. (#2602)
+- Made default cone geometry look like a cone. (#2506)
+- Show error message when loading Inspector. (#2525)
+- Added validation warnings for schema default values. (#2511)
+- Removed timestamps from debug and console messages to reduce noise. (#2550)
+- Use `getElementById` vs. `querySelector` for asset property types to be more strict. (#2578)
+- Added developer warnings for primitive mapping names. (#2631)
+- Anti-alias by default on 2D desktop. (#2455)
+- Added support for iOS 10 HLS video streaming. (#2597)
+
+### Performance
+
+- Skipped schema type checking when object is passed through `.setAttribute` more than once to consider it a validated object. (#2679)
+- Made `.getAttribute` not clone component data object. Now returns raw reference to component data (#2689)
+- Disposed of unused texture objects from memory when no longer used by material component. (#2686)
+- Throttled emitting of `componentchanged` event on each update to every 200ms. We recommend polling if more critical updates are needed. (#2683)
+- Avoided `string.split()` in `.setAttribute()` to reduce memory in array instantiations. (#2674)
+- Removed duplicate asset requests by passing down `<img>` from `<a-assets>` and by using `crossorigin` from the start. (#2544)
+
+### Fixes
+
+- Fixed hand-controls blend-character animations between hand poses. (#2568)
+- Fixed infinite loop when component `.init` handler calls `.setAttribute` on itself. (#2454)
+- Fixed unreliable `requestAnimationFrame` timestamps by using `THREE.Clock` in the render loop. (#2471)
+- Fixed error when entity detached while trying to load and then trying to initialize. (#2521)
+- Fixed updating of `material.side` component. (#2528)
+- Fixed components sharing default array reference. (#2615)
+- Fixed non-recursive raycasters. (#2331)
+- Fixed various issues with sound component. (#2490)
+- Fixed `AFRAME.utils.device.checkHeadsetConnected` to check `VRDisplay.isConnected` (for Windows Mixed Reality Headsets). (#2427)
+- Fixed video materials not respecting autoplay and controls attributes, set `playsinline`. (#2610)
+- Fixed cursor component `mouseup` event not being emitted if entity no longer intersecting. (#2678)
+- Fixed resetting material texture to null. (#2388)
+- Fixed sound not playing when changing sound source. (#2457)
+- Fixed `AFRAME.utils.deepEqual` recursion when comparing object with itself. (#2406)
+- Fixed `AFRAME.utils.deepEqual` when comparing non-Object objects like HTML elements (#2502)
+- Fixed loading of glTF files that did not include a default scene. (#2462)
+- Fixed camera height when re-entering VR. (#2394)
+- Fixed CSS cursor stuck to grabbing in Firefox. (#2684)
+- Fixed tablets not being considered mobile devices in `AFRAME.utils.isMobile`. (#2309)
+- Fixed `AFRAME.utils.coordinates.isCoordinate` with scientific notation. (#2475)
+- Fixed pool component initializing twice. (#2407)
+- Fixed error when injecting Inspector. (#2380)
+- Fixed plane geometry segments. (#2499)
+- Fixed grab CSS being applied when look-controls disabled. (#2642)
+- Fixed look-controls enabling and disabling. (#2467)
+
 ## 0.5.0 (February 09, 2017)
 
 0.5.0 contains text, glTF support, patches to enable WebVR record-and-replay

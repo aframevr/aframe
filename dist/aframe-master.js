@@ -68268,6 +68268,7 @@ module.exports.Component = registerComponent('look-controls', {
     var hmdQuaternion = this.calculateHMDQuaternion();
     var sceneEl = this.el.sceneEl;
     var rotation;
+
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
     if (isMobile) {
       // In mobile we allow camera rotation with touch events and sensors
@@ -68294,8 +68295,7 @@ module.exports.Component = registerComponent('look-controls', {
         };
       }
     } else {
-      // Mouse rotation ignored with an active headset.
-      // The user head rotation takes priority
+      // Mouse rotation ignored with an active headset. User head rotation takes priority.
       rotation = {
         x: radToDeg(hmdEuler.x),
         y: radToDeg(hmdEuler.y),
@@ -71533,6 +71533,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     return function (delta) {
       var rotation = this.el.getAttribute('rotation');
       var velocity = this.velocity;
+      var xRotation;
 
       directionVector.copy(velocity);
       directionVector.multiplyScalar(delta);
@@ -71540,10 +71541,10 @@ module.exports.Component = registerComponent('wasd-controls', {
       // Absolute.
       if (!rotation) { return directionVector; }
 
-      if (!this.data.fly) { rotation.x = 0; }
+      xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.Math.degToRad(rotation.x), THREE.Math.degToRad(rotation.y), 0);
+      rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
@@ -73096,9 +73097,10 @@ var proto = Object.create(ANode.prototype, {
    *
    * @param {string} attr - Component name.
    * @param {object} attrValue - The value of the DOM attribute.
+   * @param {bollean} clobber - if the new attrValue will ccompletely replace the previous properties
    */
   updateComponent: {
-    value: function (attr, attrValue) {
+    value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
       var isDefault = attr in this.defaultComponents;
       if (component) {
@@ -73107,7 +73109,7 @@ var proto = Object.create(ANode.prototype, {
           return;
         }
         // Component already initialized. Update component.
-        component.updateProperties(attrValue);
+        component.updateProperties(attrValue, clobber);
         return;
       }
       // Component not yet initialized. Initialize component.
@@ -73267,6 +73269,8 @@ var proto = Object.create(ANode.prototype, {
    */
   setAttribute: {
     value: function (attrName, arg1, arg2) {
+      var arg1Type = typeof arg1;
+      var clobber;
       var componentName;
       var isDebugMode;
 
@@ -73275,12 +73279,11 @@ var proto = Object.create(ANode.prototype, {
 
       // Determine which type of setAttribute to call based on the types of the arguments.
       if (COMPONENTS[componentName]) {
-        if (typeof arg1 === 'string' && typeof arg2 !== 'undefined') {
+        if (arg1Type === 'string' && typeof arg2 !== 'undefined') {
           singlePropertyUpdate(this, attrName, arg1, arg2);
-        } else if (typeof arg1 === 'object' && arg2 === true) {
-          multiPropertyClobber(this, attrName, arg1);
         } else {
-          componentUpdate(this, attrName, arg1);
+          clobber = arg1Type !== 'object' || (arg1Type === 'object' && arg2 === true);
+          this.updateComponent(attrName, arg1, clobber);
         }
 
         // In debug mode, write component data up to the DOM.
@@ -73297,30 +73300,6 @@ var proto = Object.create(ANode.prototype, {
        */
       function singlePropertyUpdate (el, componentName, propName, propertyValue) {
         el.updateComponentProperty(componentName, propName, propertyValue);
-      }
-
-      /**
-       * Just update multiple component properties at once for a multi-property component.
-       * >> setAttribute('foo', {bar: 'baz'})
-       */
-      function componentUpdate (el, componentName, propValue) {
-        var component = el.components[componentName];
-        if (component && typeof propValue === 'object') {
-          // Extend existing component attribute value.
-          el.updateComponent(
-            componentName,
-            utils.extendDeep(utils.extendDeep({}, component.attrValue), propValue));
-        } else {
-          el.updateComponent(componentName, propValue);
-        }
-      }
-
-      /**
-       * Pass in complete data set for a multi-property component.
-       * >> setAttribute('foo', {bar: 'baz'}, true)
-       */
-      function multiPropertyClobber (el, componentName, propObject) {
-        el.updateComponent(componentName, propObject);
       }
 
       /**
@@ -73376,7 +73355,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr) {
       // If component, return component data.
       var component = this.components[attr];
-      if (component) { return component.getData(); }
+      if (component) { return component.data; }
       return HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
@@ -74069,7 +74048,7 @@ var scenes = _dereq_('./scene/scenes');
 var systems = _dereq_('./system');
 var utils = _dereq_('../utils/');
 
-var components = module.exports.components = {}; // Keep track of registered components.
+var components = module.exports.components = {};  // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -74101,8 +74080,10 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
   this.el.components[this.attrName] = this;
+  // Last value passed to updateProperties.
+  this.previousAttrValue = undefined;
   this.updateProperties(attrValue);
-  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChanged (oldData) {
+  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
     el.emit('componentchanged', {
       id: self.id,
       name: self.name,
@@ -74224,6 +74205,7 @@ Component.prototype = {
   updateCachedAttrValue: function (value) {
     var isSinglePropSchema = isSingleProp(this.schema);
     var attrValue = this.parseAttrValueForCache(value);
+    if (value === undefined) { return; }
     this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
@@ -74240,16 +74222,15 @@ Component.prototype = {
     if (typeof value !== 'string') { return value; }
     if (isSingleProp(this.schema)) {
       parsedValue = this.schema.parse(value);
-      // To avoid bogus double parsings. The cached values will
-      // be parsed when building the component data.
-      // For instance when parsing a src id to it's url.
-      // We want to cache the original string and not the parsed
-      // one (#monster -> models/monster.dae) so when building
-      // data we parse the expected value.
+      /**
+       * To avoid bogus double parsings. Cached values will be parsed when building
+       * component data. For instance when parsing a src id to its url, we want to cache
+       * original string and not the parsed one (#monster -> models/monster.dae)
+       * so when building data we parse the expected value.
+       */
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
-      // We just parse using the style parser to avoid double parsing
-      // of individual properties.
+      // Parse using the style parser to avoid double parsing of individual properties.
       parsedValue = styleParser.parse(value);
     }
     return parsedValue;
@@ -74258,7 +74239,7 @@ Component.prototype = {
   /**
    * Write cached attribute data to the entity DOM element.
    *
-   * @param {bool} isDefault - Whether component is a default component. Always flush for
+   * @param {boolean} isDefault - Whether component is a default component. Always flush for
    *   default components.
    */
   flushToDOM: function (isDefault) {
@@ -74273,28 +74254,41 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
+   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
    */
-  updateProperties: function (attrValue) {
+  updateProperties: function (attrValue, clobber) {
     var el = this.el;
-    var isSinglePropSchema = isSingleProp(this.schema);
-    var oldData = extendProperties({}, this.data, isSinglePropSchema);
+    var isSinglePropSchema;
+    var oldData;
+    var skipTypeChecking;
 
-    if (attrValue !== undefined) { this.updateCachedAttrValue(attrValue); }
-
-    if (!el.hasLoaded) { return; }
-
-    if (this.updateSchema) {
-      this.updateSchema(buildData(el, this.name, this.attrName, this.schema, this.attrValue,
-                                  true));
+    // Just cache the attribute if the entity has not loaded
+    // Components are not initialized until the entity has loaded
+    if (!el.hasLoaded) {
+      this.updateCachedAttrValue(attrValue);
+      return;
     }
-    this.data = buildData(el, this.name, this.attrName, this.schema, this.attrValue);
+
+    isSinglePropSchema = isSingleProp(this.schema);
+    // Copy old data since this.data is going to be recreated.
+    oldData = extendProperties({}, this.data, isSinglePropSchema);
+    // Disable type checking if the passed attribute is an object and has not changed.
+    skipTypeChecking = typeof this.previousAttrValue === 'object' &&
+                       attrValue === this.previousAttrValue;
+    // Cache previously passed attribute to decide if we skip type checking.
+    this.previousAttrValue = attrValue;
+
+    attrValue = this.parseAttrValueForCache(attrValue);
+    if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
+    this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
+
+    // Cache current attrValue for future updates.
+    this.updateCachedAttrValue(attrValue);
 
     if (!this.initialized) {
-      // Component is being already initialized
+      // Component is being already initialized.
       if (el.initializingComponents[this.name]) { return; }
-      // Prevent infinite loop in the case of
-      // the init method setting the same component
-      // on the entity
+      // Prevent infinite loop in case of init method setting same component on the entity.
       el.initializingComponents[this.name] = true;
       // Initialize component.
       this.init();
@@ -74310,7 +74304,7 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (utils.deepEqual(oldData, this.data)) { return; }
+      if (!skipTypeChecking && utils.deepEqual(oldData, this.data)) { return; }
 
       // Update component.
       this.update(oldData);
@@ -74351,6 +74345,75 @@ Component.prototype = {
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
     this.el.emit('schemachanged', {component: this.name});
+  },
+
+  /**
+   * Builds component data from the current state of the entity, ultimately
+   * updating this.data.
+   *
+   * If the component was detached completely, set data to null.
+   *
+   * Precedence:
+   * 1. Defaults data
+   * 2. Mixin data.
+   * 3. Attribute data.
+   *
+   * Finally coerce the data to the types of the defaults.
+   *
+   * @param {object} newData - Element new data.
+   * @param {boolean} clobber - The previous data is completely replaced by the new one.
+   * @param {boolean} silent - Suppress warning messages.
+   * @param {boolean} skipTypeChecking - Skip type checking and cohercion.
+   * @return {object} The component data
+   */
+  buildData: function (newData, clobber, silent, skipTypeChecking) {
+    var self = this;
+    var componentDefined = newData !== undefined && newData !== null;
+    var data;
+    var schema = this.schema;
+    var isSinglePropSchema = isSingleProp(schema);
+    var mixinEls = this.el.mixinEls;
+    var previousData;
+
+    // 1. Default values (lowest precendence).
+    if (isSinglePropSchema) {
+      data = schema.default;
+    } else {
+      // Preserve previously set properties if clobber not enabled.
+      previousData = !clobber && this.attrValue;
+      data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
+      Object.keys(schema).forEach(function applyDefault (key) {
+        var defaultValue = schema[key].default;
+        if (data[key]) { return; }
+        data[key] = defaultValue && defaultValue.constructor === Object
+          ? utils.extend({}, defaultValue)
+          : defaultValue;
+      });
+    }
+
+    // 2. Mixin values.
+    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
+      var mixinData = mixinEl.getAttribute(self.attrName);
+      if (mixinData) {
+        data = extendProperties(data, mixinData, isSinglePropSchema);
+      }
+    });
+
+    // 3. Attribute values (highest precendence).
+    if (componentDefined) {
+      if (isSinglePropSchema) {
+        if (skipTypeChecking === true) { return newData; }
+        return parseProperty(newData, schema);
+      }
+      data = extendProperties(data, newData, isSinglePropSchema);
+    } else {
+      if (skipTypeChecking === true) { return data; }
+      // Parse and coerce using the schema.
+      if (isSinglePropSchema) { return parseProperty(data, schema); }
+    }
+
+    if (skipTypeChecking === true) { return data; }
+    return parseProperties(data, schema, undefined, this.name, silent);
   }
 };
 
@@ -74438,68 +74501,6 @@ module.exports.registerComponent = function (name, definition) {
   };
   return NewComponent;
 };
-
-/**
- * Builds component data from the current state of the entity, ultimately
- * updating this.data.
- *
- * If the component was detached completely, set data to null.
- *
- * Precedence:
- * 1. Defaults data
- * 2. Mixin data.
- * 3. Attribute data.
- *
- * Finally coerce the data to the types of the defaults.
- *
- * @param {object} el - Element to build data from.
- * @param {object} name - Component name.
- * @param {object} attrName - Attribute name associated to the component.
- * @param {object} schema - Component schema.
- * @param {object} elData - Element current data.
- * @param {boolean} silent - Suppress warning messages.
- * @return {object} The component data
- */
-function buildData (el, name, attrName, schema, elData, silent) {
-  var componentDefined = elData !== undefined && elData !== null;
-  var data;
-  var isSinglePropSchema = isSingleProp(schema);
-  var mixinEls = el.mixinEls;
-
-  // 1. Default values (lowest precendence).
-  if (isSinglePropSchema) {
-    data = schema.default;
-  } else {
-    data = {};
-    Object.keys(schema).forEach(function applyDefault (key) {
-      var defaultValue = schema[key].default;
-      data[key] = defaultValue && defaultValue.constructor === Object
-        ? utils.extend({}, defaultValue)
-        : defaultValue;
-    });
-  }
-
-  // 2. Mixin values.
-  mixinEls.forEach(handleMixinUpdate);
-  function handleMixinUpdate (mixinEl) {
-    var mixinData = mixinEl.getAttribute(attrName);
-    if (mixinData) {
-      data = extendProperties(data, mixinData, isSinglePropSchema);
-    }
-  }
-
-  // 3. Attribute values (highest precendence).
-  if (componentDefined) {
-    if (isSinglePropSchema) { return parseProperty(elData, schema); }
-    data = extendProperties(data, elData, isSinglePropSchema);
-    return parseProperties(data, schema, undefined, name, silent);
-  } else {
-     // Parse and coerce using the schema.
-    if (isSinglePropSchema) { return parseProperty(data, schema); }
-    return parseProperties(data, schema, undefined, name, silent);
-  }
-}
-module.exports.buildData = buildData;
 
 /**
 * Object extending with checking for single-property schema.
@@ -77080,7 +77081,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 20-05-2017, Commit #27d984f)');
+console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #50430dd)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 

@@ -134,6 +134,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     return function (delta) {
       var rotation = this.el.getAttribute('rotation');
       var velocity = this.velocity;
+      var xRotation;
 
       directionVector.copy(velocity);
       directionVector.multiplyScalar(delta);
@@ -141,10 +142,10 @@ module.exports.Component = registerComponent('wasd-controls', {
       // Absolute.
       if (!rotation) { return directionVector; }
 
-      if (!this.data.fly) { rotation.x = 0; }
+      xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.Math.degToRad(rotation.x), THREE.Math.degToRad(rotation.y), 0);
+      rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
