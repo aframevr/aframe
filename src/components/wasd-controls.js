@@ -142,7 +142,7 @@ module.exports.Component = registerComponent('wasd-controls', {
       // Absolute.
       if (!rotation) { return directionVector; }
 
-      xRotation = this.data.fly ? 0 : rotation.x;
+      xRotation = this.data.fly ? rotation.x : 0;
 
       // Transform direction relative to heading.
       rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
