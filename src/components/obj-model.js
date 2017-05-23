@@ -5,8 +5,6 @@ var THREE = require('../lib/three');
 var warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
-  dependencies: ['material'],
-
   schema: {
     mtl: {type: 'model'},
     obj: {type: 'model'}
@@ -57,7 +55,7 @@ module.exports.Component = registerComponent('obj-model', {
     }
 
     // .OBJ only.
-    objLoader.load(objUrl, function (objModel) {
+    objLoader.load(objUrl, function loadObjOnly (objModel) {
       // Apply material.
       var material = el.components.material;
       if (material) {
