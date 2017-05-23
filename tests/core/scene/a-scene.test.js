@@ -421,7 +421,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     sinon.assert.calledWith(Component.tock, scene.time);
   });
 
-  test('clock', function () {
+  test.skip('clock', function () {
     var scene = this.el;
 
     assert.isAbove(scene.time, 0);
