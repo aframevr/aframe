@@ -68268,6 +68268,7 @@ module.exports.Component = registerComponent('look-controls', {
     var hmdQuaternion = this.calculateHMDQuaternion();
     var sceneEl = this.el.sceneEl;
     var rotation;
+
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
     if (isMobile) {
       // In mobile we allow camera rotation with touch events and sensors
@@ -68294,8 +68295,7 @@ module.exports.Component = registerComponent('look-controls', {
         };
       }
     } else {
-      // Mouse rotation ignored with an active headset.
-      // The user head rotation takes priority
+      // Mouse rotation ignored with an active headset. User head rotation takes priority.
       rotation = {
         x: radToDeg(hmdEuler.x),
         y: radToDeg(hmdEuler.y),
@@ -71533,6 +71533,7 @@ module.exports.Component = registerComponent('wasd-controls', {
     return function (delta) {
       var rotation = this.el.getAttribute('rotation');
       var velocity = this.velocity;
+      var xRotation;
 
       directionVector.copy(velocity);
       directionVector.multiplyScalar(delta);
@@ -71540,10 +71541,10 @@ module.exports.Component = registerComponent('wasd-controls', {
       // Absolute.
       if (!rotation) { return directionVector; }
 
-      if (!this.data.fly) { rotation.x = 0; }
+      xRotation = this.data.fly ? 0 : rotation.x;
 
       // Transform direction relative to heading.
-      rotationEuler.set(THREE.Math.degToRad(rotation.x), THREE.Math.degToRad(rotation.y), 0);
+      rotationEuler.set(THREE.Math.degToRad(xRotation), THREE.Math.degToRad(rotation.y), 0);
       directionVector.applyEuler(rotationEuler);
       return directionVector;
     };
@@ -77080,7 +77081,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #3825828)');
+console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #5cda7d6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
