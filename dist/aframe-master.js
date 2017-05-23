@@ -68620,8 +68620,6 @@ var THREE = _dereq_('../lib/three');
 var warn = debug('components:obj-model:warn');
 
 module.exports.Component = registerComponent('obj-model', {
-  dependencies: ['material'],
-
   schema: {
     mtl: {type: 'model'},
     obj: {type: 'model'}
@@ -68672,7 +68670,7 @@ module.exports.Component = registerComponent('obj-model', {
     }
 
     // .OBJ only.
-    objLoader.load(objUrl, function (objModel) {
+    objLoader.load(objUrl, function loadObjOnly (objModel) {
       // Apply material.
       var material = el.components.material;
       if (material) {
@@ -77081,7 +77079,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #50430dd)');
+console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #3aced04)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
