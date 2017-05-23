@@ -166,6 +166,7 @@ module.exports.Component = registerComponent('look-controls', {
     var hmdQuaternion = this.calculateHMDQuaternion();
     var sceneEl = this.el.sceneEl;
     var rotation;
+
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
     if (isMobile) {
       // In mobile we allow camera rotation with touch events and sensors
@@ -192,8 +193,7 @@ module.exports.Component = registerComponent('look-controls', {
         };
       }
     } else {
-      // Mouse rotation ignored with an active headset.
-      // The user head rotation takes priority
+      // Mouse rotation ignored with an active headset. User head rotation takes priority.
       rotation = {
         x: radToDeg(hmdEuler.x),
         y: radToDeg(hmdEuler.y),
