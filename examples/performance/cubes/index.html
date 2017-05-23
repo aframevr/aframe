@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rotating Cubes Performance Test - A-Frame</title>
+    <meta name="description" content="">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="utils.js"></script>
+    <script src="components.js"></script>
+    <script src="main.js"></script>
+  </head>
+  <style>
+    body {
+      color: #cccccc;
+      font-family: Monospace;
+      font-size: 13px;
+      text-align: center;
+      margin: 0px;
+      overflow: hidden;
+    }
+
+    #info {
+      background-color: #000;
+      position: absolute;
+      top: 0px;
+      width: 100%;
+      padding: 5px;
+      z-index: 9999;
+    }
+    #info a {
+      color: #fff;
+    }
+  </style>
+  <body>
+    <div id="info">
+      <a href="?numobjects=5000">none</a>
+      <a href="?component=rotate-obj3d&numobjects=5000">rotate-obj3d</a>
+      <a href="?component=rotate-get-obj3d&numobjects=5000">rotate-get-obj3d</a>
+      <a href="?component=rotate-obj3d-set&numobjects=5000">rotate-obj3d-set</a>
+      <a href="?component=rotate-get-set&numobjects=5000">rotate-get-set</a>
+      <a href="?component=rotate-get-settext&numobjects=5000">rotate-get-settext</a>
+    </div>
+    <a-scene stats main></a-scene>
+  </body>
+</html>
+

@@ -1,11 +1,9 @@
 /* global AFRAME, assert, process, suite, teardown, test, setup, sinon, HTMLElement */
-var buildData = require('core/component').buildData;
 var Component = require('core/component');
 var components = require('index').components;
 
 var helpers = require('../helpers');
 var registerComponent = require('index').registerComponent;
-var processSchema = require('core/schema').process;
 
 var CloneComponent = {
   init: function () {
@@ -35,33 +33,40 @@ suite('Component', function () {
     });
 
     test('uses default values', function () {
-      var schema = processSchema({
-        color: {default: 'blue'},
-        size: {default: 5}
+      registerComponent('dummy', {
+        schema: {
+          color: {default: 'blue'},
+          size: {default: 5}
+        }
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', 'dummy', schema, {}, null);
+      el.setAttribute('dummy', '');
+      var data = el.components.dummy.buildData({}, null);
       assert.equal(data.color, 'blue');
       assert.equal(data.size, 5);
     });
 
     test('uses default values for single-property schema', function () {
-      var schema = processSchema({
-        default: 'blue'
+      registerComponent('dummy', {
+        schema: {default: 'blue'}
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', 'dummy', schema, undefined, null);
+      el.setAttribute('dummy', '');
+      var data = el.components.dummy.buildData(undefined, null);
       assert.equal(data, 'blue');
     });
 
     test('preserves type of default values', function () {
-      var schema = processSchema({
-        list: {default: [1, 2, 3, 4]},
-        none: {default: null},
-        string: {default: ''}
+      registerComponent('dummy', {
+        schema: {
+          list: {default: [1, 2, 3, 4]},
+          none: {default: null},
+          string: {default: ''}
+        }
       });
       var el = document.createElement('a-entity');
-      var data = buildData(el, 'dummy', 'dummy', schema, undefined, null);
+      el.setAttribute('dummy', '');
+      var data = el.components.dummy.buildData(undefined, null);
       assert.shallowDeepEqual(data.list, [1, 2, 3, 4]);
       assert.equal(data.none, null);
       assert.equal(data.string, '');
@@ -69,7 +74,7 @@ suite('Component', function () {
 
     test('uses mixin values', function () {
       var data;
-      var TestComponent = registerComponent('dummy', {
+      registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
           size: {default: 5}
@@ -77,17 +82,17 @@ suite('Component', function () {
       });
       var el = document.createElement('a-entity');
       var mixinEl = document.createElement('a-mixin');
-
       mixinEl.setAttribute('dummy', 'color: blue; size: 10');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, {}, null);
+      el.setAttribute('dummy', '');
+      data = el.components.dummy.buildData({}, null);
       assert.equal(data.color, 'blue');
       assert.equal(data.size, 10);
     });
 
     test('uses mixin values for single-property schema', function () {
       var data;
-      var TestComponent = registerComponent('dummy', {
+      registerComponent('dummy', {
         schema: {
           default: 'red'
         }
@@ -96,13 +101,14 @@ suite('Component', function () {
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, undefined, null);
+      el.setAttribute('dummy', '');
+      data = el.components.dummy.buildData(undefined, null);
       assert.equal(data, 'blue');
     });
 
     test('uses defined values', function () {
       var data;
-      var TestComponent = registerComponent('dummy', {
+      registerComponent('dummy', {
         schema: {
           color: {default: 'red'},
           size: {default: 5}
@@ -113,35 +119,35 @@ suite('Component', function () {
 
       mixinEl.setAttribute('dummy', 'color: blue; size: 10');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, {
-        color: 'green', size: 20
-      }, 'color: green; size: 20');
+      el.setAttribute('dummy', '');
+      data = el.components.dummy.buildData({color: 'green', size: 20}, 'color: green; size: 20');
       assert.equal(data.color, 'green');
       assert.equal(data.size, 20);
     });
 
     test('uses defined values for single-property schema', function () {
       var data;
-      var TestComponent = registerComponent('dummy', {
+      registerComponent('dummy', {
         schema: {default: 'red'}
       });
       var el = document.createElement('a-entity');
       var mixinEl = document.createElement('a-mixin');
       mixinEl.setAttribute('dummy', 'blue');
       el.mixinEls = [mixinEl];
-      data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, 'green', 'green');
+      el.setAttribute('dummy', '');
+      data = el.components.dummy.buildData('green', 'green');
       assert.equal(data, 'green');
     });
 
     test('returns default value for a single-property schema ' +
          'when the attribute is empty string', function () {
       var data;
-      var TestComponent = registerComponent('dummy', {
+      registerComponent('dummy', {
         schema: {default: 'red'}
       });
       var el = document.createElement('a-entity');
       el.setAttribute('dummy', '');
-      data = buildData(el, 'dummy', 'dummy', TestComponent.prototype.schema, 'red');
+      data = el.components.dummy.buildData('red');
       assert.equal(data, 'red');
     });
 

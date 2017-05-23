@@ -48,10 +48,13 @@ suite('fog', function () {
 
     test('can update fog type', function () {
       var el = this.el;
-      el.setAttribute('fog', 'type: exponential; density: 0.25');
-      el.setAttribute('fog', 'density: 0.25');
+      assert.equal(el.getAttribute('fog').type, 'linear');
       assert.notOk('density' in el.object3D.fog);
       assert.ok('near' in el.object3D.fog);
+      el.setAttribute('fog', 'type: exponential; density: 0.25');
+      assert.equal(el.getAttribute('fog').type, 'exponential');
+      assert.ok('density' in el.object3D.fog);
+      assert.notOk('near' in el.object3D.fog);
     });
 
     test('can remove and add linear fog', function () {

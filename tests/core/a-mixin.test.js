@@ -37,7 +37,6 @@ suite('a-mixin', function () {
     var mixinEl = document.createElement('a-mixin');
     el.setAttribute('mixin', 'ring');
     el.setAttribute('geometry', 'buffer: false');
-
     mixinEl.setAttribute('id', 'ring');
     mixinEl.setAttribute('geometry', 'primitive: ring');
     this.assetsEl.appendChild(mixinEl);
