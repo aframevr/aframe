@@ -74047,7 +74047,7 @@ var scenes = _dereq_('./scene/scenes');
 var systems = _dereq_('./system');
 var utils = _dereq_('../utils/');
 
-var components = module.exports.components = {}; // Keep track of registered components.
+var components = module.exports.components = {};  // Keep track of registered components.
 var parseProperties = schema.parseProperties;
 var parseProperty = schema.parseProperty;
 var processSchema = schema.process;
@@ -74079,10 +74079,10 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
   this.el.components[this.attrName] = this;
-  // Last value passed to updateProperties
+  // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
   this.updateProperties(attrValue);
-  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChanged (oldData) {
+  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
     el.emit('componentchanged', {
       id: self.id,
       name: self.name,
@@ -74221,16 +74221,15 @@ Component.prototype = {
     if (typeof value !== 'string') { return value; }
     if (isSingleProp(this.schema)) {
       parsedValue = this.schema.parse(value);
-      // To avoid bogus double parsings. The cached values will
-      // be parsed when building the component data.
-      // For instance when parsing a src id to it's url.
-      // We want to cache the original string and not the parsed
-      // one (#monster -> models/monster.dae) so when building
-      // data we parse the expected value.
+      /**
+       * To avoid bogus double parsings. Cached values will be parsed when building
+       * component data. For instance when parsing a src id to its url, we want to cache
+       * original string and not the parsed one (#monster -> models/monster.dae)
+       * so when building data we parse the expected value.
+       */
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
-      // We just parse using the style parser to avoid double parsing
-      // of individual properties.
+      // Parse using the style parser to avoid double parsing of individual properties.
       parsedValue = styleParser.parse(value);
     }
     return parsedValue;
@@ -74239,7 +74238,7 @@ Component.prototype = {
   /**
    * Write cached attribute data to the entity DOM element.
    *
-   * @param {bool} isDefault - Whether component is a default component. Always flush for
+   * @param {boolean} isDefault - Whether component is a default component. Always flush for
    *   default components.
    */
   flushToDOM: function (isDefault) {
@@ -74254,7 +74253,7 @@ Component.prototype = {
    *
    * @param {string} attrValue - HTML attribute value.
    *        If undefined, use the cached attribute value and continue updating properties.
-   * @param {bolloean} clobber - The previous component data is overwritten by the atrrValue
+   * @param {boolean} clobber - The previous component data is overwritten by the atrrValue
    */
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
@@ -74270,26 +74269,25 @@ Component.prototype = {
     }
 
     isSinglePropSchema = isSingleProp(this.schema);
-    // Copy old data since this.data is going to be recreated
+    // Copy old data since this.data is going to be recreated.
     oldData = extendProperties({}, this.data, isSinglePropSchema);
-    // Disable type checking if the passed attribute is an object and has not changed
-    skipTypeChecking = typeof this.previousAttrValue === 'object' && attrValue === this.previousAttrValue;
-    // Cach previously passed attribute to decide if we skip type checking
+    // Disable type checking if the passed attribute is an object and has not changed.
+    skipTypeChecking = typeof this.previousAttrValue === 'object' &&
+                       attrValue === this.previousAttrValue;
+    // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
     attrValue = this.parseAttrValueForCache(attrValue);
     if (this.updateSchema) { this.updateSchema(this.buildData(attrValue, false, true)); }
     this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
 
-    // Cache current attrValue for future updates
+    // Cache current attrValue for future updates.
     this.updateCachedAttrValue(attrValue);
 
     if (!this.initialized) {
-      // Component is being already initialized
+      // Component is being already initialized.
       if (el.initializingComponents[this.name]) { return; }
-      // Prevent infinite loop in the case of
-      // the init method setting the same component
-      // on the entity
+      // Prevent infinite loop in case of init method setting same component on the entity.
       el.initializingComponents[this.name] = true;
       // Initialize component.
       this.init();
@@ -74362,7 +74360,7 @@ Component.prototype = {
    * Finally coerce the data to the types of the defaults.
    *
    * @param {object} newData - Element new data.
-   * @param {bolloean} clobber - The previous data is completely replaced by the new one.
+   * @param {boolean} clobber - The previous data is completely replaced by the new one.
    * @param {boolean} silent - Suppress warning messages.
    * @param {boolean} skipTypeChecking - Skip type checking and cohercion.
    * @return {object} The component data
@@ -74374,13 +74372,14 @@ Component.prototype = {
     var schema = this.schema;
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
-    // Preserve previously set properties if clobber not enabled
-    var previousData = !clobber && this.attrValue;
+    var previousData;
 
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       data = schema.default;
     } else {
+      // Preserve previously set properties if clobber not enabled.
+      previousData = !clobber && this.attrValue;
       data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
       Object.keys(schema).forEach(function applyDefault (key) {
         var defaultValue = schema[key].default;
@@ -74392,13 +74391,12 @@ Component.prototype = {
     }
 
     // 2. Mixin values.
-    mixinEls.forEach(handleMixinUpdate);
-    function handleMixinUpdate (mixinEl) {
+    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
       var mixinData = mixinEl.getAttribute(self.attrName);
       if (mixinData) {
         data = extendProperties(data, mixinData, isSinglePropSchema);
       }
-    }
+    });
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
@@ -77082,7 +77080,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #9eacbb6)');
+console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #3825828)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
