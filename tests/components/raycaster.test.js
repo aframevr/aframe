@@ -2,11 +2,21 @@
 var entityFactory = require('../helpers').entityFactory;
 
 suite('raycaster', function () {
+  var component;
+  var el;
+  var parentEl;
+  var raycaster;
+  var sceneEl;
+
   setup(function (done) {
-    var parentEl = this.parentEl = entityFactory();
-    var el = this.el = document.createElement('a-entity');
+    parentEl = entityFactory();
+    el = document.createElement('a-entity');
     el.setAttribute('raycaster', '');
-    parentEl.addEventListener('loaded', function () {
+    el.addEventListener('componentinitialized', evt => {
+      if (evt.detail.name !== 'raycaster') { return; }
+      component = el.components.raycaster;
+      raycaster = component.raycaster;
+      sceneEl = el.sceneEl;
       done();
     });
     parentEl.appendChild(el);
@@ -14,198 +24,170 @@ suite('raycaster', function () {
 
   suite('init', function () {
     test('initializes raycaster', function () {
-      assert.ok(this.el.components.raycaster.raycaster);
+      assert.ok(raycaster);
     });
   });
 
   suite('update', function () {
     test('can update far', function () {
-      var el = this.el;
       el.setAttribute('raycaster', 'far', 50);
-      assert.equal(el.components.raycaster.raycaster.far, 50);
+      assert.equal(raycaster.far, 50);
     });
 
     test('can update near', function () {
-      var el = this.el;
       el.setAttribute('raycaster', 'near', 5);
-      assert.equal(el.components.raycaster.raycaster.near, 5);
+      assert.equal(raycaster.near, 5);
     });
 
     test('defaults to intersecting all objects', function (done) {
-      var el = this.el;
       var el2 = document.createElement('a-entity');
       var el3 = document.createElement('a-entity');
       var i;
-      var objects;
-      // Add some geometry so raycast will actually work, and wait for it to be loaded.
+
+      // Add geometry to test raycast and wait for them to be loaded.
       el2.setAttribute('geometry', 'primitive: box');
       el3.setAttribute('geometry', 'primitive: box');
-      el3.addEventListener('loaded', function finishSetup () {
-        el.components.raycaster.refreshObjects();
-        objects = el.components.raycaster.objects;
-        // The object to check raycast against isn't the object3D (which is a wrapper), but the child.
-        for (i = 0; i < objects.length; i++) {
-          assert.equal(objects[i], el.sceneEl.object3D.children[i].children[0]);
+
+      el3.addEventListener('loaded', function () {
+        component.refreshObjects();
+        // Check that the child is the raycaster target, not the THREE.Group.
+        for (i = 0; i < component.objects.length; i++) {
+          assert.equal(component.objects[i], sceneEl.object3D.children[i].children[0]);
         }
         done();
       });
-      el.sceneEl.appendChild(el2);
-      el.sceneEl.appendChild(el3);
+      sceneEl.appendChild(el2);
+      sceneEl.appendChild(el3);
     });
 
-    test('can set objects to intersect', function (done) {
-      var el = this.el;
+    test('can whitelist objects to intersect', function (done) {
       var el2 = document.createElement('a-entity');
       var el3 = document.createElement('a-entity');
       el2.setAttribute('class', 'clickable');
-      // add some geometry so raycast will actually work, and wait for it to be loaded
       el2.setAttribute('geometry', 'primitive: box');
-      el2.addEventListener('loaded', function finishSetup () {
+      el2.addEventListener('loaded', function () {
         el.setAttribute('raycaster', 'objects', '.clickable');
-        assert.equal(el.components.raycaster.objects.length, 1);
-        // The object to check raycast against isn't the object3D (which is a wrapper), but the child.
-        assert.equal(el.components.raycaster.objects[0], el2.object3D.children[0]);
-        // The object to check raycast against should reference the entity.
+        assert.equal(component.objects.length, 1);
+        assert.equal(component.objects[0], el2.object3D.children[0]);
         assert.equal(el2, el2.object3D.children[0].el);
         done();
       });
-      el.sceneEl.appendChild(el2);
-      el.sceneEl.appendChild(el3);
+      sceneEl.appendChild(el2);
+      sceneEl.appendChild(el3);
     });
   });
 
   suite('tick', function () {
     test('is throttled by interval', function () {
-      var el = this.el;
-      var intersectSpy = this.sinon.spy(el.components.raycaster.raycaster,
-                                        'intersectObjects');
+      var intersectSpy = this.sinon.spy(raycaster, 'intersectObjects');
       el.setAttribute('raycaster', 'interval', 1000);
-      el.components.raycaster.prevCheckTime = 1000;
-      el.sceneEl.tick(1500);
+      component.prevCheckTime = 1000;
+      component.tick(1500);
       assert.notOk(intersectSpy.called);
 
       el.setAttribute('raycaster', 'interval', 499);
-      el.sceneEl.tick(1500);
+      component.tick(1500);
       assert.ok(intersectSpy.called);
     });
   });
 
   suite('refreshObjects', function () {
-    setup(function createRaycasterAndTarget (done) {
+    setup(function (done) {
+      var light;
       // Define camera and light before tests to avoid injection.
-      this.el.sceneEl.appendChild(document.createElement('a-camera'));
-      var waitForMe = document.createElement('a-light');
-      waitForMe.addEventListener('loaded', function finishSetup () { setTimeout(function () { done(); }); });
-      this.el.sceneEl.appendChild(waitForMe);
+      sceneEl.appendChild(document.createElement('a-camera'));
+      light = document.createElement('a-light');
+      light.addEventListener('loaded', function () {
+        // Wait for raycaster to pick them up.
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(light);
     });
 
     test('refresh objects when new entities are added to the scene', function (done) {
-      var el = this.el;
       var newEl = document.createElement('a-entity');
-      var numObjects = el.components.raycaster.objects.length;
-      var sceneEl = this.el.sceneEl;
-      // add some geometry so raycast will actually work
+      var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
-      sceneEl.addEventListener('child-attached', eventuallyDoAssert);
+      newEl.addEventListener('loaded', function () {
+        setTimeout(() => {
+          assert.equal(component.objects.length, numObjects + 1);
+          done();
+        });
+      });
       sceneEl.appendChild(newEl);
-
-      function eventuallyDoAssert () {
-        if (newEl.hasLoaded) {
-          doAssert();
-        } else {
-          newEl.addEventListener('loaded', doAssert);
-        }
-      }
-      function doAssert () {
-        sceneEl.removeEventListener('child-attached', eventuallyDoAssert);
-        newEl.removeEventListener('loaded', doAssert);
-        assert.equal(el.components.raycaster.objects.length, numObjects + 1);
-        done();
-      }
     });
 
     test('refresh objects when new entities are removed from the scene', function (done) {
-      var el = this.el;
       var newEl = document.createElement('a-entity');
-      var numObjects = el.components.raycaster.objects.length;
-      var sceneEl = this.el.sceneEl;
-      // add some geometry so raycast will actually work
+      var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
-      sceneEl.addEventListener('child-detached', doAssert);
-      sceneEl.addEventListener('child-attached', eventuallyDoRemove);
+      sceneEl.addEventListener('child-detached', function doAssert () {
+        setTimeout(() => {
+          assert.equal(component.objects.length, numObjects);
+          sceneEl.removeEventListener('child-detached', doAssert);
+          done();
+        });
+      });
+      newEl.addEventListener('loaded', function () {
+        sceneEl.removeChild(newEl);
+      });
       sceneEl.appendChild(newEl);
-
-      function eventuallyDoRemove () {
-        if (newEl.hasLoaded) { doRemove(); } else { newEl.addEventListener('loaded', doRemove); }
-      }
-      function doRemove () { sceneEl.removeChild(newEl); }
-      function doAssert () {
-        assert.equal(el.components.raycaster.objects.length, numObjects);
-        sceneEl.removeEventListener('child-attached', eventuallyDoRemove);
-        sceneEl.removeEventListener('child-detached', doAssert);
-        done();
-      }
     });
   });
 
   suite('raycaster', function () {
-    setup(function createRaycasterAndTarget (done) {
-      var el = this.el;
-      var targetEl = this.targetEl = document.createElement('a-entity');
+    var targetEl;
+
+    setup(function (done) {
+      targetEl = document.createElement('a-entity');
 
       el.setAttribute('position', '0 0 1');
-      el.setAttribute('raycaster', {
-        near: 0.1,
-        far: 10
-      });
+      el.setAttribute('raycaster', {near: 0.1, far: 10});
 
-      targetEl.setAttribute('geometry', 'primitive: box; depth: 1; height: 1; width: 1;');
+      targetEl.setAttribute('geometry', 'primitive: box');
       targetEl.setAttribute('position', '0 0 -1');
-      el.sceneEl.appendChild(targetEl);
-      function finishSetup () { setTimeout(function () { done(); }, 0); }
-      if (targetEl.hasLoaded) { finishSetup(); } else { targetEl.addEventListener('loaded', finishSetup); }
+      targetEl.addEventListener('loaded', function () {
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(targetEl);
     });
 
     test('can catch basic intersection', function (done) {
-      this.targetEl.addEventListener('raycaster-intersected', function () { done(); });
-      this.el.sceneEl.tick();
+      targetEl.addEventListener('raycaster-intersected', function () { done(); });
+      component.tick();
     });
 
     test('updates intersectedEls', function (done) {
-      var raycasterEl = this.el;
-      var targetEl = this.targetEl;
-      assert.equal(raycasterEl.components.raycaster.intersectedEls.length, 0);
+      var raycasterEl = el;
+      assert.equal(component.intersectedEls.length, 0);
       raycasterEl.addEventListener('raycaster-intersection', function () {
-        assert.equal(raycasterEl.components.raycaster.intersectedEls[0], targetEl);
+        assert.equal(component.intersectedEls[0], targetEl);
         done();
       });
-      raycasterEl.sceneEl.tick();
+      component.tick();
     });
 
     test('emits event on raycaster entity with details', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
+      var raycasterEl = el;
       raycasterEl.addEventListener('raycaster-intersection', function (evt) {
         assert.equal(evt.detail.els[0], targetEl);
         assert.equal(evt.detail.intersections[0].object.el, targetEl);
         done();
       });
-      raycasterEl.sceneEl.tick();
+      component.tick();
     });
 
     test('emits event on intersected entity with details', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
+      var raycasterEl = el;
       targetEl.addEventListener('raycaster-intersected', function (evt) {
         assert.equal(evt.detail.el, raycasterEl);
         done();
       });
-      raycasterEl.sceneEl.tick();
+      component.tick();
     });
 
     test('emits event on raycaster entity when clearing intersection', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
+      var raycasterEl = el;
       raycasterEl.addEventListener('raycaster-intersection', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
@@ -213,14 +195,13 @@ suite('raycaster', function () {
           assert.equal(evt.detail.el, targetEl);
           done();
         });
-        raycasterEl.sceneEl.tick();
+        component.tick();
       });
-      raycasterEl.sceneEl.tick();
+      component.tick();
     });
 
     test('emits event on intersected entity when clearing intersection', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
+      var raycasterEl = el;
       targetEl.addEventListener('raycaster-intersected', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
@@ -228,159 +209,81 @@ suite('raycaster', function () {
           assert.equal(evt.detail.el, raycasterEl);
           done();
         });
-        raycasterEl.sceneEl.tick();
+        component.tick();
       });
-      raycasterEl.sceneEl.tick();
+      component.tick();
     });
   });
 
   suite('non-recursive raycaster', function () {
-    setup(function createRaycasterAndTarget (done) {
-      var el = this.el;
-      var targetEl = this.targetEl = document.createElement('a-entity');
+    var targetEl;
+
+    setup(function (done) {
+      targetEl = document.createElement('a-entity');
 
       el.setAttribute('position', '0 0 1');
-      el.setAttribute('raycaster', {
-        recursive: false,
-        near: 0.1,
-        far: 10
-      });
+      el.setAttribute('raycaster', {recursive: false, near: 0.1, far: 10});
 
-      targetEl.setAttribute('geometry', 'primitive: box; depth: 1; height: 1; width: 1;');
+      targetEl.setAttribute('geometry', 'primitive: box');
       targetEl.setAttribute('position', '0 0 -1');
-      el.sceneEl.appendChild(targetEl);
-      // `npm run test:forefox` needs the timeout for the tests to succeed.
-      function finishSetup () {
-        setTimeout(function () {
-          // The object to check raycast against should reference the entity.
-          assert.equal(targetEl, targetEl.object3D.children[0].el);
-          done();
-        }, 0);
-      }
-      if (targetEl.hasLoaded) { finishSetup(); } else { targetEl.addEventListener('loaded', finishSetup); }
+      targetEl.addEventListener('loaded', function () {
+        setTimeout(() => { done(); });
+      });
+      sceneEl.appendChild(targetEl);
     });
 
     test('can catch basic intersection', function (done) {
-      this.targetEl.addEventListener('raycaster-intersected', function () { done(); });
-      this.el.sceneEl.tick();
-    });
-
-    test('updates intersectedEls', function (done) {
-      var raycasterEl = this.el;
-      var targetEl = this.targetEl;
-      assert.equal(raycasterEl.components.raycaster.intersectedEls.length, 0);
-      raycasterEl.addEventListener('raycaster-intersection', function () {
-        assert.equal(raycasterEl.components.raycaster.intersectedEls[0], targetEl);
-        done();
-      });
-      raycasterEl.sceneEl.tick();
-    });
-
-    test('emits event on raycaster entity with details', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
-      raycasterEl.addEventListener('raycaster-intersection', function (evt) {
-        assert.equal(evt.detail.els[0], targetEl);
-        assert.equal(evt.detail.intersections[0].object.el, targetEl);
-        done();
-      });
-      raycasterEl.sceneEl.tick();
-    });
-
-    test('emits event on intersected entity with details', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
-      targetEl.addEventListener('raycaster-intersected', function (evt) {
-        assert.equal(evt.detail.el, raycasterEl);
-        done();
-      });
-      raycasterEl.sceneEl.tick();
-    });
-
-    test('emits event on raycaster entity when clearing intersection', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
-      raycasterEl.addEventListener('raycaster-intersection', function () {
-        // Point raycaster somewhere else.
-        raycasterEl.setAttribute('rotation', '90 0 0');
-        raycasterEl.addEventListener('raycaster-intersection-cleared', function (evt) {
-          assert.equal(evt.detail.el, targetEl);
-          done();
-        });
-        raycasterEl.sceneEl.tick();
-      });
-      raycasterEl.sceneEl.tick();
-    });
-
-    test('emits event on intersected entity when clearing intersection', function (done) {
-      var targetEl = this.targetEl;
-      var raycasterEl = this.el;
-      targetEl.addEventListener('raycaster-intersected', function () {
-        // Point raycaster somewhere else.
-        raycasterEl.setAttribute('rotation', '90 0 0');
-        targetEl.addEventListener('raycaster-intersected-cleared', function (evt) {
-          assert.equal(evt.detail.el, raycasterEl);
-          done();
-        });
-        raycasterEl.sceneEl.tick();
-      });
-      raycasterEl.sceneEl.tick();
+      targetEl.addEventListener('raycaster-intersected', function () { done(); });
+      component.tick();
     });
   });
 
   suite('updateOriginDirection', function () {
     test('updates ray origin if position changes', function () {
-      var el = this.el;
       var origin;
       el.setAttribute('position', '1 2 3');
-      el.sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
-      el.sceneEl.tick();
-      origin = el.components.raycaster.raycaster.ray.origin;
+      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      component.tick();
+      origin = raycaster.ray.origin;
       assert.equal(origin.x, 1);
       assert.equal(origin.y, 2);
       assert.equal(origin.z, 3);
     });
 
     test('updates ray origin if parent position changes', function () {
-      var el = this.el;
-      var parentEl = this.parentEl;
       var origin;
       parentEl.setAttribute('position', '1 2 3');
-      el.sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
-      el.sceneEl.tick();
-      origin = el.components.raycaster.raycaster.ray.origin;
+      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      component.tick();
+      origin = raycaster.ray.origin;
       assert.equal(origin.x, 1);
       assert.equal(origin.y, 2);
       assert.equal(origin.z, 3);
     });
 
     test('defaults ray direction to 0 0 -1', function () {
-      var el = this.el;
-      var direction = el.components.raycaster.raycaster.ray.direction;
+      var direction = raycaster.ray.direction;
       assert.equal(direction.x, 0);
       assert.equal(direction.y, 0);
       assert.equal(direction.z, -1);
     });
 
     test('updates ray direction if rotation changes', function () {
-      var el = this.el;
       var direction;
       el.setAttribute('rotation', '180 0 0');
-      el.sceneEl.tick();
-      direction = el.components.raycaster.raycaster.ray.direction;
+      component.tick();
+      direction = raycaster.ray.direction;
       assert.equal(Math.floor(direction.x), 0);
       assert.equal(Math.floor(direction.y), 0);
       assert.equal(direction.z, 1);
     });
 
     test('updates ray direction if parent rotation changes', function () {
-      var el = this.el;
-      var parentEl = this.parentEl;
       var direction;
       parentEl.setAttribute('rotation', '180 0 0');
-      el.sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
-      el.sceneEl.tick();
-      direction = el.components.raycaster.raycaster.ray.direction;
+      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      component.tick();
+      direction = raycaster.ray.direction;
       assert.equal(Math.floor(direction.x), 0);
       assert.equal(Math.floor(direction.y), 0);
       assert.equal(direction.z, 1);
