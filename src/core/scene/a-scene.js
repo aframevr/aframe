@@ -43,8 +43,7 @@ module.exports.AScene = registerElement('a-scene', {
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
-        'vr-mode-ui': '',
-        'auto-enter-vr': ''
+        'vr-mode-ui': ''
       }
     },
 
