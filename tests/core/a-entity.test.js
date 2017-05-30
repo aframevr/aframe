@@ -603,6 +603,15 @@ suite('a-entity', function () {
         done();
       });
     });
+
+    test('handles detaching with with uninitialized components', function () {
+      var box = document.createElement('a-entity');
+      var el = this.el;
+      box.setAttribute('geometry', {primitive: 'box'});
+      el.sceneEl.appendChild(box);
+      el.sceneEl.removeChild(box);
+      // Just check it doesn't error.
+    });
   });
 
   suite('load', function () {
@@ -1128,6 +1137,26 @@ suite('a-entity', function () {
       assert.notEqual(sceneEl.behaviors.tick.indexOf(component), -1);
       el.removeAttribute('look-controls');
       assert.equal(sceneEl.behaviors.tick.indexOf(component), -1);
+    });
+
+    test('waits for component to initialize', function (done) {
+      var box = document.createElement('a-entity');
+      var component;
+      var removeSpy;
+
+      box.setAttribute('geometry', {primitive: 'box'});
+      component = box.components.geometry;
+      removeSpy = this.sinon.stub(component, 'remove', () => {});
+
+      box.removeComponent('geometry');
+      assert.notOk(removeSpy.called);
+
+      component.initialized = true;
+      box.emit('componentinitialized', {name: 'geometry'});
+      setTimeout(() => {
+        assert.ok(removeSpy.called);
+        done();
+      });
     });
   });
 

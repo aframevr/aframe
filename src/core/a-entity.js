@@ -436,6 +436,16 @@ var proto = Object.create(ANode.prototype, {
       component = this.components[name];
       if (!component) { return; }
 
+      // Wait for component to initialize.
+      if (!component.initialized) {
+        this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
+          if (evt.detail.name !== name) { return; }
+          this.removeComponent(name);
+          this.removeEventListener('componentinitialized', tryRemoveLater);
+        });
+        return;
+      }
+
       component.pause();
       component.remove();
       delete this.components[name];
@@ -443,7 +453,8 @@ var proto = Object.create(ANode.prototype, {
         id: component.id,
         name: name
       });
-    }
+    },
+    writable: window.debug
   },
 
   /**
