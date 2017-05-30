@@ -1,4 +1,22 @@
 // Karma configuration.
+var glob = require('glob');
+
+// Define test files.
+var FILES = [
+  // Serve test assets.
+  'tests/__init.test.js',
+  {pattern: 'tests/assets/**/*', included: false, served: true}
+];
+if (process.env.TEST_FILE) {
+  glob.sync('tests/**/*.test.js').forEach(function (filename) {
+    if (filename.toLowerCase().indexOf(process.env.TEST_FILE.toLowerCase()) !== -1) {
+      FILES.push(filename);
+    }
+  });
+} else {
+  FILES.push('tests/**/*.test.js');
+}
+
 var karmaConf = {
   basePath: '../',
   browserify: {
@@ -14,17 +32,12 @@ var karmaConf = {
   },
   client: {
     captureConsole: true,
-    mocha: {'ui': 'tdd'}
+    mocha: {ui: 'tdd'}
   },
   envPreprocessor: [
     'TEST_ENV'
   ],
-  files: [
-    // Define test files.
-    {pattern: 'tests/**/*.test.js'},
-    // Serve test assets.
-    {pattern: 'tests/assets/**/*', included: false, served: true}
-  ],
+  files: FILES,
   frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
   preprocessors: {
     'tests/**/*.js': ['browserify', 'env']
