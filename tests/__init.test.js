@@ -18,6 +18,7 @@ navigator.getVRDisplays = function () {
   return Promise.resolve([mockVRDisplay]);
 };
 
+require('index');
 var AScene = require('core/scene/a-scene').AScene;
 
 setup(function () {
