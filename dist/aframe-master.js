@@ -67916,9 +67916,9 @@ module.exports.Component = registerComponent('light', {
             } else {
               // Target specified, set target to entity's `object3D` when it is loaded.
               if (value.hasLoaded) {
-                self.onSetTarget(value);
+                self.onSetTarget(value, light);
               } else {
-                value.addEventListener('loaded', bind(self.onSetTarget, self, value));
+                value.addEventListener('loaded', bind(self.onSetTarget, self, value, light));
               }
             }
             break;
@@ -68047,9 +68047,9 @@ module.exports.Component = registerComponent('light', {
         this.defaultTarget = light.target;
         if (target) {
           if (target.hasLoaded) {
-            this.onSetTarget(target);
+            this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target));
+            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
           }
         }
         return light;
@@ -68068,9 +68068,9 @@ module.exports.Component = registerComponent('light', {
         this.defaultTarget = light.target;
         if (target) {
           if (target.hasLoaded) {
-            this.onSetTarget(target);
+            this.onSetTarget(target, light);
           } else {
-            target.addEventListener('loaded', bind(this.onSetTarget, this, target));
+            target.addEventListener('loaded', bind(this.onSetTarget, this, target, light));
           }
         }
         return light;
@@ -68083,8 +68083,8 @@ module.exports.Component = registerComponent('light', {
     }
   },
 
-  onSetTarget: function (targetEl) {
-    this.light.target = targetEl.object3D;
+  onSetTarget: function (targetEl, light) {
+    light.target = targetEl.object3D;
   },
 
   /**
@@ -77079,7 +77079,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-05-2017, Commit #3aced04)');
+console.log('A-Frame Version: 0.5.0 (Date 01-06-2017, Commit #e6b5935)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
