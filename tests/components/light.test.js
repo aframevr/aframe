@@ -205,7 +205,7 @@ suite('light', function () {
   });
 
   suite('light target', function () {
-    test('spotlight: set light target with selector when light is created', function (done) {
+    test('spotlight: set unloaded light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -222,6 +222,21 @@ suite('light', function () {
           done();
         });
       }
+    });
+
+    test('spotlight: set loaded light target with selector when light is created', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var lightEl = this.el;
+      var targetEl = document.createElement('a-entity');
+
+      sceneEl.appendChild(targetEl);
+      targetEl.setAttribute('id', 'target');
+
+      targetEl.addEventListener('loaded', function () {
+        lightEl.setAttribute('light', 'type: spot; target: #target');
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+        done();
+      });
     });
 
     test('spotlight: change light target with selector', function (done) {
@@ -285,7 +300,7 @@ suite('light', function () {
       assert.equal(lightTarget.position.z, -1);
     });
 
-    test('directional: set light target with selector when light is created', function (done) {
+    test('directional: set unloaded light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -302,6 +317,21 @@ suite('light', function () {
           done();
         });
       }
+    });
+
+    test('directional: set loaded light target with selector when light is created', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var lightEl = this.el;
+      var targetEl = document.createElement('a-entity');
+
+      sceneEl.appendChild(targetEl);
+      targetEl.setAttribute('id', 'target');
+
+      targetEl.addEventListener('loaded', function () {
+        lightEl.setAttribute('light', 'type: directional; target: #target');
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+        done();
+      });
     });
 
     test('directional: change light target with selector', function (done) {
