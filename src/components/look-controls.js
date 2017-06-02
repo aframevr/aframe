@@ -107,6 +107,7 @@ module.exports.Component = registerComponent('look-controls', {
     // The canvas where the scene is painted
     this.mouseDown = false;
     this.pitchObject = new THREE.Object3D();
+    this.dollyObject = new THREE.Object3D();
     this.yawObject = new THREE.Object3D();
     this.yawObject.position.y = 10;
     this.yawObject.add(this.pitchObject);
@@ -234,7 +235,28 @@ module.exports.Component = registerComponent('look-controls', {
       var sceneEl = this.el.sceneEl;
       currentHMDPosition = this.calculateHMDPosition();
       deltaHMDPosition.copy(currentHMDPosition).sub(previousHMDPosition);
-      if (!sceneEl.is('vr-mode') || isNullVector(deltaHMDPosition)) { return; }
+      if (!sceneEl.is('vr-mode') || isNullVector(deltaHMDPosition)){
+        var deltaDolly = this.calculateDeltaDolly();
+
+        if (deltaDolly.x !==0 || deltaDolly.z !== 0) {
+          var rotation        = this.el.getAttribute('rotation');
+          var leftrightAmount = deltaDolly.x;
+          var inoutAmount     = deltaDolly.z;
+          deltaDolly.z        = leftrightAmount * Math.cos(  THREE.Math.degToRad( rotation.y -90 ));
+          deltaDolly.x        = leftrightAmount * Math.sin(  THREE.Math.degToRad( rotation.y -90 ));
+          deltaDolly.z        -= inoutAmount * Math.cos(  THREE.Math.degToRad( rotation.y ));
+          deltaDolly.x        -= inoutAmount * Math.sin(  THREE.Math.degToRad( rotation.y ));
+
+          var position = {
+            x: currentPosition.x + deltaDolly.x,
+            y: currentPosition.y + deltaDolly.y,
+            z: currentPosition.z + deltaDolly.z,
+          };
+
+          this.el.setAttribute('position', position);
+        }
+        return;
+      }
       previousHMDPosition.copy(currentHMDPosition);
       // Do nothing if we have not moved.
       if (!sceneEl.is('vr-mode')) { return; }
@@ -245,6 +267,25 @@ module.exports.Component = registerComponent('look-controls', {
       });
     };
   })(),
+
+  calculateDeltaDolly: function () {
+    var currentDollyX = this.dollyObject.position.x;
+    var currentDollyY = this.dollyObject.position.y;
+    var currentDollyZ = this.dollyObject.position.z;
+    var deltaDolly;
+    this.previousDollyX = this.previousDollyX || currentDollyX;
+    this.previousDollyY = this.previousDollyY || currentDollyY;
+    this.previousDollyZ = this.previousDollyZ || currentDollyZ;
+    deltaDolly = {
+      x: currentDollyX - this.previousDollyX,
+      y: currentDollyY - this.previousDollyY,
+      z: currentDollyZ - this.previousDollyZ
+    };
+    this.previousDollyX = currentDollyX;
+    this.previousDollyY = currentDollyY;
+    this.previousDollyZ = currentDollyZ;
+    return deltaDolly;
+  },
 
   calculateHMDPosition: function () {
     var dolly = this.dolly;
@@ -290,7 +331,7 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onTouchStart: function (e) {
-    if (e.touches.length !== 1) { return; }
+    if (e.touches.length > 2) { return; }
     this.touchStart = {
       x: e.touches[0].pageX,
       y: e.touches[0].pageY
@@ -299,17 +340,46 @@ module.exports.Component = registerComponent('look-controls', {
   },
 
   onTouchMove: function (e) {
-    var deltaY;
-    var yawObject = this.yawObject;
     if (!this.touchStarted) { return; }
-    deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
-            this.el.sceneEl.canvas.clientWidth;
-    // Limits touch orientaion to to yaw (y axis)
-    yawObject.rotation.y -= deltaY * 0.5;
-    this.touchStart = {
-      x: e.touches[0].pageX,
-      y: e.touches[0].pageY
-    };
+
+    if(e.touches.length === 1){
+      var deltaY;
+      var yawObject = this.yawObject;
+      deltaY = 2 * Math.PI * (e.touches[0].pageX - this.touchStart.x) /
+              this.el.sceneEl.canvas.clientWidth;
+      // Limits touch orientaion to to yaw (y axis)
+      yawObject.rotation.y -= deltaY * 0.5;
+      this.touchStart = {
+        x: e.touches[0].pageX,
+        y: e.touches[0].pageY
+      };
+    }
+    else if (e.touches.length === 2 ) {
+      // Handle the dolly motion. We will look at movement of the mid-point between the two touches.
+      var px = (e.touches[0].pageX + e.touches[1].pageX) / 2;
+      var py = (e.touches[0].pageY + e.touches[1].pageY) / 2;
+      var dist = Math.sqrt(  (e.touches[0].pageX - e.touches[1].pageX) * (e.touches[0].pageX - e.touches[1].pageX) +
+        (e.touches[0].pageY - e.touches[1].pageY) * (e.touches[0].pageY - e.touches[1].pageY));
+
+      if (!isFinite(this.touchStart.dist)) this.touchStart.dist = dist;
+
+      var minScreenDim = Math.min(this.el.sceneEl.canvas.clientWidth, this.el.sceneEl.canvas.clientHeight );
+      var maxDist = Math.sqrt( minScreenDim*minScreenDim + minScreenDim*minScreenDim);
+
+      var deltaX = 2 * Math.PI * (px - this.touchStart.x) / this.el.sceneEl.canvas.clientWidth;
+      var deltaY = 2 * Math.PI * (py - this.touchStart.y) / this.el.sceneEl.canvas.clientHeight;
+      var deltaDist =   2 * Math.PI * (dist - this.touchStart.dist) / maxDist;
+
+      if (Math.abs(deltaX)>1.5 || Math.abs(deltaX)>1.5) return;
+
+      this.dollyObject.position.z += deltaDist * 0.5;
+
+      this.touchStart = {
+        x: px,
+        y: py,
+        dist: dist
+      };
+    }
   },
 
   onTouchEnd: function () {
