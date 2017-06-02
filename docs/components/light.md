@@ -203,7 +203,8 @@ cast or receive shadows.
   receive shadows.
 
 ```html
-<a-gltf-model src="tree.gltf" shadow="receive: false"></a-gltf-model>
+<a-gltf-model src="tree.gltf" shadow="cast: true"></a-gltf-model>
+<a-circle id="ground" radius="10" rotation="-90 0 0" shadow-"receive: true"></a-circle>
 ```
 
 - **3. Adjust the shadow camera** position and frustum (`shadowCameraTop`,
