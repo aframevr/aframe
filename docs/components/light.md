@@ -177,7 +177,7 @@ additional properties:
 > information into a texture][light-baking] before importing assets into
 > A-Frame.
 
-- **1. Create at least one light** with `castShadows: true`. Three light types
+- **1. Create at least one light** with `castShadow: true`. Three light types
   support shadows (`point`, `spot`, and `directional`). Of the three,
   `directional` lights will have the best performance. Combining an ambient
   light (without shadows) and a directional light (with shadows) is a good
