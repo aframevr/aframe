@@ -79,7 +79,7 @@ together different components:
 As another abstract example, imagine we want to build a car entity by
 assembling components:
 
-- We can attach a `material` component that that has properties such as "color" or
+- We can attach a `material` component that has properties such as "color" or
   "shininess" that affects the appearance of the car.
 - We can attach an `engine` component that has properties such as "horsepower" or
   "weight" that affects the functionality of the car.
