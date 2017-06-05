@@ -1048,6 +1048,51 @@ suite('a-entity', function () {
       assert.ok(el.components.sound__1 instanceof components.sound.Component);
       assert.ok(el.components.sound__2 instanceof components.sound.Component);
     });
+
+    test('waits for DOM data to init before setAttribute data', function (done) {
+      // Test component.
+      AFRAME.registerComponent('test', {
+        schema: {
+          foo: {default: 5},
+          bar: {default: 'red'},
+          qux: {default: true}
+        },
+
+        init: function () {
+          var data = this.data;
+          assert.equal(data.foo, 10);
+          assert.equal(data.bar, 'red');
+          assert.equal(data.qux, true);
+        },
+
+        update: function (oldData) {
+          var data = this.data;
+          if (Object.keys(oldData).length) {
+            // Second update via setAttribute.
+            assert.equal(data.foo, 10);
+            assert.equal(data.bar, 'orange');
+            assert.equal(data.qux, true);
+            delete AFRAME.components['test-setter'];
+            done();
+          } else {
+            // First update via initialization.
+            assert.equal(data.foo, 10);
+            assert.equal(data.bar, 'red');
+            assert.equal(data.qux, true);
+          }
+        }
+      });
+
+      // Component that will do the setAttribute, without dependency.
+      AFRAME.registerComponent('test-setter', {
+        init: function () {
+          this.el.setAttribute('test', {bar: 'orange'});
+        }
+      });
+
+      // Create the entity.
+      this.el.innerHTML = '<a-entity test-setter test="foo: 10">';
+    });
   });
 
   suite('removeComponent', function () {
