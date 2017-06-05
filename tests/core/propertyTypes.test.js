@@ -94,6 +94,38 @@ suite('propertyTypes', function () {
     });
   });
 
+  suite('object', function () {
+    var parse = propertyTypes.object.parse;
+    var stringify = propertyTypes.object.stringify;
+
+    test('parses object', function () {
+      assert.shallowDeepEqual(parse({foo: 1}), {foo: 1});
+    });
+
+    test('parses object from string with no quotes', function () {
+      assert.shallowDeepEqual(parse('{foo: 1, bar: 2}'), {foo: 1, bar: 2});
+      assert.shallowDeepEqual(parse('{foo: "a", bar: "b"}'), {foo: 'a', bar: 'b'});
+    });
+
+    test('parses object from string with quotes', function () {
+      assert.shallowDeepEqual(parse('{"foo": 1, "bar": 2}'), {foo: 1, bar: 2});
+      assert.shallowDeepEqual(parse('{"foo": "a", "bar": "b"}'), {foo: 'a', bar: 'b'});
+    });
+
+    test('parses nested object', function () {
+      assert.shallowDeepEqual(parse('{foo: {bar: {qux: 1.5}}}'), {foo: {bar: {qux: 1.5}}});
+    });
+
+    test('parses back', function () {
+      assert.shallowDeepEqual(parse(stringify({foo: 1})), {foo: 1});
+    });
+
+    test('stringifies object', function () {
+      var obj = {foo: 'bar', bar: {qaz: -5}, qux: 1.5};
+      assert.equal(stringify(obj), JSON.stringify(obj));
+    });
+  });
+
   suite('selector', function () {
     var parse = propertyTypes.selector.parse;
     var stringify = propertyTypes.selector.stringify;

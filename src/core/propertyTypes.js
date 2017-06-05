@@ -13,6 +13,7 @@ registerPropertyType('asset', '', assetParse);
 registerPropertyType('boolean', false, boolParse);
 registerPropertyType('color', '#FFF', defaultParse, defaultStringify);
 registerPropertyType('int', 0, intParse);
+registerPropertyType('object', '', objectParse, JSON.stringify);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
@@ -117,6 +118,17 @@ function intParse (value) {
 
 function numberParse (value) {
   return parseFloat(value, 10);
+}
+
+/**
+ * `{\"bar\": 10}` to {bar: 10}
+ */
+function objectParse (value) {
+  if (!value) { return null; }
+  if (typeof value !== 'string') { return value; }
+  // Add double quotes if not true JSON.
+  value = value.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2": ');
+  return JSON.parse(value);
 }
 
 function selectorParse (value) {
