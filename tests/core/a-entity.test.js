@@ -431,6 +431,46 @@ suite('a-entity', function () {
         baz: 'url(test.jpg)'
       });
     });
+
+    test('merges updates with previous data', function (done) {
+      var el = this.el;
+      el.addEventListener('child-attached', evt => {
+        el = evt.detail.el;
+        el.addEventListener('loaded', evt => {
+          var geometry;
+
+          assert.shallowDeepEqual(el.components.geometry.attrValue, {width: 5});
+          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {});
+
+          // First setAttribute.
+          el.setAttribute('geometry', {depth: 10, height: 20});
+          geometry = el.getAttribute('geometry');
+          assert.equal(geometry.depth, 10);
+          assert.equal(geometry.height, 20);
+          assert.equal(geometry.width, 5, 'First setAttribute');
+          assert.shallowDeepEqual(el.components.geometry.attrValue, {
+            depth: 10,
+            height: 20,
+            width: 5
+          });
+          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {width: 5});
+
+          // Second setAttribute.
+          el.setAttribute('geometry', {depth: 20, height: 10});
+          geometry = el.getAttribute('geometry');
+          assert.shallowDeepEqual(el.components.geometry.attrValue, {
+            depth: 20,
+            height: 10,
+            width: 5
+          });
+          assert.equal(geometry.width, 5, 'Second setAttribute');
+          done();
+        });
+      });
+
+      // Initial data.
+      el.innerHTML = '<a-entity geometry="primitive: box; width: 5">';
+    });
   });
 
   suite('flushToDOM', function () {
