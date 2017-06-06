@@ -74198,12 +74198,25 @@ Component.prototype = {
   /**
    * Update the cache of the pre-parsed attribute value.
    *
-   * @param {string} value - HTML attribute value.
+   * @param {string} value - New data.
+   * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
-  updateCachedAttrValue: function (value) {
-    var isSinglePropSchema = isSingleProp(this.schema);
+  updateCachedAttrValue: function (value, clobber) {
     var attrValue = this.parseAttrValueForCache(value);
+    var isSinglePropSchema = isSingleProp(this.schema);
+    var property;
+
     if (value === undefined) { return; }
+
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (!isSinglePropSchema && !clobber && this.attrValue) {
+      for (property in this.attrValue) {
+        if (!(property in attrValue)) {
+          attrValue[property] = this.attrValue[property];
+        }
+      }
+    }
+
     this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
   },
 
@@ -74281,7 +74294,7 @@ Component.prototype = {
     this.data = this.buildData(attrValue, clobber, false, skipTypeChecking);
 
     // Cache current attrValue for future updates.
-    this.updateCachedAttrValue(attrValue);
+    this.updateCachedAttrValue(attrValue, clobber);
 
     if (!this.initialized) {
       // Component is being already initialized.
@@ -77079,7 +77092,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 01-06-2017, Commit #e6b5935)');
+console.log('A-Frame Version: 0.5.0 (Date 06-06-2017, Commit #410424f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
