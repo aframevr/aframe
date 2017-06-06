@@ -83,7 +83,7 @@ creating a child entity it targets. For example, pointing down its -Z axis:
 
 ```html
 <a-light type="directional" position="0 0 0" rotation="-90 0 0" target="#directionaltarget">
-	<a-entity id="directionaltarget" position="0 0 -1"></a-entity>
+  <a-entity id="directionaltarget" position="0 0 -1"></a-entity>
 </a-light>
 ```
 
@@ -204,7 +204,7 @@ cast or receive shadows.
 
 ```html
 <a-gltf-model src="tree.gltf" shadow="cast: true"></a-gltf-model>
-<a-circle id="ground" radius="10" rotation="-90 0 0" shadow-"receive: true"></a-circle>
+<a-circle id="ground" radius="10" rotation="-90 0 0" shadow="receive: true"></a-circle>
 ```
 
 - **3. Adjust the shadow camera** position and frustum (`shadowCameraTop`,
