@@ -68970,6 +68970,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.intersectedEls = [];
     this.objects = null;
     this.prevCheckTime = undefined;
+    this.prevIntersectedEls = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
     this.refreshObjects = bind(this.refreshObjects, this);
@@ -69059,10 +69060,11 @@ module.exports.Component = registerComponent('raycaster', {
   tick: function (time) {
     var el = this.el;
     var data = this.data;
-    var intersectedEls;
+    var i;
+    var intersectedEls = this.intersectedEls;
     var intersections;
     var prevCheckTime = this.prevCheckTime;
-    var prevIntersectedEls;
+    var prevIntersectedEls = this.prevIntersectedEls;
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
@@ -69071,7 +69073,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.prevCheckTime = time;
 
     // Store old previously intersected entities.
-    prevIntersectedEls = this.intersectedEls.slice();
+    copyArray(this.prevIntersectedEls, this.intersectedEls);
 
     // Raycast.
     this.updateOriginDirection();
@@ -69083,9 +69085,10 @@ module.exports.Component = registerComponent('raycaster', {
     });
 
     // Update intersectedEls.
-    intersectedEls = this.intersectedEls = intersections.map(function getEl (intersection) {
-      return intersection.object.el;
-    });
+    intersectedEls.length = intersections.length;
+    for (i = 0; i < intersections.length; i++) {
+      intersectedEls[i] = intersections[i].object.el;
+    }
 
     // Emit intersected on intersected entity per intersected entity.
     intersections.forEach(function emitEvents (intersection) {
@@ -69096,7 +69099,7 @@ module.exports.Component = registerComponent('raycaster', {
     // Emit all intersections at once on raycasting entity.
     if (intersections.length) {
       el.emit('raycaster-intersection', {
-        els: intersectedEls.slice(),
+        els: intersectedEls,
         intersections: intersections
       });
     }
@@ -69133,6 +69136,17 @@ module.exports.Component = registerComponent('raycaster', {
     };
   })()
 });
+
+/**
+ * Copy contents of one array to another without allocating new array.
+ */
+function copyArray (a, b) {
+  var i;
+  a.length = b.length;
+  for (i = 0; i < b.length; i++) {
+    a[i] = b[i];
+  }
+}
 
 },{"../core/component":102,"../lib/three":149,"../utils/":172}],72:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
@@ -77103,7 +77117,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 06-06-2017, Commit #70eea24)');
+console.log('A-Frame Version: 0.5.0 (Date 06-06-2017, Commit #7b0348e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
