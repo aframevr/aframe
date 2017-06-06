@@ -55,12 +55,21 @@ module.exports.Component = registerComponent('raycaster', {
   update: function () {
     var data = this.data;
     var raycaster = this.raycaster;
+    var self = this;
 
     // Set raycaster properties.
     raycaster.far = data.far;
     raycaster.near = data.near;
 
     this.refreshObjects();
+
+    // Pick up any `Object3D`s that get set later (e.g., after model loading).
+    this.objects.forEach(object => {
+      if (!object.el) { return; }
+      object.el.addEventListener('object3dset', function (evt) {
+        self.objects.push(evt.detail.object);
+      });
+    });
   },
 
   /**
@@ -88,28 +97,27 @@ module.exports.Component = registerComponent('raycaster', {
     var data = this.data;
     var i;
     var objects;
-    // Target entitie .
-    var objectEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
+
+    if (!data.objects) {
+      // If `objects` selector not defined, intersect with everything.
+      this.objects = this.el.sceneEl.object3D.children;
+      return;
+    }
 
     // Push meshes onto list of objects to intersect.
-    if (objectEls) {
-      objects = [];
-      for (i = 0; i < objectEls.length; i++) {
-        objects.push(objectEls[i].object3D);
-      }
-    } else {
-      // If objects not defined, intersect with everything.
-      objects = this.el.sceneEl.object3D.children;
+    objects = [];
+    targetEls = this.el.sceneEl.querySelectorAll(data.objects);
+    for (i = 0; i < targetEls.length; i++) {
+      objects.push(targetEls[i].object3D);
     }
 
     this.objects = [];
     for (i = 0; i < objects.length; i++) {
-      // A-Frame wraps everything (e.g. in a Group) so we want children.
+      // A-Frame wraps everything in a Group. Grab the children.
       children = objects[i].children;
 
       // Add the object3D's children so non-recursive raycasting will work correctly.
-      // If there aren't any children, then until a refresh after geometry loads,
-      // raycast won't see this object... but that should happen automatically.
+      // If no children, then refresh after geometry loads.
       if (children) { this.objects.push.apply(this.objects, children); }
     }
   },
@@ -125,6 +133,8 @@ module.exports.Component = registerComponent('raycaster', {
     var intersections;
     var prevCheckTime = this.prevCheckTime;
     var prevIntersectedEls = this.prevIntersectedEls;
+
+    if (!this.objects || !this.objects.length) { return; }
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
