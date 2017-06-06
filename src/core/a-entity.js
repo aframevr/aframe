@@ -510,14 +510,15 @@ var proto = Object.create(ANode.prototype, {
    * When initializing, we set the component on `this.components`.
    *
    * @param {string} attr - Component name.
-   * @param {object} attrValue - The value of the DOM attribute.
-   * @param {bollean} clobber - if the new attrValue will ccompletely replace the previous properties
+   * @param {object} attrValue - Value of the DOM attribute.
+   * @param {boolean} clobber - If new attrValue completely replaces previous properties.
    */
   updateComponent: {
     value: function (attr, attrValue, clobber) {
       var component = this.components[attr];
       var isDefault = attr in this.defaultComponents;
       if (component) {
+        // Remove component.
         if (attrValue === null && !isDefault) {
           this.removeComponent(attr);
           return;
@@ -526,6 +527,7 @@ var proto = Object.create(ANode.prototype, {
         component.updateProperties(attrValue, clobber);
         return;
       }
+
       // Component not yet initialized. Initialize component.
       this.initComponent(attr, attrValue, false);
     }
@@ -686,27 +688,36 @@ var proto = Object.create(ANode.prototype, {
       var arg1Type = typeof arg1;
       var clobber;
       var componentName;
+      var delimiterIndex;
       var isDebugMode;
 
-      var pos = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
-      componentName = pos > 0 ? attrName.substring(0, pos) : attrName;
+      delimiterIndex = attrName.indexOf(MULTIPLE_COMPONENT_DELIMITER);
+      componentName = delimiterIndex > 0 ? attrName.substring(0, delimiterIndex) : attrName;
+
+      // Not a component.
+      if (!COMPONENTS[componentName]) {
+        normalSetAttribute(this, attrName, arg1);
+        return;
+      }
+
+      // Initialize component first if not yet initialized.
+      if (!this.components[attrName] && this.hasAttribute(attrName)) {
+        this.updateComponent(attrName,
+                             HTMLElement.prototype.getAttribute.call(this, attrName));
+      }
 
       // Determine which type of setAttribute to call based on the types of the arguments.
-      if (COMPONENTS[componentName]) {
-        if (arg1Type === 'string' && typeof arg2 !== 'undefined') {
-          singlePropertyUpdate(this, attrName, arg1, arg2);
-        } else {
-          clobber = arg1Type !== 'object' || (arg1Type === 'object' && arg2 === true);
-          this.updateComponent(attrName, arg1, clobber);
-        }
-
-        // In debug mode, write component data up to the DOM.
-        isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
-        if (isDebugMode) { this.components[attrName].flushToDOM(); }
-        return;
+      if (arg1Type === 'string' && typeof arg2 !== 'undefined') {
+        singlePropertyUpdate(this, attrName, arg1, arg2);
       } else {
-        normalSetAttribute(this, attrName, arg1);
+        // Object update.
+        clobber = arg1Type !== 'object' || (arg1Type === 'object' && arg2 === true);
+        this.updateComponent(attrName, arg1, clobber);
       }
+
+      // In debug mode, write component data up to the DOM.
+      isDebugMode = this.sceneEl && this.sceneEl.getAttribute('debug');
+      if (isDebugMode) { this.components[attrName].flushToDOM(); }
 
       /**
        * Just update one of the component properties.
