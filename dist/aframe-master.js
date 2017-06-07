@@ -74105,7 +74105,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
-  this.updateProperties(attrValue);
   this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
     el.emit('componentchanged', {
       id: self.id,
@@ -74114,6 +74113,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
       oldData: oldData
     }, false);
   }, 200);
+  this.updateProperties(attrValue);
 };
 
 Component.prototype = {
@@ -77117,7 +77117,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 06-06-2017, Commit #7b0348e)');
+console.log('A-Frame Version: 0.5.0 (Date 07-06-2017, Commit #3dd9a0f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
