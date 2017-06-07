@@ -10,17 +10,18 @@ parent_section: components
 [oculustouch]: ./oculus-touch-controls.md
 [daydream]: ./daydream-controls.md
 
-The hand-controls gives tracked hands (using a prescribed model) with animated
-gestures. hand-controls wraps the [vive-controls][vive], [oculus-touch-controls][oculustouch],
-and [daydream-controls][daydream] components, which in turn wrap the
-[tracked-controls component][tracked]. The component gives extra events and
+The hand-controls component provides tracked hands (using a prescribed model)
+with animated gestures. hand-controls wraps the [vive-controls][vive] and
+[oculus-touch-controls][oculustouch] which in turn wrap the [tracked-controls
+component][tracked]. By specifying just `hand-controls`, we have something that
+works well with both Vive and Rift. The component gives extra events and
 handles hand animations and poses.
 
 ## Example
 
 ```html
-<a-entity hand-controls="left"></a-entity>
-<a-entity hand-controls="right"></a-entity>
+<a-entity id="leftHand" hand-controls="left"></a-entity>
+<a-entity id="rightHand" hand-controls="right"></a-entity>
 ```
 
 ## Values

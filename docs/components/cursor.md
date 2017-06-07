@@ -5,21 +5,41 @@ layout: docs
 parent_section: components
 ---
 
-The cursor component lets us interact with entities through clicking and
-gazing. The cursor is a specific application of the [raycaster][raycaster]
-component in that it:
+[a-cursor]: ../primitives/a-cursor.md
+[laser-controls]: ./laser-controls.md
+[raycaster]: ./raycaster.md
 
-- Listens for mouse clicks and gaze-based fuses.
-- Captures only the first intersected entity.
-- Emits special mouse and hover events (e.g., relating to mouse down/up/enter/leave).
-- Has more states for hovering.
+The cursor component provides hover and click states for interaction on top of
+the [raycaster component][raycaster]. The cursor component can be used for
+both gaze-based and controller-based interactions, but the appearance needs
+to be configured depending on the use case. The [`<a-cursor>` primitive] provides
+a default reticle appearance for a gaze-based cursor, and the [laser-controls
+component] configures the cursor for all controllers.
 
-When the mouse clicks, the closest visible entity intersecting the cursor, if
-any, will emit a `click` event. Note the cursor component only applies the
-raycasting behavior. To provide a shape or appearance to the cursor, you could
-apply the [geometry][geometry] and [material][material] components.
+The cursor component listens to events and keeps state on what's being hovered
+and pressed in order to provide `mousedown`, `mouseup`, `mouseenter`,
+`mouseleave`, and `click` events. We name use the `mouse` name to mimic
+traditional web development for now. Under the hood, the cursor component uses
+the `raycaster-intersected` and `raycaster-intersection-cleared` events,
+capturing the closest visible intersected entity.
+
+By default, the cursor is configured to be used in a gaze-based mode.
+Specifying the `downEvents` and `upEvents` properties allows the cursor to work
+with controllers.  The [laser-controls component][laser-controls] automatically
+configures those.
+
+[geometry]: ./geometry.md
+[line]: ./line.md
+[material]: ./material.md
+
+To provide a shape or appearance to the cursor, we should apply either the
+[geometry][geometry] and [material][material] components or use the raycaster
+component's `showLine` property to draw a line using the [line
+component][line].
 
 ## Example
+
+[camera]: ./camera.md
 
 For example, we can create a ring-shaped cursor fixed to the center of the
 screen. To fix the cursor to the screen so the cursor is always present no
@@ -55,20 +75,22 @@ AFRAME.registerComponent('cursor-listener', {
 
 ## Properties
 
-Note, to further customize the cursor component, we can set the properties of
-the raycaster component.
+| Property    | Description                                                                                                                | Default Value                    |
+|-------------|----------------------------------------------------------------------------------------------------------------------------|----------------------------------|
+| downEvents  | Array of additional events on the entity to listen to for triggering `mousedown` (e.g., `triggerdown` for vive-controls).  | []                               |
+| fuse        | Whether cursor is fuse-based.                                                                                              | false on desktop, true on mobile |
+| fuseTimeout | How long to wait (in milliseconds) before triggering a fuse-based click event.                                             | 1500                             |
+| upEvents    | Array of additional events on the entity to listen to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls). | []                               |
 
-| Property    | Description                                                                    | Default Value                    |
-|-------------|--------------------------------------------------------------------------------|----------------------------------|
-| fuse        | Whether cursor is fuse-based.                                                  | false on desktop, true on mobile |
-| fuseTimeout | How long to wait (in milliseconds) before triggering a fuse-based click event. | 1500                             |
+To further customize the cursor component, we configure the cursor's dependency
+component, [the raycaster component][raycaster].
 
 ## Events
 
-| Event             | Description                                                                                                                 |
-|-------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| Event      | Description                                                                                                                 |
+|------------|-----------------------------------------------------------------------------------------------------------------------------|
 | click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
-| fusing | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down. |
+| fusing     | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down.                                  |
 | mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
 | mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
 | mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
@@ -78,16 +100,16 @@ the raycaster component.
 
 The cursor will add states to the cursor entity on certain events:
 
-| State           | Description                                            |
-|-----------------|--------------------------------------------------------|
-| cursor-fusing   | Added when the cursor is fusing on another entity.     |
-| cursor-hovering | Added when the cursor is hovering over another entity. |
+| State    | Description                                            |
+|----------|--------------------------------------------------------|
+| fusing   | Added when the cursor is fusing on another entity.     |
+| hovering | Added when the cursor is hovering over another entity. |
 
 The cursor will add states to intersected entities on certain events:
 
-| State          | Description                                                          |
-|----------------|----------------------------------------------------------------------|
-| cursor-hovered | Added to the intersected entity when the cursor is hovering over it. |
+| State   | Description                                                          |
+|---------|----------------------------------------------------------------------|
+| hovered | Added to the intersected entity when the cursor is hovering over it. |
 
 ## Configuring the Cursor through the Raycaster Component
 
@@ -118,6 +140,8 @@ interactions is that it requires the user to turn their head a lot.
 
 ## Adding Visual Feedback
 
+[animation]: ../core/animations.md
+
 To add visual feedback to the cursor to show when the cursor is clicking or
 fusing, we can use the [animation system][animation].  When the cursor
 intersects the entity, it will emit an event, and the animation system will
@@ -135,12 +159,7 @@ pick up event with the `begin` attribute:
 </a-entity>
 ```
 
+[cursor-codepen]: http://codepen.io/anon/pen/dpmpJP
+
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].
-
-[animation]: ../core/animations.md
-[camera]: ./camera.md
-[cursor-codepen]: http://codepen.io/anon/pen/dpmpJP
-[geometry]: ./geometry.md
-[material]: ./material.md
-[raycaster]: ./raycaster.md
