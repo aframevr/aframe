@@ -15,6 +15,7 @@ suite('node acceptance tests', function () {
 
   teardown(function () {
     delete global.window;
+    delete global.navigator;
     delete global.document;
     delete global.HTMLElement;
   });
