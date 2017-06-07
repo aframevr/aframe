@@ -514,7 +514,7 @@ Then attach the component:
 
 ## Adding Laser Interactions for Controllers
 
-[controllercursor]: https://github.com/bryik/aframe-controller-cursor-component
+[laser-controls]: ./laser-controls.md
 
 Laser interactions refer to placing a visible raycaster (line) shooting out of
 the controller. Interactions occur when entities intersect the line, a
@@ -522,32 +522,23 @@ controller button changes during intersection, and/or when entities no longer
 intersect the line. This interaction is very similar to gaze-based interaction,
 except the raycaster is now affixed to the controller rather than the headset.
 
-The community [controller-cursor component][controllercursor] component
-provides laser interactions for controllers. We expect this functionality to be
-merged into A-Frame's [cursor component][cursor] in the future. The usage is
-almost exactly similar to the cursor component, but attach the component to the
-controller rather than under the camera:
+The [laser-controls component][laser-controls] component provides laser
+interactions for controllers.  The usage is almost exactly similar to the
+cursor component, but attach the component to the controller rather than under
+the camera:
 
 ```html
-<a-entity hand-controls controller-cursor></a-entity>
+<a-entity laser-controls="hand: right"></a-entity>
 ```
 
 [raycasterfar]: ../components/raycaster.html#properties_far
 
-Then length of the cursor is configured by [adjusting the length of the
-raycaster][raycasterfar]:
+Then default length of the laser is configured by [adjusting the length of the
+raycaster][raycasterfar]. When the laser intersects with an entity, the length
+of the laser will be truncated.
 
 ```html
 <a-entity hand-controls controller-cursor raycaster="far: 2"></a-entity>
-```
-
-By default, the controller-cursor component as is works for button mappings for
-6DoF controllers (`triggerdown`, `triggerup`). Since most 3DoF controllers have
-different types of buttons, we can configure it to 3DoF controller events or
-any event in general with `downEvents` and `upEvents`:
-
-```html
-<a-entity hand-controls controller-cursor="downEvents: triggerdown, trackpaddown; upEvents: triggerup, trackpadup"></a-entity>
 ```
 
 [gaze]: #gaze-based-interactions-with-cursor-component

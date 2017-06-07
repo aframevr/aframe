@@ -40,6 +40,9 @@ controller is used. laser-controls then configures the [cursor
 component][cursor] for listen to the appropriate events and configures the
 [raycaster component][raycaster] to draw the laser.
 
+When the laser intersects with an entity, the length of the line gets truncated
+to the distance to the intersection point.
+
 ## Example
 
 ```html
@@ -51,3 +54,25 @@ component][cursor] for listen to the appropriate events and configures the
 | Properties | Description        |
 |------------|--------------------|
 | hand       | `left` or `right`. |
+
+## Customizing the Raycaster
+
+Configure the [raycaster properties][raycaster].
+
+For example:
+
+```html
+<a-entity laser-controls raycaster="objects: .links; far: 5"></a-entity>
+```
+
+## Customizing the Line
+
+[customize]: ./raycaster.md#customizing-the-line
+
+See [*Raycaster: Customizing the Line*][customize].
+
+For example:
+
+```html
+<a-entity laser-controls line="color: red; opacity: 0.75"></a-entity>
+```
