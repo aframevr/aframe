@@ -404,7 +404,7 @@ AFRAME.registerShader('line-dashed', {
 
 ### Example — GLSL and Shaders
 
-For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. We'll do this using [THREE.ShaderMaterial](https://threejs.org/docs/#Reference/Materials/ShaderMaterial) and a custom component. GLSL shaders can also be used with the `registerShader` API, but for many cases — here, we need a `tick()` handler to update the shader's clock — using a component can be easier.
+For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. We'll do this using [THREE.ShaderMaterial](https://threejs.org/docs/#api/materials/ShaderMaterial) and a custom component. GLSL shaders can also be used with the `registerShader` API, but for many cases — here, we need a `tick()` handler to update the shader's clock — using a component can be easier.
 
 > NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
 
