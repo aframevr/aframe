@@ -435,6 +435,8 @@ var proto = Object.create(ANode.prototype, {
       if (isDefault || isMixedIn) { return; }
 
       component = this.components[name];
+      if (!component) { return; }
+
       component.pause();
       component.remove();
       delete this.components[name];
