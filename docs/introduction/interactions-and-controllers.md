@@ -514,7 +514,7 @@ Then attach the component:
 
 ## Adding Laser Interactions for Controllers
 
-[laser-controls]: ./laser-controls.md
+[laser-controls]: ../components/laser-controls.md
 
 Laser interactions refer to placing a visible raycaster (line) shooting out of
 the controller. Interactions occur when entities intersect the line, a
