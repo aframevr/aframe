@@ -38,7 +38,6 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el.components[this.attrName] = this;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
-  this.updateProperties(attrValue);
   this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
     el.emit('componentchanged', {
       id: self.id,
@@ -47,6 +46,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
       oldData: oldData
     }, false);
   }, 200);
+  this.updateProperties(attrValue);
 };
 
 Component.prototype = {
