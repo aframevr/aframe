@@ -585,6 +585,19 @@ suite('Component', function () {
       component.updateProperties({list: ['b']});
       sinon.assert.calledOnce(updateStub);
     });
+
+    test('emit componentchanged when update calls setAttribute', function (done) {
+      var TestComponent = registerComponent('dummy', {
+        schema: {color: {default: 'red'}},
+        update: function () { this.el.setAttribute('dummy', 'color', 'blue'); }
+      });
+      this.el.addEventListener('componentchanged', function (evt) {
+        assert.equal('blue', evt.detail.newData.color);
+        done();
+      });
+      var component = new TestComponent(this.el);
+      assert.equal(component.data.color, 'blue');
+    });
   });
 
   suite('flushToDOM', function () {
