@@ -24,7 +24,7 @@ if (window.location.protocol === 'file:') {
 window.Promise = window.Promise || require('promise-polyfill');
 
 // Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
   BUFFER_SCALE: 1,
@@ -36,7 +36,7 @@ window.WebVRConfig = window.WebVRConfig || {
 
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
 // Only for iOS on versions older than 10.
-if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
+if (utils.device.isIOSOlderThan10(window.navigator.userAgent)) {
   window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
 
