@@ -1,4 +1,4 @@
-/* global HTMLElement, Node */
+/* global Node */
 var schema = require('./schema');
 var scenes = require('./scene/scenes');
 var systems = require('./system');
@@ -214,7 +214,7 @@ Component.prototype = {
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+    window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                             this.stringify(attrValue));
   },
 

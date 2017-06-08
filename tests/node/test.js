@@ -10,14 +10,12 @@ suite('node acceptance tests', function () {
     let _window = global.window = jsdom.jsdom().defaultView;
     global.navigator = _window.navigator;
     global.document = _window.document;
-    global.HTMLElement = _window.HTMLElement;
   });
 
   teardown(function () {
     delete global.window;
     delete global.navigator;
     delete global.document;
-    delete global.HTMLElement;
   });
 
   test('can run in node', function () {
