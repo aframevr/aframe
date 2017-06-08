@@ -6,6 +6,7 @@ var isValidDefaultValue = PropertyTypes.isValidDefaultValue;
 var propertyTypes = PropertyTypes.propertyTypes;
 
 var warn = debug('core:schema:warn');
+var parseCoordinates = require('../utils/coordinates').parse;
 
 /**
  * A schema is classified as a schema for a single property if:
@@ -91,6 +92,18 @@ function processPropertyDefinition (propDefinition, componentName) {
   } else {
     // Fill in default value.
     propDefinition.default = propType.default;
+  } else if (typeName === 'vec2' && typeof defaultVal === 'string') {
+    // Parse default string val into object
+    if (defaultVal.split(' ').length !== 2) {
+      warn('Default value for type vec2 can only be 2 coordinates');
+    }
+    propDefinition.default = parseCoordinates(defaultVal);
+  } else if (typeName === 'vec3' && typeof defaultVal === 'string') {
+    // Parse default string val into object
+    if (defaultVal.split(' ').length !== 3) {
+      warn('Default value for type vec3 can only be 3 coordinates');
+    }
+    propDefinition.default = parseCoordinates(defaultVal);
   }
 
   return propDefinition;
