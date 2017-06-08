@@ -72081,13 +72081,9 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponentProperty: {
     value: function (name, property, propertyValue) {
-      var component = this.components[name];
-      // Cached attribute value
-      var attrValue = component && component.attrValue;
-      // Copy cached value
-      var componentObj = attrValue ? utils.extend({}, attrValue) : {};
-      componentObj[property] = propertyValue;
-      this.updateComponent(name, componentObj);
+      var attrValue = {};
+      attrValue[property] = propertyValue;
+      this.updateComponent(name, attrValue);
     }
   },
 
@@ -76055,7 +76051,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 07-06-2017, Commit #7c8ba5b)');
+console.log('A-Frame Version: 0.5.0 (Date 08-06-2017, Commit #d8dcdf3)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
