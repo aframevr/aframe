@@ -39,10 +39,12 @@ and/or pressed buttons (trackpad, trigger).
 
 | Event Name         | Description           |
 | ----------         | -----------           |
+| trackpadchanged    | Trackpad changed.     |
 | trackpaddown       | Trackpad pressed.     |
 | trackpadup         | Trackpad released.    |
 | trackpadtouchstart | Trackpad touched.     |
 | trackpadtouchend   | Trackpad not touched. |
+| triggerchanged     | Trigger changed.      |
 | triggerdown        | Trigger pressed.      |
 | triggerup          | Trigger released.     |
 
