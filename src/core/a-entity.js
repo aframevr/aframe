@@ -544,13 +544,9 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponentProperty: {
     value: function (name, property, propertyValue) {
-      var component = this.components[name];
-      // Cached attribute value
-      var attrValue = component && component.attrValue;
-      // Copy cached value
-      var componentObj = attrValue ? utils.extend({}, attrValue) : {};
-      componentObj[property] = propertyValue;
-      this.updateComponent(name, componentObj);
+      var attrValue = {};
+      attrValue[property] = propertyValue;
+      this.updateComponent(name, attrValue);
     }
   },
 
