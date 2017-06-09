@@ -29,7 +29,7 @@ setup(function () {
   this.sinon.stub(AScene.prototype, 'setupRenderer');
 });
 
-teardown(function () {
+teardown(function (done) {
   // Clean up any attached elements.
   var attachedEls = ['canvas', 'a-assets', 'a-scene'];
   var els = document.querySelectorAll(attachedEls.join(','));
@@ -39,4 +39,9 @@ teardown(function () {
   this.sinon.restore();
   delete AFRAME.components.test;
   delete AFRAME.systems.test;
+
+  // Allow detachedCallbacks to clean themselves up.
+  setTimeout(function () {
+    done();
+  });
 });
