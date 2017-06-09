@@ -65643,7 +65643,8 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
     // Use -999 as sentinel value to auto-determine based on hand.
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    armModel: {default: true}
   },
 
   // buttonId
@@ -65671,6 +65672,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
@@ -65686,6 +65688,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   addEventListeners: function () {
     var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
@@ -65696,6 +65699,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   removeEventListeners: function () {
     var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
@@ -65734,7 +65738,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: DAYDREAM_CONTROLLER_MODEL_OBJ_URL,
@@ -65769,6 +65773,13 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
+
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    if (!button) return;
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
 
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];
@@ -65838,7 +65849,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    rotationOffset: {default: 0} // use -999 as sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0}, // use -999 as sentinel value to auto-determine based on hand
+    armModel: {default: true}
   },
 
   // buttonId
@@ -65865,6 +65877,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
@@ -65880,6 +65893,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   addEventListeners: function () {
     var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
@@ -65892,6 +65906,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
 
   removeEventListeners: function () {
     var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
@@ -65927,7 +65942,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
@@ -65957,6 +65972,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonMeshes = this.buttonMeshes = {};
     buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
+  },
+
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    if (!button) return;
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onButtonEvent: function (id, evtName) {
@@ -69828,6 +69850,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
     // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    armModel: {default: true},
     headElement: {type: 'selector'}
   },
 
@@ -69959,8 +69982,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     if (pose.position) {
       dolly.position.fromArray(pose.position);
     } else {
-      // The controller is not 6DOF, so apply arm model.
-      this.applyArmModel(controllerPosition);
+      if (this.data.armModel) {
+        // The controller is not 6DOF, so apply arm model.
+        this.applyArmModel(controllerPosition);
+      }
       dolly.position.copy(controllerPosition);
     }
     dolly.updateMatrix();
@@ -76051,7 +76076,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 08-06-2017, Commit #d8dcdf3)');
+console.log('A-Frame Version: 0.5.0 (Date 09-06-2017, Commit #c61620f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
