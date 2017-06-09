@@ -27,6 +27,7 @@ and/or pressed buttons (trackpad, trigger).
 
 | Property             | Description                                        | Default |
 |----------------------|----------------------------------------------------|---------|
+| armModel             | Whether the arm model is used for positional data. | true    |
 | buttonColor          | Button colors when not pressed.                    | #000000 |
 | buttonTouchedColor   | Button colors when touched.                        | #777777 |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF |
@@ -38,10 +39,12 @@ and/or pressed buttons (trackpad, trigger).
 
 | Event Name         | Description           |
 | ----------         | -----------           |
+| trackpadchanged    | Trackpad changed.     |
 | trackpaddown       | Trackpad pressed.     |
 | trackpadup         | Trackpad released.    |
 | trackpadtouchstart | Trackpad touched.     |
 | trackpadtouchend   | Trackpad not touched. |
+| triggerchanged     | Trigger changed.      |
 | triggerdown        | Trigger pressed.      |
 | triggerup          | Trigger released.     |
 

@@ -22,6 +22,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
     // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    armModel: {default: true},
     headElement: {type: 'selector'}
   },
 
@@ -153,8 +154,10 @@ module.exports.Component = registerComponent('tracked-controls', {
     if (pose.position) {
       dolly.position.fromArray(pose.position);
     } else {
-      // The controller is not 6DOF, so apply arm model.
-      this.applyArmModel(controllerPosition);
+      if (this.data.armModel) {
+        // The controller is not 6DOF, so apply arm model.
+        this.applyArmModel(controllerPosition);
+      }
       dolly.position.copy(controllerPosition);
     }
     dolly.updateMatrix();

@@ -20,7 +20,8 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
     // Use -999 as sentinel value to auto-determine based on hand.
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    armModel: {default: true}
   },
 
   // buttonId
@@ -48,6 +49,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   init: function () {
     var self = this;
     this.animationActive = 'pointing';
+    this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
@@ -63,6 +65,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   addEventListeners: function () {
     var el = this.el;
+    el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
@@ -73,6 +76,7 @@ module.exports.Component = registerComponent('daydream-controls', {
 
   removeEventListeners: function () {
     var el = this.el;
+    el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
     el.removeEventListener('touchstart', this.onButtonTouchStart);
@@ -111,7 +115,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset});
+    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: DAYDREAM_CONTROLLER_MODEL_OBJ_URL,
@@ -146,6 +150,13 @@ module.exports.Component = registerComponent('daydream-controls', {
   },
 
   onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
+
+  onButtonChanged: function (evt) {
+    var button = this.mapping.buttons[evt.detail.id];
+    if (!button) return;
+    // Pass along changed event with button state, using button mapping for convenience.
+    this.el.emit(button + 'changed', evt.detail.state);
+  },
 
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];

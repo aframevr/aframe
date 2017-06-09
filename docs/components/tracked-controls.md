@@ -34,15 +34,13 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 | Property          | Description                                                     | Default Value              |
 |-------------------|-----------------------------------------------------------------|----------------------------|
+| armModel          | Whether the arm model is used for positional data if absent.    | true                       |
 | controller        | Index of the controller in array returned by the Gamepad API.   | 0                          |
 | id                | Selects the controller from the Gamepad API using exact match.  |                            |
 | idPrefix          | Selects the controller from the Gamepad API using prefix match. |                            |
 | rotationOffset    | Offset to add to model rotation.                                | 0                          |
 | headElement       | Head element for arm model if needed (if not active camera).    |                            |
 | hand              | Which hand to use, if arm model is needed.  (left negates X)    | right                      |
-| eyesToElbow       | Arm model vector from eyes to elbow as user height ratio.       | {x:0.175, y:-0.3, z:-0.03} |
-| forearm           | Arm model vector for forearm as user height ratio.              | {x:0, y:0, z:-0.175}       |
-| defaultUserHeight | Default user height (for cameras with zero).                    | 1.6                        |
 
 ## Events
 

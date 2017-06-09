@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE */
+/* global assert, process, setup, suite, teardown, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
 const PI = Math.PI;
@@ -414,6 +414,31 @@ suite('tracked-controls', function () {
       component.tick();
       assert.equal(component.buttonStates[0].value, 0.25);
       assert.equal(component.buttonStates[1].value, 0.75);
+    });
+  });
+
+  suite('armModel', function () {
+    setup(function () {
+      delete controller.pose.position;
+    });
+
+    el = entityFactory();
+    test('if armModel false, do not apply', function () {
+      var applyArmModelSpy = this.sinon.spy(component, 'applyArmModel');
+      component.data.armModel = false;
+      component.tick();
+      assert.notOk(applyArmModelSpy.called);
+    });
+
+    test('if armModel true, apply', function () {
+      var applyArmModelSpy = this.sinon.spy(component, 'applyArmModel');
+      component.data.armModel = true;
+      component.tick();
+      assert.ok(applyArmModelSpy.called);
+    });
+
+    teardown(function () {
+      controller.pose.position = [0, 0, 0];
     });
   });
 });
