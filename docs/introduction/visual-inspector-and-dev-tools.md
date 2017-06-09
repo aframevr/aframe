@@ -272,7 +272,7 @@ there.  Design impressive VR scenes for phone and desktop browsers."*
 posts. Run it on your own server. All you need is PHP and a database (eg.
 MySQL, MariaDB)."*
 
-![IdeaSpaceVR]((https://cloud.githubusercontent.com/assets/674727/26017126/ed464306-371c-11e7-9554-2848b2773d71.jpg)
+![IdeaSpaceVR](https://cloud.githubusercontent.com/assets/674727/26017126/ed464306-371c-11e7-9554-2848b2773d71.jpg)
 
 ### [Fader](https://fader.vragments.com/)
 
