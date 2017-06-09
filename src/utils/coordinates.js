@@ -1,5 +1,9 @@
 /* global THREE */
+var debug = require('./debug');
 var extend = require('object-assign');
+
+var warn = debug('utils:coordinates:warn');
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
@@ -54,8 +58,14 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinates = function (value) {
+function isCoordinates (value) {
   return regex.test(value);
+}
+module.exports.isCoordinates = isCoordinates;
+
+module.exports.isCoordinate = function (value) {
+  warn('`AFRAME.utils.isCoordinate` has been renamed to `AFRAME.utils.isCoordinates`');
+  return isCoordinates(value);
 };
 
 function vecParseFloat (vec) {
