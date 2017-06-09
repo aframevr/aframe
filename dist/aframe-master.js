@@ -76076,7 +76076,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 09-06-2017, Commit #c61620f)');
+console.log('A-Frame Version: 0.5.0 (Date 09-06-2017, Commit #1d4541f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77589,7 +77589,11 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
 
 },{}],193:[function(_dereq_,module,exports){
 /* global THREE */
+var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
+
+var warn = debug('utils:coordinates:warn');
+
 // Coordinate string regex. Handles negative, positive, and decimals.
 var regex = /^\s*((-?\d*\.{0,1}\d+(e-?\d+)?)\s+){2,3}(-?\d*\.{0,1}\d+(e-?\d+)?)\s*$/;
 module.exports.regex = regex;
@@ -77644,8 +77648,14 @@ module.exports.stringify = stringify;
 /**
  * @returns {bool}
  */
-module.exports.isCoordinates = function (value) {
+function isCoordinates (value) {
   return regex.test(value);
+}
+module.exports.isCoordinates = isCoordinates;
+
+module.exports.isCoordinate = function (value) {
+  warn('`AFRAME.utils.isCoordinate` has been renamed to `AFRAME.utils.isCoordinates`');
+  return isCoordinates(value);
 };
 
 function vecParseFloat (vec) {
@@ -77666,7 +77676,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"object-assign":25}],194:[function(_dereq_,module,exports){
+},{"./debug":194,"object-assign":25}],194:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
