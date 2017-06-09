@@ -45,6 +45,7 @@ suite('material', function () {
     });
 
     test('defaults to standard material', function () {
+      this.el.removeAttribute('material'); // setup creates a non-default component
       this.el.setAttribute('material', '');
       assert.equal(this.el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
