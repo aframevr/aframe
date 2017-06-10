@@ -1,4 +1,4 @@
-/* global HTMLElement, MutationObserver */
+/* global MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
 var utils = require('../utils/');
 
@@ -12,7 +12,7 @@ var warn = utils.debug('core:a-node:warn');
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 module.exports = registerElement('a-node', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {
         this.hasLoaded = false;
@@ -160,7 +160,7 @@ module.exports = registerElement('a-node', {
     setAttribute: {
       value: function (attr, newValue) {
         if (attr === 'mixin') { this.updateMixins(newValue); }
-        HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
       }
     },
 

@@ -1,4 +1,3 @@
-/* global HTMLElement */
 var debug = require('../utils/debug');
 var registerElement = require('./a-register-element').registerElement;
 
@@ -9,7 +8,7 @@ var warn = debug('core:cubemap:warn');
  * Does not listen to updates.
  */
 module.exports = registerElement('a-cubemap', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     /**
      * Calculates this.srcs.
      */

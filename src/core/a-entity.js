@@ -1,4 +1,3 @@
-/* global HTMLElement */
 var ANode = require('./a-node');
 var COMPONENTS = require('./component').components;
 var registerElement = require('./a-register-element').registerElement;
@@ -384,7 +383,7 @@ var proto = Object.create(ANode.prototype, {
       // the component with the empty string.
       if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, attrName, '');
+        window.HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
       debug('Component initialized: %s', attrName);
@@ -416,7 +415,7 @@ var proto = Object.create(ANode.prototype, {
         // Call getAttribute to initialize the data from the DOM.
         self.initComponent(
           componentName,
-          HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
+          window.HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
           true
         );
       });
@@ -580,7 +579,7 @@ var proto = Object.create(ANode.prototype, {
         this.mixinUpdate('');
       }
 
-      HTMLElement.prototype.removeAttribute.call(this, attr);
+      window.HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
 
@@ -701,7 +700,7 @@ var proto = Object.create(ANode.prototype, {
       // Initialize component first if not yet initialized.
       if (!this.components[attrName] && this.hasAttribute(attrName)) {
         this.updateComponent(attrName,
-                             HTMLElement.prototype.getAttribute.call(this, attrName));
+                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
       }
 
       // Determine which type of setAttribute to call based on the types of the arguments.
@@ -779,7 +778,7 @@ var proto = Object.create(ANode.prototype, {
       // If component, return component data.
       var component = this.components[attr];
       if (component) { return component.data; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },
@@ -813,7 +812,7 @@ var proto = Object.create(ANode.prototype, {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
       if (component) { return component.attrValue; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },

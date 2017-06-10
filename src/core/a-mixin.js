@@ -1,4 +1,3 @@
-/* global HTMLElement */
 var ANode = require('./a-node');
 var registerElement = require('./a-register-element').registerElement;
 var components = require('./component').components;
@@ -39,7 +38,7 @@ module.exports = registerElement('a-mixin', {
     setAttribute: {
       value: function (attr, value) {
         this.cacheAttribute(attr, value);
-        HTMLElement.prototype.setAttribute.call(this, attr, value);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, value);
       }
     },
 
@@ -52,7 +51,7 @@ module.exports = registerElement('a-mixin', {
         var component = components[componentName];
         if (!component) { return; }
         if (value === undefined) {
-          value = HTMLElement.prototype.getAttribute.call(this, attr);
+          value = window.HTMLElement.prototype.getAttribute.call(this, attr);
         }
         this.componentCache[attr] = component.parseAttrValueForCache(value);
       }
@@ -65,7 +64,7 @@ module.exports = registerElement('a-mixin', {
     getAttribute: {
       value: function (attr) {
         return this.componentCache[attr] ||
-               HTMLElement.prototype.getAttribute.call(this, attr);
+               window.HTMLElement.prototype.getAttribute.call(this, attr);
       }
     },
 

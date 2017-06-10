@@ -1,4 +1,3 @@
-/* global HTMLElement */
 var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
@@ -80,7 +79,7 @@ System.prototype = {
   buildData: function (rawData) {
     var schema = this.schema;
     if (!Object.keys(schema).length) { return; }
-    rawData = rawData || HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
+    rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
     if (isSingleProp(schema)) {
       this.data = parseProperty(rawData, schema);
     } else {
