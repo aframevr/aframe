@@ -371,7 +371,7 @@ AFRAME.registerShader('custom', {
 
 ### Example — Basic Materials
 
-[line-dashed]: http://threejs.org/docs/index.html#Reference/Materials/LineDashedMaterial
+[line-dashed]: https://threejs.org/docs/#api/materials/LineDashedMaterial
 
 To create a custom material, we have the `init` and `update` handlers set and
 update `this.material` to the desired material. Here is an example of
