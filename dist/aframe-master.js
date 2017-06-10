@@ -71509,7 +71509,6 @@ function inferResponseType (src) {
 module.exports.inferResponseType = inferResponseType;
 
 },{"../lib/three":175,"../utils/bind":192,"../utils/debug":194,"./a-node":126,"./a-register-element":127}],123:[function(_dereq_,module,exports){
-/* global HTMLElement */
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -71520,7 +71519,7 @@ var warn = debug('core:cubemap:warn');
  * Does not listen to updates.
  */
 module.exports = registerElement('a-cubemap', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     /**
      * Calculates this.srcs.
      */
@@ -71560,7 +71559,6 @@ module.exports = registerElement('a-cubemap', {
 });
 
 },{"../utils/debug":194,"./a-register-element":127}],124:[function(_dereq_,module,exports){
-/* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -71946,7 +71944,7 @@ var proto = Object.create(ANode.prototype, {
       // the component with the empty string.
       if (!this.hasAttribute(attrName)) {
         component.justInitialized = true;
-        HTMLElement.prototype.setAttribute.call(this, attrName, '');
+        window.HTMLElement.prototype.setAttribute.call(this, attrName, '');
       }
 
       debug('Component initialized: %s', attrName);
@@ -71978,7 +71976,7 @@ var proto = Object.create(ANode.prototype, {
         // Call getAttribute to initialize the data from the DOM.
         self.initComponent(
           componentName,
-          HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
+          window.HTMLElement.prototype.getAttribute.call(self, componentName) || undefined,
           true
         );
       });
@@ -72142,7 +72140,7 @@ var proto = Object.create(ANode.prototype, {
         this.mixinUpdate('');
       }
 
-      HTMLElement.prototype.removeAttribute.call(this, attr);
+      window.HTMLElement.prototype.removeAttribute.call(this, attr);
     }
   },
 
@@ -72263,7 +72261,7 @@ var proto = Object.create(ANode.prototype, {
       // Initialize component first if not yet initialized.
       if (!this.components[attrName] && this.hasAttribute(attrName)) {
         this.updateComponent(attrName,
-                             HTMLElement.prototype.getAttribute.call(this, attrName));
+                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
       }
 
       // Determine which type of setAttribute to call based on the types of the arguments.
@@ -72341,7 +72339,7 @@ var proto = Object.create(ANode.prototype, {
       // If component, return component data.
       var component = this.components[attr];
       if (component) { return component.data; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },
@@ -72375,7 +72373,7 @@ var proto = Object.create(ANode.prototype, {
       // If cached value exists, return partial component data.
       var component = this.components[attr];
       if (component) { return component.attrValue; }
-      return HTMLElement.prototype.getAttribute.call(this, attr);
+      return window.HTMLElement.prototype.getAttribute.call(this, attr);
     },
     writable: window.debug
   },
@@ -72481,7 +72479,6 @@ AEntity = registerElement('a-entity', {
 module.exports = AEntity;
 
 },{"../lib/three":175,"../utils/":198,"./a-node":126,"./a-register-element":127,"./component":128}],125:[function(_dereq_,module,exports){
-/* global HTMLElement */
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -72522,7 +72519,7 @@ module.exports = registerElement('a-mixin', {
     setAttribute: {
       value: function (attr, value) {
         this.cacheAttribute(attr, value);
-        HTMLElement.prototype.setAttribute.call(this, attr, value);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, value);
       }
     },
 
@@ -72535,7 +72532,7 @@ module.exports = registerElement('a-mixin', {
         var component = components[componentName];
         if (!component) { return; }
         if (value === undefined) {
-          value = HTMLElement.prototype.getAttribute.call(this, attr);
+          value = window.HTMLElement.prototype.getAttribute.call(this, attr);
         }
         this.componentCache[attr] = component.parseAttrValueForCache(value);
       }
@@ -72548,7 +72545,7 @@ module.exports = registerElement('a-mixin', {
     getAttribute: {
       value: function (attr) {
         return this.componentCache[attr] ||
-               HTMLElement.prototype.getAttribute.call(this, attr);
+               window.HTMLElement.prototype.getAttribute.call(this, attr);
       }
     },
 
@@ -72589,7 +72586,7 @@ module.exports = registerElement('a-mixin', {
 });
 
 },{"./a-node":126,"./a-register-element":127,"./component":128}],126:[function(_dereq_,module,exports){
-/* global HTMLElement, MutationObserver */
+/* global MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var utils = _dereq_('../utils/');
 
@@ -72603,7 +72600,7 @@ var warn = utils.debug('core:a-node:warn');
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 module.exports = registerElement('a-node', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {
         this.hasLoaded = false;
@@ -72751,7 +72748,7 @@ module.exports = registerElement('a-node', {
     setAttribute: {
       value: function (attr, newValue) {
         if (attr === 'mixin') { this.updateMixins(newValue); }
-        HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
       }
     },
 
@@ -73027,7 +73024,7 @@ ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
 },{"./a-entity":124,"./a-node":126,"document-register-element":10}],128:[function(_dereq_,module,exports){
-/* global HTMLElement, Node */
+/* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
 var systems = _dereq_('./system');
@@ -73243,7 +73240,7 @@ Component.prototype = {
   flushToDOM: function (isDefault) {
     var attrValue = isDefault ? this.data : this.attrValue;
     if (!attrValue) { return; }
-    HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
+    window.HTMLElement.prototype.setAttribute.call(this.el, this.attrName,
                                             this.stringify(attrValue));
   },
 
@@ -74919,7 +74916,6 @@ module.exports.registerShader = function (name, definition) {
 };
 
 },{"../lib/three":175,"../utils":198,"./schema":136}],138:[function(_dereq_,module,exports){
-/* global HTMLElement */
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -75001,7 +74997,7 @@ System.prototype = {
   buildData: function (rawData) {
     var schema = this.schema;
     if (!Object.keys(schema).length) { return; }
-    rawData = rawData || HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
+    rawData = rawData || window.HTMLElement.prototype.getAttribute.call(this.sceneEl, this.name);
     if (isSingleProp(schema)) {
       this.data = parseProperty(rawData, schema);
     } else {
@@ -76076,7 +76072,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 09-06-2017, Commit #1d4541f)');
+console.log('A-Frame Version: 0.5.0 (Date 10-06-2017, Commit #2920bbb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
