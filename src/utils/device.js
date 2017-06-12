@@ -1,12 +1,23 @@
 var THREE = require('../lib/three');
 var dolly = new THREE.Object3D();
-var controls = new THREE.VRControls(dolly);
+
+var getControls = (function () {
+  var controls;
+  return function () {
+    if (!controls) {
+      // Lazy-instantiate VRControls to not break in Node.
+      controls = new THREE.VRControls(dolly);
+    }
+    return controls;
+  };
+})();
 
 /**
  * Determine if a headset is connected by checking if the orientation is available.
  */
 function checkHeadsetConnected () {
   var orientation;
+  var controls = getControls();
   var vrDisplay = controls.getVRDisplay();
 
   // If `isConnected` is available, just use that.
@@ -25,6 +36,7 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  * Check for positional tracking.
  */
 function checkHasPositionalTracking () {
+  var controls = getControls();
   var vrDisplay = controls.getVRDisplay();
   if (isMobile() || isGearVR()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
