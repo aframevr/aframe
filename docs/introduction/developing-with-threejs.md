@@ -18,8 +18,8 @@ objects, and API that lay underneath A-Frame.
 
 - A-Frame's `<a-scene>` maps one-to-one with a three.js scene.
 - A-Frame's `<a-entity>` maps to one or more three.js objects.
-- three.js's objects have a reference to their A-Frame entity via `.el`, which is
-set by A-Frame.
+- three.js's objects have a reference to their A-Frame entity via `.el`, which is set by A-Frame.
+- A-Frame's HTML code is automatically mapped to the corresponding three.js scene graph without the need for knowing three.js.
 
 ### Parent-Child Relationships
 
