@@ -35,7 +35,7 @@ to pick up and perhaps even easier to grasp than 2D HTML. Once you pick up the
 general structure or syntax of HTML (opening tag, attributes, closing tag),
 then you're good to go! [Read an introduction to HTML on MDN][html].
 
-![HTML](https://cloud.githubusercontent.com/assets/674727/25414667/baf101da-29e7-11e7-82c4-b0ac3903e667.jpg)
+![HTML](https://user-images.githubusercontent.com/6694476/27047689-94689672-4fc6-11e7-9cf5-828a508c6522.jpg)
 
 ## Primitives
 
