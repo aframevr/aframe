@@ -60,7 +60,7 @@ var isMobile = (function () {
     if (isGearVR()) {
       _isMobile = false;
     }
-  })(navigator.userAgent || navigator.vendor || window.opera);
+  })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
 })();
@@ -71,18 +71,18 @@ module.exports.isMobile = isMobile;
  *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
  */
 function isTablet (mockUserAgent) {
-  var userAgent = mockUserAgent || navigator.userAgent;
+  var userAgent = mockUserAgent || window.navigator.userAgent;
   return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 }
 module.exports.isTablet = isTablet;
 
 function isIOS () {
-  return /iPad|iPhone|iPod/.test(navigator.platform);
+  return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
 module.exports.isIOS = isIOS;
 
 function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(navigator.userAgent);
+  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
 module.exports.isGearVR = isGearVR;
 
