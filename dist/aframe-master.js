@@ -65070,7 +65070,7 @@ module.exports={
     "karma-firefox-launcher": "^1.0.0",
     "karma-mocha": "^1.1.1",
     "karma-mocha-reporter": "^2.1.0",
-    "karma-sinon-chai": "^1.2.4",
+    "karma-sinon-chai": "^1.3.1",
     "lolex": "^1.5.1",
     "markserv": "0.0.20",
     "minifyify": "^7.3.3",
@@ -65080,8 +65080,8 @@ module.exports={
     "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
-    "sinon": "^1.17.5",
-    "sinon-chai": "^2.8.0",
+    "sinon": "^2.3.4",
+    "sinon-chai": "^2.11.0",
     "snazzy": "^5.0.0",
     "too-wordy": "ngokevin/too-wordy",
     "uglifyjs": "^2.4.10",
@@ -76060,7 +76060,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-06-2017, Commit #257e647)');
+console.log('A-Frame Version: 0.5.0 (Date 12-06-2017, Commit #79233ee)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
