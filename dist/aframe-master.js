@@ -76001,7 +76001,7 @@ if (window.location.protocol === 'file:') {
 window.Promise = window.Promise || _dereq_('promise-polyfill');
 
 // Check before the polyfill runs.
-window.hasNativeWebVRImplementation = !!navigator.getVRDisplays || !!navigator.getVRDevices;
+window.hasNativeWebVRImplementation = !!window.navigator.getVRDisplays || !!window.navigator.getVRDevices;
 
 window.WebVRConfig = window.WebVRConfig || {
   BUFFER_SCALE: 1,
@@ -76013,7 +76013,7 @@ window.WebVRConfig = window.WebVRConfig || {
 
 // Workaround for iOS Safari canvas sizing issues in stereo (webvr-polyfill/issues/102).
 // Only for iOS on versions older than 10.
-if (utils.device.isIOSOlderThan10(navigator.userAgent)) {
+if (utils.device.isIOSOlderThan10(window.navigator.userAgent)) {
   window.WebVRConfig.BUFFER_SCALE = 1 / window.devicePixelRatio;
 }
 
@@ -76060,7 +76060,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-06-2017, Commit #4e6b408)');
+console.log('A-Frame Version: 0.5.0 (Date 12-06-2017, Commit #2617ab8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77821,7 +77821,7 @@ var isMobile = (function () {
     if (isGearVR()) {
       _isMobile = false;
     }
-  })(navigator.userAgent || navigator.vendor || window.opera);
+  })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
 })();
@@ -77832,18 +77832,18 @@ module.exports.isMobile = isMobile;
  *  @param {string} mockUserAgent - Allow passing a mock user agent for testing.
  */
 function isTablet (mockUserAgent) {
-  var userAgent = mockUserAgent || navigator.userAgent;
+  var userAgent = mockUserAgent || window.navigator.userAgent;
   return /ipad|Nexus (7|9)|xoom|sch-i800|playbook|tablet|kindle/i.test(userAgent);
 }
 module.exports.isTablet = isTablet;
 
 function isIOS () {
-  return /iPad|iPhone|iPod/.test(navigator.platform);
+  return /iPad|iPhone|iPod/.test(window.navigator.platform);
 }
 module.exports.isIOS = isIOS;
 
 function isGearVR () {
-  return /SamsungBrowser.+Mobile VR/i.test(navigator.userAgent);
+  return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
 module.exports.isGearVR = isGearVR;
 
