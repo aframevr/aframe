@@ -46,8 +46,7 @@ We can also load assets by specifying the path directly within `url()`. Note thi
 
 ## Troubleshooting
 
-If you don't see your model, try scaling it down. OBJ models vertices commonly
-have large scales of units in comparison to A-Frame's unit of meters.
+See [Introduction → 3D Models → Troubleshooting](https://aframe.io/docs/0.5.0/introduction/models.html#troubleshooting).
 
 ## Additional Resources
 
