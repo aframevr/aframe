@@ -65053,7 +65053,7 @@ module.exports={
     "chai-shallow-deep-equal": "^1.4.0",
     "chalk": "^1.1.3",
     "codecov": "^1.0.1",
-    "cross-env": "^4.0.0",
+    "cross-env": "^5.0.1",
     "exorcist": "^0.4.0",
     "ghpages": "0.0.8",
     "git-rev": "^0.2.1",
@@ -76060,7 +76060,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 12-06-2017, Commit #2617ab8)');
+console.log('A-Frame Version: 0.5.0 (Date 13-06-2017, Commit #b13b133)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
