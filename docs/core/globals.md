@@ -51,3 +51,15 @@ global. This same interface is also exposed if requiring with CommonJS
 | ----------                   | -------------                                |
 | AFRAME                       | The object described above.                  |
 | hasNativeWebVRImplementation | Whether the client has native WebVR support. |
+
+## Requiring `AFRAME` in a Node.js Environment
+
+It is possible to run A-Frame in [Node.js](https://nodejs.org/en/about) to get access to its globals. The only catch is we need to supply a browser `window` mock since Node.js lacks a `window` object. A-Frame is tested with [jsdom](https://github.com/tmpvar/jsdom), although any JavaScript-based browser implementation should work.
+
+```js
+global.window = require('jsdom').jsdom().defaultView;
+var aframe = require('aframe/src');
+console.log(aframe.version);
+```
+
+Although A-Frame can load in Node.js, A-Frame isn't (yet) able to run any simulations at run time.
