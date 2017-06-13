@@ -31,22 +31,28 @@ from your questions too.
 
 # Contribute Code to A-Frame
 
+[aframe]: https://github.com/aframevr/aframe/
 [easy]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28easy%29
 [hard]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28hard%29
+[pr]: https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github
+[ssh]: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 [testing-guide]: https://github.com/aframevr/aframe/tree/master/tests#a-frame-unit-tests
 
 Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
-(hard)*][hard] for good issues to tackle.
+(hard)*][hard] for good issues to tackle. Here's how to submit a pull request (PR):
 
-1. Have a [GitHub account](https://github.com/join).
+1. Have a [GitHub account](https://github.com/join) with [SSH keys][ssh] set up.
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
-3. Run `npm install` and `npm run dev` to serve the test examples.
-4. Make changes to your fork of the repository.
-5. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
-6. Submit a pull request to the master branch.
-7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) if any.
+3. Clone your fork of the repository locally (i.e., `git clone git@github.com:yourusername/aframe`).
+4. Run `npm install` to get dependencies and `npm run dev` to serve the test examples.
+5. Create a branch to work in (i.e., `git checkout -b mybranch`).
+6. Make changes to your fork of the repository, commit them, and push them (i.e., `git add -A . && git commit -m 'My Changes (fixes #1234)' && git push origin mybranch`).
+7. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
+8. [Submit a pull request][pr] to the master branch. If you head to the [A-Frame repository][aframe] after running `git push` from earlier, you should see a pop up to submit a pull request.
+9. [Address review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) if any.
 
-Please note you would agree to license your contributions under the [license](LICENSE).
+As per usual with open source, you would agree to license your contributions
+under the [MIT License](LICENSE).
 
 # Share your Work
 
