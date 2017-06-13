@@ -288,4 +288,17 @@ suite('registerPrimitive (using innerHTML)', function () {
       done();
     });
   });
+
+  test('handles mapping not in default components', function (done) {
+    primitiveFactory({
+      defaultComponents: {},
+      mappings: {color: 'material.color'}
+    }, '', function (el) {
+      el.setAttribute('color', 'blue');
+      setTimeout(() => {
+        assert.equal(el.getAttribute('material').color, 'blue');
+        done();
+      });
+    });
+  });
 });
