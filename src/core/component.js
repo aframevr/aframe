@@ -35,6 +35,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.initialized = false;
   this.el.components[this.attrName] = this;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
