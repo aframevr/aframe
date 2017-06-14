@@ -1,203 +1,312 @@
-/* global assert, process, setup, suite, test, CustomEvent, Event */
+/* global assert, Event, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
-var controllerComponentName = 'vive-controls';
 
-suite(controllerComponentName, function () {
+suite('vive-controls', function () {
+  var component;
+  var controlsSystem;
+  var el;
+
   setup(function (done) {
-    var el = this.el = entityFactory();
-    el.setAttribute(controllerComponentName, 'hand: right'); // to ensure index = 0
-    el.addEventListener('loaded', function () {
-      var controllerComponent = el.components[controllerComponentName];
-      controllerComponent.controllersWhenPresent = [{id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {}}];
+    el = entityFactory();
+    el.setAttribute('vive-controls', 'hand: right');  // To ensure index = 0.
+    el.addEventListener('componentinitialized', function (evt) {
+      if (evt.detail.name !== 'vive-controls') { return; }
+      component = el.components['vive-controls'];
+      component.controllersWhenPresent = [
+        {id: 'OpenVR Gamepad', index: 0, hand: 'right', pose: {}}
+      ];
+      controlsSystem = el.sceneEl.systems['tracked-controls'];
       done();
     });
   });
 
   suite('checkIfControllerPresent', function () {
-    test('first-time, if no controllers, remember not present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
+    test('remember not present if no controllers on first call', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      controlsSystem.controllers = [];
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      // Mock not looked before.
+      component.controllerPresent = false;
 
-      // reset so we don't think we've looked before
-      controllerComponent.controllerPresent = false;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.strictEqual(component.controllerPresent, false);  // Not undefined.
     });
 
-    test('if no controllers again, do not remove event listeners', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
+    test('does not remove event listeners if no controllers again', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      controlsSystem.controllers = [];
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      // Mock not looked before.
+      component.controllerPresent = false;
 
-      // pretend we've looked before
-      controllerComponent.controllerPresent = false;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent === false); // not undefined
+      assert.strictEqual(component.controllerPresent, false);  // Not undefined.
     });
 
-    test('attach events if controller is newly present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
+    test('attaches events if controller is newly present', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      controlsSystem.controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
+      // Mock not looked before.
+      component.controllerPresent = false;
 
-      // reset so we don't think we've looked before
-      controllerComponent.controllerPresent = false;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+      component.checkIfControllerPresent();
+
       assert.ok(injectTrackedControlsSpy.called);
       assert.ok(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent);
+      assert.ok(component.controllerPresent);
     });
 
-    test('do not inject or attach events again if controller is already present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
+    test('does not inject/attach events again if controller is already present', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      controlsSystem.controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
+      // Mock looked before.
+      component.controllerPresent = true;
 
-      // pretend we've looked before
-      controllerComponent.controllerPresent = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.notOk(removeEventListenersSpy.called);
-      assert.ok(controllerComponent.controllerPresent);
+      assert.ok(component.controllerPresent);
     });
 
-    test('if controller disappears, remove event listeners', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var addEventListenersSpy = this.sinon.spy(controllerComponent, 'addEventListeners');
-      var injectTrackedControlsSpy = this.sinon.spy(controllerComponent, 'injectTrackedControls');
-      var removeEventListenersSpy = this.sinon.spy(controllerComponent, 'removeEventListeners');
+    test('remove event listeners if controller disappears', function () {
+      var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
+      var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
+      var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
+      controlsSystem.controllers = [];
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
+      // Mock looked before.
+      component.controllerPresent = true;
 
-      // pretend we've looked before
-      controllerComponent.controllerPresent = true;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // check assertions
+      component.checkIfControllerPresent();
+
       assert.notOk(injectTrackedControlsSpy.called);
       assert.notOk(addEventListenersSpy.called);
       assert.ok(removeEventListenersSpy.called);
-      assert.notOk(controllerComponent.controllerPresent);
+      assert.notOk(component.controllerPresent);
     });
   });
 
   suite('axismove', function () {
-    var name = 'trackpad';
-    test('if we get axismove, emit ' + name + 'moved', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var evt;
+    test('emits trackpadmoved on axismove', function (done) {
+      controlsSystem.controllers = component.controllersWhenPresent;
 
-      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for thumbstickmoved
-      this.el.addEventListener(name + 'moved', function (evt) {
+      component.checkIfControllerPresent();
+
+      // Install event handler listening for trackpad.
+      el.addEventListener('trackpadmoved', function (evt) {
         assert.equal(evt.detail.x, 0.1);
         assert.equal(evt.detail.y, 0.2);
         assert.ok(evt.detail);
         done();
       });
-      // emit axismove
-      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [true, false]}});
-      this.el.dispatchEvent(evt);
+
+      // Emit axismove.
+      el.emit('axismove', {axis: [0.1, 0.2], changed: [true, false]});
     });
 
-    test('if we get axismove with no changes, do not emit ' + name + 'moved', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var evt;
+    test('does not emit trackpadmoved on axismove with no changes', function (done) {
+      controlsSystem.controllers = component.controllersWhenPresent;
+      component.checkIfControllerPresent();
 
-      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for thumbstickmoved
-      this.el.addEventListener(name + 'moved', function (evt) {
+      // Install event handler listening for trackpadmoved.
+      el.addEventListener('trackpadmoved', function (evt) {
         assert.notOk(evt.detail);
       });
-      // emit axismove
-      evt = new CustomEvent('axismove', {'detail': {axis: [0.1, 0.2], changed: [false, false]}});
-      this.el.dispatchEvent(evt);
-      // finish next tick
-      setTimeout(function () { done(); }, 0);
+
+      // Emit axismove.
+      el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+
+      setTimeout(function () { done(); });
     });
   });
 
   suite('buttonchanged', function () {
-    var name = 'trigger';
-    var id = 1;
-    test('if we get buttonchanged, emit ' + name + 'changed', function (done) {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var evt;
+    test('emits triggerchanged on buttonchanged', function (done) {
+      controlsSystem.controllers = component.controllersWhenPresent;
+      component.checkIfControllerPresent();
 
-      el.sceneEl.systems['tracked-controls'].controllers = controllerComponent.controllersWhenPresent;
-      // do the check
-      controllerComponent.checkIfControllerPresent();
-      // install event handler listening for triggerchanged
-      this.el.addEventListener(name + 'changed', function (evt) {
+      // Install event handler listening for triggerchanged.
+      el.addEventListener('triggerchanged', function (evt) {
         assert.ok(evt.detail);
         done();
       });
-      // emit buttonchanged
-      evt = new CustomEvent('buttonchanged', {'detail': {id: id, state: {value: 0.5, pressed: true, touched: true}}});
-      this.el.dispatchEvent(evt);
+
+      // Emit buttonchanged.
+      el.emit('buttonchanged', {id: 1, state: {value: 0.5, pressed: true, touched: true}});
+    });
+
+    test('emits triggerdown on buttonchanged', function (done) {
+      controlsSystem.controllers = component.controllersWhenPresent;
+      component.checkIfControllerPresent();
+      el.addEventListener('triggerdown', function (evt) {
+        assert.ok(evt.detail);
+        done();
+      });
+      el.emit('buttondown', {id: 1});
+    });
+
+    test('emits triggerup on buttonchanged', function (done) {
+      controlsSystem.controllers = component.controllersWhenPresent;
+      component.checkIfControllerPresent();
+      el.addEventListener('triggerup', function (evt) {
+        assert.ok(evt.detail);
+        done();
+      });
+      el.emit('buttonup', {id: 1});
     });
   });
 
   suite('gamepaddisconnected', function () {
-    // Due to an apparent bug in FF Nightly
-    // where only one gamepadconnected / disconnected event is fired,
-    // which makes it difficult to handle in individual controller entities,
-    // we no longer remove the controllersupdate listener as a result.
-    test('if we get gamepaddisconnected, check if present', function () {
-      var el = this.el;
-      var controllerComponent = el.components[controllerComponentName];
-      var checkIfControllerPresentSpy = this.sinon.spy(controllerComponent, 'checkIfControllerPresent');
+    /*
+      Apparent bug in FF Nightly where only one gamepadconnected/disconnected event is
+      fired which makes it difficult to handle in individual controller entities. We no
+      longer remove the controllersupdate listener as a result.
+    */
+    test('checks if controller present on gamepaddisconnected', function () {
+      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
       // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
-      controllerComponent.checkIfControllerPresent = controllerComponent.checkIfControllerPresent.bind(controllerComponent);
-      controllerComponent.pause();
-      controllerComponent.play();
+      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
+      component.pause();
+      component.play();
 
-      el.sceneEl.systems['tracked-controls'].controllers = [];
-      // reset everGotGamepadEvent so we don't think we've looked before
-      delete controllerComponent.everGotGamepadEvent;
-      // fire emulated gamepaddisconnected event
+      controlsSystem.controllers = [];
+      // Reset everGotGamepadEvent to mock not looked before.
+      delete component.everGotGamepadEvent;
+      // Fire emulated gamepaddisconnected event.
       window.dispatchEvent(new Event('gamepaddisconnected'));
-      // check assertions
       assert.ok(checkIfControllerPresentSpy.called);
+    });
+  });
+
+  suite('model', function () {
+    test('loads', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        assert.ok(component.buttonMeshes);
+        assert.ok(component.buttonMeshes.trigger);
+        assert.ok(el.getObject3D('mesh'));
+        done();
+      });
+      component.injectTrackedControls();
+    });
+  });
+
+  suite('button colors', function () {
+    test('has trigger at default color', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        var color = component.buttonMeshes.trigger.material.color;
+        assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+        done();
+      });
+      component.injectTrackedControls();
+    });
+
+    test('has trackpad at default color', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        var color = component.buttonMeshes.trackpad.material.color;
+        assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+        done();
+      });
+      component.injectTrackedControls();
+    });
+
+    test('has grips at default colors', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        var color = component.buttonMeshes.grip.left.material.color;
+        assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+        color = component.buttonMeshes.grip.right.material.color;
+        assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+        done();
+      });
+      component.injectTrackedControls();
+    });
+
+    test('sets trigger to highlight color when down', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('buttondown', {id: 1, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trigger.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
+
+    test('sets trigger back to default color when up', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        component.buttonMeshes.trigger.material.color.set('#22d1ee');
+        el.emit('buttonup', {id: 1, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trigger.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
+
+    test('sets trackpad to highlight color when down', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('buttondown', {id: 0, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trackpad.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), '22d1ee');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
+
+    test('does not change color for trigger touch', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('touchstart', {id: 1, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trigger.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
+
+    test('does not change color for trackpad touch', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('touchstart', {id: 0, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trackpad.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+          done();
+        });
+      });
+      component.injectTrackedControls();
     });
   });
 });
