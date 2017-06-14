@@ -75249,6 +75249,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             if (mapping) {
               path = utils.entity.getComponentPropertyPath(mapping);
               if (path.constructor === Array) {
+                data[path[0]] = data[path[0]] || {};
                 data[path[0]][path[1]] = attr.value;
               } else {
                 data[path] = attr.value;
@@ -76060,7 +76061,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 13-06-2017, Commit #b13b133)');
+console.log('A-Frame Version: 0.5.0 (Date 14-06-2017, Commit #bf9ae0b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
