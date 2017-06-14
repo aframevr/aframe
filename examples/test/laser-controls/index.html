@@ -13,12 +13,19 @@
       AFRAME.registerComponent('boxes', {
         init: function () {
           var box;
+          var columns = 20;
           var el = this.el;
           var i;
           var j;
+          var rows = 15;
 
-          for (x = -10; x < 10; x++) {
-            for (y = 0.5; y < 15; y++) {
+          if (el.sceneEl.isMobile) {
+            columns = 10;
+            rows = 5;
+          };
+
+          for (x = columns / -2; x < columns / 2; x++) {
+            for (y = 0.5; y < rows; y++) {
               box = document.createElement('a-entity');
               box.setAttribute('mixin', 'box');
               box.setAttribute('position', {x: x * .6, y: y * .6, z: 1.5});
@@ -41,7 +48,7 @@
 
         <a-circle rotation="-90 0 0" radius="20" color="#666" position="0 -0.1 0" shadow="receive: true" roughness="1"></a-circle>
 
-        <a-light type="point" position="0 10 -30" intensity="0.85" light="castShadow: true; shadowMapWidth: 4096; shadowMapHeight: 1024"></a-light>
+        <a-light type="point" position="0 10 -30" intensity="0.85" light="castShadow: true; shadowMapWidth: 2048; shadowMapHeight: 1024"></a-light>
 
         <a-torus radius="20" arc="190" rotation="0 90 0">
           <a-animation attribute="rotation" to="0 450 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
