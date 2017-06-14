@@ -55,6 +55,8 @@ module.exports.Component = registerComponent('vive-controls', {
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
+    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
 
@@ -202,6 +204,10 @@ module.exports.Component = registerComponent('vive-controls', {
     var buttonName = this.mapping.buttons[id];
     var color;
     var i;
+    var isTouch = evtName.indexOf('touch') !== -1;
+
+    // Only trackpad has touch. Ignore for the rest, even if Gamepad API says touched.
+    if (isTouch && buttonName !== 'trackpad') { return; }
 
     // Emit events.
     if (Array.isArray(buttonName)) {
@@ -213,6 +219,9 @@ module.exports.Component = registerComponent('vive-controls', {
     }
 
     if (!this.data.model) { return; }
+
+    // Don't change color for trackpad touch.
+    if (isTouch) { return; }
 
     // Update colors.
     color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;

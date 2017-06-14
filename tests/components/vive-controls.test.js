@@ -282,5 +282,31 @@ suite('vive-controls', function () {
       });
       component.injectTrackedControls();
     });
+
+    test('does not change color for trigger touch', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('touchstart', {id: 1, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trigger.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
+
+    test('does not change color for trackpad touch', function (done) {
+      component.addEventListeners();
+      el.addEventListener('model-loaded', function (evt) {
+        el.emit('touchstart', {id: 0, state: {}});
+        setTimeout(() => {
+          var color = component.buttonMeshes.trackpad.material.color;
+          assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
+          done();
+        });
+      });
+      component.injectTrackedControls();
+    });
   });
 });
