@@ -72039,6 +72039,16 @@ var proto = Object.create(ANode.prototype, {
       component = this.components[name];
       if (!component) { return; }
 
+      // Wait for component to initialize.
+      if (!component.initialized) {
+        this.addEventListener('componentinitialized', function tryRemoveLater (evt) {
+          if (evt.detail.name !== name) { return; }
+          this.removeComponent(name);
+          this.removeEventListener('componentinitialized', tryRemoveLater);
+        });
+        return;
+      }
+
       component.pause();
       component.remove();
       delete this.components[name];
@@ -72046,7 +72056,8 @@ var proto = Object.create(ANode.prototype, {
         id: component.id,
         name: name
       });
-    }
+    },
+    writable: window.debug
   },
 
   /**
@@ -73091,6 +73102,7 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.initialized = false;
   this.el.components[this.attrName] = this;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
@@ -76103,7 +76115,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 14-06-2017, Commit #a011e80)');
+console.log('A-Frame Version: 0.5.0 (Date 14-06-2017, Commit #96e211a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
