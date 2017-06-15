@@ -68154,9 +68154,9 @@ var registerComponent = _dereq_('../../core/component').registerComponent;
 var utils = _dereq_('../../utils');
 
 /**
- * Automatically enter VR, either upon vrdisplayactivate (e.g. putting on Rift headset)
+ * Automatically enter VR either upon `vrdisplayactivate` (e.g. putting on Rift headset)
  * or immediately (if possible) if display name contains data string.
- * The default data string is 'GearVR' for Carmel browser which only does VR.
+ * Default data string is `GearVR` for Carmel browser which only does VR.
  */
 module.exports.Component = registerComponent('auto-enter-vr', {
   schema: {
@@ -68168,44 +68168,46 @@ module.exports.Component = registerComponent('auto-enter-vr', {
     var scene = this.el;
     var self = this;
 
-    // define methods to allow mock testing
+    // Define methods to allow mock testing.
     this.enterVR = scene.enterVR.bind(scene);
     this.exitVR = scene.exitVR.bind(scene);
     this.shouldAutoEnterVR = this.shouldAutoEnterVR.bind(this);
 
-    // don't do anything if false
     if (utils.getUrlParameter('auto-enter-vr') === 'false') { return; }
 
-    // enter VR on vrdisplayactivate (e.g. putting on Rift headset)
+    // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
     window.addEventListener('vrdisplayactivate', function () { self.enterVR(); }, false);
 
-    // exit VR on vrdisplaydeactivate (e.g. taking off Rift headset)
+    // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
     window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); }, false);
 
-    // check if we should try to enter VR... turns out we need to wait for next tick
-    setTimeout(function () { if (self.shouldAutoEnterVR()) { self.enterVR(); } }, 0);
-  },
-
-  update: function () {
-    return this.shouldAutoEnterVR() ? this.enterVR() : this.exitVR();
+    // Check if we should try to enter VR. Need to wait for next tick.
+    setTimeout(function () {
+      if (self.shouldAutoEnterVR()) {
+        self.enterVR();
+      }
+    });
   },
 
   shouldAutoEnterVR: function () {
-    var scene = this.el;
     var data = this.data;
-    // if false, we should not auto-enter VR
+    var display;
+    var scene = this.el;
+
     if (!data.enabled) { return false; }
-    // if we have a data string to match against display name, try and get it;
-    // if we can't get display name, or it doesn't match, we should not auto-enter VR
+
+    // If we have data string to match against display name, try and get it.
+    // If we can't get display name or it doesn't match, do not auto-enter VR.
     if (data.display && data.display !== 'all') {
-      var display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
-      if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) { return false; }
+      display = scene.effect && scene.effect.getVRDisplay && scene.effect.getVRDisplay();
+      if (!display || !display.displayName || display.displayName.indexOf(data.display) < 0) {
+        return false;
+      }
     }
-    // we should auto-enter VR
+
     return true;
   }
 });
-
 
 },{"../../core/component":128,"../../utils":198}],101:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
@@ -68984,7 +68986,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     });
 
     // Modal that tells the user to change orientation if in portrait.
-    window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
+    window.addEventListener('orientationchange',
+                            bind(this.toggleOrientationModalIfNeeded, this));
   },
 
   update: function () {
@@ -69046,6 +69049,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
  *
  * Structure: <div><button></div>
  *
+ * @param {function} enterVRHandler
  * @returns {Element} Wrapper <div>.
  */
 function createEnterVRButton (enterVRHandler) {
@@ -69062,7 +69066,9 @@ function createEnterVRButton (enterVRHandler) {
 
   // Insert elements.
   wrapper.appendChild(vrButton);
-  vrButton.addEventListener('click', enterVRHandler);
+  vrButton.addEventListener('click', function (evt) {
+    enterVRHandler();
+  });
   return wrapper;
 }
 
@@ -73956,8 +73962,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
-        this.renderTarget = null;
         this.originalHTML = this.innerHTML;
+        this.renderTarget = null;
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -73999,16 +74005,26 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Add to scene index.
         scenes.push(this);
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       },
       writable: window.debug
     },
 
+    /**
+     * Initialize all systems.
+     */
     initSystems: {
       value: function () {
         Object.keys(systems).forEach(bind(this.initSystem, this));
       }
     },
 
+    /**
+     * Initialize a system.
+     */
     initSystem: {
       value: function (name) {
         if (this.systems[name]) { return; }
@@ -74017,26 +74033,32 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Shuts down scene on detach.
+     * Shut down scene on detach.
      */
     detachedCallback: {
       value: function () {
+        var sceneIndex;
+
         if (this.effect && this.effect.cancelAnimationFrame) {
           this.effect.cancelAnimationFrame(this.animationFrameID);
         } else {
           window.cancelAnimationFrame(this.animationFrameID);
         }
-        var sceneIndex;
         this.animationFrameID = null;
+
         // Remove from scene index.
         sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
+
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       }
     },
 
     /**
-     * @param {object} behavior - Generally a component. Must implement a .update() method to
-     *        be called on every tick.
+     * Add ticks and tocks.
+     *
+     * @param {object} behavior - Generally a component. Must implement a .update() method
+     *   to be called on every tick.
      */
     addBehavior: {
       value: function (behavior) {
@@ -74066,24 +74088,29 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   manually calling requestPresent via WebVR API directly).
      * @returns {Promise}
      */
     enterVR: {
-      value: function (event) {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Enter VR via WebVR API.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
+
+        // Either entered VR already via WebVR API or VR not supported.
         enterVRSuccess();
         return Promise.resolve();
 
         function enterVRSuccess () {
           self.addState('vr-mode');
-          self.emit('enter-vr', event);
+          self.emit('enter-vr', {target: self});
 
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -74114,10 +74141,12 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `exitPresent` if WebVR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   Oculus Browser GearVR back button).
      * @returns {Promise}
      */
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't exit VR if not in VR.
@@ -74125,10 +74154,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         exitFullscreen();
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Handle exiting VR if not yet already and in a headset or polyfill.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
+
+        // Handle exiting VR in all other cases (2D fullscreen, external exit VR event).
         exitVRSuccess();
+
         return Promise.resolve();
 
         function exitVRSuccess () {
@@ -74151,6 +74184,22 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 
@@ -76115,7 +76164,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 14-06-2017, Commit #96e211a)');
+console.log('A-Frame Version: 0.5.0 (Date 15-06-2017, Commit #9ac9246)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
