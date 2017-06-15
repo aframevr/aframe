@@ -1,4 +1,4 @@
-/* global AFRAME, assert, process, sinon, setup, suite, teardown, test */
+/* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test */
 var AEntity = require('core/a-entity');
 var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene').AScene;
@@ -60,6 +60,25 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('vrdisplaypresentchange', function () {
+    test('tells A-Frame about entering VR if now presenting', function (done) {
+      var event;
+      var sceneEl = this.el;
+      console.log('start test');
+
+      sceneEl.setAttribute('id', 'vrdisplay');
+      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.addEventListener('enter-vr', function () {
+        assert.ok(sceneEl.is('vr-mode'));
+        done();
+      });
+
+      event = new CustomEvent('vrdisplaypresentchange');
+      event.display = {isPresenting: true};
+      window.dispatchEvent(event);
+    });
+  });
+
   suite('enterVR', function () {
     setup(function () {
       var sceneEl = this.el;
@@ -107,6 +126,16 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var requestSpy = this.requestSpy;
       sceneEl.enterVR().then(function () {
+        assert.notOk(requestSpy.called);
+        done();
+      });
+    });
+
+    test('does not call requestPresent if flag passed', function (done) {
+      var sceneEl = this.el;
+      var requestSpy = this.requestSpy;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.enterVR(true).then(function () {
         assert.notOk(requestSpy.called);
         done();
       });
@@ -202,6 +231,16 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       var exitSpy = this.exitSpy;
       sceneEl.exitVR().then(function () {
+        assert.notOk(exitSpy.called);
+        done();
+      });
+    });
+
+    test('does not call exitPresent if flag passed', function (done) {
+      var sceneEl = this.el;
+      var exitSpy = this.exitSpy;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
+      sceneEl.exitVR(true).then(function () {
         assert.notOk(exitSpy.called);
         done();
       });

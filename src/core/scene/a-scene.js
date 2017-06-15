@@ -66,8 +66,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.behaviors = { tick: [], tock: [] };
         this.hasLoaded = false;
         this.isPlaying = false;
-        this.renderTarget = null;
         this.originalHTML = this.innerHTML;
+        this.renderTarget = null;
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -109,16 +109,26 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Add to scene index.
         scenes.push(this);
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       },
       writable: window.debug
     },
 
+    /**
+     * Initialize all systems.
+     */
     initSystems: {
       value: function () {
         Object.keys(systems).forEach(bind(this.initSystem, this));
       }
     },
 
+    /**
+     * Initialize a system.
+     */
     initSystem: {
       value: function (name) {
         if (this.systems[name]) { return; }
@@ -127,26 +137,32 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Shuts down scene on detach.
+     * Shut down scene on detach.
      */
     detachedCallback: {
       value: function () {
+        var sceneIndex;
+
         if (this.effect && this.effect.cancelAnimationFrame) {
           this.effect.cancelAnimationFrame(this.animationFrameID);
         } else {
           window.cancelAnimationFrame(this.animationFrameID);
         }
-        var sceneIndex;
         this.animationFrameID = null;
+
         // Remove from scene index.
         sceneIndex = scenes.indexOf(this);
         scenes.splice(sceneIndex, 1);
+
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       }
     },
 
     /**
-     * @param {object} behavior - Generally a component. Must implement a .update() method to
-     *        be called on every tick.
+     * Add ticks and tocks.
+     *
+     * @param {object} behavior - Generally a component. Must implement a .update() method
+     *   to be called on every tick.
      */
     addBehavior: {
       value: function (behavior) {
@@ -176,24 +192,29 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `requestFullscreen` on desktop.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   manually calling requestPresent via WebVR API directly).
      * @returns {Promise}
      */
     enterVR: {
-      value: function (event) {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Enter VR via WebVR API.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
         }
+
+        // Either entered VR already via WebVR API or VR not supported.
         enterVRSuccess();
         return Promise.resolve();
 
         function enterVRSuccess () {
           self.addState('vr-mode');
-          self.emit('enter-vr', event);
+          self.emit('enter-vr', {target: self});
 
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.lock) {
@@ -224,10 +245,12 @@ module.exports.AScene = registerElement('a-scene', {
      * Call `exitPresent` if WebVR or WebVR polyfill.
      * Handle events, states, fullscreen styles.
      *
+     * @param {bool} fromExternal - Whether exiting VR due to an external event (e.g.,
+     *   Oculus Browser GearVR back button).
      * @returns {Promise}
      */
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't exit VR if not in VR.
@@ -235,10 +258,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         exitFullscreen();
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        // Handle exiting VR if not yet already and in a headset or polyfill.
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
+
+        // Handle exiting VR in all other cases (2D fullscreen, external exit VR event).
         exitVRSuccess();
+
         return Promise.resolve();
 
         function exitVRSuccess () {
@@ -261,6 +288,22 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 

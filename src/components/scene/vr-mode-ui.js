@@ -42,7 +42,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     });
 
     // Modal that tells the user to change orientation if in portrait.
-    window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
+    window.addEventListener('orientationchange',
+                            bind(this.toggleOrientationModalIfNeeded, this));
   },
 
   update: function () {
@@ -104,6 +105,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
  *
  * Structure: <div><button></div>
  *
+ * @param {function} enterVRHandler
  * @returns {Element} Wrapper <div>.
  */
 function createEnterVRButton (enterVRHandler) {
@@ -120,7 +122,9 @@ function createEnterVRButton (enterVRHandler) {
 
   // Insert elements.
   wrapper.appendChild(vrButton);
-  vrButton.addEventListener('click', enterVRHandler);
+  vrButton.addEventListener('click', function (evt) {
+    enterVRHandler();
+  });
   return wrapper;
 }
 
