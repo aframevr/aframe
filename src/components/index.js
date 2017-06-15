@@ -26,7 +26,6 @@ require('./visible');
 require('./vive-controls');
 require('./wasd-controls');
 
-require('./scene/auto-enter-vr');
 require('./scene/canvas');
 require('./scene/debug');
 require('./scene/embedded');
