@@ -544,7 +544,7 @@ of the laser will be truncated.
 [gaze]: #gaze-based-interactions-with-cursor-component
 
 Then handling events and interactions is the exact same as [gaze-based
-interactions with the cursor component]. Refer to the section above!
+interactions with the cursor component][gaze] . Refer to the section above!
 
 ## Adding Room Scale Interactions for Controllers
 
