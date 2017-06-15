@@ -120,8 +120,8 @@ A-Frame has APIs that represents each piece of ECS:
 
 We create `<a-entity>` and attach components as HTML attributes. Most
 components have multiple properties that are represented by a syntax similar to
-[`HTMLElement.style` CSS][style]. This syntax takes the form with a semicolon
-(`:`) separating property names from property values, and a colon (`;`)
+[`HTMLElement.style` CSS][style]. This syntax takes the form with a colon
+(`:`) separating property names from property values, and a semicolon (`;`)
 separating different property declarations:
 
 `<a-entity ${componentName}="${propertyName1}: ${propertyValue1}; ${propertyName2:}: ${propertyValue2}">`
