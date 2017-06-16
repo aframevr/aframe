@@ -64,10 +64,7 @@ suite('a-scene (without renderer)', function () {
     test('tells A-Frame about entering VR if now presenting', function (done) {
       var event;
       var sceneEl = this.el;
-      console.log('start test');
 
-      sceneEl.setAttribute('id', 'vrdisplay');
-      sceneEl.canvas = document.createElement('canvas');
       sceneEl.addEventListener('enter-vr', function () {
         assert.ok(sceneEl.is('vr-mode'));
         done();
@@ -75,6 +72,21 @@ suite('a-scene (without renderer)', function () {
 
       event = new CustomEvent('vrdisplaypresentchange');
       event.display = {isPresenting: true};
+      window.dispatchEvent(event);
+    });
+
+    test('tells A-Frame about exiting VR if no longer presenting', function (done) {
+      var event;
+      var sceneEl = this.el;
+      sceneEl.addState('vr-mode');
+
+      sceneEl.addEventListener('exit-vr', function () {
+        assert.notOk(sceneEl.is('vr-mode'));
+        done();
+      });
+
+      event = new CustomEvent('vrdisplaypresentchange');
+      event.display = {isPresenting: false};
       window.dispatchEvent(event);
     });
   });
