@@ -70316,9 +70316,6 @@ module.exports.Component = registerComponent('vive-controls', {
     var i;
     var isTouch = evtName.indexOf('touch') !== -1;
 
-    // Only trackpad has touch. Ignore for the rest, even if Gamepad API says touched.
-    if (isTouch && buttonName !== 'trackpad') { return; }
-
     // Emit events.
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
@@ -76111,7 +76108,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #2c70c01)');
+console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #e1b6579)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
