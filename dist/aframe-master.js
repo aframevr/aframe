@@ -76111,7 +76111,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #3c0c743)');
+console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #2c70c01)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77812,24 +77812,13 @@ module.exports = debug;
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
-
-var getControls = (function () {
-  var controls;
-  return function () {
-    if (!controls) {
-      // Lazy-instantiate VRControls to not break in Node.
-      controls = new THREE.VRControls(dolly);
-    }
-    return controls;
-  };
-})();
+var controls = new THREE.VRControls(dolly);
 
 /**
  * Determine if a headset is connected by checking if the orientation is available.
  */
 function checkHeadsetConnected () {
   var orientation;
-  var controls = getControls();
   var vrDisplay = controls.getVRDisplay();
 
   // If `isConnected` is available, just use that.
@@ -77848,7 +77837,6 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
  * Check for positional tracking.
  */
 function checkHasPositionalTracking () {
-  var controls = getControls();
   var vrDisplay = controls.getVRDisplay();
   if (isMobile() || isGearVR()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
