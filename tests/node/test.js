@@ -7,11 +7,13 @@ const jsdom = require('jsdom');
 
 suite('node acceptance tests', function () {
   setup(function () {
-    global.window = jsdom.jsdom().defaultView;
+    let _window = global.window = jsdom.jsdom().defaultView;
+    global.navigator = _window.navigator;
   });
 
   teardown(function () {
     delete global.window;
+    delete global.navigator;
   });
 
   test('can run in node', function () {
