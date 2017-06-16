@@ -206,9 +206,6 @@ module.exports.Component = registerComponent('vive-controls', {
     var i;
     var isTouch = evtName.indexOf('touch') !== -1;
 
-    // Only trackpad has touch. Ignore for the rest, even if Gamepad API says touched.
-    if (isTouch && buttonName !== 'trackpad') { return; }
-
     // Emit events.
     if (Array.isArray(buttonName)) {
       for (i = 0; i < buttonName.length; i++) {
