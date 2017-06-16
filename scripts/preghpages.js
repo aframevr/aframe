@@ -8,7 +8,8 @@ const replace = require('replace');
 // Inject `<meta>` tag for Chrome for Android's WebVR Origin Trial:
 // https://webvr.rocks/chrome_for_android#what_is_the_webvr_origin_trial
 const originTrialMetaTag = `
-  <meta http-equiv="origin-trial" data-feature="WebVR" data-origin="aframe.io" data-expires="2017-06-12" content="AtVfgsTpKNW5uNMWhhsORulpdxd0il6DEK0Xt2MF+z+QNgXelR4cKKJYdKfwJN/4xqakgwmg0BXd8Xn7WijlmggAAABbeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIiLCJleHBpcnkiOjE0OTczMTIwMDAsImlzU3ViZG9tYWluIjp0cnVlfQ==">
+  <!-- Origin Trial Token, feature = WebVR (For Chrome M59+), origin = https://aframe.io, expires = 2017-07-28 -->
+  <meta http-equiv="origin-trial" data-feature="WebVR (For Chrome M59+)" data-expires="2017-07-28" content="ArFv1ZeTwzkhjNE00uAE+XtiQB41fwqG/TqlFMLrepd9sforQSvQE/tgfIbUMYNuNre4QR1k4/z8xp2mV3dbhwwAAABeeyJvcmlnaW4iOiJodHRwczovL2FmcmFtZS5pbzo0NDMiLCJmZWF0dXJlIjoiV2ViVlIxLjEiLCJleHBpcnkiOjE1MDEyMTcwMDIsImlzU3ViZG9tYWluIjp0cnVlfQ==">
 `.trim();
 const rootDir = path.join(__dirname, '..');
 
