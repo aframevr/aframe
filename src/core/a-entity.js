@@ -35,7 +35,7 @@ var proto = Object.create(ANode.prototype, {
   createdCallback: {
     value: function () {
       this.components = {};
-      // to avoid double initializations and infinite loops
+      // To avoid double initializations and infinite loops.
       this.initializingComponents = {};
       this.isEntity = true;
       this.isPlaying = false;
