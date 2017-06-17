@@ -203,7 +203,7 @@ Read more about [component-to-DOM serialization][component-to-dom-serialization]
 // <a-entity geometry="primitive: box; width: 3">
 
 entity.getAttribute('geometry');
-// >> {primitive: "box", depth: 2, height: 2, translate: "0 0 0", width: 3, ...}
+// >> {primitive: "box", depth: 2, height: 2, width: 3, ...}
 
 entity.getAttribute('geometry').primitive;
 // >> "box"
