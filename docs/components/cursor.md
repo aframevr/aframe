@@ -155,7 +155,7 @@ pick up event with the `begin` attribute:
   <a-animation begin="click" easing="ease-in" attribute="scale"
                fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
   <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
-               fill="forwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
+               fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
 </a-entity>
 ```
 
