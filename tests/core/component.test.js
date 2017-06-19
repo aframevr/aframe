@@ -171,6 +171,21 @@ suite('Component', function () {
         done();
       });
     });
+
+    test('boolean properties are preserved when updating the component data', function () {
+      var data;
+      registerComponent('dummy', {
+        schema: {
+          depthTest: {default: true},
+          color: {default: 'red'}
+        }
+      });
+      var el = document.createElement('a-entity');
+      el.setAttribute('dummy', {color: 'blue', depthTest: false});
+      data = el.components.dummy.buildData({color: 'red'});
+      assert.equal(data.depthTest, false);
+      assert.equal(data.color, 'red');
+    });
   });
 
   suite('updateProperties', function () {
