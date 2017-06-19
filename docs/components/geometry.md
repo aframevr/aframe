@@ -349,14 +349,15 @@ AFRAME.registerGeometry('example', {
 
   init: function (data) {
     var geometry = new THREE.Geometry();
-    geometry.vertices.push.call(
-      geometry.vertices,
-      data.vertices.map(function (vertex) {
+    geometry.vertices = data.vertices.map(function (vertex) {
         var points = vertex.split(' ').map(function(x){return parseInt(x);});
         return new THREE.Vector3(points[0], points[1], points[2]);
-      })
-    );
+    });
+    geometry.computeBoundingBox();
     geometry.faces.push(new THREE.Face3(0, 1, 2));
+    geometry.mergeVertices();
+    geometry.computeFaceNormals();
+    geometry.computeVertexNormals();
     this.geometry = geometry;
   }
 });
@@ -365,7 +366,7 @@ AFRAME.registerGeometry('example', {
 We can then use that custom geometry in HTML:
 
 ```html
-<a-entity geometry="primitive: example; vertices: 1 1 1, 2 2 2, 3 3 3"></a-entity>
+<a-entity geometry="primitive: example; vertices: 1 1 -3, 3 1 -3, 2 2 -3"></a-entity>
 ```
 
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
