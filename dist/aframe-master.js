@@ -73173,7 +73173,6 @@ Component.prototype = {
     var attrValue = this.parseAttrValueForCache(value);
     var isSinglePropSchema = isSingleProp(this.schema);
     var property;
-
     if (value === undefined) { return; }
 
     // Merge new data with previous `attrValue` if updating and not clobbering.
@@ -73363,7 +73362,7 @@ Component.prototype = {
       data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
       Object.keys(schema).forEach(function applyDefault (key) {
         var defaultValue = schema[key].default;
-        if (data[key]) { return; }
+        if (data[key] !== undefined) { return; }
         data[key] = defaultValue && defaultValue.constructor === Object
           ? utils.extend({}, defaultValue)
           : defaultValue;
@@ -76108,7 +76107,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 16-06-2017, Commit #6203704)');
+console.log('A-Frame Version: 0.5.0 (Date 19-06-2017, Commit #4f488cc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
