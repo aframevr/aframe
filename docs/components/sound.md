@@ -20,14 +20,19 @@ component is positional and is thus affected by the
 
 ## Properties
 
-| Property | Description                                                           | Default Value |
-|----------|-----------------------------------------------------------------------|---------------|
-| autoplay | Whether to automatically play sound once set.                         | false         |
-| on       | An event for the entity to listen to before playing sound.            | null          |
-| loop     | Whether to loop the sound once the sound finishes playing.            | false         |
-| src      | Selector to an asset `<audio>`or `url()`-enclosed path to sound file. | null          |
-| volume   | How loud to play the sound.                                           | 1             |
-| poolSize | Numbers of simultaneous instances of this sound that can be playing at the same time | 1             |
+| Property      | Description                                                                                                    | Default Value |
+|---------------|----------------------------------------------------------------------------------------------------------------|---------------|
+| autoplay      | Whether to automatically play sound once set.                                                                  | false         |
+| distanceModel | `linear`, `inverse`, or `exponential`                                                                          | linear        |
+| loop          | Whether to loop the sound once the sound finishes playing.                                                     | false         |
+| maxDistance   | Maximum distance between the audio source and the listener, after which the volume is not reduced any further. | 10000         |
+| on            | An event for the entity to listen to before playing sound.                                                     | null          |
+| poolSize      | Numbers of simultaneous instances of this sound that can be playing at the same time                           | 1             |
+| refDistance   | Reference distance for reducing volume as the audio source moves further from the listener.                    | 1             |
+| rolloffFactor | Describes how quickly the volume is reduced as the source moves away from the listener.                        | 1             |
+| src           | Selector to an asset `<audio>`or `url()`-enclosed path to sound file.                                          | null          |
+| volume        | How loud to play the sound.                                                                                    | 1             |
+
 
 ## Methods
 
