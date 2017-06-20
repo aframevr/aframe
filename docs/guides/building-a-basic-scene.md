@@ -41,7 +41,7 @@ We start out with a minimal HTML structure:
   <body>
     <a-scene>
     </a-scene>
-  <body>
+  </body>
 </html>
 ```
 
