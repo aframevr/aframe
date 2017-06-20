@@ -18,6 +18,7 @@ Touch). If desired, we can get a consistent form of interaction that works
 across all VR platforms with a single line of HTML.
 
 [daydream-controls]: ./daydream-controls.md
+[gearvr-controls]: ./gearvr-controls.md
 [oculus-touch-controls]: ./oculus-touch-controls.md
 [tracked-controls]: ./tracked-controls.md
 [vive-controls]: ./vive-controls.md
