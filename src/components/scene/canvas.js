@@ -39,5 +39,8 @@ module.exports.Component = registerComponent('canvas', {
       document.activeElement.blur();
       document.body.focus();
     }
+  },
+  remove: function () {
+    this.el.canvas = undefined;
   }
 });
