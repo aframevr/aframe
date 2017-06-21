@@ -34,6 +34,18 @@
           }
         }
       });
+
+      AFRAME.registerComponent('shadow-if-mobile', {
+        init: function () {
+          if (!this.el.sceneEl.isMobile) {
+            this.el.setAttribute('light', {
+              castShadow: true,
+              shadowMapWidth: 2048,
+              shadowMapHeight: 1024
+            });
+          }
+        }
+      });
     </script>
 
     <a-scene antialias="true">
@@ -48,7 +60,7 @@
 
         <a-circle rotation="-90 0 0" radius="20" color="#666" position="0 -0.1 0" shadow="receive: true" roughness="1"></a-circle>
 
-        <a-light type="point" position="0 10 -30" intensity="0.85" light="castShadow: true; shadowMapWidth: 2048; shadowMapHeight: 1024"></a-light>
+        <a-light type="point" position="0 10 -30" intensity="0.85" shadow-if-mobile></a-light>
 
         <a-torus radius="20" arc="190" rotation="0 90 0">
           <a-animation attribute="rotation" to="0 450 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
