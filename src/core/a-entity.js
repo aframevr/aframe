@@ -300,6 +300,8 @@ var proto = Object.create(ANode.prototype, {
       if (this.hasLoaded || !this.parentEl) { return; }
 
       ANode.prototype.load.call(this, function entityLoadCallback () {
+        /* if you change this callback, update a-scene.reload appropriately. */
+
         // Check if entity was detached while it was waiting to load.
         if (!self.parentEl) { return; }
 
@@ -423,7 +425,7 @@ var proto = Object.create(ANode.prototype, {
   },
 
   removeComponent: {
-    value: function (name) {
+    value: function (name, force) {
       var component;
       var isDefault;
       var isMixedIn;
@@ -431,7 +433,7 @@ var proto = Object.create(ANode.prototype, {
       // Don't remove default or mixed-in components.
       isDefault = name in this.defaultComponents;
       isMixedIn = isComponentMixedIn(name, this.mixinEls);
-      if (isDefault || isMixedIn) { return; }
+      if ((isDefault || isMixedIn) && !force) { return; }
 
       component = this.components[name];
       if (!component) { return; }

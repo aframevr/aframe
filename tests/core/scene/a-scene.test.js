@@ -19,9 +19,10 @@ var helpers = require('../../helpers');
  */
 suite('a-scene (without renderer)', function () {
   setup(function (done) {
-    var el = this.el = document.createElement('a-scene');
-    el.addEventListener('nodeready', function () { done(); });
-    document.body.appendChild(el);
+    var body = document.body;
+    body.addEventListener('nodeready', function () { done(); }, {capture: true, once: true});
+    body.insertAdjacentHTML('beforeend', '<a-scene test="test"></a-scene>');
+    this.el = body.children[body.children.length - 1];
   });
 
   teardown(function () {
@@ -298,6 +299,15 @@ suite('a-scene (without renderer)', function () {
       sceneEl.innerHTML = 'NEW';
       sceneEl.reload();
       assert.equal(sceneEl.innerHTML, '');
+    });
+
+    test('reload scene attributes to original values', function () {
+      var sceneEl = this.el;
+      sceneEl.removeAttribute('test');
+      sceneEl.setAttribute('foo', 'bar');
+      sceneEl.reload();
+      assert.notOk(sceneEl.hasAttribute('foo'));
+      assert.equal(sceneEl.getAttribute('test'), 'test');
     });
 
     test('reloads the scene and pauses', function () {

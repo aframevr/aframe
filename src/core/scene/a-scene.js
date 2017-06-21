@@ -1,4 +1,4 @@
-/* global Promise, screen */
+/* global Promise, screen, HTMLElement */
 var initMetaTags = require('./metaTags').inject;
 var initWakelock = require('./wakelock');
 var re = require('../a-register-element');
@@ -66,7 +66,20 @@ module.exports.AScene = registerElement('a-scene', {
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
+        this.originalAttributes = [];
+
+        var attributes = this.attributes;
+
+        for (var i = 0; i < attributes.length; ++i) {
+          var attribute = attributes[i];
+          this.originalAttributes.push({
+            name: attribute.name,
+            value: attribute.value
+          });
+        }
+
         this.renderTarget = null;
+
         this.addEventListener('render-target-loaded', function () {
           this.setupRenderer();
           this.resize();
@@ -479,10 +492,30 @@ module.exports.AScene = registerElement('a-scene', {
       value: function (doPause) {
         var self = this;
         if (doPause) { this.pause(); }
+
+        /* remove everything */
+        this.innerHTML = '';
+        while (this.hasAttributes()) {
+          var name = this.attributes[0].name;
+
+          if (this.components[name]) {
+            this.removeComponent(name, true);
+          }
+          HTMLElement.prototype.removeAttribute.call(this, name);
+        }
+
+        this.isPlaying = false;
+
+        /* restore everything */
         this.innerHTML = this.originalHTML;
+        this.originalAttributes.forEach(function (attribute) {
+          HTMLElement.prototype.setAttribute.call(self, attribute.name, attribute.value);
+        });
+
         this.init();
         ANode.prototype.load.call(this, play);
         function play () {
+          self.updateComponents();
           if (!self.isPlaying) { return; }
           AEntity.prototype.play.call(self);
         }
