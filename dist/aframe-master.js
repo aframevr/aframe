@@ -70200,6 +70200,8 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('buttonchanged', this.onButtonChanged);
     el.addEventListener('buttondown', this.onButtonDown);
     el.addEventListener('buttonup', this.onButtonUp);
+    el.addEventListener('touchend', this.onButtonTouchEnd);
+    el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
   },
@@ -70209,6 +70211,8 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('buttonchanged', this.onButtonChanged);
     el.removeEventListener('buttondown', this.onButtonDown);
     el.removeEventListener('buttonup', this.onButtonUp);
+    el.removeEventListener('touchend', this.onButtonTouchEnd);
+    el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
   },
@@ -76107,7 +76111,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 19-06-2017, Commit #4f488cc)');
+console.log('A-Frame Version: 0.5.0 (Date 22-06-2017, Commit #a544a0b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
