@@ -333,7 +333,7 @@ AFRAME.registerGeometry('box', {
 Like with registering components, we provide a name, a
 [schema][component-schema] that will expose the properties of the geometry, and
 lifecycle methods. Then we need to create the geometry and set on
-`this.geometry` through the `init` and `update` lifecycle methods.
+`this.geometry` through the `init` lifecycle method.
 
 When a geometry component sets its `primitive` property to the custom geometry
 name, we can set the properties of the custom geometry on the geometry
