@@ -58062,48 +58062,56 @@ module.exports={
   "_args": [
     [
       {
-        "raw": "webvr-polyfill@^0.9.34",
+        "raw": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
         "scope": null,
         "escapedName": "webvr-polyfill",
         "name": "webvr-polyfill",
-        "rawSpec": "^0.9.34",
-        "spec": ">=0.9.34 <0.10.0",
-        "type": "range"
+        "rawSpec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+        "spec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+        "type": "hosted",
+        "hosted": {
+          "type": "github",
+          "ssh": "git@github.com:aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+          "sshUrl": "git+ssh://git@github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+          "httpsUrl": "git+https://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+          "gitUrl": "git://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+          "shortcut": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+          "directUrl": "https://raw.githubusercontent.com/aframevr/webvr-polyfill/vrFrameDataPolyfill/package.json"
+        }
       },
       "/home/ubuntu/a-frobot/aframe"
     ]
   ],
-  "_from": "webvr-polyfill@>=0.9.34 <0.10.0",
+  "_from": "aframevr/webvr-polyfill#vrFrameDataPolyfill",
   "_id": "webvr-polyfill@0.9.34",
   "_inCache": true,
   "_location": "/webvr-polyfill",
-  "_nodeVersion": "6.10.0",
-  "_npmOperationalInternal": {
-    "host": "s3://npm-registry-packages",
-    "tmp": "tmp/webvr-polyfill-0.9.34.tgz_1496357487388_0.023648461559787393"
-  },
-  "_npmUser": {
-    "name": "jsantell",
-    "email": "jsantell@gmail.com"
-  },
-  "_npmVersion": "3.10.10",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "webvr-polyfill@^0.9.34",
+    "raw": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
     "scope": null,
     "escapedName": "webvr-polyfill",
     "name": "webvr-polyfill",
-    "rawSpec": "^0.9.34",
-    "spec": ">=0.9.34 <0.10.0",
-    "type": "range"
+    "rawSpec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+    "spec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+    "type": "hosted",
+    "hosted": {
+      "type": "github",
+      "ssh": "git@github.com:aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+      "sshUrl": "git+ssh://git@github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+      "httpsUrl": "git+https://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+      "gitUrl": "git://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
+      "shortcut": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+      "directUrl": "https://raw.githubusercontent.com/aframevr/webvr-polyfill/vrFrameDataPolyfill/package.json"
+    }
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.34.tgz",
-  "_shasum": "6114acf67bfedc6ccb2ac84de6ab8220436261fb",
+  "_resolved": "git://github.com/aframevr/webvr-polyfill.git#876e216b3f0bd1f83c8551483e13cc938bb03cec",
+  "_shasum": "aa9bd9aaa203b406a065da63a3c70f0f89248319",
   "_shrinkwrap": null,
-  "_spec": "webvr-polyfill@^0.9.34",
+  "_spec": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
   "_where": "/home/ubuntu/a-frobot/aframe",
   "authors": [
     "Boris Smus <boris@smus.com>",
@@ -58123,12 +58131,7 @@ module.exports={
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   },
-  "directories": {},
-  "dist": {
-    "shasum": "6114acf67bfedc6ccb2ac84de6ab8220436261fb",
-    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.34.tgz"
-  },
-  "gitHead": "64bd6a3bb0b00d39753d5f2624b8eb7829b9053f",
+  "gitHead": "876e216b3f0bd1f83c8551483e13cc938bb03cec",
   "homepage": "https://github.com/googlevr/webvr-polyfill",
   "keywords": [
     "vr",
@@ -58136,23 +58139,10 @@ module.exports={
   ],
   "license": "Apache-2.0",
   "main": "src/node-entry",
-  "maintainers": [
-    {
-      "name": "jsantell",
-      "email": "jsantell@gmail.com"
-    },
-    {
-      "name": "toji",
-      "email": "tojiro@gmail.com"
-    },
-    {
-      "name": "smus",
-      "email": "boris@smus.com"
-    }
-  ],
   "name": "webvr-polyfill",
   "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
+  "readme": "# WebVR Polyfill\n\n[![Build Status](http://img.shields.io/travis/googlevr/webvr-polyfill.svg?style=flat-square)](https://travis-ci.org/googlevr/webvr-polyfill)\n[![Build Status](http://img.shields.io/npm/v/webvr-polyfill.svg?style=flat-square)](https://www.npmjs.org/package/webvr-polyfill)\n\n\nA JavaScript implementation of the [WebVR spec][spec]. This project lets you use\nWebVR today, without requiring a [special][moz] [browser][cr] build. It also\nlets you view the same content without requiring a virtual reality viewer.\n\nTake a look at [basic WebVR samples][samples] that use this polyfill.\n\n[moz]: http://mozvr.com/\n[cr]: https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ\n[samples]: https://toji.github.io/webvr-samples/\n[spec]: https://mozvr.github.io/webvr-spec/\n\n## Implementation\n\nThe polyfill decides which VRDisplays to provide, depending on the configuration\nof your browser. Mobile devices provide the `CardboardVRDisplay`. Desktop devices\nuse the `MouseKeyboardVRDisplay`.\n\n`CardboardVRDisplay` uses DeviceMotionEvents to implement a complementary\nfilter which does [sensor fusion and pose prediction][fusion] to provide\norientation tracking. It can also render in stereo mode, and includes mesh-based\nlens distortion. This display also includes user interface elements in VR mode\nto make the VR experience more intuitive, including:\n\n- A gear icon to select your VR viewer.\n- A back button to exit VR mode.\n- An interstitial which only appears in portrait orientation, requesting you switch\n  into landscape orientation (if [orientation lock][ol] is not available).\n\n`MouseKeyboardVRDisplay` uses mouse events to allow you to do the equivalent of\nmouselook. It also uses keyboard arrows keys to look around the scene\nwith the keyboard.\n\n[fusion]: http://smus.com/sensor-fusion-prediction-webvr/\n[ol]: https://www.w3.org/TR/screen-orientation/\n\n\n## Configuration\n\nThe polyfill can be configured and debugged with various options. The following\nare supported:\n\n```javascript\nWebVRConfig = {\n  // Flag to disabled the UI in VR Mode.\n  CARDBOARD_UI_DISABLED: false, // Default: false\n\n  // Forces availability of VR mode, even for non-mobile devices.\n  FORCE_ENABLE_VR: true, // Default: false.\n\n  // Complementary filter coefficient. 0 for accelerometer, 1 for gyro.\n  K_FILTER: 0.98, // Default: 0.98.\n\n  // Flag to disable the instructions to rotate your device.\n  ROTATE_INSTRUCTIONS_DISABLED: false, // Default: false.\n\n  // How far into the future to predict during fast motion (in seconds).\n  PREDICTION_TIME_S: 0.040, // Default: 0.040.\n\n  // Flag to disable touch panner. In case you have your own touch controls.\n  TOUCH_PANNER_DISABLED: false, // Default: true.\n\n  // Enable yaw panning only, disabling roll and pitch. This can be useful\n  // for panoramas with nothing interesting above or below.\n  YAW_ONLY: true, // Default: false.\n\n  // To disable keyboard and mouse controls, if you want to use your own\n  // implementation.\n  MOUSE_KEYBOARD_CONTROLS_DISABLED: true, // Default: false.\n\n  // Prevent the polyfill from initializing immediately. Requires the app\n  // to call InitializeWebVRPolyfill() before it can be used.\n  DEFER_INITIALIZATION: true, // Default: false.\n\n  // Enable the deprecated version of the API (navigator.getVRDevices).\n  ENABLE_DEPRECATED_API: true, // Default: false.\n\n  // Scales the recommended buffer size reported by WebVR, which can improve\n  // performance.\n  BUFFER_SCALE: 0.5, // Default: 0.5.\n\n  // Allow VRDisplay.submitFrame to change gl bindings, which is more\n  // efficient if the application code will re-bind its resources on the\n  // next frame anyway. This has been seen to cause rendering glitches with\n  // THREE.js.\n  // Dirty bindings include: gl.FRAMEBUFFER_BINDING, gl.CURRENT_PROGRAM,\n  // gl.ARRAY_BUFFER_BINDING, gl.ELEMENT_ARRAY_BUFFER_BINDING,\n  // and gl.TEXTURE_BINDING_2D for texture unit 0.\n  DIRTY_SUBMIT_FRAME_BINDINGS: true, // Default: false.\n\n  // When set to true, this will cause a polyfilled VRDisplay to always be\n  // appended to the list returned by navigator.getVRDisplays(), even if that\n  // list includes a native VRDisplay.\n  ALWAYS_APPEND_POLYFILL_DISPLAY: false,\n\n  // There are versions of Chrome (M58-M60?) where the native WebVR API exists,\n  // and instead of returning 0 VR displays when none are detected,\n  // `navigator.getVRDisplays()`'s promise never resolves. This results\n  // in the polyfill hanging and not being able to provide fallback\n  // displays, so set a timeout in milliseconds to stop waiting for a response\n  // and just use polyfilled displays.\n  // https://bugs.chromium.org/p/chromium/issues/detail?id=727969\n  GET_VR_DISPLAYS_TIMEOUT: 1000,\n}\n```\n\n## Performance\n\nPerformance is critical for VR. If you find your application is too sluggish,\nconsider tweaking some of the above parameters. In particular, keeping\n`BUFFER_SCALE` at 0.5 (the default) will likely help a lot.\n\n## WebVR 1.1 Shim\n\nThe polyfill exposes a helper method `WebVRPolyfill.InstallWebVRSpecShim` which\ninstalls a shim that updates a WebVR 1.0 spec implementation to WebVR 1.1.\n\n## Development\n\nIf you'd like to contribute to the `webvr-poyfill` library, check out\nthe repository and install\n[Node](https://nodejs.org/en/download/package-manager/) and the dependencies:\n\n```bash\ngit clone https://github.com/googlevr/webvr-polyfill\ncd webvr-polyfill\nnpm install\n```\n\n### Development Commands\n\n* `npm install`: installs the dependencies.\n* `npm start`: auto-builds the module whenever any source changes and serves the example\ncontent on `http://0.0.0.0:8080/`.\n* `npm run build`: builds the module.\n\n## License\n\nThis program is free software for both commercial and non-commercial use,\ndistributed under the [Apache 2.0 License](LICENSE).\n\n\n## Thanks\n\n- [Brandon Jones][bj] and [Vladimir Vukicevic][vv] for their work on the [WebVR\n  spec][spec].\n- [Ricardo Cabello][doob] for THREE.js.\n- [Diego Marcos][dm] for VREffect and VRControls.\n- [Dmitriy Kovalev][dk] for help with lens distortion correction.\n\n[dk]: https://github.com/dmitriykovalev/\n[bj]: https://twitter.com/tojiro\n[vv]: https://twitter.com/vvuk\n[spec]: https://mozvr.github.io/webvr-spec/\n[dm]: https://twitter.com/dmarcos\n[doob]: https://twitter.com/mrdoob\n",
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/googlevr/webvr-polyfill.git"
@@ -60474,48 +60464,48 @@ module.exports = Distortion;
 
 },{}],58:[function(_dereq_,module,exports){
 module.exports={
-  "format":1,
-  "last_updated":"2017-01-12T08:41:55Z",
-  "devices":[
+  "format": 1,
+  "last_updated": "2017-06-01T22:33:42Z",
+  "devices": [
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"asus/*/Nexus 7/*"
+          "mdmh": "asus/*/Nexus 7/*"
         },
         {
-          "ua":"Nexus 7"
+          "ua": "Nexus 7"
         }
       ],
-      "dpi":[
+      "dpi": [
         320.8,
         323
       ],
-      "bw":3,
-      "ac":500
-    },
-    {
-      "type":"android",
-      "rules":[
-        {
-          "mdmh":"asus/*/ASUS_Z00AD/*"
-        },
-        {
-          "ua":"ASUS_Z00AD"
-        }
-      ],
-      "dpi":[
-        403,
-        404.6
-      ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 500
     },
     {
       "type": "android",
       "rules": [
         {
-          "mdmh": "Google//Pixel XL/"
+          "mdmh": "asus/*/ASUS_Z00AD/*"
+        },
+        {
+          "ua": "ASUS_Z00AD"
+        }
+      ],
+      "dpi": [
+        403,
+        404.6
+      ],
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "Google/*/Pixel XL/*"
         },
         {
           "ua": "Pixel XL"
@@ -60532,7 +60522,7 @@ module.exports={
       "type": "android",
       "rules": [
         {
-          "mdmh": "Google//Pixel/"
+          "mdmh": "Google/*/Pixel/*"
         },
         {
           "ua": "Pixel"
@@ -60546,556 +60536,556 @@ module.exports={
       "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"HTC/*/HTC6435LVW/*"
+          "mdmh": "HTC/*/HTC6435LVW/*"
         },
         {
-          "ua":"HTC6435LVW"
+          "ua": "HTC6435LVW"
         }
       ],
-      "dpi":[
+      "dpi": [
         449.7,
         443.3
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"HTC/*/HTC One XL/*"
+          "mdmh": "HTC/*/HTC One XL/*"
         },
         {
-          "ua":"HTC One XL"
+          "ua": "HTC One XL"
         }
       ],
-      "dpi":[
+      "dpi": [
         315.3,
         314.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"htc/*/Nexus 9/*"
+          "mdmh": "htc/*/Nexus 9/*"
         },
         {
-          "ua":"Nexus 9"
+          "ua": "Nexus 9"
         }
       ],
-      "dpi":289,
-      "bw":3,
-      "ac":500
+      "dpi": 289,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"HTC/*/HTC One M9/*"
+          "mdmh": "HTC/*/HTC One M9/*"
         },
         {
-          "ua":"HTC One M9"
+          "ua": "HTC One M9"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.5,
         443.3
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"HTC/*/HTC One_M8/*"
+          "mdmh": "HTC/*/HTC One_M8/*"
         },
         {
-          "ua":"HTC One_M8"
+          "ua": "HTC One_M8"
         }
       ],
-      "dpi":[
+      "dpi": [
         449.7,
         447.4
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"HTC/*/HTC One/*"
+          "mdmh": "HTC/*/HTC One/*"
         },
         {
-          "ua":"HTC One"
+          "ua": "HTC One"
         }
       ],
-      "dpi":472.8,
-      "bw":3,
-      "ac":1000
+      "dpi": 472.8,
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Huawei/*/Nexus 6P/*"
+          "mdmh": "Huawei/*/Nexus 6P/*"
         },
         {
-          "ua":"Nexus 6P"
+          "ua": "Nexus 6P"
         }
       ],
-      "dpi":[
+      "dpi": [
         515.1,
         518
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/Nexus 5X/*"
+          "mdmh": "LGE/*/Nexus 5X/*"
         },
         {
-          "ua":"Nexus 5X"
+          "ua": "Nexus 5X"
         }
       ],
-      "dpi":[
+      "dpi": [
         422,
         419.9
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LGMS345/*"
+          "mdmh": "LGE/*/LGMS345/*"
         },
         {
-          "ua":"LGMS345"
+          "ua": "LGMS345"
         }
       ],
-      "dpi":[
+      "dpi": [
         221.7,
         219.1
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LG-D800/*"
+          "mdmh": "LGE/*/LG-D800/*"
         },
         {
-          "ua":"LG-D800"
+          "ua": "LG-D800"
         }
       ],
-      "dpi":[
+      "dpi": [
         422,
         424.1
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LG-D850/*"
+          "mdmh": "LGE/*/LG-D850/*"
         },
         {
-          "ua":"LG-D850"
+          "ua": "LG-D850"
         }
       ],
-      "dpi":[
+      "dpi": [
         537.9,
         541.9
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/VS985 4G/*"
+          "mdmh": "LGE/*/VS985 4G/*"
         },
         {
-          "ua":"VS985 4G"
+          "ua": "VS985 4G"
         }
       ],
-      "dpi":[
+      "dpi": [
         537.9,
         535.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/Nexus 5/*"
+          "mdmh": "LGE/*/Nexus 5/*"
         },
         {
-          "ua":"Nexus 5 B"
+          "ua": "Nexus 5 B"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.4,
         444.8
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/Nexus 4/*"
+          "mdmh": "LGE/*/Nexus 4/*"
         },
         {
-          "ua":"Nexus 4"
+          "ua": "Nexus 4"
         }
       ],
-      "dpi":[
+      "dpi": [
         319.8,
         318.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LG-P769/*"
+          "mdmh": "LGE/*/LG-P769/*"
         },
         {
-          "ua":"LG-P769"
+          "ua": "LG-P769"
         }
       ],
-      "dpi":[
+      "dpi": [
         240.6,
         247.5
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LGMS323/*"
+          "mdmh": "LGE/*/LGMS323/*"
         },
         {
-          "ua":"LGMS323"
+          "ua": "LGMS323"
         }
       ],
-      "dpi":[
+      "dpi": [
         206.6,
         204.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"LGE/*/LGLS996/*"
+          "mdmh": "LGE/*/LGLS996/*"
         },
         {
-          "ua":"LGLS996"
+          "ua": "LGLS996"
         }
       ],
-      "dpi":[
+      "dpi": [
         403.4,
         401.5
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Micromax/*/4560MMX/*"
+          "mdmh": "Micromax/*/4560MMX/*"
         },
         {
-          "ua":"4560MMX"
+          "ua": "4560MMX"
         }
       ],
-      "dpi":[
+      "dpi": [
         240,
         219.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Micromax/*/A250/*"
+          "mdmh": "Micromax/*/A250/*"
         },
         {
-          "ua":"Micromax A250"
+          "ua": "Micromax A250"
         }
       ],
-      "dpi":[
+      "dpi": [
         480,
         446.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Micromax/*/Micromax AQ4501/*"
+          "mdmh": "Micromax/*/Micromax AQ4501/*"
         },
         {
-          "ua":"Micromax AQ4501"
+          "ua": "Micromax AQ4501"
         }
       ],
-      "dpi":240,
-      "bw":3,
-      "ac":500
+      "dpi": 240,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/DROID RAZR/*"
+          "mdmh": "motorola/*/DROID RAZR/*"
         },
         {
-          "ua":"DROID RAZR"
+          "ua": "DROID RAZR"
         }
       ],
-      "dpi":[
+      "dpi": [
         368.1,
         256.7
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT830C/*"
+          "mdmh": "motorola/*/XT830C/*"
         },
         {
-          "ua":"XT830C"
+          "ua": "XT830C"
         }
       ],
-      "dpi":[
+      "dpi": [
         254,
         255.9
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1021/*"
+          "mdmh": "motorola/*/XT1021/*"
         },
         {
-          "ua":"XT1021"
+          "ua": "XT1021"
         }
       ],
-      "dpi":[
+      "dpi": [
         254,
         256.7
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1023/*"
+          "mdmh": "motorola/*/XT1023/*"
         },
         {
-          "ua":"XT1023"
+          "ua": "XT1023"
         }
       ],
-      "dpi":[
+      "dpi": [
         254,
         256.7
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1028/*"
+          "mdmh": "motorola/*/XT1028/*"
         },
         {
-          "ua":"XT1028"
+          "ua": "XT1028"
         }
       ],
-      "dpi":[
+      "dpi": [
         326.6,
         327.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1034/*"
+          "mdmh": "motorola/*/XT1034/*"
         },
         {
-          "ua":"XT1034"
+          "ua": "XT1034"
         }
       ],
-      "dpi":[
+      "dpi": [
         326.6,
         328.4
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1053/*"
+          "mdmh": "motorola/*/XT1053/*"
         },
         {
-          "ua":"XT1053"
+          "ua": "XT1053"
         }
       ],
-      "dpi":[
+      "dpi": [
         315.3,
         316.1
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1562/*"
+          "mdmh": "motorola/*/XT1562/*"
         },
         {
-          "ua":"XT1562"
+          "ua": "XT1562"
         }
       ],
-      "dpi":[
+      "dpi": [
         403.4,
         402.7
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/Nexus 6/*"
+          "mdmh": "motorola/*/Nexus 6/*"
         },
         {
-          "ua":"Nexus 6 B"
+          "ua": "Nexus 6 B"
         }
       ],
-      "dpi":[
+      "dpi": [
         494.3,
         489.7
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1063/*"
+          "mdmh": "motorola/*/XT1063/*"
         },
         {
-          "ua":"XT1063"
+          "ua": "XT1063"
         }
       ],
-      "dpi":[
+      "dpi": [
         295,
         296.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1064/*"
+          "mdmh": "motorola/*/XT1064/*"
         },
         {
-          "ua":"XT1064"
+          "ua": "XT1064"
         }
       ],
-      "dpi":[
+      "dpi": [
         295,
         295.6
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1092/*"
+          "mdmh": "motorola/*/XT1092/*"
         },
         {
-          "ua":"XT1092"
+          "ua": "XT1092"
         }
       ],
-      "dpi":[
+      "dpi": [
         422,
         424.1
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"motorola/*/XT1095/*"
+          "mdmh": "motorola/*/XT1095/*"
         },
         {
-          "ua":"XT1095"
+          "ua": "XT1095"
         }
       ],
-      "dpi":[
+      "dpi": [
         422,
         423.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
       "type": "android",
@@ -61107,631 +61097,648 @@ module.exports={
           "ua": "Moto G (4)"
         }
       ],
-      "dpi": 401.0,
+      "dpi": 401,
       "bw": 4,
       "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"OnePlus/*/A0001/*"
+          "mdmh": "OnePlus/*/A0001/*"
         },
         {
-          "ua":"A0001"
+          "ua": "A0001"
         }
       ],
-      "dpi":[
+      "dpi": [
         403.4,
         401
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"OnePlus/*/ONE E1005/*"
+          "mdmh": "OnePlus/*/ONE E1005/*"
         },
         {
-          "ua":"ONE E1005"
+          "ua": "ONE E1005"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.4,
         441.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"OnePlus/*/ONE A2005/*"
+          "mdmh": "OnePlus/*/ONE A2005/*"
         },
         {
-          "ua":"ONE A2005"
+          "ua": "ONE A2005"
         }
       ],
-      "dpi":[
+      "dpi": [
         391.9,
         405.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"OPPO/*/X909/*"
+          "mdmh": "OPPO/*/X909/*"
         },
         {
-          "ua":"X909"
+          "ua": "X909"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.4,
         444.1
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9082/*"
+          "mdmh": "samsung/*/GT-I9082/*"
         },
         {
-          "ua":"GT-I9082"
+          "ua": "GT-I9082"
         }
       ],
-      "dpi":[
+      "dpi": [
         184.7,
         185.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G360P/*"
+          "mdmh": "samsung/*/SM-G360P/*"
         },
         {
-          "ua":"SM-G360P"
+          "ua": "SM-G360P"
         }
       ],
-      "dpi":[
+      "dpi": [
         196.7,
         205.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/Nexus S/*"
+          "mdmh": "samsung/*/Nexus S/*"
         },
         {
-          "ua":"Nexus S"
+          "ua": "Nexus S"
         }
       ],
-      "dpi":[
+      "dpi": [
         234.5,
         229.8
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9300/*"
+          "mdmh": "samsung/*/GT-I9300/*"
         },
         {
-          "ua":"GT-I9300"
+          "ua": "GT-I9300"
         }
       ],
-      "dpi":[
+      "dpi": [
         304.8,
         303.9
       ],
-      "bw":5,
-      "ac":500
+      "bw": 5,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-T230NU/*"
+          "mdmh": "samsung/*/SM-T230NU/*"
         },
         {
-          "ua":"SM-T230NU"
+          "ua": "SM-T230NU"
         }
       ],
-      "dpi":216,
-      "bw":3,
-      "ac":500
+      "dpi": 216,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SGH-T399/*"
+          "mdmh": "samsung/*/SGH-T399/*"
         },
         {
-          "ua":"SGH-T399"
+          "ua": "SGH-T399"
         }
       ],
-      "dpi":[
+      "dpi": [
         217.7,
         231.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-N9005/*"
+          "mdmh": "samsung/*/SGH-M919/*"
         },
         {
-          "ua":"SM-N9005"
+          "ua": "SGH-M919"
         }
       ],
-      "dpi":[
+      "dpi": [
+        440.8,
+        437.7
+      ],
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/SM-N9005/*"
+        },
+        {
+          "ua": "SM-N9005"
+        }
+      ],
+      "dpi": [
         386.4,
         387
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SAMSUNG-SM-N900A/*"
+          "mdmh": "samsung/*/SAMSUNG-SM-N900A/*"
         },
         {
-          "ua":"SAMSUNG-SM-N900A"
+          "ua": "SAMSUNG-SM-N900A"
         }
       ],
-      "dpi":[
+      "dpi": [
         386.4,
         387.7
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9500/*"
+          "mdmh": "samsung/*/GT-I9500/*"
         },
         {
-          "ua":"GT-I9500"
+          "ua": "GT-I9500"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.5,
         443.3
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9505/*"
+          "mdmh": "samsung/*/GT-I9505/*"
         },
         {
-          "ua":"GT-I9505"
+          "ua": "GT-I9505"
         }
       ],
-      "dpi":439.4,
-      "bw":4,
-      "ac":1000
+      "dpi": 439.4,
+      "bw": 4,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G900F/*"
+          "mdmh": "samsung/*/SM-G900F/*"
         },
         {
-          "ua":"SM-G900F"
+          "ua": "SM-G900F"
         }
       ],
-      "dpi":[
+      "dpi": [
         415.6,
         431.6
       ],
-      "bw":5,
-      "ac":1000
+      "bw": 5,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G900M/*"
+          "mdmh": "samsung/*/SM-G900M/*"
         },
         {
-          "ua":"SM-G900M"
+          "ua": "SM-G900M"
         }
       ],
-      "dpi":[
+      "dpi": [
         415.6,
         431.6
       ],
-      "bw":5,
-      "ac":1000
+      "bw": 5,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G800F/*"
+          "mdmh": "samsung/*/SM-G800F/*"
         },
         {
-          "ua":"SM-G800F"
+          "ua": "SM-G800F"
         }
       ],
-      "dpi":326.8,
-      "bw":3,
-      "ac":1000
+      "dpi": 326.8,
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G906S/*"
+          "mdmh": "samsung/*/SM-G906S/*"
         },
         {
-          "ua":"SM-G906S"
+          "ua": "SM-G906S"
         }
       ],
-      "dpi":[
+      "dpi": [
         562.7,
         572.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9300/*"
+          "mdmh": "samsung/*/GT-I9300/*"
         },
         {
-          "ua":"GT-I9300"
+          "ua": "GT-I9300"
         }
       ],
-      "dpi":[
+      "dpi": [
         306.7,
         304.8
       ],
-      "bw":5,
-      "ac":1000
+      "bw": 5,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-T535/*"
+          "mdmh": "samsung/*/SM-T535/*"
         },
         {
-          "ua":"SM-T535"
+          "ua": "SM-T535"
         }
       ],
-      "dpi":[
+      "dpi": [
         142.6,
         136.4
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-N920C/*"
+          "mdmh": "samsung/*/SM-N920C/*"
         },
         {
-          "ua":"SM-N920C"
+          "ua": "SM-N920C"
         }
       ],
-      "dpi":[
+      "dpi": [
         515.1,
         518.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-       "type": "android",
-       "rules": [
-         {
-           "mdmh": "samsung/*/SM-N920W8/*"
-         },
-         {
-           "ua": "SM-N920W8"
-         }
-       ],
-       "dpi": [
-         515.1,
-         518.4
-       ],
-       "bw": 3,
-       "ac": 1000
-     },
-    {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9300I/*"
+          "mdmh": "samsung/*/SM-N920W8/*"
         },
         {
-          "ua":"GT-I9300I"
+          "ua": "SM-N920W8"
         }
       ],
-      "dpi":[
+      "dpi": [
+        515.1,
+        518.4
+      ],
+      "bw": 3,
+      "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/GT-I9300I/*"
+        },
+        {
+          "ua": "GT-I9300I"
+        }
+      ],
+      "dpi": [
         304.8,
         305.8
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-I9195/*"
+          "mdmh": "samsung/*/GT-I9195/*"
         },
         {
-          "ua":"GT-I9195"
+          "ua": "GT-I9195"
         }
       ],
-      "dpi":[
+      "dpi": [
         249.4,
         256.7
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SPH-L520/*"
+          "mdmh": "samsung/*/SPH-L520/*"
         },
         {
-          "ua":"SPH-L520"
+          "ua": "SPH-L520"
         }
       ],
-      "dpi":[
+      "dpi": [
         249.4,
         255.9
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SAMSUNG-SGH-I717/*"
+          "mdmh": "samsung/*/SAMSUNG-SGH-I717/*"
         },
         {
-          "ua":"SAMSUNG-SGH-I717"
+          "ua": "SAMSUNG-SGH-I717"
         }
       ],
-      "dpi":285.8,
-      "bw":3,
-      "ac":1000
+      "dpi": 285.8,
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SPH-D710/*"
+          "mdmh": "samsung/*/SPH-D710/*"
         },
         {
-          "ua":"SPH-D710"
+          "ua": "SPH-D710"
         }
       ],
-      "dpi":[
+      "dpi": [
         217.7,
         204.2
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/GT-N7100/*"
+          "mdmh": "samsung/*/GT-N7100/*"
         },
         {
-          "ua":"GT-N7100"
+          "ua": "GT-N7100"
         }
       ],
-      "dpi":265.1,
-      "bw":3,
-      "ac":1000
+      "dpi": 265.1,
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SCH-I605/*"
+          "mdmh": "samsung/*/SCH-I605/*"
         },
         {
-          "ua":"SCH-I605"
+          "ua": "SCH-I605"
         }
       ],
-      "dpi":265.1,
-      "bw":3,
-      "ac":1000
+      "dpi": 265.1,
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/Galaxy Nexus/*"
+          "mdmh": "samsung/*/Galaxy Nexus/*"
         },
         {
-          "ua":"Galaxy Nexus"
+          "ua": "Galaxy Nexus"
         }
       ],
-      "dpi":[
+      "dpi": [
         315.3,
         314.2
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-N910H/*"
+          "mdmh": "samsung/*/SM-N910H/*"
         },
         {
-          "ua":"SM-N910H"
+          "ua": "SM-N910H"
         }
       ],
-      "dpi":[
+      "dpi": [
         515.1,
         518
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-N910C/*"
+          "mdmh": "samsung/*/SM-N910C/*"
         },
         {
-          "ua":"SM-N910C"
+          "ua": "SM-N910C"
         }
       ],
-      "dpi":[
+      "dpi": [
         515.2,
         520.2
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G130M/*"
+          "mdmh": "samsung/*/SM-G130M/*"
         },
         {
-          "ua":"SM-G130M"
+          "ua": "SM-G130M"
         }
       ],
-      "dpi":[
+      "dpi": [
         165.9,
         164.8
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G928I/*"
+          "mdmh": "samsung/*/SM-G928I/*"
         },
         {
-          "ua":"SM-G928I"
+          "ua": "SM-G928I"
         }
       ],
-      "dpi":[
+      "dpi": [
         515.1,
         518.4
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G920F/*"
+          "mdmh": "samsung/*/SM-G920F/*"
         },
         {
-          "ua":"SM-G920F"
+          "ua": "SM-G920F"
         }
       ],
-      "dpi":580.6,
-      "bw":3,
-      "ac":500
+      "dpi": 580.6,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G920P/*"
+          "mdmh": "samsung/*/SM-G920P/*"
         },
         {
-          "ua":"SM-G920P"
+          "ua": "SM-G920P"
         }
       ],
-      "dpi":[
+      "dpi": [
         522.5,
         577
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G925F/*"
+          "mdmh": "samsung/*/SM-G925F/*"
         },
         {
-          "ua":"SM-G925F"
+          "ua": "SM-G925F"
         }
       ],
-      "dpi":580.6,
-      "bw":3,
-      "ac":500
+      "dpi": 580.6,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G925V/*"
+          "mdmh": "samsung/*/SM-G925V/*"
         },
         {
-          "ua":"SM-G925V"
+          "ua": "SM-G925V"
         }
       ],
-      "dpi":[
+      "dpi": [
         522.5,
         576.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
       "type": "android",
@@ -61748,237 +61755,236 @@ module.exports={
       "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"samsung/*/SM-G935F/*"
+          "mdmh": "samsung/*/SM-G935F/*"
         },
         {
-          "ua":"SM-G935F"
+          "ua": "SM-G935F"
         }
       ],
-      "dpi":533,
-      "bw":3,
-      "ac":500
+      "dpi": 533,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Sony/*/C6903/*"
+          "mdmh": "Sony/*/C6903/*"
         },
         {
-          "ua":"C6903"
+          "ua": "C6903"
         }
       ],
-      "dpi":[
+      "dpi": [
         442.5,
         443.3
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Sony/*/D6653/*"
+          "mdmh": "Sony/*/D6653/*"
         },
         {
-          "ua":"D6653"
+          "ua": "D6653"
         }
       ],
-      "dpi":[
+      "dpi": [
         428.6,
         427.6
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Sony/*/E6653/*"
+          "mdmh": "Sony/*/E6653/*"
         },
         {
-          "ua":"E6653"
+          "ua": "E6653"
         }
       ],
-      "dpi":[
+      "dpi": [
         428.6,
         425.7
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Sony/*/E6853/*"
+          "mdmh": "Sony/*/E6853/*"
         },
         {
-          "ua":"E6853"
+          "ua": "E6853"
         }
       ],
-      "dpi":[
+      "dpi": [
         403.4,
         401.9
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"Sony/*/SGP321/*"
+          "mdmh": "Sony/*/SGP321/*"
         },
         {
-          "ua":"SGP321"
+          "ua": "SGP321"
         }
       ],
-      "dpi":[
+      "dpi": [
         224.7,
         224.1
       ],
-      "bw":3,
-      "ac":500
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"TCT/*/ALCATEL ONE TOUCH Fierce/*"
+          "mdmh": "TCT/*/ALCATEL ONE TOUCH Fierce/*"
         },
         {
-          "ua":"ALCATEL ONE TOUCH Fierce"
+          "ua": "ALCATEL ONE TOUCH Fierce"
         }
       ],
-      "dpi":[
+      "dpi": [
         240,
         247.5
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"THL/*/thl 5000/*"
+          "mdmh": "THL/*/thl 5000/*"
         },
         {
-          "ua":"thl 5000"
+          "ua": "thl 5000"
         }
       ],
-      "dpi":[
+      "dpi": [
         480,
         443.3
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"android",
-      "rules":[
+      "type": "android",
+      "rules": [
         {
-          "mdmh":"ZTE/*/ZTE Blade L2/*"
+          "mdmh": "ZTE/*/ZTE Blade L2/*"
         },
         {
-          "ua":"ZTE Blade L2"
+          "ua": "ZTE Blade L2"
         }
       ],
-      "dpi":240,
-      "bw":3,
-      "ac":500
+      "dpi": 240,
+      "bw": 3,
+      "ac": 500
     },
     {
-      "type":"ios",
-      "rules":[
+      "type": "ios",
+      "rules": [
         {
-          "res":[
+          "res": [
             640,
             960
           ]
         }
       ],
-      "dpi":[
+      "dpi": [
         325.1,
         328.4
       ],
-      "bw":4,
-      "ac":1000
+      "bw": 4,
+      "ac": 1000
     },
     {
-      "type":"ios",
-      "rules":[
+      "type": "ios",
+      "rules": [
         {
-          "res":[
+          "res": [
             640,
             1136
           ]
         }
       ],
-      "dpi":[
+      "dpi": [
         317.1,
         320.2
       ],
-      "bw":3,
-      "ac":1000
+      "bw": 3,
+      "ac": 1000
     },
     {
-      "type":"ios",
-      "rules":[
+      "type": "ios",
+      "rules": [
         {
-          "res":[
+          "res": [
             750,
             1334
           ]
         }
       ],
-      "dpi":326.4,
-      "bw":4,
-      "ac":1000
+      "dpi": 326.4,
+      "bw": 4,
+      "ac": 1000
     },
     {
-      "type":"ios",
-      "rules":[
+      "type": "ios",
+      "rules": [
         {
-          "res":[
+          "res": [
             1242,
             2208
           ]
         }
       ],
-      "dpi":[
+      "dpi": [
         453.6,
         458.4
       ],
-      "bw":4,
-      "ac":1000
+      "bw": 4,
+      "ac": 1000
     },
     {
-      "type":"ios",
-      "rules":[
+      "type": "ios",
+      "rules": [
         {
-          "res":[
+          "res": [
             1125,
             2001
           ]
         }
       ],
-      "dpi":[
+      "dpi": [
         410.9,
         415.4
       ],
-      "bw":4,
-      "ac":1000
+      "bw": 4,
+      "ac": 1000
     }
   ]
 }
-
 },{}],59:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -62796,7 +62802,7 @@ module.exports = MouseKeyboardVRDisplay;
 (function (global){
 // This is the entry point if requiring/importing via node, or
 // a build tool that uses package.json entry (like browserify, webpack).
-// If running in node with a window mock available, globalize it's members
+// If running in node with a window mock available, globalize its members
 // if needed. Otherwise, just continue to `./main`
 if (typeof global !== 'undefined' && global.window) {
   global.document = global.window.document;
@@ -64409,11 +64415,17 @@ WebVRPolyfill.prototype.enablePolyfill = function() {
 
   // Polyfill native VRDisplay.getFrameData
   if (this.nativeWebVRAvailable && window.VRFrameData) {
+    var NativeVRFrameData = window.VRFrameData;
     var nativeFrameData = new window.VRFrameData();
     var nativeGetFrameData = window.VRDisplay.prototype.getFrameData;
     window.VRFrameData = VRFrameData;
 
     window.VRDisplay.prototype.getFrameData = function(frameData) {
+      if (frameData instanceof NativeVRFrameData) {
+        nativeGetFrameData.call(this, frameData);
+        return;
+      }
+
       /*
       Copy frame data from the native object into the polyfilled object.
       */
@@ -64530,6 +64542,8 @@ WebVRPolyfill.prototype.getVRDevices = function() {
   });
 };
 
+WebVRPolyfill.prototype.NativeVRFrameData = window.VRFrameData;
+
 /**
  * Determine if a device is mobile.
  */
@@ -64573,6 +64587,7 @@ function InstallWebVRSpecShim() {
   }
 };
 
+WebVRPolyfill.InstallWebVRSpecShim = InstallWebVRSpecShim;
 WebVRPolyfill.version = version;
 
 module.exports.WebVRPolyfill = WebVRPolyfill;
@@ -65042,7 +65057,7 @@ module.exports={
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "^0.9.34"
+    "webvr-polyfill": "aframevr/webvr-polyfill#vrFrameDataPolyfill"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -76117,7 +76132,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #60a440c)');
+console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #b1f22b4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
