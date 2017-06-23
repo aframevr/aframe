@@ -87,29 +87,29 @@ component, [the raycaster component][raycaster].
 
 ## Events
 
-| Event      | Description                                                                                                                 |
-|------------|-----------------------------------------------------------------------------------------------------------------------------|
-| click      | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
-| fusing     | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down.                                  |
-| mousedown  | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
-| mouseenter | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
-| mouseleave | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
-| mouseup    | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
+| Event         | Description                                                                                                                 |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------|
+| click         | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
+| cursor-fusing | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down.                                  |
+| mousedown     | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
+| mouseenter    | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
+| mouseleave    | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
+| mouseup       | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
 
 ## States
 
 The cursor will add states to the cursor entity on certain events:
 
-| State    | Description                                            |
-|----------|--------------------------------------------------------|
-| fusing   | Added when the cursor is fusing on another entity.     |
-| hovering | Added when the cursor is hovering over another entity. |
+| State           | Description                                            |
+|-----------------|--------------------------------------------------------|
+| cursor-fusing   | Added when the cursor is fusing on another entity.     |
+| cursor-hovering | Added when the cursor is hovering over another entity. |
 
 The cursor will add states to intersected entities on certain events:
 
-| State   | Description                                                          |
-|---------|----------------------------------------------------------------------|
-| hovered | Added to the intersected entity when the cursor is hovering over it. |
+| State          | Description                                                          |
+|----------------|----------------------------------------------------------------------|
+| cursor-hovered | Added to the intersected entity when the cursor is hovering over it. |
 
 ## Configuring the Cursor through the Raycaster Component
 
