@@ -58062,56 +58062,48 @@ module.exports={
   "_args": [
     [
       {
-        "raw": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+        "raw": "webvr-polyfill@^0.9.35",
         "scope": null,
         "escapedName": "webvr-polyfill",
         "name": "webvr-polyfill",
-        "rawSpec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-        "spec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-        "type": "hosted",
-        "hosted": {
-          "type": "github",
-          "ssh": "git@github.com:aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-          "sshUrl": "git+ssh://git@github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-          "httpsUrl": "git+https://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-          "gitUrl": "git://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-          "shortcut": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-          "directUrl": "https://raw.githubusercontent.com/aframevr/webvr-polyfill/vrFrameDataPolyfill/package.json"
-        }
+        "rawSpec": "^0.9.35",
+        "spec": ">=0.9.35 <0.10.0",
+        "type": "range"
       },
       "/home/ubuntu/a-frobot/aframe"
     ]
   ],
-  "_from": "aframevr/webvr-polyfill#vrFrameDataPolyfill",
-  "_id": "webvr-polyfill@0.9.34",
+  "_from": "webvr-polyfill@>=0.9.35 <0.10.0",
+  "_id": "webvr-polyfill@0.9.35",
   "_inCache": true,
   "_location": "/webvr-polyfill",
+  "_nodeVersion": "6.3.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/webvr-polyfill-0.9.35.tgz_1498193822556_0.1535588507540524"
+  },
+  "_npmUser": {
+    "name": "jsantell",
+    "email": "jsantell@gmail.com"
+  },
+  "_npmVersion": "3.10.3",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+    "raw": "webvr-polyfill@^0.9.35",
     "scope": null,
     "escapedName": "webvr-polyfill",
     "name": "webvr-polyfill",
-    "rawSpec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-    "spec": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-    "type": "hosted",
-    "hosted": {
-      "type": "github",
-      "ssh": "git@github.com:aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-      "sshUrl": "git+ssh://git@github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-      "httpsUrl": "git+https://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-      "gitUrl": "git://github.com/aframevr/webvr-polyfill.git#vrFrameDataPolyfill",
-      "shortcut": "github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
-      "directUrl": "https://raw.githubusercontent.com/aframevr/webvr-polyfill/vrFrameDataPolyfill/package.json"
-    }
+    "rawSpec": "^0.9.35",
+    "spec": ">=0.9.35 <0.10.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "git://github.com/aframevr/webvr-polyfill.git#876e216b3f0bd1f83c8551483e13cc938bb03cec",
-  "_shasum": "aa9bd9aaa203b406a065da63a3c70f0f89248319",
+  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.35.tgz",
+  "_shasum": "5740d7ef41f01234c051ce5298d18b87a532102f",
   "_shrinkwrap": null,
-  "_spec": "webvr-polyfill@github:aframevr/webvr-polyfill#vrFrameDataPolyfill",
+  "_spec": "webvr-polyfill@^0.9.35",
   "_where": "/home/ubuntu/a-frobot/aframe",
   "authors": [
     "Boris Smus <boris@smus.com>",
@@ -58131,7 +58123,12 @@ module.exports={
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   },
-  "gitHead": "876e216b3f0bd1f83c8551483e13cc938bb03cec",
+  "directories": {},
+  "dist": {
+    "shasum": "5740d7ef41f01234c051ce5298d18b87a532102f",
+    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.35.tgz"
+  },
+  "gitHead": "06801149257ff10fbc66a7fce6bd10d375c003cc",
   "homepage": "https://github.com/googlevr/webvr-polyfill",
   "keywords": [
     "vr",
@@ -58139,10 +58136,23 @@ module.exports={
   ],
   "license": "Apache-2.0",
   "main": "src/node-entry",
+  "maintainers": [
+    {
+      "name": "jsantell",
+      "email": "jsantell@gmail.com"
+    },
+    {
+      "name": "toji",
+      "email": "tojiro@gmail.com"
+    },
+    {
+      "name": "smus",
+      "email": "boris@smus.com"
+    }
+  ],
   "name": "webvr-polyfill",
   "optionalDependencies": {},
-  "readme": "# WebVR Polyfill\n\n[![Build Status](http://img.shields.io/travis/googlevr/webvr-polyfill.svg?style=flat-square)](https://travis-ci.org/googlevr/webvr-polyfill)\n[![Build Status](http://img.shields.io/npm/v/webvr-polyfill.svg?style=flat-square)](https://www.npmjs.org/package/webvr-polyfill)\n\n\nA JavaScript implementation of the [WebVR spec][spec]. This project lets you use\nWebVR today, without requiring a [special][moz] [browser][cr] build. It also\nlets you view the same content without requiring a virtual reality viewer.\n\nTake a look at [basic WebVR samples][samples] that use this polyfill.\n\n[moz]: http://mozvr.com/\n[cr]: https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ\n[samples]: https://toji.github.io/webvr-samples/\n[spec]: https://mozvr.github.io/webvr-spec/\n\n## Implementation\n\nThe polyfill decides which VRDisplays to provide, depending on the configuration\nof your browser. Mobile devices provide the `CardboardVRDisplay`. Desktop devices\nuse the `MouseKeyboardVRDisplay`.\n\n`CardboardVRDisplay` uses DeviceMotionEvents to implement a complementary\nfilter which does [sensor fusion and pose prediction][fusion] to provide\norientation tracking. It can also render in stereo mode, and includes mesh-based\nlens distortion. This display also includes user interface elements in VR mode\nto make the VR experience more intuitive, including:\n\n- A gear icon to select your VR viewer.\n- A back button to exit VR mode.\n- An interstitial which only appears in portrait orientation, requesting you switch\n  into landscape orientation (if [orientation lock][ol] is not available).\n\n`MouseKeyboardVRDisplay` uses mouse events to allow you to do the equivalent of\nmouselook. It also uses keyboard arrows keys to look around the scene\nwith the keyboard.\n\n[fusion]: http://smus.com/sensor-fusion-prediction-webvr/\n[ol]: https://www.w3.org/TR/screen-orientation/\n\n\n## Configuration\n\nThe polyfill can be configured and debugged with various options. The following\nare supported:\n\n```javascript\nWebVRConfig = {\n  // Flag to disabled the UI in VR Mode.\n  CARDBOARD_UI_DISABLED: false, // Default: false\n\n  // Forces availability of VR mode, even for non-mobile devices.\n  FORCE_ENABLE_VR: true, // Default: false.\n\n  // Complementary filter coefficient. 0 for accelerometer, 1 for gyro.\n  K_FILTER: 0.98, // Default: 0.98.\n\n  // Flag to disable the instructions to rotate your device.\n  ROTATE_INSTRUCTIONS_DISABLED: false, // Default: false.\n\n  // How far into the future to predict during fast motion (in seconds).\n  PREDICTION_TIME_S: 0.040, // Default: 0.040.\n\n  // Flag to disable touch panner. In case you have your own touch controls.\n  TOUCH_PANNER_DISABLED: false, // Default: true.\n\n  // Enable yaw panning only, disabling roll and pitch. This can be useful\n  // for panoramas with nothing interesting above or below.\n  YAW_ONLY: true, // Default: false.\n\n  // To disable keyboard and mouse controls, if you want to use your own\n  // implementation.\n  MOUSE_KEYBOARD_CONTROLS_DISABLED: true, // Default: false.\n\n  // Prevent the polyfill from initializing immediately. Requires the app\n  // to call InitializeWebVRPolyfill() before it can be used.\n  DEFER_INITIALIZATION: true, // Default: false.\n\n  // Enable the deprecated version of the API (navigator.getVRDevices).\n  ENABLE_DEPRECATED_API: true, // Default: false.\n\n  // Scales the recommended buffer size reported by WebVR, which can improve\n  // performance.\n  BUFFER_SCALE: 0.5, // Default: 0.5.\n\n  // Allow VRDisplay.submitFrame to change gl bindings, which is more\n  // efficient if the application code will re-bind its resources on the\n  // next frame anyway. This has been seen to cause rendering glitches with\n  // THREE.js.\n  // Dirty bindings include: gl.FRAMEBUFFER_BINDING, gl.CURRENT_PROGRAM,\n  // gl.ARRAY_BUFFER_BINDING, gl.ELEMENT_ARRAY_BUFFER_BINDING,\n  // and gl.TEXTURE_BINDING_2D for texture unit 0.\n  DIRTY_SUBMIT_FRAME_BINDINGS: true, // Default: false.\n\n  // When set to true, this will cause a polyfilled VRDisplay to always be\n  // appended to the list returned by navigator.getVRDisplays(), even if that\n  // list includes a native VRDisplay.\n  ALWAYS_APPEND_POLYFILL_DISPLAY: false,\n\n  // There are versions of Chrome (M58-M60?) where the native WebVR API exists,\n  // and instead of returning 0 VR displays when none are detected,\n  // `navigator.getVRDisplays()`'s promise never resolves. This results\n  // in the polyfill hanging and not being able to provide fallback\n  // displays, so set a timeout in milliseconds to stop waiting for a response\n  // and just use polyfilled displays.\n  // https://bugs.chromium.org/p/chromium/issues/detail?id=727969\n  GET_VR_DISPLAYS_TIMEOUT: 1000,\n}\n```\n\n## Performance\n\nPerformance is critical for VR. If you find your application is too sluggish,\nconsider tweaking some of the above parameters. In particular, keeping\n`BUFFER_SCALE` at 0.5 (the default) will likely help a lot.\n\n## WebVR 1.1 Shim\n\nThe polyfill exposes a helper method `WebVRPolyfill.InstallWebVRSpecShim` which\ninstalls a shim that updates a WebVR 1.0 spec implementation to WebVR 1.1.\n\n## Development\n\nIf you'd like to contribute to the `webvr-poyfill` library, check out\nthe repository and install\n[Node](https://nodejs.org/en/download/package-manager/) and the dependencies:\n\n```bash\ngit clone https://github.com/googlevr/webvr-polyfill\ncd webvr-polyfill\nnpm install\n```\n\n### Development Commands\n\n* `npm install`: installs the dependencies.\n* `npm start`: auto-builds the module whenever any source changes and serves the example\ncontent on `http://0.0.0.0:8080/`.\n* `npm run build`: builds the module.\n\n## License\n\nThis program is free software for both commercial and non-commercial use,\ndistributed under the [Apache 2.0 License](LICENSE).\n\n\n## Thanks\n\n- [Brandon Jones][bj] and [Vladimir Vukicevic][vv] for their work on the [WebVR\n  spec][spec].\n- [Ricardo Cabello][doob] for THREE.js.\n- [Diego Marcos][dm] for VREffect and VRControls.\n- [Dmitriy Kovalev][dk] for help with lens distortion correction.\n\n[dk]: https://github.com/dmitriykovalev/\n[bj]: https://twitter.com/tojiro\n[vv]: https://twitter.com/vvuk\n[spec]: https://mozvr.github.io/webvr-spec/\n[dm]: https://twitter.com/dmarcos\n[doob]: https://twitter.com/mrdoob\n",
-  "readmeFilename": "README.md",
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/googlevr/webvr-polyfill.git"
@@ -58153,7 +58163,7 @@ module.exports={
     "test": "mocha",
     "watch": "webpack-dev-server"
   },
-  "version": "0.9.34"
+  "version": "0.9.35"
 }
 
 },{}],50:[function(_dereq_,module,exports){
@@ -65057,7 +65067,7 @@ module.exports={
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
     "tween.js": "^15.0.0",
-    "webvr-polyfill": "aframevr/webvr-polyfill#vrFrameDataPolyfill"
+    "webvr-polyfill": "^0.9.35"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -76132,7 +76142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #b1f22b4)');
+console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #18b38bf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
