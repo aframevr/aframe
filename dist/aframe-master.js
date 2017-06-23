@@ -65420,9 +65420,9 @@ var EVENTS = {
 };
 
 var STATES = {
-  FUSING: 'fusing',
-  HOVERING: 'hovering',
-  HOVERED: 'hovered'
+  FUSING: 'cursor-fusing',
+  HOVERING: 'cursor-hovering',
+  HOVERED: 'cursor-hovered'
 };
 
 /**
@@ -76142,7 +76142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #18b38bf)');
+console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #a1c2214)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
