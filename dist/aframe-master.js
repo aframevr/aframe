@@ -65462,6 +65462,12 @@ module.exports.Component = registerComponent('cursor', {
     if (canvas) {
       canvas.addEventListener('mousedown', this.onCursorDown);
       canvas.addEventListener('mouseup', this.onCursorUp);
+    } else {
+      el.sceneEl.addEventListener('render-target-loaded', function () {
+        canvas = el.sceneEl.canvas;
+        canvas.addEventListener('mousedown', self.onCursorDown);
+        canvas.addEventListener('mouseup', self.onCursorUp);
+      });
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -76111,7 +76117,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 22-06-2017, Commit #a544a0b)');
+console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #78a651b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
