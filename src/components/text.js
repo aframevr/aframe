@@ -106,7 +106,7 @@ module.exports.Component = registerComponent('text', {
 
     // Update geometry and layout.
     if (font) {
-      updateGeometry(this.geometry, data, font);
+      this.updateGeometry(this.geometry, data, font);
       this.updateLayout(data);
     }
   },
@@ -209,7 +209,7 @@ module.exports.Component = registerComponent('text', {
 
       // Update geometry given font metrics.
       coercedData = coerceData(data);
-      updateGeometry(geometry, data, font);
+      self.updateGeometry(geometry, self.data, font);
 
       // Set font and update layout.
       self.currentFont = font;
@@ -313,6 +313,18 @@ module.exports.Component = registerComponent('text', {
    */
   lookupFont: function (key) {
     return FONTS[key];
+  },
+
+  /**
+   * Update the text geometry using `three-bmfont-text.update`.
+   */
+  updateGeometry: function (geometry, data, font) {
+    geometry.update(utils.extend({}, data, {
+      font: font,
+      width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
+      text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      lineHeight: data.lineHeight || font.common.lineHeight
+    }));
   }
 });
 
@@ -408,18 +420,6 @@ function createShader (el, shaderName, data) {
  */
 function updateBaseMaterial (material, data) {
   material.side = data.side;
-}
-
-/**
- * Update the text geometry using `three-bmfont-text.update`.
- */
-function updateGeometry (geometry, data, font) {
-  geometry.update(utils.extend({}, data, {
-    font: font,
-    width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-    text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
-    lineHeight: data.lineHeight || font.common.lineHeight
-  }));
 }
 
 /**
