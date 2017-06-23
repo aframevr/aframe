@@ -76142,7 +76142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #a1c2214)');
+console.log('A-Frame Version: 0.5.0 (Date 23-06-2017, Commit #73606f1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77887,9 +77887,6 @@ var isMobile = (function () {
     }
     if (isIOS() || isTablet()) {
       _isMobile = true;
-    }
-    if (isGearVR()) {
-      _isMobile = false;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
 
