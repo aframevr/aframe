@@ -50,6 +50,6 @@ and/or pressed buttons (trackpad, trigger).
 
 ## Assets
 
-- [Controller OBJ](https://cdn.aframe.io/controllers/google/vr_controller_daydream.obj)
-- [Controller MTL](https://cdn.aframe.io/controllers/google/vr_controller_daydream.mtl)
+- [Controller OBJ](https://cdn.aframe.io/controllers/samsung/gear_vr_controller.obj)
+- [Controller MTL](https://cdn.aframe.io/controllers/samsung/gear_vr_controller.mtl)
 
