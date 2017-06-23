@@ -50,6 +50,19 @@ suite('text', function () {
   });
 
   suite('update', function () {
+    test('updates value', function (done) {
+      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      el.addEventListener('textfontset', evt => {
+        el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
+        el.setAttribute('text', {value: 'bar', font: 'mozillavr'});
+        assert.equal(updateSpy.getCalls()[0].args[1].value, '');
+        assert.equal(updateSpy.getCalls()[1].args[1].value, 'foo');
+        assert.equal(updateSpy.getCalls()[2].args[1].value, 'bar');
+        done();
+      });
+      el.setAttribute('text', {font: 'mozillavr'});
+    });
+
     test('updates geometry with value', function (done) {
       // There are two paths by which geometry update can happen:
       // 1. As after-effect of font change.
@@ -193,6 +206,16 @@ suite('text', function () {
         done();
       });
       el.setAttribute('text', {font: 'mozillavr', fontImage: '/base/tests/assets/test2.png'});
+    });
+
+    test('uses up-to-date data once loaded', function (done) {
+      var updateSpy = this.sinon.spy(component, 'updateGeometry');
+      el.addEventListener('textfontset', evt => {
+        assert.equal(updateSpy.getCalls()[0].args[1].value, 'bar');
+        done();
+      });
+      el.setAttribute('text', {value: 'foo', font: 'mozillavr'});
+      el.setAttribute('text', {value: 'bar', font: 'mozillavr'});
     });
   });
 
