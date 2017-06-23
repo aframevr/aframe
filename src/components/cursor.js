@@ -80,6 +80,12 @@ module.exports.Component = registerComponent('cursor', {
     if (canvas) {
       canvas.addEventListener('mousedown', this.onCursorDown);
       canvas.addEventListener('mouseup', this.onCursorUp);
+    } else {
+      el.sceneEl.addEventListener('render-target-loaded', function () {
+        canvas = el.sceneEl.canvas;
+        canvas.addEventListener('mousedown', self.onCursorDown);
+        canvas.addEventListener('mouseup', self.onCursorUp);
+      });
     }
 
     data.downEvents.forEach(function (downEvent) {
