@@ -13,9 +13,9 @@ var EVENTS = {
 };
 
 var STATES = {
-  FUSING: 'fusing',
-  HOVERING: 'hovering',
-  HOVERED: 'hovered'
+  FUSING: 'cursor-fusing',
+  HOVERING: 'cursor-hovering',
+  HOVERED: 'cursor-hovered'
 };
 
 /**
