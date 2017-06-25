@@ -122,6 +122,9 @@ function numberParse (value) {
 function selectorParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
+  if(value[0] === '#') {
+    return document.getElementById(value.substring(1));
+  }
   return document.querySelector(value);
 }
 
