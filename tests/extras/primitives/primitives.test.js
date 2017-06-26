@@ -146,6 +146,71 @@ suite('registerPrimitive (using innerHTML)', function () {
     });
   });
 
+  test('merges mixin for multi-prop component', function (done) {
+    primitiveFactory({
+      defaultComponents: {
+        material: {color: 'blue'}
+      }
+    }, 'mixin="foo"', function postCreation (el) {
+      assert.equal(el.getAttribute('material').color, 'blue');
+      assert.equal(el.getAttribute('material').shader, 'flat');
+      el.setAttribute('material', {side: 'double'});
+      assert.equal(el.getAttribute('material').color, 'blue');
+      assert.equal(el.getAttribute('material').shader, 'flat');
+      assert.equal(el.getAttribute('material').side, 'double');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('foo', {material: 'shader: flat'}, sceneEl);
+    });
+  });
+
+  test('applies boolean mixin', function (done) {
+    primitiveFactory({
+      defaultComponents: {
+        visible: {default: true}
+      }
+    }, 'mixin="foo"', function postCreation (el) {
+      assert.equal(el.getAttribute('visible'), false);
+      el.setAttribute('visible', true);
+      assert.equal(el.getAttribute('visible'), true);
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('foo', {visible: false}, sceneEl);
+    });
+  });
+
+  test('applies single-prop value mixin', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {default: 'foo'}
+    });
+    primitiveFactory({
+      defaultComponents: {}
+    }, 'mixin="foo"', function postCreation (el) {
+      assert.equal(el.getAttribute('test'), 'bar');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('foo', {test: 'bar'}, sceneEl);
+    });
+  });
+
+  test('applies empty mixin', function (done) {
+    AFRAME.registerComponent('test', {
+      schema: {
+        foo: {default: 'foo'},
+        bar: {default: 'bar'}
+      }
+    });
+    primitiveFactory({
+      defaultComponents: {}
+    }, 'mixin="foo"', function postCreation (el) {
+      assert.equal(el.getAttribute('test').foo, 'foo');
+      assert.equal(el.getAttribute('test').bar, 'bar');
+      done();
+    }, function preCreation (sceneEl) {
+      helpers.mixinFactory('foo', {test: ''}, sceneEl);
+    });
+  });
+
   test('prioritizes mapping over mixin', function (done) {
     primitiveFactory({
       defaultComponents: {

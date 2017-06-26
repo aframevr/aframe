@@ -78,7 +78,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             mixins.forEach(function applyMixin (mixinId) {
               var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
               Object.keys(mixinComponents).forEach(function setComponent (name) {
-                data[name] = utils.extendDeep(data[name] || {}, mixinComponents[name]);
+                data[name] = extend(data[name], mixinComponents[name]);
               });
             });
           }
@@ -100,6 +100,38 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
           }
 
           return data;
+
+          /**
+           * For the base to be extensible, both objects must be pure JavaScript objects.
+           * The function assumes that base is undefined, or null or a pure object.
+           */
+          function extend (base, extension) {
+            if (isUndefined(base)) {
+              return copy(extension);
+            }
+            if (isUndefined(extension)) {
+              return copy(base);
+            }
+            if (isPureObject(base) && isPureObject(extension)) {
+              return utils.extendDeep(base, extension);
+            }
+            return copy(extension);
+          }
+
+          function isUndefined (value) {
+            return typeof value === 'undefined';
+          }
+
+          function copy (value) {
+            if (isPureObject(value)) {
+              return utils.extendDeep({}, value);
+            }
+            return value;
+          }
+
+          function isPureObject (value) {
+            return value !== null && value.constructor === Object;
+          }
         }
       },
 
