@@ -101,11 +101,11 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
 
           return data;
 
+          /**
+           * For the base to be extensible, both objects must be pure JavaScript objects.
+           * The function assumes that base is undefined, or null or a pure object.
+           */
           function extend (base, extension) {
-            // XXX: For the base to be extensible, both objects must be pure
-            // JavaScript objects. The function assumes that base is
-            // undefined, or null or a pure JavaScript object.
-
             if (isUndefined(base)) {
               return copy(extension);
             }
