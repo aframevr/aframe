@@ -75384,7 +75384,7 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
             mixins.forEach(function applyMixin (mixinId) {
               var mixinComponents = self.sceneEl.querySelector('#' + mixinId).componentCache;
               Object.keys(mixinComponents).forEach(function setComponent (name) {
-                data[name] = utils.extendDeep(data[name] || {}, mixinComponents[name]);
+                data[name] = extend(data[name], mixinComponents[name]);
               });
             });
           }
@@ -75406,6 +75406,38 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
           }
 
           return data;
+
+          /**
+           * For the base to be extensible, both objects must be pure JavaScript objects.
+           * The function assumes that base is undefined, or null or a pure object.
+           */
+          function extend (base, extension) {
+            if (isUndefined(base)) {
+              return copy(extension);
+            }
+            if (isUndefined(extension)) {
+              return copy(base);
+            }
+            if (isPureObject(base) && isPureObject(extension)) {
+              return utils.extendDeep(base, extension);
+            }
+            return copy(extension);
+          }
+
+          function isUndefined (value) {
+            return typeof value === 'undefined';
+          }
+
+          function copy (value) {
+            if (isPureObject(value)) {
+              return utils.extendDeep({}, value);
+            }
+            return value;
+          }
+
+          function isPureObject (value) {
+            return value !== null && value.constructor === Object;
+          }
         }
       },
 
@@ -76208,7 +76240,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 26-06-2017, Commit #25e3b9a)');
+console.log('A-Frame Version: 0.5.0 (Date 26-06-2017, Commit #5dd553e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
