@@ -109,8 +109,31 @@ suite('propertyTypes', function () {
       this.el.parentNode.removeChild(this.el);
     });
 
+    test('parses ID only', function () {
+      assert.equal(parse('#hello'), this.el);
+    });
+
+    test('parses id with hyphen', function () {
+      this.el.setAttribute('id', 'hello-world');
+      assert.equal(parse('#hello-world'), this.el);
+    });
+
     test('parses valid selector', function () {
       assert.equal(parse('#hello.itsme'), this.el);
+    });
+
+    test('parses valid selector with child', function () {
+      document.body.setAttribute('id', 'body');
+      assert.equal(parse('#body #hello'), this.el);
+      document.body.setAttribute('id', '');
+    });
+
+    test('parses valid selector with attribute selector', function () {
+      assert.equal(parse('#hello[id]'), this.el);
+    });
+
+    test('parses valid selector with last-child', function () {
+      assert.equal(parse('#hello:last-child'), this.el);
     });
 
     test('parses null selector', function () {
