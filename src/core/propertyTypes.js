@@ -5,6 +5,7 @@ var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
+var nonCharRegex = /[,> .[\]:]/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -122,8 +123,9 @@ function numberParse (value) {
 function selectorParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
-  if (value[0] === '#' && !/[,> ]/.test(value)) {
-    // when selecting element by id only, use getElementById for better performance
+  if (value[0] === '#' && !nonCharRegex.test(value)) {
+    // When selecting element by ID only, use getElementById for better performance.
+    // Don't match like #myId .child.
     return document.getElementById(value.substring(1));
   }
   return document.querySelector(value);
