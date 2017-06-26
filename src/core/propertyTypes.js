@@ -123,7 +123,7 @@ function selectorParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
   if (value[0] === '#' && !/[.,[: ]/.test(value)) {
-    //when selecting element by id only, use getElementById for better performance
+    // when selecting element by id only, use getElementById for better performance
     return document.getElementById(value.substring(1));
   }
   return document.querySelector(value);
