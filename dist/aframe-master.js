@@ -73715,6 +73715,7 @@ var error = debug('core:propertyTypes:warn');
 var warn = debug('core:propertyTypes:warn');
 
 var propertyTypes = module.exports.propertyTypes = {};
+var nonCharRegex = /[,> .[\]:]/;
 
 // Built-in property types.
 registerPropertyType('audio', '', assetParse);
@@ -73832,6 +73833,11 @@ function numberParse (value) {
 function selectorParse (value) {
   if (!value) { return null; }
   if (typeof value !== 'string') { return value; }
+  if (value[0] === '#' && !nonCharRegex.test(value)) {
+    // When selecting element by ID only, use getElementById for better performance.
+    // Don't match like #myId .child.
+    return document.getElementById(value.substring(1));
+  }
   return document.querySelector(value);
 }
 
@@ -76202,7 +76208,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 25-06-2017, Commit #fe199da)');
+console.log('A-Frame Version: 0.5.0 (Date 26-06-2017, Commit #25e3b9a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
