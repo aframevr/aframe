@@ -75558,7 +75558,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       primitive: 'ring',
       radiusOuter: 0.016,
       radiusInner: 0.01,
-      segmentsTheta: 64
+      segmentsTheta: 32
     },
     material: {
       color: '#000',
@@ -76240,7 +76240,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.5.0 (Date 26-06-2017, Commit #5dd553e)');
+console.log('A-Frame Version: 0.5.0 (Date 29-06-2017, Commit #397531c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
