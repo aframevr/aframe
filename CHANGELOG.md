@@ -1,21 +1,26 @@
-## 0.6.0 (TBD)
+## 0.6.0 (June 29, 2017)
 
-Navigate from world to world without leaving VR. Support for VR controllers
-across the board with the addition of Daydream and GearVR controller
-components. Large performance improvements around `.getAttribute` and
-`.setAttribute`.
+Link traversal for navigating from page to page while staying in VR. Support
+for VR controllers across the board with the addition of Daydream and GearVR
+controller components as well as laser interactions. Large performance
+improvements around `.getAttribute` and `.setAttribute`.
 
 ### Major Changes
 
-- Added support for link traversal. (#1575)
 - Bumped three.js to r84. (#2456)
+- Updated WebVR polyfill to 0.9.35. (#2700, #2818)
+- Removed auto-enter-vr component previously for Carmel debugging. (#2784)
 
 ### Deprecations
 
+- Renamed `AFRAME.utils.coordinates.isCoordinates` to `AFRAME.utils.coordinates.isCoordinate`. (af3f89)
 - Removed reset sensor keyboard shortcut due to being removed from WebVR API. (#2531)
 
 ### Enhancements
 
+- Added support for link traversal. (#1575)
+- Added link component with default portal appearance. (#1575)
+- Added link-controls component in the examples. (#1575)
 - Daydream controller support with daydream-controls, 3DoF support to tracked-controls with head/arm model. (#2538)
 - GearVR controller support with gearvr-controls. (#2545)
 - laser-controls component for responsive controls across 6DoF and 3DoF. (#2678)
@@ -25,6 +30,7 @@ components. Large performance improvements around `.getAttribute` and
 - Implement `thumbstickmoved` and `axismoved` for oculus-touch-controls. (#2513)
 - Implement system `.update` handler. (#2548, #2613)
 - Added `controllerconnected` and `controllerdisconnected` events. (#2505)
+- Handle `onvrdisplaypresentchange` events to enter and exit VR. (#2751)
 - Exposed `material.alphaTest` and `material.depthWrite` properties. (#2516)
 - Exposed glTF animations. (#2417)
 - Implemented `Component.tock` handler called after scene render for future post-processing support. (#1564)
@@ -63,6 +69,8 @@ components. Large performance improvements around `.getAttribute` and
 - Throttled emitting of `componentchanged` event on each update to every 200ms. We recommend polling if more critical updates are needed. (#2683)
 - Avoided `string.split()` in `.setAttribute()` to reduce memory in array instantiations. (#2674)
 - Removed duplicate asset requests by passing down `<img>` from `<a-assets>` and by using `crossorigin` from the start. (#2544)
+- Changed selector property types to support `getElementById`. (#2820)
+- Reduced default `<a-cursor>` segments. (#2821)
 
 ### Fixes
 
@@ -91,6 +99,16 @@ components. Large performance improvements around `.getAttribute` and
 - Fixed plane geometry segments. (#2499)
 - Fixed grab CSS being applied when look-controls disabled. (#2642)
 - Fixed look-controls enabling and disabling. (#2467)
+- Fixed light targets. (#2715)
+- Fixed `setAttribute` wiping out DOM-defined data on init. (#2727)
+- Fixed primitives mapping to non-default components. (#2767)
+- Fixed vive-controls component button colors. (#2772)
+- Fixed error if removing component before initialized. (#2713)
+- Fixed booleans when updating component. (#2796)
+- Fixed cursor component not waiting for canvas to load. (#2813)
+- Fixed text component not updating text while font is loading. (#2814)
+- Fixed WebVR polyfill being applied and user height not applied to GearVR browsers. (#2819)
+- Fixed single-property mixins not working with primitives. (#2810)
 
 ## 0.5.0 (February 09, 2017)
 
