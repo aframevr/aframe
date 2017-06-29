@@ -9,7 +9,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       primitive: 'ring',
       radiusOuter: 0.016,
       radiusInner: 0.01,
-      segmentsTheta: 64
+      segmentsTheta: 32
     },
     material: {
       color: '#000',
