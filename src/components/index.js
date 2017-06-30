@@ -10,6 +10,7 @@ require('./hand-controls');
 require('./laser-controls');
 require('./light');
 require('./line');
+require('./link');
 require('./look-controls');
 require('./material');
 require('./obj-model');

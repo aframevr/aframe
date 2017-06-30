@@ -132,6 +132,9 @@ Shader.prototype = {
         color = new THREE.Color(value);
         return new THREE.Vector3(color.r, color.g, color.b);
       }
+      case 'map': {
+        return THREE.ImageUtils.loadTexture(value);
+      }
       default: {
         return value;
       }
