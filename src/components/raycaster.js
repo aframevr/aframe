@@ -59,8 +59,9 @@ module.exports.Component = registerComponent('raycaster', {
     raycaster.near = data.near;
 
     // Draw line.
-    if (data.showLine && data.far !== oldData.far ||
-        data.origin !== oldData.origin || data.direction !== oldData.direction) {
+    if (data.showLine &&
+        (data.far !== oldData.far || data.origin !== oldData.origin ||
+         data.direction !== oldData.direction)) {
       this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
       this.drawLine();
     }
