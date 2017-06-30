@@ -47,7 +47,7 @@ are constrained to looking around and wiggling the controller.
 [Google Daydream]: https://vr.google.com/daydream/
 [Samsung GearVR]: http://www.samsung.com/global/galaxy/gear-vr/
 
-| Headset           | Platform | Positional Tracking | Controllers        | Controller Positional Traacking |
+| Headset           | Platform | Positional Tracking | Controllers        | Controller Positional Tracking |
 |-------------------|----------|---------------------|--------------------|---------------------------------|
 | [HTC Vive]        | PC       | :white_check_mark:  | :white_check_mark: | :white_check_mark:              |
 | [Oculus Rift]     | PC       | :white_check_mark:  | :white_check_mark: | :white_check_mark:              |
