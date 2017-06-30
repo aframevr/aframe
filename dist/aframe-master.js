@@ -68319,8 +68319,9 @@ module.exports.Component = registerComponent('raycaster', {
     raycaster.near = data.near;
 
     // Draw line.
-    if (data.showLine && data.far !== oldData.far ||
-        data.origin !== oldData.origin || data.direction !== oldData.direction) {
+    if (data.showLine &&
+        (data.far !== oldData.far || data.origin !== oldData.origin ||
+         data.direction !== oldData.direction)) {
       this.unitLineEndVec3.copy(data.origin).add(data.direction).normalize();
       this.drawLine();
     }
@@ -76608,7 +76609,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 30-06-2017, Commit #34d1988)');
+console.log('A-Frame Version: 0.6.0 (Date 30-06-2017, Commit #16e18f6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
