@@ -83,7 +83,7 @@ require('./core/a-mixin');
 require('./extras/components/');
 require('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 30-06-2017, Commit #34d1988)');
+console.log('A-Frame Version: 0.6.0 (Date 30-06-2017, Commit #16e18f6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
