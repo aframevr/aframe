@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Videosphere HLS</title>
+    <meta name="description" content="Videosphere HLS - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <a-assets>
+        <video id="city" preload="true"
+               src="../../assets/video/city_halfres_hls.m3u8"
+               width="360" height="360" autoplay loop="true"
+               crossOrigin="anonymous"></video>
+      </a-assets>
+
+      <a-entity material="shader: flat; src: #city" geometry="primitive: sphere; radius: 100"
+                scale="-1 1 1">
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
