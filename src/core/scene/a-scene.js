@@ -105,6 +105,11 @@ module.exports = registerElement('a-scene', {
 
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+
         this.play();
       },
       writable: window.debug
@@ -130,6 +135,7 @@ module.exports = registerElement('a-scene', {
      */
     detachedCallback: {
       value: function () {
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
         window.cancelAnimationFrame(this.animationFrameID);
         this.animationFrameID = null;
       }
@@ -185,10 +191,10 @@ module.exports = registerElement('a-scene', {
     },
 
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
         if (!this.is('vr-mode')) { return Promise.resolve(); }
-        if (checkHeadsetConnected() || this.isMobile) {
+        if (!fromExternal && (checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
         exitVRSuccess();
@@ -212,6 +218,23 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          // Do not support entering VR from external just yet (see 0.6.0)
+          // this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 

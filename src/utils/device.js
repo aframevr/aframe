@@ -48,9 +48,6 @@ var isMobile = (function () {
     if (isIOS()) {
       _isMobile = true;
     }
-    if (isGearVR()) {
-      _isMobile = false;
-    }
   })(navigator.userAgent || navigator.vendor || window.opera);
 
   return function () { return _isMobile; };
