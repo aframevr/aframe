@@ -98,6 +98,7 @@ module.exports.AScene = registerElement('a-scene', {
     attachedCallback: {
       value: function () {
         var resize;
+        var self = this;
 
         initMetaTags(this);
         initWakelock(this);
@@ -114,6 +115,12 @@ module.exports.AScene = registerElement('a-scene', {
         // Handler to exit VR (e.g., Oculus Browser back button).
         this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
         window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+
+        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
+        window.addEventListener('vrdisplayactivate', function () { self.enterVR(); });
+
+        // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
+        window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); });
       },
       writable: window.debug
     },

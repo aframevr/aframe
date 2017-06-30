@@ -1,5 +1,11 @@
 /* global AFRAME, THREE */
 
+AFRAME.registerSystem('link-controls', {
+  init: function () {
+    this.peeking = false;
+  }
+});
+
 /**
  * Link controls component. Provides the interaction model for links and hand controllers
  * When the user points to the link she can trigger the peek mode on the link to get a 360

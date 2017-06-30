@@ -9,15 +9,15 @@ var THREE = require('../lib/three');
  */
 module.exports.Component = registerComponent('link', {
   schema: {
-    href: {default: ''},
-    title: {default: ''},
-    on: {default: 'click'},
-    image: {type: 'asset'},
     color: {default: 'white', type: 'color'},
     highlighted: {default: false},
     highlightedColor: {default: '#24CAFF', type: 'color'},
-    visualAspectEnabled: {default: true},
-    peekMode: {default: false}
+    href: {default: ''},
+    image: {type: 'asset'},
+    on: {default: 'click'},
+    peekMode: {default: false},
+    title: {default: ''},
+    visualAspectEnabled: {default: true}
   },
 
   init: function () {
@@ -36,7 +36,8 @@ module.exports.Component = registerComponent('link', {
     if (data.on !== oldData.on) { this.updateEventListener(); }
     if (data.peekMode !== oldData.peekMode) { this.updatePeekMode(); }
     if (!data.image || oldData.image === data.image) { return; }
-    el.setAttribute('material', 'pano', typeof data.image === 'string' ? data.image : data.image.src);
+    el.setAttribute('material', 'pano',
+                    typeof data.image === 'string' ? data.image : data.image.src);
   },
 
   /*

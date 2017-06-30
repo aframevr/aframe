@@ -1,9 +1,7 @@
 var registerPrimitive = require('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
-  defaultComponents: {
-    link: {}
-  },
+  defaultComponents: {},
 
   mappings: {
     href: 'link.href',
