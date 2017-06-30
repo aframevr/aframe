@@ -104,6 +104,11 @@ module.exports = registerElement('a-scene', {
 
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+
         this.play();
 
         // Add to scene index.
@@ -133,6 +138,8 @@ module.exports = registerElement('a-scene', {
     detachedCallback: {
       value: function () {
         var sceneIndex;
+
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
         window.cancelAnimationFrame(this.animationFrameID);
         this.animationFrameID = null;
         // Remove from scene index.
@@ -217,7 +224,7 @@ module.exports = registerElement('a-scene', {
      * @returns {Promise}
      */
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
 
         // Don't exit VR if not in VR.
@@ -225,7 +232,7 @@ module.exports = registerElement('a-scene', {
 
         exitFullscreen();
 
-        if (this.checkHeadsetConnected() || this.isMobile) {
+        if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
         exitVRSuccess();
@@ -251,6 +258,23 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          // Do not support entering VR from external just yet (see 0.6.0)
+          // this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 
