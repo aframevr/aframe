@@ -57,7 +57,7 @@ Programs to create models include:
 
 - [Blender](https://www.blender.org/)
 - [MagicaVoxel](https://ephtracy.github.io/)
-- [Autodesk Maya](https://www.autodesk.com/products/maya/overview)
+- [Autodesk Maya](https://www.autodesk.com/products/maya/overview) or [Maya LT](https://www.autodesk.com/products/maya-lt/overview)
 - [Maxon Cinema4D](https://www.maxon.net/en-us/)
 
 ## Hosting Models
