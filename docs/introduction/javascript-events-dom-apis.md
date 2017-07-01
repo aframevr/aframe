@@ -211,7 +211,7 @@ var sceneEl = document.querySelector('a-scene');
 AFRAME.registerComponent('do-something-once-loaded', {
   init: function () {
     // This will be called after the entity has properly attached and loaded.
-    console.log('I am ready'!);
+    console.log('I am ready!');
   }
 });
 
@@ -392,7 +392,7 @@ continuing from the previous example with the physics collision event:
 // We have to define this function with a name if we later remove it.
 function collisionHandler (event) {
   console.log('Entity collided with', event.detail.collidingEntity);
-});
+}
 
 entityEl.addEventListener('physicscollided', collisionHandler);
 entityEl.removeEventListener('physicscollided', collisionHandler);
