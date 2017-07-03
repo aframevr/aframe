@@ -67,12 +67,16 @@ Models](./hosting-and-publishing.md#hosting-models).
 
 ## Troubleshooting
 
+Before anything else, check your console for errors. Common issues related to
+CORS can be solved by properly [hosting your models](./hosting-and-publishing.md#hosting-models),
+and the console will also tell you if your model needs additional files that
+are missing.
+
 ### I Don't See My Model
 
-Check your console for errors. If there are no errors, try scaling your model
-down. Often times there's a mismatch in the scale when you export, and this
-will cause the camera to be inside the model, which means you won't be able to
-see it.
+If there are no errors in the console, try scaling your model down. Often times
+there's a mismatch in the scale when you export, and this will cause the camera
+to be inside the model, which means you won't be able to see it.
 
 ```html
 <a-entity gltf-model="#tree" scale="0.01 0.01 0.01"></a-entity>
@@ -84,7 +88,10 @@ out to verify the model is actually there.
 ### I Don't See Textures
 
 Sometimes textures just won't work right off the bat. This is usually because
-exporters use absolute paths for textures, which won't work on the Web:
+exporters use absolute paths like `C:\\Path\To\Model\texture.jpg` or
+`/Path/To/Model/texture.jpg` for textures, which won't work on the Web. Instead,
+use relative paths like `texture.jpg` or `images/texture.jpg`, relative to your
+model or `.mtl` file.
 
 1. Open the model (or .mtl if you're doing OBJ) in a plain text editor
 2. Search for the name of your texture (e.g., `texture.jpg`)
