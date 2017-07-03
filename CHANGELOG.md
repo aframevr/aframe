@@ -13,7 +13,7 @@ improvements around `.getAttribute` and `.setAttribute`.
 
 ### Deprecations
 
-- Renamed `AFRAME.utils.coordinates.isCoordinates` to `AFRAME.utils.coordinates.isCoordinate`. (af3f89)
+- Renamed `AFRAME.utils.coordinates.isCoordinate` to `AFRAME.utils.coordinates.isCoordinates`. (af3f89)
 - Removed reset sensor keyboard shortcut due to being removed from WebVR API. (#2531)
 
 ### Enhancements
