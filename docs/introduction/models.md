@@ -74,10 +74,9 @@ are missing.
 
 ### I Don't See My Model
 
-If there are no errors in the console, try scaling your model
-down. Often times there's a mismatch in the scale when you export, and this
-will cause the camera to be inside the model, which means you won't be able to
-see it.
+If there are no errors in the console, try scaling your model down. Often times
+there's a mismatch in the scale when you export, and this will cause the camera
+to be inside the model, which means you won't be able to see it.
 
 ```html
 <a-entity gltf-model="#tree" scale="0.01 0.01 0.01"></a-entity>
