@@ -90,7 +90,7 @@ component, [the raycaster component][raycaster].
 | Event         | Description                                                                                                                 |
 |---------------|-----------------------------------------------------------------------------------------------------------------------------|
 | click         | Emitted on both cursor and intersected entity if a currently intersected entity is clicked (whether by mouse or by fuse).   |
-| cursor-fusing | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down.                                  |
+| fusing        | Emitted on both cursor and intersected entity when fuse-based cursor starts counting down.                                  |
 | mousedown     | Emitted on both cursor and intersected entity (if any) on mousedown on the canvas element.                                  |
 | mouseenter    | Emitted on both cursor and intersected entity (if any) when cursor intersects with an entity.                               |
 | mouseleave    | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
