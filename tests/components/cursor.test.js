@@ -22,9 +22,7 @@ suite('cursor', function () {
     el.addEventListener('componentinitialized', function (evt) {
       if (evt.detail.name !== 'cursor') { return; }
       component = el.components.cursor;
-      setTimeout(() => {
-        done();
-      });
+      done();
     });
     cameraEl.appendChild(el);
   });

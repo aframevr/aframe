@@ -613,6 +613,67 @@ suite('Component', function () {
       var component = new TestComponent(this.el);
       assert.equal(component.data.color, 'blue');
     });
+
+    test('oldData is empty object on the first call when a single property component with an object as default initializes', function () {
+      var updateStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {type: 'vec3'},
+        update: updateStub
+      });
+      this.el.setAttribute('dummy', '');
+      sinon.assert.calledOnce(updateStub);
+      // old Data passed to the update method
+      assert.deepEqual(updateStub.getCalls()[0].args[0], {});
+    });
+
+    test('oldData is empty object on the first call when a multiple property component initializes', function () {
+      var updateStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {
+          color: {default: 'red'},
+          size: {default: 0}
+        },
+        update: updateStub
+      });
+      this.el.setAttribute('dummy', '');
+      sinon.assert.calledOnce(updateStub);
+      // old Data passed to the update method
+      assert.deepEqual(updateStub.getCalls()[0].args[0], {});
+    });
+
+    test('oldData is undefined on the first call when a single property component initializes', function () {
+      var updateStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {default: 0},
+        update: updateStub
+      });
+      this.el.setAttribute('dummy', '');
+      sinon.assert.calledOnce(updateStub);
+      // old Data passed to the update method
+      assert.equal(updateStub.getCalls()[0].args[0], undefined);
+    });
+
+    test('called when modifying component with value returned from getAttribute', function () {
+      var el = this.el;
+      var direction;
+      var updateStub = sinon.stub();
+      registerComponent('dummy', {
+        schema: {type: 'vec3', default: {x: 1, y: 1, z: 1}},
+        update: updateStub
+      });
+      el.setAttribute('dummy', '');
+      direction = el.getAttribute('dummy');
+      assert.deepEqual(direction, {x: 1, y: 1, z: 1});
+      direction.x += 1;
+      direction.y += 1;
+      direction.z += 1;
+      el.setAttribute('dummy', direction);
+      sinon.assert.calledTwice(updateStub);
+      // old Data passed to the update method
+      assert.deepEqual(updateStub.getCalls()[0].args[0], {});
+      assert.deepEqual(updateStub.getCalls()[1].args[0], {x: 1, y: 1, z: 1});
+      assert.deepEqual(el.components.dummy.data, {x: 2, y: 2, z: 2});
+    });
   });
 
   suite('flushToDOM', function () {
