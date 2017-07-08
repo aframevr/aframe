@@ -29,6 +29,7 @@
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
+    "@tweenjs/tween.js": "^16.8.0",
     "browserify-css": "^0.8.2",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
@@ -41,7 +42,6 @@
     "style-attr": "^1.0.2",
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
-    "tween.js": "^15.0.0",
     "webvr-polyfill": "^0.9.35"
   },
   "devDependencies": {
