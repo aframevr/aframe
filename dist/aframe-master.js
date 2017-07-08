@@ -1,4 +1,891 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.AFRAME = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function (process){
+/**
+ * Tween.js - Licensed under the MIT license
+ * https://github.com/tweenjs/tween.js
+ * ----------------------------------------------
+ *
+ * See https://github.com/tweenjs/tween.js/graphs/contributors for the full list of contributors.
+ * Thank you all, you're awesome!
+ */
+
+var TWEEN = TWEEN || (function () {
+
+	var _tweens = [];
+
+	return {
+
+		getAll: function () {
+
+			return _tweens;
+
+		},
+
+		removeAll: function () {
+
+			_tweens = [];
+
+		},
+
+		add: function (tween) {
+
+			_tweens.push(tween);
+
+		},
+
+		remove: function (tween) {
+
+			var i = _tweens.indexOf(tween);
+
+			if (i !== -1) {
+				_tweens.splice(i, 1);
+			}
+
+		},
+
+		update: function (time, preserve) {
+
+			if (_tweens.length === 0) {
+				return false;
+			}
+
+			var i = 0;
+
+			time = time !== undefined ? time : TWEEN.now();
+
+			while (i < _tweens.length) {
+
+				if (_tweens[i].update(time) || preserve) {
+					i++;
+				} else {
+					_tweens.splice(i, 1);
+				}
+
+			}
+
+			return true;
+
+		}
+	};
+
+})();
+
+
+// Include a performance.now polyfill.
+// In node.js, use process.hrtime.
+if (typeof (window) === 'undefined' && typeof (process) !== 'undefined') {
+	TWEEN.now = function () {
+		var time = process.hrtime();
+
+		// Convert [seconds, nanoseconds] to milliseconds.
+		return time[0] * 1000 + time[1] / 1000000;
+	};
+}
+// In a browser, use window.performance.now if it is available.
+else if (typeof (window) !== 'undefined' &&
+         window.performance !== undefined &&
+		 window.performance.now !== undefined) {
+	// This must be bound, because directly assigning this function
+	// leads to an invocation exception in Chrome.
+	TWEEN.now = window.performance.now.bind(window.performance);
+}
+// Use Date.now if it is available.
+else if (Date.now !== undefined) {
+	TWEEN.now = Date.now;
+}
+// Otherwise, use 'new Date().getTime()'.
+else {
+	TWEEN.now = function () {
+		return new Date().getTime();
+	};
+}
+
+
+TWEEN.Tween = function (object) {
+
+	var _object = object;
+	var _valuesStart = {};
+	var _valuesEnd = {};
+	var _valuesStartRepeat = {};
+	var _duration = 1000;
+	var _repeat = 0;
+	var _repeatDelayTime;
+	var _yoyo = false;
+	var _isPlaying = false;
+	var _reversed = false;
+	var _delayTime = 0;
+	var _startTime = null;
+	var _easingFunction = TWEEN.Easing.Linear.None;
+	var _interpolationFunction = TWEEN.Interpolation.Linear;
+	var _chainedTweens = [];
+	var _onStartCallback = null;
+	var _onStartCallbackFired = false;
+	var _onUpdateCallback = null;
+	var _onCompleteCallback = null;
+	var _onStopCallback = null;
+
+	this.to = function (properties, duration) {
+
+		_valuesEnd = properties;
+
+		if (duration !== undefined) {
+			_duration = duration;
+		}
+
+		return this;
+
+	};
+
+	this.start = function (time) {
+
+		TWEEN.add(this);
+
+		_isPlaying = true;
+
+		_onStartCallbackFired = false;
+
+		_startTime = time !== undefined ? time : TWEEN.now();
+		_startTime += _delayTime;
+
+		for (var property in _valuesEnd) {
+
+			// Check if an Array was provided as property value
+			if (_valuesEnd[property] instanceof Array) {
+
+				if (_valuesEnd[property].length === 0) {
+					continue;
+				}
+
+				// Create a local copy of the Array with the start value at the front
+				_valuesEnd[property] = [_object[property]].concat(_valuesEnd[property]);
+
+			}
+
+			// If `to()` specifies a property that doesn't exist in the source object,
+			// we should not set that property in the object
+			if (_object[property] === undefined) {
+				continue;
+			}
+
+			// Save the starting value.
+			_valuesStart[property] = _object[property];
+
+			if ((_valuesStart[property] instanceof Array) === false) {
+				_valuesStart[property] *= 1.0; // Ensures we're using numbers, not strings
+			}
+
+			_valuesStartRepeat[property] = _valuesStart[property] || 0;
+
+		}
+
+		return this;
+
+	};
+
+	this.stop = function () {
+
+		if (!_isPlaying) {
+			return this;
+		}
+
+		TWEEN.remove(this);
+		_isPlaying = false;
+
+		if (_onStopCallback !== null) {
+			_onStopCallback.call(_object, _object);
+		}
+
+		this.stopChainedTweens();
+		return this;
+
+	};
+
+	this.end = function () {
+
+		this.update(_startTime + _duration);
+		return this;
+
+	};
+
+	this.stopChainedTweens = function () {
+
+		for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+			_chainedTweens[i].stop();
+		}
+
+	};
+
+	this.delay = function (amount) {
+
+		_delayTime = amount;
+		return this;
+
+	};
+
+	this.repeat = function (times) {
+
+		_repeat = times;
+		return this;
+
+	};
+
+	this.repeatDelay = function (amount) {
+
+		_repeatDelayTime = amount;
+		return this;
+
+	};
+
+	this.yoyo = function (yoyo) {
+
+		_yoyo = yoyo;
+		return this;
+
+	};
+
+
+	this.easing = function (easing) {
+
+		_easingFunction = easing;
+		return this;
+
+	};
+
+	this.interpolation = function (interpolation) {
+
+		_interpolationFunction = interpolation;
+		return this;
+
+	};
+
+	this.chain = function () {
+
+		_chainedTweens = arguments;
+		return this;
+
+	};
+
+	this.onStart = function (callback) {
+
+		_onStartCallback = callback;
+		return this;
+
+	};
+
+	this.onUpdate = function (callback) {
+
+		_onUpdateCallback = callback;
+		return this;
+
+	};
+
+	this.onComplete = function (callback) {
+
+		_onCompleteCallback = callback;
+		return this;
+
+	};
+
+	this.onStop = function (callback) {
+
+		_onStopCallback = callback;
+		return this;
+
+	};
+
+	this.update = function (time) {
+
+		var property;
+		var elapsed;
+		var value;
+
+		if (time < _startTime) {
+			return true;
+		}
+
+		if (_onStartCallbackFired === false) {
+
+			if (_onStartCallback !== null) {
+				_onStartCallback.call(_object, _object);
+			}
+
+			_onStartCallbackFired = true;
+		}
+
+		elapsed = (time - _startTime) / _duration;
+		elapsed = elapsed > 1 ? 1 : elapsed;
+
+		value = _easingFunction(elapsed);
+
+		for (property in _valuesEnd) {
+
+			// Don't update properties that do not exist in the source object
+			if (_valuesStart[property] === undefined) {
+				continue;
+			}
+
+			var start = _valuesStart[property] || 0;
+			var end = _valuesEnd[property];
+
+			if (end instanceof Array) {
+
+				_object[property] = _interpolationFunction(end, value);
+
+			} else {
+
+				// Parses relative end values with start as base (e.g.: +10, -3)
+				if (typeof (end) === 'string') {
+
+					if (end.charAt(0) === '+' || end.charAt(0) === '-') {
+						end = start + parseFloat(end);
+					} else {
+						end = parseFloat(end);
+					}
+				}
+
+				// Protect against non numeric properties.
+				if (typeof (end) === 'number') {
+					_object[property] = start + (end - start) * value;
+				}
+
+			}
+
+		}
+
+		if (_onUpdateCallback !== null) {
+			_onUpdateCallback.call(_object, value);
+		}
+
+		if (elapsed === 1) {
+
+			if (_repeat > 0) {
+
+				if (isFinite(_repeat)) {
+					_repeat--;
+				}
+
+				// Reassign starting values, restart by making startTime = now
+				for (property in _valuesStartRepeat) {
+
+					if (typeof (_valuesEnd[property]) === 'string') {
+						_valuesStartRepeat[property] = _valuesStartRepeat[property] + parseFloat(_valuesEnd[property]);
+					}
+
+					if (_yoyo) {
+						var tmp = _valuesStartRepeat[property];
+
+						_valuesStartRepeat[property] = _valuesEnd[property];
+						_valuesEnd[property] = tmp;
+					}
+
+					_valuesStart[property] = _valuesStartRepeat[property];
+
+				}
+
+				if (_yoyo) {
+					_reversed = !_reversed;
+				}
+
+				if (_repeatDelayTime !== undefined) {
+					_startTime = time + _repeatDelayTime;
+				} else {
+					_startTime = time + _delayTime;
+				}
+
+				return true;
+
+			} else {
+
+				if (_onCompleteCallback !== null) {
+
+					_onCompleteCallback.call(_object, _object);
+				}
+
+				for (var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++) {
+					// Make the chained tweens start exactly at the time they should,
+					// even if the `update()` method was called way past the duration of the tween
+					_chainedTweens[i].start(_startTime + _duration);
+				}
+
+				return false;
+
+			}
+
+		}
+
+		return true;
+
+	};
+
+};
+
+
+TWEEN.Easing = {
+
+	Linear: {
+
+		None: function (k) {
+
+			return k;
+
+		}
+
+	},
+
+	Quadratic: {
+
+		In: function (k) {
+
+			return k * k;
+
+		},
+
+		Out: function (k) {
+
+			return k * (2 - k);
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k;
+			}
+
+			return - 0.5 * (--k * (k - 2) - 1);
+
+		}
+
+	},
+
+	Cubic: {
+
+		In: function (k) {
+
+			return k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return --k * k * k + 1;
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k;
+			}
+
+			return 0.5 * ((k -= 2) * k * k + 2);
+
+		}
+
+	},
+
+	Quartic: {
+
+		In: function (k) {
+
+			return k * k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return 1 - (--k * k * k * k);
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k;
+			}
+
+			return - 0.5 * ((k -= 2) * k * k * k - 2);
+
+		}
+
+	},
+
+	Quintic: {
+
+		In: function (k) {
+
+			return k * k * k * k * k;
+
+		},
+
+		Out: function (k) {
+
+			return --k * k * k * k * k + 1;
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return 0.5 * k * k * k * k * k;
+			}
+
+			return 0.5 * ((k -= 2) * k * k * k * k + 2);
+
+		}
+
+	},
+
+	Sinusoidal: {
+
+		In: function (k) {
+
+			return 1 - Math.cos(k * Math.PI / 2);
+
+		},
+
+		Out: function (k) {
+
+			return Math.sin(k * Math.PI / 2);
+
+		},
+
+		InOut: function (k) {
+
+			return 0.5 * (1 - Math.cos(Math.PI * k));
+
+		}
+
+	},
+
+	Exponential: {
+
+		In: function (k) {
+
+			return k === 0 ? 0 : Math.pow(1024, k - 1);
+
+		},
+
+		Out: function (k) {
+
+			return k === 1 ? 1 : 1 - Math.pow(2, - 10 * k);
+
+		},
+
+		InOut: function (k) {
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			if ((k *= 2) < 1) {
+				return 0.5 * Math.pow(1024, k - 1);
+			}
+
+			return 0.5 * (- Math.pow(2, - 10 * (k - 1)) + 2);
+
+		}
+
+	},
+
+	Circular: {
+
+		In: function (k) {
+
+			return 1 - Math.sqrt(1 - k * k);
+
+		},
+
+		Out: function (k) {
+
+			return Math.sqrt(1 - (--k * k));
+
+		},
+
+		InOut: function (k) {
+
+			if ((k *= 2) < 1) {
+				return - 0.5 * (Math.sqrt(1 - k * k) - 1);
+			}
+
+			return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+
+		}
+
+	},
+
+	Elastic: {
+
+		In: function (k) {
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			return -Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+
+		},
+
+		Out: function (k) {
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			return Math.pow(2, -10 * k) * Math.sin((k - 0.1) * 5 * Math.PI) + 1;
+
+		},
+
+		InOut: function (k) {
+
+			if (k === 0) {
+				return 0;
+			}
+
+			if (k === 1) {
+				return 1;
+			}
+
+			k *= 2;
+
+			if (k < 1) {
+				return -0.5 * Math.pow(2, 10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI);
+			}
+
+			return 0.5 * Math.pow(2, -10 * (k - 1)) * Math.sin((k - 1.1) * 5 * Math.PI) + 1;
+
+		}
+
+	},
+
+	Back: {
+
+		In: function (k) {
+
+			var s = 1.70158;
+
+			return k * k * ((s + 1) * k - s);
+
+		},
+
+		Out: function (k) {
+
+			var s = 1.70158;
+
+			return --k * k * ((s + 1) * k + s) + 1;
+
+		},
+
+		InOut: function (k) {
+
+			var s = 1.70158 * 1.525;
+
+			if ((k *= 2) < 1) {
+				return 0.5 * (k * k * ((s + 1) * k - s));
+			}
+
+			return 0.5 * ((k -= 2) * k * ((s + 1) * k + s) + 2);
+
+		}
+
+	},
+
+	Bounce: {
+
+		In: function (k) {
+
+			return 1 - TWEEN.Easing.Bounce.Out(1 - k);
+
+		},
+
+		Out: function (k) {
+
+			if (k < (1 / 2.75)) {
+				return 7.5625 * k * k;
+			} else if (k < (2 / 2.75)) {
+				return 7.5625 * (k -= (1.5 / 2.75)) * k + 0.75;
+			} else if (k < (2.5 / 2.75)) {
+				return 7.5625 * (k -= (2.25 / 2.75)) * k + 0.9375;
+			} else {
+				return 7.5625 * (k -= (2.625 / 2.75)) * k + 0.984375;
+			}
+
+		},
+
+		InOut: function (k) {
+
+			if (k < 0.5) {
+				return TWEEN.Easing.Bounce.In(k * 2) * 0.5;
+			}
+
+			return TWEEN.Easing.Bounce.Out(k * 2 - 1) * 0.5 + 0.5;
+
+		}
+
+	}
+
+};
+
+TWEEN.Interpolation = {
+
+	Linear: function (v, k) {
+
+		var m = v.length - 1;
+		var f = m * k;
+		var i = Math.floor(f);
+		var fn = TWEEN.Interpolation.Utils.Linear;
+
+		if (k < 0) {
+			return fn(v[0], v[1], f);
+		}
+
+		if (k > 1) {
+			return fn(v[m], v[m - 1], m - f);
+		}
+
+		return fn(v[i], v[i + 1 > m ? m : i + 1], f - i);
+
+	},
+
+	Bezier: function (v, k) {
+
+		var b = 0;
+		var n = v.length - 1;
+		var pw = Math.pow;
+		var bn = TWEEN.Interpolation.Utils.Bernstein;
+
+		for (var i = 0; i <= n; i++) {
+			b += pw(1 - k, n - i) * pw(k, i) * v[i] * bn(n, i);
+		}
+
+		return b;
+
+	},
+
+	CatmullRom: function (v, k) {
+
+		var m = v.length - 1;
+		var f = m * k;
+		var i = Math.floor(f);
+		var fn = TWEEN.Interpolation.Utils.CatmullRom;
+
+		if (v[0] === v[m]) {
+
+			if (k < 0) {
+				i = Math.floor(f = m * (1 + k));
+			}
+
+			return fn(v[(i - 1 + m) % m], v[i], v[(i + 1) % m], v[(i + 2) % m], f - i);
+
+		} else {
+
+			if (k < 0) {
+				return v[0] - (fn(v[0], v[0], v[1], v[1], -f) - v[0]);
+			}
+
+			if (k > 1) {
+				return v[m] - (fn(v[m], v[m], v[m - 1], v[m - 1], f - m) - v[m]);
+			}
+
+			return fn(v[i ? i - 1 : 0], v[i], v[m < i + 1 ? m : i + 1], v[m < i + 2 ? m : i + 2], f - i);
+
+		}
+
+	},
+
+	Utils: {
+
+		Linear: function (p0, p1, t) {
+
+			return (p1 - p0) * t + p0;
+
+		},
+
+		Bernstein: function (n, i) {
+
+			var fc = TWEEN.Interpolation.Utils.Factorial;
+
+			return fc(n) / fc(i) / fc(n - i);
+
+		},
+
+		Factorial: (function () {
+
+			var a = [1];
+
+			return function (n) {
+
+				var s = 1;
+
+				if (a[n]) {
+					return a[n];
+				}
+
+				for (var i = n; i > 1; i--) {
+					s *= i;
+				}
+
+				a[n] = s;
+				return s;
+
+			};
+
+		})(),
+
+		CatmullRom: function (p0, p1, p2, p3, t) {
+
+			var v0 = (p2 - p0) * 0.5;
+			var v1 = (p3 - p1) * 0.5;
+			var t2 = t * t;
+			var t3 = t * t2;
+
+			return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (- 3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+
+		}
+
+	}
+
+};
+
+// UMD (Universal Module Definition)
+(function (root) {
+
+	if (typeof define === 'function' && define.amd) {
+
+		// AMD
+		define([], function () {
+			return TWEEN;
+		});
+
+	} else if (typeof module !== 'undefined' && typeof exports === 'object') {
+
+		// Node.js
+		module.exports = TWEEN;
+
+	} else if (root !== undefined) {
+
+		// Global variable
+		root.TWEEN = TWEEN;
+
+	}
+
+})(this);
+
+}).call(this,_dereq_('_process'))
+
+},{"_process":34}],2:[function(_dereq_,module,exports){
 var str = Object.prototype.toString
 
 module.exports = anArray
@@ -11,13 +898,13 @@ function anArray(arr) {
   )
 }
 
-},{}],2:[function(_dereq_,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 module.exports = function numtype(num, def) {
 	return typeof num === 'number'
 		? num 
 		: (typeof def === 'number' ? def : 0)
 }
-},{}],3:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -133,7 +1020,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],4:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 // For more information about browser field, check out the browser field at https://github.com/substack/browserify-handbook#browser-field.
 
@@ -185,7 +1072,7 @@ module.exports = {
     }
 };
 
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 var Buffer = _dereq_('buffer').Buffer; // for use with browserify
 
 module.exports = function (a, b) {
@@ -201,7 +1088,7 @@ module.exports = function (a, b) {
     return true;
 };
 
-},{"buffer":6}],6:[function(_dereq_,module,exports){
+},{"buffer":7}],7:[function(_dereq_,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -1995,7 +2882,7 @@ function isnan (val) {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"base64-js":3,"ieee754":15,"isarray":21}],7:[function(_dereq_,module,exports){
+},{"base64-js":4,"ieee754":16,"isarray":22}],8:[function(_dereq_,module,exports){
 
 /**
  * This is the web browser implementation of `debug()`.
@@ -2164,7 +3051,7 @@ function localstorage(){
   } catch (e) {}
 }
 
-},{"./debug":8}],8:[function(_dereq_,module,exports){
+},{"./debug":9}],9:[function(_dereq_,module,exports){
 
 /**
  * This is the common logic for both the Node.js and web browser
@@ -2348,7 +3235,7 @@ function coerce(val) {
   return val;
 }
 
-},{}],9:[function(_dereq_,module,exports){
+},{}],10:[function(_dereq_,module,exports){
 'use strict';
 var isObj = _dereq_('is-obj');
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -2418,10 +3305,10 @@ module.exports = function deepAssign(target) {
 	return target;
 };
 
-},{"is-obj":20}],10:[function(_dereq_,module,exports){
+},{"is-obj":21}],11:[function(_dereq_,module,exports){
 /*! (C) WebReflection Mit Style License */
 (function(t,n,r,i){"use strict";function st(e,t){for(var n=0,r=e.length;n<r;n++)gt(e[n],t)}function ot(e){for(var t=0,n=e.length,r;t<n;t++)r=e[t],it(r,w[at(r)])}function ut(e){return function(t){F(t)&&(gt(t,e),st(t.querySelectorAll(E),e))}}function at(e){var t=R.call(e,"is"),n=e.nodeName.toUpperCase(),r=x.call(b,t?m+t.toUpperCase():v+n);return t&&-1<r&&!ft(n,t)?-1:r}function ft(e,t){return-1<E.indexOf(e+'[is="'+t+'"]')}function lt(e){var t=e.currentTarget,n=e.attrChange,r=e.attrName,i=e.target;Y&&(!i||i===t)&&t.attributeChangedCallback&&r!=="style"&&e.prevValue!==e.newValue&&t.attributeChangedCallback(r,n===e[f]?null:e.prevValue,n===e[c]?null:e.newValue)}function ct(e){var t=ut(e);return function(e){$.push(t,e.target)}}function ht(e){G&&(G=!1,e.currentTarget.removeEventListener(p,ht)),st((e.target||n).querySelectorAll(E),e.detail===u?u:o),j&&vt()}function pt(e,t){var n=this;U.call(n,e,t),Z.call(n,{target:n})}function dt(e,t){P(e,t),nt?nt.observe(e,X):(Q&&(e.setAttribute=pt,e[s]=tt(e),e.addEventListener(d,Z)),e.addEventListener(h,lt)),e.createdCallback&&Y&&(e.created=!0,e.createdCallback(),e.created=!1)}function vt(){for(var e,t=0,n=I.length;t<n;t++)e=I[t],S.contains(e)||(n--,I.splice(t--,1),gt(e,u))}function mt(e){throw new Error("A "+e+" type is already registered")}function gt(e,t){var n,r=at(e);-1<r&&(rt(e,w[r]),r=0,t===o&&!e[o]?(e[u]=!1,e[o]=!0,r=1,j&&x.call(I,e)<0&&I.push(e)):t===u&&!e[u]&&(e[o]=!1,e[u]=!0,r=1),r&&(n=e[t+"Callback"])&&n.call(e))}if(i in n)return;var s="__"+i+(Math.random()*1e5>>0),o="attached",u="detached",a="extends",f="ADDITION",l="MODIFICATION",c="REMOVAL",h="DOMAttrModified",p="DOMContentLoaded",d="DOMSubtreeModified",v="<",m="=",g=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/,y=["ANNOTATION-XML","COLOR-PROFILE","FONT-FACE","FONT-FACE-SRC","FONT-FACE-URI","FONT-FACE-FORMAT","FONT-FACE-NAME","MISSING-GLYPH"],b=[],w=[],E="",S=n.documentElement,x=b.indexOf||function(e){for(var t=this.length;t--&&this[t]!==e;);return t},T=r.prototype,N=T.hasOwnProperty,C=T.isPrototypeOf,k=r.defineProperty,L=r.getOwnPropertyDescriptor,A=r.getOwnPropertyNames,O=r.getPrototypeOf,M=r.setPrototypeOf,_=!!r.__proto__,D=r.create||function yt(e){return e?(yt.prototype=e,new yt):this},P=M||(_?function(e,t){return e.__proto__=t,e}:A&&L?function(){function e(e,t){for(var n,r=A(t),i=0,s=r.length;i<s;i++)n=r[i],N.call(e,n)||k(e,n,L(t,n))}return function(t,n){do e(t,n);while((n=O(n))&&!C.call(n,t));return t}}():function(e,t){for(var n in t)e[n]=t[n];return e}),H=t.MutationObserver||t.WebKitMutationObserver,B=(t.HTMLElement||t.Element||t.Node).prototype,j=!C.call(B,S),F=j?function(e){return e.nodeType===1}:function(e){return C.call(B,e)},I=j&&[],q=B.cloneNode,R=B.getAttribute,U=B.setAttribute,z=B.removeAttribute,W=n.createElement,X=H&&{attributes:!0,characterData:!0,attributeOldValue:!0},V=H||function(e){Q=!1,S.removeEventListener(h,V)},$,J=t.requestAnimationFrame||t.webkitRequestAnimationFrame||t.mozRequestAnimationFrame||t.msRequestAnimationFrame||function(e){setTimeout(e,10)},K=!1,Q=!0,G=!0,Y=!0,Z,et,tt,nt,rt,it;M||_?(rt=function(e,t){C.call(t,e)||dt(e,t)},it=dt):(rt=function(e,t){e[s]||(e[s]=r(!0),dt(e,t))},it=rt),j?(Q=!1,function(){var t=L(B,"addEventListener"),n=t.value,r=function(e){var t=new CustomEvent(h,{bubbles:!0});t.attrName=e,t.prevValue=R.call(this,e),t.newValue=null,t[c]=t.attrChange=2,z.call(this,e),this.dispatchEvent(t)},i=function(t,n){var r=this.hasAttribute(t),i=r&&R.call(this,t);e=new CustomEvent(h,{bubbles:!0}),U.call(this,t,n),e.attrName=t,e.prevValue=r?i:null,e.newValue=n,r?e[l]=e.attrChange=1:e[f]=e.attrChange=0,this.dispatchEvent(e)},o=function(e){var t=e.currentTarget,n=t[s],r=e.propertyName,i;n.hasOwnProperty(r)&&(n=n[r],i=new CustomEvent(h,{bubbles:!0}),i.attrName=n.name,i.prevValue=n.value||null,i.newValue=n.value=t[r]||null,i.prevValue==null?i[f]=i.attrChange=0:i[l]=i.attrChange=1,t.dispatchEvent(i))};t.value=function(e,t,u){e===h&&this.attributeChangedCallback&&this.setAttribute!==i&&(this[s]={className:{name:"class",value:this.className}},this.setAttribute=i,this.removeAttribute=r,n.call(this,"propertychange",o)),n.call(this,e,t,u)},k(B,"addEventListener",t)}()):H||(S.addEventListener(h,V),S.setAttribute(s,1),S.removeAttribute(s),Q&&(Z=function(e){var t=this,n,r,i;if(t===e.target){n=t[s],t[s]=r=tt(t);for(i in r){if(!(i in n))return et(0,t,i,n[i],r[i],f);if(r[i]!==n[i])return et(1,t,i,n[i],r[i],l)}for(i in n)if(!(i in r))return et(2,t,i,n[i],r[i],c)}},et=function(e,t,n,r,i,s){var o={attrChange:e,currentTarget:t,attrName:n,prevValue:r,newValue:i};o[s]=e,lt(o)},tt=function(e){for(var t,n,r={},i=e.attributes,s=0,o=i.length;s<o;s++)t=i[s],n=t.name,n!=="setAttribute"&&(r[n]=t.value);return r})),n[i]=function(t,r){c=t.toUpperCase(),K||(K=!0,H?(nt=function(e,t){function n(e,t){for(var n=0,r=e.length;n<r;t(e[n++]));}return new H(function(r){for(var i,s,o,u=0,a=r.length;u<a;u++)i=r[u],i.type==="childList"?(n(i.addedNodes,e),n(i.removedNodes,t)):(s=i.target,Y&&s.attributeChangedCallback&&i.attributeName!=="style"&&(o=R.call(s,i.attributeName),o!==i.oldValue&&s.attributeChangedCallback(i.attributeName,i.oldValue,o)))})}(ut(o),ut(u)),nt.observe(n,{childList:!0,subtree:!0})):($=[],J(function d(){while($.length)$.shift().call(null,$.shift());J(d)}),n.addEventListener("DOMNodeInserted",ct(o)),n.addEventListener("DOMNodeRemoved",ct(u))),n.addEventListener(p,ht),n.addEventListener("readystatechange",ht),n.createElement=function(e,t){var r=W.apply(n,arguments),i=""+e,s=x.call(b,(t?m:v)+(t||i).toUpperCase()),o=-1<s;return t&&(r.setAttribute("is",t=t.toLowerCase()),o&&(o=ft(i.toUpperCase(),t))),Y=!n.createElement.innerHTMLHelper,o&&it(r,w[s]),r},B.cloneNode=function(e){var t=q.call(this,!!e),n=at(t);return-1<n&&it(t,w[n]),e&&ot(t.querySelectorAll(E)),t}),-2<x.call(b,m+c)+x.call(b,v+c)&&mt(t);if(!g.test(c)||-1<x.call(y,c))throw new Error("The type "+t+" is invalid");var i=function(){return f?n.createElement(l,c):n.createElement(l)},s=r||T,f=N.call(s,a),l=f?r[a].toUpperCase():c,c,h;return f&&-1<x.call(b,v+l)&&mt(l),h=b.push((f?m:v)+c)-1,E=E.concat(E.length?",":"",f?l+'[is="'+t.toLowerCase()+'"]':l),i.prototype=w[h]=N.call(s,"prototype")?s.prototype:D(B),st(n.querySelectorAll(E),o),i}})(window,document,Object,"registerElement");
-},{}],11:[function(_dereq_,module,exports){
+},{}],12:[function(_dereq_,module,exports){
 module.exports = function(dtype) {
   switch (dtype) {
     case 'int8':
@@ -2447,7 +3334,7 @@ module.exports = function(dtype) {
   }
 }
 
-},{}],12:[function(_dereq_,module,exports){
+},{}],13:[function(_dereq_,module,exports){
 /*eslint new-cap:0*/
 var dtype = _dereq_('dtype')
 module.exports = flattenVertexData
@@ -2494,7 +3381,7 @@ function flattenVertexData (data, output, offset) {
   return output
 }
 
-},{"dtype":11}],13:[function(_dereq_,module,exports){
+},{"dtype":12}],14:[function(_dereq_,module,exports){
 var isFunction = _dereq_('is-function')
 
 module.exports = forEach
@@ -2542,7 +3429,7 @@ function forEachObject(object, iterator, context) {
     }
 }
 
-},{"is-function":19}],14:[function(_dereq_,module,exports){
+},{"is-function":20}],15:[function(_dereq_,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -2556,7 +3443,7 @@ if (typeof window !== "undefined") {
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],15:[function(_dereq_,module,exports){
+},{}],16:[function(_dereq_,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -2642,7 +3529,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],17:[function(_dereq_,module,exports){
 module.exports = function compile(property) {
 	if (!property || typeof property !== 'string')
 		throw new Error('must specify property for indexof search')
@@ -2655,7 +3542,7 @@ module.exports = function compile(property) {
 		'return -1'
 	].join('\n'))
 }
-},{}],17:[function(_dereq_,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -2680,7 +3567,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],19:[function(_dereq_,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -2703,7 +3590,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],19:[function(_dereq_,module,exports){
+},{}],20:[function(_dereq_,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -2720,21 +3607,21 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],20:[function(_dereq_,module,exports){
+},{}],21:[function(_dereq_,module,exports){
 'use strict';
 module.exports = function (x) {
 	var type = typeof x;
 	return x !== null && (type === 'object' || type === 'function');
 };
 
-},{}],21:[function(_dereq_,module,exports){
+},{}],22:[function(_dereq_,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],22:[function(_dereq_,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 var wordWrap = _dereq_('word-wrapper')
 var xtend = _dereq_('xtend')
 var findChar = _dereq_('indexof-property')('id')
@@ -3025,7 +3912,7 @@ function getAlignType(align) {
     return ALIGN_RIGHT
   return ALIGN_LEFT
 }
-},{"as-number":2,"indexof-property":16,"word-wrapper":74,"xtend":77}],23:[function(_dereq_,module,exports){
+},{"as-number":3,"indexof-property":17,"word-wrapper":74,"xtend":77}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -3126,7 +4013,7 @@ function getBinaryOpts(opt) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":24,"buffer":6,"parse-bmfont-ascii":26,"parse-bmfont-binary":27,"parse-bmfont-xml":28,"xhr":75,"xtend":77}],24:[function(_dereq_,module,exports){
+},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":75,"xtend":77}],25:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -3138,7 +4025,7 @@ module.exports = function(buf) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"buffer":6,"buffer-equal":5}],25:[function(_dereq_,module,exports){
+},{"buffer":7,"buffer-equal":6}],26:[function(_dereq_,module,exports){
 'use strict';
 /* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -3223,7 +4110,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],26:[function(_dereq_,module,exports){
+},{}],27:[function(_dereq_,module,exports){
 module.exports = function parseBMFontAscii(data) {
   if (!data)
     throw new Error('no data provided')
@@ -3332,7 +4219,7 @@ function parseIntList(data) {
     return parseInt(val, 10)
   })
 }
-},{}],27:[function(_dereq_,module,exports){
+},{}],28:[function(_dereq_,module,exports){
 var HEADER = [66, 77, 70]
 
 module.exports = function readBMFontBinary(buf) {
@@ -3493,7 +4380,7 @@ function readNameNT(buf, offset) {
 function readStringNT(buf, offset) {
   return readNameNT(buf, offset).toString('utf8')
 }
-},{}],28:[function(_dereq_,module,exports){
+},{}],29:[function(_dereq_,module,exports){
 var parseAttributes = _dereq_('./parse-attribs')
 var parseFromString = _dereq_('xml-parse-from-string')
 
@@ -3579,7 +4466,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":29,"xml-parse-from-string":76}],29:[function(_dereq_,module,exports){
+},{"./parse-attribs":30,"xml-parse-from-string":76}],30:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -3608,7 +4495,7 @@ function parseIntList(data) {
     return parseInt(val, 10)
   })
 }
-},{}],30:[function(_dereq_,module,exports){
+},{}],31:[function(_dereq_,module,exports){
 var trim = _dereq_('trim')
   , forEach = _dereq_('for-each')
   , isArray = function(arg) {
@@ -3640,7 +4527,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":13,"trim":47}],31:[function(_dereq_,module,exports){
+},{"for-each":14,"trim":48}],32:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -3869,7 +4756,7 @@ var substr = 'ab'.substr(-1) === 'b'
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":33}],32:[function(_dereq_,module,exports){
+},{"_process":34}],33:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -3902,7 +4789,7 @@ module.exports = present;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],33:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4084,7 +4971,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],34:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 (function(root) {
 
 	// Store setTimeout reference so promise-polyfill will be unaffected by
@@ -4280,7 +5167,7 @@ process.umask = function() { return 0; };
 
 })(this);
 
-},{}],35:[function(_dereq_,module,exports){
+},{}],36:[function(_dereq_,module,exports){
 var dtype = _dereq_('dtype')
 var anArray = _dereq_('an-array')
 var isBuffer = _dereq_('is-buffer')
@@ -4323,7 +5210,7 @@ module.exports = function createQuadElements(array, opt) {
     }
     return indices
 }
-},{"an-array":1,"dtype":11,"is-buffer":18}],36:[function(_dereq_,module,exports){
+},{"an-array":2,"dtype":12,"is-buffer":19}],37:[function(_dereq_,module,exports){
 
 
 /*:: type Attr = { [key: string]: string } */
@@ -4431,7 +5318,7 @@ function normalize(str) {
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-},{}],37:[function(_dereq_,module,exports){
+},{}],38:[function(_dereq_,module,exports){
 var createLayout = _dereq_('layout-bmfont-text')
 var inherits = _dereq_('inherits')
 var createIndices = _dereq_('quad-indices')
@@ -4557,7 +5444,7 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
-},{"./lib/utils":38,"./lib/vertices":39,"inherits":17,"layout-bmfont-text":22,"object-assign":25,"quad-indices":35,"three-buffer-vertex-data":40}],38:[function(_dereq_,module,exports){
+},{"./lib/utils":39,"./lib/vertices":40,"inherits":18,"layout-bmfont-text":23,"object-assign":26,"quad-indices":36,"three-buffer-vertex-data":41}],39:[function(_dereq_,module,exports){
 var itemSize = 2
 var box = { min: [0, 0], max: [0, 0] }
 
@@ -4597,7 +5484,7 @@ module.exports.computeSphere = function (positions, output) {
   output.radius = length / 2
 }
 
-},{}],39:[function(_dereq_,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 module.exports.pages = function pages (glyphs) {
   var pages = new Float32Array(glyphs.length * 4 * 1)
   var i = 0
@@ -4676,7 +5563,7 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
-},{}],40:[function(_dereq_,module,exports){
+},{}],41:[function(_dereq_,module,exports){
 var flatten = _dereq_('flatten-vertex-data')
 var warned = false;
 
@@ -4776,7 +5663,7 @@ function rebuildAttribute (attrib, data, itemSize) {
   return false
 }
 
-},{"flatten-vertex-data":12}],41:[function(_dereq_,module,exports){
+},{"flatten-vertex-data":13}],42:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -48078,7 +48965,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 })));
 
-},{}],42:[function(_dereq_,module,exports){
+},{}],43:[function(_dereq_,module,exports){
 /**
  * @author Michael Guerrero / http://realitymeltdown.com
  */
@@ -48262,7 +49149,7 @@ THREE.BlendCharacter.prototype.getForward = function() {
 };
 
 
-},{}],43:[function(_dereq_,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 /**
 * @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
 * @author Tony Parisi / http://www.tonyparisi.com/
@@ -53809,7 +54696,7 @@ THREE.ColladaLoader = function () {
 
 };
 
-},{}],44:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -55961,7 +56848,7 @@ THREE.GLTFLoader = ( function () {
 
 } )();
 
-},{}],45:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -56503,7 +57390,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],46:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -57248,7 +58135,7 @@ THREE.OBJLoader.prototype = {
 
 };
 
-},{}],47:[function(_dereq_,module,exports){
+},{}],48:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -57263,799 +58150,6 @@ exports.left = function(str){
 exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
-
-},{}],48:[function(_dereq_,module,exports){
-/**
- * Tween.js - Licensed under the MIT license
- * https://github.com/sole/tween.js
- * ----------------------------------------------
- *
- * See https://github.com/sole/tween.js/graphs/contributors for the full list of contributors.
- * Thank you all, you're awesome!
- */
-
-// performance.now polyfill
-( function ( root ) {
-
-	if ( 'performance' in root === false ) {
-		root.performance = {};
-	}
-
-	// IE 8
-	Date.now = ( Date.now || function () {
-		return new Date().getTime();
-	} );
-
-	if ( 'now' in root.performance === false ) {
-		var offset = root.performance.timing && root.performance.timing.navigationStart ? performance.timing.navigationStart
-		                                                                                : Date.now();
-
-		root.performance.now = function () {
-			return Date.now() - offset;
-		};
-	}
-
-} )( this );
-
-var TWEEN = TWEEN || ( function () {
-
-	var _tweens = [];
-
-	return {
-
-		REVISION: '14',
-
-		getAll: function () {
-
-			return _tweens;
-
-		},
-
-		removeAll: function () {
-
-			_tweens = [];
-
-		},
-
-		add: function ( tween ) {
-
-			_tweens.push( tween );
-
-		},
-
-		remove: function ( tween ) {
-
-			var i = _tweens.indexOf( tween );
-
-			if ( i !== -1 ) {
-
-				_tweens.splice( i, 1 );
-
-			}
-
-		},
-
-		update: function ( time ) {
-
-			if ( _tweens.length === 0 ) return false;
-
-			var i = 0;
-
-			time = time !== undefined ? time : window.performance.now();
-
-			while ( i < _tweens.length ) {
-
-				if ( _tweens[ i ].update( time ) ) {
-
-					i++;
-
-				} else {
-
-					_tweens.splice( i, 1 );
-
-				}
-
-			}
-
-			return true;
-
-		}
-	};
-
-} )();
-
-TWEEN.Tween = function ( object ) {
-
-	var _object = object;
-	var _valuesStart = {};
-	var _valuesEnd = {};
-	var _valuesStartRepeat = {};
-	var _duration = 1000;
-	var _repeat = 0;
-	var _yoyo = false;
-	var _isPlaying = false;
-	var _reversed = false;
-	var _delayTime = 0;
-	var _startTime = null;
-	var _easingFunction = TWEEN.Easing.Linear.None;
-	var _interpolationFunction = TWEEN.Interpolation.Linear;
-	var _chainedTweens = [];
-	var _onStartCallback = null;
-	var _onStartCallbackFired = false;
-	var _onUpdateCallback = null;
-	var _onCompleteCallback = null;
-	var _onStopCallback = null;
-
-	// Set all starting values present on the target object
-	for ( var field in object ) {
-
-		_valuesStart[ field ] = parseFloat(object[field], 10);
-
-	}
-
-	this.to = function ( properties, duration ) {
-
-		if ( duration !== undefined ) {
-
-			_duration = duration;
-
-		}
-
-		_valuesEnd = properties;
-
-		return this;
-
-	};
-
-	this.start = function ( time ) {
-
-		TWEEN.add( this );
-
-		_isPlaying = true;
-
-		_onStartCallbackFired = false;
-
-		_startTime = time !== undefined ? time : window.performance.now();
-		_startTime += _delayTime;
-
-		for ( var property in _valuesEnd ) {
-
-			// check if an Array was provided as property value
-			if ( _valuesEnd[ property ] instanceof Array ) {
-
-				if ( _valuesEnd[ property ].length === 0 ) {
-
-					continue;
-
-				}
-
-				// create a local copy of the Array with the start value at the front
-				_valuesEnd[ property ] = [ _object[ property ] ].concat( _valuesEnd[ property ] );
-
-			}
-
-			_valuesStart[ property ] = _object[ property ];
-
-			if( ( _valuesStart[ property ] instanceof Array ) === false ) {
-				_valuesStart[ property ] *= 1.0; // Ensures we're using numbers, not strings
-			}
-
-			_valuesStartRepeat[ property ] = _valuesStart[ property ] || 0;
-
-		}
-
-		return this;
-
-	};
-
-	this.stop = function () {
-
-		if ( !_isPlaying ) {
-			return this;
-		}
-
-		TWEEN.remove( this );
-		_isPlaying = false;
-
-		if ( _onStopCallback !== null ) {
-
-			_onStopCallback.call( _object );
-
-		}
-
-		this.stopChainedTweens();
-		return this;
-
-	};
-
-	this.stopChainedTweens = function () {
-
-		for ( var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++ ) {
-
-			_chainedTweens[ i ].stop();
-
-		}
-
-	};
-
-	this.delay = function ( amount ) {
-
-		_delayTime = amount;
-		return this;
-
-	};
-
-	this.repeat = function ( times ) {
-
-		_repeat = times;
-		return this;
-
-	};
-
-	this.yoyo = function( yoyo ) {
-
-		_yoyo = yoyo;
-		return this;
-
-	};
-
-
-	this.easing = function ( easing ) {
-
-		_easingFunction = easing;
-		return this;
-
-	};
-
-	this.interpolation = function ( interpolation ) {
-
-		_interpolationFunction = interpolation;
-		return this;
-
-	};
-
-	this.chain = function () {
-
-		_chainedTweens = arguments;
-		return this;
-
-	};
-
-	this.onStart = function ( callback ) {
-
-		_onStartCallback = callback;
-		return this;
-
-	};
-
-	this.onUpdate = function ( callback ) {
-
-		_onUpdateCallback = callback;
-		return this;
-
-	};
-
-	this.onComplete = function ( callback ) {
-
-		_onCompleteCallback = callback;
-		return this;
-
-	};
-
-	this.onStop = function ( callback ) {
-
-		_onStopCallback = callback;
-		return this;
-
-	};
-
-	this.update = function ( time ) {
-
-		var property;
-
-		if ( time < _startTime ) {
-
-			return true;
-
-		}
-
-		if ( _onStartCallbackFired === false ) {
-
-			if ( _onStartCallback !== null ) {
-
-				_onStartCallback.call( _object );
-
-			}
-
-			_onStartCallbackFired = true;
-
-		}
-
-		var elapsed = ( time - _startTime ) / _duration;
-		elapsed = elapsed > 1 ? 1 : elapsed;
-
-		var value = _easingFunction( elapsed );
-
-		for ( property in _valuesEnd ) {
-
-			var start = _valuesStart[ property ] || 0;
-			var end = _valuesEnd[ property ];
-
-			if ( end instanceof Array ) {
-
-				_object[ property ] = _interpolationFunction( end, value );
-
-			} else {
-
-				// Parses relative end values with start as base (e.g.: +10, -3)
-				if ( typeof(end) === "string" ) {
-					end = start + parseFloat(end, 10);
-				}
-
-				// protect against non numeric properties.
-				if ( typeof(end) === "number" ) {
-					_object[ property ] = start + ( end - start ) * value;
-				}
-
-			}
-
-		}
-
-		if ( _onUpdateCallback !== null ) {
-
-			_onUpdateCallback.call( _object, value );
-
-		}
-
-		if ( elapsed == 1 ) {
-
-			if ( _repeat > 0 ) {
-
-				if( isFinite( _repeat ) ) {
-					_repeat--;
-				}
-
-				// reassign starting values, restart by making startTime = now
-				for( property in _valuesStartRepeat ) {
-
-					if ( typeof( _valuesEnd[ property ] ) === "string" ) {
-						_valuesStartRepeat[ property ] = _valuesStartRepeat[ property ] + parseFloat(_valuesEnd[ property ], 10);
-					}
-
-					if (_yoyo) {
-						var tmp = _valuesStartRepeat[ property ];
-						_valuesStartRepeat[ property ] = _valuesEnd[ property ];
-						_valuesEnd[ property ] = tmp;
-					}
-
-					_valuesStart[ property ] = _valuesStartRepeat[ property ];
-
-				}
-
-				if (_yoyo) {
-					_reversed = !_reversed;
-				}
-
-				_startTime = time + _delayTime;
-
-				return true;
-
-			} else {
-
-				if ( _onCompleteCallback !== null ) {
-
-					_onCompleteCallback.call( _object );
-
-				}
-
-				for ( var i = 0, numChainedTweens = _chainedTweens.length; i < numChainedTweens; i++ ) {
-
-					_chainedTweens[ i ].start( time );
-
-				}
-
-				return false;
-
-			}
-
-		}
-
-		return true;
-
-	};
-
-};
-
-
-TWEEN.Easing = {
-
-	Linear: {
-
-		None: function ( k ) {
-
-			return k;
-
-		}
-
-	},
-
-	Quadratic: {
-
-		In: function ( k ) {
-
-			return k * k;
-
-		},
-
-		Out: function ( k ) {
-
-			return k * ( 2 - k );
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( ( k *= 2 ) < 1 ) return 0.5 * k * k;
-			return - 0.5 * ( --k * ( k - 2 ) - 1 );
-
-		}
-
-	},
-
-	Cubic: {
-
-		In: function ( k ) {
-
-			return k * k * k;
-
-		},
-
-		Out: function ( k ) {
-
-			return --k * k * k + 1;
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k;
-			return 0.5 * ( ( k -= 2 ) * k * k + 2 );
-
-		}
-
-	},
-
-	Quartic: {
-
-		In: function ( k ) {
-
-			return k * k * k * k;
-
-		},
-
-		Out: function ( k ) {
-
-			return 1 - ( --k * k * k * k );
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( ( k *= 2 ) < 1) return 0.5 * k * k * k * k;
-			return - 0.5 * ( ( k -= 2 ) * k * k * k - 2 );
-
-		}
-
-	},
-
-	Quintic: {
-
-		In: function ( k ) {
-
-			return k * k * k * k * k;
-
-		},
-
-		Out: function ( k ) {
-
-			return --k * k * k * k * k + 1;
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( ( k *= 2 ) < 1 ) return 0.5 * k * k * k * k * k;
-			return 0.5 * ( ( k -= 2 ) * k * k * k * k + 2 );
-
-		}
-
-	},
-
-	Sinusoidal: {
-
-		In: function ( k ) {
-
-			return 1 - Math.cos( k * Math.PI / 2 );
-
-		},
-
-		Out: function ( k ) {
-
-			return Math.sin( k * Math.PI / 2 );
-
-		},
-
-		InOut: function ( k ) {
-
-			return 0.5 * ( 1 - Math.cos( Math.PI * k ) );
-
-		}
-
-	},
-
-	Exponential: {
-
-		In: function ( k ) {
-
-			return k === 0 ? 0 : Math.pow( 1024, k - 1 );
-
-		},
-
-		Out: function ( k ) {
-
-			return k === 1 ? 1 : 1 - Math.pow( 2, - 10 * k );
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( k === 0 ) return 0;
-			if ( k === 1 ) return 1;
-			if ( ( k *= 2 ) < 1 ) return 0.5 * Math.pow( 1024, k - 1 );
-			return 0.5 * ( - Math.pow( 2, - 10 * ( k - 1 ) ) + 2 );
-
-		}
-
-	},
-
-	Circular: {
-
-		In: function ( k ) {
-
-			return 1 - Math.sqrt( 1 - k * k );
-
-		},
-
-		Out: function ( k ) {
-
-			return Math.sqrt( 1 - ( --k * k ) );
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( ( k *= 2 ) < 1) return - 0.5 * ( Math.sqrt( 1 - k * k) - 1);
-			return 0.5 * ( Math.sqrt( 1 - ( k -= 2) * k) + 1);
-
-		}
-
-	},
-
-	Elastic: {
-
-		In: function ( k ) {
-
-			var s, a = 0.1, p = 0.4;
-			if ( k === 0 ) return 0;
-			if ( k === 1 ) return 1;
-			if ( !a || a < 1 ) { a = 1; s = p / 4; }
-			else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-			return - ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
-
-		},
-
-		Out: function ( k ) {
-
-			var s, a = 0.1, p = 0.4;
-			if ( k === 0 ) return 0;
-			if ( k === 1 ) return 1;
-			if ( !a || a < 1 ) { a = 1; s = p / 4; }
-			else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-			return ( a * Math.pow( 2, - 10 * k) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) + 1 );
-
-		},
-
-		InOut: function ( k ) {
-
-			var s, a = 0.1, p = 0.4;
-			if ( k === 0 ) return 0;
-			if ( k === 1 ) return 1;
-			if ( !a || a < 1 ) { a = 1; s = p / 4; }
-			else s = p * Math.asin( 1 / a ) / ( 2 * Math.PI );
-			if ( ( k *= 2 ) < 1 ) return - 0.5 * ( a * Math.pow( 2, 10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) );
-			return a * Math.pow( 2, -10 * ( k -= 1 ) ) * Math.sin( ( k - s ) * ( 2 * Math.PI ) / p ) * 0.5 + 1;
-
-		}
-
-	},
-
-	Back: {
-
-		In: function ( k ) {
-
-			var s = 1.70158;
-			return k * k * ( ( s + 1 ) * k - s );
-
-		},
-
-		Out: function ( k ) {
-
-			var s = 1.70158;
-			return --k * k * ( ( s + 1 ) * k + s ) + 1;
-
-		},
-
-		InOut: function ( k ) {
-
-			var s = 1.70158 * 1.525;
-			if ( ( k *= 2 ) < 1 ) return 0.5 * ( k * k * ( ( s + 1 ) * k - s ) );
-			return 0.5 * ( ( k -= 2 ) * k * ( ( s + 1 ) * k + s ) + 2 );
-
-		}
-
-	},
-
-	Bounce: {
-
-		In: function ( k ) {
-
-			return 1 - TWEEN.Easing.Bounce.Out( 1 - k );
-
-		},
-
-		Out: function ( k ) {
-
-			if ( k < ( 1 / 2.75 ) ) {
-
-				return 7.5625 * k * k;
-
-			} else if ( k < ( 2 / 2.75 ) ) {
-
-				return 7.5625 * ( k -= ( 1.5 / 2.75 ) ) * k + 0.75;
-
-			} else if ( k < ( 2.5 / 2.75 ) ) {
-
-				return 7.5625 * ( k -= ( 2.25 / 2.75 ) ) * k + 0.9375;
-
-			} else {
-
-				return 7.5625 * ( k -= ( 2.625 / 2.75 ) ) * k + 0.984375;
-
-			}
-
-		},
-
-		InOut: function ( k ) {
-
-			if ( k < 0.5 ) return TWEEN.Easing.Bounce.In( k * 2 ) * 0.5;
-			return TWEEN.Easing.Bounce.Out( k * 2 - 1 ) * 0.5 + 0.5;
-
-		}
-
-	}
-
-};
-
-TWEEN.Interpolation = {
-
-	Linear: function ( v, k ) {
-
-		var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = TWEEN.Interpolation.Utils.Linear;
-
-		if ( k < 0 ) return fn( v[ 0 ], v[ 1 ], f );
-		if ( k > 1 ) return fn( v[ m ], v[ m - 1 ], m - f );
-
-		return fn( v[ i ], v[ i + 1 > m ? m : i + 1 ], f - i );
-
-	},
-
-	Bezier: function ( v, k ) {
-
-		var b = 0, n = v.length - 1, pw = Math.pow, bn = TWEEN.Interpolation.Utils.Bernstein, i;
-
-		for ( i = 0; i <= n; i++ ) {
-			b += pw( 1 - k, n - i ) * pw( k, i ) * v[ i ] * bn( n, i );
-		}
-
-		return b;
-
-	},
-
-	CatmullRom: function ( v, k ) {
-
-		var m = v.length - 1, f = m * k, i = Math.floor( f ), fn = TWEEN.Interpolation.Utils.CatmullRom;
-
-		if ( v[ 0 ] === v[ m ] ) {
-
-			if ( k < 0 ) i = Math.floor( f = m * ( 1 + k ) );
-
-			return fn( v[ ( i - 1 + m ) % m ], v[ i ], v[ ( i + 1 ) % m ], v[ ( i + 2 ) % m ], f - i );
-
-		} else {
-
-			if ( k < 0 ) return v[ 0 ] - ( fn( v[ 0 ], v[ 0 ], v[ 1 ], v[ 1 ], -f ) - v[ 0 ] );
-			if ( k > 1 ) return v[ m ] - ( fn( v[ m ], v[ m ], v[ m - 1 ], v[ m - 1 ], f - m ) - v[ m ] );
-
-			return fn( v[ i ? i - 1 : 0 ], v[ i ], v[ m < i + 1 ? m : i + 1 ], v[ m < i + 2 ? m : i + 2 ], f - i );
-
-		}
-
-	},
-
-	Utils: {
-
-		Linear: function ( p0, p1, t ) {
-
-			return ( p1 - p0 ) * t + p0;
-
-		},
-
-		Bernstein: function ( n , i ) {
-
-			var fc = TWEEN.Interpolation.Utils.Factorial;
-			return fc( n ) / fc( i ) / fc( n - i );
-
-		},
-
-		Factorial: ( function () {
-
-			var a = [ 1 ];
-
-			return function ( n ) {
-
-				var s = 1, i;
-				if ( a[ n ] ) return a[ n ];
-				for ( i = n; i > 1; i-- ) s *= i;
-				return a[ n ] = s;
-
-			};
-
-		} )(),
-
-		CatmullRom: function ( p0, p1, p2, p3, t ) {
-
-			var v0 = ( p2 - p0 ) * 0.5, v1 = ( p3 - p1 ) * 0.5, t2 = t * t, t3 = t * t2;
-			return ( 2 * p1 - 2 * p2 + v0 + v1 ) * t3 + ( - 3 * p1 + 3 * p2 - 2 * v0 - v1 ) * t2 + v0 * t + p1;
-
-		}
-
-	}
-
-};
-
-// UMD (Universal Module Definition)
-( function ( root ) {
-
-	if ( typeof define === 'function' && define.amd ) {
-
-		// AMD
-		define( [], function () {
-			return TWEEN;
-		} );
-
-	} else if ( typeof exports === 'object' ) {
-
-		// Node.js
-		module.exports = TWEEN;
-
-	} else {
-
-		// Global variable
-		root.TWEEN = TWEEN;
-
-	}
-
-} )( this );
 
 },{}],49:[function(_dereq_,module,exports){
 module.exports={
@@ -64973,7 +65067,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":14,"is-function":19,"parse-headers":30,"xtend":77}],76:[function(_dereq_,module,exports){
+},{"global/window":15,"is-function":20,"parse-headers":31,"xtend":77}],76:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof window.DOMParser !== 'undefined') {
@@ -65054,6 +65148,7 @@ module.exports={
   "repository": "aframevr/aframe",
   "license": "MIT",
   "dependencies": {
+    "@tweenjs/tween.js": "^16.8.0",
     "browserify-css": "^0.8.2",
     "debug": "ngokevin/debug#noTimestamp",
     "deep-assign": "^2.0.0",
@@ -65066,7 +65161,6 @@ module.exports={
     "style-attr": "^1.0.2",
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
-    "tween.js": "^15.0.0",
     "webvr-polyfill": "^0.9.35"
   },
   "devDependencies": {
@@ -68846,7 +68940,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":78,"../../constants":119,"../../core/component":128,"../../utils/bind":193,"_process":33}],106:[function(_dereq_,module,exports){
+},{"../../../package":78,"../../constants":119,"../../core/component":128,"../../utils/bind":193,"_process":34}],106:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -70213,7 +70307,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":128,"../core/shader":137,"../lib/three":176,"../utils/":199,"load-bmfont":23,"path":31,"three-bmfont-text":37}],114:[function(_dereq_,module,exports){
+},{"../core/component":128,"../core/shader":137,"../lib/three":176,"../utils/":199,"load-bmfont":24,"path":32,"three-bmfont-text":38}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
@@ -71014,7 +71108,7 @@ module.exports.Component = registerComponent('wasd-controls', {
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
  */
-var TWEEN = _dereq_('tween.js');
+var TWEEN = _dereq_('@tweenjs/tween.js');
 
 var DIRECTIONS = {
   alternate: 'alternate',
@@ -71113,7 +71207,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"tween.js":48}],119:[function(_dereq_,module,exports){
+},{"@tweenjs/tween.js":1}],119:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -71143,7 +71237,7 @@ var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
 var parseProperty = _dereq_('./schema').parseProperty;
 var registerElement = _dereq_('./a-register-element').registerElement;
-var TWEEN = _dereq_('tween.js');
+var TWEEN = _dereq_('@tweenjs/tween.js');
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 var bind = utils.bind;
@@ -71681,7 +71775,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":118,"../lib/three":176,"../utils/":199,"./a-node":126,"./a-register-element":127,"./schema":136,"tween.js":48}],122:[function(_dereq_,module,exports){
+},{"../constants/animation":118,"../lib/three":176,"../utils/":199,"./a-node":126,"./a-register-element":127,"./schema":136,"@tweenjs/tween.js":1}],122:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -73453,7 +73547,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":124,"./a-node":126,"document-register-element":10}],128:[function(_dereq_,module,exports){
+},{"./a-entity":124,"./a-node":126,"document-register-element":11}],128:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -74281,7 +74375,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":194,"debug":7}],131:[function(_dereq_,module,exports){
+},{"../utils/coordinates":194,"debug":8}],131:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -74289,7 +74383,7 @@ var re = _dereq_('../a-register-element');
 var scenes = _dereq_('./scenes');
 var systems = _dereq_('../system').systems;
 var THREE = _dereq_('../../lib/three');
-var TWEEN = _dereq_('tween.js');
+var TWEEN = _dereq_('@tweenjs/tween.js');
 var utils = _dereq_('../../utils/');
 // Require after.
 var AEntity = _dereq_('../a-entity');
@@ -74914,7 +75008,7 @@ function shouldAntiAlias (sceneEl) {
 }
 module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
-},{"../../lib/three":176,"../../utils/":199,"../a-entity":124,"../a-node":126,"../a-register-element":127,"../system":138,"./metaTags":132,"./postMessage":133,"./scenes":134,"./wakelock":135,"tween.js":48}],132:[function(_dereq_,module,exports){
+},{"../../lib/three":176,"../../utils/":199,"../a-entity":124,"../a-node":126,"../a-register-element":127,"../system":138,"./metaTags":132,"./postMessage":133,"./scenes":134,"./wakelock":135,"@tweenjs/tween.js":1}],132:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -76589,7 +76683,7 @@ var shaders = _dereq_('./core/shader').shaders;
 var systems = _dereq_('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = _dereq_('./lib/three');
-var TWEEN = window.TWEEN = _dereq_('tween.js');
+var TWEEN = window.TWEEN = _dereq_('@tweenjs/tween.js');
 
 var pkg = _dereq_('../package');
 
@@ -76609,7 +76703,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 30-06-2017, Commit #16e18f6)');
+console.log('A-Frame Version: 0.6.0 (Date 08-07-2017, Commit #7e2996e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76640,7 +76734,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":78,"./components/index":88,"./core/a-animation":121,"./core/a-assets":122,"./core/a-cubemap":123,"./core/a-entity":124,"./core/a-mixin":125,"./core/a-node":126,"./core/a-register-element":127,"./core/component":128,"./core/geometry":129,"./core/scene/a-scene":131,"./core/scene/scenes":134,"./core/schema":136,"./core/shader":137,"./core/system":138,"./extras/components/":139,"./extras/primitives/":142,"./extras/primitives/getMeshMixin":141,"./extras/primitives/primitives":143,"./geometries/index":165,"./lib/three":176,"./shaders/index":178,"./style/aframe.css":183,"./style/rStats.css":184,"./systems/index":188,"./utils/":199,"present":32,"promise-polyfill":34,"tween.js":48,"webvr-polyfill":63}],175:[function(_dereq_,module,exports){
+},{"../package":78,"./components/index":88,"./core/a-animation":121,"./core/a-assets":122,"./core/a-cubemap":123,"./core/a-entity":124,"./core/a-mixin":125,"./core/a-node":126,"./core/a-register-element":127,"./core/component":128,"./core/geometry":129,"./core/scene/a-scene":131,"./core/scene/scenes":134,"./core/schema":136,"./core/shader":137,"./core/system":138,"./extras/components/":139,"./extras/primitives/":142,"./extras/primitives/getMeshMixin":141,"./extras/primitives/primitives":143,"./geometries/index":165,"./lib/three":176,"./shaders/index":178,"./style/aframe.css":183,"./style/rStats.css":184,"./systems/index":188,"./utils/":199,"@tweenjs/tween.js":1,"present":33,"promise-polyfill":35,"webvr-polyfill":63}],175:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -76737,7 +76831,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":204,"../../vendor/VREffect":205,"three":41,"three/examples/js/BlendCharacter":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],177:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":204,"../../vendor/VREffect":205,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/GLTFLoader":45,"three/examples/js/loaders/MTLLoader":46,"three/examples/js/loaders/OBJLoader":47}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77196,9 +77290,9 @@ function getMaterialData (data) {
 
 },{"../core/shader":137,"../lib/three":176,"../utils/":199}],183:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":4}],184:[function(_dereq_,module,exports){
+},{"browserify-css":5}],184:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":4}],185:[function(_dereq_,module,exports){
+},{"browserify-css":5}],185:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -78209,7 +78303,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":195,"object-assign":25}],195:[function(_dereq_,module,exports){
+},{"./debug":195,"object-assign":26}],195:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -78306,7 +78400,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":33,"debug":7,"object-assign":25}],196:[function(_dereq_,module,exports){
+},{"_process":34,"debug":8,"object-assign":26}],196:[function(_dereq_,module,exports){
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
@@ -78412,7 +78506,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"../lib/three":176,"_process":33}],197:[function(_dereq_,module,exports){
+},{"../lib/three":176,"_process":34}],197:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -78743,7 +78837,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":193,"./coordinates":194,"./debug":195,"./device":196,"./entity":197,"./forceCanvasResizeSafariMobile":198,"./material":200,"./src-loader":201,"./styleParser":202,"./tracked-controls":203,"deep-assign":9,"object-assign":25}],200:[function(_dereq_,module,exports){
+},{"./bind":193,"./coordinates":194,"./debug":195,"./device":196,"./entity":197,"./forceCanvasResizeSafariMobile":198,"./material":200,"./src-loader":201,"./styleParser":202,"./tracked-controls":203,"deep-assign":10,"object-assign":26}],200:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -79090,7 +79184,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":36}],203:[function(_dereq_,module,exports){
+},{"style-attr":37}],203:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 
