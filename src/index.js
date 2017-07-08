@@ -63,7 +63,7 @@ var shaders = require('./core/shader').shaders;
 var systems = require('./core/system').systems;
 // Exports THREE to window so three.js can be used without alteration.
 var THREE = window.THREE = require('./lib/three');
-var TWEEN = window.TWEEN = require('tween.js');
+var TWEEN = window.TWEEN = require('@tweenjs/tween.js');
 
 var pkg = require('../package');
 
