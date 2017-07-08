@@ -3,7 +3,7 @@
 const path = require('path');
 
 const shell = require('shelljs');
-const replace = require('replace');
+const replace = require('replace-in-file');
 
 // Inject `<meta>` tag for Chrome for Android's WebVR Origin Trial:
 // https://webvr.rocks/chrome_for_android#what_is_the_webvr_origin_trial
@@ -26,15 +26,10 @@ shell.cp('-r', [
 ], 'gh-pages');
 
 function htmlReplace (before, after) {
-  replace({
-    regex: before,
-    replacement: after,
-    paths: [
-      'gh-pages'
-    ],
-    include: '*.html',
-    recursive: true,
-    silent: true
+  replace.sync({
+    from: before,
+    to: after,
+    files: 'gh-pages/**/*.html'
   });
 }
 
