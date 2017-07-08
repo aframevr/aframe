@@ -76,7 +76,7 @@
     "minifyify": "^7.3.3",
     "mocha": "^3.0.2",
     "mozilla-download": "^1.1.1",
-    "replace": "^0.3.0",
+    "replace-in-file": "^2.5.3",
     "semistandard": "^9.0.0",
     "shelljs": "^0.7.7",
     "shx": "^0.2.2",
