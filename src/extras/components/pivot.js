@@ -17,7 +17,7 @@ registerComponent('pivot', {
     ? {
       x: this.data.x - oldData.x,
       y: this.data.y - oldData.y,
-      z: this.data.z - oldData.z,
+      z: this.data.z - oldData.z
     }
     : this.data;
     var el = this.el;
