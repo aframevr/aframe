@@ -2,7 +2,7 @@
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
  */
-var TWEEN = require('tween.js');
+var TWEEN = require('@tweenjs/tween.js');
 
 var DIRECTIONS = {
   alternate: 'alternate',
