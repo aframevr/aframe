@@ -71696,7 +71696,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
    *   Then converts to hex for the setAttribute
    */
   function getForColorComponent () {
-    from = new THREE.Color(dataFrom);
+    from = new THREE.Color(dataFrom || el.getAttribute(attribute));
     to = new THREE.Color(dataTo);
     partialSetAttribute = function (value) {
       if (attributeSplit.length > 1) {
@@ -76703,7 +76703,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 08-07-2017, Commit #e091884)');
+console.log('A-Frame Version: 0.6.0 (Date 09-07-2017, Commit #074c0ef)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
