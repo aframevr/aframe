@@ -622,6 +622,44 @@ suite('a-animation', function () {
   generateColorAnimationTest('accepts hsl', 'hsl(1, 100%, 100%)', 'hsl(0, 0%, 0%)');
   generateColorAnimationTest('accepts dot notation', 'white', 'black', 'material.color');
 
+  suite('component color animation: `from` is not defined', function () {
+    var attribute = 'color';
+    setup(function (done) {
+      var self = this;
+      var elAttrs = {color: '#ff0000'};
+
+      setupAnimation({
+        attribute: attribute,
+        dur: 1000,
+        fill: 'both',
+        to: 'blue',
+        easing: 'linear'
+      }, function (el, animationEl, startTime) {
+        self.el = el;
+        self.animationEl = animationEl;
+        self.startTime = startTime;
+        done();
+      }, elAttrs);
+    });
+
+    test('start value', function () {
+      assert.equal(this.el.getAttribute(attribute), '#ff0000');
+    });
+
+    test('between value', function () {
+      var color;
+      this.animationEl.tween.update(this.startTime + 500);
+      color = this.el.getAttribute(attribute);
+      assert.isAbove(color, '#0000ff');
+      assert.isBelow(color, '#ff0000');
+    });
+
+    test('finish value', function () {
+      this.animationEl.tween.update(this.startTime + 1000);
+      assert.equal(this.el.getAttribute(attribute), '#0000ff');
+    });
+  });
+
   suite('component color animation: accepts dot notation', function () {
     var attribute = 'material.color';
     setup(function (done) {
