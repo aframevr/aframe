@@ -6,7 +6,7 @@ parent_section: primitives
 ---
 
 The link primitive provides a compact API to define links that resembles
-the <a> traditional tag.
+the traditional `<a>` tag.
 
 ## Attributes
 
