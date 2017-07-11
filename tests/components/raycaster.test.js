@@ -332,6 +332,24 @@ suite('raycaster', function () {
       direction = raycaster.ray.direction;
       assert.equal(direction.y, 1);
     });
+
+    test('applies origin and direction without transformation if worldCoordinates enabled', function () {
+      el.setAttribute('raycaster', 'useWorldCoordinates', true);
+      el.setAttribute('raycaster', 'origin', '1 1 1');
+      el.setAttribute('raycaster', 'direction', '2 2 2');
+      el.setAttribute('position', '5 5 5');
+      el.setAttribute('rotation', '30 45 90');
+      sceneEl.object3D.updateMatrixWorld();  // Normally handled by renderer.
+      component.tick();
+      var origin = raycaster.ray.origin;
+      var direction = raycaster.ray.direction;
+      assert.equal(origin.x, 1);
+      assert.equal(origin.y, 1);
+      assert.equal(origin.z, 1);
+      assert.equal(direction.x, 2);
+      assert.equal(direction.y, 2);
+      assert.equal(direction.z, 2);
+    });
   });
 
   suite('line', function () {

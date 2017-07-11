@@ -27,7 +27,8 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     recursive: {default: true},
-    showLine: {default: false}
+    showLine: {default: false},
+    useWorldCoordinates: {default: false}
   },
 
   init: function () {
@@ -225,6 +226,11 @@ module.exports.Component = registerComponent('raycaster', {
     return function updateOriginDirection () {
       var el = this.el;
       var data = this.data;
+
+      if (data.useWorldCoordinates) {
+        this.raycaster.set(data.origin, data.direction);
+        return;
+      }
 
       // Grab the position and rotation.
       el.object3D.updateMatrixWorld();

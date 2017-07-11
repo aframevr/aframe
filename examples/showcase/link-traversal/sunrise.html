@@ -6,12 +6,13 @@
     <meta name="description" content="Links – A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="js/components/aframe-tooltip-component.js"></script>
+    <script src="js/components/camera-position.js"></script>
     <script src="js/components/ground.js"></script>
     <script src="js/components/link-controls.js"></script>
     <script src="shaders/skyGradient.js"></script>
   </head>
   <body>
-    <a-scene fog="color: #bc483e; near: 0; far: 65;">
+    <a-scene fog="color: #241417; near: 0; far: 30;" raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse" camera-position>
       <a-assets>
         <img id="thumbHome" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/home.png">
         <img id="thumbCity" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/city.png">
