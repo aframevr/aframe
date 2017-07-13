@@ -58156,48 +58156,48 @@ module.exports={
   "_args": [
     [
       {
-        "raw": "webvr-polyfill@^0.9.35",
+        "raw": "webvr-polyfill@^0.9.36",
         "scope": null,
         "escapedName": "webvr-polyfill",
         "name": "webvr-polyfill",
-        "rawSpec": "^0.9.35",
-        "spec": ">=0.9.35 <0.10.0",
+        "rawSpec": "^0.9.36",
+        "spec": ">=0.9.36 <0.10.0",
         "type": "range"
       },
       "/home/ubuntu/a-frobot/aframe"
     ]
   ],
-  "_from": "webvr-polyfill@>=0.9.35 <0.10.0",
-  "_id": "webvr-polyfill@0.9.35",
+  "_from": "webvr-polyfill@>=0.9.36 <0.10.0",
+  "_id": "webvr-polyfill@0.9.36",
   "_inCache": true,
   "_location": "/webvr-polyfill",
-  "_nodeVersion": "6.3.1",
+  "_nodeVersion": "4.8.4",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/webvr-polyfill-0.9.35.tgz_1498193822556_0.1535588507540524"
+    "tmp": "tmp/webvr-polyfill-0.9.36.tgz_1499892972378_0.10267087002284825"
   },
   "_npmUser": {
     "name": "jsantell",
     "email": "jsantell@gmail.com"
   },
-  "_npmVersion": "3.10.3",
+  "_npmVersion": "2.15.11",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "webvr-polyfill@^0.9.35",
+    "raw": "webvr-polyfill@^0.9.36",
     "scope": null,
     "escapedName": "webvr-polyfill",
     "name": "webvr-polyfill",
-    "rawSpec": "^0.9.35",
-    "spec": ">=0.9.35 <0.10.0",
+    "rawSpec": "^0.9.36",
+    "spec": ">=0.9.36 <0.10.0",
     "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.35.tgz",
-  "_shasum": "5740d7ef41f01234c051ce5298d18b87a532102f",
+  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz",
+  "_shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
   "_shrinkwrap": null,
-  "_spec": "webvr-polyfill@^0.9.35",
+  "_spec": "webvr-polyfill@^0.9.36",
   "_where": "/home/ubuntu/a-frobot/aframe",
   "authors": [
     "Boris Smus <boris@smus.com>",
@@ -58219,10 +58219,10 @@ module.exports={
   },
   "directories": {},
   "dist": {
-    "shasum": "5740d7ef41f01234c051ce5298d18b87a532102f",
-    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.35.tgz"
+    "shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
+    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz"
   },
-  "gitHead": "06801149257ff10fbc66a7fce6bd10d375c003cc",
+  "gitHead": "5f8693a9053ee1dea425e96d14cd1f2bef7a284c",
   "homepage": "https://github.com/googlevr/webvr-polyfill",
   "keywords": [
     "vr",
@@ -58257,7 +58257,7 @@ module.exports={
     "test": "mocha",
     "watch": "webpack-dev-server"
   },
-  "version": "0.9.35"
+  "version": "0.9.36"
 }
 
 },{}],50:[function(_dereq_,module,exports){
@@ -63366,11 +63366,6 @@ FusionPoseSensor.prototype.updateDeviceMotion_ = function(deviceMotion) {
   var rotRate = deviceMotion.rotationRate;
   var timestampS = deviceMotion.timeStamp / 1000;
 
-  // Firefox Android timeStamp returns one thousandth of a millisecond.
-  if (this.isFirefoxAndroid) {
-    timestampS /= 1000;
-  }
-
   var deltaS = timestampS - this.previousTimestampS;
   if (deltaS <= Util.MIN_TIMESTEP || deltaS > Util.MAX_TIMESTEP) {
     console.warn('Invalid timestamps detected. Time step between successive ' +
@@ -65161,7 +65156,7 @@ module.exports={
     "style-attr": "^1.0.2",
     "three": "^0.84.0",
     "three-bmfont-text": "^2.1.0",
-    "webvr-polyfill": "^0.9.35"
+    "webvr-polyfill": "^0.9.36"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -76703,7 +76698,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 09-07-2017, Commit #074c0ef)');
+console.log('A-Frame Version: 0.6.0 (Date 13-07-2017, Commit #e8c6f7b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
