@@ -3,6 +3,7 @@ title: <a-text>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/a-text.js
 ---
 
 [text]: ../components/text.md

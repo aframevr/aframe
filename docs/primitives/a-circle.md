@@ -3,6 +3,7 @@ title: <a-circle>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The circle primitive creates circles surfaces using the [geometry][geometry]

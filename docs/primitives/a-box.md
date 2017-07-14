@@ -6,6 +6,7 @@ layout: docs
 parent_section: docs
 order: 1
 section_order: 5
+source: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The box primitive creates shapes such as boxes, cubes, or walls.

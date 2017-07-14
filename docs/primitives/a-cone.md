@@ -3,6 +3,7 @@ title: <a-cone>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The cone primitive creates a cone shape.

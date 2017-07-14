@@ -3,6 +3,7 @@ title: hand-controls
 type: components
 layout: docs
 parent_section: components
+source: src/components/hand-controls.js
 ---
 
 [tracked]: ./tracked-controls.md

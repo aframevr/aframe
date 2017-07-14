@@ -3,6 +3,7 @@ title: pool
 type: components
 layout: docs
 parent_section: components
+source: src/components/scene/pool.js
 ---
 
 The pool component allows for [object

@@ -3,6 +3,7 @@ title: <a-camera>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/a-camera.js
 ---
 
 The camera primitive determines what the user sees. We can change the viewport

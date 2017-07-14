@@ -3,6 +3,7 @@ title: <a-collada-model>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/a-collada-model.js
 ---
 
 The COLLADA model primitive displays a 3D COLLADA model created from a 3D

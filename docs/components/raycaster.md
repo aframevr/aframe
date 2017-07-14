@@ -3,6 +3,7 @@ title: raycaster
 type: components
 layout: docs
 parent_section: components
+source: src/components/raycaster.js
 ---
 
 [3ray]: http://threejs.org/docs/#Reference/Core/Raycaster

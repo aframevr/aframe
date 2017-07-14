@@ -4,6 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 9
+source: src/core/a-assets.js
 ---
 
 A-Frame has an asset management system that allows us to place our assets in

@@ -3,6 +3,7 @@ title: <a-cylinder>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The cylinder primitive is used to create tubes and curved surfaces.
