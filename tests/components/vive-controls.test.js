@@ -8,7 +8,6 @@ suite('vive-controls', function () {
 
   setup(function (done) {
     el = entityFactory();
-    el.setAttribute('vive-controls', 'hand: right');  // To ensure index = 0.
     el.addEventListener('componentinitialized', function (evt) {
       if (evt.detail.name !== 'vive-controls') { return; }
       component = el.components['vive-controls'];
@@ -18,6 +17,7 @@ suite('vive-controls', function () {
       controlsSystem = el.sceneEl.systems['tracked-controls'];
       done();
     });
+    el.setAttribute('vive-controls', 'hand: right; model: false');  // To ensure index = 0.
   });
 
   suite('checkIfControllerPresent', function () {
@@ -206,6 +206,7 @@ suite('vive-controls', function () {
         assert.ok(el.getObject3D('mesh'));
         done();
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
   });
@@ -218,6 +219,7 @@ suite('vive-controls', function () {
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         done();
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -228,6 +230,7 @@ suite('vive-controls', function () {
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         done();
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -240,6 +243,7 @@ suite('vive-controls', function () {
         assert.equal(new THREE.Color(color).getHexString(), 'fafafa');
         done();
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -253,6 +257,7 @@ suite('vive-controls', function () {
           done();
         });
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -267,6 +272,7 @@ suite('vive-controls', function () {
           done();
         });
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -280,6 +286,7 @@ suite('vive-controls', function () {
           done();
         });
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -293,6 +300,7 @@ suite('vive-controls', function () {
           done();
         });
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
 
@@ -306,6 +314,7 @@ suite('vive-controls', function () {
           done();
         });
       });
+      component.data.model = true;
       component.injectTrackedControls();
     });
   });
