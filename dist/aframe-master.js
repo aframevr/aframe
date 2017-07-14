@@ -73582,6 +73582,8 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.attrName = this.name + (id ? '__' + id : '');
   this.initialized = false;
   this.el.components[this.attrName] = this;
+  // Store component data from previous update call.
+  this.oldData = undefined;
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
   this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
@@ -73773,8 +73775,8 @@ Component.prototype = {
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
     var isSinglePropSchema;
-    var oldData;
     var skipTypeChecking;
+    var oldData = this.oldData;
 
     // Just cache the attribute if the entity has not loaded
     // Components are not initialized until the entity has loaded
@@ -73784,10 +73786,8 @@ Component.prototype = {
     }
 
     isSinglePropSchema = isSingleProp(this.schema);
-    // Copy old data since this.data is going to be recreated.
-    oldData = extendProperties({}, this.data, isSinglePropSchema);
     // Disable type checking if the passed attribute is an object and has not changed.
-    skipTypeChecking = typeof this.previousAttrValue === 'object' &&
+    skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
                        attrValue === this.previousAttrValue;
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
@@ -73808,9 +73808,14 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
-      // Play the component if the entity is playing.
+      // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
+      // undefined is passed to the rest of types.
+      oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
       this.update(oldData);
+      // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
+      // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       el.emit('componentinitialized', {
         id: this.id,
         name: this.name,
@@ -73818,8 +73823,9 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (!skipTypeChecking && utils.deepEqual(oldData, this.data)) { return; }
-
+      if (!skipTypeChecking && utils.deepEqual(this.oldData, this.data)) { return; }
+     // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.
       this.update(oldData);
       // Limit event to fire once every 200ms.
@@ -73891,10 +73897,12 @@ Component.prototype = {
 
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
-      data = schema.default;
+      // Clone default value if object so components don't share object.
+      data = typeof schema.default === 'object' ? utils.extend({}, schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
+      // Clone default value if object so components don't share object
       data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
       Object.keys(schema).forEach(function applyDefault (key) {
         var defaultValue = schema[key].default;
@@ -74025,7 +74033,7 @@ module.exports.registerComponent = function (name, definition) {
 * @returns Overridden object or value.
 */
 function extendProperties (dest, source, isSinglePropSchema) {
-  if (isSinglePropSchema) { return source; }
+  if (isSinglePropSchema && (source === null || typeof source !== 'object')) { return source; }
   return utils.extend(dest, source);
 }
 
@@ -76698,7 +76706,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 13-07-2017, Commit #e8c6f7b)');
+console.log('A-Frame Version: 0.6.0 (Date 14-07-2017, Commit #d6d6201)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78690,7 +78698,7 @@ function deepEqual (a, b) {
   var valB;
 
   // If not objects or arrays, compare as values.
-  if (a === null || b === null ||
+  if (a === undefined || b === undefined || a === null || b === null ||
       !(a && b && (a.constructor === Object && b.constructor === Object) ||
                   (a.constructor === Array && b.constructor === Array))) {
     return a === b;
@@ -78730,6 +78738,7 @@ module.exports.deepEqual = deepEqual;
 module.exports.diff = function (a, b) {
   var diff = {};
   var keys = Object.keys(a);
+  if (!b) { return diff; }
   Object.keys(b).forEach(function collectKeys (bKey) {
     if (keys.indexOf(bKey) === -1) {
       keys.push(bKey);
