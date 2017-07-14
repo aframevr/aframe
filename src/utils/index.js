@@ -127,7 +127,7 @@ function deepEqual (a, b) {
   var valB;
 
   // If not objects or arrays, compare as values.
-  if (a === null || b === null ||
+  if (a === undefined || b === undefined || a === null || b === null ||
       !(a && b && (a.constructor === Object && b.constructor === Object) ||
                   (a.constructor === Array && b.constructor === Array))) {
     return a === b;
@@ -167,6 +167,7 @@ module.exports.deepEqual = deepEqual;
 module.exports.diff = function (a, b) {
   var diff = {};
   var keys = Object.keys(a);
+  if (!b) { return diff; }
   Object.keys(b).forEach(function collectKeys (bKey) {
     if (keys.indexOf(bKey) === -1) {
       keys.push(bKey);

@@ -133,5 +133,11 @@ suite('utils.objects', function () {
       assert.notOk(deepEqual(document.createElement('a-entity'),
                              document.createElement('a-entity')));
     });
+
+    test('can compare if any of the arguments is undefined', function () {
+      assert.notOk(deepEqual(undefined, {a: 1, b: 2}));
+      assert.notOk(deepEqual({a: 1, b: 2}, undefined));
+      assert.ok(deepEqual(undefined, undefined));
+    });
   });
 });

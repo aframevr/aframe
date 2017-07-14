@@ -422,7 +422,6 @@ suite('tracked-controls', function () {
       delete controller.pose.position;
     });
 
-    el = entityFactory();
     test('if armModel false, do not apply', function () {
       var applyArmModelSpy = this.sinon.spy(component, 'applyArmModel');
       component.data.armModel = false;

@@ -16,13 +16,11 @@ suite('text', function () {
     });
 
     el = entityFactory();
-
-    this.doneCalled = false;
-    el.addEventListener('componentinitialized', evt => {
-      if (this.doneCalled) { return; }
-      if (evt.detail.name !== 'text') { return; }
+    var fontSet = false;
+    el.addEventListener('textfontset', function () {
+      if (fontSet) { return; }
+      fontSet = true;
       component = el.components.text;
-      this.doneCalled = true;
       done();
     });
     el.setAttribute('text', '');
@@ -38,7 +36,7 @@ suite('text', function () {
   });
 
   suite('multiple', function () {
-    test('can have multiple instances', function () {
+    test('can have multiple instances', () => {
       el.setAttribute('text__foo', {value: 'foo'});
       el.setAttribute('text__bar', {value: 'bar'});
       el.setAttribute('text__baz', {value: 'baz'});

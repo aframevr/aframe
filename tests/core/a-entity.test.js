@@ -153,6 +153,7 @@ suite('a-entity', function () {
       entity.addEventListener('loaded', function () {
         assert.ok(entityChild1.hasLoaded);
         assert.ok(entityChild2.hasLoaded);
+        document.body.removeChild(scene);
         done();
       });
     });
@@ -199,6 +200,7 @@ suite('a-entity', function () {
       el.addEventListener('loaded', function () {
         assert.ok(assetsEl.hasLoaded);
         assert.ok(el.hasLoaded);
+        document.body.removeChild(sceneEl);
         done();
       });
       ANode.prototype.load.call(assetsEl);
@@ -1098,7 +1100,7 @@ suite('a-entity', function () {
 
         update: function (oldData) {
           var data = this.data;
-          if (Object.keys(oldData).length) {
+          if (oldData && Object.keys(oldData).length) {
             // Second update via setAttribute.
             assert.equal(data.foo, 10);
             assert.equal(data.bar, 'orange');
