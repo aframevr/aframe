@@ -3,6 +3,7 @@ title: <a-plane>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 [geometry]: ../components/geometry.md

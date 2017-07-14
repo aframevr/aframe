@@ -3,6 +3,7 @@ title: <a-sky>
 type: primitives
 layout: docs
 parent_section: primitives
+source: src/extras/primitives/primitives/a-sky.js
 ---
 
 The sky primitive adds a background color or 360&deg; image to a scene.  A sky

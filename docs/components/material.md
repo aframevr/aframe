@@ -3,6 +3,7 @@ title: material
 type: components
 layout: docs
 parent_section: components
+source: src/components/material.js
 ---
 
 [fog]: ./fog.md
@@ -429,7 +430,7 @@ AFRAME.registerComponent('material-grid-glitch', {
    */
   init: function () {
     const data = this.data;
-  
+
     this.material  = new THREE.ShaderMaterial({
       uniforms: {
         time: { value: 0.0 },
@@ -450,7 +451,7 @@ AFRAME.registerComponent('material-grid-glitch', {
   update: function () {
     this.material.uniforms.color.value.set(this.data.color);
   },
-    
+
   /**
    * Apply the material to the current entity.
    */
@@ -467,7 +468,7 @@ AFRAME.registerComponent('material-grid-glitch', {
   tick: function (t) {
     this.material.uniforms.time.value = t / 1000;
   }
-  
+
 })
 ```
 
@@ -497,7 +498,7 @@ void main() {
   //    (a) Dynamic color where 'R' and 'B' channels come
   //        from a modulus of the UV coordinates.
   //    (b) Base color.
-  // 
+  //
   // The color itself is a vec4 containing RGBA values 0-1.
   gl_FragColor = mix(
     vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),

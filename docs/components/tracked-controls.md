@@ -3,6 +3,7 @@ title: tracked-controls
 type: components
 layout: docs
 parent_section: components
+source: src/components/tracked-controls.js
 ---
 
 [handcontrols]: ./hand-controls.md
@@ -23,7 +24,7 @@ positional data.
 ## Example
 
 Note that due to recent browser-specific changes, Vive controllers may be returned
-by the Gamepad API with id values of either "OpenVR Gamepad" or "OpenVR Controller", 
+by the Gamepad API with id values of either "OpenVR Gamepad" or "OpenVR Controller",
 so using idPrefix for Vive / OpenVR controllers is recommended.
 
 ```html

@@ -4,6 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 10
+source: src/index.js
 ---
 
 A-Frame exposes its public interface through the `window.AFRAME` browser

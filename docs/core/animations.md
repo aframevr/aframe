@@ -4,9 +4,10 @@ type: core
 layout: docs
 parent_section: core
 order: 6
+source: src/core/a-animation.js
 ---
 
-> Also Check out the
+> Also check out the
 > [aframe-animation-component](https://github.com/ngokevin/kframe/tree/master/components/animation/)
 
 We can add animations in A-Frame attaching an `<a-animation>` element as a

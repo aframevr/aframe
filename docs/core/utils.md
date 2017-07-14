@@ -4,6 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 11
+source: src/utils/index.js
 ---
 
 A-Frame's utility modules are public through `AFRAME.utils`.
