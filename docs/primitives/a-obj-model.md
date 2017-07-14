@@ -3,7 +3,7 @@ title: <a-obj-model>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-obj-model.js
+source_code: src/extras/primitives/primitives/a-obj-model.js
 ---
 
 > We recommend glTF for distributing assets in production over the web. Check

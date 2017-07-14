@@ -3,7 +3,7 @@ title: scale
 type: components
 layout: docs
 parent_section: components
-source: src/components/scale.js
+source_code: src/components/scale.js
 ---
 
 The scale component defines a shrinking, stretching, or skewing transformation

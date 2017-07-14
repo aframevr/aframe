@@ -3,7 +3,7 @@ title: shadow
 type: components
 layout: docs
 parent_section: components
-source: src/components/shadow.js
+source_code: src/components/shadow.js
 ---
 
 The shadow component enables shadows for an entity and its children. Receiving

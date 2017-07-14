@@ -3,7 +3,7 @@ title: <a-light>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-light.js
+source_code: src/extras/primitives/primitives/a-light.js
 ---
 
 A light changes the lighting and shading of the scene.

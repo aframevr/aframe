@@ -3,7 +3,7 @@ title: text
 type: components
 layout: docs
 parent_section: components
-source: src/components/text.js
+source_code: src/components/text.js
 ---
 
 The text component renders signed distance field (SDF) font text.

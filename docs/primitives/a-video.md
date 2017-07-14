@@ -3,7 +3,7 @@ title: <a-video>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-video.js
+source_code: src/extras/primitives/primitives/a-video.js
 ---
 
 The video primitive plays a video as a texture on a flat plane.

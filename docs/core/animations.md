@@ -4,7 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 6
-source: src/core/a-animation.js
+source_code: src/core/a-animation.js
 ---
 
 > Also check out the

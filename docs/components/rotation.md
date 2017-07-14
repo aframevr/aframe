@@ -3,7 +3,7 @@ title: rotation
 type: components
 layout: docs
 parent_section: components
-source: src/components/rotation.js
+source_code: src/components/rotation.js
 ---
 
 The rotation component defines the orientation of an entity. It takes the roll

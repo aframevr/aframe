@@ -3,7 +3,7 @@ title: <a-tetrahedron>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/meshPrimitives.js
+source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 ## Example

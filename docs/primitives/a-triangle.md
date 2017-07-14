@@ -3,7 +3,7 @@ title: <a-triangle>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/meshPrimitives.js
+source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The triangle primitive creates triangle surfaces using the [geometry][geometry]

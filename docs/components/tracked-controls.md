@@ -3,7 +3,7 @@ title: tracked-controls
 type: components
 layout: docs
 parent_section: components
-source: src/components/tracked-controls.js
+source_code: src/components/tracked-controls.js
 ---
 
 [handcontrols]: ./hand-controls.md

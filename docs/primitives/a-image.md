@@ -3,7 +3,7 @@ title: <a-image>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-image.js
+source_code: src/extras/primitives/primitives/a-image.js
 ---
 
 The image primitive shows an image on a flat plane.

@@ -3,7 +3,7 @@ title: camera
 type: components
 layout: docs
 parent_section: components
-source: src/components/camera.js
+source_code: src/components/camera.js
 ---
 
 The camera component defines from which perspective the user views the scene.

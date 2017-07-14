@@ -4,7 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 3
-source: src/core/component.js
+source_code: src/core/component.js
 ---
 
 [componentguide]: ../guides/writing-an-aframe-component.md

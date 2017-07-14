@@ -3,7 +3,7 @@ title: <a-cursor>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-cursor.js
+source_code: src/extras/primitives/primitives/a-cursor.js
 ---
 
 The cursor primitive is a reticle that allows for clicking and basic

@@ -3,7 +3,7 @@ title: <a-curvedimage>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-curvedimage.js
+source_code: src/extras/primitives/primitives/a-curvedimage.js
 ---
 
 
