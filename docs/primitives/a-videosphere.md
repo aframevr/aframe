@@ -3,7 +3,7 @@ title: <a-videosphere>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-videopshere.js
+source: src/extras/primitives/primitives/a-videosphere.js
 ---
 
 The videosphere primitive plays 360&deg; videos in the background of the scene.
