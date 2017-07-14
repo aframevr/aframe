@@ -4,7 +4,7 @@ type: core
 layout: docs
 parent_section: core
 order: 5
-source: src/core/scene/a-scene.js
+source_code: src/core/scene/a-scene.js
 ---
 
 [entity]: ./entity.md

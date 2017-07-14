@@ -3,7 +3,7 @@ title: <a-gltf-model>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-gltf-model.js
+source_code: src/extras/primitives/primitives/a-gltf-model.js
 ---
 
 The glTF model primitive displays a 3D glTF model created from a 3D

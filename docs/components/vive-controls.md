@@ -3,7 +3,7 @@ title: vive-controls
 type: components
 layout: docs
 parent_section: components
-source: src/components/vive-controls.js
+source_code: src/components/vive-controls.js
 ---
 
 [trackedcontrols]: ./tracked-controls.md

@@ -3,7 +3,7 @@ title: material
 type: components
 layout: docs
 parent_section: components
-source: src/components/material.js
+source_code: src/components/material.js
 ---
 
 [fog]: ./fog.md

@@ -3,7 +3,7 @@ title: keyboard-shortcuts
 type: components
 layout: docs
 parent_section: components
-source: src/components/scene/keyboard-shortcuts.js
+source_code: src/components/scene/keyboard-shortcuts.js
 ---
 
 [scene]: ../core/scene.md

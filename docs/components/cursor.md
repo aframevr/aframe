@@ -3,7 +3,7 @@ title: cursor
 type: components
 layout: docs
 parent_section: components
-source: src/components/cursor.js
+source_code: src/components/cursor.js
 ---
 
 [a-cursor]: ../primitives/a-cursor.md

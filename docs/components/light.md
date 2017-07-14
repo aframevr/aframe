@@ -3,7 +3,7 @@ title: light
 type: components
 layout: docs
 parent_section: components
-source: src/components/light.js
+source_code: src/components/light.js
 ---
 
 The light component defines the entity as a source of light. Light affects all

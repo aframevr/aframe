@@ -3,7 +3,7 @@ title: oculus-touch-controls
 type: components
 layout: docs
 parent_section: components
-source: src/components/oculus-touch-controls.js
+source_code: src/components/oculus-touch-controls.js
 ---
 
 [trackedcontrols]: ./tracked-controls.md

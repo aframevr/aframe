@@ -3,7 +3,7 @@ title: position
 type: components
 layout: docs
 parent_section: components
-source: src/components/position.js
+source_code: src/components/position.js
 ---
 
 The position component places entities at certain spots in 3D space. Position

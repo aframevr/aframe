@@ -3,7 +3,7 @@ title: <a-link>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/a-link.js
+source_code: src/extras/primitives/primitives/a-link.js
 ---
 
 The link primitive provides a compact API to define links that resembles

@@ -3,7 +3,7 @@ title: <a-sphere>
 type: primitives
 layout: docs
 parent_section: primitives
-source: src/extras/primitives/primitives/meshPrimitives.js
+source_code: src/extras/primitives/primitives/meshPrimitives.js
 ---
 
 The sphere primitive creates a spherical or polyhedron shapes. It wraps an entity that prescribes the [geometry component](../components/geometry.md) with its geometric primitive set to `sphere`.
