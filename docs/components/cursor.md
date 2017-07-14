@@ -13,9 +13,10 @@ source_code: src/components/cursor.js
 The cursor component provides hover and click states for interaction on top of
 the [raycaster component][raycaster]. The cursor component can be used for
 both gaze-based and controller-based interactions, but the appearance needs
-to be configured depending on the use case. The [`<a-cursor>` primitive] provides
-a default reticle appearance for a gaze-based cursor, and the [laser-controls
-component] configures the cursor for all controllers.
+to be configured depending on the use case. The [`<a-cursor>`
+primitive][a-cursor] provides a default reticle appearance for a gaze-based
+cursor, and the [laser-controls component][laser-controls] configures the
+cursor for all controllers.
 
 The cursor component listens to events and keeps state on what's being hovered
 and pressed in order to provide `mousedown`, `mouseup`, `mouseenter`,
