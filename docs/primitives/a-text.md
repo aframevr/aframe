@@ -41,3 +41,7 @@ Wraps the [text component][text].
 | wrap-count     | text.wrapCount     |
 | wrap-pixels    | text.wrapPixels    |
 | z-offset       | text.zOffset       |
+
+## Limitations
+
+The generated text is not suitable for cursor or raycaster detection. Please add a geometry component.
