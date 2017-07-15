@@ -21,19 +21,19 @@ installation: true
 originators of WebVR, the [Mozilla VR team][mozvr] developed A-Frame to be the
 easiest as well as the most powerful way to develop WebVR content. As a [fully
 open project](https://github.com/aframevr/), A-Frame has grown to be one of the
-[largest and welcoming VR communities](https://aframe.io/community/).
+[largest and most welcoming VR communities](https://aframe.io/community/).
 
 A-Frame is based on top of HTML, making it simple to get started. But A-Frame
-is not just a 3D scene graph nor a markup language; the core is a powerful
-entity-component framework that provides an declarative, extensible, and
+is not just a 3D scene graph or a markup language; the core is a powerful
+entity-component framework that provides a declarative, extensible, and
 composable structure to [three.js].
 
 A-Frame supports most VR headsets such as Vive, Rift, Daydream, GearVR,
 Cardboard, and can even be used for augmented reality. Although A-Frame
-supports the whole spectrum, A-Frame aims to define fully immersive and
-interactive VR experiences with positional tracking and controllers that goes
-beyond basic 360&deg; content. The Mozilla VR team is currently using A-Frame
-as the foundations for a Metaverse-in-progress.
+supports the whole spectrum, A-Frame aims to define fully immersive
+interactive VR experiences that go beyond basic 360&deg; content, making 
+full use of positional tracking and controllers. The Mozilla VR team is 
+currently using A-Frame as the foundation for a Metaverse-in-progress.
 
 <div class="docs-introduction-examples">
   <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
@@ -61,7 +61,7 @@ as the foundations for a Metaverse-in-progress.
 [glitch]: http://glitch.com/~aframe
 
 A-Frame can be developed from a plain HTML file without having to install
-anything! A great way to try out A-Frame to **[remix the starter example on
+anything! A great way to try out A-Frame is to **[remix the starter example on
 Glitch][glitch]**, an online code editor that instantly hosts and deploys for
 free. Or create an `.html` file and include A-Frame in the `<head>`:
 
@@ -108,7 +108,7 @@ works on standard desktop and smartphones.
 
 :electric_plug: **Entity-Component Architecture**: A-Frame is a powerful
 [three.js] framework, providing a declarative, composable, reusable
-[entity-component structure][ecs].js. HTML is just the tip of the iceberg;
+[entity-component structure][ecs]. HTML is just the tip of the iceberg;
 developers have unlimited access to JavaScript, DOM APIs, three.js, WebVR, and
 WebGL.
 
@@ -129,7 +129,7 @@ clone built in A-Frame that runs like native (90+ FPS).
 [Ember.js]: https://www.emberjs.com/
 [jQuery]: http://jquery.com/download/
 
-:hammer: **Tool Agnostic**: Since the Web was built on the notion of the HTML,
+:hammer: **Tool Agnostic**: Since the Web was built on the notion of HTML,
 A-Frame is compatible with most libraries, frameworks, and tools including
 [React], [Preact], [Vue.js], [Angular], [d3.js], [Ember.js], [jQuery].
 
@@ -137,7 +137,7 @@ A-Frame is compatible with most libraries, frameworks, and tools including
 
 :mag: **Visual Inspector**: A-Frame provides a handy built-in [visual 3D
 inspector][inspector]. Open up *any* A-Frame scene, hit `<ctrl> + <alt> + i`,
-and fly around to peek behind the hood!
+and fly around to peek under the hood!
 
 ![Inspector](https://cloud.githubusercontent.com/assets/674727/25377018/27be9cce-295b-11e7-9098-3e85ac1fe172.gif)
 
