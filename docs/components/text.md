@@ -243,6 +243,8 @@ Bitmap font rendering limits you to the characters included in the font
 (*Unicode this is not*). SDF font rendering tends to produce smooth sharp edges
 [though there are ways around this][sdfsmooth].
 
+The generated text is not suitable for raycaster intersection testing. For raycaster or cursor detection it is necessary to use a geometry component along with the text component.
+
 ## Further Reading
 
 If you are curious about the details of text rendering in WebGL, three.js, and
