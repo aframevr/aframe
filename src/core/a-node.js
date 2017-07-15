@@ -1,5 +1,6 @@
 /* global MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
+var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
 
 var bind = utils.bind;
@@ -101,8 +102,7 @@ module.exports = registerElement('a-node', {
         if (this.hasLoaded) { return; }
 
         // Default to waiting for all nodes.
-        childFilter = childFilter || function (el) { return el.isNode; };
-
+        childFilter = childFilter || isNode;
         // Wait for children to load (if any), then load.
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
