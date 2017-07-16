@@ -6,8 +6,8 @@ parent_section: introduction
 order: 2
 ---
 
-This installation section will show several ways to get started with A-Frame.
-Although many of the ways don't require any actual installation since A-Frame
+This installation section offers several ways to get started with A-Frame,
+although most methods don't require any actual installation since A-Frame
 is primarily HTML and JavaScript.
 
 <!--toc-->
@@ -22,7 +22,7 @@ The fastest way to start playing from within the browser.
 
 [glitch]: https://glitch.com/~aframe
 
-[Glitch][glitch] provides an online code editor with instant deploying and
+[Glitch][glitch] provides an online code editor with instant deployment and
 hosting of web sites. The editor supports both front-end and back-end code as
 well as multiple files and directories. Glitch lets us remix (i.e., copy)
 existing projects and make them our own and instantly host and deploy changes
@@ -30,7 +30,7 @@ for everyone to see.
 
 [Hit **Remix** on this A-Frame project][glitch], mess with the HTML in
 `index.html`, and see your site published live on each change! The base A-Frame
-Glitch for example is published at `aframe.glitch.me`, but we will provide your
+Glitch, for example, is published at `aframe.glitch.me`, but we will provide your
 own custom URL name.
 
 Below are a few other A-Frame Glitches for starters:
@@ -43,7 +43,7 @@ Below are a few other A-Frame Glitches for starters:
 
 ### Other Code Editors
 
-Below are a couple other A-Frame starter kits on other browser-based code
+Below are a couple A-Frame starter kits on other browser-based code
 editors. Both support remixing or forking:
 
 - [Mozilla Thimble &mdash; A-Frame](https://thimble.mozilla.org/en-US/user/ngokevin/864056)
@@ -57,7 +57,7 @@ For the options below, we should develop projects using a local server so that
 files are properly served. Options of local servers include:
 
 - Downloading the [Mongoose](https://www.cesanta.com/products/binary) application
-  and open it from the same directory as your HTML file.
+  and opening it from the same directory as your HTML file.
 - Running `python -m SimpleHTTPServer` in a terminal in the same directory as your
   HTML file.
 - Running `npm install -g live-server && live-server` in a terminal in the same
@@ -87,7 +87,7 @@ We can grab the boilerplate in one of two ways:
 
 ### Include the JS Build
 
-To include A-Frame into an HTML file, we drop a `<script>` tag pointing to the
+To include A-Frame in an HTML file, we drop a `<script>` tag pointing to the
 CDN build:
 
 ```html
