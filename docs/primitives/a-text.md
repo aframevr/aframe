@@ -14,10 +14,6 @@ Wraps the [text component][text].
 
 ```html
 <a-text value="Hello, World!"></a-text>
-
-<!-- for interactivity add geometry -->
-
-<a-text value="click me!" geometry="primitive:plane"></a-text>
 ```
 
 ## Attributes
@@ -49,3 +45,7 @@ Wraps the [text component][text].
 ## Limitations
 
 To interact with the text via raycaster or cursor, we need to add geometry like a plane to the text.
+
+```html
+<a-text value="Now Interactable" geometry="primitive:plane"></a-text>
+```
