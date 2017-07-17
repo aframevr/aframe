@@ -41,3 +41,11 @@ Wraps the [text component][text].
 | wrap-count     | text.wrapCount     |
 | wrap-pixels    | text.wrapPixels    |
 | z-offset       | text.zOffset       |
+
+## Limitations
+
+To interact with the text via raycaster or cursor, we need to add geometry like a plane to the text.
+
+```html
+<a-text value="Now Interactable" geometry="primitive:plane"></a-text>
+```
