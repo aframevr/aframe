@@ -674,6 +674,26 @@ suite('Component', function () {
       assert.deepEqual(updateStub.getCalls()[1].args[0], {x: 1, y: 1, z: 1});
       assert.deepEqual(el.components.dummy.data, {x: 2, y: 2, z: 2});
     });
+
+    test('oldData and data is properly passed on recursive calls to setAttribute', function () {
+      var el = this.el;
+      registerComponent('dummy', {
+        schema: {
+          color: {default: 'red'},
+          size: {default: 0}
+        },
+        update: function (oldData) {
+          if (this.data.color === 'red') {
+            this.el.setAttribute('dummy', 'color', 'blue');
+          }
+          if (oldData.color === 'red') {
+            this.el.setAttribute('dummy', 'color', 'green');
+          }
+        }
+      });
+      el.setAttribute('dummy', 'color: red');
+      assert.equal(el.getAttribute('dummy').color, 'green');
+    });
   });
 
   suite('flushToDOM', function () {
