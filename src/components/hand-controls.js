@@ -305,11 +305,11 @@ module.exports.Component = registerComponent('hand-controls', {
 
     // Grab clip action.
     toAction = mesh.mixer.clipAction(gesture);
-    toAction.setDuration(1);
     toAction.clampWhenFinished = true;
     toAction.loop = THREE.PingPong;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
+    toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
@@ -325,7 +325,6 @@ module.exports.Component = registerComponent('hand-controls', {
     fromAction = mesh.mixer.clipAction(lastGesture);
     mesh.mixer.stopAllAction();
     fromAction.weight = 0.15;
-    toAction.weight = 1;
     fromAction.play();
     toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
