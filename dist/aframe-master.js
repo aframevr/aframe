@@ -73107,6 +73107,7 @@ module.exports = registerElement('a-mixin', {
 },{"./a-node":126,"./a-register-element":127,"./component":128}],126:[function(_dereq_,module,exports){
 /* global MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
+var isNode = _dereq_('./a-register-element').isNode;
 var utils = _dereq_('../utils/');
 
 var bind = utils.bind;
@@ -73208,8 +73209,7 @@ module.exports = registerElement('a-node', {
         if (this.hasLoaded) { return; }
 
         // Default to waiting for all nodes.
-        childFilter = childFilter || function (el) { return el.isNode; };
-
+        childFilter = childFilter || isNode;
         // Wait for children to load (if any), then load.
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
@@ -76706,7 +76706,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 17-07-2017, Commit #2a54909)');
+console.log('A-Frame Version: 0.6.0 (Date 17-07-2017, Commit #f5c17e4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
