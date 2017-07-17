@@ -266,11 +266,11 @@ Component.prototype = {
       // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
       // undefined is passed to the rest of types.
       oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       this.update(oldData);
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
-      // Store current data as previous data for future updates.
-      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       el.emit('componentinitialized', {
         id: this.id,
         name: this.name,
