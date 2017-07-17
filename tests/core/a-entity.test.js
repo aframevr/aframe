@@ -26,9 +26,11 @@ var TestComponent = {
 suite('a-entity', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
-    el.addEventListener('loaded', function () {
+    var onLoaded = function () {
       done();
-    });
+      el.removeEventListener('loaded', onLoaded);
+    };
+    el.addEventListener('loaded', onLoaded);
   });
 
   teardown(function () {
@@ -639,6 +641,64 @@ suite('a-entity', function () {
       setTimeout(function () {
         assert.notOk(nodeLoadSpy.called);
         done();
+      });
+    });
+
+    test('wait for all the children nodes that are not yet nodes to load', function (done) {
+      var el = this.el;
+      var a = document.createElement('a-entity');
+      var b = document.createElement('a-entity');
+      var aLoaded = false;
+      var bLoaded = false;
+      el.appendChild(a);
+      el.appendChild(b);
+      process.nextTick(function () {
+        a.isNode = false;
+        a.hasLoaded = false;
+        b.isNode = false;
+        b.hasLoaded = false;
+        el.hasLoaded = false;
+        el.addEventListener('loaded', function () {
+          assert.ok(el.hasLoaded);
+          assert.ok(aLoaded);
+          assert.ok(bLoaded);
+          done();
+        });
+        a.addEventListener('loaded', function () { aLoaded = true; });
+        b.addEventListener('loaded', function () { bLoaded = true; });
+        el.load();
+        assert.notOk(el.hasLoaded);
+        a.load();
+        b.load();
+      });
+    });
+
+    test('wait for all the children primitives that are not yet nodes to load', function (done) {
+      var el = this.el;
+      var a = document.createElement('a-sphere');
+      var b = document.createElement('a-box');
+      var aLoaded = false;
+      var bLoaded = false;
+      el.appendChild(a);
+      el.appendChild(b);
+      process.nextTick(function () {
+        a.isNode = false;
+        a.hasLoaded = false;
+        b.isNode = false;
+        b.hasLoaded = false;
+        el.hasLoaded = false;
+        el.addEventListener('loaded', function () {
+          assert.ok(el.hasLoaded);
+          assert.ok(aLoaded);
+          assert.ok(bLoaded);
+          done();
+        });
+        a.addEventListener('loaded', function () { aLoaded = true; });
+        b.addEventListener('loaded', function () { bLoaded = true; });
+        el.load();
+        assert.notOk(el.hasLoaded);
+        a.load();
+        b.load();
       });
     });
   });
