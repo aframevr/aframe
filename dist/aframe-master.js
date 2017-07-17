@@ -73811,11 +73811,11 @@ Component.prototype = {
       // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
       // undefined is passed to the rest of types.
       oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // Store current data as previous data for future updates.
+      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       this.update(oldData);
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
-      // Store current data as previous data for future updates.
-      this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       el.emit('componentinitialized', {
         id: this.id,
         name: this.name,
@@ -76706,7 +76706,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 14-07-2017, Commit #d6d6201)');
+console.log('A-Frame Version: 0.6.0 (Date 17-07-2017, Commit #2a54909)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
