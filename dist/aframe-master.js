@@ -75481,8 +75481,14 @@ registerComponent('pivot', {
 
   schema: {type: 'vec3'},
 
-  init: function () {
-    var data = this.data;
+  update: function (oldData) {
+    var data = oldData
+    ? {
+      x: this.data.x - oldData.x,
+      y: this.data.y - oldData.y,
+      z: this.data.z - oldData.z
+    }
+    : this.data;
     var el = this.el;
     var originalParent = el.object3D.parent;
     var originalGroup = el.object3D;
@@ -76509,7 +76515,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 18-07-2017, Commit #568f83a)');
+console.log('A-Frame Version: 0.6.0 (Date 18-07-2017, Commit #3d2ab9f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
