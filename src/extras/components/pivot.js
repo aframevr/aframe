@@ -12,8 +12,14 @@ registerComponent('pivot', {
 
   schema: {type: 'vec3'},
 
-  init: function () {
-    var data = this.data;
+  update: function (oldData) {
+    var data = oldData
+    ? {
+      x: this.data.x - oldData.x,
+      y: this.data.y - oldData.y,
+      z: this.data.z - oldData.z
+    }
+    : this.data;
     var el = this.el;
     var originalParent = el.object3D.parent;
     var originalGroup = el.object3D;
