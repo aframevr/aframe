@@ -320,4 +320,14 @@ suite('vive-controls', function () {
       component.injectTrackedControls();
     });
   });
+
+  suite('event listener', function () {
+    test('toggles controllerEventsActive', function () {
+      component.controllerEventsActive = false;
+      component.addEventListeners();
+      assert.ok(component.controllerEventsActive);
+      component.removeEventListeners();
+      assert.notOk(component.controllerEventsActive);
+    });
+  });
 });
