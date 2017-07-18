@@ -77,6 +77,7 @@ suite('vive-controls', function () {
       controlsSystem.controllers = component.controllersWhenPresent;
 
       // Mock looked before.
+      component.controllerEventsActive = true;
       component.controllerPresent = true;
 
       component.checkIfControllerPresent();
@@ -94,6 +95,7 @@ suite('vive-controls', function () {
       controlsSystem.controllers = [];
 
       // Mock looked before.
+      component.controllerEventsActive = true;
       component.controllerPresent = true;
 
       component.checkIfControllerPresent();

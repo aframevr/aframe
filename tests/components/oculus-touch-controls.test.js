@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, CustomEvent, Event */
+/* global assert, process, setup, suite, test, Event */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('oculus-touch-controls', function () {
@@ -10,7 +10,9 @@ suite('oculus-touch-controls', function () {
     el.setAttribute('oculus-touch-controls', '');
     el.addEventListener('loaded', function () {
       component = el.components['oculus-touch-controls'];
-      component.controllersWhenPresent = [{id: 'Oculus Touch', index: 0, hand: 'left', pose: {}}];
+      component.controllersWhenPresent = [
+        {id: 'Oculus Touch', index: 0, hand: 'left', pose: {}}
+      ];
       done();
     });
   });
@@ -67,7 +69,7 @@ suite('oculus-touch-controls', function () {
       assert.ok(component.controllerPresent);
     });
 
-    test('does not add or remove event listeners if presence doe not change', function () {
+    test('does not add/remove event listeners if presence does not change', function () {
       var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
       var removeEventListenersSpy = this.sinon.spy(component, 'removeEventListeners');
@@ -76,6 +78,7 @@ suite('oculus-touch-controls', function () {
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
 
       // Mock that it's was currently present.
+      component.controllerEventsActive = true;
       component.controllerPresent = true;
 
       component.checkIfControllerPresent();
@@ -90,9 +93,8 @@ suite('oculus-touch-controls', function () {
       var addEventListenersSpy = this.sinon.spy(component, 'addEventListeners');
       var injectTrackedControlsSpy = this.sinon.spy(component, 'injectTrackedControls');
 
-      // Mock isControllerPresent to return true.
-
       // Mock that it's was currently present.
+      component.controllerEventsActive = true;
       component.controllerPresent = true;
 
       component.checkIfControllerPresent();
@@ -104,8 +106,7 @@ suite('oculus-touch-controls', function () {
   });
 
   suite('axismove', function () {
-    test('can emit thumbstick moved', function (done) {
-      var evt;
+    test('emits thumbstick moved', function (done) {
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
@@ -117,42 +118,35 @@ suite('oculus-touch-controls', function () {
         done();
       });
       // Emit axismove.
-      evt = new CustomEvent('axismove', {detail: {axis: [0.1, 0.2], changed: [true, false]}});
-      this.el.dispatchEvent(evt);
+      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [true, false]});
     });
 
     test('does not emit thumbstickmoved if axismove has no changes', function (done) {
-      var evt;
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
-      // Install event handler listening for thumbstickmoved.
+      // Fail purposely.
       this.el.addEventListener('thumbstickmoved', function (evt) {
         assert.notOk(evt.detail);
       });
       // Emit axismove with no changes.
-      evt = new CustomEvent('axismove', {detail: {axis: [0.1, 0.2], changed: [false, false]}});
-      this.el.dispatchEvent(evt);
-      setTimeout(function () { done(); });
+      this.el.emit('axismove', {axis: [0.1, 0.2], changed: [false, false]});
+      setTimeout(() => { done(); });
     });
   });
 
   suite('buttonchanged', function () {
     test('can emit triggerchanged', function (done) {
-      var evt;
       el.sceneEl.systems['tracked-controls'].controllers = component.controllersWhenPresent;
       // Do the check.
       component.checkIfControllerPresent();
       // Install event handler listening for triggerchanged.
-      this.el.addEventListener('triggerchanged', function (evt) {
+      el.addEventListener('triggerchanged', function (evt) {
         assert.ok(evt.detail);
         done();
       });
       // Emit buttonchanged.
-      evt = new CustomEvent('buttonchanged', {
-        detail: {id: 1, state: {value: 0.5, pressed: true, touched: true}}
-      });
-      this.el.dispatchEvent(evt);
+      el.emit('buttonchanged', {id: 1, state: {value: 0.5, pressed: true, touched: true}});
     });
   });
 
@@ -162,7 +156,7 @@ suite('oculus-touch-controls', function () {
      * which makes it difficult to handle in individual controller entities.
      * We no longer remove the controllersupdate listener as a result.
      */
-    test('if we get gamepaddisconnected, check if present', function () {
+    test('checks if present on gamepaddisconnected event', function () {
       var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
       // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
       component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
