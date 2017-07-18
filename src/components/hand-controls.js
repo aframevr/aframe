@@ -153,7 +153,7 @@ module.exports.Component = registerComponent('hand-controls', {
    * Update handler. More like the `init` handler since the only property is the hand, and
    * that won't be changing much.
    */
-  update: function (prevHand) {
+  update: function (previousHand) {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data;
@@ -168,7 +168,7 @@ module.exports.Component = registerComponent('hand-controls', {
     el.setAttribute('oculus-touch-controls', controlConfiguration);
 
     // Set model.
-    if (hand !== prevHand) {
+    if (hand !== previousHand) {
       this.loader.load(MODEL_URLS[hand], function (scene) {
         var mesh = scene.getObjectByName('Hand');
         mesh.material.skinning = true;
