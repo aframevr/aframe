@@ -73,7 +73,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
-
+    this.controllerEventsActive = true;
     this.addControllersUpdateListener();
   },
 
@@ -86,7 +86,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
-
+    this.controllerEventsActive = false;
     this.removeControllersUpdateListener();
   },
 

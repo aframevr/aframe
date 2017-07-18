@@ -94,6 +94,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    this.controlllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -105,6 +106,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    this.controlllerEventsActive = false;
   },
 
   /**

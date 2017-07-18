@@ -82,6 +82,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('axismove', this.onAxisMoved);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -93,6 +94,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('axismove', this.onAxisMoved);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = false;
   },
 
   checkIfControllerPresent: function () {

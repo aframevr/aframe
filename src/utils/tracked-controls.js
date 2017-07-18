@@ -25,9 +25,10 @@ module.exports.getGamepadsByPrefix = function (idPrefix) {
 };
 
 /**
- * Check if the controller match the parameters and inject the tracked-controls component
- * and add eventlistener, otherwise it will just remove the listener.
- * It will also generate a controllerconnected or controllerdisconnected.
+ * Called on controller component `.play` handlers.
+ * Check if controller matches parameters and inject tracked-controls component.
+ * Handle event listeners.
+ * Generate controllerconnected or controllerdisconnected events.
  *
  * @param {object} component - the tracked controls component.
  * @param {object} idPrefix - prefix to match in gamepad id, if any.
@@ -37,8 +38,16 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   var el = component.el;
   var isPresent = isControllerPresent(component, idPrefix, queryObject);
 
+  // If component was previously paused and now playing, re-add event listeners.
+  // Handle the event listeners here since this helper method is control of calling
+  // `.addEventListeners` and `.removeEventListeners`.
+  if (component.controllerPresent && !component.controllerEventsActive) {
+    component.addEventListeners();
+  }
+
   // Nothing changed, no need to do anything.
   if (isPresent === component.controllerPresent) { return isPresent; }
+
   component.controllerPresent = isPresent;
 
   // Update controller presence.
