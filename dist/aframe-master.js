@@ -3912,7 +3912,7 @@ function getAlignType(align) {
     return ALIGN_RIGHT
   return ALIGN_LEFT
 }
-},{"as-number":3,"indexof-property":17,"word-wrapper":74,"xtend":77}],24:[function(_dereq_,module,exports){
+},{"as-number":3,"indexof-property":17,"word-wrapper":73,"xtend":76}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -4013,7 +4013,7 @@ function getBinaryOpts(opt) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":75,"xtend":77}],25:[function(_dereq_,module,exports){
+},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":74,"xtend":76}],25:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -4466,7 +4466,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":30,"xml-parse-from-string":76}],30:[function(_dereq_,module,exports){
+},{"./parse-attribs":30,"xml-parse-from-string":75}],30:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -4527,7 +4527,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":14,"trim":48}],32:[function(_dereq_,module,exports){
+},{"for-each":14,"trim":47}],32:[function(_dereq_,module,exports){
 (function (process){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -48967,190 +48967,6 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 },{}],43:[function(_dereq_,module,exports){
 /**
- * @author Michael Guerrero / http://realitymeltdown.com
- */
-
-THREE.BlendCharacter = function () {
-
-	this.weightSchedule = [];
-	this.warpSchedule = [];
-
-	this.load = function ( url, onLoad ) {
-
-		var scope = this;
-
-		var loader = new THREE.ObjectLoader();
-		loader.load( url, function( loadedObject ) {
-
-			// The exporter does not currently allow exporting a skinned mesh by itself
-			// so we must fish it out of the hierarchy it is embedded in (scene)
-			loadedObject.traverse( function( object ) {
-
-				if ( object instanceof THREE.SkinnedMesh ) {
-
-					scope.skinnedMesh = object;
-
-				}
-
-			} );
-
-			THREE.SkinnedMesh.call( scope, scope.skinnedMesh.geometry, scope.skinnedMesh.material );
-
-			// If we didn't successfully find the mesh, bail out
-			if ( scope.skinnedMesh == undefined ) {
-
-				console.log( 'unable to find skinned mesh in ' + url );
-				return;
-
-			}
-
-			scope.material.skinning = true;
-
-			scope.mixer = new THREE.AnimationMixer( scope );
-
-			// Create the animations
-			for ( var i = 0; i < scope.geometry.animations.length; ++ i ) {
-
-				scope.mixer.clipAction( scope.geometry.animations[ i ] );
-
-			}
-
-			// Loading is complete, fire the callback
-			if ( onLoad !== undefined ) onLoad();
-
-		} );
-
-	};
-
-	this.loadJSON = function ( url, onLoad ) {
-
-		var scope = this;
-
-		var loader = new THREE.JSONLoader();
-		loader.load( url, function( geometry, materials ) {
-
-			var originalMaterial = materials[ 0 ];
-			originalMaterial.skinning = true;
-
-			THREE.SkinnedMesh.call( scope, geometry, originalMaterial );
-
-			var mixer = new THREE.AnimationMixer( scope );
-			scope.mixer = mixer;
-
-			// Create the animations
-			for ( var i = 0; i < geometry.animations.length; ++ i ) {
-
-				mixer.clipAction( geometry.animations[ i ] );
-
-			}
-
-			// Loading is complete, fire the callback
-			if ( onLoad !== undefined ) onLoad();
-
-		} );
-
-	};
-	
-	this.update = function( dt ) {
-
-		this.mixer.update( dt );
-
-	};
-
-	this.play = function( animName, weight ) {
-
-		//console.log("play('%s', %f)", animName, weight);
-		return this.mixer.clipAction( animName ).
-				setEffectiveWeight( weight ).play();
-	};
-
-	this.crossfade = function( fromAnimName, toAnimName, duration ) {
-
-		this.mixer.stopAllAction();
-
-		var fromAction = this.play( fromAnimName, 1 );
-		var toAction = this.play( toAnimName, 1 );
-
-		fromAction.crossFadeTo( toAction, duration, false );
-
-	};
-
-	this.warp = function( fromAnimName, toAnimName, duration ) {
-
-		this.mixer.stopAllAction();
-
-		var fromAction = this.play( fromAnimName, 1 );
-		var toAction = this.play( toAnimName, 1 );
-
-		fromAction.crossFadeTo( toAction, duration, true );
-
-	};
-
-	this.applyWeight = function( animName, weight ) {
-
-		this.mixer.clipAction( animName ).setEffectiveWeight( weight );
-
-	};
-
-	this.getWeight = function( animName ) {
-
-		return this.mixer.clipAction( animName ).getEffectiveWeight();
-
-	};
-
-	this.pauseAll = function() {
-
-		this.mixer.timeScale = 0;
-
-	};
-
-	this.unPauseAll = function() {
-
-		this.mixer.timeScale = 1;
-
-	};
-
-
-	this.stopAll = function() {
-
-		this.mixer.stopAllAction();
-
-	};
-
-	this.showModel = function( boolean ) {
-
-		this.visible = boolean;
-
-	};
-
-};
-
-
-THREE.BlendCharacter.prototype = Object.create( THREE.SkinnedMesh.prototype );
-THREE.BlendCharacter.prototype.constructor = THREE.BlendCharacter;
-
-THREE.BlendCharacter.prototype.getForward = function() {
-
-	var forward = new THREE.Vector3();
-
-	return function() {
-
-		// pull the character's forward basis vector out of the matrix
-		forward.set(
-			- this.matrix.elements[ 8 ],
-			- this.matrix.elements[ 9 ],
-			- this.matrix.elements[ 10 ]
-		);
-
-		return forward;
-
-	}
-
-};
-
-
-},{}],44:[function(_dereq_,module,exports){
-/**
 * @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
 * @author Tony Parisi / http://www.tonyparisi.com/
 */
@@ -54696,7 +54512,7 @@ THREE.ColladaLoader = function () {
 
 };
 
-},{}],45:[function(_dereq_,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -56848,7 +56664,7 @@ THREE.GLTFLoader = ( function () {
 
 } )();
 
-},{}],46:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -57390,7 +57206,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],47:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -58135,7 +57951,7 @@ THREE.OBJLoader.prototype = {
 
 };
 
-},{}],48:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -58151,7 +57967,7 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],49:[function(_dereq_,module,exports){
+},{}],48:[function(_dereq_,module,exports){
 module.exports={
   "_args": [
     [
@@ -58260,7 +58076,7 @@ module.exports={
   "version": "0.9.36"
 }
 
-},{}],50:[function(_dereq_,module,exports){
+},{}],49:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -58723,7 +58539,7 @@ module.exports.VRDevice = VRDevice;
 module.exports.HMDVRDevice = HMDVRDevice;
 module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
 
-},{"./util.js":70,"./wakelock.js":72}],51:[function(_dereq_,module,exports){
+},{"./util.js":69,"./wakelock.js":71}],50:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59373,7 +59189,7 @@ CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrNam
 
 module.exports = CardboardDistorter;
 
-},{"./cardboard-ui.js":52,"./deps/wglu-preserve-state.js":54,"./util.js":70}],52:[function(_dereq_,module,exports){
+},{"./cardboard-ui.js":51,"./deps/wglu-preserve-state.js":53,"./util.js":69}],51:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59660,7 +59476,7 @@ CardboardUI.prototype.renderNoState = function() {
 
 module.exports = CardboardUI;
 
-},{"./deps/wglu-preserve-state.js":54,"./util.js":70}],53:[function(_dereq_,module,exports){
+},{"./deps/wglu-preserve-state.js":53,"./util.js":69}],52:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59944,7 +59760,7 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
 
 module.exports = CardboardVRDisplay;
 
-},{"./base.js":50,"./cardboard-distorter.js":51,"./cardboard-ui.js":52,"./device-info.js":55,"./dpdb/dpdb.js":59,"./rotate-instructions.js":64,"./sensor-fusion/fusion-pose-sensor.js":66,"./util.js":70,"./viewer-selector.js":71}],54:[function(_dereq_,module,exports){
+},{"./base.js":49,"./cardboard-distorter.js":50,"./cardboard-ui.js":51,"./device-info.js":54,"./dpdb/dpdb.js":58,"./rotate-instructions.js":63,"./sensor-fusion/fusion-pose-sensor.js":65,"./util.js":69,"./viewer-selector.js":70}],53:[function(_dereq_,module,exports){
 /**
  * Copyright (c) 2016, Brandon Jones.
  * https://github.com/toji/webgl-utils/blob/master/src/wglu-preserve-state.js
@@ -60057,7 +59873,7 @@ function WGLUPreserveGLState(gl, bindings, callback) {
 
 module.exports = WGLUPreserveGLState;
 
-},{}],55:[function(_dereq_,module,exports){
+},{}],54:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60424,7 +60240,7 @@ function CardboardViewer(params) {
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
 
-},{"./distortion/distortion.js":57,"./math-util.js":61,"./util.js":70}],56:[function(_dereq_,module,exports){
+},{"./distortion/distortion.js":56,"./math-util.js":60,"./util.js":69}],55:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60516,7 +60332,7 @@ module.exports.VRDisplayHMDDevice = VRDisplayHMDDevice;
 module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
 
 
-},{"./base.js":50}],57:[function(_dereq_,module,exports){
+},{"./base.js":49}],56:[function(_dereq_,module,exports){
 /**
  * TODO(smus): Implement coefficient inversion.
  */
@@ -60566,7 +60382,7 @@ Distortion.prototype.distort = function(radius) {
 
 module.exports = Distortion;
 
-},{}],58:[function(_dereq_,module,exports){
+},{}],57:[function(_dereq_,module,exports){
 module.exports={
   "format": 1,
   "last_updated": "2017-06-01T22:33:42Z",
@@ -62089,7 +61905,7 @@ module.exports={
     }
   ]
 }
-},{}],59:[function(_dereq_,module,exports){
+},{}],58:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62271,7 +62087,7 @@ function DeviceParams(params) {
 
 module.exports = Dpdb;
 
-},{"../util.js":70,"./dpdb.json":58}],60:[function(_dereq_,module,exports){
+},{"../util.js":69,"./dpdb.json":57}],59:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62364,7 +62180,7 @@ if (!window.WebVRConfig.DEFER_INITIALIZATION) {
 
 window.WebVRPolyfill = WebVRPolyfill;
 
-},{"./util.js":70,"./webvr-polyfill.js":73}],61:[function(_dereq_,module,exports){
+},{"./util.js":69,"./webvr-polyfill.js":72}],60:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62723,7 +62539,7 @@ MathUtil.Quaternion.prototype = {
 
 module.exports = MathUtil;
 
-},{}],62:[function(_dereq_,module,exports){
+},{}],61:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -62902,7 +62718,7 @@ MouseKeyboardVRDisplay.prototype.resetPose = function() {
 
 module.exports = MouseKeyboardVRDisplay;
 
-},{"./base.js":50,"./math-util.js":61,"./util.js":70}],63:[function(_dereq_,module,exports){
+},{"./base.js":49,"./math-util.js":60,"./util.js":69}],62:[function(_dereq_,module,exports){
 (function (global){
 // This is the entry point if requiring/importing via node, or
 // a build tool that uses package.json entry (like browserify, webpack).
@@ -62917,7 +62733,7 @@ _dereq_('./main');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./main":60}],64:[function(_dereq_,module,exports){
+},{"./main":59}],63:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63063,7 +62879,7 @@ RotateInstructions.prototype.loadIcon_ = function() {
 
 module.exports = RotateInstructions;
 
-},{"./util.js":70}],65:[function(_dereq_,module,exports){
+},{"./util.js":69}],64:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63231,7 +63047,7 @@ ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
 
 module.exports = ComplementaryFilter;
 
-},{"../math-util.js":61,"../util.js":70,"./sensor-sample.js":68}],66:[function(_dereq_,module,exports){
+},{"../math-util.js":60,"../util.js":69,"./sensor-sample.js":67}],65:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63457,7 +63273,7 @@ FusionPoseSensor.prototype.stop = function() {
 
 module.exports = FusionPoseSensor;
 
-},{"../math-util.js":61,"../touch-panner.js":69,"../util.js":70,"./complementary-filter.js":65,"./pose-predictor.js":67}],67:[function(_dereq_,module,exports){
+},{"../math-util.js":60,"../touch-panner.js":68,"../util.js":69,"./complementary-filter.js":64,"./pose-predictor.js":66}],66:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63540,7 +63356,7 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
 
 module.exports = PosePredictor;
 
-},{"../math-util":61,"../util":70}],68:[function(_dereq_,module,exports){
+},{"../math-util":60,"../util":69}],67:[function(_dereq_,module,exports){
 function SensorSample(sample, timestampS) {
   this.set(sample, timestampS);
 };
@@ -63556,7 +63372,7 @@ SensorSample.prototype.copy = function(sensorSample) {
 
 module.exports = SensorSample;
 
-},{}],69:[function(_dereq_,module,exports){
+},{}],68:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63636,7 +63452,7 @@ TouchPanner.prototype.onTouchEnd_ = function(e) {
 
 module.exports = TouchPanner;
 
-},{"./math-util.js":61,"./util.js":70}],70:[function(_dereq_,module,exports){
+},{"./math-util.js":60,"./util.js":69}],69:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64111,7 +63927,7 @@ Util.getDomainFromUrl = function(url) {
 
 module.exports = Util;
 
-},{}],71:[function(_dereq_,module,exports){
+},{}],70:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64324,7 +64140,7 @@ ViewerSelector.prototype.createButton_ = function(label, onclick) {
 
 module.exports = ViewerSelector;
 
-},{"./device-info.js":55,"./util.js":70}],72:[function(_dereq_,module,exports){
+},{"./device-info.js":54,"./util.js":69}],71:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64403,7 +64219,7 @@ function getWakeLock() {
 }
 
 module.exports = getWakeLock();
-},{"./util.js":70}],73:[function(_dereq_,module,exports){
+},{"./util.js":69}],72:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64691,7 +64507,7 @@ WebVRPolyfill.version = version;
 
 module.exports.WebVRPolyfill = WebVRPolyfill;
 
-},{"../package.json":49,"./base.js":50,"./cardboard-vr-display.js":53,"./display-wrappers.js":56,"./mouse-keyboard-vr-display.js":62,"./util.js":70}],74:[function(_dereq_,module,exports){
+},{"../package.json":48,"./base.js":49,"./cardboard-vr-display.js":52,"./display-wrappers.js":55,"./mouse-keyboard-vr-display.js":61,"./util.js":69}],73:[function(_dereq_,module,exports){
 var newline = /\n/
 var newlineChar = '\n'
 var whitespace = /\s/
@@ -64819,7 +64635,7 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
-},{}],75:[function(_dereq_,module,exports){
+},{}],74:[function(_dereq_,module,exports){
 "use strict";
 var window = _dereq_("global/window")
 var isFunction = _dereq_("is-function")
@@ -65062,7 +64878,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":15,"is-function":20,"parse-headers":31,"xtend":77}],76:[function(_dereq_,module,exports){
+},{"global/window":15,"is-function":20,"parse-headers":31,"xtend":76}],75:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof window.DOMParser !== 'undefined') {
@@ -65090,7 +64906,7 @@ module.exports = (function xmlparser() {
     return div
   }
 })()
-},{}],77:[function(_dereq_,module,exports){
+},{}],76:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -65111,7 +64927,7 @@ function extend() {
     return target
 }
 
-},{}],78:[function(_dereq_,module,exports){
+},{}],77:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.6.0",
@@ -65239,48 +65055,7 @@ module.exports={
   }
 }
 
-},{}],79:[function(_dereq_,module,exports){
-var registerComponent = _dereq_('../core/component').registerComponent;
-var THREE = _dereq_('../lib/three');
-
-/**
- * Blend character model component.
- * Loads a model with skeletal animation blending.
- */
-module.exports.Component = registerComponent('blend-character-model', {
-  schema: {type: 'asset'},
-
-  init: function () {
-    this.model = null;
-  },
-
-  update: function () {
-    var self = this;
-    var el = this.el;
-    var src = this.data;
-
-    if (!src) { return; }
-
-    this.remove();
-    this.model = new THREE.BlendCharacter();
-
-    this.model.load(src, function () {
-      el.setObject3D('mesh', self.model);
-      el.emit('model-loaded', {format: 'blend', model: self.model});
-      self.model.castShadow = true;
-      self.model.receiveShadow = true;
-      self.model.material.shading = THREE.FlatShading;
-      self.model.geometry.computeBoundingBox();
-    });
-  },
-
-  remove: function () {
-    if (!this.model) { return; }
-    this.el.removeObject3D('mesh');
-  }
-});
-
-},{"../core/component":128,"../lib/three":176}],80:[function(_dereq_,module,exports){
+},{}],78:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -65458,7 +65233,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176,"../utils/":199}],81:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/":197}],79:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -65493,7 +65268,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176}],82:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -65740,7 +65515,7 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":128,"../utils/":199}],83:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/":197}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -65944,7 +65719,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":128,"../utils/bind":193,"../utils/tracked-controls":203}],84:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":191,"../utils/tracked-controls":201}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -66146,7 +65921,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":128,"../utils/bind":193,"../utils/tracked-controls":203}],85:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":191,"../utils/tracked-controls":201}],83:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -66270,7 +66045,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":128,"../core/geometry":129,"../lib/three":176,"../utils/debug":195}],86:[function(_dereq_,module,exports){
+},{"../core/component":126,"../core/geometry":127,"../lib/three":174,"../utils/debug":193}],84:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66310,7 +66085,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176}],87:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174}],85:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -66365,6 +66140,8 @@ module.exports.Component = registerComponent('hand-controls', {
     // Active buttons populated by events provided by oculus-touch-controls and vive-controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
+    this.loader = new THREE.ObjectLoader();
+    this.loader.setCrossOrigin('anonymous');
 
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
     this.onGripUp = function () { self.handleButton('grip', 'up'); };
@@ -66394,6 +66171,14 @@ module.exports.Component = registerComponent('hand-controls', {
 
   pause: function () {
     this.removeEventListeners();
+  },
+
+  tick: function (time, delta) {
+    var mesh = this.el.getObject3D('mesh');
+
+    if (!mesh) { return; }
+
+    mesh.mixer.update(delta / 1000);
   },
 
   addEventListeners: function () {
@@ -66456,7 +66241,7 @@ module.exports.Component = registerComponent('hand-controls', {
    * Update handler. More like the `init` handler since the only property is the hand, and
    * that won't be changing much.
    */
-  update: function () {
+  update: function (previousHand) {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data;
@@ -66471,7 +66256,18 @@ module.exports.Component = registerComponent('hand-controls', {
     el.setAttribute('oculus-touch-controls', controlConfiguration);
 
     // Set model.
-    el.setAttribute('blend-character-model', MODEL_URLS[hand]);
+    if (hand !== previousHand) {
+      this.loader.load(MODEL_URLS[hand], function (scene) {
+        var mesh = scene.getObjectByName('Hand');
+        mesh.material.skinning = true;
+        mesh.mixer = new THREE.AnimationMixer(mesh);
+        el.setObject3D('mesh', mesh);
+      });
+    }
+  },
+
+  remove: function () {
+    this.el.removeObject3D('mesh');
   },
 
   /**
@@ -66601,22 +66397,24 @@ module.exports.Component = registerComponent('hand-controls', {
     toAction.loop = THREE.PingPong;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
+    toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
       // Stop all current animations.
-      mesh.stopAll();
+      mesh.mixer.stopAllAction();
 
       // Play animation.
-      mesh.play(gesture, 1);
+      toAction.play();
       return;
     }
 
     // Animate or crossfade from gesture to gesture.
     fromAction = mesh.mixer.clipAction(lastGesture);
     mesh.mixer.stopAllAction();
-    mesh.play(lastGesture, 0.15);
-    mesh.play(gesture, 1);
+    fromAction.weight = 0.15;
+    fromAction.play();
+    toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
   }
 });
@@ -66651,8 +66449,7 @@ function isOculusTouchController (trackedControls) {
   return controllerId && controllerId.indexOf('Oculus Touch') === 0;
 }
 
-},{"../core/component":128}],88:[function(_dereq_,module,exports){
-_dereq_('./blend-character-model');
+},{"../core/component":126}],86:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -66692,7 +66489,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./blend-character-model":79,"./camera":80,"./collada-model":81,"./cursor":82,"./daydream-controls":83,"./gearvr-controls":84,"./geometry":85,"./gltf-model":86,"./hand-controls":87,"./laser-controls":89,"./light":90,"./line":91,"./link":92,"./look-controls":93,"./material":94,"./obj-model":95,"./oculus-touch-controls":96,"./position":97,"./raycaster":98,"./rotation":99,"./scale":100,"./scene/canvas":101,"./scene/debug":102,"./scene/embedded":103,"./scene/fog":104,"./scene/inspector":105,"./scene/keyboard-shortcuts":106,"./scene/pool":107,"./scene/screenshot":108,"./scene/stats":109,"./scene/vr-mode-ui":110,"./shadow":111,"./sound":112,"./text":113,"./tracked-controls":114,"./visible":115,"./vive-controls":116,"./wasd-controls":117}],89:[function(_dereq_,module,exports){
+},{"./camera":78,"./collada-model":79,"./cursor":80,"./daydream-controls":81,"./gearvr-controls":82,"./geometry":83,"./gltf-model":84,"./hand-controls":85,"./laser-controls":87,"./light":88,"./line":89,"./link":90,"./look-controls":91,"./material":92,"./obj-model":93,"./oculus-touch-controls":94,"./position":95,"./raycaster":96,"./rotation":97,"./scale":98,"./scene/canvas":99,"./scene/debug":100,"./scene/embedded":101,"./scene/fog":102,"./scene/inspector":103,"./scene/keyboard-shortcuts":104,"./scene/pool":105,"./scene/screenshot":106,"./scene/stats":107,"./scene/vr-mode-ui":108,"./shadow":109,"./sound":110,"./text":111,"./tracked-controls":112,"./visible":113,"./vive-controls":114,"./wasd-controls":115}],87:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -66749,7 +66546,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":128,"../utils/":199}],90:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/":197}],88:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -67023,7 +66820,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176,"../utils":199,"../utils/bind":193,"../utils/debug":195}],91:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils":197,"../utils/bind":191,"../utils/debug":193}],89:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -67098,7 +66895,7 @@ function isEqualVec3 (a, b) {
   return a.x !== b.x || a.y !== b.y || a.z !== b.z;
 }
 
-},{"../core/component":128}],92:[function(_dereq_,module,exports){
+},{"../core/component":126}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -67448,7 +67245,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":128,"../core/shader":137,"../lib/three":176}],93:[function(_dereq_,module,exports){
+},{"../core/component":126,"../core/shader":135,"../lib/three":174}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -67836,7 +67633,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":128,"../lib/three":176,"../utils/bind":193}],94:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/bind":191}],92:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -68021,7 +67818,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":128,"../core/shader":137,"../lib/three":176,"../utils/":199}],95:[function(_dereq_,module,exports){
+},{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":197}],93:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -68097,7 +67894,7 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176,"../utils/debug":195}],96:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/debug":193}],94:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
@@ -68333,7 +68130,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":128,"../utils/bind":193,"../utils/tracked-controls":203}],97:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":191,"../utils/tracked-controls":201}],95:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -68346,7 +68143,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":128}],98:[function(_dereq_,module,exports){
+},{"../core/component":126}],96:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -68640,7 +68437,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":128,"../lib/three":176,"../utils/":199}],99:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/":197}],97:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -68658,7 +68455,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176}],100:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174}],98:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -68680,7 +68477,7 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":128}],101:[function(_dereq_,module,exports){
+},{"../core/component":126}],99:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -68725,14 +68522,14 @@ module.exports.Component = registerComponent('canvas', {
   }
 });
 
-},{"../../core/component":128,"../../utils/bind":193}],102:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../utils/bind":191}],100:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":128}],103:[function(_dereq_,module,exports){
+},{"../../core/component":126}],101:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -68757,7 +68554,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":128}],104:[function(_dereq_,module,exports){
+},{"../../core/component":126}],102:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -68830,7 +68627,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":128,"../../lib/three":176,"../../utils/debug":195}],105:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../lib/three":174,"../../utils/debug":193}],103:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -68935,7 +68732,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":78,"../../constants":119,"../../core/component":128,"../../utils/bind":193,"_process":34}],106:[function(_dereq_,module,exports){
+},{"../../../package":77,"../../constants":117,"../../core/component":126,"../../utils/bind":191,"_process":34}],104:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -68970,7 +68767,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":128,"../../utils/":199}],107:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../utils/":197}],105:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -69075,7 +68872,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":128,"../../utils/debug":195}],108:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../utils/debug":193}],106:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -69332,7 +69129,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":128,"../../lib/three":176}],109:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../lib/three":174}],107:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -69412,7 +69209,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":207,"../../../vendor/rStats.extras":206,"../../core/component":128,"../../lib/rStatsAframe":175,"../../utils":199}],110:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":205,"../../../vendor/rStats.extras":204,"../../core/component":126,"../../lib/rStatsAframe":173,"../../utils":197}],108:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -69565,7 +69362,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":119,"../../core/component":128,"../../utils/":199}],111:[function(_dereq_,module,exports){
+},{"../../constants/":117,"../../core/component":126,"../../utils/":197}],109:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -69619,7 +69416,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176,"../utils/bind":193}],112:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/bind":191}],110:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -69836,7 +69633,7 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":128,"../lib/three":176,"../utils/bind":193,"../utils/debug":195}],113:[function(_dereq_,module,exports){
+},{"../core/component":126,"../lib/three":174,"../utils/bind":191,"../utils/debug":193}],111:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
 var path = _dereq_('path');
@@ -70302,7 +70099,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":128,"../core/shader":137,"../lib/three":176,"../utils/":199,"load-bmfont":24,"path":32,"three-bmfont-text":38}],114:[function(_dereq_,module,exports){
+},{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":197,"load-bmfont":24,"path":32,"three-bmfont-text":38}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
@@ -70625,7 +70422,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":119,"../core/component":128,"../lib/three":176}],115:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":126,"../lib/three":174}],113:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -70639,7 +70436,7 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":128}],116:[function(_dereq_,module,exports){
+},{"../core/component":126}],114:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -70892,7 +70689,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":128,"../utils/":199}],117:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/":197}],115:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -71098,7 +70895,7 @@ module.exports.Component = registerComponent('wasd-controls', {
   }
 });
 
-},{"../constants":119,"../core/component":128,"../lib/three":176,"../utils/":199}],118:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/":197}],116:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -71202,7 +70999,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"@tweenjs/tween.js":1}],119:[function(_dereq_,module,exports){
+},{"@tweenjs/tween.js":1}],117:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -71211,7 +71008,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":118,"./keyboardevent":120}],120:[function(_dereq_,module,exports){
+},{"./animation":116,"./keyboardevent":118}],118:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -71226,7 +71023,7 @@ module.exports = {
   }
 };
 
-},{}],121:[function(_dereq_,module,exports){
+},{}],119:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -71770,7 +71567,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":118,"../lib/three":176,"../utils/":199,"./a-node":126,"./a-register-element":127,"./schema":136,"@tweenjs/tween.js":1}],122:[function(_dereq_,module,exports){
+},{"../constants/animation":116,"../lib/three":174,"../utils/":197,"./a-node":124,"./a-register-element":125,"./schema":134,"@tweenjs/tween.js":1}],120:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -72028,7 +71825,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":176,"../utils/bind":193,"../utils/debug":195,"./a-node":126,"./a-register-element":127}],123:[function(_dereq_,module,exports){
+},{"../lib/three":174,"../utils/bind":191,"../utils/debug":193,"./a-node":124,"./a-register-element":125}],121:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -72078,7 +71875,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":195,"./a-register-element":127}],124:[function(_dereq_,module,exports){
+},{"../utils/debug":193,"./a-register-element":125}],122:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -72997,7 +72794,7 @@ AEntity = registerElement('a-entity', {
 });
 module.exports = AEntity;
 
-},{"../lib/three":176,"../utils/":199,"./a-node":126,"./a-register-element":127,"./component":128}],125:[function(_dereq_,module,exports){
+},{"../lib/three":174,"../utils/":197,"./a-node":124,"./a-register-element":125,"./component":126}],123:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -73104,7 +72901,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":126,"./a-register-element":127,"./component":128}],126:[function(_dereq_,module,exports){
+},{"./a-node":124,"./a-register-element":125,"./component":126}],124:[function(_dereq_,module,exports){
 /* global MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -73365,7 +73162,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":199,"./a-register-element":127}],127:[function(_dereq_,module,exports){
+},{"../utils/":197,"./a-register-element":125}],125:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -73542,7 +73339,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":124,"./a-node":126,"document-register-element":11}],128:[function(_dereq_,module,exports){
+},{"./a-entity":122,"./a-node":124,"document-register-element":11}],126:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -74082,7 +73879,7 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":199,"./scene/scenes":134,"./schema":136,"./system":138}],129:[function(_dereq_,module,exports){
+},{"../utils/":197,"./scene/scenes":132,"./schema":134,"./system":136}],127:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -74156,7 +73953,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":176,"./schema":136}],130:[function(_dereq_,module,exports){
+},{"../lib/three":174,"./schema":134}],128:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -74378,7 +74175,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":194,"debug":8}],131:[function(_dereq_,module,exports){
+},{"../utils/coordinates":192,"debug":8}],129:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -75011,7 +74808,7 @@ function shouldAntiAlias (sceneEl) {
 }
 module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
-},{"../../lib/three":176,"../../utils/":199,"../a-entity":124,"../a-node":126,"../a-register-element":127,"../system":138,"./metaTags":132,"./postMessage":133,"./scenes":134,"./wakelock":135,"@tweenjs/tween.js":1}],132:[function(_dereq_,module,exports){
+},{"../../lib/three":174,"../../utils/":197,"../a-entity":122,"../a-node":124,"../a-register-element":125,"../system":136,"./metaTags":130,"./postMessage":131,"./scenes":132,"./wakelock":133,"@tweenjs/tween.js":1}],130:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -75092,7 +74889,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":119,"../../utils":199}],133:[function(_dereq_,module,exports){
+},{"../../constants/":117,"../../utils":197}],131:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -75125,13 +74922,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":199,"../../utils/bind":193}],134:[function(_dereq_,module,exports){
+},{"../../utils/":197,"../../utils/bind":191}],132:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],135:[function(_dereq_,module,exports){
+},{}],133:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -75142,7 +74939,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":209}],136:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":207}],134:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -75323,7 +75120,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":199,"./propertyTypes":130}],137:[function(_dereq_,module,exports){
+},{"../utils/":197,"./propertyTypes":128}],135:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -75502,7 +75299,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":176,"../utils":199,"./schema":136}],138:[function(_dereq_,module,exports){
+},{"../lib/three":174,"../utils":197,"./schema":134}],136:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -75660,10 +75457,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":199,"./component":128,"./schema":136}],139:[function(_dereq_,module,exports){
+},{"../utils/":197,"./component":126,"./schema":134}],137:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":140}],140:[function(_dereq_,module,exports){
+},{"./pivot":138}],138:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -75712,7 +75509,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":128,"../../lib/three":176}],141:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../lib/three":174}],139:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -75739,7 +75536,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":128,"../../core/shader":137,"../../utils/":199}],142:[function(_dereq_,module,exports){
+},{"../../core/component":126,"../../core/shader":135,"../../utils/":197}],140:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -75756,7 +75553,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":144,"./primitives/a-collada-model":145,"./primitives/a-cursor":146,"./primitives/a-curvedimage":147,"./primitives/a-gltf-model":148,"./primitives/a-image":149,"./primitives/a-light":150,"./primitives/a-link":151,"./primitives/a-obj-model":152,"./primitives/a-sky":153,"./primitives/a-sound":154,"./primitives/a-text":155,"./primitives/a-video":156,"./primitives/a-videosphere":157,"./primitives/meshPrimitives":158}],143:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":142,"./primitives/a-collada-model":143,"./primitives/a-cursor":144,"./primitives/a-curvedimage":145,"./primitives/a-gltf-model":146,"./primitives/a-image":147,"./primitives/a-light":148,"./primitives/a-link":149,"./primitives/a-obj-model":150,"./primitives/a-sky":151,"./primitives/a-sound":152,"./primitives/a-text":153,"./primitives/a-video":154,"./primitives/a-videosphere":155,"./primitives/meshPrimitives":156}],141:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -75955,7 +75752,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":124,"../../core/a-register-element":127,"../../core/component":128,"../../utils/":199}],144:[function(_dereq_,module,exports){
+},{"../../core/a-entity":122,"../../core/a-register-element":125,"../../core/component":126,"../../utils/":197}],142:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -75990,7 +75787,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":119,"../primitives":143}],145:[function(_dereq_,module,exports){
+},{"../../../constants/":117,"../primitives":141}],143:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -75999,7 +75796,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":143}],146:[function(_dereq_,module,exports){
+},{"../primitives":141}],144:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76034,7 +75831,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],147:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],145:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76071,7 +75868,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],148:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],146:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -76080,7 +75877,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":143}],149:[function(_dereq_,module,exports){
+},{"../primitives":141}],147:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76104,7 +75901,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],150:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],148:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -76125,7 +75922,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":143}],151:[function(_dereq_,module,exports){
+},{"../primitives":141}],149:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -76138,7 +75935,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":143}],152:[function(_dereq_,module,exports){
+},{"../primitives":141}],150:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76154,7 +75951,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],153:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],151:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76179,7 +75976,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143,"./meshPrimitives":158}],154:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141,"./meshPrimitives":156}],152:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -76196,12 +75993,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":143}],155:[function(_dereq_,module,exports){
+},{"../primitives":141}],153:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":143}],156:[function(_dereq_,module,exports){
+},{"../primitives":141}],154:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76225,7 +76022,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],157:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],155:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -76253,7 +76050,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],158:[function(_dereq_,module,exports){
+},{"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],156:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -76293,7 +76090,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":129,"../../../utils/":199,"../getMeshMixin":141,"../primitives":143}],159:[function(_dereq_,module,exports){
+},{"../../../core/geometry":127,"../../../utils/":197,"../getMeshMixin":139,"../primitives":141}],157:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76312,7 +76109,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],158:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76332,7 +76129,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],161:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],159:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76358,7 +76155,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],162:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],160:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76382,7 +76179,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],163:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],161:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76397,7 +76194,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],164:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],162:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76412,7 +76209,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],165:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],163:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -76428,7 +76225,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":159,"./circle.js":160,"./cone.js":161,"./cylinder.js":162,"./dodecahedron.js":163,"./icosahedron.js":164,"./octahedron.js":166,"./plane.js":167,"./ring.js":168,"./sphere.js":169,"./tetrahedron.js":170,"./torus.js":171,"./torusKnot.js":172,"./triangle.js":173}],166:[function(_dereq_,module,exports){
+},{"./box.js":157,"./circle.js":158,"./cone.js":159,"./cylinder.js":160,"./dodecahedron.js":161,"./icosahedron.js":162,"./octahedron.js":164,"./plane.js":165,"./ring.js":166,"./sphere.js":167,"./tetrahedron.js":168,"./torus.js":169,"./torusKnot.js":170,"./triangle.js":171}],164:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76443,7 +76240,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],167:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],165:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76460,7 +76257,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],168:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],166:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76483,7 +76280,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],169:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],167:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76507,7 +76304,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],170:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],168:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76522,7 +76319,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],171:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],169:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76544,7 +76341,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],172:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],170:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76565,7 +76362,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],173:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],171:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -76620,7 +76417,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":129,"../lib/three":176}],174:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../lib/three":174}],172:[function(_dereq_,module,exports){
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
@@ -76706,7 +76503,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 17-07-2017, Commit #f5c17e4)');
+console.log('A-Frame Version: 0.6.0 (Date 18-07-2017, Commit #251271e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76737,7 +76534,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":78,"./components/index":88,"./core/a-animation":121,"./core/a-assets":122,"./core/a-cubemap":123,"./core/a-entity":124,"./core/a-mixin":125,"./core/a-node":126,"./core/a-register-element":127,"./core/component":128,"./core/geometry":129,"./core/scene/a-scene":131,"./core/scene/scenes":134,"./core/schema":136,"./core/shader":137,"./core/system":138,"./extras/components/":139,"./extras/primitives/":142,"./extras/primitives/getMeshMixin":141,"./extras/primitives/primitives":143,"./geometries/index":165,"./lib/three":176,"./shaders/index":178,"./style/aframe.css":183,"./style/rStats.css":184,"./systems/index":188,"./utils/":199,"@tweenjs/tween.js":1,"present":33,"promise-polyfill":35,"webvr-polyfill":63}],175:[function(_dereq_,module,exports){
+},{"../package":77,"./components/index":86,"./core/a-animation":119,"./core/a-assets":120,"./core/a-cubemap":121,"./core/a-entity":122,"./core/a-mixin":123,"./core/a-node":124,"./core/a-register-element":125,"./core/component":126,"./core/geometry":127,"./core/scene/a-scene":129,"./core/scene/scenes":132,"./core/schema":134,"./core/shader":135,"./core/system":136,"./extras/components/":137,"./extras/primitives/":140,"./extras/primitives/getMeshMixin":139,"./extras/primitives/primitives":141,"./geometries/index":163,"./lib/three":174,"./shaders/index":176,"./style/aframe.css":181,"./style/rStats.css":182,"./systems/index":186,"./utils/":197,"@tweenjs/tween.js":1,"present":33,"promise-polyfill":35,"webvr-polyfill":62}],173:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -76794,7 +76591,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],176:[function(_dereq_,module,exports){
+},{}],174:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -76820,7 +76617,6 @@ if (THREE.Cache) {
 _dereq_('three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
 _dereq_('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 _dereq_('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
-_dereq_('three/examples/js/BlendCharacter');  // THREE.BlendCharacter
 _dereq_('three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
 _dereq_('../../vendor/VRControls');  // THREE.VRControls
 _dereq_('../../vendor/VREffect');  // THREE.VREffect
@@ -76834,7 +76630,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":204,"../../vendor/VREffect":205,"three":42,"three/examples/js/BlendCharacter":43,"three/examples/js/loaders/ColladaLoader":44,"three/examples/js/loaders/GLTFLoader":45,"three/examples/js/loaders/MTLLoader":46,"three/examples/js/loaders/OBJLoader":47}],177:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":202,"../../vendor/VREffect":203,"three":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],175:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -76899,14 +76695,14 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":137,"../lib/three":176,"../utils/":199}],178:[function(_dereq_,module,exports){
+},{"../core/shader":135,"../lib/three":174,"../utils/":197}],176:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":177,"./ios10hls":179,"./msdf":180,"./sdf":181,"./standard":182}],179:[function(_dereq_,module,exports){
+},{"./flat":175,"./ios10hls":177,"./msdf":178,"./sdf":179,"./standard":180}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -76941,7 +76737,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":137}],180:[function(_dereq_,module,exports){
+},{"../core/shader":135}],178:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77016,7 +76812,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":137}],181:[function(_dereq_,module,exports){
+},{"../core/shader":135}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -77126,7 +76922,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":137}],182:[function(_dereq_,module,exports){
+},{"../core/shader":135}],180:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -77291,11 +77087,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":137,"../lib/three":176,"../utils/":199}],183:[function(_dereq_,module,exports){
+},{"../core/shader":135,"../lib/three":174,"../utils/":197}],181:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":5}],184:[function(_dereq_,module,exports){
+},{"browserify-css":5}],182:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":5}],185:[function(_dereq_,module,exports){
+},{"browserify-css":5}],183:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -77422,7 +77218,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":119,"../core/system":138,"../utils/bind":193}],186:[function(_dereq_,module,exports){
+},{"../constants/":117,"../core/system":136,"../utils/bind":191}],184:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -77562,7 +77358,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":129,"../core/system":138,"../lib/three":176}],187:[function(_dereq_,module,exports){
+},{"../core/geometry":127,"../core/system":136,"../lib/three":174}],185:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 
@@ -77605,7 +77401,7 @@ module.exports.System = registerSystem('gltf-model', {
   }
 });
 
-},{"../core/system":138,"../lib/three":176}],188:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":174}],186:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./gltf-model');
@@ -77615,7 +77411,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":185,"./geometry":186,"./gltf-model":187,"./light":189,"./material":190,"./shadow":191,"./tracked-controls":192}],189:[function(_dereq_,module,exports){
+},{"./camera":183,"./geometry":184,"./gltf-model":185,"./light":187,"./material":188,"./shadow":189,"./tracked-controls":190}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -77700,7 +77496,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":119,"../core/system":138,"../utils/bind":193}],190:[function(_dereq_,module,exports){
+},{"../constants/":117,"../core/system":136,"../utils/bind":191}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78105,7 +77901,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":138,"../lib/three":176,"../utils/":199,"../utils/material":200}],191:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":174,"../utils/":197,"../utils/material":198}],189:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
@@ -78158,7 +77954,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":138,"../lib/three":176,"../utils/bind":193}],192:[function(_dereq_,module,exports){
+},{"../core/system":136,"../lib/three":174,"../utils/bind":191}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var trackedControlsUtils = _dereq_('../utils/tracked-controls');
 var utils = _dereq_('../utils');
@@ -78200,7 +77996,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":138,"../utils":199,"../utils/tracked-controls":203}],193:[function(_dereq_,module,exports){
+},{"../core/system":136,"../utils":197,"../utils/tracked-controls":201}],191:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -78217,7 +78013,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],194:[function(_dereq_,module,exports){
+},{}],192:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -78306,7 +78102,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":195,"object-assign":26}],195:[function(_dereq_,module,exports){
+},{"./debug":193,"object-assign":26}],193:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -78403,7 +78199,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":34,"debug":8,"object-assign":26}],196:[function(_dereq_,module,exports){
+},{"_process":34,"debug":8,"object-assign":26}],194:[function(_dereq_,module,exports){
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
@@ -78509,7 +78305,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"../lib/three":176,"_process":34}],197:[function(_dereq_,module,exports){
+},{"../lib/three":174,"_process":34}],195:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -78552,7 +78348,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],198:[function(_dereq_,module,exports){
+},{}],196:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -78568,7 +78364,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],199:[function(_dereq_,module,exports){
+},{}],197:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -78841,7 +78637,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":193,"./coordinates":194,"./debug":195,"./device":196,"./entity":197,"./forceCanvasResizeSafariMobile":198,"./material":200,"./src-loader":201,"./styleParser":202,"./tracked-controls":203,"deep-assign":10,"object-assign":26}],200:[function(_dereq_,module,exports){
+},{"./bind":191,"./coordinates":192,"./debug":193,"./device":194,"./entity":195,"./forceCanvasResizeSafariMobile":196,"./material":198,"./src-loader":199,"./styleParser":200,"./tracked-controls":201,"deep-assign":10,"object-assign":26}],198:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -78996,7 +78792,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":176}],201:[function(_dereq_,module,exports){
+},{"../lib/three":174}],199:[function(_dereq_,module,exports){
 /* global Image */
 var debug = _dereq_('./debug');
 
@@ -79128,7 +78924,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":195}],202:[function(_dereq_,module,exports){
+},{"./debug":193}],200:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -79188,7 +78984,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":37}],203:[function(_dereq_,module,exports){
+},{"style-attr":37}],201:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 
@@ -79309,7 +79105,7 @@ module.exports.emitIfAxesChanged = function (self, axesMapping, evt) {
   });
 };
 
-},{"../constants":119}],204:[function(_dereq_,module,exports){
+},{"../constants":117}],202:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -79484,7 +79280,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],205:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -79963,7 +79759,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],206:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -80228,7 +80024,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],207:[function(_dereq_,module,exports){
+},{}],205:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -80683,7 +80479,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],208:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80745,7 +80541,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],209:[function(_dereq_,module,exports){
+},{}],207:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80821,6 +80617,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":208}]},{},[174])(174)
+},{"./util.js":206}]},{},[172])(172)
 });
 //# sourceMappingURL=aframe-master.js.map
