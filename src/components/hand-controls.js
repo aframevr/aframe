@@ -52,6 +52,8 @@ module.exports.Component = registerComponent('hand-controls', {
     // Active buttons populated by events provided by oculus-touch-controls and vive-controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
+    this.loader = new THREE.ObjectLoader();
+    this.loader.setCrossOrigin('anonymous');
 
     this.onGripDown = function () { self.handleButton('grip', 'down'); };
     this.onGripUp = function () { self.handleButton('grip', 'up'); };
@@ -81,6 +83,14 @@ module.exports.Component = registerComponent('hand-controls', {
 
   pause: function () {
     this.removeEventListeners();
+  },
+
+  tick: function (time, delta) {
+    var mesh = this.el.getObject3D('mesh');
+
+    if (!mesh) { return; }
+
+    mesh.mixer.update(delta / 1000);
   },
 
   addEventListeners: function () {
@@ -143,7 +153,7 @@ module.exports.Component = registerComponent('hand-controls', {
    * Update handler. More like the `init` handler since the only property is the hand, and
    * that won't be changing much.
    */
-  update: function () {
+  update: function (previousHand) {
     var controlConfiguration;
     var el = this.el;
     var hand = this.data;
@@ -158,7 +168,18 @@ module.exports.Component = registerComponent('hand-controls', {
     el.setAttribute('oculus-touch-controls', controlConfiguration);
 
     // Set model.
-    el.setAttribute('blend-character-model', MODEL_URLS[hand]);
+    if (hand !== previousHand) {
+      this.loader.load(MODEL_URLS[hand], function (scene) {
+        var mesh = scene.getObjectByName('Hand');
+        mesh.material.skinning = true;
+        mesh.mixer = new THREE.AnimationMixer(mesh);
+        el.setObject3D('mesh', mesh);
+      });
+    }
+  },
+
+  remove: function () {
+    this.el.removeObject3D('mesh');
   },
 
   /**
@@ -288,22 +309,24 @@ module.exports.Component = registerComponent('hand-controls', {
     toAction.loop = THREE.PingPong;
     toAction.repetitions = 0;
     toAction.timeScale = reverse ? -1 : 1;
+    toAction.weight = 1;
 
     // No gesture to gesture or gesture to no gesture.
     if (!lastGesture || gesture === lastGesture) {
       // Stop all current animations.
-      mesh.stopAll();
+      mesh.mixer.stopAllAction();
 
       // Play animation.
-      mesh.play(gesture, 1);
+      toAction.play();
       return;
     }
 
     // Animate or crossfade from gesture to gesture.
     fromAction = mesh.mixer.clipAction(lastGesture);
     mesh.mixer.stopAllAction();
-    mesh.play(lastGesture, 0.15);
-    mesh.play(gesture, 1);
+    fromAction.weight = 0.15;
+    fromAction.play();
+    toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
   }
 });
