@@ -85,12 +85,12 @@ module.exports.Component = registerComponent('hand-controls', {
     this.removeEventListeners();
   },
 
-  tick: function (t, dt) {
+  tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
 
     if (!mesh) { return; }
 
-    mesh.mixer.update(dt / 1000);
+    mesh.mixer.update(delta / 1000);
   },
 
   addEventListeners: function () {
