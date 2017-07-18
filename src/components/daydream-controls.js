@@ -72,6 +72,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -83,6 +84,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = false;
   },
 
   checkIfControllerPresent: function () {
