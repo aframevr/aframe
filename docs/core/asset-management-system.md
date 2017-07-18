@@ -46,7 +46,7 @@ entities using selectors:
   </a-assets>
 
   <!-- Scene. -->
-  <a-plane src="advertisement"></a-plane>
+  <a-plane src="#advertisement"></a-plane>
   <a-sound src="#neigh"></a-sound>
   <a-entity geometry="primitive: plane" material="src: #kentucky-derby"></a-entity>
   <a-entity mixin="giant" obj-model="obj: #horse-obj; mtl: #horse-mtl"></a-entity>
@@ -115,7 +115,7 @@ network is slow.
   <a-assets timeout="10000">
     <!-- You got until the count of 10 to load else the show will go on without you. -->
     <img src="bigimage.png">
-  </a-asset>
+  </a-assets>
 </a-scene>
 ```
 
