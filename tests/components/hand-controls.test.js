@@ -17,7 +17,6 @@ suite('hand-controls', function () {
 
   suite('update', function () {
     test('injects oculus-touch-controls and vive-controls', function () {
-      assert.ok(el.components['blend-character-model']);
       assert.ok(el.components['oculus-touch-controls']);
       assert.ok(el.components['vive-controls']);
     });
