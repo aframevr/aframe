@@ -65590,6 +65590,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -65601,6 +65602,7 @@ module.exports.Component = registerComponent('daydream-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    this.controllerEventsActive = false;
   },
 
   checkIfControllerPresent: function () {
@@ -65795,7 +65797,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
-
+    this.controllerEventsActive = true;
     this.addControllersUpdateListener();
   },
 
@@ -65808,7 +65810,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
-
+    this.controllerEventsActive = false;
     this.removeControllersUpdateListener();
   },
 
@@ -67979,6 +67981,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.addEventListener('touchend', this.onButtonTouchEnd);
     el.addEventListener('axismove', this.onAxisMoved);
     el.addEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -67990,6 +67993,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('axismove', this.onAxisMoved);
     el.removeEventListener('model-loaded', this.onModelLoaded);
+    this.controllerEventsActive = false;
   },
 
   checkIfControllerPresent: function () {
@@ -70533,6 +70537,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    this.controlllerEventsActive = true;
   },
 
   removeEventListeners: function () {
@@ -70544,6 +70549,7 @@ module.exports.Component = registerComponent('vive-controls', {
     el.removeEventListener('touchstart', this.onButtonTouchStart);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    this.controlllerEventsActive = false;
   },
 
   /**
@@ -76503,7 +76509,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 18-07-2017, Commit #251271e)');
+console.log('A-Frame Version: 0.6.0 (Date 18-07-2017, Commit #20cd40a)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79012,9 +79018,10 @@ module.exports.getGamepadsByPrefix = function (idPrefix) {
 };
 
 /**
- * Check if the controller match the parameters and inject the tracked-controls component
- * and add eventlistener, otherwise it will just remove the listener.
- * It will also generate a controllerconnected or controllerdisconnected.
+ * Called on controller component `.play` handlers.
+ * Check if controller matches parameters and inject tracked-controls component.
+ * Handle event listeners.
+ * Generate controllerconnected or controllerdisconnected events.
  *
  * @param {object} component - the tracked controls component.
  * @param {object} idPrefix - prefix to match in gamepad id, if any.
@@ -79024,8 +79031,16 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
   var el = component.el;
   var isPresent = isControllerPresent(component, idPrefix, queryObject);
 
+  // If component was previously paused and now playing, re-add event listeners.
+  // Handle the event listeners here since this helper method is control of calling
+  // `.addEventListeners` and `.removeEventListeners`.
+  if (component.controllerPresent && !component.controllerEventsActive) {
+    component.addEventListeners();
+  }
+
   // Nothing changed, no need to do anything.
   if (isPresent === component.controllerPresent) { return isPresent; }
+
   component.controllerPresent = isPresent;
 
   // Update controller presence.
