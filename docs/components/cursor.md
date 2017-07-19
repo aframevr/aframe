@@ -20,7 +20,7 @@ cursor for all controllers.
 
 The cursor component listens to events and keeps state on what's being hovered
 and pressed in order to provide `mousedown`, `mouseup`, `mouseenter`,
-`mouseleave`, and `click` events. We name use the `mouse` name to mimic
+`mouseleave`, and `click` events. We use the name `mouse` to mimic
 traditional web development for now. Under the hood, the cursor component uses
 the `raycaster-intersected` and `raycaster-intersection-cleared` events,
 capturing the closest visible intersected entity.
