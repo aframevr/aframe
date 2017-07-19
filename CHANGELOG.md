@@ -1,17 +1,21 @@
-## 0.6.1 (July 17, 2017)
+## 0.6.1 (July 18, 2017)
 
-### Bug fixes
+Bug fixes, support for Firefox on Android, mouse-based cursor, enable motion
+capture developer tools in the Inspector.
 
-- Store oldData after building component data. undefined passed to update on component initialization (#2840)
-- Set this.oldData before calling update to enable recursive setAttribute within the updat method (#2871)
-- Wait for entities to load when the a-node has not been yet initialized (#2873)
-- Add a mouse based cursor / raycaster and applies to the link traversal example (#2861)
-- Bumps polyfill that fixes Firefox for Android tracking issue (#2865)
-- Use attribute for animation color as "from" if "from" is not defined (#2855)
-- Replace BlendCharacter dep with ObjectLoader (#2876)
-- Re-add controller events after unpausing scene (fixes #2879)
-- Pivot should respond to entityEl.setAttribute (#2852)
-- fix line component being applied in raycaster when disabled
+### Enhancements
+
+- Add a mouse-based cursor / raycaster, apply to the link traversal example. (#2861)
+- Replace BlendCharacter dependency with ObjectLoader for hand-controls component. (#2876)
+
+### Bug Fixes
+
+- Fix component updates when reusing same object by storing oldData after building component data. Pass undefined as oldData on component initialization for single-prop components. (#2840, #2871)
+- More reliable entity loading order by checking against list of registered elements. (#2873)
+- Bump polyfill that fixes Firefox for Android tracking issue. (#2865)
+- Use attribute for animation color as `from` if `from` is not defined. (#2855)
+- Re-add controller events after unpausing scene. (#2879)
+- Fix line component being applied in raycaster when disabled.
 
 ## 0.6.0 (June 29, 2017)
 
