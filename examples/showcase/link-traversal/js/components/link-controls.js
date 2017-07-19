@@ -163,16 +163,16 @@ AFRAME.registerComponent('link-controls', {
   },
 
   play: function () {
-    var el = this.el;
-    el.addEventListener('mouseenter', this.onMouseEnter);
-    el.addEventListener('mouseleave', this.onMouseLeave);
+    var sceneEl = this.el.sceneEl;
+    sceneEl.addEventListener('mouseenter', this.onMouseEnter);
+    sceneEl.addEventListener('mouseleave', this.onMouseLeave);
     this.addControllerEventListeners();
   },
 
   pause: function () {
-    var el = this.el;
-    el.removeEventListener('mouseenter', this.onMouseEnter);
-    el.removeEventListener('mouseleave', this.onMouseLeave);
+    var sceneEl = this.el.sceneEl;
+    sceneEl.removeEventListener('mouseenter', this.onMouseEnter);
+    sceneEl.removeEventListener('mouseleave', this.onMouseLeave);
     this.removeControllerEventListeners();
   },
 
@@ -312,7 +312,7 @@ AFRAME.registerComponent('link-controls', {
     var previousSelectedLinkEl = this.selectedLinkEl;
     var selectedLinkEl = evt.detail.intersectedEl;
     var urlEl = this.urlEl;
-    if (previousSelectedLinkEl || selectedLinkEl.components.link === undefined) { return; }
+    if (!selectedLinkEl || previousSelectedLinkEl || selectedLinkEl.components.link === undefined) { return; }
     selectedLinkEl.setAttribute('link', 'highlighted', true);
     this.selectedLinkElPosition = selectedLinkEl.getAttribute('position');
     this.selectedLinkEl = selectedLinkEl;
@@ -325,7 +325,7 @@ AFRAME.registerComponent('link-controls', {
   onMouseLeave: function (evt) {
     var selectedLinkEl = this.selectedLinkEl;
     var urlEl = this.urlEl;
-    if (!selectedLinkEl) { return; }
+    if (!selectedLinkEl || !evt.detail.intersectedEl) { return; }
     selectedLinkEl.setAttribute('link', 'highlighted', false);
     this.selectedLinkEl = undefined;
     if (!urlEl) { return; }

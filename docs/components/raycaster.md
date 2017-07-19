@@ -59,6 +59,8 @@ AFRAME.registerComponent('collider-check', {
 | origin    | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                            | 0, 0, 0       |
 | recursive | Checks all children of objects if set. Else only checks intersections with root objects.                                                              | true          |
 | showLine  | Whether or not to display the raycaster visually with the [line component][line].                                                                                         | false          |
+| useWorldCoordinates  | Whether the raycaster origin and direction properties are specified in world coordinates.
+.                                                                                         | false          |
 
 ## Events
 
