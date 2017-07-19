@@ -18,7 +18,7 @@
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
-    "prerelease": "node scripts/release.js 0.5.0 0.6.0",
+    "prerelease": "node scripts/release.js 0.6.0 0.6.1",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
     "test:docs": "node scripts/docsLint.js",

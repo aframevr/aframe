@@ -47,7 +47,7 @@ We can also load assets by specifying the path directly within `url()`. Note thi
 
 ## Troubleshooting
 
-See [Introduction → 3D Models → Troubleshooting](https://aframe.io/docs/0.6.0/introduction/models.html#troubleshooting).
+See [Introduction → 3D Models → Troubleshooting](https://aframe.io/docs/0.6.1/introduction/models.html#troubleshooting).
 
 ## Additional Resources
 
