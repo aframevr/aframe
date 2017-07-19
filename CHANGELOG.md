@@ -1,9 +1,18 @@
+## 0.6.1 (July 17, 2017)
+
+### Bug fixes
+
+- Store oldData after building component data. undefined passed to update on component initialization (#2840)
+- Set this.oldData before calling update to enable recursive setAttribute within the updat method (#2871)
+- Wait for entities to load when the a-node has not been yet initialized (#2873)
+- Add a mouse based cursor / raycaster and applies to the link traversal example (#2861)
+
 ## 0.6.0 (June 29, 2017)
 
-Link traversal for navigating from page to page while staying in VR. Support
-for VR controllers across the board with the addition of Daydream and GearVR
-controller components as well as laser interactions. Large performance
-improvements around `.getAttribute` and `.setAttribute`.
+- Link traversal for navigating from page to page while staying in VR. Support
+- for VR controllers across the board with the addition of Daydream and GearVR
+- controller components as well as laser interactions. Large performance
+- improvements around `.getAttribute` and `.setAttribute`.
 
 ### Major Changes
 
