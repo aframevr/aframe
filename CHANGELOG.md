@@ -6,6 +6,12 @@
 - Set this.oldData before calling update to enable recursive setAttribute within the updat method (#2871)
 - Wait for entities to load when the a-node has not been yet initialized (#2873)
 - Add a mouse based cursor / raycaster and applies to the link traversal example (#2861)
+- Bumps polyfill that fixes Firefox for Android tracking issue (#2865)
+- Use attribute for animation color as "from" if "from" is not defined (#2855)
+- Replace BlendCharacter dep with ObjectLoader (#2876)
+- Re-add controller events after unpausing scene (fixes #2879)
+- Pivot should respond to entityEl.setAttribute (#2852)
+- fix line component being applied in raycaster when disabled
 
 ## 0.6.0 (June 29, 2017)
 
