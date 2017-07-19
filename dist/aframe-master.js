@@ -64930,7 +64930,7 @@ function extend() {
 },{}],77:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -65269,6 +65269,7 @@ module.exports.Component = registerComponent('collada-model', {
 });
 
 },{"../core/component":126,"../lib/three":174}],80:[function(_dereq_,module,exports){
+/* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -65308,7 +65309,8 @@ module.exports.Component = registerComponent('cursor', {
     downEvents: {default: []},
     fuse: {default: utils.device.isMobile()},
     fuseTimeout: {default: 1500, min: 0},
-    upEvents: {default: []}
+    upEvents: {default: []},
+    rayOrigin: {default: 'entity', oneOf: ['mouse', 'entity']}
   },
 
   init: function () {
@@ -65322,6 +65324,12 @@ module.exports.Component = registerComponent('cursor', {
     this.onCursorUp = bind(this.onCursorUp, this);
     this.onIntersection = bind(this.onIntersection, this);
     this.onIntersectionCleared = bind(this.onIntersectionCleared, this);
+    this.onMouseMove = bind(this.onMouseMove, this);
+  },
+
+  update: function (oldData) {
+    if (this.data.rayOrigin === oldData.rayOrigin) { return; }
+    this.updateMouseEventListeners();
   },
 
   play: function () {
@@ -65389,7 +65397,37 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+    window.removeEventListener('mousemove', this.onMouseMove);
   },
+
+  updateMouseEventListeners: function () {
+    var el = this.el;
+    window.removeEventListener('mousemove', this.onMouseMove);
+    el.setAttribute('raycaster', 'useWorldCoordinates', false);
+    if (this.data.rayOrigin !== 'mouse') { return; }
+    window.addEventListener('mousemove', this.onMouseMove, false);
+    el.setAttribute('raycaster', 'useWorldCoordinates', true);
+  },
+
+  onMouseMove: (function () {
+    var mouse = new THREE.Vector2();
+    var origin = new THREE.Vector3();
+    var direction = new THREE.Vector3();
+    var rayCasterConfig = {
+      origin: origin,
+      direction: direction
+    };
+    return function (evt) {
+      var camera = this.el.sceneEl.camera;
+      camera.parent.updateMatrixWorld();
+      camera.updateMatrixWorld();
+      mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
+      origin.setFromMatrixPosition(camera.matrixWorld);
+      direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
+      this.el.setAttribute('raycaster', rayCasterConfig);
+    };
+  })(),
 
   /**
    * Trigger mousedown and keep track of the mousedowned entity.
@@ -68177,7 +68215,8 @@ module.exports.Component = registerComponent('raycaster', {
     objects: {default: ''},
     origin: {type: 'vec3'},
     recursive: {default: true},
-    showLine: {default: false}
+    showLine: {default: false},
+    useWorldCoordinates: {default: false}
   },
 
   init: function () {
@@ -68375,6 +68414,11 @@ module.exports.Component = registerComponent('raycaster', {
     return function updateOriginDirection () {
       var el = this.el;
       var data = this.data;
+
+      if (data.useWorldCoordinates) {
+        this.raycaster.set(data.origin, data.direction);
+        return;
+      }
 
       // Grab the position and rotation.
       el.object3D.updateMatrixWorld();
@@ -76509,7 +76553,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.0 (Date 19-07-2017, Commit #927fca2)');
+console.log('A-Frame Version: 0.6.1 (Date 19-07-2017, Commit #a4b91bc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
