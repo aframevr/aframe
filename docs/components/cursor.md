@@ -82,6 +82,7 @@ AFRAME.registerComponent('cursor-listener', {
 | downEvents  | Array of additional events on the entity to *listen* to for triggering `mousedown` (e.g., `triggerdown` for vive-controls).  | []                               |
 | fuse        | Whether cursor is fuse-based.                                                                                              | false on desktop, true on mobile |
 | fuseTimeout | How long to wait (in milliseconds) before triggering a fuse-based click event.                                             | 1500                             |
+| rayOrigin     | Where the intersection ray is cast from (i.e.,entity or mouse) | entity
 | upEvents    | Array of additional events on the entity to *listen* to for triggering `mouseup` (e.g., `trackpadup` for daydream-controls). | []                               |
 
 To further customize the cursor component, we configure the cursor's dependency

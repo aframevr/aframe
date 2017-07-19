@@ -2,16 +2,17 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Room Scale</title>
+    <title>Links</title>
     <meta name="description" content="Motion Capture Components – A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
     <script src="js/components/aframe-tooltip-component.js"></script>
+    <script src="js/components/camera-position.js"></script>
     <script src="js/components/ground.js"></script>
     <script src="js/components/link-controls.js"></script>
     <script src="shaders/skyGradient.js"></script>
   </head>
   <body>
-    <a-scene>
+    <a-scene raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse" camera-position>
       <a-assets>
         <img id="arena" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/aframeArena.png">
         <img id="thumbCity" crossOrigin="anonymous" src="https://cdn.aframe.io/link-traversal/thumbs/city.png">
