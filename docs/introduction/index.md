@@ -131,7 +131,7 @@ clone built in A-Frame that runs like native (90+ FPS).
 
 :hammer: **Tool Agnostic**: Since the Web was built on the notion of HTML,
 A-Frame is compatible with most libraries, frameworks, and tools including
-[React], [Preact], [Vue.js], [Angular], [d3.js], [Ember.js], [jQuery].
+[React], [Preact], [Vue.js], [d3.js], [Ember.js], [jQuery].
 
 [inspector]: ./visual-inspector-and-dev-tools.md
 
