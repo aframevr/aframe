@@ -34,7 +34,7 @@ both in content and from the browser.
 
 The default UX of the link component as a portal can be interacted with using a
 cursor or controllers. This is not provided directly in the A-Frame core, but
-there is a [link-controls component in the A-Frame examples]. This component
+there is a [link-controls component in the A-Frame examples][link-controls]. This component
 shows tooltips and provides button mappings for peeking and entering portals.
 
 ## Example
