@@ -6,7 +6,7 @@ parent_section: components
 source_code: src/components/raycaster.js
 ---
 
-[3ray]: http://threejs.org/docs/#Reference/Core/Raycaster
+[3ray]: https://threejs.org/docs/#api/core/Raycaster
 [line]: ./line.md
 [wiki-raycasting]: https://en.wikipedia.org/wiki/Ray_casting
 
@@ -60,7 +60,7 @@ AFRAME.registerComponent('collider-check', {
 | recursive | Checks all children of objects if set. Else only checks intersections with root objects.                                                              | true          |
 | showLine  | Whether or not to display the raycaster visually with the [line component][line].                                                                                         | false          |
 | useWorldCoordinates  | Whether the raycaster origin and direction properties are specified in world coordinates.
-.                                                                                         | false          |
+                                                                                          | false          |
 
 ## Events
 
