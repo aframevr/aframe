@@ -103,6 +103,7 @@ sky).
 
 | Property    | Description             | Default Value |
 |-------------|-------------------------|---------------|
+| color       | Light color from above. | #fff          |
 | groundColor | Light color from below. | #fff          |
 
 ### Point
