@@ -503,7 +503,7 @@ blocks on mobile and desktop, without changing a thing about the component!
 
 > [Read the source code on GitHub][github].
 
-On desktop, we can drag and click to spawn blacks. On mobile, we can pan the
+On desktop, we can drag and click to spawn blocks. On mobile, we can pan the
 device around and tap to spawn blocks. If we have a VR headset (e.g., HTC Vive,
 Oculus Rift + Touch), we can grab a [WebVR-enabled browser][rocks] and [head
 over to the demo][demo]. Try it in VR by plugging in an HTC Vive or Oculus Rift
