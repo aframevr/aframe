@@ -96,6 +96,8 @@ These properties are available on top of the base material properties.
 | displacementBias              | The zero point of the displacement map.                                                                                                         | 0.5           |
 | displacementTextureRepeat     | How many times the displacement texture repeats in the X and Y direction.                                                                       | 1 1           |
 | displacementTextureOffset     | How the displacement texture is offset in the x y direction.                                                                                    | 0 0           |
+| emissive                      | The color of the emissive lighting component. Used to make objects produce light even without other lighting in the scene.                      | #000
+| emissiveIntensity             | Intensity of the emissive lighting component.                                                                                                   | 1
 | height                        | Height of video (in pixels), if defining a video texture.                                                                                       | 360           |
 | envMap                        | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                | None          |
 | fog                           | Whether or not material is affected by [fog][fog].                                                                                              | true          |
