@@ -76553,7 +76553,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 19-07-2017, Commit #83eb39b)');
+console.log('A-Frame Version: 0.6.1 (Date 26-07-2017, Commit #2710698)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -76997,6 +76997,8 @@ module.exports.Shader = registerShader('standard', {
     displacementBias: {default: 0.5},
     displacementTextureOffset: {type: 'vec2'},
     displacementTextureRepeat: {type: 'vec2', default: {x: 1, y: 1}},
+    emissive: {type: 'color', default: '#000'},
+    emissiveIntensity: {default: 1},
     envMap: {default: ''},
 
     fog: {default: true},
@@ -77118,6 +77120,8 @@ module.exports.Shader = registerShader('standard', {
 function getMaterialData (data) {
   var newData = {
     color: new THREE.Color(data.color),
+    emissive: new THREE.Color(data.emissive),
+    emissiveIntensity: data.emissiveIntensity,
     fog: data.fog,
     metalness: data.metalness,
     roughness: data.roughness,
