@@ -6,8 +6,10 @@ var THREE = require('index').THREE;
 var IMG_SRC = '/base/tests/assets/test.png';
 
 suite('material', function () {
+  var el;
+
   setup(function (done) {
-    var el = this.el = entityFactory();
+    el = entityFactory();
     this.sinon = sinon.sandbox.create();
     el.setAttribute('material', 'shader: flat');
     if (el.hasLoaded) { done(); }
@@ -18,11 +20,10 @@ suite('material', function () {
 
   suite('update', function () {
     test('creates material', function () {
-      assert.ok(this.el.getObject3D('mesh').material);
+      assert.ok(el.getObject3D('mesh').material);
     });
 
     test('updates material', function () {
-      var el = this.el;
       el.setAttribute('material', 'color: #F0F; side: double');
       assert.shallowDeepEqual(el.getObject3D('mesh').material.color,
                              {r: 1, g: 0, b: 1});
@@ -30,14 +31,12 @@ suite('material', function () {
     });
 
     test('updates material shader', function () {
-      var el = this.el;
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
       el.setAttribute('material', 'shader', 'standard');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
     test('disposes material when changing to new material', function () {
-      var el = this.el;
       var material = el.getObject3D('mesh').material;
       var disposeSpy = this.sinon.spy(material, 'dispose');
       el.setAttribute('material', 'shader', 'standard');
@@ -45,34 +44,30 @@ suite('material', function () {
     });
 
     test('defaults to standard material', function () {
-      this.el.removeAttribute('material'); // setup creates a non-default component
-      this.el.setAttribute('material', '');
-      assert.equal(this.el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
+      el.removeAttribute('material'); // setup creates a non-default component
+      el.setAttribute('material', '');
+      assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
     test('does not recreate material for basic updates', function () {
-      var el = this.el;
       var uuid = el.getObject3D('mesh').material.uuid;
       el.setAttribute('material', 'color', '#F0F');
       assert.equal(el.getObject3D('mesh').material.uuid, uuid);
     });
 
     test('can toggle material to flat shading', function () {
-      var el = this.el;
       el.setAttribute('material', 'shader: flat');
       el.setAttribute('material', 'shader: standard');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshStandardMaterial');
     });
 
     test('can unset fog', function () {
-      var el = this.el;
       assert.ok(el.getObject3D('mesh').material.fog);
       el.setAttribute('material', 'fog', false);
       assert.notOk(el.getObject3D('mesh').material.fog);
     });
 
     test('emits event when loading texture', function (done) {
-      var el = this.el;
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
@@ -85,7 +80,6 @@ suite('material', function () {
     });
 
     test('removes texture when src attribute removed', function (done) {
-      var el = this.el;
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
@@ -100,7 +94,6 @@ suite('material', function () {
     });
 
     test('removes texture when src attribute is empty string', function (done) {
-      var el = this.el;
       var imageUrl = 'base/tests/assets/test.png';
       el.setAttribute('material', '');
       assert.notOk(el.components.material.material.texture);
@@ -115,7 +108,6 @@ suite('material', function () {
     });
 
     test('does not invoke XHR if passing <img>', function (done) {
-      var el = this.el;
       var assetsEl = document.createElement('a-assets');
       var img = document.createElement('img');
       var imageLoaderSpy = this.sinon.spy(THREE.ImageLoader.prototype, 'load');
@@ -137,7 +129,6 @@ suite('material', function () {
     });
 
     test('invokes XHR if <img> not cached', function (done) {
-      var el = this.el;
       var textureLoaderSpy = this.sinon.spy(THREE.TextureLoader.prototype, 'load');
       el.addEventListener('materialtextureloaded', function () {
         assert.ok(textureLoaderSpy.called);
@@ -149,7 +140,6 @@ suite('material', function () {
     });
 
     test('sets material to MeshShaderMaterial for custom shaders', function () {
-      var el = this.el;
       delete shaders.test;
       AFRAME.registerShader('test', {});
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
@@ -160,7 +150,6 @@ suite('material', function () {
 
   suite('updateSchema', function () {
     test('updates schema for flat shader', function () {
-      var el = this.el;
       el.components.material.updateSchema({shader: 'flat'});
       assert.ok(el.components.material.schema.color);
       assert.ok(el.components.material.schema.fog);
@@ -174,7 +163,6 @@ suite('material', function () {
     });
 
     test('updates schema for custom shader', function () {
-      var el = this.el;
       delete shaders.test;
       AFRAME.registerShader('test', {
         schema: {
@@ -192,14 +180,12 @@ suite('material', function () {
 
   suite('remove', function () {
     test('removes material', function () {
-      var el = this.el;
       assert.ok(el.getObject3D('mesh').material);
       el.removeAttribute('material');
       assert.equal(el.getObject3D('mesh').material.type, 'MeshBasicMaterial');
     });
 
     test('disposes material', function () {
-      var el = this.el;
       var material = el.getObject3D('mesh').material;
       var disposeSpy = this.sinon.spy(material, 'dispose');
       el.removeAttribute('material');
@@ -218,23 +204,20 @@ suite('material', function () {
     });
 
     test('defaults to front side', function () {
-      assert.equal(this.el.getObject3D('mesh').material.side, THREE.FrontSide);
+      assert.equal(el.getObject3D('mesh').material.side, THREE.FrontSide);
     });
 
     test('can be set to back', function () {
-      var el = this.el;
       el.setAttribute('material', 'side: back');
       assert.equal(el.getObject3D('mesh').material.side, THREE.BackSide);
     });
 
     test('can be set to double', function () {
-      var el = this.el;
       el.setAttribute('material', 'side: double');
       assert.equal(el.getObject3D('mesh').material.side, THREE.DoubleSide);
     });
 
     test('sets material.needsUpdate true if side switchs from/to double', function () {
-      var el = this.el;
       el.setAttribute('material', 'side: front');
       el.getObject3D('mesh').material.needsUpdate = false;
       el.setAttribute('material', 'side: double');
@@ -247,7 +230,6 @@ suite('material', function () {
 
   suite('transparent', function () {
     test('can set transparent', function () {
-      var el = this.el;
       assert.notOk(el.getObject3D('mesh').material.transparent);
       el.setAttribute('material', 'opacity: 1; transparent: true');
       assert.equal(el.getObject3D('mesh').material.opacity, 1);
@@ -255,14 +237,12 @@ suite('material', function () {
     });
 
     test('can be set to false', function () {
-      var el = this.el;
       el.setAttribute('material', 'opacity: 1; transparent: false');
       assert.equal(el.getObject3D('mesh').material.opacity, 1);
       assert.notOk(el.getObject3D('mesh').material.transparent);
     });
 
     test('is inferred if opacity is less than 1', function () {
-      var el = this.el;
       assert.notOk(el.getObject3D('mesh').material.transparent);
       el.setAttribute('material', 'opacity: 0.75');
       assert.equal(el.getObject3D('mesh').material.opacity, 0.75);
@@ -272,7 +252,6 @@ suite('material', function () {
 
   suite('depthTest', function () {
     test('can be set to false', function () {
-      var el = this.el;
       assert.ok(el.getObject3D('mesh').material.depthTest);
       el.setAttribute('material', 'depthTest: false');
       assert.equal(el.getObject3D('mesh').material.depthTest, 0);
@@ -281,7 +260,6 @@ suite('material', function () {
 
   suite('depthWrite', function () {
     test('can be set to false', function () {
-      var el = this.el;
       assert.ok(el.getObject3D('mesh').material.depthWrite);
       el.setAttribute('material', 'depthWrite: false');
       assert.equal(el.getObject3D('mesh').material.depthWrite, 0);
@@ -290,14 +268,12 @@ suite('material', function () {
 
   suite('alphaTest', function () {
     test('can be updated', function () {
-      var el = this.el;
       assert.equal(el.getObject3D('mesh').material.alphaTest, 0);
       el.setAttribute('material', 'alphaTest: 1.0');
       assert.equal(el.getObject3D('mesh').material.alphaTest, 1);
     });
 
     test('sets material.needsUpdate true if alphaTest is updated', function () {
-      var el = this.el;
       el.setAttribute('material', 'alphaTest: 0.0');
       el.getObject3D('mesh').material.needsUpdate = false;
       assert.equal(el.getObject3D('mesh').material.needsUpdate, 0);
@@ -306,8 +282,26 @@ suite('material', function () {
     });
   });
 
+  suite('vertexColor', function () {
+    test('defaults to no color', function () {
+      assert.equal(el.getAttribute('material').vertexColors, 'none');
+      assert.equal(el.components.material.material.vertexColors, THREE.NoColors);
+    });
+
+    test('can set to vertex color', function () {
+      el.setAttribute('material', 'vertexColors', 'vertex');
+      assert.equal(el.components.material.material.vertexColors, THREE.VertexColors);
+      assert.ok(el.components.material.material.needsUpdate);
+    });
+
+    test('can set to face color', function () {
+      el.setAttribute('material', 'vertexColors', 'face');
+      assert.equal(el.components.material.material.vertexColors, THREE.FaceColors);
+      assert.ok(el.components.material.material.needsUpdate);
+    });
+  });
+
   test('can set visible to false', function () {
-    var el = this.el;
     assert.ok(el.getObject3D('mesh').material.visible);
     el.setAttribute('material', 'visible: false');
     assert.notOk(el.getObject3D('mesh').material.visible);

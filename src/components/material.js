@@ -18,18 +18,19 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
+    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     depthTest: {default: true},
     depthWrite: {default: true},
-    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     flatShading: {default: false},
+    npot: {default: false},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     shader: {default: 'standard', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
-    visible: {default: true},
-    offset: {type: 'vec2', default: {x: 0, y: 0}},
-    repeat: {type: 'vec2', default: {x: 1, y: 1}},
-    npot: {default: false}
+    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
+    visible: {default: true}
   },
 
   init: function () {
@@ -47,7 +48,7 @@ module.exports.Component = registerComponent('material', {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);
-    this.updateMaterial();
+    this.updateMaterial(oldData);
   },
 
   updateSchema: function (data) {
@@ -102,25 +103,32 @@ module.exports.Component = registerComponent('material', {
     this.updateSchema(data);
   },
 
-  updateMaterial: function () {
+  /**
+   * Set and update base material properties.
+   * Set `needsUpdate` when needed.
+   */
+  updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
-    var needsUpdate = false;
-    var side = parseSide(data.side);
-    if (material.side === THREE.DoubleSide && side !== THREE.DoubleSide ||
-      material.side !== THREE.DoubleSide && side === THREE.DoubleSide) {
-      needsUpdate = true;
-    }
-    material.side = side;
-    material.opacity = data.opacity;
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
+
+    // Base material properties.
+    material.alphaTest = data.alphaTest;
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
+    material.opacity = data.opacity;
     material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.side = parseSide(data.side);
+    material.transparent = data.transparent !== false || data.opacity < 1.0;
+    material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
-    if (data.alphaTest !== material.alphaTest) { needsUpdate = true; }
-    material.alphaTest = data.alphaTest;
-    if (needsUpdate) { material.needsUpdate = true; }
+
+    // Check if material needs update.
+    if (Object.keys(oldData).length &&
+        (oldData.alphaTest !== data.alphaTest ||
+         oldData.side !== data.side ||
+         oldData.vertexColors !== data.vertexColors)) {
+      material.needsUpdate = true;
+    }
   },
 
   /**
@@ -153,7 +161,7 @@ module.exports.Component = registerComponent('material', {
 });
 
 /**
- * Returns a three.js constant determining which material face sides to render
+ * Return a three.js constant determining which material face sides to render
  * based on the side parameter (passed as a component property).
  *
  * @param {string} [side=front] - `front`, `back`, or `double`.
@@ -170,6 +178,23 @@ function parseSide (side) {
     default: {
       // Including case `front`.
       return THREE.FrontSide;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining vertex coloring.
+ */
+function parseVertexColors (coloring) {
+  switch (coloring) {
+    case 'face': {
+      return THREE.FaceColors;
+    }
+    case 'vertex': {
+      return THREE.VertexColors;
+    }
+    default: {
+      return THREE.NoColors;
     }
   }
 }
