@@ -116,11 +116,22 @@ module.exports.AScene = registerElement('a-scene', {
         this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
         window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
 
+        // bind functions
+        this.enterVRBound = function () { self.enterVR(); };
+        this.exitVRBound = function () { self.exitVR(); };
+        this.exitVRTrueBound = function () { self.exitVR(true); };
+
         // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', function () { self.enterVR(); });
+        window.addEventListener('vrdisplayactivate', this.enterVRBound);
 
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-        window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); });
+        window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
+
+        // Enter VR on `vrdisplayconnect` (e.g. plugging on Rift headset).
+        window.addEventListener('vrdisplayconnect', this.enterVRBound);
+
+        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
       },
       writable: window.debug
     },
@@ -163,6 +174,10 @@ module.exports.AScene = registerElement('a-scene', {
         scenes.splice(sceneIndex, 1);
 
         window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+        window.removeEventListener('vrdisplayactivate', this.enterVRBound);
+        window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
+        window.removeEventListener('vrdisplayconnect', this.enterVRBound);
+        window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
       }
     },
 
@@ -247,7 +262,8 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to enter VR mode (`requestPresent`).');
           }
         }
-      }
+      },
+      writable: window.debug
     },
      /**
      * Call `exitPresent` if WebVR or WebVR polyfill.
@@ -296,7 +312,8 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
-      }
+      },
+      writable: window.debug
     },
 
     /**
