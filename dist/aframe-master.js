@@ -66868,7 +66868,7 @@ module.exports.Component = registerComponent('line', {
   schema: {
     start: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
     end: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-    color: {type: 'color', default: '#74BEC1'},
+    color: {type: 'color', default: '#fff'},
     opacity: {type: 'number', default: 1},
     visible: {default: true}
   },
@@ -66932,7 +66932,7 @@ module.exports.Component = registerComponent('line', {
 
 function isEqualVec3 (a, b) {
   if (!a || !b) { return false; }
-  return a.x !== b.x || a.y !== b.y || a.z !== b.z;
+  return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
 },{"../core/component":126}],90:[function(_dereq_,module,exports){
@@ -76578,7 +76578,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #b1b6c62)');
+console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #eb300f6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
