@@ -15,47 +15,6 @@ installation: true
 
 ![A-Frame](https://cloud.githubusercontent.com/assets/674727/25392020/6f011d10-298c-11e7-845e-c3c5baebd14d.jpg)
 
-## What is A-Frame?
-
-:a:-Frame is a web framework for building virtual reality (VR) experiences. As
-originators of WebVR, the [Mozilla VR team][mozvr] developed A-Frame to be the
-easiest as well as the most powerful way to develop WebVR content. As a [fully
-open project](https://github.com/aframevr/), A-Frame has grown to be one of the
-[largest and most welcoming VR communities](https://aframe.io/community/).
-
-A-Frame is based on top of HTML, making it simple to get started. But A-Frame
-is not just a 3D scene graph or a markup language; the core is a powerful
-entity-component framework that provides a declarative, extensible, and
-composable structure to [three.js].
-
-A-Frame supports most VR headsets such as Vive, Rift, Daydream, GearVR,
-Cardboard, and can even be used for augmented reality. Although A-Frame
-supports the whole spectrum, A-Frame aims to define fully immersive
-interactive VR experiences that go beyond basic 360&deg; content, making 
-full use of positional tracking and controllers. The Mozilla VR team is 
-currently using A-Frame as the foundation for a Metaverse-in-progress.
-
-<div class="docs-introduction-examples">
-  <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
-    <img alt="A-Painter" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531388/acfc3dda-156d-11e7-8563-5bd75252f70f.gif" height="190" width="32%">
-  </a>
-  <a href="https://aframe.io/a-blast/">
-    <img alt="A-Blast" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531440/0336e66e-156e-11e7-95c2-f2e6ebc0393d.gif" height="190" width="32%">
-  </a>
-  <a href="https://aframe.io/a-saturday-night/">
-    <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
-  </a>
-  <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
-    <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
-  </a>
-  <a href="https://github.com/googlecreativelab/webvr-musicalforest">
-    <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
-  </a>
-  <a href="https://aframe-gallery.glitch.me">
-    <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
-  </a>
-</div>
-
 ## Getting Started
 
 [glitch]: http://glitch.com/~aframe
@@ -88,6 +47,47 @@ free. Or create an `.html` file and include A-Frame in the `<head>`:
 The [Installation] page provides more options for getting started with A-Frame.
 To get started learning A-Frame, check out [A-Frame School][school] for
 visual step-by-step lessons to complement the documentation.
+
+## What is A-Frame?
+
+:a:-Frame is a web framework for building virtual reality (VR) experiences. As
+originators of WebVR, the [Mozilla VR team][mozvr] developed A-Frame to be the
+easiest as well as the most powerful way to develop WebVR content. As a [fully
+open project](https://github.com/aframevr/), A-Frame has grown to be one of the
+[largest and most welcoming VR communities](https://aframe.io/community/).
+
+A-Frame is based on top of HTML, making it simple to get started. But A-Frame
+is not just a 3D scene graph or a markup language; the core is a powerful
+entity-component framework that provides a declarative, extensible, and
+composable structure to [three.js].
+
+A-Frame supports most VR headsets such as Vive, Rift, Daydream, GearVR,
+Cardboard, and can even be used for augmented reality. Although A-Frame
+supports the whole spectrum, A-Frame aims to define fully immersive
+interactive VR experiences that go beyond basic 360&deg; content, making
+full use of positional tracking and controllers. The Mozilla VR team is
+currently using A-Frame as the foundation for a Metaverse-in-progress.
+
+<div class="docs-introduction-examples">
+  <a href="https://aframe.io/a-painter/?url=https://ucarecdn.com/962b242b-87a9-422c-b730-febdc470f203/">
+    <img alt="A-Painter" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531388/acfc3dda-156d-11e7-8563-5bd75252f70f.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe.io/a-blast/">
+    <img alt="A-Blast" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531440/0336e66e-156e-11e7-95c2-f2e6ebc0393d.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe.io/a-saturday-night/">
+    <img alt="A-Saturday-Night" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531477/44272daa-156e-11e7-8ef9-d750ed430f3a.gif" height="190" width="32%">
+  </a>
+  <a href="https://ngokevin.github.io/kframe/scenes/aincraft/">
+    <img alt="Aincraft" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24531777/25b8ff5e-1570-11e7-896c-3446d1419eb8.gif" height="190" width="32%">
+  </a>
+  <a href="https://github.com/googlecreativelab/webvr-musicalforest">
+    <img alt="Musical Forest by @googlecreativelab" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/25109861/b8e9ec48-2394-11e7-8f2d-ea1cd9df69c8.gif" height="190" width="32%">
+  </a>
+  <a href="https://aframe-gallery.glitch.me">
+    <img alt="360 Image Gallery" target="_blank" src="https://cloud.githubusercontent.com/assets/674727/24572552/72f81bec-162e-11e7-9851-037d0280abdb.gif" height="190" width="32%">
+  </a>
+</div>
 
 ## Features
 
