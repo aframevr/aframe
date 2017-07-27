@@ -76553,7 +76553,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 26-07-2017, Commit #2710698)');
+console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #c407ce0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -77533,14 +77533,15 @@ module.exports.System = registerSystem('light', {
     if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
       return;
     }
+
     ambientLight = document.createElement('a-entity');
-    directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
 
-    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6});
+    directionalLight = document.createElement('a-entity');
+    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6, castShadow: true});
     directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');
