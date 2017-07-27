@@ -5,7 +5,7 @@ module.exports.Component = registerComponent('line', {
   schema: {
     start: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
     end: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-    color: {type: 'color', default: '#fff'},
+    color: {type: 'color', default: '#74BEC1'},
     opacity: {type: 'number', default: 1},
     visible: {default: true}
   },
