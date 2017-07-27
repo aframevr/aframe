@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lines</title>
+    <meta name="description" content="Lines - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <style>
+    html, body { background: #333; }
+  </style>
+
+  <body>
+    <a-scene stats debug="true">
+      <a-entity position="0 0 3">
+        <a-camera user-height="0"></a-camera>
+      </a-entity>
+      <a-entity id="dynamic-color" line="start: 0 -1 0; end: 0 1 0"></a-entity>
+      <a-entity id="no-end" line="start: 1 -1 0; color: #0f0"></a-entity>
+      <a-entity id="no-start" line="end: -1 1 0; color: #f00"></a-entity>
+      <a-entity id="dynamic-position" line=""></a-entity>
+    </a-scene>
+  </body>
+  <script>
+
+    // Animate opacity.
+    var position = document.getElementById('dynamic-position');
+    var obj = {x: -1};
+    var tween = new AFRAME.TWEEN.Tween(obj)
+      .to({x: 1}, 500)
+      .repeat( Infinity )
+      .yoyo( true )
+      .onUpdate(function () {
+        position.setAttribute('line', 'end', {x: obj.x, y: 0, z: 0});
+      })
+      .start();
+
+    // Animate color.
+    var color = document.getElementById('dynamic-color');
+    setInterval(function() {
+      var randomHexColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+      color.setAttribute('line', 'color', randomHexColor);
+    }, 1000);
+
+  </script>
+</html>
