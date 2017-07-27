@@ -66868,7 +66868,7 @@ module.exports.Component = registerComponent('line', {
   schema: {
     start: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
     end: {type: 'vec3', default: {x: 0, y: 0, z: 0}},
-    color: {type: 'color', default: '#fff'},
+    color: {type: 'color', default: '#74BEC1'},
     opacity: {type: 'number', default: 1},
     visible: {default: true}
   },
@@ -76578,7 +76578,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #eb300f6)');
+console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #f1b4467)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
