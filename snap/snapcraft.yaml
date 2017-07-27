@@ -1,0 +1,22 @@
+name: aframe
+version: master
+summary: A web framework for building virtual reality experiences
+description: |
+  Make WebVR with HTML and Entity-Component
+  Works on Vive, Rift, Daydream, GearVR, desktop
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+apps:
+  aframe:
+    command: sh -c \"cd $SNAP/lib/node_modules/aframe && node ./scripts/budo -t envify\"
+    daemon: simple
+    plugs: [network, network-bind]
+
+parts:
+  aframe:
+    source: .
+    plugin: nodejs
+    node-packages: [budo]
+    install: cp -R examples $SNAPCRAFT_PART_INSTALL/lib/node_modules/aframe
