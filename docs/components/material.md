@@ -47,19 +47,20 @@ Here is an example of using an example custom material:
 The material component has some base properties. More properties are available
 depending on the material type applied.
 
-| Property    | Description                                                                                                                                       | Default Value |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| alphaTest   | Alpha test threshold for transparency.                                                                                                            | 0             |
-| depthTest   | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
-| flatShading | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
-| opacity     | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
-| transparent | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
-| shader      | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
-| side        | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
-| visible     | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
-| offset      | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
-| repeat      | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
-| npot        | Use settings for non-power-of-two (NPOT) texture.                                                                                                 | false         |
+| Property     | Description                                                                                                                                       | Default Value |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| alphaTest    | Alpha test threshold for transparency.                                                                                                            | 0             |
+| depthTest    | Whether depth testing is enabled when rendering the material.                                                                                     | true          |
+| flatShading  | Use `THREE.FlatShading` rather than `THREE.StandardShading`.                                                                                      | false         |
+| npot         | Use settings for non-power-of-two (NPOT) texture.                                                                                                 | false         |
+| offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
+| opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
+| repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
+| shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
+| side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
+| transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
+| vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
+| visible      | Whether material is visible. Raycasters will ignore invisible materials.                                                                          | true          |
 
 ## Events
 
