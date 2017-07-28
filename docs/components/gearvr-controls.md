@@ -33,7 +33,7 @@ and/or pressed buttons (trackpad, trigger).
 | buttonTouchedColor   | Button colors when touched.                        | #777777 |
 | buttonHighlightColor | Button colors when pressed and active.             | #FFFFFF |
 | hand                 | The hand that will be tracked (e.g., right, left). |         |
-| model                | Whether the Daydream controller model is loaded.   | true    |
+| model                | Whether the Gear controller model is loaded.       | true    |
 | rotationOffset       | Offset to apply to model rotation.                 | 0       |
 
 ## Events
