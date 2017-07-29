@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tracked Controls</title>
+    <meta name="description" content="Tracked Controls – A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="./components/geometry-changer.js"></script>
+</head>
+<body>
+<a-scene>
+    <a-sky color="gray"></a-sky>
+
+    <a-entity camera look-controls position="0 0 0"></a-entity>
+    <a-box position="1 1 -8" color="blue" geometry-changer></a-box>
+    <a-entity position="0 0 0" gearvr-controls>
+        <a-entity position=".1 -.1 -.275" raycaster="showLine: true; far: 100" line="color: red; opacity: 0.5">
+        </a-entity>
+    </a-entity>
+</a-scene>
+</body>
+</html>

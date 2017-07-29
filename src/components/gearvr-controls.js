@@ -22,6 +22,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
+    positionOffset: {type: 'vec3', default: null},
     rotationOffset: {default: 0}, // use -999 as sentinel value to auto-determine based on hand
     armModel: {default: true}
   },
@@ -37,6 +38,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
   // Use these labels for detail on axis events such as thumbstickmoved.
   // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
   axisLabels: ['x', 'y', 'z', 'w'],
+
+  modelEl: document.createElement('a-entity'),
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -62,6 +65,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.bindMethods();
     this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
     this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
+
+    var positionOffset = this.data.positionOffset;
+    if (Object.keys(positionOffset).length === 0 && positionOffset.constructor === Object) {
+      this.data.positionOffset = { x: this.data.hand === 'left' ? -0.1 : 0.1, y: -0.1, z: -0.275 };
+    }
+    this.modelEl.setAttribute('position', this.data.positionOffset);
+    this.el.appendChild(this.modelEl);
   },
 
   addEventListeners: function () {
@@ -71,8 +81,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.addEventListener('buttonup', this.onButtonUp);
     el.addEventListener('touchstart', this.onButtonTouchStart);
     el.addEventListener('touchend', this.onButtonTouchEnd);
-    el.addEventListener('model-loaded', this.onModelLoaded);
     el.addEventListener('axismove', this.onAxisMoved);
+    this.modelEl.addEventListener('model-loaded', this.onModelLoaded);
     this.controllerEventsActive = true;
     this.addControllersUpdateListener();
   },
@@ -86,6 +96,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     el.removeEventListener('touchend', this.onButtonTouchEnd);
     el.removeEventListener('model-loaded', this.onModelLoaded);
     el.removeEventListener('axismove', this.onAxisMoved);
+    this.modelEl.removeEventListener('model-loaded', this.onModelLoaded);
     this.controllerEventsActive = false;
     this.removeControllersUpdateListener();
   },
@@ -117,7 +128,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var data = this.data;
     el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, rotationOffset: data.rotationOffset, armModel: data.armModel});
     if (!this.data.model) { return; }
-    this.el.setAttribute('obj-model', {
+    this.modelEl.setAttribute('obj-model', {
       obj: GEARVR_CONTROLLER_MODEL_OBJ_URL,
       mtl: GEARVR_CONTROLLER_MODEL_OBJ_MTL
     });
