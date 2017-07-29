@@ -87,23 +87,23 @@ These properties are available on top of the base material properties.
 
 | Property                      | Description                                                                                                                                     | Default Value |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
-| ambientOcclusionMap           | Ambient occlusion map. Used to add shadows to the mesh. Can either be a selector to an `<img>` an inline URL.                                   | None          |
+| ambientOcclusionMap           | Ambient occlusion map. Used to add shadows to the mesh. Can either be a selector to an `<img>`, or an inline URL. Requires 2nd set of UVs (see below). | None          |
 | ambientOcclusionMapIntensity  | The intensity of the ambient occlusion map, a number between 0 and 1.                                                                           | 1             |
 | ambientOcclusionTextureRepeat | How many times the ambient occlusion texture repeats in the X and Y direction.                                                                  | 1 1           |
 | ambientOcclusionTextureOffset | How the ambient occlusion texture is offset in the x y direction.                                                                               | 0 0           |
 | color                         | Base diffuse color.                                                                                                                             | #fff          |
-| displacementMap               | Displacement map. Used to distort a mesh. Can either be a selector to an `<img>` an inline URL.                                                 | None          |
+| displacementMap               | Displacement map. Used to distort a mesh. Can either be a selector to an `<img>`, or an inline URL.                                             | None          |
 | displacementScale             | The intensity of the displacement map effect                                                                                                    | 1             |
 | displacementBias              | The zero point of the displacement map.                                                                                                         | 0.5           |
 | displacementTextureRepeat     | How many times the displacement texture repeats in the X and Y direction.                                                                       | 1 1           |
 | displacementTextureOffset     | How the displacement texture is offset in the x y direction.                                                                                    | 0 0           |
-| emissive                      | The color of the emissive lighting component. Used to make objects produce light even without other lighting in the scene.                      | #000
-| emissiveIntensity             | Intensity of the emissive lighting component.                                                                                                   | 1
+| emissive                      | The color of the emissive lighting component. Used to make objects produce light even without other lighting in the scene.                      | #000          |
+| emissiveIntensity             | Intensity of the emissive lighting component.                                                                                                   | 1             |
 | height                        | Height of video (in pixels), if defining a video texture.                                                                                       | 360           |
 | envMap                        | Environment cubemap texture for reflections. Can be a selector to <a-cubemap> or a comma-separated list of URLs.                                | None          |
 | fog                           | Whether or not material is affected by [fog][fog].                                                                                              | true          |
 | metalness                     | How metallic the material is from `0` to `1`.                                                                                                   | 0.5           |
-| normalMap                     | Normal map. Used to add the illusion of complex detail. Can either be a selector to an `<img>` an inline URL.                                   | None          |
+| normalMap                     | Normal map. Used to add the illusion of complex detail. Can either be a selector to an `<img>`, or an inline URL.                               | None          |
 | normalScale                   | Scale of the effect of the normal map in the X and Y directions.                                                                                | 1 1           |
 | normalTextureRepeat           | How many times the normal texture repeats in the X and Y direction.                                                                             | 1 1           |
 | normalTextureOffset           | How the normal texture is offset in the x y direction.                                                                                          | 0 0           |
@@ -138,7 +138,10 @@ For example, for a tree bark material, as an estimation, we might set:
 
 There are three properties which give the illusion of complex geometry:
 
-- **Ambient occlusion maps** - Applies a texture to the image which add shadows.
+- **Ambient occlusion maps** - Applies subtle shadows in areas that receive less
+  ambient light. Direct (point, directional) lights do not affect ambient occlusion
+  maps. Baked ambient occlusion requires a 2nd set of UVs, which may be added to
+  the mesh in modeling software or using JavaScript.
 - **Displacement maps** - Distorts a simpler model at a high resolution
   allowing more detail. This will affect the mesh's silhouette but can be
   expensive.
