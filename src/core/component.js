@@ -278,7 +278,7 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (!skipTypeChecking && utils.deepEqual(this.oldData, this.data)) { return; }
+      if (utils.deepEqual(this.oldData, this.data)) { return; }
      // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.

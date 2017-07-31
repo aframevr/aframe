@@ -139,8 +139,7 @@ suite('Component', function () {
       assert.equal(data, 'green');
     });
 
-    test('returns default value for a single-property schema ' +
-         'when the attribute is empty string', function () {
+    test('returns default for single-prop schema when attr is empty string', function () {
       var data;
       registerComponent('dummy', {
         schema: {default: 'red'}
@@ -258,6 +257,53 @@ suite('Component', function () {
       });
       // Initialization.
       el.setAttribute('material', 'color', 'red');
+    });
+
+    test('does not update for multi-prop if not changed', function (done) {
+      var spy = this.sinon.spy();
+
+      AFRAME.registerComponent('test', {
+        schema: {
+          foo: {type: 'string'},
+          bar: {type: 'string'}
+        },
+
+        update: function () {
+          spy();
+        }
+      });
+
+      el.addEventListener('loaded', () => {
+        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+        el.setAttribute('test', {foo: 'foo', bar: 'bar'});
+        assert.equal(spy.getCalls().length, 1);
+        done();
+      });
+    });
+
+    test('does not update for multi-prop if not changed using same object', function (done) {
+      var data = {foo: 'foo', bar: 'bar'};
+      var spy = this.sinon.spy();
+
+      AFRAME.registerComponent('test', {
+        schema: {
+          foo: {type: 'string'},
+          bar: {type: 'string'}
+        },
+
+        update: function () {
+          spy();
+        }
+      });
+
+      el.addEventListener('loaded', () => {
+        el.setAttribute('test', data);
+        el.setAttribute('test', data);
+        el.setAttribute('test', data);
+        assert.equal(spy.getCalls().length, 1);
+        done();
+      });
     });
 
     test('does not emit componentchanged for single-prop if not changed', function (done) {
