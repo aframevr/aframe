@@ -185,7 +185,7 @@ To check out the stable and master builds, see the [`dist/` folder](dist/).
 
 ```sh
 npm install --save aframe
-# Or yarn add --save aframe
+# Or yarn add aframe
 ```
 
 ```js
