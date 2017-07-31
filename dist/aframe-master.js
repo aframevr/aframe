@@ -70175,7 +70175,7 @@ function PromiseCache () {
 },{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":197,"load-bmfont":24,"path":32,"three-bmfont-text":38}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
-var DEFAULT_USER_HEIGHT = _dereq_('../constants').DEFAULT_USER_HEIGHT;
+var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
 
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
@@ -70229,7 +70229,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Return default user height to use for non-6DOF arm model.
    */
-  defaultUserHeight: function () { return DEFAULT_USER_HEIGHT; }, // default user height (for cameras with zero)
+  defaultUserHeight: function () { return DEFAULT_CAMERA_HEIGHT; }, // default camera height (for cameras with zero)
 
   /**
    * Return head element to use for non-6DOF arm model.
@@ -76578,7 +76578,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 27-07-2017, Commit #f1b4467)');
+console.log('A-Frame Version: 0.6.1 (Date 31-07-2017, Commit #e0d7bf5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
