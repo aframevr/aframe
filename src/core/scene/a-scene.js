@@ -306,7 +306,7 @@ module.exports.AScene = registerElement('a-scene', {
     onVRPresentChange: {
       value: function (evt) {
         // Entering VR.
-        if (evt.display.isPresenting) {
+        if (evt.detail.display.isPresenting) {
           this.enterVR(true);
           return;
         }
