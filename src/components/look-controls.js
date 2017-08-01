@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
 var bind = require('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick
@@ -17,7 +18,9 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
-    standing: {default: true}
+    standing: {default: true},
+    userHeight: {default: 0},
+    headElement: {type: 'selector'}
   },
 
   init: function () {
@@ -54,9 +57,19 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
     if (!data.enabled) { return; }
     this.controls.standing = data.standing;
+    this.controls.userHeight = this.getUserHeight();
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
+  },
+
+  /**
+   * Return user height to use for standing poses, where a device doesn't provide an offset.
+   */
+  getUserHeight: function () {
+    var headEl = this.data.headElement || this.el.sceneEl.camera.el;
+    var headCamera = headEl.components.camera;
+    return (headCamera ? headCamera.data.userHeight : 0) || DEFAULT_CAMERA_HEIGHT;
   },
 
   play: function () {
