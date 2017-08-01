@@ -12,6 +12,8 @@ registerGeometry('box', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
+    this.geometry = new THREE.BoxGeometry(
+      data.width, data.height, data.depth,
+      data.segmentsWidth, data.segmentsHeight, data.segmentsDepth);
   }
 });
