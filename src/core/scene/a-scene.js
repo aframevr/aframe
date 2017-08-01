@@ -305,8 +305,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     onVRPresentChange: {
       value: function (evt) {
+        // Polyfill places display inside the detail property
+        var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (evt.display.isPresenting) {
+        if (display.isPresenting) {
           this.enterVR(true);
           return;
         }
