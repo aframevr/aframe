@@ -165,14 +165,21 @@ module.exports.Component = registerComponent('look-controls', {
     hmdQuaternion = hmdQuaternion.copy(this.dolly.quaternion);
     hmdEuler.setFromQuaternion(hmdQuaternion, 'YXZ');
 
-    if (sceneEl.isMobile) {
+    if (sceneEl.is('vr-mode') && !isNullVector(hmdEuler) && this.data.hmdEnabled) {
+      // Mouse rotation ignored with an active headset. Use headset rotation.
+      rotation = {
+        x: radToDeg(hmdEuler.x),
+        y: radToDeg(hmdEuler.y),
+        z: radToDeg(hmdEuler.z)
+      };
+    } else if (sceneEl.isMobile) {
       // On mobile, do camera rotation with touch events and sensors.
       rotation = {
         x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
         y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
         z: radToDeg(hmdEuler.z)
       };
-    } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+    } else {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
@@ -189,13 +196,6 @@ module.exports.Component = registerComponent('look-controls', {
           z: currentRotation.z
         };
       }
-    } else {
-      // Mouse rotation ignored with an active headset. Use headset rotation.
-      rotation = {
-        x: radToDeg(hmdEuler.x),
-        y: radToDeg(hmdEuler.y),
-        z: radToDeg(hmdEuler.z)
-      };
     }
 
     this.el.setAttribute('rotation', rotation);
