@@ -74558,8 +74558,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     onVRPresentChange: {
       value: function (evt) {
+        // Polyfill places display inside the detail property
+        var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (evt.display.isPresenting) {
+        if (display.isPresenting) {
           this.enterVR(true);
           return;
         }
@@ -76580,7 +76582,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 01-08-2017, Commit #4f9d0fb)');
+console.log('A-Frame Version: 0.6.1 (Date 01-08-2017, Commit #c4d6a68)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
