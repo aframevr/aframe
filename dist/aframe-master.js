@@ -76180,7 +76180,9 @@ registerGeometry('box', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.BoxGeometry(data.width, data.height, data.depth);
+    this.geometry = new THREE.BoxGeometry(
+      data.width, data.height, data.depth,
+      data.segmentsWidth, data.segmentsHeight, data.segmentsDepth);
   }
 });
 
@@ -76578,7 +76580,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 31-07-2017, Commit #e0d7bf5)');
+console.log('A-Frame Version: 0.6.1 (Date 01-08-2017, Commit #4f9d0fb)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
