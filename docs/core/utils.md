@@ -154,13 +154,34 @@ Checks if device is a smartphone. Returns a `boolean`.
 
 ## Function Utils
 
-### `AFRAME.utils.throttle (function, interval [, optionalContext])`
+### `AFRAME.utils.throttle (function, minimumInterval [, optionalContext])`
 
 Returns a throttled function that is called at most once every
 `minimumInterval` milliseconds. A context such as `this` can be provided to
 handle function binding for convenience.
 
-### `AFRAME.utils.throttleTick (function (t, dt) {...}, interval [, optionalContext])`
+`throttle` should be used on non-tick functions. `throttleTick` should be used for tick functions.
+
+```js
+AFRAME.registerComponent('foo', {
+  init: function () {
+    // Set up throttling.
+    this.throttledFunction = AFRAME.utils.throttle(this.everySecond, 1000, this);
+  },
+  everySecond: function () {
+    // everything here gets called every second
+    console.log("a second passed.");
+  },
+  tick: function (t, dt) {
+    // throttledFunction is called just once every second
+    this.throttledFunction();
+    // everything that needs to be executed every frame
+    console.log("a frame passed.");
+   },
+});
+```
+
+### `AFRAME.utils.throttleTick (function (t, dt) {...}, minimumInterval [, optionalContext])`
 
 Returns a throttled function that is called at most once every
 `minimumInterval` milliseconds. A context such as `this` can be provided to
