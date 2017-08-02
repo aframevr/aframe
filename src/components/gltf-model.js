@@ -26,6 +26,8 @@ module.exports.Component = registerComponent('gltf-model', {
       self.model.animations = gltfModel.animations;
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
+    }, undefined /* onProgress */, function gltfFailed () {
+      el.emit('model-error', {format: 'gltf', src: src});
     });
   },
 

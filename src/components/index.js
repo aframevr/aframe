@@ -25,6 +25,7 @@ require('./tracked-controls');
 require('./visible');
 require('./vive-controls');
 require('./wasd-controls');
+require('./windows-motion-controls');
 
 require('./scene/debug');
 require('./scene/embedded');
