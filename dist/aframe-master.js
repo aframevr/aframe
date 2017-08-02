@@ -69403,6 +69403,7 @@ function createEnterVRButton (enterVRHandler) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
+  vrButton.setAttribute('title', 'Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
@@ -76582,7 +76583,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 01-08-2017, Commit #c4d6a68)');
+console.log('A-Frame Version: 0.6.1 (Date 02-08-2017, Commit #f8cc842)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
