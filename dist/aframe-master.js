@@ -73681,9 +73681,10 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
-      // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
-      // undefined is passed to the rest of types.
-      oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
+      // Pass undefined to rest of types.
+      oldData = (!isSinglePropSchema ||
+                 typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
       // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       this.update(oldData);
@@ -73696,7 +73697,7 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (!skipTypeChecking && utils.deepEqual(this.oldData, this.data)) { return; }
+      if (utils.deepEqual(this.oldData, this.data)) { return; }
      // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.
@@ -74049,8 +74050,8 @@ registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', '', selectorParse, selectorStringify);
-registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
@@ -75104,7 +75105,8 @@ function processPropertyDefinition (propDefinition, componentName) {
   // Check that default value exists.
   if ('default' in propDefinition) {
     // Check that default values are valid.
-    if (!isValidDefaultValue(typeName, defaultVal)) {
+    if (!isValidDefaultValue(typeName, defaultVal) &&
+        typeName !== 'selector' && typeName !== 'selectorAll') {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
            '` in component `' + componentName + '`');
     }
@@ -76583,7 +76585,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 02-08-2017, Commit #f8cc842)');
+console.log('A-Frame Version: 0.6.1 (Date 04-08-2017, Commit #b775821)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
