@@ -76585,7 +76585,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 04-08-2017, Commit #b775821)');
+console.log('A-Frame Version: 0.6.1 (Date 04-08-2017, Commit #b4015f5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -80687,9 +80687,9 @@ function iOSWakeLock() {
   this.request = function() {
     if (!timer) {
       timer = setInterval(function() {
-        window.location = window.location;
+        window.location.href = '/';
         setTimeout(window.stop, 0);
-      }, 30000);
+      }, 15000);
     }
   }
 
