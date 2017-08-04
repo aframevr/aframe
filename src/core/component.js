@@ -263,9 +263,10 @@ Component.prototype = {
       this.init();
       this.initialized = true;
       delete el.initializingComponents[this.name];
-      // We pass empty object to multiple property schemas and single property schemas that parse to objects like position, rotation, scale
-      // undefined is passed to the rest of types.
-      oldData = (!isSinglePropSchema || typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
+      // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
+      // Pass undefined to rest of types.
+      oldData = (!isSinglePropSchema ||
+                 typeof parseProperty(undefined, this.schema) === 'object') ? {} : undefined;
       // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       this.update(oldData);
@@ -278,7 +279,7 @@ Component.prototype = {
       }, false);
     } else {
       // Don't update if properties haven't changed
-      if (!skipTypeChecking && utils.deepEqual(this.oldData, this.data)) { return; }
+      if (utils.deepEqual(this.oldData, this.data)) { return; }
      // Store current data as previous data for future updates.
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.

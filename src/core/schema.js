@@ -84,7 +84,8 @@ function processPropertyDefinition (propDefinition, componentName) {
   // Check that default value exists.
   if ('default' in propDefinition) {
     // Check that default values are valid.
-    if (!isValidDefaultValue(typeName, defaultVal)) {
+    if (!isValidDefaultValue(typeName, defaultVal) &&
+        typeName !== 'selector' && typeName !== 'selectorAll') {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
            '` in component `' + componentName + '`');
     }
