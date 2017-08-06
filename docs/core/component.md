@@ -7,7 +7,6 @@ order: 3
 source_code: src/core/component.js
 ---
 
-[componentguide]: ../guides/writing-an-aframe-component.md
 [ecs]: ../introduction/entity-component-system.md
 [entity]: ./entity.md
 [multiple]: #multiple
