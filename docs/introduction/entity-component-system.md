@@ -215,7 +215,7 @@ innovation to create components to extend any feature. Components have full
 access to JavaScript, three.js, and Web APIs (e.g., WebRTC, Speech
 Recognition).
 
-[writecomponent]: ./writing-an-aframe-component.md
+[writecomponent]: ./writing-a-component.md
 
 We will later go over in detail how to [write an A-Frame
 component][writecomponent]. As a preview, the structure of a basic component
