@@ -66972,7 +66972,9 @@ module.exports.Component = registerComponent('link', {
     var strokeColor = data.highlighted ? data.highlightedColor : data.color;
     el.setAttribute('material', 'strokeColor', strokeColor);
     if (data.on !== oldData.on) { this.updateEventListener(); }
-    if (data.peekMode !== oldData.peekMode) { this.updatePeekMode(); }
+    if (data.visualAspectEnabled && oldData.peekMode !== undefined && data.peekMode !== oldData.peekMode) {
+      this.updatePeekMode();
+    }
     if (!data.image || oldData.image === data.image) { return; }
     el.setAttribute('material', 'pano',
                     typeof data.image === 'string' ? data.image : data.image.src);
@@ -67105,6 +67107,7 @@ module.exports.Component = registerComponent('link', {
     var scale = new THREE.Vector3();
     var quaternion = new THREE.Quaternion();
     return function () {
+      if (!this.data.visualAspectEnabled) { return; }
       var el = this.el;
       var object3D = el.object3D;
       var camera = el.sceneEl.camera;
@@ -76585,7 +76588,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 04-08-2017, Commit #b4015f5)');
+console.log('A-Frame Version: 0.6.1 (Date 06-08-2017, Commit #47eee5c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
