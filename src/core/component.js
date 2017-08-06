@@ -343,10 +343,14 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var self = this;
     var componentDefined = newData !== undefined && newData !== null;
     var data;
+    var defaultValue;
+    var keys;
+    var keysLength;
+    var mixinData;
     var schema = this.schema;
+    var i;
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
@@ -354,28 +358,30 @@ Component.prototype = {
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       // Clone default value if object so components don't share object.
-      data = typeof schema.default === 'object' ? utils.extend({}, schema.default) : schema.default;
+      data = typeof schema.default === 'object' ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
       // Clone default value if object so components don't share object
-      data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
-      Object.keys(schema).forEach(function applyDefault (key) {
-        var defaultValue = schema[key].default;
-        if (data[key] !== undefined) { return; }
-        data[key] = defaultValue && defaultValue.constructor === Object
-          ? utils.extend({}, defaultValue)
+      data = typeof previousData === 'object' ? utils.clone(previousData) : {};
+
+      // Apply defaults.
+      for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
+        defaultValue = schema[keys[i]].default;
+        if (data[keys[i]] !== undefined) { continue; }
+        data[keys[i]] = defaultValue && defaultValue.constructor === Object
+          ? utils.clone(defaultValue)
           : defaultValue;
-      });
+      }
     }
 
     // 2. Mixin values.
-    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
-      var mixinData = mixinEl.getAttribute(self.attrName);
+    for (i = 0; i < mixinEls.length; i++) {
+      mixinData = mixinEls[i].getAttribute(this.attrName);
       if (mixinData) {
         data = extendProperties(data, mixinData, isSinglePropSchema);
       }
-    });
+    }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {

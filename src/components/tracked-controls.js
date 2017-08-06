@@ -3,8 +3,10 @@ var THREE = require('../lib/three');
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
 
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
-var FOREARM = {x: 0, y: 0, z: -0.175}; // vector from eyes to elbow (divided by user height)
+// Vector from eyes to elbow (divided by user height).
+var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
+// Vector from eyes to elbow (divided by user height).
+var FOREARM = {x: 0, y: 0, z: -0.175};
 
 /**
  * Tracked controls component.
@@ -67,15 +69,20 @@ module.exports.Component = registerComponent('tracked-controls', {
   updateGamepad: function () {
     var controllers = this.system.controllers;
     var data = this.data;
-    var matchingControllers;
+    var i;
+    var matchCount = 0;
 
     // Hand IDs: 0 is right, 1 is left.
-    matchingControllers = controllers.filter(function hasIdOrPrefix (controller) {
-      if (data.idPrefix) { return controller.id.indexOf(data.idPrefix) === 0; }
-      return controller.id === data.id;
-    });
-
-    this.controller = matchingControllers[data.controller];
+    for (i = 0; i < controllers.length; i++) {
+      if ((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
+          (!data.idPrefix && controllers[i].id === data.id)) {
+        matchCount++;
+        if (matchCount - 1 === data.controller) {
+          this.controller = controllers[i];
+          return;
+        }
+      }
+    }
   },
 
   applyArmModel: function (controllerPosition) {
