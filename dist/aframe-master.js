@@ -68360,74 +68360,87 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: function (time) {
-    var el = this.el;
-    var data = this.data;
-    var i;
-    var intersectedEls = this.intersectedEls;
-    var intersections;
-    var lineLength;
-    var prevCheckTime = this.prevCheckTime;
-    var prevIntersectedEls = this.prevIntersectedEls;
+  tick: (function () {
+    var intersections = [];
 
-    // Only check for intersection if interval time has passed.
-    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-    // Update check time.
-    this.prevCheckTime = time;
+    return function (time) {
+      var el = this.el;
+      var data = this.data;
+      var i;
+      var intersectedEls = this.intersectedEls;
+      var intersection;
+      var lineLength;
+      var prevCheckTime = this.prevCheckTime;
+      var prevIntersectedEls = this.prevIntersectedEls;
+      var rawIntersections;
 
-    // Store old previously intersected entities.
-    copyArray(this.prevIntersectedEls, this.intersectedEls);
+      // Only check for intersection if interval time has passed.
+      if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+      // Update check time.
+      this.prevCheckTime = time;
 
-    // Raycast.
-    this.updateOriginDirection();
-    intersections = this.raycaster.intersectObjects(this.objects, data.recursive);
+      // Store old previously intersected entities.
+      copyArray(this.prevIntersectedEls, this.intersectedEls);
 
-    // Only keep intersections against objects that have a reference to an entity.
-    intersections = intersections.filter(function hasEl (intersection) {
-      // Don't intersect with own line.
-      if (data.showLine && intersection.object === el.getObject3D('line')) { return false; }
-      return !!intersection.object.el;
-    });
+      // Raycast.
+      this.updateOriginDirection();
+      rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
-    // Update intersectedEls.
-    intersectedEls.length = intersections.length;
-    for (i = 0; i < intersections.length; i++) {
-      intersectedEls[i] = intersections[i].object.el;
-    }
-
-    // Emit intersected on intersected entity per intersected entity.
-    intersections.forEach(function emitEvents (intersection) {
-      var intersectedEl = intersection.object.el;
-      intersectedEl.emit('raycaster-intersected', {el: el, intersection: intersection});
-    });
-
-    // Emit all intersections at once on raycasting entity.
-    if (intersections.length) {
-      el.emit('raycaster-intersection', {
-        els: intersectedEls,
-        intersections: intersections
-      });
-    }
-
-    // Emit intersection cleared on both entities per formerly intersected entity.
-    prevIntersectedEls.forEach(function checkStillIntersected (intersectedEl) {
-      if (intersectedEls.indexOf(intersectedEl) !== -1) { return; }
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      intersectedEl.emit('raycaster-intersected-cleared', {el: el});
-    });
-
-    // Update line length.
-    if (data.showLine) {
-      if (intersections.length) {
-        if (intersections[0].object.el === el && intersections[1]) {
-          lineLength = intersections[1].distance;
-        } else {
-          lineLength = intersections[0].distance;
+      // Only keep intersections against objects that have a reference to an entity.
+      intersections.length = 0;
+      for (i = 0; i < rawIntersections.length; i++) {
+        intersection = rawIntersections[i];
+        // Don't intersect with own line.
+        if (data.showLine && intersection.object === el.getObject3D('line')) {
+          continue;
+        }
+        if (intersection.object.el) {
+          intersections.push(intersection);
         }
       }
-      this.drawLine(lineLength);
-    }
-  },
+
+      // Update intersectedEls.
+      intersectedEls.length = intersections.length;
+      for (i = 0; i < intersections.length; i++) {
+        intersectedEls[i] = intersections[i].object.el;
+      }
+
+      // Emit intersected on intersected entity per intersected entity.
+      for (i = 0; i < intersections.length; i++) {
+        intersections[i].object.el.emit('raycaster-intersected', {
+          el: el,
+          intersection: intersections[i]
+        });
+      }
+
+      // Emit all intersections at once on raycasting entity.
+      if (intersections.length) {
+        el.emit('raycaster-intersection', {
+          els: intersectedEls,
+          intersections: intersections
+        });
+      }
+
+      // Emit intersection cleared on both entities per formerly intersected entity.
+      for (i = 0; i < prevIntersectedEls.length; i++) {
+        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { return; }
+        el.emit('raycaster-intersection-cleared', {el: prevIntersectedEls[i]});
+        prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
+      }
+
+      // Update line length.
+      if (data.showLine) {
+        if (intersections.length) {
+          if (intersections[0].object.el === el && intersections[1]) {
+            lineLength = intersections[1].distance;
+          } else {
+            lineLength = intersections[0].distance;
+          }
+        }
+        this.drawLine(lineLength);
+      }
+    };
+  })(),
 
   /**
    * Update origin and direction of raycaster using entity transforms and supplied origin or
@@ -70182,8 +70195,10 @@ var THREE = _dereq_('../lib/three');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
 
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
-var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03}; // vector from eyes to elbow (divided by user height)
-var FOREARM = {x: 0, y: 0, z: -0.175}; // vector from eyes to elbow (divided by user height)
+// Vector from eyes to elbow (divided by user height).
+var EYES_TO_ELBOW = {x: 0.175, y: -0.3, z: -0.03};
+// Vector from eyes to elbow (divided by user height).
+var FOREARM = {x: 0, y: 0, z: -0.175};
 
 /**
  * Tracked controls component.
@@ -70246,15 +70261,20 @@ module.exports.Component = registerComponent('tracked-controls', {
   updateGamepad: function () {
     var controllers = this.system.controllers;
     var data = this.data;
-    var matchingControllers;
+    var i;
+    var matchCount = 0;
 
     // Hand IDs: 0 is right, 1 is left.
-    matchingControllers = controllers.filter(function hasIdOrPrefix (controller) {
-      if (data.idPrefix) { return controller.id.indexOf(data.idPrefix) === 0; }
-      return controller.id === data.id;
-    });
-
-    this.controller = matchingControllers[data.controller];
+    for (i = 0; i < controllers.length; i++) {
+      if ((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
+          (!data.idPrefix && controllers[i].id === data.id)) {
+        matchCount++;
+        if (matchCount - 1 === data.controller) {
+          this.controller = controllers[i];
+          return;
+        }
+      }
+    }
   },
 
   applyArmModel: function (controllerPosition) {
@@ -73764,10 +73784,14 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var self = this;
     var componentDefined = newData !== undefined && newData !== null;
     var data;
+    var defaultValue;
+    var keys;
+    var keysLength;
+    var mixinData;
     var schema = this.schema;
+    var i;
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
@@ -73775,28 +73799,30 @@ Component.prototype = {
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       // Clone default value if object so components don't share object.
-      data = typeof schema.default === 'object' ? utils.extend({}, schema.default) : schema.default;
+      data = typeof schema.default === 'object' ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
       // Clone default value if object so components don't share object
-      data = typeof previousData === 'object' ? utils.extend({}, previousData) : {};
-      Object.keys(schema).forEach(function applyDefault (key) {
-        var defaultValue = schema[key].default;
-        if (data[key] !== undefined) { return; }
-        data[key] = defaultValue && defaultValue.constructor === Object
-          ? utils.extend({}, defaultValue)
+      data = typeof previousData === 'object' ? utils.clone(previousData) : {};
+
+      // Apply defaults.
+      for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
+        defaultValue = schema[keys[i]].default;
+        if (data[keys[i]] !== undefined) { continue; }
+        data[keys[i]] = defaultValue && defaultValue.constructor === Object
+          ? utils.clone(defaultValue)
           : defaultValue;
-      });
+      }
     }
 
     // 2. Mixin values.
-    mixinEls.forEach(function handleMixinUpdate (mixinEl) {
-      var mixinData = mixinEl.getAttribute(self.attrName);
+    for (i = 0; i < mixinEls.length; i++) {
+      mixinData = mixinEls[i].getAttribute(this.attrName);
       if (mixinData) {
         data = extendProperties(data, mixinData, isSinglePropSchema);
       }
-    });
+    }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
@@ -76588,7 +76614,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 06-08-2017, Commit #47eee5c)');
+console.log('A-Frame Version: 0.6.1 (Date 06-08-2017, Commit #50a9c73)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
