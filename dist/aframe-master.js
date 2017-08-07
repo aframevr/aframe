@@ -74809,7 +74809,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Systems.
         for (i = 0; i < this.systemNames.length; i++) {
-          if (!systems[this.systemNames[i]].tick) { return; }
+          if (!systems[this.systemNames[i]].tick) { continue; }
           systems[this.systemNames[i]].tick(time, timeDelta);
         }
       }
@@ -74833,7 +74833,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Systems.
         for (i = 0; i < this.systemNames.length; i++) {
-          if (!systems[this.systemNames[i]].tock) { return; }
+          if (!systems[this.systemNames[i]].tock) { continue; }
           systems[this.systemNames[i]].tock(time, timeDelta);
         }
       }
@@ -76621,7 +76621,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 06-08-2017, Commit #02fb2f0)');
+console.log('A-Frame Version: 0.6.1 (Date 07-08-2017, Commit #5e3e775)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
