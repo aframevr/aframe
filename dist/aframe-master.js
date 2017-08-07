@@ -74241,8 +74241,10 @@ function isValidDefaultValue (type, defaultVal) {
   if (type === 'number' && typeof defaultVal !== 'number') { return false; }
   if (type === 'map' && typeof defaultVal !== 'string') { return false; }
   if (type === 'model' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selector' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selectorAll' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selector' && typeof defaultVal !== 'string' &&
+      defaultVal !== null) { return false; }
+  if (type === 'selectorAll' && typeof defaultVal !== 'string' &&
+      defaultVal !== null) { return false; }
   if (type === 'src' && typeof defaultVal !== 'string') { return false; }
   if (type === 'string' && typeof defaultVal !== 'string') { return false; }
   if (type === 'time' && typeof defaultVal !== 'number') { return false; }
@@ -75106,6 +75108,7 @@ module.exports.process = function (schema, componentName) {
  */
 function processPropertyDefinition (propDefinition, componentName) {
   var defaultVal = propDefinition.default;
+  var isCustomType;
   var propType;
   var typeName = propDefinition.type;
 
@@ -75132,6 +75135,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   }
 
   // Fill in parse and stringify using property types.
+  isCustomType = !!propDefinition.parse;
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
 
@@ -75141,8 +75145,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   // Check that default value exists.
   if ('default' in propDefinition) {
     // Check that default values are valid.
-    if (!isValidDefaultValue(typeName, defaultVal) &&
-        typeName !== 'selector' && typeName !== 'selectorAll') {
+    if (!isCustomType && !isValidDefaultValue(typeName, defaultVal)) {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
            '` in component `' + componentName + '`');
     }
@@ -76621,7 +76624,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 07-08-2017, Commit #5e3e775)');
+console.log('A-Frame Version: 0.6.1 (Date 07-08-2017, Commit #fc2f11c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
