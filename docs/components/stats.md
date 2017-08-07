@@ -17,6 +17,13 @@ component applies only to the [`<a-scene>` element][scene].
 <a-scene stats></a-scene>
 ```
 
+## Properties
+
+| Property | Description                                           | Default Value |
+|----------|-------------------------------------------------------|---------------|
+| enabled  | Whether stats are enabled.                            | true          |
+| hideInVR | Whether to hide stats panel on 2D monitor when in VR. | true          |
+
 ## Metrics
 
 - **fps**: frames per second, framerate. Aim for stable 90 fps with the WebVR 1.0 API.
