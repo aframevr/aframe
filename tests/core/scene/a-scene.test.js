@@ -292,6 +292,64 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('tick', function () {
+    test('calls component ticks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tick: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system ticks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tick: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
+  suite('tock', function () {
+    test('calls component tocks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tock: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}, tick: () => {}});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system tocks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tock: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
   suite('reload', function () {
     test('reload scene innerHTML to original value', function () {
       var sceneEl = this.el;
@@ -455,6 +513,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
+    scene.addBehavior({el: {isPlaying: true}});
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
@@ -465,6 +524,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
+    scene.addBehavior({el: {isPlaying: true}});
     scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);

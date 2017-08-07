@@ -525,7 +525,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Systems.
         for (i = 0; i < this.systemNames.length; i++) {
-          if (!systems[this.systemNames[i]].tick) { return; }
+          if (!systems[this.systemNames[i]].tick) { continue; }
           systems[this.systemNames[i]].tick(time, timeDelta);
         }
       }
@@ -549,7 +549,7 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Systems.
         for (i = 0; i < this.systemNames.length; i++) {
-          if (!systems[this.systemNames[i]].tock) { return; }
+          if (!systems[this.systemNames[i]].tock) { continue; }
           systems[this.systemNames[i]].tock(time, timeDelta);
         }
       }
