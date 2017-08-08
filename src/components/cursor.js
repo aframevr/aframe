@@ -47,6 +47,8 @@ module.exports.Component = registerComponent('cursor', {
     this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
+    this.canvasBounds = document.body.getBoundingClientRect();
+    this.updateCanvasBounds = true;
 
     // Bind methods.
     this.onCursorDown = bind(this.onCursorDown, this);
@@ -59,6 +61,13 @@ module.exports.Component = registerComponent('cursor', {
   update: function (oldData) {
     if (this.data.rayOrigin === oldData.rayOrigin) { return; }
     this.updateMouseEventListeners();
+  },
+
+  throttledTick: function () {
+    if (this.updateCanvasBounds) {
+      this.canvasBounds = this.el.sceneEl.canvas.getBoundingClientRect();
+      this.updateCanvasBounds = false;
+    }
   },
 
   play: function () {
@@ -104,6 +113,8 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.addEventListener('raycaster-intersection', this.onIntersection);
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+
+    window.addEventListener('resize', this.onWindowResize);
   },
 
   removeEventListeners: function () {
@@ -127,6 +138,7 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('resize', this.onWindowResize);
   },
 
   updateMouseEventListeners: function () {
@@ -152,7 +164,7 @@ module.exports.Component = registerComponent('cursor', {
       camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
-      var bounds = this.el.sceneEl.canvas.getBoundingClientRect();
+      var bounds = this.canvasBounds;
       var left = evt.clientX - bounds.left;
       var top = evt.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
@@ -256,6 +268,10 @@ module.exports.Component = registerComponent('cursor', {
     if (intersectedEl !== this.intersectedEl) { return; }
 
     this.clearCurrentIntersection();
+  },
+
+  onWindowResize: function () {
+    this.updateCanvasBounds = true;
   },
 
   clearCurrentIntersection: function () {
