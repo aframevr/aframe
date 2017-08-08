@@ -73483,19 +73483,17 @@ var Component = module.exports.Component = function (el, attrValue, id) {
   this.el = el;
   this.id = id;
   this.attrName = this.name + (id ? '__' + id : '');
+  this.evtDetail = {id: this.id, name: this.name};
   this.initialized = false;
   this.el.components[this.attrName] = this;
+
   // Store component data from previous update call.
   this.oldData = undefined;
+
   // Last value passed to updateProperties.
   this.previousAttrValue = undefined;
-  this.throttledEmitComponentChanged = utils.throttle(function emitComponentChange (oldData) {
-    el.emit('componentchanged', {
-      id: self.id,
-      name: self.name,
-      newData: self.data,
-      oldData: oldData
-    }, false);
+  this.throttledEmitComponentChanged = utils.throttle(function emitChange () {
+    el.emit('componentchanged', self.evtDetail, false);
   }, 200);
   this.updateProperties(attrValue);
 };
@@ -73591,17 +73589,6 @@ Component.prototype = {
     if (isSingleProp(schema)) { return stringifyProperty(data, schema); }
     data = stringifyProperties(data, schema);
     return styleParser.stringify(data);
-  },
-
-  /**
-   * Returns a copy of data such that we don't expose the private this.data.
-   *
-   * @returns {object} data
-   */
-  getData: function () {
-    var data = this.data;
-    if (typeof data !== 'object') { return data; }
-    return utils.extend({}, data);
   },
 
   /**
@@ -73720,11 +73707,7 @@ Component.prototype = {
       this.update(oldData);
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
-      el.emit('componentinitialized', {
-        id: this.id,
-        name: this.name,
-        data: this.getData()
-      }, false);
+      el.emit('componentinitialized', this.evtDetail, false);
     } else {
       // Don't update if properties haven't changed
       if (utils.deepEqual(this.oldData, this.data)) { return; }
@@ -73732,8 +73715,7 @@ Component.prototype = {
       this.oldData = extendProperties({}, this.data, isSinglePropSchema);
       // Update component.
       this.update(oldData);
-      // Limit event to fire once every 200ms.
-      this.throttledEmitComponentChanged(oldData);
+      this.throttledEmitComponentChanged();
     }
   },
 
@@ -76631,7 +76613,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 08-08-2017, Commit #22fda9e)');
+console.log('A-Frame Version: 0.6.1 (Date 08-08-2017, Commit #b2b6adf)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
