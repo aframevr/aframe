@@ -65314,10 +65314,18 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
+    var self = this;
+
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
+    this.canvasBounds = document.body.getBoundingClientRect();
+
+    // Debounce.
+    this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
+      self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
+    }, 200);
 
     // Bind methods.
     this.onCursorDown = bind(this.onCursorDown, this);
@@ -65375,6 +65383,8 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.addEventListener('raycaster-intersection', this.onIntersection);
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+
+    window.addEventListener('resize', this.updateCanvasBounds);
   },
 
   removeEventListeners: function () {
@@ -65398,6 +65408,7 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
@@ -65407,6 +65418,7 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
+    this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
@@ -65421,8 +65433,14 @@ module.exports.Component = registerComponent('cursor', {
       var camera = this.el.sceneEl.camera;
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
-      mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
+
+      // Calculate mouse position based on the canvas element
+      var bounds = this.canvasBounds;
+      var left = evt.clientX - bounds.left;
+      var top = evt.clientY - bounds.top;
+      mouse.x = (left / bounds.width) * 2 - 1;
+      mouse.y = -(top / bounds.height) * 2 + 1;
+
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
@@ -76618,7 +76636,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 08-08-2017, Commit #d45ecb0)');
+console.log('A-Frame Version: 0.6.1 (Date 08-08-2017, Commit #4c92620)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78564,6 +78582,30 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
       lastTime = time;
       functionToThrottle(time, sinceLastTime);
     }
+  };
+};
+
+/**
+ * Returns debounce function that gets called only once after a set of repeated calls.
+ *
+ * @param {function} functionToDebounce
+ * @param {number} wait - Time to wait for repeated function calls (milliseconds).
+ * @param {boolean} immediate - Calls the function immediately regardless of if it should be waiting.
+ * @returns {function} Debounced function.
+ */
+module.exports.debounce = function (func, wait, immediate) {
+  var timeout;
+  return function () {
+    var context = this;
+    var args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
   };
 };
 
