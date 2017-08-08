@@ -29,13 +29,9 @@ module.exports.Component = registerComponent('daydream-controls', {
   // 1 - menu (never dispatched on this layer)
   // 2 - system (never dispatched on this layer)
   mapping: {
-    axes: {'trackpad': [0, 1]},
+    axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'menu', 'system']
   },
-
-  // Use these labels for detail on axis events such as thumbstickmoved.
-  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
-  axisLabels: ['x', 'y', 'z', 'w'],
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -59,8 +55,8 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
-    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup; // to allow mock
-    this.emitIfAxesChanged = emitIfAxesChanged; // to allow mock
+    this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
+    this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
   },
 
   addEventListeners: function () {
@@ -117,7 +113,12 @@ module.exports.Component = registerComponent('daydream-controls', {
   injectTrackedControls: function () {
     var el = this.el;
     var data = this.data;
-    el.setAttribute('tracked-controls', {idPrefix: GAMEPAD_ID_PREFIX, hand: data.hand, rotationOffset: data.rotationOffset, armModel: data.armModel});
+    el.setAttribute('tracked-controls', {
+      armModel: data.armModel,
+      hand: data.hand,
+      idPrefix: GAMEPAD_ID_PREFIX,
+      rotationOffset: data.rotationOffset
+    });
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
       obj: DAYDREAM_CONTROLLER_MODEL_OBJ_URL,
@@ -137,8 +138,6 @@ module.exports.Component = registerComponent('daydream-controls', {
     if (!this.everGotGamepadEvent) { this.checkIfControllerPresent(); }
   },
 
-  // No need for onButtonChanged, since Daydream controller has no analog buttons.
-
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
     var buttonMeshes;
@@ -147,11 +146,13 @@ module.exports.Component = registerComponent('daydream-controls', {
     buttonMeshes.menu = controllerObject3D.getObjectByName('AppButton_AppButton_Cylinder.004');
     buttonMeshes.system = controllerObject3D.getObjectByName('HomeButton_HomeButton_Cylinder.005');
     buttonMeshes.trackpad = controllerObject3D.getObjectByName('TouchPad_TouchPad_Cylinder.003');
-    // Offset pivot point
+    // Offset pivot point.
     controllerObject3D.position.set(0, 0, -0.04);
   },
 
-  onAxisMoved: function (evt) { this.emitIfAxesChanged(this, this.mapping.axes, evt); },
+  onAxisMoved: function (evt) {
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
 
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];

@@ -13,19 +13,19 @@ var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
 /**
- * Oculus Touch Controls Component
- * Interfaces with Oculus Touch controllers and maps Gamepad events to
+ * Oculus Touch controls component.
+ * Interface with Oculus Touch controllers and maps Gamepad events to
  * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Load a controller model and highlights the pressed buttons
  */
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
     hand: {default: 'left'},
-    buttonColor: {type: 'color', default: '#999'},          // Off-white.
+    buttonColor: {type: 'color', default: '#999'},  // Off-white.
     buttonTouchColor: {type: 'color', default: '#8AB'},
-    buttonHighlightColor: {type: 'color', default: '#2DF'}, // Light blue.
+    buttonHighlightColor: {type: 'color', default: '#2DF'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0} // no default offset; -999 is sentinel value to auto-determine based on hand
+    rotationOffset: {default: 0}
   },
 
   // buttonId
@@ -37,18 +37,14 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   // 5 - surface (touch only)
   mapping: {
     left: {
-      axes: {'thumbstick': [0, 1]},
+      axes: {thumbstick: [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'xbutton', 'ybutton', 'surface']
     },
     right: {
-      axes: {'thumbstick': [0, 1]},
+      axes: {thumbstick: [0, 1]},
       buttons: ['thumbstick', 'trigger', 'grip', 'abutton', 'bbutton', 'surface']
     }
   },
-
-  // Use these labels for detail on axis events such as thumbstickmoved.
-  // e.g. for thumbstickmoved detail, the first axis returned is labeled x, and the second is labeled y.
-  axisLabels: ['x', 'y', 'z', 'w'],
 
   bindMethods: function () {
     this.onModelLoaded = bind(this.onModelLoaded, this);
@@ -69,8 +65,9 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     this.previousButtonValues = {};
     this.bindMethods();
 
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;   // Allow mock.
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;  // Allow mock.
+    // Allow mock.
+    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
