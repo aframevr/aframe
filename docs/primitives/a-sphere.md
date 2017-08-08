@@ -11,7 +11,7 @@ The sphere primitive creates a spherical or polyhedron shapes. It wraps an entit
 ## Example
 
 ```html
-<a-sphere color="yellow" radius="5"></a-sphere>
+<a-sphere color="yellow" position="9 2.7 -8" rotation="0 -115 0" scale=".35 .35 .35"></a-sphere>
 ```
 
 ## Attributes
