@@ -49,8 +49,9 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEl = null;
     this.canvasBounds = document.body.getBoundingClientRect();
 
+    var self = this;
     this.throttledUpdateCanvasBounds = utils.throttle(function updateCanvasBounds () {
-      this.canvasBounds = this.el.sceneEl.canvas.getBoundingClientRect();
+      self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
     }, 200);
 
     // Bind methods.
@@ -144,6 +145,7 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
+    this.throttledUpdateCanvasBounds();
   },
 
   onMouseMove: (function () {
