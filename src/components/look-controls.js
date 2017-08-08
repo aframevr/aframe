@@ -26,6 +26,8 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
     this.hmdEuler = new THREE.Euler();
+    this.position = {};
+    this.rotation = {};
 
     this.setupMouseControls();
     this.setupHMDControls();
@@ -159,7 +161,7 @@ module.exports.Component = registerComponent('look-controls', {
     var pitchObject = this.pitchObject;
     var yawObject = this.yawObject;
     var sceneEl = this.el.sceneEl;
-    var rotation;
+    var rotation = this.rotation;
 
     // Calculate HMD quaternion.
     hmdQuaternion = hmdQuaternion.copy(this.dolly.quaternion);
@@ -167,35 +169,27 @@ module.exports.Component = registerComponent('look-controls', {
 
     if (sceneEl.isMobile) {
       // On mobile, do camera rotation with touch events and sensors.
-      rotation = {
-        x: radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x),
-        y: radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y),
-        z: radToDeg(hmdEuler.z)
-      };
+      rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
+      rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
+      rotation.z = radToDeg(hmdEuler.z);
     } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
       if (this.data.reverseMouseDrag) {
-        rotation = {
-          x: currentRotation.x - deltaRotation.x,
-          y: currentRotation.y - deltaRotation.y,
-          z: currentRotation.z
-        };
+        rotation.x = currentRotation.x - deltaRotation.x;
+        rotation.y = currentRotation.y - deltaRotation.y;
+        rotation.z = currentRotation.z;
       } else {
-        rotation = {
-          x: currentRotation.x + deltaRotation.x,
-          y: currentRotation.y + deltaRotation.y,
-          z: currentRotation.z
-        };
+        rotation.x = currentRotation.x + deltaRotation.x;
+        rotation.y = currentRotation.y + deltaRotation.y;
+        rotation.z = currentRotation.z;
       }
     } else {
       // Mouse rotation ignored with an active headset. Use headset rotation.
-      rotation = {
-        x: radToDeg(hmdEuler.x),
-        y: radToDeg(hmdEuler.y),
-        z: radToDeg(hmdEuler.z)
-      };
+      rotation.x = radToDeg(hmdEuler.x);
+      rotation.y = radToDeg(hmdEuler.y);
+      rotation.z = radToDeg(hmdEuler.z);
     }
 
     this.el.setAttribute('rotation', rotation);
@@ -226,8 +220,9 @@ module.exports.Component = registerComponent('look-controls', {
 
     return function () {
       var el = this.el;
-      var currentPosition = el.getAttribute('position');
       var currentHMDPosition;
+      var currentPosition;
+      var position = this.position;
       var previousHMDPosition = this.previousHMDPosition;
       var sceneEl = this.el.sceneEl;
 
@@ -241,11 +236,11 @@ module.exports.Component = registerComponent('look-controls', {
 
       previousHMDPosition.copy(currentHMDPosition);
 
-      el.setAttribute('position', {
-        x: currentPosition.x + deltaHMDPosition.x,
-        y: currentPosition.y + deltaHMDPosition.y,
-        z: currentPosition.z + deltaHMDPosition.z
-      });
+      currentPosition = el.getAttribute('position');
+      position.x = currentPosition.x + deltaHMDPosition.x;
+      position.y = currentPosition.y + deltaHMDPosition.y;
+      position.z = currentPosition.z + deltaHMDPosition.z;
+      el.setAttribute('position', position);
     };
   })(),
 
