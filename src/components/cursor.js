@@ -43,14 +43,16 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
+    var self = this;
+
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
     this.canvasBounds = document.body.getBoundingClientRect();
 
-    var self = this;
-    this.throttledUpdateCanvasBounds = utils.debounce(function updateCanvasBounds () {
+    // Debounce.
+    this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
     }, 200);
 
@@ -111,7 +113,7 @@ module.exports.Component = registerComponent('cursor', {
     el.addEventListener('raycaster-intersection', this.onIntersection);
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
 
-    window.addEventListener('resize', this.throttledUpdateCanvasBounds);
+    window.addEventListener('resize', this.updateCanvasBounds);
   },
 
   removeEventListeners: function () {
@@ -135,7 +137,7 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('resize', this.throttledUpdateCanvasBounds);
+    window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
@@ -145,7 +147,7 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
-    this.throttledUpdateCanvasBounds();
+    this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
