@@ -81,6 +81,30 @@ module.exports.throttleTick = function (functionToThrottle, minimumInterval, opt
 };
 
 /**
+ * Returns debounce function that gets called only once after a set of repeated calls.
+ *
+ * @param {function} functionToDebounce
+ * @param {number} wait - Time to wait for repeated function calls (milliseconds).
+ * @param {boolean} immediate - Calls the function immediately regardless of if it should be waiting.
+ * @returns {function} Debounced function.
+ */
+module.exports.debounce = function (func, wait, immediate) {
+  var timeout;
+  return function () {
+    var context = this;
+    var args = arguments;
+    var later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
+/**
  * Fires a custom DOM event.
  *
  * @param {Element} el Element on which to fire the event.
