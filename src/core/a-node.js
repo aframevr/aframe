@@ -115,7 +115,7 @@ module.exports = registerElement('a-node', {
         Promise.all(childrenLoaded).then(function emitLoaded () {
           self.hasLoaded = true;
           if (cb) { cb(); }
-          self.emit('loaded', {}, false);
+          self.emit('loaded', undefined, false);
         });
       },
       writable: true
@@ -211,33 +211,27 @@ module.exports = registerElement('a-node', {
     },
 
     /**
-     * Emits a DOM event.
+     * Emit a DOM event.
      *
-     * @param {String} name
-     *   Name of event (use a space-delimited string for multiple events).
-     * @param {Object=} [detail={}]
-     *   Custom data to pass as `detail` to the event.
-     * @param {Boolean=} [bubbles=true]
-     *   Whether the event should bubble.
-     * @param {Object=} [extraData]
-     *   Extra data to pass to the event, if any.
+     * @param {string} name - Name of event.
+     * @param {object} [detail={}] - Custom data to pass as `detail` to the event.
+     * @param {boolean} [bubbles=true] - Whether the event should bubble.
+     * @param {object} [extraData] - Extra data to pass to the event, if any.
      */
     emit: {
       value: function (name, detail, bubbles, extraData) {
+        var data;
         var self = this;
-        detail = detail || {};
         if (bubbles === undefined) { bubbles = true; }
-        var data = { bubbles: !!bubbles, detail: detail };
+        data = {bubbles: !!bubbles, detail: detail};
         if (extraData) { utils.extend(data, extraData); }
-        return name.split(' ').map(function (eventName) {
-          return utils.fireEvent(self, eventName, data);
-        });
+        return utils.fireEvent(self, name, data);
       },
       writable: window.debug
     },
 
     /**
-     * Returns a closure that emits a DOM event.
+     * Return a closure that emits a DOM event.
      *
      * @param {String} name
      *   Name of event (use a space-delimited string for multiple events).
