@@ -198,9 +198,8 @@ suite('Component', function () {
       el.setAttribute('material', 'color: red');
       el.addEventListener('componentchanged', function (evt) {
         if (evt.detail.name !== 'material') { return; }
-        assert.equal(evt.detail.oldData.color, 'red');
-        assert.equal(evt.detail.newData.color, 'blue');
         assert.equal(evt.detail.name, 'material');
+        assert.equal(el.getAttribute('material').color, 'blue');
         assert.ok('id' in evt.detail);
         done();
       });
@@ -213,8 +212,7 @@ suite('Component', function () {
       el.setAttribute('position', {x: 0, y: 0, z: 0});
       el.addEventListener('componentchanged', function (evt) {
         if (evt.detail.name !== 'position') { return; }
-        assert.shallowDeepEqual(evt.detail.oldData, {x: 0, y: 0, z: 0});
-        assert.shallowDeepEqual(evt.detail.newData, {x: 1, y: 2, z: 3});
+        assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
         assert.equal(evt.detail.name, 'position');
         assert.ok('id' in evt.detail);
         done();
@@ -227,8 +225,7 @@ suite('Component', function () {
     test('emits componentchanged for value', function (done) {
       el.addEventListener('componentchanged', function (evt) {
         if (evt.detail.name !== 'visible') { return; }
-        assert.shallowDeepEqual(evt.detail.oldData, true);
-        assert.shallowDeepEqual(evt.detail.newData, false);
+        assert.equal(el.getAttribute('visible'), false);
         assert.equal(evt.detail.name, 'visible');
         done();
       });
@@ -353,7 +350,6 @@ suite('Component', function () {
     test('emits componentinitialized', function (done) {
       el.addEventListener('componentinitialized', function (evt) {
         if (evt.detail.name !== 'material') { return; }
-        assert.ok(evt.detail.data);
         assert.ok('id' in evt.detail);
         assert.equal(evt.detail.name, 'material');
         done();
@@ -652,8 +648,9 @@ suite('Component', function () {
         schema: {color: {default: 'red'}},
         update: function () { this.el.setAttribute('dummy', 'color', 'blue'); }
       });
-      this.el.addEventListener('componentchanged', function (evt) {
-        assert.equal('blue', evt.detail.newData.color);
+      this.el.addEventListener('componentchanged', evt => {
+        assert.equal(evt.detail.name, 'dummy');
+        assert.equal(this.el.getAttribute('dummy').color, 'blue');
         done();
       });
       var component = new TestComponent(this.el);
