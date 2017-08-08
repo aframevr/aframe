@@ -50,7 +50,7 @@ module.exports.Component = registerComponent('cursor', {
     this.canvasBounds = document.body.getBoundingClientRect();
 
     var self = this;
-    this.throttledUpdateCanvasBounds = utils.throttle(function updateCanvasBounds () {
+    this.throttledUpdateCanvasBounds = utils.debounce(function updateCanvasBounds () {
       self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
     }, 200);
 
