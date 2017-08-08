@@ -150,8 +150,14 @@ module.exports.Component = registerComponent('cursor', {
       var camera = this.el.sceneEl.camera;
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
-      mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
+
+      // Calculate mouse position based on the canvas element
+      var bounds = this.el.sceneEl.canvas.getBoundingClientRect();
+      var left = evt.clientX - bounds.left;
+      var top = evt.clientY - bounds.top;
+      mouse.x = (left / bounds.width) * 2 - 1;
+      mouse.y = -(top / bounds.height) * 2 + 1;
+
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
