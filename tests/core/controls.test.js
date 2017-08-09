@@ -1,4 +1,4 @@
-/* global Event, assert, process, setup, suite, test */
+/* global AFRAME, Event, assert, process, setup, suite, test */
 var helpers = require('../helpers');
 var PI = Math.PI;
 

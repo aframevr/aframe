@@ -411,11 +411,12 @@ suite('Component', function () {
       el.setAttribute('material', '');
     });
 
-    test('a selector property default is not cloned into data', function () {
+    test('does not clone selector property default into data', function () {
+      var el;
       registerComponent('dummy', {
         schema: {type: 'selector', default: document.body}
       });
-      var el = document.createElement('a-entity');
+      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', 'head');
       el.components.dummy.updateProperties('');
@@ -423,10 +424,11 @@ suite('Component', function () {
     });
 
     test('clones plain object schema default into data', function () {
+      var el;
       registerComponent('dummy', {
         schema: {type: 'vec3', default: {x: 1, y: 1, z: 1}}
       });
-      var el = document.createElement('a-entity');
+      el = document.createElement('a-entity');
       el.hasLoaded = true;
       el.setAttribute('dummy', '2 2 2');
       el.components.dummy.updateProperties('');
@@ -438,7 +440,6 @@ suite('Component', function () {
       var attrValue;
       var data;
       var el;
-
       registerComponent('dummy', {
         schema: {
           color: {default: 'blue'},
@@ -450,6 +451,12 @@ suite('Component', function () {
       el.hasLoaded = true;
       el.setAttribute('dummy', '');
       assert.notOk(el.components.dummy.attrValue.el);
+    });
+
+    test('does not clone props from attrValue into data that are not plain objects', function () {
+      var attrValue;
+      var el;
+      var data;
 
       // Direction property preserved across updateProperties calls but cloned into a different
       // object.
@@ -672,7 +679,7 @@ suite('Component', function () {
       var component = new TestComponent(el);
       var componentObj = {position: {x: 1, y: 2, z: 3}};
       var componentString = component.stringify(componentObj);
-      assert.deepEqual(componentString, 'position:1 2 3');
+      assert.equal(componentString, 'position: 1 2 3');
     });
   });
 
@@ -792,7 +799,9 @@ suite('Component', function () {
     });
 
     test('emit componentchanged when update calls setAttribute', function (done) {
-      var TestComponent = registerComponent('dummy', {
+      var component;
+      var TestComponent;
+      TestComponent = registerComponent('dummy', {
         schema: {color: {default: 'red'}},
         update: function () { this.el.setAttribute('dummy', 'color', 'blue'); }
       });
@@ -801,11 +810,11 @@ suite('Component', function () {
         assert.equal(this.el.getAttribute('dummy').color, 'blue');
         done();
       });
-      var component = new TestComponent(this.el);
+      component = new TestComponent(this.el);
       assert.equal(component.data.color, 'blue');
     });
 
-    test('oldData is empty object on the first call when a single property component with an object as default initializes', function () {
+    test('makes oldData empty object on first call when single property component with an object as default initializes', function () {
       var updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {type: 'vec3'},
@@ -817,7 +826,7 @@ suite('Component', function () {
       assert.deepEqual(updateStub.getCalls()[0].args[0], {});
     });
 
-    test('oldData is empty object on the first call when a multiple property component initializes', function () {
+    test('makes oldData empty object on first call when multiple property component initializes', function () {
       var updateStub = sinon.stub();
       registerComponent('dummy', {
         schema: {
@@ -866,7 +875,7 @@ suite('Component', function () {
       assert.deepEqual(el.components.dummy.data, {x: 2, y: 2, z: 2});
     });
 
-    test('oldData and data is properly passed on recursive calls to setAttribute', function () {
+    test('properly passes oldData and data properly on recursive calls to setAttribute', function () {
       var el = this.el;
       registerComponent('dummy', {
         schema: {
@@ -900,7 +909,7 @@ suite('Component', function () {
       el.setAttribute('dummy', {color: 'blue'});
       assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), '');
       el.components.dummy.flushToDOM();
-      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color: blue');
     });
 
     test('init and update are not called for a not loaded entity', function () {
@@ -918,7 +927,7 @@ suite('Component', function () {
       el.components.dummy.flushToDOM();
       sinon.assert.notCalled(initStub);
       sinon.assert.notCalled(updateStub);
-      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color:blue');
+      assert.equal(HTMLElement.prototype.getAttribute.call(el, 'dummy'), 'color: blue');
     });
   });
 
