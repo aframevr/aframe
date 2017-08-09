@@ -8,33 +8,27 @@
       html {
         font-size: 14px;
       }
-
       body {
         background: rgb(239,45,94);
         color: #fff;
         font: normal 500 1.2rem/1.2 Inconsolata, Andale Mono, Courier New, monospace;
         padding: 1rem 2rem;
       }
-
       ul {
         list-style: none;
         margin: 0;
         padding: 0;
       }
-
       .header {
         position: relative;
       }
-
       .resources {
         font-size: 0;  /* Collapse whitespace. */
         text-transform: uppercase;
       }
-
       .resources li + li {
         margin-top: 0.5rem;
       }
-
       .resources a {
         color: rgba(0,0,0,.5);
         display: inline-block;
@@ -44,17 +38,14 @@
         text-decoration: none;
         transition: all 0.075s ease-in-out;
       }
-
       .resources a:hover {
         background-color: rgba(0,0,0,0.25);
         color: #fff;
       }
-
       h1,
       h2 {
         line-height: 100%;
       }
-
       h1 {
         font-size: 1.6rem;
         font-weight: 100;
@@ -62,7 +53,6 @@
         margin-bottom: 1.25rem;
         text-transform: uppercase;
       }
-
       h2 {
         color: rgba(0,0,0,0.5);
         font-size: 0.9rem;
@@ -71,18 +61,15 @@
         padding: 0;
         text-transform: uppercase;
       }
-
       hr {
         background: none;
         border: 0;
         border-bottom: 1px dashed rgba(255,255,255,0.25);
         margin: 2rem 0;
       }
-
       .links li + li {
         box-shadow: inset 0 0.15rem 0.1rem -0.15rem rgba(0,0,0,0.5);
       }
-
       .links a {
         color: #fff;
         display: block;
@@ -92,34 +79,28 @@
         text-decoration: none;
         transition: opacity 0.075s ease-in-out;
       }
-
       .links a em {
         font-size: .9rem;
         font-style: normal;
         opacity: .6;
       }
-
       .links a:hover {
         background-color: rgba(0,0,0,0.15);
         box-shadow: inset 0 0 0 0.15rem rgba(0,0,0,0.15);
       }
-
       .links a:active {
         background-color: rgba(0,0,0,0.25);
         opacity: 0.75;
       }
-
       .links li:hover,
       .links li:hover + li {
         margin: 0 -0.75rem;
       }
-
       .links li:hover a,
       .links li:hover + li a {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
       }
-
       .moz-link {
         display: block;
         margin: -2.4rem;
@@ -131,33 +112,26 @@
         text-align: right;
         transition: 0.075s opacity ease-in-out;
       }
-
       .moz-link:hover {
         opacity: 1;
       }
-
       .moz-logo {
         display: block;
         height: 1.7rem;
       }
-
       @media only screen and (min-width: 1000px) {
         h1 {
           font-size: 3rem;
         }
-
         .resources {
           font-size: 1.2;
         }
-
         .resources li {
           display: inline-block;
         }
-
         .resources li + li {
           margin-left: 2.5rem;
         }
-
         .moz-link {
           top: 1.2rem;
           height: 1.8rem;
@@ -236,6 +210,14 @@
       <li><a href="test/opacity/">Opacity</a></li>
       <li><a href="test/physical/">Physically-Based Materials</a></li>
       <li><a href="test/pivot/">Pivot</a></li>
+      <li><a href="primitives/boxes/">Primitive: Boxes</a></li>
+      <li><a href="primitives/cylinders/">Primitive: Cylinders</a></li>
+      <li><a href="primitives/defaults/">Primitive: Defaults</a></li>
+      <li><a href="primitives/images/">Primitive: Images</a></li>
+      <li><a href="primitives/models/">Primitive: Models <em>(glTF, OBJ, COLLADA)</em></a></li>
+      <li><a href="primitives/planes/">Primitive: Planes</a></li>
+      <li><a href="primitives/ring/">Primitive: Ring</a></li>
+      <li><a href="primitives/torus/">Primitive: Torus</a></li>
       <li><a href="test/raycaster/">Raycaster</a></li>
       <li><a href="test/raycaster/simple.html">Raycaster (Simple)</a></li>
       <li><a href="test/shaders/">Shaders</a></li>
@@ -251,17 +233,13 @@
       <li><a href="test/visibility/">Visibility</a></li>
     </ul>
 
-    <h2>Primitives</h2>
+    <h2>Performance</h2>
 
     <ul class="links">
-      <li><a href="primitives/boxes/">Boxes</a></li>
-      <li><a href="primitives/cylinders/">Cylinders</a></li>
-      <li><a href="primitives/defaults/">Defaults</a></li>
-      <li><a href="primitives/images/">Images</a></li>
-      <li><a href="primitives/models/">Models <em>(glTF, OBJ, COLLADA)</em></a></li>
-      <li><a href="primitives/planes/">Planes</a></li>
-      <li><a href="primitives/ring/">Ring</a></li>
-      <li><a href="primitives/torus/">Torus</a></li>
+      <li><a href="performance/animation/">Animation</a></li>
+      <li><a href="performance/cubes/">Cubes</a></li>
+      <li><a href="performance/entity-count/">Entity Count</a></li>
+      <li><a href="performance/in-vr/">In VR</a></li>
     </ul>
   </body>
 </html>
