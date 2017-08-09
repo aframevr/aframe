@@ -485,8 +485,9 @@ suite('a-entity', function () {
           assert.shallowDeepEqual(el.components.geometry.attrValue, {
             depth: 20,
             height: 10,
+            primitive: 'box',
             width: 5
-          });
+          }, 'Second attrValue');
           assert.equal(geometry.width, 5, 'Second setAttribute');
           done();
         });
@@ -500,7 +501,7 @@ suite('a-entity', function () {
   suite('flushToDOM', function () {
     test('updates DOM attributes', function () {
       var el = this.el;
-      var materialStr = 'color:#F0F;metalness:0.75';
+      var materialStr = 'color: #F0F; metalness: 0.75';
       var material;
       el.setAttribute('material', materialStr);
       material = HTMLElement.prototype.getAttribute.call(el, 'material');
@@ -512,7 +513,7 @@ suite('a-entity', function () {
 
     test('updates DOM attributes of a multiple component', function () {
       var el = this.el;
-      var soundStr = 'src:url(mysoundfile.mp3);autoplay:true';
+      var soundStr = 'src: url(mysoundfile.mp3); autoplay: true';
       var soundAttrValue;
       el.setAttribute('sound__1', {'src': 'url(mysoundfile.mp3)', autoplay: true});
       soundAttrValue = HTMLElement.prototype.getAttribute.call(el, 'sound__1');
@@ -527,7 +528,7 @@ suite('a-entity', function () {
       var childEl = document.createElement('a-entity');
       var childMaterialStr = 'color:pink';
       var materialAttr;
-      var materialStr = 'color:#F0F;metalness:0.75';
+      var materialStr = 'color: #F0F; metalness: 0.75';
       childEl.addEventListener('loaded', function () {
         materialAttr = HTMLElement.prototype.getAttribute.call(el, 'material');
         assert.equal(materialAttr, null);
@@ -537,7 +538,7 @@ suite('a-entity', function () {
         childEl.setAttribute('material', childMaterialStr);
         el.flushToDOM(true);
         materialAttr = HTMLElement.prototype.getAttribute.call(el, 'material');
-        assert.equal(materialAttr, 'color:#F0F;metalness:0.75');
+        assert.equal(materialAttr, 'color: #F0F; metalness: 0.75');
         materialAttr = HTMLElement.prototype.getAttribute.call(childEl, 'material');
         assert.equal(childMaterialStr, 'color:pink');
         done();
@@ -717,9 +718,9 @@ suite('a-entity', function () {
       assert.shallowDeepEqual(el.getDOMAttribute('material'), {});
     });
 
-    test('returns null for a default component if it is not set', function () {
+    test('returns attrValue for a default component', function () {
       var el = this.el;
-      assert.shallowDeepEqual(el.getDOMAttribute('position'), null);
+      assert.shallowDeepEqual(el.getDOMAttribute('position'), {});
     });
 
     test('returns parsed data if default component is set', function () {
@@ -949,7 +950,7 @@ suite('a-entity', function () {
       var el = this.el;
       assert.ok('position' in el.components);
       el.removeAttribute('position');
-      assert.equal(el.getDOMAttribute('position'), null);
+      assert.shallowDeepEqual(el.getDOMAttribute('position'), {});
       assert.ok('position' in el.components);
     });
 
@@ -976,21 +977,26 @@ suite('a-entity', function () {
 
     test('can clear mixins', function () {
       var el = this.el;
+      el.setAttribute('id', 'test');
       mixinFactory('foo', {position: '1 2 3'});
       mixinFactory('bar', {scale: '1 2 3'});
       el.setAttribute('mixin', 'foo bar');
-      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3});
-      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 1, y: 2, z: 3},
+                              'Position mixin');
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 2, z: 3},
+                              'Scale mixin');
       el.removeAttribute('mixin');
-      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0});
-      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1});
+      assert.shallowDeepEqual(el.getAttribute('position'), {x: 0, y: 0, z: 0},
+                              'Position without mixin');
+      assert.shallowDeepEqual(el.getAttribute('scale'), {x: 1, y: 1, z: 1},
+                              'Scale without mixin');
     });
   });
 
   suite('initComponent', function () {
     test('initializes component', function () {
       var el = this.el;
-      el.initComponent('material', false, 'color: #F0F; transparent: true');
+      el.initComponent('material', 'color: #F0F; transparent: true', false);
       assert.ok(el.components.material);
     });
 
@@ -1005,7 +1011,7 @@ suite('a-entity', function () {
 
     test('initializes dependency component and can set attribute', function () {
       var el = this.el;
-      el.initComponent('material', undefined, true);
+      el.initComponent('material', '', true);
       assert.shallowDeepEqual(el.getAttribute('material'), {});
     });
 
@@ -1118,7 +1124,7 @@ suite('a-entity', function () {
       this.sinon.stub(el, 'setAttribute', nativeSetAttribute);
       this.sinon.stub(el, 'getAttribute', nativeGetAttribute);
       el.setAttribute('material', materialAttribute);
-      el.initComponent('material', true);
+      el.initComponent('material', '', true);
       assert.equal(el.getAttribute('material'), materialAttribute);
     });
 
