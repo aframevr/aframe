@@ -24,6 +24,7 @@ require('./text');
 require('./tracked-controls');
 require('./visible');
 require('./vive-controls');
+require('./vive-tracker');
 require('./wasd-controls');
 
 require('./scene/canvas');

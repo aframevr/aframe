@@ -1,0 +1,87 @@
+<html>
+<head>
+<script src="../../../dist/aframe-master.js"></script>
+</head>
+<body>
+
+<script>
+  AFRAME.registerComponent('tracker-marker', {
+    schema: {type: 'string'},
+    init: function () {
+      // red ray forward (-Z)
+      var forwardRayEl = document.createElement('a-box');
+      forwardRayEl.setAttribute('width', '0.001');
+      forwardRayEl.setAttribute('height', '0.001');
+      forwardRayEl.setAttribute('depth', '1');
+      forwardRayEl.setAttribute('position', '0 0 -0.5');
+      forwardRayEl.setAttribute('color', 'red');
+      // blue ray up (+Y)
+      var upwardRayEl = document.createElement('a-box');
+      upwardRayEl.setAttribute('width', '0.001');
+      upwardRayEl.setAttribute('height', '1');
+      upwardRayEl.setAttribute('depth', '0.001');
+      upwardRayEl.setAttribute('position', '0 0.5 0');
+      upwardRayEl.setAttribute('color', 'blue');
+
+      // blue label with carets forward (-Z)
+      var labelEl = document.createElement('a-box');
+      labelEl.setAttribute('color', 'blue');
+      labelEl.setAttribute('text', 'zOffset:0.025; color:white; align:center; wrapCount:9; value:^' + this.data + '^');
+      labelEl.setAttribute('width', '0.1');
+      labelEl.setAttribute('height', '0.1');
+      labelEl.setAttribute('depth', '0.001');
+      labelEl.setAttribute('rotation', '-90 0 0');
+      
+      this.el.appendChild(forwardRayEl);
+      this.el.appendChild(upwardRayEl);
+      this.el.appendChild(labelEl);
+    }
+  })
+</script>
+
+<a-scene>
+  <a-sky color="#3CF"></a-sky>
+  <a-plane color="green" width="5" height="5" rotation="-90 0 0"></a-plane>
+  
+  <a-entity position="0 0 -2">
+   <a-entity tracker-marker="floor"></a-entity>
+  </a-entity>
+  
+  <!-- nothing wrong with the model, this looks right -->
+  <a-entity position="0 0 -1" obj-model="obj:https://cdn.aframe.io/controllers/vive/vr_tracker-vive.obj; mtl:https://cdn.aframe.io/controllers/vive/vr_tracker-vive.mtl">
+   <a-entity tracker-marker="model"></a-entity>
+  </a-entity>
+ 
+  <a-entity position="0 0 0">
+   <a-entity tracker-marker="center"></a-entity>
+  </a-entity>  
+  
+  <!-- first tracker -->
+  <a-entity vive-tracker="index:0">
+   <!-- show vive-tracker pose --> 
+   <a-entity tracker-marker="0"></a-entity>
+  </a-entity>
+  
+  <!-- second tracker -->
+  <a-entity vive-tracker="index:1; rotation:-90 0 0">
+   <!-- show vive-tracker pose --> 
+   <a-entity tracker-marker="1"></a-entity>
+  </a-entity>
+  
+  <!-- third tracker, to show what raw values look like -->
+  <a-entity vive-tracker="index:2;rotation:0 0 0">
+   <!-- show vive-tracker pose --> 
+   <a-entity tracker-marker="2(raw)"></a-entity>
+  </a-entity>
+  
+  <!-- controllers -->
+  <a-entity vive-controls="hand:left">
+    <a-entity tracker-marker="left"></a-entity>
+  </a-entity>
+  <a-entity vive-controls="hand:right">
+    <a-entity tracker-marker="right"></a-entity>
+  </a-entity>
+</a-scene>
+
+</body>
+</html>
