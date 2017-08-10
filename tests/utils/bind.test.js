@@ -22,26 +22,9 @@ suite('utils.bind', function () {
         return cb();
       }
     };
-    var obj2 = {
-      propName: 'webvr'
-    };
+    var obj2 = {propName: 'webvr'};
     var bound = bind(obj.getProp, obj2);
     assert.equal(obj2.propName, bound());
     assert.equal(obj2.propName, obj.getPropByCallback(bound));
-  });
-
-  test('utils.bind accepts and handles additional arguments properly', function () {
-    var firstArg = 'awesome';
-    var secondArg = {};
-    var obj = {
-      propName: 'aframe',
-      getPropertyByCallback: function (arg1, arg2, arg3) {
-        assert.equal(arg1, firstArg);
-        assert.equal(arg2, secondArg);
-        assert.equal(arg3, obj.propName);
-      }
-    };
-    var bound = bind(obj.getPropertyByCallback, obj, firstArg, secondArg);
-    bound(obj.propName);
   });
 });
