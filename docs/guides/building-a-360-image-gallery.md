@@ -116,6 +116,9 @@ of the images defined in the [Asset Management System][ams].
   geometry="primitive: plane; height: 1; width: 1"
   material="shader: flat; src: #cubes-thumb"></a-entity>
 ```
+>***Note that the planes will default to position="0 0 0" and since the camera is also in that position by default you will not see them. You can reposition the camera with "wasd". Move the camera in the positive z direction ("S" key if camera is facing the default direction) to see the planes.
+
+>***Note that the planes do not have "backs" by default. If you move to the opposite facing side of the plane, the plane will look like it disappears!
 
 [sound]: ../components/sound.md
 
