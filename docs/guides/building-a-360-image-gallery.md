@@ -11,6 +11,8 @@ order: 3
 > Gallery Boilerplate on
 > GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
 
+> A bug has been discovered when using version 0.6.0. Recommend using version <=0.5.0 for this project while bug is reviewed.
+
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 
 [registry]: https://aframe.io/registry/
