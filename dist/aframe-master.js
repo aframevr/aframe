@@ -73795,21 +73795,23 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
-
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
-      // Clone default value if object so components don't share object.
-      data = typeof schema.default === 'object' ? utils.clone(schema.default) : schema.default;
+      // Clone default value if plain object so components don't share the same object
+      // that might be modified by the user.
+      data = schema.default.constructor === Object ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
-      // Clone default value if object so components don't share object
-      data = typeof previousData === 'object' ? utils.clone(previousData) : {};
+      // Clone previous data to prevent sharing references with attrValue that might be
+      // modified by the user.
+      data = typeof previousData === 'object' ? cloneData(previousData) : {};
 
       // Apply defaults.
       for (i = 0, keys = Object.keys(schema), keysLength = keys.length; i < keysLength; i++) {
         defaultValue = schema[keys[i]].default;
         if (data[keys[i]] !== undefined) { continue; }
+        // Clone default value if object so components don't share object
         data[keys[i]] = defaultValue && defaultValue.constructor === Object
           ? utils.clone(defaultValue)
           : defaultValue;
@@ -73926,6 +73928,25 @@ module.exports.registerComponent = function (name, definition) {
   };
   return NewComponent;
 };
+
+/**
+* Clones component data.
+* Clone only the properties that are plain objects while
+* keeping a reference for the rest.
+*
+* @param data - Component data to clone.
+* @returns Cloned data.
+*/
+function cloneData (data) {
+  var clone = {};
+  var parsedProperty;
+  var key;
+  for (key in data) {
+    parsedProperty = data[key];
+    clone[key] = parsedProperty.constructor === Object ? utils.clone(parsedProperty) : parsedProperty;
+  }
+  return clone;
+}
 
 /**
 * Object extending with checking for single-property schema.
@@ -76624,7 +76645,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 10-08-2017, Commit #b2c10d7)');
+console.log('A-Frame Version: 0.6.1 (Date 11-08-2017, Commit #2938822)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
