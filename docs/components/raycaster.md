@@ -49,18 +49,17 @@ AFRAME.registerComponent('collider-check', {
 
 ## Properties
 
-| Property  | Description                                                                                                                                           | Default Value |
-| --------  | -----------                                                                                                                                           | ------------- |
-| direction | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                      | 0, 0, 0       |
-| far       | Maximum distance under which resulting entities are returned. Cannot be lower then `near`.                                                            | Infinity      |
-| interval  | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance. | 100           |
-| near      | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                 | 0             |
-| objects   | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested.                                         | null          |
-| origin    | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                            | 0, 0, 0       |
-| recursive | Checks all children of objects if set. Else only checks intersections with root objects.                                                              | true          |
-| showLine  | Whether or not to display the raycaster visually with the [line component][line].                                                                                         | false          |
-| useWorldCoordinates  | Whether the raycaster origin and direction properties are specified in world coordinates.
-                                                                                          | false          |
+| Property            | Description                                                                                                                                           | Default Value |
+| --------            | -----------                                                                                                                                           | ------------- |
+| direction           | Vector3 coordinate of which direction the ray should point from relative to the entity's origin.                                                      | 0, 0, 0       |
+| far                 | Maximum distance under which resulting entities are returned. Cannot be lower then `near`.                                                            | Infinity      |
+| interval            | Number of milliseconds to wait in between each intersection test. Lower number is better for faster updates. Higher number is better for performance. | 100           |
+| near                | Minimum distance over which resuilting entities are returned. Cannot be lower than 0.                                                                 | 0             |
+| objects             | Query selector to pick which objects to test for intersection. If not specified, all entities will be tested.                                         | null          |
+| origin              | Vector3 coordinate of where the ray should originate from relative to the entity's origin.                                                            | 0, 0, 0       |
+| recursive           | Checks all children of objects if set. Else only checks intersections with root objects.                                                              | true          |
+| showLine            | Whether or not to display the raycaster visually with the [line component][line].                                                                     | false         |
+| useWorldCoordinates | Whether the raycaster origin and direction properties are specified in world coordinates.                                                             | false         |
 
 ## Events
 
