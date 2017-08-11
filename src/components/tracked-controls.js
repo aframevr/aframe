@@ -23,7 +23,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     id: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
-    // Arm model parameters, to use when not 6DOF. (pose hasPosition false, no position)
+    // Arm model parameters when not 6DoF.
     armModel: {default: true},
     headElement: {type: 'selector'}
   },
@@ -38,6 +38,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerPosition = new THREE.Vector3();
     this.controllerQuaternion = new THREE.Quaternion();
     this.deltaControllerPosition = new THREE.Vector3();
+    this.position = {};
+    this.rotation = {};
     this.standingMatrix = new THREE.Matrix4();
 
     this.previousControllerPosition = new THREE.Vector3();
@@ -56,12 +58,16 @@ module.exports.Component = registerComponent('tracked-controls', {
   /**
    * Return default user height to use for non-6DOF arm model.
    */
-  defaultUserHeight: function () { return DEFAULT_CAMERA_HEIGHT; }, // default camera height (for cameras with zero)
+  defaultUserHeight: function () {
+    return DEFAULT_CAMERA_HEIGHT;
+  },
 
   /**
    * Return head element to use for non-6DOF arm model.
    */
-  getHeadElement: function () { return this.data.headElement || this.el.sceneEl.camera.el; },
+  getHeadElement: function () {
+    return this.data.headElement || this.el.sceneEl.camera.el;
+  },
 
   /**
    * Handle update to `id` or `idPrefix.
@@ -86,25 +92,33 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   applyArmModel: function (controllerPosition) {
-      // Use controllerPosition and deltaControllerPosition to avoid creating yet more variables...
+    // Use controllerPosition and deltaControllerPosition to avoid creating variables.
     var controller = this.controller;
-    var pose = controller.pose;
-    var controllerQuaternion = this.controllerQuaternion;
     var controllerEuler = this.controllerEuler;
+    var controllerQuaternion = this.controllerQuaternion;
     var deltaControllerPosition = this.deltaControllerPosition;
-    var hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
-    var headEl = this.getHeadElement();
-    var headObject3D = headEl.object3D;
-    var headCamera = headEl.components.camera;
-    var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
+    var hand;
+    var headCamera;
+    var headEl;
+    var headObject3D;
+    var pose;
+    var userHeight;
+
+    headEl = this.getHeadElement();
+    headObject3D = headEl.object3D;
+    headCamera = headEl.components.camera;
+    userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
+
+    pose = controller.pose;
+    hand = (controller ? controller.hand : undefined) || DEFAULT_HANDEDNESS;
 
     // Use camera position as head position.
     controllerPosition.copy(headObject3D.position);
     // Set offset for degenerate "arm model" to elbow.
     deltaControllerPosition.set(
       EYES_TO_ELBOW.x * (hand === 'left' ? -1 : hand === 'right' ? 1 : 0),
-      EYES_TO_ELBOW.y, // lower than your eyes
-      EYES_TO_ELBOW.z); // slightly out in front
+      EYES_TO_ELBOW.y,  // Lower than our eyes.
+      EYES_TO_ELBOW.z);  // Slightly out in front.
     // Scale offset by user height.
     deltaControllerPosition.multiplyScalar(userHeight);
     // Apply camera Y rotation (not X or Z, so you can look down at your hand).
@@ -112,11 +126,11 @@ module.exports.Component = registerComponent('tracked-controls', {
     // Apply rotated offset to position.
     controllerPosition.add(deltaControllerPosition);
 
-    // Set offset for degenerate "arm model" forearm.
-    deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z); // forearm sticking out from elbow
+    // Set offset for degenerate "arm model" forearm. Forearm sticking out from elbow.
+    deltaControllerPosition.set(FOREARM.x, FOREARM.y, FOREARM.z);
     // Scale offset by user height.
     deltaControllerPosition.multiplyScalar(userHeight);
-    // Apply controller X and Y rotation (tilting up/down/left/right is usually moving the arm)
+    // Apply controller X/Y rotation (tilting up/down/left/right is usually moving the arm).
     if (pose.orientation) {
       controllerQuaternion.fromArray(pose.orientation);
     } else {
@@ -162,7 +176,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       dolly.position.fromArray(pose.position);
     } else {
       if (this.data.armModel) {
-        // The controller is not 6DOF, so apply arm model.
+        // Controller not 6DOF, apply arm model.
         this.applyArmModel(controllerPosition);
       }
       dolly.position.copy(controllerPosition);
@@ -186,21 +200,19 @@ module.exports.Component = registerComponent('tracked-controls', {
     controllerPosition.setFromMatrixPosition(dolly.matrix);
 
     // Apply rotation (as absolute, with rotation offset).
-    el.setAttribute('rotation', {
-      x: THREE.Math.radToDeg(controllerEuler.x),
-      y: THREE.Math.radToDeg(controllerEuler.y),
-      z: THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset
-    });
+    this.rotation.x = THREE.Math.radToDeg(controllerEuler.x);
+    this.rotation.y = THREE.Math.radToDeg(controllerEuler.y);
+    this.rotation.z = THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset;
+    el.setAttribute('rotation', this.rotation);
 
     // Apply position (as delta from previous Gamepad position).
     deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
     this.previousControllerPosition.copy(controllerPosition);
     currentPosition = el.getAttribute('position');
-    el.setAttribute('position', {
-      x: currentPosition.x + deltaControllerPosition.x,
-      y: currentPosition.y + deltaControllerPosition.y,
-      z: currentPosition.z + deltaControllerPosition.z
-    });
+    this.position.x = currentPosition.x + deltaControllerPosition.x;
+    this.position.y = currentPosition.y + deltaControllerPosition.y;
+    this.position.z = currentPosition.z + deltaControllerPosition.z;
+    el.setAttribute('position', this.position);
   },
 
   /**

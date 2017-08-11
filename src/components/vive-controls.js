@@ -34,16 +34,9 @@ module.exports.Component = registerComponent('vive-controls', {
    * 4 - system (never dispatched on this layer)
    */
   mapping: {
-    axes: {'trackpad': [0, 1]},
+    axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
-
-  /**
-   * Labels for detail on axis events such as `thumbstickmoved`.
-   * For example, on `thumbstickmoved` detail, the first axis returned is labeled x, and the
-   * second is labeled y.
-   */
-  axisLabels: ['x', 'y', 'z', 'w'],
 
   init: function () {
     var self = this;
