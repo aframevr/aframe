@@ -340,7 +340,7 @@ Component.prototype = {
     if (isSinglePropSchema) {
       // Clone default value if plain object so components don't share the same object
       // that might be modified by the user.
-      data = schema.default.constructor === Object ? utils.clone(schema.default) : schema.default;
+      data = (schema.default && schema.default.constructor === Object) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
