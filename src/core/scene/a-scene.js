@@ -123,7 +123,17 @@ module.exports.AScene = registerElement('a-scene', {
         this.exitVRTrueBound = function () { self.exitVR(true); };
 
         // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', this.enterVRBound);
+        window.addEventListener('vrdisplayactivate', function () {
+          // With Oculus Browser, vrdisplayactivate fires before this.effect exists.
+          if (!self.effect) {
+            // Try again to enter VR next tick.
+            // NOTE: Using self.enterVRBound apparently no longer counts as user gesture.
+            setTimeout(function () { self.enterVR(); });
+          } else {
+            // Enter VR now.
+            self.enterVR();
+          }
+        });
 
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
