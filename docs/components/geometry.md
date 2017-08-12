@@ -6,6 +6,7 @@ parent_section: docs
 section_title: Components
 section_order: 4
 source_code: src/components/geometry.js
+examples: []
 ---
 
 The geometry component provides a basic shape for an entity. The `primitive`

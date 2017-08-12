@@ -3,6 +3,9 @@ title: Entity-Component-System
 type: introduction
 layout: docs
 order: 5
+examples:
+  - title: Community Components in Action
+    src: https://glitch.com/edit/#!/aframe-registry?path=index.html
 ---
 
 [ecs]: https://wikipedia.org/wiki/Entity_component_system

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/raycaster.js
+examples: []
 ---
 
 [3ray]: http://threejs.org/docs/#Reference/Core/Raycaster

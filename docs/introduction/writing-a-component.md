@@ -4,6 +4,7 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 8
+examples: []
 ---
 
 [component]: ../core/component.md

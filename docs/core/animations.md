@@ -5,6 +5,7 @@ layout: docs
 parent_section: core
 order: 6
 source_code: src/core/a-animation.js
+examples: []
 ---
 
 > Also check out the

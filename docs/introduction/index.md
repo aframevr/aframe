@@ -7,13 +7,14 @@ order: 1
 parent_section: docs
 section_order: 1
 installation: true
+examples:
+  - title: Hello, World!
+    src: https://glitch.com/edit/#!/aframe?path=index.html
 ---
 
-[mozvr]: https://mozvr.com
+[mozvr]: https://mozilla.org
 [three.js]: https://threejs.org
 [webvr]: https://iswebvrready.com
-
-![A-Frame](https://cloud.githubusercontent.com/assets/674727/25392020/6f011d10-298c-11e7-845e-c3c5baebd14d.jpg)
 
 ## Getting Started
 
@@ -50,11 +51,16 @@ visual step-by-step lessons to complement the documentation.
 
 ## What is A-Frame?
 
-:a:-Frame is a web framework for building virtual reality (VR) experiences. As
-originators of WebVR, the [Mozilla VR team][mozvr] developed A-Frame to be the
-easiest as well as the most powerful way to develop WebVR content. As a [fully
-open project](https://github.com/aframevr/), A-Frame has grown to be one of the
-[largest and most welcoming VR communities](https://aframe.io/community/).
+[github]: https://github.com/aframevr/
+[community]: https://aframe.io/community/
+
+![A-Frame](https://cloud.githubusercontent.com/assets/674727/25392020/6f011d10-298c-11e7-845e-c3c5baebd14d.jpg)
+
+:a:-Frame is a web framework for building virtual reality (VR) experiences.
+Originally from [Mozilla][mozilla], A-Frame was developed to be an easy but
+powerful way to develop VR content. As an [independent open source
+project][github], A-Frame has grown to be one of the [largest and most
+welcoming VR communities][community].
 
 A-Frame is based on top of HTML, making it simple to get started. But A-Frame
 is not just a 3D scene graph or a markup language; the core is a powerful

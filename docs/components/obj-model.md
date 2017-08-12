@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/obj-model.js
+examples: []
 ---
 
 The obj-model component loads a 3D model and material using a

@@ -4,6 +4,7 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 6
+examples: []
 ---
 
 [geometry]: ../components/geometry.md

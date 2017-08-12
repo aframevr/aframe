@@ -4,12 +4,10 @@ type: guides
 layout: docs
 parent_section: guides
 order: 3
+examples:
+  - title: 360&deg; Image Gallery
+    src: https://glitch.com/edit/#!/aframe-gallery?path=index.html
 ---
-
-> Remix the [360&deg; Image Gallery on
-> Glitch](https://glitch.com/~aframe-gallery). Or Fork the [360&deg; Image
-> Gallery Boilerplate on
-> GitHub](https://github.com/aframevr/360-image-gallery-boilerplate).
 
 ![360&deg; Image Viewer](/images/docs/360-image-viewer.png)
 

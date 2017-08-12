@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/line.js
+examples: []
 ---
 
 [threeline]: https://threejs.org/docs/#api/objects/Line

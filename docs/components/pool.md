@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scene/pool.js
+examples: []
 ---
 
 The pool component allows for [object

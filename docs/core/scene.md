@@ -5,6 +5,7 @@ layout: docs
 parent_section: core
 order: 5
 source_code: src/core/scene/a-scene.js
+examples: []
 ---
 
 [entity]: ./entity.md
