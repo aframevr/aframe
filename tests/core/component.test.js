@@ -381,7 +381,7 @@ suite('Component', function () {
       assert.deepEqual(el.components.dummy.data, {x: 1, y: 1, z: 1});
     });
 
-    test.only('do not clone properties from attrValue into data that are not plain objects', function () {
+    test('do not clone properties from attrValue into data that are not plain objects', function () {
       registerComponent('dummy', {
         schema: {
           color: {default: 'blue'},
