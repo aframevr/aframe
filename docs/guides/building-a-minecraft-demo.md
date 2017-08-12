@@ -4,6 +4,9 @@ type: guides
 layout: docs
 parent_section: guides
 order: 10
+examples:
+  - title: Aincraft
+    src: https://glitch.com/edit/#!/aframe-aincraft?path=index.html
 ---
 
 [github]: https://github.com/ngokevin/kframe/tree/csstricks/scenes/aincraft/

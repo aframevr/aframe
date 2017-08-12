@@ -6,6 +6,7 @@ parent_section: components
 image:
   src: https://user-images.githubusercontent.com/674727/26897482-91947a94-4b7d-11e7-9cb5-5c47f50938e4.gif
 source_code: src/components/laser-controls.js
+examples: []
 ---
 
 [dof]: http://www.roadtovr.com/introduction-positional-tracking-degrees-freedom-dof/

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/gltf-model.js
+examples: []
 ---
 
 [about-gltf]: https://www.khronos.org/gltf

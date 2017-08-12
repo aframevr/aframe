@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scale.js
+examples: []
 ---
 
 The scale component defines a shrinking, stretching, or skewing transformation

@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/hand-controls.js
+examples: []
 ---
 
 [tracked]: ./tracked-controls.md

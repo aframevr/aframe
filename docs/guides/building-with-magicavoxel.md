@@ -4,6 +4,7 @@ type: guides
 layout: docs
 parent_section: guides
 order: 7
+examples: []
 ---
 
 [magicavoxel]: https://ephtracy.github.io/

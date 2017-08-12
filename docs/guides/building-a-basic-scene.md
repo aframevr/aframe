@@ -7,7 +7,9 @@ parent_section: docs
 order: 1
 section_order: 2
 nav_expand_sections: true
-
+examples:
+  - title: Basic Guide
+    src: https://glitch.com/edit/#!/aframe-basic-guide?path=index.html
 ---
 
 [primitives]: ../primitives/

@@ -5,6 +5,7 @@ layout: docs
 parent_section: core
 order: 3
 source_code: src/core/component.js
+examples: []
 ---
 
 [ecs]: ../introduction/entity-component-system.md
