@@ -12,7 +12,7 @@ examples:
     src: https://glitch.com/edit/#!/aframe?path=index.html
 ---
 
-[mozvr]: https://mozilla.org
+[mozilla]: https://mozilla.org
 [three.js]: https://threejs.org
 [webvr]: https://iswebvrready.com
 
