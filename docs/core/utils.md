@@ -156,11 +156,12 @@ Checks if device is a smartphone. Returns a `boolean`.
 
 ### `AFRAME.utils.throttle (function, minimumInterval [, optionalContext])`
 
+[lodash]: https://lodash.com/docs/#throttle
+
 Returns a throttled function that is called at most once every
 `minimumInterval` milliseconds. A context such as `this` can be provided to
-handle function binding for convenience.
-
-`throttle` should be used on non-tick functions. `throttleTick` should be used for tick functions.
+handle function binding for convenience. The same as [lodash's
+`throttle`][lodash].
 
 ```js
 AFRAME.registerComponent('foo', {
@@ -168,15 +169,15 @@ AFRAME.registerComponent('foo', {
     // Set up throttling.
     this.throttledFunction = AFRAME.utils.throttle(this.everySecond, 1000, this);
   },
+
   everySecond: function () {
-    // everything here gets called every second
-    console.log("a second passed.");
+    // Called every second.
+    console.log("A second passed.");
   },
+
   tick: function (t, dt) {
-    // throttledFunction is called just once every second
-    this.throttledFunction();
-    // everything that needs to be executed every frame
-    console.log("a frame passed.");
+    this.throttledFunction();  // Called once a second.
+    console.log("A frame passed.");  // Called every frame.
    },
 });
 ```
@@ -195,12 +196,12 @@ render loop.
 AFRAME.registerComponent('foo', {
   init: function () {
     // Set up the tick throttling.
-    this.tick = AFRAME.utils.throttleTick(this.throttledTick, 500, this);
+    this.tick = AFRAME.utils.throttleTick(this.tick, 500, this);
   },
 
   /**
    * Tick function that will be wrapped to be throttled.
    */
-  throttledTick: function (t, dt) {}
+  tick: function (t, dt) {}
 });
 ```
