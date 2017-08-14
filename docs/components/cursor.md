@@ -26,7 +26,8 @@ traditional web development for now. Under the hood, the cursor component uses
 the `raycaster-intersected` and `raycaster-intersection-cleared` events,
 capturing the closest visible intersected entity.
 
-By default, the cursor is configured to be used in a gaze-based mode.
+By default, the cursor is configured to be used in a gaze-based mode
+and will register user input via mouse or touch.
 Specifying the `downEvents` and `upEvents` properties allows the cursor to work
 with controllers.  The [laser-controls component][laser-controls] automatically
 configures those.

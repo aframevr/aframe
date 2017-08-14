@@ -431,6 +431,32 @@ suite('cursor', function () {
       });
     });
   });
+  suite('user input', function () {
+    test('cursor responds to mouse events on canvas', function () {
+      // cannot spy on onCursorDown/Up directly due to binding
+      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      var downEvt = new CustomEvent('mousedown');
+      var upEvt = new CustomEvent('mouseup');
+      assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
+      el.sceneEl.canvas.dispatchEvent(downEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mousedown'));
+      assert.isFalse(cursorEmitSpy.calledWith('mouseup'));
+      el.sceneEl.canvas.dispatchEvent(upEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
+    });
+    test('cursor responds to touch events on canvas', function () {
+      // cannot spy on onCursorDown/Up directly due to binding
+      var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
+      var downEvt = new CustomEvent('touchstart');
+      var upEvt = new CustomEvent('touchend');
+      assert.isFalse(cursorEmitSpy.calledWith('mousedown'));
+      el.sceneEl.canvas.dispatchEvent(downEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mousedown'));
+      assert.isFalse(cursorEmitSpy.calledWith('mouseup'));
+      el.sceneEl.canvas.dispatchEvent(upEvt);
+      assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
+    });
+  });
 });
 
 suite('cursor + raycaster', function () {
