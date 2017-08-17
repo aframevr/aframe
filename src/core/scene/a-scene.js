@@ -436,6 +436,11 @@ module.exports.AScene = registerElement('a-scene', {
           antialias: shouldAntiAlias(this),
           alpha: true
         });
+        // r86 shipped with a bug fixed in https://github.com/mrdoob/three.js/pull/11970
+        // We need to setup a dummy VRDevice to avoid a TypeError
+        // when vrdisplaypresentchange fires.
+        // This line can be removed after updating to THREE r87.
+        renderer.vr.setDevice({});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
