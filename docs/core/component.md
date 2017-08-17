@@ -508,8 +508,8 @@ AFRAME.registerComponent('c', {});
 
 [sound]: ../components/sound.md
 
-`multiple` allows for a component to have multiple instances. By default, since
-`multiple` is set to `false`, a component could have one instance. For
+`multiple` allows for a component to have multiple instances per entities. By default, since
+`multiple` is set to `false`, entities could have only one instance of a component . For
 example, an entity could only have one geometry component.
 
 But if a component has `multiple` set to `true`, then the component can have
