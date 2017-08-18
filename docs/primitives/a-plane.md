@@ -43,7 +43,7 @@ component with the type set to `plane`.
 | displacement-texture-repeat      | material.displacementTextureRepeat     | 1 1           |
 | env-map                          | material.envMap                        | None          |
 | fog                              | material.fog                           | true          |
-| height                           | geometry.height                        | 256           |
+| height                           | geometry.height                        | 1             |
 | metalness                        | material.metalness                     | 0             |
 | normal-map                       | material.normalMap                     | None          |
 | normal-scale                     | material.normalScale                   | 1 1           |
@@ -55,7 +55,7 @@ component with the type set to `plane`.
 | segments-width                   | geometry.segmentsWidth                 | 1             |
 | spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
-| width                            | geometry.width                         | 512           |
+| width                            | geometry.width                         | 1             |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
 
