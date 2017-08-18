@@ -19,7 +19,7 @@ if (THREE.Cache) {
 }
 
 // TODO: Eventually include these only if they are needed by a component.
-require('three/examples/js/loaders/GLTFLoader');  // THREE.GLTFLoader
+require('three/examples/js/loaders/GLTF2Loader');  // THREE.GLTF2Loader
 require('three/examples/js/loaders/OBJLoader');  // THREE.OBJLoader
 require('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 require('three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
@@ -27,7 +27,7 @@ require('../../vendor/VRControls');  // THREE.VRControls
 require('../../vendor/VREffect');  // THREE.VREffect
 
 THREE.ColladaLoader.prototype.crossOrigin = 'anonymous';
-THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';
+THREE.GLTF2Loader.prototype.crossOrigin = 'anonymous';
 THREE.MTLLoader.prototype.crossOrigin = 'anonymous';
 THREE.OBJLoader.prototype.crossOrigin = 'anonymous';
 
