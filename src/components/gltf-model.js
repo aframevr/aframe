@@ -9,7 +9,7 @@ module.exports.Component = registerComponent('gltf-model', {
 
   init: function () {
     this.model = null;
-    this.loader = new THREE.GLTFLoader();
+    this.loader = new THREE.GLTF2Loader();
   },
 
   update: function () {
@@ -24,7 +24,6 @@ module.exports.Component = registerComponent('gltf-model', {
     this.loader.load(src, function gltfLoaded (gltfModel) {
       self.model = gltfModel.scene || gltfModel.scenes[0];
       self.model.animations = gltfModel.animations;
-      self.system.registerModel(self.model);
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
     });
@@ -33,6 +32,5 @@ module.exports.Component = registerComponent('gltf-model', {
   remove: function () {
     if (!this.model) { return; }
     this.el.removeObject3D('mesh');
-    this.system.unregisterModel(this.model);
   }
 });

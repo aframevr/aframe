@@ -22,6 +22,11 @@ Note that glTF is a fairly new specification and adoption is still growing.
 Work on the [three.js glTF loader][threejsgltf] and converters are still
 active.
 
+> **NOTE:** A-Frame supports glTF 2.0. For models using older versions of the
+> glTF format, use `gltf-model-legacy` from [donmccurdy/aframe-extras][extras].
+
+[extras]: https://github.com/donmccurdy/aframe-extras/tree/master/src/loaders
+
 <!--toc-->
 
 ## Why use glTF?
@@ -91,17 +96,18 @@ rendering.
 
 ## More Resources
 
-The glTF format is fairly new, and few editors will export a `.gltf` file
-directly. Instead, various converters are available or in progress:
-
-[fbx-converter]: http://gltf.autodesk.io/
-[collada-converter]: http://cesiumjs.org/convertmodel.html
+[sketchfab]: https://sketchfab.com/models?features=downloadable&sort_by=-likeCount
+[blender-exporter]: https://github.com/KhronosGroup/glTF-Blender-Exporter/
 [obj-converter]: https://github.com/AnalyticalGraphicsInc/obj2gltf
+[collada-converter]: http://cesiumjs.org/convertmodel.html
 
-- [glTF Workflow for A Saturday Night](https://blog.mozvr.com/a-saturday-night-gltf-workflow/)
-- [FBX &rarr; glTF][fbx-converter] - Coming soon.
-- [COLLADA &rarr; glTF][collada-converter]
+Over 100,000 glTF models are free for download on [Sketchfab][sketchfab], and
+various exporters and converters converters are available:
+
+- [Blender Exporter](blender-exporter)
 - [OBJ &rarr; glTF][obj-converter]
+- [COLLADA &rarr; glTF][collada-converter]
+- [glTF Workflow for A Saturday Night](https://blog.mozvr.com/a-saturday-night-gltf-workflow/)
 
 [spec]: https://github.com/KhronosGroup/glTF
 
