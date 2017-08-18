@@ -1,5 +1,4 @@
 var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils');
 
 /**
  * Tracked controls system.
@@ -10,9 +9,6 @@ module.exports.System = registerSystem('tracked-controls', {
     var self = this;
 
     this.controllers = [];
-
-    // Throttle to every 500ms.
-    this.tick = utils.throttle(this.tick, 500, this);
 
     this.updateControllerList();
 
