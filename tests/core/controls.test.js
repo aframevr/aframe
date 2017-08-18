@@ -219,6 +219,21 @@ suite('rotation controls on camera with VRControls (integration unit test)', fun
       done();
     });
   });
+
+  test('does not rotate camera if tilt is disabled on mobile while not in VR', function (done) {
+    var el = this.el;
+    el.sceneEl.isMobile = true;
+    el.setAttribute('look-controls', 'tiltEnabled', false);
+    this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 2, PI / 6, PI / 2));
+    el.sceneEl.tick();
+    process.nextTick(function () {
+      var rotation = el.getAttribute('rotation');
+      assert.equal(rotation.x, 0);
+      assert.equal(rotation.y, 0);
+      assert.equal(rotation.z, 0);
+      done();
+    });
+  });
 });
 
 suite('rotation controls on camera with mouse drag (integration unit test)', function () {
