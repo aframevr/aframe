@@ -77560,7 +77560,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 17-08-2017, Commit #86b197e)');
+console.log('A-Frame Version: 0.6.1 (Date 18-08-2017, Commit #d994f74)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79018,7 +79018,6 @@ module.exports.System = registerSystem('shadow', {
 
 },{"../core/system":136,"../lib/three":174,"../utils/bind":191}],190:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
-var utils = _dereq_('../utils');
 
 /**
  * Tracked controls system.
@@ -79029,9 +79028,6 @@ module.exports.System = registerSystem('tracked-controls', {
     var self = this;
 
     this.controllers = [];
-
-    // Throttle to every 500ms.
-    this.tick = utils.throttle(this.tick, 500, this);
 
     this.updateControllerList();
 
@@ -79076,7 +79072,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":136,"../utils":197}],191:[function(_dereq_,module,exports){
+},{"../core/system":136}],191:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
