@@ -42,7 +42,7 @@ The box primitive creates shapes such as boxes, cubes, or walls.
 | displacement-texture-repeat      | material.displacementTextureRepeat     | 1 1           |
 | env-map                          | material.envMap                        | None          |
 | fog                              | material.fog                           | true          |
-| height                           | material.height                        | 256           |
+| height                           | geometry.height                        | 1             |
 | metalness                        | material.metalness                     | 0             |
 | normal-map                       | material.normalMap                     | None          |
 | normal-scale                     | material.normalScale                   | 1 1           |
@@ -55,6 +55,6 @@ The box primitive creates shapes such as boxes, cubes, or walls.
 | segments-width                   | geometry.segmentsWidth                 | 1             |
 | spherical-env-map                | material.sphericalEnvMap               | None          |
 | src                              | material.src                           | None          |
-| width                            | material.width                         | 512           |
+| width                            | geometry.width                         | 1             |
 | wireframe                        | material.wireframe                     | false         |
 | wireframe-linewidth              | material.wireframeLinewidth            | 2             |
