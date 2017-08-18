@@ -1,5 +1,4 @@
 var registerSystem = require('../core/system').registerSystem;
-var utils = require('../utils');
 
 /**
  * Tracked controls system.
@@ -11,8 +10,8 @@ module.exports.System = registerSystem('tracked-controls', {
 
     this.controllers = [];
 
-    // Throttle to every 500ms.
-    this.tick = utils.throttle(this.tick, 500, this);
+    // For non-Firefox browsers, the gamepad poses only seem to update if getGamepads() is called.
+    // Therefore, don't throttle the tick frequency.
 
     this.updateControllerList();
 
@@ -37,12 +36,10 @@ module.exports.System = registerSystem('tracked-controls', {
     var gamepad;
     var gamepads;
     var i;
-    var prevCount;
 
     gamepads = navigator.getGamepads && navigator.getGamepads();
     if (!gamepads) { return; }
 
-    prevCount = controllers.length;
     controllers.length = 0;
     for (i = 0; i < gamepads.length; ++i) {
       gamepad = gamepads[i];
@@ -51,8 +48,6 @@ module.exports.System = registerSystem('tracked-controls', {
       }
     }
 
-    if (controllers.length !== prevCount) {
-      this.el.emit('controllersupdated', undefined, false);
-    }
+    this.el.emit('controllersupdated', undefined, false);
   }
 });
