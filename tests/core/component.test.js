@@ -185,6 +185,17 @@ suite('Component', function () {
       assert.equal(data.depthTest, false);
       assert.equal(data.color, 'red');
     });
+
+    test('returns data for single-prop if default is null', function () {
+      var el = document.createElement('a-entity');
+      registerComponent('test', {
+        schema: {default: null}
+      });
+      el.setAttribute('test', '');
+      assert.equal(el.components.test.buildData(), null);
+      assert.equal(el.components.test.buildData(null), null);
+      assert.equal(el.components.test.buildData('foo'), 'foo');
+    });
   });
 
   suite('updateProperties', function () {
