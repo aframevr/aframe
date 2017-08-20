@@ -75363,7 +75363,7 @@ Component.prototype = {
     if (isSinglePropSchema) {
       // Clone default value if plain object so components don't share the same object
       // that might be modified by the user.
-      data = schema.default.constructor === Object ? utils.clone(schema.default) : schema.default;
+      data = (schema.default && schema.default.constructor === Object) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
@@ -78231,7 +78231,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 20-08-2017, Commit #02112aa)');
+console.log('A-Frame Version: 0.6.1 (Date 20-08-2017, Commit #8c92874)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
