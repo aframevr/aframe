@@ -19,7 +19,7 @@ var STATES = {
   HOVERED: 'cursor-hovered'
 };
 
-var CANVASEVENTS = {
+var CANVAS_EVENTS = {
   DOWN: ['mousedown', 'touchstart'],
   UP: ['mouseup', 'touchend']
 };
@@ -96,12 +96,13 @@ module.exports.Component = registerComponent('cursor', {
     var data = this.data;
     var el = this.el;
     var self = this;
+
     function addCanvasListeners () {
       canvas = el.sceneEl.canvas;
-      CANVASEVENTS.DOWN.forEach(function (downEvent) {
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.addEventListener(downEvent, self.onCursorDown);
       });
-      CANVASEVENTS.UP.forEach(function (upEvent) {
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
         canvas.addEventListener(upEvent, self.onCursorUp);
       });
     }
@@ -133,10 +134,10 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      CANVASEVENTS.DOWN.forEach(function (downEvent) {
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
         canvas.removeEventListener(downEvent, self.onCursorDown);
       });
-      CANVASEVENTS.UP.forEach(function (upEvent) {
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
         canvas.removeEventListener(upEvent, self.onCursorUp);
       });
     }

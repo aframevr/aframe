@@ -431,9 +431,10 @@ suite('cursor', function () {
       });
     });
   });
-  suite('user input', function () {
+
+  suite('canvas events', function () {
     test('cursor responds to mouse events on canvas', function () {
-      // cannot spy on onCursorDown/Up directly due to binding
+      // Cannot spy on onCursorDown/Up directly due to binding.
       var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
       var downEvt = new CustomEvent('mousedown');
       var upEvt = new CustomEvent('mouseup');
@@ -444,8 +445,9 @@ suite('cursor', function () {
       el.sceneEl.canvas.dispatchEvent(upEvt);
       assert.isTrue(cursorEmitSpy.calledWith('mouseup'));
     });
+
     test('cursor responds to touch events on canvas', function () {
-      // cannot spy on onCursorDown/Up directly due to binding
+      // Cannot spy on onCursorDown/Up directly due to binding.
       var cursorEmitSpy = this.sinon.spy(component, 'twoWayEmit');
       var downEvt = new CustomEvent('touchstart');
       var upEvt = new CustomEvent('touchend');
