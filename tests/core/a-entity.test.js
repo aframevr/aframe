@@ -24,8 +24,10 @@ var TestComponent = {
 };
 
 suite('a-entity', function () {
+  var el;
+
   setup(function (done) {
-    var el = this.el = entityFactory();
+    el = this.el = entityFactory();
     var onLoaded = function () {
       done();
       el.removeEventListener('loaded', onLoaded);
