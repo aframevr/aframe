@@ -66836,6 +66836,11 @@ var STATES = {
   HOVERED: 'cursor-hovered'
 };
 
+var CANVAS_EVENTS = {
+  DOWN: ['mousedown', 'touchstart'],
+  UP: ['mouseup', 'touchend']
+};
+
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
  * from the camera and pointing from camera's facing direction, and then only returning the
@@ -66909,16 +66914,21 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
+    function addCanvasListeners () {
+      canvas = el.sceneEl.canvas;
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.addEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.addEventListener(upEvent, self.onCursorUp);
+      });
+    }
+
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.addEventListener('mousedown', this.onCursorDown);
-      canvas.addEventListener('mouseup', this.onCursorUp);
+      addCanvasListeners();
     } else {
-      el.sceneEl.addEventListener('render-target-loaded', function () {
-        canvas = el.sceneEl.canvas;
-        canvas.addEventListener('mousedown', self.onCursorDown);
-        canvas.addEventListener('mouseup', self.onCursorUp);
-      });
+      el.sceneEl.addEventListener('render-target-loaded', addCanvasListeners);
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -66941,8 +66951,12 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.removeEventListener('mousedown', this.onCursorDown);
-      canvas.removeEventListener('mouseup', this.onCursorUp);
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.removeEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.removeEventListener(upEvent, self.onCursorUp);
+      });
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -78217,7 +78231,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 18-08-2017, Commit #ab36fe8)');
+console.log('A-Frame Version: 0.6.1 (Date 20-08-2017, Commit #02112aa)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
