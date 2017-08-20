@@ -4,7 +4,15 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 6
-examples: []
+examples:
+  - title: A-Frame School &mdash; Getting Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution.html
+  - title: A-Frame School &mdash; Modifying Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution2.html
+  - title: A-Frame School &mdash; Creating Entities
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution3.html
+  - title: A-Frame School &mdash; Handling Events
+    src: https://glitch.com/edit/#!/aframe-school-js?path=solution4.html
 ---
 
 [geometry]: ../components/geometry.md
