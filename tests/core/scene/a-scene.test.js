@@ -385,7 +385,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
       sceneEl.innerHTML = 'NEW';
       sceneEl.reload();
-      assert.equal(sceneEl.innerHTML, '<canvas class="a-canvas" data-aframe-canvas="true"></canvas>');
+      assert.equal(sceneEl.innerHTML, '');
     });
 
     test('reloads the scene and pauses', function () {
@@ -602,16 +602,6 @@ suite('scenes', function () {
       });
     });
     document.body.appendChild(sceneEl);
-  });
-});
-
-suite('setupCanvas', function () {
-  test('adds canvas to a-scene element', function () {
-    var el = this.sceneEl = document.createElement('a-scene');
-    el.canvas = undefined;
-    assert.notOk(el.canvas);
-    el.setupCanvas();
-    assert.ok(el.canvas);
   });
 });
 
