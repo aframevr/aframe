@@ -120,8 +120,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.exitVRBound = function () { self.exitVR(); };
         this.exitVRTrueBound = function () { self.exitVR(true); };
 
-        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', this.enterVRBound);
+        // There is already a listener for `vrdisplayactivate` (e.g. putting on Rift headset),
+        // since that event is also used for in-VR traversal, much earlier in the lifecycle.
 
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
