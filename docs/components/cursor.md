@@ -154,18 +154,18 @@ intersects the entity, it will emit an event, and the animation system will
 pick up event with the `begin` attribute:
 
 ```html
-<a-entity cursor="fuse: true; fuseTimeout: 500"
-          position="0 0 -1"
+<a-entity cursor="fuse: true;"
+          position="0 0 -3"
           geometry="primitive: ring"
           material="color: black; shader: flat">
-  <a-animation begin="click" easing="ease-in" attribute="scale"
-               fill="backwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
-  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale"
+  <a-animation begin="click" easing="ease-in" attribute="scale" dur="150"
+               fill="forwards" from="0.1 0.1 0.1" to="1 1 1"></a-animation>
+  <a-animation begin="cursor-fusing" easing="ease-in" attribute="scale" dur="1500"
                fill="backwards" from="1 1 1" to="0.1 0.1 0.1"></a-animation>
 </a-entity>
 ```
 
-[cursor-codepen]: http://codepen.io/anon/pen/dpmpJP
+[cursor-codepen]: https://codepen.io/Absulit/pen/WEKjqm
 
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].
