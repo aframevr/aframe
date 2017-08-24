@@ -113,3 +113,10 @@ module.exports = window.AFRAME = {
   utils: utils,
   version: pkg.version
 };
+
+// Add vrdisplayactivate event listener early.
+window.addEventListener('vrdisplayactivate', function (evt) {
+  if (window.AFRAME.scenes.length > 0) {
+    window.AFRAME.scenes[0].enterVR();
+  }
+});
