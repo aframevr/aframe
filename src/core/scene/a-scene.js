@@ -39,7 +39,6 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
-        'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
@@ -68,10 +67,9 @@ module.exports.AScene = registerElement('a-scene', {
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         this.renderTarget = null;
-        this.addEventListener('render-target-loaded', function () {
-          this.setupRenderer();
-          this.resize();
-        });
+        this.setupCanvas();
+        this.setupRenderer();
+        this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
       },
@@ -122,8 +120,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.exitVRBound = function () { self.exitVR(); };
         this.exitVRTrueBound = function () { self.exitVR(true); };
 
-        // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', this.enterVRBound);
+        // There is already a listener for `vrdisplayactivate` (e.g. putting on Rift headset),
+        // since that event is also used for in-VR traversal, much earlier in the lifecycle.
 
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
@@ -224,13 +222,14 @@ module.exports.AScene = registerElement('a-scene', {
     enterVR: {
       value: function (fromExternal) {
         var self = this;
+        var effect = this.effect;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
         // Enter VR via WebVR API.
         if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
-          return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+          return effect && effect.requestPresent().then(enterVRSuccess, enterVRFailure) || Promise.reject(new Error('VREffect not initialized'));
         }
 
         // Either entered VR already via WebVR API or VR not supported.
@@ -431,7 +430,9 @@ module.exports.AScene = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
-        var renderer = this.renderer = new THREE.WebGLRenderer({
+        var renderer;
+
+        renderer = this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
           antialias: shouldAntiAlias(this),
           alpha: true
@@ -447,6 +448,46 @@ module.exports.AScene = registerElement('a-scene', {
         this.effect.autoSubmitFrame = false;
       },
       writable: window.debug
+    },
+
+    setupCanvas: {
+      value: function () {
+        var canvasEl;
+        var sceneEl = this;
+
+        canvasEl = document.createElement('canvas');
+        canvasEl.classList.add('a-canvas');
+        // Mark canvas as provided/injected by A-Frame.
+        canvasEl.dataset.aframeCanvas = true;
+        sceneEl.appendChild(canvasEl);
+
+        document.addEventListener('fullscreenchange', onFullScreenChange);
+        document.addEventListener('mozfullscreenchange', onFullScreenChange);
+        document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+
+        // Prevent overscroll on mobile.
+        canvasEl.addEventListener('touchmove', function (event) {
+          event.preventDefault();
+        });
+
+        // Set canvas on scene.
+        sceneEl.canvas = canvasEl;
+        sceneEl.emit('render-target-loaded', {target: canvasEl});
+        // For unknown reasons a syncrhonous resize does not work on desktop when
+        // entering/exiting fullscreen.
+        setTimeout(bind(sceneEl.resize, sceneEl), 0);
+
+        function onFullScreenChange () {
+          var fullscreenEl =
+            document.fullscreenElement ||
+            document.mozFullScreenElement ||
+            document.webkitFullscreenElement;
+          // No fullscren element === exit fullscreen
+          if (!fullscreenEl) { sceneEl.exitVR(); }
+          document.activeElement.blur();
+          document.body.focus();
+        }
+      }
     },
 
     /**
