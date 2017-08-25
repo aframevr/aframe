@@ -460,7 +460,7 @@ entity.is('selected');  // >> false
 | child-attached   | A child entity was attached to the entity.                                                                                       |
 | child-detached   | A child entity was detached from the entity.                                                                                     |
 | componentchanged | One of the entity's components was modified.                                                                                     |
-| componentinit    | One of the entity's components was initialized.                                                                                  |
+| componentinitialized | One of the entity's components was initialized.                                                                                  |
 | componentremoved | One of the entity's components was removed.                                                                                      |
 | loaded           | The entity has attached and initialized its components.                                                                          |
 | object3dset      | `THREE.Object3D` was set on entity using `setObject3D(name)`. Event detail will contain `name` used to set on the `object3DMap`. |
