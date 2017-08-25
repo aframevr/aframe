@@ -3,6 +3,9 @@ title: Entity-Component-System
 type: introduction
 layout: docs
 order: 5
+examples:
+  - title: Community Components in Action
+    src: https://glitch.com/edit/#!/aframe-registry?path=index.html
 ---
 
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
@@ -203,7 +206,7 @@ is just like in normal web development.
 selectors which allows us to query for an entity or entities that have or don't
 have certain HTML attributes. This means we can ask for entities that have or
 don't have a certain set of components.
-`document.querySelector('[enemy]:not([alive]')`.
+`document.querySelector('[enemy]:not([alive])')`.
 5. **Declarativeness**: Lastly, the DOM provides HTML. A-Frame bridges between
 ECS and HTML making an already clean pattern declarative, readable, and
 copy-and-pasteable.
@@ -215,7 +218,7 @@ innovation to create components to extend any feature. Components have full
 access to JavaScript, three.js, and Web APIs (e.g., WebRTC, Speech
 Recognition).
 
-[writecomponent]: ./writing-an-aframe-component.md
+[writecomponent]: ./writing-a-component.md
 
 We will later go over in detail how to [write an A-Frame
 component][writecomponent]. As a preview, the structure of a basic component

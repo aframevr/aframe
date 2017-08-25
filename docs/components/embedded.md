@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/scene/embedded.js
+examples: []
 ---
 
 The embedded component removes fullscreen CSS styles from A-Frame's

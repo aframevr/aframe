@@ -49,6 +49,7 @@ module.exports.process = function (schema, componentName) {
  */
 function processPropertyDefinition (propDefinition, componentName) {
   var defaultVal = propDefinition.default;
+  var isCustomType;
   var propType;
   var typeName = propDefinition.type;
 
@@ -75,6 +76,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   }
 
   // Fill in parse and stringify using property types.
+  isCustomType = !!propDefinition.parse;
   propDefinition.parse = propDefinition.parse || propType.parse;
   propDefinition.stringify = propDefinition.stringify || propType.stringify;
 
@@ -84,7 +86,7 @@ function processPropertyDefinition (propDefinition, componentName) {
   // Check that default value exists.
   if ('default' in propDefinition) {
     // Check that default values are valid.
-    if (!isValidDefaultValue(typeName, defaultVal)) {
+    if (!isCustomType && !isValidDefaultValue(typeName, defaultVal)) {
       warn('Default value `' + defaultVal + '` does not match type `' + typeName +
            '` in component `' + componentName + '`');
     }

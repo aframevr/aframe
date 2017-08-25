@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/light.js
+examples: []
 ---
 
 The light component defines the entity as a source of light. Light affects all

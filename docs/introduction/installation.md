@@ -58,8 +58,8 @@ files are properly served. Options of local servers include:
 
 - Downloading the [Mongoose](https://www.cesanta.com/products/binary) application
   and opening it from the same directory as your HTML file.
-- Running `python -m SimpleHTTPServer` in a terminal in the same directory as your
-  HTML file.
+- Running `python -m SimpleHTTPServer` (or `python -m http.server` for Python 3)
+  in a terminal in the same directory as your HTML file.
 - Running `npm install -g live-server && live-server` in a terminal in the same
   directory as your HTML file.
 

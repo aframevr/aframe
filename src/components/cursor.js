@@ -19,6 +19,11 @@ var STATES = {
   HOVERED: 'cursor-hovered'
 };
 
+var CANVAS_EVENTS = {
+  DOWN: ['mousedown', 'touchstart'],
+  UP: ['mouseup', 'touchend']
+};
+
 /**
  * Cursor component. Applies the raycaster component specifically for starting the raycaster
  * from the camera and pointing from camera's facing direction, and then only returning the
@@ -43,10 +48,18 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   init: function () {
+    var self = this;
+
     this.fuseTimeout = undefined;
     this.cursorDownEl = null;
     this.intersection = null;
     this.intersectedEl = null;
+    this.canvasBounds = document.body.getBoundingClientRect();
+
+    // Debounce.
+    this.updateCanvasBounds = utils.debounce(function updateCanvasBounds () {
+      self.canvasBounds = self.el.sceneEl.canvas.getBoundingClientRect();
+    }, 200);
 
     // Bind methods.
     this.onCursorDown = bind(this.onCursorDown, this);
@@ -84,16 +97,21 @@ module.exports.Component = registerComponent('cursor', {
     var el = this.el;
     var self = this;
 
+    function addCanvasListeners () {
+      canvas = el.sceneEl.canvas;
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.addEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.addEventListener(upEvent, self.onCursorUp);
+      });
+    }
+
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.addEventListener('mousedown', this.onCursorDown);
-      canvas.addEventListener('mouseup', this.onCursorUp);
+      addCanvasListeners();
     } else {
-      el.sceneEl.addEventListener('render-target-loaded', function () {
-        canvas = el.sceneEl.canvas;
-        canvas.addEventListener('mousedown', self.onCursorDown);
-        canvas.addEventListener('mouseup', self.onCursorUp);
-      });
+      el.sceneEl.addEventListener('render-target-loaded', addCanvasListeners);
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -104,6 +122,8 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.addEventListener('raycaster-intersection', this.onIntersection);
     el.addEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
+
+    window.addEventListener('resize', this.updateCanvasBounds);
   },
 
   removeEventListeners: function () {
@@ -114,8 +134,12 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     if (canvas) {
-      canvas.removeEventListener('mousedown', this.onCursorDown);
-      canvas.removeEventListener('mouseup', this.onCursorUp);
+      CANVAS_EVENTS.DOWN.forEach(function (downEvent) {
+        canvas.removeEventListener(downEvent, self.onCursorDown);
+      });
+      CANVAS_EVENTS.UP.forEach(function (upEvent) {
+        canvas.removeEventListener(upEvent, self.onCursorUp);
+      });
     }
 
     data.downEvents.forEach(function (downEvent) {
@@ -127,6 +151,7 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
@@ -136,6 +161,7 @@ module.exports.Component = registerComponent('cursor', {
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
+    this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
@@ -150,8 +176,14 @@ module.exports.Component = registerComponent('cursor', {
       var camera = this.el.sceneEl.camera;
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
-      mouse.x = (evt.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(evt.clientY / window.innerHeight) * 2 + 1;
+
+      // Calculate mouse position based on the canvas element
+      var bounds = this.canvasBounds;
+      var left = evt.clientX - bounds.left;
+      var top = evt.clientY - bounds.top;
+      mouse.x = (left / bounds.width) * 2 - 1;
+      mouse.y = -(top / bounds.height) * 2 + 1;
+
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);

@@ -6,6 +6,7 @@ parent_section: components
 image:
   src: https://user-images.githubusercontent.com/674727/27721720-19388346-5d17-11e7-912b-499886be0a8d.gif
 source_code: src/components/link.js
+examples: []
 ---
 
 The link component connects between experiences and allows for traversing

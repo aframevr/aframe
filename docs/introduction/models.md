@@ -4,6 +4,7 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 8.75
+examples: []
 ---
 
 [3loaders]: https://github.com/mrdoob/three.js/tree/dev/examples/js/loaders

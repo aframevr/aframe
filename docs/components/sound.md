@@ -4,6 +4,7 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/sound.js
+examples: []
 ---
 
 [position]: ./position.md
@@ -11,6 +12,12 @@ source_code: src/components/sound.js
 The sound component defines the entity as a source of sound or audio. The sound
 component is positional and is thus affected by the
 [components-position][position].
+
+> **NOTE:** Playing sound on iOS — in any browser — requires a physical user interaction.
+> This is a browser limitation, and internal A-Frame events (like fusing cursors) do
+> not count as interaction. Ways to deal with this include using a *Begin Experience*
+> button to start ambient music, or creating audio sprites with libraries like
+> [Howler.js](https://github.com/goldfire/howler.js).
 
 ## Example
 

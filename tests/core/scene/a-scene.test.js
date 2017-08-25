@@ -5,6 +5,7 @@ var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
 var shouldAntiAlias = require('core/scene/a-scene').shouldAntiAlias;
+var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
@@ -57,6 +58,36 @@ suite('a-scene (without renderer)', function () {
       sceneEl.init();
       assert.equal(sceneEl.isPlaying, false);
       assert.equal(sceneEl.hasLoaded, false);
+    });
+  });
+
+  suite('vrdisplayconnect', function () {
+    test('tells A-Frame about entering VR when the headset is connected', function (done) {
+      var event;
+      var sceneEl = this.el;
+      var enterVRStub = this.sinon.stub(sceneEl, 'enterVR');
+      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
+      event = new CustomEvent('vrdisplayconnect');
+      window.dispatchEvent(event);
+      process.nextTick(function () {
+        assert.ok(enterVRStub.called);
+        done();
+      });
+    });
+  });
+
+  suite('vrdisplaydisconnect', function () {
+    test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
+      var event;
+      var sceneEl = this.el;
+      var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
+      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
+      event = new CustomEvent('vrdisplaydisconnect');
+      window.dispatchEvent(event);
+      process.nextTick(function () {
+        assert.ok(exitVRStub.calledWith(true));
+        done();
+      });
     });
   });
 
@@ -292,12 +323,74 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite('tick', function () {
+    test('calls component ticks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tick: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system ticks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tick: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tick();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
+  suite('tock', function () {
+    test('calls component tocks', function () {
+      var sceneEl = this.el;
+      var el = document.createElement('a-entity');
+      var spy = this.sinon.spy();
+      AFRAME.registerComponent('test', {
+        tock: function () { spy(); }
+      });
+      el.isPlaying = true;
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior(new AFRAME.components.test.Component(el));
+      sceneEl.addBehavior({el: {isPlaying: true}, tick: () => {}});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 2);
+    });
+
+    test('calls system tocks', function () {
+      var sceneEl = this.el;
+      var spy = this.sinon.spy();
+      AFRAME.registerSystem('test', {
+        tock: function () { spy(); }
+      });
+      AFRAME.registerSystem('foo', {});
+      sceneEl.tock();
+      assert.equal(spy.getCalls().length, 1);
+      delete AFRAME.systems.foo;
+    });
+  });
+
   suite('reload', function () {
     test('reload scene innerHTML to original value', function () {
+      var canvasEl;
       var sceneEl = this.el;
       sceneEl.innerHTML = 'NEW';
       sceneEl.reload();
-      assert.equal(sceneEl.innerHTML, '');
+      assert.equal(sceneEl.children.length, 1);
+      canvasEl = sceneEl.querySelector('canvas');
+      assert.equal(canvasEl.getAttribute('class'), 'a-canvas');
+      assert.equal(canvasEl.getAttribute('data-aframe-canvas'), 'true');
     });
 
     test('reloads the scene and pauses', function () {
@@ -455,6 +548,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tick: function () {}};
     this.sinon.spy(Component, 'tick');
     scene.addBehavior(Component);
+    scene.addBehavior({el: {isPlaying: true}});
     scene.render();
     sinon.assert.called(Component.tick);
     sinon.assert.calledWith(Component.tick, scene.time);
@@ -465,6 +559,7 @@ helpers.getSkipCISuite()('a-scene (with renderer)', function () {
     var Component = {el: {isPlaying: true}, tock: function () {}};
     this.sinon.spy(Component, 'tock');
     scene.addBehavior(Component);
+    scene.addBehavior({el: {isPlaying: true}});
     scene.render();
     sinon.assert.called(Component.tock);
     sinon.assert.calledWith(Component.tock, scene.time);
@@ -512,6 +607,16 @@ suite('scenes', function () {
       });
     });
     document.body.appendChild(sceneEl);
+  });
+});
+
+suite('setupCanvas', function () {
+  test('adds canvas to a-scene element', function () {
+    var el = this.sceneEl = document.createElement('a-scene');
+    el.canvas = undefined;
+    assert.notOk(el.canvas);
+    setupCanvas(el);
+    assert.ok(el.canvas);
   });
 });
 

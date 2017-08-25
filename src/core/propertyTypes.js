@@ -17,8 +17,8 @@ registerPropertyType('int', 0, intParse);
 registerPropertyType('number', 0, numberParse);
 registerPropertyType('map', '', assetParse);
 registerPropertyType('model', '', assetParse);
-registerPropertyType('selector', '', selectorParse, selectorStringify);
-registerPropertyType('selectorAll', '', selectorAllParse, selectorAllStringify);
+registerPropertyType('selector', null, selectorParse, selectorStringify);
+registerPropertyType('selectorAll', null, selectorAllParse, selectorAllStringify);
 registerPropertyType('src', '', srcParse);
 registerPropertyType('string', '', defaultParse, defaultStringify);
 registerPropertyType('time', 0, intParse);
@@ -179,8 +179,10 @@ function isValidDefaultValue (type, defaultVal) {
   if (type === 'number' && typeof defaultVal !== 'number') { return false; }
   if (type === 'map' && typeof defaultVal !== 'string') { return false; }
   if (type === 'model' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selector' && typeof defaultVal !== 'string') { return false; }
-  if (type === 'selectorAll' && typeof defaultVal !== 'string') { return false; }
+  if (type === 'selector' && typeof defaultVal !== 'string' &&
+      defaultVal !== null) { return false; }
+  if (type === 'selectorAll' && typeof defaultVal !== 'string' &&
+      defaultVal !== null) { return false; }
   if (type === 'src' && typeof defaultVal !== 'string') { return false; }
   if (type === 'string' && typeof defaultVal !== 'string') { return false; }
   if (type === 'time' && typeof defaultVal !== 'number') { return false; }

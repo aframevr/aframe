@@ -5,9 +5,9 @@ layout: docs
 parent_section: core
 order: 3
 source_code: src/core/component.js
+examples: []
 ---
 
-[componentguide]: ../guides/writing-an-aframe-component.md
 [ecs]: ../introduction/entity-component-system.md
 [entity]: ./entity.md
 [multiple]: #multiple
@@ -508,9 +508,10 @@ AFRAME.registerComponent('c', {});
 
 [sound]: ../components/sound.md
 
-`multiple` allows for a component to have multiple instances. By default, since
-`multiple` is set to `false`, a component could have one instance. For
-example, an entity could only have one geometry component.
+The `multiple` flag allows for a component to have multiple instances of itself
+on an entity. Since `multiple` is set to `false` by default, an entity could
+only have a single instance of a component. For example, an entity could only
+have one geometry component.
 
 But if a component has `multiple` set to `true`, then the component can have
 multiple instances:

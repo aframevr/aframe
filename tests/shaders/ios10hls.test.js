@@ -1,7 +1,7 @@
 /* global AFRAME, CustomEvent, assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
-suite('ios10hls', function () {
+suite.skip('ios10hls', function () {
   setup(function (done) {
     this.el = entityFactory();
     if (this.el.hasLoaded) {

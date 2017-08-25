@@ -39,7 +39,6 @@ module.exports.AScene = registerElement('a-scene', {
   prototype: Object.create(AEntity.prototype, {
     defaultComponents: {
       value: {
-        'canvas': '',
         'inspector': '',
         'keyboard-shortcuts': '',
         'screenshot': '',
@@ -55,6 +54,7 @@ module.exports.AScene = registerElement('a-scene', {
         this.object3D = new THREE.Scene();
         this.render = bind(this.render, this);
         this.systems = {};
+        this.systemNames = [];
         this.time = 0;
         this.init();
       }
@@ -62,15 +62,14 @@ module.exports.AScene = registerElement('a-scene', {
 
     init: {
       value: function () {
-        this.behaviors = { tick: [], tock: [] };
+        this.behaviors = {tick: [], tock: []};
         this.hasLoaded = false;
         this.isPlaying = false;
         this.originalHTML = this.innerHTML;
         this.renderTarget = null;
-        this.addEventListener('render-target-loaded', function () {
-          this.setupRenderer();
-          this.resize();
-        });
+        setupCanvas(this);
+        this.setupRenderer();
+        this.resize();
         this.addFullScreenStyles();
         initPostMessageAPI(this);
       },
@@ -116,11 +115,22 @@ module.exports.AScene = registerElement('a-scene', {
         this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
         window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
 
+        // bind functions
+        this.enterVRBound = function () { self.enterVR(); };
+        this.exitVRBound = function () { self.exitVR(); };
+        this.exitVRTrueBound = function () { self.exitVR(true); };
+
         // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
-        window.addEventListener('vrdisplayactivate', function () { self.enterVR(); });
+        window.addEventListener('vrdisplayactivate', this.enterVRBound);
 
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
-        window.addEventListener('vrdisplaydeactivate', function () { self.exitVR(); });
+        window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
+
+        // Enter VR on `vrdisplayconnect` (e.g. plugging on Rift headset).
+        window.addEventListener('vrdisplayconnect', this.enterVRBound);
+
+        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
       },
       writable: window.debug
     },
@@ -141,6 +151,7 @@ module.exports.AScene = registerElement('a-scene', {
       value: function (name) {
         if (this.systems[name]) { return; }
         this.systems[name] = new systems[name](this);
+        this.systemNames.push(name);
       }
     },
 
@@ -163,6 +174,10 @@ module.exports.AScene = registerElement('a-scene', {
         scenes.splice(sceneIndex, 1);
 
         window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
+        window.removeEventListener('vrdisplayactivate', this.enterVRBound);
+        window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
+        window.removeEventListener('vrdisplayconnect', this.enterVRBound);
+        window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
       }
     },
 
@@ -207,13 +222,14 @@ module.exports.AScene = registerElement('a-scene', {
     enterVR: {
       value: function (fromExternal) {
         var self = this;
+        var effect = this.effect;
 
         // Don't enter VR if already in VR.
         if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
 
         // Enter VR via WebVR API.
         if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
-          return this.effect.requestPresent().then(enterVRSuccess, enterVRFailure);
+          return effect && effect.requestPresent().then(enterVRSuccess, enterVRFailure) || Promise.reject(new Error('VREffect not initialized'));
         }
 
         // Either entered VR already via WebVR API or VR not supported.
@@ -247,7 +263,8 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to enter VR mode (`requestPresent`).');
           }
         }
-      }
+      },
+      writable: window.debug
     },
      /**
      * Call `exitPresent` if WebVR or WebVR polyfill.
@@ -296,7 +313,8 @@ module.exports.AScene = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
-      }
+      },
+      writable: window.debug
     },
 
     /**
@@ -305,8 +323,10 @@ module.exports.AScene = registerElement('a-scene', {
      */
     onVRPresentChange: {
       value: function (evt) {
+        // Polyfill places display inside the detail property
+        var display = evt.display || evt.detail.display;
         // Entering VR.
-        if (evt.display.isPresenting) {
+        if (display.isPresenting) {
           this.enterVR(true);
           return;
         }
@@ -410,11 +430,18 @@ module.exports.AScene = registerElement('a-scene', {
 
     setupRenderer: {
       value: function () {
-        var renderer = this.renderer = new THREE.WebGLRenderer({
+        var renderer;
+
+        renderer = this.renderer = new THREE.WebGLRenderer({
           canvas: this.canvas,
           antialias: shouldAntiAlias(this),
           alpha: true
         });
+        // r86 shipped with a bug fixed in https://github.com/mrdoob/three.js/pull/11970
+        // We need to setup a dummy VRDevice to avoid a TypeError
+        // when vrdisplaypresentchange fires.
+        // This line can be removed after updating to THREE r87.
+        renderer.vr.setDevice({});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
@@ -507,20 +534,23 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tick: {
       value: function (time, timeDelta) {
+        var i;
         var systems = this.systems;
+
         // Animations.
         TWEEN.update();
 
         // Components.
-        this.behaviors.tick.forEach(function (component) {
-          if (!component.el.isPlaying) { return; }
-          component.tick(time, timeDelta);
-        });
+        for (i = 0; i < this.behaviors.tick.length; i++) {
+          if (!this.behaviors.tick[i].el.isPlaying) { continue; }
+          this.behaviors.tick[i].tick(time, timeDelta);
+        }
+
         // Systems.
-        Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tick) { return; }
-          systems[key].tick(time, timeDelta);
-        });
+        for (i = 0; i < this.systemNames.length; i++) {
+          if (!systems[this.systemNames[i]].tick) { continue; }
+          systems[this.systemNames[i]].tick(time, timeDelta);
+        }
       }
     },
 
@@ -531,18 +561,20 @@ module.exports.AScene = registerElement('a-scene', {
      */
     tock: {
       value: function (time, timeDelta) {
+        var i;
         var systems = this.systems;
 
         // Components.
-        this.behaviors.tock.forEach(function (component) {
-          if (!component.el.isPlaying) { return; }
-          component.tock(time, timeDelta);
-        });
+        for (i = 0; i < this.behaviors.tock.length; i++) {
+          if (!this.behaviors.tock[i].el.isPlaying) { continue; }
+          this.behaviors.tock[i].tock(time, timeDelta);
+        }
+
         // Systems.
-        Object.keys(systems).forEach(function (key) {
-          if (!systems[key].tock) { return; }
-          systems[key].tock(time, timeDelta);
-        });
+        for (i = 0; i < this.systemNames.length; i++) {
+          if (!systems[this.systemNames[i]].tock) { continue; }
+          systems[this.systemNames[i]].tock(time, timeDelta);
+        }
       }
     },
 
@@ -629,3 +661,39 @@ function shouldAntiAlias (sceneEl) {
   return !sceneEl.isMobile;
 }
 module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
+
+function setupCanvas (sceneEl) {
+  var canvasEl;
+
+  canvasEl = document.createElement('canvas');
+  canvasEl.classList.add('a-canvas');
+  // Mark canvas as provided/injected by A-Frame.
+  canvasEl.dataset.aframeCanvas = true;
+  sceneEl.appendChild(canvasEl);
+
+  document.addEventListener('fullscreenchange', onFullScreenChange);
+  document.addEventListener('mozfullscreenchange', onFullScreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullScreenChange);
+
+  // Prevent overscroll on mobile.
+  canvasEl.addEventListener('touchmove', function (event) { event.preventDefault(); });
+
+  // Set canvas on scene.
+  sceneEl.canvas = canvasEl;
+  sceneEl.emit('render-target-loaded', {target: canvasEl});
+  // For unknown reasons a synchronous resize does not work on desktop when
+  // entering/exiting fullscreen.
+  setTimeout(bind(sceneEl.resize, sceneEl), 0);
+
+  function onFullScreenChange () {
+    var fullscreenEl =
+      document.fullscreenElement ||
+      document.mozFullScreenElement ||
+      document.webkitFullscreenElement;
+    // No fullscren element === exit fullscreen
+    if (!fullscreenEl) { sceneEl.exitVR(); }
+    document.activeElement.blur();
+    document.body.focus();
+  }
+}
+module.exports.setupCanvas = setupCanvas;  // For testing.
