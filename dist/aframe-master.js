@@ -76063,6 +76063,7 @@ function shouldAntiAlias (sceneEl) {
   // Default not AA for mobile.
   return !sceneEl.isMobile;
 }
+module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
 function setupCanvas (sceneEl) {
   var canvasEl;
@@ -76098,8 +76099,7 @@ function setupCanvas (sceneEl) {
     document.body.focus();
   }
 }
-
-module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
+module.exports.setupCanvas = setupCanvas;  // For testing.
 
 },{"../../lib/three":173,"../../utils/":195,"../a-entity":121,"../a-node":123,"../a-register-element":124,"../system":135,"./metaTags":129,"./postMessage":130,"./scenes":131,"./wakelock":132,"@tweenjs/tween.js":1}],129:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
@@ -77800,7 +77800,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 25-08-2017, Commit #61fb844)');
+console.log('A-Frame Version: 0.6.1 (Date 25-08-2017, Commit #1fa8fdc)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
