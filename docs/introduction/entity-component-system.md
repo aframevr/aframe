@@ -206,7 +206,7 @@ is just like in normal web development.
 selectors which allows us to query for an entity or entities that have or don't
 have certain HTML attributes. This means we can ask for entities that have or
 don't have a certain set of components.
-`document.querySelector('[enemy]:not([alive]')`.
+`document.querySelector('[enemy]:not([alive])')`.
 5. **Declarativeness**: Lastly, the DOM provides HTML. A-Frame bridges between
 ECS and HTML making an already clean pattern declarative, readable, and
 copy-and-pasteable.
