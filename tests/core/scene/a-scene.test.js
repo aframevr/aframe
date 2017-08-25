@@ -380,7 +380,7 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite.only('reload', function () {
+  suite('reload', function () {
     test('reload scene innerHTML to original value', function () {
       var canvasEl;
       var sceneEl = this.el;
