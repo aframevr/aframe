@@ -117,5 +117,6 @@ module.exports = window.AFRAME = {
 // Enter VR on `vrdisplayactivate`, to handle in-VR traversal much earlier in the lifecycle.
 // This event may also fire in other circumstances (e.g. putting on the Rift headset).
 window.addEventListener('vrdisplayactivate', function (evt) {
-  if (window.AFRAME.scenes.length > 0) { window.AFRAME.scenes[0].enterVR(); }
+  var s = window.AFRAME.scenes[0];
+  if (s.effect) { s.enterVR(); } else { setTimeout(s.enterVRBound); }
 });
