@@ -18,9 +18,7 @@ module.exports.Component = registerComponent('look-controls', {
     enabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
-    standing: {default: true},
-    userHeight: {default: 0},
-    headElement: {type: 'selector'}
+    standing: {default: true}
   },
 
   init: function () {
@@ -69,7 +67,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Return user height to use for standing poses, where a device doesn't provide an offset.
    */
   getUserHeight: function () {
-    var headEl = this.data.headElement || this.el.sceneEl.camera.el;
+    var headEl = this.el.sceneEl.camera.el;
     var headCamera = headEl.components.camera;
     return (headCamera ? headCamera.data.userHeight : 0) || DEFAULT_CAMERA_HEIGHT;
   },
