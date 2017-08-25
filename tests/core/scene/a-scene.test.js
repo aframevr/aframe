@@ -5,6 +5,7 @@ var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
 var shouldAntiAlias = require('core/scene/a-scene').shouldAntiAlias;
+var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
@@ -614,7 +615,7 @@ suite('setupCanvas', function () {
     var el = this.sceneEl = document.createElement('a-scene');
     el.canvas = undefined;
     assert.notOk(el.canvas);
-    el.setupCanvas();
+    setupCanvas(el);
     assert.ok(el.canvas);
   });
 });

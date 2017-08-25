@@ -660,6 +660,7 @@ function shouldAntiAlias (sceneEl) {
   // Default not AA for mobile.
   return !sceneEl.isMobile;
 }
+module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
 
 function setupCanvas (sceneEl) {
   var canvasEl;
@@ -695,5 +696,4 @@ function setupCanvas (sceneEl) {
     document.body.focus();
   }
 }
-
-module.exports.shouldAntiAlias = shouldAntiAlias;  // For testing.
+module.exports.setupCanvas = setupCanvas;  // For testing.
