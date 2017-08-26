@@ -71,6 +71,29 @@ Components encapsulate all of our code to be reusable, declarative, and
 shareable. Though if we're just poking around at runtime, we can use our
 browser's Developer Tools Console to run JavaScript on our scene.
 
+## Waiting until entities are loaded
+
+Entities, including `a-scene`, are not immediately available after they
+attached in the DOM. Some initialization code needs to be run before.
+When an A-Frame entity is ready, it will fire the `loaded` event.
+Therefore, if we need to something whith it, we can just add a listener
+for that event.
+
+For example, if we want to run almost any JavaScript code that
+manipulates the scene (for example, adding a new entity to it),
+we need to have `a-scene` loaded.
+Therefore, any such code should be included in the appropriate listener:
+
+```js
+document.querySelector('a-scene').addEventListener('loaded', function() { 
+  // your code goes here 
+});
+```
+
+See more on `querySelector` below, but for now, just understand that
+coded will select `a-scene` (which should be already in the DOM),
+and place a listener that will be run when it is loaded.
+
 ## Getting Entities by Querying and Traversing
 
 [queryselector]: https://developer.mozilla.org/docs/Web/API/Document/querySelector
@@ -227,6 +250,29 @@ AFRAME.registerComponent('do-something-once-loaded', {
 var entityEl = document.createElement('a-entity');
 entityEl.setAttribute('do-something-once-loaded', '');
 sceneEl.appendChild(entityEl);
+```
+
+Note also that `a-frame` also needs to be loaded before any entity
+can be attached to it. Therefore, you need to place the code
+in the appropriate listener, as was explained above:
+
+```js
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelector('a-scene').addEventListener('loaded', function() {
+    var sceneEl = document.querySelector('a-scene');
+
+    AFRAME.registerComponent('do-something-once-loaded', {
+      init: function () {
+      // This will be called after the entity has properly attached and loaded.
+      console.log('I am ready!');
+      }
+  });
+
+  var entityEl = document.createElement('a-entity');
+  entityEl.setAttribute('do-something-once-loaded', '');
+  sceneEl.appendChild(entityEl);
+  });
+});
 ```
 
 ### Removing an Entity with `.removeChild()`
