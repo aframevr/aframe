@@ -7,8 +7,12 @@ parent_section: docs
 order: 1
 section_order: 2
 nav_expand_sections: true
+image:
+  src: https://user-images.githubusercontent.com/674727/29746371-b7906dcc-8a8c-11e7-8ef4-3f7e4d224ce7.jpg
 examples:
-  - title: Basic Guide
+  - title: Basic Guide with Environment
+    src: https://glitch.com/edit/#!/aframe-basic-guide-with-environment?path=index.html
+  - title: Basic Guide with Custom Environment
     src: https://glitch.com/edit/#!/aframe-basic-guide?path=index.html
 ---
 
@@ -27,7 +31,7 @@ understanding of HTML. We will learn how to:
 - Add basic interactivity using animations and events
 - Add text
 
-[Remix the Basic Guide example on Glitch](https://glitch.com/~aframe-basic-guide).
+[Remix the Basic Guide example on Glitch](https://glitch.com/~aframe-basic-guide-with-environment).
 
 <!--toc-->
 
@@ -303,7 +307,7 @@ To use the asset management system for an image texture:
 </a-scene>
 ```
 
-## Creating an Environment (Optional)
+## Creating a Custom Environment (Optional)
 
 Previously we had the environment component generate the environment. Though
 it's good to know a bit on creating a basic environment for learning purposes.
@@ -646,8 +650,8 @@ the sound in our scene using `position`.
 
 A-Frame comes with a [text component][text]. There are several ways to render
 text, each with their advantages and disadvantages, A-Frame comes with an SDF
-text implementation using [`three-bmfont-text`] that is relatively sharp and
-performant.
+text implementation using [`three-bmfont-text`][three-bmfont-text] that is
+relatively sharp and performant.
 
 For this guide, let's use the primitive form of the text component, `<a-text>`:
 
@@ -671,6 +675,6 @@ Other ways to do text include:
 
 And that's the basic example!
 
-[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide).
+[Remix the example on Glitch](https://glitch.com/~aframe-basic-guide-with-environment).
 
-[View the example on Glitch](https://aframe-basic-guide.glitch.me).
+[View the example on Glitch](https://aframe-basic-guide-with-environment.glitch.me).
