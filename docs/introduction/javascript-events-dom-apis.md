@@ -73,7 +73,10 @@ browser's Developer Tools Console to run JavaScript on our scene.
 [contentscripts]: ./scene.md#running-content-scripts-on-the-scene
 
 Do **not** try to put A-Frame-related JavaScript in a raw `<script>` tag after
-`<a-scene>` as we would with traditional 2D scripting. If we do, we'd have to
+`<a-scene>` as we would with traditional 2D scripting,
+and in general, don't asssume `<a-scene>` is ready to attach
+as soon as it is available in the DOM.
+If we do, we'd have to
 take special measures to make sure code runs at the right time (see [Running
 Content Scripts on the Scene][contentscripts]).
 
