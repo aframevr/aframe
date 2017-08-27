@@ -70,7 +70,7 @@ Components encapsulate all of our code to be reusable, declarative, and
 shareable. Though if we're just poking around at runtime, we can use our
 browser's Developer Tools Console to run JavaScript on our scene.
 
-[contentscripts]: ./scene.md#running-content-scripts-on-the-scene
+[contentscripts]: ../core/scene.md#running-content-scripts-on-the-scene
 
 Do **not** try to put A-Frame-related JavaScript in a raw `<script>` tag after
 `<a-scene>` as we would with traditional 2D scripting. If we do, we'd have to
