@@ -41,12 +41,12 @@ the APIs discussed below.
 
 [A-Frame components]: ../core/component.md
 
-Before we go over the different ways to use JavaScript and DOM APIs, we
-recommend encapsulating your JavaScript code within [A-Frame components].
-Components modularize code, make logic and behavior visible from HTML, and
-ensure that code is executed at the correct time (e.g., after the scene and entities have
-attached and initialized). As the most basic example, to register a
-`console.log` component:
+**Important:** Before we go over the different ways to use JavaScript and DOM
+APIs, we prescribe encapsulating your JavaScript code within [A-Frame
+components].  Components modularize code, make logic and behavior visible from
+HTML, and ensure that code is executed at the correct time (e.g., after the
+scene and entities have attached and initialized). As the most basic example,
+to register a `console.log` component *before* `<a-scene>`:
 
 ```js
 AFRAME.registerComponent('log', {
@@ -59,7 +59,7 @@ AFRAME.registerComponent('log', {
 });
 ```
 
-Then to use the component from HTML:
+And *after* the registration, use the component from HTML:
 
 ```html
 <a-scene log="Hello, Scene!">
@@ -70,6 +70,13 @@ Then to use the component from HTML:
 Components encapsulate all of our code to be reusable, declarative, and
 shareable. Though if we're just poking around at runtime, we can use our
 browser's Developer Tools Console to run JavaScript on our scene.
+
+[contentscripts]: ./scene.md#running-content-scripts-on-the-scene
+
+Do **not** try to put A-Frame-related JavaScript in a raw `<script>` tag after
+`<a-scene>` as we would with traditional 2D scripting. If we do, we'd have to
+take special measures to make sure code runs at the right time (see [Running
+Content Scripts on the Scene][contentscripts]).
 
 ## Getting Entities by Querying and Traversing
 
