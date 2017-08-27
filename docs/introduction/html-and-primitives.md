@@ -146,7 +146,7 @@ the physics components via HTML attributes:
 ## Registering a Primitive
 
 We can register our own primitives (i.e., register an element) using
-`AFRAME.registerPrimitive(name, definition)`. `definition` is a JavaScript
+`AFRAME.registerPrimitive(name, definition)`. `name` is a string and must contain a dash (i.e. `'a-foo'`). `definition` is a JavaScript
 object defining these properties:
 
 | Property          | Description                                                                                                                                                                                                                                                                               | Example                          |
