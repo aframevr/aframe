@@ -1,4 +1,4 @@
----
+-
 title: JavaScript, Events, DOM APIs
 type: introduction
 layout: docs
@@ -13,6 +13,8 @@ examples:
     src: https://glitch.com/edit/#!/aframe-school-js?path=solution3.html
   - title: A-Frame School &mdash; Handling Events
     src: https://glitch.com/edit/#!/aframe-school-js?path=solution4.html
+  - title: Animated Lights
+    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
 
 [geometry]: ../components/geometry.md
@@ -28,10 +30,7 @@ JavaScript and [DOM] APIs as we mostly would in ordinary web development.
 <small class="image-caption"><i>Image by Ruben Mueller from [The VR Jump][vrjump].</i></small>
 
 [entity]: ../core/entity.md
-
-Every element in the scene, even elements such as `<a-box>` or `<a-sky>`, are
-entities (represented as `<a-entity>`). A-Frame modifies the HTML element
-prototype to add some extra behavior for certain DOM APIs to tailor them to
+Every element in the scene, even elements such as `<a-box>` or `<a-sky>`, are entities (represented as `<a-entity>`). A-Frame modifies the HTML element prototype to add some extra behavior for certain DOM APIs to tailor them to
 A-Frame. See the [Entity API documentation][entity] for reference on most of
 the APIs discussed below.
 
