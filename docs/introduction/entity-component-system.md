@@ -6,6 +6,8 @@ order: 5
 examples:
   - title: Community Components in Action
     src: https://glitch.com/edit/#!/aframe-registry?path=index.html
+  - title: Animated Lights
+    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
 
 [ecs]: https://wikipedia.org/wiki/Entity_component_system
