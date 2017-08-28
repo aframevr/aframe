@@ -5,17 +5,10 @@ layout: docs
 parent_section: primitives
 source_code: src/extras/primitives/primitives/a-sky.js
 examples:
-  - title:Adding a Sky
-    src: https://glitch.com/edit/#!/ex-1-sky?path=index.html:1:0
-
- - title:Videosphere Sky
-    src:https://glitch.com/edit/#!/ex-1a-videosphere
-
- - title:Change Sky
-    src:https://glitch.com/edit/#!/ex-1b-change-sky
-
-
-
+  - title: Adding a Sky
+    src: https://glitch.com/edit/#!/aframe-adding-a-sky?path=index.html
+  - title: Changing the Sky
+    src: https://glitch.com/edit/#!/aframe-changing-the-sky?path=index.html
 ---
 
 The sky primitive adds a background color or 360&deg; image to a scene.  A sky
