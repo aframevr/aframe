@@ -8,19 +8,19 @@ section_order: 4
 source_code: src/components/geometry.js
 examples: 
 
- - title: Ex2 — Creating Shapes
+ - title:Creating Shapes
     src: https://glitch.com/edit/#!/ex-2-geometry?path=index.html:1:0
 
- - title: Ex2.1 — Texture on Shapes
+ - title:Texture on Shapes
     src:https://glitch.com/edit/#!/ex-2a-texture-on-shape
 
- - title: Ex2.2 — Shape as Entity
+ - title:Shape as Entity
     src:https://glitch.com/edit/#!/ex-2b-shape-as-entity
     
- - title: Ex2.3 — Animating Shapes
+ - title:Animating Shapes
     src:https://glitch.com/edit/#!/ex-2c-animating-shapes
 
- - title: Ex2.4 — Animating Shapes with Components
+ - title:Animating Shapes with Components
     src:https://glitch.com/edit/#!/ex-2d-animating-shapes-with-components
 
 ---
