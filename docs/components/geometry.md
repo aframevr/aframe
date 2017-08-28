@@ -6,7 +6,23 @@ parent_section: docs
 section_title: Components
 section_order: 4
 source_code: src/components/geometry.js
-examples: []
+examples: 
+
+ - title: Ex2 — Creating Shapes
+    src: https://glitch.com/edit/#!/ex-2-geometry?path=index.html:1:0
+
+ - title: Ex2.1 — Texture on Shapes
+    src:https://glitch.com/edit/#!/ex-2a-texture-on-shape
+
+ - title: Ex2.2 — Shape as Entity
+    src:https://glitch.com/edit/#!/ex-2b-shape-as-entity
+    
+ - title: Ex2.3 — Animating Shapes
+    src:https://glitch.com/edit/#!/ex-2c-animating-shapes
+
+ - title: Ex2.4 — Animating Shapes with Components
+    src:https://glitch.com/edit/#!/ex-2d-animating-shapes-with-components
+
 ---
 
 The geometry component provides a basic shape for an entity. The `primitive`
