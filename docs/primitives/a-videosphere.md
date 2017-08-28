@@ -4,6 +4,9 @@ type: primitives
 layout: docs
 parent_section: primitives
 source_code: src/extras/primitives/primitives/a-videosphere.js
+examples:
+  - title: Adding a Videosphere
+    src: https://glitch.com/edit/#!/aframe-adding-a-videosphere?path=index.html
 ---
 
 The videosphere primitive plays 360&deg; videos in the background of the scene.
