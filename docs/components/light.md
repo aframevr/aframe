@@ -5,8 +5,14 @@ layout: docs
 parent_section: components
 source_code: src/components/light.js
 examples:
+
+  - title: Light Types
+    src: https://glitch.com/edit/#!/ex-3-lights?path=index.html:1:0
+    
   - title: Animated Lights
     src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
+ 
+
 ---
 
 The light component defines the entity as a source of light. Light affects all
