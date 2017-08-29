@@ -179,7 +179,7 @@ module.exports.Component = registerComponent('look-controls', {
       rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
       rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
       rotation.z = radToDeg(hmdEuler.z);
-    } else if ((!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) && this.data.touchEnabled) {
+    } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
