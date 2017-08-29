@@ -68448,6 +68448,7 @@ registerShader('portal', {
 },{"../core/component":125,"../core/shader":134,"../lib/three":173}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
+var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
 var bind = _dereq_('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick
@@ -68504,9 +68505,19 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
     if (!data.enabled) { return; }
     this.controls.standing = data.standing;
+    this.controls.userHeight = this.getUserHeight();
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
+  },
+
+  /**
+   * Return user height to use for standing poses, where a device doesn't provide an offset.
+   */
+  getUserHeight: function () {
+    var el = this.el;
+    var userHeight = el.hasAttribute('camera') && el.getAttribute('camera').userHeight || DEFAULT_CAMERA_HEIGHT;
+    return userHeight;
   },
 
   play: function () {
@@ -68828,7 +68839,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":125,"../lib/three":173,"../utils/bind":189}],92:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../lib/three":173,"../utils/bind":189}],92:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -77800,7 +77811,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 25-08-2017, Commit #1fa8fdc)');
+console.log('A-Frame Version: 0.6.1 (Date 29-08-2017, Commit #cb657f5)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
