@@ -15,6 +15,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
+    touchEnabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
     standing: {default: true}
@@ -77,9 +78,11 @@ module.exports.Component = registerComponent('look-controls', {
     this.onMouseDown = bind(this.onMouseDown, this);
     this.onMouseMove = bind(this.onMouseMove, this);
     this.onMouseUp = bind(this.onMouseUp, this);
-    this.onTouchStart = bind(this.onTouchStart, this);
-    this.onTouchMove = bind(this.onTouchMove, this);
-    this.onTouchEnd = bind(this.onTouchEnd, this);
+    if (this.data.touchEnabled) {
+      this.onTouchStart = bind(this.onTouchStart, this);
+      this.onTouchMove = bind(this.onTouchMove, this);
+      this.onTouchEnd = bind(this.onTouchEnd, this);
+    }
     this.onExitVR = bind(this.onExitVR, this);
   },
 
@@ -123,9 +126,11 @@ module.exports.Component = registerComponent('look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    canvasEl.addEventListener('touchstart', this.onTouchStart);
-    window.addEventListener('touchmove', this.onTouchMove);
-    window.addEventListener('touchend', this.onTouchEnd);
+    if (this.data.touchEnabled) {
+      canvasEl.addEventListener('touchstart', this.onTouchStart);
+      window.addEventListener('touchmove', this.onTouchMove);
+      window.addEventListener('touchend', this.onTouchEnd);
+    }
   },
 
   /**
@@ -144,9 +149,11 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.removeEventListener('mouseout', this.onMouseUp);
 
     // Touch events.
-    canvasEl.removeEventListener('touchstart', this.onTouchStart);
-    canvasEl.removeEventListener('touchmove', this.onTouchMove);
-    canvasEl.removeEventListener('touchend', this.onTouchEnd);
+    if (this.data.touchEnabled) {
+      canvasEl.removeEventListener('touchstart', this.onTouchStart);
+      canvasEl.removeEventListener('touchmove', this.onTouchMove);
+      canvasEl.removeEventListener('touchend', this.onTouchEnd);
+    }
   },
 
   /**
@@ -172,7 +179,7 @@ module.exports.Component = registerComponent('look-controls', {
       rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
       rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
       rotation.z = radToDeg(hmdEuler.z);
-    } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+    } else if ((!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) && this.data.touchEnabled) {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
       deltaRotation = this.calculateDeltaRotation();
