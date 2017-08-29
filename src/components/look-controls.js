@@ -78,11 +78,9 @@ module.exports.Component = registerComponent('look-controls', {
     this.onMouseDown = bind(this.onMouseDown, this);
     this.onMouseMove = bind(this.onMouseMove, this);
     this.onMouseUp = bind(this.onMouseUp, this);
-    if (this.data.touchEnabled) {
-      this.onTouchStart = bind(this.onTouchStart, this);
-      this.onTouchMove = bind(this.onTouchMove, this);
-      this.onTouchEnd = bind(this.onTouchEnd, this);
-    }
+    this.onTouchStart = bind(this.onTouchStart, this);
+    this.onTouchMove = bind(this.onTouchMove, this);
+    this.onTouchEnd = bind(this.onTouchEnd, this);
     this.onExitVR = bind(this.onExitVR, this);
   },
 
@@ -126,11 +124,9 @@ module.exports.Component = registerComponent('look-controls', {
     window.addEventListener('mouseup', this.onMouseUp, false);
 
     // Touch events.
-    if (this.data.touchEnabled) {
-      canvasEl.addEventListener('touchstart', this.onTouchStart);
-      window.addEventListener('touchmove', this.onTouchMove);
-      window.addEventListener('touchend', this.onTouchEnd);
-    }
+    canvasEl.addEventListener('touchstart', this.onTouchStart);
+    window.addEventListener('touchmove', this.onTouchMove);
+    window.addEventListener('touchend', this.onTouchEnd);
   },
 
   /**
@@ -149,11 +145,9 @@ module.exports.Component = registerComponent('look-controls', {
     canvasEl.removeEventListener('mouseout', this.onMouseUp);
 
     // Touch events.
-    if (this.data.touchEnabled) {
-      canvasEl.removeEventListener('touchstart', this.onTouchStart);
-      canvasEl.removeEventListener('touchmove', this.onTouchMove);
-      canvasEl.removeEventListener('touchend', this.onTouchEnd);
-    }
+    canvasEl.removeEventListener('touchstart', this.onTouchStart);
+    canvasEl.removeEventListener('touchmove', this.onTouchMove);
+    canvasEl.removeEventListener('touchend', this.onTouchEnd);
   },
 
   /**
@@ -318,7 +312,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Register touch down to detect touch drag.
    */
   onTouchStart: function (evt) {
-    if (evt.touches.length !== 1) { return; }
+    if (evt.touches.length !== 1 || !this.data.touchEnabled) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -334,7 +328,7 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaY;
     var yawObject = this.yawObject;
 
-    if (!this.touchStarted) { return; }
+    if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
