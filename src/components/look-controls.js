@@ -67,9 +67,9 @@ module.exports.Component = registerComponent('look-controls', {
    * Return user height to use for standing poses, where a device doesn't provide an offset.
    */
   getUserHeight: function () {
-    var headEl = this.el.sceneEl.camera.el;
-    var headCamera = headEl.components.camera;
-    return (headCamera ? headCamera.data.userHeight : 0) || DEFAULT_CAMERA_HEIGHT;
+    var el = this.el;
+    var userHeight = el.hasAttribute('camera') && el.getAttribute('camera').userHeight || DEFAULT_CAMERA_HEIGHT;
+    return userHeight;
   },
 
   play: function () {
