@@ -56,7 +56,7 @@ suite('hand-controls', function () {
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'OpenVR Vive', connected: true};
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
 
       component.pressedButtons['grip'] = false;
       component.pressedButtons['trigger'] = false;
@@ -90,7 +90,7 @@ suite('hand-controls', function () {
       var trackedControls;
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
-      trackedControls.controller = {id: 'OpenVR Vive', connected: true};
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = false;

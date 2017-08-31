@@ -50,21 +50,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.updateGamepad();
   },
 
-  update: function () {
-    var data = this.data;
-
-    // If the component requests a specific hand (the hand property is set), it implies that the ordering of
-    // controllers in gamepad array does not say anything about their handedness. This means that we need to
-    // ignore data.controller.
-    // For cases where hand property is not provided, controller ID -> Hand: 0 is right, 1 is left. (to match Vive)
-    if (data.hand) {
-      // This is used only in the case where the gamepads themselves are not handed
-      this.targetControllerNumber = (data.hand === DEFAULT_HANDEDNESS) ? 0 : 1;
-    } else {
-      this.targetControllerNumber = data.controller;
-    }
-  },
-
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
     // Update mesh animations.
@@ -98,7 +83,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       data.id,
       data.idPrefix,
       data.hand,
-      this.targetControllerNumber
+      data.controller
     );
 
     // Only replace the stored controller if we find a new one.

@@ -1,3 +1,4 @@
+/* global THREE */
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
 var controllerUtils = require('../utils/tracked-controls');
@@ -6,11 +7,11 @@ var utils = require('../utils/');
 var debug = utils.debug('components:windows-motion-controls:debug');
 var warn = utils.debug('components:windows-motion-controls:warn');
 
+var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
+
 // TODO: Point to final glb assets once they are hosted. For now, place them in this hard coded directory.
 var MODEL_BASE_URL = '/examples/assets/models/controllers/wmr/';
-var MODEL_LEFT_FILENAME = 'left.glb';
-var MODEL_RIGHT_FILENAME = 'right.glb';
-var MODEL_UNIVERSAL_FILENAME = 'universal.glb';
+var MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universal.glb' };
 
 var GAMEPAD_ID_PREFIX = 'Spatial Controller (Spatial Interaction Source) ';
 var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
@@ -23,14 +24,17 @@ var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
  */
 module.exports.Component = registerComponent('windows-motion-controls', {
   schema: {
-    hand: {default: 'left'},
+    hand: {default: DEFAULT_HANDEDNESS},
+    // It is possible to have multiple pairs of controllers attached (a pair has both left and right).
+    // Set this to 1 to use a controller from the second pair, 2 from the third pair, etc.
+    pair: {default: 0},
     // If true, loads the controller glTF asset.
     model: {default: true},
     // If true, will hide the model from the scene if no matching gamepad (based on ID & hand) is connected.
     hideDisconnected: {default: true}
   },
 
-  _mapping: {
+  mapping: {
     // A-Frame specific semantic axis names
     axes: {'thumbstick': [0, 1], 'trackpad': [2, 3]},
     // A-Frame specific semantic button names
@@ -77,7 +81,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.bindMethods();
 
     // Cache for submeshes that we have looked up by name.
-    this._loadedMeshInfo = {
+    this.loadedMeshInfo = {
       buttonMeshes: null,
       axisMeshes: null
     };
@@ -115,7 +119,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   checkIfControllerPresent: function () {
     this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {
-      hand: this.data.hand
+      hand: this.data.hand,
+      index: this.data.pair
     });
 
     if (this.data.hideDisconnected) {
@@ -156,6 +161,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var controller = trackedControlsComponent ? trackedControlsComponent.controller : null;
     var device = 'default';
     var hand = this.data.hand;
+    var filename;
 
     if (controller) {
       // Read hand directly from the controller, rather than this.data, as in the case that the controller
@@ -170,10 +176,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
 
     // Hand
-    var filename;
-    if (hand === 'left') filename = MODEL_LEFT_FILENAME;
-    else if (hand === 'right') filename = MODEL_RIGHT_FILENAME;
-    else filename = MODEL_UNIVERSAL_FILENAME;
+    filename = MODEL_FILENAMES[hand] || MODEL_FILENAMES.default;
 
     // Final url
     return MODEL_BASE_URL + device + '/' + filename;
@@ -183,6 +186,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var data = this.data;
     this.el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
+      controller: data.pair,
       hand: data.hand
     });
 
@@ -221,8 +225,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   onModelLoaded: function (evt) {
     var controllerObject3D = evt.detail.model;
-    var loadedMeshInfo = this._loadedMeshInfo;
+    var loadedMeshInfo = this.loadedMeshInfo;
     var i;
+    var meshName;
+    var mesh;
+    var meshInfo;
 
     debug('Processing model');
 
@@ -236,65 +243,65 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     // Cache our meshes so we aren't traversing the hierarchy per frame
     if (rootNode) {
       // Button Meshes
-      for (i = 0; i < this._mapping.buttons.length; i++) {
-        var buttonMeshName = this._mapping.buttonMeshNames[this._mapping.buttons[i]];
-        if (!buttonMeshName) {
-          debug('Skipping unknown button at index: ' + i + ' with mapped name: ' + this._mapping.buttons[i]);
+      for (i = 0; i < this.mapping.buttons.length; i++) {
+        meshName = this.mapping.meshNames[this.mapping.buttons[i]];
+        if (!meshName) {
+          debug('Skipping unknown button at index: ' + i + ' with mapped name: ' + this.mapping.buttons[i]);
           continue;
         }
 
-        var buttonMesh = rootNode.getObjectByName(buttonMeshName);
-        if (!buttonMesh) {
-          warn('Missing button mesh with name: ' + buttonMeshName);
+        mesh = rootNode.getObjectByName(meshName);
+        if (!mesh) {
+          warn('Missing button mesh with name: ' + meshName);
           continue;
         }
 
-        var buttonMeshInfo = {
+        meshInfo = {
           index: i,
-          value: getImmediateChildByName(buttonMesh, 'VALUE'),
-          pressed: getImmediateChildByName(buttonMesh, 'PRESSED'),
-          unpressed: getImmediateChildByName(buttonMesh, 'UNPRESSED')
+          value: getImmediateChildByName(mesh, 'VALUE'),
+          pressed: getImmediateChildByName(mesh, 'PRESSED'),
+          unpressed: getImmediateChildByName(mesh, 'UNPRESSED')
         };
-        if (buttonMeshInfo.value && buttonMeshInfo.pressed && buttonMeshInfo.unpressed) {
-          loadedMeshInfo.buttonMeshes[this._mapping.buttons[i]] = buttonMeshInfo;
+        if (meshInfo.value && meshInfo.pressed && meshInfo.unpressed) {
+          loadedMeshInfo.buttonMeshes[this.mapping.buttons[i]] = meshInfo;
         } else {
           // If we didn't find the mesh, it simply means this button won't have transforms applied as mapped button value changes.
-          warn('Missing button submesh under mesh with name: ' + buttonMeshName +
-            '(VALUE: ' + !!buttonMeshInfo.value +
-            ', PRESSED: ' + !!buttonMeshInfo.pressed +
-            ', UNPRESSED:' + !!buttonMeshInfo.unpressed +
+          warn('Missing button submesh under mesh with name: ' + meshName +
+            '(VALUE: ' + !!meshInfo.value +
+            ', PRESSED: ' + !!meshInfo.pressed +
+            ', UNPRESSED:' + !!meshInfo.unpressed +
             ')');
         }
       }
 
       // Axis Meshes
-      for (i = 0; i < this._mapping.axisMeshNames.length; i++) {
-        var axisMeshName = this._mapping.axisMeshNames[i];
-        if (!axisMeshName) {
+      for (i = 0; i < this.mapping.meshNames.length; i++) {
+        meshName = this.mapping.meshNames[i];
+        if (!meshName) {
           debug('Skipping unknown axis at index: ' + i);
           continue;
         }
 
-        var axisMesh = rootNode.getObjectByName(axisMeshName);
-        if (!axisMesh) {
-          warn('Missing axis mesh with name: ' + axisMeshName);
+        mesh = rootNode.getObjectByName(meshName);
+        if (!mesh) {
+          warn('Missing axis mesh with name: ' + meshName);
           continue;
         }
 
-        var axisMeshInfo = {
+        meshInfo = {
           index: i,
-          value: getImmediateChildByName(axisMesh, 'VALUE'),
-          min: getImmediateChildByName(axisMesh, 'MIN'),
-          max: getImmediateChildByName(axisMesh, 'MAX')
+          value: getImmediateChildByName(mesh, 'VALUE'),
+          min: getImmediateChildByName(mesh, 'MIN'),
+          max: getImmediateChildByName(mesh, 'MAX')
         };
-        if (axisMeshInfo.value && axisMeshInfo.min && axisMeshInfo.max) {
-          loadedMeshInfo.axisMeshes[i] = axisMeshInfo;
+        if (meshInfo.value && meshInfo.min && meshInfo.max) {
+          loadedMeshInfo.axisMeshes[i] = meshInfo;
         } else {
           // If we didn't find the mesh, it simply means this axis won't have transforms applied as mapped axis values change.
-          warn('Missing axis submesh under mesh with name: ' + axisMeshName +
-            '(VALUE: ' + !!axisMeshInfo.value +
-            ', MIN: ' + !!axisMeshInfo.min +
-            ', MAX:' + !!axisMeshInfo.max +
+          warn('Missing axis submesh under mesh with name: ' + meshName +
+            '(VALUE: ' + !!meshInfo.value +
+            ', MIN: ' + !!meshInfo.min +
+            ', MAX:' + !!meshInfo.max +
             ')');
         }
       }
@@ -316,38 +323,44 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
   },
 
-  lerpAxisTransform: function (axis, axisValue) {
-    var axisMeshInfo = this._loadedMeshInfo.axisMeshes[axis];
-    if (!axisMeshInfo) return;
+  lerpAxisTransform: (function () {
+    var quaternion = new THREE.Quaternion();
+    return function (axis, axisValue) {
+      var axisMeshInfo = this.loadedMeshInfo.axisMeshes[axis];
+      if (!axisMeshInfo) return;
 
-    var min = axisMeshInfo.min;
-    var max = axisMeshInfo.max;
-    var target = axisMeshInfo.value;
+      var min = axisMeshInfo.min;
+      var max = axisMeshInfo.max;
+      var target = axisMeshInfo.value;
 
-    // Convert from gamepad value range (-1 to +1) to lerp range (0 to 1)
-    var lerpValue = axisValue * 0.5 + 0.5;
-    target.setRotationFromQuaternion(min.quaternion.clone().slerp(max.quaternion, lerpValue));
-    target.position.lerpVectors(min.position, max.position, lerpValue);
-  },
+      // Convert from gamepad value range (-1 to +1) to lerp range (0 to 1)
+      var lerpValue = axisValue * 0.5 + 0.5;
+      target.setRotationFromQuaternion(quaternion.copy(min.quaternion).slerp(max.quaternion, lerpValue));
+      target.position.lerpVectors(min.position, max.position, lerpValue);
+    };
+  })(),
 
-  lerpButtonTransform: function (buttonName, buttonValue) {
-    var buttonMeshInfo = this._loadedMeshInfo.buttonMeshes[buttonName];
-    if (!buttonMeshInfo) return;
+  lerpButtonTransform: (function () {
+    var quaternion = new THREE.Quaternion();
+    return function (buttonName, buttonValue) {
+      var buttonMeshInfo = this.loadedMeshInfo.buttonMeshes[buttonName];
+      if (!buttonMeshInfo) return;
 
-    var min = buttonMeshInfo.unpressed;
-    var max = buttonMeshInfo.pressed;
-    var target = buttonMeshInfo.value;
+      var min = buttonMeshInfo.unpressed;
+      var max = buttonMeshInfo.pressed;
+      var target = buttonMeshInfo.value;
 
-    target.setRotationFromQuaternion(min.quaternion.clone().slerp(max.quaternion, buttonValue));
-    target.position.lerpVectors(min.position, max.position, buttonValue);
-  },
+      target.setRotationFromQuaternion(quaternion.copy(min.quaternion).slerp(max.quaternion, buttonValue));
+      target.position.lerpVectors(min.position, max.position, buttonValue);
+    };
+  })(),
 
   onButtonChanged: function (evt) {
-    var buttonName = this._mapping.buttons[evt.detail.id];
+    var buttonName = this.mapping.buttons[evt.detail.id];
 
     if (buttonName) {
       // Update the button mesh transform
-      if (this._loadedMeshInfo && this._loadedMeshInfo.buttonMeshes) {
+      if (this.loadedMeshInfo && this.loadedMeshInfo.buttonMeshes) {
         this.lerpButtonTransform(buttonName, evt.detail.state.value);
       }
 
@@ -357,7 +370,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onButtonEvent: function (evt, evtName) {
-    var buttonName = this._mapping.buttons[evt.detail.id];
+    var buttonName = this.mapping.buttons[evt.detail.id];
     debug('onButtonEvent(' + evt.detail.id + ', ' + evtName + ')');
 
     if (buttonName) {
@@ -367,16 +380,16 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onAxisMoved: function (evt) {
-    var numAxes = this._mapping.axisMeshNames.length;
+    var numAxes = this.mapping.axisMeshNames.length;
 
     // Only attempt to update meshes if we have valid data.
-    if (this._loadedMeshInfo && this._loadedMeshInfo.axisMeshes) {
+    if (this.loadedMeshInfo && this.loadedMeshInfo.axisMeshes) {
       for (var axis = 0; axis < numAxes; axis++) {
         // Update the button mesh transform
         this.lerpAxisTransform(axis, evt.detail.axis[axis] || 0.0);
       }
     }
 
-    this.emitIfAxesChanged(this, this._mapping.axes, evt);
+    this.emitIfAxesChanged(this, this.mapping.axes, evt);
   }
 });
