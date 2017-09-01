@@ -27,6 +27,7 @@ component](camera.md).
 | Property         | Description                                                      | Default Value |
 |------------------|------------------------------------------------------------------|---------------|
 | enabled          | Whether look controls are enabled.                               | true          |
+| touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
 | hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
 | reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
 | standing         | Whether standing mode is enabled (passed to `THREE.VRControls`). | true          |
