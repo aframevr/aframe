@@ -68959,7 +68959,7 @@ module.exports.Component = registerComponent('material', {
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
     material.opacity = data.opacity;
-    material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.vertexColors = parseVertexColors(data.vertexColors);
@@ -77812,7 +77812,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 01-09-2017, Commit #790a3ae)');
+console.log('A-Frame Version: 0.6.1 (Date 01-09-2017, Commit #537d506)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
