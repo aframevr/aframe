@@ -68464,6 +68464,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
+    touchEnabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
     standing: {default: true}
@@ -68770,7 +68771,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Register touch down to detect touch drag.
    */
   onTouchStart: function (evt) {
-    if (evt.touches.length !== 1) { return; }
+    if (evt.touches.length !== 1 || !this.data.touchEnabled) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -68786,7 +68787,7 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaY;
     var yawObject = this.yawObject;
 
-    if (!this.touchStarted) { return; }
+    if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
@@ -77811,7 +77812,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 29-08-2017, Commit #cb657f5)');
+console.log('A-Frame Version: 0.6.1 (Date 01-09-2017, Commit #790a3ae)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
