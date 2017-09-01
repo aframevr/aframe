@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var warn = utils.debug('components:windows-motion-controls:warn');
 
 /**
  * glTF model loader.
@@ -27,6 +28,7 @@ module.exports.Component = registerComponent('gltf-model', {
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
     }, undefined /* onProgress */, function gltfFailed () {
+      warn('Failed to glTF-model: ' + src);
       el.emit('model-error', {format: 'gltf', src: src});
     });
   },

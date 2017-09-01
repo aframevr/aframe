@@ -83,6 +83,7 @@ file.
 | Event Name   | Description                                |
 |--------------|--------------------------------------------|
 | model-loaded | glTF model has been loaded into the scene. |
+| model-error  | glTF model could not be loaded.            |
 
 ## Loading Inline
 
