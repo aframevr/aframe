@@ -1,5 +1,8 @@
+var debug = require('../utils/debug');
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+
+var warn = debug('components:gltf-model:warn');
 
 /**
  * glTF model loader.
@@ -26,6 +29,8 @@ module.exports.Component = registerComponent('gltf-model', {
       self.model.animations = gltfModel.animations;
       el.setObject3D('mesh', self.model);
       el.emit('model-loaded', {format: 'gltf', model: self.model});
+    }, undefined, function gltfFailed (error) {
+      warn(error || 'Error loading glTF model');
     });
   },
 
