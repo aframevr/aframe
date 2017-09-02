@@ -464,6 +464,7 @@ AFRAME.registerComponent('custom-controls', {
     el.setAttribute('oculus-touch-controls', controlConfiguration);
     el.setAttribute('daydream-controls', controlConfiguration);
     el.setAttribute('gearvr-controls', controlConfiguration);
+    el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set a model.
     el.setAttribute('gltf-model', this.data.model);
@@ -492,6 +493,7 @@ event handlers how we want:
 - [hand-controls events](../components/hand-controls.md#events)
 - [oculus-touch-controls events](../components/oculus-touch-controls.md#events)
 - [vive-controls events](../components/vive-controls.md#events)
+- [windows-motion-controls events](../components/windows-motion-controls.md#events)
 
 For example, we can listen to the Oculus Touch X button press, and toggle
 visibility of an entity. In component form:
