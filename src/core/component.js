@@ -471,9 +471,8 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
-* Clones component data.
-* Clone only the properties that are plain objects while
-* keeping a reference for the rest.
+* Clone component data.
+* Clone only the properties that are plain objects while keeping a reference for the rest.
 *
 * @param data - Component data to clone.
 * @returns Cloned data.
@@ -484,7 +483,9 @@ function cloneData (data) {
   var key;
   for (key in data) {
     parsedProperty = data[key];
-    clone[key] = parsedProperty.constructor === Object ? utils.clone(parsedProperty) : parsedProperty;
+    clone[key] = parsedProperty && parsedProperty.constructor === Object
+      ? utils.clone(parsedProperty)
+      : parsedProperty;
   }
   return clone;
 }
