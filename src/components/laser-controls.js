@@ -16,21 +16,33 @@ registerComponent('laser-controls', {
     el.setAttribute('gearvr-controls', {hand: data.hand});
     el.setAttribute('oculus-touch-controls', {hand: data.hand});
     el.setAttribute('vive-controls', {hand: data.hand});
+    el.setAttribute('windows-motion-controls', {hand: data.hand});
 
-    // Wait for controller to connect before
-    el.addEventListener('controllerconnected', function (evt) {
+    // Wait for controller to connect, or have a valid pointing pose, before creating ray
+    el.addEventListener('controllerconnected', function (evt) { createRay(evt); });
+    el.addEventListener('controllerdisplayready', createRay);
+
+    function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 
-      el.setAttribute('raycaster', utils.extend({
+      var raycasterConfig = utils.extend({
         showLine: true
-      }, controllerConfig.raycaster || {}));
+      }, controllerConfig.raycaster || {});
+
+      if (evt.detail.name === 'windows-motion-controls') {
+        var motionControls = el.components['windows-motion-controls'];
+        raycasterConfig = utils.extend(raycasterConfig, motionControls.rayOrigin);
+        raycasterConfig.showLine = motionControls.rayOriginInitialized;
+      }
+
+      el.setAttribute('raycaster', raycasterConfig);
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
-    });
+    }
   },
 
   config: {
@@ -50,6 +62,11 @@ registerComponent('laser-controls', {
 
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'windows-motion-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {showLine: false}
     }
   }
 });

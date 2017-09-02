@@ -57,7 +57,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       'grip': 'GRASP',
       'thumbstick': 'THUMBSTICK_PRESS',
       'trackpad': 'TOUCHPAD_PRESS'
-    }
+    },
+    pointingPoseMeshName: 'Pointing_Pose',
+    holdingPoseMeshName: 'Holding_Pose'
   },
 
   bindMethods: function () {
@@ -85,6 +87,13 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       buttonMeshes: null,
       axisMeshes: null
     };
+
+    // Pointing poses
+    this.rayOrigin = {
+      origin: new THREE.Vector3(),
+      direction: new THREE.Vector3(0, 0, -1)
+    };
+    this.rayOriginInitialized = !this.data.model;
 
     // Stored on object to allow for mocking in tests
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
@@ -212,6 +221,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       this.loadModel(defaultUrl);
     } else {
       warn('Failed to load default controller model.');
+      this.rayOriginInitialized = true;
     }
   },
 
@@ -230,11 +240,13 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var meshName;
     var mesh;
     var meshInfo;
+    var quaternion = new THREE.Quaternion();
 
     debug('Processing model');
 
     // Find the appropriate nodes
     var rootNode = controllerObject3D.getObjectByName('RootNode');
+    rootNode.updateMatrixWorld();
 
     // Reset the caches
     loadedMeshInfo.buttonMeshes = {};
@@ -244,7 +256,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     if (rootNode) {
       // Button Meshes
       for (i = 0; i < this.mapping.buttons.length; i++) {
-        meshName = this.mapping.meshNames[this.mapping.buttons[i]];
+        meshName = this.mapping.buttonMeshNames[this.mapping.buttons[i]];
         if (!meshName) {
           debug('Skipping unknown button at index: ' + i + ' with mapped name: ' + this.mapping.buttons[i]);
           continue;
@@ -275,8 +287,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       }
 
       // Axis Meshes
-      for (i = 0; i < this.mapping.meshNames.length; i++) {
-        meshName = this.mapping.meshNames[i];
+      for (i = 0; i < this.mapping.axisMeshNames.length; i++) {
+        meshName = this.mapping.axisMeshNames[i];
         if (!meshName) {
           debug('Skipping unknown axis at index: ' + i);
           continue;
@@ -305,6 +317,36 @@ module.exports.Component = registerComponent('windows-motion-controls', {
             ')');
         }
       }
+
+      // Calculate the pointer pose (used for rays), by applying the inverse holding pose, then the pointing pose.
+      this.rayOrigin.origin.set(0, 0, 0);
+      this.rayOrigin.direction.set(0, 0, -1);
+
+      // Holding pose
+      mesh = rootNode.getObjectByName(this.mapping.holdingPoseMeshName);
+      if (mesh) {
+        mesh.localToWorld(this.rayOrigin.origin);
+        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation).inverse());
+      } else {
+        debug('Mesh does not contain holding origin data.');
+        document.getElementById('debug').innerHTML += '<br />Mesh does not contain holding origin data.';
+      }
+
+      // Pointing pose
+      mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
+      if (mesh) {
+        var offset = new THREE.Vector3();
+        mesh.localToWorld(offset);
+        this.rayOrigin.origin.add(offset);
+
+        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation));
+      } else {
+        debug('Mesh does not contain pointing origin data, defaulting to none.');
+      }
+
+      // Record that our pointing ray is now accurate.
+      this.rayOriginInitialized = true;
+      this.el.emit('controllerdisplayready', {name: 'windows-motion-controls'});
     } else {
       warn('No node with name "RootNode" in controller glTF.');
     }
