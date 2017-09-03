@@ -75038,9 +75038,8 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
-* Clones component data.
-* Clone only the properties that are plain objects while
-* keeping a reference for the rest.
+* Clone component data.
+* Clone only the properties that are plain objects while keeping a reference for the rest.
 *
 * @param data - Component data to clone.
 * @returns Cloned data.
@@ -75051,7 +75050,9 @@ function cloneData (data) {
   var key;
   for (key in data) {
     parsedProperty = data[key];
-    clone[key] = parsedProperty.constructor === Object ? utils.clone(parsedProperty) : parsedProperty;
+    clone[key] = parsedProperty && parsedProperty.constructor === Object
+      ? utils.clone(parsedProperty)
+      : parsedProperty;
   }
   return clone;
 }
@@ -77859,7 +77860,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 01-09-2017, Commit #4da6d75)');
+console.log('A-Frame Version: 0.6.1 (Date 03-09-2017, Commit #f3f345f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
