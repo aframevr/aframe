@@ -71164,7 +71164,7 @@ module.exports.Component = registerComponent('text', {
     geometry.update(utils.extend({}, data, {
       font: font,
       width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-      text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
       lineHeight: data.lineHeight || font.common.lineHeight
     }));
   }
@@ -77860,7 +77860,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 03-09-2017, Commit #f3f345f)');
+console.log('A-Frame Version: 0.6.1 (Date 04-09-2017, Commit #6cbdac9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
