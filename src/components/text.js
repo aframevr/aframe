@@ -322,7 +322,7 @@ module.exports.Component = registerComponent('text', {
     geometry.update(utils.extend({}, data, {
       font: font,
       width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-      text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
       lineHeight: data.lineHeight || font.common.lineHeight
     }));
   }
