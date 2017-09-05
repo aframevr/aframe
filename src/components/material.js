@@ -116,7 +116,7 @@ module.exports.Component = registerComponent('material', {
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
     material.opacity = data.opacity;
-    material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.vertexColors = parseVertexColors(data.vertexColors);

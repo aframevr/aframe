@@ -68448,6 +68448,7 @@ registerShader('portal', {
 },{"../core/component":125,"../core/shader":134,"../lib/three":173}],91:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
+var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
 var bind = _dereq_('../utils/bind');
 
 // To avoid recalculation at every mouse movement tick
@@ -68463,6 +68464,7 @@ module.exports.Component = registerComponent('look-controls', {
 
   schema: {
     enabled: {default: true},
+    touchEnabled: {default: true},
     hmdEnabled: {default: true},
     reverseMouseDrag: {default: false},
     standing: {default: true}
@@ -68504,9 +68506,19 @@ module.exports.Component = registerComponent('look-controls', {
     var data = this.data;
     if (!data.enabled) { return; }
     this.controls.standing = data.standing;
+    this.controls.userHeight = this.getUserHeight();
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
+  },
+
+  /**
+   * Return user height to use for standing poses, where a device doesn't provide an offset.
+   */
+  getUserHeight: function () {
+    var el = this.el;
+    var userHeight = el.hasAttribute('camera') && el.getAttribute('camera').userHeight || DEFAULT_CAMERA_HEIGHT;
+    return userHeight;
   },
 
   play: function () {
@@ -68759,7 +68771,7 @@ module.exports.Component = registerComponent('look-controls', {
    * Register touch down to detect touch drag.
    */
   onTouchStart: function (evt) {
-    if (evt.touches.length !== 1) { return; }
+    if (evt.touches.length !== 1 || !this.data.touchEnabled) { return; }
     this.touchStart = {
       x: evt.touches[0].pageX,
       y: evt.touches[0].pageY
@@ -68775,7 +68787,7 @@ module.exports.Component = registerComponent('look-controls', {
     var deltaY;
     var yawObject = this.yawObject;
 
-    if (!this.touchStarted) { return; }
+    if (!this.touchStarted || !this.data.touchEnabled) { return; }
 
     deltaY = 2 * Math.PI * (evt.touches[0].pageX - this.touchStart.x) / canvas.clientWidth;
 
@@ -68828,7 +68840,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../core/component":125,"../lib/three":173,"../utils/bind":189}],92:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../lib/three":173,"../utils/bind":189}],92:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -68947,7 +68959,7 @@ module.exports.Component = registerComponent('material', {
     material.depthTest = data.depthTest !== false;
     material.depthWrite = data.depthWrite !== false;
     material.opacity = data.opacity;
-    material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.flatShading = data.flatShading;
     material.side = parseSide(data.side);
     material.transparent = data.transparent !== false || data.opacity < 1.0;
     material.vertexColors = parseVertexColors(data.vertexColors);
@@ -71152,7 +71164,7 @@ module.exports.Component = registerComponent('text', {
     geometry.update(utils.extend({}, data, {
       font: font,
       width: computeWidth(data.wrapPixels, data.wrapCount, font.widthFactor),
-      text: data.value.replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
+      text: data.value.toString().replace(/\\n/g, '\n').replace(/\\t/g, '\t'),
       lineHeight: data.lineHeight || font.common.lineHeight
     }));
   }
@@ -75026,9 +75038,8 @@ module.exports.registerComponent = function (name, definition) {
 };
 
 /**
-* Clones component data.
-* Clone only the properties that are plain objects while
-* keeping a reference for the rest.
+* Clone component data.
+* Clone only the properties that are plain objects while keeping a reference for the rest.
 *
 * @param data - Component data to clone.
 * @returns Cloned data.
@@ -75039,7 +75050,9 @@ function cloneData (data) {
   var key;
   for (key in data) {
     parsedProperty = data[key];
-    clone[key] = parsedProperty.constructor === Object ? utils.clone(parsedProperty) : parsedProperty;
+    clone[key] = parsedProperty && parsedProperty.constructor === Object
+      ? utils.clone(parsedProperty)
+      : parsedProperty;
   }
   return clone;
 }
@@ -75434,7 +75447,7 @@ var warn = utils.debug('core:a-scene:warn');
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
  * @member {bool} renderStarted
- * @member (object) effect - three.js VREffect
+ * @member {object} effect - three.js VREffect
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -75522,6 +75535,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.enterVRBound = function () { self.enterVR(); };
         this.exitVRBound = function () { self.exitVR(); };
         this.exitVRTrueBound = function () { self.exitVR(true); };
+        this.pointerRestrictedBound = function () { self.pointerRestricted(); };
+        this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
 
         // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
         window.addEventListener('vrdisplayactivate', this.enterVRBound);
@@ -75534,6 +75549,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+
+        // Register for mouse restricted events while in VR
+        // (e.g. mouse no longer available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+
+        // Register for mouse unrestricted events while in VR
+        // (e.g. mouse once again available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       },
       writable: window.debug
     },
@@ -75581,6 +75604,8 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
         window.removeEventListener('vrdisplayconnect', this.enterVRBound);
         window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+        window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+        window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       }
     },
 
@@ -75603,6 +75628,16 @@ module.exports.AScene = registerElement('a-scene', {
           }
         });
       }
+    },
+
+    /**
+     * For tests.
+     */
+    getPointerLockElement: {
+      value: function () {
+        return document.pointerLockElement;
+      },
+      writable: window.debug
     },
 
     /**
@@ -75718,6 +75753,31 @@ module.exports.AScene = registerElement('a-scene', {
         }
       },
       writable: window.debug
+    },
+
+    pointerRestricted: {
+      value: function () {
+        if (this.canvas) {
+          var pointerLockElement = this.getPointerLockElement();
+          if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
+            // Recreate pointer lock on the canvas, if taken on another element.
+            document.exitPointerLock();
+          }
+
+          if (this.canvas.requestPointerLock) {
+            this.canvas.requestPointerLock();
+          }
+        }
+      }
+    },
+
+    pointerUnrestricted: {
+      value: function () {
+        var pointerLockElement = this.getPointerLockElement();
+        if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
+          document.exitPointerLock();
+        }
+      }
     },
 
     /**
@@ -77800,7 +77860,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 25-08-2017, Commit #1fa8fdc)');
+console.log('A-Frame Version: 0.6.1 (Date 04-09-2017, Commit #6cbdac9)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 

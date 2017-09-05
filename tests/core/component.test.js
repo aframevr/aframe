@@ -196,6 +196,20 @@ suite('Component', function () {
       assert.equal(el.components.test.buildData(null), null);
       assert.equal(el.components.test.buildData('foo'), 'foo');
     });
+
+    test('returns data for multi-prop if default is null with previousData', function () {
+      var el = document.createElement('a-entity');
+      registerComponent('test', {
+        schema: {
+          foo: {default: null}
+        }
+      });
+      el.setAttribute('test', '');
+      el.components.test.attrValue = {foo: null};
+      assert.equal(el.components.test.buildData().foo, null);
+      assert.equal(el.components.test.buildData({foo: null}).foo, null);
+      assert.equal(el.components.test.buildData({foo: 'foo'}).foo, 'foo');
+    });
   });
 
   suite('updateProperties', function () {

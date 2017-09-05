@@ -2,6 +2,7 @@
 
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
 var GRABBING_CLASS = 'a-grabbing';
+var DEFAULT_USER_HEIGHT = 1.6;
 
 suite('look-controls', function () {
   setup(function (done) {
@@ -50,6 +51,29 @@ suite('look-controls', function () {
         done();
       });
       window.dispatchEvent(new Event('mouseup'));
+    });
+  });
+
+  suite('head-height', function () {
+    test('Return head height from camera device', function (done) {
+      var el = this.sceneEl;
+      var cameraEl = el.camera.el;
+      var cameraHeight = 2.5;
+      var lookControls = el.camera.el.components['look-controls'];
+      cameraEl.setAttribute('camera', 'userHeight', cameraHeight);
+
+      assert.shallowDeepEqual(lookControls.getUserHeight(), cameraHeight);
+      done();
+    });
+
+    test('Return default head height for poses where device does not provide an offset', function (done) {
+      var el = this.sceneEl;
+      var lookControls = el.camera.el.components['look-controls'];
+      var cameraEl = el.camera.el;
+      cameraEl.components.camera = null;
+
+      assert.shallowDeepEqual(lookControls.getUserHeight(), DEFAULT_USER_HEIGHT);
+      done();
     });
   });
 });

@@ -31,7 +31,7 @@ var warn = utils.debug('core:a-scene:warn');
  * @member {object} object3D - Root three.js Scene object.
  * @member {object} renderer
  * @member {bool} renderStarted
- * @member (object) effect - three.js VREffect
+ * @member {object} effect - three.js VREffect
  * @member {object} systems - Registered instantiated systems.
  * @member {number} time
  */
@@ -119,6 +119,8 @@ module.exports.AScene = registerElement('a-scene', {
         this.enterVRBound = function () { self.enterVR(); };
         this.exitVRBound = function () { self.exitVR(); };
         this.exitVRTrueBound = function () { self.exitVR(true); };
+        this.pointerRestrictedBound = function () { self.pointerRestricted(); };
+        this.pointerUnrestrictedBound = function () { self.pointerUnrestricted(); };
 
         // Enter VR on `vrdisplayactivate` (e.g. putting on Rift headset).
         window.addEventListener('vrdisplayactivate', this.enterVRBound);
@@ -131,6 +133,14 @@ module.exports.AScene = registerElement('a-scene', {
 
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+
+        // Register for mouse restricted events while in VR
+        // (e.g. mouse no longer available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+
+        // Register for mouse unrestricted events while in VR
+        // (e.g. mouse once again available on desktop 2D view)
+        window.addEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       },
       writable: window.debug
     },
@@ -178,6 +188,8 @@ module.exports.AScene = registerElement('a-scene', {
         window.removeEventListener('vrdisplaydeactivate', this.exitVRBound);
         window.removeEventListener('vrdisplayconnect', this.enterVRBound);
         window.removeEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
+        window.removeEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
+        window.removeEventListener('vrdisplaypointerunrestricted', this.pointerUnrestrictedBound);
       }
     },
 
@@ -200,6 +212,16 @@ module.exports.AScene = registerElement('a-scene', {
           }
         });
       }
+    },
+
+    /**
+     * For tests.
+     */
+    getPointerLockElement: {
+      value: function () {
+        return document.pointerLockElement;
+      },
+      writable: window.debug
     },
 
     /**
@@ -315,6 +337,31 @@ module.exports.AScene = registerElement('a-scene', {
         }
       },
       writable: window.debug
+    },
+
+    pointerRestricted: {
+      value: function () {
+        if (this.canvas) {
+          var pointerLockElement = this.getPointerLockElement();
+          if (pointerLockElement && pointerLockElement !== this.canvas && document.exitPointerLock) {
+            // Recreate pointer lock on the canvas, if taken on another element.
+            document.exitPointerLock();
+          }
+
+          if (this.canvas.requestPointerLock) {
+            this.canvas.requestPointerLock();
+          }
+        }
+      }
+    },
+
+    pointerUnrestricted: {
+      value: function () {
+        var pointerLockElement = this.getPointerLockElement();
+        if (pointerLockElement && pointerLockElement === this.canvas && document.exitPointerLock) {
+          document.exitPointerLock();
+        }
+      }
     },
 
     /**
