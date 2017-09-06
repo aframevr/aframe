@@ -88,7 +88,7 @@ module.exports.Component = registerComponent('hand-controls', {
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
 
-    if (!mesh) { return; }
+    if (!mesh || !mesh.mixer) { return; }
 
     mesh.mixer.update(delta / 1000);
   },
@@ -174,6 +174,8 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.material.skinning = true;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         el.setObject3D('mesh', mesh);
+        mesh.position.set(0, 0, 0);
+        mesh.rotation.set(0, 0, 0);
       });
     }
   },
