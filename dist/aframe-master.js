@@ -67374,7 +67374,7 @@ module.exports.Component = registerComponent('hand-controls', {
   tick: function (time, delta) {
     var mesh = this.el.getObject3D('mesh');
 
-    if (!mesh) { return; }
+    if (!mesh || !mesh.mixer) { return; }
 
     mesh.mixer.update(delta / 1000);
   },
@@ -67460,6 +67460,8 @@ module.exports.Component = registerComponent('hand-controls', {
         mesh.material.skinning = true;
         mesh.mixer = new THREE.AnimationMixer(mesh);
         el.setObject3D('mesh', mesh);
+        mesh.position.set(0, 0, 0);
+        mesh.rotation.set(0, 0, 0);
       });
     }
   },
@@ -77860,7 +77862,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 04-09-2017, Commit #6cbdac9)');
+console.log('A-Frame Version: 0.6.1 (Date 06-09-2017, Commit #ba39c18)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
