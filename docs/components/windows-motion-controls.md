@@ -53,7 +53,7 @@ to the pressed buttons (trigger, grip, menu, thumbstick, trackpad) and moved axe
 | trackpadup             | Trackpad released.                              |
 | trackpadchanged        | Trackpad button changed.                        |
 | trackpadmoved          | Trackpad axis moved.                            |
-| controllerdisplayready | The model file is loaded and completed parsing. |
+| controllermodelready   | The model file is loaded and completed parsing. |
 
 ## Assets
 

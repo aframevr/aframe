@@ -93,7 +93,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       origin: new THREE.Vector3(),
       direction: new THREE.Vector3(0, 0, -1)
     };
-    this.rayOriginInitialized = !this.data.model;
 
     // Stored on object to allow for mocking in tests
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
@@ -221,7 +220,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       this.loadModel(defaultUrl);
     } else {
       warn('Failed to load default controller model.');
-      this.rayOriginInitialized = true;
     }
   },
 
@@ -344,9 +342,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
         debug('Mesh does not contain pointing origin data, defaulting to none.');
       }
 
-      // Record that our pointing ray is now accurate.
-      this.rayOriginInitialized = true;
-      this.el.emit('controllerdisplayready', {name: 'windows-motion-controls'});
+      // Emit event stating that our pointing ray is now accurate.
+      this.el.emit('controllermodelready', {
+        name: 'windows-motion-controls',
+        rayOrigin: this.rayOrigin
+      });
     } else {
       warn('No node with name "RootNode" in controller glTF.');
     }

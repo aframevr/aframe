@@ -19,22 +19,25 @@ registerComponent('laser-controls', {
     el.setAttribute('windows-motion-controls', {hand: data.hand});
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
-    el.addEventListener('controllerconnected', function (evt) { createRay(evt); });
-    el.addEventListener('controllerdisplayready', createRay);
+    el.addEventListener('controllerconnected', createRay);
+    el.addEventListener('controllermodelready', createRay);
 
     function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 
+      // Show the line unless a particular config opts to hide it, until a controllermodelready
+      // event comes through.
       var raycasterConfig = utils.extend({
         showLine: true
       }, controllerConfig.raycaster || {});
 
-      if (evt.detail.name === 'windows-motion-controls') {
-        var motionControls = el.components['windows-motion-controls'];
-        raycasterConfig = utils.extend(raycasterConfig, motionControls.rayOrigin);
-        raycasterConfig.showLine = motionControls.rayOriginInitialized;
+      // The controllermodelready event contains a rayOrigin that takes into account
+      // offsets specific to the loaded model.
+      if (evt.detail.rayOrigin) {
+        raycasterConfig = utils.extend(raycasterConfig, evt.detail.rayOrigin);
+        raycasterConfig.showLine = true;
       }
 
       el.setAttribute('raycaster', raycasterConfig);
