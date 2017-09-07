@@ -41,7 +41,11 @@ registerComponent('laser-controls', {
         raycasterConfig.showLine = true;
       }
 
-      el.setAttribute('raycaster', raycasterConfig);
+      // Only apply a default raycaster if it does not yet exist. This prevents it overwriting
+      // config applied from a controllermodelready event.
+      if (evt.detail.rayOrigin || !el.hasAttribute('raycaster')) {
+        el.setAttribute('raycaster', raycasterConfig);
+      }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false

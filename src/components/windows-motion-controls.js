@@ -9,8 +9,7 @@ var warn = utils.debug('components:windows-motion-controls:warn');
 
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 
-// TODO: Point to final glb assets once they are hosted. For now, place them in this hard coded directory.
-var MODEL_BASE_URL = '/examples/assets/models/controllers/wmr/';
+var MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/microsoft/';
 var MODEL_FILENAMES = { left: 'left.glb', right: 'right.glb', default: 'universal.glb' };
 
 var GAMEPAD_ID_PREFIX = 'Spatial Controller (Spatial Interaction Source) ';
@@ -153,7 +152,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   updateControllerModel: function () {
-    if (!this.data.model || this.el.getAttribute('gltf-model')) { return; }
+    // If we do not want to load a model, or, have already loaded the model, emit the controllermodelready event.
+    if (!this.data.model || this.el.getAttribute('gltf-model')) {
+      this.modelReady();
+      return;
+    }
 
     var sourceUrl = this.createControllerModelUrl();
     this.loadModel(sourceUrl);
@@ -343,10 +346,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       }
 
       // Emit event stating that our pointing ray is now accurate.
-      this.el.emit('controllermodelready', {
-        name: 'windows-motion-controls',
-        rayOrigin: this.rayOrigin
-      });
+      this.modelReady();
     } else {
       warn('No node with name "RootNode" in controller glTF.');
     }
@@ -396,6 +396,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       target.position.lerpVectors(min.position, max.position, buttonValue);
     };
   })(),
+
+  modelReady () {
+    this.el.emit('controllermodelready', {
+      name: 'windows-motion-controls',
+      model: this.data.model,
+      rayOrigin: this.rayOrigin
+    });
+  },
 
   onButtonChanged: function (evt) {
     var buttonName = this.mapping.buttons[evt.detail.id];
