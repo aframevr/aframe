@@ -36,7 +36,8 @@ registerComponent('laser-controls', {
       // The controllermodelready event contains a rayOrigin that takes into account
       // offsets specific to the loaded model.
       if (evt.detail.rayOrigin) {
-        raycasterConfig = utils.extend(raycasterConfig, evt.detail.rayOrigin);
+        raycasterConfig.origin = evt.detail.rayOrigin.origin;
+        raycasterConfig.direction = evt.detail.rayOrigin.direction;
         raycasterConfig.showLine = true;
       }
 
