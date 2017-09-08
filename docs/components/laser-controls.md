@@ -24,6 +24,7 @@ across all VR platforms with a single line of HTML.
 [oculus-touch-controls]: ./oculus-touch-controls.md
 [tracked-controls]: ./tracked-controls.md
 [vive-controls]: ./vive-controls.md
+[windows-motion-controls]: ./windows-motion-controls.md
 
 laser-controls is a **higher-order component**, meaning the component wraps and
 configures other components, rather than implementing any logic itself. Under
@@ -33,6 +34,7 @@ the hood, laser-controls sets all of the tracked controller components:
 - [oculus-touch-controls]
 - [daydream-controls]
 - [gearvr-controls]
+- [windows-motion-controls]
 
 [cursor]: ./cursor.md
 [raycaster]: ./raycaster.md

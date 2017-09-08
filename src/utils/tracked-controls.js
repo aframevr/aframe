@@ -1,5 +1,6 @@
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
+var NUM_HANDS = 2; // Number of hands in a pair. Should always be 2.
 
 /**
  * Called on controller component `.play` handlers.
@@ -46,14 +47,12 @@ module.exports.checkControllerPresentAndSetup = function (component, idPrefix, q
  * @param {object} queryObject - Map of values to match.
  */
 function isControllerPresent (component, idPrefix, queryObject) {
-  var gamepad;
   var gamepads;
-  var i;
-  var index = 0;
-  var isPrefixMatch;
-  var isPresent = false;
   var sceneEl = component.el.sceneEl;
   var trackedControlsSystem;
+  var filterControllerIndex = queryObject.index || 0;
+
+  if (!idPrefix) { return false; }
 
   trackedControlsSystem = sceneEl && sceneEl.systems['tracked-controls'];
   if (!trackedControlsSystem) { return false; }
@@ -61,26 +60,61 @@ function isControllerPresent (component, idPrefix, queryObject) {
   gamepads = trackedControlsSystem.controllers;
   if (!gamepads.length) { return false; }
 
-  for (i = 0; i < gamepads.length; ++i) {
-    gamepad = gamepads[i];
-    isPrefixMatch = (!idPrefix || idPrefix === '' || gamepad.id.indexOf(idPrefix) === 0);
-    isPresent = isPrefixMatch;
-    if (isPresent && queryObject.hand) {
-      isPresent = (gamepad.hand || DEFAULT_HANDEDNESS) === queryObject.hand;
-    }
-    if (isPresent && queryObject.index) {
-      // Need to use count of gamepads with idPrefix.
-      isPresent = index === queryObject.index;
-    }
-    if (isPresent) { break; }
-    // Update count of gamepads with idPrefix.
-    if (isPrefixMatch) { index++; }
-  }
-
-  return isPresent;
+  return !!findMatchingController(gamepads, null, idPrefix, queryObject.hand, filterControllerIndex);
 }
 
 module.exports.isControllerPresent = isControllerPresent;
+
+/**
+ * Walk through the given controllers to find any where the device ID equals filterIdExact, or startWith filterIdPrefix.
+ * A controller where this considered true is considered a 'match'.
+ *
+ * For each matching controller:
+ *   If filterHand is set, and the controller:
+ *     is handed, we further verify that controller.hand equals filterHand.
+ *     is unhanded (controller.hand is ''), we skip until we have found a number of matching controllers that equals filterControllerIndex
+ *   If filterHand is not set, we skip until we have found the nth matching controller, where n equals filterControllerIndex
+ *
+ * The method should be called with one of: [filterIdExact, filterIdPrefix] AND one or both of: [filterHand, filterControllerIndex]
+ *
+ * @param {object} controllers - Array of gamepads to search
+ * @param {string} filterIdExact - If set, used to find controllers with id === this value
+ * @param {string} filterIdPrefix - If set, used to find controllers with id startsWith this value
+ * @param {object} filterHand - If set, further filters controllers with matching 'hand' property
+ * @param {object} filterControllerIndex - Find the nth matching controller, where n equals filterControllerIndex. defaults to 0.
+ */
+function findMatchingController (controllers, filterIdExact, filterIdPrefix, filterHand, filterControllerIndex) {
+  var controller;
+  var i;
+  var matchingControllerOccurence = 0;
+  var targetControllerMatch = filterControllerIndex || 0;
+
+  for (i = 0; i < controllers.length; i++) {
+    controller = controllers[i];
+    // Determine if the controller ID matches our criteria
+    if (filterIdPrefix && controller.id.indexOf(filterIdPrefix) === -1) { continue; }
+    if (!filterIdPrefix && controller.id !== filterIdExact) { continue; }
+
+    // If the hand filter and controller handedness are defined we compare them.
+    if (filterHand && controller.hand && filterHand !== controller.hand) { continue; }
+
+    // If we have detected an unhanded controller and the component was asking for a particular hand,
+    // we need to treat the controllers in the array as pairs of controllers. This effectively means that we
+    // need to skip NUM_HANDS matches for each controller number, instead of 1.
+    if (filterHand && !controller.hand) {
+      targetControllerMatch = NUM_HANDS * filterControllerIndex + ((filterHand === DEFAULT_HANDEDNESS) ? 0 : 1);
+    }
+
+    // We are looking for the nth occurence of a matching controller (n equals targetControllerMatch).
+    if (matchingControllerOccurence === targetControllerMatch) {
+      return controller;
+    }
+    ++matchingControllerOccurence;
+  }
+  return undefined;
+}
+
+module.exports.findMatchingController = findMatchingController;
 
 /**
  * Emit specific `moved` event(s) if axes changed based on original axismoved event.
@@ -103,7 +137,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
 
     changed = false;
     for (j = 0; j < axes.length; j++) {
-      if (evt.detail.changed[j]) { changed = true; }
+      if (evt.detail.changed[axes[j]]) { changed = true; }
     }
 
     if (!changed) { continue; }
@@ -111,7 +145,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
     // Axis has changed. Emit the specific moved event with axis values in detail.
     detail = {};
     for (j = 0; j < axes.length; j++) {
-      detail[AXIS_LABELS[axes[j]]] = evt.detail.axis[axes[j]];
+      detail[AXIS_LABELS[j]] = evt.detail.axis[axes[j]];
     }
     component.el.emit(buttonTypes[i] + 'moved', detail);
   }

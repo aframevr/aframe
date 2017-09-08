@@ -1,4 +1,5 @@
 var registerComponent = require('../core/component').registerComponent;
+var controllerUtils = require('../utils/tracked-controls');
 var THREE = require('../lib/three');
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
 
@@ -14,13 +15,15 @@ var FOREARM = {x: 0, y: 0, z: -0.175};
  * Select the appropriate controller and apply pose to the entity.
  * Observe button states and emit appropriate events.
  *
- * @property {number} controller - Index of controller in array returned by Gamepad API.
+ * @property {number} controller - Index of controller in array returned by Gamepad API. Only used if hand property is not set.
  * @property {string} id - Selected controller among those returned by Gamepad API.
+ * @property {number} hand - If multiple controllers found with id, choose the one with the given value for hand. If set, we ignore 'controller' property
  */
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: {default: 0},
     id: {type: 'string', default: ''},
+    hand: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
     // Arm model parameters when not 6DoF.
@@ -31,6 +34,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.axis = [0, 0, 0];
     this.buttonStates = {};
+    this.targetControllerNumber = this.data.controller;
 
     this.dolly = new THREE.Object3D();
     this.controllerEuler = new THREE.Euler();
@@ -70,25 +74,20 @@ module.exports.Component = registerComponent('tracked-controls', {
   },
 
   /**
-   * Handle update to `id` or `idPrefix.
+   * Handle update controller match criteria (such as `id`, `idPrefix`, `hand`, `controller`)
    */
   updateGamepad: function () {
-    var controllers = this.system.controllers;
     var data = this.data;
-    var i;
-    var matchCount = 0;
+    var controller = controllerUtils.findMatchingController(
+      this.system.controllers,
+      data.id,
+      data.idPrefix,
+      data.hand,
+      data.controller
+    );
 
-    // Hand IDs: 0 is right, 1 is left.
-    for (i = 0; i < controllers.length; i++) {
-      if ((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
-          (!data.idPrefix && controllers[i].id === data.id)) {
-        matchCount++;
-        if (matchCount - 1 === data.controller) {
-          this.controller = controllers[i];
-          return;
-        }
-      }
-    }
+    // Only replace the stored controller if we find a new one.
+    this.controller = controller || this.controller;
   },
 
   applyArmModel: function (controllerPosition) {

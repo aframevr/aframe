@@ -16,21 +16,41 @@ registerComponent('laser-controls', {
     el.setAttribute('gearvr-controls', {hand: data.hand});
     el.setAttribute('oculus-touch-controls', {hand: data.hand});
     el.setAttribute('vive-controls', {hand: data.hand});
+    el.setAttribute('windows-motion-controls', {hand: data.hand});
 
-    // Wait for controller to connect before
-    el.addEventListener('controllerconnected', function (evt) {
+    // Wait for controller to connect, or have a valid pointing pose, before creating ray
+    el.addEventListener('controllerconnected', createRay);
+    el.addEventListener('controllermodelready', createRay);
+
+    function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 
-      el.setAttribute('raycaster', utils.extend({
+      // Show the line unless a particular config opts to hide it, until a controllermodelready
+      // event comes through.
+      var raycasterConfig = utils.extend({
         showLine: true
-      }, controllerConfig.raycaster || {}));
+      }, controllerConfig.raycaster || {});
+
+      // The controllermodelready event contains a rayOrigin that takes into account
+      // offsets specific to the loaded model.
+      if (evt.detail.rayOrigin) {
+        raycasterConfig.origin = evt.detail.rayOrigin.origin;
+        raycasterConfig.direction = evt.detail.rayOrigin.direction;
+        raycasterConfig.showLine = true;
+      }
+
+      // Only apply a default raycaster if it does not yet exist. This prevents it overwriting
+      // config applied from a controllermodelready event.
+      if (evt.detail.rayOrigin || !el.hasAttribute('raycaster')) {
+        el.setAttribute('raycaster', raycasterConfig);
+      }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
-    });
+    }
   },
 
   config: {
@@ -50,6 +70,11 @@ registerComponent('laser-controls', {
 
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'windows-motion-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {showLine: false}
     }
   }
 });

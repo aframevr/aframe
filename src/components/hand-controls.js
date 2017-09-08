@@ -30,7 +30,9 @@ EVENTS[ANIMATIONS.point] = 'pointing';
 EVENTS[ANIMATIONS.thumb] = 'thumb';
 
 /**
- * Hand controls component that abstracts 6DoF controls: oculus-touch-controls, vive-controls.
+ * Hand controls component that abstracts 6DoF controls:
+ *   oculus-touch-controls, vive-controls, windows-motion-controls.
+ *
  * Originally meant to be a sample implementation of applications-specific controls that
  * abstracts multiple types of controllers.
  *
@@ -49,7 +51,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var self = this;
     // Current pose.
     this.gesture = ANIMATIONS.open;
-    // Active buttons populated by events provided by oculus-touch-controls and vive-controls.
+    // Active buttons populated by events provided by the attached controls.
     this.pressedButtons = {};
     this.touchedButtons = {};
     this.loader = new THREE.ObjectLoader();
@@ -158,7 +160,7 @@ module.exports.Component = registerComponent('hand-controls', {
     var el = this.el;
     var hand = this.data;
 
-    // Get common configuration to abstract Vive and Oculus.
+    // Get common configuration to abstract different vendor controls.
     controlConfiguration = {
       hand: hand,
       model: false,
@@ -166,6 +168,7 @@ module.exports.Component = registerComponent('hand-controls', {
     };
     el.setAttribute('vive-controls', controlConfiguration);
     el.setAttribute('oculus-touch-controls', controlConfiguration);
+    el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set model.
     if (hand !== previousHand) {
@@ -235,22 +238,22 @@ module.exports.Component = registerComponent('hand-controls', {
     var isTrackpadActive = this.pressedButtons['trackpad'] || this.touchedButtons['trackpad'];
     var isTriggerActive = this.pressedButtons['trigger'] || this.touchedButtons['trigger'];
     var isABXYActive = this.touchedButtons['AorX'] || this.touchedButtons['BorY'];
-    var isOculusTouch = isOculusTouchController(this.el.components['tracked-controls']);
+    var isVive = isViveController(this.el.components['tracked-controls']);
 
-    // Works well with Oculus Touch but Vive needs tweaks.
+    // Works well with Oculus Touch and Windows Motion Controls, but Vive needs tweaks.
     if (isGripActive) {
-      if (!isOculusTouch) {
+      if (isVive) {
         gesture = ANIMATIONS.fist;
       } else
-      if (isSurfaceActive || isABXYActive || isTrackpadActive) {
-        gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
-      } else {
-        gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
-      }
+        if (isSurfaceActive || isABXYActive || isTrackpadActive) {
+          gesture = isTriggerActive ? ANIMATIONS.fist : ANIMATIONS.point;
+        } else {
+          gesture = isTriggerActive ? ANIMATIONS.thumbUp : ANIMATIONS.pointThumb;
+        }
     } else {
       if (isTriggerActive) {
-        gesture = isOculusTouch ? ANIMATIONS.hold : ANIMATIONS.fist;
-      } else if (!isOculusTouch && isTrackpadActive) {
+        gesture = !isVive ? ANIMATIONS.hold : ANIMATIONS.fist;
+      } else if (isVive && isTrackpadActive) {
         gesture = ANIMATIONS.point;
       }
     }
@@ -357,8 +360,8 @@ function getGestureEventName (gesture, active) {
   return;
 }
 
-function isOculusTouchController (trackedControls) {
+function isViveController (trackedControls) {
   var controllerId = trackedControls && trackedControls.controller &&
                      trackedControls.controller.id;
-  return controllerId && controllerId.indexOf('Oculus Touch') === 0;
+  return controllerId && controllerId.indexOf('OpenVR ') === 0;
 }

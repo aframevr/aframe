@@ -41,6 +41,23 @@ suite('hand-controls', function () {
       trackedControls = el.components['tracked-controls'];
       trackedControls.controller = {id: 'Foobar', connected: true};
 
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = false;
+      component.pressedButtons['trackpad'] = true;
+      component.pressedButtons['thumbstick'] = false;
+      component.pressedButtons['menu'] = false;
+      component.pressedButtons['AorX'] = false;
+      component.pressedButtons['BorY'] = false;
+      component.pressedButtons['surface'] = false;
+      assert.equal(component.determineGesture(), 'Point');
+    });
+
+    test('makes point gesture on vive', function () {
+      var trackedControls;
+      el.setAttribute('tracked-controls', '');
+      trackedControls = el.components['tracked-controls'];
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
+
       component.pressedButtons['grip'] = false;
       component.pressedButtons['trigger'] = false;
       component.pressedButtons['trackpad'] = true;
@@ -57,6 +74,23 @@ suite('hand-controls', function () {
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
       trackedControls.controller = {id: 'Foobar', connected: true};
+
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = true;
+      component.pressedButtons['trackpad'] = true;
+      component.pressedButtons['thumbstick'] = false;
+      component.pressedButtons['menu'] = false;
+      component.pressedButtons['AorX'] = false;
+      component.pressedButtons['BorY'] = false;
+      component.pressedButtons['surface'] = false;
+      assert.equal(component.determineGesture(), 'Fist');
+    });
+
+    test('makes fist gesture on vive', function () {
+      var trackedControls;
+      el.setAttribute('tracked-controls', '');
+      trackedControls = el.components['tracked-controls'];
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = false;
