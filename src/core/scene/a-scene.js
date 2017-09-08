@@ -459,12 +459,11 @@ module.exports.AScene = registerElement('a-scene', {
         var canvas = this.canvas;
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
-        // Possible camera or canvas not injected yet.
-        // ON MOBILE the webvr-polyfill relies on the fullscreen API to enter
-        // VR mode. The canvas is resized by VREffect following the values returned
-        // by getEyeParameters. We don't want to overwrite the size with the
-        // windows width and height.
-        if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
+        // Do not update renderer, if a camera or a canvas have not been injected.
+        // In VR mode, VREffect handles canvas resize based on the dimensions returned by
+        // the getEyeParameters function of the WebVR API. These dimensions are independent of
+        // the window size, therefore should not be overwritten with the window's width and height.
+        if (!camera || !canvas || this.is('vr-mode')) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;
@@ -484,11 +483,6 @@ module.exports.AScene = registerElement('a-scene', {
           antialias: shouldAntiAlias(this),
           alpha: true
         });
-        // r86 shipped with a bug fixed in https://github.com/mrdoob/three.js/pull/11970
-        // We need to setup a dummy VRDevice to avoid a TypeError
-        // when vrdisplaypresentchange fires.
-        // This line can be removed after updating to THREE r87.
-        renderer.vr.setDevice({});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
         this.effect = new THREE.VREffect(renderer);
