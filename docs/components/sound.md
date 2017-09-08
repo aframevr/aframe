@@ -31,7 +31,7 @@ component is positional and is thus affected by the
 | Property      | Description                                                                                                    | Default Value |
 |---------------|----------------------------------------------------------------------------------------------------------------|---------------|
 | autoplay      | Whether to automatically play sound once set.                                                                  | false         |
-| distanceModel | `linear`, `inverse`, or `exponential`                                                                          | linear        |
+| distanceModel | `linear`, `inverse`, or `exponential`                                                                          | inverse        |
 | loop          | Whether to loop the sound once the sound finishes playing.                                                     | false         |
 | maxDistance   | Maximum distance between the audio source and the listener, after which the volume is not reduced any further. | 10000         |
 | on            | An event for the entity to listen to before playing sound.                                                     | null          |
