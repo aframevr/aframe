@@ -19,6 +19,9 @@ THREE.VRControls = function ( object, onError ) {
 
 	}
 
+	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
+	window.addEventListener('vrdisplaydisconnect', function () { vrDisplay = undefined });
+
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;

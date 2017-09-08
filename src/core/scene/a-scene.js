@@ -128,8 +128,8 @@ module.exports.AScene = registerElement('a-scene', {
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
-        // Enter VR on `vrdisplayconnect` (e.g. plugging on Rift headset).
-        window.addEventListener('vrdisplayconnect', this.enterVRBound);
+        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);

@@ -61,21 +61,6 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('vrdisplayconnect', function () {
-    test('tells A-Frame about entering VR when the headset is connected', function (done) {
-      var event;
-      var sceneEl = this.el;
-      var enterVRStub = this.sinon.stub(sceneEl, 'enterVR');
-      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
-      event = new CustomEvent('vrdisplayconnect');
-      window.dispatchEvent(event);
-      process.nextTick(function () {
-        assert.ok(enterVRStub.called);
-        done();
-      });
-    });
-  });
-
   suite('vrdisplaydisconnect', function () {
     test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
       var event;
