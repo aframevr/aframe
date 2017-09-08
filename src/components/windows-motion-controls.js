@@ -397,7 +397,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     };
   })(),
 
-  modelReady () {
+  modelReady: function () {
     this.el.emit('controllermodelready', {
       name: 'windows-motion-controls',
       model: this.data.model,
