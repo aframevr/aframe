@@ -76027,8 +76027,8 @@ module.exports.AScene = registerElement('a-scene', {
         // Exit VR on `vrdisplaydeactivate` (e.g. taking off Rift headset).
         window.addEventListener('vrdisplaydeactivate', this.exitVRBound);
 
-        // Enter VR on `vrdisplayconnect` (e.g. plugging on Rift headset).
-        window.addEventListener('vrdisplayconnect', this.enterVRBound);
+        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
+        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
@@ -78343,7 +78343,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 08-09-2017, Commit #ee643e1)');
+console.log('A-Frame Version: 0.6.1 (Date 08-09-2017, Commit #0dba182)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81004,6 +81004,9 @@ THREE.VRControls = function ( object, onError ) {
 
 	}
 
+	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
+	window.addEventListener('vrdisplaydisconnect', function () { vrDisplay = undefined });
+
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;
@@ -81184,6 +81187,16 @@ THREE.VREffect = function( renderer, onError ) {
 
 	}
 
+	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
+	window.addEventListener('vrdisplaydisconnect', function (evt) {
+		scope.exitPresent();
+		// Cancels current request animation frame.
+		scope.cancelAnimationFrame();
+		vrDisplay = undefined;
+		// Resumes the request animation frame.
+		scope.requestAnimationFrame();
+	});
+
 	function gotVRDisplays( displays ) {
 
 		vrDisplays = displays;
@@ -81343,10 +81356,12 @@ THREE.VREffect = function( renderer, onError ) {
 
 	this.requestAnimationFrame = function( f ) {
 
+		var f = scope.f = f || scope.f;
+
+		if (!f) { return; }
+
 		if ( vrDisplay !== undefined ) {
-
 			return vrDisplay.requestAnimationFrame( f );
-
 		} else {
 
 			return window.requestAnimationFrame( f );
@@ -81356,6 +81371,8 @@ THREE.VREffect = function( renderer, onError ) {
 	};
 
 	this.cancelAnimationFrame = function( h ) {
+
+		scope.f = undefined;
 
 		if ( vrDisplay !== undefined ) {
 
