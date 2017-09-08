@@ -1,5 +1,6 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var DEG2RAD = require('../lib/three').Math.DEG2RAD;
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
 
 var DEFAULT_HANDEDNESS = require('../constants').DEFAULT_HANDEDNESS;
@@ -20,9 +21,11 @@ var FOREARM = {x: 0, y: 0, z: -0.175};
 module.exports.Component = registerComponent('tracked-controls', {
   schema: {
     controller: {default: 0},
+    hand: {type: 'string', default: 'any-or-none'},
     id: {type: 'string', default: ''},
     idPrefix: {type: 'string', default: ''},
     rotationOffset: {default: 0},
+    rotation: {type: 'vec3'},
     // Arm model parameters when not 6DoF.
     armModel: {default: true},
     headElement: {type: 'selector'}
@@ -31,6 +34,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.axis = [0, 0, 0];
     this.buttonStates = {};
+    this.rotationOffset = new THREE.Quaternion();
 
     this.dolly = new THREE.Object3D();
     this.controllerEuler = new THREE.Euler();
@@ -44,6 +48,13 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     this.previousControllerPosition = new THREE.Vector3();
     this.updateGamepad();
+  },
+
+  update: function (oldData) {
+    var data = this.data;
+    if (data.rotation === oldData.rotation) { return; }
+    this.controllerEuler.set(DEG2RAD * data.rotation.x, DEG2RAD * data.rotation.y, DEG2RAD * data.rotation.z);
+    this.rotationOffset.setFromEuler(this.controllerEuler);
   },
 
   tick: function (time, delta) {
@@ -80,8 +91,10 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     // Hand IDs: 0 is right, 1 is left.
     for (i = 0; i < controllers.length; i++) {
-      if ((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
-          (!data.idPrefix && controllers[i].id === data.id)) {
+      if (((data.idPrefix && controllers[i].id.indexOf(data.idPrefix) === 0) ||
+           (!data.idPrefix && controllers[i].id === data.id)) &&
+          ((data.hand === 'any-or-none') ||
+           ((controllers[i].hand === 'undefined' ? DEFAULT_HANDEDNESS : controllers[i].hand) === (data.hand === 'none' ? '' : data.hand)))) {
         matchCount++;
         if (matchCount - 1 === data.controller) {
           this.controller = controllers[i];
@@ -150,6 +163,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controller = this.controller;
     var controllerEuler = this.controllerEuler;
     var controllerPosition = this.controllerPosition;
+    var controllerQuaternion = this.controllerQuaternion;
     var currentPosition;
     var deltaControllerPosition = this.deltaControllerPosition;
     var dolly = this.dolly;
@@ -196,7 +210,9 @@ module.exports.Component = registerComponent('tracked-controls', {
     }
 
     // Decompose.
-    controllerEuler.setFromRotationMatrix(dolly.matrix);
+    controllerQuaternion.setFromRotationMatrix(dolly.matrix);
+    controllerQuaternion.multiply(this.rotationOffset);
+    controllerEuler.setFromQuaternion(controllerQuaternion);
     controllerPosition.setFromMatrixPosition(dolly.matrix);
 
     // Apply rotation (as absolute, with rotation offset).

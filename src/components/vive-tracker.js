@@ -5,24 +5,25 @@ var bind = utils.bind;
 var checkControllerPresentAndSetup = utils.trackedControls.checkControllerPresentAndSetup;
 var emitIfAxesChanged = utils.trackedControls.emitIfAxesChanged;
 
-var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
-var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
+var VIVE_TRACKER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_tracker-vive.obj';
+var VIVE_TRACKER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_tracker-vive.mtl';
 
 var GAMEPAD_ID_PREFIX = 'OpenVR ';
 
 /**
- * Vive controls.
- * Interface with Vive controllers and map Gamepad events to controller buttons:
+ * Vive tracker.
+ * Interface with Vive trackers and map Gamepad events to controller buttons:
  * trackpad, trigger, grip, menu, system
  * Load a controller model and highlight the pressed buttons.
  */
-module.exports.Component = registerComponent('vive-controls', {
+module.exports.Component = registerComponent('vive-tracker', {
   schema: {
-    hand: {default: 'left'},
+    index: {default: 0},
     buttonColor: {type: 'color', default: '#FAFAFA'},  // Off-white.
     buttonHighlightColor: {type: 'color', default: '#22D1EE'},  // Light blue.
     model: {default: true},
-    rotationOffset: {default: 0}
+    rotationOffset: {default: 0},
+    rotation: {type: 'string', default: '-90 0 0'} // Default rotation to make orientation match tracker.
   },
 
   /**
@@ -34,9 +35,16 @@ module.exports.Component = registerComponent('vive-controls', {
    * 4 - system (never dispatched on this layer)
    */
   mapping: {
-    axes: {trackpad: [0, 1]},
+    axes: {'trackpad': [0, 1]},
     buttons: ['trackpad', 'trigger', 'grip', 'menu', 'system']
   },
+
+  /**
+   * Labels for detail on axis events such as `thumbstickmoved`.
+   * For example, on `thumbstickmoved` detail, the first axis returned is labeled x, and the
+   * second is labeled y.
+   */
+  axisLabels: ['x', 'y', 'z', 'w'],
 
   init: function () {
     var self = this;
@@ -103,7 +111,7 @@ module.exports.Component = registerComponent('vive-controls', {
   },
 
   checkIfControllerPresent: function () {
-    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: this.data.hand});
+    this.checkControllerPresentAndSetup(this, GAMEPAD_ID_PREFIX, {hand: undefined, index: this.data.index});
   },
 
   injectTrackedControls: function () {
@@ -113,16 +121,17 @@ module.exports.Component = registerComponent('vive-controls', {
     // If we have an OpenVR Gamepad, use the fixed mapping.
     el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
-      // Hand IDs: 0 = right, 1 = left, 2 = anything else.
-      hand: data.hand,
-      rotationOffset: data.rotationOffset
+      hand: 'none',
+      controller: data.index,
+      rotationOffset: data.rotationOffset,
+      rotation: data.rotation
     });
 
     // Load model.
     if (!this.data.model) { return; }
     this.el.setAttribute('obj-model', {
-      obj: VIVE_CONTROLLER_MODEL_OBJ_URL,
-      mtl: VIVE_CONTROLLER_MODEL_OBJ_MTL
+      obj: VIVE_TRACKER_MODEL_OBJ_URL,
+      mtl: VIVE_TRACKER_MODEL_OBJ_MTL
     });
   },
 
@@ -143,48 +152,27 @@ module.exports.Component = registerComponent('vive-controls', {
    */
   onButtonChanged: function (evt) {
     var button = this.mapping.buttons[evt.detail.id];
-    var buttonMeshes = this.buttonMeshes;
-    var analogValue;
 
     if (!button) { return; }
 
-    if (button === 'trigger') {
-      analogValue = evt.detail.state.value;
-      // Update trigger rotation depending on button value.
-      if (buttonMeshes && buttonMeshes.trigger) {
-        buttonMeshes.trigger.rotation.x = -analogValue * (Math.PI / 12);
-      }
-    }
+    // Maybe update trigger rotation depending on button value?
+    // Actually don't, since tracker model does not have any.
 
     // Pass along changed event with button state, using button mapping for convenience.
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
   onModelLoaded: function (evt) {
-    var buttonMeshes;
     var controllerObject3D = evt.detail.model;
-    var self = this;
 
     if (!this.data.model) { return; }
 
     // Store button meshes object to be able to change their colors.
-    buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.grip = {
-      left: controllerObject3D.getObjectByName('leftgrip'),
-      right: controllerObject3D.getObjectByName('rightgrip')
-    };
-    buttonMeshes.menu = controllerObject3D.getObjectByName('menubutton');
-    buttonMeshes.system = controllerObject3D.getObjectByName('systembutton');
-    buttonMeshes.trackpad = controllerObject3D.getObjectByName('touchpad');
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('trigger');
-
     // Set default colors.
-    Object.keys(buttonMeshes).forEach(function (buttonName) {
-      self.setButtonColor(buttonName, self.data.buttonColor);
-    });
+    // Actually don't, since tracker model does not have any.
 
     // Offset pivot point.
-    controllerObject3D.position.set(0, -0.015, 0.04);
+    controllerObject3D.position.set(0, 0, 0);
   },
 
   onAxisMoved: function (evt) {
@@ -193,9 +181,7 @@ module.exports.Component = registerComponent('vive-controls', {
 
   onButtonEvent: function (id, evtName) {
     var buttonName = this.mapping.buttons[id];
-    var color;
     var i;
-    var isTouch = evtName.indexOf('touch') !== -1;
 
     // Emit events.
     if (Array.isArray(buttonName)) {
@@ -209,30 +195,7 @@ module.exports.Component = registerComponent('vive-controls', {
     if (!this.data.model) { return; }
 
     // Don't change color for trackpad touch.
-    if (isTouch) { return; }
-
     // Update colors.
-    color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.setButtonColor(buttonName[i], color);
-      }
-    } else {
-      this.setButtonColor(buttonName, color);
-    }
-  },
-
-  setButtonColor: function (buttonName, color) {
-    var buttonMeshes = this.buttonMeshes;
-
-    if (!buttonMeshes) { return; }
-
-    // Need to do both left and right sides for grip.
-    if (buttonName === 'grip') {
-      buttonMeshes.grip.left.material.color.set(color);
-      buttonMeshes.grip.right.material.color.set(color);
-      return;
-    }
-    buttonMeshes[buttonName].material.color.set(color);
+    // Actually don't, since tracker model does not have any.
   }
 });

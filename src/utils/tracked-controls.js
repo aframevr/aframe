@@ -65,16 +65,18 @@ function isControllerPresent (component, idPrefix, queryObject) {
     gamepad = gamepads[i];
     isPrefixMatch = (!idPrefix || idPrefix === '' || gamepad.id.indexOf(idPrefix) === 0);
     isPresent = isPrefixMatch;
-    if (isPresent && queryObject.hand) {
-      isPresent = (gamepad.hand || DEFAULT_HANDEDNESS) === queryObject.hand;
+    if (isPresent && (queryObject.hand !== undefined)) {
+      isPresent = (gamepad.hand === undefined ? DEFAULT_HANDEDNESS : gamepad.hand) === queryObject.hand;
     }
-    if (isPresent && queryObject.index) {
-      // Need to use count of gamepads with idPrefix.
+    if (isPresent && (queryObject.index !== undefined)) {
+      // Index filter provided, so
+      // check count of gamepads with idPrefix
+      // (and correct hand filter, if present).
       isPresent = index === queryObject.index;
+      // Update count of gamepads with idPrefix (and correct hand filter, if present).
+      index++;
     }
     if (isPresent) { break; }
-    // Update count of gamepads with idPrefix.
-    if (isPrefixMatch) { index++; }
   }
 
   return isPresent;
