@@ -1,3 +1,51 @@
+## 0.7.0 (Sept 12, 2017)
+
+- Windows Mixed Reality headsets and Microsoft Edge support.
+- glTF 2.0 Support.
+- Performance improvements to reduce garbage collection cycles.
+
+### Major Changes
+
+- Add support for Windows Mixed Reality motion controllers (#3013)
+- Add glTF 2.0 support. The version 1.0 of the format is deprecated. Update gltf-model to glTF 2.0. (#2986)
+- Bump THREE to r87 (#2994)
+
+### Fixes
+
+- Do not resize the canvas in VR (leads to resolution drop) (#3031)
+- Fix component build data when previousData is object with null prop (#3021)
+- Calculating mouse position based on canvas bounding rectangle for embedded scenes (#2942)
+- Fix missing detail property in a-scene onVRPresentChange (#2920)
+- Fixes line update bug and add example (#2906)
+
+### Enhancements
+
+- Handle vrdisplayconnect/vrdisplaydisconnect events in VREffect and VRControls (fix #3019)
+- Allow text component to take a number value.
+- Added support and tests for vrdisplaypointerrestricted events to the a-scene element (#3014)
+- Allow Decoupling of TouchEvents and Look-Contols (#3012)
+- Added support for VR headsets that do not provide stageParameters (#3000)
+- Moves canvas initialization logic from a component to the scene. This is a prequesite for a loading screen / spinner (#2985)
+- Listen to vrdisplayconnect/vrdisplaydisconnect to enter/exit VR when a headset is plugged/unplugged (#2900)
+- Add title info to enter vr button (#2905)
+- Cursor demo improvement (#2916)
+- Add vertexColors to base material properties (#2901)
+- Expose emissive and emissiveIntensity Three.js properties to the standard material (#2896)
+
+### Performance
+
+- Optimize tracked controls tick, discovery, and various utils (#2943)
+- Does not clone attValue attributes into data anymore. Prevent cloning (#2939)
+- Optimize a-entity (#2959)
+- Optimize wasd-controls (add early return, skip type checking) (#2945)
+- Optimize vec3 parse (#2947)
+- Optimize component change/initialize events (#2950)
+- Optimize look-controls (object allocations, skip type check) (#2944)
+- Optimize emit method, remove split/map/callback and allocations (#2941)
+- Save a couple of function callbacks and array creation on each frame (#2937)
+- Remove inline fns for crit code paths in tracked-controls/raycaster/component for gc (#2936)
+- Do not update component when data not changed even if skipTypeChecking (#2917)
+
 ## 0.6.1 (July 18, 2017)
 
 Bug fixes, support for Firefox on Android, mouse-based cursor, enable motion
