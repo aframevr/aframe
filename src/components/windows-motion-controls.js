@@ -254,8 +254,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
     // Cache our meshes so we aren't traversing the hierarchy per frame
     if (rootNode) {
-      rootNode.updateMatrixWorld();
-
       // Button Meshes
       for (i = 0; i < this.mapping.buttons.length; i++) {
         meshName = this.mapping.buttonMeshNames[this.mapping.buttons[i]];
@@ -320,24 +318,33 @@ module.exports.Component = registerComponent('windows-motion-controls', {
         }
       }
 
-      // Calculate the pointer pose (used for rays), by applying the inverse holding pose, then the pointing pose.
+      // Calculate the pointer pose (used for rays), by applying the world transform of th POINTER_POSE node
+      // in the glTF (assumes that root node is at world origin)
       this.rayOrigin.origin.set(0, 0, 0);
       this.rayOrigin.direction.set(0, 0, -1);
+      this.rayOrigin.createdFromMesh = true;
 
       // Pointing pose
       mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
       if (mesh) {
-        var offset = new THREE.Vector3();
-        mesh.localToWorld(offset);
-        this.rayOrigin.origin.add(offset);
+        var parent = rootNode.parent;
 
+        // We need to read pose transforms accumulated from the root of the glTF, not the scene.
+        if (parent) {
+          rootNode.parent = null;
+          rootNode.updateMatrixWorld(true);
+          rootNode.parent = parent;
+        }
+
+        mesh.getWorldPosition(this.rayOrigin.origin);
         mesh.getWorldQuaternion(quaternion);
         this.rayOrigin.direction.applyQuaternion(quaternion);
+
+        // Reset the world matrices to the correct value.
+        rootNode.updateMatrixWorld(true);
       } else {
         debug('Mesh does not contain pointing origin data, defaulting to none.');
       }
-
-      this.rayOrigin.createdFromMesh = true;
 
       // Emit event stating that our pointing ray is now accurate.
       this.modelReady();
