@@ -250,6 +250,26 @@ entityEl.parentNode.removeChild(entityEl);
 A blank entity doesn't do anything. We can modify the entity by adding
 components, configuring component properties, and removing components.
 
+[debug]: ../components/debug.md
+[mutation-observer]: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+[flushtodom]: https://aframe.io/docs/0.6.0/core/component.html#flushtodom
+It is important to note that, for [performance reasons][flushtodom], updating
+an attribute which represents a component will bypass updating the DOM. For this
+reason, some DOM APIs would not work as expected. For instance, the
+[`MutationObserver`][mutation-observer] won't registaer any attribute update
+unless you use the [`debug`][debug] component in your scene:
+
+```js
+// <a-entity id="test" position="0 0 0"></a-entity>
+var test = document.querySelector('#test');
+var obs = new MutationObserver(function (mutations) {
+  console.log(mutations);
+  // will never print, add the debug component to the scene to make it work
+});
+obs.observe(test, { attributes: true });
+test.setAttribute('position', '0 1 0');
+```
+
 ### Adding a Component with `.setAttribute()`
 
 To add a component, we can use `.setAttribute(componentName, data)`. Let's add
