@@ -72,6 +72,7 @@ function arrayStringify (value) {
 function assetParse (value) {
   var el;
   var parsedUrl;
+  var mediaTags = ['CANVAS', 'VIDEO', 'IMG', 'AUDIO'];
 
   // If an element was provided (e.g. canvas or video), just return it.
   if (typeof value !== 'string') { return value; }
@@ -86,7 +87,7 @@ function assetParse (value) {
     if (el) {
       // Pass through media elements. If we have the elements, we don't have to call
       // three.js loaders which would re-request the assets.
-      if (el.tagName === 'CANVAS' || el.tagName === 'VIDEO' || el.tagName === 'IMG') {
+      if (mediaTags.indexOf(el.tagName) >= 0) {
         return el;
       }
       return el.getAttribute('src');

@@ -66,19 +66,42 @@ module.exports.Component = registerComponent('sound', {
     if (srcChanged) {
       var self = this;
 
+      var isStream = typeof window.MediaStream === 'function' &&
+                     data.src.srcObject instanceof window.MediaStream;
+      if (isStream) {
+        var stream = data.src.srcObject;
+        this.pool.children.forEach(function (sound) {
+          sound.setNodeSource(sound.context.createMediaStreamSource(stream));
+        });
+        if (data.src.readyState >= 1) {
+          self.completeLoading();
+        } else {
+          data.src.addEventListener('loadedmetadata', function onMetadata () {
+            data.src.removeEventListener('loadedmetadata', onMetadata);
+            self.completeLoading();
+          });
+        }
+        return;
+      }
+
+      var path = typeof data.src === 'string' ? data.src : data.src.src;
       this.loaded = false;
-      this.audioLoader.load(data.src, function (buffer) {
+      this.audioLoader.load(path, function (buffer) {
         self.pool.children.forEach(function (sound) {
           sound.setBuffer(buffer);
         });
-        self.loaded = true;
 
         // Remove this key from cache, otherwise we can't play it again
-        THREE.Cache.remove(data.src);
+        THREE.Cache.remove(path);
         if (self.data.autoplay || self.mustPlay) { self.playSound(); }
-        self.el.emit('sound-loaded');
+        self.completeLoading();
       });
     }
+  },
+
+  completeLoading: function () {
+    this.loaded = true;
+    this.el.emit('sound-loaded');
   },
 
   pause: function () {
