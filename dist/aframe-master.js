@@ -76036,9 +76036,6 @@ module.exports.AScene = registerElement('a-scene', {
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
-        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-
         // Register for mouse restricted events while in VR
         // (e.g. mouse no longer available on desktop 2D view)
         window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
@@ -78343,7 +78340,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 13-09-2017, Commit #af8d80a)');
+console.log('A-Frame Version: 0.6.1 (Date 13-09-2017, Commit #47875a0)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
