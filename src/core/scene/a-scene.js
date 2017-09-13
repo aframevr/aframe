@@ -131,9 +131,6 @@ module.exports.AScene = registerElement('a-scene', {
         // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
         window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
 
-        // Exit VR on `vrdisplaydisconnect` (e.g. unplugging Rift headset).
-        window.addEventListener('vrdisplaydisconnect', this.exitVRTrueBound);
-
         // Register for mouse restricted events while in VR
         // (e.g. mouse no longer available on desktop 2D view)
         window.addEventListener('vrdisplaypointerrestricted', this.pointerRestrictedBound);
