@@ -1,50 +1,52 @@
 ## 0.7.0 (Sept 12, 2017)
 
-- Windows Mixed Reality headsets and Microsoft Edge support.
-- glTF 2.0 Support.
+This release features:
+
+- Support for Windows Mixed Reality Headset and Microsoft Edge.
+- Support for glTF 2.0.
 - Performance improvements to reduce garbage collection cycles.
 
 ### Major Changes
 
-- Add support for Windows Mixed Reality motion controllers (#3013)
-- Add glTF 2.0 support. The version 1.0 of the format is deprecated. Update gltf-model to glTF 2.0. (#2986)
-- Bump THREE to r87 (#2994)
+- Add support for Windows Mixed Reality motion controllers. (#3013)
+- Add glTF 2.0 support through upgrading three.js. glTF 1.0 is no longer supported. (#2986)
+- Bump THREE to r87. (#2994)
 
 ### Fixes
 
-- Do not resize the canvas in VR (leads to resolution drop) (#3031)
-- Fix component build data when previousData is object with null prop (#3021)
-- Calculating mouse position based on canvas bounding rectangle for embedded scenes (#2942)
-- Fix missing detail property in a-scene onVRPresentChange (#2920)
-- Fixes line update bug and add example (#2906)
+- Do not resize the canvas in VR which leads to resolution drop (#3031).
+- Fix component build data when `previousData` is object and a property has a `null` default value. (#3021)
+- Fix calculating mouse position for embedded scenes. (#2942)
+- Fix missing detail property in a-scene onVRPresentChange. (#2920)
+- Fix updates for the line component. (#2906)
 
 ### Enhancements
 
-- Handle vrdisplayconnect/vrdisplaydisconnect events in VREffect and VRControls (fix #3019)
-- Allow text component to take a number value.
-- Added support and tests for vrdisplaypointerrestricted events to the a-scene element (#3014)
-- Allow Decoupling of TouchEvents and Look-Contols (#3012)
-- Added support for VR headsets that do not provide stageParameters (#3000)
-- Moves canvas initialization logic from a component to the scene. This is a prequesite for a loading screen / spinner (#2985)
-- Listen to vrdisplayconnect/vrdisplaydisconnect to enter/exit VR when a headset is plugged/unplugged (#2900)
-- Add title info to enter vr button (#2905)
-- Cursor demo improvement (#2916)
-- Add vertexColors to base material properties (#2901)
-- Expose emissive and emissiveIntensity Three.js properties to the standard material (#2896)
+- Handle `vrdisplayconnect` and `vrdisplaydisconnect` events in VREffect and VRControls. (#3019)
+- Allow text component to take a number value. (6cbdac)
+- Handle `vrdisplaypointerrestricted` event in `a-scene`. (#3014)
+- Allow decoupling of touch events in look-contols. (#3012)
+- Add support for VR headsets that do not provide `stageParameters`. (#3000)
+- Moves canvas initialization logic from a component to the scene. (#2985)
+- Listen to `vrdisplayconnect` and `vrdisplaydisconnect` to enter and exit VR when headset is plugged or unplugged. (#2900)
+- Add title info to Enter VR button. (#2905)
+- Cursor example improvements. (#2916)
+- Add `vertexColors` property to base material component. (#2901)
+- Add `emissive` and `emissiveIntensity` properties to base material component. (#2896)
 
 ### Performance
 
-- Optimize tracked controls tick, discovery, and various utils (#2943)
-- Does not clone attValue attributes into data anymore. Prevent cloning (#2939)
-- Optimize a-entity (#2959)
-- Optimize wasd-controls (add early return, skip type checking) (#2945)
-- Optimize vec3 parse (#2947)
-- Optimize component change/initialize events (#2950)
-- Optimize look-controls (object allocations, skip type check) (#2944)
-- Optimize emit method, remove split/map/callback and allocations (#2941)
-- Save a couple of function callbacks and array creation on each frame (#2937)
-- Remove inline fns for crit code paths in tracked-controls/raycaster/component for gc (#2936)
-- Do not update component when data not changed even if skipTypeChecking (#2917)
+- Optimize tracked controls tick, discovery, and utilities. (#2943)
+- Do not clone `attrValue` attributes into data anymore to reduce cloning. (#2939)
+- Optimize a-entity code. (#2959)
+- Optimize wasd-controls with early returns and skipping of type checking. (#2945)
+- Optimize vec3 parse utility. (#2947)
+- Optimize component change/initialize events. (#2950)
+- Optimize look-controls by reducing object allocations and skipping of type checking. (#2944)
+- Optimize emit method by removing split/map/callback calls and allocations. (#2941)
+- Save a couple of function callbacks and array creations on each frame. (#2937)
+- Remove inline functions for critical code paths in tracked-controls/raycaster/component for garbage collection. (#2936)
+- Do not update component when data not changed even if skipping type checking. (#2917)
 
 ## 0.6.1 (July 18, 2017)
 
