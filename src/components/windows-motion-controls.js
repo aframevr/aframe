@@ -57,8 +57,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       'thumbstick': 'THUMBSTICK_PRESS',
       'trackpad': 'TOUCHPAD_PRESS'
     },
-    pointingPoseMeshName: 'Pointing_Pose',
-    holdingPoseMeshName: 'Holding_Pose'
+    pointingPoseMeshName: 'POINTING_POSE'
   },
 
   bindMethods: function () {
@@ -90,7 +89,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     // Pointing poses
     this.rayOrigin = {
       origin: new THREE.Vector3(),
-      direction: new THREE.Vector3(0, 0, -1)
+      direction: new THREE.Vector3(0, 0, -1),
+      createdFromMesh: false
     };
 
     // Stored on object to allow for mocking in tests
@@ -153,7 +153,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   updateControllerModel: function () {
     // If we do not want to load a model, or, have already loaded the model, emit the controllermodelready event.
-    if (!this.data.model || this.el.getAttribute('gltf-model')) {
+    if (!this.data.model || this.rayOrigin.createdFromMesh) {
       this.modelReady();
       return;
     }
@@ -235,19 +235,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   onModelLoaded: function (evt) {
-    var controllerObject3D = evt.detail.model;
+    var rootNode = evt.detail.model;
     var loadedMeshInfo = this.loadedMeshInfo;
     var i;
     var meshName;
     var mesh;
     var meshInfo;
-    var quaternion = new THREE.Quaternion();
 
     debug('Processing model');
-
-    // Find the appropriate nodes
-    var rootNode = controllerObject3D.getObjectByName('RootNode');
-    rootNode.updateMatrixWorld();
 
     // Reset the caches
     loadedMeshInfo.buttonMeshes = {};
@@ -319,36 +314,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
         }
       }
 
-      // Calculate the pointer pose (used for rays), by applying the inverse holding pose, then the pointing pose.
-      this.rayOrigin.origin.set(0, 0, 0);
-      this.rayOrigin.direction.set(0, 0, -1);
-
-      // Holding pose
-      mesh = rootNode.getObjectByName(this.mapping.holdingPoseMeshName);
-      if (mesh) {
-        mesh.localToWorld(this.rayOrigin.origin);
-        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation).inverse());
-      } else {
-        debug('Mesh does not contain holding origin data.');
-        document.getElementById('debug').innerHTML += '<br />Mesh does not contain holding origin data.';
-      }
-
-      // Pointing pose
-      mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
-      if (mesh) {
-        var offset = new THREE.Vector3();
-        mesh.localToWorld(offset);
-        this.rayOrigin.origin.add(offset);
-
-        this.rayOrigin.direction.applyQuaternion(quaternion.setFromEuler(mesh.rotation));
-      } else {
-        debug('Mesh does not contain pointing origin data, defaulting to none.');
-      }
-
-      // Emit event stating that our pointing ray is now accurate.
-      this.modelReady();
-    } else {
-      warn('No node with name "RootNode" in controller glTF.');
+      this.calculateRayOriginFromMesh(rootNode);
     }
 
     debug('Model load complete.');
@@ -364,6 +330,46 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       return undefined;
     }
   },
+
+  calculateRayOriginFromMesh: (function () {
+    var quaternion = new THREE.Quaternion();
+    return function (rootNode) {
+      var mesh;
+
+      // Calculate the pointer pose (used for rays), by applying the world transform of th POINTER_POSE node
+      // in the glTF (assumes that root node is at world origin)
+      this.rayOrigin.origin.set(0, 0, 0);
+      this.rayOrigin.direction.set(0, 0, -1);
+      this.rayOrigin.createdFromMesh = true;
+
+      // Try to read Pointing pose from the source model
+      mesh = rootNode.getObjectByName(this.mapping.pointingPoseMeshName);
+      if (mesh) {
+        var parent = rootNode.parent;
+
+        // We need to read pose transforms accumulated from the root of the glTF, not the scene.
+        if (parent) {
+          rootNode.parent = null;
+          rootNode.updateMatrixWorld(true);
+          rootNode.parent = parent;
+        }
+
+        mesh.getWorldPosition(this.rayOrigin.origin);
+        mesh.getWorldQuaternion(quaternion);
+        this.rayOrigin.direction.applyQuaternion(quaternion);
+
+        // Recalculate the world matrices now that the rootNode is re-attached to the parent.
+        if (parent) {
+          rootNode.updateMatrixWorld(true);
+        }
+      } else {
+        debug('Mesh does not contain pointing origin data, defaulting to none.');
+      }
+
+      // Emit event stating that our pointing ray is now accurate.
+      this.modelReady();
+    };
+  })(),
 
   lerpAxisTransform: (function () {
     var quaternion = new THREE.Quaternion();
