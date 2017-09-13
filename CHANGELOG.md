@@ -2,7 +2,7 @@
 
 This release features:
 
-- Support for Windows Mixed Reality Headset and Microsoft Edge.
+- Support for Windows Mixed Reality Headsets and Microsoft Edge.
 - Support for glTF 2.0.
 - Performance improvements to reduce garbage collection cycles.
 
