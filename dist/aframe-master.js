@@ -72297,8 +72297,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       index: this.data.pair
     });
 
-    if (this.data.hideDisconnected) {
-      this.el.setAttribute('visible', this.controllerPresent);
+    if (this.data.hideDisconnected && this.controllerModel) {
+      this.controllerModel.visible = false;
     }
   },
 
@@ -72394,15 +72394,20 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    debug('Loading asset from: ' + url);
+    // Make model visible if there's already one loaded.
+    if (this.controllerModel) {
+      this.controllerModel.visible = true;
+      return;
+    }
 
+    debug('Loading asset from: ' + url);
     // The model is loaded by the gltf-model compoent when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
   },
 
   onModelLoaded: function (evt) {
-    var rootNode = evt.detail.model;
+    var rootNode = this.controllerModel = evt.detail.model;
     var loadedMeshInfo = this.loadedMeshInfo;
     var i;
     var meshName;
@@ -78340,7 +78345,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 13-09-2017, Commit #47875a0)');
+console.log('A-Frame Version: 0.6.1 (Date 13-09-2017, Commit #13349d4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
