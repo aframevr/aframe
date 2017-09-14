@@ -395,6 +395,7 @@ methods, but none that are truly one-size-fits-all.
 ### hand-controls Component
 
 [handcontrols]: ../components/hand-controls.md
+[lasercontrols]: ../components/laser-controls.md
 
 A-Frame provides an implementation for supporting multiple types of 6DoF
 controllers (Vive, Oculus Touch) via the [hand-controls
@@ -420,6 +421,9 @@ all the types of 3DoF controllers (i.e., Daydream, GearVR). We could create a
 custom controller that works with both controllers. It would be fairly easy to
 cover since 3DoF controllers do not offer much potential for interaction (i.e.,
 only rotational tracking with a touchpad).
+
+However, there is a controller component that covers all 6DoF and 3DoF controllers
+currently supported by A-Frame: [laser-controls][lasercontrols].
 
 ### Creating Custom Controllers
 
