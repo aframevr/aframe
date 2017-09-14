@@ -16,39 +16,6 @@ examples:
 [three.js]: https://threejs.org
 [webvr]: https://iswebvrready.com
 
-## Getting Started
-
-[glitch]: http://glitch.com/~aframe
-
-A-Frame can be developed from a plain HTML file without having to install
-anything. A great way to try out A-Frame is to **[remix the starter example on
-Glitch][glitch]**, an online code editor that instantly hosts and deploys for
-free. Alternatively, create an `.html` file and include A-Frame in the `<head>`:
-
-```html
-<html>
-  <head>
-    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
-  </head>
-  <body>
-    <a-scene>
-      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
-      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
-      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
-      <a-sky color="#ECECEC"></a-sky>
-    </a-scene>
-  </body>
-</html>
-```
-
-[Installation]: ./installation.md
-[school]: https://aframe.io/school/
-
-The [Installation] page provides more options for getting started with A-Frame.
-To get started learning A-Frame, check out [A-Frame School][school] for
-visual step-by-step lessons to complement the documentation.
-
 ## What is A-Frame?
 
 [github]: https://github.com/aframevr/
@@ -94,7 +61,7 @@ full use of positional tracking and controllers.
   </a>
 </div>
 
-## Features
+## Features of A-Frame
 
 :eyeglasses: **VR Made Simple**: Just drop in a `<script>` tag and `<a-scene>`.
 A-Frame will handle 3D boilerplate, VR setup, and default controls. Nothing to
@@ -170,6 +137,39 @@ positional audio, text, and Vive / Touch / Daydream / GearVR / Cardboard
 controls. Get even further with community components such as [particle systems],
 [physics], [multiuser], [oceans], [mountains], [speech recognition], [motion capture],
 [teleportation], [super hands], and [augmented reality].
+
+## Getting Started with A-Frame
+
+[glitch]: http://glitch.com/~aframe
+
+A-Frame can be developed from a plain HTML file without having to install
+anything. A great way to try out A-Frame is to **[remix the starter example on
+Glitch][glitch]**, an online code editor that instantly hosts and deploys for
+free. Alternatively, create an `.html` file and include A-Frame in the `<head>`:
+
+```html
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>
+      <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+      <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>
+```
+
+[Installation]: ./installation.md
+[school]: https://aframe.io/school/
+
+The [Installation] page provides more options for getting started with A-Frame.
+To get started learning A-Frame, check out [A-Frame School][school] for
+visual step-by-step lessons to complement the documentation.
 
 ## Off You Go!
 
