@@ -88,8 +88,9 @@ attribute values are empty.
 ![HTML](https://cloud.githubusercontent.com/assets/674727/25720562/2b243bda-30c2-11e7-98d5-479157d20046.jpg)
 
 To improve performance, A-Frame does not update the HTML to save on
-stringification operations. Use the [debug component][debug] or [`.flushToDOM`
-methods][flushtodom] if you need to sync to the DOM.
+stringification operations. This also means mutation observations will not
+fire. Use the [debug component][debug] or [`.flushToDOM` methods][flushtodom]
+if you need to sync to the DOM.
 
 ## Why does my video not play on mobile?
 
