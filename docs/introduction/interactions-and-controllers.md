@@ -603,7 +603,5 @@ Other examples to look at include:
   Interaction through sphere-collider and grab components.
 - [ball-throw](https://github.com/bryik/aframe-ball-throw) - Grab and throw
   using [aframe-extras] and [aframe-physics].
-- [architect](https://github.com/ngokevin/architect) - Interaction through
-  cloner, deleter, mover, placer, and scaler components.
 - [vr-editor](https://github.com/caseyyee/aframe-vreditor-component) - Interaction through
   a single vr-editor component for cloning, moving, deleting, placing, and scaling.
