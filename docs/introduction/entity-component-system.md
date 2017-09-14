@@ -372,7 +372,6 @@ to look at include:
 
 - [A-Painter](https://github.com/aframevr/a-painter/)
 - [A-Blast](https://github.com/aframevr/a-blast/)
-- [Architect](https://github.com/aframevr/architect/)
 
 ### Using a Community Component
 
