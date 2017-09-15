@@ -86,8 +86,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       data.controller
     );
 
-    // Only replace the stored controller if we find a new one.
-    this.controller = controller || this.controller;
+    this.controller = controller;
   },
 
   applyArmModel: function (controllerPosition) {
