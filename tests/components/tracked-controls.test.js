@@ -70,7 +70,7 @@ suite('tracked-controls', function () {
       assert.notOk(component.controller);
     });
 
-    test.only('set controller to undefined if controller not found', function () {
+    test('set controller to undefined if controller not found', function () {
       assert.notOk(component.controller);
       el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
       component.tick();
