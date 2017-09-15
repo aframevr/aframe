@@ -16,7 +16,7 @@ suite('gearvr-controls', function () {
           {value: 0, pressed: false, touched: false},
           {value: 0, pressed: false, touched: false}
         ],
-        pose: {orientation: [1, 0, 0, 0]}
+        pose: {orientation: [1, 0, 0, 0], position: null}
       }];
       done();
     });

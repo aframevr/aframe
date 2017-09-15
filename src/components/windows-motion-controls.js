@@ -129,10 +129,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       hand: this.data.hand,
       index: this.data.pair
     });
-
-    if (this.data.hideDisconnected && this.controllerModel) {
-      this.controllerModel.visible = false;
-    }
   },
 
   play: function () {
@@ -192,7 +188,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       controller: data.pair,
-      hand: data.hand
+      hand: data.hand,
+      armModel: false
     });
 
     this.updateControllerModel();
@@ -221,13 +218,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    // Make model visible if there's already one loaded.
-    if (this.controllerModel) {
-      this.controllerModel.visible = true;
-      return;
-    }
-
-    debug('Loading asset from: ' + url);
     // The model is loaded by the gltf-model compoent when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');

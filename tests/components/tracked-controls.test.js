@@ -412,7 +412,7 @@ suite('tracked-controls', function () {
 
   suite('armModel', function () {
     setup(function () {
-      delete controller.pose.position;
+      controller.pose.position = null;
     });
 
     test('if armModel false, do not apply', function () {

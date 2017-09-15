@@ -15,13 +15,6 @@ suite('hand-controls', function () {
     el.setAttribute('hand-controls', '');
   });
 
-  suite('update', function () {
-    test('injects oculus-touch-controls and vive-controls', function () {
-      assert.ok(el.components['oculus-touch-controls']);
-      assert.ok(el.components['vive-controls']);
-    });
-  });
-
   suite('determineGesture', function () {
     test('makes no gesture if nothing touched or pressed', function () {
       component.pressedButtons['grip'] = false;
