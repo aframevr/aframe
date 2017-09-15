@@ -71408,8 +71408,7 @@ module.exports.Component = registerComponent('tracked-controls', {
       data.controller
     );
 
-    // Only replace the stored controller if we find a new one.
-    this.controller = controller || this.controller;
+    this.controller = controller;
   },
 
   applyArmModel: function (controllerPosition) {
@@ -78309,7 +78308,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #ac02827)');
+console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #94d16e2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
