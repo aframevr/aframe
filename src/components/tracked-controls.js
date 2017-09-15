@@ -42,7 +42,7 @@ module.exports.Component = registerComponent('tracked-controls', {
     this.controllerPosition = new THREE.Vector3();
     this.controllerQuaternion = new THREE.Quaternion();
     this.deltaControllerPosition = new THREE.Vector3();
-    this.position = {};
+    this.position = new THREE.Vector3();
     this.rotation = {};
     this.standingMatrix = new THREE.Matrix4();
 
@@ -149,8 +149,8 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controller = this.controller;
     var controllerEuler = this.controllerEuler;
     var controllerPosition = this.controllerPosition;
-    var currentPosition;
-    var deltaControllerPosition = this.deltaControllerPosition;
+    var elPosition;
+    var previousControllerPosition = this.previousControllerPosition;
     var dolly = this.dolly;
     var el = this.el;
     var pose;
@@ -198,20 +198,17 @@ module.exports.Component = registerComponent('tracked-controls', {
     controllerEuler.setFromRotationMatrix(dolly.matrix);
     controllerPosition.setFromMatrixPosition(dolly.matrix);
 
-    // Apply rotation (as absolute, with rotation offset).
+    // Apply rotation.
     this.rotation.x = THREE.Math.radToDeg(controllerEuler.x);
     this.rotation.y = THREE.Math.radToDeg(controllerEuler.y);
     this.rotation.z = THREE.Math.radToDeg(controllerEuler.z) + this.data.rotationOffset;
     el.setAttribute('rotation', this.rotation);
 
-    // Apply position (as delta from previous Gamepad position).
-    deltaControllerPosition.copy(controllerPosition).sub(this.previousControllerPosition);
-    this.previousControllerPosition.copy(controllerPosition);
-    currentPosition = el.getAttribute('position');
-    this.position.x = currentPosition.x + deltaControllerPosition.x;
-    this.position.y = currentPosition.y + deltaControllerPosition.y;
-    this.position.z = currentPosition.z + deltaControllerPosition.z;
+    // Apply position.
+    elPosition = el.getAttribute('position');
+    this.position.copy(elPosition).sub(previousControllerPosition).add(controllerPosition);
     el.setAttribute('position', this.position);
+    previousControllerPosition.copy(controllerPosition);
   },
 
   /**

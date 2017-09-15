@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, teardown, test, THREE */
+/* global assert, process, setup, sinon, suite, teardown, test, THREE */
 const entityFactory = require('../helpers').entityFactory;
 
 const PI = Math.PI;
@@ -94,30 +94,7 @@ suite('tracked-controls', function () {
     test('applies position from gamepad pose', function () {
       controller.pose.position = [1, 2, 3];
       component.tick();
-      assertVec3(component.previousControllerPosition, [1, 2, 3]);
       assertVec3(el.getAttribute('position'), [1, 2, 3]);
-    });
-
-    test('applies position using deltas', function () {
-      controller.pose.position = [0, 0, 0];
-      el.setAttribute('position', '1 2 3');
-      component.tick();
-      assertVec3(el.getAttribute('position'), [1, 2, 3]);
-
-      assertVec3(component.previousControllerPosition, [0, 0, 0]);
-      controller.pose.position = [1, 1, 1];
-      component.tick();
-      assertVec3(el.getAttribute('position'), [2, 3, 4]);
-    });
-
-    test('applies position using deltas with non-zero pose', function () {
-      assertVec3(component.previousControllerPosition, [0, 0, 0]);
-      controller.pose.position = [4, 5, -6];
-      el.setAttribute('position', '-1 2 -3');
-      component.tick();
-      // A-Frame position + (Gamepad position - previous Gamepad position).
-      // [-1, 2, -3] + ([4, 5, -6] - [0, 0, 0]).
-      assertVec3(el.getAttribute('position'), [3, 7, -9]);
     });
 
     test('handles unchanged Gamepad position', function () {
@@ -217,7 +194,8 @@ suite('tracked-controls', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
       assert.notOk(component.handleAxes());
-      assert.notOk(emitSpy.called);
+      sinon.assert.calledOnce(emitSpy);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
     });
 
     test('emits axismove on first touch', function () {
@@ -226,9 +204,11 @@ suite('tracked-controls', function () {
       assert.deepEqual(component.axis, [0, 0, 0]);
       component.tick();
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
-      assert.equal(emitSpy.getCalls()[0].args[0], 'axismove');
-      assert.deepEqual(emitSpy.getCalls()[0].args[1].axis, [0.5, 0.5, 0.5]);
-      assert.deepEqual(emitSpy.getCalls()[0].args[1].changed, [true, true, true]);
+      assert.notOk(component.handleAxes());
+      sinon.assert.calledTwice(emitSpy);
+      assert.equal(emitSpy.getCalls()[1].args[0], 'axismove');
+      assert.deepEqual(emitSpy.getCalls()[1].args[1].axis, [0.5, 0.5, 0.5]);
+      assert.deepEqual(emitSpy.getCalls()[1].args[1].changed, [true, true, true]);
     });
 
     test('emits axismove if axis changed', function () {
@@ -264,7 +244,8 @@ suite('tracked-controls', function () {
     test('does not emit if button not pressed', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      assert.notOk(emitSpy.called);
+      sinon.assert.calledOnce(emitSpy);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
     });
 
     test('emits buttonchanged if button pressed', function () {
@@ -302,7 +283,8 @@ suite('tracked-controls', function () {
     test('does not emit anything if button not pressed', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      assert.notOk(emitSpy.called);
+      sinon.assert.calledOnce(emitSpy);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
       assert.notOk(component.handlePress(0, {pressed: false, touched: false, value: 0}));
     });
 
@@ -364,7 +346,8 @@ suite('tracked-controls', function () {
     test('does not do anything if button not touched', function () {
       const emitSpy = this.sinon.spy(el, 'emit');
       component.tick();
-      assert.notOk(emitSpy.called);
+      sinon.assert.calledOnce(emitSpy);
+      assert.equal(emitSpy.getCalls()[0].args[0], 'componentchanged');
       assert.notOk(component.handleTouch(0, {pressed: false, touched: false, value: 0}));
     });
 

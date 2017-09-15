@@ -28,7 +28,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.previousHMDPosition = new THREE.Vector3();
     this.hmdQuaternion = new THREE.Quaternion();
     this.hmdEuler = new THREE.Euler();
-    this.position = {};
+    this.position = new THREE.Vector3();
     this.rotation = {};
 
     this.setupMouseControls();
@@ -227,34 +227,25 @@ module.exports.Component = registerComponent('look-controls', {
   /**
    * Handle positional tracking.
    */
-  updatePosition: (function () {
-    var deltaHMDPosition = new THREE.Vector3();
+  updatePosition: function () {
+    var el = this.el;
+    var currentHMDPosition;
+    var currentPosition;
+    var position = this.position;
+    var previousHMDPosition = this.previousHMDPosition;
+    var sceneEl = this.el.sceneEl;
 
-    return function () {
-      var el = this.el;
-      var currentHMDPosition;
-      var currentPosition;
-      var position = this.position;
-      var previousHMDPosition = this.previousHMDPosition;
-      var sceneEl = this.el.sceneEl;
+    if (!sceneEl.is('vr-mode')) { return; }
 
-      if (!sceneEl.is('vr-mode')) { return; }
+    // Calculate change in position.
+    currentHMDPosition = this.calculateHMDPosition();
 
-      // Calculate change in position.
-      currentHMDPosition = this.calculateHMDPosition();
-      deltaHMDPosition.copy(currentHMDPosition).sub(previousHMDPosition);
+    currentPosition = el.getAttribute('position');
 
-      if (isNullVector(deltaHMDPosition)) { return; }
-
-      previousHMDPosition.copy(currentHMDPosition);
-
-      currentPosition = el.getAttribute('position');
-      position.x = currentPosition.x + deltaHMDPosition.x;
-      position.y = currentPosition.y + deltaHMDPosition.y;
-      position.z = currentPosition.z + deltaHMDPosition.z;
-      el.setAttribute('position', position);
-    };
-  })(),
+    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
+    el.setAttribute('position', position);
+    previousHMDPosition.copy(currentHMDPosition);
+  },
 
   /**
    * Get headset position from VRControls.
