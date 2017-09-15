@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('hand-controls', function () {
@@ -115,6 +115,26 @@ suite('hand-controls', function () {
 
       component.pressedButtons['menu'] = true;
       assert.equal(component.determineGesture(), 'Fist');
+    });
+  });
+
+  suite('setModelVisibility', function () {
+    test('shows model', function () {
+      var component = el.components['hand-controls'];
+      var model = new THREE.Object3D();
+      model.visible = false;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(true);
+      assert.ok(model.visible);
+    });
+
+    test('hides model', function () {
+      var component = el.components['hand-controls'];
+      var model = new THREE.Object3D();
+      model.visible = true;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(false);
+      assert.notOk(model.visible);
     });
   });
 });
