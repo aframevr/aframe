@@ -67331,6 +67331,7 @@ module.exports.Component = registerComponent('hand-controls', {
 
   init: function () {
     var self = this;
+    var el = this.el;
     // Current pose.
     this.gesture = ANIMATIONS.open;
     // Active buttons populated by events provided by the attached controls.
@@ -67359,6 +67360,11 @@ module.exports.Component = registerComponent('hand-controls', {
     this.onBorYTouchEnd = function () { self.handleButton('BorY', 'touchend'); };
     this.onSurfaceTouchStart = function () { self.handleButton('surface', 'touchstart'); };
     this.onSurfaceTouchEnd = function () { self.handleButton('surface', 'touchend'); };
+    this.onControllerConnected = function () { self.setModelVisibility(true); };
+    this.onControllerDisconnected = function () { self.setModelVisibility(false); };
+
+    el.addEventListener('controllerconnected', this.onControllerConnected);
+    el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   play: function () {
@@ -67448,9 +67454,6 @@ module.exports.Component = registerComponent('hand-controls', {
       model: false,
       rotationOffset: hand === 'left' ? 90 : -90
     };
-    el.setAttribute('vive-controls', controlConfiguration);
-    el.setAttribute('oculus-touch-controls', controlConfiguration);
-    el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set model.
     if (hand !== previousHand) {
@@ -67461,6 +67464,11 @@ module.exports.Component = registerComponent('hand-controls', {
         el.setObject3D('mesh', mesh);
         mesh.position.set(0, 0, 0);
         mesh.rotation.set(0, 0, 0);
+        // hidden by default
+        mesh.visible = false;
+        el.setAttribute('vive-controls', controlConfiguration);
+        el.setAttribute('oculus-touch-controls', controlConfiguration);
+        el.setAttribute('windows-motion-controls', controlConfiguration);
       });
     }
   },
@@ -67615,6 +67623,12 @@ module.exports.Component = registerComponent('hand-controls', {
     fromAction.play();
     toAction.play();
     fromAction.crossFadeTo(toAction, 0.15, true);
+  },
+
+  setModelVisibility: function (visible) {
+    var model = this.el.getObject3D('mesh');
+    if (!model) { return; }
+    model.visible = visible;
   }
 });
 
@@ -78308,7 +78322,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #94d16e2)');
+console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #dbd6984)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
