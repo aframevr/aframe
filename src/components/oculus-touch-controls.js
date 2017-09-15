@@ -103,15 +103,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {

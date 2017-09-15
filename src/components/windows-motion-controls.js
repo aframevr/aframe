@@ -138,17 +138,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-
-    window.addEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-
-    window.removeEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
