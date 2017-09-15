@@ -66959,7 +66959,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -67010,22 +67009,14 @@ module.exports.Component = registerComponent('gearvr-controls', {
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
-  onGamepadConnectionEvent: function (evt) {
-    this.checkIfControllerPresent();
-  },
-
   play: function () {
     this.checkIfControllerPresent();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
     this.addControllersUpdateListener();
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   injectTrackedControls: function () {
@@ -67052,7 +67043,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 
@@ -69260,15 +69250,11 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
@@ -71747,15 +71733,11 @@ module.exports.Component = registerComponent('vive-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   bindMethods: function () {
@@ -72293,17 +72275,11 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   play: function () {
     this.checkIfControllerPresent();
     this.addControllersUpdateListener();
-
-    window.addEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-
-    window.removeEventListener('gamepadconnected', this.checkIfControllerPresent, false);
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   updateControllerModel: function () {
@@ -78333,7 +78309,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #194eaac)');
+console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #ac02827)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
