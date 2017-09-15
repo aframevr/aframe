@@ -69,6 +69,16 @@ suite('tracked-controls', function () {
       component.tick();
       assert.notOk(component.controller);
     });
+
+    test.only('set controller to undefined if controller not found', function () {
+      assert.notOk(component.controller);
+      el.setAttribute('tracked-controls', 'id', 'OpenVR Gamepad');
+      component.tick();
+      assert.equal(component.controller, controller);
+      system.controllers = [];
+      component.tick();
+      assert.equal(component.controller, undefined);
+    });
   });
 
   suite('tick', function () {
