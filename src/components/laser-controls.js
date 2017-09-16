@@ -21,6 +21,7 @@ registerComponent('laser-controls', {
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
+    el.addEventListener('controllerdisconnected', hideRay);
     el.addEventListener('controllermodelready', function (evt) {
       createRay(evt);
       self.modelReady = true;
@@ -49,11 +50,17 @@ registerComponent('laser-controls', {
       // config applied from a controllermodelready event.
       if (evt.detail.rayOrigin || !self.modelReady) {
         el.setAttribute('raycaster', raycasterConfig);
+      } else {
+        el.setAttribute('raycaster', 'showLine', true);
       }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
+    }
+
+    function hideRay () {
+      el.setAttribute('raycaster', 'showLine', false);
     }
   },
 
