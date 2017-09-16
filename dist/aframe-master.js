@@ -67715,6 +67715,7 @@ registerComponent('laser-controls', {
     var config = this.config;
     var data = this.data;
     var el = this.el;
+    var self = this;
 
     // Set all controller models.
     el.setAttribute('daydream-controls', {hand: data.hand});
@@ -67725,7 +67726,10 @@ registerComponent('laser-controls', {
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
-    el.addEventListener('controllermodelready', createRay);
+    el.addEventListener('controllermodelready', function (evt) {
+      createRay(evt);
+      self.modelReady = true;
+    });
 
     function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
@@ -67748,7 +67752,7 @@ registerComponent('laser-controls', {
 
       // Only apply a default raycaster if it does not yet exist. This prevents it overwriting
       // config applied from a controllermodelready event.
-      if (evt.detail.rayOrigin || !el.hasAttribute('raycaster')) {
+      if (evt.detail.rayOrigin || !self.modelReady) {
         el.setAttribute('raycaster', raycasterConfig);
       }
 
@@ -78322,7 +78326,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 15-09-2017, Commit #dbd6984)');
+console.log('A-Frame Version: 0.6.1 (Date 16-09-2017, Commit #854b63b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
