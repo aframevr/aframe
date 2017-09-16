@@ -13,7 +13,7 @@ suite('daydream-controls', function () {
         hand: 'right',
         axes: [0, 0],
         buttons: [{value: 0, pressed: false, touched: false}],
-        pose: {orientation: [1, 0, 0, 0]}
+        pose: {orientation: [1, 0, 0, 0], position: null}
       }];
       done();
     });
