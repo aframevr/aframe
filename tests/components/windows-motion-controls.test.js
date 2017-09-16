@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, Event */
+/* global assert, process, setup, suite, test, THREE, Event */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('windows-motion-controls', function () {
@@ -538,6 +538,26 @@ suite('windows-motion-controls', function () {
       assert.ok(checkIfControllerPresentSpy.called, 'checkIfControllerPresent not called in response to gamepaddisconnected');
 
       setTimeout(() => { done(); });
+    });
+  });
+
+  suite.only('setModelVisibility', function () {
+    test('shows model', function () {
+      var component = el.components['windows-motion-controls'];
+      var model = new THREE.Object3D();
+      model.visible = false;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(true);
+      assert.ok(model.visible);
+    });
+
+    test('hides model', function () {
+      var component = el.components['windows-motion-controls'];
+      var model = new THREE.Object3D();
+      model.visible = true;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(false);
+      assert.notOk(model.visible);
     });
   });
 
