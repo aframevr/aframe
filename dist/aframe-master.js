@@ -71496,7 +71496,6 @@ module.exports.Component = registerComponent('tracked-controls', {
     var standingMatrix = this.standingMatrix;
     var vrDisplay = this.system.vrDisplay;
     var headEl = this.getHeadElement();
-    var headObject3D = headEl.object3D;
     var headCamera = headEl.components.camera;
     var userHeight = (headCamera ? headCamera.data.userHeight : 0) || this.defaultUserHeight();
 
@@ -71504,33 +71503,31 @@ module.exports.Component = registerComponent('tracked-controls', {
 
     // Compose pose from Gamepad.
     pose = controller.pose;
-    // If no orientation, use camera.
-    if (pose.orientation) {
+    if (pose.orientation !== null) {
       dolly.quaternion.fromArray(pose.orientation);
-    } else {
-      dolly.quaternion.copy(headObject3D.quaternion);
     }
-    if (pose.position) {
+
+    // controller position or arm model
+    if (pose.position !== null) {
       dolly.position.fromArray(pose.position);
     } else {
-      if (this.data.armModel) {
-        // Controller not 6DOF, apply arm model.
-        this.applyArmModel(controllerPosition);
-      }
-      dolly.position.copy(controllerPosition);
+      // Controller not 6DOF, apply arm model.
+      if (this.data.armModel) { this.applyArmModel(dolly.position); }
     }
-    dolly.updateMatrix();
 
     // Apply transforms, if 6DOF and in VR.
-    if (pose.position && vrDisplay) {
+    if (pose.position != null && vrDisplay) {
       if (vrDisplay.stageParameters) {
         standingMatrix.fromArray(vrDisplay.stageParameters.sittingToStandingTransform);
-        dolly.applyMatrix(standingMatrix);
+        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
+        dolly.matrix.multiplyMatrices(standingMatrix, dolly.matrix);
       } else {
         // Apply default camera height
         dolly.position.y += userHeight;
-        dolly.updateMatrix();
+        dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
       }
+    } else {
+      dolly.matrix.compose(dolly.position, dolly.quaternion, dolly.scale);
     }
 
     // Decompose.
@@ -72283,10 +72280,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       hand: this.data.hand,
       index: this.data.pair
     });
-
-    if (this.data.hideDisconnected && this.controllerModel) {
-      this.controllerModel.visible = false;
-    }
   },
 
   play: function () {
@@ -72346,7 +72339,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     this.el.setAttribute('tracked-controls', {
       idPrefix: GAMEPAD_ID_PREFIX,
       controller: data.pair,
-      hand: data.hand
+      hand: data.hand,
+      armModel: false
     });
 
     this.updateControllerModel();
@@ -72375,13 +72369,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   },
 
   loadModel: function (url) {
-    // Make model visible if there's already one loaded.
-    if (this.controllerModel) {
-      this.controllerModel.visible = true;
-      return;
-    }
-
-    debug('Loading asset from: ' + url);
     // The model is loaded by the gltf-model compoent when this attribute is initially set,
     // removed and re-loaded if the given url changes.
     this.el.setAttribute('gltf-model', 'url(' + url + ')');
@@ -78326,7 +78313,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 16-09-2017, Commit #854b63b)');
+console.log('A-Frame Version: 0.6.1 (Date 16-09-2017, Commit #2526bef)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
