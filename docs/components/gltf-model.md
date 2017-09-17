@@ -16,7 +16,7 @@ highly interoperable with modern web technologies.
 The `gltf-model` component loads a 3D model using a glTF (`.gltf` or `.glb`)
 file.
 
-[threejsgltf]: https://threejs.org/docs/#Examples/Loaders/GLTFLoader
+[threejsgltf]: https://threejs.org/docs/#examples/loaders/GLTFLoader
 
 Note that glTF is a fairly new specification and adoption is still growing.
 Work on the [three.js glTF loader][threejsgltf] and converters are still
