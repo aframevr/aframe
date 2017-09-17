@@ -72228,11 +72228,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
   init: function () {
     var self = this;
+    var el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
     this.onButtonDown = function (evt) { self.onButtonEvent(evt, 'down'); };
     this.onButtonUp = function (evt) { self.onButtonEvent(evt, 'up'); };
     this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt, 'touchstart'); };
     this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt, 'touchend'); };
+    this.onControllerConnected = function () { self.setModelVisibility(true); };
+    this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
@@ -72254,6 +72257,9 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     // Stored on object to allow for mocking in tests
     this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
     this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+
+    el.addEventListener('controllerconnected', this.onControllerConnected);
+    el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
   },
 
   addEventListeners: function () {
@@ -72462,6 +72468,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
       }
 
       this.calculateRayOriginFromMesh(rootNode);
+      // Determine if the model has to be visible or not.
+      this.setModelVisibility();
     }
 
     debug('Model load complete.');
@@ -72594,6 +72602,14 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
 
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
+  },
+
+  setModelVisibility: function (visible) {
+    var model = this.el.getObject3D('mesh');
+    visible = visible !== undefined ? visible : this.modelVisible;
+    this.modelVisible = visible;
+    if (!model) { return; }
+    model.visible = visible;
   }
 });
 
@@ -78320,7 +78336,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 17-09-2017, Commit #753e691)');
+console.log('A-Frame Version: 0.6.1 (Date 17-09-2017, Commit #4fe2a59)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
