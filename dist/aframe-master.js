@@ -67726,6 +67726,7 @@ registerComponent('laser-controls', {
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', createRay);
+    el.addEventListener('controllerdisconnected', hideRay);
     el.addEventListener('controllermodelready', function (evt) {
       createRay(evt);
       self.modelReady = true;
@@ -67754,11 +67755,17 @@ registerComponent('laser-controls', {
       // config applied from a controllermodelready event.
       if (evt.detail.rayOrigin || !self.modelReady) {
         el.setAttribute('raycaster', raycasterConfig);
+      } else {
+        el.setAttribute('raycaster', 'showLine', true);
       }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
+    }
+
+    function hideRay () {
+      el.setAttribute('raycaster', 'showLine', false);
     }
   },
 
@@ -78313,7 +78320,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.6.1 (Date 16-09-2017, Commit #2526bef)');
+console.log('A-Frame Version: 0.6.1 (Date 17-09-2017, Commit #753e691)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
