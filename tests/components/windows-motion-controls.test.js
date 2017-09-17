@@ -541,7 +541,7 @@ suite('windows-motion-controls', function () {
     });
   });
 
-  suite.only('setModelVisibility', function () {
+  suite('setModelVisibility', function () {
     test('shows model', function () {
       var component = el.components['windows-motion-controls'];
       var model = new THREE.Object3D();
