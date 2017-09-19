@@ -26,12 +26,14 @@ THREE.VREffect = function( renderer, onError ) {
 
 	window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
 	window.addEventListener('vrdisplaydisconnect', function (evt) {
+		var f;
+		
 		scope.exitPresent();
 		// Cancels current request animation frame.
-		scope.cancelAnimationFrame();
+		f = scope.cancelAnimationFrame();
 		vrDisplay = undefined;
 		// Resumes the request animation frame.
-		scope.requestAnimationFrame();
+		scope.requestAnimationFrame(f);
 	});
 
 	function gotVRDisplays( displays ) {
@@ -209,6 +211,8 @@ THREE.VREffect = function( renderer, onError ) {
 
 	this.cancelAnimationFrame = function( h ) {
 
+		var f = scope.f;
+
 		scope.f = undefined;
 
 		if ( vrDisplay !== undefined ) {
@@ -221,6 +225,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 		}
 
+		return f;
 	};
 
 	this.submitFrame = function() {
