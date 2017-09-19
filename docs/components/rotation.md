@@ -7,7 +7,7 @@ source_code: src/components/rotation.js
 examples: []
 ---
 
-The rotation component defines the orientation of an entity. It takes the roll
+The rotation component defines the orientation of an entity. It takes the pitch
 (`x`), yaw (`y`), and roll (`z`) as three space-delimited numbers indicating
 degrees of rotation. 
 
@@ -27,9 +27,9 @@ rotation.
 
 | Axis | Description                       | Default Value
 |------|-----------------------------------|---------------|
-| x    | Roll, rotation about the X-axis.  | 0             |
-| y    | Pitch, rotation about the Y-axis. | 0             |
-| z    | Yaw, rotation about the Z-axis.   | 0             |
+| x    | Pitch, rotation about the X-axis. | 0             |
+| y    | Yaw, rotation about the Y-axis.   | 0             |
+| z    | Roll, rotation about the Z-axis.  | 0             |
 
 ## Relative Rotation
 
