@@ -9,6 +9,9 @@ var warn = utils.debug('components:raycaster:warn');
 
 var dummyVec = new THREE.Vector3();
 
+// Defines selectors that should be 'safe' for the MutationObserver used to
+// refresh the whitelist. Less common selectors, like [position=0 2 0], cannot
+// be detected here.
 var SAFE_SELECTOR_RE = /^[\w\s-.[\]#]+$/;
 
 /**
@@ -144,6 +147,7 @@ module.exports.Component = registerComponent('raycaster', {
       // Update check time.
       this.prevCheckTime = time;
 
+      // Refresh the object whitelist if needed.
       if (this.dirty) { this.refreshObjects(); }
 
       // Store old previously intersected entities.
