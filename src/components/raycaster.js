@@ -1,10 +1,15 @@
+/* global MutationObserver */
+
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
 var bind = utils.bind;
+var warn = utils.debug('components:raycaster:warn');
 
 var dummyVec = new THREE.Vector3();
+
+var SAFE_SELECTOR_RE = /^[\w\s-.[\]#]+$/;
 
 /**
  * Raycaster component.
@@ -38,13 +43,14 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineEndVec3 = new THREE.Vector3();
     this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
-    this.objects = null;
+    this.objects = [];
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
-    this.refreshObjects = bind(this.refreshObjects, this);
-    this.refreshOnceChildLoaded = bind(this.refreshOnceChildLoaded, this);
+    this.setDirty = bind(this.setDirty, this);
+    this.observer = new MutationObserver(this.setDirty);
+    this.dirty = true;
   },
 
   /**
@@ -70,19 +76,27 @@ module.exports.Component = registerComponent('raycaster', {
       el.removeAttribute('line');
     }
 
-    this.refreshObjects();
+    if (data.objects !== oldData.objects && !SAFE_SELECTOR_RE.test(data.objects)) {
+      warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
+    }
+
+    this.setDirty();
   },
 
   play: function () {
-    this.el.sceneEl.addEventListener('loaded', this.refreshObjects);
-    this.el.sceneEl.addEventListener('child-attached', this.refreshOnceChildLoaded);
-    this.el.sceneEl.addEventListener('child-detached', this.refreshObjects);
+    this.observer.observe(this.el.sceneEl, {
+      childList: true,
+      attributes: true,
+      subtree: true
+    });
+    this.el.sceneEl.addEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
   },
 
   pause: function () {
-    this.el.sceneEl.removeEventListener('loaded', this.refreshObjects);
-    this.el.sceneEl.removeEventListener('child-attached', this.refreshOnceChildLoaded);
-    this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
+    this.observer.disconnect();
+    this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
   },
 
   remove: function () {
@@ -92,53 +106,20 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   /**
-   * Update list of objects to test for intersection once child is loaded.
+   * Mark the object list as dirty, to be refreshed before next raycast.
    */
-  refreshOnceChildLoaded: function (evt) {
-    var self = this;
-    var childEl = evt.detail.el;
-    if (!childEl) { return; }
-    if (childEl.hasLoaded) {
-      this.refreshObjects();
-    } else {
-      childEl.addEventListener('loaded', function nowRefresh (evt) {
-        childEl.removeEventListener('loaded', nowRefresh);
-        self.refreshObjects();
-      });
-    }
+  setDirty: function () {
+    this.dirty = true;
   },
 
   /**
    * Update list of objects to test for intersection.
    */
   refreshObjects: function () {
-    var children;
     var data = this.data;
-    var i;
-    var objects;
-    // Target entities.
-    var targetEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
-
-    // Push meshes onto list of objects to intersect.
-    if (targetEls) {
-      objects = [];
-      for (i = 0; i < targetEls.length; i++) {
-        objects.push(targetEls[i].object3D);
-      }
-    } else {
-      // If objects not defined, intersect with everything.
-      objects = this.el.sceneEl.object3D.children;
-    }
-
-    this.objects = [];
-    for (i = 0; i < objects.length; i++) {
-      // A-Frame wraps everything in THREE.Group. Grab the children.
-      children = objects[i].children;
-
-      // Add the object3D children for non-recursive raycasting.
-      // If no children, refresh after entity loaded.
-      if (children) { this.objects.push.apply(this.objects, children); }
-    }
+    var els = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
+    this.objects = flattenChildrenShallow(els);
+    this.dirty = false;
   },
 
   /**
@@ -162,6 +143,8 @@ module.exports.Component = registerComponent('raycaster', {
       if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
       // Update check time.
       this.prevCheckTime = time;
+
+      if (this.dirty) { this.refreshObjects(); }
 
       // Store old previously intersected entities.
       copyArray(this.prevIntersectedEls, this.intersectedEls);
@@ -298,6 +281,41 @@ module.exports.Component = registerComponent('raycaster', {
     };
   })()
 });
+
+/**
+ * Returns children of each element's object3D group. Children are flattened
+ * by one level, removing the THREE.Group wrapper, so that non-recursive
+ * raycasting remains useful.
+ *
+ * @param  {Array<Element>} els
+ * @return {Array<THREE.Object3D>}
+ */
+function flattenChildrenShallow (els) {
+  var groups = [];
+  var objects = [];
+  var children;
+  var i;
+
+  // Push meshes onto list of objects to intersect.
+  if (els) {
+    for (i = 0; i < els.length; i++) {
+      groups.push(els[i].object3D);
+    }
+  } else {
+    // If objects not defined, intersect with everything.
+    groups = this.el.sceneEl.object3D.children;
+  }
+
+  // Each entity's root is a THREE.Group. Return the group's chilrden.
+  for (i = 0; i < groups.length; i++) {
+    children = groups[i].children;
+    if (children && children.length) {
+      objects.push.apply(objects, children);
+    }
+  }
+
+  return objects;
+}
 
 /**
  * Copy contents of one array to another without allocating new array.
