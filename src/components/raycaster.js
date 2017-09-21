@@ -36,7 +36,8 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     recursive: {default: true},
     showLine: {default: false},
-    useWorldCoordinates: {default: false}
+    useWorldCoordinates: {default: false},
+    watch: {default: true}
   },
 
   init: function () {
@@ -83,10 +84,15 @@ module.exports.Component = registerComponent('raycaster', {
       warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
     }
 
+    if (data.watch !== oldData.watch && el.isPlaying) {
+      data.watch ? this.play() : this.pause();
+    }
+
     this.setDirty();
   },
 
   play: function () {
+    if (!this.data.watch) { return; }
     this.observer.observe(this.el.sceneEl, {
       childList: true,
       attributes: true,
@@ -97,6 +103,7 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   pause: function () {
+    if (!this.data.watch) { return; }
     this.observer.disconnect();
     this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
     this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
