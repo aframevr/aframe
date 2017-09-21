@@ -339,7 +339,7 @@ registerShader('portal', {
       'vec2 sampleUV;',
       'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
       'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
-      'sampleUV.x = atan(direction.z, direction.x) * -RECIPROCAL_PI2 + 0.5;',
+      'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
       'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
         'gl_FragColor = vec4(strokeColor, 1.0);',
       '} else {',
