@@ -460,6 +460,7 @@ module.exports.AScene = registerElement('a-scene', {
         // In VR mode, VREffect handles canvas resize based on the dimensions returned by
         // the getEyeParameters function of the WebVR API. These dimensions are independent of
         // the window size, therefore should not be overwritten with the window's width and height.
+        // if (!camera || !canvas || this.is('vr-mode') && isMobile) { return; }
         if (!camera || !canvas || this.is('vr-mode')) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
