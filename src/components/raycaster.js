@@ -103,7 +103,6 @@ module.exports.Component = registerComponent('raycaster', {
   },
 
   pause: function () {
-    if (!this.data.watch) { return; }
     this.observer.disconnect();
     this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
     this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
