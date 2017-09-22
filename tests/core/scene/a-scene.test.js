@@ -388,6 +388,58 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
+  suite.only('resize', function () {
+    var sceneEl;
+    var setSizeSpy;
+
+    setup(function () {
+      sceneEl = this.el;
+      AScene.prototype.resize.restore();
+      sceneEl.camera = { updateProjectionMatrix: function () {} };
+      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.renderer = { setSize: function () {} };
+
+      setSizeSpy = this.sinon.spy(sceneEl.renderer, 'setSize');
+    });
+
+    test('resize renderer when not in vr mode', function () {
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
+      sceneEl.effect = {
+        isPresenting: false
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode on mobile', function () {
+      sceneEl.isMobile = true;
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode and presenting in a headset', function () {
+      sceneEl.effect = {
+        isPresenting: true
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+  });
+
   suite('pointerRestricted', function () {
     setup(function () {
       var sceneEl = this.el;
