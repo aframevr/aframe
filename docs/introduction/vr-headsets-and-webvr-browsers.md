@@ -134,7 +134,7 @@ specification][w3c]:
 - [Firefox 55+ for Windows](https://www.mozilla.org/en-US/firefox/desktop/)
 - [Experimental builds of Chromium](https://webvr.info/get-chrome/)
 - Chrome for Android (Daydream)
-- Oculus Carmel (GearVR)
+- Oculus Browser (GearVR)
 - Samsung Internet (GearVR)
 - Microsoft Edge
 
