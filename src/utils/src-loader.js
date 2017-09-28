@@ -93,7 +93,30 @@ function checkIsImage (src, onResult) {
     onResult(src.tagName === 'IMG');
     return;
   }
+  var request = new XMLHttpRequest();
 
+  request.open("HEAD", src);
+  request.addEventListener('load', function(event) {
+    if (request.status >= 200 && request.status < 300) {
+      var contentType = request.getResponseHeader("Content-Type");
+      if(contentType == null) {
+        checkIsImageFallback(src, onResult);
+      } else {
+        if(contentType.startsWith("image")){
+          onResult(true);
+        } else {
+          onResult(false);
+        }
+      }
+    } else {
+      checkIsImageFallback(src, onResult);
+    }
+    request.abort();
+  });
+  request.send();
+}
+
+function checkIsImageFallback(src, onResult){
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
