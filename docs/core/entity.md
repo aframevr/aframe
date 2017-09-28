@@ -93,19 +93,9 @@ document.querySelector('a-entity[sound]').components.sound.pause();
 
 ### `hasLoaded`
 
-Whether the entity has fully initialized. Initialization ends after entity's chidren and components have finished loading. A common pattern to wait for an entity to load before doing something is:
-
- ```js
- function doSomething() {
-   if (!entity.hasLoaded) {
-     entity.addEventListener('loaded', doSomething);
-     return;
-   }
-   // do something with entity
- }
- var entity = document.querySelector('a-entity');
- doSomething();
- ```
+Whether the entity has attached and initialized all of its components. Though
+the best way to ensure code is run after the entity is ready is to place code
+within a component.
 
 ### `isPlaying`
 
