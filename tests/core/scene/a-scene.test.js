@@ -388,7 +388,7 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite.only('resize', function () {
+  suite('resize', function () {
     var sceneEl;
     var setSizeSpy;
 
