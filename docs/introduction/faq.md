@@ -279,9 +279,7 @@ including:
 - [React](https://github.com/aframevr/aframe-react)
 - [Preact](https://github.com/aframevr/aframe-react#using-with-preact)
 - [D3.js](http://blockbuilder.org/search#text=aframe)
-- [Angular](https://github.com/brakmic/Angular-VR-Starter)
 - [Vue.js](https://github.com/frederic-schwarz/aframe-vuejs-3dio)
-- Redux
 - jQuery
 - Ember.js
 - Meteor
