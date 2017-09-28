@@ -91,6 +91,22 @@ Or if a component exposes an API, we can call its methods:
 document.querySelector('a-entity[sound]').components.sound.pause();
 ```
 
+### `hasLoaded`
+
+Whether the entity has fully initialized. Initialization ends after entity's chidren and components have finished loading. A common pattern to wait for an entity to load before doing something is:
+
+ ```js
+ function doSomething() {
+   if (!entity.hasLoaded) {
+     entity.addEventListener('loaded', doSomething);
+     return;
+   }
+   // do something with entity
+ }
+ var entity = document.querySelector('a-entity');
+ doSomething();
+ ```
+
 ### `isPlaying`
 
 Whether the entity is active and playing. If we pause the entity , then
