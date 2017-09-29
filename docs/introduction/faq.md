@@ -276,10 +276,11 @@ Read [*Where to Find Components*][finding] for more information.
 A-Frame is built on top of the DOM so most libraries and frameworks work
 including:
 
-- [React](https://github.com/aframevr/aframe-react)
+- [Vue.js](https://github.com/frederic-schwarz/aframe-vuejs-3dio)
 - [Preact](https://github.com/aframevr/aframe-react#using-with-preact)
 - [D3.js](http://blockbuilder.org/search#text=aframe)
-- [Vue.js](https://github.com/frederic-schwarz/aframe-vuejs-3dio)
+- [React](https://github.com/aframevr/aframe-react)
+- [Angular](https://stackoverflow.com/questions/46464103/various-errors-when-attempting-to-integrate-aframe-into-angular2-project-esp-wi)
 - jQuery
 - Ember.js
 - Meteor
