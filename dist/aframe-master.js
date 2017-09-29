@@ -66072,6 +66072,7 @@ module.exports={
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
+    "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 0.6.1 0.7.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
@@ -78338,7 +78339,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 22-09-2017, Commit #75ac4d8)');
+console.log('A-Frame Version: 0.7.0 (Date 29-09-2017, Commit #31387d6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
