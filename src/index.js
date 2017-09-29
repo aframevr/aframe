@@ -42,6 +42,7 @@ if (utils.device.isIOSOlderThan10(window.navigator.userAgent)) {
 
 // WebVR polyfill
 require('webvr-polyfill');
+require('webxr-polyfill/dist/webxr-polyfill.js');
 
 require('present'); // Polyfill `performance.now()`.
 

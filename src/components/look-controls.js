@@ -112,8 +112,8 @@ module.exports.Component = registerComponent('look-controls', {
   setupHMDControls: function () {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
-    // this.controls = new THREE.VRControls(this.dolly);
-    this.controls = new THREE.XRControls(this.dolly);
+    this.controls = new THREE.VRControls(this.dolly);
+    // this.controls = new THREE.XRControls(this.dolly);
     this.controls.userHeight = 0.0;
   },
 

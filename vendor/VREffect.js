@@ -248,7 +248,7 @@ THREE.VREffect = function( renderer, onError ) {
 	var cameraR = new THREE.PerspectiveCamera();
 	cameraR.layers.enable( 2 );
 
-	this.render = function( scene, camera, renderTarget, forceClear ) {
+	this.render = function( scene, camera, renderTarget, forceClear, frameData ) {
 
 		if ( vrDisplay && scope.isPresenting ) {
 
