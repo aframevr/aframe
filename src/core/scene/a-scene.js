@@ -484,7 +484,8 @@ module.exports.AScene = registerElement('a-scene', {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.sortObjects = false;
-        this.effect = new THREE.VREffect(renderer);
+        // this.effect = new THREE.VREffect(renderer);
+        this.effect = new THREE.XREffect(renderer);
         this.effect.autoSubmitFrame = false;
       },
       writable: window.debug

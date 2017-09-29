@@ -24,7 +24,10 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
 /**
  * Check for positional tracking.
  */
+// TODO: update this to support positional tracking from XRControls
 function checkHasPositionalTracking () {
+  'use strict';
+  console.log('checkHasPositionalTracking should check XRControls if active');
   var vrDisplay = controls.getVRDisplay();
   if (isMobile() || isGearVR()) { return false; }
   return vrDisplay && vrDisplay.capabilities.hasPosition;
