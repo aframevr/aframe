@@ -18,6 +18,7 @@
     "lint": "semistandard -v | snazzy",
     "lint:fix": "semistandard --fix",
     "precommit": "npm run lint",
+    "prepush": "node scripts/testOnlyCheck.js",
     "prerelease": "node scripts/release.js 0.6.1 0.7.0",
     "start": "npm run dev",
     "test": "karma start ./tests/karma.conf.js",
