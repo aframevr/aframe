@@ -26,7 +26,7 @@ experience:
 [reactdevtools]: https://github.com/facebook/react-devtools
 [hotloading]: https://github.com/gaearon/react-hot-loader
 [React]: https://github.com/facebook/react
-[Preact]: https://github.com/facebook/react
+[Preact]: https://preactjs.com/
 [Redux]: http://reduxjs.org/
 
 We'll later also skim across some of the useful developer tools when using

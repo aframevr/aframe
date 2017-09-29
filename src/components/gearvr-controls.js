@@ -40,7 +40,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.checkIfControllerPresent = bind(this.checkIfControllerPresent, this);
     this.removeControllersUpdateListener = bind(this.removeControllersUpdateListener, this);
     this.onAxisMoved = bind(this.onAxisMoved, this);
-    this.onGamepadConnectionEvent = bind(this.onGamepadConnectionEvent, this);
   },
 
   init: function () {
@@ -91,22 +90,14 @@ module.exports.Component = registerComponent('gearvr-controls', {
                                         this.data.hand ? {hand: this.data.hand} : {});
   },
 
-  onGamepadConnectionEvent: function (evt) {
-    this.checkIfControllerPresent();
-  },
-
   play: function () {
     this.checkIfControllerPresent();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.addEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
     this.addControllersUpdateListener();
   },
 
   pause: function () {
     this.removeEventListeners();
     this.removeControllersUpdateListener();
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
-    window.removeEventListener('gamepaddisconnected', this.checkIfControllerPresent, false);
   },
 
   injectTrackedControls: function () {
@@ -133,7 +124,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
   },
 
   onControllersUpdate: function () {
-    // Note that due to gamepadconnected event propagation issues, we don't rely on events.
     this.checkIfControllerPresent();
   },
 

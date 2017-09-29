@@ -6,11 +6,10 @@
 - **Performance:** maintain high framerate with low latency
 - **Ecosystem:** enable discovery and distribution of reusable components
 
-## 0.7.0 (est. Oct 2017)
+## 0.8.0 (est. Nov 2017)
 
 - Vive tracker support (#2582)
-- glTF 2.0 support (#2693)
 - Replace VREffect / VRControls with new three.js WebVR API
 - System API enhancements (e.g., refactor to inherit from component API, entity added and removed handlers)
 - Asset management improvements (e.g., loading screen, duplicate requests in FileLoader)
-- Entity re-parenting
+- Spectator Camera (ability to show different views in headset and 2D monitor)

@@ -133,7 +133,7 @@ If we want to change the color of a box on hover and restore it when no longer
 hovering:
 
 ```html
-<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -153,7 +153,7 @@ ${selector}`. If we want to display a text label when an entity is hovered
 over:
 
 ```html
-<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -176,7 +176,7 @@ properties using A-Frame component dot syntax (i.e.,
 `${componentName}.${propertyName}`):
 
 ```html
-<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -209,7 +209,7 @@ To demonstrate what the event set component does under the hood, let's have a
 box change color on hover and on leaving hover with JavaScript:
 
 ```html
-<script src="https://aframe.io/releases/0.6.1/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 <script>
   AFRAME.registerComponent('change-color-on-hover', {
     schema: {
@@ -395,6 +395,7 @@ methods, but none that are truly one-size-fits-all.
 ### hand-controls Component
 
 [handcontrols]: ../components/hand-controls.md
+[lasercontrols]: ../components/laser-controls.md
 
 A-Frame provides an implementation for supporting multiple types of 6DoF
 controllers (Vive, Oculus Touch) via the [hand-controls
@@ -420,6 +421,9 @@ all the types of 3DoF controllers (i.e., Daydream, GearVR). We could create a
 custom controller that works with both controllers. It would be fairly easy to
 cover since 3DoF controllers do not offer much potential for interaction (i.e.,
 only rotational tracking with a touchpad).
+
+However, there is a controller component that covers all 6DoF and 3DoF controllers
+currently supported by A-Frame: [laser-controls][lasercontrols].
 
 ### Creating Custom Controllers
 
@@ -464,6 +468,7 @@ AFRAME.registerComponent('custom-controls', {
     el.setAttribute('oculus-touch-controls', controlConfiguration);
     el.setAttribute('daydream-controls', controlConfiguration);
     el.setAttribute('gearvr-controls', controlConfiguration);
+    el.setAttribute('windows-motion-controls', controlConfiguration);
 
     // Set a model.
     el.setAttribute('gltf-model', this.data.model);
@@ -492,6 +497,7 @@ event handlers how we want:
 - [hand-controls events](../components/hand-controls.md#events)
 - [oculus-touch-controls events](../components/oculus-touch-controls.md#events)
 - [vive-controls events](../components/vive-controls.md#events)
+- [windows-motion-controls events](../components/windows-motion-controls.md#events)
 
 For example, we can listen to the Oculus Touch X button press, and toggle
 visibility of an entity. In component form:
@@ -601,7 +607,5 @@ Other examples to look at include:
   Interaction through sphere-collider and grab components.
 - [ball-throw](https://github.com/bryik/aframe-ball-throw) - Grab and throw
   using [aframe-extras] and [aframe-physics].
-- [architect](https://github.com/ngokevin/architect) - Interaction through
-  cloner, deleter, mover, placer, and scaler components.
 - [vr-editor](https://github.com/caseyyee/aframe-vreditor-component) - Interaction through
   a single vr-editor component for cloning, moving, deleting, placing, and scaling.

@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test */
+/* global assert, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('hand-controls', function () {
@@ -13,13 +13,6 @@ suite('hand-controls', function () {
       done();
     });
     el.setAttribute('hand-controls', '');
-  });
-
-  suite('update', function () {
-    test('injects oculus-touch-controls and vive-controls', function () {
-      assert.ok(el.components['oculus-touch-controls']);
-      assert.ok(el.components['vive-controls']);
-    });
   });
 
   suite('determineGesture', function () {
@@ -41,6 +34,23 @@ suite('hand-controls', function () {
       trackedControls = el.components['tracked-controls'];
       trackedControls.controller = {id: 'Foobar', connected: true};
 
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = false;
+      component.pressedButtons['trackpad'] = true;
+      component.pressedButtons['thumbstick'] = false;
+      component.pressedButtons['menu'] = false;
+      component.pressedButtons['AorX'] = false;
+      component.pressedButtons['BorY'] = false;
+      component.pressedButtons['surface'] = false;
+      assert.equal(component.determineGesture(), 'Point');
+    });
+
+    test('makes point gesture on vive', function () {
+      var trackedControls;
+      el.setAttribute('tracked-controls', '');
+      trackedControls = el.components['tracked-controls'];
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
+
       component.pressedButtons['grip'] = false;
       component.pressedButtons['trigger'] = false;
       component.pressedButtons['trackpad'] = true;
@@ -57,6 +67,23 @@ suite('hand-controls', function () {
       el.setAttribute('tracked-controls', '');
       trackedControls = el.components['tracked-controls'];
       trackedControls.controller = {id: 'Foobar', connected: true};
+
+      component.pressedButtons['grip'] = true;
+      component.pressedButtons['trigger'] = true;
+      component.pressedButtons['trackpad'] = true;
+      component.pressedButtons['thumbstick'] = false;
+      component.pressedButtons['menu'] = false;
+      component.pressedButtons['AorX'] = false;
+      component.pressedButtons['BorY'] = false;
+      component.pressedButtons['surface'] = false;
+      assert.equal(component.determineGesture(), 'Fist');
+    });
+
+    test('makes fist gesture on vive', function () {
+      var trackedControls;
+      el.setAttribute('tracked-controls', '');
+      trackedControls = el.components['tracked-controls'];
+      trackedControls.controller = {id: 'OpenVR Gamepad', connected: true};
 
       component.pressedButtons['grip'] = true;
       component.pressedButtons['trigger'] = false;
@@ -81,6 +108,26 @@ suite('hand-controls', function () {
 
       component.pressedButtons['menu'] = true;
       assert.equal(component.determineGesture(), 'Fist');
+    });
+  });
+
+  suite('setModelVisibility', function () {
+    test('shows model', function () {
+      var component = el.components['hand-controls'];
+      var model = new THREE.Object3D();
+      model.visible = false;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(true);
+      assert.ok(model.visible);
+    });
+
+    test('hides model', function () {
+      var component = el.components['hand-controls'];
+      var model = new THREE.Object3D();
+      model.visible = true;
+      el.setObject3D('mesh', model);
+      component.setModelVisibility(false);
+      assert.notOk(model.visible);
     });
   });
 });

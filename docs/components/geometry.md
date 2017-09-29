@@ -374,4 +374,4 @@ We can then use that custom geometry in HTML:
 [cd]: https://en.wikipedia.org/wiki/Compact_disc
 [component-schema]: ../core/component.md#schema
 [prisms-wiki]: https://en.wikipedia.org/wiki/Prism_%28geometry%29
-[three-geometry]: http://threejs.org/docs/#Reference/Core/Geometry
+[three-geometry]: https://threejs.org/docs/#api/core/Geometry

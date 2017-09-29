@@ -1,3 +1,53 @@
+## 0.7.0 (Sept 12, 2017)
+
+This release features:
+
+- Support for Windows Mixed Reality Headsets and Microsoft Edge.
+- Support for glTF 2.0.
+- Performance improvements to reduce garbage collection cycles.
+
+### Major Changes
+
+- Add support for Windows Mixed Reality motion controllers. (#3013)
+- Add glTF 2.0 support through upgrading three.js. glTF 1.0 is no longer supported. (#2986)
+- Bump THREE to r87. (#2994)
+
+### Fixes
+
+- Do not resize the canvas in VR which leads to resolution drop (#3031).
+- Fix component build data when `previousData` is object and a property has a `null` default value. (#3021)
+- Fix calculating mouse position for embedded scenes. (#2942)
+- Fix missing detail property in a-scene onVRPresentChange. (#2920)
+- Fix updates for the line component. (#2906)
+
+### Enhancements
+
+- Handle `vrdisplayconnect` and `vrdisplaydisconnect` events in VREffect and VRControls. (#3019)
+- Allow text component to take a number value. (6cbdac)
+- Handle `vrdisplaypointerrestricted` event in `a-scene`. (#3014)
+- Allow decoupling of touch events in look-contols. (#3012)
+- Add support for VR headsets that do not provide `stageParameters`. (#3000)
+- Moves canvas initialization logic from a component to the scene. (#2985)
+- Listen to `vrdisplayconnect` and `vrdisplaydisconnect` to enter and exit VR when headset is plugged or unplugged. (#2900)
+- Add title info to Enter VR button. (#2905)
+- Cursor example improvements. (#2916)
+- Add `vertexColors` property to base material component. (#2901)
+- Add `emissive` and `emissiveIntensity` properties to base material component. (#2896)
+
+### Performance
+
+- Optimize tracked controls tick, discovery, and utilities. (#2943)
+- Do not clone `attrValue` attributes into data anymore to reduce cloning. (#2939)
+- Optimize a-entity code. (#2959)
+- Optimize wasd-controls with early returns and skipping of type checking. (#2945)
+- Optimize vec3 parse utility. (#2947)
+- Optimize component change/initialize events. (#2950)
+- Optimize look-controls by reducing object allocations and skipping of type checking. (#2944)
+- Optimize emit method by removing split/map/callback calls and allocations. (#2941)
+- Save a couple of function callbacks and array creations on each frame. (#2937)
+- Remove inline functions for critical code paths in tracked-controls/raycaster/component for garbage collection. (#2936)
+- Do not update component when data not changed even if skipping type checking. (#2917)
+
 ## 0.6.1 (July 18, 2017)
 
 Bug fixes, support for Firefox on Android, mouse-based cursor, enable motion

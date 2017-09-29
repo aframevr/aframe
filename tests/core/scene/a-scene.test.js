@@ -61,21 +61,6 @@ suite('a-scene (without renderer)', function () {
     });
   });
 
-  suite('vrdisplayconnect', function () {
-    test('tells A-Frame about entering VR when the headset is connected', function (done) {
-      var event;
-      var sceneEl = this.el;
-      var enterVRStub = this.sinon.stub(sceneEl, 'enterVR');
-      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
-      event = new CustomEvent('vrdisplayconnect');
-      window.dispatchEvent(event);
-      process.nextTick(function () {
-        assert.ok(enterVRStub.called);
-        done();
-      });
-    });
-  });
-
   suite('vrdisplaydisconnect', function () {
     test('tells A-Frame about entering VR when the headset is disconnected', function (done) {
       var event;
@@ -400,6 +385,58 @@ suite('a-scene (without renderer)', function () {
       sceneEl.reload(true);
       sinon.assert.called(AEntity.prototype.pause);
       sinon.assert.called(ANode.prototype.load);
+    });
+  });
+
+  suite('resize', function () {
+    var sceneEl;
+    var setSizeSpy;
+
+    setup(function () {
+      sceneEl = this.el;
+      AScene.prototype.resize.restore();
+      sceneEl.camera = { updateProjectionMatrix: function () {} };
+      sceneEl.canvas = document.createElement('canvas');
+      sceneEl.renderer = { setSize: function () {} };
+
+      setSizeSpy = this.sinon.spy(sceneEl.renderer, 'setSize');
+    });
+
+    test('resize renderer when not in vr mode', function () {
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
+      sceneEl.effect = {
+        isPresenting: false
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.ok(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode on mobile', function () {
+      sceneEl.isMobile = true;
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
+    });
+
+    test('does not resize renderer when in vr mode and presenting in a headset', function () {
+      sceneEl.effect = {
+        isPresenting: true
+      };
+      sceneEl.addState('vr-mode');
+
+      sceneEl.resize();
+
+      assert.notOk(setSizeSpy.called);
     });
   });
 

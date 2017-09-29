@@ -91,6 +91,12 @@ Or if a component exposes an API, we can call its methods:
 document.querySelector('a-entity[sound]').components.sound.pause();
 ```
 
+### `hasLoaded`
+
+Whether the entity has attached and initialized all of its components. Though
+the best way to ensure code is run after the entity is ready is to place code
+within a component.
+
 ### `isPlaying`
 
 Whether the entity is active and playing. If we pause the entity , then

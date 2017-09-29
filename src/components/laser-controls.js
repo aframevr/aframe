@@ -10,27 +10,58 @@ registerComponent('laser-controls', {
     var config = this.config;
     var data = this.data;
     var el = this.el;
+    var self = this;
 
     // Set all controller models.
     el.setAttribute('daydream-controls', {hand: data.hand});
     el.setAttribute('gearvr-controls', {hand: data.hand});
     el.setAttribute('oculus-touch-controls', {hand: data.hand});
     el.setAttribute('vive-controls', {hand: data.hand});
+    el.setAttribute('windows-motion-controls', {hand: data.hand});
 
-    // Wait for controller to connect before
-    el.addEventListener('controllerconnected', function (evt) {
+    // Wait for controller to connect, or have a valid pointing pose, before creating ray
+    el.addEventListener('controllerconnected', createRay);
+    el.addEventListener('controllerdisconnected', hideRay);
+    el.addEventListener('controllermodelready', function (evt) {
+      createRay(evt);
+      self.modelReady = true;
+    });
+
+    function createRay (evt) {
       var controllerConfig = config[evt.detail.name];
 
       if (!controllerConfig) { return; }
 
-      el.setAttribute('raycaster', utils.extend({
+      // Show the line unless a particular config opts to hide it, until a controllermodelready
+      // event comes through.
+      var raycasterConfig = utils.extend({
         showLine: true
-      }, controllerConfig.raycaster || {}));
+      }, controllerConfig.raycaster || {});
+
+      // The controllermodelready event contains a rayOrigin that takes into account
+      // offsets specific to the loaded model.
+      if (evt.detail.rayOrigin) {
+        raycasterConfig.origin = evt.detail.rayOrigin.origin;
+        raycasterConfig.direction = evt.detail.rayOrigin.direction;
+        raycasterConfig.showLine = true;
+      }
+
+      // Only apply a default raycaster if it does not yet exist. This prevents it overwriting
+      // config applied from a controllermodelready event.
+      if (evt.detail.rayOrigin || !self.modelReady) {
+        el.setAttribute('raycaster', raycasterConfig);
+      } else {
+        el.setAttribute('raycaster', 'showLine', true);
+      }
 
       el.setAttribute('cursor', utils.extend({
         fuse: false
       }, controllerConfig.cursor));
-    });
+    }
+
+    function hideRay () {
+      el.setAttribute('raycaster', 'showLine', false);
+    }
   },
 
   config: {
@@ -50,6 +81,11 @@ registerComponent('laser-controls', {
 
     'vive-controls': {
       cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']}
+    },
+
+    'windows-motion-controls': {
+      cursor: {downEvents: ['triggerdown'], upEvents: ['triggerup']},
+      raycaster: {showLine: false}
     }
   }
 });
