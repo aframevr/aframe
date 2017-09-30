@@ -34,8 +34,8 @@ World-space positions of child entities inherit from parent entities. Consider t
 
 ```html
 <a-entity id="parent" position="1 2 3">
-  <a-entity id="child-1"></a-entity>
-  <a-entity id="child-2" position="2 3 4"></a-entity>
+  <a-entity id="child1"></a-entity>
+  <a-entity id="child2" position="2 3 4"></a-entity>
 </a-entity>
 ```
 
