@@ -196,7 +196,7 @@ For the random color component, we want to set a random color on the entity
 that this component is attached to. Components have a reference to the entity
 with `this.el` from the handler methods. And to change the color with
 JavaScript, we change the material component's color property using
-`.setAttribute()`. A-Frame several DOM APIs a bit, but the APIs mostly mirror
+`.setAttribute()`. A-Frame enhances the behavior of several DOM APIs a bit, but the APIs mostly mirror
 vanilla web development. [Read more about using JavaScript and DOM APIs with
 A-Frame][js].
 
