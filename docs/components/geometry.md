@@ -131,7 +131,7 @@ need a double-sided material to render properly:
 <a-entity geometry="primitive: cylinder; openEnded: true" material="side: double"></a-entity>
 ```
 
-We can create a cured surfaces by specifying the arc via `thetaLength` such
+We can create a curved surfaces by specifying the arc via `thetaLength` such
 that the cylinder doesn't curve all the way around, making the cylinder
 open-ended, and then making the material double-sided:
 
@@ -201,7 +201,7 @@ the `material` component.
 ### `ring`
 
 The ring geometry creates a flat ring, like a [CD][cd]. Because the ring is
-flat, A-Frame will only render a single face of the ring we specify `side:
+flat, A-Frame will only render a single face of the ring unless we specify `side:
 double` the `material` component.
 
 ```html
