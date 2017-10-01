@@ -10,14 +10,14 @@ var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_v
 var GAMEPAD_ID_PREFIX = 'Gear VR';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Gear VR controls.
+ * Interface with Gear VR controller and map Gamepad events to
+ * controller buttons: trackpad, trigger
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('gearvr-controls', {
   schema: {
-    hand: {default: ''}, // This informs the degenerate arm model.
+    hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
@@ -26,9 +26,11 @@ module.exports.Component = registerComponent('gearvr-controls', {
     armModel: {default: true}
   },
 
-  // buttonId
-  // 0 - trackpad
-  // 1 - triggeri
+  /**
+   * Button IDs:
+   * 0 - trackpad
+   * 1 - trigger
+   */
   mapping: {
     axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'trigger']

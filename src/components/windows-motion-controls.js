@@ -16,10 +16,10 @@ var GAMEPAD_ID_PREFIX = 'Spatial Controller (Spatial Interaction Source) ';
 var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
 
 /**
- * Windows Motion Controller Controls Component
- * Interfaces with Windows Motion Controller controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and transforms the pressed buttons
+ * Windows Motion Controller controls.
+ * Interface with Windows Motion Controller controllers and map Gamepad events to
+ * controller buttons: trackpad, trigger, grip, menu, thumbstick
+ * Load a controller model and transform the pressed buttons.
  */
 module.exports.Component = registerComponent('windows-motion-controls', {
   schema: {

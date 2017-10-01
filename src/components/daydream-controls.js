@@ -11,23 +11,27 @@ var GAMEPAD_ID_PREFIX = 'Daydream Controller';
 
 /**
  * Daydream controls.
+ * Interface with Daydream controller and map Gamepad events to
+ * controller buttons: trackpad, menu, system
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: ''},  // Informs the degenerate arm model.
+    hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    // Use -999 as sentinel value to auto-determine based on hand.
     rotationOffset: {default: 0},
     armModel: {default: true}
   },
 
-  // buttonId
-  // 0 - trackpad
-  // 1 - menu (never dispatched on this layer)
-  // 2 - system (never dispatched on this layer)
+  /**
+   * Button IDs:
+   * 0 - trackpad
+   * 1 - menu (never dispatched on this layer)
+   * 2 - system (never dispatched on this layer)
+   */
   mapping: {
     axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'menu', 'system']
