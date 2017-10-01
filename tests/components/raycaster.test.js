@@ -2,7 +2,7 @@
 var entityFactory = require('../helpers').entityFactory;
 
 // TODO(donmccurdy): Implement tests if changes look OK.
-suite.skip('raycaster', function () {
+suite('raycaster', function () {
   var component;
   var el;
   var parentEl;
@@ -68,6 +68,7 @@ suite.skip('raycaster', function () {
       el2.setAttribute('geometry', 'primitive: box');
       el2.addEventListener('loaded', function () {
         el.setAttribute('raycaster', 'objects', '.clickable');
+        component.tick();
         assert.equal(component.objects.length, 1);
         assert.equal(component.objects[0], el2.object3D.children[0]);
         assert.equal(el2, el2.object3D.children[0].el);
@@ -116,13 +117,13 @@ suite.skip('raycaster', function () {
 
     test('refresh objects when new entities are added to the scene', function (done) {
       var newEl = document.createElement('a-entity');
+      component.tick();
       var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
       newEl.addEventListener('loaded', function () {
-        setTimeout(() => {
-          assert.equal(component.objects.length, numObjects + 1);
-          done();
-        });
+        component.tick();
+        assert.equal(component.objects.length, numObjects + 1);
+        done();
       });
       sceneEl.appendChild(newEl);
     });

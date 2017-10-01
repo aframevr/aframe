@@ -12,7 +12,7 @@ var dummyVec = new THREE.Vector3();
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
 // Selectors for the value of an attribute, like [position=0 2 0], cannot be
 // reliably detected and are therefore disallowed.
-var OBSERVER_SELECTOR_RE = /^[\w\s-.[\]#]+$/;
+var OBSERVER_SELECTOR_RE = /^[\w\s-.[\]#]*$/;
 
 // Configuration for the MutationObserver used to refresh the whitelist.
 // Listens for addition/removal of elements and attributes within the scene.
@@ -140,7 +140,10 @@ module.exports.Component = registerComponent('raycaster', {
    */
   refreshObjects: function () {
     var data = this.data;
-    var els = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
+    // If objects not defined, intersect with everything.
+    var els = data.objects
+      ? this.el.sceneEl.querySelectorAll(data.objects)
+      : this.el.sceneEl.children;
     this.objects = flattenChildrenShallow(els);
     this.dirty = false;
   },
@@ -321,13 +324,10 @@ function flattenChildrenShallow (els) {
   var i;
 
   // Push meshes onto list of objects to intersect.
-  if (els) {
-    for (i = 0; i < els.length; i++) {
+  for (i = 0; i < els.length; i++) {
+    if (els[i].object3D) {
       groups.push(els[i].object3D);
     }
-  } else {
-    // If objects not defined, intersect with everything.
-    groups = this.el.sceneEl.object3D.children;
   }
 
   // Each entity's root is a THREE.Group. Return the group's chilrden.
