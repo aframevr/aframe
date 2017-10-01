@@ -4,15 +4,23 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 
-var bind = utils.bind;
 var warn = utils.debug('components:raycaster:warn');
 
 var dummyVec = new THREE.Vector3();
 
 // Defines selectors that should be 'safe' for the MutationObserver used to
-// refresh the whitelist. Less common selectors, like [position=0 2 0], cannot
-// be detected here.
-var SAFE_SELECTOR_RE = /^[\w\s-.[\]#]+$/;
+// refresh the whitelist. Matches classnames, IDs, and presence of attributes.
+// Selectors for the value of an attribute, like [position=0 2 0], cannot be
+// reliably detected and are therefore disallowed.
+var OBSERVER_SELECTOR_RE = /^[\w\s-.[\]#]+$/;
+
+// Configuration for the MutationObserver used to refresh the whitelist.
+// Listens for addition/removal of elements and attributes within the scene.
+var OBSERVER_CONFIG = {
+  childList: true,
+  attributes: true,
+  subtree: true
+};
 
 /**
  * Raycaster component.
@@ -37,7 +45,7 @@ module.exports.Component = registerComponent('raycaster', {
     recursive: {default: true},
     showLine: {default: false},
     useWorldCoordinates: {default: false},
-    watch: {default: true}
+    autoRefresh: {default: true}
   },
 
   init: function () {
@@ -52,7 +60,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.prevIntersectedEls = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
-    this.setDirty = bind(this.setDirty, this);
+    this.setDirty = this.setDirty.bind(this);
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
   },
@@ -80,38 +88,44 @@ module.exports.Component = registerComponent('raycaster', {
       el.removeAttribute('line');
     }
 
-    if (data.objects !== oldData.objects && !SAFE_SELECTOR_RE.test(data.objects)) {
+    if (data.objects !== oldData.objects && !OBSERVER_SELECTOR_RE.test(data.objects)) {
       warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
     }
 
-    if (data.watch !== oldData.watch && el.isPlaying) {
-      data.watch ? this.play() : this.pause();
+    if (data.autoRefresh !== oldData.autoRefresh && el.isPlaying) {
+      data.autoRefresh
+        ? this.addEventListeners()
+        : this.removeEventListeners();
     }
 
     this.setDirty();
   },
 
   play: function () {
-    if (!this.data.watch) { return; }
-    this.observer.observe(this.el.sceneEl, {
-      childList: true,
-      attributes: true,
-      subtree: true
-    });
-    this.el.sceneEl.addEventListener('object3dset', this.setDirty);
-    this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
+    this.addEventListeners();
   },
 
   pause: function () {
-    this.observer.disconnect();
-    this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
-    this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
+    this.removeEventListeners();
   },
 
   remove: function () {
     if (this.data.showLine) {
       this.el.removeAttribute('line');
     }
+  },
+
+  addEventListeners: function () {
+    if (!this.data.autoRefresh) { return; }
+    this.observer.observe(this.el.sceneEl, OBSERVER_CONFIG);
+    this.el.sceneEl.addEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
+  },
+
+  removeEventListeners: function () {
+    this.observer.disconnect();
+    this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
   },
 
   /**
