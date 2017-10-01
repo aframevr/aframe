@@ -9,15 +9,17 @@ var THREE = require('../lib/three');
  */
 module.exports.Component = registerComponent('link', {
   schema: {
-    color: {default: 'white', type: 'color'},
-    highlighted: {default: false},
-    highlightedColor: {default: '#24CAFF', type: 'color'},
-    href: {default: ''},
-    image: {type: 'asset'},
-    on: {default: 'click'},
-    peekMode: {default: false},
-    title: {default: ''},
-    visualAspectEnabled: {default: true}
+    titleColor: { default: 'white', type: 'color' },
+    borderColor: { default: 'white', type: 'color' },
+    innerColor: { default: 'red', type: 'color' },
+    highlighted: { default: false },
+    highlightedColor: { default: '#24CAFF', type: 'color' },
+    href: { default: '' },
+    image: { type: 'asset' },
+    on: { default: 'click' },
+    peekMode: { default: false },
+    title: { default: '' },
+    visualAspectEnabled: { default: true }
   },
 
   init: function () {
@@ -31,15 +33,17 @@ module.exports.Component = registerComponent('link', {
   update: function (oldData) {
     var data = this.data;
     var el = this.el;
-    var strokeColor = data.highlighted ? data.highlightedColor : data.color;
+    var strokeColor = data.highlighted ? data.highlightedColor : data.borderColor;
+    var innerColor = data.highlighted ? data.highlightedColor : data.innerColor;
     el.setAttribute('material', 'strokeColor', strokeColor);
+    el.setAttribute('material', 'innerColor', innerColor);
     if (data.on !== oldData.on) { this.updateEventListener(); }
     if (data.visualAspectEnabled && oldData.peekMode !== undefined && data.peekMode !== oldData.peekMode) {
       this.updatePeekMode();
     }
     if (!data.image || oldData.image === data.image) { return; }
     el.setAttribute('material', 'pano',
-                    typeof data.image === 'string' ? data.image : data.image.src);
+      typeof data.image === 'string' ? data.image : data.image.src);
   },
 
   /*
@@ -92,7 +96,7 @@ module.exports.Component = registerComponent('link', {
     semiSphereEl = this.semiSphereEl = this.semiSphereEl || document.createElement('a-entity');
 
     // Set Portal
-    el.setAttribute('geometry', {primitive: 'circle', radius: 1.0, segments: 64});
+    el.setAttribute('geometry', { primitive: 'circle', radius: 1.0, segments: 64 });
     el.setAttribute('material', {
       shader: 'portal',
       pano: this.data.image,
@@ -100,7 +104,7 @@ module.exports.Component = registerComponent('link', {
     });
     // Set text that displays the link title / url
     textEl.setAttribute('text', {
-      color: 'white',
+      color: this.data.titleColor,
       align: 'center',
       font: 'kelsonsans',
       value: this.data.title || this.data.href,
@@ -243,7 +247,7 @@ module.exports.Component = registerComponent('link', {
     el.sceneEl.object3D.traverse(function (object) {
       if (object && object.el && object.el.hasAttribute('link-controls')) { return; }
       if (!object.el || object === el.sceneEl.object3D || object.el === el || object.el === self.sphereEl ||
-          object.el === el.sceneEl.cameraEl || object.el.getAttribute('visible') === false || object.el === self.textEl || object.el === self.semiSphereEl) { return; }
+        object.el === el.sceneEl.cameraEl || object.el.getAttribute('visible') === false || object.el === self.textEl || object.el === self.semiSphereEl) { return; }
       object.el.setAttribute('visible', false);
       hiddenEls.push(object.el);
     });
@@ -307,9 +311,10 @@ module.exports.Component = registerComponent('link', {
 /* eslint-disable */
 registerShader('portal', {
   schema: {
-    pano: {type: 'map', is: 'uniform'},
-    borderEnabled: {default: 1.0, type: 'int', is: 'uniform'},
-    strokeColor: {default: 'white', type: 'color', is: 'uniform'}
+    pano: { type: 'map', is: 'uniform' },
+    borderEnabled: { default: 1.0, type: 'int', is: 'uniform' },
+    strokeColor: { default: 'white', type: 'color', is: 'uniform' },
+    innerColor: { default: 'red', type: 'color', is: 'uniform' }
   },
 
   vertexShader: [
@@ -318,11 +323,11 @@ registerShader('portal', {
     'varying float vDistanceToCenter;',
     'varying float vDistance;',
     'void main() {',
-      'vDistanceToCenter = clamp(length(position - vec3(0.0, 0.0, 0.0)), 0.0, 1.0);',
-      'portalPosition = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;',
-      'vDistance = length(portalPosition - cameraPosition);',
-      'vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;',
-      'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+    'vDistanceToCenter = clamp(length(position - vec3(0.0, 0.0, 0.0)), 0.0, 1.0);',
+    'portalPosition = (modelMatrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;',
+    'vDistance = length(portalPosition - cameraPosition);',
+    'vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;',
+    'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
     '}'
   ].join('\n'),
 
@@ -330,21 +335,22 @@ registerShader('portal', {
     '#define RECIPROCAL_PI2 0.15915494',
     'uniform sampler2D pano;',
     'uniform vec3 strokeColor;',
+    'uniform vec3 innerColor;',
     'uniform float borderEnabled;',
     'varying float vDistanceToCenter;',
     'varying float vDistance;',
     'varying vec3 vWorldPosition;',
     'void main() {',
-      'vec3 direction = normalize(vWorldPosition - cameraPosition);',
-      'vec2 sampleUV;',
-      'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
-      'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
-      'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
-      'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
-        'gl_FragColor = vec4(strokeColor, 1.0);',
-      '} else {',
-        'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(0.93, 0.17, 0.36, 1.0), clamp(pow((vDistance / 15.0), 2.0), 0.0, 1.0));',
-      '}',
+    'vec3 direction = normalize(vWorldPosition - cameraPosition);',
+    'vec2 sampleUV;',
+    'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
+    'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
+    'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
+    'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
+    'gl_FragColor = vec4(strokeColor, 1.0);',
+    '} else {',
+    'gl_FragColor = mix(texture2D(pano, sampleUV), vec4(innerColor, 1.0), clamp(pow((vDistance / 15.0), 2.0), 0.0, 1.0));',
+    '}',
     '}'
   ].join('\n')
 });
