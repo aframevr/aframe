@@ -12,7 +12,7 @@ var dummyVec = new THREE.Vector3();
 // refresh the whitelist. Matches classnames, IDs, and presence of attributes.
 // Selectors for the value of an attribute, like [position=0 2 0], cannot be
 // reliably detected and are therefore disallowed.
-var OBSERVER_SELECTOR_RE = /^[\w\s-.[\]#]*$/;
+var OBSERVER_SELECTOR_RE = /^[\w\s-.,[\]#]*$/;
 
 // Configuration for the MutationObserver used to refresh the whitelist.
 // Listens for addition/removal of elements and attributes within the scene.
