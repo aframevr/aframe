@@ -38,8 +38,8 @@ Consider this scene:
 
 ```html
 <a-entity id="parent" rotation="0 45 0">
-  <a-entity id="child-1"></a-entity>
-  <a-entity id="child-2" rotation="15 45 30"></a-entity>
+  <a-entity id="child1"></a-entity>
+  <a-entity id="child2" rotation="15 45 30"></a-entity>
 </a-entity>
 ```
 

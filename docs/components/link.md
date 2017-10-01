@@ -63,7 +63,7 @@ We also provide a link primitive with a different syntax:
 | color               | Background color of the portal.                                                                                                              | white         |
 | highlighted         | Boolean to toggle link highlight color.                                                                                                      | false         |
 | highlightedColor    | Border color when highlighted.                                                                                                               | '#24CAFF'     |
-| href                | Destiantion URL where the link points to.                                                                                                    | ''            |
+| href                | Destination URL where the link points to.                                                                                                    | ''            |
 | on                  | Event to listen to that triggers link traversal.                                                                                             | ''            |
 | image               | 360&deg; image used as scene preview in the portal. Can be a selector to an `<img>` element or a URL.                                        | ''            |
 | peekMode            | Whether the 360&deg; image is fully expanded for preview.                                                                                    | false         |
