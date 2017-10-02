@@ -538,25 +538,6 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Reload the scene to the original DOM content.
-     *
-     * @param {bool} doPause - Whether to reload the scene with all dynamic behavior paused.
-     */
-    reload: {
-      value: function (doPause) {
-        var self = this;
-        if (doPause) { this.pause(); }
-        this.innerHTML = this.originalHTML;
-        this.init();
-        ANode.prototype.load.call(this, play);
-        function play () {
-          if (!self.isPlaying) { return; }
-          AEntity.prototype.play.call(self);
-        }
-      }
-    },
-
-    /**
      * Wrap `updateComponent` to not initialize the component if the component has a system
      * (aframevr/aframe#2365).
      */

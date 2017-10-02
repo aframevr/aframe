@@ -1,6 +1,4 @@
 /* global AFRAME, assert, CustomEvent, process, sinon, setup, suite, teardown, test */
-var AEntity = require('core/a-entity');
-var ANode = require('core/a-node');
 var AScene = require('core/scene/a-scene').AScene;
 var components = require('core/component').components;
 var scenes = require('core/scene/scenes');
@@ -363,28 +361,6 @@ suite('a-scene (without renderer)', function () {
       sceneEl.tock();
       assert.equal(spy.getCalls().length, 1);
       delete AFRAME.systems.foo;
-    });
-  });
-
-  suite('reload', function () {
-    test('reload scene innerHTML to original value', function () {
-      var canvasEl;
-      var sceneEl = this.el;
-      sceneEl.innerHTML = 'NEW';
-      sceneEl.reload();
-      assert.equal(sceneEl.children.length, 1);
-      canvasEl = sceneEl.querySelector('canvas');
-      assert.equal(canvasEl.getAttribute('class'), 'a-canvas');
-      assert.equal(canvasEl.getAttribute('data-aframe-canvas'), 'true');
-    });
-
-    test('reloads the scene and pauses', function () {
-      var sceneEl = this.el;
-      this.sinon.spy(AEntity.prototype, 'pause');
-      this.sinon.spy(ANode.prototype, 'load');
-      sceneEl.reload(true);
-      sinon.assert.called(AEntity.prototype.pause);
-      sinon.assert.called(ANode.prototype.load);
     });
   });
 
