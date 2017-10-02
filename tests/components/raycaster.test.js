@@ -67,6 +67,7 @@ suite('raycaster', function () {
       el2.setAttribute('geometry', 'primitive: box');
       el2.addEventListener('loaded', function () {
         el.setAttribute('raycaster', 'objects', '.clickable');
+        component.tick();
         assert.equal(component.objects.length, 1);
         assert.equal(component.objects[0], el2.object3D.children[0]);
         assert.equal(el2, el2.object3D.children[0].el);
@@ -115,32 +116,62 @@ suite('raycaster', function () {
 
     test('refresh objects when new entities are added to the scene', function (done) {
       var newEl = document.createElement('a-entity');
+      component.tick();
       var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
       newEl.addEventListener('loaded', function () {
-        setTimeout(() => {
-          assert.equal(component.objects.length, numObjects + 1);
-          done();
-        });
+        component.tick();
+        assert.equal(component.objects.length, numObjects + 1);
+        done();
       });
       sceneEl.appendChild(newEl);
     });
 
     test('refresh objects when new entities are removed from the scene', function (done) {
       var newEl = document.createElement('a-entity');
+      component.tick();
       var numObjects = component.objects.length;
       newEl.setAttribute('geometry', 'primitive: box');
       sceneEl.addEventListener('child-detached', function doAssert () {
-        setTimeout(() => {
-          assert.equal(component.objects.length, numObjects);
-          sceneEl.removeEventListener('child-detached', doAssert);
-          done();
-        });
+        component.tick();
+        assert.equal(component.objects.length, numObjects);
+        sceneEl.removeEventListener('child-detached', doAssert);
+        done();
       });
       newEl.addEventListener('loaded', function () {
         sceneEl.removeChild(newEl);
       });
       sceneEl.appendChild(newEl);
+    });
+
+    test('refresh objects when entities are modified', function (done) {
+      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      var newEl = document.createElement('a-entity');
+      newEl.setAttribute('geometry', 'primitive: box');
+      newEl.addEventListener('loaded', function doAssert () {
+        component.tick();
+        assert.equal(component.objects.length, 0);
+        newEl.setAttribute('ray-target', '');
+        setTimeout(function () {
+          component.tick();
+          assert.equal(component.objects.length, 1);
+          sceneEl.removeEventListener('child-attached', doAssert);
+          done();
+        }, 0);
+      });
+      sceneEl.appendChild(newEl);
+    });
+
+    test('refresh objects when setObject3D() or removeObject3D() is called', function () {
+      el.setAttribute('raycaster', {objects: '[ray-target]'});
+      component.tick();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('object3dset');
+      assert.equal(component.dirty, true);
+      component.tick();
+      assert.equal(component.dirty, false);
+      sceneEl.emit('object3dremove');
+      assert.equal(component.dirty, true);
     });
   });
 
