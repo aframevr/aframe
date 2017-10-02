@@ -136,8 +136,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var buttonMeshes;
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
-    buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
+    buttonMeshes.trigger = controllerObject3D.children[2];
+    buttonMeshes.trackpad = controllerObject3D.children[1];
   },
 
   onButtonChanged: function (evt) {
