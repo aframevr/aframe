@@ -4,9 +4,9 @@ type: introduction
 layout: docs
 parent_section: introduction
 order: 8.5
-examples: 
-  - title: Interaction in A-Frame
-    src: https://glitch.com/edit/#!/quilt-fisherman
+examples:
+  - title: Basic Interaction
+    src: https://glitch.com/edit/#!/aframe-basic-interaction?path=index.html:1:0
 ---
 
 There is no one true way for adding interactions due to variety of platforms,
