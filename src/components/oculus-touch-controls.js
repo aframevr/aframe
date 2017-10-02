@@ -36,7 +36,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
    * 3 - X (left) or A (right)
    * 4 - Y (left) or B (right)
    * 5 - surface (touch only)
-   *
+   */
   mapping: {
     left: {
       axes: {thumbstick: [0, 1]},
