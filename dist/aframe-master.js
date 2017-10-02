@@ -66724,23 +66724,27 @@ var GAMEPAD_ID_PREFIX = 'Daydream Controller';
 
 /**
  * Daydream controls.
+ * Interface with Daydream controller and map Gamepad events to
+ * controller buttons: trackpad, menu, system
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('daydream-controls', {
   schema: {
-    hand: {default: ''},  // Informs the degenerate arm model.
+    hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
     model: {default: true},
-    // Use -999 as sentinel value to auto-determine based on hand.
     rotationOffset: {default: 0},
     armModel: {default: true}
   },
 
-  // buttonId
-  // 0 - trackpad
-  // 1 - menu (never dispatched on this layer)
-  // 2 - system (never dispatched on this layer)
+  /**
+   * Button IDs:
+   * 0 - trackpad
+   * 1 - menu (never dispatched on this layer)
+   * 2 - system (never dispatched on this layer)
+   */
   mapping: {
     axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'menu', 'system']
@@ -66930,14 +66934,14 @@ var GEARVR_CONTROLLER_MODEL_OBJ_MTL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_v
 var GAMEPAD_ID_PREFIX = 'Gear VR';
 
 /**
- * Vive Controls Component
- * Interfaces with vive controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and highlights the pressed buttons
+ * Gear VR controls.
+ * Interface with Gear VR controller and map Gamepad events to
+ * controller buttons: trackpad, trigger
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('gearvr-controls', {
   schema: {
-    hand: {default: ''}, // This informs the degenerate arm model.
+    hand: {default: ''},  // This informs the degenerate arm model.
     buttonColor: {type: 'color', default: '#000000'},
     buttonTouchedColor: {type: 'color', default: '#777777'},
     buttonHighlightColor: {type: 'color', default: '#FFFFFF'},
@@ -66946,9 +66950,11 @@ module.exports.Component = registerComponent('gearvr-controls', {
     armModel: {default: true}
   },
 
-  // buttonId
-  // 0 - trackpad
-  // 1 - triggeri
+  /**
+   * Button IDs:
+   * 0 - trackpad
+   * 1 - trigger
+   */
   mapping: {
     axes: {trackpad: [0, 1]},
     buttons: ['trackpad', 'trigger']
@@ -69198,10 +69204,10 @@ var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
 /**
- * Oculus Touch controls component.
- * Interface with Oculus Touch controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * Load a controller model and highlights the pressed buttons
+ * Oculus Touch controls.
+ * Interface with Oculus Touch controllers and map Gamepad events to
+ * controller buttons: thumbstick, trigger, grip, xbutton, ybutton, surface
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
@@ -69213,13 +69219,15 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     rotationOffset: {default: 0}
   },
 
-  // buttonId
-  // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-  // 1 - trigger (with analog value, which goes up to 1)
-  // 2 - grip (with analog value, which goes up to 1)
-  // 3 - X (left) or A (right)
-  // 4 - Y (left) or B (right)
-  // 5 - surface (touch only)
+  /**
+   * Button IDs:
+   * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+   * 1 - trigger (with analog value, which goes up to 1)
+   * 2 - grip (with analog value, which goes up to 1)
+   * 3 - X (left) or A (right)
+   * 4 - Y (left) or B (right)
+   * 5 - surface (touch only)
+   */
   mapping: {
     left: {
       axes: {thumbstick: [0, 1]},
@@ -69427,13 +69435,29 @@ module.exports.Component = registerComponent('position', {
 });
 
 },{"../core/component":126}],96:[function(_dereq_,module,exports){
+/* global MutationObserver */
+
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 
-var bind = utils.bind;
+var warn = utils.debug('components:raycaster:warn');
 
 var dummyVec = new THREE.Vector3();
+
+// Defines selectors that should be 'safe' for the MutationObserver used to
+// refresh the whitelist. Matches classnames, IDs, and presence of attributes.
+// Selectors for the value of an attribute, like [position=0 2 0], cannot be
+// reliably detected and are therefore disallowed.
+var OBSERVER_SELECTOR_RE = /^[\w\s-.,[\]#]*$/;
+
+// Configuration for the MutationObserver used to refresh the whitelist.
+// Listens for addition/removal of elements and attributes within the scene.
+var OBSERVER_CONFIG = {
+  childList: true,
+  attributes: true,
+  subtree: true
+};
 
 /**
  * Raycaster component.
@@ -69457,7 +69481,8 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     recursive: {default: true},
     showLine: {default: false},
-    useWorldCoordinates: {default: false}
+    useWorldCoordinates: {default: false},
+    autoRefresh: {default: true}
   },
 
   init: function () {
@@ -69467,13 +69492,14 @@ module.exports.Component = registerComponent('raycaster', {
     this.lineEndVec3 = new THREE.Vector3();
     this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
-    this.objects = null;
+    this.objects = [];
     this.prevCheckTime = undefined;
     this.prevIntersectedEls = [];
     this.raycaster = new THREE.Raycaster();
     this.updateOriginDirection();
-    this.refreshObjects = bind(this.refreshObjects, this);
-    this.refreshOnceChildLoaded = bind(this.refreshOnceChildLoaded, this);
+    this.setDirty = this.setDirty.bind(this);
+    this.observer = new MutationObserver(this.setDirty);
+    this.dirty = true;
   },
 
   /**
@@ -69499,19 +69525,25 @@ module.exports.Component = registerComponent('raycaster', {
       el.removeAttribute('line');
     }
 
-    this.refreshObjects();
+    if (data.objects !== oldData.objects && !OBSERVER_SELECTOR_RE.test(data.objects)) {
+      warn('Selector "' + data.objects + '" may not update automatically with DOM changes.');
+    }
+
+    if (data.autoRefresh !== oldData.autoRefresh && el.isPlaying) {
+      data.autoRefresh
+        ? this.addEventListeners()
+        : this.removeEventListeners();
+    }
+
+    this.setDirty();
   },
 
   play: function () {
-    this.el.sceneEl.addEventListener('loaded', this.refreshObjects);
-    this.el.sceneEl.addEventListener('child-attached', this.refreshOnceChildLoaded);
-    this.el.sceneEl.addEventListener('child-detached', this.refreshObjects);
+    this.addEventListeners();
   },
 
   pause: function () {
-    this.el.sceneEl.removeEventListener('loaded', this.refreshObjects);
-    this.el.sceneEl.removeEventListener('child-attached', this.refreshOnceChildLoaded);
-    this.el.sceneEl.removeEventListener('child-detached', this.refreshObjects);
+    this.removeEventListeners();
   },
 
   remove: function () {
@@ -69520,54 +69552,37 @@ module.exports.Component = registerComponent('raycaster', {
     }
   },
 
+  addEventListeners: function () {
+    if (!this.data.autoRefresh) { return; }
+    this.observer.observe(this.el.sceneEl, OBSERVER_CONFIG);
+    this.el.sceneEl.addEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.addEventListener('object3dremove', this.setDirty);
+  },
+
+  removeEventListeners: function () {
+    this.observer.disconnect();
+    this.el.sceneEl.removeEventListener('object3dset', this.setDirty);
+    this.el.sceneEl.removeEventListener('object3dremove', this.setDirty);
+  },
+
   /**
-   * Update list of objects to test for intersection once child is loaded.
+   * Mark the object list as dirty, to be refreshed before next raycast.
    */
-  refreshOnceChildLoaded: function (evt) {
-    var self = this;
-    var childEl = evt.detail.el;
-    if (!childEl) { return; }
-    if (childEl.hasLoaded) {
-      this.refreshObjects();
-    } else {
-      childEl.addEventListener('loaded', function nowRefresh (evt) {
-        childEl.removeEventListener('loaded', nowRefresh);
-        self.refreshObjects();
-      });
-    }
+  setDirty: function () {
+    this.dirty = true;
   },
 
   /**
    * Update list of objects to test for intersection.
    */
   refreshObjects: function () {
-    var children;
     var data = this.data;
-    var i;
-    var objects;
-    // Target entities.
-    var targetEls = data.objects ? this.el.sceneEl.querySelectorAll(data.objects) : null;
-
-    // Push meshes onto list of objects to intersect.
-    if (targetEls) {
-      objects = [];
-      for (i = 0; i < targetEls.length; i++) {
-        objects.push(targetEls[i].object3D);
-      }
-    } else {
-      // If objects not defined, intersect with everything.
-      objects = this.el.sceneEl.object3D.children;
-    }
-
-    this.objects = [];
-    for (i = 0; i < objects.length; i++) {
-      // A-Frame wraps everything in THREE.Group. Grab the children.
-      children = objects[i].children;
-
-      // Add the object3D children for non-recursive raycasting.
-      // If no children, refresh after entity loaded.
-      if (children) { this.objects.push.apply(this.objects, children); }
-    }
+    // If objects not defined, intersect with everything.
+    var els = data.objects
+      ? this.el.sceneEl.querySelectorAll(data.objects)
+      : this.el.sceneEl.children;
+    this.objects = flattenChildrenShallow(els);
+    this.dirty = false;
   },
 
   /**
@@ -69591,6 +69606,9 @@ module.exports.Component = registerComponent('raycaster', {
       if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
       // Update check time.
       this.prevCheckTime = time;
+
+      // Refresh the object whitelist if needed.
+      if (this.dirty) { this.refreshObjects(); }
 
       // Store old previously intersected entities.
       copyArray(this.prevIntersectedEls, this.intersectedEls);
@@ -69727,6 +69745,38 @@ module.exports.Component = registerComponent('raycaster', {
     };
   })()
 });
+
+/**
+ * Returns children of each element's object3D group. Children are flattened
+ * by one level, removing the THREE.Group wrapper, so that non-recursive
+ * raycasting remains useful.
+ *
+ * @param  {Array<Element>} els
+ * @return {Array<THREE.Object3D>}
+ */
+function flattenChildrenShallow (els) {
+  var groups = [];
+  var objects = [];
+  var children;
+  var i;
+
+  // Push meshes onto list of objects to intersect.
+  for (i = 0; i < els.length; i++) {
+    if (els[i].object3D) {
+      groups.push(els[i].object3D);
+    }
+  }
+
+  // Each entity's root is a THREE.Group. Return the group's chilrden.
+  for (i = 0; i < groups.length; i++) {
+    children = groups[i].children;
+    if (children && children.length) {
+      objects.push.apply(objects, children);
+    }
+  }
+
+  return objects;
+}
 
 /**
  * Copy contents of one array to another without allocating new array.
@@ -72187,10 +72237,10 @@ var GAMEPAD_ID_PREFIX = 'Spatial Controller (Spatial Interaction Source) ';
 var GAMEPAD_ID_PATTERN = /([0-9a-zA-Z]+-[0-9a-zA-Z]+)$/;
 
 /**
- * Windows Motion Controller Controls Component
- * Interfaces with Windows Motion Controller controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * It loads a controller model and transforms the pressed buttons
+ * Windows Motion Controller controls.
+ * Interface with Windows Motion Controller controllers and map Gamepad events to
+ * controller buttons: trackpad, trigger, grip, menu, thumbstick
+ * Load a controller model and transform the pressed buttons.
  */
 module.exports.Component = registerComponent('windows-motion-controls', {
   schema: {
@@ -78351,7 +78401,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #def0b8e)');
+console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #d18a877)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -80645,7 +80695,7 @@ module.exports.isHLS = function (src, type) {
 };
 
 },{"../lib/three":174}],198:[function(_dereq_,module,exports){
-/* global Image */
+/* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
 var warn = debug('utils:src-loader:warn');
@@ -80736,11 +80786,38 @@ function parseUrl (src) {
  * @param {function} onResult - Callback with whether `src` is an image.
  */
 function checkIsImage (src, onResult) {
+  var request;
+
   if (src.tagName) {
     onResult(src.tagName === 'IMG');
     return;
   }
+  request = new XMLHttpRequest();
 
+  // Try to send HEAD request to check if image first.
+  request.open('HEAD', src);
+  request.addEventListener('load', function (event) {
+    var contentType;
+    if (request.status >= 200 && request.status < 300) {
+      contentType = request.getResponseHeader('Content-Type');
+      if (contentType == null) {
+        checkIsImageFallback(src, onResult);
+      } else {
+        if (contentType.startsWith('image')) {
+          onResult(true);
+        } else {
+          onResult(false);
+        }
+      }
+    } else {
+      checkIsImageFallback(src, onResult);
+    }
+    request.abort();
+  });
+  request.send();
+}
+
+function checkIsImageFallback (src, onResult) {
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }
