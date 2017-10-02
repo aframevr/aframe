@@ -13,10 +13,10 @@ var GAMEPAD_ID_PREFIX = 'Oculus Touch';
 var PIVOT_OFFSET = {x: 0, y: -0.015, z: 0.04};
 
 /**
- * Oculus Touch controls component.
- * Interface with Oculus Touch controllers and maps Gamepad events to
- * common controller buttons: trackpad, trigger, grip, menu and system
- * Load a controller model and highlights the pressed buttons
+ * Oculus Touch controls.
+ * Interface with Oculus Touch controllers and map Gamepad events to
+ * controller buttons: thumbstick, trigger, grip, xbutton, ybutton, surface
+ * Load a controller model and highlight the pressed buttons.
  */
 module.exports.Component = registerComponent('oculus-touch-controls', {
   schema: {
@@ -28,13 +28,15 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     rotationOffset: {default: 0}
   },
 
-  // buttonId
-  // 0 - thumbstick (which has separate axismove / thumbstickmoved events)
-  // 1 - trigger (with analog value, which goes up to 1)
-  // 2 - grip (with analog value, which goes up to 1)
-  // 3 - X (left) or A (right)
-  // 4 - Y (left) or B (right)
-  // 5 - surface (touch only)
+  /**
+   * Button IDs:
+   * 0 - thumbstick (which has separate axismove / thumbstickmoved events)
+   * 1 - trigger (with analog value, which goes up to 1)
+   * 2 - grip (with analog value, which goes up to 1)
+   * 3 - X (left) or A (right)
+   * 4 - Y (left) or B (right)
+   * 5 - surface (touch only)
+   *
   mapping: {
     left: {
       axes: {thumbstick: [0, 1]},
