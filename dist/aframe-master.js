@@ -76502,25 +76502,6 @@ module.exports.AScene = registerElement('a-scene', {
     },
 
     /**
-     * Reload the scene to the original DOM content.
-     *
-     * @param {bool} doPause - Whether to reload the scene with all dynamic behavior paused.
-     */
-    reload: {
-      value: function (doPause) {
-        var self = this;
-        if (doPause) { this.pause(); }
-        this.innerHTML = this.originalHTML;
-        this.init();
-        ANode.prototype.load.call(this, play);
-        function play () {
-          if (!self.isPlaying) { return; }
-          AEntity.prototype.play.call(self);
-        }
-      }
-    },
-
-    /**
      * Wrap `updateComponent` to not initialize the component if the component has a system
      * (aframevr/aframe#2365).
      */
@@ -78401,7 +78382,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #d18a877)');
+console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #407e580)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
