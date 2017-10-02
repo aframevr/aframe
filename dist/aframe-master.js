@@ -67060,8 +67060,8 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var buttonMeshes;
     if (!this.data.model) { return; }
     buttonMeshes = this.buttonMeshes = {};
-    buttonMeshes.trigger = controllerObject3D.getObjectByName('Trigger');
-    buttonMeshes.trackpad = controllerObject3D.getObjectByName('Touchpad');
+    buttonMeshes.trigger = controllerObject3D.children[2];
+    buttonMeshes.trackpad = controllerObject3D.children[1];
   },
 
   onButtonChanged: function (evt) {
@@ -78382,7 +78382,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #407e580)');
+console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #d2160c6)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
