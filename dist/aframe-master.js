@@ -68581,8 +68581,9 @@ module.exports.Component = registerComponent('look-controls', {
    */
   getUserHeight: function () {
     var el = this.el;
-    var userHeight = el.hasAttribute('camera') && el.getAttribute('camera').userHeight || DEFAULT_CAMERA_HEIGHT;
-    return userHeight;
+    return el.hasAttribute('camera')
+      ? el.getAttribute('camera').userHeight
+      : DEFAULT_CAMERA_HEIGHT;
   },
 
   play: function () {
@@ -78350,7 +78351,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #b73d176)');
+console.log('A-Frame Version: 0.7.0 (Date 02-10-2017, Commit #def0b8e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
