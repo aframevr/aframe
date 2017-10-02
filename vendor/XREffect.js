@@ -13,11 +13,7 @@ THREE.XREffect = function( renderer, onError ) {
     console.log('creating an XREffect on the renderer',renderer);
 
     var vrDisplay, vrDisplays;
-    var eyeTranslationL = new THREE.Vector3();
-    var eyeTranslationR = new THREE.Vector3();
-    var renderRectL, renderRectR;
     this.renderer = renderer;
-
 
 
     if(typeof navigator.XR === 'undefined'){
@@ -53,9 +49,9 @@ THREE.XREffect = function( renderer, onError ) {
             this.session.depthFar = 1000.0;
 
             // Handle session lifecycle events
-            this.session.addEventListener('focus', ev => { this.handleSessionFocus(ev) });
-            this.session.addEventListener('blur', ev => { this.handleSessionBlur(ev) });
-            this.session.addEventListener('end', ev => { this.handleSessionEnded(ev) });
+            // this.session.addEventListener('focus', ev => { this.handleSessionFocus(ev) });
+            // this.session.addEventListener('blur', ev => { this.handleSessionBlur(ev) });
+            // this.session.addEventListener('end', ev => { this.handleSessionEnded(ev) });
 
             if(true){
                 // VR Displays need startPresenting called due to input events like a click
@@ -76,8 +72,7 @@ THREE.XREffect = function( renderer, onError ) {
         console.log("nothing to do in start presenting");
         console.log("renderer = ",this.renderer);
         this.session.baseLayer = new XRWebGLLayer(this.session, this.renderer.context);
-
-    }
+    };
 
 
     this.initXR = function() {
@@ -93,72 +88,13 @@ THREE.XREffect = function( renderer, onError ) {
             console.error('Error getting XR displays', err);
             this.showMessage('Could not get XR displays')
         })
-    }
+    };
+
     this.initXR();
-
-    // var frameData = null;
-    //
-    // if ( 'VRFrameData' in window ) {
-    //
-    //     frameData = new window.VRFrameData();
-    //
-    // }
-
-    // window.addEventListener('vrdisplayconnect', function (evt) { vrDisplay = evt.display; });
-    // window.addEventListener('vrdisplaydisconnect', function (evt) {
-    //     var f;
-
-        // scope.exitPresent();
-        // Cancels current request animation frame.
-        // f = scope.cancelAnimationFrame();
-        // vrDisplay = undefined;
-        // Resumes the request animation frame.
-        // scope.requestAnimationFrame(f);
-    // });
-
-    /*
-    function gotVRDisplays( displays ) {
-
-        vrDisplays = displays;
-
-        if ( displays.length > 0 ) {
-
-            vrDisplay = displays[ 0 ];
-
-        } else {
-
-            if ( onError ) onError( 'HMD not available' );
-
-        }
-
-    }
-
-    if ( navigator.getVRDisplays ) {
-
-        navigator.getVRDisplays().then( gotVRDisplays ).catch( function() {
-
-            console.warn( 'THREE.VREffect: Unable to get VR Displays' );
-
-        } );
-
-    }
-    */
-
-    //
-
-    // this.isPresenting = false;
-
-    // var scope = this;
-
-    // var rendererSize = renderer.getSize();
-    // var rendererUpdateStyle = false;
-    // var rendererPixelRatio = renderer.getPixelRatio();
 
     this.getVRDisplay = function() {
         this.showMessage("get vr display called");
-
         return vrDisplay;
-
     };
 
     this.setVRDisplay = function( value ) {
@@ -175,23 +111,11 @@ THREE.XREffect = function( renderer, onError ) {
         this.showMessage("set size is called");
         rendererSize = { width: width, height: height };
         rendererUpdateStyle = updateStyle;
-
-        // if ( scope.isPresenting ) {
-        //
-        //     var eyeParamsL = vrDisplay.getEyeParameters( 'left' );
-        //     renderer.setPixelRatio( 1 );
-        //     renderer.setSize( eyeParamsL.renderWidth * 2, eyeParamsL.renderHeight, false );
-        //
-        // } else {
-            renderer.setPixelRatio( rendererPixelRatio );
-            renderer.setSize( width, height, updateStyle );
-        // }
-    //
+        renderer.setPixelRatio( rendererPixelRatio );
+        renderer.setSize( width, height, updateStyle );
     };
 
-
     this.requestAnimationFrame = function( f ) {
-        this.xrFrame = f;
         return this.session.requestFrame(f);
     };
 
@@ -207,8 +131,9 @@ THREE.XREffect = function( renderer, onError ) {
             this.showMessage('Could not get a usable stage coordinate system');
             return;
         }
-        // Get the two poses we care about: the foot level stage and head pose which is updated by ARKit, ARCore, or orientation events
-        let stagePose = frameData.getViewPose(stageCoordinateSystem);
+        // Get the two poses we care about: the foot level stage and
+        // the head pose which is updated by ARKit, ARCore, or orientation events
+        // let stagePose = frameData.getViewPose(stageCoordinateSystem);
         let headPose = frameData.getViewPose(frameData.getCoordinateSystem(XRCoordinateSystem.HEAD_MODEL));
 
 

@@ -59,7 +59,7 @@ module.exports.Component = registerComponent('look-controls', {
     if (!data.enabled) { return; }
     this.controls.standing = data.standing;
     this.controls.userHeight = this.getUserHeight();
-    this.controls.update();
+    this.controls.update(this.el.sceneEl.frameData);
     this.updateOrientation();
     this.updatePosition();
   },
@@ -112,8 +112,8 @@ module.exports.Component = registerComponent('look-controls', {
   setupHMDControls: function () {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
-    this.controls = new THREE.VRControls(this.dolly);
-    // this.controls = new THREE.XRControls(this.dolly);
+    // this.controls = new THREE.VRControls(this.dolly);
+    this.controls = new THREE.XRControls(this.dolly);
     this.controls.userHeight = 0.0;
   },
 
