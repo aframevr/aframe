@@ -54,26 +54,21 @@ suite('look-controls', function () {
     });
   });
 
-  suite('head-height', function () {
-    test('Return head height from camera device', function (done) {
+  suite('head height', function () {
+    test('returns head height from camera device', function () {
       var el = this.sceneEl;
       var cameraEl = el.camera.el;
       var cameraHeight = 2.5;
       var lookControls = el.camera.el.components['look-controls'];
       cameraEl.setAttribute('camera', 'userHeight', cameraHeight);
-
       assert.shallowDeepEqual(lookControls.getUserHeight(), cameraHeight);
-      done();
     });
 
-    test('Return default head height for poses where device does not provide an offset', function (done) {
+    test('returns default head height for poses where device does not provide offset', function () {
       var el = this.sceneEl;
       var lookControls = el.camera.el.components['look-controls'];
-      var cameraEl = el.camera.el;
-      cameraEl.components.camera = null;
-
+      el.camera.el.removeAttribute('camera');
       assert.shallowDeepEqual(lookControls.getUserHeight(), DEFAULT_USER_HEIGHT);
-      done();
     });
   });
 });

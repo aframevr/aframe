@@ -69,8 +69,9 @@ module.exports.Component = registerComponent('look-controls', {
    */
   getUserHeight: function () {
     var el = this.el;
-    var userHeight = el.hasAttribute('camera') ? el.getAttribute('camera').userHeight : DEFAULT_CAMERA_HEIGHT;
-    return userHeight;
+    return el.hasAttribute('camera')
+      ? el.getAttribute('camera').userHeight
+      : DEFAULT_CAMERA_HEIGHT;
   },
 
   play: function () {
