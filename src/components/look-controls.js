@@ -30,6 +30,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.hmdEuler = new THREE.Euler();
     this.position = new THREE.Vector3();
     this.rotation = {};
+    this.deltaRotation = {};
 
     this.setupMouseControls();
     this.setupHMDControls();
@@ -168,7 +169,7 @@ module.exports.Component = registerComponent('look-controls', {
    */
   updateOrientation: function () {
     var currentRotation;
-    var deltaRotation;
+    var deltaRotation = this.deltaRotation;
     var hmdEuler = this.hmdEuler;
     var hmdQuaternion = this.hmdQuaternion;
     var pitchObject = this.pitchObject;
@@ -188,7 +189,7 @@ module.exports.Component = registerComponent('look-controls', {
     } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
-      deltaRotation = this.calculateDeltaRotation();
+      this.calculateDeltaRotation();
       if (this.data.reverseMouseDrag) {
         rotation.x = currentRotation.x - deltaRotation.x;
         rotation.y = currentRotation.y - deltaRotation.y;
@@ -214,15 +215,12 @@ module.exports.Component = registerComponent('look-controls', {
   calculateDeltaRotation: function () {
     var currentRotationX = radToDeg(this.pitchObject.rotation.x);
     var currentRotationY = radToDeg(this.yawObject.rotation.y);
-    var deltaRotation;
-    deltaRotation = {
-      x: currentRotationX - (this.previousRotationX || 0),
-      y: currentRotationY - (this.previousRotationY || 0)
-    };
+    this.deltaRotation.x = currentRotationX - (this.previousRotationX || 0);
+    this.deltaRotation.y = currentRotationY - (this.previousRotationY || 0);
     // Store current rotation for next tick.
     this.previousRotationX = currentRotationX;
     this.previousRotationY = currentRotationY;
-    return deltaRotation;
+    return this.deltaRotation;
   },
 
   /**
