@@ -128,7 +128,7 @@ module.exports.parseProperties = (function () {
 
     // Validation errors.
     for (propName in propData) {
-      if (!schema[propName] && !silent) {
+      if (propData[propName] !== undefined && !schema[propName] && !silent) {
         warn('Unknown property `' + propName +
              '` for component/system `' + componentName + '`.');
       }

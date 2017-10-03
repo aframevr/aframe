@@ -16,7 +16,9 @@ var warn = utils.debug('core:component:warn');
 
 var aframeScript = document.currentScript;
 var upperCaseRegExp = new RegExp('[A-Z]+');
-var objectPool = utils.objectPool.createPool();
+
+// Object pools by component, created upon registration.
+var objectPools = {};
 
 /**
  * Component class definition.
@@ -43,13 +45,14 @@ var Component = module.exports.Component = function (el, attrValue, id) {
                                 isObject(parseProperty(undefined, this.schema));
   this.isObjectBased = !this.isSingleProperty || this.isSinglePropertyObject;
   this.el.components[this.attrName] = this;
+  this.objectPool = objectPools[this.name];
 
   // Store component data from previous update call.
   this.attrValue = undefined;
-  this.nextData = this.isObjectBased ? objectPool.use() : undefined;
-  this.oldData = this.isObjectBased ? objectPool.use() : undefined;
-  this.previousOldData = this.isObjectBased ? objectPool.use() : undefined;
-  this.parsingAttrValue = this.isObjectBased ? objectPool.use() : undefined;
+  this.nextData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.oldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.previousOldData = this.isObjectBased ? this.objectPool.use() : undefined;
+  this.parsingAttrValue = this.isObjectBased ? this.objectPool.use() : undefined;
   // Purely for deciding to skip type checking.
   this.previousAttrValue = undefined;
 
@@ -160,48 +163,48 @@ Component.prototype = {
    * @param {string} value - New data.
    * @param {boolean } clobber - Whether to wipe out and replace previous data.
    */
-  updateCachedAttrValue: (function () {
-    var tempObject = {};
+  updateCachedAttrValue: function (value, clobber) {
+    var newAttrValue;
+    var tempObject;
+    var property;
 
-    return function (value, clobber) {
-      var newAttrValue;
-      var property;
+    if (value === undefined) { return; }
 
-      if (value === undefined) { return; }
-
-      // If null value is the new attribute value, make the attribute value falsy.
-      if (value === null) {
-        if (this.isObjectBased && this.attrValue) {
-          objectPool.recycle(this.attrValue);
-        }
-        this.attrValue = undefined;
-        return;
+    // If null value is the new attribute value, make the attribute value falsy.
+    if (value === null) {
+      if (this.isObjectBased && this.attrValue) {
+        this.objectPool.recycle(this.attrValue);
       }
+      this.attrValue = undefined;
+      return;
+    }
 
-      if (value instanceof Object) {
-        // If value is an object, copy it to our pooled newAttrValue object to use to update
-        // the attrValue.
-        objectPool.clear(tempObject);
-        newAttrValue = utils.extend(tempObject, value);
-      } else {
-        newAttrValue = this.parseAttrValueForCache(value);
-      }
+    if (value instanceof Object) {
+      // If value is an object, copy it to our pooled newAttrValue object to use to update
+      // the attrValue.
+      tempObject = this.objectPool.use();
+      newAttrValue = utils.extend(tempObject, value);
+    } else {
+      newAttrValue = this.parseAttrValueForCache(value);
+    }
 
-      // Merge new data with previous `attrValue` if updating and not clobbering.
-      if (this.isObjectBased && !clobber && this.attrValue) {
-        for (property in this.attrValue) {
-          if (!(property in newAttrValue)) {
-            newAttrValue[property] = this.attrValue[property];
-          }
+    // Merge new data with previous `attrValue` if updating and not clobbering.
+    if (this.isObjectBased && !clobber && this.attrValue) {
+      for (property in this.attrValue) {
+        if (!(property in newAttrValue)) {
+          newAttrValue[property] = this.attrValue[property];
         }
       }
+    }
 
-      // Update attrValue.
-      if (this.isObjectBased && !this.attrValue) { this.attrValue = objectPool.use(); }
-      objectPool.clear(this.attrValue);
-      this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
-    };
-  })(),
+    // Update attrValue.
+    if (this.isObjectBased && !this.attrValue) {
+      this.attrValue = this.objectPool.use();
+    }
+    utils.objectPool.clearObject(this.attrValue);
+    this.attrValue = extendProperties(this.attrValue, newAttrValue, this.isObjectBased);
+    utils.objectPool.clearObject(tempObject);
+  },
 
   /**
    * Given an HTML attribute value parses the string based on the component schema.
@@ -224,7 +227,7 @@ Component.prototype = {
       if (typeof parsedValue === 'string') { parsedValue = value; }
     } else {
       // Parse using the style parser to avoid double parsing of individual properties.
-      objectPool.clear(this.parsingAttrValue);
+      utils.objectPool.clearObject(this.parsingAttrValue);
       parsedValue = styleParser.parse(value, this.parsingAttrValue);
     }
     return parsedValue;
@@ -329,9 +332,9 @@ Component.prototype = {
 
       // For oldData, pass empty object to multiple-prop schemas or object single-prop schema.
       // Pass undefined to rest of types.
-      initialOldData = this.isObjectBased ? objectPool.use() : undefined;
+      initialOldData = this.isObjectBased ? this.objectPool.use() : undefined;
       this.update(initialOldData);
-      if (this.isObjectBased) { objectPool.recycle(initialOldData); }
+      if (this.isObjectBased) { this.objectPool.recycle(initialOldData); }
 
       // Play the component if the entity is playing.
       if (el.isPlaying) { this.play(); }
@@ -354,7 +357,9 @@ Component.prototype = {
       if (utils.deepEqual(this.oldData, this.data)) { return; }
 
       // Store the previous old data before we calculate the new oldData.
-      if (this.previousOldData instanceof Object) { objectPool.clear(this.previousOldData); }
+      if (this.previousOldData instanceof Object) {
+        utils.objectPool.clearObject(this.previousOldData);
+      }
       if (this.isObjectBased) {
         copyData(this.oldData, this.previousOldData);
       } else {
@@ -363,7 +368,7 @@ Component.prototype = {
 
       // Store current data as previous data for future updates.
       // Reuse `this.oldData` object to try not to allocate another one.
-      if (this.oldData instanceof Object) { objectPool.clear(this.oldData); }
+      if (this.oldData instanceof Object) { utils.objectPool.clearObject(this.oldData); }
       this.oldData = extendProperties(this.oldData, this.data, this.isObjectBased);
 
       // Update component.
@@ -402,7 +407,7 @@ Component.prototype = {
   extendSchema: function (schemaAddon) {
     var extendedSchema;
     // Clone base schema.
-    extendedSchema = utils.extend(objectPool.use(), components[this.name].schema);
+    extendedSchema = utils.extend({}, components[this.name].schema);
     // Extend base schema with new schema chunk.
     utils.extend(extendedSchema, schemaAddon);
     this.schema = processSchema(extendedSchema);
@@ -445,7 +450,7 @@ Component.prototype = {
       ? newData.length
       : newData !== undefined && newData !== null;
 
-    if (this.isObjectBased) { objectPool.clear(this.nextData); }
+    if (this.isObjectBased) { utils.objectPool.clearObject(nextData); }
 
     // 1. Default values (lowest precendence).
     if (this.isSingleProperty) {
@@ -576,11 +581,15 @@ module.exports.registerComponent = function (name, definition) {
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
   NewComponent.prototype.remove = wrapRemove(NewComponent.prototype.remove);
 
+  // Create object pool for class of components.
+  objectPools[name] = utils.objectPool.createPool();
+
   components[name] = {
     Component: NewComponent,
     dependencies: NewComponent.prototype.dependencies,
     isSingleProp: isSingleProp(NewComponent.prototype.schema),
     multiple: NewComponent.prototype.multiple,
+    name: name,
     parse: NewComponent.prototype.parse,
     parseAttrValueForCache: NewComponent.prototype.parseAttrValueForCache,
     schema: utils.extend(processSchema(NewComponent.prototype.schema,
@@ -690,9 +699,9 @@ function wrapPlay (playMethod) {
 function wrapRemove (removeMethod) {
   return function remove () {
     removeMethod.call(this);
-    objectPool.recycle(this.attrValue);
-    objectPool.recycle(this.oldData);
-    objectPool.recycle(this.parsingAttrValue);
+    this.objectPool.recycle(this.attrValue);
+    this.objectPool.recycle(this.oldData);
+    this.objectPool.recycle(this.parsingAttrValue);
   };
 }
 
