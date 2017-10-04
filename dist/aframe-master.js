@@ -76844,15 +76844,17 @@ module.exports.isSingleProperty = isSingleProperty;
  * @returns {object} Schema.
  */
 module.exports.process = function (schema, componentName) {
+  var propName;
+
   // For single property schema, run processPropDefinition over the whole schema.
   if (isSingleProperty(schema)) {
     return processPropertyDefinition(schema, componentName);
   }
 
   // For multi-property schema, run processPropDefinition over each property definition.
-  Object.keys(schema).forEach(function (propName) {
+  for (propName in schema) {
     schema[propName] = processPropertyDefinition(schema[propName], componentName);
-  });
+  }
   return schema;
 };
 
@@ -76870,7 +76872,8 @@ function processPropertyDefinition (propDefinition, componentName) {
 
   // Type inference.
   if (!propDefinition.type) {
-    if (defaultVal !== undefined && ['boolean', 'number'].indexOf(typeof defaultVal) !== -1) {
+    if (defaultVal !== undefined &&
+        (typeof defaultVal === 'boolean' || typeof defaultVal === 'number')) {
       // Type inference.
       typeName = typeof defaultVal;
     } else if (Array.isArray(defaultVal)) {
@@ -76924,29 +76927,39 @@ module.exports.processPropertyDefinition = processPropertyDefinition;
  * @param {string } componentName - Name of the component, used for the property warning.
  * @param {boolean} silent - Suppress warning messages.
  */
-module.exports.parseProperties = function (propData, schema, getPartialData, componentName,
-                                           silent) {
-  var propNames = Object.keys(getPartialData ? propData : schema);
+module.exports.parseProperties = (function () {
+  var propNames = [];
 
-  if (propData === null || typeof propData !== 'object') { return propData; }
+  return function (propData, schema, getPartialData, componentName, silent) {
+    var i;
+    var propName;
+    var propDefinition;
+    var propValue;
 
-  // Validation errors.
-  Object.keys(propData).forEach(function (propName) {
-    if (!schema[propName] && !silent) {
-      warn('Unknown property `' + propName +
-           '` for component/system `' + componentName + '`.');
+    propNames.length = 0;
+    for (propName in (getPartialData ? propData : schema)) { propNames.push(propName); }
+
+    if (propData === null || typeof propData !== 'object') { return propData; }
+
+    // Validation errors.
+    for (propName in propData) {
+      if (!schema[propName] && !silent) {
+        warn('Unknown property `' + propName +
+             '` for component/system `' + componentName + '`.');
+      }
     }
-  });
 
-  propNames.forEach(function parse (propName) {
-    var propDefinition = schema[propName];
-    var propValue = propData[propName];
-    if (!(schema[propName])) { return; }
-    propData[propName] = parseProperty(propValue, propDefinition);
-  });
+    for (i = 0; i < propNames.length; i++) {
+      propName = propNames[i];
+      propDefinition = schema[propName];
+      propValue = propData[propName];
+      if (!(schema[propName])) { return; }
+      propData[propName] = parseProperty(propValue, propDefinition);
+    }
 
-  return propData;
-};
+    return propData;
+  };
+})();
 
 /**
  * Deserialize a single property.
@@ -76966,17 +76979,22 @@ module.exports.parseProperty = parseProperty;
  * Serialize a group of properties.
  */
 module.exports.stringifyProperties = function (propData, schema) {
+  var propName;
+  var propDefinition;
+  var propValue;
   var stringifiedData = {};
-  Object.keys(propData).forEach(function (propName) {
-    var propDefinition = schema[propName];
-    var propValue = propData[propName];
-    var value = propValue;
+  var value;
+
+  for (propName in propData) {
+    propDefinition = schema[propName];
+    propValue = propData[propName];
+    value = propValue;
     if (typeof value === 'object') {
       value = stringifyProperty(propValue, propDefinition);
       if (!propDefinition) { warn('Unknown component property: ' + propName); }
     }
     stringifiedData[propName] = value;
-  });
+  }
   return stringifiedData;
 };
 
@@ -78380,7 +78398,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 03-10-2017, Commit #c00570b)');
+console.log('A-Frame Version: 0.7.0 (Date 04-10-2017, Commit #cc837ad)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
