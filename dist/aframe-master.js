@@ -66921,7 +66921,7 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":200}],82:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],82:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
@@ -67118,7 +67118,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":200}],83:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],83:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -69419,7 +69419,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":200}],95:[function(_dereq_,module,exports){
+},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],95:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -70514,7 +70514,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":204,"../../../vendor/rStats.extras":203,"../../core/component":126,"../../lib/rStatsAframe":173,"../../utils":196}],107:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":205,"../../../vendor/rStats.extras":204,"../../core/component":126,"../../lib/rStatsAframe":173,"../../utils":196}],107:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -71739,7 +71739,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/tracked-controls":200}],112:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/tracked-controls":201}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -72674,7 +72674,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":117,"../core/component":126,"../utils/":196,"../utils/bind":190,"../utils/tracked-controls":200}],116:[function(_dereq_,module,exports){
+},{"../constants":117,"../core/component":126,"../utils/":196,"../utils/bind":190,"../utils/tracked-controls":201}],116:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -76812,7 +76812,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":206}],134:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":207}],134:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -78398,7 +78398,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 04-10-2017, Commit #cc837ad)');
+console.log('A-Frame Version: 0.7.0 (Date 05-10-2017, Commit #f598665)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78525,7 +78525,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":201,"../../vendor/VREffect":202,"three":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],175:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":202,"../../vendor/VREffect":203,"three":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],175:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -80246,6 +80246,7 @@ var debug = _dereq_('./debug');
 var deepAssign = _dereq_('deep-assign');
 var device = _dereq_('./device');
 var objectAssign = _dereq_('object-assign');
+var objectPool = _dereq_('./object-pool');
 
 var warn = debug('utils:warn');
 
@@ -80256,6 +80257,7 @@ module.exports.device = device;
 module.exports.entity = _dereq_('./entity');
 module.exports.forceCanvasResizeSafariMobile = _dereq_('./forceCanvasResizeSafariMobile');
 module.exports.material = _dereq_('./material');
+module.exports.objectPool = objectPool;
 module.exports.styleParser = _dereq_('./styleParser');
 module.exports.trackedControls = _dereq_('./tracked-controls');
 
@@ -80385,40 +80387,62 @@ module.exports.clone = function (obj) {
  * @param {object} b - Second object.
  * @returns {boolean} Whether two objects are deeply equal.
  */
-function deepEqual (a, b) {
-  var i;
-  var keysA;
-  var keysB;
-  var valA;
-  var valB;
+var deepEqual = (function () {
+  var arrayPool = objectPool.createPool(function () { return []; });
 
-  // If not objects or arrays, compare as values.
-  if (a === undefined || b === undefined || a === null || b === null ||
-      !(a && b && (a.constructor === Object && b.constructor === Object) ||
-                  (a.constructor === Array && b.constructor === Array))) {
-    return a === b;
-  }
+  return function (a, b) {
+    var key;
+    var keysA;
+    var keysB;
+    var i;
+    var valA;
+    var valB;
 
-  // Different number of keys, not equal.
-  keysA = Object.keys(a);
-  keysB = Object.keys(b);
-  if (keysA.length !== keysB.length) { return false; }
+    // If not objects or arrays, compare as values.
+    if (a === undefined || b === undefined || a === null || b === null ||
+        !(a && b && (a.constructor === Object && b.constructor === Object) ||
+                    (a.constructor === Array && b.constructor === Array))) {
+      return a === b;
+    }
 
-  // Return `false` at the first sign of inequality.
-  for (i = 0; i < keysA.length; ++i) {
-    valA = a[keysA[i]];
-    valB = b[keysA[i]];
-    // Check nested array and object.
-    if ((typeof valA === 'object' || typeof valB === 'object') ||
-        (Array.isArray(valA) && Array.isArray(valB))) {
-      if (valA === valB) { continue; }
-      if (!deepEqual(valA, valB)) { return false; }
-    } else if (valA !== valB) {
+    // Different number of keys, not equal.
+    keysA = arrayPool.use();
+    keysB = arrayPool.use();
+    keysA.length = 0;
+    keysB.length = 0;
+    for (key in a) { keysA.push(key); }
+    for (key in b) { keysB.push(key); }
+    if (keysA.length !== keysB.length) {
+      arrayPool.recycle(keysA);
+      arrayPool.recycle(keysB);
       return false;
     }
-  }
-  return true;
-}
+
+    // Return `false` at the first sign of inequality.
+    for (i = 0; i < keysA.length; ++i) {
+      valA = a[keysA[i]];
+      valB = b[keysA[i]];
+      // Check nested array and object.
+      if ((typeof valA === 'object' || typeof valB === 'object') ||
+          (Array.isArray(valA) && Array.isArray(valB))) {
+        if (valA === valB) { continue; }
+        if (!deepEqual(valA, valB)) {
+          arrayPool.recycle(keysA);
+          arrayPool.recycle(keysB);
+          return false;
+        }
+      } else if (valA !== valB) {
+        arrayPool.recycle(keysA);
+        arrayPool.recycle(keysB);
+        return false;
+      }
+    }
+
+    arrayPool.recycle(keysA);
+    arrayPool.recycle(keysB);
+    return true;
+  };
+})();
 module.exports.deepEqual = deepEqual;
 
 /**
@@ -80536,7 +80560,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":190,"./coordinates":191,"./debug":192,"./device":193,"./entity":194,"./forceCanvasResizeSafariMobile":195,"./material":197,"./src-loader":198,"./styleParser":199,"./tracked-controls":200,"deep-assign":10,"object-assign":26}],197:[function(_dereq_,module,exports){
+},{"./bind":190,"./coordinates":191,"./debug":192,"./device":193,"./entity":194,"./forceCanvasResizeSafariMobile":195,"./material":197,"./object-pool":198,"./src-loader":199,"./styleParser":200,"./tracked-controls":201,"deep-assign":10,"object-assign":26}],197:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -80692,6 +80716,86 @@ module.exports.isHLS = function (src, type) {
 };
 
 },{"../lib/three":174}],198:[function(_dereq_,module,exports){
+/*
+  Adapted deePool by Kyle Simpson.
+  MIT License: http://getify.mit-license.org
+*/
+var EMPTY_SLOT = Object.freeze(Object.create(null));
+
+// Default object factory.
+function defaultObjectFactory () { return {}; }
+
+/**
+ * Create a new pool.
+ */
+module.exports.createPool = function createPool (objectFactory) {
+  var objPool = [];
+  var nextFreeSlot = null;  // Pool location to look for a free object to use.
+
+  objectFactory = objectFactory || defaultObjectFactory;
+
+  function use () {
+    var objToUse;
+    if (nextFreeSlot === null || nextFreeSlot === objPool.length) {
+      grow(objPool.length || 5);
+    }
+    objToUse = objPool[nextFreeSlot];
+    objPool[nextFreeSlot++] = EMPTY_SLOT;
+    clearObject(objToUse);
+    return objToUse;
+  }
+
+  function recycle (obj) {
+    if (!(obj instanceof Object)) { return; }
+    if (nextFreeSlot === null || nextFreeSlot === -1) {
+      objPool[objPool.length] = obj;
+      return;
+    }
+    objPool[--nextFreeSlot] = obj;
+  }
+
+  function grow (count) {
+    var currentLength;
+    var i;
+
+    count = count === undefined ? objPool.length : count;
+    if (count > 0 && nextFreeSlot == null) {
+      nextFreeSlot = 0;
+    }
+
+    if (count > 0) {
+      currentLength = objPool.length;
+      objPool.length += Number(count);
+      for (i = currentLength; i < objPool.length; i++) {
+        // Add new obj to pool.
+        objPool[i] = objectFactory();
+      }
+    }
+
+    return objPool.length;
+  }
+
+  function size () {
+    return objPool.length;
+  }
+
+  return {
+    grow: grow,
+    pool: objPool,
+    recycle: recycle,
+    size: size,
+    use: use
+  };
+};
+
+function clearObject (obj) {
+  var key;
+  if (!(obj.constructor === Object)) { return; }
+  for (key in obj) { obj[key] = undefined; }
+}
+module.exports.clearObject = clearObject;
+
+},{}],199:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -80850,7 +80954,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":192}],199:[function(_dereq_,module,exports){
+},{"./debug":192}],200:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -80910,7 +81014,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":37}],200:[function(_dereq_,module,exports){
+},{"style-attr":37}],201:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2; // Number of hands in a pair. Should always be 2.
@@ -81064,7 +81168,7 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
   }
 };
 
-},{"../constants":117}],201:[function(_dereq_,module,exports){
+},{"../constants":117}],202:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -81242,7 +81346,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],202:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -81740,7 +81844,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],203:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -82005,7 +82109,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],204:[function(_dereq_,module,exports){
+},{}],205:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -82460,7 +82564,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],205:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82522,7 +82626,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],206:[function(_dereq_,module,exports){
+},{}],207:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82598,6 +82702,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":205}]},{},[172])(172)
+},{"./util.js":206}]},{},[172])(172)
 });
 //# sourceMappingURL=aframe-master.js.map
