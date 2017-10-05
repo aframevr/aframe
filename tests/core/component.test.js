@@ -869,8 +869,10 @@ suite('Component', function () {
       direction.z += 1;
       el.setAttribute('dummy', direction);
       sinon.assert.calledTwice(updateStub);
-      // old Data passed to the update method
-      assert.deepEqual(updateStub.getCalls()[0].args[0], {});
+      // oldData passed to the update method.
+      assert.equal(updateStub.getCalls()[0].args[0].x, undefined);
+      assert.equal(updateStub.getCalls()[0].args[0].y, undefined);
+      assert.equal(updateStub.getCalls()[0].args[0].z, undefined);
       assert.deepEqual(updateStub.getCalls()[1].args[0], {x: 1, y: 1, z: 1});
       assert.deepEqual(el.components.dummy.data, {x: 2, y: 2, z: 2});
     });

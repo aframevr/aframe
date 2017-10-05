@@ -191,7 +191,7 @@ Component.prototype = {
     // Merge new data with previous `attrValue` if updating and not clobbering.
     if (this.isObjectBased && !clobber && this.attrValue) {
       for (property in this.attrValue) {
-        if (!(property in newAttrValue)) {
+        if (newAttrValue[property] === undefined) {
           newAttrValue[property] = this.attrValue[property];
         }
       }
@@ -257,7 +257,6 @@ Component.prototype = {
     var el = this.el;
     var key;
     var initialOldData;
-    var isSinglePropSchema;
     var skipTypeChecking;
 <<<<<<< HEAD
     var oldData = this.oldData;
@@ -271,8 +270,6 @@ Component.prototype = {
       this.updateCachedAttrValue(attrValue);
       return;
     }
-
-    isSinglePropSchema = isSingleProp(this.schema);
 
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
@@ -361,7 +358,7 @@ Component.prototype = {
         utils.objectPool.clearObject(this.previousOldData);
       }
       if (this.isObjectBased) {
-        copyData(this.oldData, this.previousOldData);
+        copyData(this.previousOldData, this.oldData);
       } else {
         this.previousOldData = this.oldData;
       }
@@ -456,10 +453,12 @@ Component.prototype = {
     if (this.isSingleProperty) {
       if (this.isObjectBased) {
         // If object-based single-prop, then copy over the data to our pooled object.
-        data = copyData(schema.default, nextData);
+        data = copyData(nextData, schema.default);
       } else {
         // If is plain single-prop, copy by value the default.
-        data = schema.default;
+        data = isObjectOrArray(schema.default)
+          ? utils.clone(schema.default)
+          : schema.default;
       }
     } else {
       // Preserve previously set properties if clobber not enabled.
@@ -467,7 +466,7 @@ Component.prototype = {
 
       // Clone default value if object so components don't share object
       data = previousData instanceof Object
-        ? copyData(previousData, nextData)
+        ? copyData(nextData, previousData)
         : nextData;
 
       // Apply defaults.
@@ -475,28 +474,31 @@ Component.prototype = {
         defaultValue = schema[key].default;
         if (data[key] !== undefined) { continue; }
         // Clone default value if object so components don't share object
-        data[keys] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
+        data[key] = isObjectOrArray(defaultValue)
+          ? utils.clone(defaultValue)
+          : defaultValue;
       }
     }
 
     // 2. Mixin values.
     for (i = 0; i < mixinEls.length; i++) {
       mixinData = mixinEls[i].getAttribute(this.attrName);
-      if (mixinData) { data = extendProperties(data, mixinData, this.isObjectBased); }
+      if (!mixinData) { continue; }
+      data = extendProperties(data, mixinData, this.isObjectBased);
     }
 
     // 3. Attribute values (highest precendence).
     if (componentDefined) {
       if (this.isSingleProperty) {
-        if (skipTypeChecking === true) { return attrValue; }
+        if (skipTypeChecking === true) { return newData; }
         // If object-based, copy the value to not modify the original.
         if (this.isObjectBased) {
-          copyData(attrValue, this.parsingAttrValue);
+          copyData(this.parsingAttrValue, newData);
           return parseProperty(this.parsingAttrValue, schema);
         }
-        return parseProperty(attrValue, schema);
+        return parseProperty(newData, schema);
       }
-      data = extendProperties(data, attrValue, this.isObjectBased);
+      data = extendProperties(data, newData, this.isObjectBased);
     } else {
       if (skipTypeChecking === true) { return data; }
       // Parse and coerce using the schema.
@@ -607,10 +609,11 @@ module.exports.registerComponent = function (name, definition) {
 * @param data - Component data to clone.
 * @returns Cloned data.
 */
-function copyData (sourceData, dest) {
+function copyData (dest, sourceData) {
   var parsedProperty;
   var key;
   for (key in sourceData) {
+    if (sourceData[key] === undefined) { continue; }
     parsedProperty = sourceData[key];
     dest[key] = isObjectOrArray(parsedProperty)
       ? utils.clone(parsedProperty)
@@ -639,8 +642,13 @@ function extendProperties (dest, source, isSinglePropSchema) {
   return copy;
 =======
 function extendProperties (dest, source, isObjectBased) {
+  var key;
   if (isObjectBased && source instanceof Object) {
-    return utils.extend(dest, source);
+    for (key in source) {
+      if (source[key] === undefined) { continue; }
+      dest[key] = source[key];
+    }
+    return dest;
   }
   return source;
 >>>>>>> object pooling in component core, optimize style parser to reuse object
