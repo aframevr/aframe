@@ -23,7 +23,7 @@ The cursor component listens to events and keeps state on what's being hovered
 and pressed in order to provide `mousedown`, `mouseup`, `mouseenter`,
 `mouseleave`, and `click` events. We use the name `mouse` to mimic
 traditional web development for now. Under the hood, the cursor component uses
-the `raycaster-intersected` and `raycaster-intersected-cleared` events,
+the `raycaster-intersection` and `raycaster-intersection-cleared` events,
 capturing the closest visible intersected entity.
 
 By default, the cursor is configured to be used in a gaze-based mode and will
