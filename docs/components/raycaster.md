@@ -72,7 +72,7 @@ The raycaster component is useful because of the events it emits on entities. It
 | raycaster-intersected          | Emitted on the intersected entity. Entity is intersecting with a raycaster. Event detail will contain `el`, the raycasting entity, and `intersection`, an object containing detailed data about the intersection.            |
 | raycaster-intersected-cleared  | Emitted on the intersected entity. Entity is no longer intersecting with a raycaster. Event detail will contain `el`, the raycasting entity.  |
 | raycaster-intersection         | Emitted on the raycasting entity. Raycaster is intersecting with one or more entities. Event detail will contain `els`, an array with the intersected entities, and `intersections`, an array of objects containing detailed data about the intersections. |
-| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with an entity. Event detail will contain `el`, the formerly intersected entity.  |
+| raycaster-intersection-cleared | Emitted on the raycasting entity. Raycaster is no longer intersecting with one or more entities. Event detail will contain `clearedEls`, an array with the formerly intersected entities.  |
 
 ## Members
 
