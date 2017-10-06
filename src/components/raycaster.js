@@ -219,7 +219,7 @@ module.exports.Component = registerComponent('raycaster', {
       // Emit intersection cleared on both entities per formerly intersected entity.
       clearedIntersectedEls.length = 0;
       for (i = 0; i < prevIntersectedEls.length; i++) {
-        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { break; }
+        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
         clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
