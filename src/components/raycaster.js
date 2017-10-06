@@ -51,6 +51,7 @@ module.exports.Component = registerComponent('raycaster', {
   init: function () {
     // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
     // adjust line length.
+    this.clearedIntersectedEls = [];
     this.lineData = {};
     this.lineEndVec3 = new THREE.Vector3();
     this.unitLineEndVec3 = new THREE.Vector3();
@@ -155,6 +156,7 @@ module.exports.Component = registerComponent('raycaster', {
     var intersections = [];
 
     return function (time) {
+      var clearedIntersectedEls = this.clearedIntersectedEls;
       var el = this.el;
       var data = this.data;
       var i;
@@ -216,11 +218,13 @@ module.exports.Component = registerComponent('raycaster', {
       }
 
       // Emit intersection cleared on both entities per formerly intersected entity.
+      clearedIntersectedEls.length = 0;
       for (i = 0; i < prevIntersectedEls.length; i++) {
         if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { return; }
-        el.emit('raycaster-intersection-cleared', {el: prevIntersectedEls[i]});
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
+        clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
+      if (clearedIntersectedEls.length) { el.emit('raycaster-intersection-cleared'); }
 
       // Update line length.
       if (data.showLine) {

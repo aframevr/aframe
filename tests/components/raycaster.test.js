@@ -232,7 +232,7 @@ suite('raycaster', function () {
         // Point raycaster somewhere else.
         raycasterEl.setAttribute('rotation', '90 0 0');
         raycasterEl.addEventListener('raycaster-intersection-cleared', function (evt) {
-          assert.equal(evt.detail.el, targetEl);
+          assert.notEqual(component.clearedIntersectedEls.indexOf(targetEl), -1);
           done();
         });
         component.tick();
