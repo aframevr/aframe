@@ -69654,7 +69654,7 @@ module.exports.Component = registerComponent('raycaster', {
       // Emit intersection cleared on both entities per formerly intersected entity.
       clearedIntersectedEls.length = 0;
       for (i = 0; i < prevIntersectedEls.length; i++) {
-        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { break; }
+        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
         clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
@@ -78407,7 +78407,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 06-10-2017, Commit #911e01e)');
+console.log('A-Frame Version: 0.7.0 (Date 06-10-2017, Commit #572b0c2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
