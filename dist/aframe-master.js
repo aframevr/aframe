@@ -69497,6 +69497,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.setDirty = this.setDirty.bind(this);
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
+    this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
   },
 
   /**
@@ -69657,7 +69658,9 @@ module.exports.Component = registerComponent('raycaster', {
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
         clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
-      if (clearedIntersectedEls.length) { el.emit('raycaster-intersection-cleared'); }
+      if (clearedIntersectedEls.length) {
+        el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
+      }
 
       // Update line length.
       if (data.showLine) {
@@ -78404,7 +78407,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 06-10-2017, Commit #45fa1d1)');
+console.log('A-Frame Version: 0.7.0 (Date 06-10-2017, Commit #911e01e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
