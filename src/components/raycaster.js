@@ -52,8 +52,6 @@ module.exports.Component = registerComponent('raycaster', {
     // Calculate unit vector for line direction. Can be multiplied via scalar to performantly
     // adjust line length.
     this.clearedIntersectedEls = [];
-    this.lineData = {};
-    this.lineEndVec3 = new THREE.Vector3();
     this.unitLineEndVec3 = new THREE.Vector3();
     this.intersectedEls = [];
     this.objects = [];
@@ -220,7 +218,7 @@ module.exports.Component = registerComponent('raycaster', {
       // Emit intersection cleared on both entities per formerly intersected entity.
       clearedIntersectedEls.length = 0;
       for (i = 0; i < prevIntersectedEls.length; i++) {
-        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { return; }
+        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { break; }
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
         clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
@@ -293,11 +291,15 @@ module.exports.Component = registerComponent('raycaster', {
    */
   drawLine: (function (length) {
     var lineEndVec3 = new THREE.Vector3();
-    var lineData = {};
+    var otherLineEndVec3 = new THREE.Vector3();
+    var lineData = {end: lineEndVec3};
 
     return function (length) {
       var data = this.data;
       var el = this.el;
+      // We switch each time the vector so the line update is triggered
+      // and to avoid unnecessary vector clone.
+      var endVec3 = lineData.end === lineEndVec3 ? otherLineEndVec3 : lineEndVec3;
 
       // Treat Infinity as 1000m for the line.
       if (length === undefined) {
@@ -307,7 +309,7 @@ module.exports.Component = registerComponent('raycaster', {
       // Update the length of the line if given. `unitLineEndVec3` is the direction
       // given by data.direction, then we apply a scalar to give it a length.
       lineData.start = data.origin;
-      lineData.end = lineEndVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+      lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
       el.setAttribute('line', lineData);
     };
   })()
