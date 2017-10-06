@@ -62,6 +62,7 @@ module.exports.Component = registerComponent('raycaster', {
     this.setDirty = this.setDirty.bind(this);
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
+    this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
   },
 
   /**
@@ -222,7 +223,9 @@ module.exports.Component = registerComponent('raycaster', {
         prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
         clearedIntersectedEls.push(prevIntersectedEls[i]);
       }
-      if (clearedIntersectedEls.length) { el.emit('raycaster-intersection-cleared'); }
+      if (clearedIntersectedEls.length) {
+        el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
+      }
 
       // Update line length.
       if (data.showLine) {
