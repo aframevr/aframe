@@ -1220,10 +1220,10 @@ suite('a-entity', function () {
       var sceneEl = el.sceneEl;
       var component;
       el.play();
-      el.setAttribute('look-controls', '');
-      component = el.components['look-controls'];
+      el.setAttribute('raycaster', '');
+      component = el.components['raycaster'];
       assert.notEqual(sceneEl.behaviors.tick.indexOf(component), -1);
-      el.removeAttribute('look-controls');
+      el.removeAttribute('raycaster');
       assert.equal(sceneEl.behaviors.tick.indexOf(component), -1);
     });
 

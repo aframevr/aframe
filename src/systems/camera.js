@@ -37,9 +37,9 @@ module.exports.System = registerSystem('camera', {
     defaultCameraEl = document.createElement('a-entity');
     defaultCameraEl.setAttribute('position', '0 0 0');
     defaultCameraEl.setAttribute(DEFAULT_CAMERA_ATTR, '');
-    defaultCameraEl.setAttribute('camera', {active: true, userHeight: constants.DEFAULT_CAMERA_HEIGHT});
+    defaultCameraEl.setAttribute('camera', {active: true});
     defaultCameraEl.setAttribute('wasd-controls', '');
-    defaultCameraEl.setAttribute('look-controls', '');
+    defaultCameraEl.setAttribute('look-controls', {userHeight: constants.DEFAULT_CAMERA_HEIGHT});
     defaultCameraEl.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(defaultCameraEl);
     sceneEl.addEventListener('enter-vr', this.removeDefaultOffset);

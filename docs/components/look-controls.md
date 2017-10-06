@@ -29,8 +29,8 @@ component](camera.md).
 | enabled          | Whether look controls are enabled.                               | true          |
 | hmdEnabled       | Whether to use VR headset pose in VR mode.                       | true          |
 | reverseMouseDrag | Whether to reverse mouse drag.                                   | false         |
-| standing         | Whether standing mode is enabled (passed to `THREE.VRControls`). | true          |
 | touchEnabled     | Whether to use touch controls in magic window mode.              | true          |
+| userHeight | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the `<a-camera>` primitive sets this to 1.6 meters. But note the default camera component alone (`<a-entity camera>`) defaults this to 0. | 0             |
 
 ## Customizing look-controls
 

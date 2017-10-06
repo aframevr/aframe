@@ -7,6 +7,7 @@ var setupCanvas = require('core/scene/a-scene').setupCanvas;
 var systems = require('core/system').systems;
 
 var helpers = require('../../helpers');
+var utils = require('index').utils;
 
 /**
  * Tests in this suite should not involve WebGL contexts or renderer.
@@ -20,6 +21,14 @@ suite('a-scene (without renderer)', function () {
   setup(function (done) {
     var el = this.el = document.createElement('a-scene');
     el.addEventListener('nodeready', function () { done(); });
+    this.sinon.stub(utils.device, 'getVRDisplay').returns({
+      requestPresent: function () {
+        return Promise.resolve();
+      },
+      exitPresent: function () {
+        return Promise.resolve();
+      }
+    });
     document.body.appendChild(el);
   });
 
@@ -64,7 +73,6 @@ suite('a-scene (without renderer)', function () {
       var event;
       var sceneEl = this.el;
       var exitVRStub = this.sinon.stub(sceneEl, 'exitVR');
-      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
       event = new CustomEvent('vrdisplaydisconnect');
       window.dispatchEvent(event);
       process.nextTick(function () {
@@ -112,57 +120,61 @@ suite('a-scene (without renderer)', function () {
       // Stub canvas.
       sceneEl.canvas = document.createElement('canvas');
 
-      // Stub requestPresent.
-      sceneEl.effect = {requestPresent: function () { return Promise.resolve(); }};
-      this.requestSpy = this.sinon.spy(sceneEl.effect, 'requestPresent');
+      // Stub renderer.
+      sceneEl.renderer = {
+        vr: {
+          getDevice: function () {},
+          setDevice: function () {},
+          setPoseTarget: function () {}
+        }
+      };
+
+      // mock camera
+      sceneEl.camera = {el: {object3D: {}}};
     });
 
     test('does not try to enter VR if already in VR', function (done) {
       var sceneEl = this.el;
-      var requestSpy = this.requestSpy;
       sceneEl.addState('vr-mode');
       sceneEl.enterVR().then(function (val) {
         assert.equal(val, 'Already in VR.');
-        assert.notOk(requestSpy.called);
+        assert.notOk(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('calls requestPresent if headset connected', function (done) {
       var sceneEl = this.el;
-      var requestSpy = this.requestSpy;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       sceneEl.enterVR().then(function () {
-        assert.ok(requestSpy.called);
+        assert.ok(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('calls requestPresent on mobile', function (done) {
       var sceneEl = this.el;
-      var requestSpy = this.requestSpy;
       sceneEl.isMobile = true;
       sceneEl.enterVR().then(function () {
-        assert.ok(requestSpy.called);
+        assert.ok(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('does not call requestPresent if flat desktop', function (done) {
       var sceneEl = this.el;
-      var requestSpy = this.requestSpy;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       sceneEl.enterVR().then(function () {
-        assert.notOk(requestSpy.called);
+        assert.notOk(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('does not call requestPresent if flag passed', function (done) {
       var sceneEl = this.el;
-      var requestSpy = this.requestSpy;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       sceneEl.enterVR(true).then(function () {
-        assert.notOk(requestSpy.called);
+        assert.notOk(sceneEl.renderer.vr.enabled);
         done();
       });
     });
@@ -195,6 +207,7 @@ suite('a-scene (without renderer)', function () {
         fullscreenSpy = this.sinon.spy(sceneEl.canvas, 'requestFullscreen');
       }
 
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       sceneEl.enterVR().then(function () {
         assert.ok(fullscreenSpy.called);
         done();
@@ -215,59 +228,60 @@ suite('a-scene (without renderer)', function () {
       // Stub canvas.
       sceneEl.canvas = document.createElement('canvas');
 
-      // Stub exitPresent.
-      sceneEl.effect = {exitPresent: function () { return Promise.resolve(); }};
-      this.exitSpy = this.sinon.spy(sceneEl.effect, 'exitPresent');
+      // Stub renderer.
+      sceneEl.renderer = {vr: {
+        getDevice: function () {},
+        setDevice: function () {},
+        setPoseTarget: function () {}
+      }};
 
       sceneEl.addState('vr-mode');
     });
 
     test('does not try to exit VR if not in VR', function (done) {
       var sceneEl = this.el;
-      var exitSpy = this.exitSpy;
       sceneEl.removeState('vr-mode');
       sceneEl.exitVR().then(function (val) {
         assert.equal(val, 'Not in VR.');
-        assert.notOk(exitSpy.called);
         done();
       });
     });
 
     test('calls exitPresent if headset connected', function (done) {
       var sceneEl = this.el;
-      var exitSpy = this.exitSpy;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       sceneEl.exitVR().then(function () {
-        assert.ok(exitSpy.called);
+        assert.notOk(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('calls exitPresent on mobile', function (done) {
       var sceneEl = this.el;
-      var exitSpy = this.exitSpy;
       sceneEl.isMobile = true;
       sceneEl.exitVR().then(function () {
-        assert.ok(exitSpy.called);
+        assert.notOk(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
-    test('does not call exitPresent if flat desktop', function (done) {
+    test('does not call exitPresent on desktop without a headset', function (done) {
       var sceneEl = this.el;
-      var exitSpy = this.exitSpy;
+      sceneEl.renderer.vr.enabled = true;
+      sceneEl.isMobile = false;
+      this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(false);
       sceneEl.exitVR().then(function () {
-        assert.notOk(exitSpy.called);
+        assert.ok(sceneEl.renderer.vr.enabled);
         done();
       });
     });
 
     test('does not call exitPresent if flag passed', function (done) {
       var sceneEl = this.el;
-      var exitSpy = this.exitSpy;
+      sceneEl.renderer.vr.enabled = true;
       this.sinon.stub(sceneEl, 'checkHeadsetConnected').returns(true);
       sceneEl.exitVR(true).then(function () {
-        assert.notOk(exitSpy.called);
+        assert.ok(sceneEl.renderer.vr.enabled);
         done();
       });
     });
@@ -373,25 +387,27 @@ suite('a-scene (without renderer)', function () {
       AScene.prototype.resize.restore();
       sceneEl.camera = { updateProjectionMatrix: function () {} };
       sceneEl.canvas = document.createElement('canvas');
-      sceneEl.renderer = { setSize: function () {} };
+      setSizeSpy = this.sinon.spy();
 
-      setSizeSpy = this.sinon.spy(sceneEl.renderer, 'setSize');
+      // Stub renderer.
+      sceneEl.renderer = {
+        vr: {
+          getDevice: function () { return {isPresenting: false}; },
+          setDevice: function () {}
+        },
+        setSize: setSizeSpy
+      };
     });
 
     test('resize renderer when not in vr mode', function () {
       sceneEl.resize();
-
       assert.ok(setSizeSpy.called);
     });
 
     test('resize renderer when in vr mode in fullscreen presentation (desktop, no headset)', function () {
-      sceneEl.effect = {
-        isPresenting: false
-      };
+      sceneEl.renderer.vr.enabled = true;
       sceneEl.addState('vr-mode');
-
       sceneEl.resize();
-
       assert.ok(setSizeSpy.called);
     });
 
@@ -405,11 +421,9 @@ suite('a-scene (without renderer)', function () {
     });
 
     test('does not resize renderer when in vr mode and presenting in a headset', function () {
-      sceneEl.effect = {
-        isPresenting: true
-      };
+      sceneEl.renderer.vr.getDevice = function () { return {isPresenting: true}; };
+      sceneEl.renderer.vr.enabled = true;
       sceneEl.addState('vr-mode');
-
       sceneEl.resize();
 
       assert.notOk(setSizeSpy.called);
@@ -543,7 +557,6 @@ suite('a-scene (without renderer)', function () {
       var childEl;
       var componentUpdateStub = sinon.stub();
       var sceneEl;
-
       AFRAME.registerComponent('test', {
         schema: {componentProp: {default: 'foo'}},
         update: componentUpdateStub

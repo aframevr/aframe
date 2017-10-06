@@ -9,7 +9,6 @@ suite('fog', function () {
 
     el.addEventListener('loaded', function () {
       self.updateMaterialsSpy = self.sinon.spy(el.systems.material, 'updateMaterials');
-
       // Stub scene load to avoid WebGL code.
       el.hasLoaded = true;
       el.setAttribute('fog', '');

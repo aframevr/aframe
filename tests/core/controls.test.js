@@ -1,7 +1,5 @@
 /* global Event, assert, process, setup, suite, test */
 var helpers = require('../helpers');
-var THREE = require('lib/three');
-
 var PI = Math.PI;
 
 suite('position controls on camera with WASD controls (integration unit test)', function () {
@@ -129,191 +127,183 @@ suite('position controls on camera with WASD controls (integration unit test)', 
   });
 });
 
-suite('rotation controls on camera with VRControls (integration unit test)', function () {
+suite('rotation controls on camera in VR mode', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
+    var el = this.el = helpers.entityFactory();
+    var sceneEl = el.parentNode;
     var self = this;
-
-    function StubVRControls (dolly) {
-      var sceneEl = el.sceneEl;
-      self.dolly = dolly;
-      self.el = sceneEl.querySelector('[camera]');
-      self.el.addEventListener('componentinitialized', function (evt) {
-        if (evt.detail.name !== 'look-controls') { return; }
+    this.position = [0, 0, 0];
+    this.orientation = [0, 0, 0];
+    sceneEl.addEventListener('camera-ready', function () {
+      sceneEl.renderer.vr.getCamera = function (obj) {
+        if (!this.enabled) { return; }
+        obj.position.fromArray(self.position);
+        obj.rotation.fromArray(self.orientation);
+        obj.updateMatrixWorld();
+      };
+      sceneEl.querySelector('[camera]').addEventListener('loaded', function () {
+        sceneEl.addState('vr-mode');
+        el.sceneEl.renderer.vr.enabled = true;
+        sceneEl.render = function () {
+          sceneEl.renderer.vr.getCamera(sceneEl.camera.el.object3D);
+        };
         done();
       });
-    }
-
-    el.addEventListener('loaded', function () {
-      StubVRControls.prototype.update = function () { /* no-op */ };
-      self.sinon.stub(THREE, 'VRControls', StubVRControls);
     });
   });
 
-  test('rotates camera around Y', function (done) {
+  test('rotates camera around Y', function () {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(0, PI, 0));
-    el.sceneEl.tick();
-    process.nextTick(function () {
-      var rotation = el.getAttribute('rotation');
-      assert.equal(Math.round(rotation.x), 0);
-      assert.equal(Math.round(rotation.y), 180);
-      assert.equal(Math.round(rotation.z), 0);
-      done();
-    });
+    var rotation;
+    var cameraEl = el.sceneEl.querySelector('[camera]');
+    this.orientation = [0, Math.PI, 0];
+    el.sceneEl.render();
+    rotation = cameraEl.getAttribute('rotation');
+    assert.equal(Math.round(rotation.x), 0);
+    assert.equal(Math.round(rotation.y), 180);
+    assert.equal(Math.round(rotation.z), 0);
   });
 
-  test('rotates camera composing X and Y', function (done) {
+  test('rotates camera composing X and Y', function () {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 4, PI, 0));
-    el.sceneEl.tick();
-    process.nextTick(function () {
-      var rotation = el.getAttribute('rotation');
-      assert.equal(Math.round(rotation.x), -45);
-      assert.equal(Math.round(rotation.y), 180);
-      assert.equal(Math.round(rotation.z), 0);
-      done();
-    });
+    var cameraEl = el.sceneEl.querySelector('[camera]');
+    this.orientation = [PI / 4, PI, 0];
+    el.sceneEl.render();
+    var rotation = cameraEl.getAttribute('rotation');
+    assert.equal(Math.round(rotation.x), 45);
+    assert.equal(Math.round(rotation.y), 180);
+    assert.equal(Math.round(rotation.z), 0);
   });
 
-  test('rotates camera composing X and Y and Z', function (done) {
+  test('rotates camera composing X and Y and Z', function () {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 2, PI / 6, PI / 2));
-    el.sceneEl.tick();
-    process.nextTick(function () {
-      var rotation = el.getAttribute('rotation');
-      assert.equal(Math.round(rotation.x), 60);
-      assert.equal(Math.round(rotation.y), 90);
-      assert.equal(Math.round(rotation.z), 180);
-      done();
-    });
+    var cameraEl = el.sceneEl.querySelector('[camera]');
+    this.orientation = [PI / 4, PI / 6, PI / 2];
+    el.sceneEl.render();
+    var rotation = cameraEl.getAttribute('rotation');
+    assert.equal(Math.round(rotation.x), 45);
+    assert.equal(Math.round(rotation.y), 30);
+    assert.equal(Math.round(rotation.z), 90);
   });
 
-  test('replaces previous rotation', function (done) {
+  test('replaces previous rotation', function () {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
-    el.setAttribute('rotation', {x: -10000, y: -10000, z: -10000});
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 2, PI / 6, PI / 2));
-    el.sceneEl.tick();
-    process.nextTick(function () {
-      var rotation = el.getAttribute('rotation');
-      assert.equal(Math.round(rotation.x), 60);
-      assert.equal(Math.round(rotation.y), 90);
-      assert.equal(Math.round(rotation.z), 180);
-      done();
-    });
+    var cameraEl = el.sceneEl.querySelector('[camera]');
+    this.orientation = [PI / 4, PI / 6, PI / 2];
+    cameraEl.setAttribute('rotation', {x: -10000, y: -10000, z: -10000});
+    el.sceneEl.render();
+    var rotation = cameraEl.getAttribute('rotation');
+    assert.equal(Math.round(rotation.x), 45);
+    assert.equal(Math.round(rotation.y), 30);
+    assert.equal(Math.round(rotation.z), 90);
   });
 
-  test('does not rotate camera if not in VR', function (done) {
+  test('does not rotate camera if not in VR', function () {
     var el = this.el;
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(0, PI, 0));
-    el.sceneEl.tick();
-    process.nextTick(function () {
-      var rotation = el.getAttribute('rotation');
-      assert.equal(rotation.x, 0);
-      assert.equal(rotation.y, 0);
-      assert.equal(rotation.z, 0);
-      done();
-    });
+    var cameraEl = el.sceneEl.querySelector('[camera]');
+    this.orientation = [PI / 4, PI / 6, PI / 2];
+    cameraEl.setAttribute('rotation', {x: 0, y: 0, z: 0});
+    el.sceneEl.renderer.vr.enabled = false;
+    el.sceneEl.render();
+    var rotation = cameraEl.getAttribute('rotation');
+    assert.equal(Math.round(rotation.x), 0);
+    assert.equal(Math.round(rotation.y), 0);
+    assert.equal(Math.round(rotation.z), 0);
   });
 });
 
 suite('rotation controls on camera with mouse drag (integration unit test)', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
+    var el = this.el = helpers.entityFactory();
     var self = this;
-
-    function StubVRControls (dolly) {
-      self.dolly = dolly;
-      self.el = el.sceneEl.querySelector('[camera]');  // Default camera.
-      process.nextTick(function () {
-        done();  // Done once we get a grip on VRControls created through the default camera.
+    el.addEventListener('loaded', function () {
+      el.sceneEl.addEventListener('camera-ready', function () {
+        var cameraEl = self.cameraEl = el.sceneEl.querySelector('[camera]');  // Default camera.
+        cameraEl.addEventListener('loaded', function () { done(); });
       });
-    }
-    StubVRControls.prototype.update = function () { /* no-op */ };
-    this.sinon.stub(THREE, 'VRControls', StubVRControls);
+    });
   });
 
   test('rotates camera on dragging mouse around X', function (done) {
     var el = this.el;
+    var self = this;
     var mousedownEvent = new Event('mousedown');
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
       mouseMoveEvent.movementX = 1000;
-      mouseMoveEvent.movementY = 1;
+      mouseMoveEvent.movementY = 0.1;
       mouseMoveEvent.screenX = 1000;
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        el.sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.ok(Math.abs(Math.round(rotation.y)) > 0);
-          done();
-        });
+        var cameraEl = self.cameraEl;
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.equal(Math.floor(Math.abs(rotation.x)), 0);
+        assert.notEqual(Math.floor(Math.abs(rotation.y)), 0);
+        done();
       });
     });
   });
 
   test('rotates camera on dragging mouse along Y', function (done) {
     var el = this.el;
+    var self = this;
     var mousedownEvent = new Event('mousedown');
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
-      mouseMoveEvent.movementX = 1;
+      mouseMoveEvent.movementX = 0.1;
       mouseMoveEvent.movementY = 1000;
       mouseMoveEvent.screenX = 1000;
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        el.sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.equal(Math.round(rotation.x), -90);
-          done();
-        });
+        var cameraEl = self.cameraEl;
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.equal(Math.floor(Math.abs(rotation.y)), 0);
+        assert.notEqual(Math.floor(Math.abs(rotation.x)), 0);
+        done();
       });
     });
   });
 
   test('rotates camera dragging mouse on already rotated camera', function (done) {
     var el = this.el;
+    var self = this;
+    this.cameraEl.setAttribute('rotation', '45 45 0');
     var mousedownEvent = new Event('mousedown');
     mousedownEvent.button = 0;
     el.sceneEl.canvas.dispatchEvent(mousedownEvent);
-
-    el.setAttribute('rotation', {x: 0, y: -360, z: 0});
-
     process.nextTick(function afterMousedown () {
       var mouseMoveEvent = new Event('mousemove');
-      mouseMoveEvent.movementX = 1000;
-      mouseMoveEvent.movementY = 1;
+      mouseMoveEvent.movementX = -1000;
+      mouseMoveEvent.movementY = -1000;
       mouseMoveEvent.screenX = 1000;
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        el.sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.ok(rotation.y < -360, 'Drag applies delta to current rotation.');
-          done();
-        });
+        var cameraEl = self.cameraEl;
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.ok(rotation.x > 45);
+        assert.ok(rotation.y > 45);
+        done();
       });
     });
   });
 
   test('does not rotate camera when dragging in VR with headset', function (done) {
     var el = this.el;
-    this.dolly.quaternion.setFromEuler(new THREE.Euler(0, PI, 0));
+    var cameraEl = this.cameraEl;
+    cameraEl.setAttribute('rotation', '30 45 60');
     el.sceneEl.addState('vr-mode');
     el.sceneEl.canvas.dispatchEvent(new Event('mousedown'));
 
@@ -325,14 +315,12 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
       mouseMoveEvent.screenY = 1000;
       window.dispatchEvent(mouseMoveEvent);
       process.nextTick(function afterMousemove () {
-        el.sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.equal(Math.round(rotation.x), 0);
-          assert.equal(Math.round(rotation.y), 180, 'Use VR controls rotation');
-          assert.equal(Math.round(rotation.z), 0);
-          done();
-        });
+        var rotation = cameraEl.getAttribute('rotation');
+        cameraEl.components['look-controls'].updateOrientation();
+        assert.equal(Math.ceil(rotation.x), 30);
+        assert.equal(Math.ceil(rotation.y), 45);
+        assert.equal(Math.ceil(rotation.z), 60);
+        done();
       });
     });
   });
@@ -340,24 +328,21 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
 
 suite('rotation controls on camera with touch drag (integration unit test)', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
+    var el = this.el = helpers.entityFactory();
     var self = this;
-
-    function StubVRControls (dolly) {
-      self.dolly = dolly;
-      self.el = el.sceneEl.querySelector('[camera]');  // Default camera.
-      process.nextTick(function () {
-        done();  // Done once we get a grip on VRControls created through the default camera.
+    el.addEventListener('loaded', function () {
+      el.sceneEl.addEventListener('camera-ready', function () {
+        var cameraEl = self.cameraEl = el.sceneEl.querySelector('[camera]');  // Default camera.
+        cameraEl.addEventListener('loaded', function () { done(); });
       });
-    }
-    StubVRControls.prototype.update = function () { /* no-op */ };
-    this.sinon.stub(THREE, 'VRControls', StubVRControls);
+    });
   });
 
   test('rotates camera on touch dragging around X', function (done) {
     var canvas;
     var el = this.el;
     var sceneEl = el.sceneEl;
+    var cameraEl = this.cameraEl;
     var touchStartEvent;
 
     canvas = sceneEl.canvas;
@@ -374,12 +359,11 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
       touchMoveEvent.touches = [{pageX: 500, pageY: 0}];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
-        sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.ok(Math.abs(Math.round(rotation.y)) > 0);
-          done();
-        });
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.ok(Math.abs(Math.round(rotation.y)) > 0);
+        done();
       });
     });
   });
@@ -388,6 +372,7 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
     var canvas;
     var el = this.el;
     var sceneEl = el.sceneEl;
+    var cameraEl = this.cameraEl;
     var touchStartEvent;
 
     canvas = sceneEl.canvas;
@@ -404,13 +389,12 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
       touchMoveEvent.touches = [{pageX: 0, pageY: 500}];
       window.dispatchEvent(touchMoveEvent);
       process.nextTick(function afterTouchmove () {
-        sceneEl.tick();
-        process.nextTick(function doAssert () {
-          var rotation = el.getAttribute('rotation');
-          assert.equal(Math.round(rotation.x), 0);
-          assert.equal(Math.round(rotation.y), 0);
-          done();
-        });
+        var rotation;
+        cameraEl.components['look-controls'].updateOrientation();
+        rotation = cameraEl.getAttribute('rotation');
+        assert.equal(Math.round(rotation.x), 0);
+        assert.equal(Math.round(rotation.y), 0);
+        done();
       });
     });
   });
@@ -418,39 +402,43 @@ suite('rotation controls on camera with touch drag (integration unit test)', fun
 
 suite('position controls on camera with VRControls (integration unit test)', function () {
   setup(function (done) {
-    var el = helpers.entityFactory();
+    var el = this.el = helpers.entityFactory();
+    var sceneEl = el.parentNode;
     var self = this;
-
-    function StubVRControls (dolly) {
-      self.dolly = dolly;
-      self.el = el.sceneEl.querySelector('[camera]');  // Default camera.
-      process.nextTick(function () {
-        done();  // Done once we get a grip on VRControls created through the default camera.
+    this.position = [0, 0, 0];
+    this.orientation = [0, 0, 0];
+    sceneEl.addEventListener('camera-ready', function () {
+      var cameraEl = self.cameraEl = sceneEl.querySelector('[camera]');
+      sceneEl.renderer.vr.getCamera = function (obj) {
+        if (!this.enabled) { return; }
+        obj.position.fromArray(self.position);
+        obj.rotation.fromArray(self.orientation);
+        obj.updateMatrixWorld();
+      };
+      cameraEl.addEventListener('loaded', function () {
+        sceneEl.addState('vr-mode');
+        el.sceneEl.renderer.vr.enabled = true;
+        sceneEl.render = function () {
+          sceneEl.renderer.vr.getCamera(cameraEl.object3D);
+        };
+        done();
       });
-    }
-    StubVRControls.prototype.update = function () { /* no-op */ };
-    this.sinon.stub(THREE, 'VRControls', StubVRControls);
+    });
   });
 
-  test('copies matrix to camera in VR mode', function (done) {
+  test('copies matrix to camera in VR mode', function () {
     var el = this.el;
-    var sceneEl = el.sceneEl;
-    var dolly = this.dolly;
+    var sceneEl = el.parentNode;
+    var cameraEl = this.cameraEl;
 
     sceneEl.addState('vr-mode');
-    el.components.camera.hasPositionalTracking = true;
-    el.components.camera.removeHeightOffset();
-
-    process.nextTick(function () {
-      var position;
-      dolly.position.set(-1, 2, 3);
-      sceneEl.tick();
-
-      position = el.getAttribute('position');
-      assert.equal(position.x, -1);
-      assert.equal(position.y, 2);
-      assert.equal(position.z, 3);
-      done();
-    });
+    cameraEl.components['look-controls'].hasPositionalTracking = true;
+    cameraEl.components['look-controls'].removeHeightOffset();
+    this.position = [-1, 2, 3];
+    el.sceneEl.render();
+    var position = cameraEl.getAttribute('position');
+    assert.equal(position.x, -1);
+    assert.equal(position.y, 2);
+    assert.equal(position.z, 3);
   });
 });

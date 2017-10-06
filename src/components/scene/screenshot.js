@@ -61,6 +61,7 @@ module.exports.Component = registerComponent('screenshot', {
 
     function setup () {
       var gl = el.renderer.getContext();
+      if (!gl) { return; }
       self.cubeMapSize = gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE);
       self.material = new THREE.RawShaderMaterial({
         uniforms: {map: {type: 't', value: null}},
