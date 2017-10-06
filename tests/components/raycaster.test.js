@@ -207,16 +207,6 @@ suite('raycaster', function () {
       component.tick();
     });
 
-    test('emits event on raycaster entity with details', function (done) {
-      var raycasterEl = el;
-      raycasterEl.addEventListener('raycaster-intersection', function (evt) {
-        assert.equal(evt.detail.els[0], targetEl);
-        assert.equal(evt.detail.intersections[0].object.el, targetEl);
-        done();
-      });
-      component.tick();
-    });
-
     test('emits event on intersected entity with details', function (done) {
       var raycasterEl = el;
       targetEl.addEventListener('raycaster-intersected', function (evt) {
@@ -236,6 +226,16 @@ suite('raycaster', function () {
           done();
         });
         component.tick();
+      });
+      component.tick();
+    });
+
+    test('emits event on raycaster entity with details', function (done) {
+      var raycasterEl = el;
+      raycasterEl.addEventListener('raycaster-intersection', function (evt) {
+        assert.equal(evt.detail.els[0], targetEl);
+        assert.equal(evt.detail.intersections[0].object.el, targetEl);
+        done();
       });
       component.tick();
     });

@@ -249,11 +249,13 @@ module.exports.Component = registerComponent('cursor', {
     var index;
     var intersectedEl;
     var intersection;
+    var raycaster;
 
     // Select closest object, excluding the cursor.
-    index = evt.detail.els[0] === cursorEl ? 1 : 0;
-    intersection = evt.detail.intersections[index];
-    intersectedEl = evt.detail.els[index];
+    raycaster = cursorEl.components.raycaster;
+    index = raycaster.intersectedEls[0] === cursorEl ? 1 : 0;
+    intersection = raycaster.intersections[index];
+    intersectedEl = raycaster.intersectedEls[index];
 
     // If cursor is the only intersected object, ignore the event.
     if (!intersectedEl) { return; }
