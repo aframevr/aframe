@@ -30,8 +30,8 @@ Some best practices for the framework:
 [stats]: ../components/stats.md
 
 Performance is critical in VR. A high framerate must be maintained in order for
-people to feel comfortable and as if they were in another place. Here are some
-ways to help improve performance of an A-Frame scene:
+people to feel comfortable. Here are some ways to help improve performance of
+an A-Frame scene:
 
 - Use [recommended hardware specifications][hardware].
 - Use the **[stats component][stats]** to keep an eye on various metrics (FPS,
@@ -55,6 +55,60 @@ ways to help improve performance of an A-Frame scene:
   handlers to hook into the global render loop. Use utilities such as
   `AFRAME.utils.throttleTick` to limit the number of times the `tick` handler
   is run if appropriate.
+
+### GPU Texture Preloading
+
+Until off-thread texture uploads to the GPU are available, try to draw all
+materials and textures up front. When materials and textures are drawn for the
+first time, the browser will hang and block while uploading to the GPU. Note
+that three.js's renderer does not upload textures to the GPU if objects are
+non-visible. To prevent frame drops during the experience, create and draw all
+materials and textures when the scene starts. They do not need to be within
+view (e.g., we can put an entity at position `0 -1000 0`). Then hide them as
+needed. We will try to come with a convenient API in A-Frame to do this
+automatically.
+
+As an aside, try to create as few and reuse materials and textures as much as
+possible. Such as using texture atlases. It may also help to use simpler
+three.js materials such as Lambert since A-Frame's default PBR-based material
+is fairly heavy yet its features are rarely used.
+
+[360]: https://aframe-360-gallery.glitch.me
+
+For example, this is apparent in the [360&deg; image gallery]. If we look at
+the browser performance tools, there will be frame drops when switching to a
+new image for the first time, but runs smoothly when switching back to images
+for the second time.
+
+### JavaScript
+
+Avoid creating garbage and instantiating new JavaScript objects, arrays,
+strings, and functions as much as possible. in the 2d web, it is not as big of
+a deal to create a lot of javascript objects since there is a lot of idle time
+for the garbage collector to run. For VR, garbage collection may cause dropped
+frames.
+
+Try to avoid patterns such as `Object.keys(obj).forEach(function () { });`
+which creates new arrays, functions, and callbacks versus using `for (key in
+obj)`. Or for array iteration, avoid `.forEach` and use a simple `for` loop
+instead. And try not to create copies of objects such as with `utils.clone`,
+`utils.extend`, or `.slice`.
+
+If emitting an event, try to reuse the same object for event details:
+
+```js
+AFRAME.registerComponent('foo', {
+  init: function () {
+    this.someData = [];
+    this.evtDetail = {someData: this.someData};
+  },
+
+  tick: function (time) {
+    this.someData.push(time);
+    this.el.emit('bar', this.evtDetail);
+  }
+});
+```
 
 ### `tick` Handlers
 
