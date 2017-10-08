@@ -5,12 +5,20 @@
     <title>360 Video</title>
     <meta name="description" content="360 Video — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
-    <link rel="stylesheet" href="/css/examples.css">
+    <style>
+      #hls {
+        right: 8px;
+        top: 8px;
+        position: absolute;
+        z-index: 999999;
+        text-align: right;
+      }
+    </style>
   </head>
   <body>
-    <div style="right:8px; top:8px; position:absolute; z-index:999999">
-      <a style="align:right" href="../../test/videosphere/hls.html">Click here for<br/>native HLS version</a>
-    </div>
+    <a id="hls" href="../../test/videosphere/hls.html">
+      Click here for native HLS version
+    </a>
     <a-scene>
       <a-assets>
         <video id="video" src="https://ucarecdn.com/fadab25d-0b3a-45f7-8ef5-85318e92a261/"

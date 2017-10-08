@@ -122,21 +122,25 @@ function handleTextureEvents (el, texture) {
   if (!texture.image || texture.image.tagName !== 'VIDEO') { return; }
 
   texture.image.addEventListener('loadeddata', function emitVideoTextureLoadedDataAll () {
-    // Check to see if we need to use iOS 10 HLS shader.
-    // Only override the shader if it is stock shader that we know doesn't correct.
-    if (!el.components || !el.components.material) { return; }
-
-    if (texture.needsCorrectionBGRA && texture.needsCorrectionFlipY &&
-        ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
-      el.setAttribute('material', 'shader', 'ios10hls');
-    }
-
     el.emit('materialvideoloadeddata', {src: texture.image, texture: texture});
   });
   texture.image.addEventListener('ended', function emitVideoTextureEndedAll () {
     // Works for non-looping videos only.
     el.emit('materialvideoended', {src: texture.image, texture: texture});
   });
+
+  // NOTE: For MacOS HLS, loadeddata doesn't appear to fire...
+  // Check to see if we need to use iOS 10 HLS shader.
+  // Only override the shader if it is stock shader that we know doesn't correct.
+  if (!el.components || !el.components.material) { return; }
+
+  if (texture.needsCorrectionFlipY &&
+      ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
+    // For some reason, wait a tick before changing shader, or it doesn't work.
+    setTimeout(function () {
+      el.setAttribute('material', 'shader', texture.needsCorrectionBGRA ? 'ios10hls' : 'macoshls');
+    });
+  }
 }
 module.exports.handleTextureEvents = handleTextureEvents;
 

@@ -14,6 +14,7 @@ var initPostMessageAPI = require('./postMessage');
 
 var bind = utils.bind;
 var isIOS = utils.device.isIOS();
+var isMacOS = utils.device.isMacOS();
 var isMobile = utils.device.isMobile();
 var registerElement = re.registerElement;
 var warn = utils.debug('core:a-scene:warn');
@@ -49,6 +50,7 @@ module.exports.AScene = registerElement('a-scene', {
     createdCallback: {
       value: function () {
         this.isIOS = isIOS;
+        this.isMacOS = isMacOS;
         this.isMobile = isMobile;
         this.isScene = true;
         this.object3D = new THREE.Scene();
