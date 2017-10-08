@@ -66,4 +66,19 @@ suite('laser-controls', function () {
       });
     });
   });
+  suite('remove', function () {
+    test('removes event handlers when removed', function () {
+      el.removeAttribute('line');
+      el.removeAttribute('raycaster');
+      el.removeAttribute('laser-controls');
+      assert.isNotOk(el.getAttribute('line'));
+      assert.isNotOk(el.getAttribute('raycaster'));
+      el.emit('controllerconnected');
+      el.emit('controllermodelready');
+      assert.isNotOk(el.getAttribute('line'));
+      assert.isNotOk(el.getAttribute('raycaster'));
+      el.emit('controllerdisconnected');
+      assert.isNotOk(el.getAttribute('raycaster'));
+    });
+  });
 });
