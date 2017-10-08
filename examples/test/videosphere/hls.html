@@ -9,7 +9,7 @@
   <body>
     <a-scene stats>
       <a-assets>
-        <video id="city" preload="true"
+        <video id="city" preload="true" webkit-playsinline playsinline
                src="../../assets/video/city_halfres_hls.m3u8"
                width="360" height="360" autoplay loop
                crossorigin="anonymous"></video>
@@ -20,9 +20,17 @@
       </a-entity>
       <a-text value="Click or tap to play." align="center" position="0 0.25 -2"></a-text>
       <script>
-        window.addEventListener('click', function () {
-          document.querySelector('video').play();
-        });
+        setTimeout(function() {
+          var vid = document.querySelector('video');
+          if (vid.paused) {
+            window.addEventListener('click', function playOnce() {
+              vid.play();
+              var txt = document.querySelector('a-text');
+              txt.parentElement.removeChild(txt);
+              window.removeEventListener('click', playOnce);
+            });
+          }
+        }, 3000);
       </script>
     </a-scene>
   </body>
