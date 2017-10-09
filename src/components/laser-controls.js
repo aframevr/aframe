@@ -23,19 +23,17 @@ registerComponent('laser-controls', {
     // Bind methods
     this.createRay = bind(this.createRay, this);
     this.hideRay = bind(this.hideRay, this);
-    this.setModelReady = bind(this.setModelReady, this);
+    this.onModelReady = bind(this.onModelReady, this);
 
     // Wait for controller to connect, or have a valid pointing pose, before creating ray
     el.addEventListener('controllerconnected', this.createRay);
     el.addEventListener('controllerdisconnected', this.hideRay);
-    el.addEventListener('controllermodelready', this.createRay);
-    el.addEventListener('controllermodelready', this.setModelReady);
+    el.addEventListener('controllermodelready', this.onModelReady);
   },
   remove: function () {
     this.el.removeEventListener('controllerconnected', this.createRay);
     this.el.removeEventListener('controllerdisconnected', this.hideRay);
-    this.el.removeEventListener('controllermodelready', this.createRay);
-    this.el.removeEventListener('controllermodelready', this.setModelReady);
+    this.el.removeEventListener('controllermodelready', this.onModelReady);
   },
   createRay: function (evt) {
     var controllerConfig = this.config[evt.detail.name];
@@ -71,7 +69,8 @@ registerComponent('laser-controls', {
   hideRay: function () {
     this.el.setAttribute('raycaster', 'showLine', false);
   },
-  setModelReady: function () {
+  onModelReady: function (evt) {
+    this.createRay(evt);
     this.modelReady = true;
   },
   config: {
