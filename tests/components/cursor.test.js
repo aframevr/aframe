@@ -299,13 +299,13 @@ suite('cursor', function () {
 
   suite('onIntersectionCleared', function () {
     test('does not do anything if not intersecting', function () {
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('does not do anything if only the cursor is intersecting', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {els: [el]});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [el]});
       assert.ok(component.intersection);
       assert.ok(component.intersectedEl);
     });
@@ -313,7 +313,7 @@ suite('cursor', function () {
     test('unsets intersectedEl', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(component.intersection);
       assert.notOk(component.intersectedEl);
     });
@@ -322,7 +322,7 @@ suite('cursor', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       intersectedEl.addState('cursor-hovered');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(intersectedEl.is('cursor-hovered'));
     });
 
@@ -333,7 +333,7 @@ suite('cursor', function () {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
         done();
       });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('emits mouseleave event on intersectedEl', function (done) {
@@ -343,7 +343,7 @@ suite('cursor', function () {
         assert.equal(evt.detail.cursorEl, el);
         done();
       });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
     });
 
     test('removes cursor-hovering and cursor-fusing states on cursor', function () {
@@ -351,67 +351,7 @@ suite('cursor', function () {
       component.intersectedEl = intersectedEl;
       el.addState('cursor-fusing');
       el.addState('cursor-hovering');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(el.is('cursor-fusing'));
-      assert.notOk(el.is('cursor-hovering'));
-    });
-  });
-
-  suite('onIntersectionCleared', function () {
-    test('does not do anything if not intersecting', function () {
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('does not do anything if only the cursor is intersecting', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {els: [el]});
-      assert.ok(component.intersection);
-      assert.ok(component.intersectedEl);
-    });
-
-    test('unsets intersectedEl', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(component.intersection);
-      assert.notOk(component.intersectedEl);
-    });
-
-    test('removes cursor-hovered state on intersectedEl', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      intersectedEl.addState('cursor-hovered');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-      assert.notOk(intersectedEl.is('cursor-hovered'));
-    });
-
-    test('emits mouseleave event on el', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(el, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.intersectedEl, intersectedEl);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('emits mouseleave event on intersectedEl', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(intersectedEl, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.cursorEl, el);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
-    });
-
-    test('removes cursor-hovering and cursor-fusing states on cursor', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.addState('cursor-fusing');
-      el.addState('cursor-hovering');
-      el.emit('raycaster-intersection-cleared', {el: intersectedEl});
+      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(el.is('cursor-fusing'));
       assert.notOk(el.is('cursor-hovering'));
     });
