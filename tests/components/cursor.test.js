@@ -430,6 +430,17 @@ suite('cursor', function () {
         done();
       });
     });
+    test('update raycaster based on touch coordinates', function (done) {
+      var event = new CustomEvent('touchstart');
+      event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
+      el.setAttribute('cursor', 'rayOrigin', 'mouse');
+      window.dispatchEvent(event);
+      process.nextTick(function () {
+        var raycaster = el.getAttribute('raycaster');
+        assert.notEqual(raycaster.direction.x, 0);
+        done();
+      });
+    });
   });
 
   suite('canvas events', function () {
