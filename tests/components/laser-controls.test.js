@@ -65,6 +65,15 @@ suite('laser-controls', function () {
         done();
       });
     });
+
+    test('passes model property to controllers', function () {
+      el.setAttribute('laser-controls', {model: false});
+      assert.isFalse(el.getAttribute('daydream-controls').model);
+      assert.isFalse(el.getAttribute('gearvr-controls').model);
+      assert.isFalse(el.getAttribute('oculus-touch-controls').model);
+      assert.isFalse(el.getAttribute('vive-controls').model);
+      assert.isFalse(el.getAttribute('windows-motion-controls').model);
+    });
   });
   suite('remove', function () {
     test('removes event handlers when removed', function () {
