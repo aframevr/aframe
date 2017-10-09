@@ -151,15 +151,21 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
     var el = this.el;
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
+    window.addEventListener('touchstart', this.onMouseMove, false);
+    window.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
@@ -179,14 +185,24 @@ module.exports.Component = registerComponent('cursor', {
 
       // Calculate mouse position based on the canvas element
       var bounds = this.canvasBounds;
-      var left = evt.clientX - bounds.left;
-      var top = evt.clientY - bounds.top;
+      var point;
+      if (evt.type === 'touchmove' || evt.type === 'touchstart') {
+        // just track the first touch for simplicity
+        point = evt.touches.item(0);
+      } else {
+        point = evt;
+      }
+      var left = point.clientX - bounds.left;
+      var top = point.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
+      if (evt.type === 'touchstart' || evt.type === 'touchmove') {
+        evt.preventDefault();
+      }
     };
   })(),
 
@@ -196,6 +212,7 @@ module.exports.Component = registerComponent('cursor', {
   onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
+    evt.type === 'touchstart' && evt.preventDefault();
   },
 
   /**
@@ -219,6 +236,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     this.cursorDownEl = null;
+    evt.type === 'touchend' && evt.preventDefault();
   },
 
   /**

@@ -93,7 +93,7 @@ suite('cursor', function () {
       once(el, 'mousedown', function () {
         done();
       });
-      component.onCursorDown();
+      component.onCursorDown({});
     });
 
     test('emits mousedown event on intersectedEl', function (done) {
@@ -102,14 +102,14 @@ suite('cursor', function () {
       once(intersectedEl, 'mousedown', function () {
         done();
       });
-      component.onCursorDown();
+      component.onCursorDown({});
     });
 
     test('sets cursorDownEl', function () {
       component.intersection = intersection;
       component.intersectedEl = intersectedEl;
       assert.notOk(component.cursorDownEl);
-      component.onCursorDown();
+      component.onCursorDown({});
       assert.equal(component.cursorDownEl, intersectedEl);
     });
   });
