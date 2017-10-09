@@ -27,7 +27,7 @@ A camera situated at the average height of human eye level (1.6 meters).
 | far        | Camera frustum far clipping plane.                                                                                              | 10000         |
 | fov        | Field of view (in degrees).                                                                                                     | 80            |
 | near       | Camera frustum near clipping plane.                                                                                             | 0.005         |
-| userHeight | How much height to add to the camera when *not* in VR mode. The default camera has this set to 1.6 (meters, to represent average eye level.). | 0             |
+| userHeight | How much height to add to the camera when *not* in VR mode. The default camera has this set to 1.6 (meters, to represent average eye level.). | 1.6             |
 | zoom       | Zoom factor of the camera.                                                                                                      | 1             |
 
 ## VR Behavior
