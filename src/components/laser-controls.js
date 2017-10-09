@@ -4,19 +4,21 @@ var bind = utils.bind;
 
 registerComponent('laser-controls', {
   schema: {
-    hand: {default: 'right'}
+    hand: {default: 'right'},
+    model: {default: true}
   },
 
   init: function () {
     var data = this.data;
     var el = this.el;
+    var controllerConfig = {hand: data.hand, model: data.model};
 
     // Set all controller models.
-    el.setAttribute('daydream-controls', {hand: data.hand});
-    el.setAttribute('gearvr-controls', {hand: data.hand});
-    el.setAttribute('oculus-touch-controls', {hand: data.hand});
-    el.setAttribute('vive-controls', {hand: data.hand});
-    el.setAttribute('windows-motion-controls', {hand: data.hand});
+    el.setAttribute('daydream-controls', controllerConfig);
+    el.setAttribute('gearvr-controls', controllerConfig);
+    el.setAttribute('oculus-touch-controls', controllerConfig);
+    el.setAttribute('vive-controls', controllerConfig);
+    el.setAttribute('windows-motion-controls', controllerConfig);
 
     // Bind methods
     this.createRay = bind(this.createRay, this);
