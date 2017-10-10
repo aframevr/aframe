@@ -21,14 +21,25 @@ A camera situated at the average height of human eye level (1.6 meters).
 
 ## Properties
 
-| Property   | Description                                                                                                                     | Default Value |
-|------------|---------------------------------------------------------------------------------------------------------------------------------|---------------|
-| active     | Whether the camera is the active camera in a scene with more than one camera.                                             | true          |
-| far        | Camera frustum far clipping plane.                                                                                              | 10000         |
-| fov        | Field of view (in degrees).                                                                                                     | 80            |
-| near       | Camera frustum near clipping plane.                                                                                             | 0.005         |
-| userHeight | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the primitive has this set to 1.6 (meters, to represent average eye level.). Note the default camera component alone defaults this to 0. | 1.6             |
-| zoom       | Zoom factor of the camera.                                                                                                      | 1             |
+| Property   | Description                                                                                                                                                                                                                                                                         | Default Value |
+|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|
+| active     | Whether the camera is the active camera in a scene with more than one camera.                                                                                                                                                                                                       | true          |
+| far        | Camera frustum far clipping plane.                                                                                                                                                                                                                                                  | 10000         |
+| fov        | Field of view (in degrees).                                                                                                                                                                                                                                                         | 80            |
+| near       | Camera frustum near clipping plane.                                                                                                                                                                                                                                                 | 0.005         |
+| userHeight | Height offset to add to the camera when *not* in VR mode so the camera is not on ground level. The default camera that A-Frame injects or the `<a-camera>` primitive sets this to 1.6 meters. But note the default camera component alone (`<a-entity camera>`) defaults this to 0. | 0             |
+| zoom       | Zoom factor of the camera.                                                                                                                                                                                                                                                          | 1             |
+
+## Default Camera
+
+If a camera is not specified, A-Frame will inject a default camera:
+
+```html
+<a-entity camera="active: true; userHeight: 1.6" look-controls wasd-controls position="0 0 0" data-aframe-default-camera></a-entity>
+```
+
+If a camera is specified (e.g., our own `<a-camera>` or `<a-entity camera>`),
+then the default camera will not be added.
 
 ## VR Behavior
 
