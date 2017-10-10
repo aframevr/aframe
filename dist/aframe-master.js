@@ -66222,6 +66222,9 @@ module.exports.Component = registerComponent('camera', {
     this.onExitVR = bind(this.onExitVR, this);
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
     sceneEl.addEventListener('exit-vr', this.onExitVR);
+
+    // Call enter VR handler if the scene has entered VR before the event listeners attached.
+    if (sceneEl.is('vr-mode')) { this.onEnterVR(); }
   },
 
   /**
@@ -66314,7 +66317,9 @@ module.exports.Component = registerComponent('camera', {
     // Remove the offset if there is positional tracking when entering VR.
     // Necessary for fullscreen mode with no headset.
     // Checking this.hasPositionalTracking to make the value injectable for unit tests.
-    hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
     if (!userHeightOffset || !hasPositionalTracking) { return; }
 
@@ -78427,7 +78432,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #3eb046f)');
+console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #2f33f22)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
