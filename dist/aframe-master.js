@@ -66547,42 +66547,58 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
     var el = this.el;
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
+    window.addEventListener('touchstart', this.onMouseMove, false);
+    window.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
+    var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
     var origin = new THREE.Vector3();
-    var direction = new THREE.Vector3();
-    var rayCasterConfig = {
-      origin: origin,
-      direction: direction
-    };
+    var rayCasterConfig = {origin: origin, direction: direction};
+
     return function (evt) {
+      var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var left;
+      var point;
+      var top;
+
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
-      var bounds = this.canvasBounds;
-      var left = evt.clientX - bounds.left;
-      var top = evt.clientY - bounds.top;
+      if (evt.type === 'touchmove' || evt.type === 'touchstart') {
+        // Track the first touch for simplicity.
+        point = evt.touches.item(0);
+      } else {
+        point = evt;
+      }
+
+      left = point.clientX - bounds.left;
+      top = point.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
+      if (evt.type === 'touchstart' || evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -66592,6 +66608,7 @@ module.exports.Component = registerComponent('cursor', {
   onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
+    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
@@ -66615,6 +66632,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     this.cursorDownEl = null;
+    if (evt.type === 'touchend') { evt.preventDefault(); }
   },
 
   /**
@@ -66668,16 +66686,12 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection cleared.
    */
   onIntersectionCleared: function (evt) {
-    var cursorEl = this.el;
-    var intersectedEl = evt.detail.el;
+    var clearedEls = evt.detail.clearedEls;
 
-    // Ignore the cursor.
-    if (cursorEl === intersectedEl) { return; }
-
-    // Ignore if the event didn't occur on the current intersection.
-    if (intersectedEl !== this.intersectedEl) { return; }
-
-    this.clearCurrentIntersection();
+    // Check if the current intersection has ended
+    if (clearedEls.indexOf(this.intersectedEl) !== -1) {
+      this.clearCurrentIntersection();
+    }
   },
 
   clearCurrentIntersection: function () {
@@ -78413,7 +78427,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #765a0d1)');
+console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #3eb046f)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
