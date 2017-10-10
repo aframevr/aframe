@@ -75447,7 +75447,7 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var componentDefined = newData !== undefined && newData !== null;
+    var componentDefined;
     var data;
     var defaultValue;
     var keys;
@@ -75458,11 +75458,17 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
+
+    // Whether component has a defined value. For arrays, treat empty as not defined.
+    componentDefined = newData && newData.constructor === Array
+      ? newData.length
+      : newData !== undefined && newData !== null;
+
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       // Clone default value if plain object so components don't share the same object
       // that might be modified by the user.
-      data = (schema.default && schema.default.constructor === Object) ? utils.clone(schema.default) : schema.default;
+      data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
@@ -75475,9 +75481,7 @@ Component.prototype = {
         defaultValue = schema[keys[i]].default;
         if (data[keys[i]] !== undefined) { continue; }
         // Clone default value if object so components don't share object
-        data[keys[i]] = defaultValue && defaultValue.constructor === Object
-          ? utils.clone(defaultValue)
-          : defaultValue;
+        data[keys[i]] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
       }
     }
 
@@ -75605,9 +75609,7 @@ function cloneData (data) {
   var key;
   for (key in data) {
     parsedProperty = data[key];
-    clone[key] = parsedProperty && parsedProperty.constructor === Object
-      ? utils.clone(parsedProperty)
-      : parsedProperty;
+    clone[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
   }
   return clone;
 }
@@ -75668,6 +75670,10 @@ function wrapPlay (playMethod) {
     if (!hasBehavior(this)) { return; }
     sceneEl.addBehavior(this);
   };
+}
+
+function isObjectOrArray (value) {
+  return value && (value.constructor === Object || value.constructor === Array);
 }
 
 },{"../utils/":196,"./scene/scenes":132,"./schema":134,"./system":136}],127:[function(_dereq_,module,exports){
@@ -78407,7 +78413,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #f9148aa)');
+console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #765a0d1)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
