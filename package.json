@@ -43,7 +43,7 @@
     "style-attr": "^1.0.2",
     "three": "^0.87.0",
     "three-bmfont-text": "^2.1.0",
-    "webvr-polyfill": "^0.9.36"
+    "webvr-polyfill": "^0.9.40"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
