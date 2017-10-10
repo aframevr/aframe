@@ -59096,48 +59096,48 @@ module.exports={
   "_args": [
     [
       {
-        "raw": "webvr-polyfill@^0.9.36",
+        "raw": "webvr-polyfill@^0.9.40",
         "scope": null,
         "escapedName": "webvr-polyfill",
         "name": "webvr-polyfill",
-        "rawSpec": "^0.9.36",
-        "spec": ">=0.9.36 <0.10.0",
+        "rawSpec": "^0.9.40",
+        "spec": ">=0.9.40 <0.10.0",
         "type": "range"
       },
       "/home/ubuntu/a-frobot/aframe"
     ]
   ],
-  "_from": "webvr-polyfill@>=0.9.36 <0.10.0",
-  "_id": "webvr-polyfill@0.9.36",
+  "_from": "webvr-polyfill@>=0.9.40 <0.10.0",
+  "_id": "webvr-polyfill@0.9.40",
   "_inCache": true,
   "_location": "/webvr-polyfill",
-  "_nodeVersion": "4.8.4",
+  "_nodeVersion": "8.6.0",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/webvr-polyfill-0.9.36.tgz_1499892972378_0.10267087002284825"
+    "tmp": "tmp/webvr-polyfill-0.9.40.tgz_1507657755590_0.00047161197289824486"
   },
   "_npmUser": {
     "name": "jsantell",
     "email": "jsantell@gmail.com"
   },
-  "_npmVersion": "2.15.11",
+  "_npmVersion": "5.3.0",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "webvr-polyfill@^0.9.36",
+    "raw": "webvr-polyfill@^0.9.40",
     "scope": null,
     "escapedName": "webvr-polyfill",
     "name": "webvr-polyfill",
-    "rawSpec": "^0.9.36",
-    "spec": ">=0.9.36 <0.10.0",
+    "rawSpec": "^0.9.40",
+    "spec": ">=0.9.40 <0.10.0",
     "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz",
-  "_shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
+  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.40.tgz",
+  "_shasum": "2cfa0ec0e0cc6ba7238c73a09cba4952fff59a63",
   "_shrinkwrap": null,
-  "_spec": "webvr-polyfill@^0.9.36",
+  "_spec": "webvr-polyfill@^0.9.40",
   "_where": "/home/ubuntu/a-frobot/aframe",
   "authors": [
     "Boris Smus <boris@smus.com>",
@@ -59155,14 +59155,15 @@ module.exports={
     "mocha": "^3.2.0",
     "semver": "^5.3.0",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "2.7.1"
   },
   "directories": {},
   "dist": {
-    "shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
-    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz"
+    "integrity": "sha512-m7jhJHjFcUYPyPSNeGmly7a2h/cP7bARz0OZMoUn5SueVXEKeZ4P7bzbAUDBDvvqCsa5gHgM3PFIhYe13bqaWw==",
+    "shasum": "2cfa0ec0e0cc6ba7238c73a09cba4952fff59a63",
+    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.40.tgz"
   },
-  "gitHead": "5f8693a9053ee1dea425e96d14cd1f2bef7a284c",
+  "gitHead": "45828ffdb8c3e0f9bb90296d6039d3cc7909ba8e",
   "homepage": "https://github.com/googlevr/webvr-polyfill",
   "keywords": [
     "vr",
@@ -59197,7 +59198,7 @@ module.exports={
     "test": "mocha",
     "watch": "webpack-dev-server"
   },
-  "version": "0.9.36"
+  "version": "0.9.40"
 }
 
 },{}],49:[function(_dereq_,module,exports){
@@ -60846,11 +60847,14 @@ CardboardVRDisplay.prototype.onResize_ = function(e) {
       'position: absolute',
       'top: 0',
       'left: 0',
-      'width: ' + Math.max(screen.width, screen.height) + 'px',
-      'height: ' + Math.min(screen.height, screen.width) + 'px',
+      // Use vw/vh to handle implicitly devicePixelRatio; issue #282
+      'width: 100vw',
+      'height: 100vh',
       'border: 0',
       'margin: 0',
-      'padding: 0 10px 10px 0',
+      // Set no padding in the case where you don't have control over
+      // the content injection, like in Unity WebGL; issue #282
+      'padding: 0px',
       'box-sizing: content-box',
     ];
     gl.canvas.setAttribute('style', cssProperties.join('; ') + ';');
@@ -61509,7 +61513,7 @@ module.exports = Distortion;
 },{}],57:[function(_dereq_,module,exports){
 module.exports={
   "format": 1,
-  "last_updated": "2017-06-01T22:33:42Z",
+  "last_updated": "2017-08-27T14:39:31Z",
   "devices": [
     {
       "type": "android",
@@ -61691,6 +61695,23 @@ module.exports={
       ],
       "bw": 3,
       "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "LENOVO/*/Lenovo PB2-690Y/*"
+        },
+        {
+          "ua": "Lenovo PB2-690Y"
+        }
+      ],
+      "dpi": [
+        457.2,
+        454.713
+      ],
+      "bw": 3,
+      "ac": 500
     },
     {
       "type": "android",
@@ -62809,6 +62830,40 @@ module.exports={
         }
       ],
       "dpi": 533,
+      "bw": 3,
+      "ac": 500
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/SM-G950F/*"
+        },
+        {
+          "ua": "SM-G950F"
+        }
+      ],
+      "dpi": [
+        562.707,
+        565.293
+      ],
+      "bw": 3,
+      "ac": 500
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/SM-G955U/*"
+        },
+        {
+          "ua": "SM-G955U"
+        }
+      ],
+      "dpi": [
+        522.514,
+        525.762
+      ],
       "bw": 3,
       "ac": 500
     },
@@ -64313,8 +64368,13 @@ FusionPoseSensor.prototype.updateDeviceMotion_ = function(deviceMotion) {
     this.previousTimestampS = timestampS;
     return;
   }
+
   this.accelerometer.set(-accGravity.x, -accGravity.y, -accGravity.z);
-  this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
+  if (Util.isR7()) {
+    this.gyroscope.set(-rotRate.beta, rotRate.alpha, rotRate.gamma);
+  } else {
+    this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
+  }
 
   // With iOS and Firefox Android, rotationRate is reported in degrees,
   // so we first convert to radians.
@@ -64659,8 +64719,16 @@ Util.isFirefoxAndroid = (function() {
   };
 })();
 
+Util.isR7 = (function() {
+  var isR7 = navigator.userAgent.indexOf('R7 Build') !== -1;
+  return function() {
+    return isR7;
+  };
+})();
+
 Util.isLandscapeMode = function() {
-  return (window.orientation == 90 || window.orientation == -90);
+  var rtn = (window.orientation == 90 || window.orientation == -90);
+  return Util.isR7() ? !rtn : rtn;
 };
 
 // Helper method to validate the time steps of sensor timestamps.
@@ -65382,7 +65450,7 @@ function WebVRPolyfill() {
                                  navigator.getVRDisplays :
                                  null;
 
-  if (!this.nativeLegacyWebVRAvailable) {
+  if (!this.nativeLegacyWebVRAvailable && !this.nativeWebVRAvailable) {
     this.enablePolyfill();
     if (window.WebVRConfig.ENABLE_DEPRECATED_API) {
       this.enableDeprecatedPolyfill();
@@ -65483,7 +65551,7 @@ WebVRPolyfill.prototype.enablePolyfill = function() {
   window.VRDisplay = VRDisplay;
 
   // Provide the `navigator.vrEnabled` property.
-  if (navigator && !navigator.vrEnabled) {
+  if (navigator && typeof navigator.vrEnabled === 'undefined') {
     var self = this;
     Object.defineProperty(navigator, 'vrEnabled', {
       get: function () {
@@ -66097,7 +66165,7 @@ module.exports={
     "style-attr": "^1.0.2",
     "three": "^0.87.0",
     "three-bmfont-text": "^2.1.0",
-    "webvr-polyfill": "^0.9.36"
+    "webvr-polyfill": "^0.9.40"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -78435,7 +78503,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #12921a9)');
+console.log('A-Frame Version: 0.7.0 (Date 10-10-2017, Commit #767af19)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -80157,7 +80225,7 @@ var isMobile = (function () {
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
       _isMobile = true;
     }
-    if (isIOS() || isTablet()) {
+    if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
@@ -80186,12 +80254,19 @@ function isGearVR () {
 }
 module.exports.isGearVR = isGearVR;
 
+function isR7 () {
+  return /R7 Build/.test(window.navigator.userAgent);
+}
+module.exports.isR7 = isR7;
+
 /**
  * Checks mobile device orientation.
  * @return {Boolean} True if landscape orientation.
  */
 module.exports.isLandscape = function () {
-  return window.orientation === 90 || window.orientation === -90;
+  var orientation = window.orientation;
+  if (isR7()) { orientation += 90; }
+  return orientation === 90 || orientation === -90;
 };
 
 /**
