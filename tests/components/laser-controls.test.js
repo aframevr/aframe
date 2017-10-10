@@ -66,4 +66,40 @@ suite('laser-controls', function () {
       });
     });
   });
+
+  suite('remove', function () {
+    test('removes event handlers when removed', function () {
+      el.removeAttribute('line');
+      el.removeAttribute('raycaster');
+      el.removeAttribute('laser-controls');
+      assert.isNotOk(el.getAttribute('line'));
+      assert.isNotOk(el.getAttribute('raycaster'));
+      el.emit('controllerconnected');
+      el.emit('controllermodelready');
+      assert.isNotOk(el.getAttribute('line'));
+      assert.isNotOk(el.getAttribute('raycaster'));
+      el.emit('controllerdisconnected');
+      assert.isNotOk(el.getAttribute('raycaster'));
+    });
+  });
+});
+suite('init with model:false', function () {
+  var el;
+
+  setup(function (done) {
+    el = entityFactory();
+    el.addEventListener('componentinitialized', function (evt) {
+      if (evt.detail.name !== 'laser-controls') { return; }
+      done();
+    });
+    el.setAttribute('laser-controls', 'model: false');
+  });
+
+  test('passes model property to controllers', function () {
+    assert.isFalse(el.getAttribute('daydream-controls').model);
+    assert.isFalse(el.getAttribute('gearvr-controls').model);
+    assert.isFalse(el.getAttribute('oculus-touch-controls').model);
+    assert.isFalse(el.getAttribute('vive-controls').model);
+    assert.isFalse(el.getAttribute('windows-motion-controls').model);
+  });
 });
