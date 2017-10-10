@@ -59,12 +59,19 @@ module.exports.Component = registerComponent('look-controls', {
 
   tick: function (t) {
     var data = this.data;
-    var hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    var hasPositionalTracking;
+
     if (!data.enabled) { return; }
+
     this.controls.standing = data.standing;
+
+    hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
     if (hasPositionalTracking) {
       this.controls.userHeight = this.getUserHeight();
     }
+
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
