@@ -1,7 +1,10 @@
 var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
+var utils = require('../utils/');
 var DEFAULT_CAMERA_HEIGHT = require('../constants').DEFAULT_CAMERA_HEIGHT;
 var bind = require('../utils/bind');
+
+var checkHasPositionalTracking = utils.device.checkHasPositionalTracking;
 
 // To avoid recalculation at every mouse movement tick
 var GRABBING_CLASS = 'a-grabbing';
@@ -57,9 +60,19 @@ module.exports.Component = registerComponent('look-controls', {
 
   tick: function (t) {
     var data = this.data;
+    var hasPositionalTracking;
+
     if (!data.enabled) { return; }
+
     this.controls.standing = data.standing;
-    this.controls.userHeight = this.getUserHeight();
+
+    hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
+    if (hasPositionalTracking) {
+      this.controls.userHeight = this.getUserHeight();
+    }
+
     this.controls.update();
     this.updateOrientation();
     this.updatePosition();
