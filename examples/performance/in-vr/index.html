@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>In-VR Performance</title>
+    <meta name="description" content="In-VR Performance - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="components/controller.js"></script>
+    <script src="components/stats-in-vr.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-entity controller="hand: left">
+        <a-entity stats-in-vr position="0.47 0 0.08"></a-entity>
+      </a-entity>
+      <a-entity controller="hand: right"></a-entity>
+
+      <a-entity position="0 0 -1">
+        <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9" shadow></a-box>
+        <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E" shadow></a-sphere>
+        <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D" shadow></a-cylinder>
+        <a-plane position="0 0 -4" rotation="-90 0 0" width="6" height="6" color="#7BC8A4" shadow="cast: false"></a-plane>
+      </a-entity>
+
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>

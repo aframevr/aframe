@@ -3,9 +3,12 @@ title: fog
 type: components
 layout: docs
 parent_section: components
+source_code: src/components/scene/fog.js
+examples: []
 ---
 
-The fog component obscures entities in fog given distance from the camera. The fog component applies only to the [`<a-scene>` element][scene].
+The fog component obscures entities in fog given distance from the camera. The
+fog component applies only to the [`<a-scene>` element][scene].
 
 ## Example
 
@@ -15,7 +18,7 @@ The fog component obscures entities in fog given distance from the camera. The f
 
 ## Properties
 
-Given the type of fog distribution, different properties will apply.
+Given the fog distribution type, different properties will apply.
 
 | Property | Description                                                                          | Default Value |
 |----------|--------------------------------------------------------------------------------------|---------------|

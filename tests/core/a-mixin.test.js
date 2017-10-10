@@ -23,10 +23,10 @@ suite('a-mixin', function () {
     this.assetsEl.appendChild(mixinEl);
 
     mixinEl.addEventListener('loaded', function () {
-      assert.equal(el.getComputedAttribute('geometry').primitive, 'ring');
+      assert.equal(el.getAttribute('geometry').primitive, 'ring');
       mixinEl.setAttribute('geometry', 'primitive: circle');
       process.nextTick(function () {
-        assert.equal(el.getComputedAttribute('geometry').primitive, 'circle');
+        assert.equal(el.getAttribute('geometry').primitive, 'circle');
         done();
       });
     });
@@ -37,13 +37,12 @@ suite('a-mixin', function () {
     var mixinEl = document.createElement('a-mixin');
     el.setAttribute('mixin', 'ring');
     el.setAttribute('geometry', 'buffer: false');
-
     mixinEl.setAttribute('id', 'ring');
     mixinEl.setAttribute('geometry', 'primitive: ring');
     this.assetsEl.appendChild(mixinEl);
 
     mixinEl.addEventListener('loaded', function () {
-      var geometry = el.getComputedAttribute('geometry');
+      var geometry = el.getAttribute('geometry');
       assert.equal(geometry.buffer, false);
       assert.equal(geometry.primitive, 'ring');
       done();
@@ -65,6 +64,13 @@ suite('a-mixin (detached)', function () {
       mixinEl.setAttribute('test', 'src: url(www.mozilla.com)');
       mixinEl.cacheAttributes();
       assert.equal(mixinEl.componentCache.test, undefined);
+    });
+
+    test('caches multiple component attributes', function () {
+      var mixinEl = document.createElement('a-mixin');
+      mixinEl.setAttribute('sound__test', 'src: url(mysoundfile.mp3)');
+      mixinEl.cacheAttributes();
+      assert.shallowDeepEqual(mixinEl.componentCache.sound__test, {src: 'url(mysoundfile.mp3)'});
     });
   });
 });

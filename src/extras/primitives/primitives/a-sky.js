@@ -1,6 +1,7 @@
 var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
 var utils = require('../../../utils/');
+var meshPrimitives = require('./meshPrimitives');
 
 registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   defaultComponents: {
@@ -8,18 +9,15 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
       primitive: 'sphere',
       radius: 5000,
       segmentsWidth: 64,
-      segmentsHeight: 20
+      segmentsHeight: 32
     },
     material: {
       color: '#FFF',
-      shader: 'flat'
+      shader: 'flat',
+      npot: true
     },
     scale: '-1 1 1'
   },
 
-  mappings: {
-    radius: 'geometry.radius',
-    'segments-width': 'geometry.segmentsWidth',
-    'segments-height': 'geometry.segmentsHeight'
-  }
+  mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));

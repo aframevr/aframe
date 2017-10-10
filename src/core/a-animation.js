@@ -3,7 +3,7 @@ var animationConstants = require('../constants/animation');
 var coordinates = require('../utils/').coordinates;
 var parseProperty = require('./schema').parseProperty;
 var registerElement = require('./a-register-element').registerElement;
-var TWEEN = require('tween.js');
+var TWEEN = require('@tweenjs/tween.js');
 var THREE = require('../lib/three');
 var utils = require('../utils/');
 var bind = utils.bind;
@@ -14,7 +14,7 @@ var DIRECTIONS = animationConstants.directions;
 var EASING_FUNCTIONS = animationConstants.easingFunctions;
 var FILLS = animationConstants.fills;
 var REPEATS = animationConstants.repeats;
-var isCoordinate = coordinates.isCoordinate;
+var isCoordinates = coordinates.isCoordinates;
 
 /**
  * Animation element that applies Tween animation to parent element (entity).
@@ -109,7 +109,7 @@ module.exports.AAnimation = registerElement('a-animation', {
         // Handle indefinite + forwards + alternate yoyo edge-case (#405).
         if (repeat === Infinity && fill === FILLS.forwards &&
             [DIRECTIONS.alternate,
-             DIRECTIONS.alternateReverse].indexOf(data.direction) !== -1) {
+              DIRECTIONS.alternateReverse].indexOf(data.direction) !== -1) {
           yoyo = true;
         }
 
@@ -375,7 +375,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
     } else {
       getForComponentAttribute();
     }
-  } else if (dataTo && isCoordinate(dataTo)) {
+  } else if (dataTo && isCoordinates(dataTo)) {
     getForCoordinateComponent();
   } else if (['true', 'false'].indexOf(dataTo) !== -1) {
     getForBoolean();
@@ -462,7 +462,7 @@ function getAnimationValues (el, attribute, dataFrom, dataTo, currentValue) {
    *   Then converts to hex for the setAttribute
    */
   function getForColorComponent () {
-    from = new THREE.Color(dataFrom);
+    from = new THREE.Color(dataFrom || el.getAttribute(attribute));
     to = new THREE.Color(dataTo);
     partialSetAttribute = function (value) {
       if (attributeSplit.length > 1) {

@@ -1,9 +1,7 @@
-var getMeshMixin = require('../getMeshMixin');
 var registerPrimitive = require('../primitives').registerPrimitive;
-var utils = require('../../../utils/');
 
-registerPrimitive('a-collada-model', utils.extendDeep({}, getMeshMixin(), {
+registerPrimitive('a-collada-model', {
   mappings: {
     src: 'collada-model'
   }
-}));
+});

@@ -2,9 +2,7 @@ var registerComponent = require('../core/component').registerComponent;
 var THREE = require('../lib/three');
 
 module.exports.Component = registerComponent('collada-model', {
-  schema: {
-    type: 'src'
-  },
+  schema: {type: 'asset'},
 
   init: function () {
     this.model = null;

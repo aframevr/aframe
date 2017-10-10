@@ -9,7 +9,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       primitive: 'ring',
       radiusOuter: 0.016,
       radiusInner: 0.01,
-      segmentsTheta: 64
+      segmentsTheta: 32
     },
     material: {
       color: '#000',
@@ -20,17 +20,14 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
       x: 0,
       y: 0,
       z: -1
-    },
-    raycaster: {
-      far: 1000
     }
   },
 
   mappings: {
     far: 'raycaster.far',
     fuse: 'cursor.fuse',
+    'fuse-timeout': 'cursor.fuseTimeout',
     interval: 'raycaster.interval',
-    objects: 'raycaster.objects',
-    'fuse-timeout': 'cursor.fuseTimeout'
+    objects: 'raycaster.objects'
   }
 }));

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Laser Controls</title>
+    <meta name="description" content="Laser Controls - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="components/intersect-color-change.js"></script>
+  </head>
+  <body>
+    <script>
+      // Create boxes.
+      AFRAME.registerComponent('boxes', {
+        init: function () {
+          var box;
+          var columns = 20;
+          var el = this.el;
+          var i;
+          var j;
+          var rows = 15;
+
+          if (el.sceneEl.isMobile) {
+            columns = 10;
+            rows = 5;
+          };
+
+          for (x = columns / -2; x < columns / 2; x++) {
+            for (y = 0.5; y < rows; y++) {
+              box = document.createElement('a-entity');
+              box.setAttribute('mixin', 'box');
+              box.setAttribute('position', {x: x * .6, y: y * .6, z: 1.5});
+              el.appendChild(box);
+            }
+          }
+        }
+      });
+
+      AFRAME.registerComponent('shadow-if-mobile', {
+        init: function () {
+          if (!this.el.sceneEl.isMobile) {
+            this.el.setAttribute('light', {
+              castShadow: true,
+              shadowMapWidth: 2048,
+              shadowMapHeight: 1024
+            });
+          }
+        }
+      });
+    </script>
+
+    <a-scene antialias="true">
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: [mixin='box']"></a-entity>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: [mixin='box']" line="color: #118A7E"></a-entity>
+
+      <a-light position="0 0.5 1" intensity="0.75"></a-light>
+
+      <a-entity position="0 0 -10">
+        <a-mixin id="box" geometry="primitive: box" material="color: #FAFAFA" rotation="0 0 -35" scale="0.5 0.5 0.5" intersect-color-change shadow="cast: true; receive: false"></a-mixin>
+        <a-entity boxes></a-entity>
+
+        <a-circle rotation="-90 0 0" radius="20" color="#666" position="0 -0.1 0" shadow="receive: true" roughness="1"></a-circle>
+
+        <a-light type="point" position="0 10 -30" intensity="0.85" shadow-if-mobile></a-light>
+
+        <a-torus radius="20" arc="190" rotation="0 90 0">
+          <a-animation attribute="rotation" to="0 450 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
+        </a-torus>
+        <a-torus radius="20" arc="190" rotation="0 45 0">
+          <a-animation attribute="rotation" to="0 405 0" repeat="indefinite" dur="16000" easing="linear"></a-animation>
+        </a-torus>
+        <a-torus radius="20" arc="190" rotation="0 135 0">
+          <a-animation attribute="rotation" to="0 495 0" direction="reverse" repeat="indefinite" dur="16000" easing="linear"></a-animation>
+        </a-torus>
+        <a-torus radius="20" arc="360" rotation="-90 0 0"></a-torus>
+
+        <a-sky color="#212" radius="50"></a-sky>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>

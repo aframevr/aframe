@@ -1,51 +1,27 @@
-/* global Image */
+/* global Image, XMLHttpRequest */
 var debug = require('./debug');
 
 var warn = debug('utils:src-loader:warn');
 
 /**
- * Validates a texture, either as a selector or as a URL.
- * Detects whether `src` is pointing to an image, video, or canvas, and invokes the
- * appropriate callback.
+ * Validate a texture, either as a selector or as a URL.
+ * Detects whether `src` is pointing to an image or video and invokes the appropriate
+ * callback.
  *
- * If `src` is selector, check if it's valid, return the el in the callback.
- * An el is returned so that it can be reused for texture loading.
+ * `src` will be passed into the callback
  *
- * If `src` is a URL, check if it's valid, return the src in the callback.
- *
- * @params {string} src - A selector or a URL. URLs must be wrapped by `url()`.
+ * @params {string|Element} src - URL or media element.
  * @params {function} isImageCb - callback if texture is an image.
  * @params {function} isVideoCb - callback if texture is a video.
- * @params {function} isCanvasCb - callback if texture is a canvas.
  */
-function validateSrc (src, isImageCb, isVideoCb, isCanvasCb) {
-  var textureEl;
-  var isImage;
-  var isVideo;
-  var isCanvas;
-  var url = parseUrl(src);
-
-  // src is a url.
-  if (url) {
-    validateImageUrl(url, function isAnImageUrl (isImage) {
-      if (!isImage) { isVideoCb(url); return; }
-      isImageCb(url);
-    });
-    return;
-  }
-
-  // src is a query selector.
-  textureEl = validateAndGetQuerySelector(src);
-  if (!textureEl) { return; }
-  isImage = textureEl && textureEl.tagName === 'IMG';
-  isVideo = textureEl && textureEl.tagName === 'VIDEO';
-  isCanvas = textureEl && textureEl.tagName === 'CANVAS';
-  if (isImage) { return isImageCb(textureEl); }
-  if (isVideo) { return isVideoCb(textureEl); }
-  if (isCanvas) { return isCanvasCb(textureEl); }
-
-  // src is a valid selector but doesn't match with a <img>, <video>, or <canvas> element.
-  warn('"%s" does not point to a valid <img>, <video>, or <canvas> element', src);
+function validateSrc (src, isImageCb, isVideoCb) {
+  checkIsImage(src, function isAnImageUrl (isImage) {
+    if (isImage) {
+      isImageCb(src);
+      return;
+    }
+    isVideoCb(src);
+  });
 }
 
 /**
@@ -80,7 +56,7 @@ function validateCubemapSrc (src, cb) {
   }
   if (urls) {
     for (i = 1; i < 7; i++) {
-      validateSrc(urls[i], isImageCb);
+      validateSrc(parseUrl(urls[i]), isImageCb);
     }
     return;
   }
@@ -107,11 +83,44 @@ function parseUrl (src) {
 }
 
 /**
- * Validate src is a valid image url
- * @param  {string} src - url that will be tested
- * @param  {function} onResult - callback with the test result
+ * Call back whether `src` is an image.
+ *
+ * @param {string|Element} src - URL or element that will be tested.
+ * @param {function} onResult - Callback with whether `src` is an image.
  */
-function validateImageUrl (src, onResult) {
+function checkIsImage (src, onResult) {
+  var request;
+
+  if (src.tagName) {
+    onResult(src.tagName === 'IMG');
+    return;
+  }
+  request = new XMLHttpRequest();
+
+  // Try to send HEAD request to check if image first.
+  request.open('HEAD', src);
+  request.addEventListener('load', function (event) {
+    var contentType;
+    if (request.status >= 200 && request.status < 300) {
+      contentType = request.getResponseHeader('Content-Type');
+      if (contentType == null) {
+        checkIsImageFallback(src, onResult);
+      } else {
+        if (contentType.startsWith('image')) {
+          onResult(true);
+        } else {
+          onResult(false);
+        }
+      }
+    } else {
+      checkIsImageFallback(src, onResult);
+    }
+    request.abort();
+  });
+  request.send();
+}
+
+function checkIsImageFallback (src, onResult) {
   var tester = new Image();
   tester.addEventListener('load', onLoad);
   function onLoad () { onResult(true); }

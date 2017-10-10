@@ -3,18 +3,18 @@ title: <a-collada-model>
 type: primitives
 layout: docs
 parent_section: primitives
+source_code: src/extras/primitives/primitives/a-collada-model.js
 ---
 
 The COLLADA model primitive displays a 3D COLLADA model created from a 3D
-modeling program or downloaded from the web. It is an entity that maps the
-`src` attribute to the [collada-model component][collada]
+modeling program or downloaded from the web.
 
 ## Example
 
 ```html
 <a-scene>
   <a-assets>
-    <a-asset-item id="tree" src="tree.dae">
+    <a-asset-item id="tree" src="tree.dae"></a-asset-item>
   </a-assets>
 
   <!-- Using the asset management system. -->
@@ -27,8 +27,8 @@ modeling program or downloaded from the web. It is an entity that maps the
 
 ## Attribute
 
-| Attribute | Component Mapping | Default Value |
-|-----------|-------------------|---------------|
-| src       | collada-model.src | null          |
-
 [collada]: ../components/collada-model.md
+
+| Attribute | Component Mapping            | Default Value |
+|-----------|------------------------------|---------------|
+| src       | [collada-model][collada].src | null          |

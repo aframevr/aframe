@@ -1,14 +1,27 @@
+[slack]: https://aframevr-slack.herokuapp.com
 [stackoverflow]: http://stackoverflow.com/questions/tagged/aframe
+
+Interested in contributing? As an open source project, we'd appreciate any help
+and contributions! On top of the A-Frame framework itself, you can also
+contribute to these related projects:
+
+- [aframe-inspector](https://github.com/aframevr/aframe-inspector)
+- [aframe-site](https://github.com/aframevr/aframe-site)
 
 # Join the Community on Slack
 
-1. [Invite yourself](https://aframevr-slack.herokuapp.com/) to the A-Frame Slack channel.
+1. [Invite yourself][slack] to the A-Frame Slack channel.
 2. [Join the discussion](https://aframevr.slack.com)!
 
-# File an Issue
+# Get Help or Ask a Question
 
-If you have a question rather than an issue, you can post to [the A-Frame Stack
-Overflow tag][stackoverflow]
+If you're not sure how to do something with A-Frame, please post a question
+(and any code you've tried so far) to [Stack Overflow under the 'aframe'
+tag][stackoverflow]. Questions there will automatically create notifications in
+[Slack][slack], and are easier for others to find so new developers can learn
+from your questions too.
+
+# File an Issue
 
 1. Search the [issue tracker](https://github.com/aframevr/aframe/issues) for similar issues.
 2. Specify the version of A-Frame in which the bug occurred.
@@ -18,22 +31,28 @@ Overflow tag][stackoverflow]
 
 # Contribute Code to A-Frame
 
+[aframe]: https://github.com/aframevr/aframe/
 [easy]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28easy%29
 [hard]: https://github.com/aframevr/aframe/labels/help%20wanted%20%28hard%29
+[pr]: https://www.digitalocean.com/community/tutorials/how-to-create-a-pull-request-on-github
+[ssh]: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 [testing-guide]: https://github.com/aframevr/aframe/tree/master/tests#a-frame-unit-tests
 
 Check out the [issues labeled *help wanted (easy)*][easy] or [*help wanted
-(hard)*][hard] for good issues to tackle.
+(hard)*][hard] for good issues to tackle. Here's how to submit a pull request (PR):
 
-1. Have a [GitHub account](https://github.com/join).
+1. Have a [GitHub account](https://github.com/join) with [SSH keys][ssh] set up.
 2. [Fork](https://github.com/aframevr/aframe/fork) the repository on GitHub.
-3. Run `npm install` and `npm run dev` to serve the test examples.
-4. Make changes to your fork of the repository.
-5. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
-6. Submit a pull request to the master branch.
-7. Address [review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) if any.
+3. Clone your fork of the repository locally (i.e., `git clone git@github.com:yourusername/aframe`).
+4. Run `npm install` to get dependencies and `npm run dev` to serve the test examples.
+5. Create a branch to work in (i.e., `git checkout -b mybranch`).
+6. Make changes to your fork of the repository, commit them, and push them (i.e., `git add -A . && git commit -m 'My Changes (fixes #1234)' && git push origin mybranch`).
+7. If necessary, write [unit tests](tests/) ([guide][testing-guide]) and run with `npm test`.
+8. [Submit a pull request][pr] to the master branch. If you head to the [A-Frame repository][aframe] after running `git push` from earlier, you should see a pop up to submit a pull request.
+9. [Address review comments](http://stackoverflow.com/questions/9790448/how-to-update-a-pull-request) if any.
 
-Please note you would agree to license your contributions under the [license](LICENSE).
+As per usual with open source, you would agree to license your contributions
+under the [MIT License](LICENSE).
 
 # Share your Work
 
@@ -49,11 +68,29 @@ If you catch a typo or error in the documentation, we'd greatly appreciate a
 pull request.
 
 1. Go to the bottom of the documentation page on `aframe.io` you wish to update.
-2. Click the button to suggest edits on GitHub.
+2. Click *Edit Page* GitHub button.
 3. Edit the documentation through GitHub's text editor.
 4. Prepend the commit message with `[docs]`.
 5. We will merge the pull request and cherry-pick it onto documentation
 branches for older versions if necessary.
+
+You can also do `npm run docs` within the A-Frame project to start a local live
+server for watching and serving documentation.
+
+## Add Glitch Examples to Documentation
+
+We like to have simple and interesting [Glitch](https://glitch.com/~aframe)
+examples listed on relevant documentation pages. Glitch lets people remix/fork
+examples and code right in the browser with live updates. If you have a Glitch
+that might be useful in the documentation, request to add it!
+
+1. Have a Glitch example ready. [Remix the base A-Frame Glitch](https://glitch.com/~aframe) to maintain consistency and formatting. Follow [best practices](https://aframe.io/docs/master/introduction/best-practices.html).
+2. Go to the bottom of the documentation page on `aframe.io` you wish to update.
+3. Click *Edit Page* GitHub button.
+4. Add Glitch examples to the `examples` piece in the header, with `title` and `src`. [See example](https://github.com/aframevr/aframe/commit/1472ab23b957e6345c7fc242242f505927463122).
+
+If a Glitch example needs to be updated for whatever reason, we can remix the
+Glitch and update the `src` URL.
 
 # Help Your Fellow A-Framers
 
@@ -68,5 +105,22 @@ branches for older versions if necessary.
 1. Help respond to [newly-filed GitHub issues](https://github.com/aframevr/aframe/issues)
 2. Redirect developers to [Stack Overflow][stackoverflow] if a question is filed rather than an issue.
 3. For extra points, cross-post and answer the question on Stack Overflow after redirecting!
+
+# Curate and Make Efforts Known
+
+Every week, we round up all the cool stuff happening with A-Frame on the
+[blog](https://aframe.io/blog). We collect things to show off in [these GitHub
+issues](https://github.com/aframevr/aframe-site/labels/A%20Week%20of%20A-Frame).
+If you see anything, just post it there!
+
+We also need help keeping the [`awesome-aframe`
+repository](https://github.com/aframevr/awesome-aframe) up to date. If you see
+any missing content or things that haven't been synced to the blog, make a pull
+request there.
+
+# Spread the Word
+
+If you want to hold an event and talk about WebVR and A-Frame, check out [the
+presentation kit](https://github.com/aframevr/aframe-presentation-kit).
 
 Thanks so much for contributing and helping grow WebVR!

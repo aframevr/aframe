@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <title>Text</title>
+    <meta name="description" content="Text - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <a-mixin
+          id="marker"
+          geometry="primitive: plane; width: 0.02; height: 0.02"
+          material="color: red"
+        ></a-mixin>
+      </a-assets>
+
+      <a-entity mixin="marker" position="-2.5 0.7 0.01"></a-entity>
+
+      <!-- Animations. -->
+      <a-entity id="opacity" position="-2.5 0.7 0"
+                text="color: white; align: center; value: Animating opacity; width: 1.5">
+      </a-entity>
+      <a-entity mixin="marker" position="0 0.7 0.01"></a-entity>
+      <a-entity id="color" position="0 0.7 0"
+                text="color: white; align: center; value: Animating color; width: 1.5">
+      </a-entity>
+      <a-entity mixin="marker" position="2.5 0.7 0.01"></a-entity>
+      <a-entity id="size" position="2.5 0.7 0"
+                text="color: white; align: center; value: Animating size; width: 1.5">
+      </a-entity>
+
+      <!-- Anchors. -->
+      <a-entity mixin="marker" position="-2.5 1 0.01"></a-entity>
+      <a-entity position="-2.5 1 0"
+                text="anchor: left; width: 1.5; color: white; value: [LEFT ANCHOR] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+      </a-entity>
+      <a-entity mixin="marker" position="0 1 0.01"></a-entity>
+      <a-entity position="0 1 0"
+                text="anchor: center; width: 1.5; color: white; value: [CENTER ANCHOR] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+      </a-entity>
+      <a-entity mixin="marker" position="2.5 1 0.01"></a-entity>
+      <a-entity position="2.5 1 0"
+                text="anchor: right; width: 1.5; color: white; value: [RIGHT ANCHOR] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+      </a-entity>
+
+      <!-- Spacing. -->
+      <a-entity mixin="marker" position="-1 2.5 0.01"></a-entity>
+      <a-entity position="-1 2.5 0"
+                text="width: 2; color: white; value: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+      </a-entity>
+
+      <a-entity mixin="marker" position="-1 2 0.01"></a-entity>
+      <a-entity position="-1 2 0"
+                text="width: 2; lineHeight: 50; letterSpacing: 5; color: white; value: [LINE AND LETTER SPACING] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam">
+      </a-entity>
+
+      <!-- Alignments. -->
+      <a-entity position="2 2 0">
+        <a-entity mixin="marker" position="0 0 0.01"></a-entity>
+        <a-entity position="0 0 0" geometry="primitive: plane; width: auto; height: auto" material="color: #333"
+                  text="color: yellow; align: left; value: [LEFT ALIGNED]; width: 2; ">
+        </a-entity>
+        <a-entity mixin="marker" position="0 0.2 0.01"></a-entity>
+        <a-entity position="0 0.2 0" geometry="primitive: plane; width: auto; height: auto" material="color: #333"
+                  text="color: red; align: right; value: [RIGHT ALIGNED]; width: 2; ">
+        </a-entity>
+        <a-entity mixin="marker" position="0 0.4 0.01"></a-entity>
+        <a-entity position="0 0.4 0" geometry="primitive: plane; width: auto; height: auto" material="color: #eee"
+                  text="color: blue; align: center; value: [CENTER ALIGNED]; width: 2; ">
+        </a-entity>
+      </a-entity>
+
+      <a-sky color="#222"></a-sky>
+      <a-entity position="0 1.8 2">
+        <a-entity camera look-controls wasd-controls></a-entity>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Animate opacity.
+      var opacity = document.getElementById('opacity');
+      var obj = {opacity: 0};
+      var tween = new AFRAME.TWEEN.Tween(obj)
+        .to({opacity: 1}, 500)
+        .repeat( Infinity )
+        .yoyo( true )
+        .onUpdate(function () {
+          opacity.setAttribute('text', 'opacity', obj.opacity);
+        })
+        .start();
+
+      // Animate color.
+      var color = document.getElementById('color');
+      setInterval(function() {
+        var randomHexColor = '#'+Math.floor(Math.random()*16777215).toString(16);
+        color.setAttribute('text', 'color', randomHexColor);
+      }, 1000);
+
+      // Animate size.
+      var size = document.getElementById('size');
+      var objsize = {scale: 60};
+      var tween = new AFRAME.TWEEN.Tween(objsize)
+        .to({scale: 20}, 1000)
+        .repeat( Infinity )
+        .yoyo( true )
+        .onUpdate(function () {
+          size.setAttribute('text', 'wrapCount', objsize.scale);
+        })
+        .start();
+    </script>
+  </body>
+</html>

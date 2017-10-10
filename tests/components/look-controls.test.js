@@ -2,6 +2,7 @@
 
 var CANVAS_GRAB_CLASS = 'a-grab-cursor';
 var GRABBING_CLASS = 'a-grabbing';
+var DEFAULT_USER_HEIGHT = 1.6;
 
 suite('look-controls', function () {
   setup(function (done) {
@@ -12,6 +13,20 @@ suite('look-controls', function () {
     });
   });
 
+  suite('exit-vr', function () {
+    test('reset previous HMD position upon exit-vr event', function (done) {
+      var el = this.sceneEl;
+      var lookControls = el.camera.el.components['look-controls'];
+      el.camera.el.components['camera'].hasPositionalTracking = false;
+      lookControls.previousHMDPosition.set(1, 2, 3);
+      process.nextTick(function () {
+        assert.ok(lookControls.previousHMDPosition.length() === 0);
+        done();
+      });
+      el.dispatchEvent(new Event('exit-vr'));
+    });
+  });
+
   suite('grabbing', function () {
     test('enables grab cursor on canvas', function () {
       this.sceneEl.canvas.classList.contains(CANVAS_GRAB_CLASS);
@@ -19,21 +34,41 @@ suite('look-controls', function () {
 
     test('adds grabbing class to document body on mousedown', function (done) {
       var el = this.sceneEl;
-      el.canvas.dispatchEvent(new Event('mousedown'));
       process.nextTick(function () {
         assert.ok(document.body.classList.contains(GRABBING_CLASS));
         document.body.classList.remove(GRABBING_CLASS);
         done();
       });
+      var event = new Event('mousedown');
+      event.button = 0;
+      el.canvas.dispatchEvent(event);
     });
 
     test('removes grabbing class from document body on document body mouseup', function (done) {
       document.body.classList.add(GRABBING_CLASS);
-      window.dispatchEvent(new Event('mouseup'));
       process.nextTick(function () {
         assert.notOk(document.body.classList.contains(GRABBING_CLASS));
         done();
       });
+      window.dispatchEvent(new Event('mouseup'));
+    });
+  });
+
+  suite('head height', function () {
+    test('returns head height from camera device', function () {
+      var el = this.sceneEl;
+      var cameraEl = el.camera.el;
+      var cameraHeight = 2.5;
+      var lookControls = el.camera.el.components['look-controls'];
+      cameraEl.setAttribute('camera', 'userHeight', cameraHeight);
+      assert.shallowDeepEqual(lookControls.getUserHeight(), cameraHeight);
+    });
+
+    test('returns default head height for poses where device does not provide offset', function () {
+      var el = this.sceneEl;
+      var lookControls = el.camera.el.components['look-controls'];
+      el.camera.el.removeAttribute('camera');
+      assert.shallowDeepEqual(lookControls.getUserHeight(), DEFAULT_USER_HEIGHT);
     });
   });
 });

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pool Test</title>
+    <meta name="description" content="Pool - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+    <script src="./components/laser.js"></script>
+    <script src="./components/spaceship.js"></script>
+    <style>
+      body { background-color: black; }
+      .message {
+        position: absolute;
+        height: 200px;
+        width: 600px;
+        top: calc(50% - 100px);
+        left: calc(50% - 200px);
+        color: white;
+        font-size: 18pt;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="message"><p>Left and right arrows to move and space bar to shoot</p><p>Used Pool Entities</p></div>
+    <a-scene update-pool-message=".message" stats pool="mixin: laser; size: 10">
+      <a-assets>
+        <a-mixin id="laser" laser></a-mixin>
+      </a-assets>
+      <a-entity
+        position="0 -10 -10"
+        wasd-controls="acceleration: 400; wsEnabled: false"
+        spaceship></a-entity>
+      <a-entity position="0 0 20">
+        <a-entity camera="fov: 45"></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+  <script>
+    var message = '<p>Left and right arrows to move and space bar to shoot</p><p>Used Pool Entities ';
+    AFRAME.registerComponent('update-pool-message', {
+      schema: {type: 'selector'},
+      tick: function () {
+        var poolComponent = this.el.components.pool;
+        var poolSize = poolComponent.availableEls.length + poolComponent.usedEls.length;
+        var usedPoolEntities = this.el.components.pool.usedEls.length;
+        this.data.innerHTML = message + usedPoolEntities + '/' + poolSize + '</p>';
+      }
+    });
+  </script>
+</html>

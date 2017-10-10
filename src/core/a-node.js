@@ -1,7 +1,10 @@
-/* global HTMLElement, MutationObserver */
+/* global MutationObserver */
 var registerElement = require('./a-register-element').registerElement;
+var isNode = require('./a-register-element').isNode;
 var utils = require('../utils/');
+
 var bind = utils.bind;
+var warn = utils.debug('core:a-node:warn');
 
 /**
  * Base class for A-Frame that manages loading of objects.
@@ -10,7 +13,7 @@ var bind = utils.bind;
  * Nodes emit a `loaded` event when they and their children have initialized.
  */
 module.exports = registerElement('a-node', {
-  prototype: Object.create(HTMLElement.prototype, {
+  prototype: Object.create(window.HTMLElement.prototype, {
     createdCallback: {
       value: function () {
         this.hasLoaded = false;
@@ -23,9 +26,18 @@ module.exports = registerElement('a-node', {
 
     attachedCallback: {
       value: function () {
-        var mixins = this.getAttribute('mixin');
+        var mixins;
         this.sceneEl = this.closestScene();
+
+        if (!this.sceneEl) {
+          warn('You are attempting to attach <' + this.tagName + '> outside of an A-Frame ' +
+               'scene. Append this element to `<a-scene>` instead.');
+        }
+
+        this.hasLoaded = false;
         this.emit('nodeready', {}, false);
+
+        mixins = this.getAttribute('mixin');
         if (mixins) { this.updateMixins(mixins); }
       },
       writable: window.debug
@@ -72,7 +84,9 @@ module.exports = registerElement('a-node', {
     },
 
     detachedCallback: {
-      value: function () { /* no-op */ }
+      value: function () {
+        this.hasLoaded = false;
+      }
     },
 
     /**
@@ -88,8 +102,7 @@ module.exports = registerElement('a-node', {
         if (this.hasLoaded) { return; }
 
         // Default to waiting for all nodes.
-        childFilter = childFilter || function (el) { return el.isNode; };
-
+        childFilter = childFilter || isNode;
         // Wait for children to load (if any), then load.
         children = this.getChildren();
         childrenLoaded = children.filter(childFilter).map(function (child) {
@@ -102,7 +115,7 @@ module.exports = registerElement('a-node', {
         Promise.all(childrenLoaded).then(function emitLoaded () {
           self.hasLoaded = true;
           if (cb) { cb(); }
-          self.emit('loaded', {}, false);
+          self.emit('loaded', undefined, false);
         });
       },
       writable: true
@@ -114,15 +127,23 @@ module.exports = registerElement('a-node', {
       }
     },
 
+    /**
+     * Remove old mixins and mixin listeners.
+     * Add new mixins and mixin listeners.
+     */
     updateMixins: {
       value: function (newMixins, oldMixins) {
-        var newMixinsIds = newMixins.split(' ');
-        var oldMixinsIds = oldMixins ? oldMixins.split(' ') : [];
-        // To determine what listeners will be removed
-        var diff = oldMixinsIds.filter(function (i) { return newMixinsIds.indexOf(i) < 0; });
+        var newMixinIds = newMixins ? newMixins.trim().split(/\s+/) : [];
+        var oldMixinIds = oldMixins ? oldMixins.trim().split(/\s+/) : [];
+
+        // Unregister old mixins.
+        oldMixinIds.filter(function (i) {
+          return newMixinIds.indexOf(i) < 0;
+        }).forEach(bind(this.unregisterMixin, this));
+
+        // Register new mixins.
         this.mixinEls = [];
-        diff.forEach(bind(this.unregisterMixin, this));
-        newMixinsIds.forEach(bind(this.registerMixin, this));
+        newMixinIds.forEach(bind(this.registerMixin, this));
       }
     },
 
@@ -139,7 +160,7 @@ module.exports = registerElement('a-node', {
     setAttribute: {
       value: function (attr, newValue) {
         if (attr === 'mixin') { this.updateMixins(newValue); }
-        HTMLElement.prototype.setAttribute.call(this, attr, newValue);
+        window.HTMLElement.prototype.setAttribute.call(this, attr, newValue);
       }
     },
 
@@ -190,29 +211,27 @@ module.exports = registerElement('a-node', {
     },
 
     /**
-     * Emits a DOM event.
+     * Emit a DOM event.
      *
-     * @param {String} name
-     *   Name of event (use a space-delimited string for multiple events).
-     * @param {Object=} [detail={}]
-     *   Custom data to pass as `detail` to the event.
-     * @param {Boolean=} [bubbles=true]
-     *   Whether the event should bubble.
+     * @param {string} name - Name of event.
+     * @param {object} [detail={}] - Custom data to pass as `detail` to the event.
+     * @param {boolean} [bubbles=true] - Whether the event should bubble.
+     * @param {object} [extraData] - Extra data to pass to the event, if any.
      */
     emit: {
-      value: function (name, detail, bubbles) {
+      value: function (name, detail, bubbles, extraData) {
+        var data;
         var self = this;
-        detail = detail || {};
         if (bubbles === undefined) { bubbles = true; }
-        var data = { bubbles: !!bubbles, detail: detail };
-        return name.split(' ').map(function (eventName) {
-          return utils.fireEvent(self, eventName, data);
-        });
-      }
+        data = {bubbles: !!bubbles, detail: detail};
+        if (extraData) { utils.extend(data, extraData); }
+        return utils.fireEvent(self, name, data);
+      },
+      writable: window.debug
     },
 
     /**
-     * Returns a closure that emits a DOM event.
+     * Return a closure that emits a DOM event.
      *
      * @param {String} name
      *   Name of event (use a space-delimited string for multiple events).

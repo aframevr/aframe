@@ -42,7 +42,8 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     });
 
     // Modal that tells the user to change orientation if in portrait.
-    window.addEventListener('orientationchange', bind(this.toggleOrientationModalIfNeeded, this));
+    window.addEventListener('orientationchange',
+                            bind(this.toggleOrientationModalIfNeeded, this));
   },
 
   update: function () {
@@ -90,7 +91,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     var sceneEl = this.el;
     var orientationModalEl = this.orientationModalEl;
     if (!orientationModalEl || !sceneEl.isMobile) { return; }
-    if (!utils.isLandscape() && sceneEl.is('vr-mode')) {
+    if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
       // Show if in VR mode on portrait.
       orientationModalEl.classList.remove(HIDDEN_CLASS);
     } else {
@@ -104,6 +105,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
  *
  * Structure: <div><button></div>
  *
+ * @param {function} enterVRHandler
  * @returns {Element} Wrapper <div>.
  */
 function createEnterVRButton (enterVRHandler) {
@@ -116,11 +118,14 @@ function createEnterVRButton (enterVRHandler) {
   wrapper.setAttribute(constants.AFRAME_INJECTED, '');
   vrButton = document.createElement('button');
   vrButton.className = ENTER_VR_BTN_CLASS;
+  vrButton.setAttribute('title', 'Enter VR mode with a headset or fullscreen mode on a desktop. Visit https://webvr.rocks or https://webvr.info for more information.');
   vrButton.setAttribute(constants.AFRAME_INJECTED, '');
 
   // Insert elements.
   wrapper.appendChild(vrButton);
-  vrButton.addEventListener('click', enterVRHandler);
+  vrButton.addEventListener('click', function (evt) {
+    enterVRHandler();
+  });
   return wrapper;
 }
 

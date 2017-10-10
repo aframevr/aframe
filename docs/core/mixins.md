@@ -4,6 +4,10 @@ type: core
 layout: docs
 parent_section: core
 order: 7
+source_code: src/core/a-mixin.js
+examples:
+  - title: Animated Lights
+    src: https://glitch.com/edit/#!/aframe-animated-lights?path=index.html
 ---
 
 Mixins provide a way to compose and reuse commonly-used sets of component
@@ -40,7 +44,7 @@ the entities above expand to:
 
 Properties of a multi-property component will merge if defined by multiple mixins and/or the entity. For example:
 
-```
+```html
 <a-scene>
   <a-assets>
     <a-mixin id="box" geometry="primitive: box"></a-mixin>
@@ -54,7 +58,7 @@ Properties of a multi-property component will merge if defined by multiple mixin
 
 All of the geometry component properties will merge since they are included as mixins and defined on the entity. The entity would then be equivalent to:
 
-```
+```html
 <a-entity geometry="primitive: box; height: 10; depth: 2; width: 10"></a-entity>
 ```
 

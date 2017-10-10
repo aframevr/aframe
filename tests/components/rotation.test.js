@@ -20,7 +20,7 @@ suite('rotation', function () {
 
   suite('schema', function () {
     test('can get rotation', function () {
-      assert.shallowDeepEqual(this.el.getComputedAttribute('rotation'), {
+      assert.shallowDeepEqual(this.el.getAttribute('rotation'), {
         x: 0, y: 0, z: 0
       });
     });

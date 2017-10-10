@@ -10,6 +10,6 @@ registerGeometry('plane', {
   },
 
   init: function (data) {
-    this.geometry = new THREE.PlaneGeometry(data.width, data.height);
+    this.geometry = new THREE.PlaneGeometry(data.width, data.height, data.segmentsWidth, data.segmentsHeight);
   }
 });

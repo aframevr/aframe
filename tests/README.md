@@ -28,10 +28,17 @@ Unit tests use:
 
 Run `npm run test` to run the entire test suite. This starts a watcher. Every
 change to the codebase will automatically trigger the tests. This is useful in
-that you don't have to re-run a command every time you want to run the tests.
+that we don't have to re-run a command every time we want to run the tests.
 
-If you wish to only run a single test suite or a single test case, then you can
-add `.only` to the suite or test you wish to run. For example:
+If we wish to only run a single test suite or a single test case, we can add
+either set the `TEST_FILE` environment variable pattern. This will match for
+files containing the pattern.
+
+```
+TEST_FILE=geometry npm run test
+```
+
+Or add `.only` to the suite or test we wish to run. For example:
 
 ```js
 // To run just this suite, change:
@@ -43,6 +50,13 @@ suite.only('lorum ipsum', function () { // ... });
 test('lorem ipsum', function () { // ... });
 // to...
 test.only('lorem ipsum', function () { // ... });
+```
+
+To run only on a specific browser:
+
+```
+npm run test:chrome
+TEST_FILE=scene npm run test:firefox
 ```
 
 ## Writing a Test
@@ -99,5 +113,5 @@ suite('module/component/custom element', function () {
   'loaded' event.
 - karma may sometimes misreport test failures to other unit tests. Run one test
   suite or case at a time to isolate the test failure.
-- Use `process.nextTick` after doing DOM manipulations. However, you will not
+- Use `process.nextTick` after doing DOM manipulations. However, we will not
   need to do this after `Entity.setAttribute` as we have made that synchronous.

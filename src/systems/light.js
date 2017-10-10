@@ -14,6 +14,10 @@ var DEFAULT_LIGHT_ATTR = 'data-aframe-default-light';
  * @param {bool} userDefinedLights - Whether user lighting is defined.
  */
 module.exports.System = registerSystem('light', {
+  schema: {
+    defaultLightsEnabled: {default: true}
+  },
+
   init: function () {
     this.defaultLights = false;
     this.userDefinedLights = false;
@@ -58,15 +62,18 @@ module.exports.System = registerSystem('light', {
     var ambientLight;
     var directionalLight;
 
-    if (this.userDefinedLights || this.defaultLights) { return; }
+    if (this.userDefinedLights || this.defaultLights || !this.data.defaultLightsEnabled) {
+      return;
+    }
+
     ambientLight = document.createElement('a-entity');
-    directionalLight = document.createElement('a-entity');
     ambientLight.setAttribute('light', {color: '#BBB', type: 'ambient'});
     ambientLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     ambientLight.setAttribute(constants.AFRAME_INJECTED, '');
     sceneEl.appendChild(ambientLight);
 
-    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6});
+    directionalLight = document.createElement('a-entity');
+    directionalLight.setAttribute('light', {color: '#FFF', intensity: 0.6, castShadow: true});
     directionalLight.setAttribute('position', {x: -0.5, y: 1, z: 1});
     directionalLight.setAttribute(DEFAULT_LIGHT_ATTR, '');
     directionalLight.setAttribute(constants.AFRAME_INJECTED, '');

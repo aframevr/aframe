@@ -3,9 +3,21 @@ title: sound
 type: components
 layout: docs
 parent_section: components
+source_code: src/components/sound.js
+examples: []
 ---
 
-The sound component defines the entity as a source of sound or audio. The sound component is positional and is therefore affected by the [components-position](position.md).
+[position]: ./position.md
+
+The sound component defines the entity as a source of sound or audio. The sound
+component is positional and is thus affected by the
+[components-position][position].
+
+> **NOTE:** Playing sound on iOS — in any browser — requires a physical user interaction.
+> This is a browser limitation, and internal A-Frame events (like fusing cursors) do
+> not count as interaction. Ways to deal with this include using a *Begin Experience*
+> button to start ambient music, or creating audio sprites with libraries like
+> [Howler.js](https://github.com/goldfire/howler.js).
 
 ## Example
 
@@ -16,23 +28,39 @@ The sound component defines the entity as a source of sound or audio. The sound 
 
 ## Properties
 
-| Property | Description                                                           | Default Value |
-|----------|-----------------------------------------------------------------------|---------------|
-| autoplay | Whether to automatically play sound once set.                         | false         |
-| on       | An event for the entity to listen to before playing sound.            | null          |
-| loop     | Whether to loop the sound once the sound finishes playing.            | false         |
-| src      | Selector to an asset `<audio>`or `url()`-enclosed path to sound file. | null          |
-| volume   | How loud to play the sound.                                           | 1             |
+| Property      | Description                                                                                                    | Default Value |
+|---------------|----------------------------------------------------------------------------------------------------------------|---------------|
+| autoplay      | Whether to automatically play sound once set.                                                                  | false         |
+| distanceModel | `linear`, `inverse`, or `exponential`                                                                          | inverse        |
+| loop          | Whether to loop the sound once the sound finishes playing.                                                     | false         |
+| maxDistance   | Maximum distance between the audio source and the listener, after which the volume is not reduced any further. | 10000         |
+| on            | An event for the entity to listen to before playing sound.                                                     | null          |
+| poolSize      | Numbers of simultaneous instances of this sound that can be playing at the same time                           | 1             |
+| refDistance   | Reference distance for reducing volume as the audio source moves further from the listener.                    | 1             |
+| rolloffFactor | Describes how quickly the volume is reduced as the source moves away from the listener.                        | 1             |
+| src           | Selector to an asset `<audio>`or `url()`-enclosed path to sound file.                                          | null          |
+| volume        | How loud to play the sound.                                                                                    | 1             |
+
+
+## Methods
+
+| Event Name | Description  |
+|------------|--------------|
+| pauseSound | Pause sound. |
+| playSound  | Play sound.  |
+| stopSound  | Stop sound.  |
 
 ## Events
 
-| Event Name  | Description                           |
-|-------------|---------------------------------------|
-| sound-ended | triggered when sound finishes playing |
+| Event Name   | Description                            |
+|--------------|----------------------------------------|
+| sound-loaded | Triggered when sound file is loaded.   |
+| sound-ended  | Triggered when sound finishes playing. |
 
 ## Playing on an Event
 
-The `sound` component can also listen to an event before playing as well. For example, we might have a laughing sound play every time a monster is clicked:
+The `sound` component can also listen to an event before playing as well. For
+example, we might have a laughing sound play every time we click a monster:
 
 ```html
 <a-entity cursor position="0 0 -5"></a-entity>
@@ -43,12 +71,13 @@ The `sound` component can also listen to an event before playing as well. For ex
 
 ## Preloading a Sound Asset
 
-For performance, it is recommended to block the scene on the sound asset to preload and cache. We can do so through the asset management system:
+For performance, we recommend to block the scene on the sound asset to preload
+and cache. We can do so through the asset management system:
 
 ```html
 <a-scene>
   <a-assets>
-    <audio id="river" src="river.mp3">
+    <audio id="river" src="river.mp3" preload="auto"></audio>
   </a-assets>
 
   <a-entity sound="src: #river"></a-entity>
@@ -57,19 +86,22 @@ For performance, it is recommended to block the scene on the sound asset to prel
 
 ## Pause and Resume
 
-To programmatically pause or resume a playing sound, we can tell the entity to pause or resume:
+To programmatically pause or resume a playing sound, we can tell the entity to
+pause or resume:
 
 ```js
 var entity = document.querySelector('[sound]');
-entity.pause();
+entity.components.sound.stopSound();
 ```
 
 Or to pause only the sound:
 
-```
-entity.components.sound.pause();
+```js
+entity.components.sound.pauseSound();
 ```
 
-Then call `.play()` on either the entity or the sound component to resume.
+And to play the sound:
 
-[components-position]: ./position.md
+```js
+entity.components.sound.playSound();
+```

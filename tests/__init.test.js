@@ -1,4 +1,4 @@
-/* global sinon, setup, teardown */
+/* global AFRAME, sinon, setup, teardown */
 
 /**
  * __init.test.js is run before every test case.
@@ -9,12 +9,17 @@ navigator.getVRDisplays = function () {
   var resolvePromise = Promise.resolve();
   var mockVRDisplay = {
     requestPresent: resolvePromise,
-    exitPresent: resolvePromise
+    exitPresent: resolvePromise,
+    submitFrame: function () { return; },
+    getPose: function () { return { orientation: null, position: null }; },
+    requestAnimationFrame: function () { return 1; },
+    cancelAnimationFrame: function (h) { return window.cancelAnimationFrame(1); }
   };
   return Promise.resolve([mockVRDisplay]);
 };
 
-var AScene = require('core/scene/a-scene');
+require('index');
+var AScene = require('core/scene/a-scene').AScene;
 
 setup(function () {
   this.sinon = sinon.sandbox.create();
@@ -24,7 +29,7 @@ setup(function () {
   this.sinon.stub(AScene.prototype, 'setupRenderer');
 });
 
-teardown(function () {
+teardown(function (done) {
   // Clean up any attached elements.
   var attachedEls = ['canvas', 'a-assets', 'a-scene'];
   var els = document.querySelectorAll(attachedEls.join(','));
@@ -32,4 +37,11 @@ teardown(function () {
     els[i].parentNode.removeChild(els[i]);
   }
   this.sinon.restore();
+  delete AFRAME.components.test;
+  delete AFRAME.systems.test;
+
+  // Allow detachedCallbacks to clean themselves up.
+  setTimeout(function () {
+    done();
+  });
 });

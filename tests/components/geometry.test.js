@@ -86,6 +86,22 @@ suite('geometry', function () {
       assert.equal(sceneEl.querySelector('#mergeSource'), null);
       assert.equal(targetGeometry.vertices.length, 16);
     });
+
+    test('it does not merge geometries if the target is not a valid entity', function () {
+      var sourceEl = this.sourceEl;
+      // The target is not an entity.
+      var sceneEl = sourceEl.sceneEl;
+      var targetEl = document.createElement('a');
+      sceneEl.appendChild(targetEl);
+      targetEl.id = 'mergeTarget';
+      sourceEl.id = 'mergeSource';
+      assert.ok(sceneEl.querySelector('#mergeSource'));
+      assert.ok(sceneEl.querySelector('#mergeTarget'));
+      sourceEl.setAttribute('geometry', 'buffer: false; skipCache: true; primitive: box; mergeTo: #mergeTarget');
+      assert.notEqual(sceneEl.querySelector('#mergeSource'), null);
+      assert.ok(sceneEl.querySelector('#mergeTarget'));
+      assert.equal(sourceEl.getObject3D('mesh').geometry.vertices.length, 8);
+    });
   });
 
   suite('remove', function () {
@@ -126,8 +142,7 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0,
-      thetaLength: 350
+      buffer: false, primitive: 'circle', radius: 5, segments: 4, thetaStart: 0, thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -142,8 +157,15 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'cylinder', radius: 1, height: 2, segmentsRadial: 3,
-      segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      buffer: false,
+      primitive: 'cylinder',
+      radius: 1,
+      height: 2,
+      segmentsRadial: 3,
+      segmentsHeight: 4,
+      openEnded: true,
+      thetaStart: 240,
+      thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -162,8 +184,16 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'cone', radiusTop: 1, radiusBottom: 5, height: 2,
-      segmentsRadial: 3, segmentsHeight: 4, openEnded: true, thetaStart: 240, thetaLength: 350
+      buffer: false,
+      primitive: 'cone',
+      radiusTop: 1,
+      radiusBottom: 5,
+      height: 2,
+      segmentsRadial: 3,
+      segmentsHeight: 4,
+      openEnded: true,
+      thetaStart: 240,
+      thetaLength: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -217,8 +247,14 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'sphere', radius: 1, segmentsWidth: 2, segmentsHeight: 3,
-      phiStart: 45, phiLength: 90, thetaStart: 45
+      buffer: false,
+      primitive: 'sphere',
+      radius: 1,
+      segmentsWidth: 2,
+      segmentsHeight: 3,
+      phiStart: 45,
+      phiLength: 90,
+      thetaStart: 45
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -236,8 +272,13 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'torus', radius: 1, radiusTubular: 2, segmentsRadial: 3,
-      segmentsTubular: 4, arc: 350
+      buffer: false,
+      primitive: 'torus',
+      radius: 1,
+      radiusTubular: 2,
+      segmentsRadial: 3,
+      segmentsTubular: 4,
+      arc: 350
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -253,8 +294,14 @@ suite('standard geometries', function () {
     var el = this.el;
     var geometry;
     el.setAttribute('geometry', {
-      buffer: false, primitive: 'torusKnot', radius: 1, radiusTubular: 2, segmentsRadial: 3,
-      segmentsTubular: 4, p: 5, q: 6
+      buffer: false,
+      primitive: 'torusKnot',
+      radius: 1,
+      radiusTubular: 2,
+      segmentsRadial: 3,
+      segmentsTubular: 4,
+      p: 5,
+      q: 6
     });
 
     geometry = el.getObject3D('mesh').geometry;
@@ -265,5 +312,31 @@ suite('standard geometries', function () {
     assert.equal(geometry.parameters.tubularSegments, 4);
     assert.equal(geometry.parameters.p, 5);
     assert.equal(geometry.parameters.q, 6);
+  });
+
+  test('triangle', function () {
+    var el = this.el;
+    var geometry;
+    el.setAttribute('geometry', {
+      buffer: false,
+      primitive: 'triangle',
+      vertexA: {x: 1, y: 2, z: 3},
+      vertexB: {x: 4, y: 5, z: 6},
+      vertexC: {x: 7, y: 8, z: 9}
+    });
+
+    geometry = el.getObject3D('mesh').geometry;
+    assert.equal(geometry.type, 'Geometry');
+    var vertices = geometry.vertices;
+    assert.equal(vertices.length, 3);
+    assert.equal(vertices[0].x, 1);
+    assert.equal(vertices[0].y, 2);
+    assert.equal(vertices[0].z, 3);
+    assert.equal(vertices[1].x, 4);
+    assert.equal(vertices[1].y, 5);
+    assert.equal(vertices[1].z, 6);
+    assert.equal(vertices[2].x, 7);
+    assert.equal(vertices[2].y, 8);
+    assert.equal(vertices[2].z, 9);
   });
 });

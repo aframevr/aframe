@@ -1,24 +1,43 @@
-// karma configuration
-var karma_conf = {
+// Karma configuration.
+var glob = require('glob');
+
+// Define test files.
+var FILES = [
+  // Serve test assets.
+  'tests/__init.test.js',
+  {pattern: 'tests/assets/**/*', included: false, served: true}
+];
+if (process.env.TEST_FILE) {
+  glob.sync('tests/**/*.test.js').forEach(function (filename) {
+    if (filename.toLowerCase().indexOf(process.env.TEST_FILE.toLowerCase()) !== -1) {
+      FILES.push(filename);
+    }
+  });
+} else {
+  FILES.push('tests/**/*.test.js');
+}
+
+var karmaConf = {
   basePath: '../',
   browserify: {
     debug: true,
     paths: ['src']
   },
   browsers: ['Firefox', 'Chrome'],
+  customLaunchers: {
+    ChromeTravis: {
+      base: 'Chrome',
+      flags: ['--no-sandbox']
+    }
+  },
   client: {
     captureConsole: true,
-    mocha: {'ui': 'tdd'}
+    mocha: {ui: 'tdd'}
   },
   envPreprocessor: [
     'TEST_ENV'
   ],
-  files: [
-    // Define test files.
-    {pattern: 'tests/**/*.test.js'},
-    // Serve test assets.
-    {pattern: 'tests/assets/**/*', included: false, served: true}
-  ],
+  files: FILES,
   frameworks: ['mocha', 'sinon-chai', 'chai-shallow-deep-equal', 'browserify'],
   preprocessors: {
     'tests/**/*.js': ['browserify', 'env']
@@ -26,9 +45,9 @@ var karma_conf = {
   reporters: ['mocha']
 };
 
-// configuration for code coverage reporting
+// Configuration for code coverage reporting.
 if (process.env.TEST_ENV === 'ci') {
-  Object.assign(karma_conf.browserify, {
+  Object.assign(karmaConf.browserify, {
     transform: [
       [
         'browserify-istanbul', {
@@ -41,7 +60,7 @@ if (process.env.TEST_ENV === 'ci') {
       ]
     ]
   });
-  karma_conf.coverageReporter = {
+  karmaConf.coverageReporter = {
     dir: 'tests/coverage',
     includeAllSources: true,
     reporters: [
@@ -49,11 +68,12 @@ if (process.env.TEST_ENV === 'ci') {
       {'type': 'lcov', subdir: '.'}
     ]
   };
-  karma_conf.reporters.push('coverage');
-  karma_conf.preprocessors['src/**/*.js'] = ['coverage'];
+  karmaConf.reporters.push('coverage');
+  karmaConf.preprocessors['src/**/*.js'] = ['coverage'];
+  karmaConf.browsers = ['Firefox', 'ChromeTravis'];
 }
 
-// Apply configuration
+// Apply configuration.
 module.exports = function (config) {
-  config.set(karma_conf);
+  config.set(karmaConf);
 };

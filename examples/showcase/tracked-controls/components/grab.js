@@ -1,4 +1,4 @@
-/* global AFRAME */
+/* global AFRAME, THREE */
 
 /**
 * Handles events coming from the hand-controls.
@@ -64,7 +64,7 @@ AFRAME.registerComponent('grab', {
     var position;
     if (!hitEl) { return; }
     this.updateDelta();
-    position = hitEl.getComputedAttribute('position');
+    position = hitEl.getAttribute('position');
     hitEl.setAttribute('position', {
       x: position.x + this.deltaPosition.x,
       y: position.y + this.deltaPosition.y,
@@ -73,14 +73,18 @@ AFRAME.registerComponent('grab', {
   },
 
   updateDelta: function () {
-    var currentPosition = this.el.getComputedAttribute('position');
-    var previousPosition = this.previousPosition || currentPosition;
+    var currentPosition = this.el.getAttribute('position');
+    if (!this.previousPosition) {
+      this.previousPosition = new THREE.Vector3();
+      this.previousPosition.copy(currentPosition);
+    }
+    var previousPosition = this.previousPosition;
     var deltaPosition = {
       x: currentPosition.x - previousPosition.x,
       y: currentPosition.y - previousPosition.y,
       z: currentPosition.z - previousPosition.z
     };
-    this.previousPosition = currentPosition;
+    this.previousPosition.copy(currentPosition);
     this.deltaPosition = deltaPosition;
   }
 });

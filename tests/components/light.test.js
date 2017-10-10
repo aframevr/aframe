@@ -48,6 +48,16 @@ suite('light', function () {
       el.setAttribute('light', 'angle', 180);
       assert.equal(el.getObject3D('light').angle, Math.PI);
     });
+
+    test('can update light shadow', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowBias: 0.25
+      });
+      assert.ok(el.getObject3D('light').castShadow);
+      assert.equal(el.getObject3D('light').shadow.bias, 0.25);
+    });
   });
 
   suite('getLight', function () {
@@ -95,6 +105,17 @@ suite('light', function () {
   suite('remove', function () {
     test('removes light', function () {
       var el = this.el;
+      el.removeAttribute('light');
+      assert.equal(el.object3D.children.length, 0);
+    });
+
+    test('removes shadow camera helper', function () {
+      var el = this.el;
+      el.setAttribute('light', {
+        castShadow: true,
+        shadowCameraVisible: true
+      });
+      assert.ok(el.getObject3D('cameraHelper'));
       el.removeAttribute('light');
       assert.equal(el.object3D.children.length, 0);
     });
@@ -184,7 +205,7 @@ suite('light', function () {
   });
 
   suite('light target', function () {
-    test('spotlight: set light target with selector when light is created', function (done) {
+    test('spotlight: set unloaded light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -201,6 +222,21 @@ suite('light', function () {
           done();
         });
       }
+    });
+
+    test('spotlight: set loaded light target with selector when light is created', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var lightEl = this.el;
+      var targetEl = document.createElement('a-entity');
+
+      sceneEl.appendChild(targetEl);
+      targetEl.setAttribute('id', 'target');
+
+      targetEl.addEventListener('loaded', function () {
+        lightEl.setAttribute('light', 'type: spot; target: #target');
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+        done();
+      });
     });
 
     test('spotlight: change light target with selector', function (done) {
@@ -264,7 +300,7 @@ suite('light', function () {
       assert.equal(lightTarget.position.z, -1);
     });
 
-    test('directional: set light target with selector when light is created', function (done) {
+    test('directional: set unloaded light target with selector when light is created', function (done) {
       var sceneEl = this.el.sceneEl;
       var lightEl = this.el;
       var targetEl = document.createElement('a-entity');
@@ -281,6 +317,21 @@ suite('light', function () {
           done();
         });
       }
+    });
+
+    test('directional: set loaded light target with selector when light is created', function (done) {
+      var sceneEl = this.el.sceneEl;
+      var lightEl = this.el;
+      var targetEl = document.createElement('a-entity');
+
+      sceneEl.appendChild(targetEl);
+      targetEl.setAttribute('id', 'target');
+
+      targetEl.addEventListener('loaded', function () {
+        lightEl.setAttribute('light', 'type: directional; target: #target');
+        assert.equal(lightEl.getObject3D('light').target.uuid, targetEl.object3D.uuid);
+        done();
+      });
     });
 
     test('directional: change light target with selector', function (done) {

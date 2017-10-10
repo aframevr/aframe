@@ -1,9 +1,9 @@
 /* global AFRAME */
 AFRAME.registerShader('sky', {
   schema: {
-    luminance: { type: 'number', default: 1, max: 0, min: 2, is: 'uniform' },
-    turbidity: { type: 'number', default: 2, max: 0, min: 20, is: 'uniform' },
-    reileigh: { type: 'number', default: 1, max: 0, min: 4, is: 'uniform' },
+    luminance: { type: 'number', default: 1, min: 0, max: 2, is: 'uniform' },
+    turbidity: { type: 'number', default: 2, min: 0, max: 20, is: 'uniform' },
+    reileigh: { type: 'number', default: 1, min: 0, max: 4, is: 'uniform' },
     mieCoefficient: { type: 'number', default: 0.005, min: 0, max: 0.1, is: 'uniform' },
     mieDirectionalG: { type: 'number', default: 0.8, min: 0, max: 1, is: 'uniform' },
     sunPosition: { type: 'vec3', default: '0 0 -1', is: 'uniform' }

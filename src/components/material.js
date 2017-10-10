@@ -18,12 +18,18 @@ var shaderNames = shader.shaderNames;
  */
 module.exports.Component = registerComponent('material', {
   schema: {
+    alphaTest: {default: 0.0, min: 0.0, max: 1.0},
     depthTest: {default: true},
+    depthWrite: {default: true},
     flatShading: {default: false},
+    npot: {default: false},
+    offset: {type: 'vec2', default: {x: 0, y: 0}},
     opacity: {default: 1.0, min: 0.0, max: 1.0},
+    repeat: {type: 'vec2', default: {x: 1, y: 1}},
     shader: {default: 'standard', oneOf: shaderNames},
     side: {default: 'front', oneOf: ['front', 'back', 'double']},
     transparent: {default: false},
+    vertexColors: {type: 'string', default: 'none', oneOf: ['face', 'vertex']},
     visible: {default: true}
   },
 
@@ -42,7 +48,7 @@ module.exports.Component = registerComponent('material', {
       this.updateShader(data.shader);
     }
     this.shader.update(this.data);
-    this.updateMaterial();
+    this.updateMaterial(oldData);
   },
 
   updateSchema: function (data) {
@@ -57,26 +63,28 @@ module.exports.Component = registerComponent('material', {
   },
 
   updateBehavior: function () {
-    var scene = this.el.sceneEl;
     var schema = this.schema;
     var self = this;
+    var sceneEl = this.el.sceneEl;
     var tickProperties = {};
     var tick = function (time, delta) {
-      var keys = Object.keys(tickProperties);
-      keys.forEach(update);
-      function update (key) { tickProperties[key] = time; }
+      Object.keys(tickProperties).forEach(function update (key) {
+        tickProperties[key] = time;
+      });
       self.shader.update(tickProperties);
     };
-    var keys = Object.keys(schema);
-    keys.forEach(function (key) {
+    this.tick = undefined;
+    Object.keys(schema).forEach(function (key) {
       if (schema[key].type === 'time') {
         self.tick = tick;
         tickProperties[key] = true;
-        scene.addBehavior(self);
       }
     });
-    if (Object.keys(tickProperties).length === 0) {
-      scene.removeBehavior(this);
+    if (!sceneEl) { return; }
+    if (!this.tick) {
+      sceneEl.removeBehavior(this);
+    } else {
+      sceneEl.addBehavior(this);
     }
   },
 
@@ -95,15 +103,32 @@ module.exports.Component = registerComponent('material', {
     this.updateSchema(data);
   },
 
-  updateMaterial: function () {
+  /**
+   * Set and update base material properties.
+   * Set `needsUpdate` when needed.
+   */
+  updateMaterial: function (oldData) {
     var data = this.data;
     var material = this.material;
-    material.side = parseSide(data.side);
-    material.opacity = data.opacity;
-    material.transparent = data.transparent !== false || data.opacity < 1.0;
+
+    // Base material properties.
+    material.alphaTest = data.alphaTest;
     material.depthTest = data.depthTest !== false;
-    material.shading = data.flatShading ? THREE.FlatShading : THREE.SmoothShading;
+    material.depthWrite = data.depthWrite !== false;
+    material.opacity = data.opacity;
+    material.flatShading = data.flatShading;
+    material.side = parseSide(data.side);
+    material.transparent = data.transparent !== false || data.opacity < 1.0;
+    material.vertexColors = parseVertexColors(data.vertexColors);
     material.visible = data.visible;
+
+    // Check if material needs update.
+    if (Object.keys(oldData).length &&
+        (oldData.alphaTest !== data.alphaTest ||
+         oldData.side !== data.side ||
+         oldData.vertexColors !== data.vertexColors)) {
+      material.needsUpdate = true;
+    }
   },
 
   /**
@@ -136,7 +161,7 @@ module.exports.Component = registerComponent('material', {
 });
 
 /**
- * Returns a three.js constant determining which material face sides to render
+ * Return a three.js constant determining which material face sides to render
  * based on the side parameter (passed as a component property).
  *
  * @param {string} [side=front] - `front`, `back`, or `double`.
@@ -153,6 +178,23 @@ function parseSide (side) {
     default: {
       // Including case `front`.
       return THREE.FrontSide;
+    }
+  }
+}
+
+/**
+ * Return a three.js constant determining vertex coloring.
+ */
+function parseVertexColors (coloring) {
+  switch (coloring) {
+    case 'face': {
+      return THREE.FaceColors;
+    }
+    case 'vertex': {
+      return THREE.VertexColors;
+    }
+    default: {
+      return THREE.NoColors;
     }
   }
 }

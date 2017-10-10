@@ -8,7 +8,7 @@ registerGeometry('cone', {
     height: {default: 1, min: 0},
     openEnded: {default: false},
     radiusBottom: {default: 1, min: 0},
-    radiusTop: {default: 0.8, min: 0},
+    radiusTop: {default: 0.01, min: 0},
     segmentsHeight: {default: 18, min: 1, type: 'int'},
     segmentsRadial: {default: 36, min: 3, type: 'int'},
     thetaLength: {default: 360, min: 0},

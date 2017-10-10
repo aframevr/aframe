@@ -3,6 +3,7 @@ title: <a-sound>
 type: primitives
 layout: docs
 parent_section: primitives
+source_code: src/extras/primitives/primitives/a-sound.js
 ---
 
 The sound primitive wraps the [sound component](../components/sound.md).

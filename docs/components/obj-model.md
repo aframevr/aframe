@@ -3,6 +3,8 @@ title: obj-model
 type: components
 layout: docs
 parent_section: components
+source_code: src/components/obj-model.js
+examples: []
 ---
 
 The obj-model component loads a 3D model and material using a
@@ -46,7 +48,7 @@ We can also load assets by specifying the path directly within `url()`. Note thi
 
 ## Troubleshooting
 
-If you don't see your model, try scaling it down. OBJ models generally have extremely large scales in comparison to A-Frame's scale.
+See [Introduction → 3D Models → Troubleshooting](../introduction/models.md#troubleshooting).
 
 ## Additional Resources
 
@@ -60,4 +62,4 @@ We can find and download models on the web to drop into our scenes:
 [clara]: https://clara.io
 [material]: ./material.md
 [sketchup]: https://3dwarehouse.sketchup.com
-[wavefront-wiki]: https://en.wikipedia.org/wiki/Wavefront
+[wavefront-wiki]: https://en.wikipedia.org/wiki/Wavefront_.obj_file
