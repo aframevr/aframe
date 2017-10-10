@@ -36,7 +36,9 @@ var OBSERVER_CONFIG = {
  */
 module.exports.Component = registerComponent('raycaster', {
   schema: {
+    autoRefresh: {default: true},
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
+    enabled: {default: true},
     far: {default: 1000},
     interval: {default: 100},
     near: {default: 0},
@@ -44,8 +46,7 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     recursive: {default: true},
     showLine: {default: false},
-    useWorldCoordinates: {default: false},
-    autoRefresh: {default: true}
+    useWorldCoordinates: {default: false}
   },
 
   init: function () {
@@ -165,6 +166,8 @@ module.exports.Component = registerComponent('raycaster', {
       var prevCheckTime = this.prevCheckTime;
       var prevIntersectedEls = this.prevIntersectedEls;
       var rawIntersections;
+
+      if (!this.data.enabled) { return; }
 
       // Only check for intersection if interval time has passed.
       if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
