@@ -370,6 +370,7 @@ suite('cursor', function () {
         done();
       });
     });
+
     test('update raycaster based on touch coordinates', function (done) {
       var event = new CustomEvent('touchstart');
       event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};

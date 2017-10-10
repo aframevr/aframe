@@ -171,38 +171,38 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   onMouseMove: (function () {
+    var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
     var origin = new THREE.Vector3();
-    var direction = new THREE.Vector3();
-    var rayCasterConfig = {
-      origin: origin,
-      direction: direction
-    };
+    var rayCasterConfig = {origin: origin, direction: direction};
+
     return function (evt) {
+      var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var left;
+      var point;
+      var top;
+
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
-      var bounds = this.canvasBounds;
-      var point;
       if (evt.type === 'touchmove' || evt.type === 'touchstart') {
-        // just track the first touch for simplicity
+        // Track the first touch for simplicity.
         point = evt.touches.item(0);
       } else {
         point = evt;
       }
-      var left = point.clientX - bounds.left;
-      var top = point.clientY - bounds.top;
+
+      left = point.clientX - bounds.left;
+      top = point.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
-      if (evt.type === 'touchstart' || evt.type === 'touchmove') {
-        evt.preventDefault();
-      }
+      if (evt.type === 'touchstart' || evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -212,7 +212,7 @@ module.exports.Component = registerComponent('cursor', {
   onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
-    evt.type === 'touchstart' && evt.preventDefault();
+    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
@@ -236,7 +236,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     this.cursorDownEl = null;
-    evt.type === 'touchend' && evt.preventDefault();
+    if (evt.type === 'touchend') { evt.preventDefault(); }
   },
 
   /**
