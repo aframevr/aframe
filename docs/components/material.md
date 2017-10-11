@@ -59,7 +59,7 @@ depending on the material type applied.
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
-| shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
+| shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom shader material. | standard      |
 | side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
 | transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
 | vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
@@ -329,31 +329,81 @@ visual defects.
 
 To work around this issue, try changing the order of the entities in the HTML.
 
-## Register a Custom Material
+## Register a Custom Shader Material
 
-We can register custom materials for appearances and effects using
-`AFRAME.registerShader`. However, the `registerShader` API is not yet fully
-featured and fairly limiting (e.g., no `tick` handler, some missing uniform
-types). For most cases for now, we recommend creating a custom material by
-creating three.js materials (e.g., `RawShaderMaterial`, `ShaderMaterial`) in a
-component:
+We can register custom shader materials for appearances and effects using
+`AFRAME.registerShader`.
+
+[example]: https://codepen.io/machenmusik/pen/WZyQNj
+Here is an [example][example] CodePen with step-by-step commentary.
 
 ```js
-AFRAME.registerComponent('custom-material', {
+<!-- Include A-Frame latest master distribution, via RawGit. -->
+<!-- Really should be in <head>; in CodePen body for simple viewing. -->
+<script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+
+<!-- Components and shaders go after A-Frame, but before the scene declaration. -->
+<script>
+AFRAME.registerShader('my-custom', {
+  // The schema declares any parameters for the shader.
   schema: {
-    // Add properties.
+    // Where relevant, it is customary to support color.
+    // The A-Frame schema uses `type:'color'`, so it will parse string values like 'white' or 'red.
+    // `is:'uniform'` tells A-Frame this should appear as uniform value in the shader(s).
+    color: {type:'color', is:'uniform', default:'red'},
+    // It is customary to support opacity, for fading in and out.
+    opacity: {type:'number', is:'uniform', default:1.0}
   },
+  
+  // Setting raw to true uses THREE.RawShaderMaterial instead of ShaderMaterial,
+  // so your shader strings are used as-is, for advanced shader usage.
+  // Here, we want the usual prefixes with GLSL constants etc.,
+  // so we set it to false.
+  // (Which is also the default, so we could have omitted it).
+  raw: false,
+  
+  // Here, we're going to use the default vertex shader by omitting vertexShader.
+  // But note that if your fragment shader cares about texture coordinates,
+  // the vertex shader should set uniform values to use in the fragment shader. 
+  
+  // Since almost every WebVR-capable browser supports ES6,
+  // define our fragment shader as a multi-line string.
+  fragmentShader: 
+`
+  // Use medium precision.
+  precision mediump float;
 
-  init: function () {
-    this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShaderMaterial({
-      // ...
-    });
-  },
+  // This receives the color value from the schema, which becomes a vec3 in the shader.
+  uniform vec3 color;
 
-  update: function () {
-    // Update `this.material`.
+  // This receives the opacity value from the schema, which becomes a number.
+  uniform float opacity;
+
+  // This is the shader program.
+  // A fragment shader can set the color via gl_FragColor,
+  // or decline to draw anything via discard.
+  void main () {
+    // Note that this shader doesn't use texture coordinates.
+    // Set the RGB portion to our color,
+    // and the alpha portion to our opacity.
+    gl_FragColor = vec4(color, opacity);
   }
+`
 });
+</script>
+
+<!-- Declaration of the A-Frame scene. -->
+<a-scene>
+  <!-- Black skybox at effectively infinite distance. -->
+  <!-- a-box is used instead of a-sky because it requires less processing than the sphere that a-sky generates. -->
+  <!-- Z scale is inverted so that the inside surface gets the color. -->
+  <a-box width="10000" height="10000" depth="-10000" color="black">
+    <!-- Inside the black skybox, a box using our shader, 2 meters ahead, not fully opaque, and blue. -->
+    <a-box material="shader:my-custom; color:blue; opacity:0.7; transparent:true" position="0 0 -2"></a-box>
+    <!-- Inside the black skybox, a box behind the previous one, 3 meters ahead. -->
+    <a-box position="0 0 -3"></a-box>
+  </a-box>
+</a-scene>
 ```
 
 ### `registerShader`
@@ -376,6 +426,60 @@ AFRAME.registerShader('custom', {
   schema: {
     emissive: {default: '#000'},
     wireframe: {default: false}
+  }
+});
+```
+
+Note that to pass schema values to our shader as uniforms, we need to include
+`is: 'uniform'` in the value definition:
+
+```js
+AFRAME.registerShader('my-custom', {
+  schema: {
+    color: {type:'color', is:'uniform', default:'red'},
+    opacity: {type:'number', is:'uniform', default:1.0}
+  },
+  ...
+```
+
+## Supported Uniform Types
+
+The uniform types supported by A-Frame are summarized in the table below.
+Note that `time` can eliminate the need for a `tick()` handler in many cases.
+
+| A-Frame Type | THREE Type | GLSL Type |
+| array | v3 | vec3 |
+| color | v3 | vec3 |
+| int   | i  | int  |
+| number | f | float |
+| map | t | map |
+| time | f | float (milliseconds) |
+| vec2 | v2 | vec2 |
+| vec3 | v3 | vec3 |
+| vec4 | v4 | vec4 |
+
+## Register a Custom Component Using THREE Material
+
+For those cases where the `registerShader` API lacks needed functionality 
+(e.g., no `tick` handler, some missing uniform types), 
+we recommend creating a custom material by
+creating three.js materials (e.g., `RawShaderMaterial`, `ShaderMaterial`) in a
+component:
+
+```js
+AFRAME.registerComponent('custom-material', {
+  schema: {
+    // Add properties.
+  },
+
+  init: function () {
+    this.material = this.el.getOrCreateObject3D('mesh').material = new THREE.ShaderMaterial({
+      // ...
+    });
+  },
+
+  update: function () {
+    // Update `this.material`.
   }
 });
 ```
