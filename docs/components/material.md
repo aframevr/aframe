@@ -558,6 +558,15 @@ Finally, here is the HTML markup to put it all together:
 * [Live demo](https://aframe-simpler-shader.glitch.me/)
 * [Remix this on Glitch](https://glitch.com/edit/#!/aframe-simpler-shader)
 
+![5093034e-97f2-40dc-8cb9-28ca75bfd75b-8043-00000dbc2e00268d](https://cloud.githubusercontent.com/assets/1848368/24825516/abb98abe-1bd4-11e7-8262-93d3efb6056f.gif)
+
+***
+
+For a more advanced example, [try realtime vertex displacement](https://glitch.com/edit/#!/aframe-displacement-registershader).
+
+![b19320eb-802a-462a-afcd-3d0dd9480aee-861-000004c2a8504498](https://cloud.githubusercontent.com/assets/1848368/24825518/b52e5bf6-1bd4-11e7-8eb2-9a9c1ff82ce9.gif)
+
+
 ## Register a Custom Component Using THREE Material
 
 For those cases where the `registerShader` API lacks needed functionality 
