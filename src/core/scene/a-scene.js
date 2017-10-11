@@ -636,6 +636,7 @@ module.exports.AScene = registerElement('a-scene', {
         if (this.isPlaying) { this.tick(this.time, delta); }
 
         this.animationFrameID = effect.requestAnimationFrame(this.render);
+        // console.log('camera',this.camera.position);
         effect.render(this.object3D, this.camera, this.renderTarget, false, this.frameData);
 
         if (this.isPlaying) { this.tock(this.time, delta); }

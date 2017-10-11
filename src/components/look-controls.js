@@ -62,6 +62,7 @@ module.exports.Component = registerComponent('look-controls', {
     this.controls.update(this.el.sceneEl.frameData);
     this.updateOrientation();
     this.updatePosition();
+    // console.log("position = ", this.position);
   },
 
   /**
@@ -234,9 +235,9 @@ module.exports.Component = registerComponent('look-controls', {
     var currentPosition;
     var position = this.position;
     var previousHMDPosition = this.previousHMDPosition;
-    var sceneEl = this.el.sceneEl;
+    // var sceneEl = this.el.sceneEl;
 
-    if (!sceneEl.is('vr-mode')) { return; }
+    // if (!sceneEl.is('vr-mode')) { return; }
 
     // Calculate change in position.
     currentHMDPosition = this.calculateHMDPosition();
@@ -245,6 +246,7 @@ module.exports.Component = registerComponent('look-controls', {
 
     position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
     el.setAttribute('position', position);
+    // console.log("final position = ", position);
     previousHMDPosition.copy(currentHMDPosition);
   },
 

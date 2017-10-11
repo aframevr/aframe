@@ -144,6 +144,7 @@ THREE.XREffect = function( renderer, onError ) {
         this.renderer.setSize(this.session.baseLayer.framebufferWidth, this.session.baseLayer.framebufferHeight, false);
         this.renderer.clear();
 
+        // console.log("pos = ", this.camera.position);
         // Render each view into this.session.baseLayer.context
         for(const view of frameData.views){
             // Each XRView has its own projection matrix, so set the camera to use that
