@@ -488,18 +488,9 @@ For more customized visual effects, we can write GLSL shaders and apply them to 
 
 > NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
 
-To use these vertex and fragment shaders, we register our shader:
+Here are the vertex and fragment shaders we'll use:
 
-```js
-// shader-grid-glitch.js
-
-AFRAME.registerShader('grid-glitch', {
-  schema: {
-    color: {type: 'color', is: 'uniform'},
-    time: {type: 'time', is: 'uniform'}
-  },
-
-  vertexShader: `
+```glsl
 // vertex.glsl
 
 varying vec2 vUv;
@@ -508,14 +499,14 @@ void main() {
   vUv = uv;
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
-`,
+```
 
-  fragmentShader: `
+```glsl
 // fragment.glsl
 
 varying vec2 vUv;
 uniform vec3 color;
-uniform float time;
+uniform float time1000;
 
 void main() {
   // Use sin(time), which curves between 0 and 1 over time,
@@ -523,15 +514,31 @@ void main() {
   //    (a) Dynamic color where 'R' and 'B' channels come
   //        from a modulus of the UV coordinates.
   //    (b) Base color.
-  //
+  // 
   // The color itself is a vec4 containing RGBA values 0-1.
   gl_FragColor = mix(
     vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
     vec4(color, 1.0),
-    sin(time)
+    sin(time1000 / 1000.0) // since A-Frame time is in milliseconds
   );
 }
-`
+```
+
+To use these vertex and fragment shaders, 
+after reading them into strings `vertexShader` and `fragmentShader`,
+we simply register our custom shader with A-Frame:
+
+```js
+// shader-grid-glitch.js
+
+AFRAME.registerShader('grid-glitch', {
+  schema: {
+    color: {type: 'color', is: 'uniform'},
+    time1000: {type: 'time', is: 'uniform'}
+  },
+
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader
 });
 ```
 
