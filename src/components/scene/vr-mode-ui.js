@@ -80,7 +80,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
   toggleEnterVRButtonIfNeeded: function () {
     var sceneEl = this.el;
     if (!this.enterVREl) { return; }
-    if (sceneEl.is('vr-mode')) {
+    if (sceneEl.hasAttribute('data-vr-mode')) {
       this.enterVREl.classList.add(HIDDEN_CLASS);
     } else {
       this.enterVREl.classList.remove(HIDDEN_CLASS);
@@ -91,7 +91,7 @@ module.exports.Component = registerComponent('vr-mode-ui', {
     var sceneEl = this.el;
     var orientationModalEl = this.orientationModalEl;
     if (!orientationModalEl || !sceneEl.isMobile) { return; }
-    if (!utils.device.isLandscape() && sceneEl.is('vr-mode')) {
+    if (!utils.device.isLandscape() && sceneEl.hasAttribute('data-vr-mode')) {
       // Show if in VR mode on portrait.
       orientationModalEl.classList.remove(HIDDEN_CLASS);
     } else {

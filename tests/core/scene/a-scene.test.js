@@ -80,7 +80,7 @@ suite('a-scene (without renderer)', function () {
       var sceneEl = this.el;
 
       sceneEl.addEventListener('enter-vr', function () {
-        assert.ok(sceneEl.is('vr-mode'));
+        assert.ok(sceneEl.hasAttribute('data-vr-mode'));
         done();
       });
 
@@ -92,10 +92,10 @@ suite('a-scene (without renderer)', function () {
     test('tells A-Frame about exiting VR if no longer presenting', function (done) {
       var event;
       var sceneEl = this.el;
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
 
       sceneEl.addEventListener('exit-vr', function () {
-        assert.notOk(sceneEl.is('vr-mode'));
+        assert.notOk(sceneEl.hasAttribute('data-vr-mode'));
         done();
       });
 
@@ -120,7 +120,7 @@ suite('a-scene (without renderer)', function () {
     test('does not try to enter VR if already in VR', function (done) {
       var sceneEl = this.el;
       var requestSpy = this.requestSpy;
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
       sceneEl.enterVR().then(function (val) {
         assert.equal(val, 'Already in VR.');
         assert.notOk(requestSpy.called);
@@ -170,7 +170,7 @@ suite('a-scene (without renderer)', function () {
     test('adds VR mode state', function (done) {
       var sceneEl = this.el;
       sceneEl.enterVR().then(function () {
-        assert.ok(sceneEl.is('vr-mode'));
+        assert.ok(sceneEl.hasAttribute('data-vr-mode'));
         done();
       });
     });
@@ -219,13 +219,13 @@ suite('a-scene (without renderer)', function () {
       sceneEl.effect = {exitPresent: function () { return Promise.resolve(); }};
       this.exitSpy = this.sinon.spy(sceneEl.effect, 'exitPresent');
 
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
     });
 
     test('does not try to exit VR if not in VR', function (done) {
       var sceneEl = this.el;
       var exitSpy = this.exitSpy;
-      sceneEl.removeState('vr-mode');
+      sceneEl.removeAttribute('data-vr-mode');
       sceneEl.exitVR().then(function (val) {
         assert.equal(val, 'Not in VR.');
         assert.notOk(exitSpy.called);
@@ -275,7 +275,7 @@ suite('a-scene (without renderer)', function () {
     test('removes VR mode state', function (done) {
       var sceneEl = this.el;
       sceneEl.exitVR().then(function () {
-        assert.notOk(sceneEl.is('vr-mode'));
+        assert.notOk(sceneEl.hasAttribute('data-vr-mode'));
         done();
       });
     });
@@ -388,7 +388,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.effect = {
         isPresenting: false
       };
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
 
       sceneEl.resize();
 
@@ -397,7 +397,7 @@ suite('a-scene (without renderer)', function () {
 
     test('does not resize renderer when in vr mode on mobile', function () {
       sceneEl.isMobile = true;
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
 
       sceneEl.resize();
 
@@ -408,7 +408,7 @@ suite('a-scene (without renderer)', function () {
       sceneEl.effect = {
         isPresenting: true
       };
-      sceneEl.addState('vr-mode');
+      sceneEl.setAttribute('data-vr-mode', '');
 
       sceneEl.resize();
 

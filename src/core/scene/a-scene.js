@@ -244,7 +244,7 @@ module.exports.AScene = registerElement('a-scene', {
         var effect = this.effect;
 
         // Don't enter VR if already in VR.
-        if (this.is('vr-mode')) { return Promise.resolve('Already in VR.'); }
+        if (this.hasAttribute('data-vr-mode')) { return Promise.resolve('Already in VR.'); }
 
         // Enter VR via WebVR API.
         if (!fromExternal && (this.checkHeadsetConnected() || this.isMobile)) {
@@ -256,7 +256,7 @@ module.exports.AScene = registerElement('a-scene', {
         return Promise.resolve();
 
         function enterVRSuccess () {
-          self.addState('vr-mode');
+          self.setAttribute('data-vr-mode', '');
           self.emit('enter-vr', {target: self});
 
           // Lock to landscape orientation on mobile.
@@ -298,7 +298,7 @@ module.exports.AScene = registerElement('a-scene', {
         var self = this;
 
         // Don't exit VR if not in VR.
-        if (!this.is('vr-mode')) { return Promise.resolve('Not in VR.'); }
+        if (!this.hasAttribute('data-vr-mode')) { return Promise.resolve('Not in VR.'); }
 
         exitFullscreen();
 
@@ -313,7 +313,7 @@ module.exports.AScene = registerElement('a-scene', {
         return Promise.resolve();
 
         function exitVRSuccess () {
-          self.removeState('vr-mode');
+          self.removeAttribute('data-vr-mode');
           // Lock to landscape orientation on mobile.
           if (self.isMobile && screen.orientation && screen.orientation.unlock) {
             screen.orientation.unlock();
@@ -454,7 +454,7 @@ module.exports.AScene = registerElement('a-scene', {
       value: function () {
         var camera = this.camera;
         var canvas = this.canvas;
-        var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
+        var embedded = this.getAttribute('embedded') && !this.hasAttribute('data-vr-mode');
         var size;
         var isEffectPresenting = this.effect && this.effect.isPresenting;
         // Do not update renderer, if a camera or a canvas have not been injected.
@@ -462,7 +462,7 @@ module.exports.AScene = registerElement('a-scene', {
         // the getEyeParameters function of the WebVR API. These dimensions are independent of
         // the window size, therefore should not be overwritten with the window's width and height,
         // except when in fullscreen mode.
-        if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
+        if (!camera || !canvas || (this.hasAttribute('data-vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;

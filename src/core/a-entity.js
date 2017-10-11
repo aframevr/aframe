@@ -763,6 +763,7 @@ var proto = Object.create(ANode.prototype, {
 
   addState: {
     value: function (state) {
+      warn('.addState is deprecated.');
       if (this.is(state)) { return; }
       this.states.push(state);
       this.emit('stateadded', {state: state});
@@ -772,6 +773,7 @@ var proto = Object.create(ANode.prototype, {
   removeState: {
     value: function (state) {
       var stateIndex = this.states.indexOf(state);
+      warn('.removeState is deprecated.');
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
       this.emit('stateremoved', {state: state});
@@ -784,6 +786,7 @@ var proto = Object.create(ANode.prototype, {
    */
   is: {
     value: function (state) {
+      warn('.is is deprecated.');
       return this.states.indexOf(state) !== -1;
     }
   }

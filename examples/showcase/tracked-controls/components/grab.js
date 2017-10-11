@@ -7,7 +7,6 @@
 */
 AFRAME.registerComponent('grab', {
   init: function () {
-    this.GRABBED_STATE = 'grabbed';
     // Bind event handlers
     this.onHit = this.onHit.bind(this);
     this.onGripOpen = this.onGripOpen.bind(this);
@@ -45,7 +44,7 @@ AFRAME.registerComponent('grab', {
     var hitEl = this.hitEl;
     this.grabbing = false;
     if (!hitEl) { return; }
-    hitEl.removeState(this.GRABBED_STATE);
+    hitEl.emit('ungrab');
     this.hitEl = undefined;
   },
 
@@ -55,7 +54,7 @@ AFRAME.registerComponent('grab', {
     // If the hand is not grabbing the element does not stick.
     // If we're already grabbing something you can't grab again.
     if (!hitEl || hitEl.is(this.GRABBED_STATE) || !this.grabbing || this.hitEl) { return; }
-    hitEl.addState(this.GRABBED_STATE);
+    hitEl.emit('grab');
     this.hitEl = hitEl;
   },
 
