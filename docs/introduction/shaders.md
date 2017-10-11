@@ -7,7 +7,7 @@ order: 8.775
 examples: []
 ---
 
-[shaders]: ../../components/material
+[shaders]: ../../components/material.md
 [shadertoy]: https://github.com/ngokevin/aframe-shadertoy-gallery
 [shaderfrog]: https://github.com/chenzlabs/aframe-import-shaderfrog
 Shaders are a powerful technique to implement visual effects.
