@@ -335,39 +335,53 @@ We can register custom shader materials for appearances and effects using
 `AFRAME.registerShader`.
 
 [example]: https://codepen.io/machenmusik/pen/WZyQNj
-Here is an [example][example] CodePen with step-by-step commentary.
+Let's walk through an [example CodePen][example] with step-by-step commentary.
+
+As always, we need to include the A-Frame script.
+Here, we use RawGit to include the latest master version.
 
 ```js
-<!-- Include A-Frame latest master distribution, via RawGit. -->
-<!-- Really should be in <head>; in CodePen body for simple viewing. -->
 <script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+```
 
-<!-- Components and shaders go after A-Frame, but before the scene declaration. -->
+Next, we define any custom components and shaders we may want to use,
+after A-Frame, but before the scene declaration.
+Here, we begin our `my-custom` shader.
+The schema declares any parameters for the shader.
+```js
 <script>
 AFRAME.registerShader('my-custom', {
-  // The schema declares any parameters for the shader.
   schema: {
-    // Where relevant, it is customary to support color.
-    // The A-Frame schema uses `type:'color'`, so it will parse string values like 'white' or 'red.
-    // `is:'uniform'` tells A-Frame this should appear as uniform value in the shader(s).
+```
+Where relevant, it is customary to support at least two data values:
+
+- `color`: A-Frame uses `type:'color'`, so it will parse string values like 'white' or 'red.
+- `opacity`: This is commonly used for fading in and out.
+
+`is:'uniform'` tells A-Frame this should appear as uniform value in the shader(s).
+
+```js
     color: {type:'color', is:'uniform', default:'red'},
-    // It is customary to support opacity, for fading in and out.
     opacity: {type:'number', is:'uniform', default:1.0}
   },
-  
-  // Setting raw to true uses THREE.RawShaderMaterial instead of ShaderMaterial,
-  // so your shader strings are used as-is, for advanced shader usage.
-  // Here, we want the usual prefixes with GLSL constants etc.,
-  // so we set it to false.
-  // (Which is also the default, so we could have omitted it).
+```
+
+Setting raw to true uses THREE.RawShaderMaterial instead of ShaderMaterial,
+so your shader strings are used as-is, for advanced shader usage.
+Here, we want the usual prefixes with GLSL constants etc.,
+so we set it to false.
+(Which is also the default, so we could have omitted it).
+```js
   raw: false,
+```
+
+Here, we're going to use the default vertex shader by omitting vertexShader.
+But note that if your fragment shader cares about texture coordinates,
+the vertex shader should set uniform values to use in the fragment shader. 
   
-  // Here, we're going to use the default vertex shader by omitting vertexShader.
-  // But note that if your fragment shader cares about texture coordinates,
-  // the vertex shader should set uniform values to use in the fragment shader. 
-  
-  // Since almost every WebVR-capable browser supports ES6,
-  // define our fragment shader as a multi-line string.
+Since almost every WebVR-capable browser supports ES6,
+we define our fragment shader as a multi-line string.
+```js
   fragmentShader: 
 `
   // Use medium precision.
@@ -391,7 +405,11 @@ AFRAME.registerShader('my-custom', {
 `
 });
 </script>
+```
 
+Here is the A-Frame scene declaration that uses our `my-custom` shader:
+
+```
 <!-- Declaration of the A-Frame scene. -->
 <a-scene>
   <!-- Black skybox at effectively infinite distance. -->
@@ -405,6 +423,8 @@ AFRAME.registerShader('my-custom', {
   </a-box>
 </a-scene>
 ```
+
+Again, here is a link to view the [example CodePen][example].
 
 ### `registerShader`
 
@@ -451,6 +471,7 @@ The uniform types supported by A-Frame are summarized in the table below.
 Note that `time` can eliminate the need for a `tick()` handler in many cases.
 
 | A-Frame Type | THREE Type | GLSL Shader Type |
+|--------------|------------|------------------|
 | array | v3 | vec3 |
 | color | v3 | vec3 |
 | int   | i  | int  |
