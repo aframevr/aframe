@@ -510,7 +510,7 @@ void main() {
 }
 `,
 
-  fragmentShader = `
+  fragmentShader: `
 // fragment.glsl
 
 varying vec2 vUv;
