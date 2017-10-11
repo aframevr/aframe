@@ -205,3 +205,18 @@ AFRAME.registerComponent('foo', {
   tick: function (t, dt) {}
 });
 ```
+
+
+## Web Utils
+
+### `AFRAME.utils.getUrlParameter ( name )` 
+
+Returns the value of a URL parameter as a string otherwise returns an empty string.
+
+
+```js
+// visiting the current page with ?testing=aframe
+var testing = AFRAME.utils.getUrlParameter ( "testing" );
+console.log(testing)
+// will return "aframe"
+```
