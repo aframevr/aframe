@@ -412,9 +412,12 @@ Like components, custom materials have schema and lifecycle handlers.
 
 | Property | Description                                                                                                                 |
 |----------|-----------------------------------------------------------------------------------------------------------------------------|
-| schema   | Defines properties, uniforms, attributes that the shader will use to extend the material component.                         |
-| init     | Lifecycle handler called once during shader initialization. Used to create the material.                                    |
-| update   | Lifecycle handler called once during shader initialization and when data is updated. Used to update the material or shader. |
+| schema   | Defines properties, uniforms, attributes that the shader will use to extend the material component.                          |
+| raw      | Optional. If true, uses THREE.RawShaderMaterial to accept shaders verbatim. If false (default), uses THREE.ShaderMaterial. |
+| vertexShader | Optional string containing the vertex shader. If omitted, a simple default is used. |
+| fragmentShader | Optional string containing the fragment shader. If omitted, a simple default is used. |
+| init     | Optional lifecycle handler called once during shader initialization. Used to create the material.                                    |
+| update   | Optional lifecycle handler called once during shader initialization and when data is updated. Used to update the material or shader. |
 
 ### Schema
 
@@ -430,8 +433,8 @@ AFRAME.registerShader('custom', {
 });
 ```
 
-Note that to pass schema values to our shader as uniforms, we need to include
-`is: 'uniform'` in the value definition:
+To pass data values into the shader(s) as uniform values, include
+`is: 'uniform'` in the definition:
 
 ```js
 AFRAME.registerShader('my-custom', {
@@ -447,7 +450,7 @@ AFRAME.registerShader('my-custom', {
 The uniform types supported by A-Frame are summarized in the table below.
 Note that `time` can eliminate the need for a `tick()` handler in many cases.
 
-| A-Frame Type | THREE Type | GLSL Type |
+| A-Frame Type | THREE Type | GLSL Shader Type |
 | array | v3 | vec3 |
 | color | v3 | vec3 |
 | int   | i  | int  |
