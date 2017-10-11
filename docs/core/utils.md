@@ -206,17 +206,14 @@ AFRAME.registerComponent('foo', {
 });
 ```
 
+## Miscellaneous
 
-## Web Utils
+### `AFRAME.utils.getUrlParameter (name)`
 
-### `AFRAME.utils.getUrlParameter ( name )` 
-
-Returns the value of a URL parameter as a string otherwise returns an empty string.
-
+Returns the value of a URL parameter as a string, otherwise returns an empty
+string.
 
 ```js
-// visiting the current page with ?testing=aframe
-var testing = AFRAME.utils.getUrlParameter ( "testing" );
-console.log(testing)
-// will return "aframe"
+AFRAME.utils.getUrlParameter('testing');
+// If visiting the current page with ?testing=aframe, this will log 'aframe'.
 ```
