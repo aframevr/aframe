@@ -377,7 +377,7 @@ so we set it to false.
 
 Here, we're going to use the default vertex shader by omitting vertexShader.
 But note that if your fragment shader cares about texture coordinates,
-the vertex shader should set uniform values to use in the fragment shader. 
+the vertex shader should set varying values to use in the fragment shader. 
   
 Since almost every WebVR-capable browser supports ES6,
 we define our fragment shader as a multi-line string.
@@ -482,6 +482,75 @@ Note that `time` can eliminate the need for a `tick()` handler in many cases.
 | vec3 | v3 | vec3 |
 | vec4 | v4 | vec4 |
 
+### Example — GLSL and Shaders
+
+For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. 
+
+> NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
+
+To use these vertex and fragment shaders, we register our shader:
+
+```js
+// shader-grid-glitch.js
+
+AFRAME.registerShader('grid-glitch', {
+  schema: {
+    color: {type: 'color', is: 'uniform'},
+    time: {type: 'time', is: 'uniform'}
+  },
+
+  vertexShader: `
+// vertex.glsl
+
+varying vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`,
+
+  fragmentShader = `
+// fragment.glsl
+
+varying vec2 vUv;
+uniform vec3 color;
+uniform float time;
+
+void main() {
+  // Use sin(time), which curves between 0 and 1 over time,
+  // to determine the mix of two colors:
+  //    (a) Dynamic color where 'R' and 'B' channels come
+  //        from a modulus of the UV coordinates.
+  //    (b) Base color.
+  //
+  // The color itself is a vec4 containing RGBA values 0-1.
+  gl_FragColor = mix(
+    vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
+    vec4(color, 1.0),
+    sin(time)
+  );
+}
+`
+});
+```
+
+Finally, here is the HTML markup to put it all together:
+
+```html
+<!-- index.html -->
+
+<a-scene>
+  <a-sphere material="shader:grid-glitch; color: blue;"
+            radius="0.5"
+            position="0 1.5 -2">
+  </a-sphere>
+</a-scene>
+```
+
+* [Live demo](https://aframe-simpler-shader.glitch.me/)
+* [Remix this on Glitch](https://glitch.com/edit/#!/aframe-simpler-shader)
+
 ## Register a Custom Component Using THREE Material
 
 For those cases where the `registerShader` API lacks needed functionality 
@@ -541,7 +610,7 @@ AFRAME.registerShader('line-dashed', {
 });
 ```
 
-### Example — GLSL and Shaders
+### Example — GLSL and Shaders, Using Custom Component
 
 For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. We'll do this using [THREE.ShaderMaterial](https://threejs.org/docs/#api/materials/ShaderMaterial) and a custom component. GLSL shaders can also be used with the `registerShader` API, but for many cases — here, we need a `tick()` handler to update the shader's clock — using a component can be easier.
 
