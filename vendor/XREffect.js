@@ -144,6 +144,7 @@ THREE.XREffect = function( renderer, onError ) {
         this.renderer.setSize(this.session.baseLayer.framebufferWidth, this.session.baseLayer.framebufferHeight, false);
         this.renderer.clear();
 
+
         // console.log("pos = ", this.camera.position);
         // Render each view into this.session.baseLayer.context
         for(const view of frameData.views){
@@ -160,7 +161,6 @@ THREE.XREffect = function( renderer, onError ) {
             this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height)
             this.renderer.render(this.scene, this.camera)
         }
-
         //just delgate back to the standard renderer
         // renderer.render( scene, camera, renderTarget, forceClear );
     };

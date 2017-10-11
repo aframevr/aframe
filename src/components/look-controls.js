@@ -231,23 +231,15 @@ module.exports.Component = registerComponent('look-controls', {
    */
   updatePosition: function () {
     var el = this.el;
-    var currentHMDPosition;
-    var currentPosition;
+    var hmd;
     var position = this.position;
     var previousHMDPosition = this.previousHMDPosition;
-    // var sceneEl = this.el.sceneEl;
-
-    // if (!sceneEl.is('vr-mode')) { return; }
 
     // Calculate change in position.
-    currentHMDPosition = this.calculateHMDPosition();
-
-    currentPosition = el.getAttribute('position');
-
-    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
+    hmd = this.calculateHMDPosition();
+    position.copy(new THREE.Vector3(hmd.x * 10, ((hmd.y - 1) * 10) + 1, hmd.z * 10));
     el.setAttribute('position', position);
-    // console.log("final position = ", position);
-    previousHMDPosition.copy(currentHMDPosition);
+    previousHMDPosition.copy(hmd);
   },
 
   /**
