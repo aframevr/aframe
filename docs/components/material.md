@@ -4,7 +4,9 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/material.js
-examples: []
+examples:
+  - title: Displacement Shader
+    url: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
 ---
 
 [fog]: ./fog.md
