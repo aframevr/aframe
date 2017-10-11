@@ -17,6 +17,8 @@ examples:
     src: https://glitch.com/edit/#!/aframe-displacement-offset-registershader?path=public/index.html
   - title: A-Frame test shaders
     src: https://aframe.io/aframe/examples/test/shaders/
+  - title: Displacement Shader
+    url: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
 ---
 
 [fog]: ./fog.md
