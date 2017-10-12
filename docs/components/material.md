@@ -380,6 +380,7 @@ the vertex shader should set varying values to use in the fragment shader.
   
 Since almost every WebVR-capable browser supports ES6,
 we define our fragment shader as a multi-line string.
+
 ```js
   fragmentShader: 
 `
@@ -677,6 +678,40 @@ Voila!
 * [Live demo](https://aframe-displacement-offset-registershader.glitch.me/)
 * [Remix this on Glitch](https://glitch.com/edit/#!/aframe-displacement-offset-registershader)
 
+Another good example of using a custom component to set shader values is the
+[A-Frame test shaders example](https://aframe.io/aframe/examples/test/shaders/).
+This component reacts to `rotation` updates to the element with id `orbit`
+by computing the `sunPosition` vector to use in the sky shader.
+
+```js
+      AFRAME.registerComponent('sun-position-setter', {
+        init: function () {
+          var skyEl = this.el;
+          var orbitEl = this.el.sceneEl.querySelector('#orbit');
+
+          orbitEl.addEventListener('componentchanged', function changeSun (evt) {
+            var sunPosition;
+            var phi;
+            var theta;
+
+            if (evt.detail.name !== 'rotation') { return; }
+
+            sunPosition = orbitEl.getAttribute('rotation');
+
+            if(sunPosition === null) { return; }
+
+            theta = Math.PI * (- 0.5);
+            phi = 2 * Math.PI * (sunPosition.y / 360 - 0.5);
+            skyEl.setAttribute('material', 'sunPosition', {
+              x: Math.cos(phi),
+              y: Math.sin(phi) * Math.sin(theta),
+              z: -1
+            });
+          });
+        }
+      });
+```
+
 ## Register a Custom Component Using THREE Material
 
 For those cases where the `registerShader` API lacks needed functionality 
@@ -709,7 +744,7 @@ AFRAME.registerComponent('custom-material', {
 
 To create a custom material, we have the `init` and `update` handlers set and
 update `this.material` to the desired material. Here is an example of
-registering a [`THREE.LinedDashedMaterial`][line-dashed]:
+registering a [`THREE.LineDashedMaterial`][line-dashed]:
 
 ```js
 AFRAME.registerShader('line-dashed', {
