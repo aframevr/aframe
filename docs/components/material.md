@@ -338,10 +338,9 @@ We can register custom shader materials for appearances and effects using
 Let's walk through an [example CodePen][example] with step-by-step commentary.
 
 As always, we need to include the A-Frame script.
-Here, we use RawGit to include the latest master version.
 
 ```js
-<script src="https://rawgit.com/aframevr/aframe/master/dist/aframe-master.min.js"></script>
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
 ```
 
 Next, we define any custom components and shaders we may want to use,
@@ -366,8 +365,8 @@ Where relevant, it is customary to support at least two data values:
   },
 ```
 
-Setting raw to true uses THREE.RawShaderMaterial instead of ShaderMaterial,
-so your shader strings are used as-is, for advanced shader usage.
+Setting raw to true uses [THREE.RawShaderMaterial](https://threejs.org/docs/api/materials/RawShaderMaterial.html) instead of [ShaderMaterial](https://threejs.org/docs/api/materials/ShaderMaterial.html),
+so built-in uniforms and attributes are not automatically added to your shader code.
 Here, we want the usual prefixes with GLSL constants etc.,
 so we set it to false.
 (Which is also the default, so we could have omitted it).
@@ -506,9 +505,10 @@ void main() {
 
 varying vec2 vUv;
 uniform vec3 color;
-uniform float time1000;
+uniform float timeMsec; // A-Frame time in milliseconds.
 
 void main() {
+  float time = timeMsec / 1000.0; // Convert from A-Frame milliseconds to typical time in seconds.
   // Use sin(time), which curves between 0 and 1 over time,
   // to determine the mix of two colors:
   //    (a) Dynamic color where 'R' and 'B' channels come
@@ -519,7 +519,7 @@ void main() {
   gl_FragColor = mix(
     vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
     vec4(color, 1.0),
-    sin(time1000 / 1000.0) // since A-Frame time is in milliseconds
+    sin(time)
   );
 }
 ```
@@ -534,7 +534,7 @@ we simply register our custom shader with A-Frame:
 AFRAME.registerShader('grid-glitch', {
   schema: {
     color: {type: 'color', is: 'uniform'},
-    time1000: {type: 'time', is: 'uniform'}
+    timeMsec: {type: 'time', is: 'uniform'}
   },
 
   vertexShader: vertexShader,
@@ -576,7 +576,7 @@ We declare that offset as a uniform vec3 value `myOffset`:
 ```js
 AFRAME.registerShader('displacement-offset', {
   schema: {
-    time1000: {type:'time', is:'uniform'},
+    timeMsec: {type:'time', is:'uniform'},
     myOffset: {type:'vec3', is:'uniform'}
   },
   vertexShader: vertexShader,
@@ -584,7 +584,8 @@ AFRAME.registerShader('displacement-offset', {
 });
 ```
 
-that the vertex shader uses:
+that the vertex shader uses below.
+This example uses Browserify and glslify to include glsl-noise as a dependency of our shader.
 
 ```glsl
 // vertex.glsl
@@ -599,7 +600,7 @@ that the vertex shader uses:
 //
 
 varying float noise;
-uniform float time1000;
+uniform float timeMsec; // A-Frame time, in milliseconds
 uniform vec3 myOffset;
 
 float turbulence( vec3 p ) {
@@ -617,7 +618,7 @@ float turbulence( vec3 p ) {
 }
 
 void main() {
-  float time = time1000 / 1000.0;
+  float time = timeMsec / 1000.0; // Convert from A-Frame milliseconds to typical time in seconds.
   noise = 10.0 *  -.10 * turbulence( .5 * normal + time / 3.0 );
   float b = 5.0 * pnoise3( 0.05 * position, vec3( 100.0 ) );
   float displacement = (- 10. * noise + b) / 50.0;
