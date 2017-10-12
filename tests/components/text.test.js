@@ -125,6 +125,16 @@ suite('text', function () {
       el.setAttribute('text', 'shader', 'sdf');
       assert.equal(updateMaterialSpy.getCalls().length, 2);
     });
+
+    test('caches texture', function (done) {
+      var el2 = document.createElement('a-entity');
+      el2.setAttribute('text', '');
+      el.appendChild(el2);
+      setTimeout(() => {
+        assert.equal(el.components.text.texture, el2.components.text.texture);
+        done();
+      });
+    });
   });
 
   suite('createOrUpdateMaterial', function () {
