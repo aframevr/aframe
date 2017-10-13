@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>A-Frame Input Mapping Component - Basic</title>
+    <meta name="description" content="Basic example for Input Mapping component."></meta>
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets>
+        <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+        <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
+      </a-assets>
+
+      <a-entity id="leftHand" vive-controls="hand: left"></a-entity>
+      <a-entity id="rightHand" vive-controls="hand: right"></a-entity>
+
+      <a-plane src="#groundTexture" rotation="-90 0 0" height="100" width="100"></a-plane>
+      <a-light type="ambient" color="#445451"></a-light>
+      <a-light type="point" intensity="2" position="2 4 4"></a-light>
+      <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
+      <a-entity id="textmapping" position="0 1.9 -1.6" text="width:4;align:center;" geometry="height: 0.5; width:3.61;primitive:plane" material="shader:flat;color:#a91b1e"></a-entity>
+      <a-entity id="textbuttons" position="0 1.3 -1.6" text="width:4;align:center;" geometry="height: 0.5; width:3.61;primitive:plane" material="shader:flat;color:#a91b1e"></a-entity>
+    </a-scene>
+  </body>
+  <script>
+  var scene = document.querySelector('a-scene');
+
+  if (scene.hasLoaded) {
+    init();
+  } else {
+    scene.addEventListener('loaded', init);
+  }
+
+  var mappings = {
+    default: {
+      common: {
+        triggerdown: 'testlog'
+      },
+      'vive-controls': {
+        gripdown: 'changeTask'
+      },
+      'oculus-touch-controls': {
+        abuttondown: 'changeTask'
+      },
+      'windows-motion-controls': {
+        gripdown: 'changeTask'
+      },
+      keyboard: {
+        't_up': 'testlog',
+        'c_up': 'changeTask'
+      }
+    },
+    task1: {
+      'vive-controls': {
+        triggerdown: 'testlog_task1',
+        gripdown: 'changeTask'
+      },
+      'oculus-touch-controls': {
+        triggerdown: 'testlog_task1',
+        abuttondown: 'changeTask'
+      },
+      'windows-motion-controls': {
+        triggerdown: 'testlog_task1',
+        gripdown: 'changeTask'
+      },
+      keyboard: {
+        'y_up': 'testlog_task1',
+        'c_up': 'changeTask'
+      }
+    }
+  };
+
+  AFRAME.registerInputMappings(mappings);
+
+  var buttonsText = document.getElementById('textbuttons');
+  var mappingText = document.getElementById('textmapping');
+  var lastTimeout = null;
+
+  function drawText(message) {
+    buttonsText.setAttribute('text', {value: message});
+    clearTimeout(lastTimeout);
+    lastTimeout = setTimeout(() => {
+      buttonsText.setAttribute('text', {value: ''});
+    }, 1000);
+    console.log(message);
+  }
+
+  function init()
+  {
+    scene.addEventListener('changeTask', function(evt) {
+      AFRAME.currentMapping = AFRAME.currentMapping === 'default' ? 'task1' : 'default';
+      mappingText.setAttribute('text', {value: 'Current mapping: ' + AFRAME.currentMapping});
+      drawText('Changing task. ' + AFRAME.currentMapping);
+    });
+
+    mappingText.setAttribute('text', {value: 'Current mapping: ' + AFRAME.currentMapping});
+
+    scene.addEventListener('testlog_task1', function(evt) {
+      drawText('TestLog TASK1!');
+    });
+
+    scene.addEventListener('testlog', function(evt) {
+      drawText('TestLog event!');
+    });
+  }
+  </script>
+</html>
