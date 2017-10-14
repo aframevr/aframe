@@ -58,7 +58,7 @@ an A-Frame scene:
 
 ### GPU Texture Preloading
 
-Until off-thread texture uploads to the GPU are available, try to draw all
+Until non-blocking texture uploads to the GPU are available, try to draw all
 materials and textures up front. When materials and textures are drawn for the
 first time, the browser will hang and block while uploading to the GPU. Note
 that three.js's renderer does not upload textures to the GPU if objects are
@@ -68,31 +68,39 @@ view (e.g., we can put an entity at position `0 -1000 0`). Then hide them as
 needed. We will try to come with a convenient API in A-Frame to do this
 automatically.
 
-As an aside, try to create as few and reuse materials and textures as much as
-possible. Such as using texture atlases. It may also help to use simpler
-three.js materials such as Lambert since A-Frame's default PBR-based material
-is fairly heavy yet its features are rarely used.
+Reuse materials and textures as much as possible, aiming for a small number
+of unique materials. Texture atlases provide one efficient way to reuse
+materials while giving the impression of more variety. Simpler three.js
+materials such as Lambert or Basic perform better and are often sufficient
+for low-poly scenes. In particular, pre-baked lighting on an unlit (Basic)
+material can significantly improve performance. A-Frame's default PBR-based
+(Standard) material is more physically realistic, but also more expensive
+and often unnecessary in simple scenes.
 
 [360]: https://aframe-360-gallery.glitch.me
 
-For example, this is apparent in the [360&deg; image gallery]. If we look at
+For example, this is apparent in the [360&deg; image gallery][360]. If we look at
 the browser performance tools, there will be frame drops when switching to a
-new image for the first time, but runs smoothly when switching back to images
-for the second time.
+new image for the first time, but smooth transitions when switching back to
+images for the second time.
 
 ### JavaScript
 
-Avoid creating garbage and instantiating new JavaScript objects, arrays,
-strings, and functions as much as possible. in the 2d web, it is not as big of
-a deal to create a lot of javascript objects since there is a lot of idle time
-for the garbage collector to run. For VR, garbage collection may cause dropped
-frames.
+[firefox-alloc]: https://developer.mozilla.org/en-US/docs/Tools/Performance/Allocations
+[chrome-alloc]: https://developers.google.com/web/tools/chrome-devtools/memory-problems/#spot_frequent_garbage_collections
 
-Try to avoid patterns such as `Object.keys(obj).forEach(function () { });`
-which creates new arrays, functions, and callbacks versus using `for (key in
+Avoid creating garbage and instantiating new JavaScript objects, arrays,
+strings, and functions as much as possible. In the 2D web, it is not as big of
+a deal to create a lot of JavaScript objects since there is a lot of idle time
+for the garbage collector to run. For VR, garbage collection may cause dropped
+frames. Learn more about detecting allocations and garbage collection in
+[Firefox][firefox-alloc] and [Chrome][chrome-alloc] performance tools.
+
+Try to avoid patterns such as `Object.keys(obj).forEach(function () { });`,
+which create new arrays, functions, and callbacks versus using `for (key in
 obj)`. Or for array iteration, avoid `.forEach` and use a simple `for` loop
-instead. And try not to create copies of objects such as with `utils.clone`,
-`utils.extend`, or `.slice`.
+instead. Avoid unnecessary copying of objects, using methods like
+`utils.extend(target, source)` instead of `utils.clone` or `.slice`.
 
 If emitting an event, try to reuse the same object for event details:
 
@@ -109,6 +117,9 @@ AFRAME.registerComponent('foo', {
   }
 });
 ```
+
+All of the suggestions above are _especially_ important in `tick()` handlers,
+where they will be running on every frame.
 
 ### `tick` Handlers
 
