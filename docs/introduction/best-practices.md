@@ -68,6 +68,13 @@ view (e.g., we can put an entity at position `0 -1000 0`). Then hide them as
 needed. We will try to come with a convenient API in A-Frame to do this
 automatically.
 
+[360]: https://aframe-360-gallery.glitch.me
+
+For example, this is apparent in the [360&deg; image gallery][360]. If we look at
+the browser performance tools, there will be frame drops when switching to a
+new image for the first time, but smooth transitions when switching back to
+images for the second time.
+
 Reuse materials and textures as much as possible, aiming for a small number
 of unique materials. Texture atlases provide one efficient way to reuse
 materials while giving the impression of more variety. Simpler three.js
@@ -76,13 +83,6 @@ for low-poly scenes. In particular, pre-baked lighting on an unlit (Basic)
 material can significantly improve performance. A-Frame's default PBR-based
 (Standard) material is more physically realistic, but also more expensive
 and often unnecessary in simple scenes.
-
-[360]: https://aframe-360-gallery.glitch.me
-
-For example, this is apparent in the [360&deg; image gallery][360]. If we look at
-the browser performance tools, there will be frame drops when switching to a
-new image for the first time, but smooth transitions when switching back to
-images for the second time.
 
 ### JavaScript
 
