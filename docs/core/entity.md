@@ -485,8 +485,6 @@ Below is what the event detail contains for each event:
 | child-attached       | el        | Reference to the attached child element.           |
 | componentchanged     | name      | Name of component that had its data modified.      |
 |                      | id        | ID of component that had its data modified.        |
-|                      | newData   | Component's new data, after it was modified.       |
-|                      | oldData   | Component's previous data, before it was modified. |
 | componentinitialized | name      | Name of component that was initialized.            |
 |                      | id        | ID of component that had its data modified.        |
 |                      | data      | Component data.                                    |
@@ -503,7 +501,7 @@ We can use the `componentchanged` event to listen for changes to the entity:
 ```js
 entity.addEventListener('componentchanged', function (evt) {
   if (evt.detail.name === 'position') {
-    console.log('Entity has moved from', evt.detail.oldData, 'to', evt.detail.newData, '!');
+    console.log('Entity has moved to', evt.target.getAttribute('position'), '!');
   }
 });
 ```
