@@ -75151,15 +75151,16 @@ Component.prototype = {
     if (value === undefined) { return; }
 
     // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (!isSinglePropSchema && !clobber && this.attrValue) {
-      for (property in this.attrValue) {
-        if (!(property in attrValue)) {
-          attrValue[property] = this.attrValue[property];
-        }
+    if (!isSinglePropSchema && !clobber) {
+      this.attrValue = this.attrValue ? cloneData(this.attrValue) : {};
+      for (property in attrValue) {
+        this.attrValue[property] = attrValue[property];
       }
+      return;
     }
 
-    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
+    // If single-prop schema or clobber.
+    this.attrValue = attrValue;
   },
 
   /**
@@ -75212,6 +75213,7 @@ Component.prototype = {
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
     var isSinglePropSchema;
+    var key;
     var skipTypeChecking;
     var oldData = this.oldData;
 
@@ -75223,9 +75225,25 @@ Component.prototype = {
     }
 
     isSinglePropSchema = isSingleProp(this.schema);
+
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
                        attrValue === this.previousAttrValue;
+    if (skipTypeChecking) {
+      for (key in this.attrValue) {
+        if (!(key in attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+      for (key in attrValue) {
+        if (!(key in this.attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+    }
+
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
@@ -78286,7 +78304,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 12-10-2017, Commit #19eef8a)');
+console.log('A-Frame Version: 0.7.0 (Date 15-10-2017, Commit #188f653)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
