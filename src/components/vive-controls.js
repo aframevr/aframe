@@ -2,8 +2,10 @@ var registerComponent = require('../core/component').registerComponent;
 var utils = require('../utils/');
 
 var bind = utils.bind;
-var checkControllerPresentAndSetup = utils.trackedControls.checkControllerPresentAndSetup;
-var emitIfAxesChanged = utils.trackedControls.emitIfAxesChanged;
+var trackedControlsUtils = require('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -46,10 +48,10 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
 
@@ -195,35 +197,18 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
+  updateModel: function (buttonName, evtName) {
     var color;
-    var i;
-    var isTouch = evtName.indexOf('touch') !== -1;
-
-    // Emit events.
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-
+    var isTouch;
     if (!this.data.model) { return; }
 
+    isTouch = evtName.indexOf('touch') !== -1;
     // Don't change color for trackpad touch.
     if (isTouch) { return; }
 
     // Update colors.
     color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.setButtonColor(buttonName[i], color);
-      }
-    } else {
-      this.setButtonColor(buttonName, color);
-    }
+    this.setButtonColor(buttonName, color);
   },
 
   setButtonColor: function (buttonName, color) {
