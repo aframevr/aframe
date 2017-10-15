@@ -466,22 +466,18 @@ suite('a-entity', function () {
         el = evt.detail.el;
         el.addEventListener('loaded', evt => {
           var geometry;
+          var setObj;
 
-          assert.shallowDeepEqual(el.components.geometry.attrValue, {width: 5});
-          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {});
+          assert.shallowDeepEqual(el.components.geometry.attrValue, {primitive: 'box', width: 5});
 
           // First setAttribute.
-          el.setAttribute('geometry', {depth: 10, height: 20});
+          setObj = {depth: 10, height: 20};
+          el.setAttribute('geometry', setObj);
           geometry = el.getAttribute('geometry');
           assert.equal(geometry.depth, 10);
           assert.equal(geometry.height, 20);
           assert.equal(geometry.width, 5, 'First setAttribute');
-          assert.shallowDeepEqual(el.components.geometry.attrValue, {
-            depth: 10,
-            height: 20,
-            width: 5
-          });
-          assert.shallowDeepEqual(el.components.geometry.previousAttrValue, {width: 5});
+          assert.equal(el.components.geometry.previousAttrValue, setObj);
 
           // Second setAttribute.
           el.setAttribute('geometry', {depth: 20, height: 10});
@@ -1413,6 +1409,34 @@ suite('a-entity component lifecycle management', function () {
     el.setAttribute('test', attrValue);
     componentData = el.getAttribute('test');
     assert.ok(componentData.a === '3');
+  });
+
+  test('parses if mix of unparsed data and reused object from setAttribute', function (done) {
+    var componentData;
+    var el;
+    var parentEl = this.el;
+    var updateObj = {b: 5};
+
+    AFRAME.registerComponent('setter', {
+      init: function () {
+        setTimeout(() => {
+          this.el.setAttribute('test', updateObj);
+          updateObj.b = 10;
+          this.el.setAttribute('test', updateObj);
+        });
+      }
+    });
+
+    parentEl.innerHTML = '<a-entity setter test="a: 3">';
+
+    setTimeout(() => {
+      el = parentEl.children[0];
+      componentData = el.getAttribute('test');
+      assert.strictEqual(componentData.a, 3);
+      assert.strictEqual(componentData.b, 10);
+      delete AFRAME.components.setter;
+      done();
+    }, 50);
   });
 
   test('calls remove on removeAttribute', function () {
