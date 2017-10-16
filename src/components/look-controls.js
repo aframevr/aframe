@@ -186,7 +186,7 @@ module.exports.Component = registerComponent('look-controls', {
       rotation.x = radToDeg(hmdEuler.x) + radToDeg(pitchObject.rotation.x);
       rotation.y = radToDeg(hmdEuler.y) + radToDeg(yawObject.rotation.y);
       rotation.z = radToDeg(hmdEuler.z);
-    } else if (!sceneEl.is('vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
+    } else if (!sceneEl.hasAttribute('data-vr-mode') || isNullVector(hmdEuler) || !this.data.hmdEnabled) {
       // Mouse drag if WebVR not active (not connected, no incoming sensor data).
       currentRotation = this.el.getAttribute('rotation');
       this.calculateDeltaRotation();
@@ -234,7 +234,7 @@ module.exports.Component = registerComponent('look-controls', {
     var previousHMDPosition = this.previousHMDPosition;
     var sceneEl = this.el.sceneEl;
 
-    if (!sceneEl.is('vr-mode')) { return; }
+    if (!sceneEl.hasAttribute('data-vr-mode')) { return; }
 
     // Calculate change in position.
     currentHMDPosition = this.calculateHMDPosition();

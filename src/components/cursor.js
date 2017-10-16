@@ -13,12 +13,6 @@ var EVENTS = {
   MOUSEUP: 'mouseup'
 };
 
-var STATES = {
-  FUSING: 'cursor-fusing',
-  HOVERING: 'cursor-hovering',
-  HOVERED: 'cursor-hovered'
-};
-
 var CANVAS_EVENTS = {
   DOWN: ['mousedown', 'touchstart'],
   UP: ['mouseup', 'touchend']
@@ -83,11 +77,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   remove: function () {
-    var el = this.el;
-    el.removeState(STATES.HOVERING);
-    el.removeState(STATES.FUSING);
     clearTimeout(this.fuseTimeout);
-    if (this.intersectedEl) { this.intersectedEl.removeState(STATES.HOVERED); }
     this.removeEventListeners();
   },
 
@@ -272,16 +262,12 @@ module.exports.Component = registerComponent('cursor', {
     this.intersectedEl = intersectedEl;
 
     // Hovering.
-    cursorEl.addState(STATES.HOVERING);
-    intersectedEl.addState(STATES.HOVERED);
     self.twoWayEmit(EVENTS.MOUSEENTER);
 
     // Begin fuse if necessary.
     if (data.fuseTimeout === 0 || !data.fuse) { return; }
-    cursorEl.addState(STATES.FUSING);
     this.twoWayEmit(EVENTS.FUSING);
     this.fuseTimeout = setTimeout(function fuse () {
-      cursorEl.removeState(STATES.FUSING);
       self.twoWayEmit(EVENTS.CLICK);
     }, data.fuseTimeout);
   },
@@ -299,12 +285,7 @@ module.exports.Component = registerComponent('cursor', {
   },
 
   clearCurrentIntersection: function () {
-    var cursorEl = this.el;
-
     // No longer hovering (or fusing).
-    this.intersectedEl.removeState(STATES.HOVERED);
-    cursorEl.removeState(STATES.HOVERING);
-    cursorEl.removeState(STATES.FUSING);
     this.twoWayEmit(EVENTS.MOUSELEAVE);
 
     // Unset intersected entity (after emitting the event).

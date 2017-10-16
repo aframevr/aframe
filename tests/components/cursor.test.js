@@ -34,35 +34,6 @@ suite('cursor', function () {
   });
 
   suite('remove', function () {
-    test('removes hover state', function (done) {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      assert.ok(el.is('cursor-hovering'));
-      assert.ok(intersectedEl.is('cursor-hovered'));
-      el.removeAttribute('cursor');
-      process.nextTick(function () {
-        assert.notOk(el.is('cursor-hovering'));
-        assert.notOk(intersectedEl.is('cursor-hovered'));
-        done();
-      });
-    });
-
-    test('removes fuse state', function (done) {
-      el.setAttribute('cursor', 'fuse', true);
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      assert.ok(el.is('cursor-fusing'));
-      el.removeAttribute('cursor');
-      process.nextTick(function () {
-        assert.notOk(el.is('cursor-fusing'));
-        done();
-      });
-    });
-
     test('removes intersection listener', function (done) {
       el.removeAttribute('cursor');
       process.nextTick(function () {
@@ -70,7 +41,7 @@ suite('cursor', function () {
           intersections: [intersection],
           els: [intersectedEl]
         });
-        assert.notOk(el.is('cursor-hovering'));
+        assert.notOk(el.components.intersectedEl);
         done();
       });
     });
@@ -161,7 +132,7 @@ suite('cursor', function () {
         intersections: [intersection],
         els: [el]
       });
-      assert.notOk(intersectedEl.is('cursor-hovered'));
+      assert.notOk(el.components.intersectedEl);
     });
 
     test('does not do anything if only the cursor is intersecting', function () {
@@ -169,15 +140,7 @@ suite('cursor', function () {
         intersections: [intersection],
         els: [el]
       });
-      assert.notOk(el.is('cursor-hovered'));
-    });
-
-    test('sets cursor-hovered state on intersectedEl', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      assert.ok(intersectedEl.is('cursor-hovered'));
+      assert.notOk(el.components.intersectedEl);
     });
 
     test('emits mouseenter event on el', function (done) {
@@ -239,7 +202,6 @@ suite('cursor', function () {
         intersections: [intersection],
         els: [intersectedEl]
       });
-      assert.ok(el.is('cursor-hovering'));
     });
 
     test('emits a mouseleave event on the prevIntersectedEl', function (done) {
@@ -253,35 +215,6 @@ suite('cursor', function () {
       el.emit('raycaster-intersection', {
         intersections: [intersection],
         els: [intersectedEl]
-      });
-    });
-
-    test('does not set cursor-fusing state on cursor if not fuse', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      assert.notOk(el.is('cursor-fusing'));
-    });
-
-    test('sets cursor-fusing state on cursor if fuse', function () {
-      el.setAttribute('cursor', 'fuse', true);
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      assert.ok(el.is('cursor-fusing'));
-    });
-
-    test('removes fuse state and emits event on fuse click', function (done) {
-      el.setAttribute('cursor', {fuse: true, fuseTimeout: 1});
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
-      once(el, 'click', function () {
-        assert.notOk(el.is('cursor-fusing'));
-        done();
       });
     });
 
@@ -316,44 +249,6 @@ suite('cursor', function () {
       el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
       assert.notOk(component.intersection);
       assert.notOk(component.intersectedEl);
-    });
-
-    test('removes cursor-hovered state on intersectedEl', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      intersectedEl.addState('cursor-hovered');
-      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
-      assert.notOk(intersectedEl.is('cursor-hovered'));
-    });
-
-    test('emits mouseleave event on el', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(el, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.intersectedEl, intersectedEl);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
-    });
-
-    test('emits mouseleave event on intersectedEl', function (done) {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      once(intersectedEl, 'mouseleave', function (evt) {
-        assert.equal(evt.detail.cursorEl, el);
-        done();
-      });
-      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
-    });
-
-    test('removes cursor-hovering and cursor-fusing states on cursor', function () {
-      component.intersection = intersection;
-      component.intersectedEl = intersectedEl;
-      el.addState('cursor-fusing');
-      el.addState('cursor-hovering');
-      el.emit('raycaster-intersection-cleared', {clearedEls: [intersectedEl]});
-      assert.notOk(el.is('cursor-fusing'));
-      assert.notOk(el.is('cursor-hovering'));
     });
   });
 

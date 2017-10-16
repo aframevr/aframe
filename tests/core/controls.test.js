@@ -152,7 +152,7 @@ suite('rotation controls on camera with VRControls (integration unit test)', fun
 
   test('rotates camera around Y', function (done) {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
+    el.sceneEl.setAttribute('data-vr-mode', '');
     this.dolly.quaternion.setFromEuler(new THREE.Euler(0, PI, 0));
     el.sceneEl.tick();
     process.nextTick(function () {
@@ -166,7 +166,7 @@ suite('rotation controls on camera with VRControls (integration unit test)', fun
 
   test('rotates camera composing X and Y', function (done) {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
+    el.sceneEl.setAttribute('data-vr-mode', '');
     this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 4, PI, 0));
     el.sceneEl.tick();
     process.nextTick(function () {
@@ -180,7 +180,7 @@ suite('rotation controls on camera with VRControls (integration unit test)', fun
 
   test('rotates camera composing X and Y and Z', function (done) {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
+    el.sceneEl.setAttribute('data-vr-mode', '');
     this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 2, PI / 6, PI / 2));
     el.sceneEl.tick();
     process.nextTick(function () {
@@ -194,7 +194,7 @@ suite('rotation controls on camera with VRControls (integration unit test)', fun
 
   test('replaces previous rotation', function (done) {
     var el = this.el;
-    el.sceneEl.addState('vr-mode');
+    el.sceneEl.setAttribute('data-vr-mode', '');
     el.setAttribute('rotation', {x: -10000, y: -10000, z: -10000});
     this.dolly.quaternion.setFromEuler(new THREE.Euler(PI / 2, PI / 6, PI / 2));
     el.sceneEl.tick();
@@ -314,7 +314,7 @@ suite('rotation controls on camera with mouse drag (integration unit test)', fun
   test('does not rotate camera when dragging in VR with headset', function (done) {
     var el = this.el;
     this.dolly.quaternion.setFromEuler(new THREE.Euler(0, PI, 0));
-    el.sceneEl.addState('vr-mode');
+    el.sceneEl.setAttribute('data-vr-mode', '');
     el.sceneEl.canvas.dispatchEvent(new Event('mousedown'));
 
     process.nextTick(function afterMousedown () {
@@ -437,7 +437,7 @@ suite('position controls on camera with VRControls (integration unit test)', fun
     var sceneEl = el.sceneEl;
     var dolly = this.dolly;
 
-    sceneEl.addState('vr-mode');
+    sceneEl.setAttribute('data-vr-mode', '');
     el.components.camera.hasPositionalTracking = true;
     el.components.camera.removeHeightOffset();
 

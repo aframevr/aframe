@@ -151,23 +151,6 @@ console.log(entity.sceneEl === sceneEl);  // >> true.
 
 ## Methods
 
-### `addState (stateName)`
-
-`addState` will push a state onto the entity. This will emit the `stateadded`
-event, and we can check the state can for existence using `.is`:
-
-
-```js
-entity.addEventListener('stateadded', function (evt) {
-  if (evt.detail.state === 'selected') {
-    console.log('Entity now selected!');
-  }
-});
-
-entity.addState('selected');
-entity.is('selected');  // >> true
-```
-
 ### `emit (name, detail, bubbles)`
 
 [animation-begin]: ./animations.md#begin
@@ -438,25 +421,6 @@ AFRAME.registerComponent('example-light', {
     // object3DMap.light is now null.
   }
 });
-```
-
-### `removeState (stateName)`
-
-`removeState` will pop a state from the entity. This will emit the
-`stateremoved` event, and we can check the state its removal using `.is`:
-
-```js
-entity.addEventListener('stateremoved', function (evt) {
-  if (evt.detail.state === 'selected') {
-    console.log('Entity no longer selected.');
-  }
-});
-
-entity.addState('selected');
-entity.is('selected');  // >> true
-
-entity.removeState('selected');
-entity.is('selected');  // >> false
 ```
 
 ## Events
