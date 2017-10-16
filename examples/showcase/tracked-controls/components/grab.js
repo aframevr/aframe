@@ -46,6 +46,7 @@ AFRAME.registerComponent('grab', {
     this.grabbing = false;
     if (!hitEl) { return; }
     hitEl.removeState(this.GRABBED_STATE);
+    hitEl.emit('grabend');
     this.hitEl = undefined;
   },
 
