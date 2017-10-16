@@ -73544,7 +73544,6 @@ var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 
 var AEntity;
-var bind = utils.bind;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
@@ -73667,62 +73666,6 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
       this.updateComponent(attrName, this.getDOMAttribute(attrName));
-    }
-  },
-
-  /**
-   * Add new mixin for each mixin with state suffix.
-   */
-  mapStateMixins: {
-    value: function (state, op) {
-      var mixins;
-      var mixinIds;
-      var i;
-
-      mixins = this.getAttribute('mixin');
-
-      if (!mixins) { return; }
-      mixinIds = mixins.split(' ');
-      for (i = 0; i < mixinIds.length; i++) {
-        op(mixinIds[i] + '-' + state);
-      }
-      this.updateComponents();
-    }
-  },
-
-  /**
-   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
-   * `hovered` is the entity state.
-   */
-  updateStateMixins: {
-    value: function (newMixins, oldMixins) {
-      var diff;
-      var newMixinIds;
-      var oldMixinIds;
-      var i;
-      var j;
-      var stateMixinEls;
-
-      newMixinIds = newMixins.split(' ');
-      oldMixinIds = (oldMixins || '') ? oldMixins.split(' ') : [];
-
-      // List of mixins that might have been removed on update.
-      diff = oldMixinIds.filter(function (i) { return newMixinIds.indexOf(i) < 0; });
-
-      // Remove removed mixins.
-      for (i = 0; i < diff.length; i++) {
-        stateMixinEls = document.querySelectorAll('[id^=' + diff[i] + '-]');
-        for (j = 0; j < stateMixinEls.length; j++) {
-          this.unregisterMixin(stateMixinEls[j].id);
-        }
-      }
-
-      // Add new mixins.
-      for (i = 0; i < this.states.length; i++) {
-        for (j = 0; j < newMixinIds.length; j++) {
-          this.registerMixin(newMixinIds[j] + '-' + this.states[i]);
-        }
-      }
     }
   },
 
@@ -74207,7 +74150,6 @@ var proto = Object.create(ANode.prototype, {
     value: function (newMixins, oldMixins) {
       oldMixins = oldMixins || this.getAttribute('mixin');
       this.updateMixins(newMixins, oldMixins);
-      this.updateStateMixins(newMixins, oldMixins);
       this.updateComponents();
     }
   },
@@ -74362,8 +74304,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, bind(this.registerMixin, this));
-      this.emit('stateadded', {state: state});
+      this.emit('stateadded', state);
     }
   },
 
@@ -74372,8 +74313,7 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, bind(this.unregisterMixin, this));
-      this.emit('stateremoved', {state: state});
+      this.emit('stateremoved', state);
     }
   },
 
@@ -78304,7 +78244,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 15-10-2017, Commit #188f653)');
+console.log('A-Frame Version: 0.7.0 (Date 16-10-2017, Commit #a80d9c2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
