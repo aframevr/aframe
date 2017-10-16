@@ -63,10 +63,9 @@ materials and textures up front. When materials and textures are drawn for the
 first time, the browser will hang and block while uploading to the GPU. Note
 that three.js's renderer does not upload textures to the GPU if objects are
 non-visible. To prevent frame drops during the experience, create and draw all
-materials and textures when the scene starts. They do not need to be within
-view (e.g., we can put an entity at position `0 -1000 0`). Then hide them as
-needed. We will try to come with a convenient API in A-Frame to do this
-automatically.
+materials and textures when the scene starts. Draw them somewhere within the camera
+frustum (viewport) then hide them as needed. We will try to come with a
+convenient API in A-Frame to do this automatically.
 
 [360]: https://aframe-360-gallery.glitch.me
 
@@ -78,11 +77,21 @@ images for the second time.
 Reuse materials and textures as much as possible, aiming for a small number
 of unique materials. Texture atlases provide one efficient way to reuse
 materials while giving the impression of more variety. Simpler three.js
-materials such as Lambert or Basic perform better and are often sufficient
-for low-poly scenes. In particular, pre-baked lighting on an unlit (Basic)
-material can significantly improve performance. A-Frame's default PBR-based
-(Standard) material is more physically realistic, but also more expensive
-and often unnecessary in simple scenes.
+materials such as MeshLambertMaterial or MeshBasicMaterial perform better and
+are often sufficient for low-poly scenes. In particular, pre-baked lighting on
+an unlit (Basic) material can significantly improve performance. A-Frame's
+default PBR-based (Standard) material is more physically realistic, but also
+more expensive and often unnecessary in simple scenes.
+
+#### Tools
+
+[webglinsights]: https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko?hl=en-US
+[webglinspector]: https://addons.mozilla.org/en-US/firefox/addon/webgl-inspector/
+
+There are browser add-ons available to look into what's being sent to the GPU.
+
+- [WebGL Insights extension for Chrome][webglinsights]
+- [WebGL Inspector add-on for Firefox][webglinspector]
 
 ### JavaScript
 
