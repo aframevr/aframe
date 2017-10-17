@@ -712,6 +712,16 @@ by computing the `sunPosition` vector to use in the sky shader.
       });
 ```
 
+[shadertoy]: https://github.com/ngokevin/aframe-shadertoy-gallery
+[shaderfrog]: https://github.com/chenzlabs/aframe-import-shaderfrog
+
+In addition, there are components developed by the A-Frame developer community
+that allow the use of existing shaders from repositories such as [ShaderToy][shadertoy] and [ShaderFrog][shaderfrog].
+
+Note however that these shaders can be quite demanding in terms of
+computational and graphics power, and some more complex shaders may not function 
+well on lower-performance devices such as smartphones.
+
 ## Register a Custom Component Using THREE Material
 
 For those cases where the `registerShader` API lacks needed functionality 
