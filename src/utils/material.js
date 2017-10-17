@@ -138,7 +138,7 @@ function handleTextureEvents (el, texture) {
       ['standard', 'flat'].indexOf(el.components.material.data.shader) !== -1) {
     // For some reason, wait a tick before changing shader, or it doesn't work.
     setTimeout(function () {
-      el.setAttribute('material', 'shader', texture.needsCorrectionBGRA ? 'ios10hls' : 'macoshls');
+      el.setAttribute('material', 'shader', texture.needsCorrectionBGRA ? 'bgra-flipy' : 'flipy');
     });
   }
 }

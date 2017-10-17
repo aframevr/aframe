@@ -1,10 +1,11 @@
 var registerShader = require('../core/shader').registerShader;
 
 /**
- * Custom shader for MacOS HTTP Live Streaming (HLS).
+ * Custom shader that flips Y,
+ * primarily for MacOS HTTP Live Streaming (HLS).
  * For more information on HLS, see https://datatracker.ietf.org/doc/draft-pantos-http-live-streaming/
  */
-module.exports.Shader = registerShader('macoshls', {
+module.exports.Shader = registerShader('flipy', {
   schema: {
     src: {type: 'map', is: 'uniform'},
     opacity: {type: 'number', is: 'uniform', default: 1}
