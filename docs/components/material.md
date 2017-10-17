@@ -7,6 +7,16 @@ source_code: src/components/material.js
 examples:
   - title: Displacement Shader
     url: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
+  - title: Shader walkthrough CodePen
+    src: https://codepen.io/machenmusik/pen/WZyQNj
+  - title: Glitch grid-shader (remixable)
+    src: https://glitch.com/edit/#!/aframe-simpler-shader?path=public/index.html
+  - title: Glitch real-time vertex displacement (remixable)
+    src: https://glitch.com/edit/#!/aframe-displacement-registershader?path=public/index.html
+  - title: Glitch real-time vertex displacement with offset (remixable)
+    src: https://glitch.com/edit/#!/aframe-displacement-offset-registershader?path=public/index.html
+  - title: A-Frame test shaders
+    src: https://aframe.io/aframe/examples/test/shaders/
 ---
 
 [fog]: ./fog.md
@@ -376,13 +386,13 @@ so we set it to false.
 
 Here, we're going to use the default vertex shader by omitting vertexShader.
 But note that if your fragment shader cares about texture coordinates,
-the vertex shader should set varying values to use in the fragment shader. 
-  
+the vertex shader should set varying values to use in the fragment shader.
+
 Since almost every WebVR-capable browser supports ES6,
 we define our fragment shader as a multi-line string.
 
 ```js
-  fragmentShader: 
+  fragmentShader:
 `
   // Use medium precision.
   precision mediump float;
@@ -484,7 +494,7 @@ Note that `time` can eliminate the need for a `tick()` handler in many cases.
 
 ### Example — GLSL and Shaders
 
-For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. 
+For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities.
 
 > NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
 
@@ -515,7 +525,7 @@ void main() {
   //    (a) Dynamic color where 'R' and 'B' channels come
   //        from a modulus of the UV coordinates.
   //    (b) Base color.
-  // 
+  //
   // The color itself is a vec4 containing RGBA values 0-1.
   gl_FragColor = mix(
     vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
@@ -525,7 +535,7 @@ void main() {
 }
 ```
 
-To use these vertex and fragment shaders, 
+To use these vertex and fragment shaders,
 after reading them into strings `vertexShader` and `fragmentShader`,
 we simply register our custom shader with A-Frame:
 
@@ -595,7 +605,7 @@ This example uses Browserify and glslify to include glsl-noise as a dependency o
 
 //
 // Based on @thespite's article:
-// 
+//
 // "Vertex displacement with a noise function using GLSL and three.js"
 // Source: https://www.clicktorelease.com/blog/vertex-displacement-noise-3d-webgl-glsl-three-js/
 //
@@ -647,7 +657,7 @@ AFRAME.registerComponent('myoffset-updater', {
   init: function () {
     this.offset = new THREE.Vector3();
   },
-  
+
   tick: function (t, dt) {
     this.offset.copy(this.el.sceneEl.camera.el.getAttribute('position'));
     this.offset.y = 0;
@@ -719,13 +729,13 @@ In addition, there are components developed by the A-Frame developer community
 that allow the use of existing shaders from repositories such as [ShaderToy][shadertoy] and [ShaderFrog][shaderfrog].
 
 Note however that these shaders can be quite demanding in terms of
-computational and graphics power, and some more complex shaders may not function 
+computational and graphics power, and some more complex shaders may not function
 well on lower-performance devices such as smartphones.
 
 ## Register a Custom Component Using THREE Material
 
-For those cases where the `registerShader` API lacks needed functionality 
-(e.g., no `tick` handler, some missing uniform types), 
+For those cases where the `registerShader` API lacks needed functionality
+(e.g., no `tick` handler, some missing uniform types),
 we recommend creating a custom material by
 creating three.js materials (e.g., `RawShaderMaterial`, `ShaderMaterial`) in a
 component:
