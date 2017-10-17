@@ -129,7 +129,7 @@ function handleTextureEvents (el, texture) {
     el.emit('materialvideoended', {src: texture.image, texture: texture});
   });
 
-  // NOTE: For MacOS HLS, loadeddata doesn't appear to fire...
+  // NOTE: For macOS HLS, loadeddata doesn't appear to fire...
   // Check to see if we need to use iOS 10 HLS shader.
   // Only override the shader if it is stock shader that we know doesn't correct.
   if (!el.components || !el.components.material) { return; }
