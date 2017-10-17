@@ -712,7 +712,7 @@ by computing the `sunPosition` vector to use in the sky shader.
       });
 ```
 
-[shadertoy]: https://github.com/ngokevin/aframe-shadertoy-gallery
+[shadertoy]: https://shadertoy.com
 [shaderfrog]: https://github.com/chenzlabs/aframe-import-shaderfrog
 
 In addition, there are components developed by the A-Frame developer community
