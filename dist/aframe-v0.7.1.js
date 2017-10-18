@@ -66174,8 +66174,8 @@ module.exports={
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-master.js.map > dist/aframe-master.js",
-    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-master.min.js.map --output dist/aframe-master.min.js.map] -o dist/aframe-master.min.js",
+    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.7.1.js.map > dist/aframe-v0.7.1.js",
+    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.7.1.min.js.map --output dist/aframe-v0.7.1.min.js.map] -o dist/aframe-v0.7.1.min.js",
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
@@ -78448,7 +78448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.1 (Date 18-10-2017, Commit #3cabba0)');
+console.log('A-Frame Version: 0.7.1 (Date 18-10-2017, Commit #0da6cf4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -82623,4 +82623,4 @@ module.exports = getWakeLock();
 
 },{"./util.js":204}]},{},[171])(171)
 });
-//# sourceMappingURL=aframe-master.js.map
+//# sourceMappingURL=aframe-v0.7.1.js.map
