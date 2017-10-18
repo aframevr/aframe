@@ -191,6 +191,24 @@ suite('material system', function () {
         });
       });
 
+      test('loads image given a <video> element with <source>', function (done) {
+        var videoEl = document.createElement('video');
+        var system = this.system;
+        var data = {};
+
+        videoEl.insertAdjacentHTML('beforeend',
+          '<source src="' + VIDEO1 + '"></source>');
+        system.loadVideo(videoEl, data, function (texture) {
+          var hash = Object.keys(system.textureCache)[0];
+          assert.equal(texture.image, videoEl);
+          system.textureCache[hash].then(function (result) {
+            assert.equal(texture, result.texture);
+            assert.equal(texture.image, result.videoEl);
+            done();
+          });
+        });
+      });
+
       test('sets texture flags appropriately when given a <video> element that isHLS on iOS', function (done) {
         var videoEl = document.createElement('video');
         var system = this.system;
