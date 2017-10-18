@@ -27,11 +27,11 @@ THREE.XRControls = function ( object, onError ) {
 
     this.userHeight = 1.6;
     this.update = function (frameData) {
-        let stageCoordinateSystem = frameData.getCoordinateSystem(XRCoordinateSystem.STAGE);
-        if(stageCoordinateSystem === null){
-            console.log('Could not get a usable stage coordinate system');
-            return;
-        }
+        // let stageCoordinateSystem = frameData.getCoordinateSystem(XRCoordinateSystem.STAGE);
+        // if(stageCoordinateSystem === null){
+        //     console.log('Could not get a usable stage coordinate system');
+        //     return;
+        // }
         // Get the two poses we care about: the foot level stage and
         // the head pose which is updated by ARKit, ARCore, or orientation events
         let headPose = frameData.getViewPose(frameData.getCoordinateSystem(XRCoordinateSystem.HEAD_MODEL))

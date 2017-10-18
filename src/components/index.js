@@ -11,6 +11,7 @@ require('./light');
 require('./line');
 require('./link');
 require('./look-controls');
+require('./xranchor');
 require('./material');
 require('./obj-model');
 require('./oculus-touch-controls');

@@ -14,6 +14,7 @@ THREE.XREffect = function( renderer, onError ) {
 
     var vrDisplay, vrDisplays;
     this.renderer = renderer;
+    this.anchoredNodes = [];
 
 
     if(typeof navigator.XR === 'undefined'){
@@ -126,18 +127,31 @@ THREE.XREffect = function( renderer, onError ) {
             this.showMessage("no frame yet");
             return;
         }
-        let stageCoordinateSystem = frameData.getCoordinateSystem(XRCoordinateSystem.STAGE);
-        if(stageCoordinateSystem === null){
-            this.showMessage('Could not get a usable stage coordinate system');
-            return;
-        }
+        // let stageCoordinateSystem = frameData.getCoordinateSystem(XRCoordinateSystem.STAGE);
+        // if(stageCoordinateSystem === null){
+        //     this.showMessage('Could not get a usable stage coordinate system');
+        //     return;
+        // }
         // Get the two poses we care about: the foot level stage and
         // the head pose which is updated by ARKit, ARCore, or orientation events
         // let stagePose = frameData.getViewPose(stageCoordinateSystem);
         let headPose = frameData.getViewPose(frameData.getCoordinateSystem(XRCoordinateSystem.HEAD_MODEL));
 
+        if(!this.requestedFloor){
+            this.requestedFloor = true;
+            frameData.findFloorAnchor('first-floor-anchor').then(anchorOffset => {
+                console.log("found the floor anchor", anchorOffset);
+                if(!this.scene._floorGroup) {
+                    this.scene._floorGroup = new THREE.Group();
+                    this.anchoredNodes.push({node:this.scene._floorGroup, anchorOffset: anchorOffset});
+                }
+            });
+        }
 
-        // Prep THREE.js for the render of each XRView
+        for(let anchoredNode of this.anchoredNodes){
+            this.updateNodeFromAnchorOffset(frameData, anchoredNode.node, anchoredNode.anchorOffset)
+        }
+            // Prep THREE.js for the render of each XRView
         //this.renderer.resetGLState()
         this.scene.matrixAutoUpdate = false;
         this.renderer.autoClear = false;
@@ -169,5 +183,23 @@ THREE.XREffect = function( renderer, onError ) {
             vrDisplay.submitFrame();
         }
     };
+    this.updateNodeFromAnchorOffset = function(frame, node, anchorOffset){
+        const anchor = frame.getAnchor(anchorOffset.anchorUID)
+        if(anchor === null){
+            console.log('Unknown anchor uid', anchorOffset.anchorUID)
+            return
+        }
+
+        node.matrixAutoUpdate = false
+        const offsetCoordinates = anchorOffset.getTransformedCoordinates(anchor)
+        if(offsetCoordinates.coordinateSystem.type === XRCoordinateSystem.TRACKER){
+            node.matrix.fromArray(offsetCoordinates.poseMatrix)
+        } else {
+            node.matrix.fromArray(
+                offsetCoordinates.getTransformedCoordinates(frame.getCoordinateSystem(XRCoordinateSystem.TRACKER)).poseMatrix
+            )
+        }
+        node.updateMatrixWorld(true)
+    }
 
 };
