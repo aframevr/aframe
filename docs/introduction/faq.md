@@ -210,7 +210,7 @@ to serve, but that is against their terms of service.
 Browsers provide the ability to go from WebVR page to WebVR page via the
 `vrdisplayactivate` event described in the WebVR specification. Currently, not
 all browsers implement this. Firefox with WebVR implements this. A link
-component for link traversal was released with A-Frame 0.7.0:
+component for link traversal was released with A-Frame 0.6.0:
 
 ```html
 <a-entity link="on: click; href: https://aframe-aincraft.glitch.me"></a-entity>
