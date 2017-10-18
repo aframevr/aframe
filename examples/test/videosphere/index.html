@@ -9,15 +9,32 @@
   <body>
     <a-scene stats>
       <a-assets>
-        <video id="lego" preload="true"
-               src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"
+        <!-- Test anonymous video with source element. -->
+        <!-- Normally, one would give the video an id, e.g. id="lego" -->
+        <video preload="true"
                width="360" height="360" autoplay loop="true"
-               crossOrigin="anonymous"></video>
+               crossOrigin="anonymous">
+          <source src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"></source>
+        </video>
       </a-assets>
-
-      <a-entity material="shader: flat; src: #lego" geometry="primitive: sphere; radius: 100"
+      <!-- Normally, one would use the video id, e.g. material="src:#lego" -->
+      <a-entity material="shader: flat" geometry="primitive: sphere; radius: 100"
                 scale="-1 1 1">
       </a-entity>
     </a-scene>
+
+    <script>
+      // Call onceSceneLoaded() once the scene is loaded.
+      var scene = document.querySelector('a-scene');
+      if (scene.hasLoaded) { onceSceneLoaded(); } else {
+        scene.addEventListener('loaded', onceSceneLoaded);
+      }
+
+      function onceSceneLoaded() {
+        // Set the material's src texture to the first video element.
+        var entity = document.querySelector('a-entity[material]');
+        entity.setAttribute('material', 'src', document.querySelector('video'));
+      }
+    </script>
   </body>
 </html>
