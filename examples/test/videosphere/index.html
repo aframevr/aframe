@@ -23,17 +23,26 @@
       </a-entity>
     </a-scene>
 
+    <!-- Normally, one would use video id, e.g. material="src:#lego" above. 
+         For this example however, we want to show that an anonymous video
+         element can be utilized successfully. -->
     <script>
       // Call onceSceneLoaded() once the scene is loaded.
       var scene = document.querySelector('a-scene');
-      if (scene.hasLoaded) { onceSceneLoaded(); } else {
+      if (scene.hasLoaded) {
+        onceSceneLoaded();
+      } else {
         scene.addEventListener('loaded', onceSceneLoaded);
       }
 
       function onceSceneLoaded() {
-        // Set the material's src texture to the first video element.
+        // Get the video element we'd like to show.
+        // It's anonymous (no id), so we access it by element name.
+        var video = document.querySelector('video');
+
+        // Set the material's src texture to the video element.
         var entity = document.querySelector('a-entity[material]');
-        entity.setAttribute('material', 'src', document.querySelector('video'));
+        entity.setAttribute('material', 'src', video);
       }
     </script>
   </body>

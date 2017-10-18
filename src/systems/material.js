@@ -184,7 +184,7 @@ module.exports.System = registerSystem('material', {
       data = utils.extendDeep({}, data);
       data.src = data.src.src;
       if (!data.src && data.src.tagName === 'VIDEO') {
-        // Video elements can have source elements as well
+        // Video elements can have source elements as well.
         data.sources = Array.prototype.slice.call(
           data.src.querySelectorAll('source'))
           .map(function (v) { return v.src || v.srcObject; }).join(',');
@@ -278,7 +278,7 @@ function calculateVideoCacheHash (data, videoEl) {
   for (i = 0; i < videoEl.attributes.length; i++) {
     videoAttributes[videoEl.attributes[i].name] = videoEl.attributes[i].value;
   }
-  // Video elements can have source elements as well
+  // Video elements can have source elements as well.
   videoAttributes.sources = Array.prototype.slice.call(
     videoEl.querySelectorAll('source'))
     .map(function (v) { return v.src || v.srcObject; }).join(',');
