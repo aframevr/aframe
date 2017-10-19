@@ -57,8 +57,8 @@ module.exports.System = registerSystem('material', {
 
     // Video element.
     if (src.tagName === 'VIDEO') {
-      if (!src.hasAttribute('src') && !src.hasAttribute('srcObject')) {
-        warn('Video element was defined without `src` nor `srcObject` attributes.');
+      if (!src.src && !src.srcObject && !src.childElementCount) {
+        warn('Video element was defined with neither `source` elements nor `src` / `srcObject` attributes.');
       }
       this.loadVideo(src, data, cb);
       return;
@@ -180,7 +180,7 @@ module.exports.System = registerSystem('material', {
     if (data.src.tagName) {
       // Since `data.src` can be an element, parse out the string if necessary for the hash.
       data = utils.extendDeep({}, data);
-      data.src = data.src.getAttribute('src');
+      data.src = data.src.src;
     }
     return JSON.stringify(data);
   },

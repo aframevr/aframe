@@ -52,6 +52,9 @@ module.exports = registerElement('a-assets', {
         mediaEls = this.querySelectorAll('audio, video');
         for (i = 0; i < mediaEls.length; i++) {
           mediaEl = fixUpMediaElement(mediaEls[i]);
+          if (!mediaEl.src && !mediaEl.srcObject) {
+            warn('Audio/video asset has neither `src` nor `srcObject` attributes.');
+          }
           loaded.push(mediaElementLoaded(mediaEl));
         }
 
