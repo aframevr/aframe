@@ -363,7 +363,7 @@ suite('cursor', function () {
       event.clientX = 5;
       event.clientY = 5;
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
-      window.dispatchEvent(event);
+      el.sceneEl.canvas.dispatchEvent(event);
       process.nextTick(function () {
         var raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
@@ -375,7 +375,7 @@ suite('cursor', function () {
       var event = new CustomEvent('touchstart');
       event.touches = {item: function () { return {clientX: 5, clientY: 5}; }};
       el.setAttribute('cursor', 'rayOrigin', 'mouse');
-      window.dispatchEvent(event);
+      el.sceneEl.canvas.dispatchEvent(event);
       process.nextTick(function () {
         var raycaster = el.getAttribute('raycaster');
         assert.notEqual(raycaster.direction.x, 0);
