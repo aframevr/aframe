@@ -13,4 +13,4 @@
 - System API enhancements (e.g., refactor to inherit from component API, entity added and removed handlers)
 - Asset management improvements (e.g., loading screen, duplicate requests in FileLoader)
 - Spectator Camera (ability to show different views in headset and 2D monitor)
-- Input Mapping to easily map app specific actions with controller buttons and axis
+- Input Mapping to easily map app-specific actions with controller buttons and axes
