@@ -6,6 +6,7 @@ var controls = new THREE.VRControls(dolly);
  * Determine if a headset is connected by checking if the orientation is available.
  */
 function checkHeadsetConnected () {
+  // console.log("check if headset is connected");
   var orientation;
   var vrDisplay = controls.getVRDisplay();
 
@@ -24,10 +25,14 @@ module.exports.checkHeadsetConnected = checkHeadsetConnected;
 /**
  * Check for positional tracking.
  */
+// TODO: update this to support positional tracking from XRControls
 function checkHasPositionalTracking () {
-  var vrDisplay = controls.getVRDisplay();
-  if (isMobile() || isGearVR()) { return false; }
-  return vrDisplay && vrDisplay.capabilities.hasPosition;
+  'use strict';
+  return true;
+  // console.log('checkHasPositionalTracking should check XRControls if active');
+  // var vrDisplay = controls.getVRDisplay();
+  // if (isMobile() || isGearVR()) { return false; }
+  // return vrDisplay && vrDisplay.capabilities.hasPosition;
 }
 module.exports.checkHasPositionalTracking = checkHasPositionalTracking;
 

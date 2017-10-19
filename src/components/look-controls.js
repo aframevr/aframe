@@ -60,9 +60,10 @@ module.exports.Component = registerComponent('look-controls', {
     if (!data.enabled) { return; }
     this.controls.standing = data.standing;
     this.controls.userHeight = this.getUserHeight();
-    this.controls.update();
+    this.controls.update(this.el.sceneEl.frameData);
     this.updateOrientation();
     this.updatePosition();
+    // console.log("position = ", this.position);
   },
 
   /**
@@ -114,7 +115,8 @@ module.exports.Component = registerComponent('look-controls', {
   setupHMDControls: function () {
     this.dolly = new THREE.Object3D();
     this.euler = new THREE.Euler();
-    this.controls = new THREE.VRControls(this.dolly);
+    // this.controls = new THREE.VRControls(this.dolly);
+    this.controls = new THREE.XRControls(this.dolly);
     this.controls.userHeight = 0.0;
   },
 
@@ -228,22 +230,15 @@ module.exports.Component = registerComponent('look-controls', {
    */
   updatePosition: function () {
     var el = this.el;
-    var currentHMDPosition;
-    var currentPosition;
+    var hmd;
     var position = this.position;
     var previousHMDPosition = this.previousHMDPosition;
-    var sceneEl = this.el.sceneEl;
-
-    if (!sceneEl.is('vr-mode')) { return; }
 
     // Calculate change in position.
-    currentHMDPosition = this.calculateHMDPosition();
-
-    currentPosition = el.getAttribute('position');
-
-    position.copy(currentPosition).sub(previousHMDPosition).add(currentHMDPosition);
+    hmd = this.calculateHMDPosition();
+    position.copy(new THREE.Vector3(hmd.x * 10, ((hmd.y - 1) * 10) + 1, hmd.z * 10));
     el.setAttribute('position', position);
-    previousHMDPosition.copy(currentHMDPosition);
+    previousHMDPosition.copy(hmd);
   },
 
   /**

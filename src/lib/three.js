@@ -25,6 +25,8 @@ require('three/examples/js/loaders/MTLLoader');  // THREE.MTLLoader
 require('three/examples/js/loaders/ColladaLoader');  // THREE.ColladaLoader
 require('../../vendor/VRControls');  // THREE.VRControls
 require('../../vendor/VREffect');  // THREE.VREffect
+require('../../vendor/XRControls');  // THREE.XRControls
+require('../../vendor/XREffect');  // THREE.XREffect
 
 THREE.ColladaLoader.prototype.crossOrigin = 'anonymous';
 THREE.GLTFLoader.prototype.crossOrigin = 'anonymous';
