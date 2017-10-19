@@ -86,12 +86,10 @@ more expensive and often unnecessary in simple scenes.
 #### Tools
 
 [webglinsights]: https://chrome.google.com/webstore/detail/webgl-insight/djdcbmfacaaocoomokenoalbomllhnko?hl=en-US
-[webglinspector]: https://addons.mozilla.org/en-US/firefox/addon/webgl-inspector/
 
-There are browser add-ons available to look into what's being sent to the GPU.
+There are browser add-ons available to look into what's being sent to the GPU:
 
 - [WebGL Insights extension for Chrome][webglinsights]
-- [WebGL Inspector add-on for Firefox][webglinspector]
 
 ### JavaScript
 
