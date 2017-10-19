@@ -1,3 +1,8 @@
+## 0.7.1 (Oct 12, 2017)
+
+- This release contains same functionality as 0.7.0.
+- This is a version bump to fix the npm package that shipped by mistake with an outdated THREE r86 version. (#3177)
+
 ## 0.7.0 (Sept 12, 2017)
 
 This release features:
