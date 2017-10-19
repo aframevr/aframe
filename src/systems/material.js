@@ -57,10 +57,8 @@ module.exports.System = registerSystem('material', {
 
     // Video element.
     if (src.tagName === 'VIDEO') {
-      if (!src.src && !src.srcObject) {
-        if (!src.querySelector('source[src],source[srcObject]')) {
-          warn('Video element was defined without `src` nor `srcObject` attributes.');
-        }
+      if (!src.src && !src.srcObject && !src.childElementCount) {
+        warn('Video element was defined with neither `source` elements nor `src` / `srcObject` attributes.');
       }
       this.loadVideo(src, data, cb);
       return;
@@ -183,12 +181,6 @@ module.exports.System = registerSystem('material', {
       // Since `data.src` can be an element, parse out the string if necessary for the hash.
       data = utils.extendDeep({}, data);
       data.src = data.src.src;
-      if (!data.src && data.src.tagName === 'VIDEO') {
-        // Video elements can have source elements as well.
-        data.sources = Array.prototype.slice.call(
-          data.src.querySelectorAll('source'))
-          .map(function (v) { return v.src || v.srcObject; }).join(',');
-      }
     }
     return JSON.stringify(data);
   },
@@ -278,10 +270,6 @@ function calculateVideoCacheHash (data, videoEl) {
   for (i = 0; i < videoEl.attributes.length; i++) {
     videoAttributes[videoEl.attributes[i].name] = videoEl.attributes[i].value;
   }
-  // Video elements can have source elements as well.
-  videoAttributes.sources = Array.prototype.slice.call(
-    videoEl.querySelectorAll('source'))
-    .map(function (v) { return v.src || v.srcObject; }).join(',');
   Object.keys(videoAttributes).sort().forEach(function (name) {
     hash += name + ':' + videoAttributes[name] + ';';
   });
