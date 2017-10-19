@@ -8,42 +8,7 @@
   </head>
   <body>
     <a-scene stats>
-      <a-assets>
-        <!-- Test anonymous video with source element. -->
-        <!-- Normally, one would give the video an id, e.g. id="lego" -->
-        <video preload="auto"
-               width="360" height="360" autoplay loop="true"
-               crossOrigin="anonymous">
-          <source src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"></source>
-        </video>
-      </a-assets>
-      <!-- Normally, one would use the video id, e.g. material="src:#lego" -->
-      <a-entity material="shader: flat" geometry="primitive: sphere; radius: 100"
-                scale="-1 1 1">
-      </a-entity>
+      <a-videosphere src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/t-197/walking_the_dog_360_video_short.webm"></a-videosphere>
     </a-scene>
-
-    <!-- Normally, one would use video id, e.g. material="src:#lego" above. 
-         For this example however, we want to show that an anonymous video
-         element can be utilized successfully. -->
-    <script>
-      // Call onceSceneLoaded() once the scene is loaded.
-      var scene = document.querySelector('a-scene');
-      if (scene.hasLoaded) {
-        onceSceneLoaded();
-      } else {
-        scene.addEventListener('loaded', onceSceneLoaded);
-      }
-
-      function onceSceneLoaded() {
-        // Get the video element we'd like to show.
-        // It's anonymous (no id), so we access it by element name.
-        var video = document.querySelector('video');
-
-        // Set the material's src texture to the video element.
-        var entity = document.querySelector('a-entity[material]');
-        entity.setAttribute('material', 'src', video);
-      }
-    </script>
   </body>
 </html>
