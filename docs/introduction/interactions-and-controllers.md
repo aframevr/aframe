@@ -135,7 +135,7 @@ If we want to change the color of a box on hover and restore it when no longer
 hovering:
 
 ```html
-<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -155,7 +155,7 @@ ${selector}`. If we want to display a text label when an entity is hovered
 over:
 
 ```html
-<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -178,7 +178,7 @@ properties using A-Frame component dot syntax (i.e.,
 `${componentName}.${propertyName}`):
 
 ```html
-<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@3.0.3/dist/aframe-event-set-component.min.js"></script>
 <body>
   <a-scene>
@@ -211,7 +211,7 @@ To demonstrate what the event set component does under the hood, let's have a
 box change color on hover and on leaving hover with JavaScript:
 
 ```html
-<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+<script src="https://aframe.io/releases/0.7.1/aframe.min.js"></script>
 <script>
   AFRAME.registerComponent('change-color-on-hover', {
     schema: {
