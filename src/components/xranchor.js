@@ -25,8 +25,7 @@ module.exports.Component = registerComponent('xr-anchor', {
     }
     if (this.added) {
       this.el.object3D.position.copy(scene._floorGroup.position);
-      // this.el.object3D.rotation.copy(scene._floorGroup.rotation);
-      // this.el.object3D.quaternion.copy(scene._floorGroup.quaternion );
+      this.el.object3D.rotation.copy(scene._floorGroup.rotation);
     }
   }
 });
