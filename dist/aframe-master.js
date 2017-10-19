@@ -73283,6 +73283,9 @@ module.exports = registerElement('a-assets', {
         mediaEls = this.querySelectorAll('audio, video');
         for (i = 0; i < mediaEls.length; i++) {
           mediaEl = fixUpMediaElement(mediaEls[i]);
+          if (!mediaEl.src && !mediaEl.srcObject) {
+            warn('Audio/video asset has neither `src` nor `srcObject` attributes.');
+          }
           loaded.push(mediaElementLoaded(mediaEl));
         }
 
@@ -78244,7 +78247,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 19-10-2017, Commit #8b62440)');
+console.log('A-Frame Version: 0.7.0 (Date 19-10-2017, Commit #187f520)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79258,8 +79261,8 @@ module.exports.System = registerSystem('material', {
 
     // Video element.
     if (src.tagName === 'VIDEO') {
-      if (!src.hasAttribute('src') && !src.hasAttribute('srcObject')) {
-        warn('Video element was defined without `src` nor `srcObject` attributes.');
+      if (!src.src && !src.srcObject && !src.childElementCount) {
+        warn('Video element was defined with neither `source` elements nor `src` / `srcObject` attributes.');
       }
       this.loadVideo(src, data, cb);
       return;
@@ -79381,7 +79384,7 @@ module.exports.System = registerSystem('material', {
     if (data.src.tagName) {
       // Since `data.src` can be an element, parse out the string if necessary for the hash.
       data = utils.extendDeep({}, data);
-      data.src = data.src.getAttribute('src');
+      data.src = data.src.src;
     }
     return JSON.stringify(data);
   },
