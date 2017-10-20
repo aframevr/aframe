@@ -181,5 +181,3 @@ pick up event with the `begin` attribute:
 
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].
-
-## Getting the Intersection Point
