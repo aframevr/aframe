@@ -150,3 +150,20 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
     component.el.emit(buttonTypes[i] + 'moved', detail);
   }
 };
+
+/**
+ * Handle a button event and reemits the events.
+ *
+ * @param {string} id - id of the button.
+ * @param {string} evtName - name of the reemitted event
+ * @param {object} component - reference to the component
+ * @param {string} hand - handedness of the controller: left or right.
+ */
+module.exports.onButtonEvent = function (id, evtName, component, hand) {
+  var mapping = hand ? component.mapping[hand] : component.mapping;
+  var buttonName = mapping.buttons[id];
+  component.el.emit(buttonName + evtName);
+  if (component.updateModel) {
+    component.updateModel(buttonName, evtName);
+  }
+};

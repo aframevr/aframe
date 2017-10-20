@@ -1,6 +1,7 @@
 var bind = require('../utils/bind');
 var registerComponent = require('../core/component').registerComponent;
-var controllerUtils = require('../utils/tracked-controls');
+var trackedControlsUtils = require('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -58,18 +59,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   init: function () {
     var self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 
     // Allow mock.
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -192,32 +193,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     controllerObject3D.position = PIVOT_OFFSET;
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping[this.data.hand].buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    if (!this.data.model) { return; }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
