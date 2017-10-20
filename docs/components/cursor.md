@@ -102,6 +102,18 @@ component, [the raycaster component][raycaster].
 | mouseleave    | Emitted on both cursor and intersected entity (if any) when cursor no longer intersects with previously intersected entity. |
 | mouseup       | Emitted on both cursor and intersected entity (if any) on mouseup on the canvas element.                                    |
 
+### Intersection Data
+
+Relevant events will contain in the event detail `intersection`, which will
+contain `{distance, point, face, faceIndex, indices, object}` about specific
+data about the intersection:
+
+```js
+this.el.addEventListener('click', function (evt) {
+  console.log(evt.detail.intersection.point);
+});
+```
+
 ## States
 
 The cursor will add states to the cursor entity on certain events:
@@ -169,3 +181,5 @@ pick up event with the `begin` attribute:
 
 To play with an example of a cursor with visual feedback, check out the [Cursor
 with Visual Feedback example on CodePen][cursor-codepen].
+
+## Getting the Intersection Point
