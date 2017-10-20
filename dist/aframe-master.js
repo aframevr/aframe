@@ -66572,7 +66572,9 @@ module.exports.Component = registerComponent('cursor', {
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
-var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
@@ -66621,10 +66623,10 @@ module.exports.Component = registerComponent('daydream-controls', {
     var self = this;
     this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
@@ -66736,29 +66738,9 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   updateModel: function (buttonName, evtName) {
-    var i;
     if (!this.data.model) { return; }
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -66782,8 +66764,10 @@ module.exports.Component = registerComponent('daydream-controls', {
 },{"../core/component":125,"../utils/bind":189,"../utils/tracked-controls":200}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
-var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
@@ -66830,10 +66814,10 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var self = this;
     this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
@@ -66929,33 +66913,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
     if (!this.data.model) { return; }
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -69047,7 +69011,8 @@ module.exports.Component = registerComponent('obj-model', {
 },{"../core/component":125,"../lib/three":173,"../utils/debug":191}],93:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var controllerUtils = _dereq_('../utils/tracked-controls');
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -69105,18 +69070,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   init: function () {
     var self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 
     // Allow mock.
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -69239,32 +69204,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     controllerObject3D.position = PIVOT_OFFSET;
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping[this.data.hand].buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    if (!this.data.model) { return; }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -71640,8 +71586,10 @@ var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
 var bind = utils.bind;
-var checkControllerPresentAndSetup = utils.trackedControls.checkControllerPresentAndSetup;
-var emitIfAxesChanged = utils.trackedControls.emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -71684,10 +71632,10 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
 
@@ -71833,35 +71781,18 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
+  updateModel: function (buttonName, evtName) {
     var color;
-    var i;
-    var isTouch = evtName.indexOf('touch') !== -1;
-
-    // Emit events.
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-
+    var isTouch;
     if (!this.data.model) { return; }
 
+    isTouch = evtName.indexOf('touch') !== -1;
     // Don't change color for trackpad touch.
     if (isTouch) { return; }
 
     // Update colors.
     color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.setButtonColor(buttonName[i], color);
-      }
-    } else {
-      this.setButtonColor(buttonName, color);
-    }
+    this.setButtonColor(buttonName, color);
   },
 
   setButtonColor: function (buttonName, color) {
@@ -71879,7 +71810,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":125,"../utils/":195}],113:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":195,"../utils/tracked-controls":200}],113:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -72102,7 +72033,8 @@ function isEmptyObject (keys) {
 /* global THREE */
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var controllerUtils = _dereq_('../utils/tracked-controls');
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var utils = _dereq_('../utils/');
 
 var debug = utils.debug('components:windows-motion-controls:debug');
@@ -72173,10 +72105,10 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var self = this;
     var el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt, 'touchend', self); };
     this.onControllerConnected = function () { self.setModelVisibility(true); };
     this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
@@ -72198,8 +72130,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     };
 
     // Stored on object to allow for mocking in tests
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
@@ -72520,16 +72452,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
 
       // Only emit events for buttons that we know how to map from index to name
       this.el.emit(buttonName + 'changed', evt.detail.state);
-    }
-  },
-
-  onButtonEvent: function (evt, evtName) {
-    var buttonName = this.mapping.buttons[evt.detail.id];
-    debug('onButtonEvent(' + evt.detail.id + ', ' + evtName + ')');
-
-    if (buttonName) {
-      // Only emit events for buttons that we know how to map from index to name
-      this.el.emit(buttonName + evtName);
     }
   },
 
@@ -78247,7 +78169,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 19-10-2017, Commit #187f520)');
+console.log('A-Frame Version: 0.7.0 (Date 20-10-2017, Commit #a992d78)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -81021,6 +80943,23 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
       detail[AXIS_LABELS[j]] = evt.detail.axis[axes[j]];
     }
     component.el.emit(buttonTypes[i] + 'moved', detail);
+  }
+};
+
+/**
+ * Handle a button event and reemits the events.
+ *
+ * @param {string} id - id of the button.
+ * @param {string} evtName - name of the reemitted event
+ * @param {object} component - reference to the component
+ * @param {string} hand - handedness of the controller: left or right.
+ */
+module.exports.onButtonEvent = function (id, evtName, component, hand) {
+  var mapping = hand ? component.mapping[hand] : component.mapping;
+  var buttonName = mapping.buttons[id];
+  component.el.emit(buttonName + evtName);
+  if (component.updateModel) {
+    component.updateModel(buttonName, evtName);
   }
 };
 
