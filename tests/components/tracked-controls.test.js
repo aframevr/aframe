@@ -214,8 +214,6 @@ suite('tracked-controls', function () {
       assert.deepEqual(component.axis, [0, 0, 0]);
       component.tick();
       assert.deepEqual(component.axis, [0.5, 0.5, 0.5]);
-      assert.notOk(component.handleAxes());
-      sinon.assert.calledTwice(emitSpy);
       assert.equal(emitSpy.getCalls()[1].args[0], 'axismove');
       assert.deepEqual(emitSpy.getCalls()[1].args[1].axis, [0.5, 0.5, 0.5]);
       assert.deepEqual(emitSpy.getCalls()[1].args[1].changed, [true, true, true]);
