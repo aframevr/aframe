@@ -468,7 +468,7 @@ module.exports.AScene = registerElement('a-scene', {
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
-        this.renderer.setSize(size.width, size.height);
+        this.renderer.setSize(size.width, size.height, false);
       },
       writable: window.debug
     },
