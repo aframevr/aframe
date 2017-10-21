@@ -34,7 +34,10 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.axis = [0, 0, 0];
     this.buttonStates = {};
+    this.changedAxes = [];
     this.targetControllerNumber = this.data.controller;
+
+    this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
 
     this.dolly = new THREE.Object3D();
     this.controllerEuler = new THREE.Euler();
@@ -258,17 +261,21 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerAxes = this.controller.axes;
     var i;
     var previousAxis = this.axis;
-    var changedAxes = [];
+    var changedAxes = this.changedAxes;
 
     // Check if axis changed.
+    this.changedAxes.length = 0;
     for (i = 0; i < controllerAxes.length; ++i) {
       changedAxes.push(previousAxis[i] !== controllerAxes[i]);
       if (changedAxes[i]) { changed = true; }
     }
     if (!changed) { return false; }
 
-    this.axis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: this.axis, changed: changedAxes});
+    this.axis.length = 0;
+    for (i = 0; i < controllerAxes.length; i++) {
+      this.axis.push(controllerAxes[i]);
+    }
+    this.el.emit('axismove', this.axisMoveEventDetail);
     return true;
   },
 
