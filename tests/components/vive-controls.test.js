@@ -1,4 +1,4 @@
-/* global assert, Event, process, setup, suite, test, THREE */
+/* global assert, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('vive-controls', function () {
@@ -174,28 +174,6 @@ suite('vive-controls', function () {
         done();
       });
       el.emit('buttonup', {id: 1});
-    });
-  });
-
-  suite('gamepaddisconnected', function () {
-    /*
-      Apparent bug in FF Nightly where only one gamepadconnected/disconnected event is
-      fired which makes it difficult to handle in individual controller entities. We no
-      longer remove the controllersupdate listener as a result.
-    */
-    test('checks if controller present on gamepaddisconnected', function () {
-      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
-      // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
-      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
-      component.pause();
-      component.play();
-
-      controlsSystem.controllers = [];
-      // Reset everGotGamepadEvent to mock not looked before.
-      delete component.everGotGamepadEvent;
-      // Fire emulated gamepaddisconnected event.
-      window.dispatchEvent(new Event('gamepaddisconnected'));
-      assert.ok(checkIfControllerPresentSpy.called);
     });
   });
 

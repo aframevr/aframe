@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, Event */
+/* global assert, process, setup, suite, test */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('daydream-controls', function () {
@@ -174,34 +174,6 @@ suite('daydream-controls', function () {
       // Emit buttonchanged.
       this.el.emit('buttonchanged',
                    {id: 0, state: {value: 0.5, pressed: true, touched: true}});
-    });
-  });
-
-  suite('gamepaddisconnected', function () {
-    /**
-     * Due to an apparent bug in FF Nightly
-     * where only one gamepadconnected / disconnected event is fired,
-     * which makes it difficult to handle in individual controller entities,
-     * we no longer remove the controllersupdate listener as a result.
-     */
-    test('checks present on gamepaddisconnected', function () {
-      var el = this.el;
-      var component = el.components['daydream-controls'];
-      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
-      // Because checkIfControllerPresent may be used in bound form, bind and reinstall.
-      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
-      component.pause();
-      component.play();
-
-      el.sceneEl.systems['tracked-controls'].controllers = [];
-
-      // Reset everGotGamepadEvent so we don't think we've looked before.
-      delete component.everGotGamepadEvent;
-
-      // Fire emulated gamepaddisconnected event.
-      window.dispatchEvent(new Event('gamepaddisconnected'));
-
-      assert.ok(checkIfControllerPresentSpy.called);
     });
   });
 

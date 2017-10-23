@@ -1,4 +1,4 @@
-/* global assert, process, setup, suite, test, THREE, Event */
+/* global assert, process, setup, suite, test, THREE */
 var entityFactory = require('../helpers').entityFactory;
 
 suite('windows-motion-controls', function () {
@@ -519,26 +519,6 @@ suite('windows-motion-controls', function () {
       // Emit buttonchanged.
       el.emit('buttonchanged', {id: buttonIndex, state: state});
     }
-  });
-
-  suite('gamepaddisconnected', function () {
-    test('checks if present on gamepaddisconnected event', function (done) {
-      var checkIfControllerPresentSpy = this.sinon.spy(component, 'checkIfControllerPresent');
-      // Because checkIfControllerPresent may be used in bound form, using this.bind,
-      // we need to re-create the binding and re-attach the event listeners for our spy to work
-      component.checkIfControllerPresent = component.checkIfControllerPresent.bind(component);
-      // Pause and resume to remove and re-attach the event listeners, with our spy.
-      component.pause();
-      component.play();
-      // Reset everGotGamepadEvent so we don't think we've looked before.
-      delete component.everGotGamepadEvent;
-      // Fire emulated gamepaddisconnected event.
-      window.dispatchEvent(new Event('gamepaddisconnected'));
-
-      assert.ok(checkIfControllerPresentSpy.called, 'checkIfControllerPresent not called in response to gamepaddisconnected');
-
-      setTimeout(() => { done(); });
-    });
   });
 
   suite('setModelVisibility', function () {
