@@ -63,6 +63,7 @@ AFRAME.registerComponent('aabb-collider', {
         return collisions.indexOf(el) === -1;
       }).forEach(function removeState (el) {
         el.removeState(self.data.state);
+        el.emit('hitend');
       });
       // Store new collisions
       this.collisions = collisions;

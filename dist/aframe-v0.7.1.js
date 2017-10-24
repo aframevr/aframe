@@ -15981,7 +15981,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 		this.castShadow = false;
 		this.receiveShadow = false;
 
-		this.frustumCulled = true;
+		this.frustumCulled = false;
 		this.renderOrder = 0;
 
 		this.userData = {};
@@ -26153,7 +26153,6 @@ function rebuildAttribute (attrib, data, itemSize) {
 			var pose = frameData.pose;
 
 			if ( pose.position !== null ) {
-
 				camera.position.fromArray( pose.position );
 
 			} else {
@@ -26191,7 +26190,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 			cameraL.far = camera.far;
 			cameraR.far = camera.far;
-
+			
 			cameraVR.matrixWorld.copy( camera.matrixWorld );
 			cameraVR.matrixWorldInverse.copy( camera.matrixWorldInverse );
 
@@ -27595,9 +27594,8 @@ function rebuildAttribute (attrib, data, itemSize) {
 						}
 
 					} else {
-
 						initMaterial( object.material, scene.fog, object );
-
+						setProgram( camera, scene.fog, object.material, object );
 					}
 
 				}
@@ -27661,9 +27659,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 			if ( camera.parent === null ) camera.updateMatrixWorld();
 
 			if ( vr.enabled ) {
-
 				camera = vr.getCamera( camera );
-
 			}
 
 			_projScreenMatrix.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
@@ -27765,7 +27761,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 			state.setPolygonOffset( false );
 
 			if ( vr.enabled ) {
-
+				
 				vr.submitFrame();
 
 			}
@@ -27980,7 +27976,6 @@ function rebuildAttribute (attrib, data, itemSize) {
 		}
 
 		function renderObject( object, scene, camera, geometry, material, group ) {
-
 			object.onBeforeRender( _this, scene, camera, geometry, material, group );
 
 			object.modelViewMatrix.multiplyMatrices( camera.matrixWorldInverse, object.matrixWorld );
@@ -28067,7 +28062,6 @@ function rebuildAttribute (attrib, data, itemSize) {
 				material.onBeforeCompile( materialProperties.shader );
 
 				program = programCache.acquireProgram( material, materialProperties.shader, parameters, code );
-
 				materialProperties.program = program;
 				material.program = program;
 
@@ -66170,7 +66164,7 @@ function extend() {
 },{}],76:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "A web framework for building virtual reality experiences.",
   "homepage": "https://aframe.io/",
   "main": "dist/aframe-master.js",
@@ -66180,8 +66174,8 @@ module.exports={
     "codecov": "codecov",
     "dev": "npm run build && cross-env INSPECTOR_VERSION=dev node ./scripts/budo -t envify",
     "dist": "node scripts/updateVersionLog.js && npm run dist:min && npm run dist:max",
-    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.7.0.js.map > dist/aframe-v0.7.0.js",
-    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.7.0.min.js.map --output dist/aframe-v0.7.0.min.js.map] -o dist/aframe-v0.7.0.min.js",
+    "dist:max": "npm run browserify -s -- --debug | exorcist dist/aframe-v0.7.1.js.map > dist/aframe-v0.7.1.js",
+    "dist:min": "npm run browserify -s -- --debug -p [minifyify --map aframe-v0.7.1.min.js.map --output dist/aframe-v0.7.1.min.js.map] -o dist/aframe-v0.7.1.min.js",
     "docs": "markserv --dir docs --port 9001",
     "preghpages": "node ./scripts/preghpages.js",
     "ghpages": "ghpages -p gh-pages/",
@@ -68602,7 +68596,7 @@ registerShader('portal', {
       'vec2 sampleUV;',
       'float borderThickness = clamp(exp(-vDistance / 50.0), 0.6, 0.95);',
       'sampleUV.y = saturate(direction.y * 0.5  + 0.5);',
-      'sampleUV.x = atan(direction.z, direction.x) * -RECIPROCAL_PI2 + 0.5;',
+      'sampleUV.x = atan(direction.z, -direction.x) * -RECIPROCAL_PI2 + 0.5;',
       'if (vDistanceToCenter > borderThickness && borderEnabled == 1.0) {',
         'gl_FragColor = vec4(strokeColor, 1.0);',
       '} else {',
@@ -76473,11 +76467,13 @@ module.exports.AScene = registerElement('a-scene', {
         var canvas = this.canvas;
         var embedded = this.getAttribute('embedded') && !this.is('vr-mode');
         var size;
+        var isEffectPresenting = this.effect && this.effect.isPresenting;
         // Do not update renderer, if a camera or a canvas have not been injected.
         // In VR mode, VREffect handles canvas resize based on the dimensions returned by
         // the getEyeParameters function of the WebVR API. These dimensions are independent of
-        // the window size, therefore should not be overwritten with the window's width and height.
-        if (!camera || !canvas || this.is('vr-mode')) { return; }
+        // the window size, therefore should not be overwritten with the window's width and height,
+        // except when in fullscreen mode.
+        if (!camera || !canvas || (this.is('vr-mode') && (this.isMobile || isEffectPresenting))) { return; }
         // Update camera.
         size = getCanvasSize(canvas, embedded);
         camera.aspect = size.width / size.height;
@@ -78452,7 +78448,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 20-09-2017, Commit #aa76fb0)');
+console.log('A-Frame Version: 0.7.1 (Date 18-10-2017, Commit #0da6cf4)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -82627,4 +82623,4 @@ module.exports = getWakeLock();
 
 },{"./util.js":204}]},{},[171])(171)
 });
-//# sourceMappingURL=aframe-v0.7.0.js.map
+//# sourceMappingURL=aframe-v0.7.1.js.map

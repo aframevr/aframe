@@ -4,7 +4,17 @@ type: components
 layout: docs
 parent_section: components
 source_code: src/components/material.js
-examples: []
+examples:
+  - title: Displacement Shader
+    src: https://glitch.com/edit/#!/aframe-displacement-shader?path=client/index.js:1:0
+  - title: Shader Walkthrough
+    src: https://codepen.io/machenmusik/pen/WZyQNj
+  - title: Grid Shader
+    src: https://glitch.com/edit/#!/aframe-simpler-shader?path=public/index.html
+  - title: Real-Time Vertex Displacement Shader
+    src: https://glitch.com/edit/#!/aframe-displacement-registershader?path=public/index.html
+  - title: Real-Time Vertex Displacement with Offset
+    src: https://glitch.com/edit/#!/aframe-displacement-offset-registershader?path=public/index.html
 ---
 
 [fog]: ./fog.md
@@ -57,7 +67,7 @@ depending on the material type applied.
 | offset       | Texture offset to be used.                                                                                                                        | {x: 0, y: 0}  |
 | opacity      | Extent of transparency. If the `transparent` property is not `true`, then the material will remain opaque and `opacity` will only affect color.   | 1.0           |
 | repeat       | Texture repeat to be used.                                                                                                                        | {x: 1, y: 1}  |
-| shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom material. | standard      |
+| shader       | Which material to use. Defaults to the [standard material][standard]. Can be set to the [flat material][flat] or to a registered custom shader material. | standard      |
 | side         | Which sides of the mesh to render. Can be one of `front`, `back`, or `double`.                                                                    | front         |
 | transparent  | Whether material is transparent. Transparent entities are rendered after non-transparent entities.                                                | false         |
 | vertexColors | Whether to use vertex or face colors to shade the material. Can be one of `none`, `vertex`, or `face`.                                            | none          |
@@ -327,14 +337,357 @@ visual defects.
 
 To work around this issue, try changing the order of the entities in the HTML.
 
-## Register a Custom Material
+## Register a Custom Shader Material
 
-We can register custom materials for appearances and effects using
-`AFRAME.registerShader`. However, the `registerShader` API is not yet fully
-featured and fairly limiting (e.g., no `tick` handler, some missing uniform
-types). For most cases for now, we recommend creating a custom material by
-creating three.js materials (e.g., `RawShaderMaterial`, `ShaderMaterial`) in a
-component:
+We can register custom shader materials for appearances and effects using
+`AFRAME.registerShader`.
+
+[example]: https://codepen.io/machenmusik/pen/WZyQNj
+
+Let's walk through an [example CodePen][example] with step-by-step commentary.
+As always, we need to include the A-Frame script.
+
+```js
+<script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+```
+
+Next, we define any components and shaders we need after the A-Frame
+script but before the scene declaration. Here, we begin our `my-custom` shader.
+The schema declares any parameters for the shader.
+
+```js
+<script>
+AFRAME.registerShader('my-custom', {
+  schema: {
+    // ...
+  }
+});
+</script>
+```
+
+We usually want to support the `color` and `opacity` properties.  `is:
+'uniform'` tells A-Frame this property should appear as uniform value in the
+shaders:
+
+```js
+<script>
+AFRAME.registerShader('my-custom', {
+  schema: {
+    color: {type: 'color', is: 'uniform', default: 'red'},
+    opacity: {type: 'number', is: 'uniform', default: 1.0}
+  }
+});
+</script>
+```
+
+[rawshader]: https://threejs.org/docs/api/materials/RawShaderMaterial.html
+[shadermaterial]: https://threejs.org/docs/api/materials/ShaderMaterial.html
+
+Setting `raw` to `true` uses [THREE.RawShaderMaterial][rawshader] instead of
+[ShaderMaterial][shadermaterial] so built-in uniforms and attributes are not
+automatically added to your shader code. Here we want to include the usual
+prefixes with GLSL constants and such, so leave it `false`.
+
+```js
+  raw: false,
+```
+
+We're going to use the default vertex shader by omitting `vertexShader`.  Note
+that if our fragment shader cares about texture coordinates, our vertex shader
+should set `varying` values to use in the fragment shader.
+
+Since almost every WebVR-capable browser supports ES6, we define our fragment
+shader as a multi-line string:
+
+```js
+  fragmentShader:
+`
+  // Use medium precision.
+  precision mediump float;
+
+  // This receives the color value from the schema, which becomes a vec3 in the shader.
+  uniform vec3 color;
+
+  // This receives the opacity value from the schema, which becomes a number.
+  uniform float opacity;
+
+  // This is the shader program.
+  // A fragment shader can set the color via gl_FragColor,
+  // or decline to draw anything via discard.
+  void main () {
+    // Note that this shader doesn't use texture coordinates.
+    // Set the RGB portion to our color,
+    // and the alpha portion to our opacity.
+    gl_FragColor = vec4(color, opacity);
+  }
+`
+});
+</script>
+```
+
+And using our shader from the `material` component:
+
+```
+<!-- A box using our shader, not fully opaque and blue. -->
+<a-box material="shader: my-custom; color: blue; opacity: 0.7; transparent: true" position="0 0 -2"></a-box>
+```
+
+### `registerShader`
+
+Like components, custom materials have schema and lifecycle handlers.
+
+| Property       | Description                                                                                                                          |
+|----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| fragmentShader | Optional string containing the fragment shader. If omitted, a simple default is used.                                                |
+| init           | Optional lifecycle handler called once during shader initialization. Used to create the material.                                    |
+| raw            | Optional. If true, uses THREE.RawShaderMaterial to accept shaders verbatim. If false (default), uses THREE.ShaderMaterial.           |
+| schema         | Defines properties, uniforms, attributes that the shader will use to extend the material component.                                  |
+| update         | Optional lifecycle handler called once during shader initialization and when data is updated. Used to update the material or shader. |
+| vertexShader   | Optional string containing the vertex shader. If omitted, a simple default is used.                                                  |
+
+### Schema
+
+We can define material properties just as we would with component properties.
+The data will act as the data we use to create our material:
+
+```js
+AFRAME.registerShader('custom', {
+  schema: {
+    emissive: {default: '#000'},
+    wireframe: {default: false}
+  }
+});
+```
+
+To pass data values into the shader(s) as uniform values, include `is:
+'uniform'` in the definition:
+
+```js
+AFRAME.registerShader('my-custom', {
+  schema: {
+    color: {type:'color', is:'uniform', default:'red'},
+    opacity: {type:'number', is:'uniform', default:1.0}
+  },
+  ...
+```
+
+## Supported Uniform Types
+
+The uniform types supported by A-Frame are summarized in the table below.  Note
+that `time` can eliminate the need for a `tick()` handler in many cases.
+
+| A-Frame Type | THREE Type | GLSL Shader Type     |
+|--------------|------------|----------------------|
+| array        | v3         | vec3                 |
+| color        | v3         | vec3                 |
+| int          | i          | int                  |
+| number       | f          | float                |
+| map          | t          | map                  |
+| time         | f          | float (milliseconds) |
+| vec2         | v2         | vec2                 |
+| vec3         | v3         | vec3                 |
+| vec4         | v4         | vec4                 |
+
+### Example - GLSL and Shaders
+
+For more customized visual effects, we can write GLSL shaders and apply them to
+A-Frame entities.
+
+> NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first.
+> For a gentle (and free!) introduction, we recommend [The Book of
+> Shaders](http://thebookofshaders.com/).
+
+Here are the vertex and fragment shaders we'll use:
+
+```glsl
+// vertex.glsl
+
+varying vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+```
+
+```glsl
+// fragment.glsl
+
+varying vec2 vUv;
+uniform vec3 color;
+uniform float timeMsec; // A-Frame time in milliseconds.
+
+void main() {
+  float time = timeMsec / 1000.0; // Convert from A-Frame milliseconds to typical time in seconds.
+  // Use sin(time), which curves between 0 and 1 over time,
+  // to determine the mix of two colors:
+  //    (a) Dynamic color where 'R' and 'B' channels come
+  //        from a modulus of the UV coordinates.
+  //    (b) Base color.
+  //
+  // The color itself is a vec4 containing RGBA values 0-1.
+  gl_FragColor = mix(
+    vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
+    vec4(color, 1.0),
+    sin(time)
+  );
+}
+```
+
+To use these vertex and fragment shaders, after reading them into strings
+`vertexShader` and `fragmentShader`, we register our custom shader with
+A-Frame:
+
+```js
+// shader-grid-glitch.js
+
+AFRAME.registerShader('grid-glitch', {
+  schema: {
+    color: {type: 'color', is: 'uniform'},
+    timeMsec: {type: 'time', is: 'uniform'}
+  },
+
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader
+});
+```
+
+And using from HTML markup:
+
+```html
+<a-sphere material="shader:grid-glitch; color: blue;" radius="0.5" position="0 1.5 -2"></a-sphere>
+```
+
+* [Live demo](https://aframe-simpler-shader.glitch.me/)
+* [Remix this on Glitch](https://glitch.com/edit/#!/aframe-simpler-shader)
+
+![5093034e-97f2-40dc-8cb9-28ca75bfd75b-8043-00000dbc2e00268d](https://cloud.githubusercontent.com/assets/1848368/24825516/abb98abe-1bd4-11e7-8262-93d3efb6056f.gif)
+
+***
+
+For a more advanced example, [try Real-Time Vertex Displacement](https://glitch.com/edit/#!/aframe-displacement-registershader).
+
+![b19320eb-802a-462a-afcd-3d0dd9480aee-861-000004c2a8504498](https://cloud.githubusercontent.com/assets/1848368/24825518/b52e5bf6-1bd4-11e7-8eb2-9a9c1ff82ce9.gif)
+
+## Using a Custom Shader and Component Together
+
+Let's take the real-time vertex displacement shader example above, and add the
+capability to apply an offset based upon the camera's position. We declare
+that offset as a uniform vec3 value `myOffset`:
+
+```js
+AFRAME.registerShader('displacement-offset', {
+  schema: {
+    timeMsec: {type: 'time', is: 'uniform'},
+    myOffset: {type: 'vec3', is: 'uniform'}
+  },
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader
+});
+```
+
+[vertexshaderglitch]: https://glitch.com/edit/#!/aframe-displacement-offset-registershader?path=displacement-offset-shader.js:1:0
+
+Used by [this vertex shader][vertexshaderglitch]. So how do we update
+`myOffset` to be the camera position from A-Frame such that the vertex shader
+behaves correctly? The typical method to do this in A-Frame is to create a
+component with the desired functionality, and attach it to the appropriate
+entity.
+
+Note that the shader property is exposed via the `material` component, so we
+modify the single property of interest using a form of `setAttribute()`. As
+best practice to avoid creating garbage for performance reasons:
+
+- Do not use the form of `setAttribute` that takes an object as second argument.
+- Create a component property to hold the offset, to avoid creating a new `THREE.Vector3` every tick.
+
+```js
+AFRAME.registerComponent('myoffset-updater', {
+  init: function () {
+    this.offset = new THREE.Vector3();
+  },
+
+  tick: function (t, dt) {
+    this.offset.copy(this.el.sceneEl.camera.el.getAttribute('position'));
+    this.offset.y = 0;
+    this.el.setAttribute('material', 'myOffset', this.offset);
+  }
+});
+```
+
+We then apply the component to the entity with the custom shader:
+
+```
+<a-scene>
+  <a-sphere material="shader:displacement-offset"
+            myoffset-updater
+            scale="1 1 1"
+            radius="0.2"
+            position="0 1.5 -2"
+            segments-height="128"
+            segments-width="128">
+    <a-animation attribute="scale" direction="alternate-reverse" dur="5000" from="1 1 1" to="4 4 4" repeat="indefinite"></a-animation>
+  </a-sphere>
+  <a-box color="#CCC" width="3" depth="3" height="0.1" position="0 0 -2"></a-box>
+</a-scene>
+```
+
+Voila!
+
+- [Live demo](https://aframe-displacement-offset-registershader.glitch.me/)
+- [Remix this on Glitch](https://glitch.com/edit/#!/aframe-displacement-offset-registershader)
+
+Another good example of using a component to set shader values is the [A-Frame
+Shaders example](https://aframe.io/aframe/examples/test/shaders/).  This
+component reacts to `rotation` updates to the element with id `orbit` by
+computing the `sunPosition` vector to use in the sky shader:
+
+```js
+AFRAME.registerComponent('sun-position-setter', {
+  init: function () {
+    var skyEl = this.el;
+    var orbitEl = this.el.sceneEl.querySelector('#orbit');
+
+    orbitEl.addEventListener('componentchanged', function changeSun (evt) {
+      var sunPosition;
+      var phi;
+      var theta;
+
+      if (evt.detail.name !== 'rotation') { return; }
+
+      sunPosition = orbitEl.getAttribute('rotation');
+
+      if(sunPosition === null) { return; }
+
+      theta = Math.PI * (- 0.5);
+      phi = 2 * Math.PI * (sunPosition.y / 360 - 0.5);
+      skyEl.setAttribute('material', 'sunPosition', {
+        x: Math.cos(phi),
+        y: Math.sin(phi) * Math.sin(theta),
+        z: -1
+      });
+    });
+  }
+});
+```
+
+[shadertoy]: https://shadertoy.com
+[shaderfrog]: https://github.com/chenzlabs/aframe-import-shaderfrog
+
+In addition, there are components developed by the A-Frame developer community
+that allow the use of existing shaders from repositories such as
+[ShaderToy][shadertoy] and [ShaderFrog][shaderfrog].
+
+Note however that these shaders can be quite demanding in terms of
+computational and graphics power, and some more complex shaders may not
+function well on lower-performance devices such as smartphones.
+
+## Creating a Material from a Component
+
+For those cases where the `registerShader` API lacks needed functionality
+(e.g., no `tick` handler, some missing uniform types), we recommend creating a
+custom material by creating three.js materials (e.g., `RawShaderMaterial`,
+`ShaderMaterial`) within a component:
 
 ```js
 AFRAME.registerComponent('custom-material', {
@@ -353,189 +706,3 @@ AFRAME.registerComponent('custom-material', {
   }
 });
 ```
-
-### `registerShader`
-
-Like components, custom materials have schema and lifecycle handlers.
-
-| Property | Description                                                                                                                 |
-|----------|-----------------------------------------------------------------------------------------------------------------------------|
-| schema   | Defines properties, uniforms, attributes that the shader will use to extend the material component.                         |
-| init     | Lifecycle handler called once during shader initialization. Used to create the material.                                    |
-| update   | Lifecycle handler called once during shader initialization and when data is updated. Used to update the material or shader. |
-
-### Schema
-
-We can define material properties just as we would with component properties.
-The data will act as the data we use to create our material:
-
-```js
-AFRAME.registerShader('custom', {
-  schema: {
-    emissive: {default: '#000'},
-    wireframe: {default: false}
-  }
-});
-```
-
-### Example — Basic Materials
-
-[line-dashed]: https://threejs.org/docs/#api/materials/LineDashedMaterial
-
-To create a custom material, we have the `init` and `update` handlers set and
-update `this.material` to the desired material. Here is an example of
-registering a [`THREE.LinedDashedMaterial`][line-dashed]:
-
-```js
-AFRAME.registerShader('line-dashed', {
-  schema: {
-    dashSize: {default: 3},
-    lineWidth: {default: 1}
-  },
-
-  /**
-   * `init` used to initialize material. Called once.
-   */
-  init: function (data) {
-    this.material = new THREE.LineDashedMaterial(data);
-    this.update(data);  // `update()` currently not called after `init`. (#1834)
-  },
-
-  /**
-   * `update` used to update the material. Called on initialization and when data updates.
-   */
-  update: function (data) {
-    this.material.dashsize = data.dashsize;
-    this.material.linewidth = data.linewidth;
-  }
-});
-```
-
-### Example — GLSL and Shaders
-
-For more customized visual effects, we can write GLSL shaders and apply them to A-Frame entities. We'll do this using [THREE.ShaderMaterial](https://threejs.org/docs/#api/materials/ShaderMaterial) and a custom component. GLSL shaders can also be used with the `registerShader` API, but for many cases — here, we need a `tick()` handler to update the shader's clock — using a component can be easier.
-
-> NOTE: GLSL, the syntax used to write shaders, may seem a bit scary at first. For a gentle (and free!) introduction, we recommend [The Book of Shaders](http://thebookofshaders.com/).
-
-Component:
-
-```js
-// material-grid-glitch.js
-
-const vertexShader = `
-  /// PLACEHOLDER ///
-`;
-const fragmentShader = `
-  /// PLACEHOLDER ///
-`;
-
-AFRAME.registerComponent('material-grid-glitch', {
-  schema: {color: {type: 'color'}},
-
-  /**
-   * Creates a new THREE.ShaderMaterial using the two shaders defined
-   * in vertex.glsl and fragment.glsl.
-   */
-  init: function () {
-    const data = this.data;
-
-    this.material  = new THREE.ShaderMaterial({
-      uniforms: {
-        time: { value: 0.0 },
-        color: { value: new THREE.Color(data.color) }
-      },
-      vertexShader,
-      fragmentShader
-    });
-
-    this.applyToMesh();
-    this.el.addEventListener('model-loaded', () => this.applyToMesh());
-  },
-
-
-  /**
-   * Update the ShaderMaterial when component data changes.
-   */
-  update: function () {
-    this.material.uniforms.color.value.set(this.data.color);
-  },
-
-  /**
-   * Apply the material to the current entity.
-   */
-  applyToMesh: function() {
-    const mesh = this.el.getObject3D('mesh');
-    if (mesh) {
-      mesh.material = this.material;
-    }
-  },
-
-  /**
-   * On each frame, update the 'time' uniform in the shaders.
-   */
-  tick: function (t) {
-    this.material.uniforms.time.value = t / 1000;
-  }
-
-})
-```
-
-Next, we can put our shaders into the placeholders above. Every material will have two shaders: a vertex and a fragment shader.
-
-```glsl
-// vertex.glsl
-
-varying vec2 vUv;
-
-void main() {
-  vUv = uv;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-}
-```
-
-```glsl
-// fragment.glsl
-
-varying vec2 vUv;
-uniform vec3 color;
-uniform float time;
-
-void main() {
-  // Use sin(time), which curves between 0 and 1 over time,
-  // to determine the mix of two colors:
-  //    (a) Dynamic color where 'R' and 'B' channels come
-  //        from a modulus of the UV coordinates.
-  //    (b) Base color.
-  //
-  // The color itself is a vec4 containing RGBA values 0-1.
-  gl_FragColor = mix(
-    vec4(mod(vUv , 0.05) * 20.0, 1.0, 1.0),
-    vec4(color, 1.0),
-    sin(time)
-  );
-}
-```
-
-Finally, here is the HTML markup to put it all together:
-
-```html
-<!-- index.html -->
-
-<a-scene>
-  <a-sphere material-grid-glitch="color: blue;"
-            radius="0.5"
-            position="0 1.5 -2">
-  </a-sphere>
-</a-scene>
-```
-
-* [Live demo](https://aframe-simple-shader.glitch.me/)
-* [Remix this on Glitch](https://glitch.com/edit/#!/aframe-simple-shader)
-
-![5093034e-97f2-40dc-8cb9-28ca75bfd75b-8043-00000dbc2e00268d](https://cloud.githubusercontent.com/assets/1848368/24825516/abb98abe-1bd4-11e7-8262-93d3efb6056f.gif)
-
-***
-
-For a more advanced example, [try realtime vertex displacement](https://glitch.com/edit/#!/aframe-displacement-shader).
-
-![b19320eb-802a-462a-afcd-3d0dd9480aee-861-000004c2a8504498](https://cloud.githubusercontent.com/assets/1848368/24825518/b52e5bf6-1bd4-11e7-8eb2-9a9c1ff82ce9.gif)

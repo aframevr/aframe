@@ -17,7 +17,7 @@ global. This same interface is also exposed if requiring with CommonJS
 [componentregister]: ./component.md#register-a-component
 [entity]: ./entity.md
 [geometryregister]: ../components/geometry.md#register-a-custom-geometry
-[materialregister]: ../components/material.md#register-a-custom-material
+[materialregister]: ../components/material.md#register-a-custom-shader-material
 [primitiveregister]: ../introduction/html-and-primitives.md#registering-a-primitive
 [scene]: ./scene.md
 [three.js]: http://threejs.org

@@ -885,7 +885,7 @@ TWEEN.Interpolation = {
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":34}],2:[function(_dereq_,module,exports){
+},{"_process":33}],2:[function(_dereq_,module,exports){
 var str = Object.prototype.toString
 
 module.exports = anArray
@@ -3912,7 +3912,7 @@ function getAlignType(align) {
     return ALIGN_RIGHT
   return ALIGN_LEFT
 }
-},{"as-number":3,"indexof-property":17,"word-wrapper":73,"xtend":76}],24:[function(_dereq_,module,exports){
+},{"as-number":3,"indexof-property":17,"word-wrapper":72,"xtend":75}],24:[function(_dereq_,module,exports){
 (function (Buffer){
 var xhr = _dereq_('xhr')
 var noop = function(){}
@@ -4013,7 +4013,7 @@ function getBinaryOpts(opt) {
 }
 }).call(this,_dereq_("buffer").Buffer)
 
-},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":74,"xtend":76}],25:[function(_dereq_,module,exports){
+},{"./lib/is-binary":25,"buffer":7,"parse-bmfont-ascii":27,"parse-bmfont-binary":28,"parse-bmfont-xml":29,"xhr":73,"xtend":75}],25:[function(_dereq_,module,exports){
 (function (Buffer){
 var equal = _dereq_('buffer-equal')
 var HEADER = new Buffer([66, 77, 70, 3])
@@ -4466,7 +4466,7 @@ function getAttribList(element) {
 function mapName(nodeName) {
   return NAME_MAP[nodeName.toLowerCase()] || nodeName
 }
-},{"./parse-attribs":30,"xml-parse-from-string":75}],30:[function(_dereq_,module,exports){
+},{"./parse-attribs":30,"xml-parse-from-string":74}],30:[function(_dereq_,module,exports){
 //Some versions of GlyphDesigner have a typo
 //that causes some bugs with parsing. 
 //Need to confirm with recent version of the software
@@ -4527,236 +4527,7 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":14,"trim":47}],32:[function(_dereq_,module,exports){
-(function (process){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-}).call(this,_dereq_('_process'))
-
-},{"_process":34}],33:[function(_dereq_,module,exports){
+},{"for-each":14,"trim":46}],32:[function(_dereq_,module,exports){
 (function (global){
 var performance = global.performance || {};
 
@@ -4789,7 +4560,7 @@ module.exports = present;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{}],34:[function(_dereq_,module,exports){
+},{}],33:[function(_dereq_,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4971,7 +4742,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],35:[function(_dereq_,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 (function(root) {
 
 	// Store setTimeout reference so promise-polyfill will be unaffected by
@@ -5167,7 +4938,7 @@ process.umask = function() { return 0; };
 
 })(this);
 
-},{}],36:[function(_dereq_,module,exports){
+},{}],35:[function(_dereq_,module,exports){
 var dtype = _dereq_('dtype')
 var anArray = _dereq_('an-array')
 var isBuffer = _dereq_('is-buffer')
@@ -5210,7 +4981,7 @@ module.exports = function createQuadElements(array, opt) {
     }
     return indices
 }
-},{"an-array":2,"dtype":12,"is-buffer":19}],37:[function(_dereq_,module,exports){
+},{"an-array":2,"dtype":12,"is-buffer":19}],36:[function(_dereq_,module,exports){
 
 
 /*:: type Attr = { [key: string]: string } */
@@ -5318,7 +5089,7 @@ function normalize(str) {
 module.exports.parse = parse;
 module.exports.stringify = stringify;
 module.exports.normalize = normalize;
-},{}],38:[function(_dereq_,module,exports){
+},{}],37:[function(_dereq_,module,exports){
 var createLayout = _dereq_('layout-bmfont-text')
 var inherits = _dereq_('inherits')
 var createIndices = _dereq_('quad-indices')
@@ -5444,7 +5215,7 @@ TextGeometry.prototype.computeBoundingBox = function () {
   utils.computeBox(positions, bbox)
 }
 
-},{"./lib/utils":39,"./lib/vertices":40,"inherits":18,"layout-bmfont-text":23,"object-assign":26,"quad-indices":36,"three-buffer-vertex-data":41}],39:[function(_dereq_,module,exports){
+},{"./lib/utils":38,"./lib/vertices":39,"inherits":18,"layout-bmfont-text":23,"object-assign":26,"quad-indices":35,"three-buffer-vertex-data":40}],38:[function(_dereq_,module,exports){
 var itemSize = 2
 var box = { min: [0, 0], max: [0, 0] }
 
@@ -5484,7 +5255,7 @@ module.exports.computeSphere = function (positions, output) {
   output.radius = length / 2
 }
 
-},{}],40:[function(_dereq_,module,exports){
+},{}],39:[function(_dereq_,module,exports){
 module.exports.pages = function pages (glyphs) {
   var pages = new Float32Array(glyphs.length * 4 * 1)
   var i = 0
@@ -5563,7 +5334,7 @@ module.exports.positions = function positions (glyphs) {
   return positions
 }
 
-},{}],41:[function(_dereq_,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 var flatten = _dereq_('flatten-vertex-data')
 var warned = false;
 
@@ -5663,7 +5434,7 @@ function rebuildAttribute (attrib, data, itemSize) {
   return false
 }
 
-},{"flatten-vertex-data":13}],42:[function(_dereq_,module,exports){
+},{"flatten-vertex-data":13}],41:[function(_dereq_,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -49904,7 +49675,7 @@ function rebuildAttribute (attrib, data, itemSize) {
 
 })));
 
-},{}],43:[function(_dereq_,module,exports){
+},{}],42:[function(_dereq_,module,exports){
 /**
 * @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
 * @author Tony Parisi / http://www.tonyparisi.com/
@@ -55443,7 +55214,7 @@ THREE.ColladaLoader = function () {
 
 };
 
-},{}],44:[function(_dereq_,module,exports){
+},{}],43:[function(_dereq_,module,exports){
 /**
  * @author Rich Tibbett / https://github.com/richtr
  * @author mrdoob / http://mrdoob.com/
@@ -57850,7 +57621,7 @@ THREE.GLTFLoader = ( function () {
 
 } )();
 
-},{}],45:[function(_dereq_,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 /**
  * Loads a Wavefront .mtl file specifying materials
  *
@@ -58403,7 +58174,7 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 
 };
 
-},{}],46:[function(_dereq_,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 /**
  * @author mrdoob / http://mrdoob.com/
  */
@@ -59075,7 +58846,7 @@ THREE.OBJLoader = ( function () {
 
 } )();
 
-},{}],47:[function(_dereq_,module,exports){
+},{}],46:[function(_dereq_,module,exports){
 
 exports = module.exports = trim;
 
@@ -59091,53 +58862,53 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],48:[function(_dereq_,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 module.exports={
   "_args": [
     [
       {
-        "raw": "webvr-polyfill@^0.9.36",
+        "raw": "webvr-polyfill@^0.9.40",
         "scope": null,
         "escapedName": "webvr-polyfill",
         "name": "webvr-polyfill",
-        "rawSpec": "^0.9.36",
-        "spec": ">=0.9.36 <0.10.0",
+        "rawSpec": "^0.9.40",
+        "spec": ">=0.9.40 <0.10.0",
         "type": "range"
       },
       "/home/ubuntu/a-frobot/aframe"
     ]
   ],
-  "_from": "webvr-polyfill@>=0.9.36 <0.10.0",
-  "_id": "webvr-polyfill@0.9.36",
+  "_from": "webvr-polyfill@>=0.9.40 <0.10.0",
+  "_id": "webvr-polyfill@0.9.40",
   "_inCache": true,
   "_location": "/webvr-polyfill",
-  "_nodeVersion": "4.8.4",
+  "_nodeVersion": "8.6.0",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/webvr-polyfill-0.9.36.tgz_1499892972378_0.10267087002284825"
+    "tmp": "tmp/webvr-polyfill-0.9.40.tgz_1507657755590_0.00047161197289824486"
   },
   "_npmUser": {
     "name": "jsantell",
     "email": "jsantell@gmail.com"
   },
-  "_npmVersion": "2.15.11",
+  "_npmVersion": "5.3.0",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "webvr-polyfill@^0.9.36",
+    "raw": "webvr-polyfill@^0.9.40",
     "scope": null,
     "escapedName": "webvr-polyfill",
     "name": "webvr-polyfill",
-    "rawSpec": "^0.9.36",
-    "spec": ">=0.9.36 <0.10.0",
+    "rawSpec": "^0.9.40",
+    "spec": ">=0.9.40 <0.10.0",
     "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz",
-  "_shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
+  "_resolved": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.40.tgz",
+  "_shasum": "2cfa0ec0e0cc6ba7238c73a09cba4952fff59a63",
   "_shrinkwrap": null,
-  "_spec": "webvr-polyfill@^0.9.36",
+  "_spec": "webvr-polyfill@^0.9.40",
   "_where": "/home/ubuntu/a-frobot/aframe",
   "authors": [
     "Boris Smus <boris@smus.com>",
@@ -59155,14 +58926,15 @@ module.exports={
     "mocha": "^3.2.0",
     "semver": "^5.3.0",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "2.7.1"
   },
   "directories": {},
   "dist": {
-    "shasum": "4b1e1556667e804beb0c8c2e67fdfcba3371e8c6",
-    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.36.tgz"
+    "integrity": "sha512-m7jhJHjFcUYPyPSNeGmly7a2h/cP7bARz0OZMoUn5SueVXEKeZ4P7bzbAUDBDvvqCsa5gHgM3PFIhYe13bqaWw==",
+    "shasum": "2cfa0ec0e0cc6ba7238c73a09cba4952fff59a63",
+    "tarball": "https://registry.npmjs.org/webvr-polyfill/-/webvr-polyfill-0.9.40.tgz"
   },
-  "gitHead": "5f8693a9053ee1dea425e96d14cd1f2bef7a284c",
+  "gitHead": "45828ffdb8c3e0f9bb90296d6039d3cc7909ba8e",
   "homepage": "https://github.com/googlevr/webvr-polyfill",
   "keywords": [
     "vr",
@@ -59197,10 +58969,10 @@ module.exports={
     "test": "mocha",
     "watch": "webpack-dev-server"
   },
-  "version": "0.9.36"
+  "version": "0.9.40"
 }
 
-},{}],49:[function(_dereq_,module,exports){
+},{}],48:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59663,7 +59435,7 @@ module.exports.VRDevice = VRDevice;
 module.exports.HMDVRDevice = HMDVRDevice;
 module.exports.PositionSensorVRDevice = PositionSensorVRDevice;
 
-},{"./util.js":69,"./wakelock.js":71}],50:[function(_dereq_,module,exports){
+},{"./util.js":68,"./wakelock.js":70}],49:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60313,7 +60085,7 @@ CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrNam
 
 module.exports = CardboardDistorter;
 
-},{"./cardboard-ui.js":51,"./deps/wglu-preserve-state.js":53,"./util.js":69}],51:[function(_dereq_,module,exports){
+},{"./cardboard-ui.js":50,"./deps/wglu-preserve-state.js":52,"./util.js":68}],50:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60600,7 +60372,7 @@ CardboardUI.prototype.renderNoState = function() {
 
 module.exports = CardboardUI;
 
-},{"./deps/wglu-preserve-state.js":53,"./util.js":69}],52:[function(_dereq_,module,exports){
+},{"./deps/wglu-preserve-state.js":52,"./util.js":68}],51:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60846,11 +60618,14 @@ CardboardVRDisplay.prototype.onResize_ = function(e) {
       'position: absolute',
       'top: 0',
       'left: 0',
-      'width: ' + Math.max(screen.width, screen.height) + 'px',
-      'height: ' + Math.min(screen.height, screen.width) + 'px',
+      // Use vw/vh to handle implicitly devicePixelRatio; issue #282
+      'width: 100vw',
+      'height: 100vh',
       'border: 0',
       'margin: 0',
-      'padding: 0 10px 10px 0',
+      // Set no padding in the case where you don't have control over
+      // the content injection, like in Unity WebGL; issue #282
+      'padding: 0px',
       'box-sizing: content-box',
     ];
     gl.canvas.setAttribute('style', cssProperties.join('; ') + ';');
@@ -60884,7 +60659,7 @@ CardboardVRDisplay.prototype.fireVRDisplayDeviceParamsChange_ = function() {
 
 module.exports = CardboardVRDisplay;
 
-},{"./base.js":49,"./cardboard-distorter.js":50,"./cardboard-ui.js":51,"./device-info.js":54,"./dpdb/dpdb.js":58,"./rotate-instructions.js":63,"./sensor-fusion/fusion-pose-sensor.js":65,"./util.js":69,"./viewer-selector.js":70}],53:[function(_dereq_,module,exports){
+},{"./base.js":48,"./cardboard-distorter.js":49,"./cardboard-ui.js":50,"./device-info.js":53,"./dpdb/dpdb.js":57,"./rotate-instructions.js":62,"./sensor-fusion/fusion-pose-sensor.js":64,"./util.js":68,"./viewer-selector.js":69}],52:[function(_dereq_,module,exports){
 /**
  * Copyright (c) 2016, Brandon Jones.
  * https://github.com/toji/webgl-utils/blob/master/src/wglu-preserve-state.js
@@ -60997,7 +60772,7 @@ function WGLUPreserveGLState(gl, bindings, callback) {
 
 module.exports = WGLUPreserveGLState;
 
-},{}],54:[function(_dereq_,module,exports){
+},{}],53:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61364,7 +61139,7 @@ function CardboardViewer(params) {
 DeviceInfo.Viewers = Viewers;
 module.exports = DeviceInfo;
 
-},{"./distortion/distortion.js":56,"./math-util.js":60,"./util.js":69}],55:[function(_dereq_,module,exports){
+},{"./distortion/distortion.js":55,"./math-util.js":59,"./util.js":68}],54:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61456,7 +61231,7 @@ module.exports.VRDisplayHMDDevice = VRDisplayHMDDevice;
 module.exports.VRDisplayPositionSensorDevice = VRDisplayPositionSensorDevice;
 
 
-},{"./base.js":49}],56:[function(_dereq_,module,exports){
+},{"./base.js":48}],55:[function(_dereq_,module,exports){
 /**
  * TODO(smus): Implement coefficient inversion.
  */
@@ -61506,10 +61281,10 @@ Distortion.prototype.distort = function(radius) {
 
 module.exports = Distortion;
 
-},{}],57:[function(_dereq_,module,exports){
+},{}],56:[function(_dereq_,module,exports){
 module.exports={
   "format": 1,
-  "last_updated": "2017-06-01T22:33:42Z",
+  "last_updated": "2017-08-27T14:39:31Z",
   "devices": [
     {
       "type": "android",
@@ -61691,6 +61466,23 @@ module.exports={
       ],
       "bw": 3,
       "ac": 1000
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "LENOVO/*/Lenovo PB2-690Y/*"
+        },
+        {
+          "ua": "Lenovo PB2-690Y"
+        }
+      ],
+      "dpi": [
+        457.2,
+        454.713
+      ],
+      "bw": 3,
+      "ac": 500
     },
     {
       "type": "android",
@@ -62816,6 +62608,40 @@ module.exports={
       "type": "android",
       "rules": [
         {
+          "mdmh": "samsung/*/SM-G950F/*"
+        },
+        {
+          "ua": "SM-G950F"
+        }
+      ],
+      "dpi": [
+        562.707,
+        565.293
+      ],
+      "bw": 3,
+      "ac": 500
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
+          "mdmh": "samsung/*/SM-G955U/*"
+        },
+        {
+          "ua": "SM-G955U"
+        }
+      ],
+      "dpi": [
+        522.514,
+        525.762
+      ],
+      "bw": 3,
+      "ac": 500
+    },
+    {
+      "type": "android",
+      "rules": [
+        {
           "mdmh": "Sony/*/C6903/*"
         },
         {
@@ -63029,7 +62855,7 @@ module.exports={
     }
   ]
 }
-},{}],58:[function(_dereq_,module,exports){
+},{}],57:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63211,7 +63037,7 @@ function DeviceParams(params) {
 
 module.exports = Dpdb;
 
-},{"../util.js":69,"./dpdb.json":57}],59:[function(_dereq_,module,exports){
+},{"../util.js":68,"./dpdb.json":56}],58:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63304,7 +63130,7 @@ if (!window.WebVRConfig.DEFER_INITIALIZATION) {
 
 window.WebVRPolyfill = WebVRPolyfill;
 
-},{"./util.js":69,"./webvr-polyfill.js":72}],60:[function(_dereq_,module,exports){
+},{"./util.js":68,"./webvr-polyfill.js":71}],59:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63663,7 +63489,7 @@ MathUtil.Quaternion.prototype = {
 
 module.exports = MathUtil;
 
-},{}],61:[function(_dereq_,module,exports){
+},{}],60:[function(_dereq_,module,exports){
 /*
  * Copyright 2016 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63842,7 +63668,7 @@ MouseKeyboardVRDisplay.prototype.resetPose = function() {
 
 module.exports = MouseKeyboardVRDisplay;
 
-},{"./base.js":49,"./math-util.js":60,"./util.js":69}],62:[function(_dereq_,module,exports){
+},{"./base.js":48,"./math-util.js":59,"./util.js":68}],61:[function(_dereq_,module,exports){
 (function (global){
 // This is the entry point if requiring/importing via node, or
 // a build tool that uses package.json entry (like browserify, webpack).
@@ -63857,7 +63683,7 @@ _dereq_('./main');
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./main":59}],63:[function(_dereq_,module,exports){
+},{"./main":58}],62:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64003,7 +63829,7 @@ RotateInstructions.prototype.loadIcon_ = function() {
 
 module.exports = RotateInstructions;
 
-},{"./util.js":69}],64:[function(_dereq_,module,exports){
+},{"./util.js":68}],63:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64171,7 +63997,7 @@ ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
 
 module.exports = ComplementaryFilter;
 
-},{"../math-util.js":60,"../util.js":69,"./sensor-sample.js":67}],65:[function(_dereq_,module,exports){
+},{"../math-util.js":59,"../util.js":68,"./sensor-sample.js":66}],64:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64313,8 +64139,13 @@ FusionPoseSensor.prototype.updateDeviceMotion_ = function(deviceMotion) {
     this.previousTimestampS = timestampS;
     return;
   }
+
   this.accelerometer.set(-accGravity.x, -accGravity.y, -accGravity.z);
-  this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
+  if (Util.isR7()) {
+    this.gyroscope.set(-rotRate.beta, rotRate.alpha, rotRate.gamma);
+  } else {
+    this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
+  }
 
   // With iOS and Firefox Android, rotationRate is reported in degrees,
   // so we first convert to radians.
@@ -64397,7 +64228,7 @@ FusionPoseSensor.prototype.stop = function() {
 
 module.exports = FusionPoseSensor;
 
-},{"../math-util.js":60,"../touch-panner.js":68,"../util.js":69,"./complementary-filter.js":64,"./pose-predictor.js":66}],66:[function(_dereq_,module,exports){
+},{"../math-util.js":59,"../touch-panner.js":67,"../util.js":68,"./complementary-filter.js":63,"./pose-predictor.js":65}],65:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64480,7 +64311,7 @@ PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
 
 module.exports = PosePredictor;
 
-},{"../math-util":60,"../util":69}],67:[function(_dereq_,module,exports){
+},{"../math-util":59,"../util":68}],66:[function(_dereq_,module,exports){
 function SensorSample(sample, timestampS) {
   this.set(sample, timestampS);
 };
@@ -64496,7 +64327,7 @@ SensorSample.prototype.copy = function(sensorSample) {
 
 module.exports = SensorSample;
 
-},{}],68:[function(_dereq_,module,exports){
+},{}],67:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64576,7 +64407,7 @@ TouchPanner.prototype.onTouchEnd_ = function(e) {
 
 module.exports = TouchPanner;
 
-},{"./math-util.js":60,"./util.js":69}],69:[function(_dereq_,module,exports){
+},{"./math-util.js":59,"./util.js":68}],68:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -64659,8 +64490,16 @@ Util.isFirefoxAndroid = (function() {
   };
 })();
 
+Util.isR7 = (function() {
+  var isR7 = navigator.userAgent.indexOf('R7 Build') !== -1;
+  return function() {
+    return isR7;
+  };
+})();
+
 Util.isLandscapeMode = function() {
-  return (window.orientation == 90 || window.orientation == -90);
+  var rtn = (window.orientation == 90 || window.orientation == -90);
+  return Util.isR7() ? !rtn : rtn;
 };
 
 // Helper method to validate the time steps of sensor timestamps.
@@ -65051,7 +64890,7 @@ Util.getDomainFromUrl = function(url) {
 
 module.exports = Util;
 
-},{}],70:[function(_dereq_,module,exports){
+},{}],69:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65264,7 +65103,7 @@ ViewerSelector.prototype.createButton_ = function(label, onclick) {
 
 module.exports = ViewerSelector;
 
-},{"./device-info.js":54,"./util.js":69}],71:[function(_dereq_,module,exports){
+},{"./device-info.js":53,"./util.js":68}],70:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65343,7 +65182,7 @@ function getWakeLock() {
 }
 
 module.exports = getWakeLock();
-},{"./util.js":69}],72:[function(_dereq_,module,exports){
+},{"./util.js":68}],71:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65382,7 +65221,7 @@ function WebVRPolyfill() {
                                  navigator.getVRDisplays :
                                  null;
 
-  if (!this.nativeLegacyWebVRAvailable) {
+  if (!this.nativeLegacyWebVRAvailable && !this.nativeWebVRAvailable) {
     this.enablePolyfill();
     if (window.WebVRConfig.ENABLE_DEPRECATED_API) {
       this.enableDeprecatedPolyfill();
@@ -65483,7 +65322,7 @@ WebVRPolyfill.prototype.enablePolyfill = function() {
   window.VRDisplay = VRDisplay;
 
   // Provide the `navigator.vrEnabled` property.
-  if (navigator && !navigator.vrEnabled) {
+  if (navigator && typeof navigator.vrEnabled === 'undefined') {
     var self = this;
     Object.defineProperty(navigator, 'vrEnabled', {
       get: function () {
@@ -65631,7 +65470,7 @@ WebVRPolyfill.version = version;
 
 module.exports.WebVRPolyfill = WebVRPolyfill;
 
-},{"../package.json":48,"./base.js":49,"./cardboard-vr-display.js":52,"./display-wrappers.js":55,"./mouse-keyboard-vr-display.js":61,"./util.js":69}],73:[function(_dereq_,module,exports){
+},{"../package.json":47,"./base.js":48,"./cardboard-vr-display.js":51,"./display-wrappers.js":54,"./mouse-keyboard-vr-display.js":60,"./util.js":68}],72:[function(_dereq_,module,exports){
 var newline = /\n/
 var newlineChar = '\n'
 var whitespace = /\s/
@@ -65759,7 +65598,7 @@ function monospace(text, start, end, width) {
         end: start+glyphs
     }
 }
-},{}],74:[function(_dereq_,module,exports){
+},{}],73:[function(_dereq_,module,exports){
 "use strict";
 var window = _dereq_("global/window")
 var isFunction = _dereq_("is-function")
@@ -66002,7 +65841,7 @@ function getXml(xhr) {
 
 function noop() {}
 
-},{"global/window":15,"is-function":20,"parse-headers":31,"xtend":76}],75:[function(_dereq_,module,exports){
+},{"global/window":15,"is-function":20,"parse-headers":31,"xtend":75}],74:[function(_dereq_,module,exports){
 module.exports = (function xmlparser() {
   //common browsers
   if (typeof window.DOMParser !== 'undefined') {
@@ -66030,7 +65869,7 @@ module.exports = (function xmlparser() {
     return div
   }
 })()
-},{}],76:[function(_dereq_,module,exports){
+},{}],75:[function(_dereq_,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -66051,7 +65890,7 @@ function extend() {
     return target
 }
 
-},{}],77:[function(_dereq_,module,exports){
+},{}],76:[function(_dereq_,module,exports){
 module.exports={
   "name": "aframe",
   "version": "0.7.0",
@@ -66097,7 +65936,7 @@ module.exports={
     "style-attr": "^1.0.2",
     "three": "^0.87.0",
     "three-bmfont-text": "^2.1.0",
-    "webvr-polyfill": "^0.9.36"
+    "webvr-polyfill": "^0.9.40"
   },
   "devDependencies": {
     "browserify": "^13.1.0",
@@ -66180,7 +66019,7 @@ module.exports={
   }
 }
 
-},{}],78:[function(_dereq_,module,exports){
+},{}],77:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -66222,6 +66061,9 @@ module.exports.Component = registerComponent('camera', {
     this.onExitVR = bind(this.onExitVR, this);
     sceneEl.addEventListener('enter-vr', this.onEnterVR);
     sceneEl.addEventListener('exit-vr', this.onExitVR);
+
+    // Call enter VR handler if the scene has entered VR before the event listeners attached.
+    if (sceneEl.is('vr-mode')) { this.onEnterVR(); }
   },
 
   /**
@@ -66314,7 +66156,9 @@ module.exports.Component = registerComponent('camera', {
     // Remove the offset if there is positional tracking when entering VR.
     // Necessary for fullscreen mode with no headset.
     // Checking this.hasPositionalTracking to make the value injectable for unit tests.
-    hasPositionalTracking = this.hasPositionalTracking !== undefined ? this.hasPositionalTracking : checkHasPositionalTracking();
+    hasPositionalTracking = this.hasPositionalTracking !== undefined
+      ? this.hasPositionalTracking
+      : checkHasPositionalTracking();
 
     if (!userHeightOffset || !hasPositionalTracking) { return; }
 
@@ -66358,7 +66202,7 @@ module.exports.Component = registerComponent('camera', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils/":196}],79:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":195}],78:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
@@ -66393,7 +66237,7 @@ module.exports.Component = registerComponent('collada-model', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174}],80:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173}],79:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
@@ -66547,42 +66391,58 @@ module.exports.Component = registerComponent('cursor', {
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     window.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
     var el = this.el;
     window.removeEventListener('mousemove', this.onMouseMove);
+    window.removeEventListener('touchstart', this.onMouseMove);
+    window.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
     window.addEventListener('mousemove', this.onMouseMove, false);
+    window.addEventListener('touchstart', this.onMouseMove, false);
+    window.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
 
   onMouseMove: (function () {
+    var direction = new THREE.Vector3();
     var mouse = new THREE.Vector2();
     var origin = new THREE.Vector3();
-    var direction = new THREE.Vector3();
-    var rayCasterConfig = {
-      origin: origin,
-      direction: direction
-    };
+    var rayCasterConfig = {origin: origin, direction: direction};
+
     return function (evt) {
+      var bounds = this.canvasBounds;
       var camera = this.el.sceneEl.camera;
+      var left;
+      var point;
+      var top;
+
       camera.parent.updateMatrixWorld();
       camera.updateMatrixWorld();
 
       // Calculate mouse position based on the canvas element
-      var bounds = this.canvasBounds;
-      var left = evt.clientX - bounds.left;
-      var top = evt.clientY - bounds.top;
+      if (evt.type === 'touchmove' || evt.type === 'touchstart') {
+        // Track the first touch for simplicity.
+        point = evt.touches.item(0);
+      } else {
+        point = evt;
+      }
+
+      left = point.clientX - bounds.left;
+      top = point.clientY - bounds.top;
       mouse.x = (left / bounds.width) * 2 - 1;
       mouse.y = -(top / bounds.height) * 2 + 1;
 
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
+      if (evt.type === 'touchstart' || evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -66592,6 +66452,7 @@ module.exports.Component = registerComponent('cursor', {
   onCursorDown: function (evt) {
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
+    if (evt.type === 'touchstart') { evt.preventDefault(); }
   },
 
   /**
@@ -66615,6 +66476,7 @@ module.exports.Component = registerComponent('cursor', {
     }
 
     this.cursorDownEl = null;
+    if (evt.type === 'touchend') { evt.preventDefault(); }
   },
 
   /**
@@ -66668,16 +66530,12 @@ module.exports.Component = registerComponent('cursor', {
    * Handle intersection cleared.
    */
   onIntersectionCleared: function (evt) {
-    var cursorEl = this.el;
-    var intersectedEl = evt.detail.el;
+    var clearedEls = evt.detail.clearedEls;
 
-    // Ignore the cursor.
-    if (cursorEl === intersectedEl) { return; }
-
-    // Ignore if the event didn't occur on the current intersection.
-    if (intersectedEl !== this.intersectedEl) { return; }
-
-    this.clearCurrentIntersection();
+    // Check if the current intersection has ended
+    if (clearedEls.indexOf(this.intersectedEl) !== -1) {
+      this.clearCurrentIntersection();
+    }
   },
 
   clearCurrentIntersection: function () {
@@ -66710,11 +66568,13 @@ module.exports.Component = registerComponent('cursor', {
   }
 });
 
-},{"../core/component":126,"../utils/":196}],81:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":195}],80:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
 var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
-var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var DAYDREAM_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/google/';
 var DAYDREAM_CONTROLLER_MODEL_OBJ_URL = DAYDREAM_CONTROLLER_MODEL_BASE_URL + 'vr_controller_daydream.obj';
@@ -66763,10 +66623,10 @@ module.exports.Component = registerComponent('daydream-controls', {
     var self = this;
     this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
@@ -66878,29 +66738,9 @@ module.exports.Component = registerComponent('daydream-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   updateModel: function (buttonName, evtName) {
-    var i;
     if (!this.data.model) { return; }
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -66921,11 +66761,13 @@ module.exports.Component = registerComponent('daydream-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],82:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":189,"../utils/tracked-controls":200}],81:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var bind = _dereq_('../utils/bind');
-var checkControllerPresentAndSetup = _dereq_('../utils/tracked-controls').checkControllerPresentAndSetup;
-var emitIfAxesChanged = _dereq_('../utils/tracked-controls').emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var GEARVR_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/samsung/';
 var GEARVR_CONTROLLER_MODEL_OBJ_URL = GEARVR_CONTROLLER_MODEL_BASE_URL + 'gear_vr_controller.obj';
@@ -66972,10 +66814,10 @@ module.exports.Component = registerComponent('gearvr-controls', {
     var self = this;
     this.animationActive = 'pointing';
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
     this.everGotGamepadEvent = false;
@@ -67071,33 +66913,13 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.el.emit(button + 'changed', evt.detail.state);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
     if (!this.data.model) { return; }
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -67118,7 +66940,7 @@ module.exports.Component = registerComponent('gearvr-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],83:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":189,"../utils/tracked-controls":200}],82:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
@@ -67242,7 +67064,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":126,"../core/geometry":127,"../lib/three":174,"../utils/debug":192}],84:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/geometry":126,"../lib/three":173,"../utils/debug":191}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -67286,7 +67108,7 @@ module.exports.Component = registerComponent('gltf-model', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils/":196}],85:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":195}],84:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -67669,7 +67491,7 @@ function isViveController (trackedControls) {
   return controllerId && controllerId.indexOf('OpenVR ') === 0;
 }
 
-},{"../core/component":126}],86:[function(_dereq_,module,exports){
+},{"../core/component":125}],85:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./collada-model');
 _dereq_('./cursor');
@@ -67709,7 +67531,7 @@ _dereq_('./scene/screenshot');
 _dereq_('./scene/stats');
 _dereq_('./scene/vr-mode-ui');
 
-},{"./camera":78,"./collada-model":79,"./cursor":80,"./daydream-controls":81,"./gearvr-controls":82,"./geometry":83,"./gltf-model":84,"./hand-controls":85,"./laser-controls":87,"./light":88,"./line":89,"./link":90,"./look-controls":91,"./material":92,"./obj-model":93,"./oculus-touch-controls":94,"./position":95,"./raycaster":96,"./rotation":97,"./scale":98,"./scene/debug":99,"./scene/embedded":100,"./scene/fog":101,"./scene/inspector":102,"./scene/keyboard-shortcuts":103,"./scene/pool":104,"./scene/screenshot":105,"./scene/stats":106,"./scene/vr-mode-ui":107,"./shadow":108,"./sound":109,"./text":110,"./tracked-controls":111,"./visible":112,"./vive-controls":113,"./wasd-controls":114,"./windows-motion-controls":115}],87:[function(_dereq_,module,exports){
+},{"./camera":77,"./collada-model":78,"./cursor":79,"./daydream-controls":80,"./gearvr-controls":81,"./geometry":82,"./gltf-model":83,"./hand-controls":84,"./laser-controls":86,"./light":87,"./line":88,"./link":89,"./look-controls":90,"./material":91,"./obj-model":92,"./oculus-touch-controls":93,"./position":94,"./raycaster":95,"./rotation":96,"./scale":97,"./scene/debug":98,"./scene/embedded":99,"./scene/fog":100,"./scene/inspector":101,"./scene/keyboard-shortcuts":102,"./scene/pool":103,"./scene/screenshot":104,"./scene/stats":105,"./scene/vr-mode-ui":106,"./shadow":107,"./sound":108,"./text":109,"./tracked-controls":110,"./visible":111,"./vive-controls":112,"./wasd-controls":113,"./windows-motion-controls":114}],86:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
@@ -67802,7 +67624,7 @@ registerComponent('laser-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/":196}],88:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":195}],87:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var diff = _dereq_('../utils').diff;
 var debug = _dereq_('../utils/debug');
@@ -68076,7 +67898,7 @@ module.exports.Component = registerComponent('light', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils":196,"../utils/bind":190,"../utils/debug":192}],89:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils":195,"../utils/bind":189,"../utils/debug":191}],88:[function(_dereq_,module,exports){
 /* global THREE */
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -68151,7 +67973,7 @@ function isEqualVec3 (a, b) {
   return (a.x === b.x && a.y === b.y && a.z === b.z);
 }
 
-},{"../core/component":126}],90:[function(_dereq_,module,exports){
+},{"../core/component":125}],89:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
@@ -68515,7 +68337,7 @@ registerShader('portal', {
 });
 /* eslint-enable */
 
-},{"../core/component":126,"../core/shader":135,"../lib/three":174}],91:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":134,"../lib/three":173}],90:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../constants').DEFAULT_CAMERA_HEIGHT;
@@ -68900,7 +68722,7 @@ function isNullVector (vector) {
   return vector.x === 0 && vector.y === 0 && vector.z === 0;
 }
 
-},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/bind":190}],92:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../lib/three":173,"../utils/bind":189}],91:[function(_dereq_,module,exports){
 /* global Promise */
 var utils = _dereq_('../utils/');
 var component = _dereq_('../core/component');
@@ -69110,7 +68932,7 @@ function disposeMaterial (material, system) {
   system.unregisterMaterial(material);
 }
 
-},{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":196}],93:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":134,"../lib/three":173,"../utils/":195}],92:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -69186,10 +69008,11 @@ module.exports.Component = registerComponent('obj-model', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils/debug":192}],94:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/debug":191}],93:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var controllerUtils = _dereq_('../utils/tracked-controls');
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var TOUCH_CONTROLLER_MODEL_BASE_URL = 'https://cdn.aframe.io/controllers/oculus/oculus-touch-controller-';
 var TOUCH_CONTROLLER_MODEL_OBJ_URL_L = TOUCH_CONTROLLER_MODEL_BASE_URL + 'left.obj';
@@ -69247,18 +69070,18 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   init: function () {
     var self = this;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self, self.data.hand); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self, self.data.hand); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self, self.data.hand); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self, self.data.hand); };
     this.controllerPresent = false;
     this.lastControllerCheck = 0;
     this.previousButtonValues = {};
     this.bindMethods();
 
     // Allow mock.
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
   },
 
   addEventListeners: function () {
@@ -69381,32 +69204,13 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
     controllerObject3D.position = PIVOT_OFFSET;
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping[this.data.hand].buttons[id];
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-    this.updateModel(buttonName, evtName);
-  },
-
   onAxisMoved: function (evt) {
     this.emitIfAxesChanged(this, this.mapping[this.data.hand].axes, evt);
   },
 
   updateModel: function (buttonName, evtName) {
-    var i;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.updateButtonModel(buttonName[i], evtName);
-      }
-    } else {
-      this.updateButtonModel(buttonName, evtName);
-    }
+    if (!this.data.model) { return; }
+    this.updateButtonModel(buttonName, evtName);
   },
 
   updateButtonModel: function (buttonName, state) {
@@ -69419,7 +69223,7 @@ module.exports.Component = registerComponent('oculus-touch-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/bind":190,"../utils/tracked-controls":201}],95:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/bind":189,"../utils/tracked-controls":200}],94:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 module.exports.Component = registerComponent('position', {
@@ -69432,7 +69236,7 @@ module.exports.Component = registerComponent('position', {
   }
 });
 
-},{"../core/component":126}],96:[function(_dereq_,module,exports){
+},{"../core/component":125}],95:[function(_dereq_,module,exports){
 /* global MutationObserver */
 
 var registerComponent = _dereq_('../core/component').registerComponent;
@@ -69471,7 +69275,9 @@ var OBSERVER_CONFIG = {
  */
 module.exports.Component = registerComponent('raycaster', {
   schema: {
+    autoRefresh: {default: true},
     direction: {type: 'vec3', default: {x: 0, y: 0, z: -1}},
+    enabled: {default: true},
     far: {default: 1000},
     interval: {default: 100},
     near: {default: 0},
@@ -69479,8 +69285,7 @@ module.exports.Component = registerComponent('raycaster', {
     origin: {type: 'vec3'},
     recursive: {default: true},
     showLine: {default: false},
-    useWorldCoordinates: {default: false},
-    autoRefresh: {default: true}
+    useWorldCoordinates: {default: false}
   },
 
   init: function () {
@@ -69600,6 +69405,8 @@ module.exports.Component = registerComponent('raycaster', {
       var prevCheckTime = this.prevCheckTime;
       var prevIntersectedEls = this.prevIntersectedEls;
       var rawIntersections;
+
+      if (!this.data.enabled) { return; }
 
       // Only check for intersection if interval time has passed.
       if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
@@ -69796,7 +69603,7 @@ function copyArray (a, b) {
   }
 }
 
-},{"../core/component":126,"../lib/three":174,"../utils/":196}],97:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/":195}],96:[function(_dereq_,module,exports){
 var degToRad = _dereq_('../lib/three').Math.degToRad;
 var registerComponent = _dereq_('../core/component').registerComponent;
 
@@ -69814,7 +69621,7 @@ module.exports.Component = registerComponent('rotation', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174}],98:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173}],97:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 // Avoids triggering a zero-determinant which makes object3D matrix non-invertible.
@@ -69836,14 +69643,14 @@ module.exports.Component = registerComponent('scale', {
   }
 });
 
-},{"../core/component":126}],99:[function(_dereq_,module,exports){
+},{"../core/component":125}],98:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 
 module.exports.Component = register('debug', {
   schema: {default: true}
 });
 
-},{"../../core/component":126}],100:[function(_dereq_,module,exports){
+},{"../../core/component":125}],99:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
 /**
@@ -69868,7 +69675,7 @@ module.exports.Component = registerComponent('embedded', {
 
 });
 
-},{"../../core/component":126}],101:[function(_dereq_,module,exports){
+},{"../../core/component":125}],100:[function(_dereq_,module,exports){
 var register = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 var debug = _dereq_('../../utils/debug');
@@ -69941,7 +69748,7 @@ function getFog (data) {
   return fog;
 }
 
-},{"../../core/component":126,"../../lib/three":174,"../../utils/debug":192}],102:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173,"../../utils/debug":191}],101:[function(_dereq_,module,exports){
 (function (process){
 /* global AFRAME */
 var AFRAME_INJECTED = _dereq_('../../constants').AFRAME_INJECTED;
@@ -70046,7 +69853,7 @@ module.exports.Component = registerComponent('inspector', {
 
 }).call(this,_dereq_('_process'))
 
-},{"../../../package":77,"../../constants":117,"../../core/component":126,"../../utils/bind":190,"_process":34}],103:[function(_dereq_,module,exports){
+},{"../../../package":76,"../../constants":116,"../../core/component":125,"../../utils/bind":189,"_process":33}],102:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var shouldCaptureKeyEvent = _dereq_('../../utils/').shouldCaptureKeyEvent;
 
@@ -70081,7 +69888,7 @@ module.exports.Component = registerComponent('keyboard-shortcuts', {
   }
 });
 
-},{"../../core/component":126,"../../utils/":196}],104:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../utils/":195}],103:[function(_dereq_,module,exports){
 var debug = _dereq_('../../utils/debug');
 var registerComponent = _dereq_('../../core/component').registerComponent;
 
@@ -70186,7 +69993,7 @@ module.exports.Component = registerComponent('pool', {
   }
 });
 
-},{"../../core/component":126,"../../utils/debug":192}],105:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../utils/debug":191}],104:[function(_dereq_,module,exports){
 /* global ImageData, URL */
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
@@ -70443,7 +70250,7 @@ module.exports.Component = registerComponent('screenshot', {
   }
 });
 
-},{"../../core/component":126,"../../lib/three":174}],106:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173}],105:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var RStats = _dereq_('../../../vendor/rStats');
 var utils = _dereq_('../../utils');
@@ -70523,7 +70330,7 @@ function createStats (scene) {
   });
 }
 
-},{"../../../vendor/rStats":205,"../../../vendor/rStats.extras":204,"../../core/component":126,"../../lib/rStatsAframe":173,"../../utils":196}],107:[function(_dereq_,module,exports){
+},{"../../../vendor/rStats":204,"../../../vendor/rStats.extras":203,"../../core/component":125,"../../lib/rStatsAframe":172,"../../utils":195}],106:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var constants = _dereq_('../../constants/');
 var utils = _dereq_('../../utils/');
@@ -70677,7 +70484,7 @@ function createOrientationModal (exitVRHandler) {
   return modal;
 }
 
-},{"../../constants/":117,"../../core/component":126,"../../utils/":196}],108:[function(_dereq_,module,exports){
+},{"../../constants/":116,"../../core/component":125,"../../utils/":195}],107:[function(_dereq_,module,exports){
 var component = _dereq_('../core/component');
 var THREE = _dereq_('../lib/three');
 var bind = _dereq_('../utils/bind');
@@ -70731,7 +70538,7 @@ module.exports.Component = registerComponent('shadow', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils/bind":190}],109:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/bind":189}],108:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var debug = _dereq_('../utils/debug');
 var bind = _dereq_('../utils/bind');
@@ -70948,10 +70755,9 @@ module.exports.Component = registerComponent('sound', {
   }
 });
 
-},{"../core/component":126,"../lib/three":174,"../utils/bind":190,"../utils/debug":192}],110:[function(_dereq_,module,exports){
+},{"../core/component":125,"../lib/three":173,"../utils/bind":189,"../utils/debug":191}],109:[function(_dereq_,module,exports){
 var createTextGeometry = _dereq_('three-bmfont-text');
 var loadBMFont = _dereq_('load-bmfont');
-var path = _dereq_('path');
 
 var registerComponent = _dereq_('../core/component').registerComponent;
 var coreShader = _dereq_('../core/shader');
@@ -70986,6 +70792,7 @@ module.exports.FONTS = FONTS;
 
 var cache = new PromiseCache();
 var fontWidthFactors = {};
+var textures = {};
 
 /**
  * SDF-based text component.
@@ -71032,11 +70839,7 @@ module.exports.Component = registerComponent('text', {
   },
 
   init: function () {
-    this.texture = new THREE.Texture();
-    this.texture.anisotropy = MAX_ANISOTROPY;
-
     this.geometry = createTextGeometry();
-
     this.createOrUpdateMaterial();
     this.mesh = new THREE.Mesh(this.geometry, this.material);
     this.el.setObject3D(this.attrName, this.mesh);
@@ -71045,6 +70848,15 @@ module.exports.Component = registerComponent('text', {
   update: function (oldData) {
     var data = coerceData(this.data);
     var font = this.currentFont;
+    var fontImage = this.getFontImageSrc();
+
+    if (textures[fontImage]) {
+      this.texture = textures[fontImage];
+    } else {
+      // Create texture per font.
+      this.texture = textures[fontImage] = new THREE.Texture();
+      this.texture.anisotropy = MAX_ANISOTROPY;
+    }
 
     // Update material.
     this.createOrUpdateMaterial();
@@ -71167,15 +70979,17 @@ module.exports.Component = registerComponent('text', {
       self.updateLayout(coercedData);
 
       // Look up font image URL to use, and perform cached load.
-      fontImgSrc = data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png') ||
-                   path.dirname(data.font) + '/' + font.pages[0];
+      fontImgSrc = self.getFontImageSrc();
       cache.get(fontImgSrc, function () {
         return loadTexture(fontImgSrc);
       }).then(function (image) {
         // Make mesh visible and apply font image as texture.
+        var texture = self.texture;
+        texture.image = image;
+        texture.needsUpdate = true;
+        textures[fontImgSrc] = texture;
+        self.texture = texture;
         self.mesh.visible = true;
-        self.texture.image = image;
-        self.texture.needsUpdate = true;
         el.emit('textfontset', {font: data.font, fontObj: font});
       }).catch(function (err) {
         error(err);
@@ -71185,6 +70999,11 @@ module.exports.Component = registerComponent('text', {
       error(err);
       throw err;
     });
+  },
+
+  getFontImageSrc: function () {
+    var fontSrc = this.lookupFont(this.data.font || DEFAULT_FONT) || this.data.font;
+    return this.data.fontImage || fontSrc.replace(/(\.fnt)|(\.json)/, '.png');
   },
 
   /**
@@ -71414,7 +71233,7 @@ function PromiseCache () {
   };
 }
 
-},{"../core/component":126,"../core/shader":135,"../lib/three":174,"../utils/":196,"load-bmfont":24,"path":32,"three-bmfont-text":38}],111:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/shader":134,"../lib/three":173,"../utils/":195,"load-bmfont":24,"three-bmfont-text":37}],110:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var controllerUtils = _dereq_('../utils/tracked-controls');
 var THREE = _dereq_('../lib/three');
@@ -71451,7 +71270,10 @@ module.exports.Component = registerComponent('tracked-controls', {
   init: function () {
     this.axis = [0, 0, 0];
     this.buttonStates = {};
+    this.changedAxes = [];
     this.targetControllerNumber = this.data.controller;
+
+    this.axisMoveEventDetail = {axis: this.axis, changed: this.changedAxes};
 
     this.dolly = new THREE.Object3D();
     this.controllerEuler = new THREE.Euler();
@@ -71675,17 +71497,21 @@ module.exports.Component = registerComponent('tracked-controls', {
     var controllerAxes = this.controller.axes;
     var i;
     var previousAxis = this.axis;
-    var changedAxes = [];
+    var changedAxes = this.changedAxes;
 
     // Check if axis changed.
+    this.changedAxes.length = 0;
     for (i = 0; i < controllerAxes.length; ++i) {
       changedAxes.push(previousAxis[i] !== controllerAxes[i]);
       if (changedAxes[i]) { changed = true; }
     }
     if (!changed) { return false; }
 
-    this.axis = controllerAxes.slice();
-    this.el.emit('axismove', {axis: this.axis, changed: changedAxes});
+    this.axis.length = 0;
+    for (i = 0; i < controllerAxes.length; i++) {
+      this.axis.push(controllerAxes[i]);
+    }
+    this.el.emit('axismove', this.axisMoveEventDetail);
     return true;
   },
 
@@ -71748,7 +71574,7 @@ module.exports.Component = registerComponent('tracked-controls', {
   }
 });
 
-},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/tracked-controls":201}],112:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../lib/three":173,"../utils/tracked-controls":200}],111:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 
 /**
@@ -71762,13 +71588,15 @@ module.exports.Component = registerComponent('visible', {
   }
 });
 
-},{"../core/component":126}],113:[function(_dereq_,module,exports){
+},{"../core/component":125}],112:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var utils = _dereq_('../utils/');
 
 var bind = utils.bind;
-var checkControllerPresentAndSetup = utils.trackedControls.checkControllerPresentAndSetup;
-var emitIfAxesChanged = utils.trackedControls.emitIfAxesChanged;
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
+var emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 
 var VIVE_CONTROLLER_MODEL_OBJ_URL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.obj';
 var VIVE_CONTROLLER_MODEL_OBJ_MTL = 'https://cdn.aframe.io/controllers/vive/vr_controller_vive.mtl';
@@ -71811,10 +71639,10 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged = emitIfAxesChanged;  // To allow mock.
     this.lastControllerCheck = 0;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt.detail.id, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt.detail.id, 'up'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt.detail.id, 'touchend'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt.detail.id, 'touchstart'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt.detail.id, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt.detail.id, 'up', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt.detail.id, 'touchstart', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.previousButtonValues = {};
 
@@ -71960,35 +71788,18 @@ module.exports.Component = registerComponent('vive-controls', {
     this.emitIfAxesChanged(this, this.mapping.axes, evt);
   },
 
-  onButtonEvent: function (id, evtName) {
-    var buttonName = this.mapping.buttons[id];
+  updateModel: function (buttonName, evtName) {
     var color;
-    var i;
-    var isTouch = evtName.indexOf('touch') !== -1;
-
-    // Emit events.
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.el.emit(buttonName[i] + evtName);
-      }
-    } else {
-      this.el.emit(buttonName + evtName);
-    }
-
+    var isTouch;
     if (!this.data.model) { return; }
 
+    isTouch = evtName.indexOf('touch') !== -1;
     // Don't change color for trackpad touch.
     if (isTouch) { return; }
 
     // Update colors.
     color = evtName === 'up' ? this.data.buttonColor : this.data.buttonHighlightColor;
-    if (Array.isArray(buttonName)) {
-      for (i = 0; i < buttonName.length; i++) {
-        this.setButtonColor(buttonName[i], color);
-      }
-    } else {
-      this.setButtonColor(buttonName, color);
-    }
+    this.setButtonColor(buttonName, color);
   },
 
   setButtonColor: function (buttonName, color) {
@@ -72006,7 +71817,7 @@ module.exports.Component = registerComponent('vive-controls', {
   }
 });
 
-},{"../core/component":126,"../utils/":196}],114:[function(_dereq_,module,exports){
+},{"../core/component":125,"../utils/":195,"../utils/tracked-controls":200}],113:[function(_dereq_,module,exports){
 var KEYCODE_TO_CODE = _dereq_('../constants').keyboardevent.KEYCODE_TO_CODE;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
@@ -72225,11 +72036,12 @@ function isEmptyObject (keys) {
   return true;
 }
 
-},{"../constants":117,"../core/component":126,"../lib/three":174,"../utils/":196}],115:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../lib/three":173,"../utils/":195}],114:[function(_dereq_,module,exports){
 /* global THREE */
 var bind = _dereq_('../utils/bind');
 var registerComponent = _dereq_('../core/component').registerComponent;
-var controllerUtils = _dereq_('../utils/tracked-controls');
+var trackedControlsUtils = _dereq_('../utils/tracked-controls');
+var onButtonEvent = trackedControlsUtils.onButtonEvent;
 var utils = _dereq_('../utils/');
 
 var debug = utils.debug('components:windows-motion-controls:debug');
@@ -72300,10 +72112,10 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     var self = this;
     var el = this.el;
     this.onButtonChanged = bind(this.onButtonChanged, this);
-    this.onButtonDown = function (evt) { self.onButtonEvent(evt, 'down'); };
-    this.onButtonUp = function (evt) { self.onButtonEvent(evt, 'up'); };
-    this.onButtonTouchStart = function (evt) { self.onButtonEvent(evt, 'touchstart'); };
-    this.onButtonTouchEnd = function (evt) { self.onButtonEvent(evt, 'touchend'); };
+    this.onButtonDown = function (evt) { onButtonEvent(evt, 'down', self); };
+    this.onButtonUp = function (evt) { onButtonEvent(evt, 'up', self); };
+    this.onButtonTouchStart = function (evt) { onButtonEvent(evt, 'touchstart', self); };
+    this.onButtonTouchEnd = function (evt) { onButtonEvent(evt, 'touchend', self); };
     this.onControllerConnected = function () { self.setModelVisibility(true); };
     this.onControllerDisconnected = function () { self.setModelVisibility(false); };
     this.controllerPresent = false;
@@ -72325,8 +72137,8 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     };
 
     // Stored on object to allow for mocking in tests
-    this.emitIfAxesChanged = controllerUtils.emitIfAxesChanged;
-    this.checkControllerPresentAndSetup = controllerUtils.checkControllerPresentAndSetup;
+    this.emitIfAxesChanged = trackedControlsUtils.emitIfAxesChanged;
+    this.checkControllerPresentAndSetup = trackedControlsUtils.checkControllerPresentAndSetup;
 
     el.addEventListener('controllerconnected', this.onControllerConnected);
     el.addEventListener('controllerdisconnected', this.onControllerDisconnected);
@@ -72650,16 +72462,6 @@ module.exports.Component = registerComponent('windows-motion-controls', {
     }
   },
 
-  onButtonEvent: function (evt, evtName) {
-    var buttonName = this.mapping.buttons[evt.detail.id];
-    debug('onButtonEvent(' + evt.detail.id + ', ' + evtName + ')');
-
-    if (buttonName) {
-      // Only emit events for buttons that we know how to map from index to name
-      this.el.emit(buttonName + evtName);
-    }
-  },
-
   onAxisMoved: function (evt) {
     var numAxes = this.mapping.axisMeshNames.length;
 
@@ -72683,7 +72485,7 @@ module.exports.Component = registerComponent('windows-motion-controls', {
   }
 });
 
-},{"../constants":117,"../core/component":126,"../utils/":196,"../utils/bind":190,"../utils/tracked-controls":201}],116:[function(_dereq_,module,exports){
+},{"../constants":116,"../core/component":125,"../utils/":195,"../utils/bind":189,"../utils/tracked-controls":200}],115:[function(_dereq_,module,exports){
 /**
  * Animation configuration options for TWEEN.js animations.
  * Used by `<a-animation>`.
@@ -72787,7 +72589,7 @@ module.exports.easingFunctions = EASING_FUNCTIONS;
 module.exports.fills = FILLS;
 module.exports.repeats = REPEATS;
 
-},{"@tweenjs/tween.js":1}],117:[function(_dereq_,module,exports){
+},{"@tweenjs/tween.js":1}],116:[function(_dereq_,module,exports){
 module.exports = {
   AFRAME_INJECTED: 'aframe-injected',
   DEFAULT_CAMERA_HEIGHT: 1.6,
@@ -72796,7 +72598,7 @@ module.exports = {
   keyboardevent: _dereq_('./keyboardevent')
 };
 
-},{"./animation":116,"./keyboardevent":118}],118:[function(_dereq_,module,exports){
+},{"./animation":115,"./keyboardevent":117}],117:[function(_dereq_,module,exports){
 module.exports = {
   // Tiny KeyboardEvent.code polyfill.
   KEYCODE_TO_CODE: {
@@ -72811,7 +72613,7 @@ module.exports = {
   }
 };
 
-},{}],119:[function(_dereq_,module,exports){
+},{}],118:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var animationConstants = _dereq_('../constants/animation');
 var coordinates = _dereq_('../utils/').coordinates;
@@ -73355,7 +73157,7 @@ function rgbVectorToHex (color) {
   }).join('');
 }
 
-},{"../constants/animation":116,"../lib/three":174,"../utils/":196,"./a-node":124,"./a-register-element":125,"./schema":134,"@tweenjs/tween.js":1}],120:[function(_dereq_,module,exports){
+},{"../constants/animation":115,"../lib/three":173,"../utils/":195,"./a-node":123,"./a-register-element":124,"./schema":133,"@tweenjs/tween.js":1}],119:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var bind = _dereq_('../utils/bind');
 var debug = _dereq_('../utils/debug');
@@ -73410,6 +73212,9 @@ module.exports = registerElement('a-assets', {
         mediaEls = this.querySelectorAll('audio, video');
         for (i = 0; i < mediaEls.length; i++) {
           mediaEl = fixUpMediaElement(mediaEls[i]);
+          if (!mediaEl.src && !mediaEl.srcObject) {
+            warn('Audio/video asset has neither `src` nor `srcObject` attributes.');
+          }
           loaded.push(mediaElementLoaded(mediaEl));
         }
 
@@ -73613,7 +73418,7 @@ function inferResponseType (src) {
 }
 module.exports.inferResponseType = inferResponseType;
 
-},{"../lib/three":174,"../utils/bind":190,"../utils/debug":192,"./a-node":124,"./a-register-element":125}],121:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils/bind":189,"../utils/debug":191,"./a-node":123,"./a-register-element":124}],120:[function(_dereq_,module,exports){
 var debug = _dereq_('../utils/debug');
 var registerElement = _dereq_('./a-register-element').registerElement;
 
@@ -73663,7 +73468,7 @@ module.exports = registerElement('a-cubemap', {
   })
 });
 
-},{"../utils/debug":192,"./a-register-element":125}],122:[function(_dereq_,module,exports){
+},{"../utils/debug":191,"./a-register-element":124}],121:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var COMPONENTS = _dereq_('./component').components;
 var registerElement = _dereq_('./a-register-element').registerElement;
@@ -73671,7 +73476,6 @@ var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
 
 var AEntity;
-var bind = utils.bind;
 var debug = utils.debug('core:a-entity:debug');
 var warn = utils.debug('core:a-entity:warn');
 
@@ -73794,62 +73598,6 @@ var proto = Object.create(ANode.prototype, {
         return;
       }
       this.updateComponent(attrName, this.getDOMAttribute(attrName));
-    }
-  },
-
-  /**
-   * Add new mixin for each mixin with state suffix.
-   */
-  mapStateMixins: {
-    value: function (state, op) {
-      var mixins;
-      var mixinIds;
-      var i;
-
-      mixins = this.getAttribute('mixin');
-
-      if (!mixins) { return; }
-      mixinIds = mixins.split(' ');
-      for (i = 0; i < mixinIds.length; i++) {
-        op(mixinIds[i] + '-' + state);
-      }
-      this.updateComponents();
-    }
-  },
-
-  /**
-   * Handle update of mixin states (e.g., `box-hovered` where `box` is the mixin ID and
-   * `hovered` is the entity state.
-   */
-  updateStateMixins: {
-    value: function (newMixins, oldMixins) {
-      var diff;
-      var newMixinIds;
-      var oldMixinIds;
-      var i;
-      var j;
-      var stateMixinEls;
-
-      newMixinIds = newMixins.split(' ');
-      oldMixinIds = (oldMixins || '') ? oldMixins.split(' ') : [];
-
-      // List of mixins that might have been removed on update.
-      diff = oldMixinIds.filter(function (i) { return newMixinIds.indexOf(i) < 0; });
-
-      // Remove removed mixins.
-      for (i = 0; i < diff.length; i++) {
-        stateMixinEls = document.querySelectorAll('[id^=' + diff[i] + '-]');
-        for (j = 0; j < stateMixinEls.length; j++) {
-          this.unregisterMixin(stateMixinEls[j].id);
-        }
-      }
-
-      // Add new mixins.
-      for (i = 0; i < this.states.length; i++) {
-        for (j = 0; j < newMixinIds.length; j++) {
-          this.registerMixin(newMixinIds[j] + '-' + this.states[i]);
-        }
-      }
     }
   },
 
@@ -74334,7 +74082,6 @@ var proto = Object.create(ANode.prototype, {
     value: function (newMixins, oldMixins) {
       oldMixins = oldMixins || this.getAttribute('mixin');
       this.updateMixins(newMixins, oldMixins);
-      this.updateStateMixins(newMixins, oldMixins);
       this.updateComponents();
     }
   },
@@ -74489,8 +74236,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (state) {
       if (this.is(state)) { return; }
       this.states.push(state);
-      this.mapStateMixins(state, bind(this.registerMixin, this));
-      this.emit('stateadded', {state: state});
+      this.emit('stateadded', state);
     }
   },
 
@@ -74499,8 +74245,7 @@ var proto = Object.create(ANode.prototype, {
       var stateIndex = this.states.indexOf(state);
       if (stateIndex === -1) { return; }
       this.states.splice(stateIndex, 1);
-      this.mapStateMixins(state, bind(this.unregisterMixin, this));
-      this.emit('stateremoved', {state: state});
+      this.emit('stateremoved', state);
     }
   },
 
@@ -74580,7 +74325,7 @@ function isComponent (componentName) {
 AEntity = registerElement('a-entity', {prototype: proto});
 module.exports = AEntity;
 
-},{"../lib/three":174,"../utils/":196,"./a-node":124,"./a-register-element":125,"./component":126}],123:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils/":195,"./a-node":123,"./a-register-element":124,"./component":125}],122:[function(_dereq_,module,exports){
 var ANode = _dereq_('./a-node');
 var registerElement = _dereq_('./a-register-element').registerElement;
 var components = _dereq_('./component').components;
@@ -74687,7 +74432,7 @@ module.exports = registerElement('a-mixin', {
   })
 });
 
-},{"./a-node":124,"./a-register-element":125,"./component":126}],124:[function(_dereq_,module,exports){
+},{"./a-node":123,"./a-register-element":124,"./component":125}],123:[function(_dereq_,module,exports){
 /* global MutationObserver */
 var registerElement = _dereq_('./a-register-element').registerElement;
 var isNode = _dereq_('./a-register-element').isNode;
@@ -74942,7 +74687,7 @@ module.exports = registerElement('a-node', {
   })
 });
 
-},{"../utils/":196,"./a-register-element":125}],125:[function(_dereq_,module,exports){
+},{"../utils/":195,"./a-register-element":124}],124:[function(_dereq_,module,exports){
 /*
   ------------------------------------------------------------
   ------------- WARNING WARNING WARNING WARNING --------------
@@ -75119,7 +74864,7 @@ function copyProperties (source, destination) {
 ANode = _dereq_('./a-node');
 AEntity = _dereq_('./a-entity');
 
-},{"./a-entity":122,"./a-node":124,"document-register-element":11}],126:[function(_dereq_,module,exports){
+},{"./a-entity":121,"./a-node":123,"document-register-element":11}],125:[function(_dereq_,module,exports){
 /* global Node */
 var schema = _dereq_('./schema');
 var scenes = _dereq_('./scene/scenes');
@@ -75278,15 +75023,16 @@ Component.prototype = {
     if (value === undefined) { return; }
 
     // Merge new data with previous `attrValue` if updating and not clobbering.
-    if (!isSinglePropSchema && !clobber && this.attrValue) {
-      for (property in this.attrValue) {
-        if (!(property in attrValue)) {
-          attrValue[property] = this.attrValue[property];
-        }
+    if (!isSinglePropSchema && !clobber) {
+      this.attrValue = this.attrValue ? cloneData(this.attrValue) : {};
+      for (property in attrValue) {
+        this.attrValue[property] = attrValue[property];
       }
+      return;
     }
 
-    this.attrValue = extendProperties({}, attrValue, isSinglePropSchema);
+    // If single-prop schema or clobber.
+    this.attrValue = attrValue;
   },
 
   /**
@@ -75339,6 +75085,7 @@ Component.prototype = {
   updateProperties: function (attrValue, clobber) {
     var el = this.el;
     var isSinglePropSchema;
+    var key;
     var skipTypeChecking;
     var oldData = this.oldData;
 
@@ -75350,9 +75097,25 @@ Component.prototype = {
     }
 
     isSinglePropSchema = isSingleProp(this.schema);
+
     // Disable type checking if the passed attribute is an object and has not changed.
     skipTypeChecking = attrValue !== null && typeof this.previousAttrValue === 'object' &&
                        attrValue === this.previousAttrValue;
+    if (skipTypeChecking) {
+      for (key in this.attrValue) {
+        if (!(key in attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+      for (key in attrValue) {
+        if (!(key in this.attrValue)) {
+          skipTypeChecking = false;
+          break;
+        }
+      }
+    }
+
     // Cache previously passed attribute to decide if we skip type checking.
     this.previousAttrValue = attrValue;
 
@@ -75447,7 +75210,7 @@ Component.prototype = {
    * @return {object} The component data
    */
   buildData: function (newData, clobber, silent, skipTypeChecking) {
-    var componentDefined = newData !== undefined && newData !== null;
+    var componentDefined;
     var data;
     var defaultValue;
     var keys;
@@ -75458,11 +75221,17 @@ Component.prototype = {
     var isSinglePropSchema = isSingleProp(schema);
     var mixinEls = this.el.mixinEls;
     var previousData;
+
+    // Whether component has a defined value. For arrays, treat empty as not defined.
+    componentDefined = newData && newData.constructor === Array
+      ? newData.length
+      : newData !== undefined && newData !== null;
+
     // 1. Default values (lowest precendence).
     if (isSinglePropSchema) {
       // Clone default value if plain object so components don't share the same object
       // that might be modified by the user.
-      data = (schema.default && schema.default.constructor === Object) ? utils.clone(schema.default) : schema.default;
+      data = isObjectOrArray(schema.default) ? utils.clone(schema.default) : schema.default;
     } else {
       // Preserve previously set properties if clobber not enabled.
       previousData = !clobber && this.attrValue;
@@ -75475,9 +75244,7 @@ Component.prototype = {
         defaultValue = schema[keys[i]].default;
         if (data[keys[i]] !== undefined) { continue; }
         // Clone default value if object so components don't share object
-        data[keys[i]] = defaultValue && defaultValue.constructor === Object
-          ? utils.clone(defaultValue)
-          : defaultValue;
+        data[keys[i]] = isObjectOrArray(defaultValue) ? utils.clone(defaultValue) : defaultValue;
       }
     }
 
@@ -75605,9 +75372,7 @@ function cloneData (data) {
   var key;
   for (key in data) {
     parsedProperty = data[key];
-    clone[key] = parsedProperty && parsedProperty.constructor === Object
-      ? utils.clone(parsedProperty)
-      : parsedProperty;
+    clone[key] = isObjectOrArray(parsedProperty) ? utils.clone(parsedProperty) : parsedProperty;
   }
   return clone;
 }
@@ -75670,7 +75435,11 @@ function wrapPlay (playMethod) {
   };
 }
 
-},{"../utils/":196,"./scene/scenes":132,"./schema":134,"./system":136}],127:[function(_dereq_,module,exports){
+function isObjectOrArray (value) {
+  return value && (value.constructor === Object || value.constructor === Array);
+}
+
+},{"../utils/":195,"./scene/scenes":131,"./schema":133,"./system":135}],126:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -75744,7 +75513,7 @@ module.exports.registerGeometry = function (name, definition) {
   return NewGeometry;
 };
 
-},{"../lib/three":174,"./schema":134}],128:[function(_dereq_,module,exports){
+},{"../lib/three":173,"./schema":133}],127:[function(_dereq_,module,exports){
 var coordinates = _dereq_('../utils/coordinates');
 var debug = _dereq_('debug');
 
@@ -75968,7 +75737,7 @@ function isValidDefaultCoordinate (possibleCoordinates, dimensions) {
 }
 module.exports.isValidDefaultCoordinate = isValidDefaultCoordinate;
 
-},{"../utils/coordinates":191,"debug":8}],129:[function(_dereq_,module,exports){
+},{"../utils/coordinates":190,"debug":8}],128:[function(_dereq_,module,exports){
 /* global Promise, screen */
 var initMetaTags = _dereq_('./metaTags').inject;
 var initWakelock = _dereq_('./wakelock');
@@ -76439,7 +76208,7 @@ module.exports.AScene = registerElement('a-scene', {
         camera.aspect = size.width / size.height;
         camera.updateProjectionMatrix();
         // Notify renderer of size change.
-        this.renderer.setSize(size.width, size.height);
+        this.renderer.setSize(size.width, size.height, false);
       },
       writable: window.debug
     },
@@ -76690,7 +76459,7 @@ function setupCanvas (sceneEl) {
 }
 module.exports.setupCanvas = setupCanvas;  // For testing.
 
-},{"../../lib/three":174,"../../utils/":196,"../a-entity":122,"../a-node":124,"../a-register-element":125,"../system":136,"./metaTags":130,"./postMessage":131,"./scenes":132,"./wakelock":133,"@tweenjs/tween.js":1}],130:[function(_dereq_,module,exports){
+},{"../../lib/three":173,"../../utils/":195,"../a-entity":121,"../a-node":123,"../a-register-element":124,"../system":135,"./metaTags":129,"./postMessage":130,"./scenes":131,"./wakelock":132,"@tweenjs/tween.js":1}],129:[function(_dereq_,module,exports){
 var constants = _dereq_('../../constants/');
 var extend = _dereq_('../../utils').extend;
 
@@ -76771,7 +76540,7 @@ function createTag (tagObj) {
   return extend(meta, tagObj.attributes);
 }
 
-},{"../../constants/":117,"../../utils":196}],131:[function(_dereq_,module,exports){
+},{"../../constants/":116,"../../utils":195}],130:[function(_dereq_,module,exports){
 var bind = _dereq_('../../utils/bind');
 var isIframed = _dereq_('../../utils/').isIframed;
 
@@ -76804,13 +76573,13 @@ function postMessageAPIHandler (event) {
   }
 }
 
-},{"../../utils/":196,"../../utils/bind":190}],132:[function(_dereq_,module,exports){
+},{"../../utils/":195,"../../utils/bind":189}],131:[function(_dereq_,module,exports){
 /*
   Scene index for keeping track of created scenes.
 */
 module.exports = [];
 
-},{}],133:[function(_dereq_,module,exports){
+},{}],132:[function(_dereq_,module,exports){
 var Wakelock = _dereq_('../../../vendor/wakelock/wakelock');
 
 module.exports = function initWakelock (scene) {
@@ -76821,7 +76590,7 @@ module.exports = function initWakelock (scene) {
   scene.addEventListener('exit-vr', function () { wakelock.release(); });
 };
 
-},{"../../../vendor/wakelock/wakelock":207}],134:[function(_dereq_,module,exports){
+},{"../../../vendor/wakelock/wakelock":206}],133:[function(_dereq_,module,exports){
 var utils = _dereq_('../utils/');
 var PropertyTypes = _dereq_('./propertyTypes');
 
@@ -77022,7 +76791,7 @@ function stringifyProperty (value, propDefinition) {
 }
 module.exports.stringifyProperty = stringifyProperty;
 
-},{"../utils/":196,"./propertyTypes":128}],135:[function(_dereq_,module,exports){
+},{"../utils/":195,"./propertyTypes":127}],134:[function(_dereq_,module,exports){
 var schema = _dereq_('./schema');
 
 var processSchema = schema.process;
@@ -77201,7 +76970,7 @@ module.exports.registerShader = function (name, definition) {
   return NewShader;
 };
 
-},{"../lib/three":174,"../utils":196,"./schema":134}],136:[function(_dereq_,module,exports){
+},{"../lib/three":173,"../utils":195,"./schema":133}],135:[function(_dereq_,module,exports){
 var components = _dereq_('./component');
 var schema = _dereq_('./schema');
 var utils = _dereq_('../utils/');
@@ -77359,10 +77128,10 @@ module.exports.registerSystem = function (name, definition) {
   for (i = 0; i < scenes.length; i++) { scenes[i].initSystem(name); }
 };
 
-},{"../utils/":196,"./component":126,"./schema":134}],137:[function(_dereq_,module,exports){
+},{"../utils/":195,"./component":125,"./schema":133}],136:[function(_dereq_,module,exports){
 _dereq_('./pivot');
 
-},{"./pivot":138}],138:[function(_dereq_,module,exports){
+},{"./pivot":137}],137:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../../core/component').registerComponent;
 var THREE = _dereq_('../../lib/three');
 
@@ -77411,7 +77180,7 @@ registerComponent('pivot', {
   }
 });
 
-},{"../../core/component":126,"../../lib/three":174}],139:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../lib/three":173}],138:[function(_dereq_,module,exports){
 /**
  * Common mesh defaults, mappings, and transforms.
  */
@@ -77438,7 +77207,7 @@ module.exports = function getMeshMixin () {
   };
 };
 
-},{"../../core/component":126,"../../core/shader":135,"../../utils/":196}],140:[function(_dereq_,module,exports){
+},{"../../core/component":125,"../../core/shader":134,"../../utils/":195}],139:[function(_dereq_,module,exports){
 _dereq_('./primitives/a-camera');
 _dereq_('./primitives/a-collada-model');
 _dereq_('./primitives/a-cursor');
@@ -77455,7 +77224,7 @@ _dereq_('./primitives/a-video');
 _dereq_('./primitives/a-videosphere');
 _dereq_('./primitives/meshPrimitives');
 
-},{"./primitives/a-camera":142,"./primitives/a-collada-model":143,"./primitives/a-cursor":144,"./primitives/a-curvedimage":145,"./primitives/a-gltf-model":146,"./primitives/a-image":147,"./primitives/a-light":148,"./primitives/a-link":149,"./primitives/a-obj-model":150,"./primitives/a-sky":151,"./primitives/a-sound":152,"./primitives/a-text":153,"./primitives/a-video":154,"./primitives/a-videosphere":155,"./primitives/meshPrimitives":156}],141:[function(_dereq_,module,exports){
+},{"./primitives/a-camera":141,"./primitives/a-collada-model":142,"./primitives/a-cursor":143,"./primitives/a-curvedimage":144,"./primitives/a-gltf-model":145,"./primitives/a-image":146,"./primitives/a-light":147,"./primitives/a-link":148,"./primitives/a-obj-model":149,"./primitives/a-sky":150,"./primitives/a-sound":151,"./primitives/a-text":152,"./primitives/a-video":153,"./primitives/a-videosphere":154,"./primitives/meshPrimitives":155}],140:[function(_dereq_,module,exports){
 var AEntity = _dereq_('../../core/a-entity');
 var components = _dereq_('../../core/component').components;
 var registerElement = _dereq_('../../core/a-register-element').registerElement;
@@ -77549,9 +77318,9 @@ module.exports.registerPrimitive = function registerPrimitive (name, definition)
               path = utils.entity.getComponentPropertyPath(mapping);
               if (path.constructor === Array) {
                 data[path[0]] = data[path[0]] || {};
-                data[path[0]][path[1]] = attr.value;
+                data[path[0]][path[1]] = attr.value.trim();
               } else {
-                data[path] = attr.value;
+                data[path] = attr.value.trim();
               }
               continue;
             }
@@ -77654,7 +77423,7 @@ function definePrimitive (tagName, defaultComponents, mappings) {
 }
 module.exports.definePrimitive = definePrimitive;
 
-},{"../../core/a-entity":122,"../../core/a-register-element":125,"../../core/component":126,"../../utils/":196}],142:[function(_dereq_,module,exports){
+},{"../../core/a-entity":121,"../../core/a-register-element":124,"../../core/component":125,"../../utils/":195}],141:[function(_dereq_,module,exports){
 var DEFAULT_CAMERA_HEIGHT = _dereq_('../../../constants/').DEFAULT_CAMERA_HEIGHT;
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
@@ -77689,7 +77458,7 @@ registerPrimitive('a-camera', {
   }
 });
 
-},{"../../../constants/":117,"../primitives":141}],143:[function(_dereq_,module,exports){
+},{"../../../constants/":116,"../primitives":140}],142:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-collada-model', {
@@ -77698,7 +77467,7 @@ registerPrimitive('a-collada-model', {
   }
 });
 
-},{"../primitives":141}],144:[function(_dereq_,module,exports){
+},{"../primitives":140}],143:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77733,7 +77502,7 @@ registerPrimitive('a-cursor', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],145:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],144:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77770,7 +77539,7 @@ registerPrimitive('a-curvedimage', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],146:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],145:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-gltf-model', {
@@ -77779,7 +77548,7 @@ registerPrimitive('a-gltf-model', {
   }
 });
 
-},{"../primitives":141}],147:[function(_dereq_,module,exports){
+},{"../primitives":140}],146:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77803,7 +77572,7 @@ registerPrimitive('a-image', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],148:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],147:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-light', {
@@ -77824,7 +77593,7 @@ registerPrimitive('a-light', {
   }
 });
 
-},{"../primitives":141}],149:[function(_dereq_,module,exports){
+},{"../primitives":140}],148:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-link', {
@@ -77837,7 +77606,7 @@ registerPrimitive('a-link', {
   }
 });
 
-},{"../primitives":141}],150:[function(_dereq_,module,exports){
+},{"../primitives":140}],149:[function(_dereq_,module,exports){
 var meshMixin = _dereq_('../getMeshMixin')();
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77853,7 +77622,7 @@ registerPrimitive('a-obj-model', utils.extendDeep({}, meshMixin, {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],151:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],150:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77878,7 +77647,7 @@ registerPrimitive('a-sky', utils.extendDeep({}, getMeshMixin(), {
   mappings: utils.extendDeep({}, meshPrimitives['a-sphere'].prototype.mappings)
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141,"./meshPrimitives":156}],152:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140,"./meshPrimitives":155}],151:[function(_dereq_,module,exports){
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 
 registerPrimitive('a-sound', {
@@ -77895,12 +77664,12 @@ registerPrimitive('a-sound', {
   }
 });
 
-},{"../primitives":141}],153:[function(_dereq_,module,exports){
+},{"../primitives":140}],152:[function(_dereq_,module,exports){
 // <a-text> using `definePrimitive` helper.
 var definePrimitive = _dereq_('../primitives').definePrimitive;
 definePrimitive('a-text', {text: {anchor: 'align', width: 5}});
 
-},{"../primitives":141}],154:[function(_dereq_,module,exports){
+},{"../primitives":140}],153:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77924,7 +77693,7 @@ registerPrimitive('a-video', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],155:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],154:[function(_dereq_,module,exports){
 var getMeshMixin = _dereq_('../getMeshMixin');
 var registerPrimitive = _dereq_('../primitives').registerPrimitive;
 var utils = _dereq_('../../../utils/');
@@ -77952,7 +77721,7 @@ registerPrimitive('a-videosphere', utils.extendDeep({}, getMeshMixin(), {
   }
 }));
 
-},{"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],156:[function(_dereq_,module,exports){
+},{"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],155:[function(_dereq_,module,exports){
 /**
  * Automated mesh primitive registration.
  */
@@ -77992,7 +77761,7 @@ function unCamelCase (str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-},{"../../../core/geometry":127,"../../../utils/":196,"../getMeshMixin":139,"../primitives":141}],157:[function(_dereq_,module,exports){
+},{"../../../core/geometry":126,"../../../utils/":195,"../getMeshMixin":138,"../primitives":140}],156:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78013,7 +77782,7 @@ registerGeometry('box', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],158:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],157:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78033,7 +77802,7 @@ registerGeometry('circle', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],159:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],158:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78059,7 +77828,7 @@ registerGeometry('cone', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],160:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],159:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78083,7 +77852,7 @@ registerGeometry('cylinder', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],161:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],160:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78098,7 +77867,7 @@ registerGeometry('dodecahedron', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],162:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],161:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78113,7 +77882,7 @@ registerGeometry('icosahedron', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],163:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],162:[function(_dereq_,module,exports){
 _dereq_('./box.js');
 _dereq_('./circle.js');
 _dereq_('./cone.js');
@@ -78129,7 +77898,7 @@ _dereq_('./torus.js');
 _dereq_('./torusKnot.js');
 _dereq_('./triangle.js');
 
-},{"./box.js":157,"./circle.js":158,"./cone.js":159,"./cylinder.js":160,"./dodecahedron.js":161,"./icosahedron.js":162,"./octahedron.js":164,"./plane.js":165,"./ring.js":166,"./sphere.js":167,"./tetrahedron.js":168,"./torus.js":169,"./torusKnot.js":170,"./triangle.js":171}],164:[function(_dereq_,module,exports){
+},{"./box.js":156,"./circle.js":157,"./cone.js":158,"./cylinder.js":159,"./dodecahedron.js":160,"./icosahedron.js":161,"./octahedron.js":163,"./plane.js":164,"./ring.js":165,"./sphere.js":166,"./tetrahedron.js":167,"./torus.js":168,"./torusKnot.js":169,"./triangle.js":170}],163:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78144,7 +77913,7 @@ registerGeometry('octahedron', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],165:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],164:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78161,7 +77930,7 @@ registerGeometry('plane', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],166:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],165:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78184,7 +77953,7 @@ registerGeometry('ring', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],167:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],166:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78208,7 +77977,7 @@ registerGeometry('sphere', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],168:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],167:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78223,7 +77992,7 @@ registerGeometry('tetrahedron', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],169:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],168:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78245,7 +78014,7 @@ registerGeometry('torus', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],170:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],169:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78266,7 +78035,7 @@ registerGeometry('torusKnot', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],171:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],170:[function(_dereq_,module,exports){
 var registerGeometry = _dereq_('../core/geometry').registerGeometry;
 var THREE = _dereq_('../lib/three');
 
@@ -78321,7 +78090,7 @@ registerGeometry('triangle', {
   }
 });
 
-},{"../core/geometry":127,"../lib/three":174}],172:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../lib/three":173}],171:[function(_dereq_,module,exports){
 var utils = _dereq_('./utils/');
 
 var debug = utils.debug;
@@ -78407,7 +78176,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 06-10-2017, Commit #572b0c2)');
+console.log('A-Frame Version: 0.7.0 (Date 21-10-2017, Commit #17aff26)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78438,7 +78207,7 @@ module.exports = window.AFRAME = {
   version: pkg.version
 };
 
-},{"../package":77,"./components/index":86,"./core/a-animation":119,"./core/a-assets":120,"./core/a-cubemap":121,"./core/a-entity":122,"./core/a-mixin":123,"./core/a-node":124,"./core/a-register-element":125,"./core/component":126,"./core/geometry":127,"./core/scene/a-scene":129,"./core/scene/scenes":132,"./core/schema":134,"./core/shader":135,"./core/system":136,"./extras/components/":137,"./extras/primitives/":140,"./extras/primitives/getMeshMixin":139,"./extras/primitives/primitives":141,"./geometries/index":163,"./lib/three":174,"./shaders/index":176,"./style/aframe.css":181,"./style/rStats.css":182,"./systems/index":185,"./utils/":196,"@tweenjs/tween.js":1,"present":33,"promise-polyfill":35,"webvr-polyfill":62}],173:[function(_dereq_,module,exports){
+},{"../package":76,"./components/index":85,"./core/a-animation":118,"./core/a-assets":119,"./core/a-cubemap":120,"./core/a-entity":121,"./core/a-mixin":122,"./core/a-node":123,"./core/a-register-element":124,"./core/component":125,"./core/geometry":126,"./core/scene/a-scene":128,"./core/scene/scenes":131,"./core/schema":133,"./core/shader":134,"./core/system":135,"./extras/components/":136,"./extras/primitives/":139,"./extras/primitives/getMeshMixin":138,"./extras/primitives/primitives":140,"./geometries/index":162,"./lib/three":173,"./shaders/index":175,"./style/aframe.css":180,"./style/rStats.css":181,"./systems/index":184,"./utils/":195,"@tweenjs/tween.js":1,"present":32,"promise-polyfill":34,"webvr-polyfill":61}],172:[function(_dereq_,module,exports){
 window.aframeStats = function (scene) {
   var _rS = null;
   var _scene = scene;
@@ -78495,7 +78264,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],174:[function(_dereq_,module,exports){
+},{}],173:[function(_dereq_,module,exports){
 (function (global){
 var THREE = global.THREE = _dereq_('three');
 
@@ -78534,7 +78303,7 @@ module.exports = THREE;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../../vendor/VRControls":202,"../../vendor/VREffect":203,"three":42,"three/examples/js/loaders/ColladaLoader":43,"three/examples/js/loaders/GLTFLoader":44,"three/examples/js/loaders/MTLLoader":45,"three/examples/js/loaders/OBJLoader":46}],175:[function(_dereq_,module,exports){
+},{"../../vendor/VRControls":201,"../../vendor/VREffect":202,"three":41,"three/examples/js/loaders/ColladaLoader":42,"three/examples/js/loaders/GLTFLoader":43,"three/examples/js/loaders/MTLLoader":44,"three/examples/js/loaders/OBJLoader":45}],174:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78599,14 +78368,14 @@ function getMaterialData (data) {
   };
 }
 
-},{"../core/shader":135,"../lib/three":174,"../utils/":196}],176:[function(_dereq_,module,exports){
+},{"../core/shader":134,"../lib/three":173,"../utils/":195}],175:[function(_dereq_,module,exports){
 _dereq_('./flat');
 _dereq_('./standard');
 _dereq_('./sdf');
 _dereq_('./msdf');
 _dereq_('./ios10hls');
 
-},{"./flat":175,"./ios10hls":177,"./msdf":178,"./sdf":179,"./standard":180}],177:[function(_dereq_,module,exports){
+},{"./flat":174,"./ios10hls":176,"./msdf":177,"./sdf":178,"./standard":179}],176:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -78641,7 +78410,7 @@ module.exports.Shader = registerShader('ios10hls', {
 });
 
 
-},{"../core/shader":135}],178:[function(_dereq_,module,exports){
+},{"../core/shader":134}],177:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -78716,7 +78485,7 @@ module.exports.Shader = registerShader('msdf', {
   ].join('\n')
 });
 
-},{"../core/shader":135}],179:[function(_dereq_,module,exports){
+},{"../core/shader":134}],178:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 
 /**
@@ -78826,7 +78595,7 @@ module.exports.Shader = registerShader('sdf', {
   ].join('\n')
 });
 
-},{"../core/shader":135}],180:[function(_dereq_,module,exports){
+},{"../core/shader":134}],179:[function(_dereq_,module,exports){
 var registerShader = _dereq_('../core/shader').registerShader;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78995,11 +78764,11 @@ function getMaterialData (data) {
   return newData;
 }
 
-},{"../core/shader":135,"../lib/three":174,"../utils/":196}],181:[function(_dereq_,module,exports){
+},{"../core/shader":134,"../lib/three":173,"../utils/":195}],180:[function(_dereq_,module,exports){
 var css = ".a-html{bottom:0;left:0;position:fixed;right:0;top:0}.a-body{height:100%;margin:0;overflow:hidden;padding:0;width:100%}:-webkit-full-screen{background-color:transparent}.a-hidden{display:none!important}.a-canvas{height:100%;left:0;position:absolute;top:0;width:100%}.a-canvas.a-grab-cursor:hover{cursor:grab;cursor:-moz-grab;cursor:-webkit-grab}.a-canvas.a-grab-cursor:active,.a-grabbing{cursor:grabbing;cursor:-moz-grabbing;cursor:-webkit-grabbing}// Class is removed when doing <a-scene embedded>. a-scene.fullscreen .a-canvas{width:100%!important;height:100%!important;top:0!important;left:0!important;right:0!important;bottom:0!important;z-index:999999!important;position:fixed!important}.a-inspector-loader{background-color:#ed3160;position:fixed;left:3px;top:3px;padding:6px 10px;color:#fff;text-decoration:none;font-size:12px;font-family:Roboto,sans-serif;text-align:center;z-index:99999;width:204px}@keyframes dots-1{from{opacity:0}25%{opacity:1}}@keyframes dots-2{from{opacity:0}50%{opacity:1}}@keyframes dots-3{from{opacity:0}75%{opacity:1}}@-webkit-keyframes dots-1{from{opacity:0}25%{opacity:1}}@-webkit-keyframes dots-2{from{opacity:0}50%{opacity:1}}@-webkit-keyframes dots-3{from{opacity:0}75%{opacity:1}}.a-inspector-loader .dots span{animation:dots-1 2s infinite steps(1);-webkit-animation:dots-1 2s infinite steps(1)}.a-inspector-loader .dots span:first-child+span{animation-name:dots-2;-webkit-animation-name:dots-2}.a-inspector-loader .dots span:first-child+span+span{animation-name:dots-3;-webkit-animation-name:dots-3}a-scene{display:block;position:relative;height:100%;width:100%}a-assets,a-scene audio,a-scene img,a-scene video{display:none}.a-enter-vr-modal,.a-orientation-modal{font-family:Consolas,Andale Mono,Courier New,monospace}.a-enter-vr-modal a{border-bottom:1px solid #fff;padding:2px 0;text-decoration:none;transition:.1s color ease-in}.a-enter-vr-modal a:hover{background-color:#fff;color:#111;padding:2px 4px;position:relative;left:-4px}.a-enter-vr{font-family:sans-serif,monospace;font-size:13px;width:100%;font-weight:200;line-height:16px;position:absolute;right:20px;bottom:20px}.a-enter-vr.embedded{right:5px;bottom:5px}.a-enter-vr-button,.a-enter-vr-modal,.a-enter-vr-modal a{color:#fff}.a-enter-vr-button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20245.82%20141.73%22%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill%3A%23fff%3Bfill-rule%3Aevenodd%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%3Emask%3C%2Ftitle%3E%3Cpath%20class%3D%22a%22%20d%3D%22M175.56%2C111.37c-22.52%2C0-40.77-18.84-40.77-42.07S153%2C27.24%2C175.56%2C27.24s40.77%2C18.84%2C40.77%2C42.07S198.08%2C111.37%2C175.56%2C111.37ZM26.84%2C69.31c0-23.23%2C18.25-42.07%2C40.77-42.07s40.77%2C18.84%2C40.77%2C42.07-18.26%2C42.07-40.77%2C42.07S26.84%2C92.54%2C26.84%2C69.31ZM27.27%2C0C11.54%2C0%2C0%2C12.34%2C0%2C28.58V110.9c0%2C16.24%2C11.54%2C30.83%2C27.27%2C30.83H99.57c2.17%2C0%2C4.19-1.83%2C5.4-3.7L116.47%2C118a8%2C8%2C0%2C0%2C1%2C12.52-.18l11.51%2C20.34c1.2%2C1.86%2C3.22%2C3.61%2C5.39%2C3.61h72.29c15.74%2C0%2C27.63-14.6%2C27.63-30.83V28.58C245.82%2C12.34%2C233.93%2C0%2C218.19%2C0H27.27Z%22%2F%3E%3C%2Fsvg%3E) 50% 50%/70% 70% no-repeat rgba(0,0,0,.35);border:0;bottom:0;cursor:pointer;min-width:50px;min-height:30px;padding-right:5%;padding-top:4%;position:absolute;right:0;transition:background-color .05s ease;-webkit-transition:background-color .05s ease;z-index:9999}.a-enter-vr-button:active,.a-enter-vr-button:hover{background-color:#666}[data-a-enter-vr-no-webvr] .a-enter-vr-button{border-color:#666;opacity:.65}[data-a-enter-vr-no-webvr] .a-enter-vr-button:active,[data-a-enter-vr-no-webvr] .a-enter-vr-button:hover{background-color:rgba(0,0,0,.35);cursor:not-allowed}.a-enter-vr-modal{background-color:#666;border-radius:0;display:none;min-height:32px;margin-right:70px;padding:9px;width:280px;right:2%;position:absolute}.a-enter-vr-modal:after{border-bottom:10px solid transparent;border-left:10px solid #666;border-top:10px solid transparent;display:inline-block;content:'';position:absolute;right:-5px;top:5px;width:0;height:0}.a-enter-vr-modal a,.a-enter-vr-modal p{display:inline}.a-enter-vr-modal p{margin:0}.a-enter-vr-modal p:after{content:' '}[data-a-enter-vr-no-headset].a-enter-vr:hover .a-enter-vr-modal,[data-a-enter-vr-no-webvr].a-enter-vr:hover .a-enter-vr-modal{display:block}.a-orientation-modal{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%2090%2090%22%20enable-background%3D%22new%200%200%2090%2090%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpolygon%20points%3D%220%2C0%200%2C0%200%2C0%20%22%3E%3C/polygon%3E%3Cg%3E%3Cpath%20d%3D%22M71.545%2C48.145h-31.98V20.743c0-2.627-2.138-4.765-4.765-4.765H18.456c-2.628%2C0-4.767%2C2.138-4.767%2C4.765v42.789%20%20%20c0%2C2.628%2C2.138%2C4.766%2C4.767%2C4.766h5.535v0.959c0%2C2.628%2C2.138%2C4.765%2C4.766%2C4.765h42.788c2.628%2C0%2C4.766-2.137%2C4.766-4.765V52.914%20%20%20C76.311%2C50.284%2C74.173%2C48.145%2C71.545%2C48.145z%20M18.455%2C16.935h16.344c2.1%2C0%2C3.808%2C1.708%2C3.808%2C3.808v27.401H37.25V22.636%20%20%20c0-0.264-0.215-0.478-0.479-0.478H16.482c-0.264%2C0-0.479%2C0.214-0.479%2C0.478v36.585c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h7.507v7.644%20%20%20h-5.534c-2.101%2C0-3.81-1.709-3.81-3.81V20.743C14.645%2C18.643%2C16.354%2C16.935%2C18.455%2C16.935z%20M16.96%2C23.116h19.331v25.031h-7.535%20%20%20c-2.628%2C0-4.766%2C2.139-4.766%2C4.768v5.828h-7.03V23.116z%20M71.545%2C73.064H28.757c-2.101%2C0-3.81-1.708-3.81-3.808V52.914%20%20%20c0-2.102%2C1.709-3.812%2C3.81-3.812h42.788c2.1%2C0%2C3.809%2C1.71%2C3.809%2C3.812v16.343C75.354%2C71.356%2C73.645%2C73.064%2C71.545%2C73.064z%22%3E%3C/path%3E%3Cpath%20d%3D%22M28.919%2C58.424c-1.466%2C0-2.659%2C1.193-2.659%2C2.66c0%2C1.466%2C1.193%2C2.658%2C2.659%2C2.658c1.468%2C0%2C2.662-1.192%2C2.662-2.658%20%20%20C31.581%2C59.617%2C30.387%2C58.424%2C28.919%2C58.424z%20M28.919%2C62.786c-0.939%2C0-1.703-0.764-1.703-1.702c0-0.939%2C0.764-1.704%2C1.703-1.704%20%20%20c0.94%2C0%2C1.705%2C0.765%2C1.705%2C1.704C30.623%2C62.022%2C29.858%2C62.786%2C28.919%2C62.786z%22%3E%3C/path%3E%3Cpath%20d%3D%22M69.654%2C50.461H33.069c-0.264%2C0-0.479%2C0.215-0.479%2C0.479v20.288c0%2C0.264%2C0.215%2C0.478%2C0.479%2C0.478h36.585%20%20%20c0.263%2C0%2C0.477-0.214%2C0.477-0.478V50.939C70.131%2C50.676%2C69.917%2C50.461%2C69.654%2C50.461z%20M69.174%2C51.417V70.75H33.548V51.417H69.174z%22%3E%3C/path%3E%3Cpath%20d%3D%22M45.201%2C30.296c6.651%2C0%2C12.233%2C5.351%2C12.551%2C11.977l-3.033-2.638c-0.193-0.165-0.507-0.142-0.675%2C0.048%20%20%20c-0.174%2C0.198-0.153%2C0.501%2C0.045%2C0.676l3.883%2C3.375c0.09%2C0.075%2C0.198%2C0.115%2C0.312%2C0.115c0.141%2C0%2C0.273-0.061%2C0.362-0.166%20%20%20l3.371-3.877c0.173-0.2%2C0.151-0.502-0.047-0.675c-0.194-0.166-0.508-0.144-0.676%2C0.048l-2.592%2C2.979%20%20%20c-0.18-3.417-1.629-6.605-4.099-9.001c-2.538-2.461-5.877-3.817-9.404-3.817c-0.264%2C0-0.479%2C0.215-0.479%2C0.479%20%20%20C44.72%2C30.083%2C44.936%2C30.296%2C45.201%2C30.296z%22%3E%3C/path%3E%3C/g%3E%3C/svg%3E) center/50% 50% no-repeat rgba(244,244,244,1);bottom:0;font-size:14px;font-weight:600;left:0;line-height:20px;right:0;position:fixed;top:0;z-index:9999999}.a-orientation-modal:after{color:#666;content:\"Insert phone into Cardboard holder.\";display:block;position:absolute;text-align:center;top:70%;transform:translateY(-70%);width:100%}.a-orientation-modal button{background:url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20xmlns%3Axlink%3D%22http%3A//www.w3.org/1999/xlink%22%20version%3D%221.1%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20100%20100%22%20enable-background%3D%22new%200%200%20100%20100%22%20xml%3Aspace%3D%22preserve%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M55.209%2C50l17.803-17.803c1.416-1.416%2C1.416-3.713%2C0-5.129c-1.416-1.417-3.713-1.417-5.129%2C0L50.08%2C44.872%20%20L32.278%2C27.069c-1.416-1.417-3.714-1.417-5.129%2C0c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129L44.951%2C50L27.149%2C67.803%20%20c-1.417%2C1.416-1.417%2C3.713%2C0%2C5.129c0.708%2C0.708%2C1.636%2C1.062%2C2.564%2C1.062c0.928%2C0%2C1.856-0.354%2C2.564-1.062L50.08%2C55.13l17.803%2C17.802%20%20c0.708%2C0.708%2C1.637%2C1.062%2C2.564%2C1.062s1.856-0.354%2C2.564-1.062c1.416-1.416%2C1.416-3.713%2C0-5.129L55.209%2C50z%22%3E%3C/path%3E%3C/svg%3E) no-repeat;border:none;height:50px;text-indent:-9999px;width:50px}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/aframe.css"})); module.exports = css;
-},{"browserify-css":5}],182:[function(_dereq_,module,exports){
+},{"browserify-css":5}],181:[function(_dereq_,module,exports){
 var css = ".rs-base{background-color:#333;color:#fafafa;border-radius:0;font:10px monospace;left:5px;line-height:1em;opacity:.85;overflow:hidden;padding:10px;position:fixed;top:5px;width:300px;z-index:10000}.rs-base div.hidden{display:none}.rs-base h1{color:#fff;cursor:pointer;font-size:1.4em;font-weight:300;margin:0 0 5px;padding:0}.rs-group{display:-webkit-box;display:-webkit-flex;display:flex;-webkit-flex-direction:column-reverse;flex-direction:column-reverse;margin-bottom:5px}.rs-group:last-child{margin-bottom:0}.rs-counter-base{align-items:center;display:-webkit-box;display:-webkit-flex;display:flex;height:10px;-webkit-justify-content:space-between;justify-content:space-between;margin:2px 0}.rs-counter-base.alarm{color:#b70000;text-shadow:0 0 0 #b70000,0 0 1px #fff,0 0 1px #fff,0 0 2px #fff,0 0 2px #fff,0 0 3px #fff,0 0 3px #fff,0 0 4px #fff,0 0 4px #fff}.rs-counter-id{font-weight:300;-webkit-box-ordinal-group:0;-webkit-order:0;order:0;width:54px}.rs-counter-value{font-weight:300;-webkit-box-ordinal-group:1;-webkit-order:1;order:1;text-align:right;width:35px}.rs-canvas{-webkit-box-ordinal-group:2;-webkit-order:2;order:2}@media (min-width:480px){.rs-base{left:20px;top:20px}}"; (_dereq_("browserify-css").createStyle(css, { "href": "src/style/rStats.css"})); module.exports = css;
-},{"browserify-css":5}],183:[function(_dereq_,module,exports){
+},{"browserify-css":5}],182:[function(_dereq_,module,exports){
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
 var registerSystem = _dereq_('../core/system').registerSystem;
@@ -79126,7 +78895,7 @@ function removeDefaultCamera (sceneEl) {
   sceneEl.removeChild(defaultCamera);
 }
 
-},{"../constants/":117,"../core/system":136,"../utils/bind":190}],184:[function(_dereq_,module,exports){
+},{"../constants/":116,"../core/system":135,"../utils/bind":189}],183:[function(_dereq_,module,exports){
 var geometries = _dereq_('../core/geometry').geometries;
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
@@ -79266,7 +79035,7 @@ function toBufferGeometry (geometry, doBuffer) {
   return bufferGeometry;
 }
 
-},{"../core/geometry":127,"../core/system":136,"../lib/three":174}],185:[function(_dereq_,module,exports){
+},{"../core/geometry":126,"../core/system":135,"../lib/three":173}],184:[function(_dereq_,module,exports){
 _dereq_('./camera');
 _dereq_('./geometry');
 _dereq_('./light');
@@ -79275,7 +79044,7 @@ _dereq_('./shadow');
 _dereq_('./tracked-controls');
 
 
-},{"./camera":183,"./geometry":184,"./light":186,"./material":187,"./shadow":188,"./tracked-controls":189}],186:[function(_dereq_,module,exports){
+},{"./camera":182,"./geometry":183,"./light":185,"./material":186,"./shadow":187,"./tracked-controls":188}],185:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var constants = _dereq_('../constants/');
@@ -79361,7 +79130,7 @@ module.exports.System = registerSystem('light', {
   }
 });
 
-},{"../constants/":117,"../core/system":136,"../utils/bind":190}],187:[function(_dereq_,module,exports){
+},{"../constants/":116,"../core/system":135,"../utils/bind":189}],186:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -79421,8 +79190,8 @@ module.exports.System = registerSystem('material', {
 
     // Video element.
     if (src.tagName === 'VIDEO') {
-      if (!src.hasAttribute('src') && !src.hasAttribute('srcObject')) {
-        warn('Video element was defined without `src` nor `srcObject` attributes.');
+      if (!src.src && !src.srcObject && !src.childElementCount) {
+        warn('Video element was defined with neither `source` elements nor `src` / `srcObject` attributes.');
       }
       this.loadVideo(src, data, cb);
       return;
@@ -79544,7 +79313,7 @@ module.exports.System = registerSystem('material', {
     if (data.src.tagName) {
       // Since `data.src` can be an element, parse out the string if necessary for the hash.
       data = utils.extendDeep({}, data);
-      data.src = data.src.getAttribute('src');
+      data.src = data.src.src;
     }
     return JSON.stringify(data);
   },
@@ -79766,7 +79535,7 @@ function fixVideoAttributes (videoEl) {
   return videoEl;
 }
 
-},{"../core/system":136,"../lib/three":174,"../utils/":196,"../utils/material":197}],188:[function(_dereq_,module,exports){
+},{"../core/system":135,"../lib/three":173,"../utils/":195,"../utils/material":196}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
@@ -79819,7 +79588,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":136,"../lib/three":174,"../utils/bind":190}],189:[function(_dereq_,module,exports){
+},{"../core/system":135,"../lib/three":173,"../utils/bind":189}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 
 /**
@@ -79875,7 +79644,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":136}],190:[function(_dereq_,module,exports){
+},{"../core/system":135}],189:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
@@ -79892,7 +79661,7 @@ module.exports = function bind (fn, ctx/* , arg1, arg2 */) {
   })(Array.prototype.slice.call(arguments, 2));
 };
 
-},{}],191:[function(_dereq_,module,exports){
+},{}],190:[function(_dereq_,module,exports){
 /* global THREE */
 var debug = _dereq_('./debug');
 var extend = _dereq_('object-assign');
@@ -79986,7 +79755,7 @@ module.exports.toVector3 = function (vec3) {
   return new THREE.Vector3(vec3.x, vec3.y, vec3.z);
 };
 
-},{"./debug":192,"object-assign":26}],192:[function(_dereq_,module,exports){
+},{"./debug":191,"object-assign":26}],191:[function(_dereq_,module,exports){
 (function (process){
 var debugLib = _dereq_('debug');
 var extend = _dereq_('object-assign');
@@ -80083,7 +79852,7 @@ module.exports = debug;
 
 }).call(this,_dereq_('_process'))
 
-},{"_process":34,"debug":8,"object-assign":26}],193:[function(_dereq_,module,exports){
+},{"_process":33,"debug":8,"object-assign":26}],192:[function(_dereq_,module,exports){
 (function (process){
 var THREE = _dereq_('../lib/three');
 var dolly = new THREE.Object3D();
@@ -80129,7 +79898,7 @@ var isMobile = (function () {
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
       _isMobile = true;
     }
-    if (isIOS() || isTablet()) {
+    if (isIOS() || isTablet() || isR7()) {
       _isMobile = true;
     }
   })(window.navigator.userAgent || window.navigator.vendor || window.opera);
@@ -80158,12 +79927,19 @@ function isGearVR () {
 }
 module.exports.isGearVR = isGearVR;
 
+function isR7 () {
+  return /R7 Build/.test(window.navigator.userAgent);
+}
+module.exports.isR7 = isR7;
+
 /**
  * Checks mobile device orientation.
  * @return {Boolean} True if landscape orientation.
  */
 module.exports.isLandscape = function () {
-  return window.orientation === 90 || window.orientation === -90;
+  var orientation = window.orientation;
+  if (isR7()) { orientation += 90; }
+  return orientation === 90 || orientation === -90;
 };
 
 /**
@@ -80189,7 +79965,7 @@ module.exports.isNodeEnvironment = !module.exports.isBrowserEnvironment;
 
 }).call(this,_dereq_('_process'))
 
-},{"../lib/three":174,"_process":34}],194:[function(_dereq_,module,exports){
+},{"../lib/three":173,"_process":33}],193:[function(_dereq_,module,exports){
 /**
  * Split a delimited component property string (e.g., `material.color`) to an object
  * containing `component` name and `property` name. If there is no delimiter, just return the
@@ -80232,7 +80008,7 @@ module.exports.setComponentProperty = function (el, name, value, delimiter) {
   el.setAttribute(name, value);
 };
 
-},{}],195:[function(_dereq_,module,exports){
+},{}],194:[function(_dereq_,module,exports){
 module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   var width = canvasEl.style.width;
   var height = canvasEl.style.height;
@@ -80248,7 +80024,7 @@ module.exports = function forceCanvasResizeSafariMobile (canvasEl) {
   }, 200);
 };
 
-},{}],196:[function(_dereq_,module,exports){
+},{}],195:[function(_dereq_,module,exports){
 /* global CustomEvent, location */
 /* Centralized place to reference utilities since utils is exposed to the user. */
 var debug = _dereq_('./debug');
@@ -80569,7 +80345,7 @@ module.exports.findAllScenes = function (el) {
 // Must be at bottom to avoid circular dependency.
 module.exports.srcLoader = _dereq_('./src-loader');
 
-},{"./bind":190,"./coordinates":191,"./debug":192,"./device":193,"./entity":194,"./forceCanvasResizeSafariMobile":195,"./material":197,"./object-pool":198,"./src-loader":199,"./styleParser":200,"./tracked-controls":201,"deep-assign":10,"object-assign":26}],197:[function(_dereq_,module,exports){
+},{"./bind":189,"./coordinates":190,"./debug":191,"./device":192,"./entity":193,"./forceCanvasResizeSafariMobile":194,"./material":196,"./object-pool":197,"./src-loader":198,"./styleParser":199,"./tracked-controls":200,"deep-assign":10,"object-assign":26}],196:[function(_dereq_,module,exports){
 var THREE = _dereq_('../lib/three');
 
 var HLS_MIMETYPES = ['application/x-mpegurl', 'application/vnd.apple.mpegurl'];
@@ -80724,7 +80500,7 @@ module.exports.isHLS = function (src, type) {
   return false;
 };
 
-},{"../lib/three":174}],198:[function(_dereq_,module,exports){
+},{"../lib/three":173}],197:[function(_dereq_,module,exports){
 /*
   Adapted deePool by Kyle Simpson.
   MIT License: http://getify.mit-license.org
@@ -80804,7 +80580,7 @@ function clearObject (obj) {
 }
 module.exports.clearObject = clearObject;
 
-},{}],199:[function(_dereq_,module,exports){
+},{}],198:[function(_dereq_,module,exports){
 /* global Image, XMLHttpRequest */
 var debug = _dereq_('./debug');
 
@@ -80963,7 +80739,7 @@ module.exports = {
   validateCubemapSrc: validateCubemapSrc
 };
 
-},{"./debug":192}],200:[function(_dereq_,module,exports){
+},{"./debug":191}],199:[function(_dereq_,module,exports){
 /* Utils for parsing style-like strings (e.g., "primitive: box; width: 5; height: 4.5"). */
 var styleParser = _dereq_('style-attr');
 
@@ -81023,7 +80799,7 @@ function transformKeysToCamelCase (obj) {
 }
 module.exports.transformKeysToCamelCase = transformKeysToCamelCase;
 
-},{"style-attr":37}],201:[function(_dereq_,module,exports){
+},{"style-attr":36}],200:[function(_dereq_,module,exports){
 var DEFAULT_HANDEDNESS = _dereq_('../constants').DEFAULT_HANDEDNESS;
 var AXIS_LABELS = ['x', 'y', 'z', 'w'];
 var NUM_HANDS = 2; // Number of hands in a pair. Should always be 2.
@@ -81177,7 +80953,24 @@ module.exports.emitIfAxesChanged = function (component, axesMapping, evt) {
   }
 };
 
-},{"../constants":117}],202:[function(_dereq_,module,exports){
+/**
+ * Handle a button event and reemits the events.
+ *
+ * @param {string} id - id of the button.
+ * @param {string} evtName - name of the reemitted event
+ * @param {object} component - reference to the component
+ * @param {string} hand - handedness of the controller: left or right.
+ */
+module.exports.onButtonEvent = function (id, evtName, component, hand) {
+  var mapping = hand ? component.mapping[hand] : component.mapping;
+  var buttonName = mapping.buttons[id];
+  component.el.emit(buttonName + evtName);
+  if (component.updateModel) {
+    component.updateModel(buttonName, evtName);
+  }
+};
+
+},{"../constants":116}],201:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -81355,7 +81148,7 @@ THREE.VRControls = function ( object, onError ) {
 
 };
 
-},{}],203:[function(_dereq_,module,exports){
+},{}],202:[function(_dereq_,module,exports){
 /**
  * @author dmarcos / https://github.com/dmarcos
  * @author mrdoob / http://mrdoob.com
@@ -81853,7 +81646,7 @@ THREE.VREffect = function( renderer, onError ) {
 
 };
 
-},{}],204:[function(_dereq_,module,exports){
+},{}],203:[function(_dereq_,module,exports){
 window.glStats = function () {
 
     var _rS = null;
@@ -82118,7 +81911,7 @@ if (typeof module === 'object') {
   };
 }
 
-},{}],205:[function(_dereq_,module,exports){
+},{}],204:[function(_dereq_,module,exports){
 // performance.now() polyfill from https://gist.github.com/paulirish/5438650
 'use strict';
 
@@ -82573,7 +82366,7 @@ if (typeof module === 'object') {
   module.exports = window.rStats;
 }
 
-},{}],206:[function(_dereq_,module,exports){
+},{}],205:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82635,7 +82428,7 @@ Util.isLandscapeMode = function() {
 
 module.exports = Util;
 
-},{}],207:[function(_dereq_,module,exports){
+},{}],206:[function(_dereq_,module,exports){
 /*
  * Copyright 2015 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82711,6 +82504,6 @@ function getWakeLock() {
 
 module.exports = getWakeLock();
 
-},{"./util.js":206}]},{},[172])(172)
+},{"./util.js":205}]},{},[171])(171)
 });
 //# sourceMappingURL=aframe-master.js.map
