@@ -54,6 +54,7 @@ module.exports.Component = registerComponent('raycaster', {
     // adjust line length.
     this.clearedIntersectedEls = [];
     this.unitLineEndVec3 = new THREE.Vector3();
+    this.intersections = [];
     this.intersectedEls = [];
     this.objects = [];
     this.prevCheckTime = undefined;
@@ -63,7 +64,9 @@ module.exports.Component = registerComponent('raycaster', {
     this.setDirty = this.setDirty.bind(this);
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
+    this.intersectedClearedDetail = {el: this.el};
     this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
+    this.intersectionDetail = {els: this.intersectedEls, intersections: this.intersections};
   },
 
   /**
@@ -152,97 +155,90 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: (function () {
-    var intersections = [];
+  tick: function (time) {
+    var clearedIntersectedEls = this.clearedIntersectedEls;
+    var el = this.el;
+    var data = this.data;
+    var i;
+    var intersectedEls = this.intersectedEls;
+    var intersection;
+    var intersections = this.intersections;
+    var lineLength;
+    var prevCheckTime = this.prevCheckTime;
+    var prevIntersectedEls = this.prevIntersectedEls;
+    var rawIntersections;
 
-    return function (time) {
-      var clearedIntersectedEls = this.clearedIntersectedEls;
-      var el = this.el;
-      var data = this.data;
-      var i;
-      var intersectedEls = this.intersectedEls;
-      var intersection;
-      var lineLength;
-      var prevCheckTime = this.prevCheckTime;
-      var prevIntersectedEls = this.prevIntersectedEls;
-      var rawIntersections;
+    if (!this.data.enabled) { return; }
 
-      if (!this.data.enabled) { return; }
+    // Only check for intersection if interval time has passed.
+    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+    // Update check time.
+    this.prevCheckTime = time;
 
-      // Only check for intersection if interval time has passed.
-      if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-      // Update check time.
-      this.prevCheckTime = time;
+    // Refresh the object whitelist if needed.
+    if (this.dirty) { this.refreshObjects(); }
 
-      // Refresh the object whitelist if needed.
-      if (this.dirty) { this.refreshObjects(); }
+    // Store old previously intersected entities.
+    copyArray(this.prevIntersectedEls, this.intersectedEls);
 
-      // Store old previously intersected entities.
-      copyArray(this.prevIntersectedEls, this.intersectedEls);
+    // Raycast.
+    this.updateOriginDirection();
+    rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
 
-      // Raycast.
-      this.updateOriginDirection();
-      rawIntersections = this.raycaster.intersectObjects(this.objects, data.recursive);
-
-      // Only keep intersections against objects that have a reference to an entity.
-      intersections.length = 0;
-      for (i = 0; i < rawIntersections.length; i++) {
-        intersection = rawIntersections[i];
-        // Don't intersect with own line.
-        if (data.showLine && intersection.object === el.getObject3D('line')) {
-          continue;
-        }
-        if (intersection.object.el) {
-          intersections.push(intersection);
-        }
+    // Only keep intersections against objects that have a reference to an entity.
+    intersections.length = 0;
+    for (i = 0; i < rawIntersections.length; i++) {
+      intersection = rawIntersections[i];
+      // Don't intersect with own line.
+      if (data.showLine && intersection.object === el.getObject3D('line')) {
+        continue;
       }
-
-      // Update intersectedEls.
-      intersectedEls.length = intersections.length;
-      for (i = 0; i < intersections.length; i++) {
-        intersectedEls[i] = intersections[i].object.el;
+      if (intersection.object.el) {
+        intersections.push(intersection);
       }
+    }
 
-      // Emit intersected on intersected entity per intersected entity.
-      for (i = 0; i < intersections.length; i++) {
-        intersections[i].object.el.emit('raycaster-intersected', {
-          el: el,
-          intersection: intersections[i]
-        });
-      }
+    // Update intersectedEls.
+    intersectedEls.length = intersections.length;
+    for (i = 0; i < intersections.length; i++) {
+      intersectedEls[i] = intersections[i].object.el;
+    }
 
-      // Emit all intersections at once on raycasting entity.
+    // Emit intersected on intersected entity per intersected entity.
+    for (i = 0; i < intersections.length; i++) {
+      intersections[i].object.el.emit('raycaster-intersected', {
+        el: el,
+        intersection: intersections[i]
+      });
+    }
+
+    // Emit all intersections at once on raycasting entity.
+    if (intersections.length) { el.emit('raycaster-intersection', this.intersectionDetail); }
+
+    // Emit intersection cleared on both entities per formerly intersected entity.
+    clearedIntersectedEls.length = 0;
+    for (i = 0; i < prevIntersectedEls.length; i++) {
+      if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
+      prevIntersectedEls[i].emit('raycaster-intersected-cleared',
+                                 this.intersectedClearedDetail);
+      clearedIntersectedEls.push(prevIntersectedEls[i]);
+    }
+    if (clearedIntersectedEls.length) {
+      el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
+    }
+
+    // Update line length.
+    if (data.showLine) {
       if (intersections.length) {
-        el.emit('raycaster-intersection', {
-          els: intersectedEls,
-          intersections: intersections
-        });
-      }
-
-      // Emit intersection cleared on both entities per formerly intersected entity.
-      clearedIntersectedEls.length = 0;
-      for (i = 0; i < prevIntersectedEls.length; i++) {
-        if (intersectedEls.indexOf(prevIntersectedEls[i]) !== -1) { continue; }
-        prevIntersectedEls[i].emit('raycaster-intersected-cleared', {el: el});
-        clearedIntersectedEls.push(prevIntersectedEls[i]);
-      }
-      if (clearedIntersectedEls.length) {
-        el.emit('raycaster-intersection-cleared', this.intersectionClearedDetail);
-      }
-
-      // Update line length.
-      if (data.showLine) {
-        if (intersections.length) {
-          if (intersections[0].object.el === el && intersections[1]) {
-            lineLength = intersections[1].distance;
-          } else {
-            lineLength = intersections[0].distance;
-          }
+        if (intersections[0].object.el === el && intersections[1]) {
+          lineLength = intersections[1].distance;
+        } else {
+          lineLength = intersections[0].distance;
         }
-        this.drawLine(lineLength);
       }
-    };
-  })(),
+      this.drawLine(lineLength);
+    }
+  },
 
   /**
    * Update origin and direction of raycaster using entity transforms and supplied origin or

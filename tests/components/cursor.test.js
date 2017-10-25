@@ -9,6 +9,7 @@ suite('cursor', function () {
   var intersection;
   var intersectedEl;
   var prevIntersectedEl;
+  var raycaster;
 
   setup(function (done) {
     cameraEl = entityFactory();
@@ -22,6 +23,7 @@ suite('cursor', function () {
     el.addEventListener('componentinitialized', function (evt) {
       if (evt.detail.name !== 'cursor') { return; }
       component = el.components.cursor;
+      raycaster = el.components.raycaster;
       done();
     });
     cameraEl.appendChild(el);
@@ -35,10 +37,9 @@ suite('cursor', function () {
 
   suite('remove', function () {
     test('removes hover state', function (done) {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.ok(el.is('cursor-hovering'));
       assert.ok(intersectedEl.is('cursor-hovered'));
       el.removeAttribute('cursor');
@@ -51,10 +52,9 @@ suite('cursor', function () {
 
     test('removes fuse state', function (done) {
       el.setAttribute('cursor', 'fuse', true);
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.ok(el.is('cursor-fusing'));
       el.removeAttribute('cursor');
       process.nextTick(function () {
@@ -66,10 +66,9 @@ suite('cursor', function () {
     test('removes intersection listener', function (done) {
       el.removeAttribute('cursor');
       process.nextTick(function () {
-        el.emit('raycaster-intersection', {
-          intersections: [intersection],
-          els: [intersectedEl]
-        });
+        raycaster.intersections = [intersection];
+        raycaster.intersectedEls = [intersectedEl];
+        el.emit('raycaster-intersection');
         assert.notOk(el.is('cursor-hovering'));
         done();
       });
@@ -157,26 +156,23 @@ suite('cursor', function () {
 
   suite('onIntersection', function () {
     test('does not do anything if already intersecting', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [el]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [el];
+      el.emit('raycaster-intersection');
       assert.notOk(intersectedEl.is('cursor-hovered'));
     });
 
     test('does not do anything if only the cursor is intersecting', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [el]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [el];
+      el.emit('raycaster-intersection');
       assert.notOk(el.is('cursor-hovered'));
     });
 
     test('sets cursor-hovered state on intersectedEl', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.ok(intersectedEl.is('cursor-hovered'));
     });
 
@@ -185,10 +181,9 @@ suite('cursor', function () {
         assert.equal(evt.detail.intersectedEl, intersectedEl);
         done();
       });
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
     });
 
     test('emits mouseenter event on intersectedEl', function (done) {
@@ -196,10 +191,9 @@ suite('cursor', function () {
         assert.equal(evt.detail.cursorEl, el);
         done();
       });
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
     });
 
     test('emits mousenter event on intersectedEl, ignoring el intersection', function (done) {
@@ -207,10 +201,9 @@ suite('cursor', function () {
         assert.equal(evt.detail.cursorEl, el);
         done();
       });
-      el.emit('raycaster-intersection', {
-        intersections: [intersection, intersection],
-        els: [el, intersectedEl]
-      });
+      raycaster.intersections = [intersection, intersection];
+      raycaster.intersectedEls = [el, intersectedEl];
+      el.emit('raycaster-intersection');
     });
 
     test('updates existing intersections for intersected entities', function (done, fail) {
@@ -224,10 +217,9 @@ suite('cursor', function () {
         intersectedEl.addEventListener('mouseenter', fail);
         el.addEventListener('mouseenter', fail);
 
-        el.emit('raycaster-intersection', {
-          intersections: [intersection2],
-          els: [intersectedEl]
-        });
+        raycaster.intersections = [intersection2];
+        raycaster.intersectedEls = [intersectedEl];
+        el.emit('raycaster-intersection');
 
         process.nextTick(function () {
           assert.shallowDeepEqual(el.components.cursor.intersection, intersection2);
@@ -235,10 +227,9 @@ suite('cursor', function () {
         });
       });
 
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.ok(el.is('cursor-hovering'));
     });
 
@@ -246,39 +237,36 @@ suite('cursor', function () {
       once(prevIntersectedEl, 'mouseleave', function (evt) {
         done();
       });
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [prevIntersectedEl]
-      });
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [prevIntersectedEl];
+      el.emit('raycaster-intersection');
+
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
     });
 
     test('does not set cursor-fusing state on cursor if not fuse', function () {
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.notOk(el.is('cursor-fusing'));
     });
 
     test('sets cursor-fusing state on cursor if fuse', function () {
       el.setAttribute('cursor', 'fuse', true);
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       assert.ok(el.is('cursor-fusing'));
     });
 
     test('removes fuse state and emits event on fuse click', function (done) {
       el.setAttribute('cursor', {fuse: true, fuseTimeout: 1});
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       once(el, 'click', function () {
         assert.notOk(el.is('cursor-fusing'));
         done();
@@ -287,10 +275,9 @@ suite('cursor', function () {
 
     test('emits event on intersectedEl on fuse click', function (done) {
       el.setAttribute('cursor', {fuse: true, fuseTimeout: 1});
-      el.emit('raycaster-intersection', {
-        intersections: [intersection],
-        els: [intersectedEl]
-      });
+      raycaster.intersections = [intersection];
+      raycaster.intersectedEls = [intersectedEl];
+      el.emit('raycaster-intersection');
       once(intersectedEl, 'click', function () {
         done();
       });
