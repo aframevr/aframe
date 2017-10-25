@@ -69303,6 +69303,9 @@ module.exports.Component = registerComponent('raycaster', {
     this.observer = new MutationObserver(this.setDirty);
     this.dirty = true;
     this.intersectionClearedDetail = {clearedEls: this.clearedIntersectedEls};
+    this.lineEndVec3 = new THREE.Vector3();
+    this.otherLineEndVec3 = new THREE.Vector3();
+    this.lineData = {end: this.lineEndVec3};
   },
 
   /**
@@ -69534,30 +69537,24 @@ module.exports.Component = registerComponent('raycaster', {
    * @param {number} length - Length of line. Pass in to shorten the line to the intersection
    *   point. If not provided, length will default to the max length, `raycaster.far`.
    */
-  drawLine: (function (length) {
-    var lineEndVec3 = new THREE.Vector3();
-    var otherLineEndVec3 = new THREE.Vector3();
-    var lineData = {end: lineEndVec3};
+  drawLine: function (length) {
+    var data = this.data;
+    var el = this.el;
+    // We switch each time the vector so the line update is triggered
+    // and to avoid unnecessary vector clone.
+    var endVec3 = this.lineData.end === this.lineEndVec3 ? this.otherLineEndVec3 : this.lineEndVec3;
 
-    return function (length) {
-      var data = this.data;
-      var el = this.el;
-      // We switch each time the vector so the line update is triggered
-      // and to avoid unnecessary vector clone.
-      var endVec3 = lineData.end === lineEndVec3 ? otherLineEndVec3 : lineEndVec3;
+    // Treat Infinity as 1000m for the line.
+    if (length === undefined) {
+      length = data.far === Infinity ? 1000 : data.far;
+    }
 
-      // Treat Infinity as 1000m for the line.
-      if (length === undefined) {
-        length = data.far === Infinity ? 1000 : data.far;
-      }
-
-      // Update the length of the line if given. `unitLineEndVec3` is the direction
-      // given by data.direction, then we apply a scalar to give it a length.
-      lineData.start = data.origin;
-      lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
-      el.setAttribute('line', lineData);
-    };
-  })()
+    // Update the length of the line if given. `unitLineEndVec3` is the direction
+    // given by data.direction, then we apply a scalar to give it a length.
+    this.lineData.start = data.origin;
+    this.lineData.end = endVec3.copy(this.unitLineEndVec3).multiplyScalar(length);
+    el.setAttribute('line', this.lineData);
+  }
 });
 
 /**
@@ -78176,7 +78173,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 21-10-2017, Commit #17aff26)');
+console.log('A-Frame Version: 0.7.0 (Date 25-10-2017, Commit #6c3e5f8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
