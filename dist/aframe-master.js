@@ -66941,14 +66941,12 @@ module.exports.Component = registerComponent('gearvr-controls', {
 });
 
 },{"../core/component":125,"../utils/bind":189,"../utils/tracked-controls":200}],82:[function(_dereq_,module,exports){
-var debug = _dereq_('../utils/debug');
 var geometries = _dereq_('../core/geometry').geometries;
 var geometryNames = _dereq_('../core/geometry').geometryNames;
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 
 var dummyGeometry = new THREE.Geometry();
-var warn = debug('components:geometry:warn');
 
 /**
  * Geometry component. Combined with material component to make a mesh in 3D object.
@@ -66957,7 +66955,6 @@ var warn = debug('components:geometry:warn');
 module.exports.Component = registerComponent('geometry', {
   schema: {
     buffer: {default: true},
-    mergeTo: {type: 'selector'},
     primitive: {default: 'box', oneOf: geometryNames},
     skipCache: {default: false}
   },
@@ -66982,57 +66979,6 @@ module.exports.Component = registerComponent('geometry', {
 
     // Create new geometry.
     this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
-    if (data.mergeTo) {
-      this.mergeTo(data.mergeTo);
-    }
-  },
-
-  /**
-   * Merge geometry to another entity's geometry.
-   * Remove the entity from the scene. Not a reversible operation.
-   *
-   * @param {Element} toEl - Entity where the geometry will be merged to.
-   */
-  mergeTo: function (toEl) {
-    var el = this.el;
-    var mesh = el.getObject3D('mesh');
-    var toMesh;
-
-    if (!toEl || !toEl.isEntity) {
-      warn('There is not a valid entity to merge the geometry to');
-      return;
-    }
-
-    if (toEl === el) {
-      warn('Source and target geometries cannot be the same for merge');
-      return;
-    }
-
-    // Create mesh if entity does not have one.
-    toMesh = toEl.getObject3D('mesh');
-    if (!toMesh) {
-      toMesh = toEl.getOrCreateObject3D('mesh', THREE.Mesh);
-      toEl.setAttribute('material', el.getAttribute('material'));
-      return;
-    }
-
-    if (toMesh.geometry instanceof THREE.Geometry === false ||
-        mesh.geometry instanceof THREE.Geometry === false) {
-      warn('Geometry merge is only available for `THREE.Geometry` types. ' +
-           'Check that both of the merging geometry and the target geometry have `buffer` ' +
-           'set to false');
-      return;
-    }
-
-    if (this.data.skipCache === false) {
-      warn('Cached geometries are not allowed to merge. Set `skipCache` to true');
-      return;
-    }
-
-    mesh.parent.updateMatrixWorld();
-    toMesh.geometry.merge(mesh.geometry, mesh.matrixWorld);
-    el.emit('geometry-merged', {mergeTarget: toEl});
-    el.parentNode.removeChild(el);
   },
 
   /**
@@ -67064,7 +67010,7 @@ module.exports.Component = registerComponent('geometry', {
   }
 });
 
-},{"../core/component":125,"../core/geometry":126,"../lib/three":173,"../utils/debug":191}],83:[function(_dereq_,module,exports){
+},{"../core/component":125,"../core/geometry":126,"../lib/three":173}],83:[function(_dereq_,module,exports){
 var registerComponent = _dereq_('../core/component').registerComponent;
 var THREE = _dereq_('../lib/three');
 var utils = _dereq_('../utils/');
@@ -78173,7 +78119,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 25-10-2017, Commit #6c3e5f8)');
+console.log('A-Frame Version: 0.7.0 (Date 25-10-2017, Commit #fcf3a12)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -78930,7 +78876,7 @@ module.exports.System = registerSystem('geometry', {
     var hash;
 
     // Skip all caching logic.
-    if (data.skipCache || data.mergeTo) { return createGeometry(data); }
+    if (data.skipCache) { return createGeometry(data); }
 
     // Try to retrieve from cache first.
     hash = this.hash(data);
@@ -78956,7 +78902,7 @@ module.exports.System = registerSystem('geometry', {
     var geometry;
     var hash;
 
-    if (data.skipCache || data.mergeTo) { return; }
+    if (data.skipCache) { return; }
 
     hash = this.hash(data);
 
