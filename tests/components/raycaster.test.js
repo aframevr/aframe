@@ -435,12 +435,65 @@ suite('raycaster', function () {
         component.tick();
         line = el.getAttribute('line');
         assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 24.5);
-
         box.parentNode.removeChild(box);
         setTimeout(() => {
           component.tick();
           line = el.getAttribute('line');
           assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+          done();
+        });
+      });
+    });
+
+    test('truncates line length with two raycasters', function (done) {
+      var box;
+      var rayEl2;
+      var line;
+      var lineArray;
+      var lineStart = new THREE.Vector3();
+      var lineEnd = new THREE.Vector3();
+
+      el.setAttribute('raycaster', {direction: '0 0 -1', origin: '0 0 0', objects: '#target'});
+      lineArray = el.components.line.geometry.attributes.position.array;
+
+      rayEl2 = document.createElement('a-entity');
+      rayEl2.setAttribute('raycaster', {
+        direction: '0 -1 -1',
+        origin: '0 0 0',
+        showLine: true,
+        objects: '#target'
+      });
+      sceneEl.appendChild(rayEl2);
+
+      line = el.getAttribute('line');
+      assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+      lineEnd.fromArray(lineArray, 3);
+      assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 1000);
+
+      box = document.createElement('a-entity');
+      box.id = 'target';
+      box.setAttribute('geometry', {primitive: 'box', width: 1, height: 1, depth: 1});
+      box.setAttribute('position', '0 0 -25');
+      sceneEl.appendChild(box);
+
+      box.addEventListener('loaded', function () {
+        el.sceneEl.object3D.updateMatrixWorld();
+        component.refreshObjects();
+        component.tick();
+        rayEl2.components.raycaster.tick();
+        rayEl2.components.raycaster.tick();
+        // ensure component and geometry are unaffected by other raycaster
+        line = el.getAttribute('line');
+        assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 24.5);
+        lineEnd.fromArray(lineArray, 3);
+        assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 24.5);
+        box.parentNode.removeChild(box);
+        setTimeout(() => {
+          component.tick();
+          line = el.getAttribute('line');
+          assert.equal(new THREE.Vector3().copy(line.start).sub(line.end).length(), 1000);
+          lineEnd.fromArray(lineArray, 3);
+          assert.equal(lineStart.fromArray(lineArray).sub(lineEnd).length(), 1000);
           done();
         });
       });
