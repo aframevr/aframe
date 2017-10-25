@@ -342,15 +342,6 @@ Most A-Frame components are published on npm as well as GitHub. We can use
 quality, popularity, and maintenance. This is a great place to look for a more
 complete list of components.
 
-#### `awesome-aframe` Repository
-
-[awesome]: https://github.com/aframevr/awesome-aframe#components
-
-The [`awesome-aframe` repository][awesome] is a list of awesome things
-regarding the A-Frame ecosystem. Within that list is a section for components.
-Note the component list is not heavily curated and doesn't contain any images.
-Each entry will contain a name, link, and short description.
-
 #### *A Week of A-Frame*
 
 [blog]: https://aframe.io/blog/

@@ -177,10 +177,9 @@ If it's your first time here, here's a plan for success for getting into
 A-Frame:
 
 1. For inspiration, check out what other people have built with A-Frame on the
-[Weekly Blog](https://aframe.io/blog/) and
-[awesome-aframe](https://github.com/aframevr/awesome-aframe/). Users of A-Frame
-have included The Washington Post, Amnesty International, Google Creative Labs,
-Al Jazeera, NPR, Shopify, iStaging, and IDEO.
+[Weekly Blog](https://aframe.io/blog/). Users of A-Frame have included The
+Washington Post, Amnesty International, Google, Al Jazeera, NPR, Shopify,
+iStaging, and IDEO.
 
 2. Read through the basic documentation and guides to get a grasp.
 

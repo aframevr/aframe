@@ -6,7 +6,6 @@ parent_section: introduction
 order: 12
 ---
 
-[awesome]: https://github.com/aframevr/awesome-aframe/
 [ecs]: ./entity-component-system.md
 [github]: http://github.com/aframevr/aframe/
 [three]: http://threejs.org
