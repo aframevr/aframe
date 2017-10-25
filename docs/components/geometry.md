@@ -23,27 +23,8 @@ Every geometry type will have these properties:
 | Property  | Description                                                                                                                          | Default Value |
 |-----------|--------------------------------------------------------------------------------------------------------------------------------------|---------------|
 | buffer    | Transform geometry into a BufferGeometry to reduce memory usage at the cost of being harder to manipulate.                           | true          |
-| mergeTo   | A selector to an entity to merge the entity's geometry to.                                                                           | None          |
 | primitive | Name of a geometry (e.g., one of the geometries listed below). Determines the geometry type and what other properties are available. | box           |
 | skipCache | Disable retrieving the shared geometry object from the cache.                                                                        | false         |
-
-### `mergeTo`
-
-Merging geometries reduces the number of draw calls, greatly improving
-performance under certain circumstances. Merged geometries will inherit the
-material of the target geometry. Thus, it's useful when we have entities that
-share the same material.
-
-Once merged, we can no longer manipulate the individual geometry independently.
-
-For geometry merging to be able to work, we will have to turn off `buffer` and
-turn on `skipCache`.
-
-```html
-<a-entity id="target" geometry="primitive: box; buffer: false; skipCache: true" material="color: red"></a-entity>
-<a-entity geometry="primitive: box; buffer: false; skipCache: true; mergeTo: #target"
-          material="color: red" position="1 2 3"></a-entity>
-```
 
 ## Built-in Geometries
 
