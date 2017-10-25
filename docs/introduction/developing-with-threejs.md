@@ -61,7 +61,7 @@ scene graph.
 
 ### Accessing the three.js Scene
 
-[scene]: https://threejs.org/docs/#Reference/Scenes/Scene
+[scene]: https://threejs.org/docs/#api/scenes/Scene
 
 The [three.js scene][scene] is accessible from the `<a-scene>` element as `.object3D`:
 
@@ -90,8 +90,8 @@ AFRAME.registerComponent('foo', {
 
 ### Accessing an Entity's three.js Objects
 
-[group]: https://threejs.org/docs/#Reference/Objects/Group
-[object3d]: https://threejs.org/docs/#Reference/Core/Object3D
+[group]: https://threejs.org/docs/#api/objects/Group
+[object3d]: https://threejs.org/docs/#api/core/Object3D
 
 Every A-Frame entity (e.g., `<a-entity>`) has its own
 [`THREE.Object3D`][object3d], more specifically a [`THREE.Group`][group] that
@@ -226,8 +226,6 @@ To get the world rotation of an `Object3D`:
 ```js
 entityEl.object3D.getWorldRotation();
 ```
-
-[object3d]: https://threejs.org/docs/#api/core/Object3D
 
 three.js `Object3D` has [more functions available for local-to-world transforms][object3d]:
 
