@@ -412,3 +412,15 @@ function collisionHandler (event) {
 entityEl.addEventListener('physicscollided', collisionHandler);
 entityEl.removeEventListener('physicscollided', collisionHandler);
 ```
+
+## Caveats
+
+[faq]: ./faq.md#why-is-the-html-not-updating-when-i-check-the-browser-inspector
+[mutation-observer]: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+[attr-selectors]: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
+
+A-Frame entities and primitives are implemented in a way that
+[favours performance][faq] and so, some HTML APIs my not work as expected.
+For instance, [attribute selectors involving values][attr-selectors] won't work
+and a [mutation observer][mutation-observer] won't trigger changes when a entity's
+component is altered.
