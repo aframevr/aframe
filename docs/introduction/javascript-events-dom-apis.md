@@ -420,7 +420,7 @@ entityEl.removeEventListener('physicscollided', collisionHandler);
 [attr-selectors]: https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors
 
 A-Frame entities and primitives are implemented in a way that
-[favours performance][faq] and so, some HTML APIs my not work as expected.
+[favours performance][faq] such that some HTML APIs may not work as expected.
 For instance, [attribute selectors involving values][attr-selectors] won't work
 and a [mutation observer][mutation-observer] won't trigger changes when a entity's
 component is altered.
