@@ -100,11 +100,15 @@ module.exports.System = registerSystem('camera', {
     cameraEls = sceneEl.querySelectorAll('[camera]');
     for (i = 0; i < cameraEls.length; i++) {
       cameraEl = cameraEls[i];
-      if (newCameraEl === cameraEl) { continue; }
+      if (isMixin(cameraEl) || newCameraEl === cameraEl) { continue; }
       cameraEl.setAttribute('camera', 'active', false);
       cameraEl.pause();
     }
     sceneEl.emit('camera-set-active', {cameraEl: newCameraEl});
+
+    function isMixin (el) {
+      return el.tagName === 'A-MIXIN';
+    }
   }
 });
 
