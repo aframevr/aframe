@@ -66390,22 +66390,25 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
-    window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('touchstart', this.onMouseMove);
-    window.removeEventListener('touchmove', this.onMouseMove);
-    window.removeEventListener('resize', this.updateCanvasBounds);
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchstart', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
+    canvas.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
+    var canvas;
     var el = this.el;
-    window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('touchstart', this.onMouseMove);
-    window.removeEventListener('touchmove', this.onMouseMove);
+
+    canvas = el.sceneEl.canvas;
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchstart', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
-    window.addEventListener('mousemove', this.onMouseMove, false);
-    window.addEventListener('touchstart', this.onMouseMove, false);
-    window.addEventListener('touchmove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove, false);
+    canvas.addEventListener('touchstart', this.onMouseMove, false);
+    canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
@@ -78119,7 +78122,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 25-10-2017, Commit #fcf3a12)');
+console.log('A-Frame Version: 0.7.0 (Date 27-10-2017, Commit #6959de2)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
