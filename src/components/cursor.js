@@ -150,22 +150,25 @@ module.exports.Component = registerComponent('cursor', {
     });
     el.removeEventListener('raycaster-intersection', this.onIntersection);
     el.removeEventListener('raycaster-intersection-cleared', this.onIntersectionCleared);
-    window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('touchstart', this.onMouseMove);
-    window.removeEventListener('touchmove', this.onMouseMove);
-    window.removeEventListener('resize', this.updateCanvasBounds);
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchstart', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
+    canvas.removeEventListener('resize', this.updateCanvasBounds);
   },
 
   updateMouseEventListeners: function () {
+    var canvas;
     var el = this.el;
-    window.removeEventListener('mousemove', this.onMouseMove);
-    window.removeEventListener('touchstart', this.onMouseMove);
-    window.removeEventListener('touchmove', this.onMouseMove);
+
+    canvas = el.sceneEl.canvas;
+    canvas.removeEventListener('mousemove', this.onMouseMove);
+    canvas.removeEventListener('touchstart', this.onMouseMove);
+    canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
-    window.addEventListener('mousemove', this.onMouseMove, false);
-    window.addEventListener('touchstart', this.onMouseMove, false);
-    window.addEventListener('touchmove', this.onMouseMove, false);
+    canvas.addEventListener('mousemove', this.onMouseMove, false);
+    canvas.addEventListener('touchstart', this.onMouseMove, false);
+    canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
   },
