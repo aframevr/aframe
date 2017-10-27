@@ -2,4 +2,5 @@ require('./flat');
 require('./standard');
 require('./sdf');
 require('./msdf');
-require('./ios10hls');
+require('./bgra-flipy');
+require('./flipy');

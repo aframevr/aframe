@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Videosphere HLS</title>
+    <meta name="description" content="Videosphere HLS - A-Frame">
+    <script src="../../../dist/aframe-master.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <video id="city" preload="auto" webkit-playsinline playsinline
+        src="../../assets/videos/city_halfres_hls.m3u8"
+        width="360" height="360" autoplay loop
+        crossorigin="anonymous"></video>
+
+      <a-entity material="shader: flat; src: #city" geometry="primitive: sphere; radius: 100"
+        scale="1 1 -1">
+      </a-entity>
+
+      <a-camera></a-camera>
+    </a-scene>
+
+    <script>
+      var vid = document.querySelector('video');
+      window.addEventListener('load', function() {
+        console.log('load');
+        if (vid.paused) {
+          document.querySelector('[camera]').insertAdjacentHTML('beforeend',
+'<a-text id="prompt" value="Click or tap to play." align="center" position="0 0.25 -2"></a-text>');
+
+          window.addEventListener('click', function playOnce() {
+            vid.play();
+            var txt = document.querySelector('#prompt');
+            txt.parentElement.removeChild(txt);
+            window.removeEventListener('click', playOnce);
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

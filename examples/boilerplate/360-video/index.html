@@ -5,11 +5,44 @@
     <title>360 Video</title>
     <meta name="description" content="360 Video — A-Frame">
     <script src="../../../dist/aframe-master.js"></script>
+    <style>
+      @media (-webkit-video-playable-inline) {
+        .tip {
+          background: rgba(255,255,255,.9);
+          color: rgba(0,0,0,.9);
+          display: inline-block;
+          font: .8rem monospace;
+          padding: .5rem .75rem;
+          position: absolute;
+          right: 0;
+          text-align: right;
+          top: 0;
+          z-index: 999999;
+        }
+
+        .tip:hover,
+        .tip:active,
+        .tip:focus {
+          color: #000;
+        }
+      }
+
+      #tip-hls {
+        right: 8px;
+        top: 8px;
+        position: absolute;
+        z-index: 999999;
+        text-align: right;
+      }
+    </style>
   </head>
   <body>
-    <a-scene>
+    <a id="tip-hls" class="tip hls" href="../../test/videosphere/hls.html">
+      Switch to native HLS version (e.g. Safari, Edge...)
+    </a>
+    <a-scene stats>
       <a-assets>
-        <video id="video" autoplay loop crossorigin="anonymous">
+        <video id="video" autoplay loop crossorigin="anonymous" webkit-playsinline playsinline>
           <source src="https://ucarecdn.com/fadab25d-0b3a-45f7-8ef5-85318e92a261/"></source>
         </video>
       </a-assets>

@@ -66,6 +66,11 @@ function isIOS () {
 }
 module.exports.isIOS = isIOS;
 
+function isMacOS () {
+  return /Mac/.test(window.navigator.platform);
+}
+module.exports.isMacOS = isMacOS;
+
 function isGearVR () {
   return /SamsungBrowser.+Mobile VR/i.test(window.navigator.userAgent);
 }
