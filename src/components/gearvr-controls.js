@@ -56,7 +56,6 @@ module.exports.Component = registerComponent('gearvr-controls', {
     this.onButtonTouchEnd = function (evt) { onButtonEvent(evt.detail.id, 'touchend', self); };
     this.onAxisMoved = bind(this.onAxisMoved, this);
     this.controllerPresent = false;
-    this.everGotGamepadEvent = false;
     this.lastControllerCheck = 0;
     this.bindMethods();
     this.checkControllerPresentAndSetup = checkControllerPresentAndSetup;  // To allow mock.
