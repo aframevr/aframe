@@ -150,8 +150,8 @@ AFRAME.registerComponent('foo', {
     return function () {
       helperVector.copy(this.el.object3D.position);
       helperQuaternion.copy(this.el.object3D.quaternion);
-    })();
-  }
+    };
+  })()
 });
 ```
 
