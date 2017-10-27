@@ -49,7 +49,7 @@ so using idPrefix for Vive / OpenVR controllers is recommended.
 
 | Event Name    | Description                                                                                                                                                                       |
 |---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| axismove      | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detial. `axis` is an array of values from `-1.0` (left, up) to `1.0` (right, down). |
+| axismove      | Axis changed (e.g., for thumbstick, touchpad). Contains `axis` and `axesChanged` in the event detial. `axis` is an array of values from `-1.0` (left, down) to `1.0` (right, up). |
 | buttonchanged | Any touch or press of a button fires this.                                                                                                                                        |
 | buttondown    | Button pressed.                                                                                                                                                                   |
 | buttonup      | Button released.                                                                                                                                                                  |
