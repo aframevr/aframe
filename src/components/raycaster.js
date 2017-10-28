@@ -155,10 +155,21 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: (function () {
+  tick: function (time) {
+    var data = this.data;
+    var prevCheckTime = this.prevCheckTime;
+
+    // Only check for intersection if interval time has passed.
+    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+    // Update check time.
+    this.prevCheckTime = time;
+    this.checkIntersections();
+  },
+  /* Raycast for intersections and emit events for current and cleared inersections */
+  checkIntersections: (function () {
     var intersections = [];
 
-    return function (time) {
+    return function () {
       var clearedIntersectedEls = this.clearedIntersectedEls;
       var el = this.el;
       var data = this.data;
@@ -166,16 +177,10 @@ module.exports.Component = registerComponent('raycaster', {
       var intersectedEls = this.intersectedEls;
       var intersection;
       var lineLength;
-      var prevCheckTime = this.prevCheckTime;
       var prevIntersectedEls = this.prevIntersectedEls;
       var rawIntersections;
 
       if (!this.data.enabled) { return; }
-
-      // Only check for intersection if interval time has passed.
-      if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-      // Update check time.
-      this.prevCheckTime = time;
 
       // Refresh the object whitelist if needed.
       if (this.dirty) { this.refreshObjects(); }
