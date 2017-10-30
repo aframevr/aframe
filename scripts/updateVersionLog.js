@@ -16,17 +16,9 @@ gitRev.short(hash => {
 });
 
 /**
- * @returns {string} of format `1-1-2017`.
+ * @returns {string} of format `2017-12-25`.
  */
 function getBuildTimestamp () {
-  function pad2 (value) {
-    return ('0' + value).slice(-2);
-  }
-  const date = new Date();
-  const timestamp = [
-    pad2(date.getUTCDate()),
-    pad2(date.getUTCMonth() + 1),
-    date.getUTCFullYear()
-  ];
-  return timestamp.join('-');
+  const timestamp = new Date().toISOString().slice(0, 10);
+  return timestamp;
 }
