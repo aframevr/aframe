@@ -1,4 +1,3 @@
-var components = require('./component');
 var schema = require('./schema');
 var utils = require('../utils/');
 
@@ -28,14 +27,9 @@ var systems = module.exports.systems = {};  // Keep track of registered systems.
  * @member {Element} sceneEl - Handle to the scene element where system applies to.
  */
 var System = module.exports.System = function (sceneEl) {
-  var component = components && components.components[this.name];
-
   // Set reference to scene.
   this.el = sceneEl;
   this.sceneEl = sceneEl;
-
-  // Set reference to matching component (if exists).
-  if (component) { component.Component.prototype.system = this; }
 
   // Process system configuration.
   this.buildData();

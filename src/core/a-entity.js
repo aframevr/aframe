@@ -36,6 +36,7 @@ var proto = Object.create(ANode.prototype, {
       this.components = {};
       // To avoid double initializations and infinite loops.
       this.initializingComponents = {};
+      this.deferredComponentUpdates = [];
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -74,6 +75,8 @@ var proto = Object.create(ANode.prototype, {
       var self = this;  // Component.
 
       this.addToParent();
+
+      this.updateComponents();
 
       // Don't .load() scene on attachedCallback.
       if (this.isScene) { return; }
@@ -430,7 +433,7 @@ var proto = Object.create(ANode.prototype, {
         var i;
         var name;
 
-        if (!this.hasLoaded) { return; }
+        if (!this.hasLoaded || !this.parentEl) { return; }
 
         // Gather mixin-defined components.
         for (i = 0; i < this.mixinEls.length; i++) {
@@ -468,6 +471,12 @@ var proto = Object.create(ANode.prototype, {
           this.updateComponent(name, data);
           delete componentsToUpdate[name];
         }
+
+        // Perform any pending component updates.
+        for (i = 0; i < this.deferredComponentUpdates.length; ++i) {
+          this.updateComponent.apply(this, this.deferredComponentUpdates[i]);
+        }
+        this.deferredComponentUpdates.length = 0;
       };
     })(),
     writable: window.debug
@@ -484,6 +493,10 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponent: {
     value: function (attr, attrValue, clobber) {
+      if (!this.hasLoaded || !this.parentEl) {
+        this.deferredComponentUpdates.push([attr, attrValue, clobber]);
+        return;
+      }
       var component = this.components[attr];
       var isDefault = attr in this.defaultComponents;
       if (component) {
@@ -645,12 +658,6 @@ var proto = Object.create(ANode.prototype, {
         ANode.prototype.setAttribute.call(this, attrName, arg1);
         if (attrName === 'mixin') { this.mixinUpdate(arg1); }
         return;
-      }
-
-      // Initialize component first if not yet initialized.
-      if (!this.components[attrName] && this.hasAttribute(attrName)) {
-        this.updateComponent(attrName,
-                             window.HTMLElement.prototype.getAttribute.call(this, attrName));
       }
 
       // Determine new attributes from the arguments
