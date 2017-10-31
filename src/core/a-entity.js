@@ -76,8 +76,6 @@ var proto = Object.create(ANode.prototype, {
 
       this.addToParent();
 
-      this.updateComponents();
-
       // Don't .load() scene on attachedCallback.
       if (this.isScene) { return; }
 
@@ -493,10 +491,12 @@ var proto = Object.create(ANode.prototype, {
    */
   updateComponent: {
     value: function (attr, attrValue, clobber) {
+      // If the entity has not initialised yet, queue this update for later
       if (!this.hasLoaded || !this.parentEl) {
         this.deferredComponentUpdates.push([attr, attrValue, clobber]);
         return;
       }
+
       var component = this.components[attr];
       var isDefault = attr in this.defaultComponents;
       if (component) {
