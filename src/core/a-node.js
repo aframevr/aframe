@@ -85,7 +85,6 @@ module.exports = registerElement('a-node', {
 
     detachedCallback: {
       value: function () {
-        this.sceneEl = null;
         this.hasLoaded = false;
       }
     },
