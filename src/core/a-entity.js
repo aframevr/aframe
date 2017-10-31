@@ -36,7 +36,7 @@ var proto = Object.create(ANode.prototype, {
       this.components = {};
       // To avoid double initializations and infinite loops.
       this.initializingComponents = {};
-      this.deferredComponentUpdates = [];
+      this.queuedComponentUpdates = [];
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -471,10 +471,10 @@ var proto = Object.create(ANode.prototype, {
         }
 
         // Perform any pending component updates.
-        for (i = 0; i < this.deferredComponentUpdates.length; ++i) {
-          this.updateComponent.apply(this, this.deferredComponentUpdates[i]);
+        for (i = 0; i < this.queuedComponentUpdates.length; ++i) {
+          this.updateComponent.apply(this, this.queuedComponentUpdates[i]);
         }
-        this.deferredComponentUpdates.length = 0;
+        this.queuedComponentUpdates.length = 0;
       };
     })(),
     writable: window.debug
@@ -493,7 +493,7 @@ var proto = Object.create(ANode.prototype, {
     value: function (attr, attrValue, clobber) {
       // If the entity has not initialised yet, queue this update for later
       if (!this.hasLoaded || !this.parentEl) {
-        this.deferredComponentUpdates.push([attr, attrValue, clobber]);
+        this.queuedComponentUpdates.push([attr, attrValue, clobber]);
         return;
       }
 
