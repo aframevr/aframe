@@ -70737,6 +70737,8 @@ module.exports.Component = registerComponent('text', {
   schema: {
     align: {type: 'string', default: 'left', oneOf: ['left', 'right', 'center']},
     alphaTest: {default: 0.5},
+    depthTest: {default: true},
+    depthWrite: {default: true},
     // `anchor` defaults to center to match geometries.
     anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
     baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
@@ -71120,6 +71122,8 @@ function createShader (el, shaderName, data) {
  */
 function updateBaseMaterial (material, data) {
   material.side = data.side;
+  material.depthTest = data.depthTest;
+  material.depthWrite = data.depthWrite;
 }
 
 /**
@@ -78106,7 +78110,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 27-10-2017, Commit #e8f5f97)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-01, Commit #bb6f861)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
