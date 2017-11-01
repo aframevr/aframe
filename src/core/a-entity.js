@@ -36,6 +36,7 @@ var proto = Object.create(ANode.prototype, {
       this.components = {};
       // To avoid double initializations and infinite loops.
       this.initializingComponents = {};
+      this.componentsToUpdate = {};
       this.isEntity = true;
       this.isPlaying = false;
       this.object3D = new THREE.Group();
@@ -421,55 +422,52 @@ var proto = Object.create(ANode.prototype, {
    *   from other sources (e.g., implemented by primitives).
    */
   updateComponents: {
-    value: (function () {
-      var componentsToUpdate = {};
+    value: function () {
+      var data;
+      var extraComponents;
+      var i;
+      var name;
+      var componentsToUpdate = this.componentsToUpdate;
 
-      return function () {
-        var data;
-        var extraComponents;
-        var i;
-        var name;
+      if (!this.hasLoaded) { return; }
 
-        if (!this.hasLoaded) { return; }
-
-        // Gather mixin-defined components.
-        for (i = 0; i < this.mixinEls.length; i++) {
-          for (name in this.mixinEls[i].componentCache) {
-            if (isComponent(name)) { componentsToUpdate[name] = true; }
-          }
-        }
-
-        // Gather from extra initial component data if defined (e.g., primitives).
-        if (this.getExtraComponents) {
-          extraComponents = this.getExtraComponents();
-          for (name in extraComponents) {
-            if (isComponent(name)) { componentsToUpdate[name] = true; }
-          }
-        }
-
-        // Gather entity-defined components.
-        for (i = 0; i < this.attributes.length; ++i) {
-          name = this.attributes[i].name;
+      // Gather mixin-defined components.
+      for (i = 0; i < this.mixinEls.length; i++) {
+        for (name in this.mixinEls[i].componentCache) {
           if (isComponent(name)) { componentsToUpdate[name] = true; }
         }
+      }
 
-        // Initialze or update default components first.
-        for (name in this.defaultComponents) {
-          data = mergeComponentData(this.getDOMAttribute(name),
-                                    extraComponents && extraComponents[name]);
-          this.updateComponent(name, data);
-          delete componentsToUpdate[name];
+      // Gather from extra initial component data if defined (e.g., primitives).
+      if (this.getExtraComponents) {
+        extraComponents = this.getExtraComponents();
+        for (name in extraComponents) {
+          if (isComponent(name)) { componentsToUpdate[name] = true; }
         }
+      }
 
-        // Initialize or update rest of components.
-        for (name in componentsToUpdate) {
-          data = mergeComponentData(this.getDOMAttribute(name),
-                                    extraComponents && extraComponents[name]);
-          this.updateComponent(name, data);
-          delete componentsToUpdate[name];
-        }
-      };
-    })(),
+      // Gather entity-defined components.
+      for (i = 0; i < this.attributes.length; ++i) {
+        name = this.attributes[i].name;
+        if (isComponent(name)) { componentsToUpdate[name] = true; }
+      }
+
+      // Initialze or update default components first.
+      for (name in this.defaultComponents) {
+        data = mergeComponentData(this.getDOMAttribute(name),
+                                  extraComponents && extraComponents[name]);
+        this.updateComponent(name, data);
+        delete componentsToUpdate[name];
+      }
+
+      // Initialize or update rest of components.
+      for (name in componentsToUpdate) {
+        data = mergeComponentData(this.getDOMAttribute(name),
+                                  extraComponents && extraComponents[name]);
+        this.updateComponent(name, data);
+        delete componentsToUpdate[name];
+      }
+    },
     writable: window.debug
   },
 
