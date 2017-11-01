@@ -1,7 +1,6 @@
 /* global Node */
 var schema = require('./schema');
 var scenes = require('./scene/scenes');
-var systems = require('./system');
 var utils = require('../utils/');
 
 var components = module.exports.components = {};  // Keep track of registered components.
@@ -468,13 +467,14 @@ module.exports.registerComponent = function (name, definition) {
                     'or two different components of the same name.');
   }
   NewComponent = function (el, attr, id) {
+    this.system = el.sceneEl.systems[name];
+
     Component.call(this, el, attr, id);
   };
 
   NewComponent.prototype = Object.create(Component.prototype, proto);
   NewComponent.prototype.name = name;
   NewComponent.prototype.constructor = NewComponent;
-  NewComponent.prototype.system = systems && systems.systems[name];
   NewComponent.prototype.play = wrapPlay(NewComponent.prototype.play);
   NewComponent.prototype.pause = wrapPause(NewComponent.prototype.pause);
 
