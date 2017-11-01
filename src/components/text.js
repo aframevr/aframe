@@ -49,6 +49,8 @@ module.exports.Component = registerComponent('text', {
   schema: {
     align: {type: 'string', default: 'left', oneOf: ['left', 'right', 'center']},
     alphaTest: {default: 0.5},
+    depthTest: {default: true},
+    depthWrite: {default: true},
     // `anchor` defaults to center to match geometries.
     anchor: {default: 'center', oneOf: ['left', 'right', 'center', 'align']},
     baseline: {default: 'center', oneOf: ['top', 'center', 'bottom']},
@@ -432,6 +434,8 @@ function createShader (el, shaderName, data) {
  */
 function updateBaseMaterial (material, data) {
   material.side = data.side;
+  material.depthTest = data.depthTest;
+  material.depthWrite = data.depthWrite;
 }
 
 /**
