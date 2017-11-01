@@ -1247,6 +1247,29 @@ suite('a-entity', function () {
     });
   });
 
+  suite('updateComponents', function () {
+    setup(function (done) {
+      this.child = this.el.appendChild(document.createElement('a-entity'));
+      this.child.addEventListener('loaded', function () {
+        done();
+      });
+    });
+    test('nested calls do not leak components to children', function () {
+      registerComponent('test', {
+        init: function () {
+          var children = this.el.getChildEntities();
+          if (children.length) {
+            children[0].setAttribute('mixin', 'addGeometry');
+          }
+        }
+      });
+      mixinFactory('addTest', {test: ''});
+      mixinFactory('addGeometry', {geometry: 'shape: sphere'});
+      this.el.setAttribute('mixin', 'addTest');
+      assert.notOk(this.child.components['test']);
+    });
+  });
+
   suite('applyMixin', function () {
     test('combines mixin and element components with a dynamic schema', function () {
       var el = this.el;
