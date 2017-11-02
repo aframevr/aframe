@@ -66402,12 +66402,10 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     canvas.removeEventListener('mousemove', this.onMouseMove);
-    canvas.removeEventListener('touchstart', this.onMouseMove);
     canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
     canvas.addEventListener('mousemove', this.onMouseMove, false);
-    canvas.addEventListener('touchstart', this.onMouseMove, false);
     canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
@@ -66445,7 +66443,7 @@ module.exports.Component = registerComponent('cursor', {
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
-      if (evt.type === 'touchstart' || evt.type === 'touchmove') { evt.preventDefault(); }
+      if (evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -66453,6 +66451,11 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    if (this.data.rayOrigin === 'mouse') {
+      // Raycast at new coordinates
+      this.onMouseMove(evt);
+      this.el.components.raycaster.checkIntersections();
+    }
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
     if (evt.type === 'touchstart') { evt.preventDefault(); }
@@ -69327,10 +69330,21 @@ module.exports.Component = registerComponent('raycaster', {
   /**
    * Check for intersections and cleared intersections on an interval.
    */
-  tick: (function () {
+  tick: function (time) {
+    var data = this.data;
+    var prevCheckTime = this.prevCheckTime;
+
+    // Only check for intersection if interval time has passed.
+    if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+    // Update check time.
+    this.prevCheckTime = time;
+    this.checkIntersections();
+  },
+  /* Raycast for intersections and emit events for current and cleared inersections */
+  checkIntersections: (function () {
     var intersections = [];
 
-    return function (time) {
+    return function () {
       var clearedIntersectedEls = this.clearedIntersectedEls;
       var el = this.el;
       var data = this.data;
@@ -69338,16 +69352,10 @@ module.exports.Component = registerComponent('raycaster', {
       var intersectedEls = this.intersectedEls;
       var intersection;
       var lineLength;
-      var prevCheckTime = this.prevCheckTime;
       var prevIntersectedEls = this.prevIntersectedEls;
       var rawIntersections;
 
       if (!this.data.enabled) { return; }
-
-      // Only check for intersection if interval time has passed.
-      if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
-      // Update check time.
-      this.prevCheckTime = time;
 
       // Refresh the object whitelist if needed.
       if (this.dirty) { this.refreshObjects(); }
@@ -78129,7 +78137,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-01, Commit #d3c5220)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #c39980b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
