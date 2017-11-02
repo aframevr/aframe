@@ -162,12 +162,10 @@ module.exports.Component = registerComponent('cursor', {
 
     canvas = el.sceneEl.canvas;
     canvas.removeEventListener('mousemove', this.onMouseMove);
-    canvas.removeEventListener('touchstart', this.onMouseMove);
     canvas.removeEventListener('touchmove', this.onMouseMove);
     el.setAttribute('raycaster', 'useWorldCoordinates', false);
     if (this.data.rayOrigin !== 'mouse') { return; }
     canvas.addEventListener('mousemove', this.onMouseMove, false);
-    canvas.addEventListener('touchstart', this.onMouseMove, false);
     canvas.addEventListener('touchmove', this.onMouseMove, false);
     el.setAttribute('raycaster', 'useWorldCoordinates', true);
     this.updateCanvasBounds();
@@ -205,7 +203,7 @@ module.exports.Component = registerComponent('cursor', {
       origin.setFromMatrixPosition(camera.matrixWorld);
       direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(origin).normalize();
       this.el.setAttribute('raycaster', rayCasterConfig);
-      if (evt.type === 'touchstart' || evt.type === 'touchmove') { evt.preventDefault(); }
+      if (evt.type === 'touchmove') { evt.preventDefault(); }
     };
   })(),
 
@@ -213,6 +211,11 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    if (this.data.rayOrigin === 'mouse') {
+      // Raycast at new coordinates
+      this.onMouseMove(evt);
+      this.el.components.raycaster.checkIntersections();
+    }
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
     if (evt.type === 'touchstart') { evt.preventDefault(); }
