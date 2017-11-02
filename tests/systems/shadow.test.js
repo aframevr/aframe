@@ -20,18 +20,20 @@ suite('shadow system', function () {
     });
 
     test('configures renderer properties', function (done) {
-      var sceneEl = this.el.sceneEl;
+      var div;
+      var scene;
+      var renderer;
 
-      // Systems cannot yet be directly updated.
-      system.data.type = 'basic';
-      system.data.renderReverseSided = false;
-      system.data.renderSingleSided = false;
-      sceneEl.emit('render-target-loaded');
+      div = document.createElement('div');
+      div.innerHTML = '<a-scene shadow="type: basic; autoUpdate: false">';
+      scene = div.children[0];
+      renderer = scene.renderer = {shadowMap: {}};
+      document.body.appendChild(div);
 
-      process.nextTick(function () {
+      setTimeout(() => {
         assert.equal(renderer.shadowMap.type, THREE.BasicShadowMap);
-        assert.notOk(renderer.shadowMap.renderReverseSided);
-        assert.notOk(renderer.shadowMap.renderSingleSided);
+        assert.ok(renderer.shadowMap.renderReverseSided);
+        assert.notOk(renderer.shadowMap.autoUpdate);
         done();
       });
     });
