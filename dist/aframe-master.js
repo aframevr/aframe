@@ -78142,7 +78142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #af0369e)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #48faf8d)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79503,7 +79503,6 @@ function fixVideoAttributes (videoEl) {
 
 },{"../core/system":135,"../lib/three":173,"../utils/":195,"../utils/material":196}],187:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
-var bind = _dereq_('../utils/bind');
 var THREE = _dereq_('../lib/three');
 
 var SHADOW_MAP_TYPE_MAP = {
@@ -79520,9 +79519,10 @@ var SHADOW_MAP_TYPE_MAP = {
  */
 module.exports.System = registerSystem('shadow', {
   schema: {
-    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']},
+    autoUpdate: {default: true},
     renderReverseSided: {default: true},
-    renderSingleSided: {default: true}
+    renderSingleSided: {default: true},
+    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
   },
 
   init: function () {
@@ -79531,14 +79531,14 @@ module.exports.System = registerSystem('shadow', {
 
     this.shadowMapEnabled = false;
 
-    sceneEl.addEventListener('render-target-loaded', bind(function () {
-      // Renderer is not initialized in most tests.
-      if (!sceneEl.renderer) { return; }
-      sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
-      sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
-      sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
-      this.setShadowMapEnabled(this.shadowMapEnabled);
-    }, this));
+    if (!sceneEl.renderer) { return; }  // For tests.
+
+    console.log(data.type);
+    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
+    sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
+    sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
+    sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
+    this.setShadowMapEnabled(this.shadowMapEnabled);
   },
 
   /**
@@ -79554,7 +79554,7 @@ module.exports.System = registerSystem('shadow', {
   }
 });
 
-},{"../core/system":135,"../lib/three":173,"../utils/bind":189}],188:[function(_dereq_,module,exports){
+},{"../core/system":135,"../lib/three":173}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
 
 /**
