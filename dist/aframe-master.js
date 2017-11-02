@@ -66451,11 +66451,12 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
+    // Raycast again for touch.
     if (this.data.rayOrigin === 'mouse') {
-      // Raycast at new coordinates
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
     }
+
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
     if (evt.type === 'touchstart') { evt.preventDefault(); }
@@ -69336,11 +69337,15 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+
     // Update check time.
     this.prevCheckTime = time;
     this.checkIntersections();
   },
-  /* Raycast for intersections and emit events for current and cleared inersections */
+
+  /**
+   * Raycast for intersections and emit events for current and cleared inersections.
+   */
   checkIntersections: (function () {
     var intersections = [];
 
@@ -78137,7 +78142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #c39980b)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #af0369e)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
