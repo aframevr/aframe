@@ -1,5 +1,4 @@
 var registerSystem = require('../core/system').registerSystem;
-var bind = require('../utils/bind');
 var THREE = require('../lib/three');
 
 var SHADOW_MAP_TYPE_MAP = {
@@ -16,9 +15,10 @@ var SHADOW_MAP_TYPE_MAP = {
  */
 module.exports.System = registerSystem('shadow', {
   schema: {
-    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']},
+    autoUpdate: {default: true},
     renderReverseSided: {default: true},
-    renderSingleSided: {default: true}
+    renderSingleSided: {default: true},
+    type: {default: 'pcf', oneOf: ['basic', 'pcf', 'pcfsoft']}
   },
 
   init: function () {
@@ -27,14 +27,14 @@ module.exports.System = registerSystem('shadow', {
 
     this.shadowMapEnabled = false;
 
-    sceneEl.addEventListener('render-target-loaded', bind(function () {
-      // Renderer is not initialized in most tests.
-      if (!sceneEl.renderer) { return; }
-      sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
-      sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
-      sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
-      this.setShadowMapEnabled(this.shadowMapEnabled);
-    }, this));
+    if (!sceneEl.renderer) { return; }  // For tests.
+
+    console.log(data.type);
+    sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
+    sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
+    sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
+    sceneEl.renderer.shadowMap.autoUpdate = data.autoUpdate;
+    this.setShadowMapEnabled(this.shadowMapEnabled);
   },
 
   /**

@@ -24,7 +24,6 @@ scene but not receive shadows itself.
 ```
 
 [light]: ./light.md#configuring-shadows
-
 **IMPORTANT:** Adding the `shadow` component alone is not enough to display
 shadows in your scene. We must have at least one light with `castShadow:
 true` enabled.  Additionally, the light's shadow camera (used for depth
@@ -37,3 +36,16 @@ component for more information.
 |----------|-----------------------------------------------------------------|---------------|
 | cast     | Whether the entity casts shadows onto the surrounding scene.    | true          |
 | receive  | Whether the entity receives shadows from the surrounding scene. | true          |
+
+## Scene Properties
+
+The shadow system exposes scene-level properties for configuring the renderer
+for shadows. These are set on `<a-scene>` (e.g., `<a-scene shadow="autoUpdate:
+  false">`).
+
+| Property           | Description                                                                                                                                                                                           | Default Value                       |
+|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
+| autoUpdate         | Whether to dynamically update the shadow map every frame. Disable and manually update by setting `renderer.shadowMap.needsUpdate = true` for best performance. Calculating shadow maps is expensive. | true                                |
+| type               | Shadow type. One of `pcf`, `basic`, `pcfsoft`.                                                                                                                                                        | `pcf` (percentage closer filtering) |
+| renderReverseSided | Whether to render the opposite side as specified by the material into the shadow map.                                                                                                                 | true                                |
+| renderSingleSided  | Whether to treat materials specified as double-sided as if they were specified as front-sided when rendering the shadow map.                                                                          | true                                |
