@@ -161,11 +161,15 @@ module.exports.Component = registerComponent('raycaster', {
 
     // Only check for intersection if interval time has passed.
     if (prevCheckTime && (time - prevCheckTime < data.interval)) { return; }
+
     // Update check time.
     this.prevCheckTime = time;
     this.checkIntersections();
   },
-  /* Raycast for intersections and emit events for current and cleared inersections */
+
+  /**
+   * Raycast for intersections and emit events for current and cleared inersections.
+   */
   checkIntersections: (function () {
     var intersections = [];
 

@@ -382,6 +382,7 @@ suite('cursor', function () {
         done();
       });
     });
+
     test('casts ray at current touch location', function (done) {
       var event = new CustomEvent('touchstart');
       var target = el.sceneEl.appendChild(document.createElement('a-entity'));

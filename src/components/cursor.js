@@ -211,11 +211,12 @@ module.exports.Component = registerComponent('cursor', {
    * Trigger mousedown and keep track of the mousedowned entity.
    */
   onCursorDown: function (evt) {
-    if (this.data.rayOrigin === 'mouse') {
-      // Raycast at new coordinates
+    // Raycast again for touch.
+    if (evt.type === 'touchstart' && this.data.rayOrigin === 'mouse') {
       this.onMouseMove(evt);
       this.el.components.raycaster.checkIntersections();
     }
+
     this.twoWayEmit(EVENTS.MOUSEDOWN);
     this.cursorDownEl = this.intersectedEl;
     if (evt.type === 'touchstart') { evt.preventDefault(); }
