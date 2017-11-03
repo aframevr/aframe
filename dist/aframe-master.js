@@ -78142,7 +78142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-02, Commit #48faf8d)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-03, Commit #da422ee)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79533,7 +79533,6 @@ module.exports.System = registerSystem('shadow', {
 
     if (!sceneEl.renderer) { return; }  // For tests.
 
-    console.log(data.type);
     sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
     sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
     sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
