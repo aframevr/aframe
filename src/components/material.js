@@ -152,11 +152,24 @@ module.exports.Component = registerComponent('material', {
    * @returns {object} Material.
    */
   setMaterial: function (material) {
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var el = this.el;
+    var mesh;
     var system = this.system;
+
     if (this.material) { disposeMaterial(this.material, system); }
-    this.material = mesh.material = material;
+
+    this.material = material;
     system.registerMaterial(material);
+
+    // Set on mesh. If mesh does not exist, create it.
+    mesh = el.getObject3D('mesh');
+    if (mesh) {
+      mesh.material = this.material;
+    } else {
+      mesh = new THREE.Mesh();
+      mesh.material = this.material;
+      el.setObject3D('mesh', mesh);
+    }
   }
 });
 
