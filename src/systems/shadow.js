@@ -29,7 +29,6 @@ module.exports.System = registerSystem('shadow', {
 
     if (!sceneEl.renderer) { return; }  // For tests.
 
-    console.log(data.type);
     sceneEl.renderer.shadowMap.type = SHADOW_MAP_TYPE_MAP[data.type];
     sceneEl.renderer.shadowMap.renderReverseSided = data.renderReverseSided;
     sceneEl.renderer.shadowMap.renderSingleSided = data.renderSingleSided;
