@@ -170,7 +170,7 @@ var proto = Object.create(ANode.prototype, {
       // Add.
       this.object3D.add(obj);
       this.object3DMap[type] = obj;
-      this.emit('object3dset', {object: obj, type: type}, false);
+      this.emit('object3dset', {object: obj, type: type});
     }
   },
 
@@ -186,7 +186,7 @@ var proto = Object.create(ANode.prototype, {
       }
       this.object3D.remove(obj);
       delete this.object3DMap[type];
-      this.emit('object3dremove', {type: type}, false);
+      this.emit('object3dremove', {type: type});
     }
   },
 
