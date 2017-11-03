@@ -73609,7 +73609,7 @@ var proto = Object.create(ANode.prototype, {
       // Add.
       this.object3D.add(obj);
       this.object3DMap[type] = obj;
-      this.emit('object3dset', {object: obj, type: type}, false);
+      this.emit('object3dset', {object: obj, type: type});
     }
   },
 
@@ -73625,7 +73625,7 @@ var proto = Object.create(ANode.prototype, {
       }
       this.object3D.remove(obj);
       delete this.object3DMap[type];
-      this.emit('object3dremove', {type: type}, false);
+      this.emit('object3dremove', {type: type});
     }
   },
 
@@ -78142,7 +78142,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-03, Commit #db4ea55)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-03, Commit #176625b)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
