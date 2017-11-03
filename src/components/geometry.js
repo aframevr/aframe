@@ -36,6 +36,8 @@ module.exports.Component = registerComponent('geometry', {
 
     // Create new geometry.
     this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
+
+    this.el.emit('geometryset', null, false);
   },
 
   /**
