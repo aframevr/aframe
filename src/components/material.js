@@ -161,14 +161,16 @@ module.exports.Component = registerComponent('material', {
     this.material = material;
     system.registerMaterial(material);
 
-    // Set on mesh. If mesh does not exist, create it.
+    // Set on mesh. If mesh does not exist, wait for it.
     mesh = el.getObject3D('mesh');
     if (mesh) {
-      mesh.material = this.material;
+      mesh.material = material;
     } else {
-      mesh = new THREE.Mesh();
-      mesh.material = this.material;
-      el.setObject3D('mesh', mesh);
+      el.addEventListener('object3dset', function waitForMesh (evt) {
+        if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
+        el.getObject3D('mesh').material = material;
+        el.removeEventListener('object3dset', waitForMesh);
+      });
     }
   }
 });
