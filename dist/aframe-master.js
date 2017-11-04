@@ -66959,7 +66959,8 @@ module.exports.Component = registerComponent('geometry', {
    */
   update: function (previousData) {
     var data = this.data;
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var el = this.el;
+    var mesh;
     var system = this.system;
 
     // Dispose old geometry if we created one.
@@ -66969,7 +66970,17 @@ module.exports.Component = registerComponent('geometry', {
     }
 
     // Create new geometry.
-    this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
+    this.geometry = system.getOrCreateGeometry(data);
+
+    // Set on mesh. If mesh does not exist, create it.
+    mesh = el.getObject3D('mesh');
+    if (mesh) {
+      mesh.geometry = this.geometry;
+    } else {
+      mesh = new THREE.Mesh();
+      mesh.geometry = this.geometry;
+      el.setObject3D('mesh', mesh);
+    }
   },
 
   /**
@@ -68814,11 +68825,26 @@ module.exports.Component = registerComponent('material', {
    * @returns {object} Material.
    */
   setMaterial: function (material) {
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var el = this.el;
+    var mesh;
     var system = this.system;
+
     if (this.material) { disposeMaterial(this.material, system); }
-    this.material = mesh.material = material;
+
+    this.material = material;
     system.registerMaterial(material);
+
+    // Set on mesh. If mesh does not exist, wait for it.
+    mesh = el.getObject3D('mesh');
+    if (mesh) {
+      mesh.material = material;
+    } else {
+      el.addEventListener('object3dset', function waitForMesh (evt) {
+        if (evt.detail.type !== 'mesh' || evt.target !== el) { return; }
+        el.getObject3D('mesh').material = material;
+        el.removeEventListener('object3dset', waitForMesh);
+      });
+    }
   }
 });
 
@@ -78142,7 +78168,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-03, Commit #176625b)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-04, Commit #ad3ed7c)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
