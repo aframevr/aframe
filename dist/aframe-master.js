@@ -73669,6 +73669,8 @@ var proto = Object.create(ANode.prototype, {
         object3D = new Constructor();
         this.setObject3D(type, object3D);
       }
+      warn('`getOrCreateObject3D` has been deprecated. Use `setObject3D()` ' +
+           'and `object3dset` event instead.');
       return object3D;
     }
   },
@@ -78168,7 +78170,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-04, Commit #ad3ed7c)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-04, Commit #bd193b8)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
