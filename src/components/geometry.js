@@ -25,7 +25,8 @@ module.exports.Component = registerComponent('geometry', {
    */
   update: function (previousData) {
     var data = this.data;
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
+    var el = this.el;
+    var mesh;
     var system = this.system;
 
     // Dispose old geometry if we created one.
@@ -35,7 +36,17 @@ module.exports.Component = registerComponent('geometry', {
     }
 
     // Create new geometry.
-    this.geometry = mesh.geometry = system.getOrCreateGeometry(data);
+    this.geometry = system.getOrCreateGeometry(data);
+
+    // Set on mesh. If mesh does not exist, create it.
+    mesh = el.getObject3D('mesh');
+    if (mesh) {
+      mesh.geometry = this.geometry;
+    } else {
+      mesh = new THREE.Mesh();
+      mesh.geometry = this.geometry;
+      el.setObject3D('mesh', mesh);
+    }
   },
 
   /**

@@ -4,6 +4,7 @@ var entityFactory = require('../helpers').entityFactory;
 suite('flat material', function () {
   setup(function (done) {
     var el = this.el = entityFactory();
+    el.setAttribute('geometry', '');
     el.setAttribute('material', 'shader: flat');
     if (el.hasLoaded) { done(); }
     el.addEventListener('loaded', function () {
