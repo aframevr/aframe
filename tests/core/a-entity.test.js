@@ -856,25 +856,6 @@ suite('a-entity', function () {
     });
   });
 
-  suite('getOrCreateObject3D', function () {
-    test('creates an object3D if the type does not exist', function () {
-      var el = this.el;
-      el.getOrCreateObject3D('mesh', THREE.Object3D);
-      assert.ok(el.getObject3D('mesh'));
-      assert.equal(el.getObject3D('mesh').constructor, THREE.Object3D);
-    });
-
-    test('returns existing object3D if it exists', function () {
-      var el = this.el;
-      var Constructor = function () {};
-      var dummy = {};
-      el.object3DMap['dummy'] = dummy;
-      el.getOrCreateObject3D('dummy', Constructor);
-      assert.ok(el.getObject3D('dummy'));
-      assert.equal(el.getObject3D('dummy'), dummy);
-    });
-  });
-
   suite('getAttribute', function () {
     test('returns full component data', function () {
       var componentData;
