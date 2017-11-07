@@ -78170,7 +78170,7 @@ _dereq_('./core/a-mixin');
 _dereq_('./extras/components/');
 _dereq_('./extras/primitives/');
 
-console.log('A-Frame Version: 0.7.0 (Date 2017-11-04, Commit #bd193b8)');
+console.log('A-Frame Version: 0.7.0 (Date 2017-11-07, Commit #7cc2cef)');
 console.log('three Version:', pkg.dependencies['three']);
 console.log('WebVR Polyfill Version:', pkg.dependencies['webvr-polyfill']);
 
@@ -79583,6 +79583,7 @@ module.exports.System = registerSystem('shadow', {
 
 },{"../core/system":135,"../lib/three":173}],188:[function(_dereq_,module,exports){
 var registerSystem = _dereq_('../core/system').registerSystem;
+var utils = _dereq_('../utils');
 
 /**
  * Tracked controls system.
@@ -79594,7 +79595,8 @@ module.exports.System = registerSystem('tracked-controls', {
 
     this.controllers = [];
 
-    this.updateControllerList();
+    this.updateControllerList(navigator.getGamepads && navigator.getGamepads());
+    this.throttledUpdateControllerList = utils.throttle(this.updateControllerList, 500, this);
 
     if (!navigator.getVRDisplays) { return; }
 
@@ -79606,20 +79608,21 @@ module.exports.System = registerSystem('tracked-controls', {
   },
 
   tick: function () {
-    this.updateControllerList();
+    var gamepads;
+    // Call getGamepads for Chrome.
+    gamepads = navigator.getGamepads && navigator.getGamepads();
+    this.throttledUpdateControllerList(gamepads);
   },
 
   /**
    * Update controller list.
    */
-  updateControllerList: function () {
+  updateControllerList: function (gamepads) {
     var controllers = this.controllers;
     var gamepad;
-    var gamepads;
     var i;
     var prevCount;
 
-    gamepads = navigator.getGamepads && navigator.getGamepads();
     if (!gamepads) { return; }
 
     prevCount = controllers.length;
@@ -79637,7 +79640,7 @@ module.exports.System = registerSystem('tracked-controls', {
   }
 });
 
-},{"../core/system":135}],189:[function(_dereq_,module,exports){
+},{"../core/system":135,"../utils":195}],189:[function(_dereq_,module,exports){
 /**
  * Faster version of Function.prototype.bind
  * @param {Function} fn - Function to wrap.
