@@ -136,8 +136,8 @@ attached, `object3DMap` might look like:
 }
 ```
 
-We can manage an entity's set of `THREE.Object3D`s by using `getOrCreateObject3D`,
-`setObject3D`, and `removeObject3D`.
+We can manage an entity's set of `THREE.Object3D`s by using `setObject3D` and
+`removeObject3D`.
 
 ### `sceneEl`
 
@@ -267,24 +267,8 @@ entity.getDOMAttribute('position');
 AFRAME.registerComponent('example-mesh', {
   init: function () {
     var el = this.el;
-    el.getOrCreateObject3D('mesh', THREE.Mesh);
+    el.setObject3D('mesh', new THREE.Mesh());
     el.getObject3D('mesh');  // Returns THREE.Mesh that was just created.
-  }
-});
-```
-
-### `getOrCreateObject3D (type, Constructor)`
-
-If the entity does not have a `THREE.Object3D` registered under `type`,
-`getOrCreateObject3D` will register an instantiated `THREE.Object3D` using the
-passed `Constructor`. If the entity does have an `THREE.Object3D` registered
-under `type`, `getOrCreateObject3D` will act as `getObject3D`:
-
-```js
-AFRAME.registerComponent('example-geometry', {
-  update: function () {
-    var mesh = this.el.getOrCreateObject3D('mesh', THREE.Mesh);
-    mesh.geometry = new THREE.Geometry();
   }
 });
 ```
@@ -388,7 +372,8 @@ entity.setAttribute('light', {
 
 `setObject3D` will register the passed `obj`, a `THREE.Object3D`, as `type`
 under the entity's `object3DMap`. A-Frame adds `obj` as a child of the entity's
-root `object3D`.
+root `object3D`. An entity will emit the `object3dset` event with `type` event
+detail when `setObject3D` is called.
 
 ```js
 AFRAME.registerComponent('example-orthogonal-camera', {
